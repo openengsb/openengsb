@@ -1,5 +1,5 @@
 ~~
-~~	Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~	Copyright 2009 EngSB Team QSE/IFS, Vienna University of Technology
 ~~
 ~~   Licensed under the Apache License, Version 2.0 (the "License");
 ~~   you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ Infrastructure
   For a readonly access to the git repos simply clone the repository
   
 +--------------+
-git clone git://host/REPO (e.g. git clone git://github.com/engsb/EngSB.git)
+git clone git://host/REPO (e.g. git clone git://github.com/openengsb/openengsb.git)
 +--------------+
 
 ****Write
@@ -168,7 +168,7 @@ git branch -D WORKING
 *-----------*-----------*-----------*-----------*
 |<<name>>|<<read>>|<<write>>|<<description>>|
 *-----------*-----------*-----------*-----------*
-|engsb-core|git://github.com/engsb/EngSB.git|git@github.com:engsb/EngSB.git|core project containing the entire core and connectors and the documentation|
+|engsb-core|git://github.com/openengsb/openengsb.git|git@github.com:openengsb/openengsb.git|core project containing the entire core and connectors and the documentation|
 *-----------*-----------*-----------*-----------*
 
 ***Supported Projects
@@ -190,7 +190,7 @@ git branch -D WORKING
 ***Add a git repository
 
   A new git repository could simply be created by <<git init>>, one commit and finally a <<git clone --bare>>. This 
- new repository should be transfered to 85.126.79.3 at /var/opt/git/repository/. Finally add the following data
+ new repository should be transfered to the server at /var/opt/git/repository/. Finally add the following data
  to the git project. Afterwards the new project is ready and integrated into the environment.
  
 +-----------+
@@ -210,7 +210,7 @@ git config hooks.showrev "git show -C %s; echo"
  to manage project access by rsa-key-infrastructure. To access the system clone gitosis-admin
  
 +----------+
-git clone git@85.126.79.3:gitosis-admin
+git clone git@openengsb.org:gitosis-admin
 +----------+
 
   This project contains a gitosis.conf file and a keydir. To add an additional user two steps 
@@ -234,13 +234,13 @@ git clone git@85.126.79.3:gitosis-admin
  which would liked to be referenced could be uploaded to... 
  
 +-------------+
-engsb@85.126.79.3/home/engsb/artifacts/engsb (engsb/password)
+engsb@openengsb.org/home/engsb/artifacts/engsb
 +-------------+
 
   ...and afterwards referenced by...
   
 +-------------+
-http://85.126.79.3/artifacts/engsb/
+http://openengsb.org/artifacts/engsb/
 +-------------+
  
 *** deploying mvn site
@@ -274,7 +274,7 @@ http://85.126.79.3/artifacts/engsb/
 
   Since not all persons working at the Engineering Service Bus project are very familar with git, and further more
  git does not offer any advantages at versioning and working on documents an additional server. Therefore an additional
- SVN repository to storing documents could be found at {{{http://85.126.79.3/svn/engsb/}http://85.126.79.3/svn/engsb/}}.
+ SVN repository to storing documents could be found at {{{http://openengsb.org/svn/engsb/}http://openengsb.org/svn/engsb/}}.
  This repository could be read by anyone and contains, beside of all presentations, protocols and other material also
  all master theses, bakk theses and other works written around the EngSB. If you require commit access please drop
  a mail @ anpi@gmx.at.
@@ -283,14 +283,14 @@ http://85.126.79.3/artifacts/engsb/
 
   Every project has issues :) Also the EngSB. The main plan of the milestones,
  releases and the tasks und issues which have to be done are completely handled
- by an mantis instance which could be found here: {{http://85.126.79.3/mantis}}.
+ by an mantis instance which could be found here: {{http://issues.openengsb.org/mantis}}.
  Please register and account and you'll be added to the engsb and its 
  sub-projects (the connectors).
 
 * Continuum Integration
 
   Automatical build is done (at the moment) by an hudson instance which does
- a full build at each checkin. The state could be seen here {{http://85.126.79.3:8080/hudson}}, 
+ a full build at each checkin. The state could be seen here {{http://build.openengsb.org:8080/hudson}}, 
  althouth this wont be required since notification mails are sent for every interesting events. Just
  register for the engsb-notification list.
 
@@ -299,11 +299,11 @@ http://85.126.79.3/artifacts/engsb/
   All maven artefacts are produces by the EngSB project are stored in an internal
  Archiva instance. This could be referenced by (e.g.) the connectors to get
  access to all common-core packages required by the connectors. The archiva instance
- could be searched here {{http://85.126.79.3:8080/archiva}} directly.
+ could be searched here {{http://maven.openengsb.org:8080/archiva}} directly.
 
 * Stagging Repository
 
   Final artefacts could be downloaded from the staging repostiroy which could 
- be found in {{http://85.126.79.3/staging/engsb}}. Nevertheless all releases 
+ be found in {{http://maven.openengsb.org/staging/engsb}}. Nevertheless all releases 
  will also be published on the EngSB project page and directly linked to the
  right artefacts.
