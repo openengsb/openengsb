@@ -1,0 +1,27 @@
+#=================
+#eclipse-workspace
+#=================
+.metadata
+
+#=================
+#eclipse-project
+#=================
+*.project
+*.classpath
+*.settings
+
+#=================
+#maven-files
+#=================
+*target
+
+#================
+#log files
+#================
+*engsb.log*
+
+#================
+#runtime productions
+#================
+*activemq-data
+engsb-edb-core/dump

@@ -1,0 +1,32 @@
+~~
+~~	Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+  [ATTENTION:] This page is only a proposal! This means that everyone is allowed to edit this page and it is 
+  			   marked for change. This proposal could be seen as design idea and should be discussed in public
+  			   and visible for everyone before implemented at all.
+
+PIM Domain
+
+  This proposal is about an additional domain at the engineering service bus. The domain is responsible for connecting
+ a range of <<p>>ersonal <<i>>nformation <<m>>anagement systems (PIM). Generally there could be thought about tasks,
+ persons, calendars, time-tracking and so on. Mostly I think in the direction of the KDE Akonadi project, but not
+ as a local common datastore, more as a global sync server. This means we have to implement a wide range of different
+ protocols and connectors. Very interesting connectors could be gcal (calendar), gmail (contacts), rtm (tasks),
+ direct mailer integration, which means global icals file (mail), "pseudo" ldap server (contacts), and maybe some
+ additional protocols. This would allow developers to have access to all his tasks, mettings, persons of the project
+ and so on in his own environment. He could use google, rtm, outlook, kontact, evolution, 
+ imacthingihavenoideaandiamnotinterestedinhowthisthingisnamed and so on. He could close tasks, add comments to tasks
+ which will be attached to issue tracker issues, he'll automatically see if a project manager changes a milestone,
+ and many many other advantages.

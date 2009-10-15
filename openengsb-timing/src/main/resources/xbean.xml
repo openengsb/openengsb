@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<beans xmlns:quartz="http://servicemix.apache.org/quartz/1.0" xmlns:routing="urn:openengsb:routing" xmlns:timing="urn:openengsb:timing"
+  xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+    http://servicemix.apache.org/quartz/1.0 http://servicemix.apache.org/schema/servicemix-quartz-2008.01.xsd">
+
+  <quartz:endpoint endpoint="endpoint" service="timing:DummyTimer" targetService="routing:CIWorkflow">
+    <quartz:jobDetail>
+      <quartz:jobDetail>
+        <quartz:jobDataAsMap>
+          <quartz:property key="xml"><![CDATA[<message><payload><timer><name>Foo</name><group>Bar</group></timer></payload></message>]]></quartz:property>
+        </quartz:jobDataAsMap>
+      </quartz:jobDetail>
+    </quartz:jobDetail>
+    <quartz:triggers>
+      <quartz:simple repeatCount="5" repeatInterval="5000" />
+    </quartz:triggers>
+    <quartz:marshaler>
+      <bean class="org.openengsb.timing.SimpleTextMarshaler" />
+    </quartz:marshaler>
+  </quartz:endpoint>
+
+</beans>

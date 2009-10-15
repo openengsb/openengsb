@@ -1,0 +1,114 @@
+~~
+~~	Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+  [ATTENTION:] This page is only a proposal! This means that everyone is allowed to edit this page and it is 
+  			   marked for change. This proposal could be seen as design idea and should be discussed in public
+  			   and visible for everyone before implemented at all.
+
+EDB
+
+*search
+
+  current search strings look like; 
+  path/to/some/thing/*/*[attribute1=value1][attribute2=value2], with a fixed number
+  of path elements (8 for hydro) and any number of attributes. 
+  (like from the XPath-Queries in JCR)
+  Lucene (now the search engine):
+  path:path/to/some/thing* AND attribute1:value1 AND attribute2:value2
+  BUT: + - && || ! ( ) { } [ ] ^ " ~ * ? : \ are special characters and 
+  should be escaped before passing the query to the searcher
+
+  util-class for query "translation" ?
+  
+*proposal search syntax:
+
+  *OR:\
+  Base is optional and looks like: path/to/some/thing* \
+  Base is used for all Options, not only the first one \
+  If Base is not used the Syntax could be [1] or [2] 
+  
+  Syntax: \
+  normal: Base AND Option1 OR Option2 OR Option3 \
+  [1] * AND Option1 OR Option2 OR Option3 \
+  [2] Option1 OR Option2 OR Option3 
+  
+  *EXISTS: \
+  Exists returns a Query with a certain Data \
+  eg. UUID of a Hydro Signal 
+  
+  Syntax: \
+  EXISTS uuid --> returns a single dataset 
+  
+  *SIMILAR: \
+  Similarity Serach on base of Levenshtein-Distance adepted for Signals: \
+  abc/def/ghi/jkl - abc/def/ghi/jkl: distance 0 \
+  abc/def/ghi/jkl - abc/xxx/ghi/jkl: distance 1 \
+  abc/def/ghi/jkl - abc/def/ghi/xxx: distance 1 \
+  abc/def/ghi/jkl - abc/def/ghi/jkl/xxx: distance 1 \
+  abc/def/ghi/jkl - abc/xxx/ghi/yyy: distance 2 
+  
+  Additional: weighting of fields \
+  the importance of every field is not equivalent, so they can be weighted \
+  default weight: 1  
+  
+  Syntax: \
+  SIMILAR abc/def/ghi/jkl \
+  SIMILAR abc/def/ghi/jkl WEIGHTED [abc:1][def:2][ghi:3][jkl:4] \
+  SIMILAR abc/def/ghi/jkl WEIGHTED [abc:2] \
+  SIMILAR abc/def/ghi/jkl WEIGHTED [abc:2][def:2][jkl:4] 
+  
+
+
+*read-write operations
+
+  add element to EDB, current standard
+  show diff: from last add, needed soon (?)
+  missing: remove, revert
+
+*error strategies
+
+  search index may become broken during a commit or 'foreign' disk access, there should be an automated repair utility
+  git index may become broken ... we need a reliable reset functionality
+  -> lucene index repairer & jgit reset
+  
+*message schema
+
+	schema has to support command modes: add (insert or update) and remove (delete ?or ignore?)
+	schema has to support a rollback command (no content) with params steps (how many checkins to revert)
+	and mode (arbitary usage, for git it will be hard, soft and mixed, 
+	on others SCMs it may be 'show rollback in history' or 'switch to new branch'
+	
+	metadata has to be added (partially existing already) user, tool and time
+	-> radical schema rewrite
+	
+*duplicate detection
+	
+	old content is inserted everytime a commit happens, some duplicate detection will be needed 
+	trivial: UUID, realistic: set of custom fields
+	-> we need the detection used in the CommitService, the behavior and search itself 
+	may be placed in its own class (per strategy)
+
+*version detection
+
+	on insertion, duplicate detecton even has to search through the history to see if the last
+	commit from the same user/tool combination updated his data fields. in addition, the user/tool
+	may specify which fields it will change, ?every other changed field may be regarded as outdated?
+	-> we need history lookup
+	for git: branch, checkout/reset, search/compare, enhance commit data, commit to original, delete branch
+	
+*split SCM of search index and content
+
+	two different jgit repos should be maintained by the edb: one for the search index and one for the content
+	this becomes important on history lookup, general efficiency and repair functionality

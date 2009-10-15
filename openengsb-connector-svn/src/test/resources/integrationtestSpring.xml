@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+  <bean class="org.openengsb.connector.svn.constants.SvnScmComponentIntegrationTestConstants">
+
+    <property name="XBEAN_XML_NAME" value="testXbean.xml" />
+    <property name="TEST_NAMESPACE" value="urn:test" />
+    <property name="CHECKOUT_WC1_TRUNK_SERVICE_NAME" value="checkoutService1" />
+    <property name="CHECKOUT_WC2_TRUNK_SERVICE_NAME" value="checkoutService2" />
+    <property name="CHECKOUT_WC2_BRANCHES_SERVICE_NAME" value="checkoutService3" />
+    <property name="CHECKOUT_WC1_NO_BRANCHES_TRUNK_SERVICE_NAME" value="checkoutService4" />
+    <property name="CHECKOUT_WC1_NO_BRANCHES_REPOSITORY_SERVICE_NAME" value="checkoutService5" />
+    <property name="CHECKOUT_WC2_NO_BRANCHES_BRANCHES_SERVICE_NAME" value="checkoutService6" />
+    <property name="CHECKOUT_BOTH_CONNECTIONS_SET" value="checkoutService7" />
+    <property name="CHECKOUT_ONLY_CONNECTION_SET" value="checkoutService8" />
+    <property name="CHECKOUT_NO_CONNECTION_SET" value="checkoutService9" />
+    <property name="CHECKOUT_NO_WORKING_COPY_SET_SERVICE_NAME" value="checkoutService10" />
+    <property name="ADD_SERVICE_NAME" value="addService" />
+    <property name="DELETE_SERVICE_NAME" value="deleteService" />
+    <property name="COMMIT_SERVICE_NAMES">
+      <list>
+        <value>commitService1</value>
+        <value>commitService2</value>
+      </list>
+    </property>
+    <property name="UPDATE_SERVICE_NAME" value="updateService" />
+    <property name="BRANCH_SERVICE_NAME" value="branchService" />
+    <property name="LIST_BRANCHES_SERVICE_NAME" value="listBranchesService" />
+    <property name="SWITCH_BRANCH_SERVICE_NAME" value="switchBranchService" />
+    <property name="MERGE_SERVICE_NAME" value="mergeService" />
+    <property name="BLAME_SERVICE_NAME" value="blameService" />
+    <property name="DIFF_SERVICE_NAME" value="diffService" />
+    <property name="EXPORT_SERVICE_NAME" value="exportService" />
+    <property name="IMPORT_SERVICE_NAME" value="importService" />
+    <property name="LOG_SERVICE_NAME" value="logService" />
+
+    <property name="REPOSITORY" value="target/testRepository" />
+    <property name="REPOSITORY_NO_BRANCH" value="target/testRepositoryNoBranch" />
+    <property name="TRUNK" value="target/testRepository/trunk" />
+    <property name="BRANCHES" value="target/testRepository/branches" />
+    <property name="BRANCHLESS_REPOSITORY_TRUNK" value="target/testRepositoryNoBranch/trunk" />
+    <property name="BRANCHLESS_REPOSITORY_BRANCHES" value="target/testRepositoryNoBranch/branches" />
+    <property name="WORKING_COPIES">
+      <list>
+        <value>target/testWorkingCopy</value>
+        <value>target/testWorkingCopy2</value>
+      </list>
+    </property>
+    <property name="EXPORT_PATH" value="target/export" />
+    <property name="IMPORT_PATH" value="src/test/resources/import" />
+    <property name="IMPORT_FILE" value="importFile" />
+    <property name="REFERENCE_REPOSITORY" value="src/test/resources/testRepository" />
+    <property name="REFERENCE_REPOSITORY_NO_BRANCH" value="src/test/resources/testRepositoryNoBranch" />
+
+    <property name="AUTHOR" value="testAuthor" />
+
+    <property name="FILE_TO_ADD" value="src/test/resources/testFiles/addFile" />
+    <property name="DELETE_FILE" value="deleteFile" />
+    <property name="MERGE_FILE" value="mergeFile" />
+    <property name="TEST_FILE" value="testFile" />
+    <property name="UPDATE_FILE" value="updateFile" />
+    <property name="NOT_EXISTING_FILE" value="someFilenameThatDoesNotExist" />
+    <property name="WORKING_COPY_LEAVING_FILE" value="../../target" />
+    <property name="SUB_PATH" value="subPath" />
+    <property name="INITIAL_FILES">
+      <list>
+        <value>deleteFile</value>
+        <value>mergeFile</value>
+        <value>testFile</value>
+        <value>updateFile</value>
+        <value>subPath</value>
+      </list>
+    </property>
+
+    <property name="COMMIT_ONLY_CONNECTION_SET_SERVICE_NAME" value="commitServiceOnlyConnection" />
+    <property name="BRANCH_ONLY_CONNECTION_SET_SERVICE_NAME" value="branchServiceOnlyConnection" />
+    <property name="IMPORT_NO_CONNECTION_SET_SERVICE_NAME" value="importServiceOnlyConnection" />
+
+    <property name="REPOSITORY_ENV_NAME" value="OPENENGSB_TEST_REPOSITORY" />
+    <property name="REPOSITORY_NO_BRANCH_ENV_NAME" value="OPENENGSB_TEST_REPOSITORY_NO_BRANCHES" />
+    <property name="TRUNK_ENV_NAME" value="OPENENGSB_TEST_TRUNK" />
+    <property name="BRANCHES_ENV_NAME" value="OPENENGSB_TEST_BRANCHES" />
+    <property name="NO_BRANCH_TRUNK_ENV_NAME" value="OPENENGSB_TEST_TRUNK_NO_BRANCHES" />
+    <property name="NO_BRANCH_BRANCHES_ENV_NAME" value="OPENENGSB_TEST_BRANCHES_NO_BRANCHES" />
+    <property name="WORKING_COPY1_ENV_NAME" value="OPENENGSB_WORKING_COPY1" />
+    <property name="WORKING_COPY2_ENV_NAME" value="OPENENGSB_WORKING_COPY2" />
+
+    <property name="DEFAULT_WORKING_COPY" value="./data/openengsb/workingCopy" />
+
+  </bean>
+</beans>

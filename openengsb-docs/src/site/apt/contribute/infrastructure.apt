@@ -1,0 +1,309 @@
+~~
+~~	Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+Infrastructure
+
+  There is quite some infrastructure provided for openEngSB. The following
+ page describes which infrastructure is available and where to find it.
+ 
+* Mailing Lists
+
+  There are five mailing lists available for the openEngSB project. The announce,
+  dev and user lists are the most important ones.
+ 
+  ** openengsb-announce@googlegroups.com
+
+    This group publishes information about new releases and/or updates.
+
+  ** openengsb-dev@googlegroups.com
+
+    The developer list is thought for all kinds of discussions about or/and 
+    around the openEngSB project.
+
+  ** openengsb-user@googlegroups.com
+
+    The user group offers information, opinion and support from openEngSB users
+
+  ** openengsb-ticket@googlegroups.com
+
+    Notifications from issue tracket and build server go here.
+
+  ** openengsb-commit@googlegroups.com
+
+    The commit list collects commit messages from github.com
+
+* IRC Channel
+
+  Additional to the mailing list an irc channel is active most of the time at least one of the core developer is
+ spending its time and answering questions. The channel could be found at server irc.machts.net:6668 and channel #engsb.
+ 
+* SCM
+
+  Since the EngSB project uses the not too common SCM system GIT for its version control it should be explained
+ a little bit in more detail than normal for an scm. The following chapter explains how to use git, which
+ projects are available and how the repositories are administered.
+
+**Usage
+
+  First of all this chapter explains only the VERY basics of git and only that parts directly relevant for the
+ development, but not the entire idea and possibilities with git. PLEASE read a lot of tutorials first to get
+ how to work with git and see this chapter more as an summary!
+ 
+***Remarks
+
+  For mac and for windows there are specific implementations of GIT. Don't use them! They do not work for what
+ we like to do with them. If you're using linux no problems at all are expected. If you're using any other platform
+ use cygwin or compile the original source with ssh support! 
+ 
+***Starting up and configure
+
+  Before starting to work with git some settings should be applied to git. Therefore simply execute the following
+ commands one after the other in a shell.
+
+  Of course not all of the settings are REALLY required, but others are, so please simply execute all of them!
+  
+  [[1]] git config --global user.name "FirstName LastName"
+  
+  [[2]] git config --global user.email "user@example.com"
+  
+  [[3]] git config --global color.ui "auto"
+  
+  [[4]] git config --global pack.threads "0"
+  
+  [[5]] git config --global diff.renamelimit "0"
+  
+  [[6]] git config --global core.autocrlf "input"
+  
+***Getting the repository
+
+  The git repositories could be checked out in two different permission levels. Read or write. The following two
+ subsections explain how to get the code.
+
+****Readonly
+
+  For a readonly access to the git repos simply clone the repository
+  
++--------------+
+git clone git://host/REPO (e.g. git clone git://github.com/engsb/EngSB.git)
++--------------+
+
+****Write
+
+  To get write access to the repositries an additional step is required. First of all you have to create an
+ ssh-key (in cygwin on windows! Otherwise simply in the bash).
+ 
++-------------+
+ssh-keygen
++-------------+
+
+  Simply answer all questions from the application with return without enter any values. Afterwards the id_rsa.pub
+ file from your ~/.ssh/ folder should be submitted to github. ***Workflow with GIT
+
+  To understand the workflow you have to have a basic understanding of git. Nevertheless the approach will also
+ work with "pattern matching".
+ 
++-------------+
+[1. create working feature; if not exists; WORKING = name of the feature; e.g. info]
+git checkout -b WORKING master
+git push origin WORKING
+git checkout master
+git branch -D WORKING
+git checkout -b WORKING origin/WORKING
+git checkout -b devWORKING WORKING
+[2. producing context]
+git checkout -b devWORKING
+HACK HACK HACK
+git add FILES
+git rm FILES
+git commit -s
+[3. push changes or continue with 2.]
+git checkout WORKING
+git pull
+git rebase WORKING devWORKING
+git checkout WORKING
+git merge devWORKING
+// test if everything still works...
+git push
+[4. feature completed and merged by an admin to the master; or go back to 2.]
+git push origin :WORKING
+git checkout master
+git branch -D devWORKING
+git branch -D WORKING
+[5. go back to 1. and create new feature branch]
++-------------+ 
+
+**Additional Infrastructure
+
+  Git itself is a nice tool, but nevertheless it does not allow direct read access via webdav as svn (for example). 
+ Therefore some additional infrastructure was installed to make it easier for developers to work with git. These
+ tools should be explained in more detail at this chapter.
+ 
+***Gitweb
+
+  Gitweb is a is a web application similar to svnweb to access the git repositories from the web, get their updates
+ and analyse them without to checkout the entire repository. This page is saved with the same password and username
+ as this page.
+
+**Projects
+
+  The following projects could be accessed via the git git-repository and are relevant for the EngSB project.
+  
+***Core Projects
+  
+  The following chapter lists and describes the git repositories directly required for developing the EngSB and or
+ components related to the EngSB.
+  
+*-----------*-----------*-----------*-----------*
+|<<name>>|<<read>>|<<write>>|<<description>>|
+*-----------*-----------*-----------*-----------*
+|engsb-core|git://github.com/engsb/EngSB.git|git@github.com:engsb/EngSB.git|core project containing the entire core and connectors and the documentation|
+*-----------*-----------*-----------*-----------*
+
+***Supported Projects
+
+  Since the EngSB is developed according to the needs of some partners and sponsors this code is separated in
+ additional repositories. First of all no one may be interested into the specific implementations and further
+ more the proprietary code have to be separated from the core which should be available as an open source project
+ in the near future. The projects exists could be find best via the gitweb tool described at additional infrastructure.
+ 
+  Therefore the projects could be checked out for read access with git://github.com/PROEJCT. For write access from
+ git@github.com:PROJECT. A more detailed of the projects themself could mostly be found in the PROJECT-docs folder
+ contained in the git repository of the project.
+
+**Administration
+
+  This section is only interesting for people with full management access to the server and the
+ project. It could be divided in two relevant tasks. Creating new projects and management access.
+ 
+***Add a git repository
+
+  A new git repository could simply be created by <<git init>>, one commit and finally a <<git clone --bare>>. This 
+ new repository should be transfered to 85.126.79.3 at /var/opt/git/repository/. Finally add the following data
+ to the git project. Afterwards the new project is ready and integrated into the environment.
+ 
++-----------+
+touch git-daemon-export-ok
+ln -s /usr/share/doc/git-core/contrib/hooks/post-receive-email post-receive
+git config hooks.mailinglist "engsb-notification@ifs.tuwien.ac.at"
+git config hooks.envelopesender "issueTracker@schmutterer-partner.at"
+git config hooks.showrev "git show -C %s; echo"
++-----------+
+ 
+  Finally add a symbolic link to /var/cache/git/. This adds it to the gitweb page and allows to export
+  via the typical git protocol.
+
+***Manage user access
+
+  Management the user access is quite simple with the help of gitosis. Gitosis is a project used
+ to manage project access by rsa-key-infrastructure. To access the system clone gitosis-admin
+ 
++----------+
+git clone git@85.126.79.3:gitosis-admin
++----------+
+
+  This project contains a gitosis.conf file and a keydir. To add an additional user two steps 
+  have to be done
+  
+  1. Add the id_rsa.pub file of the user to the keydir folder. Rename it to the username could be
+     found at the end of the id_rsa.pub file. For example open the id_rsa.pub file and go to the
+     end of the file. There you'll find someting like <<uUxdd3OnvY4Iw== pieber@coprime>> therefore
+     rename id_rsa.pub to pieber@coprime.pub.
+     
+  2. Add the user to the gitosis.conf file. It should not be explained here in detail, since it could 
+     be find at the gitosis project. Further more its more copy past than anything new. So add the user
+     to the project if one exists; otherwise create a new project.
+     
+  3. Finally add everything to the git index, commit and push it. Everything else should be done 
+     automatically by gitosis.
+ 
+*** store big files
+
+  If really big files needed to be stored and referenced by site. The artifacts
+ which would liked to be referenced could be uploaded to... 
+ 
++-------------+
+engsb@85.126.79.3/home/engsb/artifacts/engsb (engsb/password)
++-------------+
+
+  ...and afterwards referenced by...
+  
++-------------+
+http://85.126.79.3/artifacts/engsb/
++-------------+
+ 
+*** deploying mvn site
+
+  Its possible for everyone to deploy Maven site on the server. Therefore only
+ some simple configurations for Maven are required. For deploying simply create
+ a settings.xml in your .m2 folder (if the file does not exist).
+ 
++-----------------------+
+<settings>
+        <!-- Allows to ask on default  -->
+        <interactiveMode>true</interactiveMode>
+        <servers>
+                <server>
+                        <id>publicServer</id>
+                        <username>engsb</username>
+                        <password>password</password>
+                </server>
+        </servers>
+</settings>
++-----------------------+
+
+  After adding those lines it will be possible to deploy every EngSB-docs project
+ with the following simple command.
+ 
++-----------------------+
+[pieber@coprime engsb-docs]$ mvn clean site site:deploy
++-----------------------+
+
+* Document Repository
+
+  Since not all persons working at the Engineering Service Bus project are very familar with git, and further more
+ git does not offer any advantages at versioning and working on documents an additional server. Therefore an additional
+ SVN repository to storing documents could be found at {{{http://85.126.79.3/svn/engsb/}http://85.126.79.3/svn/engsb/}}.
+ This repository could be read by anyone and contains, beside of all presentations, protocols and other material also
+ all master theses, bakk theses and other works written around the EngSB. If you require commit access please drop
+ a mail @ anpi@gmx.at.
+
+* Issue tracker
+
+  Every project has issues :) Also the EngSB. The main plan of the milestones,
+ releases and the tasks und issues which have to be done are completely handled
+ by an mantis instance which could be found here: {{http://85.126.79.3/mantis}}.
+ Please register and account and you'll be added to the engsb and its 
+ sub-projects (the connectors).
+
+* Continuum Integration
+
+  Automatical build is done (at the moment) by an hudson instance which does
+ a full build at each checkin. The state could be seen here {{http://85.126.79.3:8080/hudson}}, 
+ althouth this wont be required since notification mails are sent for every interesting events. Just
+ register for the engsb-notification list.
+
+* Maven Artefact Repository
+
+  All maven artefacts are produces by the EngSB project are stored in an internal
+ Archiva instance. This could be referenced by (e.g.) the connectors to get
+ access to all common-core packages required by the connectors. The archiva instance
+ could be searched here {{http://85.126.79.3:8080/archiva}} directly.
+
+* Stagging Repository
+
+  Final artefacts could be downloaded from the staging repostiroy which could 
+ be found in {{http://85.126.79.3/staging/engsb}}. Nevertheless all releases 
+ will also be published on the EngSB project page and directly linked to the
+ right artefacts.

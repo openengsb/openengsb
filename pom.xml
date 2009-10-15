@@ -1,0 +1,882 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <properties>
+
+    <!-- Library Versions -->
+    <spring.version>2.5.6.SEC01</spring.version>
+    <spring.activemq.version>2.1</spring.activemq.version>
+    <jdk.version>1.6</jdk.version>
+    <servicemix.tools.version>4.0</servicemix.tools.version>
+    <servicemix.version>3.3.1</servicemix.version>
+    <servicemix.subprojects.version>2009.01</servicemix.subprojects.version>
+    <slf4j.version>1.5.8</slf4j.version>
+    <svnkit.version>1.3.0</svnkit.version>
+    <lucene.version>2.4.1</lucene.version>
+    <activemq.version>5.2.0</activemq.version>
+    <jgit.version>0.5.0</jgit.version>
+    <log4j.version>1.2.14</log4j.version>
+    <cglib.version>2.2</cglib.version>
+    <xbean.version>3.5</xbean.version>
+    <xmlrpc.version>3.0</xmlrpc.version>
+    <dom4j.version>1.6.1</dom4j.version>
+    <joda.version>1.6</joda.version>
+    <commons.lang.version>2.4</commons.lang.version>
+    <junit.version>4.4</junit.version>
+    <hamcrest.version>1.1</hamcrest.version>
+    <mockito.version>1.7</mockito.version>
+    <xmlunit.version>1.2</xmlunit.version>
+    <maven.code.version>3.0-alpha-2</maven.code.version>
+    <maven.plexus.utils.version>1.5.6</maven.plexus.utils.version>
+
+    <!-- Plugin Version -->
+    <docbkx.version>2.0.7</docbkx.version>
+    <maven.plugin.release.version>2.0-beta-9</maven.plugin.release.version>
+    <maven.plugin.surefire>2.4.3</maven.plugin.surefire>
+  </properties>
+
+  <groupId>org.openengsb</groupId>
+  <artifactId>openengsb-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>openengsb-trunk</name>
+
+  <description>
+    Parent project of all OpenEngSB subprojects. The OpenEngSB could be seen
+    as an extension to an Enterprise Service Bus and is based on JBI (Service Mix).
+    With this project it is tried to provide as many as possible SE domains and
+    to allow to combine the tools as easily as possible.
+  </description>
+
+  <url>http://openengsb.org</url>
+
+  <modules>
+
+    <!-- Documentation -->
+    <module>openengsb-docs</module>
+
+    <!-- Common Modules & Helpers -->
+    <module>openengsb-timing</module>
+    <module>openengsb-routing</module>
+    <module>openengsb-logging</module>
+    <module>openengsb-util</module>
+        
+    <!-- Engineering Knowledge Base -->
+    <module>openengsb-ekb</module>
+    
+    <!-- Enterprise Data Base -->
+    <module>openengsb-edb-core</module>
+    <module>openengsb-edb-se</module>
+    <module>openengsb-edb</module>
+
+    <!-- Workflows -->
+    <module>openengsb-workflow</module>
+
+    <!-- SCM Domain -->
+    <module>openengsb-domain-scm-se</module>
+    <module>openengsb-domain-scm-common</module>
+
+    <!-- Connectors -->
+    <module>openengsb-connector-svn</module>
+    <module>openengsb-connector-mvn</module>
+
+    <!-- Implementation Modules -->
+    <module>openengsb-connector-mvn-build</module>
+    <module>openengsb-connector-mvn-test</module>
+    <module>openengsb-connector-mvn-deploy</module>
+    <module>openengsb-connector-svn-impl</module>
+    
+    <!-- Packaging Modules -->
+    <module>openengsb-all</module>
+
+  </modules>
+
+  <inceptionYear>2009</inceptionYear>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
+
+  <issueManagement>
+    <system>Mantis</system>
+    <url>http://issues.openengsb.org/mantis</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>Hudson</system>
+    <url>http://build.openengsb.org/hudson</url>
+    <notifiers>
+      <notifier>
+        <type>mail</type>
+        <sendOnError>true</sendOnError>
+        <sendOnFailure>true</sendOnFailure>
+        <sendOnSuccess>true</sendOnSuccess>
+        <sendOnWarning>true</sendOnWarning>
+        <configuration>
+          <address>openengsb-ticket@googlegroups.com</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>Release announcements</name>
+      <subscribe>openengsb-announce-subscribe@googlegroups.com</subscribe>
+      <unsubscribe>openengsb-announce-unsubscribe@googlegroups.com</unsubscribe>
+      <post>openengsb-announce@googlegroups.com</post>
+      <archive>http://groups.google.com/group/openengsb-announce</archive>
+    </mailingList>
+    <mailingList>
+      <name>Developer Mailing List</name>
+      <subscribe>openengsb-dev-subscribe@googlegroups.com</subscribe>
+      <unsubscribe>openengsb-dev-unsubscribe@googlegroups.com</unsubscribe>
+      <post>openengsb-dev@googlegroups.com</post>
+      <archive>http://groups.google.com/group/openengsb-dev</archive>
+    </mailingList>
+    <mailingList>
+      <name>User Mailing List</name>
+      <subscribe>openengsb-user-subscribe@googlegroups.com</subscribe>
+      <unsubscribe>openengsb-user-unsubscribe@googlegroups.com</unsubscribe>
+      <post>openengsb-user@googlegroups.com</post>
+      <archive>http://groups.google.com/group/openengsb-user</archive>
+    </mailingList>
+    <mailingList>
+      <name>Issue tracker notifications</name>
+      <subscribe>openengsb-ticket-subscribe@googlegroups.com</subscribe>
+      <unsubscribe>openengsb-ticket-unsubscribe@googlegroups.com</unsubscribe>
+      <post>openengsb-ticket@googlegroups.com</post>
+      <archive>http://groups.google.com/group/openengsb-ticket</archive>
+    </mailingList>
+    <mailingList>
+      <name>Commit notifications</name>
+      <subscribe>openengsb-commit-subscribe@googlegroups.com</subscribe>
+      <unsubscribe>openengsb-commit-unsubscribe@googlegroups.com</unsubscribe>
+      <post>openengsb-commit@googlegroups.com</post>
+      <archive>http://groups.google.com/group/openengsb-commit</archive>
+    </mailingList>
+  </mailingLists>
+
+  <developers>
+    <developer>
+      <id>api</id>
+      <name>Andreas Pieber</name>
+      <organisation>Vienna University of Technology</organisation>
+      <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
+      <email>anpi@gmx.at</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Project Lead</role>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>fwa</id>
+      <name>Florian Waltersdorfer</name>
+      <organisation>Vienna University of Technology</organisation>
+      <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
+      <email>ignatiomobius@gmail.com</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Alexander Pucher</name>
+      <email>engsb@alexander-pucher.com</email>
+      <organisation>Vienna University of Technology</organisation>
+      <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Christoph Leiter</name>
+      <email>openengsb@christophleiter.com</email>
+      <organisation>Vienna University of Technology</organisation>
+      <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <name>Michael Handler</name>
+      <email>michael.handler@fullstop.at</email>
+      <organisation>Vienna University of Technology</organisation>
+      <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <contributors>
+    <contributor>
+      <name>Patrick Peer</name>
+      <email>e0326352@gmail.com</email>
+      <organisation>Vienna University of Technology</organisation>
+      <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Christoph Zehetner</name>
+      <email>christoph.zehetner@gmx.at</email>
+      <organisation>Vienna University of Technology</organisation>
+      <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+    </contributor>
+  </contributors>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${jdk.version}</source>
+          <target>${jdk.version}</target>
+          <fork>true</fork>
+          <meminitial>128m</meminitial>
+          <maxmem>512m</maxmem>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <configuration>
+          <reportSets>
+            <reportSet>
+              <reports>
+                <report>report-only</report>
+              </reports>
+            </reportSet>
+          </reportSets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[${mvn.version},)</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>${jdk.version}</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>true</downloadJavadocs>
+          <workspace>${basedir}</workspace>
+          <workspaceCodeStylesURL>http://dev.openengsb.org/resources/eclipse/formatter.xml</workspaceCodeStylesURL>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+          <excludeSubProjects>false</excludeSubProjects>
+          <excludes>
+            <!-- scm/git -->
+            <exclude>**/.gitignore</exclude>
+            <exclude>**/.git/**</exclude>
+
+            <!-- build dir -->
+            <exclude>**/target/**</exclude>
+
+            <!-- eclipse -->
+            <exclude>**/.classpath</exclude>
+            <exclude>**/.project</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>**/.metadata/**</exclude>
+
+            <!-- runtime generated data -->
+            <exclude>openengsb-edb-core/easy2find/**</exclude>
+            <exclude>**/*.log</exclude>
+            <exclude>**/activemq-data/**</exclude>
+
+            <!-- raw data -->
+            <exclude>**/testRepository**/**</exclude>
+            <exclude>**/testRepositoryNoBranch/**</exclude>
+            <exclude>**/import/**</exclude>
+            <exclude>**/testFiles/**</exclude>
+            <exclude>**/site/docbook/empty.txt</exclude>
+
+            <!-- licensed externally -->
+            <exclude>openengsb-docs/src/docbkx/resources/css/highlight.css</exclude>
+            <exclude>openengsb-docs/src/docbkx/resources/css/html.css</exclude>
+            <exclude>openengsb-docs/src/docbkx/resources/xsl/fopdf.xsl</exclude>
+            <exclude>openengsb-docs/src/docbkx/resources/xsl/highlight-fo.xsl</exclude>
+            <exclude>openengsb-docs/src/docbkx/resources/xsl/highlight.xsl</exclude>
+            <exclude>openengsb-docs/src/docbkx/resources/xsl/html.xsl</exclude>
+
+            <!-- notice and license -->
+            <exclude>NOTICE</exclude>
+            <exclude>LICENSE</exclude>
+
+            <!-- nonjava projects -->
+            <exclude>openengsb-nonjava/csharp/lib/**</exclude>
+            <exclude>**/**.csproj</exclude>
+            <exclude>**/**.sln</exclude>
+
+            <!-- Scripts -->
+            <exclude>quickrun.sh</exclude>
+            <exclude>openengsb-all/quickdeploy.sh</exclude>
+          </excludes>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.servicemix.tooling</groupId>
+        <artifactId>jbi-maven-plugin</artifactId>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-eclipse-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>jaxws-maven-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-scm-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-report-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>com.agilejava.docbkx</groupId>
+          <artifactId>docbkx-maven-plugin</artifactId>
+          <version>${docbkx.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.camel</groupId>
+          <artifactId>camel-maven-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.xbean</groupId>
+          <artifactId>maven-xbean-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.servicemix.tooling</groupId>
+          <artifactId>jbi-maven-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven.plugin.release.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven.plugin.surefire}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <!-- Documentation -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-docs</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
+      <!-- Common Modules & Helpers -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-timing</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-routing</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-logging</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-util</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+        
+      <!-- Engineering Knowledge Base -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-ekb</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+    
+      <!-- Enterprise Data Base -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-edb-core</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-edb-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-edb</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
+      <!-- Workflows -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-workflow</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+    
+      <!-- SCM Domain -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domain-scm-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domain-scm-common</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
+      <!-- Connectors -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-connector-svn</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-connector-mvn</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
+      <!-- Implementation Modules -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-connector-mvn-build</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-connector-mvn-test</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-connector-mvn-deploy</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-connector-svn-impl</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+    
+      <!-- Packaging Modules -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-all</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+    
+      <!-- Servicemix Dependencies -->
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-core</artifactId>
+        <version>${servicemix.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <!-- Servicemix Module Dependencies -->
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-shared</artifactId>
+        <version>${servicemix.subprojects.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-common</artifactId>
+        <version>${servicemix.subprojects.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-camel</artifactId>
+        <version>${servicemix.subprojects.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-eip</artifactId>
+        <version>${servicemix.subprojects.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-drools</artifactId>
+        <version>${servicemix.subprojects.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-bean</artifactId>
+        <version>${servicemix.subprojects.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-quartz</artifactId>
+        <version>${servicemix.subprojects.version}</version>
+      </dependency>
+
+      <!-- ActiveMQ Dependencies (are they really required??) -->
+      <dependency>
+        <groupId>org.apache.activemq</groupId>
+        <artifactId>activemq-core</artifactId>
+        <version>${activemq.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.activemq</groupId>
+        <artifactId>activemq-pool</artifactId>
+        <version>${activemq.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>activemq</groupId>
+        <artifactId>activemq-spring</artifactId>
+        <version>${spring.activemq.version}</version>
+      </dependency>
+
+      <!-- SVNKit Dependencies -->
+      <dependency>
+        <groupId>org.tmatesoft</groupId>
+        <artifactId>jna</artifactId>
+        <version>${svnkit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.tmatesoft</groupId>
+        <artifactId>svnkit</artifactId>
+        <version>${svnkit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.tmatesoft</groupId>
+        <artifactId>svnkit-cli</artifactId>
+        <version>${svnkit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.tmatesoft</groupId>
+        <artifactId>svnkit-javahl</artifactId>
+        <version>${svnkit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.tmatesoft</groupId>
+        <artifactId>trilead</artifactId>
+        <version>${svnkit.version}</version>
+      </dependency>
+
+      <!-- Lucene Dependencies (Search Engine) -->
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-queries</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-xml-query-parser</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-regex</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <!-- JGit Version -->
+      <dependency>
+        <groupId>org.spearce</groupId>
+        <artifactId>jgit</artifactId>
+        <version>${jgit.version}</version>
+      </dependency>
+
+      <!-- Maven Dependencies -->
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${maven.code.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-embedder</artifactId>
+        <version>${maven.code.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>${maven.plexus.utils.version}</version>
+      </dependency>
+
+      <!-- Logging Dependencies -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+
+      <!-- Spring Dependencies -->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-test</artifactId>
+        <version>${spring.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-aop</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jms</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib</artifactId>
+        <version>${cglib.version}</version>
+      </dependency>
+
+      <!-- XML RPC deps (are they really required any longer??) -->
+      <dependency>
+        <groupId>org.apache.xbean</groupId>
+        <artifactId>xbean-spring</artifactId>
+        <version>${xbean.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>xmlrpc</groupId>
+        <artifactId>xmlrpc-client</artifactId>
+        <version>${xmlrpc.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>dom4j</groupId>
+        <artifactId>dom4j</artifactId>
+        <version>${dom4j.version}</version>
+      </dependency>
+
+      <!-- Util Dependencies -->
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>${joda.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>${commons.lang.version}</version>
+      </dependency>
+
+      <!-- Test Dependencies -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-library</artifactId>
+        <version>${hamcrest.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>xmlunit</groupId>
+        <artifactId>xmlunit</artifactId>
+        <version>${xmlunit.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <repositories>
+    <repository>
+    	<id>thirdparty</id>
+    	<name>OpenEngSB 3rd Party Repository</name>
+    	<url>http://maven.openengsb.org/nexus/content/repositories/thirdparty/</url>
+    	<releases>
+    		<enabled>true</enabled>
+    	</releases>
+    	<snapshots>
+    		<enabled>true</enabled>
+    	</snapshots>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshots Repository</name>
+      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </pluginRepository>
+    <pluginRepository>
+      <id>apache.incubating</id>
+      <name>Apache Incubating Repository</name>
+      <url>http://people.apache.org/repo/m2-incubating-repository</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+  
+  <distributionManagement>
+    <repository>
+      <id>releases</id>
+      <name>OpenEngSB Release Repository</name>
+      <url>dav:http://maven.openengsb.org/nexus/content/repositories/releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshots</id>
+      <name>OpenEngSB Snapshot Repository</name>
+      <url>dav:http://maven.openengsb.org/nexus/content/repositories/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+</project>

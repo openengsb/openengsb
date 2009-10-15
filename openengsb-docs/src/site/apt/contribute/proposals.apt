@@ -1,0 +1,45 @@
+~~
+~~	Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+Proposals
+
+  Since the EngSB project is a very opened project (should finally also delivered to 
+ the open-source many things are discussed in the public. Mostly ideas are discussed
+ first in the mailinglist; but when the idea should be fixed in a more consistent way
+ mostly a proposal is written. For the EngSB project this should be done in the proposals
+ section. This articel explains in more details what this means and how it should be handled.
+ 
+*General
+
+  First of all some general information about proposals; Please write them, as everything else
+ on this page in English! Further write all proposals in APT and add them to the 
+ /engsb-docs/src/site/apt/proposals folder. The structure itself could be chosen by the type of
+ the document.
+ 
+*Domain Description
+
+  This section describes what should be contained in the proposal for an interface description.
+ The structure of the documents themself should be done in the following form:
+ 
+ [[1]] Which tools exist for the domain
+ 
+ [[2]] What does these tools can, what is the common sense between these tools
+ 
+ [[3]] What services are required for the domain to use the services available. This should be done in
+    "the java way of live". Simply define an interface and document it and its data types in most
+    detail.
+    
+ [[4]] Define which events could be thrown by the domain. Define java classes and describe in detail
+    when this event should be thrown. 

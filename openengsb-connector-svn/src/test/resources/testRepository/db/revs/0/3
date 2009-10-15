@@ -1,0 +1,46 @@
+id: 0-3.0.r3/0
+type: file
+count: 0
+text: 1 0 64 52 b1538ca486384043cc7ab24107051f51 bc1cf500c9f15083886e2509f1c83e3c8bb77479 2-2/_2
+cpath: /updateFile
+copyroot: 0 /
+
+PLAIN
+K 10
+deleteFile
+V 17
+file 0-1.0.r1/688
+K 9
+mergeFile
+V 17
+file 2-1.0.r1/354
+K 7
+subPath
+V 14
+dir 0-2.0.r2/0
+K 8
+testFile
+V 17
+file 3-1.0.r1/521
+K 10
+updateFile
+V 15
+file 0-3.0.r3/0
+END
+ENDREP
+id: 0.0.r3/364
+type: dir
+pred: 0.0.r2/319
+count: 3
+text: 3 166 185 185 bb9b306433d34b2f449202bea7c5af82
+cpath: /
+copyroot: 0 /
+
+_0.0.t2-2 add-file true false /updateFile
+
+5-1.0.r1/858 delete-file false false /updateToRepoFile
+
+4-1.0.r1/1034 delete-file false false /updateFromRepoFile
+
+
+364 492

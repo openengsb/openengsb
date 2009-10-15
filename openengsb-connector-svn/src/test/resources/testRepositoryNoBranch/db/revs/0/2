@@ -1,0 +1,45 @@
+id: 0-2.0.r2/0
+type: dir
+count: 0
+cpath: /subPath
+copyroot: 0 /
+
+PLAIN
+K 10
+deleteFile
+V 17
+file 0-1.0.r1/688
+K 9
+mergeFile
+V 17
+file 2-1.0.r1/354
+K 7
+subPath
+V 14
+dir 0-2.0.r2/0
+K 8
+testFile
+V 17
+file 3-1.0.r1/521
+K 18
+updateFromRepoFile
+V 18
+file 4-1.0.r1/1034
+K 16
+updateToRepoFile
+V 17
+file 5-1.0.r1/858
+END
+ENDREP
+id: 0.0.r2/319
+type: dir
+pred: 0.0.r1/1435
+count: 2
+text: 2 65 241 241 f813a92c4e5ee904b54916e6ff808251
+cpath: /
+copyroot: 0 /
+
+_0.0.t1-1 add-dir false false /subPath
+
+
+319 447

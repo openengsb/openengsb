@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!--
+
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<project name="Open Engineering Service Bus">
+
+  <skin>
+    <groupId>org.apache.maven.skins</groupId>
+    <artifactId>maven-stylus-skin</artifactId>
+  </skin>
+
+  <bannerLeft>
+    <name>Open Engineering Service Bus (openEngSB)</name>
+    <src>images/openengsb_small.png</src>
+  </bannerLeft>
+
+  <bannerRight>
+    <name>Vienna University of Technology</name>
+    <src>images/tu.png</src>
+  </bannerRight>
+
+  <version position="right" />
+  <poweredBy />
+
+  <body>
+
+    <menu name="openEngSB">
+      <item href="index.html" name="Project Overview" />
+      <item href="reference/index.html" name="Userguide" />
+    </menu>
+
+    <menu name="Tool Connectors">
+      <item collapse="true" href="connector/issues/issues.html" name="Issue-Connectors">
+        <item href="connector/issues/trac.html" name="Trac" />
+        <item href="connector/issues/mantis.html" name="Mantis" />
+      </item>
+      <item collapse="true" href="connector/build/build.html" name="Build-Connectors">
+        <item href="connector/build/mvn.html" name="Mvn" />
+      </item>
+      <item collapse="true" href="connector/test/test.html" name="Test-Connectors">
+        <item href="connector/test/mvn.html" name="Mvn" />
+      </item>
+      <item collapse="true" href="connector/notification/notification.html" name="Notification-Connectors">
+        <item href="connector/notification/email.html" name="EMail" />
+      </item>
+      <item collapse="true" href="connector/repository/repository.html" name="Repository-Connectors">
+        <item href="connector/repository/mvn.html" name="Mvn" />
+        <item href="connector/repository/staging.html" name="Staging" />
+      </item>
+    </menu>
+
+    <menu name="Project Information">
+      <item href="roadmap.html" name="Roadmap" />
+      <item href="presentation.html" name="Presentations" />
+      <item collapse="true" href="contribute.html" name="Contribute">
+        <item href="contribute/infrastructure.html" name="Infrastructure" />
+        <item href="contribute/codingstyle.html" name="Coding Guidelines" />
+        <item href="contribute/format.html" name="APT Format" />
+        <item href="contribute/eclipse.html" name="Eclipse Setup" />
+        <item href="contribute/proposals.html" name="Proposals" />
+        <item href="contribute/relatedProjects.html" name="Related Projects" />
+      </item>
+      <item collapse="true" href="source-repository.html" name="Infrastructure">
+        <item href="source-repository.html" name="Source Repository" />
+        <item href="integration.html" name="Continous Integration" />
+        <item href="issue-tracking.html" name="Issue Tracking" />
+        <item href="mail-lists.html" name="Mailing Lists" />
+      </item>
+      <item collapse="true" href="dependency-management.html" name="Dependencies">
+        <item href="dependency-management.html" name="Dependencies" />
+        <item href="plugin-management.html" name="Modules" />
+        <item href="plugins.html" name="Plugins" />
+      </item>
+      <item collapse="true" href="proposals/edbInterface.html" name="Proposals">
+        <item href="proposals/edbInterface.html" name="EDB" />
+        <item href="proposals/scmDomain.html" name="SCM Domain" />
+        <item href="proposals/buildDomain.html" name="Build Domain" />
+        <item href="proposals/testDomain.html" name="Test Domain" />
+        <item href="proposals/deployDomain.html" name="Deploy Domain" />
+        <item href="proposals/pimDomain.html" name="PIM Domain" />
+      </item>
+      <item href="team-list.html" name="Team" />
+      <item href="license.txt" name="License" />
+      <item href="faq.html" name="FAQ" />
+    </menu>
+
+  </body>
+
+</project>

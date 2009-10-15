@@ -1,0 +1,13 @@
+K 10
+svn:author
+V 7
+patrick
+K 8
+svn:date
+V 27
+2009-09-01T18:37:20.790511Z
+K 7
+svn:log
+V 38
+reverted back to trunk-less repository
+END

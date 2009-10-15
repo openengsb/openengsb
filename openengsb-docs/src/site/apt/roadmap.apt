@@ -1,0 +1,263 @@
+~~
+~~	Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+Roadmap
+
+  This page presents the roadmap for the EngSB project. The fine grained tasks
+ could be seen in the {{{http://85.126.79.3/mantis/}Issue Tracker Mantis}} used
+ for this project.
+ 
+  Must have tasks are marked with !!, where optional (nice to have) tasks does not have any special marks.
+  
+*Version EngSB-1.0.0.M3 [2009-09-05]
+
+**Active Members
+
+  Pieber, Waltersdorfer, Zehetner, Peer, Pucher
+
+**General
+
+  Version 1.0.0.M3 should be used for learning the JBI SMX engine, starting with
+ SMX3 since its the easier, more stable version. The entire 3-x production
+ line could be seen as an prototype and should not be used for production.
+
+**Tasks
+ 
+ * <<!!Tool Integrations:>> svn-co, mvn-build, mvn-test, mvn-deploy <[Christoph Zehetner, Patrick Peer]>
+ 
+ * <<!!Workflow Base:>> ODE impl <[Andreas Pieber]>
+ 
+ * <<!!EDB-API:>> Service integration interface for the internal engsb-edb-core <[Florian Waltersdorfer, Alexander Pucher]>
+ 
+ * <<!!EDB-JBI-Integration:>> JBI Service Wrapper around the internal engsb-edb-core component to allow general 
+   access via JBI over the SMX to the component, and to replace the actual engsb-edb-mule implementation in 
+   the engsb-1.0.0.M2 branch. <[Andreas Pieber]>
+
+*Version EngSB-1.0.0.M4 [2009-10-03] 
+ 
+**Active Members
+
+  Pieber, Waltersdorfer, Zehetner, Peer, Pucher, Chung, Gruber, Zoech
+
+**General
+ 
+  The fourth milestone of the engineering service bus should first of all replace the legacy M2 branch and therefore
+ integrate the hydro project. Further more it should finally produce a first use case of the CI and test use case.
+ Finally the first version of a configuration inteface for managing the components and tools at the EngSB should be
+ provided.
+ 
+**Tasks
+ 
+ * <[Andreas Pieber]> <<!!rule engine:>> The event processor is implemented by drools. First of all the engine component have to be added
+   as internal service engine. 
+  
+ * <[Michael Zoech]> <<!!embeddabble smx:>> There have to be a possibility to create a deploy package (a .war file) which conaints
+   the entire code for the EngSB itself, and further more other components. This packaging mechanism is quite important
+   for us to deploy our packages and further more to create "ready to download" packages of the EngSB itself for
+   the open source
+ 
+ * <[Michael Zoech]> <<!!Component Metadata Description:>> Mostly SAs, packages containing SUs have to be instanziated in the EngSB at 
+   runtime. To configure these interfaces from the EngSB an additional metadata configuration have to be added to each
+   component. This metadata should contain, furher more, bindings for the UI, mappings of values which should be
+   configured by the user and which are required for the component to run. 
+ 
+ * <[Michael Zoech]> <<!!Configuration Manager:>> A more or less generic webgui have to be created which is able to manage components,
+   aquire metadata from the user, update components, ... Further more also further extensions as workflow manager, 
+   rule manager, statistics and so on could be integrated at a very easy way into the user interface. 
+ 
+ * <[Michael Zoech]> <<Workflow/Rule Manager:>> The configuration manager should also include a workflow and a rule management system, 
+   which allows users to manage processes and rules. Actually this does not have to allow a graphical edition of the 
+   workflows/processes but it ould be very nice if it allows to upload/download such components. 
+  
+ * <[Andreas Pieber]> <<!!UC-CI:>> The continuus integration use case should be fully seen the first time at this release. This means a
+   checkin could be done, which creates an event, which results in a build, which results in a test and finally in a 
+   deploy with at least one option of notification should be ready.
+   
+ * <[Christoph Zehetner, Patrick Peer, Andreas Pieber]> <<!!Domain-Implementations:>> The first implementations of the 
+   following domains should be ready: <build>, <scm>, <deploy>, <test>, <notification> 
+   
+ * <[Florian Waltersdorfer]> <<!!SCM-Git-Connector:>> Since we want to build the entire EngSB with the EngSB we need a git connector for the
+   scm domain. 
+   
+ * <[Fabian Gruber]> <<!!email-notification-connector:>> Connect a notfication tool (email would be the simplest) and 
+   implement the notification domain. 
+ 
+ * <[Fabian Gruber]> <<!!trac-issue-connector:>> Connect to a trac instance and implement the issue domain 
+ 
+ * <[Andreas Pieber, Michael Zoech]> <<!!Dummies for User- and Projectsmanagement:>> Since also the absolute base integration requires at least projects
+   and users if notification and configuration should work at least some (actually) internal base components for this 
+   tasks are required and have to be integrated into the graphical user interface. 
+   
+ * <[Andreas Pieber]> <<!!Dummy-Registry:>> The tools require some lookup for a basic registry to find the required tools. This does not
+   have to be a full registry, but at least a simple component with a hashmap (at the moment)
+ 
+ * <[Patrick Peer, Christoph Zehetner]> <<!!HowTo create domains/connectors:>> Since Alexander Pucher, Patrick Peer and Christoph Zehetner have developed
+   some domains/connectors so far they should write a howto about their experiences with the systems to help new
+   comers with writing domains/connectors. 
+   
+ * <[Michael Zoech]> <<!!HowTo configure the bus:>> Since Michael Zoech wrote the configuration project he could also write the 
+   documentation therefore 
+   
+ * <[Gi-Won Chung]> <<!!Link EngSB with Daisy:>> A link in a document should add information from an issue-tracker during the 
+   creation of the document. 
+ 
+ * <[Alexander Pucher]> <<!!Make open source project out of actual state>> definition with alexander schatten (skype-meeting)
+  
+*Version EngSB-1.0.0.M5 [2009-10-17]
+
+**Active Members
+
+  Pieber, Waltersdorfer, Chung, Gruber
+
+**General
+
+**Tasks
+
+ * <<!!Link EngSB with Daisy:>> A link in a document should add information from an issue-tracker during the 
+   creation of the document. <[Gi-Won Chung]>
+   
+ * <<!!Finish research for CMS systems:>>  <[Gi-Won Chung]>
+  
+ * <<EKB:>>
+ 
+ * <[Andreas Pieber]> <<Finish Registry Design:>>
+ 
+*Version EngSB-1.0.0.M6 [2009-10-31] 
+
+**Active Members
+
+  Pieber, Waltersdorfer, Chung
+
+**General
+
+**Tasks
+
+ * <<!!Link EngSB with Daisy:>> A link in a document should add information from an issue-tracker during the 
+   creation of the document. <[Gi-Won Chung]> 
+   
+ * <<Logging Component:>> to EngSB
+  
+ * <<Log Analysing:>> (Debugging, Performance)
+  
+ * <<Reporting and Business Activity Monitoring:>> (e.g. performance indicators, Health status of systems and processes)
+ 
+ * <<EKB:>>
+
+ * <<Registry Prototype:>> ueberblick ueber grundsaetzlich verfuegbare Nachrichten/Services (Design Time),
+   ueberblick ueber aktuell verfuegbare Nachrichten/Services (Run Time) (Self-describing Engineering Component 
+   Adapter on domain level (tool-dependent) connects specific engineering components like source code management, 
+   issue tracker, development environment; definition of capabilities via message types and capability ontologies
+   (knowledge on tool capabilities); has to be designed and implemented.) 
+
+*Version EngSB-1.0.0.M7 [2009-11-14] 
+
+**Active Members
+
+  Pieber, Waltersdorfer, Chung
+
+**General
+
+**Tasks
+
+ * <<EKB:>>
+ 
+ * <<Registry Prototype:>> ueberblick ueber grundsaetzlich verfuegbare Nachrichten/Services (Design Time),
+   ueberblick ueber aktuell verfuegbare Nachrichten/Services (Run Time) (Self-describing Engineering Component 
+   Adapter on domain level (tool-dependent) connects specific engineering components like source code management, 
+   issue tracker, development environment; definition of capabilities via message types and capability ontologies
+   (knowledge on tool capabilities); has to be designed and implemented.) 
+
+*Version EngSB-1.0.0.M8 [2009-11-28]
+
+**Active Members
+
+  Pieber, Waltersdorfer, Chung
+
+**General
+
+**Tasks
+
+  * <<SMX4:>> Upgrade to SMX4
+  
+  * <<EKB:>>
+  
+*Version EngSB-1.0.0.M9 [2009-12-05]
+
+**Active Members
+
+  Pieber, Waltersdorfer, Chung
+
+**General
+
+**Tasks
+
+ * <<EKB:>>
+
+*Version EngSB-1.0.0.M10 [2009-12-19]
+ 
+**Active Members
+
+  Pieber, Waltersdorfer, Chung
+
+**General
+
+**Tasks
+
+ * <<EKB:>>
+ 
+*Version EngSB-1.0.0.M11 [2009-01-16]
+
+**Active Members
+
+  Pieber, Waltersdorfer, Chung
+
+**General
+
+**Tasks
+
+ * <<EKB:>>
+
+*Version EngSB-1.0.0.M12 [2009-01-30]
+ 
+**Active Members
+
+  Pieber, Waltersdorfer, Chung
+
+**General
+
+**Tasks
+
+ * <<EKB:>>
+ 
+* Not Scheduled
+ 
+ * <<Security concept:>> Send authorised messages, encrypt messages?, send authorised data over gateway
+ 
+ * <<Bridge/Gateway from EngSB to EngSB:>> Filtering, Security
+ 
+ * <<Online/Offline Capabiliy:>> Synchronisation, Auf Nachrichtenebene Kumuliert (nicht alle Nachrichten), 
+   Modell/Datensynchronisation?
+   
+ * <<Process management:>> Task container (GUI included, similar to BPEL4People, WSHuman), RUP actual models
+   (V-Model XT analyzing, implement ...), TUEV check (ISO 90002, ...), Artifact management (documentation, requirements),
+   Roles, Fuer Workflow, Fuer Berechtigungen, Integration in existing systems (LDAP, 'own' implementation, etc)
+     
+ * <<Browserplugin for navigation:>> Every now and then some linking UCs come on the floor. Imho the best solution
+   for such UCs is to write a (firefox) plugin launchin a specific application with specific parameters according to
+   this link. <[???]>
+      
+ * Extend Michael Zoechs work
+
+ * Implement {{{proposals/pimDomain.html}PIM-Domain}}

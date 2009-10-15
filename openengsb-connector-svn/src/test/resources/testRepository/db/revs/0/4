@@ -1,0 +1,132 @@
+id: 2-1.1-4.r4/0
+type: file
+pred: 2-1.0.r1/354
+count: 1
+text: 1 0 64 52 b1538ca486384043cc7ab24107051f51 bc1cf500c9f15083886e2509f1c83e3c8bb77479 0-0/_6
+cpath: /trunk/mergeFile
+copyfrom: 1 /mergeFile
+
+id: 3-1.3-4.r4/201
+type: file
+pred: 3-1.0.r1/521
+count: 1
+text: 1 77 33 21 749ead942739510c114062ae4a313b58 c976995252fb60044ba0f5e4bdab4db3ead3531d 0-0/_7
+cpath: /trunk/testFile
+copyfrom: 1 /testFile
+
+id: 0-1.0-4.r4/403
+type: file
+pred: 0-1.0.r1/688
+count: 1
+text: 1 123 64 52 b1538ca486384043cc7ab24107051f51 bc1cf500c9f15083886e2509f1c83e3c8bb77479 0-0/_8
+cpath: /trunk/deleteFile
+copyfrom: 1 /deleteFile
+
+id: 0-3.4-4.r4/610
+type: file
+pred: 0-3.0.r3/0
+count: 1
+text: 1 0 64 52 b1538ca486384043cc7ab24107051f51 bc1cf500c9f15083886e2509f1c83e3c8bb77479 2-2/_2
+cpath: /trunk/updateFile
+copyfrom: 3 /updateFile
+
+id: 0-2.2-4.r4/813
+type: dir
+pred: 0-2.0.r2/0
+count: 1
+cpath: /trunk/subPath
+copyfrom: 2 /subPath
+
+PLAIN
+K 10
+deleteFile
+V 19
+file 0-1.0-4.r4/403
+K 9
+mergeFile
+V 17
+file 2-1.1-4.r4/0
+K 7
+subPath
+V 18
+dir 0-2.2-4.r4/813
+K 8
+testFile
+V 19
+file 3-1.3-4.r4/201
+K 10
+updateFile
+V 19
+file 0-3.4-4.r4/610
+END
+ENDREP
+id: 3-4.0.r4/1122
+type: dir
+count: 0
+text: 4 912 197 197 94d14aea5563e8bf3aaf835ba51728e1
+cpath: /trunk
+copyroot: 0 /
+
+id: 0-4.0.r4/1241
+type: dir
+count: 0
+cpath: /branches
+copyroot: 0 /
+
+id: 2-4.0.r4/1310
+type: dir
+count: 0
+cpath: /tags
+copyroot: 0 /
+
+PLAIN
+K 8
+branches
+V 17
+dir 0-4.0.r4/1241
+K 4
+tags
+V 17
+dir 2-4.0.r4/1310
+K 5
+trunk
+V 17
+dir 3-4.0.r4/1122
+END
+ENDREP
+id: 0.0.r4/1493
+type: dir
+pred: 0.0.r3/364
+count: 4
+text: 4 1375 105 105 777a7b10d4a83c8f074c4f6645626356
+cpath: /
+copyroot: 0 /
+
+0-1.0.r1/688 delete-file false false /deleteFile
+
+2-1._1.t3-3 add-file false false /trunk/mergeFile
+1 /mergeFile
+3-1._3.t3-3 add-file false false /trunk/testFile
+1 /testFile
+0-3.0.r3/0 delete-file false false /updateFile
+
+_3.0.t3-3 add-dir false false /trunk
+
+_0.0.t3-3 add-dir false false /branches
+
+0-1._0.t3-3 add-file false false /trunk/deleteFile
+1 /deleteFile
+0-3._4.t3-3 add-file false false /trunk/updateFile
+3 /updateFile
+0-2.0.r2/0 delete-dir false false /subPath
+
+0-2._2.t3-3 add-dir false false /trunk/subPath
+2 /subPath
+_2.0.t3-3 add-dir false false /tags
+
+2-1.0.r1/354 delete-file false false /mergeFile
+
+3-1.0.r1/521 delete-file false false /testFile
+
+
+1493 1623

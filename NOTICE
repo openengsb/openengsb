@@ -1,0 +1,207 @@
+   =========================================================================
+   ==  NOTICE file for use with the Apache License, Version 2.0,          ==
+   ==  in this case for the Engineering Service Bus distribution.         ==
+   =========================================================================
+
+   
+   This product contains software developed by
+   The Engineering Service Bus Project (http://www.engsb.org).
+   
+      Copyright (c) 2009 EngSB Team QSE/IFS, Vienna University of Technology
+   
+=========================================================================
+==  Apache ServiceMix Notice                                           ==
+=========================================================================
+
+This product includes software developed by
+The Apache Software Foundation (http://www.apache.org/).
+
+
+=========================================================================
+==  Bouncy Castle Notice                                               ==
+=========================================================================
+
+This product includes software (the ASN1 codec in the org.apache.geronimo.asn1
+package) which was developed by the Bouncy Castle project. 
+(http://www.bouncycastle.org/) 
+
+     Copyright (c) 2000-2005 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)
+
+
+=========================================================================
+==  Derby Notice                                                       ==
+=========================================================================
+
+Portions of Derby were orginally developed by
+International Business Machines Corporation and are
+licensed to the Apache Software Foundation under the
+"Software Grant and Corporate Contribution License Agreement",
+informally known as the "Derby CLA".
+
+The portion of the functionTests under 'nist' was originally 
+developed by the National Institute of Standards and Technology (NIST), 
+an agency of the United States Department of Commerce, and adapted by
+International Business Machines Corporation in accordance with the NIST
+Software Acknowledgment and Redistribution document at
+http://www.itl.nist.gov/div897/ctg/sql_form.htm
+
+
+=========================================================================
+==  Spring Notice                                                      ==
+=========================================================================
+
+This product includes software developed by
+the Apache Software Foundation (http://www.apache.org).
+
+This product also includes software developed by
+Clinton Begin (http://www.ibatis.com).
+
+The end-user documentation included with a redistribution, if any,
+must include the following acknowledgement:
+
+ "This product includes software developed by the Spring Framework
+  Project (http://www.springframework.org)."
+
+Alternately, this acknowledgement may appear in the software itself,
+if and wherever such third-party acknowledgements normally appear.
+
+The names "Spring" and "Spring Framework" must not be used to
+endorse or promote products derived from this software without
+prior written permission. For written permission, please contact
+rod.johnson@interface21.com or juergen.hoeller@interface21.com.
+   
+=========================================================================
+==  MX4J Notice                                                        ==
+=========================================================================
+
+This product includes software developed by the MX4J project 
+(http://sourceforge.net/projects/mx4j).
+
+
+=========================================================================
+==  WSDL4J Notice                                                      ==
+=========================================================================
+
+The Program includes all or portions of the following software which is 
+subject to the Common Public License ("CPL Code").  This software 
+consists of voluntary contributions made by many individuals on behalf of
+the WSDL4J project.
+
+You may download the source version of the WSDL4J component at 
+http://sourceforge.net/projects/wsdl4j
+
+
+=========================================================================
+==  Xerces Notice                                                      ==
+=========================================================================
+
+Portions of this software were originally based on the following:
+  - software copyright (c) 1999, IBM Corporation., http://www.ibm.com.
+  - software copyright (c) 1999, Sun Microsystems., http://www.sun.com.
+  - voluntary contributions made by Paul Eng on behalf of the 
+    Apache Software Foundation that were originally developed at 
+    iClick, Inc., software copyright (c) 1999.
+
+
+=========================================================================
+==  XmlBeans Notice                                                    ==
+=========================================================================
+
+Portions of this software were originally based on the following:
+  - software copyright (c) 2000-2003, BEA Systems, <http://www.bea.com/>.
+
+Aside from contributions to the Apache XMLBeans project, this
+software also includes:
+
+ - one or more source files from the Apache Xerces-J and Apache Axis
+   products, Copyright (c) 1999-2003 Apache Software Foundation
+
+ - W3C XML Schema documents Copyright 2001-2003 (c) World Wide Web
+   Consortium (Massachusetts Institute of Technology, European Research
+   Consortium for Informatics and Mathematics, Keio University)
+
+ - resolver.jar from Apache Xml Commons project,
+   Copyright (c) 2001-2003 Apache Software Foundation
+
+ - Piccolo XML Parser for Java from http://piccolo.sourceforge.net/,
+   Copyright 2002 Yuval Oren under the terms of the Apache Software 
+   License 2.0
+
+
+=========================================================================
+==  XmlSecurity Notice                                                 ==
+=========================================================================
+
+It was originally based on software copyright (c) 2001, Institute for
+Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
+
+The development of this software was partly funded by the European 
+Commission in the <WebSig> project in the ISIS Programme. 
+
+=========================================================================
+==  OpenSaml Notice                                                    ==
+=========================================================================
+
+We wish to acknowledge the following copyrighted works that make up
+portions of this software:
+
+This product includes software developed by the Apache Software
+Foundation (http://www.apache.org/).
+
+We also thank Tom Scavo for donating the original SAML artifact
+implementation.
+
+
+   This following notices refer to portions of this
+   software.
+
+
+=========================================================================
+==  W3C Notice                                                         ==
+=========================================================================
+
+W3C® DOCUMENT LICENSE
+http://www.w3.org/Consortium/Legal/2002/copyright-documents-20021231
+
+Public documents on the W3C site are provided by the copyright holders under the following license. By using and/or copying this document, or the W3C document from which this statement is linked, you (the licensee) agree that you have read, understood, and will comply with the following terms and conditions:
+
+Permission to copy, and distribute the contents of this document, or the W3C document from which this statement is linked, in any medium for any purpose and without fee or royalty is hereby granted, provided that you include the following on ALL copies of the document, or portions thereof, that you use:
+
+   1. A link or URL to the original W3C document.
+   2. The pre-existing copyright notice of the original author, or if it doesn't exist, a notice (hypertext is preferred, but a textual representation is permitted) of the form: "Copyright © [$date-of-document] World Wide Web Consortium, (Massachusetts Institute of Technology, European Research Consortium for Informatics and Mathematics, Keio University). All Rights Reserved. http://www.w3.org/Consortium/Legal/2002/copyright-documents-20021231"
+   3. If it exists, the STATUS of the W3C document.
+
+When space permits, inclusion of the full text of this NOTICE should be provided. We request that authorship attribution be provided in any software, documents, or other items or products that you create pursuant to the implementation of the contents of this document, or any portion thereof.
+
+No right to create modifications or derivatives of W3C documents is granted pursuant to this license. However, if additional requirements (documented in the Copyright FAQ) are satisfied, the right to create modifications or derivatives is sometimes granted by the W3C to individuals complying with those requirements.
+
+THIS DOCUMENT IS PROVIDED "AS IS," AND COPYRIGHT HOLDERS MAKE NO REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR TITLE; THAT THE CONTENTS OF THE DOCUMENT ARE SUITABLE FOR ANY PURPOSE; NOR THAT THE IMPLEMENTATION OF SUCH CONTENTS WILL NOT INFRINGE ANY THIRD PARTY PATENTS, COPYRIGHTS, TRADEMARKS OR OTHER RIGHTS.
+
+COPYRIGHT HOLDERS WILL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, SPECIAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF ANY USE OF THE DOCUMENT OR THE PERFORMANCE OR IMPLEMENTATION OF THE CONTENTS THEREOF.
+
+The name and trademarks of copyright holders may NOT be used in advertising or publicity pertaining to this document or its contents without specific, written prior permission. Title to copyright in this document will at all times remain with copyright holders.
+
+----------------------------------------------------------------------------
+
+This formulation of W3C's notice and license became active on December 31 2002. This version removes the copyright ownership notice such that this license can be used with materials other than those owned by the W3C, moves information on style sheets, DTDs, and schemas to the Copyright FAQ, reflects that ERCIM is now a host of the W3C, includes references to this specific dated version of the license, and removes the ambiguous grant of "use". See the older formulation for the policy prior to this date. Please see our Copyright FAQ for common questions about using materials from our site, such as the translating or annotating specifications. Other questions about this notice can be directed to site-policy@w3.org.
+
+Joseph Reagle <site-policy@w3.org>
+
+Last revised $Id: copyright-documents-20021231.html,v 1.6 2004/07/06 16:02:49 slesch Exp $
+
+
+=========================================================================
+==  OASIS Notice                                                       ==
+=========================================================================
+
+OASIS takes no position regarding the validity or scope of any intellectual property or other rights that might be claimed to pertain to the implementation or use of the technology described in this document or the extent to which any license under such rights might or might not be available; neither does it represent that it has made any effort to identify any such rights. Information on OASIS's procedures with respect to rights in OASIS specifications can be found at the OASIS website. Copies of claims of rights made available for publication and any assurances of licenses to be made available, or the result of an attempt made to obtain a general license or permission for the use of such proprietary rights by implementors or users of this specification, can be obtained from the OASIS Executive Director.
+
+OASIS invites any interested party to bring to its attention any copyrights, patents or patent applications, or other proprietary rights which may cover technology that may be required to implement this specification. Please address the information to the OASIS Executive Director.
+
+Copyright (C) OASIS Open (2004-2005). All Rights Reserved.
+
+This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself may not be modified in any way, such as by removing the copyright notice or references to OASIS, except as needed for the purpose of developing OASIS specifications, in which case the procedures for copyrights defined in the OASIS Intellectual Property Rights document must be followed, or as required to translate it into languages other than English. 
+
+The limited permissions granted above are perpetual and will not be revoked by OASIS or its successors or assigns. 
+
+This document and the information contained herein is provided on an "AS IS" basis and OASIS DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.

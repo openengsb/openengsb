@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
+
+	<bean id="unit_constants_build" class="org.openengsb.maven.build.constants.BuildMvnTestConstants">
+		<property name="test_project" value="../test-classes/build-test" />
+		<property name="test_project_fail" value="../test-classes/build-test-fail" />
+		<property name="test_project_dep" value="../test-classes/build-test-dep" />
+		<property name="test_project_invalid_pom" value="../test-classes/build-invalid-pom" />
+		<property name="test_settings_file" value="../test-classes/settings/settings.xml" />
+	</bean>
+	
+	<bean id="integration_constants_build" class="org.openengsb.maven.build.constants.BuildMvnTestConstantsIntegration">
+		<property name="test_project" value="../test-classes/build-test" />
+		<property name="test_project_fail" value="../test-classes/build-test-fail" />
+		<property name="test_project_dep" value="../test-classes/build-test-dep" />
+		<property name="test_project_invalid_pom" value="../test-classes/build-invalid-pom" />
+		<property name="test_settings_file" value="../test-classes/settings/settings.xml" />
+		<property name="xbean" value="spring-test-xbean-build.xml" />
+	</bean>
+	
+	<bean id="unit_constants_deploy" class="org.openengsb.maven.deploy.constants.DeployMvnTestConstants" >
+		<property name="REPOSITORY" value="target/testRepository/" />
+		<property name="GROUP_ID_PATH" value="com/test/groupId/" />
+		<property name="VERSION" value="1.0-SNAPSHOT" />
+		<property name="DEPLOYED_VERSION" value="1\.0" />
+		<property name="MAVEN_METADATA_FILES">
+			<list>
+				<value>maven-metadata.xml</value>
+				<value>maven-metadata.xml.md5</value>
+				<value>maven-metadata.xml.sha1</value>
+			</list>
+		</property>
+		<property name="EXPECTED_DEPLOYED_FILES" value="6" />
+		<property name="VALID_ARTIFACTS">
+			<list>
+				<value>src/test/resources/deploy-valid1</value>
+				<value>src/test/resources/deploy-valid2</value>
+			</list>
+		</property>
+		<property name="VALID_ARTIFACT" value="src/test/resources/deploy-valid1" />
+		<property name="MISSING_POM_ARTIFACT" value="src/test/resources/deploy-missingPom" />
+		<property name="INVALID_POM_ARTIFACT" value="src/test/resources/deploy-invalidPom" />
+		<property name="NON_EXISTING_ARTIFACT" value="src/test/resources/nonExistingArtifact" />
+		<property name="INVALID_ARTIFACTS">
+			<list>
+				<value>src/test/resources/deploy-missingPom</value>
+				<value>src/test/resources/deploy-invalidPom</value>
+			</list>
+		</property>
+		<property name="SOME_VALID_SOME_INVALID_ARTIFACTS">
+			<list>
+				<value>src/test/resources/deploy-valid1</value>
+				<value>src/test/resources/deploy-valid2</value>
+				<value>src/test/resources/deploy-missingPom</value>
+				<value>src/test/resources/deploy-invalidPom</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="integration_constants_deploy" class="org.openengsb.maven.deploy.constants.DeployMvnTestConstantsIntegration">
+		<property name="XBEAN_XML_NAME" value="spring-test-xbean-deploy.xml" />
+
+		<property name="VALID_ARTIFACTS_SERVICE_NAME" value="validArtifacts" />
+		<property name="INVALID_ARTIFACTS_SERVICE_NAME" value="invalidArtifacts" />
+
+		<property name="TEST_NAMESPACE" value="urn:test" />
+
+		<property name="REPOSITORY" value="target/testRepository/" />
+		<property name="RESOURCES_DIRECTORY" value="src/test/resources/" />
+		<property name="VALID_ARTIFACT" value="src/test/resources/deploy-valid1" />
+		<property name="MISSING_POM_ARTIFACT" value="src/test/resources/deploy-missingPom" />
+	</bean>
+	
+		<bean id="unit_constants_test" class="org.openengsb.maven.test.constants.TestMvnTestConstants">
+		<property name="test_valid_surefire" value="../test-classes/test-valid-surefire" />
+		<property name="test_invalid_surefire" value="../test-classes/test-invalid-surefire" />
+		<property name="test_no_surefire" value="../test-classes/test-no-surefire" />
+		<property name="test_unit_fail" value="../test-classes/test-unit-fail" />
+		<property name="test_settings_file" value="../test-classes/settings/settings.xml" />
+	</bean>
+
+	<bean id="integration_constants_test" class="org.openengsb.maven.test.constants.TestMvnTestConstantsIntegration">
+		<property name="test_valid_surefire" value="../test-classes/test-valid-surefire" />
+		<property name="test_invalid_surefire" value="../test-classes/test-invalid-surefire" />
+		<property name="test_no_surefire" value="../test-classes/test-no-surefire" />
+		<property name="test_unit_fail" value="../test-classes/test-unit-fail" />
+		<property name="test_settings_file" value="../test-classes/settings/settings.xml" />
+		<property name="xbean" value="spring-test-xbean-test.xml" />
+	</bean>
+	
+</beans>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<bpel:process
+			  xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+			  xmlns:tns="urn:openengsb:continous" xmlns:repo="urn:openengsb:svn" xmlns:build="urn:openengsb:build"
+			  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			  suppressJoinFailure="yes"
+			  expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"
+			  exitOnStandardFault="yes" name="ContinousIntegrationService"
+			  targetNamespace="urn:openengsb:continous" xmlns:sxt="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Trace" xmlns:sxed="http://www.sun.com/wsbpel/2.0/process/executable/SUNExtension/Editor">
+
+    <bpel:import importType="http://schemas.xmlsoap.org/wsdl/" location="continousIntegration.wsdl" namespace="urn:openengsb:continous"/>
+    <bpel:import importType="http://schemas.xmlsoap.org/wsdl/" location="scm.wsdl" namespace="urn:openengsb:svn"/>
+    <bpel:import importType="http://schemas.xmlsoap.org/wsdl/" location="build.wsdl" namespace="urn:openengsb:build"/>
+
+    <bpel:partnerLinks>
+        <bpel:partnerLink myRole="ContinousIntegrationService" name="ContinousIntegration" partnerLinkType="tns:ContinousIntegrationPL" />
+        <bpel:partnerLink partnerRole="SourceControlManagmentService" name="SourceControlManagement" partnerLinkType="repo:SourceControlManagmentPL" />
+        <bpel:partnerLink partnerRole="BuildManagementService" name="BuildManagement" partnerLinkType="build:BuildManagementPL" />
+    </bpel:partnerLinks>
+
+    <bpel:variables>
+        <bpel:variable messageType="tns:integrateRequest" name="request"/>
+        <bpel:variable messageType="tns:integrateResponse" name="response"/>
+        <bpel:variable messageType="repo:checkout" name="checkoutRequest" />
+        <bpel:variable messageType="repo:mergeResult" name="checkoutResponse" />
+        <bpel:variable messageType="build:mavenBuilder" name="buildRequest" />
+        <bpel:variable messageType="build:result" name="buildResponse" />
+    </bpel:variables>
+
+    <bpel:sequence>
+
+        <bpel:receive createInstance="yes" name="start"
+        	partnerLink="ContinousIntegration"
+        	portType="tns:ContinousIntegration" operation="integrate"
+        	variable="request"/>
+
+        <bpel:assign name="copyInToOuptut">
+            <bpel:copy>
+                <bpel:from>
+                    <bpel:literal>
+                        <repo:checkout author="pieber" />
+                    </bpel:literal>
+                </bpel:from>
+                <bpel:to>$checkoutRequest</bpel:to>
+            </bpel:copy>
+        </bpel:assign>
+
+        <bpel:invoke name="checkoutRepo" partnerLink="SourceControlManagement"
+        		portType="repo:SourceControlManagment" operation="checkout"
+                inputVariable="checkoutRequest" outputVariable="checkoutResponse"/>
+        
+        <bpel:assign name="prepareBuild">
+            <bpel:copy>
+                <bpel:from>
+	                <bpel:literal>
+	                	<build:mavenBuilder />
+	                </bpel:literal>
+                </bpel:from>
+                <bpel:to variable="buildRequest" part="payload"/>
+            </bpel:copy>
+        </bpel:assign>
+        
+        <bpel:invoke name="buildRepo" partnerLink="BuildManagement"
+        		portType="build:BuildManagement" operation="build"
+                inputVariable="buildRequest" outputVariable="buildResponse"/>
+
+        <bpel:assign name="prepareOutput">
+            <bpel:copy>
+                <bpel:from variable="request" part="payload"/>
+                <bpel:to variable="response" part="payload"/>
+            </bpel:copy>
+        </bpel:assign>
+
+        <bpel:reply name="end" operation="integrate" partnerLink="ContinousIntegration"
+        	portType="tns:ContinousIntegration" variable="response"/>
+
+    </bpel:sequence>
+</bpel:process>
+
+
+
+
+
+
+
+
+
+
+
