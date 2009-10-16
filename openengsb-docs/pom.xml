@@ -45,139 +45,12 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>mvnSite</id>
-            <phase>package</phase>
-            <goals>
-              <goal>site</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>mvnDeploy</id>
-            <phase>deploy</phase>
-            <goals>
-              <goal>deploy</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.agilejava.docbkx</groupId>
-        <artifactId>docbkx-maven-plugin</artifactId>
-        <version>2.0.7</version>
-        <executions>
-          <execution>
-            <id>single-page</id>
-            <goals>
-              <goal>generate-html</goal>
-              <goal>generate-pdf</goal>
-            </goals>
-            <configuration>
-              <chunkedOutput>false</chunkedOutput>
-              <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html.xsl</htmlCustomization>
-              <foCustomization>${basedir}/src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
-              <postProcess>
-                <copy todir="${basedir}/target/site/reference">
-                  <fileset dir="${basedir}/target/docbkx">
-                    <include name="**/*.pdf" />
-                  </fileset>
-                </copy>
-                <copy todir="${basedir}/target/site/reference/html-single">
-                  <fileset dir="${basedir}/target/docbkx/html">
-                    <include name="**/*.html" />
-                  </fileset>
-                </copy>
-                <copy todir="${basedir}/target/site/reference/html-single">
-                  <fileset dir="${basedir}/src/docbkx/resources">
-                    <include name="**/*.css" />
-                    <include name="**/*.png" />
-                    <include name="**/*.gif" />
-                    <include name="**/*.jpg" />
-                  </fileset>
-                </copy>
-                <move failonerror="false" file="target/site/reference/pdf/index.pdf" tofile="target/site/reference/pdf/engsb-reference.pdf" />
-              </postProcess>
-            </configuration>
-            <phase>compile</phase>
-          </execution>
-          <execution>
-            <id>multi-page</id>
-            <goals>
-              <goal>generate-html</goal>
-            </goals>
-            <configuration>
-              <chunkedOutput>true</chunkedOutput>
-              <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>
-              <postProcess>
-                <copy todir="${basedir}/target/site/reference">
-                  <fileset dir="${basedir}/target/docbkx">
-                    <include name="**/*.html" />
-                  </fileset>
-                </copy>
-                <copy todir="${basedir}/target/site/reference/html">
-                  <fileset dir="${basedir}/src/docbkx/resources">
-                    <include name="**/*.css" />
-                    <include name="**/*.png" />
-                    <include name="**/*.gif" />
-                    <include name="**/*.jpg" />
-                  </fileset>
-                </copy>
-              </postProcess>
-            </configuration>
-            <phase>compile</phase>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.docbook</groupId>
-            <artifactId>docbook-xml</artifactId>
-            <version>4.4</version>
-            <scope>runtime</scope>
-          </dependency>
-        </dependencies>
-        <configuration>
-          <includes>index.xml</includes>
-          <htmlStylesheet>css/html.css</htmlStylesheet>
-          <xincludeSupported>true</xincludeSupported>
-          <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>
-          <!-- use extensions -->
-          <useExtensions>1</useExtensions>
-          <highlightSource>1</highlightSource>
-          <highlightDefaultLanguage />
-          <!-- callouts -->
-          <calloutsExtension>1</calloutsExtension>
-
-          <entities>
-            <entity>
-              <name>version</name>
-              <value>${version}</value>
-            </entity>
-          </entities>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
           <excludes>
             <!-- raw data -->
             <exclude>src/site/docbook/empty.txt</exclude>
-
             <!-- licensed externally -->
             <exclude>src/docbkx/resources/css/highlight.css</exclude>
             <exclude>src/docbkx/resources/css/html.css</exclude>
@@ -185,7 +58,6 @@
             <exclude>src/docbkx/resources/xsl/highlight-fo.xsl</exclude>
             <exclude>src/docbkx/resources/xsl/highlight.xsl</exclude>
             <exclude>src/docbkx/resources/xsl/html.xsl</exclude>
-
           </excludes>
         </configuration>
         <executions>
@@ -199,5 +71,140 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>docs</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>mvnSite</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>site</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>mvnDeploy</id>
+                <phase>deploy</phase>
+                <goals>
+                  <goal>deploy</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.agilejava.docbkx</groupId>
+            <artifactId>docbkx-maven-plugin</artifactId>
+            <version>2.0.7</version>
+            <executions>
+              <execution>
+                <id>single-page</id>
+                <goals>
+                  <goal>generate-html</goal>
+                  <goal>generate-pdf</goal>
+                </goals>
+                <configuration>
+                  <chunkedOutput>false</chunkedOutput>
+                  <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html.xsl</htmlCustomization>
+                  <foCustomization>${basedir}/src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
+                  <postProcess>
+                    <copy todir="${basedir}/target/site/reference">
+                      <fileset dir="${basedir}/target/docbkx">
+                        <include name="**/*.pdf" />
+                      </fileset>
+                    </copy>
+                    <copy todir="${basedir}/target/site/reference/html-single">
+                      <fileset dir="${basedir}/target/docbkx/html">
+                        <include name="**/*.html" />
+                      </fileset>
+                    </copy>
+                    <copy todir="${basedir}/target/site/reference/html-single">
+                      <fileset dir="${basedir}/src/docbkx/resources">
+                        <include name="**/*.css" />
+                        <include name="**/*.png" />
+                        <include name="**/*.gif" />
+                        <include name="**/*.jpg" />
+                      </fileset>
+                    </copy>
+                    <move failonerror="false" file="target/site/reference/pdf/index.pdf" tofile="target/site/reference/pdf/engsb-reference.pdf" />
+                  </postProcess>
+                </configuration>
+                <phase>compile</phase>
+              </execution>
+              <execution>
+                <id>multi-page</id>
+                <goals>
+                  <goal>generate-html</goal>
+                </goals>
+                <configuration>
+                  <chunkedOutput>true</chunkedOutput>
+                  <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>
+                  <postProcess>
+                    <copy todir="${basedir}/target/site/reference">
+                      <fileset dir="${basedir}/target/docbkx">
+                        <include name="**/*.html" />
+                      </fileset>
+                    </copy>
+                    <copy todir="${basedir}/target/site/reference/html">
+                      <fileset dir="${basedir}/src/docbkx/resources">
+                        <include name="**/*.css" />
+                        <include name="**/*.png" />
+                        <include name="**/*.gif" />
+                        <include name="**/*.jpg" />
+                      </fileset>
+                    </copy>
+                  </postProcess>
+                </configuration>
+                <phase>compile</phase>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.docbook</groupId>
+                <artifactId>docbook-xml</artifactId>
+                <version>4.4</version>
+                <scope>runtime</scope>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <includes>index.xml</includes>
+              <htmlStylesheet>css/html.css</htmlStylesheet>
+              <xincludeSupported>true</xincludeSupported>
+              <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>
+              <!-- use extensions -->
+              <useExtensions>1</useExtensions>
+              <highlightSource>1</highlightSource>
+              <highlightDefaultLanguage />
+              <!-- callouts -->
+              <calloutsExtension>1</calloutsExtension>
+              <entities>
+                <entity>
+                  <name>version</name>
+                  <value>${version}</value>
+                </entity>
+              </entities>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
