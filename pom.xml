@@ -84,6 +84,7 @@
     <module>openengsb-util</module>
         
     <!-- Engineering Knowledge Base -->
+    <module>openengsb-ekb-core</module>
     <module>openengsb-ekb</module>
     
     <!-- Enterprise Data Base -->
@@ -492,6 +493,11 @@
       </dependency>
         
       <!-- Engineering Knowledge Base -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-ekb-core</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-ekb</artifactId>

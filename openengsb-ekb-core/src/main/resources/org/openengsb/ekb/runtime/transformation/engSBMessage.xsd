@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xsd:element name="message" type="message" />
+  <xsd:complexType name="message">
+    <xsd:sequence>
+      <xsd:element name="header" type="header" />
+      <xsd:element name="payload" type="payload" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="header">
+    <xsd:sequence>
+      <xsd:element name="messageID" type="xsd:string" />
+      <xsd:element name="created" type="xsd:string" />
+      <xsd:element name="sender" type="xsd:string" />
+      <xsd:element name="receiver" type="xsd:string" />
+      <xsd:element name="messageType" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="payload">
+    <xsd:sequence>
+      <xsd:element name="segments" type="segments" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="segments">
+    <xsd:sequence>
+      <xsd:element name="textSegment" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+              <xsd:attribute name="name" use="required" />
+              <xsd:attribute name="domainConcept" use="required" />
+              <xsd:attribute name="format" use="required" />
+            </xsd:extension>
+          </xsd:simpleContent>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
