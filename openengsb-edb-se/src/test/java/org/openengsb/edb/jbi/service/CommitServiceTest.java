@@ -46,6 +46,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.edb.core.api.EDBHandler;
@@ -216,6 +217,7 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void testCommit1() throws Exception {
         InOut inout = createInOutMessage(CommitServiceTest.persistMessage.asXML());
         inout.setOperation(new QName(EdbEndpoint.OPERATION_COMMIT));
@@ -232,6 +234,7 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void testInvalidCommit() throws Exception {
         InOut inout = createInOutMessage(CommitServiceTest.invalidResetMessage.asXML());
         inout.setOperation(new QName(EdbEndpoint.OPERATION_COMMIT));
@@ -246,6 +249,7 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void testResetInvalidHead() throws Exception {
         InOut inout = createInOutMessage(CommitServiceTest.invalidResetMessage.asXML());
         inout.setOperation(new QName(EdbEndpoint.OPERATION_RESET));
@@ -260,6 +264,7 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void testResetDepth0() throws Exception {
         InOut inout = createInOutMessage(CommitServiceTest.resetMessage.asXML());
         inout.setOperation(new QName(EdbEndpoint.OPERATION_RESET));
@@ -273,6 +278,7 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void testValidQuery() throws Exception {
         testCommit1();
         InOut inout = createInOutMessage(CommitServiceTest.validQueryMessage.asXML());
@@ -290,6 +296,7 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void testInvalidQuery() throws Exception {
         testCommit1();
         InOut inout = createInOutMessage(CommitServiceTest.invalidQueryMessage.asXML());
