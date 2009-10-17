@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.maven.embedder.Configuration;
-import org.apache.maven.embedder.ConfigurationValidationResult;
 import org.apache.maven.embedder.DefaultConfiguration;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderConsoleLogger;
@@ -42,7 +41,6 @@ import org.openengsb.maven.common.pojos.LogLevelMaven;
 import org.openengsb.maven.common.pojos.Options;
 import org.openengsb.maven.common.pojos.ProjectConfiguration;
 import org.openengsb.maven.common.pojos.result.MavenResult;
-
 
 public class AbstractMavenEndpoint extends ProviderEndpoint {
 
@@ -73,34 +71,30 @@ public class AbstractMavenEndpoint extends ProviderEndpoint {
             configuration.setUserSettingsFile(MavenEmbedder.DEFAULT_USER_SETTINGS_FILE);
         }
 
-        ConfigurationValidationResult validationResult = MavenEmbedder.validateConfiguration(configuration);
-
         MavenEmbedder embedder = null;
         MavenExecutionRequest request = null;
 
-        if (validationResult.isValid()) {
-            if (configuration.getUserSettingsFile().exists()) {
-                this.settingsDefinied = true;
-            }
-
-            try {
-                embedder = new MavenEmbedder(configuration);
-            } catch (MavenEmbedderException exception) {
-                throw new MavenException(exception);
-            }
-
-            // further set up call
-            request = new DefaultMavenExecutionRequest().setBaseDirectory(baseDirectory).setGoals(goals);
-
-            request.setPom(new File(this.projectConfiguration.getBaseDirectory(), "/pom.xml"));
-
-            // default logging is info level
-            MavenEmbedderConsoleLogger consoleLogger = new MavenEmbedderConsoleLogger();
-            consoleLogger.setThreshold(LogLevelMaven.ACTUAL_LEVEL);
-
-            embedder.setLogger(consoleLogger);
-            this.buildStartTime = new Date();
+        if (configuration.getUserSettingsFile().exists()) {
+            this.settingsDefinied = true;
         }
+
+        try {
+            embedder = new MavenEmbedder(configuration);
+        } catch (MavenEmbedderException exception) {
+            throw new MavenException(exception);
+        }
+
+        // further set up call
+        request = new DefaultMavenExecutionRequest().setBaseDirectory(baseDirectory).setGoals(goals);
+
+        request.setPom(new File(this.projectConfiguration.getBaseDirectory(), "/pom.xml"));
+
+        // default logging is info level
+        MavenEmbedderConsoleLogger consoleLogger = new MavenEmbedderConsoleLogger();
+        consoleLogger.setThreshold(LogLevelMaven.ACTUAL_LEVEL);
+
+        embedder.setLogger(consoleLogger);
+        this.buildStartTime = new Date();
 
         MavenExecutionResult executionResult = embedder.execute(request);
 
