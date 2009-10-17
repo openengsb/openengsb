@@ -59,7 +59,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:testBeans.xml" })
 public class CommitServiceTest extends SpringTestSupport {
@@ -157,10 +156,7 @@ public class CommitServiceTest extends SpringTestSupport {
         super.setUp();
         makeParameters(this.config);
         CommitServiceTest.handler = this.config.loadDefaultRepository();
-
-        // servicemix-client
         this.client = createClient();
-        // make really valid reset-message
         CommitServiceTest.resetMessage.getRootElement().element("body").element("headId").setText(
                 CommitServiceTest.handler.getHeadInfo());
     }
@@ -171,50 +167,6 @@ public class CommitServiceTest extends SpringTestSupport {
         IO.deleteStructure(CommitServiceTest.handler.getRepositoryBase().getParentFile());
         super.tearDown();
     }
-
-    // @Test
-    // public void testGetMessageType() {
-    // assertEquals("acmPersistMessage",
-    // this.commitServiceBean.getMessageType());
-    // }
-    //
-    // @Test
-    // public void testMiniCommit() {
-    // this.commitServiceBean.messageReceivedAndCreateResponse(this.defaultRequest);
-    //
-    // // check filesys
-    // final String basePath = this.handler.getRepositoryBase() + File.separator
-    // + PATH_1 + File.separator + PATH_2
-    // + File.separator;
-    // assertTrue(new File(basePath + UUID_1.toString()).exists());
-    // assertTrue(new File(basePath + UUID_1.toString()).exists());
-    // }
-
-    // @Test
-    // @Ignore
-    // public void testMassCommit() throws Exception {
-    //
-    // List<GenericContent> list = buildMassGC(4000,
-    // 20,this.handler.getRepositoryBase().getAbsolutePath());
-    //
-    // final Element body = DocumentHelper.createElement("acmPersistMessage");
-    // for(final GenericContent gc : list){
-    // addGCToMessagePart(gc, body, USER);
-    // }
-    // list = null;
-    //
-    // this.defaultRequest = new EngsbMessage();
-    // this.defaultRequest.setBody(body);
-    //
-    // //
-    // this.commitServiceBean.messageReceivedAndCreateResponse(this.defaultRequest);
-    //
-    // // check filesys
-    // final String basePath = this.handler.getRepositoryBase().toString() +
-    // File.separator + "path";
-    // assertEquals(1000, IO.recursiveScanDirectoryForFiles(new
-    // File(basePath)).size());
-    // }
 
     private static void addGCToMessagePart(final GenericContent gc, final Element elem, final String user) {
         final Element gcElem = elem.addElement("acmMessageObjects");
@@ -227,21 +179,6 @@ public class CommitServiceTest extends SpringTestSupport {
             pairs.addElement("value").setText(entry.getValue().toString());
         }
     }
-
-    // private static List<GenericContent> buildMassGC(final int count,
-    // final int fieldNumber, final String basePath) {
-    // final List<GenericContent> result = new ArrayList<GenericContent>();
-    // GenericContent gc;
-    // for (int i = 0; i < count; i++) {
-    // gc = new GenericContent(basePath, new String[] { "absPath" },
-    // new String[] { "path" });
-    // for (int j = 0; j < fieldNumber; j++) {
-    // gc.setProperty(String.valueOf(j), UUID.randomUUID().toString());
-    // }
-    // result.add(gc);
-    // }
-    // return result;
-    // }
 
     private InOut createInOutMessage(String message) throws MessagingException {
         InOut inOut = this.client.createInOutExchange();
@@ -283,8 +220,6 @@ public class CommitServiceTest extends SpringTestSupport {
         InOut inout = createInOutMessage(CommitServiceTest.persistMessage.asXML());
         inout.setOperation(new QName(EdbEndpoint.OPERATION_COMMIT));
         this.client.send(inout);
-        // Thread.sleep(1000);
-
         Document doc = parseResponse(this.client.receive());
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
@@ -294,10 +229,6 @@ public class CommitServiceTest extends SpringTestSupport {
         List<Element> messageObjects = body.elements("acmMessageObjects");
         assertEquals(2, messageObjects.size());
         assertNoErrorMessage(body);
-        // Source source = response.getMessage("in").getContent();
-
-        // InOut inOut = client.createInOutExchange();
-        // inOut.setService(new QName(TEST_NAMESPACE, "commit"));
     }
 
     @Test
@@ -343,7 +274,6 @@ public class CommitServiceTest extends SpringTestSupport {
 
     @Test
     public void testValidQuery() throws Exception {
-        /* execute the commit of test1 */
         testCommit1();
         InOut inout = createInOutMessage(CommitServiceTest.validQueryMessage.asXML());
         inout.setOperation(new QName(EdbEndpoint.OPERATION_QUERY));
@@ -375,34 +305,4 @@ public class CommitServiceTest extends SpringTestSupport {
         Element object = body.element("acmMessageObjects");
         assertNull("query result was not empty", object);
     }
-
-    // @Test
-    // public void testRequestDepth1() throws Exception {
-    // // use default message
-    // this.defaultRequest.getBody().element("depth").setText("1");
-    //
-    // /* final MessageBuilder builder = */this.resetServiceBean
-    // .messageReceivedAndCreateResponse(this.defaultRequest);
-    // // TODO find out about race conditions on *nix systems, #701
-    // // final EngsbMessage response =
-    // // EngsbMessage.createFromXml(builder.finish());
-    //
-    // // final Element respRoot = response.getBody();
-    // // assertEquals(this.handler.getHeadInfo(),
-    // // respRoot.element("headId").getTextTrim());
-    //
-    // final File f = new File("_default_" + File.separator + "data"
-    // + File.separator + "DO NOT DELETE");
-    // assertTrue(f.exists());
-    // final FileInputStream fis = new FileInputStream(f);
-    // final int b = fis.read();
-    // if (b != -1) {
-    // fail("File not empty");
-    // }
-    // fis.close();
-    // }
-
-    // public void setCommitServiceBean(final CommitService commitServiceBean) {
-    // this.commitServiceBean = commitServiceBean;
-    // }
 }
