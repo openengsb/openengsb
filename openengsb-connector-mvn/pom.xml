@@ -92,6 +92,12 @@
 
   <dependencies>
 
+	<!-- util dependencies -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+
     <!-- smx dependencies -->
     <dependency>
       <groupId>org.apache.servicemix</groupId>

@@ -110,4 +110,14 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
 		<property name="xbean" value="spring-test-xbean-test.xml" />
 	</bean>
 	
+	<bean id="unit_constants_installfile" class="org.openengsb.maven.installfile.constants.InstallFileMvnTestConstants">
+		<property name="validFullPathToFile" value="../test-classes/installfile-valid/installfile-sample.jar" />
+		<property name="validGroupId" value="com.installfilevalidgroup" />
+		<property name="validArtifactId" value="installfilevalidartifact" />
+		<property name="validVersion" value="installfilevalidversion-1.0" />
+		<property name="jarPackaging" value="jar" />
+		<property name="invalidFullPathToFile" value="../test-classes/installfile-valid/installfile-sample-invalid.jar" />
+		<property name="settingsFile" value="../test-classes/settings/settings.xml" />
+	</bean>
+	
 </beans>

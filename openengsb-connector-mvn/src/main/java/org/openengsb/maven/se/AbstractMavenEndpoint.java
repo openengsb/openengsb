@@ -21,6 +21,7 @@ package org.openengsb.maven.se;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.maven.embedder.Configuration;
 import org.apache.maven.embedder.DefaultConfiguration;
@@ -57,7 +58,27 @@ public class AbstractMavenEndpoint extends ProviderEndpoint {
     protected Date buildEndTime;
     protected boolean settingsDefinied;
 
+    /**
+     * Executes the given Maven goals in the given directory. 
+     * 
+     * @param file Directory in which the pom.xml is expected
+     * @param goals Goals to execute for the pom.xml in the directory specified by parameter 'file'
+     * @return Result of the Maven goal execution.
+     * @throws MavenException
+     */
     protected MavenResult execute(String file, List<String> goals) throws MavenException {
+    	return execute(file, goals, new Properties());
+    }
+    
+    /**
+     * Executes the given Maven goals in the given directory. 
+     * 
+     * @param file Directory in which the pom.xml is expected
+     * @param goals Goals to execute for the pom.xml in the directory specified by parameter 'file'
+     * @return Result of the Maven goal execution.
+     * @throws MavenException
+     */
+    protected MavenResult execute(String file, List<String> goals, Properties properties) throws MavenException {
         MavenResult mavenResult = new MavenResult();
 
         // set up maven call
@@ -85,7 +106,7 @@ public class AbstractMavenEndpoint extends ProviderEndpoint {
         }
 
         // further set up call
-        request = new DefaultMavenExecutionRequest().setBaseDirectory(baseDirectory).setGoals(goals);
+        request = new DefaultMavenExecutionRequest().setBaseDirectory(baseDirectory).setGoals(goals).setProperties(properties);
 
         request.setPom(new File(this.projectConfiguration.getBaseDirectory(), "/pom.xml"));
 
