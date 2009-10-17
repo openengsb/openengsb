@@ -40,6 +40,8 @@
     <xbean.version>3.5</xbean.version>
     <xmlrpc.version>3.0</xmlrpc.version>
     <dom4j.version>1.6.1</dom4j.version>
+    <xerxes.version>2.4.0</xerxes.version>
+    <jaxen.version>1.1.1</jaxen.version>
     <joda.version>1.6</joda.version>
     <commons.lang.version>2.4</commons.lang.version>
     <junit.version>4.4</junit.version>
@@ -780,10 +782,22 @@
         <artifactId>xmlrpc-client</artifactId>
         <version>${xmlrpc.version}</version>
       </dependency>
+      
+      <!-- XPath, Dom, ... -->
       <dependency>
         <groupId>dom4j</groupId>
         <artifactId>dom4j</artifactId>
         <version>${dom4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>xerces</groupId>
+        <artifactId>xerces</artifactId>
+        <version>${xerxes.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jaxen</groupId>
+        <artifactId>jaxen</artifactId>
+        <version>${jaxen.version}</version>
       </dependency>
 
       <!-- Util Dependencies -->
