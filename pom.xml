@@ -183,7 +183,7 @@
     <developer>
       <id>api</id>
       <name>Andreas Pieber</name>
-      <organisation>Vienna University of Technology</organisation>
+      <organization>Vienna University of Technology</organization>
       <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
       <email>anpi@gmx.at</email>
       <timezone>+1</timezone>
@@ -195,7 +195,7 @@
     <developer>
       <id>fwa</id>
       <name>Florian Waltersdorfer</name>
-      <organisation>Vienna University of Technology</organisation>
+      <organization>Vienna University of Technology</organization>
       <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
       <email>ignatiomobius@gmail.com</email>
       <timezone>+1</timezone>
@@ -206,7 +206,7 @@
     <developer>
       <name>Alexander Pucher</name>
       <email>engsb@alexander-pucher.com</email>
-      <organisation>Vienna University of Technology</organisation>
+      <organization>Vienna University of Technology</organization>
       <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
       <roles>
@@ -216,7 +216,7 @@
     <developer>
       <name>Christoph Leiter</name>
       <email>openengsb@christophleiter.com</email>
-      <organisation>Vienna University of Technology</organisation>
+      <organization>Vienna University of Technology</organization>
       <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
       <roles>
@@ -226,7 +226,7 @@
     <developer>
       <name>Michael Handler</name>
       <email>michael.handler@fullstop.at</email>
-      <organisation>Vienna University of Technology</organisation>
+      <organization>Vienna University of Technology</organization>
       <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
       <roles>
@@ -239,14 +239,14 @@
     <contributor>
       <name>Patrick Peer</name>
       <email>e0326352@gmail.com</email>
-      <organisation>Vienna University of Technology</organisation>
+      <organization>Vienna University of Technology</organization>
       <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
     <contributor>
       <name>Christoph Zehetner</name>
       <email>christoph.zehetner@gmx.at</email>
-      <organisation>Vienna University of Technology</organisation>
+      <organization>Vienna University of Technology</organization>
       <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
