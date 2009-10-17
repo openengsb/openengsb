@@ -221,7 +221,7 @@ public class CommitServiceTest extends SpringTestSupport {
     public void testCommit1() throws Exception {
         InOut inout = createInOutMessage(CommitServiceTest.persistMessage.asXML());
         inout.setOperation(new QName(EdbEndpoint.OPERATION_COMMIT));
-        this.client.send(inout);
+        this.client.sendSync(inout);
         Document doc = parseResponse(this.client.receive());
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
@@ -238,7 +238,7 @@ public class CommitServiceTest extends SpringTestSupport {
     public void testInvalidCommit() throws Exception {
         InOut inout = createInOutMessage(CommitServiceTest.invalidResetMessage.asXML());
         inout.setOperation(new QName(EdbEndpoint.OPERATION_COMMIT));
-        this.client.send(inout);
+        this.client.sendSync(inout);
         Document doc = parseResponse(this.client.receive());
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
@@ -253,7 +253,7 @@ public class CommitServiceTest extends SpringTestSupport {
     public void testResetInvalidHead() throws Exception {
         InOut inout = createInOutMessage(CommitServiceTest.invalidResetMessage.asXML());
         inout.setOperation(new QName(EdbEndpoint.OPERATION_RESET));
-        this.client.send(inout);
+        this.client.sendSync(inout);
         Document doc = parseResponse(this.client.receive());
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
@@ -268,7 +268,7 @@ public class CommitServiceTest extends SpringTestSupport {
     public void testResetDepth0() throws Exception {
         InOut inout = createInOutMessage(CommitServiceTest.resetMessage.asXML());
         inout.setOperation(new QName(EdbEndpoint.OPERATION_RESET));
-        this.client.send(inout);
+        this.client.sendSync(inout);
         Document doc = parseResponse(this.client.receive());
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
@@ -283,7 +283,7 @@ public class CommitServiceTest extends SpringTestSupport {
         testCommit1();
         InOut inout = createInOutMessage(CommitServiceTest.validQueryMessage.asXML());
         inout.setOperation(new QName(EdbEndpoint.OPERATION_QUERY));
-        this.client.send(inout);
+        this.client.sendSync(inout);
         Document doc = parseResponse(this.client.receive());
         System.out.println(doc.asXML());
         Element root = doc.getRootElement();
@@ -301,7 +301,7 @@ public class CommitServiceTest extends SpringTestSupport {
         testCommit1();
         InOut inout = createInOutMessage(CommitServiceTest.invalidQueryMessage.asXML());
         inout.setOperation(new QName(EdbEndpoint.OPERATION_QUERY));
-        this.client.send(inout);
+        this.client.sendSync(inout);
         Document doc = parseResponse(this.client.receive());
         System.out.println(doc.asXML());
         Element root = doc.getRootElement();
