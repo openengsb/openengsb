@@ -63,36 +63,30 @@
       </item>
     </menu>
 
+    <menu name="Proposals">
+      <item href="proposals/edbInterface.html" name="EDB" />
+      <item href="proposals/scmDomain.html" name="SCM Domain" />
+      <item href="proposals/buildDomain.html" name="Build Domain" />
+      <item href="proposals/testDomain.html" name="Test Domain" />
+      <item href="proposals/deployDomain.html" name="Deploy Domain" />
+      <item href="proposals/pimDomain.html" name="PIM Domain" />
+    </menu>
+
     <menu name="Project Information">
       <item href="roadmap.html" name="Roadmap" />
       <item href="presentation.html" name="Presentations" />
-      <item collapse="true" href="contribute.html" name="Contribute">
-        <item href="contribute/infrastructure.html" name="Infrastructure" />
-        <item href="contribute/codingstyle.html" name="Coding Guidelines" />
-        <item href="contribute/format.html" name="APT Format" />
-        <item href="contribute/eclipse.html" name="Eclipse Setup" />
-        <item href="contribute/proposals.html" name="Proposals" />
-        <item href="contribute/relatedProjects.html" name="Related Projects" />
-      </item>
-      <item collapse="true" href="source-repository.html" name="Infrastructure">
-        <item href="source-repository.html" name="Source Repository" />
-        <item href="integration.html" name="Continous Integration" />
-        <item href="issue-tracking.html" name="Issue Tracking" />
-        <item href="mail-lists.html" name="Mailing Lists" />
-      </item>
-      <item collapse="true" href="dependency-management.html" name="Dependencies">
-        <item href="dependency-management.html" name="Dependencies" />
-        <item href="plugin-management.html" name="Modules" />
-        <item href="plugins.html" name="Plugins" />
-      </item>
-      <item collapse="true" href="proposals/edbInterface.html" name="Proposals">
-        <item href="proposals/edbInterface.html" name="EDB" />
-        <item href="proposals/scmDomain.html" name="SCM Domain" />
-        <item href="proposals/buildDomain.html" name="Build Domain" />
-        <item href="proposals/testDomain.html" name="Test Domain" />
-        <item href="proposals/deployDomain.html" name="Deploy Domain" />
-        <item href="proposals/pimDomain.html" name="PIM Domain" />
-      </item>
+      <item href="contribute/git.html" name="Github" />
+      <item href="contribute/codingstyle.html" name="Coding Guidelines" />
+      <item href="contribute/format.html" name="APT Format" />
+      <item href="contribute/eclipse.html" name="Eclipse Setup" />
+      <item href="contribute/proposals.html" name="Proposals" />
+      <item href="source-repository.html" name="Source Repository" />
+      <item href="integration.html" name="Continous Integration" />
+      <item href="issue-tracking.html" name="Issue Tracking" />
+      <item href="mail-lists.html" name="Mailing Lists" />
+      <item href="dependency-management.html" name="Dependencies" />
+      <item href="plugin-management.html" name="Modules" />
+      <item href="plugins.html" name="Plugins" />
       <item href="team-list.html" name="Team" />
       <item href="license.txt" name="License" />
       <item href="faq.html" name="FAQ" />

@@ -1,0 +1,103 @@
+~~
+~~  Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+Usage
+
+  First of all this chapter explains only the VERY basics of git and only that parts directly relevant for the
+ development, but not the entire idea and possibilities with git. PLEASE read a lot of tutorials first to get
+ how to work with git and see this chapter more as an summary!
+ 
+Remarks
+
+  For mac and for windows there are specific implementations of GIT. Don't use them! They do not work for what
+ we like to do with them. If you're using linux no problems at all are expected. If you're using any other platform
+ use cygwin or compile the original source with ssh support! 
+ 
+Starting up and configure
+
+  Before starting to work with git some settings should be applied to git. Therefore simply execute the following
+ commands one after the other in a shell.
+
+  Of course not all of the settings are REALLY required, but others are, so please simply execute all of them!
+  
+  [[1]] git config --global user.name "FirstName LastName"
+  
+  [[2]] git config --global user.email "user@example.com"
+  
+  [[3]] git config --global color.ui "auto"
+  
+  [[4]] git config --global pack.threads "0"
+  
+  [[5]] git config --global diff.renamelimit "0"
+  
+  [[6]] git config --global core.autocrlf "input"
+  
+Getting the repository
+
+  The git repositories could be checked out in two different permission levels. Read or write. The following two
+ subsections explain how to get the code.
+
+Readonly
+
+  For a readonly access to the git repos simply clone the repository
+  
++--------------+
+git clone git://host/REPO (e.g. git clone git://github.com/openengsb/openengsb.git)
++--------------+
+
+Write
+
+  To get write access to the repositries an additional step is required. First of all you have to create an
+ ssh-key (in cygwin on windows! Otherwise simply in the bash).
+ 
++-------------+
+ssh-keygen
++-------------+
+
+  Simply answer all questions from the application with return without enter any values. Afterwards the id_rsa.pub
+ file from your ~/.ssh/ folder should be submitted to github. ***Workflow with GIT
+
+  To understand the workflow you have to have a basic understanding of git. Nevertheless the approach will also
+ work with "pattern matching".
+ 
++-------------+
+[1. create working feature; if not exists; WORKING = name of the feature; e.g. info]
+git checkout -b WORKING master
+git push origin WORKING
+git checkout master
+git branch -D WORKING
+git checkout -b WORKING origin/WORKING
+git checkout -b devWORKING WORKING
+[2. producing context]
+git checkout -b devWORKING
+HACK HACK HACK
+git add FILES
+git rm FILES
+git commit -s
+[3. push changes or continue with 2.]
+git checkout WORKING
+git pull
+git rebase WORKING devWORKING
+git checkout WORKING
+git merge devWORKING
+// test if everything still works...
+git push
+[4. feature completed and merged by an admin to the master; or go back to 2.]
+git push origin :WORKING
+git checkout master
+git branch -D devWORKING
+git branch -D WORKING
+[5. go back to 1. and create new feature branch]
++-------------+ 
