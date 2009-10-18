@@ -22,25 +22,25 @@ package org.openengsb.maven.common.exceptions;
  * Exception if a error occurs during the xml transformation.
  * 
  */
-public class SerialisationException extends Exception {
+public class SerializationException extends Exception {
 
     /**
      * Serial version UID
      */
     private static final long serialVersionUID = -1827056553154604792L;
 
-    public SerialisationException() {
+    public SerializationException() {
     }
 
-    public SerialisationException(String message) {
+    public SerializationException(String message) {
         super(message);
     }
 
-    public SerialisationException(Throwable cause) {
+    public SerializationException(Throwable cause) {
         super(cause);
     }
 
-    public SerialisationException(String message, Throwable cause) {
+    public SerializationException(String message, Throwable cause) {
         super(message, cause);
     }
 
