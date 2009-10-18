@@ -50,6 +50,8 @@
     <maven.code.version>3.0-alpha-2</maven.code.version>
     <maven.plexus.utils.version>1.5.6</maven.plexus.utils.version>
     <jibx.version>1.2.1</jibx.version>
+    <wicket.version>1.4.1</wicket.version>
+    <jetty.version>6.1.20</jetty.version>
 
     <!-- Plugin Version -->
     <docbkx.version>2.0.7</docbkx.version>
@@ -114,6 +116,12 @@
     
     <!-- Packaging Modules -->
     <module>openengsb-all</module>
+
+    <!-- Embedded -->
+    <module>openengsb-config-jbi</module>
+    <module>openengsb-config-ui</module>
+    <module>openengsb-config-ui-test</module>
+    <module>openengsb-embedded</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
