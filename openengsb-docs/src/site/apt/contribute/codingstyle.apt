@@ -33,7 +33,7 @@ OpenEngSB Coding Guidelines
 ~~~~~~~~~~~~~~~
 
   Use the autoformatter of your IDE. Import the
-  {{{http://openengsb.org/dev/eclipse/engsb-formatter.xml}Eclipse Formatter file}}.
+  {{{http://dev.openengsb.org/resources/eclipse/formatter.xml}Eclipse Formatter file}}.
 
 ** 6.1 Number of declarations per line
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
