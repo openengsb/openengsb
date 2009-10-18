@@ -30,7 +30,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.openengsb.maven.common.exceptions.SerialisationException;
+import org.openengsb.maven.common.exceptions.SerializationException;
 import org.openengsb.maven.common.pojos.result.MavenResult;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -67,16 +67,16 @@ public class MavenResultSerializer extends AbstractSerializer {
      * @param result - maven result
      * @return dom source - the generated dom source
      */
-    public static Source serializeAsSource(Source source, MavenResult result) throws SerialisationException {
+    public static Source serializeAsSource(Source source, MavenResult result) throws SerializationException {
 
         try {
             return new DOMSource(serializeAsElement(result));
         } catch (DOMException e) {
-            throw new SerialisationException(e);
+            throw new SerializationException(e);
         }
     }
 
-    public static Source serialize(Source source, List<MavenResult> resultList) throws SerialisationException {
+    public static Source serialize(Source source, List<MavenResult> resultList) throws SerializationException {
         try {
             // set up containing element
             Element resultListElement = getDocument().createElement(MavenResultSerializer.RESULTLIST_ELEMENT_NAME);
@@ -87,9 +87,9 @@ public class MavenResultSerializer extends AbstractSerializer {
 
             return new DOMSource(resultListElement);
         } catch (DOMException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (ParserConfigurationException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         }
     }
 
@@ -100,7 +100,7 @@ public class MavenResultSerializer extends AbstractSerializer {
      *        into a dom source
      * @return mavenresult - result of maven
      */
-    public static MavenResult deserialize(NormalizedMessage message) throws SerialisationException {
+    public static MavenResult deserialize(NormalizedMessage message) throws SerializationException {
         MavenResult mavenResult = null;
 
         Node resultNode;
@@ -140,21 +140,21 @@ public class MavenResultSerializer extends AbstractSerializer {
             }
 
         } catch (TransformerException e) {
-            throw new SerialisationException(e);
+            throw new SerializationException(e);
         } catch (MessagingException e) {
-            throw new SerialisationException(e);
+            throw new SerializationException(e);
         } catch (ParserConfigurationException e) {
-            throw new SerialisationException(e);
+            throw new SerializationException(e);
         } catch (IOException e) {
-            throw new SerialisationException(e);
+            throw new SerializationException(e);
         } catch (SAXException e) {
-            throw new SerialisationException(e);
+            throw new SerializationException(e);
         }
 
         return mavenResult;
     }
 
-    public static List<MavenResult> deserializeList(NormalizedMessage message) throws SerialisationException {
+    public static List<MavenResult> deserializeList(NormalizedMessage message) throws SerializationException {
         // set up result-list
         List<MavenResult> resultList = new ArrayList<MavenResult>();
 
@@ -173,17 +173,17 @@ public class MavenResultSerializer extends AbstractSerializer {
                 resultList.add(desirializeResult(resultNode));
             }
         } catch (MessagingException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (DOMException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (TransformerException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (ParserConfigurationException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (IOException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (SAXException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         }
 
         return resultList;
@@ -195,7 +195,7 @@ public class MavenResultSerializer extends AbstractSerializer {
      * @param source - source that includes the buildresult pattern
      * @return mavenresult - the created result
      */
-    public static MavenResult deserializeSource(Source source) throws SerialisationException {
+    public static MavenResult deserializeSource(Source source) throws SerializationException {
         MavenResult mavenResult = null;
 
         Node resultNode;
@@ -236,19 +236,19 @@ public class MavenResultSerializer extends AbstractSerializer {
             }
 
         } catch (TransformerException e) {
-            throw new SerialisationException(e);
+            throw new SerializationException(e);
         } catch (ParserConfigurationException e) {
-            throw new SerialisationException(e);
+            throw new SerializationException(e);
         } catch (IOException e) {
-            throw new SerialisationException(e);
+            throw new SerializationException(e);
         } catch (SAXException e) {
-            throw new SerialisationException(e);
+            throw new SerializationException(e);
         }
 
         return mavenResult;
     }
 
-    public static List<MavenResult> deserializeListSource(Source source) throws SerialisationException {
+    public static List<MavenResult> deserializeListSource(Source source) throws SerializationException {
         // set up result-list
         List<MavenResult> resultList = new ArrayList<MavenResult>();
 
@@ -267,15 +267,15 @@ public class MavenResultSerializer extends AbstractSerializer {
                 resultList.add(desirializeResult(resultNode));
             }
         } catch (DOMException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (TransformerException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (ParserConfigurationException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (IOException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (SAXException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         }
 
         return resultList;
@@ -283,7 +283,7 @@ public class MavenResultSerializer extends AbstractSerializer {
 
     /* helpers */
 
-    public static Element serializeAsElement(MavenResult result) throws SerialisationException {
+    public static Element serializeAsElement(MavenResult result) throws SerializationException {
 
         Element resultElement = null;
         try {
@@ -313,14 +313,14 @@ public class MavenResultSerializer extends AbstractSerializer {
 
             return resultElement;
         } catch (DOMException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (ParserConfigurationException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         }
     }
 
     private static MavenResult desirializeResult(Node resultNode) throws DOMException, TransformerException,
-            SerialisationException {
+            SerializationException {
 
         MavenResult mavenResult = null;
 

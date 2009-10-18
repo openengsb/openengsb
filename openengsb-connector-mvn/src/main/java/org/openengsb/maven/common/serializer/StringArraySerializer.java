@@ -27,7 +27,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.openengsb.maven.common.exceptions.SerialisationException;
+import org.openengsb.maven.common.exceptions.SerializationException;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
 public class StringArraySerializer extends AbstractSerializer {
     private static final String ELEMENT_NAME = "element";
 
-    public Element serialize(String[] array, String name) throws SerialisationException {
+    public Element serialize(String[] array, String name) throws SerializationException {
         try {
             Element arrayXmlElement = getDocument().createElement(name);
 
@@ -53,9 +53,9 @@ public class StringArraySerializer extends AbstractSerializer {
 
             return arrayXmlElement;
         } catch (DOMException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (ParserConfigurationException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         }
     }
 
@@ -66,7 +66,7 @@ public class StringArraySerializer extends AbstractSerializer {
         return element;
     }
 
-    public String[] deserialize(NormalizedMessage message) throws SerialisationException {
+    public String[] deserialize(NormalizedMessage message) throws SerializationException {
         try {
             // Grab the xml message
             SourceTransformer sourceTransformer = new SourceTransformer();
@@ -86,19 +86,19 @@ public class StringArraySerializer extends AbstractSerializer {
 
             return result;
         } catch (MessagingException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (TransformerException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (ParserConfigurationException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (IOException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         } catch (SAXException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         }
     }
 
-    public String[] deserialize(Node node) throws SerialisationException {
+    public String[] deserialize(Node node) throws SerializationException {
         try {
             // get all elements' value
             NodeList nodeList = getXpath().selectNodeList(node, StringArraySerializer.ELEMENT_NAME);
@@ -113,7 +113,7 @@ public class StringArraySerializer extends AbstractSerializer {
 
             return result;
         } catch (TransformerException exception) {
-            throw new SerialisationException(exception);
+            throw new SerializationException(exception);
         }
     }
 }

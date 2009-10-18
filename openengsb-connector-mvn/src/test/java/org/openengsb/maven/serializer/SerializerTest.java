@@ -33,7 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.maven.build.constants.BuildMvnTestConstants;
-import org.openengsb.maven.common.exceptions.SerialisationException;
+import org.openengsb.maven.common.exceptions.SerializationException;
 import org.openengsb.maven.common.pojos.ProjectConfiguration;
 import org.openengsb.maven.common.pojos.result.MavenResult;
 import org.openengsb.maven.common.serializer.MavenResultSerializer;
@@ -62,7 +62,7 @@ public class SerializerTest extends TestCase {
     }
 
     @Test
-    public void buildSerializer_Failure() throws SerialisationException {
+    public void buildSerializer_Failure() throws SerializationException {
         MavenResult buildresult = new MavenResult();
         buildresult.setMavenOutput(MavenResult.FAILURE);
         buildresult.setTimestamp(new Date().getTime());
@@ -88,7 +88,7 @@ public class SerializerTest extends TestCase {
     }
 
     @Test
-    public void buildSerializer_Success() throws SerialisationException {
+    public void buildSerializer_Success() throws SerializationException {
         MavenResult buildresult = new MavenResult();
         buildresult.setMavenOutput(MavenResult.SUCCESS);
         buildresult.setTimestamp(new Date().getTime());
@@ -110,7 +110,7 @@ public class SerializerTest extends TestCase {
     }
 
     @Test
-    public void deploySerializer_Failure() throws SerialisationException {
+    public void deploySerializer_Failure() throws SerializationException {
         MavenResult deployresult1 = new MavenResult();
         deployresult1.setMavenOutput(MavenResult.FAILURE);
         deployresult1.setTimestamp(new Date().getTime());
@@ -156,7 +156,7 @@ public class SerializerTest extends TestCase {
     }
 
     @Test
-    public void deploySerializer_Success() throws SerialisationException {
+    public void deploySerializer_Success() throws SerializationException {
         MavenResult deployresult1 = new MavenResult();
         deployresult1.setMavenOutput(MavenResult.SUCCESS);
         deployresult1.setTimestamp(new Date().getTime());
