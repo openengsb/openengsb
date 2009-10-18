@@ -21,4 +21,4 @@
 # http://www.mavenreposearch.com/browsegroups/o/org.apache.servicemix.tooling
 # The second parameter takes the artifactId of the newly generated project. 
 
-mvn archetype:create -DarchetypeGroupId=org.apache.servicemix.tooling -DarchetypeArtifactId=$1 -DgroupId=at.ac.tuwien.ifs.engsb -DartifactId=$2
+mvn archetype:create -DarchetypeGroupId=org.apache.servicemix.tooling -DarchetypeArtifactId=$1 -DgroupId=org.openengsb -DartifactId=$2
