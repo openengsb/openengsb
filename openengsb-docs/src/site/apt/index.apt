@@ -13,73 +13,37 @@
 ~~   See the License for the specific language governing permissions and
 ~~   limitations under the License.
 ~~
-Welcome to the openEngSB project website
+Welcome to OpenEngSB!
 
-  The Engineering Service Bus (EngSB) project provides an easy-to-use plattform
-  for engineering tool integration. It offers domain-based workflow design for
-  reoccurring integration tasks, freeing an engineer's time for creative work.
+  The Open Engineering Service Bus (OpenEngSB) project provides an easy-to-use
+  plattform for engineering tool integration. It offers domain-based workflow
+  design for reoccurring integration tasks, freeing an engineer's time for 
+  creative work.
   
   Interested? Read on ... or directly join the community!
 
 OpenEngSB Community
 
-* {{{http://openengsb.org}openEngSB Home}}
+* About OpenEngSB
+
+  * {{{about.html}What is OpenEngSB?}}
   
-* {{{http://issues.openengsb.org/mantis}Issue tracker}}
+  * {{{presentation.html}Presentations}}
   
-* {{{http://github.com/openengsb/openengsb}Source repository}}
-  
-*  {{{http://groups.google.com/group/openengsb-user}Mailing lists}}
+* Getting Help
+
+  * {{{reference/index.html}Userguide}}
   
   * {{{http://groups.google.com/group/openengsb-announce}openengsb-announce}} (release announcements)
   
   * {{{http://groups.google.com/group/openengsb-user}openengsb-user}} (user group and support)
   
   * {{{http://groups.google.com/group/openengsb-dev}openengsb-dev}} (developer discussion)
+
+* Getting involved
   
-  * {{{http://groups.google.com/group/openengsb-ticket}openengsb-ticket}} (issue tracker notifications)
+  * {{{http://github.com/openengsb/openengsb}Source repository}}
   
-  * {{{http://groups.google.com/group/openengsb-commit}openengsb-commit}} (commit notifications)
+  * {{{http://issues.openengsb.org/mantis}Issue tracker}}
   
-More about openEngSB
-
-  In engineering environments a lot of different tools are used. Most of these
- operate on the same domain, but often interoperability is the limiting factor
- in productivity. For each project and every team integration work has to be
- done over again. In general, this ends up with numerous point-to-point
- connectors between tools which is neither a stabe solution nor a flexible one.
-
-  This is the point where the (Software) Engineering Service Bus (openEngSB)
- comes into play. It simplyfies design and implementation of workflows in an
- engineering team. The engineering team itself (or a process administrator) is
- able to design workflows between different tools. The entire description process
- happens on the layer of generic domains instead of specific tool properties.
- This provides an out of the box solution which allows typical engineering teams
- to optimize their processes and make their workflows very flexible and easy to
- change. Also, openEngSB simlyfies the replacement of individual tools and allows
- interdepartmental tool integration.
-
-  Project management is set to a new level since its possible to clearly guard
- all integrated tools and workflows. This offers new ways in notifying managers
- at the right moment and furthermore allows a very general, distanced and
- objective view on a project.
-
-  Although this concept is very powerful it cannot solve every problem. The
- openEngSB is not designed as a general graphical layer over an Enterprise
- Service Bus (ESB) which allows you to design ALL of your processes out of the
- box. As long as you work in the designed domains of the EngSB you have a lot
- of graphical support and other tools available making your work extremely easy.
- But when leaving the common engineering domains you also leave the core scope
- of the sevice bus. OpenEngSB still allows you to connect your own integration
- projects, use services and react on events, but you have to  keep in mind that
- you're working outside the openEngSB and "falling back" to classical Enterprise
- Application Integration (EAI) patterns and tools.
-
-  However, this project does not try to reinvent the wheel. OpenEngSB will not
- replace the tools already used for your development process, it will integrate
- them. Our service bus is used to connect the different tools and design a workflow
- between them, but not to replace them with yet another application.
- For example, software engineers like us love their tools and will fight
- desperately if you try to take them away.  We like the wheels as they are,
- but we do not like the way they are put together at the moment.
- 
+  * {{{http://groups.google.com/group/openengsb-user}Mailing lists}}

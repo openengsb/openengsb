@@ -24,7 +24,7 @@
   </skin>
 
   <bannerLeft>
-    <name>Open Engineering Service Bus (openEngSB)</name>
+    <name>Open Engineering Service Bus (OpenEngSB)</name>
     <src>images/openengsb_small.png</src>
   </bannerLeft>
 
@@ -38,12 +38,14 @@
 
   <body>
 
-    <menu name="openEngSB">
-      <item href="index.html" name="Project Overview" />
-      <item href="reference/index.html" name="Userguide" />
+    <menu name="OpenEngSB">
+      <item href="index.html" name="Wellcome" />
+      <item href="about.html" name="What is OpenEngSB?" />
+      <item href="http://github.com/openengsb/openengsb/downloads" name="Download"/>
     </menu>
 
-    <menu name="Tool Connectors">
+    <menu name="Documentation">
+      <item href="reference/index.html" name="Userguide" />
       <item collapse="true" href="connector/issues/issues.html" name="Issue-Connectors">
         <item href="connector/issues/trac.html" name="Trac" />
         <item href="connector/issues/mantis.html" name="Mantis" />
@@ -63,33 +65,36 @@
       </item>
     </menu>
 
-    <menu name="Proposals">
-      <item href="proposals/edbInterface.html" name="EDB" />
-      <item href="proposals/scmDomain.html" name="SCM Domain" />
-      <item href="proposals/buildDomain.html" name="Build Domain" />
-      <item href="proposals/testDomain.html" name="Test Domain" />
-      <item href="proposals/deployDomain.html" name="Deploy Domain" />
-      <item href="proposals/pimDomain.html" name="PIM Domain" />
+    <menu name="Community">
+      <item href="mail-lists.html" name="Mailing Lists" />
+      <item href="issue-tracking.html" name="Issue Tracking" />
+      <item href="source-repository.html" name="Source Repository" />
+      <item href="integration.html" name="Continous Integration" />
+      <item collapse="true" name="Contribute" href="roadmap.html">
+        <item href="roadmap.html" name="Roadmap" />
+        <item href="contribute/git.html" name="Github" />
+        <item href="contribute/codingstyle.html" name="Coding Guidelines" />
+        <item href="contribute/format.html" name="APT Format" />
+        <item href="contribute/eclipse.html" name="Eclipse Setup" />
+        <item href="contribute/proposals.html" name="Proposals" />
+      </item>
+      <item collapse="true" name="Proposals" href="proposals/edbInterface.html">
+        <item href="proposals/edbInterface.html" name="EDB" />
+        <item href="proposals/scmDomain.html" name="SCM Domain" />
+        <item href="proposals/buildDomain.html" name="Build Domain" />
+        <item href="proposals/testDomain.html" name="Test Domain" />
+        <item href="proposals/deployDomain.html" name="Deploy Domain" />
+        <item href="proposals/pimDomain.html" name="PIM Domain" />
+      </item>
     </menu>
 
     <menu name="Project Information">
-      <item href="roadmap.html" name="Roadmap" />
       <item href="presentation.html" name="Presentations" />
-      <item href="contribute/git.html" name="Github" />
-      <item href="contribute/codingstyle.html" name="Coding Guidelines" />
-      <item href="contribute/format.html" name="APT Format" />
-      <item href="contribute/eclipse.html" name="Eclipse Setup" />
-      <item href="contribute/proposals.html" name="Proposals" />
-      <item href="source-repository.html" name="Source Repository" />
-      <item href="integration.html" name="Continous Integration" />
-      <item href="issue-tracking.html" name="Issue Tracking" />
-      <item href="mail-lists.html" name="Mailing Lists" />
       <item href="dependency-management.html" name="Dependencies" />
       <item href="plugin-management.html" name="Modules" />
       <item href="plugins.html" name="Plugins" />
       <item href="team-list.html" name="Team" />
       <item href="license.txt" name="License" />
-      <item href="faq.html" name="FAQ" />
     </menu>
 
   </body>
