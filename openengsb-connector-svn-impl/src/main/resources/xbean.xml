@@ -39,7 +39,7 @@
   <!-- Configuration bean for the SVN implementation. -->
   <bean id="workingCopy" class="org.openengsb.connector.svn.SvnConfiguration">
     <property name="workingCopy" value="projectOutput" />
-    <property name="developerConnection" value="http://85.126.79.3/svn/engsb/test/openengsb-test/" />
+    <property name="developerConnection" value="http://svn.openengsb.org/repos/test/openengsb-testrepo/" />
   </bean>
 
 </beans>
