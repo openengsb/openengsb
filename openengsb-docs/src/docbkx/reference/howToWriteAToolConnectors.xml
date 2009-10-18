@@ -31,7 +31,7 @@
       <para>
         Before we start the implementation you should be familiar with the Apache ServiceMix components. You should know
         what is a service unit, a service assembly, a service engine and a binding component. Of course there is an
-        official documentation, but it is very hard to understand the fully concept in a small tutorial. A good
+        official documentation, but it is very hard to understand the full concept in a small tutorial. A good
         overview, that I used, was the following site:
         <ulink url="http://servicemix.apache.org/users-guide.html">http://servicemix.apache.org/users-guide.html</ulink>
         . For a deeper understanding I focused on code reading from the ServiceMix Source Repository.
@@ -49,7 +49,7 @@
         </itemizedlist>
       </para>
 
-      <para>Attention, I summarize some typical servicemix documentation in my own words. These is not a replacement of
+      <para>Attention, I summarize some typical servicemix documentation in my own words. This is not a replacement of
         the user-guide mentioned above.
       </para>
     </section>
@@ -61,8 +61,8 @@
         Another important documentation for understanding the mapping for the integration Test is the standard of JBI(
         <ulink url="http://jcp.org/en/jsr/detail?id=208">http://jcp.org/en/jsr/detail?id=208 </ulink>
         ). If you open the link choose the latest version of JBI and download the specification. Of course, it is a 240
-        page long document, but the first 120 pages explain how the mapping works. Especially the chapter 5 - Normalized
-        Message Router show the technology with goog examples.
+        page long document, but the first 120 pages explain how the mapping works. Especially chapter 5 - Normalized
+        Message Router - shows the technology with good examples.
       </para>
     </section>
 
@@ -82,18 +82,17 @@
     </para>
 
     <para>
-      To manage the files for our development you should be familiar with GIT. A short introduction is written on the
+      To manage the files for our development you should be familiar with GIT. You can find a short introduction to the workflow for new tools on 
       page(
       <ulink url="???">infrastructure</ulink>
-      ) how the workflow for new tools look like. For depper understanding search in google.
+      ). For a deeper understanding search the web.
     </para>
 
     <section>
       <title id="cygwin">Cygwin</title>
 
       <para>
-        If you use windows it is necessar to install cygwin to manage the git commands like push and pull your
-        source. When you install cygwin you have to look for the openssh for autehtification and the git libraries for
+        If you use windows it is necessary to install cygwin to manage the git commands like push and pull. When you install cygwin you have to look for the openssh for authentification and the git libraries for
         working. For working with the cmd, set a system variable and the path.
       </para>
     </section>
@@ -111,7 +110,7 @@
       <title id="creating.servicemix.element">Creating ServiceMix Element</title>
 
       <para>
-        For creating an servicemix element you can easily use the archetype command from maven by using the the
+        For creating a servicemix element you can easily use the archetype command from maven by using the the
         servicemix archetype ids. If you want to add a new component to Engsb, you should regard the standard groupId
         and the pattern of the aritfactId.
       </para>
@@ -125,7 +124,7 @@
     -DarchetypeVersion=3.2.1
     -DgroupId=at.ac.tuwien.ifs.engsb
     -DartifactId=engsb-mvn-build]]></programlisting>
-        In the root directory of the project there you will find a file this is called createProject.sh. This is a shell
+        In the root directory of the project you will find a file called createProject.sh. This is a shell
         script for creating a servicemix element with parameters.
       </para>
 
@@ -133,7 +132,7 @@
         <programlisting format="linespecific"><![CDATA[mvn archetype:create
     -DarchetypeGroupId=org.apache.servicemix.tooling
     -DarchetypeArtifactId=$1
-    -DgroupId=at.ac.tuwien.ifs.engsb
+    -DgroupId=org.openengsb
     -DartifactId=$2]]></programlisting>
         With this script a command would finally look like:
       </para>
@@ -152,33 +151,33 @@
       <title id="modify.pom.xml">Modify pom.xml</title>
 
       <para>
-        The created pom.xml has in most cases not the right dependency versions. For managing the dependencies and
-        the embedded modules, you should use the parent pom, that you can find in the head directory. If you need
+        The created pom.xml does not have the right dependency versions in most cases. For managing the dependencies and
+        the embedded modules you should use the parent pom that you can find in the head directory. If you need
         additional dependencies for your tasks, add the dependency in your branch in the parent pom. Also the whole
         build has to be configured in the parent pom, for example the compiler plugin to set the java version.
       </para>
 
       <para>
-        You should also use the name tag to describe the component and to identify the component in the commandline
+        You should also use the name tag to describe the component and to identify the component in the command line
         during the
         build process.
       </para>
 
       <para>
-        In a nutshell, you use the parent pom, name new components with a descriptively name, add only required
-        dependencies, plugins, etc in the parent pom. The version management is also handled in the parent pom.
+        In a nutshell, you use the parent pom, name new components with a descriptive name, add only required
+        dependencies, plugins, etc. in the parent pom. The version management is also handled in the parent pom.
       </para>
 
       <para>
-        There are a lot of implemented feature, where there typical pom for a domain is shown.
+        There are a lot of implemented features where the typical pom for a domain is shown.
       </para>
 
       <section>
         <title id="use.junit.4.4">JUnit 4.4</title>
 
         <para>
-          At the moment, 18.09.2009 there are some problems with spring and junit 4.5 or higher. Maybe the problems
-          disappear in few days, weeks or months.
+          At the moment (18.09.2009) there are some problems with spring and junit 4.5 or higher. Maybe the problems
+          disappear in a few days, weeks or months.
         </para>
 
         <para>
@@ -191,9 +190,9 @@
       <title id="plugins">Plugins</title>
 
       <para>
-        When you look at the pom.xml, you will find these plugins. The type describes, what servicemix component
-        will be produces during the build process and the component tag refer the class. Also the namespace plays a
-        important role, if you don't use the same in your integration test, it won't react on your commands.
+        When you look at the pom.xml, you will find these plugins. The type describes what servicemix component
+        will be produced during the build process and the component tag refers to the class. Also the namespace plays a
+        important role, if you don't use the same in your integration test, it won't react to your commands.
       </para>
 
       <para>
@@ -242,8 +241,8 @@
         by other components (or even itself). Components can query JBI for the for the WSDL describing available
         services. JBI engines and bindings function as service consumers, providers, or both. A service provider makes a
         WSDL-described service available through an
-        <emphasis role="bold">endpoint</emphasis>
-        . A consumer makes use of services by initiating message exchanges that invoke particular operations.
+        <emphasis role="bold">endpoint</emphasis>. A consumer makes use of services by initiating message exchanges 
+        that invoke particular operations.
       </para>
 
       <para>
@@ -257,19 +256,19 @@
       </para>
 
       <para>
-        In the MEP are endpoints defined for the communication. You can campare this concept with another like RMI or
-        simple sockets. You have someone you offers services and someone who wants to use them. For the activation you
+        In the MEP are endpoints defined for the communication. You can compare this concept with another like RMI or
+        simple sockets. You have someone who offers services and someone who wants to use them. For the activation you
         have to send a command and parameter. For the Normalized Message we use the payload as standard, so you have to
-        generate a xml message for the communication between components for your objects and values, that you want to
-        transfer. On the other site you can read the xml message and set the wanted parameter. More information are
-        shown in the source code. The different message pattern(In-out, In-only, ..) can be found in the standard of JBI
-        or from ServiceMix:
+        generate an xml message for the communication between components for your objects and values, that you want to
+        transfer. On the other site you can read the xml message and set the wanted parameter. More information is
+        shown in the source code. The different message patterns (In-out, In-only, ...) can be found in the standard of JBI
+        or in the ServiceMix user's guide:
         <ulink url="http://servicemix.apache.org/5-jbi.html#5">http://servicemix.apache.org/5-jbi.html#5</ulink>
         .
       </para>
 
       <para>
-        Endpoints refers to a particular address, accessible by a particular protocol, used to access a particular
+        Endpoints refer to a particular address, accessible by a particular protocol, used to access a particular
         service.
       </para>
 
@@ -293,7 +292,7 @@
                 <listitem>
                   <para>
                     External endpoints exposed by binding components, for the use of external service
-                    consumer
+                    consumers.
                   </para>
                 </listitem>
               </itemizedlist>
@@ -315,10 +314,10 @@
       </para>
 
       <para>
-        If you create the project with the mentioned above command, you will find some predefined classes. At first
-        the following annotation sets the name of the component and show the default binding. The component is a default
+        If you create the project with the command mentioned above, you will find some predefined classes. At first
+        the following annotation sets the name of the component and shows the default binding. The component is a default
         JBI Component with the base lifecycle. You could implement your own component and override methods from
-        servicemix if your tasks require it. In most cases you can use the default configuration of the component.
+        ServiceMix if your tasks require it. In most cases you can use the default configuration of the component.
       </para>
 
       <para>
@@ -334,7 +333,7 @@
 
       <para>
         Look at the target/xbean directory for deeper information. For example you wil find a XSD File that
-        describes how the WSDL we look like after building.
+        describes what the WSDL will look like after building.
       </para>
     </section>
 
@@ -342,7 +341,7 @@
       <title id="writeJavadoc2">Write JavaDoc</title>
 
       <para>
-        Its very important to write javadoc for a quick code review.
+        It is very important to write javadoc for a quick code review.
        </para>
     </section>
   </section>
@@ -351,8 +350,8 @@
     <title id="writing.tests">Writing Tests</title>
 
     <para>
-      It is helpful to write at first your unit tests. So you can be sure, that your code does what you want before
-      you use servicemix.
+      It is helpful to write your unit tests at first. This way you can be sure that your code does what you want before
+      you use ServiceMix.
     </para>
 
     <section>
@@ -374,9 +373,9 @@
         <title id="mapping">Mapping</title>
 
         <para>
-          In ServiceMix you use a standard component in the xbean.xml, where you define the component with his
+          In ServiceMix you use a standard component in the xbean.xml, where you define the component with its
           endpoints. The
-          endpoints deliver parameter that initialize and activate the service from the component. For
+          endpoints deliver parameters that initialize and activate the service from the component. For
           example the
           quartz component of servicemix has a repeat intervall for starting a target service.
           </para>
@@ -388,8 +387,8 @@
         </para>
 
         <para>
-          A definition of a bean for your own objects(creating and setting the parameter of that object with a
-          bean)to
+          A definition of a bean for your own objects (creating and setting the parameter of that object with a
+          bean) to
           initialize your endpoints can easiliy set and refer to a endpoint of your choice.
         </para>
 
@@ -410,17 +409,17 @@
   </property>
 </bean>]]></programlisting>
           If you understand the bean invocation, you will see that the other elements in the xbean.xml are also beans
-          and initialize the endpoint, the component and created a initialized JBI Component, which is embedded in
-          servicemix. To check this, look at the super classes of the DefaultComponent. You will find a class named
+          and initialize the endpoint, the component and create an initialized JBI Component, which is embedded in
+          ServiceMix. To check this, look at the super classes of the DefaultComponent. You will find a class named
           ServiceMixComponent and a short description in JavaDoc.
         </para>
 
         <para>
           Now the endpoints are initialized for communication. As we mentioned above the communication between the
           endpoints and
-          the Normalized Message Router has to be in xml and are part of the WSDL service-oriented model.
+          the Normalized Message Router has to be in xml and is part of the WSDL service-oriented model.
           Now a message
-          can be send to activate a service, for instance build the project with the baseDirectory xy.
+          can be sent to activate a service, for instance build the project with the baseDirectory xy.
         </para>
       </section>
 
