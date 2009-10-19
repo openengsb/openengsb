@@ -45,7 +45,6 @@
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-edb-se</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
