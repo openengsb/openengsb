@@ -40,7 +40,6 @@ import org.openengsb.edb.core.search.lucene.LuceneIndexer;
 import org.openengsb.edb.core.search.lucene.LuceneSearcher;
 import org.openengsb.util.IO;
 
-
 public class SearcherTest extends ATestStub {
 
     private static List<GenericContent> content;
@@ -231,6 +230,7 @@ public class SearcherTest extends ATestStub {
     }
 
     @Test
+    @Ignore
     public void testSearchAll() {
         this.term = "*";
         this.result = this.searcher.search(this.term);
