@@ -38,7 +38,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-
 /**
  * The MavenResultSerializer creates a dom source of the <tt>MavenResult</tt>
  * object and reverse. </br> There are constants used to find the elements in
@@ -302,10 +301,12 @@ public class MavenResultSerializer extends AbstractSerializer {
             }
 
             if (!result.getMavenOutput().equals(MavenResult.SUCCESS)) {
-                ListSerializer<Exception> serializer = new ListSerializer<Exception>();
-                Element exceptionList = serializer.serializeList(result.getExceptions(),
-                        MavenResultSerializer.EXCEPTION_LIST, MavenResultSerializer.EXCEPTION);
-                resultElement.appendChild(exceptionList);
+                if (result.getExceptions() != null) {
+                    ListSerializer<Exception> serializer = new ListSerializer<Exception>();
+                    Element exceptionList = serializer.serializeList(result.getExceptions(),
+                            MavenResultSerializer.EXCEPTION_LIST, MavenResultSerializer.EXCEPTION);
+                    resultElement.appendChild(exceptionList);
+                }
 
                 resultElement.setAttribute(MavenResultSerializer.TASK, result.getTask());
                 resultElement.setAttribute(MavenResultSerializer.ERRORMESSAGE, result.getErrorMessage());
@@ -337,11 +338,14 @@ public class MavenResultSerializer extends AbstractSerializer {
                 Node exceptionsNode = AbstractSerializer.xpath.selectSingleNode(resultNode,
                         MavenResultSerializer.EXCEPTION_LIST);
 
-                ListSerializer<Exception> listSerializer = new ListSerializer<Exception>();
-                List<Exception> exceptions = listSerializer.deserializeList(exceptionsNode,
-                        MavenResultSerializer.EXCEPTION_LIST);
+                if (exceptionsNode != null) {
+                    ListSerializer<Exception> listSerializer = new ListSerializer<Exception>();
+                    List<Exception> exceptions = listSerializer.deserializeList(exceptionsNode,
+                            MavenResultSerializer.EXCEPTION_LIST);
 
-                mavenResult.setExceptions(exceptions);
+                    mavenResult.setExceptions(exceptions);
+                }
+
                 mavenResult.setTask(AbstractSerializer.xpath.selectSingleNode(resultNode,
                         "@" + MavenResultSerializer.TASK).getNodeValue());
 

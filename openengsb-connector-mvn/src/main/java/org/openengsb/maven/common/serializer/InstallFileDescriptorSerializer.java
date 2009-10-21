@@ -55,11 +55,6 @@ public class InstallFileDescriptorSerializer extends AbstractSerializer {
             result.setVersion(versionAttribute.getTextContent());
             result.setPackaging(packagingAttribute.getTextContent());
 
-            if (!result.validate()) {
-                throw new SerializationException(
-                        "The InstallFileDescriptor resulting from the deserialization is not valid.");
-            }
-
         } catch (TransformerException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
