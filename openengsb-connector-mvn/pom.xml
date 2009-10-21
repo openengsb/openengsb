@@ -76,16 +76,9 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
-            <include>**/BuildDomain*.java</include>
-            <include>**/TestDomain*.java</include>
-            <include>**/DeployDomain*.java</include>
-            <include>**/SerializerTest.java</include>
-            <include>**/MavenBuildIntegrationTest.java</include>
-            <include>**/MavenTestIntegrationTest.java</include>
-            <include>**/MavenDeployIntegrationTest.java</include>
+            <include>org/openengsb/**/*Test.java</include>
           </includes>
         </configuration>
-
       </plugin>
     </plugins>
   </build>
