@@ -170,7 +170,7 @@ public class MavenResultSerializer extends AbstractSerializer {
             // iterate over result nodes
             for (int i = 0; i < resultNodeList.getLength(); i++) {
                 Node resultNode = resultNodeList.item(i);
-                resultList.add(desirializeResult(resultNode));
+                resultList.add(deserializeResult(resultNode));
             }
         } catch (MessagingException exception) {
             throw new SerializationException(exception);
@@ -264,7 +264,7 @@ public class MavenResultSerializer extends AbstractSerializer {
             // iterate over result nodes
             for (int i = 0; i < resultNodeList.getLength(); i++) {
                 Node resultNode = resultNodeList.item(i);
-                resultList.add(desirializeResult(resultNode));
+                resultList.add(deserializeResult(resultNode));
             }
         } catch (DOMException exception) {
             throw new SerializationException(exception);
@@ -319,7 +319,7 @@ public class MavenResultSerializer extends AbstractSerializer {
         }
     }
 
-    private static MavenResult desirializeResult(Node resultNode) throws DOMException, TransformerException,
+    private static MavenResult deserializeResult(Node resultNode) throws DOMException, TransformerException,
             SerializationException {
 
         MavenResult mavenResult = null;
