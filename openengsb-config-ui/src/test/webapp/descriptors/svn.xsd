@@ -1,0 +1,846 @@
+<?xml version='1.0'?>
+<!--
+
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<xs:schema elementFormDefault='qualified' targetNamespace='http://at.ac.tuwien.ifs.engsb/1.0' xmlns:xs='http://www.w3.org/2001/XMLSchema'
+  xmlns:tns='http://at.ac.tuwien.ifs.engsb/1.0'>
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnAddEndpoint -->
+  <xs:element name='add'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnBlameEndpoint -->
+  <xs:element name='blame'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnBranchEndpoint -->
+  <xs:element name='branch'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnCheckoutEndpoint -->
+  <xs:element name='checkout'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnCommitEndpoint -->
+  <xs:element name='commit'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnDeleteEndpoint -->
+  <xs:element name='delete'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnDiffEndpoint -->
+  <xs:element name='diff'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnExportEndpoint -->
+  <xs:element name='export'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnImportEndpoint -->
+  <xs:element name='import'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnListBranchesEndpoint -->
+  <xs:element name='listBranches'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnLogEndpoint -->
+  <xs:element name='log'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnMergeEndpoint -->
+  <xs:element name='merge'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.SvnComponent -->
+  <xs:element name='svnComponent'>
+    <xs:annotation>
+      <xs:documentation><![CDATA[
+        SVN Component
+      ]]></xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='endpoints' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:choice minOccurs='0' maxOccurs='unbounded'>
+              <xs:element ref='tns:add' />
+              <xs:element ref='tns:blame' />
+              <xs:element ref='tns:branch' />
+              <xs:element ref='tns:checkout' />
+              <xs:element ref='tns:commit' />
+              <xs:element ref='tns:delete' />
+              <xs:element ref='tns:diff' />
+              <xs:element ref='tns:export' />
+              <xs:element ref='tns:import' />
+              <xs:element ref='tns:listBranches' />
+              <xs:element ref='tns:log' />
+              <xs:element ref='tns:merge' />
+              <xs:element ref='tns:switchBranch' />
+              <xs:element ref='tns:update' />
+              <xs:any namespace='##other' />
+            </xs:choice>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='executor' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='executorFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='executor' type='xs:string' />
+      <xs:attribute name='executorFactory' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnSwitchBranchEndpoint -->
+  <xs:element name='switchBranch'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+  <!-- element for type: at.ac.tuwien.ifs.engsb.scm.svnSE.endpoints.SvnUpdateEndpoint -->
+  <xs:element name='update'>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name='commandFactory' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='configuration' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='definition' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='description' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name='serviceUnit' minOccurs='0' maxOccurs='1'>
+          <xs:complexType>
+            <xs:sequence minOccurs='0' maxOccurs='1'>
+              <xs:any namespace='##other' />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:any namespace='##other' minOccurs='0' maxOccurs='unbounded' />
+      </xs:sequence>
+      <xs:attribute name='commandFactory' type='xs:string' />
+      <xs:attribute name='configuration' type='xs:string' />
+      <xs:attribute name='definition' type='xs:string' />
+      <xs:attribute name='description' type='xs:string' />
+      <xs:attribute name='endpoint' type='xs:string' />
+      <xs:attribute name='interfaceName' type='xs:QName' />
+      <xs:attribute name='service' type='xs:QName' />
+      <xs:attribute name='serviceUnit' type='xs:string' />
+      <xs:attribute name='id' type='xs:ID' />
+      <xs:anyAttribute namespace='##other' processContents='lax' />
+    </xs:complexType>
+  </xs:element>
+
+
+</xs:schema>

@@ -29,7 +29,7 @@
 
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-config-ui</artifactId>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
   <name>openengsb-config-ui</name>
 
   <description>
@@ -136,6 +136,12 @@
 
     <!-- Test Dependencies -->
 
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+      <version>${jetty.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
