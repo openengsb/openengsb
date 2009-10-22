@@ -22,21 +22,20 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.config.jbi.ComponentsRetriever;
 import org.openengsb.config.jbi.component.ComponentDescriptor;
 
-public class BasePage extends WebPage
-{
-	@SpringBean
-	protected ComponentsRetriever retriever;
+public class BasePage extends WebPage {
+    @SpringBean
+    protected ComponentsRetriever retriever;
 
-	public BasePage() {
-		add(new NavigationPanel("navigationBar", retriever.lookupComponents()));
-	}
+    public BasePage() {
+        add(new NavigationPanel("navigationBar", retriever.lookupComponents()));
+    }
 
-	protected ComponentDescriptor getComponent(String name) {
-		for (ComponentDescriptor c : retriever.lookupComponents()) {
-			if (c.getName().equals(name)) {
-				return c;
-			}
-		}
-		return null;
-	}
+    protected ComponentDescriptor getComponent(String name) {
+        for (ComponentDescriptor c : retriever.lookupComponents()) {
+            if (c.getName().equals(name)) {
+                return c;
+            }
+        }
+        return null;
+    }
 }

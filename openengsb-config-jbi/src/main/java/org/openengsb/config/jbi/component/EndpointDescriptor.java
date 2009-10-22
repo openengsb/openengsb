@@ -19,21 +19,20 @@ package org.openengsb.config.jbi.component;
 
 import java.util.ArrayList;
 
-public class EndpointDescriptor
-{
-	private final String name;
-	private final ArrayList<AttributeDescriptor> attributes;
+public class EndpointDescriptor {
+    private final String name;
+    private final ArrayList<AttributeDescriptor> attributes;
 
-	public EndpointDescriptor(String name, ArrayList<AttributeDescriptor> attributes) {
-		this.name = name;
-		this.attributes = attributes;
-	}
+    public EndpointDescriptor(String name, ArrayList<AttributeDescriptor> attributes) {
+        this.name = name;
+        this.attributes = attributes;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public ArrayList<AttributeDescriptor> getAttributes() {
-		return attributes;
-	}
+    public ArrayList<AttributeDescriptor> getAttributes() {
+        return attributes;
+    }
 }

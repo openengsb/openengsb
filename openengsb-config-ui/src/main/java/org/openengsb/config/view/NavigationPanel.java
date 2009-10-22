@@ -28,22 +28,22 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.openengsb.config.jbi.component.ComponentDescriptor;
 
-public class NavigationPanel extends Panel
-{
-	private static final long serialVersionUID = 1L;
+public class NavigationPanel extends Panel {
+    private static final long serialVersionUID = 1L;
 
-	public NavigationPanel(String id, List<ComponentDescriptor> components) {
-		super(id);
-		add(new ListView<ComponentDescriptor>("components", components) {
-			private static final long serialVersionUID = 1L;
-			@Override
-			protected void populateItem(ListItem<ComponentDescriptor> item) {
-				item.setModel(new CompoundPropertyModel<ComponentDescriptor>(item.getModelObject()));
-				final PageParameters params = new PageParameters();
-				params.put("component", item.getModelObject().getName());
-				item.add(new BookmarkablePageLink("componentLink", ComponentInfoPage.class, params)
-						.add(new Label("name")));
-			}
-		});
-	}
+    public NavigationPanel(String id, List<ComponentDescriptor> components) {
+        super(id);
+        add(new ListView<ComponentDescriptor>("components", components) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void populateItem(ListItem<ComponentDescriptor> item) {
+                item.setModel(new CompoundPropertyModel<ComponentDescriptor>(item.getModelObject()));
+                final PageParameters params = new PageParameters();
+                params.put("component", item.getModelObject().getName());
+                item.add(new BookmarkablePageLink("componentLink", ComponentInfoPage.class, params).add(new Label(
+                        "name")));
+            }
+        });
+    }
 }

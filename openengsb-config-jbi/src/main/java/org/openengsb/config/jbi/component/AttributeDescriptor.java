@@ -17,36 +17,35 @@
  */
 package org.openengsb.config.jbi.component;
 
-public class AttributeDescriptor
-{
-	public static enum Type {
-		BOOLEAN, STRING, QNAME
-	}
+public class AttributeDescriptor {
+    public static enum Type {
+        BOOLEAN, STRING, QNAME
+    }
 
-	private final String name;
-	private final Type type;
+    private final String name;
+    private final Type type;
 
-	public AttributeDescriptor(String name, Type type) {
-		this.name = name;
-		this.type = type;
-	}
+    public AttributeDescriptor(String name, Type type) {
+        this.name = name;
+        this.type = type;
+    }
 
-	public AttributeDescriptor(String name, String type) {
-		this.name = name;
-		if (type.endsWith("boolean")) {
-			this.type = Type.BOOLEAN;
-		} else if (type.endsWith("QName")) {
-			this.type = Type.QNAME;
-		} else {
-			this.type = Type.STRING;
-		}
-	}
+    public AttributeDescriptor(String name, String type) {
+        this.name = name;
+        if (type.endsWith("boolean")) {
+            this.type = Type.BOOLEAN;
+        } else if (type.endsWith("QName")) {
+            this.type = Type.QNAME;
+        } else {
+            this.type = Type.STRING;
+        }
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Type getType() {
-		return type;
-	}
+    public Type getType() {
+        return type;
+    }
 }

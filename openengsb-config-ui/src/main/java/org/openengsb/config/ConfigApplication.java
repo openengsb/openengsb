@@ -23,30 +23,28 @@ import org.openengsb.config.view.OverviewPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Application object for your web application. If you want to run this
  * application without deploying, run the Start class.
  * 
  * @see org.openengsb.config.Start#main(String[])
  */
-public class ConfigApplication extends WebApplication
-{
-	private static final Logger log = LoggerFactory.getLogger(ConfigApplication.class);
+public class ConfigApplication extends WebApplication {
+    private static final Logger log = LoggerFactory.getLogger(ConfigApplication.class);
 
-	public ConfigApplication() {
-	}
+    public ConfigApplication() {
+    }
 
-	@Override
-	protected void init() {
-		super.init();
-		this.addComponentInstantiationListener(new SpringComponentInjector(this));
-		String realPath = this.getServletContext().getRealPath("/");
-		log.info("RealPath is " + realPath);
-	}
+    @Override
+    protected void init() {
+        super.init();
+        this.addComponentInstantiationListener(new SpringComponentInjector(this));
+        String realPath = this.getServletContext().getRealPath("/");
+        log.info("RealPath is " + realPath);
+    }
 
-	@Override
-	public Class<OverviewPage> getHomePage() {
-		return OverviewPage.class;
-	}
+    @Override
+    public Class<OverviewPage> getHomePage() {
+        return OverviewPage.class;
+    }
 }

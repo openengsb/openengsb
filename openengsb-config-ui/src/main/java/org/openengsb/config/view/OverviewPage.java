@@ -17,8 +17,7 @@
  */
 package org.openengsb.config.view;
 
-public class OverviewPage extends BasePage
-{
-	public OverviewPage() {
-	}
+public class OverviewPage extends BasePage {
+    public OverviewPage() {
+    }
 }

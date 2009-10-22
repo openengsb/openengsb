@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.openengsb.config.jbi.component.ComponentDescriptor;
 
-public interface ComponentsRetriever
-{
-	List<ComponentDescriptor> lookupComponents();
+public interface ComponentsRetriever {
+    List<ComponentDescriptor> lookupComponents();
 }

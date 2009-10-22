@@ -19,62 +19,61 @@ package org.openengsb.config.jbi.component;
 
 import java.util.ArrayList;
 
-public class ComponentDescriptor
-{
-	public static enum Type {
-		BINDING_COMPONENT("binding-component"), SERVICE_ENGINE("service-engine");
+public class ComponentDescriptor {
+    public static enum Type {
+        BINDING_COMPONENT("binding-component"), SERVICE_ENGINE("service-engine");
 
-		private String textual;
+        private String textual;
 
-		Type(String textual) {
-			this.textual = textual;
-		}
+        Type(String textual) {
+            this.textual = textual;
+        }
 
-		public String getTextual() {
-			return textual;
-		}
-	}
+        public String getTextual() {
+            return textual;
+        }
+    }
 
-	private final Type type;
-	private final String name;
-	private final String description;
-	private final String targetNamespace;
-	private final ArrayList<EndpointDescriptor> endpoints;
+    private final Type type;
+    private final String name;
+    private final String description;
+    private final String targetNamespace;
+    private final ArrayList<EndpointDescriptor> endpoints;
 
-	ComponentDescriptor(Type type, String name, String description) {
-		this(type, name, description, null, null);
-	}
+    ComponentDescriptor(Type type, String name, String description) {
+        this(type, name, description, null, null);
+    }
 
-	ComponentDescriptor(String targetNamespace, ArrayList<EndpointDescriptor> endpoints) {
-		this(null, null, null, targetNamespace, endpoints);
-	}
+    ComponentDescriptor(String targetNamespace, ArrayList<EndpointDescriptor> endpoints) {
+        this(null, null, null, targetNamespace, endpoints);
+    }
 
-	public ComponentDescriptor(Type type, String name, String description, String targetNamespace,
-			ArrayList<EndpointDescriptor> endpoints) {
-		this.type = type;
-		this.name = name;
-		this.description = description;
-		this.targetNamespace = targetNamespace;
-		this.endpoints = endpoints;
-	}
+    public ComponentDescriptor(Type type, String name, String description, String targetNamespace,
+            ArrayList<EndpointDescriptor> endpoints) {
+        this.type = type;
+        this.name = name;
+        this.description = description;
+        this.targetNamespace = targetNamespace;
+        this.endpoints = endpoints;
+    }
 
-	public Type getType() {
-		return type;
-	}
+    public Type getType() {
+        return type;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getTargetNamespace() {
-		return targetNamespace;
-	}
+    public String getTargetNamespace() {
+        return targetNamespace;
+    }
 
-	public ArrayList<EndpointDescriptor> getEndpoints() {
-		return endpoints;
-	}
+    public ArrayList<EndpointDescriptor> getEndpoints() {
+        return endpoints;
+    }
 }

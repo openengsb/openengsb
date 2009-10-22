@@ -34,73 +34,68 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
-public class DirectoryComponentsRetriever implements ComponentsRetriever
-{
-	private static Logger log = LoggerFactory.getLogger(DirectoryComponentsRetriever.class);
-	private String componentsDirectory;
-	private List<ComponentDescriptor> components;
+public class DirectoryComponentsRetriever implements ComponentsRetriever {
+    private static Logger log = LoggerFactory.getLogger(DirectoryComponentsRetriever.class);
+    private String componentsDirectory;
+    private List<ComponentDescriptor> components;
 
-	@Override
-	public List<ComponentDescriptor> lookupComponents() {
-		if (components != null) {
-			return components;
-		}
-		components = new ArrayList<ComponentDescriptor>();
-		File path = new File(componentsDirectory);
+    @Override
+    public List<ComponentDescriptor> lookupComponents() {
+        if (components != null) {
+            return components;
+        }
+        components = new ArrayList<ComponentDescriptor>();
+        File path = new File(componentsDirectory);
 
-		if (!path.exists() || !path.isDirectory()) {
-			return components;
-		}
+        if (!path.exists() || !path.isDirectory()) {
+            return components;
+        }
 
-		for (File file : path.listFiles()) {
-			if (!file.getAbsolutePath().endsWith("-installer.zip")) {
-				continue;
-			}
-			try {
-				components.add(readInstallerZip(file));
-				log.info("Parsed jbi component file " + file);
-			} catch (Throwable e) {
-				log.warn("Error while reading jbi component file", e);
-			}
-		}
+        for (File file : path.listFiles()) {
+            if (!file.getAbsolutePath().endsWith("-installer.zip")) {
+                continue;
+            }
+            try {
+                components.add(readInstallerZip(file));
+                log.info("Parsed jbi component file " + file);
+            } catch (Throwable e) {
+                log.warn("Error while reading jbi component file", e);
+            }
+        }
 
-		return components;
-	}
+        return components;
+    }
 
-	private ComponentDescriptor readInstallerZip(File file) throws ZipException, IOException,
-			ParseException {
-		ComponentParser parser = new ComponentParser();
-		String jarname = "lib/"
-				+ file.getName().substring(0, file.getName().indexOf("-installer.zip")) + ".jar";
-		ZipFile zip = new ZipFile(file);
+    private ComponentDescriptor readInstallerZip(File file) throws ZipException, IOException, ParseException {
+        ComponentParser parser = new ComponentParser();
+        String jarname = "lib/" + file.getName().substring(0, file.getName().indexOf("-installer.zip")) + ".jar";
+        ZipFile zip = new ZipFile(file);
 
-		ZipEntry jbiEntry = zip.getEntry("META-INF/jbi.xml");
-		ComponentDescriptor jbiDescriptor = parser.parseJbi(new InputSource(zip
-				.getInputStream(jbiEntry)));
+        ZipEntry jbiEntry = zip.getEntry("META-INF/jbi.xml");
+        ComponentDescriptor jbiDescriptor = parser.parseJbi(new InputSource(zip.getInputStream(jbiEntry)));
 
-		ZipEntry jarEntry = zip.getEntry(jarname);
-		ZipInputStream jar = new ZipInputStream(zip.getInputStream(jarEntry));
+        ZipEntry jarEntry = zip.getEntry(jarname);
+        ZipInputStream jar = new ZipInputStream(zip.getInputStream(jarEntry));
 
-		ZipEntry entry = null;
-		while ((entry = jar.getNextEntry()) != null) {
-			if (entry.getName().endsWith(".xsd")) {
-				break;
-			}
-			entry = null;
-		}
+        ZipEntry entry = null;
+        while ((entry = jar.getNextEntry()) != null) {
+            if (entry.getName().endsWith(".xsd")) {
+                break;
+            }
+            entry = null;
+        }
 
-		if (entry == null) {
-			throw new ParseException("jbi component schema not found");
-		}
+        if (entry == null) {
+            throw new ParseException("jbi component schema not found");
+        }
 
-		ComponentDescriptor schemaDescriptor = parser.parseSchema(new InputSource(jar));
+        ComponentDescriptor schemaDescriptor = parser.parseSchema(new InputSource(jar));
 
-		return new ComponentDescriptor(jbiDescriptor.getType(), jbiDescriptor.getName(),
-				jbiDescriptor.getDescription(), schemaDescriptor.getTargetNamespace(),
-				schemaDescriptor.getEndpoints());
-	}
+        return new ComponentDescriptor(jbiDescriptor.getType(), jbiDescriptor.getName(),
+                jbiDescriptor.getDescription(), schemaDescriptor.getTargetNamespace(), schemaDescriptor.getEndpoints());
+    }
 
-	public void setComponentsDirectory(String componentsDirectory) {
-		this.componentsDirectory = componentsDirectory;
-	}
+    public void setComponentsDirectory(String componentsDirectory) {
+        this.componentsDirectory = componentsDirectory;
+    }
 }

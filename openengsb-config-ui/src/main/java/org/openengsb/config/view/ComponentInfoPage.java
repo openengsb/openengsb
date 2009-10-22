@@ -26,32 +26,30 @@ import org.openengsb.config.jbi.component.AttributeDescriptor;
 import org.openengsb.config.jbi.component.ComponentDescriptor;
 import org.openengsb.config.jbi.component.EndpointDescriptor;
 
-public class ComponentInfoPage extends BasePage
-{
-	public ComponentInfoPage(PageParameters params) {
-		String name = params.getString("component");
-		ComponentDescriptor desc = getComponent(name);
-		setDefaultModel(new CompoundPropertyModel<ComponentDescriptor>(desc));
-		add(new Label("name"));
-		add(new Label("description"));
-		add(new Label("targetNamespace"));
-		add(new ListView<EndpointDescriptor>("endpoints", desc.getEndpoints()) {
-			private static final long serialVersionUID = 1L;
-			@Override
-			protected void populateItem(ListItem<EndpointDescriptor> item) {
-				item.add(new Label("endpoint.name", item.getModelObject().getName()));
-				item.add(new ListView<AttributeDescriptor>("attributes", item.getModelObject()
-						.getAttributes()) {
-					private static final long serialVersionUID = 1L;
+public class ComponentInfoPage extends BasePage {
+    public ComponentInfoPage(PageParameters params) {
+        String name = params.getString("component");
+        ComponentDescriptor desc = getComponent(name);
+        setDefaultModel(new CompoundPropertyModel<ComponentDescriptor>(desc));
+        add(new Label("name"));
+        add(new Label("description"));
+        add(new Label("targetNamespace"));
+        add(new ListView<EndpointDescriptor>("endpoints", desc.getEndpoints()) {
+            private static final long serialVersionUID = 1L;
 
-					@Override
-					protected void populateItem(ListItem<AttributeDescriptor> item) {
-						item.add(new Label("attribute.name", item.getModelObject().getName()));
-						item.add(new Label("attribute.type", item.getModelObject().getType()
-								.toString()));
-					}
-				});
-			}
-		});
-	}
+            @Override
+            protected void populateItem(ListItem<EndpointDescriptor> item) {
+                item.add(new Label("endpoint.name", item.getModelObject().getName()));
+                item.add(new ListView<AttributeDescriptor>("attributes", item.getModelObject().getAttributes()) {
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    protected void populateItem(ListItem<AttributeDescriptor> item) {
+                        item.add(new Label("attribute.name", item.getModelObject().getName()));
+                        item.add(new Label("attribute.type", item.getModelObject().getType().toString()));
+                    }
+                });
+            }
+        });
+    }
 }
