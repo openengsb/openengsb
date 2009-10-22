@@ -20,14 +20,14 @@
 </head>
 <body>
 <wicket:extend>
-  <h3>JBI Component <span wicket:id="name">[name]</span></h3>
-  <p>Description: <span wicket:id="description">[description]</span></p>
-  <p>Namespace: <span wicket:id="targetNamespace">[targetNamespace]</span></p>
+  <h3><wicket:message key="component">[component]</wicket:message>: <span wicket:id="name">[name]</span></h3>
+  <p><wicket:message key="description">[description]</wicket:message>: <span wicket:id="description">[description]</span></p>
+  <p><wicket:message key="namespace">[namespace]</wicket:message>: <span wicket:id="targetNamespace">[targetNamespace]</span></p>
   <ul wicket:id="endpoints">
     <li>
-      Endpoint: <span wicket:id="endpoint.name">[endpoint.name]</span>
+      <wicket:message key="endpoint">[endpoint]</wicket:message>: <span wicket:id="endpoint.name">[endpoint.name]</span>
       <ul wicket:id="attributes">
-        <li>Attribute: <span wicket:id="attribute.name">[attribute.name]</span> of type <span wicket:id="attribute.type">[attribute.type]</span></li>
+        <li><wicket:message key="attribute">[attribute]</wicket:message>: <span wicket:id="attribute.name">[attribute.name]</span> of type <span wicket:id="attribute.type">[attribute.type]</span></li>
       </ul>
     </li>
   </ul>
