@@ -365,6 +365,53 @@
             <configuration>
               <outputDirectory>${project.build.directory}/components/install</outputDirectory>
               <artifactItems>
+                <!-- OpenEngSB installers -->
+
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-connector-mvn</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-connector-svn</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domain-scm-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-edb-core</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-edb-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-util</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+
+                <!-- ServiceMix installers -->
+
                 <artifactItem>
                   <groupId>org.apache.servicemix</groupId>
                   <artifactId>servicemix-shared</artifactId>
