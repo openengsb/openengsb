@@ -19,13 +19,18 @@
 <head>
 </head>
 <body>
-	<wicket:extend>
-		<h3>Overview</h3>
-		<p>The Open Engineering Service Bus (OpenEngSB) project provides an easy-to-use plattform
-		for engineering tool integration. It offers domain-based workflow design for
-		reoccurring integration tasks, freeing an engineer's time for creative work.</p>
-		<h3>More aboute the OpenEngSB</h3>
-		<p>More ...</p>
-	</wicket:extend>
+<wicket:extend>
+  <h3>JBI Component <span wicket:id="name">[name]</span></h3>
+  <p>Description: <span wicket:id="description">[description]</span></p>
+  <p>Namespace: <span wicket:id="targetNamespace">[targetNamespace]</span></p>
+  <ul wicket:id="endpoints">
+    <li>
+      Endpoint: <span wicket:id="endpoint.name">[endpoint.name]</span>
+      <ul wicket:id="attributes">
+        <li>Attribute: <span wicket:id="attribute.name">[attribute.name]</span> of type <span wicket:id="attribute.type">[attribute.type]</span></li>
+      </ul>
+    </li>
+  </ul>
+</wicket:extend>
 </body>
 </html>
