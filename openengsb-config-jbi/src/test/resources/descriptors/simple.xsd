@@ -16,10 +16,8 @@
    limitations under the License.
 
 -->
-<xsd:schema elementFormDefault='qualified'
-           targetNamespace='http://openengsb.org/simple'
-           xmlns:xsd='http://www.w3.org/2001/XMLSchema'
-           xmlns:tns='http://openengsb.org/simple'>
+<xsd:schema elementFormDefault='qualified' targetNamespace='http://openengsb.org/simple' xmlns:xsd='http://www.w3.org/2001/XMLSchema'
+  xmlns:tns='http://openengsb.org/simple'>
   <xsd:element name='theEndpoint'>
     <xsd:complexType>
       <xsd:attribute name='a' type='xsd:string'>

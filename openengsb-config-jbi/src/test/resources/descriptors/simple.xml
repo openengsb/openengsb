@@ -17,7 +17,8 @@
 
 -->
 <jbi xmlns="http://java.sun.com/xml/ns/jbi" version="1.0">
-  <component type="binding-component" component-class-loader-delegation="parent-first" bootstrap-class-loader-delegation="parent-first">
+  <component type="binding-component" component-class-loader-delegation="parent-first"
+    bootstrap-class-loader-delegation="parent-first">
     <identification>
       <name>thename</name>
       <description>thedesc</description>

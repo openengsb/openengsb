@@ -16,61 +16,60 @@
    limitations under the License.
 
 -->
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<artifactId>openengsb-parent</artifactId>
-		<groupId>org.openengsb</groupId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <artifactId>openengsb-parent</artifactId>
+    <groupId>org.openengsb</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
 
-	<groupId>org.openengsb</groupId>
-	<artifactId>openengsb-config-jbi</artifactId>
-	<packaging>jar</packaging>
-	<name>openengsb-config-jbi</name>
+  <groupId>org.openengsb</groupId>
+  <artifactId>openengsb-config-jbi</artifactId>
+  <packaging>jar</packaging>
+  <name>openengsb-config-jbi</name>
 
-	<description>
+  <description>
   	JBI components reader and SU/SA writer.
 	</description>
 
-	<url>http://85.126.79.3/engsb/</url>
+  <url>http://85.126.79.3/engsb/</url>
 
-	<dependencies>
+  <dependencies>
 
-		<!-- Logging -->
+    <!-- Logging -->
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
 
-		<!-- Test Dependencies -->
+    <!-- Test Dependencies -->
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-library</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-		</dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+    </dependency>
 
-	</dependencies>
+  </dependencies>
 
 </project>
