@@ -120,7 +120,6 @@
     <!-- Embedded -->
     <module>openengsb-config-jbi</module>
     <module>openengsb-config-ui</module>
-    <module>openengsb-config-ui-test</module>
     <module>openengsb-embedded</module>
   </modules>
 
