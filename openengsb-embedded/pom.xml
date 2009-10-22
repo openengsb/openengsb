@@ -44,6 +44,7 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-config-ui</artifactId>
       <version>${project.version}</version>
+      <type>war</type>
     </dependency>
 
     <!-- Servicemix Dependencies -->
