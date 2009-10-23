@@ -18,17 +18,46 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:sm="http://servicemix.apache.org/config/1.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:jencks="http://jencks.org/2.0"
   xsi:schemaLocation="http://www.springframework.org/schema/beans 
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd
            http://servicemix.apache.org/config/1.0
-           http://servicemix.apache.org/schema/servicemix-core-3.3.xsd">
+           http://servicemix.apache.org/schema/servicemix-core-3.3.xsd
+           http://jencks.org/2.0
+           classpath:jencks.xsd
+           ">
 
   <!-- the JBI container -->
   <sm:container id="jbi" rootDir="#rootDir" useMBeanServer="true" createMBeanServer="true"
     installationDirPath="#installDir" deploymentDirPath="#deployDir" monitorInstallationDirectory="true"
-    monitorDeploymentDirectory="true">
+    monitorDeploymentDirectory="true" transactionManager="#transactionManager">
   </sm:container>
+
+  <sm:dotViewService container="#jbi" autoStart="true" />
+  
+  <bean id="servletContext" class="org.springframework.web.context.support.ServletContextFactoryBean" />
+  <bean id="txDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
+    <constructor-arg ref="servletContext" />
+    <constructor-arg value="/txlog" />
+  </bean>
+
+  <jencks:transactionManager id="transactionManager" transactionLogDir="#txDir"
+    defaultTransactionTimeoutSeconds="600" />
+
+  <!-- Work manager -->
+  <jencks:workManager id="workManager" threadPoolSize="200" transactionManager="#transactionManager" />
+
+  <!-- Bootstrap context for JCA -->
+  <jencks:bootstrapContext id="bootstrapContext" workManager="#workManager" transactionManager="#transactionManager" />
+
+  <!-- Connection manager for JCA -->
+  <jencks:connectionTracker id="connectionTracker" geronimoTransactionManager="#transactionManager" />
+
+  <jencks:poolingSupport id="poolingSupport" />
+
+  <jencks:connectionManager id="connectionManager" containerManagedSecurity="false"
+    transaction="xa" transactionManager="#transactionManager" poolingSupport="#poolingSupport" connectionTracker="#connectionTracker" />
 
 </beans>
