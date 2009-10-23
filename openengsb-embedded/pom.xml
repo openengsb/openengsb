@@ -365,6 +365,15 @@
             <configuration>
               <outputDirectory>${project.build.directory}/components/install</outputDirectory>
               <artifactItems>
+                <!-- Other installers -->
+
+                <artifactItem>
+                  <groupId>org.apache.ode</groupId>
+                  <artifactId>ode-jbi</artifactId>
+                  <version>1.3.4-SNAPSHOT</version>
+                  <type>zip</type>
+                </artifactItem>
+
                 <!-- OpenEngSB installers -->
 
                 <artifactItem>
