@@ -39,6 +39,7 @@
     <property name="CHECKOUT_ONLY_CONNECTION_SET" value="checkoutService8" />
     <property name="CHECKOUT_NO_CONNECTION_SET" value="checkoutService9" />
     <property name="CHECKOUT_NO_WORKING_COPY_SET_SERVICE_NAME" value="checkoutService10" />
+    <property name="CHECKOUT_OR_UPDATE_SERVICE_NAME" value="checkoutOrUpdate" />
     <property name="ADD_SERVICE_NAME" value="addService" />
     <property name="DELETE_SERVICE_NAME" value="deleteService" />
     <property name="COMMIT_SERVICE_NAMES">

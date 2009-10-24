@@ -85,6 +85,7 @@
               <my:checkout configuration="#bothConnections" endpoint="checkout" service="test:checkoutService7" />
               <my:checkout configuration="#onlyConnection" endpoint="checkout" service="test:checkoutService8" />
               <my:checkout configuration="#noWorkingCopy" endpoint="checkout" service="test:checkoutService10" />
+              <my:checkoutOrUpdate configuration="#workingCopy1trunk" endpoint="checkoutOrUpdate" service="test:checkoutOrUpdate" />
               <my:add configuration="#workingCopy1trunk" endpoint="add" service="test:addService" />
               <my:delete configuration="#workingCopy1trunk" endpoint="delete" service="test:deleteService" />
               <my:commit configuration="#workingCopy1trunk" endpoint="commit" service="test:commitService1" />

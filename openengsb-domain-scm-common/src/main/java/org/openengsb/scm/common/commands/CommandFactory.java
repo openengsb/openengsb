@@ -82,6 +82,14 @@ public interface CommandFactory {
     Command<MergeResult> getCheckoutCommand(String author);
 
     /**
+     * Returns either a CheckoutCommand or an UpdateCommand. The decision is
+     * based on whether the working copy already exists or not.
+     * @param author
+     * @return
+     */
+    Command<MergeResult> getCheckoutOrUpdateCommand (String author);
+    
+    /**
      * Returns a Command that marks a file for deletion from version control.
      * 
      * @param file The path to the file to be deleted. Relative to the working

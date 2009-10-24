@@ -35,6 +35,7 @@ public class SvnScmComponentIntegrationTestConstants extends SvnScmDomainTestCon
     public String CHECKOUT_ONLY_CONNECTION_SET;
     public String CHECKOUT_NO_CONNECTION_SET;
     public String CHECKOUT_NO_WORKING_COPY_SET_SERVICE_NAME;
+    public String CHECKOUT_OR_UPDATE_SERVICE_NAME;
     public String ADD_SERVICE_NAME;
     public String DELETE_SERVICE_NAME;
     public String[] COMMIT_SERVICE_NAMES;
@@ -204,4 +205,10 @@ public class SvnScmComponentIntegrationTestConstants extends SvnScmDomainTestCon
     public void setWORKING_COPY2_ENV_NAME(String working_copy2_env_name) {
         this.WORKING_COPY2_ENV_NAME = working_copy2_env_name;
     }
+
+	public void setCHECKOUT_OR_UPDATE_SERVICE_NAME (
+			String checkout_or_update_service_name)
+	{
+		CHECKOUT_OR_UPDATE_SERVICE_NAME = checkout_or_update_service_name;
+	}
 }

@@ -254,7 +254,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
         assertTrue("Could not find " + this.CONSTANTS.DEFAULT_WORKING_COPY, new File(
                 this.CONSTANTS.DEFAULT_WORKING_COPY).exists());
     }
-
+    
     /**
      * Tests basic ability to add files to the working copy.
      * 
@@ -714,6 +714,61 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
         // update second working copy
         // exception expected here
         commandFactory2.getUpdateCommand(null).execute();
+    }
+    
+    /**
+     * Asserts that repository is checked out, when the workingcopy does not yet exist
+     * @throws ScmException
+     */
+    @Test
+    public void checkoutOrUpdate_shouldCheckoutTheRepositoryWhenWorkingcopyDoesNotYetExist() throws ScmException {
+    	CommandFactory commandFactory = createCommandFactory(this.CONSTANTS.WORKING_COPIES[0], null,
+                SvnScmDomainUnitTest.TRUNK);
+        MergeResult result = commandFactory.getCheckoutOrUpdateCommand(this.CONSTANTS.AUTHOR).execute();
+        String[] checkedOutFiles = result.getAdds();
+
+        // checking checkedOutFiles
+        assertFileListsEqual(this.CONSTANTS.WORKING_COPIES[0], this.CONSTANTS.INITIAL_FILES, checkedOutFiles);
+
+        // checking file system:
+        File workingCopyPath = new File(this.CONSTANTS.WORKING_COPIES[0]);
+        assertTrue(new File(workingCopyPath, this.CONSTANTS.TEST_FILE).exists());
+    }
+    
+    /**
+     * Asserts that the working copy is updated when it alread exists
+     * @throws ScmException
+     * @throws IOException
+     */
+    @Test
+    public void checkoutOrUpdate_shouldTheWorkingcopyWhenItDoesAlreadyExist() throws ScmException, IOException {
+    	 // 1. check out initial working copy
+        CommandFactory commandFactory = createCommandFactory(this.CONSTANTS.WORKING_COPIES[0], null,
+                SvnScmDomainUnitTest.TRUNK);
+        commandFactory.getCheckoutCommand(this.CONSTANTS.AUTHOR).execute();
+
+        // 2. check out a second time
+        CommandFactory commandFactory2 = createCommandFactory(this.CONSTANTS.WORKING_COPIES[1], null,
+                SvnScmDomainUnitTest.TRUNK);
+        commandFactory2.getCheckoutCommand(this.CONSTANTS.AUTHOR).execute();
+
+        // 3. modify file
+        String modifyContent = "someContent";
+        File fileToModify = new File(new File(this.CONSTANTS.WORKING_COPIES[0]), this.CONSTANTS.UPDATE_FILE);
+        appendContentToFile(fileToModify, modifyContent);
+
+        // 4. commit changes
+        commandFactory.getCommitCommand(this.CONSTANTS.AUTHOR, "somArbitraryMessage").execute();
+
+        // 5. update second working copy
+        MergeResult result = commandFactory2.getCheckoutOrUpdateCommand (this.CONSTANTS.AUTHOR).execute();
+
+        // 6. check result
+        assertEquals(0, result.getConflicts().length);
+        assertEquals(2, result.getMerges().length);
+
+        File secondWorkingCopy = new File(this.CONSTANTS.WORKING_COPIES[1]);
+        assertThatFileWasModified(new File(secondWorkingCopy, this.CONSTANTS.UPDATE_FILE), modifyContent);
     }
 
     /**

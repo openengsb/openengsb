@@ -121,6 +121,19 @@ public abstract class AbstractScmCommandFactory implements CommandFactory {
 
         return command;
     }
+    
+    @Override
+    public Command<MergeResult> getCheckoutOrUpdateCommand (String author)
+    {
+    	Command<MergeResult>	command;
+    	
+    	if (getWorkingCopyFile().exists())
+    		command	= getUpdateCommand();
+    	else
+    		command	= getCheckoutCommand (author);
+    	
+    	return command;
+    }
 
     @Override
     public Command<MergeResult> getCommitCommand(String author, String message) {

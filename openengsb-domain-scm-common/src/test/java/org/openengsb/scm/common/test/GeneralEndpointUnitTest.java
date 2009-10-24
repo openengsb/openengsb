@@ -66,6 +66,7 @@ public class GeneralEndpointUnitTest {
     private static Command<String> blameCommand;
     private static Command<Object> branchCommand;
     private static Command<MergeResult> checkoutCommand;
+    private static Command<MergeResult> checkoutOrUpdateCommand;
     private static Command<MergeResult> commitCommand;
     private static Command<Object> deleteCommand;
     private static Command<String> diffCommand;
@@ -201,10 +202,28 @@ public class GeneralEndpointUnitTest {
 
         verify(GeneralEndpointUnitTest.checkoutCommand).execute();
     }
-
+    
     @Test(expected = UnsupportedOperationException.class)
     public void checkout_shouldFailWhenWrongMepIsUsed() throws Exception {
         MessageExchange messageExchange = createRobustInOnlyMessageExchange("<checkout author=\""
+                + this.CONSTANTS.CHECKOUT_AUTHOR + "\"/>");
+
+        // exception expected here
+        GeneralEndpointUnitTest.endpoint.process(messageExchange);
+    }
+    
+    @Test
+    public void checkoutOrUpdate_shouldCallCheckoutOrUpdateCommand() throws Exception {
+        MessageExchange messageExchange = createInOutMessageExchange("<checkoutOrUpdate author=\""
+                + this.CONSTANTS.CHECKOUT_AUTHOR + "\"/>");
+        GeneralEndpointUnitTest.endpoint.process(messageExchange);
+
+        verify(GeneralEndpointUnitTest.checkoutOrUpdateCommand).execute();
+    }
+    
+    @Test(expected = UnsupportedOperationException.class)
+    public void checkoutOrUpdate_shouldFailWhenWrongMepIsUsed() throws Exception {
+        MessageExchange messageExchange = createRobustInOnlyMessageExchange("<checkoutOrUpdate author=\""
                 + this.CONSTANTS.CHECKOUT_AUTHOR + "\"/>");
 
         // exception expected here
@@ -418,6 +437,7 @@ public class GeneralEndpointUnitTest {
         GeneralEndpointUnitTest.blameCommand = mock(BlameDummy.class);
         GeneralEndpointUnitTest.branchCommand = mock(BranchDummy.class);
         GeneralEndpointUnitTest.checkoutCommand = mock(CheckoutDummy.class);
+        GeneralEndpointUnitTest.checkoutOrUpdateCommand = mock(CheckoutOrUpdateDummy.class);
         GeneralEndpointUnitTest.commitCommand = mock(CommitDummy.class);
         GeneralEndpointUnitTest.deleteCommand = mock(DeleteDummy.class);
         GeneralEndpointUnitTest.diffCommand = mock(DiffDummy.class);
@@ -430,6 +450,7 @@ public class GeneralEndpointUnitTest {
         GeneralEndpointUnitTest.updateCommand = mock(UpdateDummy.class);
 
         when(GeneralEndpointUnitTest.checkoutCommand.execute()).thenReturn(new MergeResult());
+        when(GeneralEndpointUnitTest.checkoutOrUpdateCommand.execute()).thenReturn(new MergeResult());
         when(GeneralEndpointUnitTest.commitCommand.execute()).thenReturn(new MergeResult());
         when(GeneralEndpointUnitTest.importCommand.execute()).thenReturn(new MergeResult());
         when(GeneralEndpointUnitTest.listBranchesCommand.execute()).thenReturn(new String[0]);
@@ -451,6 +472,8 @@ public class GeneralEndpointUnitTest {
                         this.CONSTANTS.BRANCH_COMMIT_MESSAGE)).thenReturn(GeneralEndpointUnitTest.branchCommand);
         when(GeneralEndpointUnitTest.commandFactory.getCheckoutCommand(this.CONSTANTS.CHECKOUT_AUTHOR)).thenReturn(
                 GeneralEndpointUnitTest.checkoutCommand);
+        when(GeneralEndpointUnitTest.commandFactory.getCheckoutOrUpdateCommand(this.CONSTANTS.CHECKOUT_AUTHOR)).thenReturn(
+                GeneralEndpointUnitTest.checkoutOrUpdateCommand);
         when(
                 GeneralEndpointUnitTest.commandFactory.getCommitCommand(this.CONSTANTS.COMMIT_AUTHOR,
                         this.CONSTANTS.COMMIT_MESSAGE)).thenReturn(GeneralEndpointUnitTest.commitCommand);
@@ -515,6 +538,9 @@ public class GeneralEndpointUnitTest {
     }
 
     private interface CheckoutDummy extends Command<MergeResult> {
+    }
+    
+    private interface CheckoutOrUpdateDummy extends Command<MergeResult> {
     }
 
     private interface CommitDummy extends Command<MergeResult> {

@@ -36,6 +36,7 @@ public class GeneralScmEndpoint extends AbstractScmEndpoint {
     private AbstractScmEndpoint blameEndpoint = new BlameEndpoint();
     private AbstractScmEndpoint branchEndpoint = new BranchEndpoint();
     private AbstractScmEndpoint checkoutEndpoint = new CheckoutEndpoint();
+    private AbstractScmEndpoint	checkoutOrUpdateEndpoint = new CheckoutOrUpdateEndpoint();
     private AbstractScmEndpoint commitEndpoint = new CommitEndpoint();
     private AbstractScmEndpoint deleteEndpoint = new DeleteEndpoint();
     private AbstractScmEndpoint diffEndpoint = new DiffEndpoint();
@@ -88,6 +89,9 @@ public class GeneralScmEndpoint extends AbstractScmEndpoint {
         } else if (EndpointCommandNames.CHECKOUT_COMMAND_NAME.equals(endpointCommandName)) {
             getLog().debug("Forwarding request to Checkout-Endpoint.");
             processRequest(this.checkoutEndpoint, exchange, in, out);
+        } else if (EndpointCommandNames.CHECKOUT_OR_UPDATE_COMMAND_NAME.equals(endpointCommandName)) {
+            getLog().debug("Forwarding request to CheckoutOrUpdate-Endpoint.");
+            processRequest(this.checkoutOrUpdateEndpoint, exchange, in, out);    
         } else if (EndpointCommandNames.COMMIT_COMMAND_NAME.equals(endpointCommandName)) {
             getLog().debug("Forwarding request to Commit-Endpoint.");
             processRequest(this.commitEndpoint, exchange, in, out);
@@ -156,6 +160,7 @@ public class GeneralScmEndpoint extends AbstractScmEndpoint {
         this.blameEndpoint.setCommandFactory(getCommandFactory());
         this.branchEndpoint.setCommandFactory(getCommandFactory());
         this.checkoutEndpoint.setCommandFactory(getCommandFactory());
+        this.checkoutOrUpdateEndpoint.setCommandFactory (getCommandFactory());
         this.commitEndpoint.setCommandFactory(getCommandFactory());
         this.deleteEndpoint.setCommandFactory(getCommandFactory());
         this.diffEndpoint.setCommandFactory(getCommandFactory());

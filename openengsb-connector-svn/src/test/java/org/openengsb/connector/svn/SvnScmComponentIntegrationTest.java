@@ -590,6 +590,58 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
         // exception expected here
         doUpdate(this.CONSTANTS.UPDATE_SERVICE_NAME, this.CONSTANTS.SUB_PATH);
     }
+    
+    /**
+     * Tests basic checkout behavior
+     * 
+     * @throws ScmException
+     */
+    @Test
+    public void checkoutOrUpdate_shouldCheckoutRepositoryWheWorkingcopyDoesNotYetExist() throws Exception {
+        MergeResult result = doCheckoutOrUpdate(this.CONSTANTS.CHECKOUT_OR_UPDATE_SERVICE_NAME);
+
+        // examine result
+        // checking checkedOutFiles
+        assertFileListsEqual(this.CONSTANTS.WORKING_COPIES[0], this.CONSTANTS.INITIAL_FILES, result.getAdds());
+
+        // checking file system:
+        File workingCopyPath = new File(this.CONSTANTS.WORKING_COPIES[0]);
+        assertTrue(new File(workingCopyPath, this.CONSTANTS.TEST_FILE).exists());
+    }
+    
+    /**
+     * Tests basic ability to update the working copy with changes from the
+     * repository.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void checkoutOrUpdate_shouldUpdateFilesFromRepository() throws Exception {
+        // 1. check out initial working copy
+        doCheckoutRepository(this.CONSTANTS.CHECKOUT_WC1_TRUNK_SERVICE_NAME);
+
+        // 2. check out a second time
+        doCheckoutRepository(this.CONSTANTS.CHECKOUT_WC2_TRUNK_SERVICE_NAME);
+
+        // 3. modify a file in second working copy
+        String modifyContent = "someContent";
+        File fileToModify = new File(new File(this.CONSTANTS.WORKING_COPIES[1]), this.CONSTANTS.UPDATE_FILE);
+        appendContentToFile(fileToModify, modifyContent);
+
+        // 4. commit second working copy
+        doCommit("someArbitraryMessage", null, this.CONSTANTS.COMMIT_SERVICE_NAMES[1]);
+
+        // actual call to test: update second working copy
+        MergeResult result = doCheckoutOrUpdate(this.CONSTANTS.CHECKOUT_OR_UPDATE_SERVICE_NAME);
+
+        // check result
+        assertEquals(0, result.getConflicts().length);
+        assertEquals(2, result.getMerges().length);
+
+        // assert changes
+        File secondWorkingCopy = new File(this.CONSTANTS.WORKING_COPIES[0]);
+        assertThatFileWasModified(new File(secondWorkingCopy, this.CONSTANTS.UPDATE_FILE), modifyContent);
+    }
 
     /**
      * Tests the basic ability to create a new branch.
@@ -1254,6 +1306,32 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
         // set up and perform call
         DefaultServiceMixClient client = createClient();
         InOut inOut = createInOutMessage(client, serviceName, "<checkout " + " author=\"" + this.CONSTANTS.AUTHOR
+                + "\"/>");
+
+        client.sendSync(inOut);
+        validateReturnMessageSuccess(inOut);
+
+        // get result
+        MergeResult result = MergeResultSerializer.deserialize(inOut.getOutMessage());
+
+        // // finish MEP
+        // client.done (inOut);
+
+        return result;
+    }
+    
+    /**
+     * Triggers a jbi-call (sends normalized message) to check out or update a repository
+     * 
+     * @param serviceName the service's name
+     * @param repository The repository to check out from
+     * @return The deserialized MergeReusult
+     * @throws Exception
+     */
+    private MergeResult doCheckoutOrUpdate(String serviceName) throws Exception {
+        // set up and perform call
+        DefaultServiceMixClient client = createClient();
+        InOut inOut = createInOutMessage(client, serviceName, "<checkoutOrUpdate " + " author=\"" + this.CONSTANTS.AUTHOR
                 + "\"/>");
 
         client.sendSync(inOut);

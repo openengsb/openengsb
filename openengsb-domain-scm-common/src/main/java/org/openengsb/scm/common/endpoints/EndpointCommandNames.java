@@ -29,6 +29,7 @@ public interface EndpointCommandNames {
     public static final String BLAME_COMMAND_NAME = "blame";
     public static final String BRANCH_COMMAND_NAME = "branch";
     public static final String CHECKOUT_COMMAND_NAME = "checkout";
+    public static final String CHECKOUT_OR_UPDATE_COMMAND_NAME = "checkoutOrUpdate";
     public static final String COMMIT_COMMAND_NAME = "commit";
     public static final String DELETE_COMMAND_NAME = "delete";
     public static final String DIFF_COMMAND_NAME = "diff";
