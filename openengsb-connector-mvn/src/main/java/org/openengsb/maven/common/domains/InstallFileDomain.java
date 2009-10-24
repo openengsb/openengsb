@@ -1,6 +1,6 @@
 /**
 
-   Copyright 2009 openEngSB Division, Vienna University of Technology
+   Copyright 2009 OenEngSB Division, Vienna University of Technology
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -24,16 +24,9 @@ import org.openengsb.maven.common.pojos.result.MavenResult;
 
 /**
  * Interface describing the install-file domain.
- * 
- * @author David Waldhans
  */
 public interface InstallFileDomain {
 
-	/**
-	 * 
-	 * @param fileDescriptor
-	 * @return
-	 */
-	MavenResult installFile(InstallFileDescriptor fileDescriptor) throws MavenException;
+    MavenResult installFile(InstallFileDescriptor fileDescriptor) throws MavenException;
 
 }

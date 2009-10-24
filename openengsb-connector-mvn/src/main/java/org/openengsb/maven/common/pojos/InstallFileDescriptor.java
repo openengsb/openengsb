@@ -1,6 +1,6 @@
 /**
 
-   Copyright 2009 openEngSB Division, Vienna University of Technology
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -23,83 +23,81 @@ import org.apache.commons.lang.ArrayUtils;
 /**
  * The InstallFileDescriptor describes the properties of a file that should be
  * installed into a maven repository.
- * 
- * @author David Waldhans
  */
 public class InstallFileDescriptor {
 
-	private static final String[] VALID_PACKAGING_TYPES = new String[] { "jar" };
+    private static final String[] VALID_PACKAGING_TYPES = new String[] { "jar" };
 
-	/**
-	 * The absolute file path of the file to be installed into the repository
-	 */
-	private String filePath;
-	private String groupId;
-	private String artifactId;
-	private String version;
-	private String packaging;
+    /**
+     * The absolute file path of the file to be installed into the repository
+     */
+    private String filePath;
+    private String groupId;
+    private String artifactId;
+    private String version;
+    private String packaging;
 
-	public InstallFileDescriptor() {
+    public InstallFileDescriptor() {
 
-	}
+    }
 
-	public InstallFileDescriptor(String filePath, String groupId,
-			String artifactId, String version, String packaging) {
-		this.filePath = filePath;
-		this.groupId = groupId;
-		this.artifactId = artifactId;
-		this.version = version;
-		this.packaging = packaging;
-	}
+    public InstallFileDescriptor(String filePath, String groupId,
+            String artifactId, String version, String packaging) {
+        this.filePath = filePath;
+        this.groupId = groupId;
+        this.artifactId = artifactId;
+        this.version = version;
+        this.packaging = packaging;
+    }
 
-	public String getFilePath() {
-		return filePath;
-	}
+    public String getFilePath() {
+        return this.filePath;
+    }
 
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
-	}
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
 
-	public String getGroupId() {
-		return groupId;
-	}
+    public String getGroupId() {
+        return this.groupId;
+    }
 
-	public void setGroupId(String groupId) {
-		this.groupId = groupId;
-	}
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
 
-	public String getArtifactId() {
-		return artifactId;
-	}
+    public String getArtifactId() {
+        return this.artifactId;
+    }
 
-	public void setArtifactId(String artifactId) {
-		this.artifactId = artifactId;
-	}
+    public void setArtifactId(String artifactId) {
+        this.artifactId = artifactId;
+    }
 
-	public String getVersion() {
-		return version;
-	}
+    public String getVersion() {
+        return this.version;
+    }
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
-	public String getPackaging() {
-		return packaging;
-	}
+    public String getPackaging() {
+        return this.packaging;
+    }
 
-	public void setPackaging(String packaging) {
-		this.packaging = packaging;
-	}
+    public void setPackaging(String packaging) {
+        this.packaging = packaging;
+    }
 
-	public boolean validate() {
-		return (!isNullOrEmpty(filePath) && !isNullOrEmpty(groupId)
-				&& !isNullOrEmpty(artifactId) && !isNullOrEmpty(version)
-				&& !isNullOrEmpty(packaging) && ArrayUtils.contains(
-				VALID_PACKAGING_TYPES, packaging));
-	}
+    public boolean validate() {
+        return (!isNullOrEmpty(this.filePath) && !isNullOrEmpty(this.groupId)
+                && !isNullOrEmpty(this.artifactId) && !isNullOrEmpty(this.version)
+                && !isNullOrEmpty(this.packaging) && ArrayUtils.contains(
+                VALID_PACKAGING_TYPES, this.packaging));
+    }
 
-	private boolean isNullOrEmpty(String s) {
-		return (s == null || s.equals(""));
-	}
+    private boolean isNullOrEmpty(String s) {
+        return (s == null || s.equals(""));
+    }
 }

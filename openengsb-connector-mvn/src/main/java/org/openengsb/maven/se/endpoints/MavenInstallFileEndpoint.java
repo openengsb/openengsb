@@ -1,6 +1,6 @@
 /**
 
-   Copyright 2009 EngSB Team QSE/IFS, Vienna University of Technology
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -42,8 +42,7 @@ import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * Endpoint implementing maven's install:install-file functionality.
- */
-/**
+ * 
  * @org.apache.xbean.XBean element="mavenFileInstaller"
  */
 public class MavenInstallFileEndpoint extends AbstractMavenEndpoint implements InstallFileDomain {
@@ -77,6 +76,7 @@ public class MavenInstallFileEndpoint extends AbstractMavenEndpoint implements I
         getChannel().send(exchange);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public MavenResult installFile(InstallFileDescriptor fileDescriptor) throws MavenException {
         if (fileDescriptor == null) {
@@ -104,7 +104,7 @@ public class MavenInstallFileEndpoint extends AbstractMavenEndpoint implements I
 
         this.projectConfiguration.setBaseDirectory(new File(pathToFile));
 
-        return execute(pathToFile, Arrays.asList(new String[] { "install:install-file" }), props);
+        return execute(pathToFile, new ArrayList<String>(Arrays.asList(new String[] { "install:install-file" })), props);
     }
 
     public void setOptions(Options options) {

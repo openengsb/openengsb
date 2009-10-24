@@ -1,51 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!--
+    <!--
 
-		Copyright 2009 OpenEngSB Division, Vienna University of Technology
+        Copyright 2009 OpenEngSB Division, Vienna University of Technology
 
-		Licensed under the Apache License, Version 2.0 (the "License"); you
-		may not use this file except in compliance with the License. You may
-		obtain a copy of the License at
+        Licensed under the Apache License, Version 2.0 (the "License"); you
+        may not use this file except in compliance with the License. You may
+        obtain a copy of the License at
 
-		http://www.apache.org/licenses/LICENSE-2.0 Unless required by
-		applicable law or agreed to in writing, software distributed under the
-		License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-		CONDITIONS OF ANY KIND, either express or implied. See the License for
-		the specific language governing permissions and limitations under the
-		License.
-	-->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0"
-	xmlns:engsb="http://openengsb.org/connector/mvn/1.0" xmlns:test="urn:test-surefire">
+        http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+        applicable law or agreed to in writing, software distributed under the
+        License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+        CONDITIONS OF ANY KIND, either express or implied. See the License for
+        the specific language governing permissions and limitations under the
+        License.
+    -->
+<beans xmlns:sm="http://servicemix.apache.org/config/1.0" xmlns:engsb="http://openengsb.org/connector/mvn/1.0"
+  xmlns:test="urn:test-surefire">
 
-	<sm:container id="jbi" embedded="true" createMBeanServer="false">
+  <sm:container id="jbi" embedded="true" createMBeanServer="false">
 
-		<sm:activationSpecs>
+    <sm:activationSpecs>
 
-			<sm:activationSpec>
-				<sm:component>
-					<engsb:mavenComponent>
-						<engsb:endpoints>
-							<engsb:mavenTester service="test:test-no-surefire"
-								endpoint="endpoint" baseDirectory="file:target/test-classes/test-no-surefire">
-							</engsb:mavenTester>
+      <sm:activationSpec>
+        <sm:component>
+          <engsb:mavenComponent>
+            <engsb:endpoints>
+              <engsb:mavenTester service="test:test-no-surefire" endpoint="endpoint"
+                baseDirectory="file:target/test-classes/test-no-surefire">
+              </engsb:mavenTester>
 
-							<engsb:mavenTester service="test:test-unit-fail"
-								endpoint="endpoint" baseDirectory="file:target/test-classes/test-unit-fail">
-							</engsb:mavenTester>
+              <engsb:mavenTester service="test:test-unit-fail" endpoint="endpoint"
+                baseDirectory="file:target/test-classes/test-unit-fail">
+              </engsb:mavenTester>
 
-							<engsb:mavenTester service="test:test-valid-surefire"
-								endpoint="endpoint" baseDirectory="file:target/test-classes/test-valid-surefire"
-								excludes="**/AppFailTest.java,**/ApplicationFailTest.java">
-							</engsb:mavenTester>
+              <engsb:mavenTester service="test:test-valid-surefire" endpoint="endpoint"
+                baseDirectory="file:target/test-classes/test-valid-surefire" excludes="**/AppFailTest.java,**/ApplicationFailTest.java">
+              </engsb:mavenTester>
 
-							<engsb:mavenTester service="test:test-invalid-surefire"
-								endpoint="endpoint" baseDirectory="file:target/test-classes/test-invalid-surefire">
-							</engsb:mavenTester>
-						</engsb:endpoints>
-					</engsb:mavenComponent>
-				</sm:component>
-			</sm:activationSpec>
+              <engsb:mavenTester service="test:test-invalid-surefire" endpoint="endpoint"
+                baseDirectory="file:target/test-classes/test-invalid-surefire">
+              </engsb:mavenTester>
+            </engsb:endpoints>
+          </engsb:mavenComponent>
+        </sm:component>
+      </sm:activationSpec>
 
-		</sm:activationSpecs>
-	</sm:container>
+    </sm:activationSpecs>
+  </sm:container>
 </beans>

@@ -1,3 +1,21 @@
+/**
+
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+   
+ */
+
 package org.openengsb.maven.serializer;
 
 import javax.xml.transform.Source;
@@ -31,7 +49,8 @@ public class InstallFileDescriptorSerializerTest extends TestCase {
 
     @Test
     public void serializeValidDescriptorShouldSucceed() throws TransformerException, SerializationException {
-        InstallFileDescriptor descriptor = new InstallFileDescriptor(filePath, groupId, artifactId, version, packaging);
+        InstallFileDescriptor descriptor = new InstallFileDescriptor(this.filePath, this.groupId, this.artifactId,
+                this.version, this.packaging);
 
         Source source = InstallFileDescriptorSerializer.serialize(descriptor);
 
@@ -40,37 +59,38 @@ public class InstallFileDescriptorSerializerTest extends TestCase {
         SourceTransformer transformer = new SourceTransformer();
         String deserializedMessage = transformer.toString(source);
 
-        Assert.assertEquals(String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + validMessageTemplate,
-                filePath, groupId, artifactId, version, packaging), deserializedMessage);
+        Assert.assertEquals(String.format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + this.validMessageTemplate,
+                this.filePath, this.groupId, this.artifactId, this.version, this.packaging), deserializedMessage);
     }
 
     @Test(expected = SerializationException.class)
     public void serializeInvalidDescriptorShouldThrowSerializationException() throws SerializationException {
-        InstallFileDescriptor descriptor = new InstallFileDescriptor(null, groupId, artifactId, version, packaging);
-
-        Source source = InstallFileDescriptorSerializer.serialize(descriptor);
+        InstallFileDescriptor descriptor = new InstallFileDescriptor(null, this.groupId, this.artifactId, this.version,
+                this.packaging);
+        InstallFileDescriptorSerializer.serialize(descriptor);
     }
 
     @Test
     public void deserializeValidSourceShouldSucceed() throws SerializationException {
-        Source validSource = new StringSource(String.format(validMessageTemplate, filePath, groupId, artifactId,
-                version, packaging));
+        Source validSource = new StringSource(String.format(this.validMessageTemplate, this.filePath, this.groupId,
+                this.artifactId,
+                this.version, this.packaging));
 
         InstallFileDescriptor descriptor = InstallFileDescriptorSerializer.deserialize(validSource);
 
         Assert.assertNotNull(descriptor);
-        Assert.assertEquals(filePath, descriptor.getFilePath());
-        Assert.assertEquals(groupId, descriptor.getGroupId());
-        Assert.assertEquals(artifactId, descriptor.getArtifactId());
-        Assert.assertEquals(version, descriptor.getVersion());
-        Assert.assertEquals(packaging, descriptor.getPackaging());
+        Assert.assertEquals(this.filePath, descriptor.getFilePath());
+        Assert.assertEquals(this.groupId, descriptor.getGroupId());
+        Assert.assertEquals(this.artifactId, descriptor.getArtifactId());
+        Assert.assertEquals(this.version, descriptor.getVersion());
+        Assert.assertEquals(this.packaging, descriptor.getPackaging());
     }
 
     @Test(expected = SerializationException.class)
     public void deserializeInvalidSourceShouldThrowSerializationException() throws SerializationException {
-        Source invalidSource = new StringSource(invalidMessageTemplate);
+        Source invalidSource = new StringSource(this.invalidMessageTemplate);
 
-        InstallFileDescriptor descriptor = InstallFileDescriptorSerializer.deserialize(invalidSource);
+        InstallFileDescriptorSerializer.deserialize(invalidSource);
     }
 
 }

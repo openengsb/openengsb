@@ -1,6 +1,6 @@
 /**
 
-   Copyright 2009 openEngSB Division, Vienna University of Technology
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,76 +18,71 @@
 
 package org.openengsb.maven.installfile.constants;
 
-/**
- * 
- * @author David Waldhans
- * 
- */
 public class InstallFileMvnTestConstants {
 
-	public String validFullPathToFile;
-	public String validGroupId;
-	public String validArtifactId;
-	public String validVersion;
+    public String validFullPathToFile;
+    public String validGroupId;
+    public String validArtifactId;
+    public String validVersion;
 
-	public String getValidFullPathToFile() {
-		return validFullPathToFile;
-	}
+    public String getValidFullPathToFile() {
+        return this.validFullPathToFile;
+    }
 
-	public void setValidFullPathToFile(String validFullPathToFile) {
-		this.validFullPathToFile = validFullPathToFile;
-	}
+    public void setValidFullPathToFile(String validFullPathToFile) {
+        this.validFullPathToFile = validFullPathToFile;
+    }
 
-	public String getValidGroupId() {
-		return validGroupId;
-	}
+    public String getValidGroupId() {
+        return this.validGroupId;
+    }
 
-	public void setValidGroupId(String validGroupId) {
-		this.validGroupId = validGroupId;
-	}
+    public void setValidGroupId(String validGroupId) {
+        this.validGroupId = validGroupId;
+    }
 
-	public String getValidArtifactId() {
-		return validArtifactId;
-	}
+    public String getValidArtifactId() {
+        return this.validArtifactId;
+    }
 
-	public void setValidArtifactId(String validArtifactId) {
-		this.validArtifactId = validArtifactId;
-	}
+    public void setValidArtifactId(String validArtifactId) {
+        this.validArtifactId = validArtifactId;
+    }
 
-	public String getValidVersion() {
-		return validVersion;
-	}
+    public String getValidVersion() {
+        return this.validVersion;
+    }
 
-	public void setValidVersion(String validVersion) {
-		this.validVersion = validVersion;
-	}
+    public void setValidVersion(String validVersion) {
+        this.validVersion = validVersion;
+    }
 
-	public String getJarPackaging() {
-		return jarPackaging;
-	}
+    public String getJarPackaging() {
+        return this.jarPackaging;
+    }
 
-	public void setJarPackaging(String jarPackaging) {
-		this.jarPackaging = jarPackaging;
-	}
+    public void setJarPackaging(String jarPackaging) {
+        this.jarPackaging = jarPackaging;
+    }
 
-	public String getInvalidFullPathToFile() {
-		return invalidFullPathToFile;
-	}
+    public String getInvalidFullPathToFile() {
+        return this.invalidFullPathToFile;
+    }
 
-	public void setInvalidFullPathToFile(String invalidFullPathToFile) {
-		this.invalidFullPathToFile = invalidFullPathToFile;
-	}
+    public void setInvalidFullPathToFile(String invalidFullPathToFile) {
+        this.invalidFullPathToFile = invalidFullPathToFile;
+    }
 
-	public String getSettingsFile() {
-		return settingsFile;
-	}
+    public String getSettingsFile() {
+        return this.settingsFile;
+    }
 
-	public void setSettingsFile(String settingsFile) {
-		this.settingsFile = settingsFile;
-	}
+    public void setSettingsFile(String settingsFile) {
+        this.settingsFile = settingsFile;
+    }
 
-	public String jarPackaging;
-	public String invalidFullPathToFile;
-	public String settingsFile;
+    public String jarPackaging;
+    public String invalidFullPathToFile;
+    public String settingsFile;
 
 }

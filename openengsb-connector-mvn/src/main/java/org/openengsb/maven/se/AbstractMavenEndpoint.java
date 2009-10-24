@@ -59,25 +59,28 @@ public class AbstractMavenEndpoint extends ProviderEndpoint {
     protected boolean settingsDefinied;
 
     /**
-     * Executes the given Maven goals in the given directory. 
+     * Executes the given Maven goals in the given directory.
      * 
      * @param file Directory in which the pom.xml is expected
-     * @param goals Goals to execute for the pom.xml in the directory specified by parameter 'file'
+     * @param goals Goals to execute for the pom.xml in the directory specified
+     *        by parameter 'file'
      * @return Result of the Maven goal execution.
      * @throws MavenException
      */
     protected MavenResult execute(String file, List<String> goals) throws MavenException {
-    	return execute(file, goals, new Properties());
+        return execute(file, goals, new Properties());
     }
-    
+
     /**
-     * Executes the given Maven goals in the given directory. 
+     * Executes the given Maven goals in the given directory.
      * 
      * @param file Directory in which the pom.xml is expected
-     * @param goals Goals to execute for the pom.xml in the directory specified by parameter 'file'
+     * @param goals Goals to execute for the pom.xml in the directory specified
+     *        by parameter 'file'
      * @return Result of the Maven goal execution.
      * @throws MavenException
      */
+    @SuppressWarnings("unchecked")
     protected MavenResult execute(String file, List<String> goals, Properties properties) throws MavenException {
         MavenResult mavenResult = new MavenResult();
 
@@ -106,7 +109,8 @@ public class AbstractMavenEndpoint extends ProviderEndpoint {
         }
 
         // further set up call
-        request = new DefaultMavenExecutionRequest().setBaseDirectory(baseDirectory).setGoals(goals).setProperties(properties);
+        request = new DefaultMavenExecutionRequest().setBaseDirectory(baseDirectory).setGoals(goals).setProperties(
+                properties);
 
         request.setPom(new File(this.projectConfiguration.getBaseDirectory(), "/pom.xml"));
 
