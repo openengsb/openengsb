@@ -21,7 +21,8 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
   <!-- Service Configurations available by the svn module. -->
-  <svn:checkout service="repo:SourceControlManagmentService" endpoint="checkout" configuration="#workingCopy" />
+  <svn:checkout service="repo:checkout" endpoint="checkoutPlain" configuration="#workingCopy" />
+  <svn:checkoutOrUpdate configuration="#workingCopy" endpoint="checkout" service="repo:SourceControlManagmentService" />
   <svn:add service="repo:addService" endpoint="add" configuration="#workingCopy" />
   <svn:delete service="repo:deleteService" endpoint="delete" configuration="#workingCopy" />
   <svn:commit service="repo:commitService" endpoint="commit" configuration="#workingCopy" />
