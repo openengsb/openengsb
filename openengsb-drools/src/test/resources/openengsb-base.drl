@@ -1,0 +1,34 @@
+package org.openengsb.drools
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import org.apache.servicemix.drools.model.Exchange;
+import org.openengsb.drools.model.Event
+
+global org.apache.servicemix.drools.model.JbiHelper jbi;
+global org.openengsb.drools.XmlHelper xml;
+
+rule "Parse"
+	when
+		e : Exchange()
+	then
+		Event event = xml.parseEvent(e.getIn().getContent());
+		insert(event);
+		//insert(new Event("greet"));
+end
+	
+rule "Test"
+	when
+		e: Event(name == "test", handled == false)
+	then
+		System.out.println("test");
+		e.setHandled(true);
+end
+
+rule "Cleanup"
+	when
+		e: Event()
+	then
+		e.setHandled(true);
+end
