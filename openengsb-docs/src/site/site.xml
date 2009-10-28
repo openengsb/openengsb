@@ -33,10 +33,14 @@
     <src>images/tu.png</src>
   </bannerRight>
 
-  <version position="right" />
   <poweredBy />
 
   <body>
+    <links>
+      <item name="Source" href="http://www.github.com/openengsb/openengsb" />
+      <item name="Issues" href="http://issues.openengsb.org/mantis"/>
+      <item name="Build" href="http://build.openengsb.org/hudson"/>
+    </links>
 
     <menu name="OpenEngSB">
       <item href="index.html" name="Wellcome" />
@@ -62,22 +66,17 @@
       <item collapse="true" href="connector/repository/repository.html" name="Repository-Connectors">
         <item href="connector/repository/mvn.html" name="Mvn" />
         <item href="connector/repository/staging.html" name="Staging" />
-      </item>
+      </item>   
     </menu>
 
     <menu name="Community">
       <item href="mail-lists.html" name="Mailing Lists" />
-      <item href="issue-tracking.html" name="Issue Tracking" />
-      <item href="source-repository.html" name="Source Repository" />
-      <item href="integration.html" name="Continous Integration" />
-      <item collapse="true" name="Contribute" href="roadmap.html">
-        <item href="roadmap.html" name="Roadmap" />
-        <item href="contribute/git.html" name="Github" />
-        <item href="contribute/codingstyle.html" name="Coding Guidelines" />
-        <item href="contribute/format.html" name="APT Format" />
-        <item href="contribute/eclipse.html" name="Eclipse Setup" />
-        <item href="contribute/proposals.html" name="Proposals" />
-      </item>
+      <item href="roadmap.html" name="Roadmap" />
+      <item href="contribute/git.html" name="Github" />
+      <item href="contribute/codingstyle.html" name="Coding Guidelines" />
+      <item href="contribute/format.html" name="APT Format" />
+      <item href="contribute/eclipse.html" name="Eclipse Setup" />
+      <item href="contribute/proposals.html" name="Proposals" />
       <item collapse="true" name="Proposals" href="proposals/edbInterface.html">
         <item href="proposals/edbInterface.html" name="EDB" />
         <item href="proposals/scmDomain.html" name="SCM Domain" />
