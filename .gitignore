@@ -25,6 +25,7 @@
 #================
 *activemq-data
 engsb-edb-core/dump
+openengsb-embedded/derby.log
 
 #================
 #Mac OS X hidden files/folders

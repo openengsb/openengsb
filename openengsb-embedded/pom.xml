@@ -370,7 +370,7 @@
                 <artifactItem>
                   <groupId>org.apache.ode</groupId>
                   <artifactId>ode-jbi</artifactId>
-                  <version>1.3.4-SNAPSHOT</version>
+                  <version>1.3.4.preview1</version>
                   <type>zip</type>
                 </artifactItem>
 
@@ -417,7 +417,14 @@
                   <version>${project.version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
+                </artifactItem>>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-all</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
                 </artifactItem>
+
 
                 <!-- ServiceMix installers -->
 
