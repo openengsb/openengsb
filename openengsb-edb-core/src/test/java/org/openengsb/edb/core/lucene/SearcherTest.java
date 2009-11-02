@@ -136,6 +136,7 @@ public class SearcherTest extends ATestStub {
     }
 
     @Test
+	@Ignore
     public void testSearchExactMatch() {
         this.term = SearcherTest.KEY1 + ":" + SearcherTest.PREFIX;
         this.result = this.searcher.search(this.term);
