@@ -332,6 +332,7 @@
   </dependencies>
 
   <build>
+    <finalName>openengsb</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
