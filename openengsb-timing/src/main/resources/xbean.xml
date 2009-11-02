@@ -29,7 +29,7 @@
       </quartz:jobDetail>
     </quartz:jobDetail>
     <quartz:triggers>
-      <quartz:simple repeatCount="5" repeatInterval="5000" />
+      <quartz:simple repeatCount="5" repeatInterval="180000" />
     </quartz:triggers>
     <quartz:marshaler>
       <bean class="org.openengsb.timing.SimpleTextMarshaler" />
