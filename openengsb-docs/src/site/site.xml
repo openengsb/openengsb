@@ -43,7 +43,7 @@
     </links>
 
     <menu name="OpenEngSB">
-      <item href="index.html" name="Wellcome" />
+      <item href="index.html" name="Welcome" />
       <item href="about.html" name="What is OpenEngSB?" />
       <item href="http://github.com/openengsb/openengsb/downloads" name="Download"/>
     </menu>
