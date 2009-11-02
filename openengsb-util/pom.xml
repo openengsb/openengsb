@@ -37,6 +37,17 @@
 
   <dependencies>
 
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
+
+    <!-- JibX Dependencies -->
+    <dependency>
+      <groupId>org.jibx</groupId>
+      <artifactId>jibx-run</artifactId>
+    </dependency>
+
     <!-- Logging Dependencies -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -73,5 +84,58 @@
     </dependency>
 
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-test-classes</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <echo>Running Jibx Ant task</echo>
+
+                <path id="jibx.classpath">
+                  <path refid="maven.test.classpath"/>
+                  <path refid="maven.plugin.classpath"/>
+                </path>
+
+                <property name="compile_classpath" refid="maven.compile.classpath"/>
+                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
+                <property name="test_classpath" refid="maven.test.classpath"/>
+                <property name="plugin_classpath" refid="maven.plugin.classpath"/>
+                <property name="jibx_classpath" refid="jibx.classpath"/>
+
+                <taskdef classname="org.jibx.binding.ant.CompileTask" name="jibxbind">
+                  <classpath refid="maven.plugin.classpath"/>
+                </taskdef>
+                <jibxbind verbose="false" binding="${basedir}/src/test/config/binding.xml">
+                  <classpath refid="jibx.classpath"/>
+                </jibxbind>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.jibx</groupId>
+            <artifactId>jibx-bind</artifactId>
+            <version>${jibx.version}</version>
+            <scope>test</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.jibx</groupId>
+            <artifactId>jibx-run</artifactId>
+            <version>${jibx.version}</version>
+            <scope>test</scope>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
