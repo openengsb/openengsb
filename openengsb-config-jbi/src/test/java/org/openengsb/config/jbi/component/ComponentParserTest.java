@@ -23,42 +23,27 @@ import static org.junit.Assert.assertThat;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.config.jbi.ParseException;
 import org.xml.sax.InputSource;
 
 public class ComponentParserTest {
-    private final DocumentBuilderFactory dbf;
-    private final DocumentBuilder db;
     private ComponentParser parser;
-
-    public ComponentParserTest() throws ParserConfigurationException {
-        dbf = DocumentBuilderFactory.newInstance();
-        db = dbf.newDocumentBuilder();
-    }
 
     @Before
     public void setup() {
-        parser = new ComponentParser();
-    }
-
-    private static InputSource getFile(String name) {
-        return new InputSource(ClassLoader.getSystemResourceAsStream(name));
+        this.parser = new ComponentParser();
     }
 
     @Test(expected = ParseException.class)
     public void parseJbi_nonComponentDescriptor_shouldThrowException() throws Exception {
-        parser.parseJbi(new InputSource(new StringReader("<jbi><services binding-component=\"false\"/></jbi>")));
+        this.parser.parseJbi(new InputSource(new StringReader("<jbi><services binding-component=\"false\"/></jbi>")));
     }
 
     @Test
     public void parseJbi_validDescriptorWithAttributes_shouldReadAttributesCorrect() throws Exception {
-        ComponentDescriptor desc = parser.parseJbi(getFile("descriptors/simple.xml"));
+        ComponentDescriptor desc = this.parser.parseJbi(getFile("descriptors/simple.xml"));
         assertThat(desc.getName(), is("thename"));
         assertThat(desc.getType(), is(ComponentDescriptor.Type.BINDING_COMPONENT));
         assertThat(desc.getDescription(), is("thedesc"));
@@ -66,20 +51,21 @@ public class ComponentParserTest {
 
     @Test
     public void parseSchema_minimumSchema_shouldReadTargetNamespaceCorrect() throws Exception {
-        ComponentDescriptor desc = parser.parseSchema(getFile("descriptors/simple.xsd"));
+        ComponentDescriptor desc = this.parser.parseSchema(getFile("descriptors/simple.xsd"));
         assertThat(desc.getTargetNamespace(), is("http://openengsb.org/simple"));
     }
 
     @Test
     public void parseSchema_minimumSchema_shouldReadEndpointNameCorrect() throws Exception {
-        ComponentDescriptor desc = parser.parseSchema(getFile("descriptors/simple.xsd"));
+        ComponentDescriptor desc = this.parser.parseSchema(getFile("descriptors/simple.xsd"));
         assertThat(desc.getEndpoints().size(), is(1));
         assertThat(desc.getEndpoints().get(0).getName(), is("theEndpoint"));
     }
 
     @Test
     public void parseSchema_minimumSchema_shouldReadAttributesCorrect() throws Exception {
-        ArrayList<AttributeDescriptor> attrs = parser.parseSchema(getFile("descriptors/simple.xsd")).getEndpoints()
+        ArrayList<AttributeDescriptor> attrs = this.parser.parseSchema(getFile("descriptors/simple.xsd"))
+                .getEndpoints()
                 .get(0).getAttributes();
         assertThat(attrs.size(), is(3));
         assertThat(attrs.get(0).getName(), is("a"));
@@ -88,5 +74,9 @@ public class ComponentParserTest {
         assertThat(attrs.get(1).getType(), is(AttributeDescriptor.Type.BOOLEAN));
         assertThat(attrs.get(2).getName(), is("c"));
         assertThat(attrs.get(2).getType(), is(AttributeDescriptor.Type.QNAME));
+    }
+
+    private InputSource getFile(String name) {
+        return new InputSource(ClassLoader.getSystemResourceAsStream(name));
     }
 }

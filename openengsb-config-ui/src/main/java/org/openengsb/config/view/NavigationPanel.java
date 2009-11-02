@@ -41,8 +41,8 @@ public class NavigationPanel extends Panel {
                 item.setModel(new CompoundPropertyModel<ComponentDescriptor>(item.getModelObject()));
                 final PageParameters params = new PageParameters();
                 params.put("component", item.getModelObject().getName());
-                item.add(new BookmarkablePageLink("componentLink", ComponentInfoPage.class, params).add(new Label(
-                        "name")));
+                item.add(new BookmarkablePageLink<ComponentInfoPage>("componentLink", ComponentInfoPage.class, params)
+                        .add(new Label("name")));
             }
         });
     }
