@@ -164,6 +164,9 @@
     <module>openengsb-link-http-processor-se</module>
     <module>openengsb-link-http-processor</module>
     <module>openengsb-link-http-jms</module>
+
+    <module>openengsb-connector-issues-trac</module>
+    <module>openengsb-domain-issues-common</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -654,6 +657,13 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domain-scm-common</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
+      <!-- Issue Domain -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domain-issues-common</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
