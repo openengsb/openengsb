@@ -33,7 +33,7 @@
       </list>
     </property>
     <property name="baseDirectory">
-      <value>projectOutput</value>
+      <value>file:data/openengsb/projectOutput/</value>
     </property>
   </bean>
 
