@@ -13,10 +13,10 @@
 ~~   See the License for the specific language governing permissions and
 ~~   limitations under the License.
 ~~
-OpenEngSB Coding Guidelines
+
+Java Coding Style
 
 * Sun Coding Guidelines
-~~~~~~~~~~~~~~~~~~~~~~~
 
   The openEngSB Coding Guidelines are based upon the
  {{{http://java.sun.com/docs/codeconv/html/CodeConvTOC.doc.html}Code
@@ -24,45 +24,37 @@ OpenEngSB Coding Guidelines
  deviations for this project.
 
 ** 4.1 Line length
-~~~~~~~~~~~~~~~~~~
 
   A line length of 80 was standard 10 years ago, but with increasing screen
- size and resolution a length of 120 is more reasonable.
+size and resolution a length of 120 is more reasonable.
 
 ** 4.2 Wrapping
-~~~~~~~~~~~~~~~
 
   Use the autoformatter of your IDE. Import the
   {{{http://dev.openengsb.org/resources/eclipse/formatter.xml}Eclipse Formatter file}}.
 
 ** 6.1 Number of declarations per line
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Only one declaration per line is allowed.
 
 ** 6.3 Declaration placement
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Declare variables where they are needed. It's easier to read and restricts the
  scope of variables.  Don't overshadow variables.
 
 ** 8.1 Blank lines
-~~~~~~~~~~~~~~~~~~
 
   The body of a method should not start with a blank line.
 
 * General
-~~~~~~~~~
 
 ** File Format
-~~~~~~~~~~~~~~
 
   Every Java file has to be UTF-8 encoded and has to use UNIX line endings.
  Indentations consist of four spaces, tabstops are not allowed.
 
 
 ** Header
-~~~~~~~~~
 
   Every source file has to start with this header:
 
@@ -87,12 +79,10 @@ OpenEngSB Coding Guidelines
 +----------------------------------------------------------------------------+
 
 ** Duplication
-~~~~~~~~~~~~~~
 
   Code duplication has to be avoided at all costs.
 
 ** Use guards
-~~~~~~~~~~~~~
 
   Guards are a possibility to reduce the amount of nesting.  Heavily nested
  code is much harder to read.
@@ -134,30 +124,25 @@ OpenEngSB Coding Guidelines
 +----------------------------------+
 
 ** Keep methods short
-~~~~~~~~~~~~~~~~~~~~~
 
   Methods longer than 40 lines are candidates for refactoring. A method should only
  do one thing and has to be easily understandable. The number of arguments should be
  minimized.  A method should only be at a single level of abstraction.
 
 ** Use enums
-~~~~~~~~~~~~
 
   Prefer typesafe enumerations over integer constants.
 
 ** Avoid use of static members
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Static members are a sign of a design error because they are like global variables.
   It's fine if you declare a constant as final abstract of course.
 
 ** Use fully qualified imports
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Don't import org.example.package.*, instead import the needed classes.
-
+  
 ** Never declare implementation types
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Use interfaces or the abstract base class instead of concrete implementation
  classes where possible.  Don't write:
@@ -175,18 +160,21 @@ OpenEngSB Coding Guidelines
  This is especially important in method signatures.
 
 ** SerialVersionUID
-~~~~~~~~~~~~~~~~~~~
 
   Don't declare serialVersionUID just because your IDE tells you. Have a good reason
- why you need it.  This can cause bugs that are hard to detect. 
+ why you need it.  This can cause bugs that are hard to detect.
+ 
+** Restrict scope of suppressed warnings
+
+  If you have to suppress a warning make sure you give it the smallest possible scope.
+This means you should never annotate a whole class with @SuppressWarnings. A method may
+be acceptable but you should try to annotate the problematic statements instead.
 
 ** Use String.format()
-~~~~~~~~~~~~~~~~~~~~~~
 
   Use String.format() instead of long concatenation chains which are hard to read.
  
 ** Array declaration style
-~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   Always use
 
@@ -201,23 +189,19 @@ OpenEngSB Coding Guidelines
 +---------------------------+
 
 ** Comments
-~~~~~~~~~~~
 
   Don't make funny comments, be professional. All comments have to be in English.
  Comment what methods do, not how they do it. Do not comment what is already stated
  in code.
 
 * Naming
-~~~~~~~~
 
 ** Interfaces
-~~~~~~~~~~~~~
 
   Interfaces are not marked by starting their names with <I>.  This exposes
  more information than necessary and is not Java-like.
 
 ** Don't abbreviate
-~~~~~~~~~~~~~~~~~~~
 
   Do not use abbreviations if it's not a project wide standard. Long method names
  are preferable to inconsistency.  With automatic code completion this isn't a problem
@@ -225,7 +209,6 @@ OpenEngSB Coding Guidelines
 
 
 * No clutter
-~~~~~~~~~~~~
 
  * Exception/Log Messages have to be concise. Don't end messages with "...".
 
@@ -256,7 +239,6 @@ OpenEngSB Coding Guidelines
    Simply delete it, it's still present in the SCM history.
 
 * Exception Handling
-~~~~~~~~~~~~~~~~~~~~
 
  * Don't log and throw. Either a exception should be logged or thrown to be processed
    at a more appropriate place.
@@ -272,15 +254,40 @@ OpenEngSB Coding Guidelines
  * Write meaningful exception message.
 
 * Tests
-~~~~~~~
 
  * Make use of JUnit 4 features, e.g. @Expected.
 
  * Tests should not output anything. They have to be automatically verified.
 
+ * Don't catch exceptions just to fail manually. Declare the method to throw the exception.
+
+ * Install a shutdown hook for test data files. This assures that they will be deleted and the
+   project remains in a clean state.
+
+XML Formatting
+
+* File Format
+
+  Every XML file has to be UTF-8 encoded and has to use UNIX line endings.
+Indentations consist of <<two>> spaces, tabstops are not allowed. The line length
+shouldn't exceed 120 characters.
+
+* Indent DTD properly
+
+  There should be a new line for every namespace:
+
++------------------------------------------------------------------------------------------------------------------+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:build="urn:openengsb:build" 
+  xmlns:mvn="http://openengsb.org/connector/mvn/1.0"
+  xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+    http://servicemix.apache.org/bean/1.0 http://servicemix.apache.org/schema/servicemix-bean-3.2.3.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
++------------------------------------------------------------------------------------------------------------------+
+
+
 
 * Recommended Readings
-~~~~~~~~~~~~~~~~~~~~~~
 
  * Clean Code, Robert C. Martin, 2008
 
