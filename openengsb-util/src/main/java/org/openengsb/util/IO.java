@@ -18,6 +18,7 @@
 package org.openengsb.util;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -199,7 +200,21 @@ public class IO {
     }
 
     /**
-     * Recursive method delting a file with the entire sub structure beyond the
+     * Close quietly
+     */
+    public static void closeQuietly(Closeable closeable) {
+        if (closeable == null) {
+            return;
+        }
+
+        try {
+            closeable.close();
+        } catch (IOException e) {
+        }
+    }
+
+    /**
+     * Recursive method deleting a file with the entire sub structure beyond the
      * file.
      */
     public static boolean deleteStructure(final File path) {
