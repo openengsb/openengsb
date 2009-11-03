@@ -18,13 +18,16 @@ Setup Eclipse for the EngSB
   The following page describes how to setup the actual code as an eclipse project
  with two different focuses. One directly on the core development team and how
  to setup eclipse to work on the core and run the modules with reference to the
- core code. The second focus is on connector projects wich run eclipse only for
- their code (the actual conntector) and use maven artifacts to reference the core.
+ core code. The second focus is on connector projects which run eclipse only for
+ their code (the actual connector) and use maven artifacts to reference the core.
+ 
+ Please check the {{{codingstyle.html}Coding Style}} and set up your IDE
+ accordingly.
  
 * Core Team
 
   For the core team everything is setup already correctly. Simply checkout
- <http://85.126.79.3/svn/engsb/engsb/trunk/>, create a new eclispe workspace
+ <http://85.126.79.3/svn/engsb/engsb/trunk/>, create a new eclipse workspace
  directly in this root folder (where the root pom could be found) and close eclipse.
  Afterwards point with a console to the same directory and run the following commands:
  
@@ -64,7 +67,7 @@ Setup Eclipse for the EngSB
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>true</downloadJavadocs>
 					<workspace>${basedir}</workspace>
-					<workspaceCodeStylesURL>http://85.126.79.3/dev/eclipse/engsb-formatter.xml</workspaceCodeStylesURL>
+					<workspaceCodeStylesURL>http://dev.openengsb.org/resources/eclipse/formatter.xml</workspaceCodeStylesURL>
 				</configuration>
 			</plugin>
 			...

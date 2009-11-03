@@ -285,7 +285,11 @@ shouldn't exceed 120 characters.
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 +------------------------------------------------------------------------------------------------------------------+
 
+* Eclipse Settings
 
+ If you use Eclipse please choose these settings for your OpenEngSB workspace:
+
+[../images/codingstyle/eclipse-xml-settings.png] Eclipse XML Settings
 
 * Recommended Readings
 
