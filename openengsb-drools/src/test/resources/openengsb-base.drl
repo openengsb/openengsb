@@ -7,6 +7,7 @@ import org.apache.servicemix.drools.model.Exchange;
 import org.openengsb.drools.model.Event
 
 global org.apache.servicemix.drools.model.JbiHelper jbi;
+global org.openengsb.drools.MessageHelper helper;
 global org.openengsb.drools.XmlHelper xml;
 
 rule "Parse"
@@ -24,6 +25,7 @@ rule "Test"
 	then
 		System.out.println("test");
 		e.setHandled(true);
+		helper.triggerAction("fault", "blabla-errro");
 end
 
 rule "Cleanup"
