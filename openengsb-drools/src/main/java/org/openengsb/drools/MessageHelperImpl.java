@@ -16,7 +16,13 @@ public class MessageHelperImpl implements MessageHelper {
 	}
 
 	@Override
+	public boolean triggerAction(String name, String arg) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 	public boolean triggerAction(String name, Object... args) {
+	
 		System.out.println("triggering action " + name);
 		Class<?>[] types = new Class<?>[args.length];
 		for (int i = 0; i < args.length; i++) {

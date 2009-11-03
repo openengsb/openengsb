@@ -2,6 +2,7 @@ package org.openengsb.drools;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 import org.apache.servicemix.drools.model.JbiHelper;
 import org.openengsb.drools.model.Action;

@@ -47,6 +47,7 @@ import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.common.util.MessageUtil;
 import org.apache.servicemix.drools.model.Exchange;
+import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
@@ -62,6 +63,7 @@ import org.springframework.core.io.Resource;
 public class DroolsEndpoint extends ProviderEndpoint {
 
 	private RuleBase ruleBase;
+	private KnowledgeBase kb;
 	private Resource ruleBaseResource;
 	private URL ruleBaseURL;
 	private NamespaceContext namespaceContext;

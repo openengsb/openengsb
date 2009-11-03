@@ -16,16 +16,21 @@
  */
 package org.apache.servicemix.drools;
 
+import java.util.Collection;
 import java.util.Map;
 
 import javax.jbi.messaging.MessageExchange;
 
 import org.apache.servicemix.drools.model.JbiHelper;
+import org.drools.KnowledgeBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.DefaultAgendaEventListener;
-import org.openengsb.drools.MessageHelperImpl;
+import org.drools.runtime.ObjectFilter;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.openengsb.drools.ActionHandler;
+import org.openengsb.drools.model.Action;
 
 /**
  * Represents the execution context of the Drools rules for a single
@@ -35,6 +40,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
 	private final StatefulSession memory;
 	private final JbiHelper helper;
+	private final ActionHandler actionHandler;
 	private int rulesFired;
 	private MessageExchange exchange;
 
@@ -53,16 +59,18 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 	public DroolsExecutionContext(DroolsEndpoint endpoint,
 			MessageExchange exchange) {
 		super();
+		
 		this.memory = endpoint.getRuleBase().newStatefulSession();
 		this.memory.addEventListener(this);
 		this.exchange = exchange;
 		this.helper = new JbiHelper(endpoint, exchange, memory);
+		actionHandler = new ActionHandler(helper);
 		populateWorkingMemory(endpoint);
 	}
 
 	private void populateWorkingMemory(DroolsEndpoint endpoint) {
 		// memory.setGlobal(JBI_HELPER_KEY, helper);
-		memory.setGlobal(HELPER_KEY, new MessageHelperImpl(helper));
+		// memory.setGlobal(HELPER_KEY, new MessageHelperImpl(helper));
 		if (endpoint.getAssertedObjects() != null) {
 			for (Object o : endpoint.getAssertedObjects()) {
 				memory.insert(o);
@@ -75,11 +83,24 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 		}
 	}
 
+	public void performActions() {
+		Collection<Object> actions = memory.getObjects(new ObjectFilter() {
+			@Override
+			public boolean accept(Object object) {
+				return (object instanceof Action);
+			}
+		});
+		for (Object o : actions) {
+			actionHandler.handleAction((Action) o);
+		}
+	}
+
 	/**
 	 * Start the execution context. This will fire all rules in the rule base.
 	 */
 	public void start() {
 		memory.fireAllRules();
+		performActions();
 	}
 
 	/**
@@ -87,6 +108,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 	 */
 	public void update() {
 		helper.update();
+		performActions();
 	}
 
 	/**
