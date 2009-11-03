@@ -2,8 +2,10 @@ package org.openengsb.drools;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 
 import org.apache.servicemix.drools.model.JbiHelper;
+import org.openengsb.drools.model.Action;
 
 @SuppressWarnings("serial")
 public class MessageHelperImpl implements MessageHelper {
@@ -16,13 +18,17 @@ public class MessageHelperImpl implements MessageHelper {
 	}
 
 	@Override
-	public boolean triggerAction(String name, String arg) {
+	public boolean triggerAction(String name, Action arg) {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
+	public boolean triggerAction(String name, Collection<Object> arg) {
+		return triggerAction(name, arg.toArray());
+	}
+
 	public boolean triggerAction(String name, Object... args) {
-	
+
 		System.out.println("triggering action " + name);
 		Class<?>[] types = new Class<?>[args.length];
 		for (int i = 0; i < args.length; i++) {

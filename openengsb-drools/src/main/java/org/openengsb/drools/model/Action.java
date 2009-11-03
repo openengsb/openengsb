@@ -1,10 +1,15 @@
 package org.openengsb.drools.model;
 
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
+public class Action implements Serializable {
 
-public class Action {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7015379310266603386L;
 
 	@SuppressWarnings("unchecked")
 	public Action(String name, Object... args) {
