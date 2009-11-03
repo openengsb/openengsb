@@ -43,7 +43,7 @@
     <servicemix-shared-version>2009.01</servicemix-shared-version>
 		<servicemix-specs-version>1.3.0</servicemix-specs-version>
 		
-    <drools-version>4.0.7</drools-version>
+    <drools-version>5.0.1</drools-version>
 
     <servicemix.osgi.import>
       org.apache.servicemix.common,
