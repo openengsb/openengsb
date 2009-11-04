@@ -15,7 +15,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -92,12 +94,9 @@
   <version>1.0.0-SNAPSHOT</version>
   <name>openengsb-trunk</name>
 
-  <description>
-    Parent project of all OpenEngSB subprojects. The OpenEngSB could be seen
-    as an extension to an Enterprise Service Bus and is based on JBI (Service Mix).
-    With this project it is tried to provide as many as possible SE domains and
-    to allow to combine the tools as easily as possible.
-  </description>
+  <description> Parent project of all OpenEngSB subprojects. The OpenEngSB could be seen as an extension to an
+    Enterprise Service Bus and is based on JBI (Service Mix). With this project it is tried to provide as many as
+    possible SE domains and to allow to combine the tools as easily as possible. </description>
 
   <url>http://openengsb.org</url>
 
@@ -113,16 +112,16 @@
     <module>openengsb-routing</module>
     <module>openengsb-logging</module>
     <module>openengsb-util</module>
-    
+
     <!-- Rules -->
     <module>openengsb-drools-domains</module>
     <module>openengsb-drools-se</module>
     <module>openengsb-drools</module>
-    
+
     <!-- Engineering Knowledge Base -->
     <module>openengsb-ekb-core</module>
     <module>openengsb-ekb</module>
-    
+
     <!-- Enterprise Data Base -->
     <module>openengsb-edb-core</module>
     <module>openengsb-edb-se</module>
@@ -145,7 +144,7 @@
     <module>openengsb-connector-mvn-test</module>
     <module>openengsb-connector-mvn-deploy</module>
     <module>openengsb-connector-svn-impl</module>
-    
+
     <!-- Packaging Modules -->
     <module>openengsb-package-all</module>
     <module>openengsb-package-essential</module>
@@ -436,7 +435,7 @@
             <!-- notice and license -->
             <exclude>NOTICE</exclude>
             <exclude>LICENSE</exclude>
-            
+
             <!-- drl-rules -->
             <exclude>**/**.drl</exclude>
 
@@ -451,11 +450,14 @@
 
             <!-- Test Data -->
             <exclude>openengsb-util/src/test/resources/serialization/valid.xml</exclude>
-	    <exclude>openengsb-package-all/quickdeploy.sh</exclude>
+            <exclude>openengsb-package-all/quickdeploy.sh</exclude>
             <exclude>openengsb-package-all/quickdeploy.sh</exclude>
 
             <!-- OpenEngSB Embedded -->
             <exclude>openengsb-embedded/data/*</exclude>
+
+            <!-- Serialization Test Data -->
+            <exclude>**/src/test/resources/serialization/valid.xml</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -606,7 +608,7 @@
         <artifactId>openengsb-drools</artifactId>
         <version>${pom.version}</version>
       </dependency>
-      
+
       <!-- Engineering Knowledge Base -->
       <dependency>
         <groupId>org.openengsb</groupId>
@@ -618,7 +620,7 @@
         <artifactId>openengsb-ekb</artifactId>
         <version>${pom.version}</version>
       </dependency>
-    
+
       <!-- Enterprise Data Base -->
       <dependency>
         <groupId>org.openengsb</groupId>
@@ -647,7 +649,7 @@
         <artifactId>openengsb-workflow</artifactId>
         <version>${pom.version}</version>
       </dependency>
-    
+
       <!-- SCM Domain -->
       <dependency>
         <groupId>org.openengsb</groupId>
@@ -735,7 +737,7 @@
         <artifactId>openengsb-connector-svn-impl</artifactId>
         <version>${pom.version}</version>
       </dependency>
-    
+
       <!-- Packaging Modules -->
       <dependency>
         <groupId>org.openengsb</groupId>
@@ -753,7 +755,7 @@
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-config-ui</artifactId>
         <version>${pom.version}</version>
-		<type>war</type>
+        <type>war</type>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
@@ -993,7 +995,7 @@
         <artifactId>xmlrpc-client</artifactId>
         <version>${xmlrpc.version}</version>
       </dependency>
-      
+
       <!-- XPath, Dom, ... -->
       <dependency>
         <groupId>dom4j</groupId>
@@ -1026,7 +1028,7 @@
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons.io.version}</version>
-      </dependency> 
+      </dependency>
       <dependency>
         <groupId>org.jibx</groupId>
         <artifactId>jibx-run</artifactId>
@@ -1064,15 +1066,26 @@
 
   <repositories>
     <repository>
-        <id>thirdparty</id>
-        <name>OpenEngSB 3rd Party Repository</name>
-        <url>http://maven.openengsb.org/nexus/content/repositories/thirdparty/</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-        <snapshots>
-            <enabled>true</enabled>
-        </snapshots>
+      <id>thirdparty</id>
+      <name>OpenEngSB 3rd Party Repository</name>
+      <url>http://maven.openengsb.org/nexus/content/repositories/thirdparty/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>jibx.sf.net</id>
+      <name>JiBX repository</name>
+      <url>http://jibx.sf.net/maven2</url>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
   </repositories>
 

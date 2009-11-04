@@ -16,7 +16,9 @@
    limitations under the License.
 
 -->
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>openengsb-parent</artifactId>
     <groupId>org.openengsb</groupId>
@@ -26,8 +28,7 @@
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-connector-issues-trac</artifactId>
   <packaging>jbi-component</packaging>
-  <name>Trac Connector</name>
-  <version>1.0-SNAPSHOT</version>
+  <name>openengsb-connector-issues-trac</name>
   <url>http://www.myorganization.org</url>
   <build>
     <plugins>
@@ -112,13 +113,7 @@
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    
+
     <!-- internal scm-common Dependency -->
     <dependency>
       <groupId>org.openengsb</groupId>
