@@ -1,0 +1,12 @@
+#created on: Nov 4, 2009
+package org.openengsb
+
+rule "eventhandler"
+	
+	when
+		e : Event( name == "checkout" )
+	then 
+		#actions
+		
+end
+

@@ -16,21 +16,20 @@
  */
 package org.apache.servicemix.drools;
 
+import java.io.IOException;
 import java.util.Collection;
-import java.util.Map;
 
 import javax.jbi.messaging.MessageExchange;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
-import org.apache.servicemix.drools.model.JbiHelper;
-import org.drools.KnowledgeBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
+import org.drools.definition.rule.Rule;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.DefaultAgendaEventListener;
-import org.drools.runtime.ObjectFilter;
-import org.drools.runtime.StatefulKnowledgeSession;
-import org.openengsb.drools.ActionHandler;
-import org.openengsb.drools.model.Action;
+import org.openengsb.drools.MessageHelperImpl;
+import org.xml.sax.SAXException;
 
 /**
  * Represents the execution context of the Drools rules for a single
@@ -39,10 +38,9 @@ import org.openengsb.drools.model.Action;
 public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
 	private final StatefulSession memory;
-	private final JbiHelper helper;
-	private final ActionHandler actionHandler;
+//	private final JbiHelper helper;
 	private int rulesFired;
-	private MessageExchange exchange;
+	//private MessageExchange exchange;
 
 	public static final String JBI_HELPER_KEY = "jbi";
 	public static final String HELPER_KEY = "helper";
@@ -54,61 +52,43 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 	 * it to keep track of things.
 	 * 
 	 * @param endpoint
-	 * @param exchange
 	 */
 	public DroolsExecutionContext(DroolsEndpoint endpoint,
-			MessageExchange exchange) {
-		super();
-		
+			Collection<Object> objects) {
 		this.memory = endpoint.getRuleBase().newStatefulSession();
 		this.memory.addEventListener(this);
-		this.exchange = exchange;
-		this.helper = new JbiHelper(endpoint, exchange, memory);
-		actionHandler = new ActionHandler(helper);
-		populateWorkingMemory(endpoint);
+//		this.helper = new JbiHelper(endpoint, memory);
+
+		populateWorkingMemory(objects);
 	}
 
-	private void populateWorkingMemory(DroolsEndpoint endpoint) {
+	private void populateWorkingMemory(Collection<Object> objects) {
 		// memory.setGlobal(JBI_HELPER_KEY, helper);
-		// memory.setGlobal(HELPER_KEY, new MessageHelperImpl(helper));
-		if (endpoint.getAssertedObjects() != null) {
-			for (Object o : endpoint.getAssertedObjects()) {
+		memory.setGlobal(HELPER_KEY, new MessageHelperImpl());
+		if (objects != null) {
+			System.out.println("inserting objects");
+			for (Object o : objects) {
+				System.out.println("insert");
 				memory.insert(o);
 			}
 		}
-		if (endpoint.getGlobals() != null) {
-			for (Map.Entry<String, Object> e : endpoint.getGlobals().entrySet()) {
-				memory.setGlobal(e.getKey(), e.getValue());
-			}
-		}
-	}
-
-	public void performActions() {
-		Collection<Object> actions = memory.getObjects(new ObjectFilter() {
-			@Override
-			public boolean accept(Object object) {
-				return (object instanceof Action);
-			}
-		});
-		for (Object o : actions) {
-			actionHandler.handleAction((Action) o);
-		}
+		// if (endpoint.getGlobals() != null) {
+		// for (Map.Entry<String, Object> e : endpoint.getGlobals().entrySet())
+		// {
+		// memory.setGlobal(e.getKey(), e.getValue());
+		// }
+		// }
 	}
 
 	/**
 	 * Start the execution context. This will fire all rules in the rule base.
 	 */
 	public void start() {
+		System.out.println("firing all rules");
+		Rule[] rules = memory.getRuleBase().getPackages()[0].getRules();
+		System.out.println(rules[0].getName());
 		memory.fireAllRules();
-		performActions();
-	}
-
-	/**
-	 * Update the working memory, potentially triggering additional rules
-	 */
-	public void update() {
-		helper.update();
-		performActions();
+		System.out.println("all rules fired - " + getRulesFired());
 	}
 
 	/**
@@ -127,21 +107,6 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 		return rulesFired;
 	}
 
-	/**
-	 * Returns <code>true</code> if the {@link MessageExchange} was handled by
-	 * the rules themselves (e.g. by answering or faulting the exchange}
-	 */
-	public boolean isExchangeHandled() {
-		return helper.isExchangeHandled();
-	}
-
-	/**
-	 * Return the {@link MessageExchange} we are evaluating rules on
-	 */
-	public MessageExchange getExchange() {
-		return exchange;
-	}
-
 	// event handler callbacks
 	@Override
 	public void activationCreated(ActivationCreatedEvent event,
@@ -149,10 +114,4 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 		rulesFired++;
 	}
 
-	/**
-	 * Access the JbiHelper object that is being exposed to the .drl file
-	 */
-	public JbiHelper getHelper() {
-		return helper;
-	}
 }

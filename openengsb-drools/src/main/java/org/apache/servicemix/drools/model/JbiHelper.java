@@ -55,7 +55,7 @@ public class JbiHelper {
         this.endpoint = endpoint;
         this.exchange = new Exchange(exchange, endpoint.getNamespaceContext());
         this.memory = memory;
-        this.exchangeFactHandle = this.memory.insert(this.exchange);
+        // this.exchangeFactHandle = this.memory.insert(this.exchange);
     }
 
     public DroolsEndpoint getEndpoint() {
@@ -125,23 +125,6 @@ public class JbiHelper {
         newMe.setProperty(JbiConstants.CORRELATION_ID, DroolsEndpoint.getCorrelationId(this.exchange.getInternalExchange()));
         newMe.setProperty(DroolsComponent.DROOLS_CORRELATION_ID, me.getExchangeId());
         getChannel().send(newMe);
-    }
-
-    /**
-     * @see #routeToDefault(Source)
-     */
-    public void routeToDefault(String content) throws MessagingException {
-        routeTo(content, endpoint.getDefaultRouteURI());
-    }
-
-    /**
-     * Send this content to the default routing URI ({@link DroolsEndpoint#getDefaultRouteURI()} specified on the endpoint
-     * 
-     * @param content the message body
-     * @throws MessagingException
-     */
-    public void routeToDefault(Source content) throws MessagingException {
-        routeTo(content, endpoint.getDefaultRouteURI());
     }
 
     /**

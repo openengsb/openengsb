@@ -1,12 +1,12 @@
 package org.openengsb.drools;
 
+import java.util.Collection;
 import java.util.Properties;
 
 import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
 import org.junit.Test;
-import org.openengsb.drools.model.Action;
 import org.openengsb.drools.model.Event;
 
 public class GuvnorInterface {
@@ -23,11 +23,12 @@ public class GuvnorInterface {
 		WorkingMemory workingMemory = ruleBase.newStatefulSession();
 		workingMemory.setGlobal("helper", new MessageHelper() {
 			@Override
-			public boolean triggerAction(String name, Action arg2) {
+			public boolean call(String name, Collection<Object> arg2) {
 				System.out.println("triggered action: " + name);
-				//System.out.println("arg was " + arg2);
+				System.out.println("arg was " + arg2);
 				return true;
 			}
+			
 		});
 		Event e = new Event("hello");
 		workingMemory.insert(e);

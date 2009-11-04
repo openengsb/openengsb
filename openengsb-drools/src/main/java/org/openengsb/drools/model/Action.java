@@ -11,7 +11,6 @@ public class Action implements Serializable {
 	 */
 	private static final long serialVersionUID = 7015379310266603386L;
 
-	@SuppressWarnings("unchecked")
 	public Action(String name, Object... args) {
 		super();
 		this.name = name;

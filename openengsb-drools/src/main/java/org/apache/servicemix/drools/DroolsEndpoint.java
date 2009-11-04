@@ -16,11 +16,11 @@
  */
 package org.apache.servicemix.drools;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,12 +47,14 @@ import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.common.util.MessageUtil;
 import org.apache.servicemix.drools.model.Exchange;
-import org.drools.KnowledgeBase;
 import org.drools.RuleBase;
-import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.RuleBaseLoader;
+import org.openengsb.drools.XmlHelper;
+import org.openengsb.drools.model.Event;
 import org.springframework.core.io.Resource;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * 
@@ -63,7 +65,6 @@ import org.springframework.core.io.Resource;
 public class DroolsEndpoint extends ProviderEndpoint {
 
 	private RuleBase ruleBase;
-	private KnowledgeBase kb;
 	private Resource ruleBaseResource;
 	private URL ruleBaseURL;
 	private NamespaceContext namespaceContext;
@@ -80,7 +81,7 @@ public class DroolsEndpoint extends ProviderEndpoint {
 			if (context != null) {
 				// stop the execution context -- updating and disposing of any
 				// working memory
-				context.update();
+				// context.update();
 				context.stop();
 			}
 			return context;
@@ -174,29 +175,6 @@ public class DroolsEndpoint extends ProviderEndpoint {
 		this.globals = variables;
 	}
 
-	/**
-	 * Will this endpoint automatically reply to any exchanges not handled by
-	 * the Drools rulebase?
-	 * 
-	 * @return <code>true</code> if the endpoint replies to any unanswered
-	 *         exchanges
-	 */
-	public boolean isAutoReply() {
-		return autoReply;
-	}
-
-	/**
-	 * Set auto-reply to <code>true</code> to ensure that every exchange is
-	 * being replied to. This way, you can avoid having to end every Drools rule
-	 * with jbi.answer()
-	 * 
-	 * @param autoReply
-	 *            <code>true</code> for auto-replying on incoming exchanges
-	 */
-	public void setAutoReply(boolean autoReply) {
-		this.autoReply = autoReply;
-	}
-
 	public void validate() throws DeploymentException {
 		super.validate();
 		if (ruleBase == null && ruleBaseResource == null && ruleBaseURL == null) {
@@ -242,41 +220,41 @@ public class DroolsEndpoint extends ProviderEndpoint {
 		if (exchange.getRole() == Role.PROVIDER) {
 			handleProviderExchange(exchange);
 		} else {
-			handleConsumerExchange(exchange);
+//			handleConsumerExchange(exchange);
 		}
 	}
 
-	/*
-	 * Handle a consumer exchange
-	 */
-	private void handleConsumerExchange(MessageExchange exchange)
-			throws MessagingException {
-		String correlation = (String) exchange
-				.getProperty(DroolsComponent.DROOLS_CORRELATION_ID);
-		DroolsExecutionContext drools = pending.get(correlation);
-		if (drools != null) {
-			MessageExchange original = drools.getExchange();
-			if (exchange.getStatus() == ExchangeStatus.DONE) {
-				done(original);
-			} else if (exchange.getStatus() == ExchangeStatus.ERROR) {
-				fail(original, exchange.getError());
-			} else {
-				if (exchange.getFault() != null) {
-					MessageUtil.transferFaultToFault(exchange, original);
-				} else {
-					MessageUtil.transferOutToOut(exchange, original);
-				}
-				// TODO: remove this sendSync() and replace by a send()
-				// TODO: there is a need to store the exchange and send the DONE
-				// TODO: when the original comes back
-				sendSync(original);
-				done(exchange);
-			}
-		} else {
-			logger.debug("No pending exchange found for " + correlation
-					+ ", no additional rules will be triggered");
-		}
-	}
+//	/*
+//	 * Handle a consumer exchange
+//	 */
+//	private void handleConsumerExchange(MessageExchange exchange)
+//			throws MessagingException {
+//		String correlation = (String) exchange
+//				.getProperty(DroolsComponent.DROOLS_CORRELATION_ID);
+//		DroolsExecutionContext drools = pending.get(correlation);
+//		if (drools != null) {
+//			// MessageExchange original = drools.getExchange();
+//			// if (exchange.getStatus() == ExchangeStatus.DONE) {
+//			// done(original);
+//			// } else if (exchange.getStatus() == ExchangeStatus.ERROR) {
+//			// fail(original, exchange.getError());
+//			// } else {
+//			// if (exchange.getFault() != null) {
+//			// MessageUtil.transferFaultToFault(exchange, original);
+//			// } else {
+//			// MessageUtil.transferOutToOut(exchange, original);
+//			// }
+//			// // TODO: remove this sendSync() and replace by a send()
+//			// // TODO: there is a need to store the exchange and send the DONE
+//			// // TODO: when the original comes back
+//			// sendSync(original);
+//			// done(exchange);
+//			// }
+//		} else {
+//			logger.debug("No pending exchange found for " + correlation
+//					+ ", no additional rules will be triggered");
+//		}
+//	}
 
 	private void handleProviderExchange(MessageExchange exchange)
 			throws Exception {
@@ -298,103 +276,19 @@ public class DroolsEndpoint extends ProviderEndpoint {
 	}
 
 	protected void drools(MessageExchange exchange) throws Exception {
-		DroolsExecutionContext drools = startDroolsExecutionContext(exchange);
-		if (drools.getRulesFired() < 1) {
-			if (getDefaultTargetService() == null) {
-				fail(
-						exchange,
-						new Exception(
-								"No rules have handled the exchange. Check your rule base."));
-			} else {
-				drools.getHelper().route(getDefaultRouteURI());
-			}
-		} else {
-			// the exchange has been answered or faulted by the drools endpoint
-			if (drools.isExchangeHandled() && exchange instanceof InOnly) {
-				// only removing InOnly
-				pending.remove(exchange.getExchangeId());
-			}
-			if (!drools.isExchangeHandled() && autoReply) {
-				reply(exchange, drools);
-			}
-		}
-	}
-
-	private void reply(MessageExchange exchange, DroolsExecutionContext drools)
-			throws Exception {
-		Fault fault = exchange.getFault();
-		if (fault != null) {
-			drools.getHelper().fault(fault.getContent());
-		} else if (isOutCapable(exchange)) {
-			NormalizedMessage message = exchange
-					.getMessage(Exchange.OUT_MESSAGE);
-			if (message == null) {
-				// send back the 'in' message if no 'out' message is available
-				message = exchange.getMessage(Exchange.IN_MESSAGE);
-			}
-			drools.getHelper().answer(message.getContent());
-		} else if (exchange instanceof InOnly) {
-			// just send back the done
-			done(exchange);
-		}
-	}
-
-	private boolean isOutCapable(MessageExchange exchange) {
-		return exchange instanceof InOptionalOut || exchange instanceof InOut;
+		Event e = XmlHelper.parseEvent(exchange.getMessage("in"));
+		@SuppressWarnings("unchecked")
+		Collection<Object> objects = Arrays.asList(new Object[] { e });
+		startDroolsExecutionContext(objects);
 	}
 
 	private DroolsExecutionContext startDroolsExecutionContext(
-			MessageExchange exchange) {
+			Collection<Object> objects) {
 		DroolsExecutionContext drools = new DroolsExecutionContext(this,
-				exchange);
-		pending.put(exchange.getExchangeId(), drools);
+				objects);
+		// pending.put(exchange.getExchangeId(), drools);
 		drools.start();
 		return drools;
-	}
-
-	public QName getDefaultTargetService() {
-		return defaultTargetService;
-	}
-
-	public void setDefaultTargetService(QName defaultTargetService) {
-		this.defaultTargetService = defaultTargetService;
-	}
-
-	public String getDefaultTargetURI() {
-		return defaultTargetURI;
-	}
-
-	public void setDefaultTargetURI(String defaultTargetURI) {
-		this.defaultTargetURI = defaultTargetURI;
-	}
-
-	public List<Object> getAssertedObjects() {
-		return assertedObjects;
-	}
-
-	public void setAssertedObjects(List<Object> assertedObjects) {
-		this.assertedObjects = assertedObjects;
-	}
-
-	public void addDrlRule(Reader reader) throws Exception {
-		PackageBuilder pb = new PackageBuilder();
-		pb.addPackageFromDrl(reader);
-		if (!pb.hasErrors()) {
-			ruleBase.addPackage(pb.getPackage());
-		}
-	}
-
-	public String getDefaultRouteURI() {
-		if (defaultTargetURI != null) {
-			return defaultTargetURI;
-		} else if (defaultTargetService != null) {
-			String nsURI = defaultTargetService.getNamespaceURI();
-			String sep = (nsURI.indexOf("/") > 0) ? "/" : ":";
-			return "service:" + nsURI + sep
-					+ defaultTargetService.getLocalPart();
-		} else {
-			return null;
-		}
 	}
 
 	@Override

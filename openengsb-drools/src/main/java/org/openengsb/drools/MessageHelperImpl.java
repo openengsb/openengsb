@@ -1,6 +1,5 @@
 package org.openengsb.drools;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
@@ -13,22 +12,24 @@ public class MessageHelperImpl implements MessageHelper {
 	JbiHelper jbihelper;
 	Class<? extends JbiHelper> jbihelperclass = JbiHelper.class;
 
-	public MessageHelperImpl(JbiHelper jbihelper) {
-		this.jbihelper = jbihelper;
-	}
+//	public MessageHelperImpl(JbiHelper jbihelper) {
+//		this.jbihelper = jbihelper;
+//	}
 
-	@Override
+	//TODO add override again to respective method
 	public boolean triggerAction(String name, Action arg) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public boolean triggerAction(String name, Collection<Object> arg) {
+	public boolean call(String name, Collection<Object> arg) {
 		return triggerAction(name, arg.toArray());
 	}
 
 	public boolean triggerAction(String name, Object... args) {
-
+		
+		// Collection<Object> bla = Arrays.asList(new Object[]{"","asd", });
+		
 		System.out.println("triggering action " + name);
 		Class<?>[] types = new Class<?>[args.length];
 		for (int i = 0; i < args.length; i++) {
@@ -44,22 +45,22 @@ public class MessageHelperImpl implements MessageHelper {
 			e.printStackTrace();
 			return false;
 		}
-		try {
-			m.invoke(jbihelper, args);
-			System.out.println("action triggered");
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
+//		try {
+//			m.invoke(jbihelper, args);
+//			System.out.println("action triggered");
+//		} catch (IllegalArgumentException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return false;
+//		} catch (IllegalAccessException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return false;
+//		} catch (InvocationTargetException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return false;
+//		}
 		return true;
 
 	}

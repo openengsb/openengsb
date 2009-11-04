@@ -2,12 +2,12 @@ package org.openengsb.drools.model;
 
 public class Event {
 	private String name;
-	private boolean handled;
+	private String contextId;
+	private String toolDomainId;
 
 	public Event(String name) {
 		super();
 		this.name = name;
-		this.handled = false;
 	}
 
 	public String getName() {
@@ -18,12 +18,20 @@ public class Event {
 		this.name = name;
 	}
 
-	public boolean isHandled() {
-		return handled;
+	public String getContextId() {
+		return contextId;
 	}
 
-	public void setHandled(boolean handled) {
-		this.handled = handled;
+	public void setContextId(String contextId) {
+		this.contextId = contextId;
+	}
+
+	public String getToolDomainId() {
+		return toolDomainId;
+	}
+
+	public void setToolDomainId(String toolDomainId) {
+		this.toolDomainId = toolDomainId;
 	}
 
 }
