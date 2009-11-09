@@ -4,8 +4,7 @@ public class ContextStore {
 	private Context rootContext = new Context();
 
 	public Context getContext(String path) {
-		path = normalizePath(path);
-		return new Context(resolve(path));
+		return new Context(resolve(new ContextPath(path)));
 	}
 
 	public Context getContext(String path, int depth) {
@@ -31,13 +30,13 @@ public class ContextStore {
 	}
 
 	public void setValue(String path, String value) {
-		path = normalizePath(path);
-		String[] splitPath = splitPath(path);
-		Context ctx = resolveAndCreate(splitPath[0]);
+		String[] splitPath = splitPath(new ContextPath(path));
+		Context ctx = resolveAndCreate(new ContextPath(splitPath[0]));
 		ctx.set(splitPath[1], value);
 	}
 
-	private String[] splitPath(String path) {
+	private String[] splitPath(ContextPath contextPath) {
+		String path = contextPath.getPath();
 		String[] s = new String[2];
 		int index = path.lastIndexOf('/');
 
@@ -52,41 +51,23 @@ public class ContextStore {
 		return s;
 	}
 
-	private Context resolveAndCreate(String path) {
+	private Context resolveAndCreate(ContextPath path) {
 		return resolve(path, true);
 	}
 
-	private Context resolve(String path) {
+	private Context resolve(ContextPath path) {
 		return resolve(path, false);
 	}
 
-	private String normalizePath(String path) {
-		path = path.replaceAll("/+", "/");
-
-		if (path.length() > 0 && path.charAt(0) == '/') {
-			path = path.substring(1);
-		}
-
-		if (path.length() > 0 && path.charAt(path.length() - 1) == '/') {
-			path = path.substring(0, path.length() - 1);
-		}
-
-		return path;
-	}
-
-	private Context resolve(String path, boolean create) {
-		if (path.isEmpty()) {
+	private Context resolve(ContextPath path, boolean create) {
+		if (path.isRoot()) {
 			return rootContext;
 		}
-
-		String[] split = path.split("/", -1);
 
 		Context ctx = rootContext;
 		Context last;
 
-		for (int i = 0; i < split.length; i++) {
-			String pathElement = split[i];
-
+		for (String pathElement : path.getElements()) {
 			last = ctx;
 			ctx = ctx.getChild(pathElement);
 

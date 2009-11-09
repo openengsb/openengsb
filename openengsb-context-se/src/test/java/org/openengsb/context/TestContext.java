@@ -94,4 +94,11 @@ public class TestContext {
 
 		assertEquals("42", ctx3.getChild("foo").getChild("bar").get("buz"));
 	}
+
+	@Test
+	public void testChildPathResolution() {
+		store.setValue("/foo/bar/buz", "42");
+		Context ctx = store.getContext("/");
+		assertEquals("42", ctx.getChild("foo/bar").get("buz"));
+	}
 }

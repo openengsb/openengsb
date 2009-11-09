@@ -35,7 +35,18 @@ public class Context {
 	}
 
 	public Context getChild(String name) {
-		return children.get(name);
+		ContextPath contextPath = new ContextPath(name);
+		Context ctx = this;
+
+		for (String child : contextPath.getElements()) {
+			ctx = ctx.children.get(child);
+
+			if (ctx == null) {
+				return null;
+			}
+		}
+
+		return ctx;
 	}
 
 	public Set<String> getChildrenNames() {
@@ -43,6 +54,9 @@ public class Context {
 	}
 
 	public void createChild(String name) {
+		if (name.contains("/")) {
+			throw new IllegalArgumentException("Name must not contain '/'");
+		}
 		children.put(name, new Context());
 	}
 
