@@ -149,6 +149,9 @@
     <module>openengsb-config-jbi</module>
     <module>openengsb-config-ui</module>
     <module>openengsb-embedded</module>
+
+    <!-- Context -->
+    <module>openengsb-context-se</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
