@@ -101,4 +101,15 @@ public class TestContext {
 		Context ctx = store.getContext("/");
 		assertEquals("42", ctx.getChild("foo/bar").get("buz"));
 	}
+
+	@Test
+	public void testParentLookup() {
+		store.setValue("x", "1");
+		store.setValue("y", "42");
+		store.setValue("foo/bar/x", "10");
+
+		Context ctx = store.getContext("foo/bar");
+		assertEquals("42", ctx.get("y"));
+		assertEquals("10", ctx.get("x"));
+	}
 }

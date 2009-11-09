@@ -11,11 +11,14 @@ public class Context {
 
 	private Map<String, Context> children = new HashMap<String, Context>();
 
+	private Context parent;
+
 	public Context() {
 	}
 
 	/* copy constructor */
 	public Context(Context ctx) {
+		parent = ctx.parent;
 		values = new HashMap<String, String>(ctx.values);
 
 		for (Entry<String, Context> e : ctx.children.entrySet()) {
@@ -31,7 +34,13 @@ public class Context {
 	}
 
 	public String get(String key) {
-		return values.get(key);
+		String value = values.get(key);
+
+		if (value == null && parent != null) {
+			return parent.get(key);
+		}
+
+		return value;
 	}
 
 	public Context getChild(String name) {
@@ -57,7 +66,9 @@ public class Context {
 		if (name.contains("/")) {
 			throw new IllegalArgumentException("Name must not contain '/'");
 		}
-		children.put(name, new Context());
+		Context child = new Context();
+		child.parent = this;
+		children.put(name, child);
 	}
 
 	@Override
@@ -66,6 +77,11 @@ public class Context {
 	}
 
 	public void removeChild(String child) {
+		Context childContext = children.get(child);
+		if (childContext == null) {
+			return;
+		}
+		childContext.parent = null;
 		children.remove(child);
 	}
 }
