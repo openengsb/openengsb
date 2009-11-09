@@ -18,27 +18,18 @@
 -->
 <book xmlns:xi="http://www.w3.org/2001/XInclude">
   <bookinfo>
-    <title>Open Engineering Service Bus User Documentation</title>
+    <title>Open Engineering Service Bus Architectural Documentation</title>
 
-    <releaseinfo>OpenEngSB</releaseinfo>
+    <releaseinfo>OpenEngSB Architectural Documentation</releaseinfo>
 
     <authorgroup>
       <author>
         <firstname>Andreas</firstname>
         <surname>Pieber</surname>
-        <affiliation>anpi@gmx.at</affiliation>
-      </author>
-      <author>
-        <firstname>Christoph</firstname>
-        <surname>Zehetner</surname>
-        <affiliation>christoph.zehetner@gmx.at</affiliation>
+        <affiliation>andreas.pieber@ifs.tuwien.ac.at</affiliation>
       </author>
     </authorgroup>
   </bookinfo>
 
-  <xi:include href="reference/introduction.xml" />
-  <xi:include href="reference/architecture.xml" />
-  <xi:include href="reference/connectors.xml" />
-  <xi:include href="reference/howToWriteAToolConnectors.xml" />
-  <xi:include href="reference/scmDomain.xml"/>
+  <xi:include href="architecture/introduction.xml" />
 </book>

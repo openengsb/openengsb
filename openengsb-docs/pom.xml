@@ -131,7 +131,8 @@
                         <include name="**/*.jpg" />
                       </fileset>
                     </copy>
-                    <move failonerror="false" file="target/site/reference/pdf/index.pdf" tofile="target/site/reference/pdf/engsb-reference.pdf" />
+                    <move failonerror="false" file="target/site/reference/pdf/usermanual.pdf" tofile="target/site/reference/pdf/usermanual.pdf" />
+                    <move failonerror="false" file="target/site/reference/pdf/architecture.pdf" tofile="target/site/reference/pdf/architecture.pdf" />
                   </postProcess>
                 </configuration>
                 <phase>compile</phase>
@@ -172,7 +173,7 @@
               </dependency>
             </dependencies>
             <configuration>
-              <includes>index.xml</includes>
+              <includes>*.xml</includes>
               <htmlStylesheet>css/html.css</htmlStylesheet>
               <xincludeSupported>true</xincludeSupported>
               <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>

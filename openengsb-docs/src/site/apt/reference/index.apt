@@ -13,10 +13,15 @@
 ~~   See the License for the specific language governing permissions and
 ~~   limitations under the License.
 ~~
-Reference Documentation 
+User Documentation 
 
-    * {{{./html/index.html} Multi-HTML page documentation}}
+    * {{{html/index.html} Multi-HTML page documentation}}
     
-    * {{{./html-single/index.html} Singe HTML page documentation}}
+    * {{{html-single/index.html} Singe HTML page documentation}}
     
-    * {{{./pdf/engsb-reference.pdf} PDF documentation}}
+    * {{{pdf/usermanual.pdf} PDF documentation}}
+
+Architectural Documentation
+
+	* {{{pdf/architecture.pdf} PDF documentation}}
+    
