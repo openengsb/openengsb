@@ -255,7 +255,7 @@ be acceptable but you should try to annotate the problematic statements instead.
 
 * Tests
 
- * Make use of JUnit 4 features, e.g. @Expected.
+ * Make use of JUnit 4 features, e.g. @Test(expected = SomeException.class)
 
  * Tests should not output anything. They have to be automatically verified.
 
