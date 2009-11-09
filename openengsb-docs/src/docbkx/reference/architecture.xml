@@ -20,7 +20,8 @@
   <title>Architecture of the EngSB</title>
 
   <para>
-    TBW
+    Since this manual is the user manual only a very basic overview over the architecture should be given. For more
+    detailed overview use the own architectural manual also provided at openengsb.org.
   </para>
 
   <section id="architecture.base">
