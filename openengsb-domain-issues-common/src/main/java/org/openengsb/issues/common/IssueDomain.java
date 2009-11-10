@@ -18,6 +18,7 @@
 
 package org.openengsb.issues.common;
 
+import org.openengsb.issues.common.exceptions.IssueDomainException;
 import org.openengsb.issues.common.model.Issue;
 
 /**
@@ -35,6 +36,6 @@ public interface IssueDomain {
      * @param priority Issue priority
      * @return Id of created issue
      */
-    String createIssue(Issue issue);
+    String createIssue(Issue issue) throws IssueDomainException;
 
 }

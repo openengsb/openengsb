@@ -32,6 +32,7 @@ import org.apache.camel.converter.jaxp.StringSource;
 import org.apache.log4j.Logger;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.openengsb.issues.common.IssueDomain;
+import org.openengsb.issues.common.exceptions.IssueDomainException;
 import org.openengsb.issues.common.messages.CreateIssueMessage;
 import org.openengsb.issues.common.messages.CreateIssueResponseMessage;
 import org.openengsb.issues.common.messages.CreateIssueStatus;
@@ -81,6 +82,10 @@ public abstract class AbstractCreateIssueEndpoint extends ProviderEndpoint {
             responseMessage.setStatusMessage("Issue created successfully.");
         } catch (SerializationException e) {
             log.error("Error deserializing incoming message.", e);
+            responseMessage.setStatus(CreateIssueStatus.ERROR);
+            responseMessage.setStatusMessage(e.getMessage());
+        } catch (IssueDomainException e) {
+            log.error("Error creating issue.", e);
             responseMessage.setStatus(CreateIssueStatus.ERROR);
             responseMessage.setStatusMessage(e.getMessage());
         } finally {

@@ -24,15 +24,20 @@ import static org.hamcrest.Matchers.equalTo;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import javax.annotation.Resource;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.RobustInOnly;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.servicemix.client.DefaultServiceMixClient;
@@ -45,6 +50,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.issues.common.endpoints.AbstractCreateIssueEndpoint;
+import org.openengsb.issues.common.exceptions.IssueDomainException;
 import org.openengsb.issues.common.messages.CreateIssueMessage;
 import org.openengsb.issues.common.messages.CreateIssueResponseMessage;
 import org.openengsb.issues.common.messages.CreateIssueStatus;
@@ -74,6 +80,8 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
     private String type = "Test Type";
     private String priority = "Test Priority";
     private String createdIssueId = "Test Issue ID 1";
+
+    private String exceptionMessage = "Error creating ticket.";
 
     private IssueDomain mockedIssueDomain;
 
@@ -128,21 +136,13 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
 
     /* setup */
 
-    /**
-     * Called before each test. Performs basic JUnit setup Don't get confused by
-     * the name, this is actually JUnit 4 ;)
-     */
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        mockedIssueDomain = mock(IssueDomain.class);
+        mockedIssueDomain = (IssueDomain) context.getBean("mockedIssueDomain");
         serializer = new JibxXmlSerializer();
     }
 
-    /**
-     * Called after each test. Don't get confused by the name, this is actually
-     * JUnit 4
-     */
     @After
     @Override
     public void tearDown() throws Exception {
@@ -174,21 +174,34 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
         }
     }
 
+    /**
+     * Transforms a NormalizedMessage to its String representation.
+     * 
+     * @param msg Message to be transformed to a String
+     * @return String representation of the given NormalizedMessage
+     * @throws TransformerConfigurationException
+     * @throws TransformerFactoryConfigurationError
+     * @throws TransformerException
+     */
+    private String transformMessageToString(NormalizedMessage msg) throws TransformerConfigurationException,
+            TransformerFactoryConfigurationError, TransformerException {
+        Transformer messageTransformer = TransformerFactory.newInstance().newTransformer();
+        StringWriter stringWriter = new StringWriter();
+        messageTransformer.transform(msg.getContent(), new StreamResult(stringWriter));
+        return stringWriter.toString();
+    }
+
     @Test
     public void validInputShouldReturnValidResponse() throws Exception {
         DefaultServiceMixClient client = createClient();
 
         Issue issueToCreate = new Issue(summary, description, reporter, owner, type, priority);
-        // Issue issueToCreate2 = new Issue(summary, description, reporter,
-        // owner, type, priority);
 
         CreateIssueMessage inMsg = new CreateIssueMessage(issueToCreate);
 
         StringWriter requestWriter = new StringWriter();
         serializer.serialize(inMsg, requestWriter);
         InOut inOut = createInOutMessage(client, this.TEST_SERVICE_NAME, requestWriter.toString());
-
-        mockedIssueDomain = getIssueDomainFromClient();
 
         when(mockedIssueDomain.createIssue(any(Issue.class))).thenReturn(createdIssueId);
 
@@ -198,22 +211,56 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
 
         validateReturnMessageSuccess(inOut);
 
-        // transform message to string
-        Transformer messageTransformer = TransformerFactory.newInstance().newTransformer();
-        StringWriter stringWriter = new StringWriter();
-        messageTransformer.transform(inOut.getOutMessage().getContent(), new StreamResult(stringWriter));
-
-        StringReader sr = new StringReader(stringWriter.toString());
-        CreateIssueResponseMessage outMsg = serializer.deserialize(CreateIssueResponseMessage.class, sr);
+        CreateIssueResponseMessage outMsg = serializer.deserialize(CreateIssueResponseMessage.class, new StringReader(
+                transformMessageToString(inOut.getOutMessage())));
 
         assertEquals(CreateIssueStatus.SUCCESS, outMsg.getStatus());
         assertEquals("Issue created successfully.", outMsg.getStatusMessage());
         assertEquals(createdIssueId, outMsg.getCreatedIssueId());
     }
 
-    private IssueDomain getIssueDomainFromClient() {
-        return ((TestCreateIssueEndpoint) ((TestIssueComponent) this.jbi.getActivationSpecs()[0].getComponent())
-                .getEndpoints()[0]).getIssueDomain();
+    @Test
+    public void errorInIssueDomainShouldReturnErrorResponse() throws Exception {
+        DefaultServiceMixClient client = createClient();
+
+        Issue issueToCreate = new Issue(summary, description, reporter, owner, type, priority);
+
+        CreateIssueMessage inMsg = new CreateIssueMessage(issueToCreate);
+
+        StringWriter requestWriter = new StringWriter();
+        serializer.serialize(inMsg, requestWriter);
+        InOut inOut = createInOutMessage(client, this.TEST_SERVICE_NAME, requestWriter.toString());
+
+        when(mockedIssueDomain.createIssue(any(Issue.class))).thenThrow(new IssueDomainException(exceptionMessage));
+
+        client.sendSync(inOut);
+
+        validateReturnMessageSuccess(inOut);
+
+        CreateIssueResponseMessage outMsg = serializer.deserialize(CreateIssueResponseMessage.class, new StringReader(
+                transformMessageToString(inOut.getOutMessage())));
+
+        assertEquals(CreateIssueStatus.ERROR, outMsg.getStatus());
+        assertEquals(exceptionMessage, outMsg.getStatusMessage());
+        assertNull(outMsg.getCreatedIssueId());
+    }
+
+    @Test
+    public void invalidInMessageShouldReturnErrorResponse() throws Exception {
+        DefaultServiceMixClient client = createClient();
+
+        InOut inOut = createInOutMessage(client, this.TEST_SERVICE_NAME, "<invalidInMessage />");
+
+        client.sendSync(inOut);
+
+        validateReturnMessageSuccess(inOut);
+
+        CreateIssueResponseMessage outMsg = serializer.deserialize(CreateIssueResponseMessage.class, new StringReader(
+                transformMessageToString(inOut.getOutMessage())));
+
+        assertEquals(CreateIssueStatus.ERROR, outMsg.getStatus());
+        assertEquals("Error deserializing from reader.", outMsg.getStatusMessage());
+        assertNull(outMsg.getCreatedIssueId());
     }
 
 }
