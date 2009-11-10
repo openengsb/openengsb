@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?><createissueresponsemessage xmlns="http://org.openengsb/issues/common/messages"><createdissueid>Test Issue ID 1</createdissueid><status>SUCCESS</status><statusmessage>Test Status Message</statusmessage></createissueresponsemessage>

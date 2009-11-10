@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8"?><createissuemessage xmlns="http://org.openengsb/issues/common/messages"><issue><summary>Test Summary</summary><description>Test Description</description><reporter>Test Reporter</reporter><owner>Test Owner</owner><type>Test Type</type><priority>Test Priority</priority></issue></createissuemessage>

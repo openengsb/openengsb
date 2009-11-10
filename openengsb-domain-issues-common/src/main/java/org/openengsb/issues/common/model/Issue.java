@@ -27,6 +27,9 @@ public class Issue {
     private String type;
     private String priority;
 
+    public Issue() {
+    }
+
     public Issue(String summary, String description, String reporter, String owner, String type, String priority) {
         this.summary = summary;
         this.description = description;
@@ -84,4 +87,15 @@ public class Issue {
         this.priority = priority;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Issue))
+            return false;
+
+        Issue other = (Issue) obj;
+
+        return (this.summary.equals(other.summary) && this.description.equals(other.description)
+                && this.reporter.equals(other.reporter) && this.owner.equals(other.owner)
+                && this.type.equals(other.type) && this.priority.equals(other.priority));
+    }
 }
