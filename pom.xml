@@ -426,6 +426,9 @@
             <!-- notice and license -->
             <exclude>NOTICE</exclude>
             <exclude>LICENSE</exclude>
+            
+            <!-- drl-rules -->
+            <exclude>**/**.drl</exclude>
 
             <!-- nonjava projects -->
             <exclude>openengsb-nonjava/csharp/lib/**</exclude>
