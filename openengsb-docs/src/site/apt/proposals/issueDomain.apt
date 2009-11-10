@@ -1,0 +1,590 @@
+~~
+~~	Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+  [ATTENTION:] This page is only a proposal! This means that everyone is allowed to edit this page and it is 
+  			   marked for change. This proposal could be seen as design idea and should be discussed in public
+  			   and visible for everyone before implemented at all.
+
+Issue Tracker Domain
+
+  The domain represents a interface description, how to append issue tracker on TiTA. 
+  The mapping between the interface of the specific issue tracker and TiTA is designed to 
+  add easily new fields from issue trackers. There are a lot of issue tracker on the market. 
+  The focus is on open source issue tracker. For modelling the interface 4 widespreaded issue 
+  tracker are chosen:
+  * Mantis
+  * GitHub
+  * Bugzilla
+  * Trac
+
+
+{Comparison}
+
+* Issue/Task
+
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|<<Fields/Options>>|<<Type>>|<<Short description>>|<<Mantis>>|<<GitHub>>|<<Bugzilla>>|<<Trac>>|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|id|long or int|identify the issue|+|+|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|project|String|The name of the product/project the bug is being filed against|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|component|String|The name of a component in the product above. 1) Different meanings|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|summary or title|String|A brief description of the bug being filed.|+|+|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|version|String|A version of the product above; the version the bug was found in.|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|description|String|The initial description for this bug.|+|+|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|os|String|The operating system the bug was discovered on.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|os version|String|The version of the operating system.|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|platform|String|What type of hardware the bug was experienced on.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|priority|String|What order the bug will be fixed in by the developer, compared to the developer’s other bugs.|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|severity|String|How severe the bug is.|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|alias|String|The alias of this bug. If there is no alias or aliases are disabled, this will be an empty string.|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|assigned_to / owner|String|The login name of the user to whom the bug is assigned.|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|creation_time|Date|When the bug was created.|+|+|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|dupe_of|int|The bug ID of the bug that this bug is a duplicate of. If this bug isn’t a duplicate of any bug, this will be an empty int.|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|is_open|boolean|Returns true (1) if this bug is open, false (0) if it is closed.|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|update_time|Date|When the bug was last changed.|+|+|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|status|String|The current status of the bug.|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|creation time|Date|When the bug was created.|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|resolution|String|The current resolution of the bug, or an empty string if the bug is open.|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|reporter|String|The author of the ticket.|+|+|-|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|monitor|String|The persons who monitor the issue.|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|keywords|String|Keywords that a ticket is marked with. Useful for searching and report generation.|-|-|-|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|milestone / targetversion|String|When this issue should be resolved at the latest.|+|-|-|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|cc|String|A comma-separated list of other users or E-Mail addresses to notify. Note that this does not imply responsiblity or any other policy.|-|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|fixed in version|String|The version the issue was fixed|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|type|String|The nature of the ticket (for example, defect or enhancement request) or self-defined categories|+|-|-|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|view state|String|The view state describes the point of view(public, private, any).|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|build|String|The version of the build|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|notes|List|Added notes after creation.|+|+|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|addtional information|String|These information should give more details of the issue.|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|steps to reproduce|String|If it is a bug, you can describe what you have to do to reproduce the error.|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|eta|String|no info|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|projection|String|no info|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|votes|int|You can vote to prioritise the open issue. This option is for opensource project to integrate all internal and external members|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+Comparison of issue trackers
+
+
+	1) component vs. project/product
+	The component field has different meanings accross the issue trackers.
+	Bugzilla supports a project object(more abstract), that has more components where the 
+	issues are noted. Other do not have this abstraction and the component describes the project. 
+	For example trac describe it like this: "The project module or subsystem this ticket concerns. "
+
+	Mantis, Trac(is named component but it is described differently) use project objects to add issue. 
+	Github only supports label that describes the component, the assigend person or the build. 
+	For integrating GitHub to TiTA you should define the labels to filter it and use the content of it. 
+	Bugzilla design a additional layer that has to be mapped for the TiTA interface.
+
+	2) Status vs. Resolution
+	The issue tracker have different statuses. For example, GitHub has only three, not realy typically states: Open, Unread, Closed.
+	For the interface a enum of all declared states is defined to support more than one issue tracker for the 
+	resolution, but for the mappind of the issue status only that all provide.
+
+
+* IssueNotes
+
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|<<Fields/Options>>|<<Type>>|<<Short description>>|<<Mantis>>|<<GitHub>>|<<Bugzilla>>|<<Trac>>|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|id|int|Identifies the issue note|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|reporter|String|The person who wrote the note.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|text|String|The comment itself.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|view state|String|The view state describes the point of view(public, private, any)|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|date submitted|Date|The time when the note was submitted.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|last modified|Date|The time when the note was the last time updated.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|The time when the note was the last time updated.|int|estimated work time|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+
+
+
+* Project for Issues
+
+	WebService Object for Bugzilla is unstable, but the object extists in the backend. The additional fields of Bugzilla are not listed.
+
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|<<Fields/Options>>|<<Type>>|<<Short description>>|<<Mantis>>|<<GitHub>>|<<Bugzilla>>|<<Trac>>|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|id|int|Identifies the project.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|name|String|The name of the project.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|status|String|A status that describes the whole project..|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|enabled|boolean|To lock any activities for the project.|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|view state|String|The view state describes the point of view(public, private, any)|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|access min|Object|To manage the access to the project.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|file path|String|File path to the project in the filesystem.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|description|String|The time when the note was the last time updated.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|subproject|List|Defined supbprojects for the project.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|inherit_global|boolean|no info|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+
+	Subprojects are not included in the actual releases – no support.
+	
+
+Interface
+
+* Interface for Issue/Task/Bug
+---
+public interface Issue {
+	
+	/**
+	 * Sets the id of the task to identify it.
+	 * @param id - the id identifies the task
+	 */
+	public void setId(Long id);
+	
+	/**
+	 * Supplies the identifier of the task
+	 * @return id - identifier of the task
+	 */
+	public Long getId();
+	
+	/**
+	 * Sets the summary, a short description of the task
+	 * @param summary - short description
+	 */
+	public void setSummary(String summary);
+	
+	/**
+	 * Returns the summary of the task
+	 * @return summary - short task description
+	 */
+	public String getSummary();
+	
+	/**
+	 * Sets the detailed description of the task
+	 * @param description - detailed description of the task
+	 */
+	public void setDescription(String description);
+	
+	/**
+	 * Return the detailed task description
+	 * @return description - detailed description
+	 */
+	public String getDescription();
+	
+	/**
+	 * Sets the priority of the task
+	 * @param priority - uses the enumeration values for setting
+	 * @see IssuePriority
+	 */
+	public void setPriority(IssuePriority priority);
+	
+	/**
+	 * Returns the priority of the task
+	 * @return priority - the priority of the task
+	 * @see IssuePriority
+	 */
+	public IssuePriority getPriority();
+	
+	/**
+	 * Sets the severity of the task
+	 * @param severity - uses the enumeration values for setting
+	 * @see IssueSeverity
+	 */
+	public void setSeverity(IssueSeverity severity);
+	
+	/**
+	 * Returns the severity of the task
+	 * @return severity - the severity of the task
+	 * @see IssueSeverity
+	 */
+	public IssueSeverity getSeverity();
+	
+	/**
+	 * Sets the resolution of the task
+	 * @param resolution - uses the enumeration values for setting
+	 * @see IssueResolution
+	 */
+	public void setResolution(IssueResolution resolution);
+	
+	/**
+	 * Returns the resolution of the task
+	 * @return resolution - the resolution of the task
+	 * @see IssueResolution
+	 */
+	public IssueResolution getResolution();
+	
+	/**
+	 * Sets the status of the task
+	 * @param status - uses the enumeration values for setting
+	 * @see IssueStatus
+	 */
+	public void setStatus(IssueStatus status);
+	
+	/**
+	 * Returns the status of the task
+	 * @return status - the status of the task
+	 * @see IssueStatus
+	 */
+	public IssueStatus getStatus();
+	
+	/**
+	 * Sets the creation time of the task due to the issue tracker
+	 * @param creationTime - time the task was created
+	 */
+	public void setCreationTime(Date creationTime);
+	
+	/**
+	 * Returns the creation time of the task
+	 * @return creationTime - time the task was created
+	 */
+	public Date getCreationTime();
+	
+	/**
+	 * Sets the time the last change was updated
+	 * @param lastChange - the time the last change was updated
+	 */
+	public void setLastChange(Date lastChange);
+	
+	/**
+	 * Returns the last change time
+	 * @return lastChange - the time the last change was committed
+	 */
+	public Date getLastChange();
+	
+	/**
+	 * Sets the reporter(user of the issue tracker) of the task
+	 * @param reporter - the author of the task
+	 */
+	public void setReporter(String reporter);
+	
+	/**
+	 * Returns the reporter of the task
+	 * @return reporter - author of the task
+	 */
+	public String getReporter();
+	
+	/**
+	 * Sets the owner of the task
+	 * @param owner - the person who has assigned to
+	 */
+	public void setOwner(String owner);
+	
+	/**
+	 * Return the owner of the task
+	 * @return owner - person who has assigned to
+	 */
+	public String getOwner();
+	
+	/**
+	 * Sets the project of task
+	 * @param project - the project the task is being filed against
+	 * @see IsProjectTrackable
+	 */
+	public void setProject(IsProjectTrackable project);
+	
+	/**
+	 * Returns the project the task is being filed against
+	 * @return project - the project the task is being filed against
+	 * @see IsProjectTrackable
+	 */
+	public IsProjectTrackable getProject();
+	
+	/**
+	 * Sets the comments that are added to the task
+	 * At the creation time of course null
+	 * @param comments - a list of comments, default null
+	 * @see IsCommentTrackable
+	 */
+	public void setComments(List<IsCommentTrackable> comments);
+	
+	/**
+	 * Returns a list of comments added to the task
+	 * @return comments - a list of comments
+	 * @see IsCommentTrackable
+	 */
+	public List<IsCommentTrackable> getComments();
+}
+---
+
+
+* Interface for IssueTracker Comment
+---
+public interface Comment {
+	
+	/**
+	 * Sets the id of the comment to identify it.
+	 * @param id - the id identifies the comment
+	 */
+	public void setId(Long id);
+	
+	/**
+	 * Supplies the identifier of the comment
+	 * @return id - identifier of the comment
+	 */
+	public Long getId();
+	
+	/**
+	 * Sets the reporter of the comment
+	 * @param reporter - author of the comment
+	 */
+	public void setReporter(String reporter);
+	
+	/**
+	 * Returns the reporter of the comment
+	 * @return reporter - author of the comment
+	 */
+	public String getReporter();
+	
+	/**
+	 * Sets the text of the comment
+	 * @param text - the content of the comment
+	 */
+	public void setText(String text);
+	
+	/**
+	 * Returns the text of the comment
+	 * @return text - content of the comment
+	 */
+	public String getText();
+	
+	/**
+	 * Sets the state of the view for the comment
+	 * It decides if everybody is allowed to read it.
+	 * The default value is public.
+	 * @param viewState - uses the enumeration for setting
+	 * @see ViewState
+	 */
+	public void setViewState(ViewState viewState);
+	
+	/**
+	 * Returns the view state of the comment
+	 * @return viewState - public, private or any
+	 * @see ViewState
+	 */
+	public ViewState getViewState();
+	
+	/**
+	 * Sets the creation time of the comment due to the issue tracker
+	 * @param creationTime - time the comment was created
+	 */
+	public void setCreationTime(Date creationTime);
+	
+	/**
+	 * Returns the creation time of the comment
+	 * @return creationTime - time the comment was created
+	 */
+	public Date getCreationTime();
+	
+	/**
+	 * Sets the time the last change was updated
+	 * @param lastChange - the time the last change was updated
+	 */
+	public void setLastChange(Date lastChange);
+	
+	/**
+	 * Returns the last change time
+	 * @return lastChange - the time the last change was committed
+	 */
+	public Date getLastChange();
+	
+}
+---
+
+
+
+* Interface for Issue Tracker Project
+
+---
+public interface Project {
+	
+	/**
+	 * Sets the id of the project to identify it.
+	 * @param id - the id identifies the project
+	 */
+	public void setId(Long id);
+	
+	/**
+	 * Supplies the identifier of the project
+	 * @return id - identifier of the project
+	 */
+	public Long getId();
+	
+	/**
+	 * Sets the name of the project in the form of a short
+	 * @param name - short description
+	 */
+	public void setName(String name);
+	
+	/**
+	 * Supplies the name of the project
+	 * @return name - short description of the project
+	 */
+	public String getName();
+	
+	/**
+	 * Sets the status of the project
+	 * @param projectStatus - use the enumaration values for setting
+	 * @see ProjectStatus
+	 */
+	public void setStatus(ProjectStatus projectStatus);
+	
+	/**
+	 * Supplies the topically status of the project
+	 * @return status - the topically status of the project
+	 * @see ProjectStatus
+	 */
+	public ProjectStatus getStatus();
+	
+	/**
+	 * Sets the description of the project
+	 * @param description - a detailed description of the project
+	 */
+	public void setDescription(String description);
+	
+	/**
+	 * Supplies the detailed description of the project
+	 * @return description - in detailed form
+	 */
+	public String getDescription();
+	
+	/**
+	 * Sets the URL of the project 
+	 * @param url - place on the file system(remote in most cases)
+	 */
+	public void setUrl(File url);
+	
+	/**
+	 * Supplies the URL of the project
+	 * @return url - place on the file system
+	 */
+	public File getUrl();
+	
+	/**
+	 * Sets the tasks for a project from the issue tracker
+	 * @param tasks - a list of tasks
+	 * @see IsTaskTrackable
+	 */
+	public void setTasks(List<IsTaskTrackable> tasks);
+	
+	/**
+	 * Returns the tasks of the project
+	 * @return tasks - reported tasks of the project
+	 * @see IsTaskTrackable
+	 */
+	public List<IsTaskTrackable> getTasks();
+}
+---
+
+
+* Enums
+
+---
+/**
+ * Describes the possibilities for priorities
+ */
+public enum IssuePriority {
+	IMMEDIATE, URGENT, HIGH, NORMAL, LOW, NONE
+}
+
+/**
+ * Describes the possibilities for resolution
+ */
+public enum IssueResolution {
+	OPEN, REOPENED, FIXED, INVALID, WONTFIX, 
+        DUPLICATE, WORKSFORM, UNABLETOPRODUCE, 
+        NOTFIXABLE, NOCHANGEREQUIRED, SUSPENDED
+}
+
+/**
+ * Describes the possibilities for severity
+ */
+public enum IssueSeverity {
+	BLOCK, CRASH, MAJOR, MINOR, TWEAK, TEXT, TRIVIAL, FEATURE
+}
+
+/**
+ * Describes the possibilities for issue states
+ */
+public enum IssueStatus {
+	NEW, ASSIGNED, CLOSED
+}
+
+/**
+ * Describes the possibilities for project states
+ */
+public enum ProjectStatus {
+	OPEN, ENABLED, DISABLE, CLOSED
+}
+
+/**
+ * Describes the possibilities for the view state
+ */
+public enum ViewState {
+	PUBLIC, PRIVATE, ANY
+}
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
