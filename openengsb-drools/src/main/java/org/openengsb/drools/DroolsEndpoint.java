@@ -23,20 +23,16 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
 import org.apache.servicemix.common.DefaultComponent;
-import org.apache.servicemix.common.JbiConstants;
 import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.drools.RuleBase;
@@ -45,33 +41,32 @@ import org.openengsb.drools.model.Event;
 import org.springframework.core.io.Resource;
 
 /**
- * 
  * @org.apache.xbean.XBean element="endpoint"
  */
 
 public class DroolsEndpoint extends ProviderEndpoint {
 
+    /**
+     * Pointer to the rulebase.
+     */
     private RuleBase ruleBase;
+    /**
+     * Some Resource to read the rulebase from.
+     */
     private Resource ruleBaseResource;
+    /**
+     * URL to remote guvnor-rulebase.
+     */
     private URL ruleBaseURL;
+    /**
+     * List of global variables for rules to use.
+     */
     private Map<String, Object> globals;
 
-    @SuppressWarnings("serial")
-    private ConcurrentMap<String, DroolsExecutionContext> pending = new ConcurrentHashMap<String, DroolsExecutionContext>() {
-        public DroolsExecutionContext remove(Object key) {
-            DroolsExecutionContext context = super.remove(key);
-            if (context != null) {
-                // stop the execution context -- updating and disposing of any
-                // working memory
-                // context.update();
-                context.stop();
-            }
-            return context;
-        };
-    };
-
+    /**
+     * default constructor.
+     */
     public DroolsEndpoint() {
-        super();
     }
 
     public DroolsEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
@@ -138,6 +133,7 @@ public class DroolsEndpoint extends ProviderEndpoint {
         this.globals = variables;
     }
 
+    @Override
     public void validate() throws DeploymentException {
         super.validate();
         if (ruleBase == null && ruleBaseResource == null && ruleBaseURL == null) {
@@ -145,6 +141,7 @@ public class DroolsEndpoint extends ProviderEndpoint {
         }
     }
 
+    @Override
     public void start() throws Exception {
         super.start();
         if (ruleBase == null) {
@@ -170,56 +167,32 @@ public class DroolsEndpoint extends ProviderEndpoint {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apache.servicemix.common.endpoints.ProviderEndpoint#process(
-     * javax.jbi.messaging.MessageExchange,
-     * javax.jbi.messaging.NormalizedMessage)
-     */
+    @Override
     public void process(MessageExchange exchange) throws Exception {
-        if (exchange.getRole() == Role.PROVIDER) {
-            handleProviderExchange(exchange);
-        }
-    }
-
-    private void handleProviderExchange(MessageExchange exchange) throws Exception {
-        if (exchange.getStatus() == ExchangeStatus.ACTIVE) {
+        if (exchange.getRole() == Role.PROVIDER && exchange.getStatus() == ExchangeStatus.ACTIVE) {
             drools(exchange);
-        } else {
-            // must be a DONE/ERROR so removing any pending contexts
-            pending.remove(exchange.getExchangeId());
         }
     }
 
-    public static String getCorrelationId(MessageExchange exchange) {
-        Object correlation = exchange.getProperty(JbiConstants.CORRELATION_ID);
-        if (correlation == null) {
-            return exchange.getExchangeId();
-        } else {
-            return correlation.toString();
-        }
-    }
+    // public static String getCorrelationId(MessageExchange exchange) {
+    // Object correlation = exchange.getProperty(JbiConstants.CORRELATION_ID);
+    // if (correlation == null) {
+    // return exchange.getExchangeId();
+    // } else {
+    // return correlation.toString();
+    // }
+    // }
 
-    protected void drools(MessageExchange exchange) throws Exception {
+    /**
+     * handle the MessageExchange with drools.
+     * 
+     * @param exchange exchange to handle
+     */
+    protected void drools(MessageExchange exchange) {
         Event e = XmlHelper.parseEvent(exchange.getMessage("in"));
         Collection<Object> objects = Arrays.asList(new Object[] { e });
-        startDroolsExecutionContext(objects);
-    }
-
-    private DroolsExecutionContext startDroolsExecutionContext(Collection<Object> objects) {
         DroolsExecutionContext drools = new DroolsExecutionContext(this, objects);
-        // pending.put(exchange.getExchangeId(), drools);
         drools.start();
-        return drools;
     }
 
-    @Override
-    protected void send(MessageExchange me) throws MessagingException {
-        if (me.getStatus() != ExchangeStatus.ACTIVE) {
-            // must be a DONE/ERROR so removing any pending contexts
-            pending.remove(me.getExchangeId());
-        }
-        super.send(me);
-    }
 }

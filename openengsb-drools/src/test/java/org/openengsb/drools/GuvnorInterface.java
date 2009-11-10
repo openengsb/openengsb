@@ -13,7 +13,6 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
  */
 package org.openengsb.drools;
 
@@ -26,10 +25,19 @@ import org.junit.Test;
 import org.openengsb.drools.model.Event;
 import org.openengsb.drools.model.MessageHelperImpl;
 
+/**
+ * A Testmethod that connects to a guvnor-rulebase.
+ */
 public class GuvnorInterface {
-    /* drl */
-    public static final String URL = "http://localhost:8080/drools-guvnor/org.drools.guvnor.Guvnor/package/org.openengsb/LATEST";
+    /**
+     * URL to the remote guvnor-base.
+     */
+    public static final String URL = "http://localhost:8080/drools-guvnor/"
+            + "org.drools.guvnor.Guvnor/package/org.openengsb/LATEST";
 
+    /**
+     * a simple hello-world-example using drools+guvnor.
+     */
     @Test
     public void testInit() {
         Properties config = new Properties();

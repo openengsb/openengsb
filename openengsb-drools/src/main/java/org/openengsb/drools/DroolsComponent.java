@@ -22,18 +22,22 @@ import java.util.List;
 import org.apache.servicemix.common.DefaultComponent;
 
 /**
- * 
  * @org.apache.xbean.XBean element="component"
  */
 @SuppressWarnings("unchecked")
 public class DroolsComponent extends DefaultComponent {
 
+    /**
+     * List of endpoints.
+     */
     private DroolsEndpoint[] endpoints;
 
+    @Override
     protected List getConfiguredEndpoints() {
         return asList(endpoints);
     }
 
+    @Override
     protected Class[] getEndpointClasses() {
         return new Class[] { DroolsEndpoint.class };
     }
