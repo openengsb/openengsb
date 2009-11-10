@@ -113,7 +113,11 @@
     <module>openengsb-routing</module>
     <module>openengsb-logging</module>
     <module>openengsb-util</module>
-        
+    
+    <!-- Rules -->
+    <module>openengsb-drools-common</module>
+    <module>openengsb-drools</module>
+    
     <!-- Engineering Knowledge Base -->
     <module>openengsb-ekb-core</module>
     <module>openengsb-ekb</module>
@@ -572,7 +576,19 @@
         <artifactId>openengsb-util</artifactId>
         <version>${pom.version}</version>
       </dependency>
-        
+
+      <!-- Rules -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-drools-common</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-drools</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      
       <!-- Engineering Knowledge Base -->
       <dependency>
         <groupId>org.openengsb</groupId>
