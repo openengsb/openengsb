@@ -47,15 +47,7 @@ public class HotplugDrool {
         jbi.setEmbedded(true);
         jbi.init();
         client = new DefaultServiceMixClient(jbi);
-    }
 
-    @After
-    public void tearDown() throws Exception {
-        jbi.shutDown();
-    }
-
-    @Test
-    public void testGuvnorConnect() throws Exception {
         drools = new DroolsComponent();
         DroolsEndpoint endpoint = new DroolsEndpoint(drools.getServiceUnit(), new QName("drools"), "endpoint");
         // endpoint
@@ -72,6 +64,16 @@ public class HotplugDrool {
 
         jbi.start();
 
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        jbi.shutDown();
+    }
+
+    @Test
+    public void testGuvnorConnect() throws Exception {
+
         InOnly me = client.createInOnlyExchange();
         me.setService(new QName("drools"));
         me.getInMessage().setContent(new StringSource("<event><name>hello</name></event>"));
@@ -80,7 +82,15 @@ public class HotplugDrool {
 
         // Source answer = client.receive(1000).getMessage("out").getContent();
         // System.out.println("answer" + answer);
+    }
 
+    @Test
+    public void testGuvnorAction() throws Exception {
+        InOnly me = client.createInOnlyExchange();
+        me.setService(new QName("drools"));
+        me.getInMessage().setContent(new StringSource("<event><name>checkout</name></event>"));
+        me.getInMessage().setProperty("prop", Boolean.TRUE);
+        client.sendSync(me, 1000);
     }
 
 }

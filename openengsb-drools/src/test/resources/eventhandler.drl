@@ -6,7 +6,7 @@ rule "eventhandler"
 	when
 		e : Event( name == "checkout" )
 	then 
-		#actions
+		helper.sendNotification("qm@company.com", "[Project] checkout-notification", "someone checkout the project out");
 		
 end
 

@@ -20,6 +20,7 @@ package org.openengsb.drools;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,8 +43,6 @@ import org.drools.RuleBase;
 import org.drools.compiler.RuleBaseLoader;
 import org.openengsb.drools.model.Event;
 import org.springframework.core.io.Resource;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 /**
  * 
@@ -204,7 +203,6 @@ public class DroolsEndpoint extends ProviderEndpoint {
 
     protected void drools(MessageExchange exchange) throws Exception {
         Event e = XmlHelper.parseEvent(exchange.getMessage("in"));
-        @SuppressWarnings("unchecked")
         Collection<Object> objects = Arrays.asList(new Object[] { e });
         startDroolsExecutionContext(objects);
     }
