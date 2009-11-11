@@ -92,4 +92,14 @@ public class HotplugDrool {
         client.sendSync(me, 1000);
     }
 
+    @Test
+    public void testBuildBreak() throws Exception {
+        InOnly me = client.createInOnlyExchange();
+        me.setService(new QName("drools"));
+        me.getInMessage()
+                .setContent(new StringSource("<event><name>buildbreak</name><contextId>5</contextId></event>"));
+        me.getInMessage().setProperty("prop", Boolean.TRUE);
+        client.sendSync(me, 1000);
+    }
+
 }
