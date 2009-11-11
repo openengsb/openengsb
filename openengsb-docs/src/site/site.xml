@@ -84,6 +84,8 @@
         <item href="proposals/testDomain.html" name="Test Domain" />
         <item href="proposals/deployDomain.html" name="Deploy Domain" />
         <item href="proposals/pimDomain.html" name="PIM Domain" />
+        <item href="proposals/issueDomain.html" name="Issue Domain" />
+        <item href="proposals/cmsDomain.html" name="CMS Domain" />
       </item>
     </menu>
 
