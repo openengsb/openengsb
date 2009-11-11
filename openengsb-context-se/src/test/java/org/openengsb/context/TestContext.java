@@ -22,6 +22,8 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 
+import java.util.Map;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -129,5 +131,21 @@ public class TestContext {
 		Context ctx = store.getContext("foo/bar");
 		assertEquals("42", ctx.get("y"));
 		assertEquals("10", ctx.get("x"));
+	}
+
+	@Test
+	public void testFlatten() {
+		store.setValue("a", "1");
+		store.setValue("b/c", "2");
+		store.setValue("b/d", "4");
+		store.setValue("b/x/a", "7");
+
+		Map<String, String> map = store.getContext("").flatten();
+
+		assertEquals(4, map.size());
+		assertEquals("1", map.get("a"));
+		assertEquals("2", map.get("b/c"));
+		assertEquals("4", map.get("b/d"));
+		assertEquals("7", map.get("b/x/a"));
 	}
 }

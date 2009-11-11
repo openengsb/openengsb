@@ -24,7 +24,19 @@
     <quartz:jobDetail>
       <quartz:jobDetail>
         <quartz:jobDataAsMap>
-          <quartz:property key="xml"><![CDATA[<message><payload><timer><name>Foo</name><group>Bar</group></timer></payload></message>]]></quartz:property>
+          <quartz:property key="xml"><![CDATA[
+            <message>
+              <header>
+                <messageID>5</messageID>
+                <contextID>42</contextID>
+              </header>
+              <payload>
+                <timer>
+                  <name>Foo</name>
+                  <group>Bar</group>
+                </timer>
+              </payload>
+            </message>]]></quartz:property>
         </quartz:jobDataAsMap>
       </quartz:jobDetail>
     </quartz:jobDetail>

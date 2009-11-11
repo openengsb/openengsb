@@ -102,4 +102,20 @@ public class Context {
 		childContext.parent = null;
 		children.remove(child);
 	}
+
+	public Map<String, String> flatten() {
+		Map<String, String> map = new HashMap<String, String>();
+		flatten(this, "", map);
+		return map;
+	}
+
+	private void flatten(Context ctx, String prefix, Map<String, String> map) {
+		for (Entry<String, String> e : ctx.values.entrySet()) {
+			map.put(prefix + e.getKey(), e.getValue());
+		}
+
+		for (String child : ctx.getChildrenNames()) {
+			flatten(ctx.getChild(child), prefix + child + "/", map);
+		}
+	}
 }
