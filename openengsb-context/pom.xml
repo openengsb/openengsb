@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <componentName>openengsb-context</componentName>
+    <componentName>openengsb-context-se</componentName>
   </properties>
 
   <parent>
@@ -38,5 +38,12 @@
   <description>
     Context SU
   </description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-context-se</artifactId>
+    </dependency>
+  </dependencies>
 
 </project>

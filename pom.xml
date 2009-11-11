@@ -638,6 +638,18 @@
         <version>${pom.version}</version>
       </dependency>
 
+      <!-- Context -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-context-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-context</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
       <!-- Implementation Modules -->
       <dependency>
         <groupId>org.openengsb</groupId>

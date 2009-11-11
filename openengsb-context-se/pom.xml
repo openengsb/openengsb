@@ -51,7 +51,7 @@
         <extensions>true</extensions>
         <configuration>
           <type>service-engine</type>
-          <component>org.openengsb.scm.ScmComponent</component>
+          <component>org.openengsb.context.ContextComponent</component>
         </configuration>
       </plugin>
       <plugin>
@@ -63,7 +63,7 @@
               <goal>mapping</goal>
             </goals>
             <configuration>
-              <namespace>http://openengsb.org/domain/scm/1.0</namespace>
+              <namespace>http://www.openengsb.org/domain/context/1.0</namespace>
             </configuration>
           </execution>
         </executions>

@@ -21,8 +21,8 @@ import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 
-import org.apache.camel.converter.jaxp.StringSource;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
+import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
 
 /**

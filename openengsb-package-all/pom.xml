@@ -103,6 +103,13 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-workflow</artifactId>
     </dependency>
+    
+    
+    <!-- Context -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-context</artifactId>
+    </dependency>
 
   </dependencies>
 
