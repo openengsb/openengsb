@@ -24,15 +24,19 @@ Issue Tracker Domain
   add easily new fields from issue trackers. There are a lot of issue tracker on the market. 
   The focus is on open source issue tracker. For modelling the interface 4 widespreaded issue 
   tracker are chosen:
+  
   * Mantis
+  
   * GitHub
+  
   * Bugzilla
+  
   * Trac
 
 
-{Comparison}
+* Comparison
 
-* Issue/Task
+** Issue/Task
 
 *------------------+--------+---------------------+----------+----------+------------+--------+
 |<<Fields/Options>>|<<Type>>|<<Short description>>|<<Mantis>>|<<GitHub>>|<<Bugzilla>>|<<Trac>>|
@@ -55,7 +59,7 @@ Issue Tracker Domain
 *------------------+--------+---------------------+----------+----------+------------+--------+
 |platform|String|What type of hardware the bug was experienced on.|+|-|+|-|
 *------------------+--------+---------------------+----------+----------+------------+--------+
-|priority|String|What order the bug will be fixed in by the developer, compared to the developer’s other bugs.|+|-|+|+|
+|priority|String|What order the bug will be fixed in by the developer, compared to the developers other bugs.|+|-|+|+|
 *------------------+--------+---------------------+----------+----------+------------+--------+
 |severity|String|How severe the bug is.|+|-|+|+|
 *------------------+--------+---------------------+----------+----------+------------+--------+
@@ -65,7 +69,7 @@ Issue Tracker Domain
 *------------------+--------+---------------------+----------+----------+------------+--------+
 |creation_time|Date|When the bug was created.|+|+|+|+|
 *------------------+--------+---------------------+----------+----------+------------+--------+
-|dupe_of|int|The bug ID of the bug that this bug is a duplicate of. If this bug isn’t a duplicate of any bug, this will be an empty int.|-|-|+|-|
+|dupe_of|int|The bug ID of the bug that this bug is a duplicate of. If this bug isn't a duplicate of any bug, this will be an empty int.|-|-|+|-|
 *------------------+--------+---------------------+----------+----------+------------+--------+
 |is_open|boolean|Returns true (1) if this bug is open, false (0) if it is closed.|-|-|+|-|
 *------------------+--------+---------------------+----------+----------+------------+--------+
@@ -107,8 +111,8 @@ Issue Tracker Domain
 *------------------+--------+---------------------+----------+----------+------------+--------+
 |votes|int|You can vote to prioritise the open issue. This option is for opensource project to integrate all internal and external members|-|-|+|-|
 *------------------+--------+---------------------+----------+----------+------------+--------+
-Comparison of issue trackers
 
+** Comparison of issue trackers
 
 	1) component vs. project/product
 	The component field has different meanings accross the issue trackers.
@@ -147,8 +151,6 @@ Comparison of issue trackers
 |The time when the note was the last time updated.|int|estimated work time|-|-|+|-|
 *------------------+--------+---------------------+----------+----------+------------+--------+
 
-
-
 * Project for Issues
 
 	WebService Object for Bugzilla is unstable, but the object extists in the backend. The additional fields of Bugzilla are not listed.
@@ -177,12 +179,13 @@ Comparison of issue trackers
 |inherit_global|boolean|no info|+|-|-|-|
 *------------------+--------+---------------------+----------+----------+------------+--------+
 
-	Subprojects are not included in the actual releases – no support.
+	Subprojects are not included in the actual releases # no support.
 	
 
-Interface
+* Interface
 
-* Interface for Issue/Task/Bug
+** Interface for Issue/Task/Bug
+
 ---
 public interface Issue {
 	
@@ -357,8 +360,8 @@ public interface Issue {
 }
 ---
 
+** Interface for IssueTracker Comment
 
-* Interface for IssueTracker Comment
 ---
 public interface Comment {
 	
@@ -441,9 +444,7 @@ public interface Comment {
 }
 ---
 
-
-
-* Interface for Issue Tracker Project
+** Interface for Issue Tracker Project
 
 ---
 public interface Project {
@@ -527,7 +528,7 @@ public interface Project {
 ---
 
 
-* Enums
+** Enums
 
 ---
 /**
