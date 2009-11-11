@@ -17,10 +17,13 @@
  */
 package org.openengsb.context;
 
+import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 
+import org.apache.camel.converter.jaxp.StringSource;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
+import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
 
 /**
  * @org.apache.xbean.XBean element="contextEndpoint"
@@ -37,11 +40,20 @@ public class ContextEndpoint extends ProviderEndpoint {
 	@Override
 	protected void processInOnly(MessageExchange exchange, NormalizedMessage in)
 			throws Exception {
+		super.processInOnly(exchange, in);
 	}
 
 	@Override
 	protected void processInOut(MessageExchange exchange, NormalizedMessage in,
 			NormalizedMessage out) throws Exception {
+		System.out.println("yep im here!!!");
+		NormalizedMessageImpl msg = new NormalizedMessageImpl();
+		msg.setContent(new StringSource("wuhu"));
+
+		InOut inOut = getExchangeFactory().createInOutExchange();
+		inOut.setInMessage(msg);
+
+		out.setContent(msg.getContent());
 	}
 
 }

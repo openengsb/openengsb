@@ -1,4 +1,5 @@
-/**
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
 
    Copyright 2009 OpenEngSB Division, Vienna University of Technology
 
@@ -13,25 +14,12 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
- */
 
-package org.openengsb.context;
+-->
+<beans xmlns:context="http://www.openengsb.org/domain/context/1.0" xmlns:ctx="urn:openengsb:context"
+  xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-public class ContextNotFoundException extends RuntimeException {
+  <context:contextEndpoint endpoint="contextEndpoint" service="ctx:contextService" />
 
-	public ContextNotFoundException() {
-	}
-
-	public ContextNotFoundException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
-	public ContextNotFoundException(String message) {
-		super(message);
-	}
-
-	public ContextNotFoundException(Throwable cause) {
-		super(cause);
-	}
-}
+</beans>

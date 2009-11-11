@@ -16,7 +16,8 @@
    limitations under the License.
 
 -->
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:ci="urn:openengsb:continous" xmlns:eip="http://servicemix.apache.org/eip/1.0"
+<beans xmlns:ctx="urn:openengsb:context"
+xmlns="http://www.springframework.org/schema/beans" xmlns:ci="urn:openengsb:continous" xmlns:eip="http://servicemix.apache.org/eip/1.0"
   xmlns:logging="urn:openengsb:logging" xmlns:routing="urn:openengsb:routing" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="
     http://servicemix.apache.org/eip/1.0 http://servicemix.apache.org/schema/servicemix-eip-3.2.3.xsd 
@@ -24,7 +25,9 @@
 
   <eip:pipeline endpoint="endpoint" service="routing:CIWorkflow">
     <eip:transformer>
-      <eip:exchange-target operation="integrate" service="ci:ContinousIntegrationService" />
+      <!-- <eip:exchange-target operation="integrate" service="ci:ContinousIntegrationService" /> -->
+      <eip:exchange-target operation="forward" service="ctx:contextService" endpoint="contextEndpoint" />
+      
     </eip:transformer>
     <eip:target>
       <eip:exchange-target service="logging:BaseLogger" />

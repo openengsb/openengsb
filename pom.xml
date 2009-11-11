@@ -152,6 +152,7 @@
 
     <!-- Context -->
     <module>openengsb-context-se</module>
+    <module>openengsb-context</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>

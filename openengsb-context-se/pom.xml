@@ -29,7 +29,7 @@
 
   <artifactId>openengsb-context-se</artifactId>
   <packaging>jbi-component</packaging>
-  <name>openengsb-domain-scm-se</name>
+  <name>openengsb-context-se</name>
 
   <description>
     OpenEngSB Context JBI SE
