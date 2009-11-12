@@ -32,4 +32,12 @@
   </bookinfo>
 
   <xi:include href="architecture/introduction.xml" />
+  <xi:include href="architecture/domains.xml" />
+  <xi:include href="architecture/messageFormat.xml" />
+  <xi:include href="architecture/routing.xml" />
+  <xi:include href="architecture/ruleEngine.xml" />
+  <xi:include href="architecture/workflows.xml" />
+  <xi:include href="architecture/context.xml" />
+  <xi:include href="architecture/configuring.xml" />
+  <xi:include href="architecture/transformation.xml" />
 </book>

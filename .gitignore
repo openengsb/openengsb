@@ -30,3 +30,9 @@ engsb-edb-core/dump
 #Mac OS X hidden files/folders
 #================
 .DS_Store
+
+#================
+#Documentation artifacts
+#================
+*.dia~
+

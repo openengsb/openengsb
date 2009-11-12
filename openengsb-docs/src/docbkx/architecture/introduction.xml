@@ -27,11 +27,61 @@
     <title>The classical ESB</title>
 
     <para>
-      
+      First question we may have to answer is why we design a new layer on an enterprise service bus at all and not
+      be happy with the bus itself as many other integration projects are?
     </para>
 
-    <para> TBW </para>
+    <section id="introduction.esb.replaceability">
+      <title>Replaceability of components</title>
 
-    <para> TBW </para>
+      <para>
+        In a classical integration environment all components are more or less directly integrated with the bus
+        as shown
+        in
+        <xref linkend="classic" />
+        . Since many of the components could be legacy applications they could not
+        be integrated directly, but with the
+        help of connecters. Additional help is provided by core components as the
+        transformation and a component for
+        routing.
+      </para>
+
+      <para>
+        <mediaobject>
+          <imageobject>
+            <imagedata id="classic" fileref="graphics/classicalESB.png" format="png" />
+          </imageobject>
+        </mediaobject>
+      </para>
+
+      <para>
+        Compared to that the base structure of the OpenEngSB looks quite similar as shown here
+        <xref linkend="new" />
+        . The only difference is the domain which is now (logically) located between the bus and the component itself.
+        Of course we did much more to the architecture than adding simply another component, but nevertheless the domain
+        is one of the core concepts of the OpenEngSB and one of THE differences to the classical ESB. But for more see
+        <xref linkend="domain" />
+        .
+      </para>
+
+      <para>
+        <mediaobject>
+          <imageobject>
+            <imagedata id="new" fileref="graphics/OpenEngSB.png" format="png" />
+          </imageobject>
+        </mediaobject>
+      </para>
+
+      <para>
+        Further topics handled by this document are the standardized message format used by each component and the
+        general context store. Further more we take a look how to generalize the event model in the OpenEngSB and where
+        events are used at all. Further more we discuss how to get events clean and also involve the
+        <ulink url="http://martinfowler.com/bliki/RulesEngine.html">text about rule engines by Martin Fowler</ulink>
+        . Additional we also include the workflow system into an direct view. Finally everything is matched together and
+        the complete overview over the system is presented.
+      </para>
+
+    </section>
+
   </section>
 </chapter>
