@@ -171,6 +171,18 @@
                 <version>4.4</version>
                 <scope>runtime</scope>
               </dependency>
+              <dependency>
+                <groupId>com.sun</groupId>
+                <artifactId>jai_core</artifactId>
+                <version>1.1.3</version>
+                <scope>runtime</scope>
+              </dependency>
+              <dependency>
+                <groupId>com.sun</groupId>
+                <artifactId>jai_codec</artifactId>
+                <version>1.1.3</version>
+                <scope>runtime</scope>
+              </dependency>
             </dependencies>
             <configuration>
               <includes>*.xml</includes>
@@ -205,6 +217,13 @@
           </plugin>
         </plugins>
       </build>
+      <repositories>
+        <repository>
+          <id>jai.repository</id>
+          <name>JAI Repository (indirectly used by Docbook plugin)</name>
+          <url>https://m2proxy.atlassian.com/repository/public</url>
+        </repository>
+      </repositories>
     </profile>
   </profiles>
 
