@@ -17,4 +17,6 @@ Build Connectors
 
   TBW
   
+  * {{{buildDomain.html}Build domain specification}}
+  
   * {{{mvn.html}engsb-connector-build-mvn}}

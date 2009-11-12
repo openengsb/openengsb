@@ -13,9 +13,11 @@
 ~~   See the License for the specific language governing permissions and
 ~~   limitations under the License.
 ~~
-Issue Connectors
+Issue Tracker Connectors
 
   TBW
+  
+  * {{{issueDomain.html}Issue Tracker domain specification}}
   
   * {{{trac.html}engsb-connector-issues-trac}}
   

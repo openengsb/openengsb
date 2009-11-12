@@ -51,19 +51,23 @@
     <menu name="Documentation">
       <item href="reference/index.html" name="Userguide" />
       <item collapse="true" href="connector/issues/issues.html" name="Issue-Connectors">
+        <item href="connector/issues/issueDomain.html" name="Issue domain" />
         <item href="connector/issues/trac.html" name="Trac" />
         <item href="connector/issues/mantis.html" name="Mantis" />
       </item>
       <item collapse="true" href="connector/build/build.html" name="Build-Connectors">
+        <item href="connector/build/buildDomain.html" name="Build domain" />
         <item href="connector/build/mvn.html" name="Mvn" />
       </item>
       <item collapse="true" href="connector/test/test.html" name="Test-Connectors">
+        <item href="connector/test/testDomain.html" name="Test domain" />
         <item href="connector/test/mvn.html" name="Mvn" />
       </item>
       <item collapse="true" href="connector/notification/notification.html" name="Notification-Connectors">
         <item href="connector/notification/email.html" name="EMail" />
       </item>
       <item collapse="true" href="connector/repository/repository.html" name="Repository-Connectors">
+        <item href="connector/repository/deployDomain.html" name="Deployment domain" />
         <item href="connector/repository/mvn.html" name="Mvn" />
         <item href="connector/repository/staging.html" name="Staging" />
       </item>   
@@ -76,15 +80,10 @@
       <item href="contribute/codingstyle.html" name="Coding Guidelines" />
       <item href="contribute/format.html" name="APT Format" />
       <item href="contribute/eclipse.html" name="Eclipse Setup" />
-      <item href="contribute/proposals.html" name="Proposals" />
-      <item collapse="true" name="Proposals" href="proposals/edbInterface.html">
+      <item collapse="true" name="Proposals" href="contribute/proposals.html">
         <item href="proposals/edbInterface.html" name="EDB" />
         <item href="proposals/scmDomain.html" name="SCM Domain" />
-        <item href="proposals/buildDomain.html" name="Build Domain" />
-        <item href="proposals/testDomain.html" name="Test Domain" />
-        <item href="proposals/deployDomain.html" name="Deploy Domain" />
         <item href="proposals/pimDomain.html" name="PIM Domain" />
-        <item href="proposals/issueDomain.html" name="Issue Domain" />
         <item href="proposals/cmsDomain.html" name="CMS Domain" />
       </item>
     </menu>
