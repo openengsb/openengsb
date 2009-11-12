@@ -50,6 +50,7 @@
         <configuration>
           <excludes>
             <!-- raw data -->
+            <exclude>**/*.dia</exclude>
             <exclude>src/site/docbook/empty.txt</exclude>
             <!-- licensed externally -->
             <exclude>src/docbkx/resources/css/highlight.css</exclude>

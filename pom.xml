@@ -353,6 +353,7 @@
 
             <!-- runtime generated data -->
             <exclude>openengsb-edb-core/easy2find/**</exclude>
+            <exclude>**/*.dia</exclude>
             <exclude>**/*.log</exclude>
             <exclude>**/activemq-data/**</exclude>
 
