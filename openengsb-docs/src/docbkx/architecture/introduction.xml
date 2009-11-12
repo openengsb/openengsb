@@ -16,15 +16,22 @@
    limitations under the License.
 
 -->
-<chapter id="introduction">This manual describes the OpenEngSB Architecture in much detail. Please only read this
-document if you are really interested into the deep architecture behind the OpenEngSB. This is no user reference manual.
-Please use the usermanual from openengsb.org instead, containing a short overview over the OpenEngSB architecture.
-<title>Introduction</title> TBW <section id="introduction.what">
-    <title>What is an Engineering Service Bus</title>
+<chapter id="introduction">
+  <title>Introduction</title>
+  <para>
+    This manual describes the OpenEngSB Architecture in much detail. Please only read this document if you are
+    really interested into the deep architecture behind the OpenEngSB. This is no user reference manual. Please use the
+    usermanual from openengsb.org instead, containing a short overview over the OpenEngSB architecture.
+  </para>
+  <section id="introduction.esb">
+    <title>The classical ESB</title>
+
+    <para>
+      
+    </para>
 
     <para> TBW </para>
 
     <para> TBW </para>
-
-    <para> TBW </para>
-  </section> </chapter>
+  </section>
+</chapter>
