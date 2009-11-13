@@ -379,66 +379,6 @@
             <configuration>
               <outputDirectory>${project.build.directory}/components/install</outputDirectory>
               <artifactItems>
-                <!-- Other installers -->
-
-                <artifactItem>
-                  <groupId>org.apache.ode</groupId>
-                  <artifactId>ode-jbi</artifactId>
-                  <version>1.3.4.preview1</version>
-                  <type>zip</type>
-                </artifactItem>
-
-                <!-- OpenEngSB installers -->
-
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-connector-mvn</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-connector-svn</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-domain-scm-se</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-edb-core</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-edb-se</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-util</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-all</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                </artifactItem>
-
 
                 <!-- ServiceMix installers -->
 
@@ -448,6 +388,7 @@
                   <version>${servicemix.subprojects.version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
+                  <jbi-type>shared</jbi-type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.servicemix</groupId>
@@ -615,6 +556,71 @@
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
+                
+                <!-- Other installers -->
+
+                <artifactItem>
+                  <groupId>org.apache.ode</groupId>
+                  <artifactId>ode-jbi</artifactId>
+                  <version>1.3.4.preview1</version>
+                  <type>zip</type>
+                </artifactItem>
+
+                <!-- OpenEngSB installers -->
+
+
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-util</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                  <jbi-type>shared</jbi-type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-connector-mvn</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-connector-svn</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domain-scm-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-edb-core</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                  <jbi-type>shared</jbi-type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-edb-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-all</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                  <jbi-type>sa</jbi-type>
+                </artifactItem>
+                
               </artifactItems>
             </configuration>
           </execution>
