@@ -82,7 +82,7 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
+      <version>${javax.servlet.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -103,10 +103,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -142,37 +138,37 @@
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-ejb_2.1_spec</artifactId>
-      <version>1.1</version>
+      <version>${geronimo.ejb.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-j2ee-connector_1.5_spec</artifactId>
-      <version>2.0.0</version>
+      <version>${geronimo.j2ee.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-servlet_2.4_spec</artifactId>
-      <version>1.1</version>
+      <version>${geronimo.servlet.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-javamail_1.3.1_spec</artifactId>
-      <version>1.2</version>
+      <version>${geronimo.javamail.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-jaxws_2.1_spec</artifactId>
-      <version>1.0</version>
+      <version>${geronimo.jaxws.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
-      <version>1.1.2</version>
+      <version>${geronimo.ws.metadata.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.woden</groupId>
       <artifactId>woden</artifactId>
-      <version>1.0.0M6</version>
+      <version>${woden.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.apache.ws.commons.axiom</groupId>
@@ -187,17 +183,17 @@
     <dependency>
       <groupId>javax.activation</groupId>
       <artifactId>activation</artifactId>
-      <version>1.1</version>
+      <version>${javax.activation.version}</version>
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
-      <version>1.4</version>
+      <version>${javax.mail.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.1.1</version>
+      <version>${commons.logging.version}</version>
       <exclusions>
         <exclusion>
           <groupId>avalon-framework</groupId>
@@ -216,12 +212,12 @@
     <dependency>
       <groupId>classworlds</groupId>
       <artifactId>classworlds</artifactId>
-      <version>1.1</version>
+      <version>${classworlds.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
-      <version>1.2</version>
+      <version>${commons.pool.version}</version>
       <exclusions>
         <exclusion>
           <groupId>xerces</groupId>
@@ -232,27 +228,28 @@
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
-      <version>3.1</version>
+      <version>${commons.collections.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.derby</groupId>
       <artifactId>derby</artifactId>
-      <version>10.2.2.0</version>
+      <version>${derby.version}</version>
     </dependency>
     <dependency>
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
-      <version>1.7.3.3</version>
+      <version>${hsqldb.version}</version>
     </dependency>
     <dependency>
       <groupId>quartz</groupId>
       <artifactId>quartz</artifactId>
-      <version>1.5.2</version>
+      <version>${quartz.version}</version>
     </dependency>
     <dependency>
       <groupId>jaxen</groupId>
       <artifactId>jaxen</artifactId>
-      <version>1.1-beta-9</version>
+      <!-- version>1.1-beta-9</version -->
+      <version>${jaxen.version}</version>
       <exclusions>
         <exclusion>
           <groupId>jaxme</groupId>
@@ -279,7 +276,7 @@
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-ra</artifactId>
-      <version>5.2.0</version>
+      <version>${activemq.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.springframework</groupId>
@@ -294,52 +291,52 @@
     <dependency>
       <groupId>commons-vfs</groupId>
       <artifactId>commons-vfs</artifactId>
-      <version>20050307052300</version>
+      <version>${commons.vfs.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>1.4</version>
+      <version>${commons.io.version}</version>
     </dependency>
     <dependency>
       <groupId>rome</groupId>
       <artifactId>rome</artifactId>
-      <version>0.5</version>
+      <version>${rome.version}</version>
     </dependency>
     <dependency>
       <groupId>axis</groupId>
       <artifactId>axis-saaj</artifactId>
-      <version>1.3</version>
+      <version>${axis.version}</version>
     </dependency>
     <dependency>
       <groupId>axis</groupId>
       <artifactId>axis-jaxrpc</artifactId>
-      <version>1.3</version>
+      <version>${axis.version}</version>
     </dependency>
     <dependency>
       <groupId>axis</groupId>
       <artifactId>axis</artifactId>
-      <version>1.3</version>
+      <version>${axis.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-discovery</groupId>
       <artifactId>commons-discovery</artifactId>
-      <version>0.2</version>
+      <version>${commons.discovery.version}</version>
     </dependency>
     <dependency>
       <groupId>org.objectweb.howl</groupId>
       <artifactId>howl</artifactId>
-      <version>1.0.1-1</version>
+      <version>${howl.version}</version>
     </dependency>
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
-      <version>1.3.04</version>
+      <version>${xml.apis.version}</version>
     </dependency>
     <dependency>
       <groupId>backport-util-concurrent</groupId>
       <artifactId>backport-util-concurrent</artifactId>
-      <version>2.2</version>
+      <version>${backport.util.concurrent.version}</version>
     </dependency>
 
   </dependencies>
@@ -562,7 +559,7 @@
                 <artifactItem>
                   <groupId>org.apache.ode</groupId>
                   <artifactId>ode-jbi</artifactId>
-                  <version>1.3.4.preview1</version>
+                  <version>${ode.version}</version>
                   <type>zip</type>
                 </artifactItem>
 

@@ -53,6 +53,33 @@
     <jibx.version>1.2.1</jibx.version>
     <wicket.version>1.4.1</wicket.version>
     <jetty.version>6.1.20</jetty.version>
+    <ode.version>1.3.4.preview1</ode.version>
+
+    <!-- Servicemix Library Versions -->
+    <axis.version>1.3</axis.version>
+    <backport.util.concurrent.version>2.2</backport.util.concurrent.version>
+    <classworlds.version>1.1</classworlds.version>
+    <commons.collections.version>3.1</commons.collections.version>
+    <commons.discovery.version>0.2</commons.discovery.version>
+    <commons.logging.version>1.1.1</commons.logging.version>
+    <commons.pool.version>1.2</commons.pool.version>
+    <commons.vfs.version>20050307052300</commons.vfs.version>
+    <derby.version>10.2.2.0</derby.version>
+    <geronimo.ejb.version>1.1</geronimo.ejb.version>
+    <geronimo.j2ee.version>2.0.0</geronimo.j2ee.version>
+    <geronimo.servlet.version>1.1</geronimo.servlet.version>
+    <geronimo.javamail.version>1.2</geronimo.javamail.version>
+    <geronimo.jaxws.version>1.0</geronimo.jaxws.version>
+    <geronimo.ws.metadata.version>1.1.2</geronimo.ws.metadata.version>
+    <howl.version>1.0.1-1</howl.version>
+    <hsqldb.version>1.7.3.3</hsqldb.version>
+    <javax.activation.version>1.1</javax.activation.version>
+    <javax.mail.version>1.4</javax.mail.version>
+    <javax.servlet.version>2.5</javax.servlet.version>
+    <quartz.version>1.5.2</quartz.version>
+    <rome.version>0.5</rome.version>
+    <woden.version>1.0.0M6</woden.version>
+    <xml.apis.version>1.3.04</xml.apis.version>
 
     <!-- Plugin Version -->
     <docbkx.version>2.0.7</docbkx.version>
@@ -397,9 +424,10 @@
             <!-- Test Data -->
             <exclude>openengsb-util/src/test/resources/serialization/valid.xml</exclude>
 	    <exclude>openengsb-all/quickdeploy.sh</exclude>
+            <exclude>openengsb-all/quickdeploy.sh</exclude>
 
-	    <!-- OpenEngSB Embedded -->
-	    <exclude>openengsb-embedded/data/*</exclude>
+            <!-- OpenEngSB Embedded -->
+            <exclude>openengsb-embedded/data/*</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -911,15 +939,15 @@
 
   <repositories>
     <repository>
-    	<id>thirdparty</id>
-    	<name>OpenEngSB 3rd Party Repository</name>
-    	<url>http://maven.openengsb.org/nexus/content/repositories/thirdparty/</url>
-    	<releases>
-    		<enabled>true</enabled>
-    	</releases>
-    	<snapshots>
-    		<enabled>true</enabled>
-    	</snapshots>
+        <id>thirdparty</id>
+        <name>OpenEngSB 3rd Party Repository</name>
+        <url>http://maven.openengsb.org/nexus/content/repositories/thirdparty/</url>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
     </repository>
     <repository>
       <id>jibx.sf.net</id>
