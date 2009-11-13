@@ -290,6 +290,13 @@
       <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
+    <contributor>
+      <name>Michael Zoech</name>
+      <email>zoech [at] qse.ifs.tuwien.ac.at</email>
+      <organization>Vienna University of Technology</organization>
+      <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+    </contributor>
   </contributors>
 
   <build>
