@@ -655,7 +655,24 @@
         <artifactId>openengsb-all</artifactId>
         <version>${pom.version}</version>
       </dependency>
-    
+
+      <!-- WebApp Modules -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-config-jbi</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-config-ui</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-embedded</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
       <!-- Servicemix Dependencies -->
       <dependency>
         <groupId>org.apache.servicemix</groupId>
@@ -832,6 +849,16 @@
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
+        <artifactId>spring-core</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-beans</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
         <version>${spring.version}</version>
       </dependency>
@@ -849,6 +876,11 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-jms</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-tx</artifactId>
         <version>${spring.version}</version>
       </dependency>
       <dependency>
