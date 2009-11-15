@@ -24,63 +24,97 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.openengsb.issues.common.IssueDomain;
+import org.openengsb.issues.common.endpoints.AbstractCreateIssueEndpoint;
+import org.openengsb.issues.common.exceptions.IssueDomainException;
+import org.openengsb.issues.common.model.Issue;
 import org.openengsb.issues.trac.model.Ticket;
 import org.openengsb.issues.trac.xmlrpc.TrackerDynamicProxy;
 
 public class TracConnector implements IssueDomain {
+
+    private Logger log = Logger.getLogger(TracConnector.class);
+
     private final Ticket ticket;
 
-    public TracConnector(String url, String username, String password) {
-        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
-        try {
-            config.setServerURL(new URL(url));
-        } catch (MalformedURLException e) {
-            throw new RuntimeException();
-        }
-        config.setBasicUserName(username);
-        config.setBasicPassword(password);
-        XmlRpcClient client = new XmlRpcClient();
-        client.setConfig(config);
+    private String url;
+    private String username;
+    private String password;
 
-        TrackerDynamicProxy proxy = new TrackerDynamicProxy(client);
+    public TracConnector(String url, String username, String password) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
+
+        log.info(String.format("Instantiating TracConnector to %s with user %s ...", url, username));
+
+        TrackerDynamicProxy proxy = createProxyGenerator();
 
         ticket = (Ticket) proxy.newInstance(Ticket.class);
-    }
 
-    @SuppressWarnings("unchecked")
-    public HashMap<String, String> getTicket(int id) {
-        Vector<?> v = ticket.get(id);
-        return (HashMap<String, String>) v.get(3);
-    }
-
-    public void updateTicketStatus(int id, String status, String comment) {
-        Hashtable<String, String> h = new Hashtable<String, String>();
-        h.put("status", status);
-        ticket.update(id, comment, h);
-    }
-
-    public String createIssue(String summary, String description, String reporter, String owner, String type,
-            String priority) {
-        Hashtable<String, String> attributes = new Hashtable<String, String>();
-        attributes.put("type", type);
-        attributes.put("owner", owner);
-        attributes.put("reporter", reporter);
-        attributes.put("priority", priority);
-
-        return ticket.create(summary, description, attributes).toString();
+        log.info("Instantiation done");
     }
 
     @Override
-    public String createIssue(Issue issue) {
+    public String createIssue(Issue issue) throws IssueDomainException {
         Hashtable<String, String> attributes = new Hashtable<String, String>();
         attributes.put("type", issue.getType());
         attributes.put("owner", issue.getOwner());
         attributes.put("reporter", issue.getReporter());
         attributes.put("priority", issue.getPriority());
 
-        return ticket.create(issue.getSummary(), issue.getDescription(), attributes).toString();
+        String issueId;
+        try {
+            issueId = ticket.create(issue.getSummary(), issue.getDescription(), attributes).toString();
+        } catch (Exception e) {
+            throw new IssueDomainException(e.getMessage(), e);
+        }
+
+        return issueId;
+    }
+
+    private TrackerDynamicProxy createProxyGenerator() {
+        XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+        try {
+            config.setServerURL(new URL(this.url));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException();
+        }
+        config.setBasicUserName(this.username);
+        config.setBasicPassword(this.password);
+        XmlRpcClient client = new XmlRpcClient();
+        client.setConfig(config);
+
+        TrackerDynamicProxy proxy = new TrackerDynamicProxy(client);
+        return proxy;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

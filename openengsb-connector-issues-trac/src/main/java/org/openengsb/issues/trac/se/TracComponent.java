@@ -16,33 +16,33 @@
  */
 package org.openengsb.issues.trac.se;
 
-import org.apache.servicemix.common.DefaultComponent;
-import org.openengsb.issues.common.endpoints.AbstractCreateIssueEndpoint;
-
 import java.util.List;
 
+import org.apache.servicemix.common.DefaultComponent;
+import org.openengsb.issues.trac.se.endpoints.TracCreateIssueEndpoint;
+
 /**
- * @org.apache.xbean.XBean element="component"
- *                  description="My Component"
+ * @org.apache.xbean.XBean element="tracComponent"
+ *                         description="Trac Issue Tracker Component"
  */
 public class TracComponent extends DefaultComponent {
 
-    private AbstractCreateIssueEndpoint[] endpoints;
-	
-	public AbstractCreateIssueEndpoint[] getEndpoints() {
-	    return endpoints;
-	}
-	
-	public void setEndpoints(AbstractCreateIssueEndpoint[] endpoints) {
-		this.endpoints = endpoints;
-	}
-	
-	protected List getConfiguredEndpoints() {
-	    return asList(endpoints);
-	}
-	
+    private TracCreateIssueEndpoint[] endpoints;
+
+    public TracCreateIssueEndpoint[] getEndpoints() {
+        return endpoints;
+    }
+
+    public void setEndpoints(TracCreateIssueEndpoint[] endpoints) {
+        this.endpoints = endpoints;
+    }
+
+    protected List getConfiguredEndpoints() {
+        return asList(endpoints);
+    }
+
     protected Class[] getEndpointClasses() {
-        return new Class[] { AbstractCreateIssueEndpoint.class };
+        return new Class[] { TracCreateIssueEndpoint.class };
     }
 
 }

@@ -39,8 +39,7 @@
         <extensions>true</extensions>
         <configuration>
           <type>service-engine</type>
-          <bootstrap>org.openengsb.issues.trac.MyBootstrap</bootstrap>
-          <component>org.openengsb.issues.trac.MyComponent</component>
+          <component>org.openengsb.issues.trac.se.TracComponent</component>
         </configuration>
       </plugin>
       <plugin>
@@ -53,7 +52,7 @@
               <goal>mapping</goal>
             </goals>
             <configuration>
-              <namespace>http://org.openengsb.issues.trac/1.0</namespace>
+              <namespace>http://openengsb.org/connector/issues/trac/1.0</namespace>
             </configuration>
           </execution>
         </executions>
@@ -112,6 +111,12 @@
     <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
+    </dependency>
+
+    <!-- Springframework dependencies -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
     </dependency>
 
     <!-- internal scm-common Dependency -->

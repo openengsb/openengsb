@@ -24,4 +24,8 @@ public class IssueDomainException extends Exception {
         super(message);
     }
 
+    public IssueDomainException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

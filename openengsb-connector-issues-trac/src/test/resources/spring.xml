@@ -17,25 +17,13 @@
     limitations under the License.
 
 -->
-<beans xmlns:sm="http://servicemix.apache.org/config/1.0" 
-	     xmlns:my="http://org.openengsb.issues.trac/1.0"
-       xmlns:test="urn:test">
-
-  <sm:container id="jbi" embedded="true" createMBeanServer="false">
-    
-    <sm:activationSpecs>
-
-      <sm:activationSpec>
-      	<sm:component>
-            <my:component>
-            	<my:endpoints>
-            		<my:endpoint service="test:service" endpoint="endpoint" />
-            	</my:endpoints>
-            </my:component>
-        </sm:component>
-      </sm:activationSpec>
-
-    </sm:activationSpecs>
-  </sm:container>
-
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+  http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+  
 </beans>

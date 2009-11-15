@@ -25,12 +25,11 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.camel.converter.jaxp.StringSource;
 import org.apache.log4j.Logger;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
+import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.openengsb.issues.common.IssueDomain;
 import org.openengsb.issues.common.exceptions.IssueDomainException;
 import org.openengsb.issues.common.messages.CreateIssueMessage;
@@ -49,7 +48,7 @@ public abstract class AbstractCreateIssueEndpoint extends ProviderEndpoint {
 
     private Serializer serializer;
 
-    protected abstract IssueDomain createIssueDomain();
+    protected abstract IssueDomain createIssueDomain() throws IssueDomainException;
 
     public AbstractCreateIssueEndpoint() {
         // set defaults
@@ -66,16 +65,15 @@ public abstract class AbstractCreateIssueEndpoint extends ProviderEndpoint {
 
         CreateIssueResponseMessage responseMessage = new CreateIssueResponseMessage();
 
-        IssueDomain domain = createIssueDomain();
-
-        String issueId;
         try {
+            IssueDomain domain = createIssueDomain();
+
             // transform message to string
             Transformer messageTransformer = TransformerFactory.newInstance().newTransformer();
             StringWriter stringWriter = new StringWriter();
             messageTransformer.transform(in.getContent(), new StreamResult(stringWriter));
 
-            issueId = domain.createIssue(serializer.deserialize(CreateIssueMessage.class,
+            String issueId = domain.createIssue(serializer.deserialize(CreateIssueMessage.class,
                     new StringReader(stringWriter.toString())).getIssue());
             responseMessage.setCreatedIssueId(issueId);
             responseMessage.setStatus(CreateIssueStatus.SUCCESS);
@@ -86,6 +84,10 @@ public abstract class AbstractCreateIssueEndpoint extends ProviderEndpoint {
             responseMessage.setStatusMessage(e.getMessage());
         } catch (IssueDomainException e) {
             log.error("Error creating issue.", e);
+            responseMessage.setStatus(CreateIssueStatus.ERROR);
+            responseMessage.setStatusMessage(e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected error occurred.", e);
             responseMessage.setStatus(CreateIssueStatus.ERROR);
             responseMessage.setStatusMessage(e.getMessage());
         } finally {

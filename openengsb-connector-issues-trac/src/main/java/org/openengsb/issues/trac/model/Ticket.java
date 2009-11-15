@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import org.apache.xmlrpc.XmlRpcException;
+
 public interface Ticket {
     public interface TicketProperty {
         Vector<?> getAll();
@@ -61,7 +63,7 @@ public interface Ticket {
 
     Integer create(String summary, String description);
 
-    Integer create(String summary, String description, Hashtable<?, ?> attribute);
+    Integer create(String summary, String description, Hashtable<?, ?> attribute) throws XmlRpcException;
 
     Integer create(String summary, String description, Hashtable<?, ?> attribute, Boolean notify);
 

@@ -432,6 +432,7 @@
             <exclude>openengsb-docs/src/docbkx/resources/xsl/highlight-fo.xsl</exclude>
             <exclude>openengsb-docs/src/docbkx/resources/xsl/highlight.xsl</exclude>
             <exclude>openengsb-docs/src/docbkx/resources/xsl/html.xsl</exclude>
+            <exclude>openengsb-domain-issues-common/src/test/resources/**/*</exclude>
 
             <!-- notice and license -->
             <exclude>NOTICE</exclude>
@@ -679,6 +680,11 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-connector-mvn</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-connector-issues-trac</artifactId>
         <version>${pom.version}</version>
       </dependency>
 

@@ -110,7 +110,7 @@
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
           <excludes>
-            <exclude>src/test/resources/**</exclude>
+            <exclude>src/test/resources/**/*</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -118,6 +118,20 @@
             <phase>verify</phase>
             <goals>
               <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
             </goals>
           </execution>
         </executions>

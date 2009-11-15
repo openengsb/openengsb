@@ -22,6 +22,6 @@
       name="createissueresponsemessage">
      <value name="createdissueid" field="createdIssueId" usage="optional" />
      <value name="status" field="status" />
-     <value name="statusmessage" field="statusMessage" />
+     <value name="statusmessage" field="statusMessage" usage="optional" />
    </mapping>
 </binding>
