@@ -97,6 +97,14 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-connector-mvn-deploy</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-connector-issues-trac-su</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>file-poller-su</artifactId>
+    </dependency>
 
     <!-- Workflows -->
     <dependency>

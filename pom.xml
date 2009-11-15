@@ -167,6 +167,10 @@
 
     <module>openengsb-connector-issues-trac</module>
     <module>openengsb-domain-issues-common</module>
+    <module>openengsb-connector-issues-trac-su</module>
+    <module>file-poller-su</module>
+    <module>csd-sa</module>
+    <module>csd-eip</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -687,6 +691,16 @@
         <artifactId>openengsb-connector-issues-trac</artifactId>
         <version>${pom.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-connector-issues-trac-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>file-poller-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
 
       <!-- Context -->
       <dependency>
@@ -823,6 +837,11 @@
       <dependency>
         <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-http</artifactId>
+        <version>${servicemix.subprojects.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-file</artifactId>
         <version>${servicemix.subprojects.version}</version>
       </dependency>
 
