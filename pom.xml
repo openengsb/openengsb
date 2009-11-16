@@ -550,6 +550,11 @@
         <artifactId>openengsb-edb</artifactId>
         <version>${pom.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-edb-jms</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
 
       <!-- Workflows -->
       <dependency>
@@ -654,6 +659,11 @@
       <dependency>
         <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-quartz</artifactId>
+        <version>${servicemix.subprojects.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-jms</artifactId>
         <version>${servicemix.subprojects.version}</version>
       </dependency>
 
