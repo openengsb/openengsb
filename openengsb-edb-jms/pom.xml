@@ -33,7 +33,7 @@
   
   <artifactId>openengsb-edb-jms</artifactId>
   <packaging>jbi-service-unit</packaging>
-  <name>A custom project</name>
+  <name>openengsb-edb-jms</name>
 
   <description>
     "Fast forward" JMS adapter for the EDB implementation, so that it could be used outside of the OpenEngSB/Servicemix. 
