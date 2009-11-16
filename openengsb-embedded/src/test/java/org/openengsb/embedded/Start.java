@@ -19,7 +19,6 @@ package org.openengsb.embedded;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.embedder.Configuration;
@@ -33,6 +32,7 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.reactor.MavenExecutionException;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.openengsb.embedded.JbiTypeChecker.JbiType;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Start {
@@ -56,15 +56,14 @@ public class Start {
         Xpp3Dom[] artifacts = getServicemixInstallers(embedder);
 
         for (int i = 0; i < artifacts.length; ++i) {
-            String path = getLocalInstallerZipPath(embedder, artifacts[i]).getAbsolutePath();
-            Xpp3Dom n = artifacts[i].getChild("jbi-type");
-            String jbitype = n != null ? n.getValue() : "";
-            if ("shared".equals(jbitype)) {
-                jbiContainer.getInstallationService().installSharedLibrary(path);
-            } else if ("sa".equals(jbitype)) {
-                jbiContainer.getDeploymentService().deploy(path);
+            File installerFile = getLocalInstallerZipPath(embedder, artifacts[i]);
+            JbiType type = JbiTypeChecker.checkJbiInstallerType(installerFile);
+            if (type == JbiType.SHARED_LIBRARY) {
+                jbiContainer.getInstallationService().installSharedLibrary(installerFile.getAbsolutePath());
+            } else if (type == JbiType.SERVICE_ASSEMBLY) {
+                jbiContainer.getDeploymentService().deploy(installerFile.getAbsolutePath());
             } else {
-                jbiContainer.installArchive(path);
+                jbiContainer.installArchive(installerFile.getAbsolutePath());
             }
         }
 

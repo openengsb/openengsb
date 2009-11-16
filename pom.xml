@@ -673,6 +673,7 @@
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-config-ui</artifactId>
         <version>${pom.version}</version>
+		<type>war</type>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>

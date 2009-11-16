@@ -379,7 +379,6 @@
                   <version>${servicemix.subprojects.version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
-                  <jbi-type>shared</jbi-type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.apache.servicemix</groupId>
@@ -566,7 +565,6 @@
                   <version>${project.version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
-                  <jbi-type>shared</jbi-type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
@@ -595,7 +593,6 @@
                   <version>${project.version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
-                  <jbi-type>shared</jbi-type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
@@ -609,7 +606,6 @@
                   <artifactId>openengsb-all</artifactId>
                   <version>${project.version}</version>
                   <type>zip</type>
-                  <jbi-type>sa</jbi-type>
                 </artifactItem>
                 
               </artifactItems>
