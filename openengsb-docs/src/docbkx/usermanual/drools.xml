@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<chapter id="drools">
+  <title>Drools</title>
+
+  <para>
+  	The openengsb-drools component takes "events" as input and handles them
+  	using a rulebased system (JBoss Drools 5.0). The rules are managed
+  	independent of servicemix in the Drools Guvnor. Guvnor is a webapplication
+  	running inside a JBoss Application Server. The rulebase can be managed with
+  	the webinterface. For specifying conditions in rules a model is needed. A
+  	model is described in simple Java objects. The default model is located in
+  	the "openengsb-drools-common"-folder. The following example shows how a rule
+  	can be specified.
+  </para>
+  <orderedlist>
+  	<listitem>
+  		Login guvnor
+			<para>
+				Take the browser to the guvnor webinterface (e.g. http://127.0.0.1:8080/drools-guvnor) and login with your
+				credentials. 
+			</para>
+  	</listitem>
+  	<listitem>
+  		Setup package
+			<para>
+				select "Knowledge Bases" in the sidebar and Create a new package named "org.openengsb".
+			</para>
+  	</listitem>
+  	<listitem>
+			Build and upload the model
+			<para>
+				Open a command-shell in the "openengsb-drools-common"-directory and execute "mvn install". This compiles the
+				model and packs it to target/openengsb-drools-common-VERSION.jar. Use the webinterface to upload the model by
+				selecting "Create New->Upload POJO Model jar". Enter a name (e.g. "mymodel") and confirm the dialog. Now
+				browse to the openengsb-drools-common-VERSION.jar and upload it. When that is done click "save changes" in the
+				top-left corner of the frame. Enter a commit-message (e.g. "add openengsb-drools-common-VERSION").
+			</para>
+  	</listitem>
+  	<listitem>
+  		Create a new rule with the webinterface
+  		<para>
+  			Select "Create New->New Rule" and enter a name for the new rule. Assign it to a category (does not influence
+  			functionality of the rule). Then choose which type of rule you would like to create. The easiest to use type
+  			is the "Business Rule (guided editor)". In the WHEN-area you may specify conditions (e.g. using the
+  			Event-model). In the THEN-area you may specify the actions. In actions you can modify the knowledge
+  			(e.g. the current event) or trigger actions in openengsb. To trigger actions select "call method on helper...".
+				You can use information contained in the event by binding it to a variable. Click on the field in the
+				when-condition and providing a variable name.
+  		</para>
+  	</listitem>
+  	<listitem>
+  		Compile the rulebase
+  		<para>
+  			For the changes to be applied for usage in the workflow the rules must be compiled. You only need to select the
+  			package (org.openengsb) in the sidepane and then click "Build package" in the right frame.
+  		</para>
+  	</listitem>
+  	<listitem>
+  		Eclipse-plugin
+  		<para>
+  			TODO
+  		</para>
+  	</listitem>
+  	
+  </orderedlist>
+</chapter>
