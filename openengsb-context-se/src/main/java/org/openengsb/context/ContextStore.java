@@ -19,95 +19,100 @@
 package org.openengsb.context;
 
 public class ContextStore {
-	private Context rootContext = new Context();
+    private Context rootContext = new Context();
 
-	public Context getContext(String path) {
-		return new Context(resolve(new ContextPath(path)));
-	}
+    public ContextStore() {
+        load();
+    }
 
-	public Context getContext(String path, int depth) {
-		if (depth <= 0) {
-			throw new IllegalArgumentException("Depth must be positive");
-		}
-		Context context = getContext(path);
-		prune(context, depth, 1);
-		return context;
-	}
+    public Context getContext(String path) {
+        return new Context(resolve(new ContextPath(path)));
+    }
 
-	private void prune(Context ctx, int depth, int currentDepth) {
-		if (currentDepth >= depth) {
-			for (String child : ctx.getChildrenNames()) {
-				ctx.removeChild(child);
-			}
-			return;
-		}
+    public Context getContext(String path, int depth) {
+        if (depth <= 0) {
+            throw new IllegalArgumentException("Depth must be positive");
+        }
+        Context context = getContext(path);
+        prune(context, depth, 1);
+        return context;
+    }
 
-		for (String child : ctx.getChildrenNames()) {
-			prune(ctx.getChild(child), depth, currentDepth + 1);
-		}
-	}
+    private void prune(Context ctx, int depth, int currentDepth) {
+        if (currentDepth >= depth) {
+            for (String child : ctx.getChildrenNames()) {
+                ctx.removeChild(child);
+            }
+            return;
+        }
 
-	public void setValue(String path, String value) {
-		String[] splitPath = splitPath(new ContextPath(path));
-		Context ctx = resolveAndCreate(new ContextPath(splitPath[0]));
-		ctx.set(splitPath[1], value);
-	}
+        for (String child : ctx.getChildrenNames()) {
+            prune(ctx.getChild(child), depth, currentDepth + 1);
+        }
+    }
 
-	private String[] splitPath(ContextPath contextPath) {
-		String path = contextPath.getPath();
-		String[] s = new String[2];
-		int index = path.lastIndexOf('/');
+    public void setValue(String path, String value) {
+        String[] splitPath = splitPath(new ContextPath(path));
+        Context ctx = resolveAndCreate(new ContextPath(splitPath[0]));
+        ctx.set(splitPath[1], value);
+    }
 
-		if (index == -1) {
-			s[0] = "";
-			s[1] = path;
-		} else {
-			s[0] = path.substring(0, index);
-			s[1] = path.substring(index + 1);
-		}
+    private String[] splitPath(ContextPath contextPath) {
+        String path = contextPath.getPath();
+        String[] s = new String[2];
+        int index = path.lastIndexOf('/');
 
-		return s;
-	}
+        if (index == -1) {
+            s[0] = "";
+            s[1] = path;
+        } else {
+            s[0] = path.substring(0, index);
+            s[1] = path.substring(index + 1);
+        }
 
-	private Context resolveAndCreate(ContextPath path) {
-		return resolve(path, true);
-	}
+        return s;
+    }
 
-	private Context resolve(ContextPath path) {
-		return resolve(path, false);
-	}
+    private Context resolveAndCreate(ContextPath path) {
+        return resolve(path, true);
+    }
 
-	private Context resolve(ContextPath path, boolean create) {
-		if (path.isRoot()) {
-			return rootContext;
-		}
+    private Context resolve(ContextPath path) {
+        return resolve(path, false);
+    }
 
-		Context ctx = rootContext;
-		Context last;
+    private Context resolve(ContextPath path, boolean create) {
+        if (path.isRoot()) {
+            return rootContext;
+        }
 
-		for (String pathElement : path.getElements()) {
-			last = ctx;
-			ctx = ctx.getChild(pathElement);
+        Context ctx = rootContext;
+        Context last;
 
-			if (ctx == null) {
-				if (!create) {
-					throw new ContextNotFoundException("Can't find context "
-							+ path);
-				}
+        for (String pathElement : path.getElements()) {
+            last = ctx;
+            ctx = ctx.getChild(pathElement);
 
-				last.createChild(pathElement);
-				ctx = last.getChild(pathElement);
-			}
-		}
+            if (ctx == null) {
+                if (!create) {
+                    throw new ContextNotFoundException("Can't find context " + path);
+                }
 
-		return ctx;
-	}
+                last.createChild(pathElement);
+                ctx = last.getChild(pathElement);
+            }
+        }
 
-	private void load() {
-		// TODO
-	}
+        return ctx;
+    }
 
-	private void save() {
-		// TODO
-	}
+    private void load() {
+        // TODO
+        setValue("42/name", "Test Project");
+        setValue("42/scmendpoint", "git@example.com:");
+    }
+
+    private void save() {
+        // TODO
+    }
 }

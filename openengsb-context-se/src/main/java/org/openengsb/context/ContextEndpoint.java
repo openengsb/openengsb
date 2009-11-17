@@ -42,99 +42,56 @@ import org.xml.sax.SAXException;
  *                         description="Context Component"
  */
 public class ContextEndpoint extends ProviderEndpoint {
-	private static final String ID_XPATH = "/message/header/contextID";
+    private static final String ID_XPATH = "/message/header/contextID";
 
-	private ContextStore contextStore = new ContextStore();
+    private ContextStore contextStore = new ContextStore();
 
-	private static final CachedXPathAPI XPATH = new CachedXPathAPI();
+    private static final CachedXPathAPI XPATH = new CachedXPathAPI();
 
-	// TODO
+    @Override
+    protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
+        Node idNode = extractSingleNode(in, ID_XPATH);
 
-	@Override
-	protected void processInOnly(MessageExchange exchange, NormalizedMessage in)
-			throws Exception {
-		super.processInOnly(exchange, in);
-	}
+        if (idNode == null) {
+            throw new IllegalStateException("Could not find id node");
+        }
 
-	@Override
-	protected void processInOut(MessageExchange exchange, NormalizedMessage in,
-			NormalizedMessage out) throws Exception {
+        String id = idNode.getTextContent();
+        Context ctx = contextStore.getContext(id);
 
-		Node idNode = extractSingleNode(in, ID_XPATH);
+        String m = "<context>\n";
+        for (Entry<String, String> e : ctx.flatten().entrySet()) {
+            m += String.format("<entry key=\"%s\" value=\"%s\" />\n", e.getKey(), e.getValue());
+        }
+        m += "</context>";
 
-		String id = null;
-		if (idNode != null) {
-			id = idNode.getTextContent();
-		}
+        NormalizedMessageImpl msg = new NormalizedMessageImpl();
+        msg.setContent(new StringSource(m));
 
-		Context ctx = contextStore.getContext(id);
+        if (exchange != null) {
+            InOut inOut = getExchangeFactory().createInOutExchange();
+            inOut.setInMessage(msg);
+        }
+        out.setContent(msg.getContent());
+    }
 
-		String m = "<context>\n";
+    private Node extractSingleNode(NormalizedMessage inMessage, String xPath) throws MessagingException,
+            TransformerException, ParserConfigurationException, IOException, SAXException {
+        Node rootNode = getRootNode(inMessage);
+        return rootNode == null ? null : XPATH.selectSingleNode(rootNode, xPath);
+    }
 
-		for (Entry<String, String> e : ctx.flatten().entrySet()) {
-			m += String.format("<entry key=\"%s\" value=\"%s\" />\n", e
-					.getKey(), e.getValue());
-		}
+    private Node getRootNode(NormalizedMessage message) throws ParserConfigurationException, IOException, SAXException,
+            TransformerException {
+        SourceTransformer sourceTransformer = new SourceTransformer();
+        DOMSource messageXml = sourceTransformer.toDOMSource(message.getContent());
 
-		m += "</context>";
+        Node rootNode = messageXml.getNode();
 
-		System.out.println("ID: " + id);
+        if (rootNode instanceof Document) {
+            return rootNode.getFirstChild();
+        }
 
-		System.out.println("yep im here!!!");
-		NormalizedMessageImpl msg = new NormalizedMessageImpl();
-		msg.setContent(new StringSource(m));
-
-		if (exchange != null) {
-			InOut inOut = getExchangeFactory().createInOutExchange();
-			inOut.setInMessage(msg);
-		}
-		out.setContent(msg.getContent());
-	}
-
-	protected Node extractSingleNode(NormalizedMessage inMessage, String xPath)
-			throws MessagingException, TransformerException,
-			ParserConfigurationException, IOException, SAXException {
-		Node rootNode = getRootNode(inMessage);
-		if (rootNode == null) {
-			System.out.println("rootnode is null");
-			return null;
-		} else {
-			return XPATH.selectSingleNode(rootNode, xPath);
-		}
-	}
-
-	private Node getRootNode(NormalizedMessage message)
-			throws ParserConfigurationException, IOException, SAXException,
-			TransformerException {
-		SourceTransformer sourceTransformer = new SourceTransformer();
-		DOMSource messageXml = sourceTransformer.toDOMSource(message
-				.getContent());
-
-		Node rootNode = messageXml.getNode();
-
-		if (rootNode instanceof Document) {
-			return rootNode.getFirstChild();
-		} else {
-			return rootNode;
-		}
-	}
-
-	public static void main(String[] args) throws Exception {
-
-		String in = "<message> <header> <messageID>5</messageID> <contextID>42</contextID> </header> <payload> <timer> <name>Foo</name> <group>Bar</group> </timer> </payload> </message>";
-
-		ContextEndpoint endpoint = new ContextEndpoint();
-		endpoint.contextStore.setValue("42/a", "1");
-		endpoint.contextStore.setValue("42/b", "2");
-		endpoint.contextStore.setValue("42/x/y/z", "7");
-
-		NormalizedMessageImpl msgIn = new NormalizedMessageImpl();
-		NormalizedMessageImpl msgOut = new NormalizedMessageImpl();
-
-		msgIn.setContent(new StringSource(in));
-
-		endpoint.processInOut(null, msgIn, msgOut);
-
-		System.out.println(msgOut.getContent());
-	}
+        return rootNode;
+    }
 }

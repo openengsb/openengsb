@@ -22,8 +22,8 @@ import java.util.List;
 import org.apache.servicemix.common.DefaultComponent;
 
 /**
- * @org.apache.xbean.XBean element="contextComponent" description="Context Component"
- *                         The Context-component
+ * @org.apache.xbean.XBean element="contextComponent"
+ *                         description="Context Component" The Context-component
  */
 public class ContextComponent extends DefaultComponent {
     private ContextEndpoint[] endpoints;

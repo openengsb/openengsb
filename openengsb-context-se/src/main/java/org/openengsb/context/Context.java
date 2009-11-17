@@ -19,103 +19,107 @@
 package org.openengsb.context;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
 public class Context {
 
-	private Map<String, String> values = new HashMap<String, String>();
+    private Map<String, String> values = new HashMap<String, String>();
 
-	private Map<String, Context> children = new HashMap<String, Context>();
+    private Map<String, Context> children = new HashMap<String, Context>();
 
-	private Context parent;
+    private Context parent;
 
-	public Context() {
-	}
+    public Context() {
+    }
 
-	/* copy constructor */
-	public Context(Context ctx) {
-		parent = ctx.parent;
-		values = new HashMap<String, String>(ctx.values);
+    /* copy constructor */
+    public Context(Context ctx) {
+        parent = ctx.parent;
+        values = new HashMap<String, String>(ctx.values);
 
-		for (Entry<String, Context> e : ctx.children.entrySet()) {
-			children.put(e.getKey(), new Context(e.getValue()));
-		}
-	}
+        for (Entry<String, Context> e : ctx.children.entrySet()) {
+            children.put(e.getKey(), new Context(e.getValue()));
+        }
+    }
 
-	public void set(String key, String value) {
-		if (key == null) {
-			throw new IllegalArgumentException("Key can not be null");
-		}
-		values.put(key, value);
-	}
+    public void set(String key, String value) {
+        if (key == null) {
+            throw new IllegalArgumentException("Key can not be null");
+        }
+        if (key.contains("/")) {
+            throw new IllegalArgumentException("Key must not contain '/'");
+        }
+        values.put(key, value);
+    }
 
-	public String get(String key) {
-		String value = values.get(key);
+    public String get(String key) {
+        String value = values.get(key);
 
-		if (value == null && parent != null) {
-			return parent.get(key);
-		}
+        if (value == null && parent != null) {
+            return parent.get(key);
+        }
 
-		return value;
-	}
+        return value;
+    }
 
-	public Context getChild(String name) {
-		ContextPath contextPath = new ContextPath(name);
-		Context ctx = this;
+    public Context getChild(String name) {
+        ContextPath contextPath = new ContextPath(name);
+        Context ctx = this;
 
-		for (String child : contextPath.getElements()) {
-			ctx = ctx.children.get(child);
+        for (String child : contextPath.getElements()) {
+            ctx = ctx.children.get(child);
 
-			if (ctx == null) {
-				return null;
-			}
-		}
+            if (ctx == null) {
+                return null;
+            }
+        }
 
-		return ctx;
-	}
+        return ctx;
+    }
 
-	public Set<String> getChildrenNames() {
-		return children.keySet();
-	}
+    public Set<String> getChildrenNames() {
+        return new HashSet<String>(children.keySet());
+    }
 
-	public void createChild(String name) {
-		if (name.contains("/")) {
-			throw new IllegalArgumentException("Name must not contain '/'");
-		}
-		Context child = new Context();
-		child.parent = this;
-		children.put(name, child);
-	}
+    void createChild(String name) {
+        if (name.contains("/")) {
+            throw new IllegalArgumentException("Name must not contain '/'");
+        }
+        Context child = new Context();
+        child.parent = this;
+        children.put(name, child);
+    }
 
-	@Override
-	public String toString() {
-		return values.toString();
-	}
+    void removeChild(String child) {
+        Context childContext = children.get(child);
+        if (childContext == null) {
+            return;
+        }
+        childContext.parent = null;
+        children.remove(child);
+    }
 
-	public void removeChild(String child) {
-		Context childContext = children.get(child);
-		if (childContext == null) {
-			return;
-		}
-		childContext.parent = null;
-		children.remove(child);
-	}
+    public Map<String, String> flatten() {
+        Map<String, String> map = new HashMap<String, String>();
+        flatten(this, "", map);
+        return map;
+    }
 
-	public Map<String, String> flatten() {
-		Map<String, String> map = new HashMap<String, String>();
-		flatten(this, "", map);
-		return map;
-	}
+    private void flatten(Context ctx, String prefix, Map<String, String> map) {
+        for (Entry<String, String> e : ctx.values.entrySet()) {
+            map.put(prefix + e.getKey(), e.getValue());
+        }
 
-	private void flatten(Context ctx, String prefix, Map<String, String> map) {
-		for (Entry<String, String> e : ctx.values.entrySet()) {
-			map.put(prefix + e.getKey(), e.getValue());
-		}
+        for (String child : ctx.getChildrenNames()) {
+            flatten(ctx.getChild(child), prefix + child + "/", map);
+        }
+    }
 
-		for (String child : ctx.getChildrenNames()) {
-			flatten(ctx.getChild(child), prefix + child + "/", map);
-		}
-	}
+    @Override
+    public String toString() {
+        return String.format("[Context] %s", values.toString());
+    }
 }
