@@ -41,4 +41,5 @@
   <xi:include href="usermanual/connectors.xml" />
   <xi:include href="usermanual/howToWriteAToolConnectors.xml" />
   <xi:include href="usermanual/scmDomain.xml"/>
+  <xi:include href="usermanual/drools.xml"/>
 </book>
