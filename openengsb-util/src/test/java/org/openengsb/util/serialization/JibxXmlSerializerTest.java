@@ -30,8 +30,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import sun.rmi.rmic.iiop.ClassPathLoader;
-
 public class JibxXmlSerializerTest {
 
     private Serializer serializer;
@@ -43,13 +41,16 @@ public class JibxXmlSerializerTest {
 
     @Test
     public void serializeShouldSucceedWithValidInput() throws SerializationException, IOException, URISyntaxException {
-        String validFileContent = FileUtils.readFileToString(new File(ClassPathLoader.getSystemResource(
+        String validFileContent = FileUtils.readFileToString(new File(ClassLoader.getSystemResource(
                 "serialization/valid.xml").toURI()));
+
         StringWriter writer = new StringWriter();
-
         serializer.serialize(new SerializationTestClass("1", 2, 3.3), writer);
+        String serialized = writer.toString();
 
-        Assert.assertEquals(validFileContent, writer.toString());
+        String expected = validFileContent.substring(validFileContent.indexOf("<serializationtestclass")).trim();
+        String actual = serialized.substring(serialized.indexOf("<serializationtestclass"));
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
@@ -63,7 +64,7 @@ public class JibxXmlSerializerTest {
 
     @Test
     public void deserializeShouldSucceedWithValidInput() throws SerializationException, IOException, URISyntaxException {
-        String validFileContent = FileUtils.readFileToString(new File(ClassPathLoader.getSystemResource(
+        String validFileContent = FileUtils.readFileToString(new File(ClassLoader.getSystemResource(
                 "serialization/valid.xml").toURI()));
         StringReader reader = new StringReader(validFileContent);
 
