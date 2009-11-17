@@ -72,6 +72,11 @@
   </build>
 
   <dependencies>
+    <!--  Internal dependencies -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-util</artifactId>
+    </dependency>
 
     <!-- Servicemix dependencies -->
     <dependency>

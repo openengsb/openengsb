@@ -55,6 +55,7 @@ public class ContextStore {
         String[] splitPath = splitPath(new ContextPath(path));
         Context ctx = resolveAndCreate(new ContextPath(splitPath[0]));
         ctx.set(splitPath[1], value);
+        save();
     }
 
     private String[] splitPath(ContextPath contextPath) {

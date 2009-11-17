@@ -22,10 +22,14 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 
+import java.io.StringWriter;
 import java.util.Map;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.openengsb.util.serialization.JibxXmlSerializer;
+import org.openengsb.util.serialization.SerializationException;
 
 public class TestContext {
 
@@ -146,5 +150,14 @@ public class TestContext {
         assertEquals("2", map.get("b/c"));
         assertEquals("4", map.get("b/d"));
         assertEquals("7", map.get("b/x/a"));
+    }
+    
+    @Test
+    @Ignore("Not implemented yet")
+    public void testSerialization() throws SerializationException {
+        JibxXmlSerializer serializer = new JibxXmlSerializer();
+        StringWriter writer = new StringWriter();
+        serializer.serialize(store.getContext("/"), writer);
+        System.out.println(writer);
     }
 }
