@@ -19,11 +19,10 @@
 
 Issue Tracker Domain
 
-  The domain represents a interface description, how to append issue tracker on TiTA. 
-  The mapping between the interface of the specific issue tracker and TiTA is designed to 
-  add easily new fields from issue trackers. There are a lot of issue tracker on the market. 
-  The focus is on open source issue tracker. For modelling the interface 4 widespreaded issue 
-  tracker are chosen:
+  This page provides object and interface descriptions needed for the integration of issue tracking systems into OpenEngSB.
+  The mapping between the interface of the specific issue tracker and OpenEngSB is designed to
+  be easily extensible (e.g. adding new fields from issue trackers). There are a lot of issue trackers on the market.
+  The focus lies on open source issue trackers. To model the interface 4 widespread systems were chosen:
   
   * Mantis
   
@@ -193,13 +192,13 @@ public interface Issue {
 	 * Sets the id of the task to identify it.
 	 * @param id - the id identifies the task
 	 */
-	public void setId(Long id);
+	public void setId(String id);
 	
 	/**
 	 * Supplies the identifier of the task
 	 * @return id - identifier of the task
 	 */
-	public Long getId();
+	public String getId();
 	
 	/**
 	 * Sets the summary, a short description of the task
@@ -332,31 +331,31 @@ public interface Issue {
 	/**
 	 * Sets the project of task
 	 * @param project - the project the task is being filed against
-	 * @see IsProjectTrackable
+	 * @see Project
 	 */
-	public void setProject(IsProjectTrackable project);
+	public void setProject(Project project);
 	
 	/**
 	 * Returns the project the task is being filed against
 	 * @return project - the project the task is being filed against
-	 * @see IsProjectTrackable
+	 * @see Project
 	 */
-	public IsProjectTrackable getProject();
+	public Project getProject();
 	
 	/**
 	 * Sets the comments that are added to the task
 	 * At the creation time of course null
 	 * @param comments - a list of comments, default null
-	 * @see IsCommentTrackable
+	 * @see Comment
 	 */
-	public void setComments(List<IsCommentTrackable> comments);
+	public void setComments(List<Comment> comments);
 	
 	/**
 	 * Returns a list of comments added to the task
 	 * @return comments - a list of comments
-	 * @see IsCommentTrackable
+	 * @see Comment
 	 */
-	public List<IsCommentTrackable> getComments();
+	public List<Comment> getComments();
 }
 ---
 
@@ -369,13 +368,13 @@ public interface Comment {
 	 * Sets the id of the comment to identify it.
 	 * @param id - the id identifies the comment
 	 */
-	public void setId(Long id);
+	public void setId(String id);
 	
 	/**
 	 * Supplies the identifier of the comment
 	 * @return id - identifier of the comment
 	 */
-	public Long getId();
+	public String getId();
 	
 	/**
 	 * Sets the reporter of the comment
@@ -453,13 +452,13 @@ public interface Project {
 	 * Sets the id of the project to identify it.
 	 * @param id - the id identifies the project
 	 */
-	public void setId(Long id);
+	public void setId(String id);
 	
 	/**
 	 * Supplies the identifier of the project
 	 * @return id - identifier of the project
 	 */
-	public Long getId();
+	public String getId();
 	
 	/**
 	 * Sets the name of the project in the form of a short
@@ -514,16 +513,16 @@ public interface Project {
 	/**
 	 * Sets the tasks for a project from the issue tracker
 	 * @param tasks - a list of tasks
-	 * @see IsTaskTrackable
+	 * @see Issue
 	 */
-	public void setTasks(List<IsTaskTrackable> tasks);
+	public void setTasks(List<Issue> tasks);
 	
 	/**
 	 * Returns the tasks of the project
 	 * @return tasks - reported tasks of the project
-	 * @see IsTaskTrackable
+	 * @see Issue
 	 */
-	public List<IsTaskTrackable> getTasks();
+	public List<Issue> getTasks();
 }
 ---
 
