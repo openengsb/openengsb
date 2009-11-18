@@ -57,6 +57,6 @@ class ContextPath {
 
     @Override
     public String toString() {
-        return String.format("[ContextPath] '%s'", path);
+        return String.format("[ContextPath, path=%s]", path);
     }
 }

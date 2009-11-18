@@ -75,7 +75,7 @@
     <!--  Internal dependencies -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-util</artifactId>
+      <artifactId>openengsb-core</artifactId>
     </dependency>
 
     <!-- Servicemix dependencies -->

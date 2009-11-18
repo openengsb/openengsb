@@ -18,7 +18,6 @@
 package org.openengsb.context;
 
 import java.io.IOException;
-import java.util.Map.Entry;
 
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
@@ -33,6 +32,7 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
 import org.apache.xpath.CachedXPathAPI;
+import org.openengsb.core.messaging.Segment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
@@ -59,11 +59,8 @@ public class ContextEndpoint extends ProviderEndpoint {
         String id = idNode.getTextContent();
         Context ctx = contextStore.getContext(id);
 
-        String m = "<context>\n";
-        for (Entry<String, String> e : ctx.flatten().entrySet()) {
-            m += String.format("<entry key=\"%s\" value=\"%s\" />\n", e.getKey(), e.getValue());
-        }
-        m += "</context>";
+        Segment segment = ContextToSegmentTransformer.transform(ctx);
+        String m = ContextToSegmentTransformer.asString(segment);
 
         NormalizedMessageImpl msg = new NormalizedMessageImpl();
         msg.setContent(new StringSource(m));

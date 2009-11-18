@@ -84,6 +84,10 @@ public class Context {
         return new HashSet<String>(children.keySet());
     }
 
+    public Set<String> getKeys() {
+        return new HashSet<String>(values.keySet());
+    }
+
     void createChild(String name) {
         if (name.contains("/")) {
             throw new IllegalArgumentException("Name must not contain '/'");
@@ -120,6 +124,6 @@ public class Context {
 
     @Override
     public String toString() {
-        return String.format("[Context] %s", values.toString());
+        return String.format("[Context, values=%s]", values.toString());
     }
 }
