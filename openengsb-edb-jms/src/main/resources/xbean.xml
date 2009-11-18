@@ -20,7 +20,7 @@
 
   <jms:endpoint service="edb:edb"
                 endpoint="edb"
-                targetService="lb:edb"
+                targetService="edb:edb"
                 role="consumer"
                 connectionFactory="#jmsFactory"
                 destinationStyle="queue"
