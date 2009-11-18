@@ -18,21 +18,26 @@
 -->
 <beans xmlns:jms="http://servicemix.apache.org/jms/1.0" xmlns:edb="urn:openengsb:edb" >
 
-  <jms:endpoint service="edb:edb"
+  <jms:consumer service="edb:edb"
                 endpoint="edb"
+                synchronous="true"
+                destinationName="org.openengsb.edb"
+                connectionFactory="#connectionFactory"
                 targetService="edb:edb"
-                role="consumer"
-                connectionFactory="#jmsFactory"
-                destinationStyle="queue"
-                jmsProviderDestinationName="org.openengsb.edb"
-                defaultMep="http://www.w3.org/2004/08/wsdl/in-out" />
+                targetEndpoint="edb"
+                concurrentConsumers="8"
+                marshaler="#marshaler" />
 
-  <bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+  <bean id="connectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
     <property name="connectionFactory">
       <bean class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL" value="tcp://localhost:61616" />
       </bean>
     </property>
   </bean>
-
+  
+  <bean id="marshaler" class="org.apache.servicemix.jms.endpoints.DefaultConsumerMarshaler">
+    <property name="mep" value="http://www.w3.org/2004/08/wsdl/in-out" />
+  </bean>
+  
 </beans>
