@@ -33,7 +33,6 @@ import org.openengsb.edb.core.entities.OperationType;
 import org.openengsb.edb.jbi.endpoints.XmlParserFunctions.ContentWrapper;
 import org.openengsb.edb.jbi.endpoints.XmlParserFunctions.RequestWrapper;
 
-
 /**
  * @org.apache.xbean.XBean element="edb" The Endpoint to the commit-feature
  * 
@@ -84,15 +83,15 @@ public class EdbEndpoint extends AbstractEndpoint {
          * Only check the local part. Don't care about the namespace of the
          * operation
          */
-        String op = exchange.getOperation().getLocalPart();
+        String op = XmlParserFunctions.getMessageType(in);// exchange.getOperation().getLocalPart();
         String body = null;
-        if (op.equals(EdbEndpoint.OPERATION_COMMIT)) {
+
+        if (op.equals(EdbEndpoint.OPERATION_COMMIT))
             try {
                 List<ContentWrapper> contentWrappers = XmlParserFunctions.parseCommitMessage(in, handler
                         .getRepositoryBase().toString());
-                if (contentWrappers.size() < 1) {
+                if (contentWrappers.size() < 1)
                     throw new EDBException("Message did not contain files to commit");
-                }
                 final List<GenericContent> listAdd = new ArrayList<GenericContent>();
                 final List<GenericContent> listRemove = new ArrayList<GenericContent>();
 
@@ -100,15 +99,13 @@ public class EdbEndpoint extends AbstractEndpoint {
                 // EngsbMessage.createFromXml(sourceTransformer
                 // .contentToString(in));
 
-                for (final ContentWrapper content : contentWrappers) {
+                for (final ContentWrapper content : contentWrappers)
                     // update search index
-                    if (content.getOperation() == OperationType.UPDATE) {
+                    if (content.getOperation() == OperationType.UPDATE)
                         listAdd.add(content.getContent());
-                        // delete content file
-                    } else if (content.getOperation() == OperationType.DELETE) {
+                    // delete content file
+                    else if (content.getOperation() == OperationType.DELETE)
                         listRemove.add(content.getContent());
-                    }
-                }
 
                 handler.add(listAdd);
                 handler.remove(listRemove);
@@ -119,8 +116,7 @@ public class EdbEndpoint extends AbstractEndpoint {
                 body = XmlParserFunctions.buildCommitErrorBody(e.getMessage(), makeStackTraceString(e));
                 this.logger.info(body);
             }
-
-        } else if (op.equals(EdbEndpoint.OPERATION_QUERY)) {
+        else if (op.equals(EdbEndpoint.OPERATION_QUERY)) {
             final List<String> terms = XmlParserFunctions.parseQueryMessage(in);
             List<GenericContent> foundSignals = new ArrayList<GenericContent>();
 
