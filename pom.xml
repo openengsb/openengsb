@@ -75,6 +75,8 @@
   <url>http://openengsb.org</url>
 
   <modules>
+    <!-- Core -->
+    <module>openengsb-core</module>
 
     <!-- Documentation -->
     <module>openengsb-docs</module>
@@ -485,6 +487,13 @@
 
   <dependencyManagement>
     <dependencies>
+
+      <!-- Core -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-core</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
 
       <!-- Documentation -->
       <dependency>
