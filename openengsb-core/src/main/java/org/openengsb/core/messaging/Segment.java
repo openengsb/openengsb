@@ -19,60 +19,59 @@
 package org.openengsb.core.messaging;
 
 public abstract class Segment {
-	private final String name;
-	private final String format;
-	private final String domainConcept;
+    private final String name;
+    private final String format;
+    private final String domainConcept;
 
-	protected Segment(String name, String format, String domainConcept) {
-		this.name = name;
-		this.format = format;
-		this.domainConcept = domainConcept;
-		validate();
-	}
+    protected Segment(String name, String format, String domainConcept) {
+        this.name = name;
+        this.format = format;
+        this.domainConcept = domainConcept;
+        validate();
+    }
 
-	public void validate() {
-		if (name == null) {
-			throw new IllegalStateException("Name must not be null");
-		}
-		if (format == null) {
-			throw new IllegalStateException("Format must not be null");
-		}
-		if (domainConcept == null) {
-			throw new IllegalStateException("DomainConcept must not be null");
-		}
-	}
+    public void validate() {
+        if (name == null) {
+            throw new IllegalStateException("Name must not be null");
+        }
+        if (format == null) {
+            throw new IllegalStateException("Format must not be null");
+        }
+        if (domainConcept == null) {
+            throw new IllegalStateException("DomainConcept must not be null");
+        }
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getFormat() {
-		return format;
-	}
+    public String getFormat() {
+        return format;
+    }
 
-	public String getDomainConcept() {
-		return domainConcept;
-	}
+    public String getDomainConcept() {
+        return domainConcept;
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = 17;
-		hash = hash * 31 + name.hashCode();
-		hash = hash * 31 + format.hashCode();
-		hash = hash * 31 + domainConcept.hashCode();
-		return hash;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 17;
+        hash = hash * 31 + name.hashCode();
+        hash = hash * 31 + format.hashCode();
+        hash = hash * 31 + domainConcept.hashCode();
+        return hash;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof Segment)) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Segment)) {
+            return false;
+        }
 
-		Segment other = (Segment) obj;
+        Segment other = (Segment) obj;
 
-		return name.equals(other.name) && format.equals(other.format)
-				&& domainConcept.equals(other.domainConcept);
+        return name.equals(other.name) && format.equals(other.format) && domainConcept.equals(other.domainConcept);
 
-	}
+    }
 }

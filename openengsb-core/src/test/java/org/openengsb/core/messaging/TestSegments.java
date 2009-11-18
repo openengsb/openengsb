@@ -31,61 +31,53 @@ import org.openengsb.util.serialization.SerializationException;
 
 public class TestSegments {
 
-	private JibxXmlSerializer serializer = new JibxXmlSerializer();
+    private JibxXmlSerializer serializer = new JibxXmlSerializer();
 
-	@Test
-	public void testTextSegment() throws SerializationException {
-		TextSegment ts = new TextSegment.Builder().name("name")
-				.format("format").domainConcept("domainConcept").text("text")
-				.build();
+    @Test
+    public void testTextSegment() throws SerializationException {
+        TextSegment ts = new TextSegment.Builder().name("name").format("format").domainConcept("domainConcept").text(
+                "text").build();
 
-		StringWriter writer = new StringWriter();
-		serializer.serialize(ts, writer);
+        StringWriter writer = new StringWriter();
+        serializer.serialize(ts, writer);
 
-		TextSegment out = serializer.deserialize(TextSegment.class,
-				new StringReader(writer.toString()));
+        TextSegment out = serializer.deserialize(TextSegment.class, new StringReader(writer.toString()));
 
-		Assert.assertEquals(ts, out);
-	}
+        Assert.assertEquals(ts, out);
+    }
 
-	@Test
-	public void testListSegment() throws SerializationException {
-		List<Segment> list = new ArrayList<Segment>();
-		list.add(new TextSegment.Builder().name("foo").text("x").build());
-		list.add(new TextSegment.Builder().name("bar").text("y").build());
-		ListSegment ls = new ListSegment.Builder().name("list").list(list)
-				.build();
+    @Test
+    public void testListSegment() throws SerializationException {
+        List<Segment> list = new ArrayList<Segment>();
+        list.add(new TextSegment.Builder().name("foo").text("x").build());
+        list.add(new TextSegment.Builder().name("bar").text("y").build());
+        ListSegment ls = new ListSegment.Builder().name("list").list(list).build();
 
-		StringWriter writer = new StringWriter();
-		serializer.serialize(ls, writer);
+        StringWriter writer = new StringWriter();
+        serializer.serialize(ls, writer);
 
-		ListSegment out = serializer.deserialize(ListSegment.class,
-				new StringReader(writer.toString()));
+        ListSegment out = serializer.deserialize(ListSegment.class, new StringReader(writer.toString()));
+        Assert.assertEquals(ls, out);
+    }
 
-		Assert.assertEquals(ls, out);
-	}
+    @Test
+    public void testListInListSegment() throws SerializationException {
+        List<Segment> list1 = new ArrayList<Segment>();
+        list1.add(new TextSegment.Builder().name("bar").text("y").build());
+        list1.add(new TextSegment.Builder().name("foo").text("x").build());
+        ListSegment ls1 = new ListSegment.Builder().name("list1").list(list1).build();
 
-	@Test
-	public void testListInListSegment() throws SerializationException {
-		List<Segment> list1 = new ArrayList<Segment>();
-		list1.add(new TextSegment.Builder().name("bar").text("y").build());
-		list1.add(new TextSegment.Builder().name("foo").text("x").build());
-		ListSegment ls1 = new ListSegment.Builder().name("list1").list(list1)
-				.build();
+        List<Segment> list2 = new ArrayList<Segment>();
+        list2.add(new TextSegment.Builder().name("foo").text("x").build());
+        list2.add(ls1);
 
-		List<Segment> list2 = new ArrayList<Segment>();
-		list2.add(new TextSegment.Builder().name("foo").text("x").build());
-		list2.add(ls1);
+        ListSegment ls2 = new ListSegment.Builder().name("list2").list(list2).build();
 
-		ListSegment ls2 = new ListSegment.Builder().name("list2").list(list2)
-				.build();
+        StringWriter writer = new StringWriter();
+        serializer.serialize(ls2, writer);
 
-		StringWriter writer = new StringWriter();
-		serializer.serialize(ls2, writer);
+        ListSegment out = serializer.deserialize(ListSegment.class, new StringReader(writer.toString()));
 
-		ListSegment out = serializer.deserialize(ListSegment.class,
-				new StringReader(writer.toString()));
-
-		Assert.assertEquals(ls2, out);
-	}
+        Assert.assertEquals(ls2, out);
+    }
 }

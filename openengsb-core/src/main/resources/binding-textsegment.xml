@@ -20,6 +20,6 @@
 	<namespace uri="http://org.openengsb/util/serialization" default="elements" />
 	<mapping class="org.openengsb.core.messaging.TextSegment" name="textSegment" extends="org.openengsb.core.messaging.Segment">
       <structure map-as="org.openengsb.core.messaging.Segment" />
-      <value style="element" name="text" field="text" />
+      <value style="text" field="text" />
 	</mapping>
 </binding>

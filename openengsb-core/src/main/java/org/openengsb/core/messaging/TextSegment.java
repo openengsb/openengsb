@@ -20,83 +20,82 @@ package org.openengsb.core.messaging;
 
 public class TextSegment extends Segment {
 
-	private final String text;
+    private final String text;
 
-	private TextSegment(Builder builder) {
-		super(builder.name, builder.format, builder.domainConcept);
-		this.text = builder.text;
-	}
+    private TextSegment(Builder builder) {
+        super(builder.name, builder.format, builder.domainConcept);
+        this.text = builder.text;
+    }
 
-	private TextSegment() {
-		// needed for jibx
-		super("", "", "");
-		this.text = "";
-	}
+    private TextSegment() {
+        // needed for jibx
+        super("", "", "");
+        this.text = "";
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 
-	@Override
-	public String toString() {
-		return String.format(
-				"[TextSegment, name=%s, format=%s, domainConcept=%s, text=%s]",
-				getName(), getFormat(), getDomainConcept(), getText());
-	}
+    @Override
+    public String toString() {
+        return String.format("[TextSegment, name=%s, format=%s, domainConcept=%s, text=%s]", getName(), getFormat(),
+                getDomainConcept(), getText());
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = super.hashCode();
-		hash = hash * 31 + text.hashCode();
-		return hash;
-	}
+    @Override
+    public int hashCode() {
+        int hash = super.hashCode();
+        hash = hash * 31 + text.hashCode();
+        return hash;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof TextSegment)) {
-			return false;
-		}
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof TextSegment)) {
+            return false;
+        }
 
-		TextSegment other = (TextSegment) obj;
+        TextSegment other = (TextSegment) obj;
 
-		return super.equals(other) && text.equals(other.text);
-	}
+        return super.equals(other) && text.equals(other.text);
+    }
 
-	public static class Builder {
-		private String name;
-		private String format = "";
-		private String domainConcept = "";
-		private String text;
+    public static class Builder {
+        private String name;
+        private String format = "";
+        private String domainConcept = "";
+        private String text;
 
-		public TextSegment build() {
-			validate();
-			return new TextSegment(this);
-		}
+        public TextSegment build() {
+            validate();
+            return new TextSegment(this);
+        }
 
-		private void validate() {
-			if (text == null) {
-				throw new IllegalStateException("Text must not be null");
-			}
-		}
+        private void validate() {
+            if (text == null) {
+                throw new IllegalStateException("Text must not be null");
+            }
+        }
 
-		public Builder name(String name) {
-			this.name = name;
-			return this;
-		}
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
 
-		public Builder format(String format) {
-			this.format = format;
-			return this;
-		}
+        public Builder format(String format) {
+            this.format = format;
+            return this;
+        }
 
-		public Builder domainConcept(String domainConcept) {
-			this.domainConcept = domainConcept;
-			return this;
-		}
+        public Builder domainConcept(String domainConcept) {
+            this.domainConcept = domainConcept;
+            return this;
+        }
 
-		public Builder text(String text) {
-			this.text = text;
-			return this;
-		}
-	}
+        public Builder text(String text) {
+            this.text = text;
+            return this;
+        }
+    }
 }
