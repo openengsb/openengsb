@@ -23,30 +23,23 @@
     <constructor-arg index="0" value="tcp://localhost:61616"/>
   </object>
 
-  
   <object name="NmsTemplate" type="Spring.Messaging.Nms.Core.NmsTemplate, Spring.Messaging.Nms">
     <property name="ConnectionFactory" ref="ConnectionFactory"/>
   </object>
 
-
-  <nms:listener-container connection-factory="ConnectionFactory">
-    <nms:listener ref="MessageListenerAdapter" destination="engsb.acm.response" />
-  </nms:listener-container>
-
-  
-  <!-- Plain object message handler -->
-  <object id="MessageListenerAdapter" type="Spring.Messaging.Nms.Listener.Adapter.MessageListenerAdapter, Spring.Messaging.Nms">
-    <property name="HandlerObject" ref="MessageReceiver"/>
-    <property name="DefaultHandlerMethod" value="MessageReceived"/>
-  </object>
-
-  <object id="MessageReceiver" type="EngSB.Connector.Common.EngsbServiceRequestor, EngSB.Connector.Common" >
+  <object id="MessageWorker" type="EngSB.Connector.Common.EngsbMessageWorker, EngSB.Connector.Common" >
   	<property name="NmsTemplate" ref="NmsTemplate" />
-	<property name="Destination" value="asb.in" />
+	<property name="EdbDestination" value="org.openengsb.edb" />
+	<property name="ReponseBase" value="org.openengsb.edb.response" />
+  </object>
+	
+  <object id="ServiceRequestor" type="EngSB.Connector.Common.EngsbServiceRequestor, EngSB.Connector.Common" >
+	<property name="NmsTemplate" ref="NmsTemplate" />
+	<property name="Worker" ref="MessageWorker" />
   </object>
 
   <object id="ClientHandler" type="EngSB.Connector.Quickstart.ClientHandler">
-	<property name="Service" ref="MessageReceiver" />
+	<property name="Service" ref="ServiceRequestor" />
    </object>
 
 </objects>

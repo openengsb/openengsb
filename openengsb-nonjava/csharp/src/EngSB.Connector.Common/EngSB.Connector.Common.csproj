@@ -106,6 +106,7 @@
     <Compile Include="Connector\Common\EngsbMessageBuilder.cs" />
     <Compile Include="Connector\Common\EngsbServiceException.cs" />
     <Compile Include="Connector\Common\EngsbServiceRequestor.cs" />
+    <Compile Include="Connector\Common\EngsbMessageWorker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

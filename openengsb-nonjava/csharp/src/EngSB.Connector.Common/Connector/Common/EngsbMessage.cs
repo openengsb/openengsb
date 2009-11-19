@@ -116,30 +116,33 @@ namespace EngSB.Connector.Common
             		       		
             		msg.MessageType = doc.DocumentElement.Name;
             		msg.log.Debug("MessageType: "+msg.messageType);
-            		msg.MessageId = new Guid(header["base:messageId"].InnerText.Trim());
-            		msg.log.Debug("MessageId: "+msg.messageId);
-            		msg.Timestamp = DateTime.Parse(header["base:timestamp"].InnerText.Trim());
-            		msg.log.Debug("Timestamp: "+msg.timestamp);
-            		
-            		XmlElement tmp = header["base:correlationId"];
-            		if (tmp != null)
+            		if(header != null)
             		{
-            			msg.CorrelationId = new Guid(tmp.InnerText.Trim());
-            			msg.log.Debug("CorrelationId: "+msg.correlationId);
-            		}
+            			msg.MessageId = new Guid(header["base:messageId"].InnerText.Trim());
+            			msg.log.Debug("MessageId: "+msg.messageId);
+            			msg.Timestamp = DateTime.Parse(header["base:timestamp"].InnerText.Trim());
+            			msg.log.Debug("Timestamp: "+msg.timestamp);
             		
-            		tmp = header["base:parentMessageId"];
-            		if (tmp != null) 
-            		{
-            			msg.ParentMessageId = new Guid((tmp.InnerText.Trim()));
-            			msg.log.Debug("ParentMessageId: " + msg.parentMessageId);
-            		}
+            			XmlElement tmp = header["base:correlationId"];
+            			if (tmp != null)
+            			{
+            				msg.CorrelationId = new Guid(tmp.InnerText.Trim());
+            				msg.log.Debug("CorrelationId: "+msg.correlationId);
+            			}
             		
-            		tmp = header["base:replyQueue"];
-            		if (tmp != null) 
-            		{
-            			msg.ReplyQueue = tmp.InnerText.Trim();
-            			msg.log.Debug("replyQueue: " + msg.replyQueue);
+            			tmp = header["base:parentMessageId"];
+            			if (tmp != null) 
+            			{
+            				msg.ParentMessageId = new Guid((tmp.InnerText.Trim()));
+            				msg.log.Debug("ParentMessageId: " + msg.parentMessageId);
+            			}
+            		
+            			tmp = header["base:replyQueue"];
+            			if (tmp != null) 
+            			{
+            				msg.ReplyQueue = tmp.InnerText.Trim();
+            				msg.log.Debug("replyQueue: " + msg.replyQueue);
+            			}
             		}
             
             		msg.body = body;
