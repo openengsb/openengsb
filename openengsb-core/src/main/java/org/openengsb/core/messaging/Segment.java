@@ -18,10 +18,18 @@
 
 package org.openengsb.core.messaging;
 
+import java.io.StringReader;
+import java.io.StringWriter;
+
+import org.openengsb.util.serialization.JibxXmlSerializer;
+import org.openengsb.util.serialization.SerializationException;
+
 public abstract class Segment {
     private final String name;
     private final String format;
     private final String domainConcept;
+
+    private final static JibxXmlSerializer serializer = new JibxXmlSerializer();
 
     protected Segment(String name, String format, String domainConcept) {
         this.name = name;
@@ -40,6 +48,16 @@ public abstract class Segment {
         if (domainConcept == null) {
             throw new IllegalStateException("DomainConcept must not be null");
         }
+    }
+
+    public String toXML() throws SerializationException {
+        StringWriter writer = new StringWriter();
+        serializer.serialize(this, writer);
+        return writer.toString();
+    }
+
+    public static Segment fromXML(String xml) throws SerializationException {
+        return serializer.deserialize(Segment.class, new StringReader(xml));
     }
 
     public String getName() {
@@ -72,6 +90,5 @@ public abstract class Segment {
         Segment other = (Segment) obj;
 
         return name.equals(other.name) && format.equals(other.format) && domainConcept.equals(other.domainConcept);
-
     }
 }

@@ -67,6 +67,13 @@ public class TextSegment extends Segment {
         private String domainConcept = "";
         private String text;
 
+        public Builder() {
+        }
+
+        public Builder(String name) {
+            name(name);
+        }
+
         public TextSegment build() {
             validate();
             return new TextSegment(this);

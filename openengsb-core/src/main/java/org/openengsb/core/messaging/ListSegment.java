@@ -76,6 +76,13 @@ public class ListSegment extends Segment {
         private String domainConcept = "";
         private List<Segment> list;
 
+        public Builder() {
+        }
+
+        public Builder(String name) {
+            name(name);
+        }
+
         public ListSegment build() {
             validate();
             return new ListSegment(this);
