@@ -17,15 +17,14 @@
  */
 package org.openengsb.edb.jbi.endpoints;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
 
+import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.openengsb.edb.core.api.EDBException;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.entities.GenericContent;
@@ -86,12 +85,13 @@ public class EdbEndpoint extends AbstractEndpoint {
         String op = XmlParserFunctions.getMessageType(in);// exchange.getOperation().getLocalPart();
         String body = null;
 
-        if (op.equals(EdbEndpoint.OPERATION_COMMIT))
+        if (op.equals(EdbEndpoint.OPERATION_COMMIT)) {
             try {
                 List<ContentWrapper> contentWrappers = XmlParserFunctions.parseCommitMessage(in, handler
                         .getRepositoryBase().toString());
-                if (contentWrappers.size() < 1)
+                if (contentWrappers.size() < 1) {
                     throw new EDBException("Message did not contain files to commit");
+                }
                 final List<GenericContent> listAdd = new ArrayList<GenericContent>();
                 final List<GenericContent> listRemove = new ArrayList<GenericContent>();
 
@@ -99,13 +99,14 @@ public class EdbEndpoint extends AbstractEndpoint {
                 // EngsbMessage.createFromXml(sourceTransformer
                 // .contentToString(in));
 
-                for (final ContentWrapper content : contentWrappers)
+                for (final ContentWrapper content : contentWrappers) {
                     // update search index
-                    if (content.getOperation() == OperationType.UPDATE)
+                    if (content.getOperation() == OperationType.UPDATE) {
                         listAdd.add(content.getContent());
-                    // delete content file
-                    else if (content.getOperation() == OperationType.DELETE)
+                    } else if (content.getOperation() == OperationType.DELETE) {
                         listRemove.add(content.getContent());
+                    }
+                }
 
                 handler.add(listAdd);
                 handler.remove(listRemove);
@@ -116,7 +117,7 @@ public class EdbEndpoint extends AbstractEndpoint {
                 body = XmlParserFunctions.buildCommitErrorBody(e.getMessage(), makeStackTraceString(e));
                 this.logger.info(body);
             }
-        else if (op.equals(EdbEndpoint.OPERATION_QUERY)) {
+        } else if (op.equals(EdbEndpoint.OPERATION_QUERY)) {
             final List<String> terms = XmlParserFunctions.parseQueryMessage(in);
             List<GenericContent> foundSignals = new ArrayList<GenericContent>();
 
@@ -156,7 +157,7 @@ public class EdbEndpoint extends AbstractEndpoint {
         }
         body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><acmResponseMessage><body>" + body
                 + "</body></acmResponseMessage>";
-        Source response = new StreamSource(new ByteArrayInputStream(body.getBytes()));
+        Source response = new StringSource(body);
         this.logger.info(body);
         out.setContent(response);
         getChannel().send(exchange);
