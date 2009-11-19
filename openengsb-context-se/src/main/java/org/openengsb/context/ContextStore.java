@@ -18,11 +18,26 @@
 
 package org.openengsb.context;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+import org.openengsb.core.messaging.Segment;
+import org.openengsb.util.serialization.SerializationException;
+
 public class ContextStore {
+
     private Context rootContext = new Context();
 
-    public ContextStore() {
+    private final File settings;
+
+    public ContextStore(String filename) {
+        settings = new File(filename);
         load();
+    }
+
+    public ContextStore() {
+        settings = null;
     }
 
     public Context getContext(String path) {
@@ -56,6 +71,16 @@ public class ContextStore {
         Context ctx = resolveAndCreate(new ContextPath(splitPath[0]));
         ctx.set(splitPath[1], value);
         save();
+    }
+
+    public String getValue(String path) {
+        try {
+            String[] splitPath = splitPath(new ContextPath(path));
+            Context ctx = resolve(new ContextPath(splitPath[0]));
+            return ctx.get(splitPath[1]);
+        } catch (ContextNotFoundException e) {
+            return null;
+        }
     }
 
     private String[] splitPath(ContextPath contextPath) {
@@ -108,12 +133,32 @@ public class ContextStore {
     }
 
     private void load() {
-        // TODO
-        setValue("42/name", "Test Project");
-        setValue("42/scmendpoint", "git@example.com:");
+        if (settings == null || !settings.isFile()) {
+            return;
+        }
+
+        try {
+            Segment segment = Segment.fromXML(FileUtils.readFileToString(settings));
+            rootContext = ContextSegmentTransformer.toContext(segment);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void save() {
-        // TODO
+        if (settings == null) {
+            return;
+        }
+
+        try {
+            Segment segment = ContextSegmentTransformer.toSegment(rootContext);
+            FileUtils.writeStringToFile(settings, segment.toXML(), "UTF-8");
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

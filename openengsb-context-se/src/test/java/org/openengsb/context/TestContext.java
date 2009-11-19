@@ -22,20 +22,30 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 
-import java.util.Map;
+import java.io.File;
 
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openengsb.core.messaging.Segment;
-import org.openengsb.util.serialization.SerializationException;
 
 public class TestContext {
 
     private ContextStore store;
 
+    @BeforeClass
+    public static void beforeClass() {
+        new File("testsettings.xml").deleteOnExit();
+    }
+
     @Before
     public void before() {
-        store = new ContextStore();
+        store = new ContextStore("testsettings.xml");
+    }
+
+    @After
+    public void after() {
+        new File("testsettings.xml").delete();
     }
 
     @Test
@@ -136,29 +146,14 @@ public class TestContext {
     }
 
     @Test
-    public void testFlatten() {
-        store.setValue("a", "1");
-        store.setValue("b/c", "2");
-        store.setValue("b/d", "4");
-        store.setValue("b/x/a", "7");
+    public void testSaveLoad() {
+        ContextStore s2 = new ContextStore("test.xml");
+        s2.setValue("foo/bar/buz", "42");
 
-        Map<String, String> map = store.getContext("").flatten();
+        ContextStore s3 = new ContextStore("test.xml");
+        System.out.println(s3.getContext("/").toString());
+        assertEquals("42", s3.getValue("foo/bar/buz"));
 
-        assertEquals("1", map.get("a"));
-        assertEquals("2", map.get("b/c"));
-        assertEquals("4", map.get("b/d"));
-        assertEquals("7", map.get("b/x/a"));
-    }
-
-    @Test
-    public void testSerialization() throws SerializationException {
-        store.setValue("a", "1");
-        store.setValue("b/c", "2");
-        store.setValue("b/d", "4");
-        store.setValue("b/x/a", "7");
-
-        Segment segment = ContextToSegmentTransformer.transform(store.getContext("/"));
-        String string = ContextToSegmentTransformer.asString(segment);
-        System.out.println(string);
+        new File("test.xml").delete();
     }
 }

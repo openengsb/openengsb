@@ -18,24 +18,42 @@
 
 package org.openengsb.context;
 
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.messaging.ListSegment;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
-import org.openengsb.util.serialization.JibxXmlSerializer;
-import org.openengsb.util.serialization.SerializationException;
 
-public class ContextToSegmentTransformer {
+public class ContextSegmentTransformer {
 
-    public static Segment transform(Context ctx) {
-        return transform("/", ctx);
+    public static Segment toSegment(Context ctx) {
+        return toSegment("/", ctx);
     }
 
-    public static Segment transform(String current, Context ctx) {
+    public static Context toContext(Segment segment) {
+        ContextStore store = new ContextStore();
+        toContext("", store, segment);
+        return store.getContext("/");
+    }
 
+    private static void toContext(String prefix, ContextStore store, Segment segment) {
+        if (segment instanceof TextSegment) {
+            TextSegment ts = (TextSegment) segment;
+            String value = ts.getText();
+            String key = ts.getName();
+
+            store.setValue(prefix + key, value);
+        } else if (segment instanceof ListSegment) {
+            ListSegment ls = (ListSegment) segment;
+
+            for (Segment s : ls.getList()) {
+                toContext(prefix + ls.getName() + "/", store, s);
+            }
+        }
+    }
+
+    private static Segment toSegment(String current, Context ctx) {
         List<Segment> list = new ArrayList<Segment>();
 
         for (String key : ctx.getKeys()) {
@@ -44,17 +62,11 @@ public class ContextToSegmentTransformer {
         }
 
         for (String child : ctx.getChildrenNames()) {
-            list.add(transform(child, ctx.getChild(child)));
+            list.add(toSegment(child, ctx.getChild(child)));
         }
 
         Segment root = new ListSegment.Builder().name(current).list(list).build();
 
         return root;
-    }
-
-    public static String asString(Segment segment) throws SerializationException {
-        StringWriter writer = new StringWriter();
-        new JibxXmlSerializer().serialize(segment, writer);
-        return writer.toString();
     }
 }

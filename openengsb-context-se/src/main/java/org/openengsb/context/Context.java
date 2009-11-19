@@ -18,17 +18,17 @@
 
 package org.openengsb.context;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.Map.Entry;
 
 public class Context {
 
-    private Map<String, String> values = new HashMap<String, String>();
+    private SortedMap<String, String> values = new TreeMap<String, String>();
 
-    private Map<String, Context> children = new HashMap<String, Context>();
+    private SortedMap<String, Context> children = new TreeMap<String, Context>();
 
     private Context parent;
 
@@ -38,10 +38,12 @@ public class Context {
     /* copy constructor */
     public Context(Context ctx) {
         parent = ctx.parent;
-        values = new HashMap<String, String>(ctx.values);
+        values = new TreeMap<String, String>(ctx.values);
 
         for (Entry<String, Context> e : ctx.children.entrySet()) {
-            children.put(e.getKey(), new Context(e.getValue()));
+            Context context = new Context(e.getValue());
+            context.parent = this;
+            children.put(e.getKey(), context);
         }
     }
 
@@ -81,11 +83,11 @@ public class Context {
     }
 
     public Set<String> getChildrenNames() {
-        return new HashSet<String>(children.keySet());
+        return new TreeSet<String>(children.keySet());
     }
 
     public Set<String> getKeys() {
-        return new HashSet<String>(values.keySet());
+        return new TreeSet<String>(values.keySet());
     }
 
     void createChild(String name) {
@@ -106,24 +108,8 @@ public class Context {
         children.remove(child);
     }
 
-    public Map<String, String> flatten() {
-        Map<String, String> map = new HashMap<String, String>();
-        flatten(this, "", map);
-        return map;
-    }
-
-    private void flatten(Context ctx, String prefix, Map<String, String> map) {
-        for (Entry<String, String> e : ctx.values.entrySet()) {
-            map.put(prefix + e.getKey(), e.getValue());
-        }
-
-        for (String child : ctx.getChildrenNames()) {
-            flatten(ctx.getChild(child), prefix + child + "/", map);
-        }
-    }
-
     @Override
     public String toString() {
-        return String.format("[Context, values=%s]", values.toString());
+        return String.format("[Context, values=%s, children=%s]", values.toString(), children.toString());
     }
 }

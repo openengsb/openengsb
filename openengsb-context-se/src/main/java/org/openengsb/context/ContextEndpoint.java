@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
 public class ContextEndpoint extends ProviderEndpoint {
     private static final String ID_XPATH = "/message/header/contextID";
 
-    private ContextStore contextStore = new ContextStore();
+    private ContextStore contextStore = new ContextStore("contextstoresettings");
 
     private static final CachedXPathAPI XPATH = new CachedXPathAPI();
 
@@ -59,11 +59,11 @@ public class ContextEndpoint extends ProviderEndpoint {
         String id = idNode.getTextContent();
         Context ctx = contextStore.getContext(id);
 
-        Segment segment = ContextToSegmentTransformer.transform(ctx);
-        String m = ContextToSegmentTransformer.asString(segment);
+        Segment segment = ContextSegmentTransformer.toSegment(ctx);
+        String xml = segment.toXML();
 
         NormalizedMessageImpl msg = new NormalizedMessageImpl();
-        msg.setContent(new StringSource(m));
+        msg.setContent(new StringSource(xml));
 
         if (exchange != null) {
             InOut inOut = getExchangeFactory().createInOutExchange();
