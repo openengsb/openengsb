@@ -51,7 +51,8 @@ public class ContextEndpoint extends ProviderEndpoint {
         if (messageType.equals("context/store")) {
             handleStore(id, in);
         } else {
-            // TODO send error
+            // TODO throw specialized exception
+            throw new RuntimeException("Illegal message type: " + messageType);
         }
     }
 
@@ -64,7 +65,8 @@ public class ContextEndpoint extends ProviderEndpoint {
         if (messageType.equals("context/request")) {
             result = handleRequest(in, id);
         } else {
-            // TODO send error
+            // TODO throw specialized exception
+            throw new RuntimeException("Illegal message type: " + messageType);
         }
 
         out.setContent(new StringSource(result));
@@ -93,9 +95,6 @@ public class ContextEndpoint extends ProviderEndpoint {
         String inputMessage = sourceTransformer.toString(in.getContent());
 
         Segment inSegment = Segment.fromXML(inputMessage);
-        if (!(inSegment instanceof TextSegment)) {
-            throw new RuntimeException();
-        }
         TextSegment ts = (TextSegment) inSegment;
         String path = ts.getText();
 
