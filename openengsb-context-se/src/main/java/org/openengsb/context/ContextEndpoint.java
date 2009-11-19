@@ -17,78 +17,101 @@
  */
 package org.openengsb.context;
 
-import java.io.IOException;
-
-import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.jbi.messaging.RobustInOnly;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.dom.DOMSource;
 
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.NormalizedMessageImpl;
-import org.apache.xpath.CachedXPathAPI;
+import org.openengsb.core.messaging.ListSegment;
 import org.openengsb.core.messaging.Segment;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
+import org.openengsb.core.messaging.TextSegment;
+import org.openengsb.util.serialization.SerializationException;
 
 /**
  * @org.apache.xbean.XBean element="contextEndpoint"
  *                         description="Context Component"
  */
 public class ContextEndpoint extends ProviderEndpoint {
-    private static final String ID_XPATH = "/message/header/contextID";
 
     private ContextStore contextStore = new ContextStore("contextstoresettings");
 
-    private static final CachedXPathAPI XPATH = new CachedXPathAPI();
+    @Override
+    protected void processInOnly(MessageExchange exchange, NormalizedMessage in) throws Exception {
+        if (!(exchange instanceof RobustInOnly)) {
+            throw new UnsupportedOperationException("Unsupported MEP: " + exchange.getPattern());
+        }
+        RobustInOnly ex = (RobustInOnly) exchange;
+
+        String messageType = getMessageType(ex);
+        String id = getContextId(ex);
+
+        if (messageType.equals("context/store")) {
+            handleStore(id, in);
+        } else {
+            // TODO send error
+        }
+    }
 
     @Override
     protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
-        Node idNode = extractSingleNode(in, ID_XPATH);
+        String id = getContextId(exchange);
+        String messageType = getMessageType(exchange);
 
-        if (idNode == null) {
-            throw new IllegalStateException("Could not find id node");
+        String result = null;
+        if (messageType.equals("context/request")) {
+            result = handleRequest(in, id);
+        } else {
+            // TODO send error
         }
 
-        String id = idNode.getTextContent();
-        Context ctx = contextStore.getContext(id);
+        out.setContent(new StringSource(result));
+    }
+
+    private void handleStore(String id, NormalizedMessage in) throws SerializationException, TransformerException {
+        SourceTransformer sourceTransformer = new SourceTransformer();
+        String inputMessage = sourceTransformer.toString(in.getContent());
+
+        Segment inSegment = Segment.fromXML(inputMessage);
+        ListSegment ls = (ListSegment) inSegment;
+
+        for (Segment s : ls.getList()) {
+            handleStoreSegment((TextSegment) s, id);
+        }
+    }
+
+    private void handleStoreSegment(TextSegment s, String id) {
+        String key = s.getName();
+        String value = s.getText();
+        contextStore.setValue(id + "/" + key, value);
+    }
+
+    private String handleRequest(NormalizedMessage in, String id) throws TransformerException, SerializationException {
+        SourceTransformer sourceTransformer = new SourceTransformer();
+        String inputMessage = sourceTransformer.toString(in.getContent());
+
+        Segment inSegment = Segment.fromXML(inputMessage);
+        if (!(inSegment instanceof TextSegment)) {
+            throw new RuntimeException();
+        }
+        TextSegment ts = (TextSegment) inSegment;
+        String path = ts.getText();
+
+        Context ctx = contextStore.getContext(id + "/" + path);
 
         Segment segment = ContextSegmentTransformer.toSegment(ctx);
-        String xml = segment.toXML();
-
-        NormalizedMessageImpl msg = new NormalizedMessageImpl();
-        msg.setContent(new StringSource(xml));
-
-        if (exchange != null) {
-            InOut inOut = getExchangeFactory().createInOutExchange();
-            inOut.setInMessage(msg);
-        }
-        out.setContent(msg.getContent());
+        return segment.toXML();
     }
 
-    private Node extractSingleNode(NormalizedMessage inMessage, String xPath) throws MessagingException,
-            TransformerException, ParserConfigurationException, IOException, SAXException {
-        Node rootNode = getRootNode(inMessage);
-        return rootNode == null ? null : XPATH.selectSingleNode(rootNode, xPath);
+    private String getMessageType(MessageExchange exchange) {
+        String messageType = (String) exchange.getProperty("messageType");
+        return messageType;
     }
 
-    private Node getRootNode(NormalizedMessage message) throws ParserConfigurationException, IOException, SAXException,
-            TransformerException {
-        SourceTransformer sourceTransformer = new SourceTransformer();
-        DOMSource messageXml = sourceTransformer.toDOMSource(message.getContent());
-
-        Node rootNode = messageXml.getNode();
-
-        if (rootNode instanceof Document) {
-            return rootNode.getFirstChild();
-        }
-
-        return rootNode;
+    private String getContextId(MessageExchange exchange) {
+        String id = (String) exchange.getProperty("contextId");
+        return id;
     }
 }
