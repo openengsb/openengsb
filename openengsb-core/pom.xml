@@ -29,7 +29,7 @@
 
   <artifactId>openengsb-core</artifactId>
   <name>openengsb-core</name>
-  <packaging>jbi-shared-library</packaging>
+  <packaging>jar</packaging>
 
   <description>
     Core OpenEngSB functionality.

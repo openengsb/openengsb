@@ -22,7 +22,7 @@
 
   <quartz:endpoint endpoint="endpoint" service="timing:DummyTimer" targetService="routing:CIWorkflow">
     <quartz:triggers>
-      <quartz:simple repeatCount="5" repeatInterval="180000" />
+      <quartz:simple repeatCount="5" repeatInterval="10000" />
     </quartz:triggers>
     <quartz:marshaler>
       <bean class="org.openengsb.timing.SimpleTextMarshaler" />

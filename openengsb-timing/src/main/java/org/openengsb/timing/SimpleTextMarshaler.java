@@ -29,7 +29,6 @@ import org.apache.servicemix.quartz.support.DefaultQuartzMarshaler;
 import org.openengsb.core.messaging.ListSegment;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
-import org.openengsb.util.serialization.SerializationException;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -41,8 +40,6 @@ public class SimpleTextMarshaler extends DefaultQuartzMarshaler {
     public void populateNormalizedMessage(NormalizedMessage message, JobExecutionContext context)
             throws JobExecutionException, MessagingException {
         super.populateNormalizedMessage(message, context);
-        message.setContent(new StringSource((String) context.getJobDetail().getJobDataMap().get("xml")));
-
         message.setProperty("contextId", "42");
 
         try {
@@ -64,8 +61,8 @@ public class SimpleTextMarshaler extends DefaultQuartzMarshaler {
             }
 
             message.setContent(new StringSource(xml));
-        } catch (SerializationException e) {
-
+        } catch (Exception e) {
+            throw new RuntimeException(e); // TODO
         }
     }
 }

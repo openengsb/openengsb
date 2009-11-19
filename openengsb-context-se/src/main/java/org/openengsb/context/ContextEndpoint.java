@@ -45,8 +45,8 @@ public class ContextEndpoint extends ProviderEndpoint {
         }
         RobustInOnly ex = (RobustInOnly) exchange;
 
-        String messageType = getMessageType(ex);
-        String id = getContextId(ex);
+        String messageType = getMessageType(in);
+        String id = getContextId(in);
 
         if (messageType.equals("context/store")) {
             handleStore(id, in);
@@ -58,14 +58,16 @@ public class ContextEndpoint extends ProviderEndpoint {
 
     @Override
     protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
-        String id = getContextId(exchange);
-        String messageType = getMessageType(exchange);
+        String id = getContextId(in);
+        String messageType = getMessageType(in);
 
         String result = null;
         if (messageType.equals("context/request")) {
             result = handleRequest(in, id);
+        } else if (messageType.equals("context/store")) {
+            handleStore(id, in);
+            result = "<result>success</result>";
         } else {
-            // TODO throw specialized exception
             throw new RuntimeException("Illegal message type: " + messageType);
         }
 
@@ -104,13 +106,11 @@ public class ContextEndpoint extends ProviderEndpoint {
         return segment.toXML();
     }
 
-    private String getMessageType(MessageExchange exchange) {
-        String messageType = (String) exchange.getProperty("messageType");
-        return messageType;
+    private String getMessageType(NormalizedMessage in) {
+        return (String) in.getProperty("messageType");
     }
 
-    private String getContextId(MessageExchange exchange) {
-        String id = (String) exchange.getProperty("contextId");
-        return id;
+    private String getContextId(NormalizedMessage in) {
+        return (String) in.getProperty("contextId");
     }
 }
