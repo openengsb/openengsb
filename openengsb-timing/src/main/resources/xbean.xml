@@ -21,25 +21,6 @@
     http://servicemix.apache.org/quartz/1.0 http://servicemix.apache.org/schema/servicemix-quartz-2008.01.xsd">
 
   <quartz:endpoint endpoint="endpoint" service="timing:DummyTimer" targetService="routing:CIWorkflow">
-    <quartz:jobDetail>
-      <quartz:jobDetail>
-        <quartz:jobDataAsMap>
-          <quartz:property key="xml"><![CDATA[
-            <message>
-              <header>
-                <messageID>5</messageID>
-                <contextID>42</contextID>
-              </header>
-              <payload>
-                <timer>
-                  <name>Foo</name>
-                  <group>Bar</group>
-                </timer>
-              </payload>
-            </message>]]></quartz:property>
-        </quartz:jobDataAsMap>
-      </quartz:jobDetail>
-    </quartz:jobDetail>
     <quartz:triggers>
       <quartz:simple repeatCount="5" repeatInterval="180000" />
     </quartz:triggers>

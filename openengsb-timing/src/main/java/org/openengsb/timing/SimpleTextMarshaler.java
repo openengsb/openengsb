@@ -17,21 +17,55 @@
  */
 package org.openengsb.timing;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.quartz.support.DefaultQuartzMarshaler;
+import org.openengsb.core.messaging.ListSegment;
+import org.openengsb.core.messaging.Segment;
+import org.openengsb.core.messaging.TextSegment;
+import org.openengsb.util.serialization.SerializationException;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 public class SimpleTextMarshaler extends DefaultQuartzMarshaler {
 
+    private int i = 0;
+
     @Override
-    public void populateNormalizedMessage(final NormalizedMessage message, final JobExecutionContext context)
+    public void populateNormalizedMessage(NormalizedMessage message, JobExecutionContext context)
             throws JobExecutionException, MessagingException {
         super.populateNormalizedMessage(message, context);
         message.setContent(new StringSource((String) context.getJobDetail().getJobDataMap().get("xml")));
-    }
 
+        message.setProperty("contextId", "42");
+
+        try {
+            String xml;
+            if (i++ % 2 == 0) {
+                message.setProperty("messageType", "context/store");
+
+                List<Segment> list = new ArrayList<Segment>();
+                list.add(new TextSegment.Builder(i + "/foo").text(UUID.randomUUID().toString()).build());
+                list.add(new TextSegment.Builder(i + "/bar").text(UUID.randomUUID().toString()).build());
+                list.add(new TextSegment.Builder(i + "/buz").text(UUID.randomUUID().toString()).build());
+
+                ListSegment listSegment = new ListSegment.Builder("/").list(list).build();
+                xml = listSegment.toXML();
+            } else {
+                message.setProperty("messageType", "context/request");
+                TextSegment text = new TextSegment.Builder("path").text("/").build();
+                xml = text.toXML();
+            }
+
+            message.setContent(new StringSource(xml));
+        } catch (SerializationException e) {
+
+        }
+    }
 }
