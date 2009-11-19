@@ -132,8 +132,9 @@ public class XmlParserFunctions {
         List<Element> pairs = element.elements("acmMessageObject");
         for (Element pair : pairs) {
             final String singleName = pair.element("key").getText().trim();
-            if (namesList.contains(singleName))
+            if (namesList.contains(singleName)) {
                 values[namesList.indexOf(singleName)] = pair.element("value").getText().trim();
+            }
         }
         return values;
     }
@@ -146,9 +147,9 @@ public class XmlParserFunctions {
 
         String uuid = msgElement.element(GenericContent.UUID_NAME).getText().trim();
         GenericContent parsedMsgElement;
-        if (uuid == null)
+        if (uuid == null) {
             parsedMsgElement = new GenericContent(repositoryBase, names, extractPathElems(names, msgElement));
-        else {
+        } else {
             UUID uuidCreated;
             try {
                 uuidCreated = UUID.fromString(uuid);
@@ -162,13 +163,15 @@ public class XmlParserFunctions {
         parsedMsgElement.setPath(msgElement.element(GenericContent.PATH_NAME).getText().trim());
 
         Element elem = msgElement.element(EdbEndpoint.COMMIT_OPERATION_TAG_NAME);
-        if (elem != null)
+        if (elem != null) {
             content.setOperation(OperationType.valueOf(elem.getTextTrim()));
+        }
 
         @SuppressWarnings("unchecked")
         List<Element> pairs = msgElement.elements("acmMessageObject");
-        for (final Element pair : pairs)
+        for (final Element pair : pairs) {
             parsedMsgElement.setProperty(pair.element("key").getText().trim(), pair.element("value").getText().trim());
+        }
         content.setContent(parsedMsgElement);
 
         return content;
@@ -188,14 +191,15 @@ public class XmlParserFunctions {
     public static String getMessageType(NormalizedMessage msg) throws IOException, SAXException, TransformerException,
             DocumentException {
         Document doc = readMessage(msg);
-        if (doc.getRootElement().getName().equals("acmQueryRequestMessage"))
+        if (doc.getRootElement().getName().equals("acmQueryRequestMessage")) {
             return EdbEndpoint.OPERATION_QUERY;
-        else if (doc.getRootElement().getName().equals("acmPersistMessage"))
+        } else if (doc.getRootElement().getName().equals("acmPersistMessage")) {
             return EdbEndpoint.OPERATION_COMMIT;
-        else if (doc.getRootElement().getName().equals("acmResetRequestMessage"))
+        } else if (doc.getRootElement().getName().equals("acmResetRequestMessage")) {
             return EdbEndpoint.OPERATION_RESET;
-        else
+        } else {
             throw new RuntimeException("root element could not be sorted..." + doc.getRootElement().getName());
+        }
     }
 
     public static List<ContentWrapper> parseCommitMessage(NormalizedMessage msg, String repoBase)
@@ -210,8 +214,9 @@ public class XmlParserFunctions {
         XmlParserFunctions.logger.info("start searching");
         @SuppressWarnings("unchecked")
         List<Element> objects = body.elements("acmMessageObjects");
-        for (Element e : objects)
+        for (Element e : objects) {
             result.add(parseCommitMessageItem(e, repoBase));
+        }
         XmlParserFunctions.logger.info("search finished");
 
         return result;
@@ -231,7 +236,7 @@ public class XmlParserFunctions {
             buildElement("value", "emptyValue", body);
             body.append("</acmMessageObject>");
             body.append("</acmMessageObjects>");
-        } else
+        } else {
             for (ContentWrapper wrapper : persistedSignals) {
 
                 GenericContent signal = wrapper.getContent();
@@ -253,6 +258,7 @@ public class XmlParserFunctions {
 
                 body.append("</acmMessageObjects>");
             }
+        }
 
         buildElement("headId", commitId, body);
 
@@ -309,8 +315,9 @@ public class XmlParserFunctions {
         // star search
 
         List<String> results = new ArrayList<String>();
-        for (final Element element : elements)
+        for (final Element element : elements) {
             results.add(translateQuery(element.getTextTrim()));
+        }
 
         return results;
 
@@ -323,9 +330,9 @@ public class XmlParserFunctions {
     @Deprecated
     private static String translateQuery(String query) {
         String result = query;
-        if (result.equals("/") || result.equals(""))
+        if (result.equals("/") || result.equals("")) {
             result = "*";
-        else {
+        } else {
             // all other searches
             String pathPart = result;
             String propertyPart = "";
@@ -342,11 +349,13 @@ public class XmlParserFunctions {
                 propertyPart = propertyPart.substring(0, propertyPart.length() - 5);
             }
             // adding wildcard at end of path
-            if (!pathPart.endsWith("*"))
+            if (!pathPart.endsWith("*")) {
                 pathPart += "*";
+            }
             pathPart = "path" + ":" + pathPart;
-            if (propertyPart != "")
+            if (propertyPart != "") {
                 result = pathPart + " AND " + propertyPart;
+            }
         }
         return result;
     }
@@ -364,14 +373,16 @@ public class XmlParserFunctions {
         Element headId = body.element("headId");
         req.setHeadId(headId.getTextTrim());
 
-        if (body.element("repoId") == null)
+        if (body.element("repoId") == null) {
             req.setRepoId("");
-        else
+        } else {
             req.setRepoId(body.element("repoId").getTextTrim());
-        if (body.element("depth") == null)
+        }
+        if (body.element("depth") == null) {
             req.setDepth(EdbEndpoint.DEFAULT_DEPTH);
-        else
+        } else {
             req.setDepth(Integer.valueOf(body.element("depth").getTextTrim()));
+        }
         return req;
     }
 
@@ -410,8 +421,9 @@ public class XmlParserFunctions {
     }
 
     private static void storeToTmp(File store, List<GenericContent> foundSignals) throws IOException {
-        if (store.exists())
+        if (store.exists()) {
             store.delete();
+        }
         store.createNewFile();
 
         FileWriter writer = new FileWriter(store);
@@ -443,8 +455,9 @@ public class XmlParserFunctions {
             BufferedReader reader = new BufferedReader(new FileReader(file));
 
             String line;
-            while ((line = reader.readLine()) != null)
+            while ((line = reader.readLine()) != null) {
                 builder.append(line);
+            }
             reader.close();
             try {
                 file.delete();
