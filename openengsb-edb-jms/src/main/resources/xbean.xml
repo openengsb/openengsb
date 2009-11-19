@@ -20,7 +20,7 @@
 
   <jms:consumer service="edb:edb"
                 endpoint="edb"
-                synchronous="true"
+                synchronous="false"
                 destinationName="org.openengsb.edb"
                 connectionFactory="#connectionFactory"
                 targetService="edb:edb"
@@ -36,7 +36,7 @@
     </property>
   </bean>
   
-  <bean id="marshaler" class="org.apache.servicemix.jms.endpoints.DefaultConsumerMarshaler">
+  <bean id="marshaler" class="org.openengsb.edb.jms.CustomOpenEngSBMarshaler">
     <property name="mep" value="http://www.w3.org/2004/08/wsdl/in-out" />
   </bean>
   
