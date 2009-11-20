@@ -180,349 +180,649 @@ Issue Tracker Domain
 
 	Subprojects are not included in the actual releases # no support.
 	
-
-* Interface
-
-** Interface for Issue/Task/Bug
+* Interface description
 
 ---
-public interface Issue {
-	
-	/**
-	 * Sets the id of the task to identify it.
-	 * @param id - the id identifies the task
-	 */
-	public void setId(String id);
-	
-	/**
-	 * Supplies the identifier of the task
-	 * @return id - identifier of the task
-	 */
-	public String getId();
-	
-	/**
-	 * Sets the summary, a short description of the task
-	 * @param summary - short description
-	 */
-	public void setSummary(String summary);
-	
-	/**
-	 * Returns the summary of the task
-	 * @return summary - short task description
-	 */
-	public String getSummary();
-	
-	/**
-	 * Sets the detailed description of the task
-	 * @param description - detailed description of the task
-	 */
-	public void setDescription(String description);
-	
-	/**
-	 * Return the detailed task description
-	 * @return description - detailed description
-	 */
-	public String getDescription();
-	
-	/**
-	 * Sets the priority of the task
-	 * @param priority - uses the enumeration values for setting
-	 * @see IssuePriority
-	 */
-	public void setPriority(IssuePriority priority);
-	
-	/**
-	 * Returns the priority of the task
-	 * @return priority - the priority of the task
-	 * @see IssuePriority
-	 */
-	public IssuePriority getPriority();
-	
-	/**
-	 * Sets the severity of the task
-	 * @param severity - uses the enumeration values for setting
-	 * @see IssueSeverity
-	 */
-	public void setSeverity(IssueSeverity severity);
-	
-	/**
-	 * Returns the severity of the task
-	 * @return severity - the severity of the task
-	 * @see IssueSeverity
-	 */
-	public IssueSeverity getSeverity();
-	
-	/**
-	 * Sets the resolution of the task
-	 * @param resolution - uses the enumeration values for setting
-	 * @see IssueResolution
-	 */
-	public void setResolution(IssueResolution resolution);
-	
-	/**
-	 * Returns the resolution of the task
-	 * @return resolution - the resolution of the task
-	 * @see IssueResolution
-	 */
-	public IssueResolution getResolution();
-	
-	/**
-	 * Sets the status of the task
-	 * @param status - uses the enumeration values for setting
-	 * @see IssueStatus
-	 */
-	public void setStatus(IssueStatus status);
-	
-	/**
-	 * Returns the status of the task
-	 * @return status - the status of the task
-	 * @see IssueStatus
-	 */
-	public IssueStatus getStatus();
-	
-	/**
-	 * Sets the creation time of the task due to the issue tracker
-	 * @param creationTime - time the task was created
-	 */
-	public void setCreationTime(Date creationTime);
-	
-	/**
-	 * Returns the creation time of the task
-	 * @return creationTime - time the task was created
-	 */
-	public Date getCreationTime();
-	
-	/**
-	 * Sets the time the last change was updated
-	 * @param lastChange - the time the last change was updated
-	 */
-	public void setLastChange(Date lastChange);
-	
-	/**
-	 * Returns the last change time
-	 * @return lastChange - the time the last change was committed
-	 */
-	public Date getLastChange();
-	
-	/**
-	 * Sets the reporter(user of the issue tracker) of the task
-	 * @param reporter - the author of the task
-	 */
-	public void setReporter(String reporter);
-	
-	/**
-	 * Returns the reporter of the task
-	 * @return reporter - author of the task
-	 */
-	public String getReporter();
-	
-	/**
-	 * Sets the owner of the task
-	 * @param owner - the person who has assigned to
-	 */
-	public void setOwner(String owner);
-	
-	/**
-	 * Return the owner of the task
-	 * @return owner - person who has assigned to
-	 */
-	public String getOwner();
-	
-	/**
-	 * Sets the project of task
-	 * @param project - the project the task is being filed against
-	 * @see Project
-	 */
-	public void setProject(Project project);
-	
-	/**
-	 * Returns the project the task is being filed against
-	 * @return project - the project the task is being filed against
-	 * @see Project
-	 */
-	public Project getProject();
-	
-	/**
-	 * Sets the comments that are added to the task
-	 * At the creation time of course null
-	 * @param comments - a list of comments, default null
-	 * @see Comment
-	 */
-	public void setComments(List<Comment> comments);
-	
-	/**
-	 * Returns a list of comments added to the task
-	 * @return comments - a list of comments
-	 * @see Comment
-	 */
-	public List<Comment> getComments();
+package org.openengsb.issues.common;
+
+import org.openengsb.issues.common.exceptions.IssueDomainException;
+import org.openengsb.issues.common.model.Issue;
+
+/**
+ * Interface describing a generic issue domain.
+ */
+public interface IssueDomain {
+
+    /**
+     * Creates an issue.
+     *
+     * @param issue The issue to create.
+     * @return ID of created issue
+     */
+    String createIssue(Issue issue) throws IssueDomainException;
+
+    /**
+     * Updates the given issue.
+     *
+     * @param issue The issue to update (the ID of the issue must be set).
+     * @throws IssueDomainException
+     */
+    void updateIssue(Issue issue) throws IssueDomainException;
+
+    /**
+     * Deletes the issue with the given ID.
+     *
+     * @param id ID of the issue being deleted.
+     * @throws IssueDomainException
+     */
+    void deleteIssue(String id) throws IssueDomainException;
+
 }
 ---
 
-** Interface for IssueTracker Comment
+* Exceptions
 
 ---
-public interface Comment {
-	
-	/**
-	 * Sets the id of the comment to identify it.
-	 * @param id - the id identifies the comment
-	 */
-	public void setId(String id);
-	
-	/**
-	 * Supplies the identifier of the comment
-	 * @return id - identifier of the comment
-	 */
-	public String getId();
-	
-	/**
-	 * Sets the reporter of the comment
-	 * @param reporter - author of the comment
-	 */
-	public void setReporter(String reporter);
-	
-	/**
-	 * Returns the reporter of the comment
-	 * @return reporter - author of the comment
-	 */
-	public String getReporter();
-	
-	/**
-	 * Sets the text of the comment
-	 * @param text - the content of the comment
-	 */
-	public void setText(String text);
-	
-	/**
-	 * Returns the text of the comment
-	 * @return text - content of the comment
-	 */
-	public String getText();
-	
-	/**
-	 * Sets the state of the view for the comment
-	 * It decides if everybody is allowed to read it.
-	 * The default value is public.
-	 * @param viewState - uses the enumeration for setting
-	 * @see ViewState
-	 */
-	public void setViewState(ViewState viewState);
-	
-	/**
-	 * Returns the view state of the comment
-	 * @return viewState - public, private or any
-	 * @see ViewState
-	 */
-	public ViewState getViewState();
-	
-	/**
-	 * Sets the creation time of the comment due to the issue tracker
-	 * @param creationTime - time the comment was created
-	 */
-	public void setCreationTime(Date creationTime);
-	
-	/**
-	 * Returns the creation time of the comment
-	 * @return creationTime - time the comment was created
-	 */
-	public Date getCreationTime();
-	
-	/**
-	 * Sets the time the last change was updated
-	 * @param lastChange - the time the last change was updated
-	 */
-	public void setLastChange(Date lastChange);
-	
-	/**
-	 * Returns the last change time
-	 * @return lastChange - the time the last change was committed
-	 */
-	public Date getLastChange();
-	
+package org.openengsb.issues.common.exceptions;
+
+public class IssueDomainException extends Exception {
+
+    public IssueDomainException(String message) {
+        super(message);
+    }
+
+    public IssueDomainException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
 ---
 
-** Interface for Issue Tracker Project
+* Domain model
+
+** Domain object for Issue/Task/Bug
 
 ---
-public interface Project {
-	
-	/**
-	 * Sets the id of the project to identify it.
-	 * @param id - the id identifies the project
-	 */
-	public void setId(String id);
-	
-	/**
-	 * Supplies the identifier of the project
-	 * @return id - identifier of the project
-	 */
-	public String getId();
-	
-	/**
-	 * Sets the name of the project in the form of a short
-	 * @param name - short description
-	 */
-	public void setName(String name);
-	
-	/**
-	 * Supplies the name of the project
-	 * @return name - short description of the project
-	 */
-	public String getName();
-	
-	/**
-	 * Sets the status of the project
-	 * @param projectStatus - use the enumaration values for setting
-	 * @see ProjectStatus
-	 */
-	public void setStatus(ProjectStatus projectStatus);
-	
-	/**
-	 * Supplies the topically status of the project
-	 * @return status - the topically status of the project
-	 * @see ProjectStatus
-	 */
-	public ProjectStatus getStatus();
-	
-	/**
-	 * Sets the description of the project
-	 * @param description - a detailed description of the project
-	 */
-	public void setDescription(String description);
-	
-	/**
-	 * Supplies the detailed description of the project
-	 * @return description - in detailed form
-	 */
-	public String getDescription();
-	
-	/**
-	 * Sets the URL of the project 
-	 * @param url - place on the file system(remote in most cases)
-	 */
-	public void setUrl(File url);
-	
-	/**
-	 * Supplies the URL of the project
-	 * @return url - place on the file system
-	 */
-	public File getUrl();
-	
-	/**
-	 * Sets the tasks for a project from the issue tracker
-	 * @param tasks - a list of tasks
-	 * @see Issue
-	 */
-	public void setTasks(List<Issue> tasks);
-	
-	/**
-	 * Returns the tasks of the project
-	 * @return tasks - reported tasks of the project
-	 * @see Issue
-	 */
-	public List<Issue> getTasks();
+package org.openengsb.issues.common.model;
+
+import java.util.Date;
+import java.util.List;
+
+public class Issue {
+
+    private String id;
+    private String summary;
+    private String description;
+    private String reporter;
+    private String owner;
+    private String affectedVersion;
+    private IssuePriority priority;
+    private IssueSeverity severity;
+    private IssueResolution resolution;
+    private IssueStatus status;
+    private IssueType type;
+    private List<Comment> comments;
+    private Project project;
+    private Date creationTime;
+    private Date lastChange;
+
+    /**
+     * Supplies the identifier of the issue
+     *
+     * @return id - identifier of the issue
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Sets the id of the issue to identify it.
+     *
+     * @param id - the id identifies the issue
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * Returns the summary of the issue
+     *
+     * @return summary - short issue description
+     */
+    public String getSummary() {
+        return summary;
+    }
+
+    /**
+     * Sets the summary, a short description of the issue
+     *
+     * @param summary - short description
+     */
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    /**
+     * Return the detailed issue description
+     *
+     * @return description - detailed description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the detailed description of the issue
+     *
+     * @param description - detailed description of the issue
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * Returns the reporter of the issue
+     *
+     * @return reporter - author of the issue
+     */
+    public String getReporter() {
+        return reporter;
+    }
+
+    /**
+     * Sets the reporter(user of the issue tracker) of the issue
+     *
+     * @param reporter - the author of the issue
+     */
+    public void setReporter(String reporter) {
+        this.reporter = reporter;
+    }
+
+    /**
+     * Return the owner of the issue
+     *
+     * @return owner - person who has assigned to
+     */
+    public String getOwner() {
+        return owner;
+    }
+
+    /**
+     * Sets the owner of the issue
+     *
+     * @param owner - the person who has assigned to
+     */
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    /**
+     * Gets the version of the product in which the topic of this issue
+     * occurred.
+     *
+     * @return
+     */
+    public String getAffectedVersion() {
+        return affectedVersion;
+    }
+
+    /**
+     * Sets the version of the product in which the topic of this issue
+     * occurred.
+     *
+     * @param affectedVersion
+     */
+    public void setAffectedVersion(String affectedVersion) {
+        this.affectedVersion = affectedVersion;
+    }
+
+    /**
+     * Returns the priority of the issue
+     *
+     * @return priority - the priority of the issue
+     * @see IssuePriority
+     */
+    public IssuePriority getPriority() {
+        return priority;
+    }
+
+    /**
+     * Sets the priority of the issue
+     *
+     * @param priority - uses the enumeration values for setting
+     * @see IssuePriority
+     */
+    public void setPriority(IssuePriority priority) {
+        this.priority = priority;
+    }
+
+    /**
+     * Returns the severity of the issue
+     *
+     * @return severity - the severity of the issue
+     * @see IssueSeverity
+     */
+    public IssueSeverity getSeverity() {
+        return severity;
+    }
+
+    /**
+     * Sets the severity of the issue
+     *
+     * @param severity - uses the enumeration values for setting
+     * @see IssueSeverity
+     */
+    public void setSeverity(IssueSeverity severity) {
+        this.severity = severity;
+    }
+
+    /**
+     * Returns the resolution of the issue
+     *
+     * @return resolution - the resolution of the issue
+     * @see IssueResolution
+     */
+    public IssueResolution getResolution() {
+        return resolution;
+    }
+
+    /**
+     * Sets the resolution of the issue
+     *
+     * @param resolution - uses the enumeration values for setting
+     * @see IssueResolution
+     */
+    public void setResolution(IssueResolution resolution) {
+        this.resolution = resolution;
+    }
+
+    /**
+     * Returns the status of the issue
+     *
+     * @return status - the status of the issue
+     * @see IssueStatus
+     */
+    public IssueStatus getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the status of the issue
+     *
+     * @param status - uses the enumeration values for setting
+     * @see IssueStatus
+     */
+    public void setStatus(IssueStatus status) {
+        this.status = status;
+    }
+
+    /**
+     * Returns the type of the issue
+     *
+     * @return type - the type of the issue
+     * @see IssueType
+     */
+    public IssueType getType() {
+        return type;
+    }
+
+    /**
+     * Sets the type of the issue
+     *
+     * @param type - the type of the issue
+     */
+    public void setType(IssueType type) {
+        this.type = type;
+    }
+
+    /**
+     * Returns a list of comments added to the issue
+     *
+     * @return comments - a list of comments
+     * @see Comment
+     */
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    /**
+     * Sets the comments that are added to the issue At the creation time of
+     * course null
+     *
+     * @param comments - a list of comments, default null
+     * @see Comment
+     */
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    /**
+     * Returns the project the issue is being filed against
+     *
+     * @return project - the project the issue is being filed against
+     * @see Project
+     */
+    public Project getProject() {
+        return project;
+    }
+
+    /**
+     * Sets the project of issue
+     *
+     * @param project - the project the issue is being filed against
+     * @see IsProjectTrackable
+     */
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    /**
+     * Returns the creation time of the issue
+     *
+     * @return creationTime - time the issue was created
+     */
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    /**
+     * Sets the creation time of the issue due to the issue tracker
+     *
+     * @param creationTime - time the issue was created
+     */
+    public void setCreationTime(Date creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    /**
+     * Returns the last change time
+     *
+     * @return lastChange - the time the last change was committed
+     */
+    public Date getLastChange() {
+        return lastChange;
+    }
+
+    /**
+     * Sets the time the last change was updated
+     *
+     * @param lastChange - the time the last change was updated
+     */
+    public void setLastChange(Date lastChange) {
+        this.lastChange = lastChange;
+    }
+
+    /**
+     * Compares this Issue to another Issue
+     *
+     * @param obj
+     * @return true if the given Issue is equal to this Issue, false otherwise
+     */
+    public boolean equals(Object obj) {
+        ...
+    }
+}
+---
+
+** Domain object for Comment
+
+---
+package org.openengsb.issues.common.model;
+
+import java.util.Date;
+
+public class Comment {
+
+    private String id;
+    private String reporter;
+    private String text;
+    private ViewState viewState;
+    private Date creationTime;
+    private Date lastChange;
+
+    /**
+     * Supplies the identifier of the comment
+     *
+     * @return id - identifier of the comment
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Sets the id of the comment to identify it.
+     *
+     * @param id - the id identifies the comment
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * Returns the reporter of the comment
+     *
+     * @return reporter - author of the comment
+     */
+    public String getReporter() {
+        return reporter;
+    }
+
+    /**
+     * Sets the reporter of the comment
+     *
+     * @param reporter - author of the comment
+     */
+    public void setReporter(String reporter) {
+        this.reporter = reporter;
+    }
+
+    /**
+     * Returns the text of the comment
+     *
+     * @return text - content of the comment
+     */
+    public String getText() {
+        return text;
+    }
+
+    /**
+     * Sets the text of the comment
+     *
+     * @param text - the content of the comment
+     */
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    /**
+     * Returns the view state of the comment
+     *
+     * @return viewState - public, private or any
+     * @see ViewState
+     */
+    public ViewState getViewState() {
+        return viewState;
+    }
+
+    /**
+     * Sets the state of the view for the comment It decides if everybody is
+     * allowed to read it. The default value is public.
+     *
+     * @param viewState - uses the enumeration for setting
+     * @see ViewState
+     */
+    public void setViewState(ViewState viewState) {
+        this.viewState = viewState;
+    }
+
+    /**
+     * Returns the creation time of the comment
+     *
+     * @return creationTime - time the comment was created
+     */
+    public Date getCreationTime() {
+        return creationTime;
+    }
+
+    /**
+     * Sets the creation time of the comment due to the issue tracker
+     *
+     * @param creationTime - time the comment was created
+     */
+    public void setCreationTime(Date creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    /**
+     * Returns the last change time
+     *
+     * @return lastChange - the time the last change was committed
+     */
+    public Date getLastChange() {
+        return lastChange;
+    }
+
+    /**
+     * Sets the time the last change was updated
+     *
+     * @param lastChange - the time the last change was updated
+     */
+    public void setLastChange(Date lastChange) {
+        this.lastChange = lastChange;
+    }
+
+}
+---
+
+** Domain object for Project
+
+---
+package org.openengsb.issues.common.model;
+
+import java.net.URI;
+import java.util.List;
+
+public class Project {
+
+    private String id;
+    private String name;
+    private ProjectStatus status;
+    private String description;
+    private URI uri;
+    private List<Issue> issues;
+
+    /**
+     * Supplies the identifier of the project
+     *
+     * @return id - identifier of the project
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Sets the id of the project to identify it.
+     *
+     * @param id - the id identifies the project
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * Supplies the name of the project
+     *
+     * @return name - short description of the project
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the name of the project in the form of a short
+     *
+     * @param name - short description
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Supplies the topically status of the project
+     *
+     * @return status - the topically status of the project
+     * @see ProjectStatus
+     */
+    public ProjectStatus getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets the status of the project
+     *
+     * @param projectStatus - use the enumaration values for setting
+     * @see ProjectStatus
+     */
+    public void setStatus(ProjectStatus status) {
+        this.status = status;
+    }
+
+    /**
+     * Supplies the detailed description of the project
+     *
+     * @return description - in detailed form
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Sets the description of the project
+     *
+     * @param description - a detailed description of the project
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * Supplies the URI of the project
+     *
+     * @return uri - place on the file system
+     */
+    public URI getUri() {
+        return uri;
+    }
+
+    /**
+     * Sets the URI of the project
+     *
+     * @param uri - place on the file system(remote in most cases)
+     */
+    public void setUri(URI uri) {
+        this.uri = uri;
+    }
+
+    /**
+     * Returns the issues of the project
+     *
+     * @return issues - reported issues of the project
+     * @see Issue
+     */
+    public List<Issue> getIssues() {
+        return issues;
+    }
+
+    /**
+     * Sets the issues for this project
+     *
+     * @param issues - a list of issues
+     * @see Issue
+     */
+    public void setIssues(List<Issue> issues) {
+        this.issues = issues;
+    }
+
 }
 ---
 
@@ -558,6 +858,13 @@ public enum IssueSeverity {
  */
 public enum IssueStatus {
 	NEW, ASSIGNED, CLOSED
+}
+
+/**
+ * Describes the possibilities for the issue type
+ */
+public enum IssueType {
+    BUG, IMPROVEMENT, NEW_FEATURE, TASK
 }
 
 /**
