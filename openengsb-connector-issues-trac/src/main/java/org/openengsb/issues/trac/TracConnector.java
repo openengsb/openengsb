@@ -13,26 +13,25 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 
 package org.openengsb.issues.trac;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Vector;
 
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
-import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.openengsb.issues.common.IssueDomain;
-import org.openengsb.issues.common.endpoints.AbstractCreateIssueEndpoint;
 import org.openengsb.issues.common.exceptions.IssueDomainException;
 import org.openengsb.issues.common.model.Issue;
-import org.openengsb.issues.trac.model.Ticket;
+import org.openengsb.issues.trac.model.Converter;
+import org.openengsb.issues.trac.model.TracIssue;
+import org.openengsb.issues.trac.services.Ticket;
 import org.openengsb.issues.trac.xmlrpc.TrackerDynamicProxy;
 
 public class TracConnector implements IssueDomain {
@@ -44,6 +43,8 @@ public class TracConnector implements IssueDomain {
     private String url;
     private String username;
     private String password;
+
+    private Converter converter = new Converter();
 
     public TracConnector(String url, String username, String password) {
         this.url = url;
@@ -61,20 +62,33 @@ public class TracConnector implements IssueDomain {
 
     @Override
     public String createIssue(Issue issue) throws IssueDomainException {
+        TracIssue tracIssue = converter.convertGenericIssueToSpecificIssue(issue);
+
         Hashtable<String, String> attributes = new Hashtable<String, String>();
-        attributes.put("type", issue.getType());
-        attributes.put("owner", issue.getOwner());
-        attributes.put("reporter", issue.getReporter());
-        attributes.put("priority", issue.getPriority());
+        attributes.put("type", tracIssue.getType());
+        attributes.put("owner", tracIssue.getOwner());
+        attributes.put("reporter", tracIssue.getReporter());
+        attributes.put("priority", tracIssue.getPriority());
+        attributes.put("version", tracIssue.getVersion());
 
         String issueId;
         try {
-            issueId = ticket.create(issue.getSummary(), issue.getDescription(), attributes).toString();
+            issueId = ticket.create(tracIssue.getSummary(), tracIssue.getDescription(), attributes).toString();
         } catch (Exception e) {
             throw new IssueDomainException(e.getMessage(), e);
         }
 
         return issueId;
+    }
+
+    @Override
+    public void deleteIssue(String arg0) throws IssueDomainException {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void updateIssue(Issue arg0) throws IssueDomainException {
+        throw new NotImplementedException();
     }
 
     private TrackerDynamicProxy createProxyGenerator() {

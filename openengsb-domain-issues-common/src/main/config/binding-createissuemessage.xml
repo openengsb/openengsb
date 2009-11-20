@@ -27,6 +27,8 @@
        <value name="owner" field="owner" />
        <value name="type" field="type" />
        <value name="priority" field="priority" />
+       <value name="severity" field="severity" />
+       <value name="affectedVersion" field="affectedVersion" />
      </structure>
    </mapping>
 </binding>

@@ -27,7 +27,6 @@ import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.jbi.messaging.RobustInOnly;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -49,6 +48,9 @@ import org.junit.runner.RunWith;
 import org.openengsb.issues.common.messages.CreateIssueMessage;
 import org.openengsb.issues.common.messages.CreateIssueResponseMessage;
 import org.openengsb.issues.common.model.Issue;
+import org.openengsb.issues.common.model.IssuePriority;
+import org.openengsb.issues.common.model.IssueSeverity;
+import org.openengsb.issues.common.model.IssueType;
 import org.openengsb.util.serialization.JibxXmlSerializer;
 import org.openengsb.util.serialization.Serializer;
 import org.springframework.context.support.AbstractXmlApplicationContext;
@@ -69,8 +71,10 @@ public class TracEndpointIntegrationTest extends SpringTestSupport {
     private String description = "Test Description";
     private String reporter = "Test Reporter";
     private String owner = "Test Owner";
-    private String type = "Test Type";
-    private String priority = "Test Priority";
+    private IssueType type = IssueType.BUG;
+    private IssuePriority priority = IssuePriority.HIGH;
+    private IssueSeverity severity = IssueSeverity.BLOCK;
+    private String affectedVersion = "1.0";
 
     /* creators */
 
@@ -100,28 +104,6 @@ public class TracEndpointIntegrationTest extends SpringTestSupport {
 
         return inOut;
     }
-
-    /**
-     * Creates and configures a new Message-Object for the Out-Only-MEP
-     * 
-     * @param client The client used to create the empty Message-Object
-     * @param service The configured entpoint's name as noted in the xbean.xml
-     * @param message The actual message as xml-String
-     * @return The new and configured In-Only-Message-Object
-     * @throws MessagingException should something go wrong
-     */
-    private RobustInOnly createRobustInOnlyMessage(DefaultServiceMixClient client, String service, String message)
-            throws MessagingException {
-        RobustInOnly robustInOnly = client.createRobustInOnlyExchange();
-        robustInOnly.setService(new QName(this.TEST_NAMESPACE, service));
-        robustInOnly.getInMessage().setContent(new StringSource(message));
-
-        return robustInOnly;
-    }
-
-    /* end creators */
-
-    /* setup */
 
     /**
      * Called before each test. Performs basic JUnit setup Don't get confused by
@@ -192,7 +174,7 @@ public class TracEndpointIntegrationTest extends SpringTestSupport {
     public void validInputShouldReturnValidResponse() throws Exception {
         DefaultServiceMixClient client = createClient();
         CreateIssueMessage inMsg = new CreateIssueMessage(new Issue(summary, description, reporter, owner, type,
-                priority));
+                priority, severity, affectedVersion));
 
         StringWriter sw = new StringWriter();
         serializer.serialize(inMsg, sw);

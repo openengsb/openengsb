@@ -14,10 +14,10 @@
         the specific language governing permissions and limitations under the
         License.
     -->
-<beans xmlns="http://www.springframework.org/schema/beans" 
+<beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:sm="http://servicemix.apache.org/config/1.0"
-  xmlns:engsb="http://openengsb.org/test/domain/issues/1.0" 
-  xmlns:test="urn:test" 
+  xmlns:engsb="http://openengsb.org/test/domain/issues/1.0"
+  xmlns:test="urn:test"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:mockns="http://mockns.btmatthews.com/schema/mockito"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
@@ -39,7 +39,7 @@
 
     </sm:activationSpecs>
   </sm:container>
-  
+
   <mockns:mock id="mockedIssueDomain" object-class="org.openengsb.issues.common.IssueDomain" />
 
 </beans>

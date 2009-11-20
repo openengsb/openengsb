@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 
 package org.openengsb.issues.common;
@@ -28,14 +28,26 @@ public interface IssueDomain {
 
     /**
      * Creates an issue in an issue tracking system.
-     * 
-     * @param summary A short summary of the issue.
-     * @param description The detailed description of the issue.
-     * @param reporter Name of the reporter of the issue.
-     * @param type Issue type
-     * @param priority Issue priority
-     * @return Id of created issue
+     *
+     * @param issue The issue to create.
+     * @return ID of created issue
      */
     String createIssue(Issue issue) throws IssueDomainException;
+
+    /**
+     * Updates the given issue.
+     *
+     * @param issue The issue to update (the ID of the issue must be set).
+     * @throws IssueDomainException
+     */
+    void updateIssue(Issue issue) throws IssueDomainException;
+
+    /**
+     * Deletes the issue with the given ID.
+     *
+     * @param id ID of the issue being deleted.
+     * @throws IssueDomainException
+     */
+    void deleteIssue(String id) throws IssueDomainException;
 
 }

@@ -55,6 +55,9 @@ import org.openengsb.issues.common.messages.CreateIssueMessage;
 import org.openengsb.issues.common.messages.CreateIssueResponseMessage;
 import org.openengsb.issues.common.messages.CreateIssueStatus;
 import org.openengsb.issues.common.model.Issue;
+import org.openengsb.issues.common.model.IssuePriority;
+import org.openengsb.issues.common.model.IssueSeverity;
+import org.openengsb.issues.common.model.IssueType;
 import org.openengsb.util.serialization.JibxXmlSerializer;
 import org.openengsb.util.serialization.Serializer;
 import org.springframework.context.support.AbstractXmlApplicationContext;
@@ -62,7 +65,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * 
+ *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/integrationtestSpring.xml" })
@@ -77,8 +80,11 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
     private String description = "Test Description";
     private String reporter = "Test Reporter";
     private String owner = "Test Owner";
-    private String type = "Test Type";
-    private String priority = "Test Priority";
+    private IssueType type = IssueType.BUG;
+    private IssuePriority priority = IssuePriority.HIGH;
+    private IssueSeverity severity = IssueSeverity.BLOCK;
+    private String affectedVersion = "1.0";
+
     private String createdIssueId = "Test Issue ID 1";
 
     private String exceptionMessage = "Error creating ticket.";
@@ -89,7 +95,7 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
 
     /**
      * Creates a new ServiceMixClieant
-     * 
+     *
      * @return The new ServiceMixClient
      */
     private DefaultServiceMixClient createClient() throws JBIException {
@@ -98,7 +104,7 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
 
     /**
      * Creates and configures a new Message-Object for the In-Out-MEP
-     * 
+     *
      * @param client The client used to create the empty Message-Object
      * @param service The configured entpoint's name as noted in the xbean.xml
      * @param message The actual message as xml-String
@@ -116,7 +122,7 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
 
     /**
      * Creates and configures a new Message-Object for the Out-Only-MEP
-     * 
+     *
      * @param client The client used to create the empty Message-Object
      * @param service The configured entpoint's name as noted in the xbean.xml
      * @param message The actual message as xml-String
@@ -158,7 +164,7 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
 
     /**
      * Checks the message for errors and either fails or throws an Exception
-     * 
+     *
      * @param message
      * @throws Exception
      */
@@ -176,7 +182,7 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
 
     /**
      * Transforms a NormalizedMessage to its String representation.
-     * 
+     *
      * @param msg Message to be transformed to a String
      * @return String representation of the given NormalizedMessage
      * @throws TransformerConfigurationException
@@ -195,7 +201,8 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
     public void validInputShouldReturnValidResponse() throws Exception {
         DefaultServiceMixClient client = createClient();
 
-        Issue issueToCreate = new Issue(summary, description, reporter, owner, type, priority);
+        Issue issueToCreate = new Issue(summary, description, reporter, owner, type, priority, severity,
+                affectedVersion);
 
         CreateIssueMessage inMsg = new CreateIssueMessage(issueToCreate);
 
@@ -223,7 +230,8 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
     public void errorInIssueDomainShouldReturnErrorResponse() throws Exception {
         DefaultServiceMixClient client = createClient();
 
-        Issue issueToCreate = new Issue(summary, description, reporter, owner, type, priority);
+        Issue issueToCreate = new Issue(summary, description, reporter, owner, type, priority, severity,
+                affectedVersion);
 
         CreateIssueMessage inMsg = new CreateIssueMessage(issueToCreate);
 

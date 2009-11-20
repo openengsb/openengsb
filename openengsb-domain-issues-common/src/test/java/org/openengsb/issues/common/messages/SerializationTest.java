@@ -29,6 +29,9 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.issues.common.model.Issue;
+import org.openengsb.issues.common.model.IssuePriority;
+import org.openengsb.issues.common.model.IssueSeverity;
+import org.openengsb.issues.common.model.IssueType;
 import org.openengsb.util.serialization.JibxXmlSerializer;
 import org.openengsb.util.serialization.SerializationException;
 import org.openengsb.util.serialization.Serializer;
@@ -43,8 +46,10 @@ public class SerializationTest {
     private String description = "Test Description";
     private String reporter = "Test Reporter";
     private String owner = "Test Owner";
-    private String type = "Test Type";
-    private String priority = "Test Priority";
+    private IssueType type = IssueType.BUG;
+    private IssuePriority priority = IssuePriority.HIGH;
+    private IssueSeverity severity = IssueSeverity.BLOCK;
+    private String affectedVersion = "1.0";
 
     private String createdIssueId = "Test Issue ID 1";
     private CreateIssueStatus status = CreateIssueStatus.SUCCESS;
@@ -60,8 +65,8 @@ public class SerializationTest {
             SerializationException, IOException {
         File validFile = new File(ClassLoader.getSystemResource("valid-createissuemessage.xml").toURI());
 
-        CreateIssueMessage msg = new CreateIssueMessage(
-                new Issue(summary, description, reporter, owner, type, priority));
+        CreateIssueMessage msg = new CreateIssueMessage(new Issue(summary, description, reporter, owner, type,
+                priority, severity, affectedVersion));
 
         StringWriter sw = new StringWriter();
 

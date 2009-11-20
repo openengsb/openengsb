@@ -25,7 +25,7 @@ import org.apache.servicemix.common.DefaultComponent;
 /**
  * @org.apache.xbean.XBean element="testIssueComponent"
  *                         description="Test Issue Component"
- * 
+ *
  */
 public class TestIssueComponent extends DefaultComponent {
     private TestCreateIssueEndpoint[] endpoints;

@@ -54,7 +54,7 @@
       <artifactId>servicemix-core</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Test dependencies -->
     <dependency>
       <groupId>org.mockito</groupId>
@@ -72,7 +72,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  
+
   <build>
     <plugins>
       <plugin>
