@@ -23,5 +23,5 @@
 echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
 
 mvn clean install -o -Dmaven.test.skip=true
-cd openengsb-all;mvn jbi:projectDeploy -e -o
+cd openengsb-package-all;mvn jbi:projectDeploy -e -o
 

@@ -143,7 +143,7 @@
     <module>openengsb-connector-svn-impl</module>
     
     <!-- Packaging Modules -->
-    <module>openengsb-all</module>
+    <module>openengsb-package-all</module>
 
     <!-- Embedded -->
     <module>openengsb-config-jbi</module>
@@ -426,12 +426,12 @@
 
             <!-- Scripts -->
             <exclude>quickrun.sh</exclude>
-            <exclude>openengsb-all/quickdeploy.sh</exclude>
+            <exclude>openengsb-package-all/quickdeploy.sh</exclude>
 
             <!-- Test Data -->
             <exclude>openengsb-util/src/test/resources/serialization/valid.xml</exclude>
-	    <exclude>openengsb-all/quickdeploy.sh</exclude>
-            <exclude>openengsb-all/quickdeploy.sh</exclude>
+	    <exclude>openengsb-package-all/quickdeploy.sh</exclude>
+            <exclude>openengsb-package-all/quickdeploy.sh</exclude>
 
             <!-- OpenEngSB Embedded -->
             <exclude>openengsb-embedded/data/*</exclude>
@@ -659,7 +659,7 @@
       <!-- Packaging Modules -->
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-all</artifactId>
+        <artifactId>openengsb-package-all</artifactId>
         <version>${pom.version}</version>
       </dependency>
 

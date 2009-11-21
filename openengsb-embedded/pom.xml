@@ -603,7 +603,7 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-all</artifactId>
+                  <artifactId>openengsb-package-all</artifactId>
                   <version>${project.version}</version>
                   <type>zip</type>
                 </artifactItem>

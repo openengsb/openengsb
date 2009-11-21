@@ -26,9 +26,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-all</artifactId>
+  <artifactId>openengsb-package-all</artifactId>
   <packaging>jbi-service-assembly</packaging>
-  <name>openengsb-all</name>
+  <name>openengsb-package-all</name>
 
   <description>
     The package used to assembly all SUs which are required for the core 
@@ -74,6 +74,10 @@
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-edb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-edb-jms</artifactId>
     </dependency>
 
     <!-- Implementation Modules -->
