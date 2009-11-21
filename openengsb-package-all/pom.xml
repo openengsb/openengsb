@@ -31,7 +31,7 @@
   <name>openengsb-package-all</name>
 
   <description>
-    The package used to assembly all SUs which are required for the core 
+    The package used to assembly all SUs which are required for the entire 
     OpenEngSB. At the moment the build package is (nevertheless) separated.
   </description>
 
