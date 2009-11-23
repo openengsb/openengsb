@@ -40,7 +40,7 @@ public class TestContext {
 
     @Before
     public void before() {
-        store = new ContextStore("testsettings.xml");
+        store = new ContextStore(new File("testsettings.xml"));
     }
 
     @After
@@ -147,13 +147,13 @@ public class TestContext {
 
     @Test
     public void testSaveLoad() {
-        ContextStore s2 = new ContextStore("test.xml");
+        File datafile = new File("test.xml");
+        ContextStore s2 = new ContextStore(datafile);
         s2.setValue("foo/bar/buz", "42");
 
-        ContextStore s3 = new ContextStore("test.xml");
-        System.out.println(s3.getContext("/").toString());
+        ContextStore s3 = new ContextStore(datafile);
         assertEquals("42", s3.getValue("foo/bar/buz"));
 
-        new File("test.xml").delete();
+        datafile.delete();
     }
 }

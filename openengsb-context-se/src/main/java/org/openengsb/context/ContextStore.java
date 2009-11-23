@@ -31,13 +31,13 @@ public class ContextStore {
 
     private final File settings;
 
-    public ContextStore(String filename) {
-        settings = new File(filename);
-        load();
-    }
-
     public ContextStore() {
         settings = null;
+    }
+
+    public ContextStore(File file) {
+        settings = file;
+        load();
     }
 
     public Context getContext(String path) {

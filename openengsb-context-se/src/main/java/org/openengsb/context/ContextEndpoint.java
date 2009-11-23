@@ -28,6 +28,7 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.openengsb.core.messaging.ListSegment;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
+import org.openengsb.util.WorkingDirectory;
 import org.openengsb.util.serialization.SerializationException;
 
 /**
@@ -36,7 +37,7 @@ import org.openengsb.util.serialization.SerializationException;
  */
 public class ContextEndpoint extends ProviderEndpoint {
 
-    private ContextStore contextStore = new ContextStore("contextstoresettings");
+    private ContextStore contextStore = new ContextStore(WorkingDirectory.getFile("context", "contextdata.xml"));
 
     @Override
     protected void processInOnly(MessageExchange exchange, NormalizedMessage in) throws Exception {
