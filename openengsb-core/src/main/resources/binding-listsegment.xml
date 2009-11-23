@@ -18,7 +18,7 @@
 <binding xmlns:tns="http://org.openengsb/util/serialization" name="binding"
 	package="org.openengsb.util.serialization">
 	<namespace uri="http://org.openengsb/util/serialization" default="elements" />
-	<mapping class="org.openengsb.core.messaging.ListSegment" name="listSegment" extends="org.openengsb.core.messaging.Segment">
+	<mapping class="org.openengsb.core.messaging.ListSegment" name="list" extends="org.openengsb.core.messaging.Segment">
       <structure map-as="org.openengsb.core.messaging.Segment" />
       <collection field="list" item-type="org.openengsb.core.messaging.Segment" factory="org.openengsb.core.messaging.ListSegment.listFactory"/>
 	</mapping>

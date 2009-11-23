@@ -18,7 +18,7 @@
 <binding xmlns:tns="http://org.openengsb/util/serialization" name="binding"
 	package="org.openengsb.util.serialization">
 	<namespace uri="http://org.openengsb/util/serialization" default="elements" />
-	<mapping class="org.openengsb.core.messaging.TextSegment" name="textSegment" extends="org.openengsb.core.messaging.Segment">
+	<mapping class="org.openengsb.core.messaging.TextSegment" name="text" extends="org.openengsb.core.messaging.Segment">
       <structure map-as="org.openengsb.core.messaging.Segment" />
       <value style="text" field="text" />
 	</mapping>
