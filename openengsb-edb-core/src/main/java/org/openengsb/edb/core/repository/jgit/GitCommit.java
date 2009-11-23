@@ -128,7 +128,7 @@ public class GitCommit implements Commit {
             throw new RepositoryStateException("Requiring all fields to be filled, before executing a commit...");
         }
 
-        this.log.info("Doing commit for author [" + this.authorName + "; " + this.authorEmail + "] with message ["
+        this.log.debug("Doing commit for author [" + this.authorName + "; " + this.authorEmail + "] with message ["
                 + this.commitMessage + "]...");
 
         try {
@@ -248,7 +248,7 @@ public class GitCommit implements Commit {
 
     private void writeTreeWithSubTrees(Tree tree) throws Exception {
         if (tree.getId() == null) {
-            this.log.info("writing tree for: " + tree.getFullName());
+            this.log.debug("writing tree for: " + tree.getFullName());
             try {
                 for (TreeEntry entry : tree.members()) {
                     if (entry.isModified()) {

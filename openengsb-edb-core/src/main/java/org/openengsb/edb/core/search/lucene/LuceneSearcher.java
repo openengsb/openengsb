@@ -77,7 +77,7 @@ public class LuceneSearcher implements Searcher {
             parser.setAllowLeadingWildcard(true);
             parser.setLowercaseExpandedTerms(false);
             Query query = parser.parse(search);
-            this.log.info("query (after parser): " + search);
+            this.log.debug("query (after parser): " + search);
             ScoreDoc[] results = searcher.search(query, LuceneSearcher.MAX_NUMBER_OF_HITS).scoreDocs;
 
             for (int i = 0; i < results.length; ++i) {
@@ -86,7 +86,7 @@ public class LuceneSearcher implements Searcher {
                 result.add(documentToGenericContent(document));
             }
             searcher.close();
-            this.log.info("found  " + result.size() + " entries");
+			this.log.debug("found  " + result.size() + " entries");
         } catch (ParseException e) {
             this.log.warn(e);
             result = new ArrayList<GenericContent>();
