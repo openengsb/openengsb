@@ -31,6 +31,8 @@ import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.edb.jbi.endpoints.XmlParserFunctions.RequestWrapper;
 import org.openengsb.edb.jbi.endpoints.commands.EDBCommit;
 import org.openengsb.edb.jbi.endpoints.commands.EDBEndpointCommand;
+import org.openengsb.edb.jbi.endpoints.commands.EDBQuery;
+import org.openengsb.edb.jbi.endpoints.commands.EDBReset;
 
 /**
  * @org.apache.xbean.XBean element="edb" The Endpoint to the commit-feature
@@ -86,50 +88,14 @@ public class EdbEndpoint extends AbstractEndpoint {
 		String body = null;
 
 		if (op.equals(EdbEndpoint.OPERATION_COMMIT)) {
-
 			EDBEndpointCommand commit = new EDBCommit(handler, logger);
-			commit.execute(in);
-
+			body = commit.execute(in);
 		} else if (op.equals(EdbEndpoint.OPERATION_QUERY)) {
-			final List<String> terms = XmlParserFunctions.parseQueryMessage(in);
-			List<GenericContent> foundSignals = new ArrayList<GenericContent>();
-
-			try {
-				for (final String term : terms) {
-					final List<GenericContent> result = handler.query(term,
-							false);
-					// if (result.size() == 0) {
-					// foundSignals.add(dummy);
-					// } else if (isMergeQ) {
-					// foundSignals.add(result.get(0));
-					// } else {
-					foundSignals.addAll(result);
-					// }
-				}
-
-			} catch (final EDBException e) {
-				// TODO build error message
-				e.printStackTrace();
-				foundSignals = new ArrayList<GenericContent>();
-			}
-			body = XmlParserFunctions.buildQueryBody(foundSignals);
+			EDBEndpointCommand query = new EDBQuery(handler, logger);
+			body = query.execute(in);
 		} else if (op.equals(EdbEndpoint.OPERATION_RESET)) {
-			final RequestWrapper req = XmlParserFunctions.parseResetMessage(in);
-			// this.log.info(req);
-			//
-			// final IEDBHandler handler;
-			// if (req.getRepoId().equals("")) {
-			// handler = this.edbHandlerFactory.loadDefaultRepository();
-			// } else {
-			// handler = this.edbHandlerFactory.loadRepository(req.getRepoId());
-			// }
-			try {
-				body = XmlParserFunctions.buildResetBody(handler.reset(req
-						.getHeadId(), req.getDepth()));
-			} catch (final EDBException e) {
-				body = XmlParserFunctions.buildResetErrorBody(e.getMessage(), e
-						.getStackTrace().toString());
-			}
+			EDBEndpointCommand reset = new EDBReset(handler, logger);
+			body = reset.execute(in);
 		}
 		body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><acmResponseMessage><body>"
 				+ body + "</body></acmResponseMessage>";
@@ -138,49 +104,4 @@ public class EdbEndpoint extends AbstractEndpoint {
 		out.setContent(response);
 		getChannel().send(exchange);
 	}
-
-	private String makeStackTraceString(Exception e) {
-		StringBuilder sb = new StringBuilder();
-		for (StackTraceElement ste : e.getStackTrace()) {
-			sb.append(ste.toString());
-			sb.append("\n");
-		}
-		return sb.toString();
-	}
-
-	// private Element makeErrorElement(Exception e) {
-	// Element result = DocumentHelper.createElement("acmErrorObject");
-	// result.addElement("message").setText(e.getMessage());
-	// result.addElement("stacktrace").setText(makeStackTraceString(e));
-	// return result;
-	// }
-
-	/*
-	 * private Element makeSuccessElement(List<ContentWrapper> persistedSignals,
-	 * String commitId) { Element result = DocumentHelper.createElement("body");
-	 * for (final ContentWrapper wrapper : persistedSignals) {
-	 * 
-	 * final GenericContent signal = wrapper.getContent();
-	 * 
-	 * Element objects = result.addElement("acmMessageObjects");
-	 * objects.addElement("user", DEFAULT_USER);
-	 * 
-	 * 
-	 * 
-	 * buildElement("user", DEFAULT_USER, body);
-	 * buildElement(GenericContent.UUID_NAME, signal.getUUID(), body);
-	 * buildElement(GenericContent.PATH_NAME, signal.getPath(), body); Element
-	 * el = result.addElement("acmMessageObject"); for (final Entry<Object,
-	 * Object> entry : signal .getEntireContent()) {
-	 * body.append("<acmMessageObject>"); buildElement("key",
-	 * entry.getKey().toString(), body); buildElement("value",
-	 * entry.getValue().toString(), body); body.append("</acmMessageObject>"); }
-	 * 
-	 * body.append("<operation>").append(wrapper.getOperation())
-	 * .append("</operation>");
-	 * 
-	 * body.append("</acmMessageObjects>"); // TODO implement this return
-	 * result; }
-	 */
-
 }

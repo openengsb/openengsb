@@ -25,7 +25,7 @@ public class EDBCommit implements EDBEndpointCommand {
 	}
 	
 	@Override
-	public void execute(NormalizedMessage in) throws Exception {
+	public String execute(NormalizedMessage in) throws Exception {
 		String body = null;
 		try {
             List<ContentWrapper> contentWrappers = XmlParserFunctions.parseCommitMessage(in, handler
@@ -54,7 +54,7 @@ public class EDBCommit implements EDBEndpointCommand {
             body = XmlParserFunctions.buildCommitErrorBody(e.getMessage(), makeStackTraceString(e));
             this.log.info(body);
         }
-
+        return body;
 	}
 	
 	private String makeStackTraceString(Exception e) {
