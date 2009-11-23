@@ -17,18 +17,15 @@
  */
 package org.openengsb.edb.jbi.endpoints;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.Source;
 
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.openengsb.edb.core.api.EDBException;
 import org.openengsb.edb.core.api.EDBHandler;
-import org.openengsb.edb.core.entities.GenericContent;
-import org.openengsb.edb.jbi.endpoints.XmlParserFunctions.RequestWrapper;
 import org.openengsb.edb.jbi.endpoints.commands.EDBCommit;
 import org.openengsb.edb.jbi.endpoints.commands.EDBEndpointCommand;
 import org.openengsb.edb.jbi.endpoints.commands.EDBQuery;
@@ -72,6 +69,9 @@ public class EdbEndpoint extends AbstractEndpoint {
 	public static final String COMMIT_OPERATION_TAG_NAME = "operation";
 	public static final String QUERY_ELEMENT_NAME = "query";
 	public static final int DEFAULT_DEPTH = 1;
+	
+	// should be set via spring ?
+	private Map<String, EDBEndpointCommand> commands;
 
 	@Override
 	protected void processInOutRequest(MessageExchange exchange,
@@ -79,6 +79,10 @@ public class EdbEndpoint extends AbstractEndpoint {
 		getLog().info("init handler from factory");
 
 		EDBHandler handler = this.factory.loadDefaultRepository();
+		
+		// see issue #179
+		init(handler);
+		
 		getLog().info("parsing message");
 		/*
 		 * Only check the local part. Don't care about the namespace of the
@@ -87,21 +91,23 @@ public class EdbEndpoint extends AbstractEndpoint {
 		String op = XmlParserFunctions.getMessageType(in);// exchange.getOperation().getLocalPart();
 		String body = null;
 
-		if (op.equals(EdbEndpoint.OPERATION_COMMIT)) {
-			EDBEndpointCommand commit = new EDBCommit(handler, logger);
-			body = commit.execute(in);
-		} else if (op.equals(EdbEndpoint.OPERATION_QUERY)) {
-			EDBEndpointCommand query = new EDBQuery(handler, logger);
-			body = query.execute(in);
-		} else if (op.equals(EdbEndpoint.OPERATION_RESET)) {
-			EDBEndpointCommand reset = new EDBReset(handler, logger);
-			body = reset.execute(in);
-		}
+		body = this.commands.get(op).execute(in);
+		
 		body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><acmResponseMessage><body>"
 				+ body + "</body></acmResponseMessage>";
 		Source response = new StringSource(body);
 		this.logger.info(body);
 		out.setContent(response);
 		getChannel().send(exchange);
+	}
+	
+	/**
+	 * see issue 179
+	 */
+	private void init(EDBHandler handler){
+		this.commands = new HashMap<String, EDBEndpointCommand>();
+		this.commands.put(OPERATION_COMMIT, new EDBCommit(handler, logger));
+		this.commands.put(OPERATION_QUERY, new EDBQuery(handler, logger));
+		this.commands.put(OPERATION_RESET, new EDBReset(handler, logger));
 	}
 }
