@@ -561,13 +561,6 @@
 
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-util</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
                   <artifactId>openengsb-connector-mvn</artifactId>
                   <version>${project.version}</version>
                   <classifier>installer</classifier>
