@@ -188,15 +188,15 @@ public class XmlParserFunctions {
         return doc;
     }
 
-    public static String getMessageType(NormalizedMessage msg) throws IOException, SAXException, TransformerException,
+    public static EDBOperationType getMessageType(NormalizedMessage msg) throws IOException, SAXException, TransformerException,
             DocumentException {
         Document doc = readMessage(msg);
         if (doc.getRootElement().getName().equals("acmQueryRequestMessage")) {
-            return EdbEndpoint.OPERATION_QUERY;
+            return EDBOperationType.QUERY;
         } else if (doc.getRootElement().getName().equals("acmPersistMessage")) {
-            return EdbEndpoint.OPERATION_COMMIT;
+            return EDBOperationType.COMMIT;
         } else if (doc.getRootElement().getName().equals("acmResetRequestMessage")) {
-            return EdbEndpoint.OPERATION_RESET;
+            return EDBOperationType.RESET;
         } else {
             throw new RuntimeException("root element could not be sorted..." + doc.getRootElement().getName());
         }

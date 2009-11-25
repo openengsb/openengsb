@@ -28,7 +28,10 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.jbi.endpoints.commands.EDBCommit;
 import org.openengsb.edb.jbi.endpoints.commands.EDBEndpointCommand;
+import org.openengsb.edb.jbi.endpoints.commands.EDBExecuteLink;
 import org.openengsb.edb.jbi.endpoints.commands.EDBQuery;
+import org.openengsb.edb.jbi.endpoints.commands.EDBRegisterLink;
+import org.openengsb.edb.jbi.endpoints.commands.EDBRequestLink;
 import org.openengsb.edb.jbi.endpoints.commands.EDBReset;
 
 /**
@@ -47,21 +50,6 @@ public class EdbEndpoint extends AbstractEndpoint {
 	 * 
 	 * The namespace is ignored in the operation-check
 	 */
-	/**
-	 * String to identify a commit-operation in a
-	 * {@link javax.jbi.messaging.MessageExchange}
-	 */
-	public static final String OPERATION_COMMIT = "commit";
-	/**
-	 * String to identify a query-operation in a
-	 * {@link javax.jbi.messaging.MessageExchange}
-	 */
-	public static final String OPERATION_QUERY = "query";
-	/**
-	 * String to identify a reset-operation in a
-	 * {@link javax.jbi.messaging.MessageExchange}
-	 */
-	public static final String OPERATION_RESET = "reset";
 
 	public static final String DEFAULT_USER = "EDB";
 	public static final String DEFAULT_EMAIL = "EDB@engsb.ifs.tuwien.ac.at";
@@ -71,7 +59,7 @@ public class EdbEndpoint extends AbstractEndpoint {
 	public static final int DEFAULT_DEPTH = 1;
 	
 	// should be set via spring ?
-	private Map<String, EDBEndpointCommand> commands;
+	private Map<EDBOperationType, EDBEndpointCommand> commands;
 
 	@Override
 	protected void processInOutRequest(MessageExchange exchange,
@@ -88,7 +76,7 @@ public class EdbEndpoint extends AbstractEndpoint {
 		 * Only check the local part. Don't care about the namespace of the
 		 * operation
 		 */
-		String op = XmlParserFunctions.getMessageType(in);// exchange.getOperation().getLocalPart();
+		EDBOperationType op = XmlParserFunctions.getMessageType(in);// exchange.getOperation().getLocalPart();
 		String body = null;
 
 		body = this.commands.get(op).execute(in);
@@ -105,9 +93,9 @@ public class EdbEndpoint extends AbstractEndpoint {
 	 * see issue 179
 	 */
 	private void init(EDBHandler handler){
-		this.commands = new HashMap<String, EDBEndpointCommand>();
-		this.commands.put(OPERATION_COMMIT, new EDBCommit(handler, logger));
-		this.commands.put(OPERATION_QUERY, new EDBQuery(handler, logger));
-		this.commands.put(OPERATION_RESET, new EDBReset(handler, logger));
+		this.commands = new HashMap<EDBOperationType, EDBEndpointCommand>();
+		this.commands.put(EDBOperationType.COMMIT, new EDBCommit(handler, logger));
+		this.commands.put(EDBOperationType.QUERY, new EDBQuery(handler, logger));
+		this.commands.put(EDBOperationType.RESET, new EDBReset(handler, logger));
 	}
 }
