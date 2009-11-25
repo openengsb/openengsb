@@ -28,6 +28,11 @@
     <property name="indexFactory" ref="luceneIndexFactory" />
     <property name="indexRepoFactory" ref="gitRepositoryFactory" />
   </bean>
-  <edb:edb service="repo:edb" endpoint="edb" factory="#config" />
+  
+  <bean class="org.openengsb.edb.jbi.endpoints.EDBEndPointConfig" id="fullConfig">
+  	<property name="factory" ref="config" />
+  </bean>
+  
+  <edb:edb service="repo:edb" endpoint="edb" factory="#fullConfig" />
 
 </beans>

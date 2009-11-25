@@ -36,8 +36,17 @@ import org.openengsb.edb.core.api.impl.DefaultEDBHandlerFactory;
 public abstract class AbstractEndpoint extends ProviderEndpoint {
 
     protected EDBHandlerFactory factory;
+    protected EDBEndPointConfig fullConfig;
 
-    protected AbstractEndpoint() {
+    public EDBEndPointConfig getFullConfig() {
+		return fullConfig;
+	}
+
+	public void setFullConfig(EDBEndPointConfig fullConfig) {
+		this.fullConfig = fullConfig;
+	}
+
+	protected AbstractEndpoint() {
         this.factory = new DefaultEDBHandlerFactory();
     }
 
