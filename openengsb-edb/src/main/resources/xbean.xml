@@ -31,6 +31,7 @@
   
   <bean class="org.openengsb.edb.jbi.endpoints.EDBEndPointConfig" id="fullConfig">
   	<property name="factory" ref="config" />
+  	<property name="linkStorage" value="links" />
   </bean>
   
   <edb:edb service="repo:edb" endpoint="edb" fullConfig="#fullConfig" />

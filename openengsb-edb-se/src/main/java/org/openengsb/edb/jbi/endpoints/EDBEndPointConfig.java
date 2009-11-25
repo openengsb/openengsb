@@ -23,7 +23,7 @@ public class EDBEndPointConfig {
 	private EDBHandlerFactory factory;
 
 	private String linkStorage;
-	
+
 	public String getLinkStorage() {
 		return linkStorage;
 	}
@@ -39,5 +39,5 @@ public class EDBEndPointConfig {
 	public void setFactory(EDBHandlerFactory factory) {
 		this.factory = factory;
 	}
-	
+
 }
