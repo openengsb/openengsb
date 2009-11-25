@@ -52,6 +52,7 @@ import org.junit.runner.RunWith;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
+
 import org.openengsb.util.IO;
 import org.openengsb.util.Prelude;
 import org.springframework.context.support.AbstractXmlApplicationContext;
@@ -223,7 +224,9 @@ public class CommitServiceTest extends SpringTestSupport {
 
     @Test
     public void testCommit1() throws Exception {
+
         Document doc = sendMessageAndParseResponse(CommitServiceTest.persistMessage);
+
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");
@@ -243,10 +246,9 @@ public class CommitServiceTest extends SpringTestSupport {
     @Test
     @Ignore
     public void testInvalidCommit() throws Exception {
-        InOut inout = createInOutMessage(CommitServiceTest.invalidResetMessage.asXML());
-        // inout.setOperation(new QName(EdbEndpoint.OPERATION_COMMIT));
-        this.client.sendSync(inout, 1000);
-        Document doc = parseResponse(inout.getOutMessage());
+        
+        Document doc = sendMessageAndParseResponse(CommitServiceTest.invalidResetMessage);
+        
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");
@@ -257,7 +259,9 @@ public class CommitServiceTest extends SpringTestSupport {
 
     @Test
     public void testResetInvalidHead() throws Exception {
+
         Document doc = sendMessageAndParseResponse(CommitServiceTest.invalidResetMessage);
+
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");
@@ -268,7 +272,9 @@ public class CommitServiceTest extends SpringTestSupport {
 
     @Test
     public void testResetDepth0() throws Exception {
+
         Document doc = sendMessageAndParseResponse(CommitServiceTest.resetMessage);
+
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");
@@ -278,8 +284,10 @@ public class CommitServiceTest extends SpringTestSupport {
 
     @Test
     public void testValidQuery() throws Exception {
+
         testCommit1(); // this test depends on a working commit-test.
         Document doc = sendMessageAndParseResponse(CommitServiceTest.validQueryMessage);
+
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");
@@ -291,8 +299,10 @@ public class CommitServiceTest extends SpringTestSupport {
 
     @Test
     public void testInvalidQuery() throws Exception {
+
         testCommit1(); // this test depends on a working commit-test.
         Document doc = sendMessageAndParseResponse(CommitServiceTest.invalidQueryMessage);
+
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");
