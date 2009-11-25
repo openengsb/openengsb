@@ -28,7 +28,10 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.jbi.endpoints.commands.EDBCommit;
 import org.openengsb.edb.jbi.endpoints.commands.EDBEndpointCommand;
+import org.openengsb.edb.jbi.endpoints.commands.EDBExecuteLink;
 import org.openengsb.edb.jbi.endpoints.commands.EDBQuery;
+import org.openengsb.edb.jbi.endpoints.commands.EDBRegisterLink;
+import org.openengsb.edb.jbi.endpoints.commands.EDBRequestLink;
 import org.openengsb.edb.jbi.endpoints.commands.EDBReset;
 
 /**
@@ -36,7 +39,6 @@ import org.openengsb.edb.jbi.endpoints.commands.EDBReset;
  * 
  */
 public class EdbEndpoint extends AbstractEndpoint {
-
     /*
      * Operations
      * 
@@ -63,11 +65,10 @@ public class EdbEndpoint extends AbstractEndpoint {
             throws Exception {
         getLog().info("init handler from factory");
 
-        EDBHandler handler = this.fullConfig.getFactory().loadDefaultRepository();
-        EDBHandler linksHandler = this.fullConfig.getFactory().loadRepository(this.fullConfig.getLinkStorage());
+        EDBHandler handler = this.factory.loadDefaultRepository();
 
         // see issue #179
-        init(handler, linksHandler);
+        init(handler);
 
         getLog().info("parsing message");
         /*
@@ -90,11 +91,13 @@ public class EdbEndpoint extends AbstractEndpoint {
     /**
      * see issue 179
      */
-    private void init(EDBHandler handler, EDBHandler linksHandler) {
+    private void init(EDBHandler handler) {
         this.commands = new HashMap<EDBOperationType, EDBEndpointCommand>();
-        this.commands.put(EDBOperationType.COMMIT, new EDBCommit(handler, this.logger));
-        this.commands.put(EDBOperationType.QUERY, new EDBQuery(handler, this.logger));
-        this.commands.put(EDBOperationType.RESET, new EDBReset(handler, this.logger));
+        this.commands.put(EDBOperationType.COMMIT, new EDBCommit(handler, logger));
+        this.commands.put(EDBOperationType.QUERY, new EDBQuery(handler, logger));
+        this.commands.put(EDBOperationType.RESET, new EDBReset(handler, logger));
+        this.commands.put(EDBOperationType.REGISTER_LINK, new EDBRegisterLink(handler, logger));
+        this.commands.put(EDBOperationType.REQUEST_LINK, new EDBRequestLink(handler, logger));
+        this.commands.put(EDBOperationType.EXECUTE_LINK, new EDBExecuteLink(handler, logger));
     }
-
 }

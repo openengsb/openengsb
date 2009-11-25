@@ -197,6 +197,12 @@ public class XmlParserFunctions {
             return EDBOperationType.COMMIT;
         } else if (doc.getRootElement().getName().equals("acmResetRequestMessage")) {
             return EDBOperationType.RESET;
+        } else if (doc.getRootElement().getName().equals("acmLinkRegisterMessage")) {
+            return EDBOperationType.REGISTER_LINK;
+        } else if (doc.getRootElement().getName().equals("acmLinkExecutedMessage")) {
+            return EDBOperationType.EXECUTE_LINK;
+        } else if (doc.getRootElement().getName().equals("acmLinkQueryRequestMessage")) {
+            return EDBOperationType.REQUEST_LINK;
         } else {
             throw new RuntimeException("root element could not be sorted..." + doc.getRootElement().getName());
         }
