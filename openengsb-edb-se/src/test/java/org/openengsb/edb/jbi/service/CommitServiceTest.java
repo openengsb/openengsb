@@ -27,8 +27,8 @@ import java.util.Map.Entry;
 import javax.annotation.Resource;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.InOut;
-import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
@@ -52,7 +52,6 @@ import org.junit.runner.RunWith;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
-import org.openengsb.edb.jbi.endpoints.EdbEndpoint;
 import org.openengsb.util.IO;
 import org.openengsb.util.Prelude;
 import org.springframework.context.support.AbstractXmlApplicationContext;
@@ -188,15 +187,21 @@ public class CommitServiceTest extends SpringTestSupport {
         return inOut;
     }
 
-    private Document parseResponse(MessageExchange response) throws IOException, SAXException, TransformerException {
+    private Document sendMessageAndParseResponse(Document doc) throws MessagingException, IOException, SAXException,
+            TransformerException {
+        InOut inout = createInOutMessage(doc.asXML());
+        this.client.sendSync(inout, 1000);
+        return parseResponse(inout.getOutMessage());
+    }
+
+    private Document parseResponse(NormalizedMessage response) throws IOException, SAXException, TransformerException {
         SourceTransformer st = new SourceTransformer();
-        SAXSource rSource = st.toSAXSource(response.getMessage("out").getContent());
+        SAXSource rSource = st.toSAXSource(response.getContent());
         SAXReader saxreader = new SAXReader(rSource.getXMLReader());
         try {
             return saxreader.read(rSource.getInputSource());
         } catch (DocumentException e) {
-            // TODO Auto-generated catch block
-            StreamSource rawSource = st.toStreamSource(response.getMessage("out").getContent());
+            StreamSource rawSource = st.toStreamSource(response.getContent());
             BufferedReader br = new BufferedReader(rawSource.getReader());
             StringBuilder sb = new StringBuilder();
             String line;
@@ -217,12 +222,8 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
-    @Ignore
     public void testCommit1() throws Exception {
-        InOut inout = createInOutMessage(CommitServiceTest.persistMessage.asXML());
-        inout.setOperation(new QName(EdbEndpoint.OPERATION_COMMIT));
-        this.client.sendSync(inout);
-        Document doc = parseResponse(this.client.receive());
+        Document doc = sendMessageAndParseResponse(CommitServiceTest.persistMessage);
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");
@@ -233,13 +234,19 @@ public class CommitServiceTest extends SpringTestSupport {
         assertNoErrorMessage(body);
     }
 
+    /*
+     * This test is ignored because it tests the JBI-way of communication via
+     * the operation-field in the MessageExchange. Since this does not work with
+     * the JMS-connector yet, the component does not use the operations field
+     * for the moment.
+     */
     @Test
     @Ignore
     public void testInvalidCommit() throws Exception {
         InOut inout = createInOutMessage(CommitServiceTest.invalidResetMessage.asXML());
-        inout.setOperation(new QName(EdbEndpoint.OPERATION_COMMIT));
-        this.client.sendSync(inout);
-        Document doc = parseResponse(this.client.receive());
+        // inout.setOperation(new QName(EdbEndpoint.OPERATION_COMMIT));
+        this.client.sendSync(inout, 1000);
+        Document doc = parseResponse(inout.getOutMessage());
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");
@@ -249,12 +256,8 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
-    @Ignore
     public void testResetInvalidHead() throws Exception {
-        InOut inout = createInOutMessage(CommitServiceTest.invalidResetMessage.asXML());
-        inout.setOperation(new QName(EdbEndpoint.OPERATION_RESET));
-        this.client.sendSync(inout);
-        Document doc = parseResponse(this.client.receive());
+        Document doc = sendMessageAndParseResponse(CommitServiceTest.invalidResetMessage);
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");
@@ -264,12 +267,8 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
-    @Ignore
     public void testResetDepth0() throws Exception {
-        InOut inout = createInOutMessage(CommitServiceTest.resetMessage.asXML());
-        inout.setOperation(new QName(EdbEndpoint.OPERATION_RESET));
-        this.client.sendSync(inout);
-        Document doc = parseResponse(this.client.receive());
+        Document doc = sendMessageAndParseResponse(CommitServiceTest.resetMessage);
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");
@@ -278,14 +277,9 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
-    @Ignore
     public void testValidQuery() throws Exception {
-        testCommit1();
-        InOut inout = createInOutMessage(CommitServiceTest.validQueryMessage.asXML());
-        inout.setOperation(new QName(EdbEndpoint.OPERATION_QUERY));
-        this.client.sendSync(inout);
-        Document doc = parseResponse(this.client.receive());
-        System.out.println(doc.asXML());
+        testCommit1(); // this test depends on a working commit-test.
+        Document doc = sendMessageAndParseResponse(CommitServiceTest.validQueryMessage);
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");
@@ -296,14 +290,9 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
-    @Ignore
     public void testInvalidQuery() throws Exception {
-        testCommit1();
-        InOut inout = createInOutMessage(CommitServiceTest.invalidQueryMessage.asXML());
-        inout.setOperation(new QName(EdbEndpoint.OPERATION_QUERY));
-        this.client.sendSync(inout);
-        Document doc = parseResponse(this.client.receive());
-        System.out.println(doc.asXML());
+        testCommit1(); // this test depends on a working commit-test.
+        Document doc = sendMessageAndParseResponse(CommitServiceTest.invalidQueryMessage);
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");
