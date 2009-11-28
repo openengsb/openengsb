@@ -28,10 +28,7 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.jbi.endpoints.commands.EDBCommit;
 import org.openengsb.edb.jbi.endpoints.commands.EDBEndpointCommand;
-import org.openengsb.edb.jbi.endpoints.commands.EDBExecuteLink;
 import org.openengsb.edb.jbi.endpoints.commands.EDBQuery;
-import org.openengsb.edb.jbi.endpoints.commands.EDBRegisterLink;
-import org.openengsb.edb.jbi.endpoints.commands.EDBRequestLink;
 import org.openengsb.edb.jbi.endpoints.commands.EDBReset;
 
 /**

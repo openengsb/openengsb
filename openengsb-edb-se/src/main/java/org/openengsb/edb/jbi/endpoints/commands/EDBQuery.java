@@ -43,7 +43,7 @@ public class EDBQuery implements EDBEndpointCommand {
 		String body = null;
 		final List<String> terms = XmlParserFunctions.parseQueryMessage(in);
 		List<GenericContent> foundSignals = new ArrayList<GenericContent>();
-
+		log.debug(terms.size() + " queries received, searching now.");
 		try {
 			for (final String term : terms) {
 				final List<GenericContent> result = handler.query(term,

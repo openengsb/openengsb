@@ -38,6 +38,9 @@ public class EDBReset implements EDBEndpointCommand {
 	public String execute(NormalizedMessage in) throws Exception {
 		String body = null;
 		final RequestWrapper req = XmlParserFunctions.parseResetMessage(in);
+		log.debug(String.format(
+				"Reset request %s %s received, processing now.", req
+						.getHeadId(), req.getDepth()));
 		try {
 			body = XmlParserFunctions.buildResetBody(handler.reset(req
 					.getHeadId(), req.getDepth()));
