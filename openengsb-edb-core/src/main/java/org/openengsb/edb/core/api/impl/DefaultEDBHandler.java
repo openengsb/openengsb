@@ -53,9 +53,6 @@ public class DefaultEDBHandler implements EDBHandler {
 	private static final String DEFAULT_MSG = "commit via EDB-API";
 	
 	private static final String ELEM_NAME = "name";
-	
-	@Deprecated
-	private static final String GIT_CONFIG = ".git";
 
 	protected Repository repoData;
 	protected Repository repoSearch;

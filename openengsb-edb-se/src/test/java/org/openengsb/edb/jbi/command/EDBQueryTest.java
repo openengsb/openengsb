@@ -19,9 +19,13 @@ public class EDBQueryTest {
 	private static final String VALID_PATH_ONLY = "path:x/y/z";
 	private static final String VALID_ONE_PATH_ELEMENT = "path:x/y/z AND x:42";
 	
+	@SuppressWarnings("unchecked")
 	private static final List<String> QUERY_LIST_1 = new ArrayList<String>(Arrays.asList(new String[]{"foo","bar",}));
+	@SuppressWarnings("unchecked")
 	private static final List<String> QUERY_LIST_2 = new ArrayList<String>(Arrays.asList(new String[]{"42","1337",}));
+	@SuppressWarnings("unchecked")
 	private static final List<String> QUERY_LIST_3 = new ArrayList<String>(Arrays.asList(new String[]{}));
+	@SuppressWarnings("unchecked")
 	private static final List<String> QUERY_LIST_4 = new ArrayList<String>(Arrays.asList(new String[]{"42",}));
 	
 	private static final String INVALID_IS_FULL_PATH = "path:a/b/c AND a:foo AND b:bar AND c:test";
