@@ -51,7 +51,7 @@ public interface EDBHandler {
 	 * the lowest level of a tree will return the leaves names,their UUIDs, but
 	 * no actual content, to this purpose, use {@link #query(String, boolean)}.
 	 */
-	List<GenericContent> queryNodes(String[] query) throws EDBException;
+	List<GenericContent> queryNodes(List<String> query) throws EDBException;
 
 	/**
 	 * Add a list of objects to be persisted on the next update (should be

@@ -132,7 +132,7 @@ public class DefaultEDBHandler implements EDBHandler {
 	}
 
 	//FIXME dependent on the real file tree and git folder structure
-	public List<GenericContent> queryNodes(String[] query) throws EDBException {
+	public List<GenericContent> queryNodes(List<String> query) throws EDBException {
 		
 		File file = this.repoData.getRepositoryBase();
 		// iterate to end of path

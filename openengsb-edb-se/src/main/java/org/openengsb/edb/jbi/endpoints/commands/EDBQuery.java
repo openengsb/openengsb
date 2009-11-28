@@ -32,31 +32,39 @@ import org.openengsb.util.Prelude;
 import edu.emory.mathcs.backport.java.util.Arrays;
 
 public class EDBQuery implements EDBEndpointCommand {
-	
+
 	private static final String ELEM_OR = " OR ";
 	private static final String ELEM_AND = " AND ";
 	private static final String ELEM_PATH = "path:";
 	private static final String TERM_DELIMITER = ":";
-	
+	private static final String PATH_DELIMITER = "/";
+
 	private EDBHandler handler;
 	private Log log;
-	
+
 	public EDBQuery(EDBHandler handler, Log log) {
 		this.handler = handler;
 		this.log = log;
 	}
-	
+
 	@Override
 	public String execute(NormalizedMessage in) throws Exception {
+
 		String body = null;
 		final List<String> terms = XmlParserFunctions.parseQueryMessage(in);
 		List<GenericContent> foundSignals = new ArrayList<GenericContent>();
 		log.debug(terms.size() + " queries received, searching now.");
 		try {
 			for (final String term : terms) {
-				final List<GenericContent> result = handler.query(term,
-						false);
-				foundSignals.addAll(result);
+				if (isNodeQuery(term)) {
+					final List<GenericContent> result = handler
+							.queryNodes(prepareForNodeQuery(term));
+					foundSignals.addAll(result);
+				} else {
+					final List<GenericContent> result = handler.query(term,
+							false);
+					foundSignals.addAll(result);
+				}
 			}
 
 		} catch (final EDBException e) {
@@ -67,7 +75,7 @@ public class EDBQuery implements EDBEndpointCommand {
 		body = XmlParserFunctions.buildQueryBody(foundSignals);
 		return body;
 	}
-	
+
 	public static boolean isNodeQuery(String query) throws ArrayIndexOutOfBoundsException{
 		
 		if(query.equals("")){
@@ -78,7 +86,6 @@ public class EDBQuery implements EDBEndpointCommand {
 		if (query.contains(ELEM_OR)) {
 			return false;
 		}
-
 		// split query by terms
 		String[] fieldsArray = query.split(ELEM_AND);		
 		//extract term prefix and abstract path
@@ -94,6 +101,8 @@ public class EDBQuery implements EDBEndpointCommand {
 				fields.add(field.substring(0, field.indexOf(TERM_DELIMITER)));
 			}
 		}
+		List<String> possibleResult = new ArrayList<String>(fields);
+		possibleResult.add(0, path);
 		
 		// contained "path"
 		if(path.equals("")) {
@@ -110,7 +119,7 @@ public class EDBQuery implements EDBEndpointCommand {
 		// contains any non-path element ?
 		// basic: more elements as fields then path has depth ?
 		if(fields.size() >= pathNames.size()) {
-			return false; 
+			return false;
 		}
 		// contains any non-path element ?
 		// extended: compare content
@@ -127,13 +136,36 @@ public class EDBQuery implements EDBEndpointCommand {
 		return true;
 	}
 	
-	public static String printList(List<String> list){
-		StringBuffer buf = new StringBuffer();
-		for(String obj : list){
-			buf.append(obj);
-			buf.append(", ");
+	public static List<String> prepareForNodeQuery(String query) {
+		
+		List<String> result = new ArrayList<String>();
+		
+		@SuppressWarnings("unchecked")
+		List<String> tmp =  new ArrayList<String>(Arrays.asList(query.split(ELEM_AND)));
+		String path = "";
+		for(int i=0;i<tmp.size();i++) {
+			String elem = tmp.get(i);
+			if(elem.startsWith(ELEM_PATH)) {
+				path = elem.substring(elem.indexOf(TERM_DELIMITER) + 1);
+				tmp.remove(i);
+			} 
 		}
-		return buf.toString();
+		while(path.startsWith(PATH_DELIMITER)) {
+			path = path.substring(1);
+		}
+		String[] pathNames = path.split(PATH_DELIMITER);
+		for(int i=0;i<pathNames.length;i++) {
+			for(int j=0;j<tmp.size();j++) {
+				String candidate = tmp.get(j);
+				if(candidate.startsWith(pathNames[i] + TERM_DELIMITER)) {
+					result.add(candidate.substring(candidate.indexOf(TERM_DELIMITER) + 1));
+					tmp.remove(j);
+					break;
+				}
+			}
+		}
+		
+		return result;
 	}
 
 }
