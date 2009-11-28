@@ -32,8 +32,6 @@ import org.openengsb.edb.core.search.IndexFactory;
  * a handler should be synchronized, either by using the explicit keyword or own
  * synchronization.
  * 
- * @author FWa
- * 
  */
 public interface EDBHandler {
 
