@@ -27,9 +27,17 @@ import org.openengsb.edb.core.api.EDBException;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.edb.jbi.endpoints.XmlParserFunctions;
+import org.openengsb.util.Prelude;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 public class EDBQuery implements EDBEndpointCommand {
-
+	
+	private static final String ELEM_OR = " OR ";
+	private static final String ELEM_AND = " AND ";
+	private static final String ELEM_PATH = "path:";
+	private static final String TERM_DELIMITER = ":";
+	
 	private EDBHandler handler;
 	private Log log;
 	
@@ -58,6 +66,74 @@ public class EDBQuery implements EDBEndpointCommand {
 		}
 		body = XmlParserFunctions.buildQueryBody(foundSignals);
 		return body;
+	}
+	
+	public static boolean isNodeQuery(String query) throws ArrayIndexOutOfBoundsException{
+		
+		if(query.equals("")){
+			return false;
+		}
+		
+		// contains OR ?
+		if (query.contains(ELEM_OR)) {
+			return false;
+		}
+
+		// split query by terms
+		String[] fieldsArray = query.split(ELEM_AND);		
+		//extract term prefix and abstract path
+		String path ="";
+		List<String> fields = new ArrayList<String>();
+		for(int i=0;i<fieldsArray.length;i++) {
+			String field = fieldsArray[i];
+			//extract path
+			if(field.startsWith(ELEM_PATH)){
+				path = field.substring(field.indexOf(TERM_DELIMITER) + 1);
+			} else {
+				// store as element to check against path
+				fields.add(field.substring(0, field.indexOf(TERM_DELIMITER)));
+			}
+		}
+		
+		// contained "path"
+		if(path.equals("")) {
+			return false;
+		}
+		
+		// contains last path element ?
+		@SuppressWarnings("unchecked")
+		List<String> pathNames = new ArrayList<String>(Arrays.asList(Prelude.dePathize(path)));
+		if(fields.contains(pathNames.get(pathNames.size() - 1))){
+			return false;
+		}
+
+		// contains any non-path element ?
+		// basic: more elements as fields then path has depth ?
+		if(fields.size() >= pathNames.size()) {
+			return false; 
+		}
+		// contains any non-path element ?
+		// extended: compare content
+		for(int i=0;i<fields.size();i++) {
+			String field = fields.get(i);
+			if(pathNames.contains(field)) {
+				pathNames.remove(field);
+				fields.remove(i);
+				i--;
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static String printList(List<String> list){
+		StringBuffer buf = new StringBuffer();
+		for(String obj : list){
+			buf.append(obj);
+			buf.append(", ");
+		}
+		return buf.toString();
 	}
 
 }
