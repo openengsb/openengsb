@@ -51,6 +51,11 @@ public class DefaultEDBHandler implements EDBHandler {
 	private static final String HEAD_NAME = "HEAD";
 	private static final String MODE_HARD = "hard";
 	private static final String DEFAULT_MSG = "commit via EDB-API";
+	
+	private static final String ELEM_NAME = "name";
+	
+	@Deprecated
+	private static final String GIT_CONFIG = ".git";
 
 	protected Repository repoData;
 	protected Repository repoSearch;
@@ -128,10 +133,30 @@ public class DefaultEDBHandler implements EDBHandler {
 
 	//FIXME dependent on the real file tree and git folder structure
 	public List<GenericContent> queryNodes(String[] query) throws EDBException {
-
-		File rootDir = this.repoData.getRepositoryBase();
-
-		return null;
+		
+		File file = this.repoData.getRepositoryBase();
+		// iterate to end of path
+		for(String elem : query){
+			File[] files = file.listFiles();
+			for(File candidate : files) {
+				if(candidate.isDirectory() && candidate.getName().equals(elem)){
+					file = candidate;
+					break;
+				}
+				return null;
+			}
+		}
+		List<GenericContent> result = new ArrayList<GenericContent>();
+		// save directories at the end of the path
+		File[] files = file.listFiles();
+		for(File candidate : files) {
+			if(candidate.isDirectory()) {
+				GenericContent gc = new GenericContent();
+				gc.setProperty(ELEM_NAME, candidate.getName());
+				result.add(gc);
+			}
+		}
+		return result;
 	}
 
 	public synchronized EDBHandler add(List<GenericContent> content)
