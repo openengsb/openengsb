@@ -39,8 +39,8 @@ public class EDBQuery implements EDBEndpointCommand {
 	private static final String TERM_DELIMITER = ":";
 	private static final String PATH_DELIMITER = "/";
 
-	private EDBHandler handler;
-	private Log log;
+	private final EDBHandler handler;
+	private final Log log;
 
 	public EDBQuery(EDBHandler handler, Log log) {
 		this.handler = handler;
@@ -76,25 +76,27 @@ public class EDBQuery implements EDBEndpointCommand {
 		return body;
 	}
 
-	public static boolean isNodeQuery(String query) throws ArrayIndexOutOfBoundsException{
-		
-		if(query.equals("")){
+	public static boolean isNodeQuery(String query)
+			throws ArrayIndexOutOfBoundsException {
+
+		if (query.equals("") || query.equals("*")
+				|| (!query.contains(TERM_DELIMITER))) {
 			return false;
 		}
-		
+
 		// contains OR ?
 		if (query.contains(ELEM_OR)) {
 			return false;
 		}
 		// split query by terms
-		String[] fieldsArray = query.split(ELEM_AND);		
-		//extract term prefix and abstract path
-		String path ="";
+		String[] fieldsArray = query.split(ELEM_AND);
+		// extract term prefix and abstract path
+		String path = "";
 		List<String> fields = new ArrayList<String>();
-		for(int i=0;i<fieldsArray.length;i++) {
+		for (int i = 0; i < fieldsArray.length; i++) {
 			String field = fieldsArray[i];
-			//extract path
-			if(field.startsWith(ELEM_PATH)){
+			// extract path
+			if (field.startsWith(ELEM_PATH)) {
 				path = field.substring(field.indexOf(TERM_DELIMITER) + 1);
 			} else {
 				// store as element to check against path
@@ -103,29 +105,30 @@ public class EDBQuery implements EDBEndpointCommand {
 		}
 		List<String> possibleResult = new ArrayList<String>(fields);
 		possibleResult.add(0, path);
-		
+
 		// contained "path"
-		if(path.equals("")) {
+		if (path.equals("")) {
 			return false;
 		}
-		
+
 		// contains last path element ?
 		@SuppressWarnings("unchecked")
-		List<String> pathNames = new ArrayList<String>(Arrays.asList(Prelude.dePathize(path)));
-		if(fields.contains(pathNames.get(pathNames.size() - 1))){
+		List<String> pathNames = new ArrayList<String>(Arrays.asList(Prelude
+				.dePathize(path)));
+		if (fields.contains(pathNames.get(pathNames.size() - 1))) {
 			return false;
 		}
 
 		// contains any non-path element ?
 		// basic: more elements as fields then path has depth ?
-		if(fields.size() >= pathNames.size()) {
+		if (fields.size() >= pathNames.size()) {
 			return false;
 		}
 		// contains any non-path element ?
 		// extended: compare content
-		for(int i=0;i<fields.size();i++) {
+		for (int i = 0; i < fields.size(); i++) {
 			String field = fields.get(i);
-			if(pathNames.contains(field)) {
+			if (pathNames.contains(field)) {
 				pathNames.remove(field);
 				fields.remove(i);
 				i--;
@@ -135,36 +138,38 @@ public class EDBQuery implements EDBEndpointCommand {
 		}
 		return true;
 	}
-	
+
 	public static List<String> prepareForNodeQuery(String query) {
-		
+
 		List<String> result = new ArrayList<String>();
-		
+
 		@SuppressWarnings("unchecked")
-		List<String> tmp =  new ArrayList<String>(Arrays.asList(query.split(ELEM_AND)));
+		List<String> tmp = new ArrayList<String>(Arrays.asList(query
+				.split(ELEM_AND)));
 		String path = "";
-		for(int i=0;i<tmp.size();i++) {
+		for (int i = 0; i < tmp.size(); i++) {
 			String elem = tmp.get(i);
-			if(elem.startsWith(ELEM_PATH)) {
+			if (elem.startsWith(ELEM_PATH)) {
 				path = elem.substring(elem.indexOf(TERM_DELIMITER) + 1);
 				tmp.remove(i);
-			} 
+			}
 		}
-		while(path.startsWith(PATH_DELIMITER)) {
+		while (path.startsWith(PATH_DELIMITER)) {
 			path = path.substring(1);
 		}
 		String[] pathNames = path.split(PATH_DELIMITER);
-		for(int i=0;i<pathNames.length;i++) {
-			for(int j=0;j<tmp.size();j++) {
+		for (int i = 0; i < pathNames.length; i++) {
+			for (int j = 0; j < tmp.size(); j++) {
 				String candidate = tmp.get(j);
-				if(candidate.startsWith(pathNames[i] + TERM_DELIMITER)) {
-					result.add(candidate.substring(candidate.indexOf(TERM_DELIMITER) + 1));
+				if (candidate.startsWith(pathNames[i] + TERM_DELIMITER)) {
+					result.add(candidate.substring(candidate
+							.indexOf(TERM_DELIMITER) + 1));
 					tmp.remove(j);
 					break;
 				}
 			}
 		}
-		
+
 		return result;
 	}
 
