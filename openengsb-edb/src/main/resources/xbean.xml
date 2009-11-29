@@ -33,6 +33,6 @@
   	<property name="factory" ref="config" />
   </bean>
   
-  <edb:edb service="repo:edb" endpoint="edb" config="#fullConfig" />
+  <edb:edb service="repo:edb" endpoint="edb" fullConfig="#fullConfig" />
 
 </beans>
