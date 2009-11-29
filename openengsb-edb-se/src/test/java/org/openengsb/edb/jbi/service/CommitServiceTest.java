@@ -64,7 +64,6 @@ import org.xml.sax.SAXException;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:testBeans.xml" })
 public class CommitServiceTest extends SpringTestSupport {
-
     @Resource
     private EDBHandlerFactory config;
 
