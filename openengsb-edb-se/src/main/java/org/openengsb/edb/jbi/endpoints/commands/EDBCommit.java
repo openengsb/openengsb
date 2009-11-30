@@ -32,19 +32,18 @@ import org.openengsb.edb.jbi.endpoints.XmlParserFunctions;
 import org.openengsb.edb.jbi.endpoints.XmlParserFunctions.ContentWrapper;
 
 public class EDBCommit implements EDBEndpointCommand {
-	
-	private EDBHandler handler;
-	private Log log;
-	
-	public EDBCommit(EDBHandler handler, Log log) {
-		this.handler = handler;
-		this.log = log;
-	}
-	
-	@Override
-	public String execute(NormalizedMessage in) throws Exception {
-		String body = null;
-		try {
+
+    private final EDBHandler handler;
+    private final Log log;
+
+    public EDBCommit(EDBHandler handler, Log log) {
+        this.handler = handler;
+        this.log = log;
+    }
+
+    public String execute(NormalizedMessage in) throws Exception {
+        String body = null;
+        try {
             List<ContentWrapper> contentWrappers = XmlParserFunctions.parseCommitMessage(in, handler
                     .getRepositoryBase().toString());
             if (contentWrappers.size() < 1) {
@@ -72,9 +71,9 @@ public class EDBCommit implements EDBEndpointCommand {
             this.log.info(body);
         }
         return body;
-	}
-	
-	private String makeStackTraceString(Exception e) {
+    }
+
+    private String makeStackTraceString(Exception e) {
         StringBuilder sb = new StringBuilder();
         for (StackTraceElement ste : e.getStackTrace()) {
             sb.append(ste.toString());

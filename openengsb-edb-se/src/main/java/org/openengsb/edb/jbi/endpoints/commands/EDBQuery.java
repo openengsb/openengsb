@@ -47,7 +47,6 @@ public class EDBQuery implements EDBEndpointCommand {
         this.log = log;
     }
 
-    @Override
     public String execute(NormalizedMessage in) throws Exception {
 
         String body = null;
