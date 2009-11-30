@@ -46,318 +46,291 @@ import org.openengsb.util.IO;
  */
 public class DefaultEDBHandler implements EDBHandler {
 
-	private static final String REPO_NAME = "data";
-	private static final String SEARCHER_NAME = "lucene";
-	private static final String HEAD_NAME = "HEAD";
-	private static final String MODE_HARD = "hard";
-	private static final String DEFAULT_MSG = "commit via EDB-API";
-	
-	private static final String ELEM_NAME = "name";
+    private static final String REPO_NAME = "data";
+    private static final String SEARCHER_NAME = "lucene";
+    private static final String HEAD_NAME = "HEAD";
+    private static final String MODE_HARD = "hard";
+    private static final String DEFAULT_MSG = "commit via EDB-API";
 
-	protected Repository repoData;
-	protected Repository repoSearch;
+    private static final String ELEM_NAME = "name";
 
-	private RepositoryFactory factoryDataRepo;
-	private RepositoryFactory factoryIndexRepo;
-	private IndexFactory factoryIndex;
+    protected Repository repoData;
+    protected Repository repoSearch;
 
-	private Commit commitData;
-	private Commit commitSearch;
+    private RepositoryFactory factoryDataRepo;
+    private RepositoryFactory factoryIndexRepo;
+    private IndexFactory factoryIndex;
 
-	private Logger log = Logger.getLogger(DefaultEDBHandler.class);
+    private Commit commitData;
+    private Commit commitSearch;
 
-	public DefaultEDBHandler(String repositoryId, boolean isAbsolute,
-			RepositoryFactory factoryDataRepo,
-			RepositoryFactory factoryIndexRepo, IndexFactory factoryIndex) {
+    private final Logger log = Logger.getLogger(DefaultEDBHandler.class);
 
-		String pathMain;
-		String pathSearch;
-		String pathData;
+    public DefaultEDBHandler(String repositoryId, boolean isAbsolute, RepositoryFactory factoryDataRepo,
+            RepositoryFactory factoryIndexRepo, IndexFactory factoryIndex) {
 
-		// build main path, abs or user dir
-		if (isAbsolute) {
-			pathMain = new StringBuilder().append(repositoryId).append(
-					File.separator).toString();
-		} else {
-			pathMain = new StringBuilder().append(
-					System.getProperty("user.dir")).append(File.separator)
-					.append(repositoryId).append(File.separator).toString();
-		}
-		// build index / data paths
-		pathSearch = new StringBuilder().append(pathMain)
-				.append(File.separator).append(DefaultEDBHandler.SEARCHER_NAME)
-				.toString();
-		pathData = new StringBuilder().append(pathMain).append(File.separator)
-				.append(DefaultEDBHandler.REPO_NAME).toString();
+        String pathMain;
+        String pathSearch;
+        String pathData;
 
-		this.factoryDataRepo = factoryDataRepo;
-		this.factoryIndexRepo = factoryIndexRepo;
-		this.factoryIndex = factoryIndex;
+        // build main path, abs or user dir
+        if (isAbsolute) {
+            pathMain = new StringBuilder().append(repositoryId).append(File.separator).toString();
+        } else {
+            pathMain = new StringBuilder().append(System.getProperty("user.dir")).append(File.separator).append(
+                    repositoryId).append(File.separator).toString();
+        }
+        // build index / data paths
+        pathSearch = new StringBuilder().append(pathMain).append(File.separator)
+                .append(DefaultEDBHandler.SEARCHER_NAME).toString();
+        pathData = new StringBuilder().append(pathMain).append(File.separator).append(DefaultEDBHandler.REPO_NAME)
+                .toString();
 
-		// load repos
-		this.repoData = this.factoryDataRepo.loadRepository(pathData);
-		this.repoSearch = this.factoryIndexRepo.loadRepository(pathSearch);
-	}
+        this.factoryDataRepo = factoryDataRepo;
+        this.factoryIndexRepo = factoryIndexRepo;
+        this.factoryIndex = factoryIndex;
 
-	public synchronized List<GenericContent> query(String query,
-			boolean headRevision) throws EDBException {
-		List<GenericContent> foundSignals;
-		Searcher searcher = null;
-		try {
-			this.log.info("Preparing search with query: " + query);
-			try {
-				searcher = this.factoryIndex.createNewSearcher(this.repoSearch);
-				foundSignals = searcher.search(query);
-				searcher.cleanup();
-				if (headRevision) {
-					GenericContent head = new GenericContent(this.repoData
-							.getRepositoryBase().getAbsolutePath(),
-							new String[] {}, new String[] {});
-					head.setProperty(DefaultEDBHandler.HEAD_NAME, this.repoData
-							.getHeadRevision());
-					foundSignals.add(0, head);
-				}
-				this.log.info("Search call completed.");
-			} catch (IOException e) {
-				this.log.info("Search request failed: " + e.getMessage());
-				foundSignals = new ArrayList<GenericContent>();
-			}
-			return foundSignals;
-		} catch (RepositoryStateException e) {
-			throw new EDBException(e.getMessage(), e);
-		}
-	}
+        // load repos
+        this.repoData = this.factoryDataRepo.loadRepository(pathData);
+        this.repoSearch = this.factoryIndexRepo.loadRepository(pathSearch);
+    }
 
-	//FIXME dependent on the real file tree and git folder structure
-	public List<GenericContent> queryNodes(List<String> query) throws EDBException {
-		
-		File file = this.repoData.getRepositoryBase();
-		// iterate to end of path
-		for(String elem : query){
-			File[] files = file.listFiles();
-			for(File candidate : files) {
-				if(candidate.isDirectory() && candidate.getName().equals(elem)){
-					file = candidate;
-					break;
-				}
-				return null;
-			}
-		}
-		List<GenericContent> result = new ArrayList<GenericContent>();
-		// save directories at the end of the path
-		File[] files = file.listFiles();
-		for(File candidate : files) {
-			if(candidate.isDirectory()) {
-				GenericContent gc = new GenericContent();
-				gc.setProperty(ELEM_NAME, candidate.getName());
-				result.add(gc);
-			}
-		}
-		return result;
-	}
+    public synchronized List<GenericContent> query(String query, boolean headRevision) throws EDBException {
+        List<GenericContent> foundSignals;
+        Searcher searcher = null;
+        try {
+            this.log.info("Preparing search with query: " + query);
+            try {
+                searcher = this.factoryIndex.createNewSearcher(this.repoSearch);
+                foundSignals = searcher.search(query);
+                searcher.cleanup();
+                if (headRevision) {
+                    GenericContent head = new GenericContent(this.repoData.getRepositoryBase().getAbsolutePath(),
+                            new String[] {}, new String[] {});
+                    head.setProperty(DefaultEDBHandler.HEAD_NAME, this.repoData.getHeadRevision());
+                    foundSignals.add(0, head);
+                }
+                this.log.info("Search call completed.");
+            } catch (IOException e) {
+                this.log.info("Search request failed: " + e.getMessage());
+                foundSignals = new ArrayList<GenericContent>();
+            }
+            return foundSignals;
+        } catch (RepositoryStateException e) {
+            throw new EDBException(e.getMessage(), e);
+        }
+    }
 
-	public synchronized EDBHandler add(List<GenericContent> content)
-			throws EDBException {
-		try {
-			this.log.trace("Adding uuid to elements having none...");
-			Iterator<GenericContent> iterGC = content.iterator();
-			GenericContent tmpGC;
-			while (iterGC.hasNext()) {
-				tmpGC = iterGC.next();
-				if (tmpGC.getUUID() == null) {
-					tmpGC.setUUID(UUID.randomUUID().toString());
-				}
-			}
-			this.log.trace("Storing data commit for index store...");
-			this.factoryIndex.createNewIndexer(this.repoSearch).addDocuments(
-					content).cleanup();
+    // FIXME dependent on the real file tree and git folder structure
+    public List<GenericContent> queryNodes(List<String> query) throws EDBException {
 
-			this.log.trace("Storing data commit for data store...");
-			for (GenericContent con : content) {
-				con.store();
-			}
-			this.log.trace("Creating commit for data store...");
-			this.commitData = this.repoData.prepareCommit();
-			this.commitData.add(content.toArray(new GenericContent[] {}));
+        File file = this.repoData.getRepositoryBase();
+        // iterate to end of path
+        for (String elem : query) {
+            File[] files = file.listFiles();
+            for (File candidate : files) {
+                if (candidate.isDirectory() && candidate.getName().equalsIgnoreCase(elem)) {
+                    file = candidate;
+                    break;
+                }
+                return null;
+            }
+        }
+        List<GenericContent> result = new ArrayList<GenericContent>();
+        // save directories at the end of the path
+        File[] files = file.listFiles();
+        for (File candidate : files) {
+            if (candidate.isDirectory()) {
+                GenericContent gc = new GenericContent();
+                gc.setProperty(ELEM_NAME, candidate.getName());
+                result.add(gc);
+            }
+        }
+        return result;
+    }
 
-			this.log.trace("Creating commit for index store...");
-			this.commitSearch = this.repoSearch.prepareCommit();
-			this.commitSearch.add(IO.recursiveScanDirectoryForFiles(
-					this.factoryIndex.createNewSearcher(this.repoSearch)
-							.getBaseIndex()).toArray(new File[] {}));
+    public synchronized EDBHandler add(List<GenericContent> content) throws EDBException {
+        try {
+            this.log.trace("Adding uuid to elements having none...");
+            Iterator<GenericContent> iterGC = content.iterator();
+            GenericContent tmpGC;
+            while (iterGC.hasNext()) {
+                tmpGC = iterGC.next();
+                if (tmpGC.getUUID() == null) {
+                    tmpGC.setUUID(UUID.randomUUID().toString());
+                }
+            }
+            this.log.trace("Storing data commit for index store...");
+            this.factoryIndex.createNewIndexer(this.repoSearch).addDocuments(content).cleanup();
 
-			this.log.trace("Commit preparations done.");
+            this.log.trace("Storing data commit for data store...");
+            for (GenericContent con : content) {
+                con.store();
+            }
+            this.log.trace("Creating commit for data store...");
+            this.commitData = this.repoData.prepareCommit();
+            this.commitData.add(content.toArray(new GenericContent[] {}));
 
-		} catch (IOException e) {
-			resetToCurrent();
-			throw new EDBException("Activity rolled back." + e.getMessage(), e);
-		}
+            this.log.trace("Creating commit for index store...");
+            this.commitSearch = this.repoSearch.prepareCommit();
+            this.commitSearch.add(IO.recursiveScanDirectoryForFiles(
+                    this.factoryIndex.createNewSearcher(this.repoSearch).getBaseIndex()).toArray(new File[] {}));
 
-		return this;
-	}
+            this.log.trace("Commit preparations done.");
 
-	public synchronized EDBHandler remove(List<GenericContent> content)
-			throws EDBException {
-		try {
-			this.log.trace("Storing data commit for index store...");
-			Indexer indexer = this.factoryIndex
-					.createNewIndexer(this.repoSearch);
+        } catch (IOException e) {
+            resetToCurrent();
+            throw new EDBException("Activity rolled back." + e.getMessage(), e);
+        }
 
-			this.log.trace("Filtering out elements with no UUID...");
-			Iterator<GenericContent> iterGC = content.iterator();
-			while (iterGC.hasNext()) {
-				if (iterGC.next().getUUID() == null) {
-					iterGC.remove();
-				}
-			}
-			this.log.trace("Creating commit for data store...");
-			this.commitData = this.repoData.prepareCommit();
-			this.commitData.add(content.toArray(new GenericContent[] {}));
+        return this;
+    }
 
-			for (GenericContent con : content) {
-				indexer.removeDocument(con);
+    public synchronized EDBHandler remove(List<GenericContent> content) throws EDBException {
+        try {
+            this.log.trace("Storing data commit for index store...");
+            Indexer indexer = this.factoryIndex.createNewIndexer(this.repoSearch);
 
-				if (!con.getFileLocation().delete()) {
-					// TODO possible concurrency issue (removal of a resource
-					// causes abort)
-					throw new IOException("Deleting failed for '"
-							+ con.getFileLocation() + "'");
-				}
-			}
+            this.log.trace("Filtering out elements with no UUID...");
+            Iterator<GenericContent> iterGC = content.iterator();
+            while (iterGC.hasNext()) {
+                if (iterGC.next().getUUID() == null) {
+                    iterGC.remove();
+                }
+            }
+            this.log.trace("Creating commit for data store...");
+            this.commitData = this.repoData.prepareCommit();
+            this.commitData.add(content.toArray(new GenericContent[] {}));
 
-			indexer.commit();
+            for (GenericContent con : content) {
+                indexer.removeDocument(con);
 
-			this.log.trace("Creating commit for index store...");
-			this.commitSearch = this.repoSearch.prepareCommit();
-			this.commitSearch.add(IO.recursiveScanDirectoryForFiles(
-					this.factoryIndex.createNewSearcher(this.repoSearch)
-							.getBaseIndex()).toArray(new File[] {}));
+                if (!con.getFileLocation().delete()) {
+                    // TODO possible concurrency issue (removal of a resource
+                    // causes abort)
+                    throw new IOException("Deleting failed for '" + con.getFileLocation() + "'");
+                }
+            }
 
-			this.log.trace("Commit preparations done.");
+            indexer.commit();
 
-		} catch (IOException e) {
-			resetToCurrent();
-			throw new EDBException("Activity rolled back.", e);
-		}
+            this.log.trace("Creating commit for index store...");
+            this.commitSearch = this.repoSearch.prepareCommit();
+            this.commitSearch.add(IO.recursiveScanDirectoryForFiles(
+                    this.factoryIndex.createNewSearcher(this.repoSearch).getBaseIndex()).toArray(new File[] {}));
 
-		return this;
-	}
+            this.log.trace("Commit preparations done.");
 
-	public synchronized String reset(String headInfo, int steps)
-			throws EDBException {
-		try {
-			if (this.repoData.getHeadRevision().equals(headInfo)) {
-				this.log
-						.trace("Reseting index store by " + steps + " steps...");
-				this.repoSearch.prepareReset().setDepth(steps).setMode(
-						DefaultEDBHandler.MODE_HARD).reset();
+        } catch (IOException e) {
+            resetToCurrent();
+            throw new EDBException("Activity rolled back.", e);
+        }
 
-				this.log.trace("Reseting data store by " + steps + " steps...");
-				String headId = this.repoData.prepareReset().setDepth(steps)
-						.setMode(DefaultEDBHandler.MODE_HARD).reset();
+        return this;
+    }
 
-				this.log.info("Reset successful.");
-				return headId;
-			} else {
-				throw new EDBException(
-						"Reset aborted. (HeadId does not match repository final head revision)");
-			}
-		} catch (RepositoryStateException e) {
-			throw new EDBException(e.getMessage(), e);
-		}
-	}
+    public synchronized String reset(String headInfo, int steps) throws EDBException {
+        try {
+            if (this.repoData.getHeadRevision().equals(headInfo)) {
+                this.log.trace("Reseting index store by " + steps + " steps...");
+                this.repoSearch.prepareReset().setDepth(steps).setMode(DefaultEDBHandler.MODE_HARD).reset();
 
-	public synchronized EDBHandler resetToCurrent() throws EDBException {
-		try {
-			this.log.trace("Cleaning index store from pending changes...");
-			this.repoSearch.prepareReset().setDepth(0).setMode(
-					DefaultEDBHandler.MODE_HARD).reset();
+                this.log.trace("Reseting data store by " + steps + " steps...");
+                String headId = this.repoData.prepareReset().setDepth(steps).setMode(DefaultEDBHandler.MODE_HARD)
+                        .reset();
 
-			this.log.trace("Cleaning data store from pending changes...");
-			this.repoData.prepareReset().setDepth(0).setMode(
-					DefaultEDBHandler.MODE_HARD).reset();
+                this.log.info("Reset successful.");
+                return headId;
+            } else {
+                throw new EDBException("Reset aborted. (HeadId does not match repository final head revision)");
+            }
+        } catch (RepositoryStateException e) {
+            throw new EDBException(e.getMessage(), e);
+        }
+    }
 
-			this.commitData = null;
-			this.commitSearch = null;
-			this.log.trace("Cleanup of pending changes done.");
-			return this;
-		} catch (RepositoryStateException e) {
-			throw new EDBException(e.getMessage(), e);
-		}
-	}
+    public synchronized EDBHandler resetToCurrent() throws EDBException {
+        try {
+            this.log.trace("Cleaning index store from pending changes...");
+            this.repoSearch.prepareReset().setDepth(0).setMode(DefaultEDBHandler.MODE_HARD).reset();
 
-	public synchronized String commit(String user, String email)
-			throws EDBException {
-		if (this.commitData == null && this.commitSearch == null) {
-			this.commitData = this.repoData.prepareCommit();
-			this.commitSearch = this.repoSearch.prepareCommit();
-		}
+            this.log.trace("Cleaning data store from pending changes...");
+            this.repoData.prepareReset().setDepth(0).setMode(DefaultEDBHandler.MODE_HARD).reset();
 
-		if ((this.commitData == null && this.commitSearch != null)
-				|| (this.commitData != null && this.commitSearch == null)) {
-			throw new EDBException("Inconsistent index state.");
-		}
+            this.commitData = null;
+            this.commitSearch = null;
+            this.log.trace("Cleanup of pending changes done.");
+            return this;
+        } catch (RepositoryStateException e) {
+            throw new EDBException(e.getMessage(), e);
+        }
+    }
 
-		try {
-			this.commitSearch.setAuthor(user, email).setMessage(
-					DefaultEDBHandler.DEFAULT_MSG).commit();
-			String headId;
+    public synchronized String commit(String user, String email) throws EDBException {
+        if (this.commitData == null && this.commitSearch == null) {
+            this.commitData = this.repoData.prepareCommit();
+            this.commitSearch = this.repoSearch.prepareCommit();
+        }
 
-			try {
-				headId = this.commitData.setAuthor(user, email).setMessage(
-						DefaultEDBHandler.DEFAULT_MSG).commit();
+        if ((this.commitData == null && this.commitSearch != null)
+                || (this.commitData != null && this.commitSearch == null)) {
+            throw new EDBException("Inconsistent index state.");
+        }
 
-				this.log.info("Commit " + headId + " performed successfully.");
+        try {
+            this.commitSearch.setAuthor(user, email).setMessage(DefaultEDBHandler.DEFAULT_MSG).commit();
+            String headId;
 
-				this.commitSearch = null;
-				this.commitData = null;
+            try {
+                headId = this.commitData.setAuthor(user, email).setMessage(DefaultEDBHandler.DEFAULT_MSG).commit();
 
-				return headId;
+                this.log.info("Commit " + headId + " performed successfully.");
 
-				// catch exception of data commit
-			} catch (RepositoryStateException e) {
+                this.commitSearch = null;
+                this.commitData = null;
 
-				try {
-					this.repoSearch.prepareReset().setDepth(1).setMode(
-							DefaultEDBHandler.MODE_HARD).reset();
-					// catch exception of search index reset
-				} catch (RepositoryStateException e1) {
-					// now we screwed up
-					this.log.fatal(e1);
-					throw new EDBException(
-							"Rollback failed, data integrity damaged.", e1);
-				}
-				throw new EDBException(e.getMessage(), e);
-			}
+                return headId;
 
-			// catch exception of search index commit
-		} catch (RepositoryStateException e) {
-			throw new EDBException(e.getMessage(), e);
-		}
-	}
+                // catch exception of data commit
+            } catch (RepositoryStateException e) {
 
-	public synchronized EDBHandler setFactoryDataRepo(
-			RepositoryFactory factoryDataRepo) {
-		this.factoryDataRepo = factoryDataRepo;
-		return this;
-	}
+                try {
+                    this.repoSearch.prepareReset().setDepth(1).setMode(DefaultEDBHandler.MODE_HARD).reset();
+                    // catch exception of search index reset
+                } catch (RepositoryStateException e1) {
+                    // now we screwed up
+                    this.log.fatal(e1);
+                    throw new EDBException("Rollback failed, data integrity damaged.", e1);
+                }
+                throw new EDBException(e.getMessage(), e);
+            }
 
-	public synchronized EDBHandler setFactoryIndex(IndexFactory factoryIndex) {
-		this.factoryIndex = factoryIndex;
-		return this;
-	}
+            // catch exception of search index commit
+        } catch (RepositoryStateException e) {
+            throw new EDBException(e.getMessage(), e);
+        }
+    }
 
-	public synchronized EDBHandler setFactoryIndexRepo(
-			RepositoryFactory factoryIndexRepo) {
-		this.factoryIndexRepo = factoryIndexRepo;
-		return this;
-	}
+    public synchronized EDBHandler setFactoryDataRepo(RepositoryFactory factoryDataRepo) {
+        this.factoryDataRepo = factoryDataRepo;
+        return this;
+    }
 
-	public synchronized String getHeadInfo() {
-		return this.repoData.getHeadRevision();
-	}
+    public synchronized EDBHandler setFactoryIndex(IndexFactory factoryIndex) {
+        this.factoryIndex = factoryIndex;
+        return this;
+    }
 
-	public synchronized File getRepositoryBase() {
-		return this.repoData.getRepositoryBase();
-	}
+    public synchronized EDBHandler setFactoryIndexRepo(RepositoryFactory factoryIndexRepo) {
+        this.factoryIndexRepo = factoryIndexRepo;
+        return this;
+    }
+
+    public synchronized String getHeadInfo() {
+        return this.repoData.getHeadRevision();
+    }
+
+    public synchronized File getRepositoryBase() {
+        return this.repoData.getRepositoryBase();
+    }
 }

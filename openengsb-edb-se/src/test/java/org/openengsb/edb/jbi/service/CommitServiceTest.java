@@ -75,6 +75,7 @@ public class CommitServiceTest extends SpringTestSupport {
     private static final String ABSTRACT_PATH = "/first/second/";
     private static final String PATH_1 = "d2sdf000";
     private static final String PATH_2 = "any key";
+    private static final String REAL_QUERY_1 = "path:/customer/projectId/region/componentNumber/cpuNumber/peripheralBoardAddress/inputOutputModule/channelName AND customer:customer";
 
     private static final String EDB_SERVICE_NAME = "edb";
     private static GenericContent gc1;
@@ -83,6 +84,7 @@ public class CommitServiceTest extends SpringTestSupport {
     private static Document resetMessage;
     private static Document invalidResetMessage;
     private static Document validQueryMessage;
+    private static Document validQueryMessageRealSample;
     private static Document invalidQueryMessage;
 
     /* end test-parameters */
@@ -140,11 +142,15 @@ public class CommitServiceTest extends SpringTestSupport {
         CommitServiceTest.resetMessage = DocumentHelper.createDocument(root);
         CommitServiceTest.invalidResetMessage = DocumentHelper.createDocument(root.createCopy());
 
-        /* valid query */
+        /* valid query star search */
         root = DocumentHelper.createElement("acmQueryRequestMessage");
         Element querybody = root.addElement("body");
         querybody.addElement("query").setText("*");
         CommitServiceTest.validQueryMessage = DocumentHelper.createDocument(root.createCopy());
+
+        /* valid query star search */
+        querybody.addElement("query").setText(REAL_QUERY_1);
+        CommitServiceTest.validQueryMessageRealSample = DocumentHelper.createDocument(root.createCopy());
 
         /* invalid query */
         querybody.element("query").setText("does_not_exist");
@@ -288,6 +294,21 @@ public class CommitServiceTest extends SpringTestSupport {
 
         testCommit1(); // this test depends on a working commit-test.
         Document doc = sendMessageAndParseResponse(CommitServiceTest.validQueryMessage);
+
+        Element root = doc.getRootElement();
+        assertEquals("acmResponseMessage", root.getName());
+        Element body = root.element("body");
+        assertNotNull(body);
+        assertNoErrorMessage(body);
+        Element object = body.element("acmMessageObjects");
+        assertNotNull("query result was empty", object);
+    }
+
+    @Test
+    public void testHydroSampleQuery() throws Exception {
+
+        testCommit1(); // this test depends on a working commit-test.
+        Document doc = sendMessageAndParseResponse(CommitServiceTest.validQueryMessageRealSample);
 
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
