@@ -38,7 +38,6 @@ public class EDBRequestLink implements EDBEndpointCommand {
         this.log = log;
     }
 
-    @Override
     public String execute(NormalizedMessage in) throws Exception {
 
         String body = null;
@@ -49,7 +48,6 @@ public class EDBRequestLink implements EDBEndpointCommand {
 
             final List<GenericContent> result = handler.query(term, false);
             foundLinkTargets.addAll(result);
-
         } catch (final EDBException e) {
             // TODO build error message
             e.printStackTrace();

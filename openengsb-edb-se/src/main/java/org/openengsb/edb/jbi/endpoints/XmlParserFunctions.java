@@ -215,6 +215,12 @@ public class XmlParserFunctions {
         return null;
     }
 
+    public static String parseLinkExecutedMessage(NormalizedMessage msg) throws IOException, SAXException,
+            TransformerException, DocumentException {
+
+        return "";
+    }
+
     public static String buildCommitBody(List<ContentWrapper> persistedSignals, String commitId) {
         int expectedChars = persistedSignals.size() * (300 + 20 * 200);
         StringBuilder body = new StringBuilder(expectedChars);
