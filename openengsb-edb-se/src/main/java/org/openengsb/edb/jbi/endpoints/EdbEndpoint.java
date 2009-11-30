@@ -49,6 +49,7 @@ public class EdbEndpoint extends AbstractEndpoint {
      * 
      * The namespace is ignored in the operation-check
      */
+
     public static final String DEFAULT_USER = "EDB";
     public static final String DEFAULT_EMAIL = "EDB@engsb.ifs.tuwien.ac.at";
 
@@ -64,8 +65,8 @@ public class EdbEndpoint extends AbstractEndpoint {
             throws Exception {
         getLog().info("init handler from factory");
 
-        EDBHandler handler = this.factory.loadDefaultRepository();
-        EDBHandler linksHandler = this.factory.loadRepository(this.fullConfig.getLinkStorage());
+        EDBHandler handler = this.fullConfig.getFactory().loadDefaultRepository();
+        EDBHandler linksHandler = this.fullConfig.getFactory().loadRepository(this.fullConfig.getLinkStorage());
 
         // see issue #179
         init(handler, linksHandler);
@@ -93,12 +94,11 @@ public class EdbEndpoint extends AbstractEndpoint {
      */
     private void init(EDBHandler handler, EDBHandler linksHandler) {
         this.commands = new HashMap<EDBOperationType, EDBEndpointCommand>();
-        this.commands.put(EDBOperationType.COMMIT, new EDBCommit(handler, logger));
-        this.commands.put(EDBOperationType.QUERY, new EDBQuery(handler, logger));
-        this.commands.put(EDBOperationType.RESET, new EDBReset(handler, logger));
-        this.commands.put(EDBOperationType.REGISTER_LINK, new EDBRegisterLink(linksHandler, logger));
-        this.commands.put(EDBOperationType.REQUEST_LINK, new EDBRequestLink(linksHandler, logger));
-        this.commands.put(EDBOperationType.EXECUTE_LINK, new EDBExecuteLink(linksHandler, logger));
+        this.commands.put(EDBOperationType.COMMIT, new EDBCommit(handler, this.logger));
+        this.commands.put(EDBOperationType.QUERY, new EDBQuery(handler, this.logger));
+        this.commands.put(EDBOperationType.RESET, new EDBReset(handler, this.logger));
+        this.commands.put(EDBOperationType.REGISTER_LINK, new EDBRegisterLink(linksHandler, this.logger));
+        this.commands.put(EDBOperationType.REQUEST_LINK, new EDBRequestLink(linksHandler, this.logger));
+        this.commands.put(EDBOperationType.EXECUTE_LINK, new EDBExecuteLink(linksHandler, this.logger));
     }
-
 }
