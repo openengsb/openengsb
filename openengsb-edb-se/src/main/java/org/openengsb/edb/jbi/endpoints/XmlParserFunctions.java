@@ -203,6 +203,18 @@ public class XmlParserFunctions {
         return req;
     }
 
+    public static String parseLinkRequestMessage(NormalizedMessage msg) throws IOException, SAXException,
+            TransformerException, DocumentException {
+
+        return "";
+    }
+
+    public static List<GenericContent> parseLinkRegisterMessage(NormalizedMessage msg) throws IOException,
+            SAXException, TransformerException, DocumentException {
+
+        return null;
+    }
+
     public static String buildCommitBody(List<ContentWrapper> persistedSignals, String commitId) {
         int expectedChars = persistedSignals.size() * (300 + 20 * 200);
         StringBuilder body = new StringBuilder(expectedChars);
@@ -267,22 +279,6 @@ public class XmlParserFunctions {
         return body.toString();
     }
 
-    public static String buildResetBody(String headId) {
-        StringBuilder sb = new StringBuilder();
-        return buildElement("headId", headId, sb).toString();
-    }
-
-    public static String buildResetErrorBody(String msg, String trace) {
-        StringBuilder body = new StringBuilder();
-
-        body.append("<acmErrorObject>");
-        buildElement("message", msg, body);
-        buildElement("stacktrace", trace, body);
-        body.append("</acmErrorObject>");
-
-        return body.toString();
-    }
-
     public static String buildQueryBody(List<GenericContent> foundSignals) throws EDBException {
 
         String name = UUID.randomUUID().toString();
@@ -299,6 +295,34 @@ public class XmlParserFunctions {
             }
             throw new EDBException(e);
         }
+    }
+
+    public static String buildResetBody(String headId) {
+        StringBuilder sb = new StringBuilder();
+        return buildElement("headId", headId, sb).toString();
+    }
+
+    public static String buildResetErrorBody(String msg, String trace) {
+        StringBuilder body = new StringBuilder();
+
+        body.append("<acmErrorObject>");
+        buildElement("message", msg, body);
+        buildElement("stacktrace", trace, body);
+        body.append("</acmErrorObject>");
+
+        return body.toString();
+    }
+
+    public static String buildLinkRegisteredBody(List<GenericContent> links) {
+        return "";
+    }
+
+    public static String buildLinkRequestedBody(List<GenericContent> links) {
+        return "";
+    }
+
+    public static String buildLinkExecutedBody(List<GenericContent> links) {
+        return "";
     }
 
     private static String buildElement(String name, String content) {
