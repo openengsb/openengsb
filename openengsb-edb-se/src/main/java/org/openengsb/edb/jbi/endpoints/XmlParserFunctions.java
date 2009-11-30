@@ -118,6 +118,258 @@ public class XmlParserFunctions {
 
     }
 
+    public static EDBOperationType getMessageType(NormalizedMessage msg) throws IOException, SAXException,
+            TransformerException, DocumentException {
+        Document doc = readMessage(msg);
+        if (doc.getRootElement().getName().equals("acmQueryRequestMessage")) {
+            return EDBOperationType.QUERY;
+        } else if (doc.getRootElement().getName().equals("acmPersistMessage")) {
+            return EDBOperationType.COMMIT;
+        } else if (doc.getRootElement().getName().equals("acmResetRequestMessage")) {
+            return EDBOperationType.RESET;
+        } else if (doc.getRootElement().getName().equals("acmLinkRegisterMessage")) {
+            return EDBOperationType.REGISTER_LINK;
+        } else if (doc.getRootElement().getName().equals("acmLinkExecutedMessage")) {
+            return EDBOperationType.EXECUTE_LINK;
+        } else if (doc.getRootElement().getName().equals("acmLinkQueryRequestMessage")) {
+            return EDBOperationType.REQUEST_LINK;
+        } else {
+            throw new RuntimeException("root element could not be sorted..." + doc.getRootElement().getName());
+        }
+    }
+
+    public static List<ContentWrapper> parseCommitMessage(NormalizedMessage msg, String repoBase)
+            throws MessagingException, TransformerException, ParserConfigurationException, IOException, SAXException,
+            DocumentException {
+
+        Document doc = readMessage(msg);
+        List<ContentWrapper> result = new ArrayList<ContentWrapper>();
+        Element root = doc.getRootElement();
+        Element body = root.element("body");
+
+        XmlParserFunctions.logger.info("start searching");
+        @SuppressWarnings("unchecked")
+        List<Element> objects = body.elements("acmMessageObjects");
+        for (Element e : objects) {
+            result.add(parseCommitMessageItem(e, repoBase));
+        }
+        XmlParserFunctions.logger.info("search finished");
+
+        return result;
+    }
+
+    public static List<String> parseQueryMessage(NormalizedMessage msg) throws IOException, SAXException,
+            TransformerException, DocumentException {
+
+        Document doc = readMessage(msg);
+        Element root = doc.getRootElement();
+        Element body = root.element("body");
+        @SuppressWarnings("unchecked")
+        List<Element> elements = body.elements(EdbEndpoint.QUERY_ELEMENT_NAME);
+        // star search
+
+        List<String> results = new ArrayList<String>();
+        for (final Element element : elements) {
+            results.add(translateQuery(element.getTextTrim()));
+        }
+
+        return results;
+
+    }
+
+    public static RequestWrapper parseResetMessage(NormalizedMessage msg) throws IOException, SAXException,
+            TransformerException, DocumentException {
+
+        Document doc = readMessage(msg);
+
+        RequestWrapper req = new RequestWrapper();
+
+        // TODO exception handling required?
+        XmlParserFunctions.logger.info(doc.asXML());
+        Element body = doc.getRootElement().element("body");
+        Element headId = body.element("headId");
+        req.setHeadId(headId.getTextTrim());
+
+        if (body.element("repoId") == null) {
+            req.setRepoId("");
+        } else {
+            req.setRepoId(body.element("repoId").getTextTrim());
+        }
+        if (body.element("depth") == null) {
+            req.setDepth(EdbEndpoint.DEFAULT_DEPTH);
+        } else {
+            req.setDepth(Integer.valueOf(body.element("depth").getTextTrim()));
+        }
+        return req;
+    }
+
+    public static String buildCommitBody(List<ContentWrapper> persistedSignals, String commitId) {
+        int expectedChars = persistedSignals.size() * (300 + 20 * 200);
+        StringBuilder body = new StringBuilder(expectedChars);
+
+        if (persistedSignals.size() == 0) {
+            body.append("<acmMessageObjects>");
+            buildElement("user", EdbEndpoint.DEFAULT_USER, body);
+            buildElement(GenericContent.UUID_NAME, UUID.randomUUID().toString(), body);
+            buildElement(GenericContent.PATH_NAME, "", body);
+            body.append("<acmMessageObject>");
+            buildElement("key", "emptyKey", body);
+            buildElement("value", "emptyValue", body);
+            body.append("</acmMessageObject>");
+            body.append("</acmMessageObjects>");
+        } else {
+            for (ContentWrapper wrapper : persistedSignals) {
+
+                GenericContent signal = wrapper.getContent();
+
+                body.append("<acmMessageObjects>");
+
+                buildElement("user", EdbEndpoint.DEFAULT_USER, body);
+                buildElement(GenericContent.UUID_NAME, signal.getUUID(), body);
+                buildElement(GenericContent.PATH_NAME, signal.getPath(), body);
+
+                for (Entry<Object, Object> entry : signal.getEntireContent()) {
+                    body.append("<acmMessageObject>");
+                    buildElement("key", entry.getKey().toString(), body);
+                    buildElement("value", entry.getValue().toString(), body);
+                    body.append("</acmMessageObject>");
+                }
+
+                body.append("<operation>").append(wrapper.getOperation()).append("</operation>");
+
+                body.append("</acmMessageObjects>");
+            }
+        }
+
+        buildElement("headId", commitId, body);
+
+        return body.toString();
+    }
+
+    public static String buildCommitErrorBody(String msg, String trace) {
+        StringBuilder body = new StringBuilder();
+
+        // body.append("<acmMessageObjects>");
+        // body.append(buildElement("user", EdbEndpoint.DEFAULT_USER, body));
+        // body.append(buildElement(GenericContent.UUID_NAME, "uuid", body));
+        // body.append(buildElement(GenericContent.PATH_NAME, "path", body));
+        // body.append("<acmMessageObject>");
+        // body.append(buildElement("key", "none", body));
+        // body.append(buildElement("value", "none", body));
+        // body.append("</acmMessageObject>");
+        // body.append("</acmMessageObjects>");
+
+        body.append("<acmErrorObject>");
+        buildElement("message", msg, body);
+        // body.append(buildElement("stacktrace", trace, body));
+        body.append("</acmErrorObject>");
+
+        return body.toString();
+    }
+
+    public static String buildResetBody(String headId) {
+        StringBuilder sb = new StringBuilder();
+        return buildElement("headId", headId, sb).toString();
+    }
+
+    public static String buildResetErrorBody(String msg, String trace) {
+        StringBuilder body = new StringBuilder();
+
+        body.append("<acmErrorObject>");
+        buildElement("message", msg, body);
+        buildElement("stacktrace", trace, body);
+        body.append("</acmErrorObject>");
+
+        return body.toString();
+    }
+
+    public static String buildQueryBody(List<GenericContent> foundSignals) throws EDBException {
+
+        String name = UUID.randomUUID().toString();
+        File store = new File(name);
+        try {
+            storeToTmp(store, foundSignals);
+            foundSignals.clear();
+            return loadFromTmpStore(store);
+        } catch (IOException e) {
+            try {
+                store.delete();
+            } catch (Exception e1) {
+                XmlParserFunctions.logger.warn("tmp store file could not be deleted");
+            }
+            throw new EDBException(e);
+        }
+    }
+
+    private static String buildElement(String name, String content) {
+        StringBuilder block = new StringBuilder();
+        block.append("<").append(name).append(">");
+        block.append("<![CDATA[").append(content).append("]]>");
+        block.append("</").append(name).append(">");
+
+        return block.toString();
+    }
+
+    private static StringBuilder buildElement(String name, String content, StringBuilder builder) {
+
+        builder.append("<").append(name).append(">");
+        builder.append("<![CDATA[").append(content).append("]]>");
+        builder.append("</").append(name).append(">");
+
+        return builder;
+    }
+
+    private static void storeToTmp(File store, List<GenericContent> foundSignals) throws IOException {
+        if (store.exists()) {
+            store.delete();
+        }
+        store.createNewFile();
+
+        FileWriter writer = new FileWriter(store);
+        for (GenericContent signal : foundSignals) {
+            writer.append("<acmMessageObjects>");
+
+            // TODO extract from incoming msg;
+            writer.append(buildElement("user", "dummyUser"));
+            writer.append(buildElement(GenericContent.UUID_NAME, signal.getUUID()));
+            writer.append(buildElement(GenericContent.PATH_NAME, signal.getPath()));
+
+            for (Entry<Object, Object> entry : signal.getEntireContent()) {
+                writer.append("<acmMessageObject>");
+                writer.append(buildElement("key", entry.getKey().toString()));
+                writer.append(buildElement("value", entry.getValue().toString()));
+                writer.append("</acmMessageObject>");
+            }
+
+            writer.append("</acmMessageObjects>");
+            writer.append("\n");
+        }
+        writer.flush();
+        writer.close();
+    }
+
+    private static String loadFromTmpStore(File file) throws IOException {
+        try {
+            StringBuilder builder = new StringBuilder((int) file.length());
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                builder.append(line);
+            }
+            reader.close();
+            try {
+                file.delete();
+            } catch (Exception e) {
+                // TODO what ?
+            }
+            return builder.toString();
+
+        } catch (NegativeArraySizeException e) {
+            throw new IOException("tmp store is seriously too large (or does exist)");
+        }
+    }
+
     /**
      * Take the 'names' of the path 'values' and extract their occurrences from
      * the element (dom4j.Element)
@@ -188,257 +440,41 @@ public class XmlParserFunctions {
         return doc;
     }
 
-    public static EDBOperationType getMessageType(NormalizedMessage msg) throws IOException, SAXException,
-            TransformerException, DocumentException {
-        Document doc = readMessage(msg);
-        if (doc.getRootElement().getName().equals("acmQueryRequestMessage")) {
-            return EDBOperationType.QUERY;
-        } else if (doc.getRootElement().getName().equals("acmPersistMessage")) {
-            return EDBOperationType.COMMIT;
-        } else if (doc.getRootElement().getName().equals("acmResetRequestMessage")) {
-            return EDBOperationType.RESET;
-        } else if (doc.getRootElement().getName().equals("acmLinkRegisterMessage")) {
-            return EDBOperationType.REGISTER_LINK;
-        } else if (doc.getRootElement().getName().equals("acmLinkExecutedMessage")) {
-            return EDBOperationType.EXECUTE_LINK;
-        } else if (doc.getRootElement().getName().equals("acmLinkQueryRequestMessage")) {
-            return EDBOperationType.REQUEST_LINK;
+    /**
+     * Hacky String replacements for jcr to lucene syntax (hotfix that lived too
+     * long)
+     */
+    @Deprecated
+    private static String translateQuery(String query) {
+        String result = query;
+        if (result.equals("/") || result.equals("")) {
+            result = "*";
         } else {
-            throw new RuntimeException("root element could not be sorted..." + doc.getRootElement().getName());
+            // all other searches
+            String pathPart = result;
+            String propertyPart = "";
+            // search with attributes
+            if (result.contains("[")) {
+
+                pathPart = result.substring(0, result.indexOf("["));
+
+                propertyPart = result.substring(result.indexOf("["), result.length());
+
+                propertyPart = propertyPart.replace('[', ' ');
+                propertyPart = propertyPart.replaceAll("=", ":*");
+                propertyPart = propertyPart.replaceAll("\\]", "* AND ");
+                propertyPart = propertyPart.substring(0, propertyPart.length() - 5);
+            }
+            // adding wildcard at end of path
+            if (!pathPart.endsWith("*")) {
+                pathPart += "*";
+            }
+            pathPart = "path" + ":" + pathPart;
+            if (propertyPart != "") {
+                result = pathPart + " AND " + propertyPart;
+            }
         }
-    }
-
-    public static List<ContentWrapper> parseCommitMessage(NormalizedMessage msg, String repoBase)
-            throws MessagingException, TransformerException, ParserConfigurationException, IOException, SAXException,
-            DocumentException {
-
-        Document doc = readMessage(msg);
-        List<ContentWrapper> result = new ArrayList<ContentWrapper>();
-        Element root = doc.getRootElement();
-        Element body = root.element("body");
-
-        XmlParserFunctions.logger.info("start searching");
-        @SuppressWarnings("unchecked")
-        List<Element> objects = body.elements("acmMessageObjects");
-        for (Element e : objects) {
-            result.add(parseCommitMessageItem(e, repoBase));
-        }
-        XmlParserFunctions.logger.info("search finished");
-
         return result;
-    }
-
-    public static String buildCommitBody(List<ContentWrapper> persistedSignals, String commitId) {
-        int expectedChars = persistedSignals.size() * (300 + 20 * 200);
-        StringBuilder body = new StringBuilder(expectedChars);
-
-        if (persistedSignals.size() == 0) {
-            body.append("<acmMessageObjects>");
-            buildElement("user", EdbEndpoint.DEFAULT_USER, body);
-            buildElement(GenericContent.UUID_NAME, UUID.randomUUID().toString(), body);
-            buildElement(GenericContent.PATH_NAME, "", body);
-            body.append("<acmMessageObject>");
-            buildElement("key", "emptyKey", body);
-            buildElement("value", "emptyValue", body);
-            body.append("</acmMessageObject>");
-            body.append("</acmMessageObjects>");
-        } else {
-            for (ContentWrapper wrapper : persistedSignals) {
-
-                GenericContent signal = wrapper.getContent();
-
-                body.append("<acmMessageObjects>");
-
-                buildElement("user", EdbEndpoint.DEFAULT_USER, body);
-                buildElement(GenericContent.UUID_NAME, signal.getUUID(), body);
-                buildElement(GenericContent.PATH_NAME, signal.getPath(), body);
-
-                for (Entry<Object, Object> entry : signal.getEntireContent()) {
-                    body.append("<acmMessageObject>");
-                    buildElement("key", entry.getKey().toString(), body);
-                    buildElement("value", entry.getValue().toString(), body);
-                    body.append("</acmMessageObject>");
-                }
-
-                body.append("<operation>").append(wrapper.getOperation()).append("</operation>");
-
-                body.append("</acmMessageObjects>");
-            }
-        }
-
-        buildElement("headId", commitId, body);
-
-        return body.toString();
-    }
-
-    public static String buildCommitErrorBody(String msg, String trace) {
-        StringBuilder body = new StringBuilder();
-
-        // body.append("<acmMessageObjects>");
-        // body.append(buildElement("user", EdbEndpoint.DEFAULT_USER, body));
-        // body.append(buildElement(GenericContent.UUID_NAME, "uuid", body));
-        // body.append(buildElement(GenericContent.PATH_NAME, "path", body));
-        // body.append("<acmMessageObject>");
-        // body.append(buildElement("key", "none", body));
-        // body.append(buildElement("value", "none", body));
-        // body.append("</acmMessageObject>");
-        // body.append("</acmMessageObjects>");
-
-        body.append("<acmErrorObject>");
-        buildElement("message", msg, body);
-        // body.append(buildElement("stacktrace", trace, body));
-        body.append("</acmErrorObject>");
-
-        return body.toString();
-    }
-
-    private static String buildElement(String name, String content) {
-        StringBuilder block = new StringBuilder();
-        block.append("<").append(name).append(">");
-        block.append("<![CDATA[").append(content).append("]]>");
-        block.append("</").append(name).append(">");
-
-        return block.toString();
-    }
-
-    private static StringBuilder buildElement(String name, String content, StringBuilder builder) {
-
-        builder.append("<").append(name).append(">");
-        builder.append("<![CDATA[").append(content).append("]]>");
-        builder.append("</").append(name).append(">");
-
-        return builder;
-    }
-
-    public static List<String> parseQueryMessage(NormalizedMessage msg) throws IOException, SAXException,
-            TransformerException, DocumentException {
-
-        Document doc = readMessage(msg);
-        Element root = doc.getRootElement();
-        Element body = root.element("body");
-        @SuppressWarnings("unchecked")
-        List<Element> elements = body.elements(EdbEndpoint.QUERY_ELEMENT_NAME);
-        // star search
-        List<String> results = new ArrayList<String>();
-        for (final Element element : elements) {
-            String query = element.getTextTrim();
-            if (query.isEmpty()) {
-                query = "*";
-            }
-            results.add(query);
-        }
-        return results;
-    }
-
-    public static RequestWrapper parseResetMessage(NormalizedMessage msg) throws IOException, SAXException,
-            TransformerException, DocumentException {
-
-        Document doc = readMessage(msg);
-
-        RequestWrapper req = new RequestWrapper();
-
-        // TODO exception handling required?
-        XmlParserFunctions.logger.info(doc.asXML());
-        Element body = doc.getRootElement().element("body");
-        Element headId = body.element("headId");
-        req.setHeadId(headId.getTextTrim());
-
-        if (body.element("repoId") == null) {
-            req.setRepoId("");
-        } else {
-            req.setRepoId(body.element("repoId").getTextTrim());
-        }
-        if (body.element("depth") == null) {
-            req.setDepth(EdbEndpoint.DEFAULT_DEPTH);
-        } else {
-            req.setDepth(Integer.valueOf(body.element("depth").getTextTrim()));
-        }
-        return req;
-    }
-
-    public static String buildResetBody(String headId) {
-        StringBuilder sb = new StringBuilder();
-        return buildElement("headId", headId, sb).toString();
-    }
-
-    public static String buildResetErrorBody(String msg, String trace) {
-        StringBuilder body = new StringBuilder();
-
-        body.append("<acmErrorObject>");
-        buildElement("message", msg, body);
-        buildElement("stacktrace", trace, body);
-        body.append("</acmErrorObject>");
-
-        return body.toString();
-    }
-
-    public static String buildQueryBody(List<GenericContent> foundSignals) throws EDBException {
-
-        String name = UUID.randomUUID().toString();
-        File store = new File(name);
-        try {
-            storeToTmp(store, foundSignals);
-            foundSignals.clear();
-            return loadFromTmpStore(store);
-        } catch (IOException e) {
-            try {
-                store.delete();
-            } catch (Exception e1) {
-                XmlParserFunctions.logger.warn("tmp store file could not be deleted");
-            }
-            throw new EDBException(e);
-        }
-    }
-
-    private static void storeToTmp(File store, List<GenericContent> foundSignals) throws IOException {
-        if (store.exists()) {
-            store.delete();
-        }
-        store.createNewFile();
-
-        FileWriter writer = new FileWriter(store);
-        for (GenericContent signal : foundSignals) {
-            writer.append("<acmMessageObjects>");
-
-            // TODO extract from incoming msg;
-            writer.append(buildElement("user", "dummyUser"));
-            writer.append(buildElement(GenericContent.UUID_NAME, signal.getUUID()));
-            writer.append(buildElement(GenericContent.PATH_NAME, signal.getPath()));
-
-            for (Entry<Object, Object> entry : signal.getEntireContent()) {
-                writer.append("<acmMessageObject>");
-                writer.append(buildElement("key", entry.getKey().toString()));
-                writer.append(buildElement("value", entry.getValue().toString()));
-                writer.append("</acmMessageObject>");
-            }
-
-            writer.append("</acmMessageObjects>");
-            writer.append("\n");
-        }
-        writer.flush();
-        writer.close();
-    }
-
-    private static String loadFromTmpStore(File file) throws IOException {
-        try {
-            StringBuilder builder = new StringBuilder((int) file.length());
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                builder.append(line);
-            }
-            reader.close();
-            try {
-                file.delete();
-            } catch (Exception e) {
-                // TODO what ?
-            }
-            return builder.toString();
-
-        } catch (NegativeArraySizeException e) {
-            throw new IOException("tmp store is seriously too large (or does exist)");
-        }
     }
 
 }
