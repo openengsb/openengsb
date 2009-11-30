@@ -126,6 +126,7 @@ public class CustomOpenEngSBMarshaler extends AbstractJmsMarshaler implements Jm
         return exchange;
     }
 
+    @SuppressWarnings("unchecked")
     public Message createOut(MessageExchange exchange, NormalizedMessage outMsg, Session session, JmsContext context)
             throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -156,6 +157,7 @@ public class CustomOpenEngSBMarshaler extends AbstractJmsMarshaler implements Jm
         return text;
     }
 
+    @SuppressWarnings("unchecked")
     public Message createFault(MessageExchange exchange, Fault fault, Session session, JmsContext context)
             throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

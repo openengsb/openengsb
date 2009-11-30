@@ -43,6 +43,7 @@ public class JibxXmlSerializer implements Serializer {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T deserialize(Class<T> clazz, Reader reader) throws SerializationException {
         try {
