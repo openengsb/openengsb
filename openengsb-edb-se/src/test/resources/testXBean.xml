@@ -31,7 +31,7 @@
         <sm:component>
           <my:edbComponent>
             <my:endpoints>
-              <my:edb factory="#config" endpoint="edb" service="test:edb" />
+              <my:edb fullConfig="#fullConfig" endpoint="edb" service="test:edb" />
             </my:endpoints>
           </my:edbComponent>
         </sm:component>

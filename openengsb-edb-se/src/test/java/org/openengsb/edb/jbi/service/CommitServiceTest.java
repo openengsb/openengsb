@@ -19,6 +19,7 @@
 package org.openengsb.edb.jbi.service;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -52,7 +53,6 @@ import org.junit.runner.RunWith;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
-
 import org.openengsb.util.IO;
 import org.openengsb.util.Prelude;
 import org.springframework.context.support.AbstractXmlApplicationContext;
@@ -166,6 +166,7 @@ public class CommitServiceTest extends SpringTestSupport {
     @After
     public void tearDown() throws Exception {
         IO.deleteStructure(CommitServiceTest.handler.getRepositoryBase().getParentFile());
+        IO.deleteStructure(new File("links"));
         super.tearDown();
     }
 
@@ -246,9 +247,9 @@ public class CommitServiceTest extends SpringTestSupport {
     @Test
     @Ignore
     public void testInvalidCommit() throws Exception {
-        
+
         Document doc = sendMessageAndParseResponse(CommitServiceTest.invalidResetMessage);
-        
+
         Element root = doc.getRootElement();
         assertEquals("acmResponseMessage", root.getName());
         Element body = root.element("body");

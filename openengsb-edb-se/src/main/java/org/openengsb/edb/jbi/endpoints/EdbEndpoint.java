@@ -37,62 +37,64 @@ import org.openengsb.edb.jbi.endpoints.commands.EDBReset;
  */
 public class EdbEndpoint extends AbstractEndpoint {
 
-	/*
-	 * Operations
-	 * 
-	 * Strings to identify an operation. {@link
-	 * javax.jbi.messaging.MessageExchange} requires a QName as operation.
-	 * 
-	 * setOperation(new QName(OPERATION_COMMIT))
-	 * 
-	 * The namespace is ignored in the operation-check
-	 */
+    /*
+     * Operations
+     * 
+     * Strings to identify an operation. {@link
+     * javax.jbi.messaging.MessageExchange} requires a QName as operation.
+     * 
+     * setOperation(new QName(OPERATION_COMMIT))
+     * 
+     * The namespace is ignored in the operation-check
+     */
 
-	public static final String DEFAULT_USER = "EDB";
-	public static final String DEFAULT_EMAIL = "EDB@engsb.ifs.tuwien.ac.at";
+    public static final String DEFAULT_USER = "EDB";
+    public static final String DEFAULT_EMAIL = "EDB@engsb.ifs.tuwien.ac.at";
 
-	public static final String COMMIT_OPERATION_TAG_NAME = "operation";
-	public static final String QUERY_ELEMENT_NAME = "query";
-	public static final int DEFAULT_DEPTH = 1;
-	
-	// should be set via spring ?
-	private Map<EDBOperationType, EDBEndpointCommand> commands;
+    public static final String COMMIT_OPERATION_TAG_NAME = "operation";
+    public static final String QUERY_ELEMENT_NAME = "query";
+    public static final int DEFAULT_DEPTH = 1;
 
-	@Override
-	protected void processInOutRequest(MessageExchange exchange,
-			NormalizedMessage in, NormalizedMessage out) throws Exception {
-		getLog().info("init handler from factory");
+    // should be set via spring ?
+    private Map<EDBOperationType, EDBEndpointCommand> commands;
 
-		EDBHandler handler = this.factory.loadDefaultRepository();
-		
-		// see issue #179
-		init(handler);
-		
-		getLog().info("parsing message");
-		/*
-		 * Only check the local part. Don't care about the namespace of the
-		 * operation
-		 */
-		EDBOperationType op = XmlParserFunctions.getMessageType(in);// exchange.getOperation().getLocalPart();
-		String body = null;
+    @Override
+    protected void processInOutRequest(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out)
+            throws Exception {
+        getLog().info("init handler from factory");
 
-		body = this.commands.get(op).execute(in);
-		
-		body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><acmResponseMessage><body>"
-				+ body + "</body></acmResponseMessage>";
-		Source response = new StringSource(body);
-		this.logger.info(body);
-		out.setContent(response);
-		getChannel().send(exchange);
-	}
-	
-	/**
-	 * see issue 179
-	 */
-	private void init(EDBHandler handler){
-		this.commands = new HashMap<EDBOperationType, EDBEndpointCommand>();
-		this.commands.put(EDBOperationType.COMMIT, new EDBCommit(handler, logger));
-		this.commands.put(EDBOperationType.QUERY, new EDBQuery(handler, logger));
-		this.commands.put(EDBOperationType.RESET, new EDBReset(handler, logger));
-	}
+        EDBHandler handler = this.fullConfig.getFactory().loadDefaultRepository();
+        EDBHandler linksHandler = this.fullConfig.getFactory().loadRepository(this.fullConfig.getLinkStorage());
+
+        // see issue #179
+        init(handler, linksHandler);
+
+        getLog().info("parsing message");
+        /*
+         * Only check the local part. Don't care about the namespace of the
+         * operation
+         */
+        EDBOperationType op = XmlParserFunctions.getMessageType(in);// exchange.getOperation().getLocalPart();
+        String body = null;
+
+        body = this.commands.get(op).execute(in);
+
+        body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><acmResponseMessage><body>" + body
+                + "</body></acmResponseMessage>";
+        Source response = new StringSource(body);
+        this.logger.info(body);
+        out.setContent(response);
+        getChannel().send(exchange);
+    }
+
+    /**
+     * see issue 179
+     */
+    private void init(EDBHandler handler, EDBHandler linksHandler) {
+        this.commands = new HashMap<EDBOperationType, EDBEndpointCommand>();
+        this.commands.put(EDBOperationType.COMMIT, new EDBCommit(handler, this.logger));
+        this.commands.put(EDBOperationType.QUERY, new EDBQuery(handler, this.logger));
+        this.commands.put(EDBOperationType.RESET, new EDBReset(handler, this.logger));
+    }
+
 }
