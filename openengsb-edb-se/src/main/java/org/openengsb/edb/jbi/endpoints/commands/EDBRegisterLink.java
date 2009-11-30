@@ -17,25 +17,51 @@
  */
 package org.openengsb.edb.jbi.endpoints.commands;
 
+import java.util.List;
+
 import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.commons.logging.Log;
+import org.openengsb.edb.core.api.EDBException;
 import org.openengsb.edb.core.api.EDBHandler;
+import org.openengsb.edb.core.entities.GenericContent;
+import org.openengsb.edb.jbi.endpoints.XmlParserFunctions;
 
 public class EDBRegisterLink implements EDBEndpointCommand {
 
-	private EDBHandler handler;
-	private Log log;
-	
-	public EDBRegisterLink(EDBHandler handler, Log log) {
-		this.handler = handler;
-		this.log = log;
-	}
-	
-	@Override
-	public String execute(NormalizedMessage in) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    private final EDBHandler handler;
+    private final Log log;
+
+    public EDBRegisterLink(EDBHandler handler, Log log) {
+        this.handler = handler;
+        this.log = log;
+    }
+
+    public String execute(NormalizedMessage in) throws Exception {
+        String body = null;
+        try {
+            List<GenericContent> links = XmlParserFunctions.parseLinkRegisterMessage(in, handler.getRepositoryBase()
+                    .toString());
+
+            if (links.size() < 1) {
+                throw new EDBException("Message did not contain links to register");
+            }
+            handler.add(links);
+            body = XmlParserFunctions.buildLinkRegisteredBody(links);
+        } catch (EDBException e) {
+            body = XmlParserFunctions.buildCommitErrorBody(e.getMessage(), makeStackTraceString(e));
+            this.log.info(body);
+        }
+        return body;
+    }
+
+    private String makeStackTraceString(Exception e) {
+        StringBuilder sb = new StringBuilder();
+        for (StackTraceElement ste : e.getStackTrace()) {
+            sb.append(ste.toString());
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
 
 }

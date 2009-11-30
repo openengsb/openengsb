@@ -17,25 +17,46 @@
  */
 package org.openengsb.edb.jbi.endpoints.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.commons.logging.Log;
+import org.openengsb.edb.core.api.EDBException;
 import org.openengsb.edb.core.api.EDBHandler;
+import org.openengsb.edb.core.entities.GenericContent;
+import org.openengsb.edb.jbi.endpoints.XmlParserFunctions;
 
 public class EDBRequestLink implements EDBEndpointCommand {
 
-	private EDBHandler handler;
-	private Log log;
-	
-	public EDBRequestLink(EDBHandler handler, Log log) {
-		this.handler = handler;
-		this.log = log;
-	}
-	
-	@Override
-	public String execute(NormalizedMessage in) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    private final EDBHandler handler;
+    private final Log log;
+
+    public EDBRequestLink(EDBHandler handler, Log log) {
+        this.handler = handler;
+        this.log = log;
+    }
+
+    @Override
+    public String execute(NormalizedMessage in) throws Exception {
+
+        String body = null;
+        final String term = XmlParserFunctions.parseLinkRequestMessage(in);
+        List<GenericContent> foundLinkTargets = new ArrayList<GenericContent>();
+        log.debug(term + " link request received.");
+        try {
+
+            final List<GenericContent> result = handler.query(term, false);
+            foundLinkTargets.addAll(result);
+
+        } catch (final EDBException e) {
+            // TODO build error message
+            e.printStackTrace();
+            foundLinkTargets = new ArrayList<GenericContent>();
+        }
+        body = XmlParserFunctions.buildLinkRequestedBody(foundLinkTargets);
+        return body;
+    }
 
 }

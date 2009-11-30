@@ -209,8 +209,8 @@ public class XmlParserFunctions {
         return "";
     }
 
-    public static List<GenericContent> parseLinkRegisterMessage(NormalizedMessage msg) throws IOException,
-            SAXException, TransformerException, DocumentException {
+    public static List<GenericContent> parseLinkRegisterMessage(NormalizedMessage msg, String repoBase)
+            throws IOException, SAXException, TransformerException, DocumentException {
 
         return null;
     }
