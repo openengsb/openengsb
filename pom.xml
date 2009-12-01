@@ -168,9 +168,7 @@
     <module>openengsb-connector-issues-trac</module>
     <module>openengsb-domain-issues-common</module>
     <module>openengsb-connector-issues-trac-su</module>
-    <module>file-poller-su</module>
-    <module>csd-sa</module>
-    <module>csd-eip</module>
+
   </modules>
 
   <inceptionYear>2009</inceptionYear>
