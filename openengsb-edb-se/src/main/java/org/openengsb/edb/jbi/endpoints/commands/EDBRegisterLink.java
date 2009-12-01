@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.openengsb.edb.core.api.EDBException;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.entities.GenericContent;
+import org.openengsb.edb.jbi.endpoints.EdbEndpoint;
 import org.openengsb.edb.jbi.endpoints.XmlParserFunctions;
 
 public class EDBRegisterLink implements EDBEndpointCommand {
@@ -47,6 +48,7 @@ public class EDBRegisterLink implements EDBEndpointCommand {
                 throw new EDBException("Message did not contain links to register");
             }
             handler.add(links);
+            handler.commit(EdbEndpoint.DEFAULT_USER, EdbEndpoint.DEFAULT_EMAIL);
             body = XmlParserFunctions.buildLinkRegisteredBody(links);
         } catch (EDBException e) {
             body = XmlParserFunctions.buildCommitErrorBody(e.getMessage(), makeStackTraceString(e));

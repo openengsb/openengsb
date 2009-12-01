@@ -57,6 +57,8 @@ public class EdbEndpoint extends AbstractEndpoint {
     public static final String QUERY_ELEMENT_NAME = "query";
     public static final int DEFAULT_DEPTH = 1;
 
+    public static final int LINK_TARGET_ELEMENT = 1;
+
     // should be set via spring ?
     private Map<EDBOperationType, EDBEndpointCommand> commands;
 

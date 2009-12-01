@@ -48,6 +48,11 @@ import org.xml.sax.SAXException;
 
 public class XmlParserFunctions {
 
+    private static final String LINK_SOURCE = "source";
+    private static final String LINK_TYPE = "type";
+    private static final String LINK_PARAM = "param";
+    private static final String LINK_NAME = "link";
+
     private static SourceTransformer sourceTransformer = new SourceTransformer();
 
     private static Logger logger = Logger.getLogger(XmlParserFunctions.class);
@@ -127,11 +132,11 @@ public class XmlParserFunctions {
             return EDBOperationType.COMMIT;
         } else if (doc.getRootElement().getName().equals("acmResetRequestMessage")) {
             return EDBOperationType.RESET;
-        } else if (doc.getRootElement().getName().equals("acmLinkRegisterMessage")) {
+        } else if (doc.getRootElement().getName().equals("LinkRegisterMessage")) {
             return EDBOperationType.REGISTER_LINK;
-        } else if (doc.getRootElement().getName().equals("acmLinkExecutedMessage")) {
+        } else if (doc.getRootElement().getName().equals("LinkExecutedMessage")) {
             return EDBOperationType.EXECUTE_LINK;
-        } else if (doc.getRootElement().getName().equals("acmLinkQueryRequestMessage")) {
+        } else if (doc.getRootElement().getName().equals("LinkQueryRequestMessage")) {
             return EDBOperationType.REQUEST_LINK;
         } else {
             throw new RuntimeException("root element could not be sorted..." + doc.getRootElement().getName());
@@ -206,13 +211,33 @@ public class XmlParserFunctions {
     public static String parseLinkRequestMessage(NormalizedMessage msg) throws IOException, SAXException,
             TransformerException, DocumentException {
 
-        return "";
+        Document doc = readMessage(msg);
+        Element root = doc.getRootElement();
+        Element body = root.element("body");
+        Element element = body.element(EdbEndpoint.QUERY_ELEMENT_NAME);
+
+        String result = element.getTextTrim();
+
+        return result;
     }
 
     public static List<GenericContent> parseLinkRegisterMessage(NormalizedMessage msg, String repoBase)
             throws IOException, SAXException, TransformerException, DocumentException {
 
-        return null;
+        Document doc = readMessage(msg);
+        List<GenericContent> result = new ArrayList<GenericContent>();
+        Element root = doc.getRootElement();
+        Element body = root.element("body");
+
+        XmlParserFunctions.logger.info("start searching");
+        @SuppressWarnings("unchecked")
+        List<Element> objects = body.elements(LINK_NAME);
+        for (Element e : objects) {
+            result.add(parseRegisterMessageItem(e, repoBase));
+        }
+        XmlParserFunctions.logger.info("search finished");
+
+        return result;
     }
 
     public static String parseLinkExecutedMessage(NormalizedMessage msg) throws IOException, SAXException,
@@ -309,8 +334,8 @@ public class XmlParserFunctions {
     }
 
     public static String buildResetErrorBody(String msg, String trace) {
-        StringBuilder body = new StringBuilder();
 
+        StringBuilder body = new StringBuilder();
         body.append("<acmErrorObject>");
         buildElement("message", msg, body);
         buildElement("stacktrace", trace, body);
@@ -320,15 +345,39 @@ public class XmlParserFunctions {
     }
 
     public static String buildLinkRegisteredBody(List<GenericContent> links) {
-        return "";
+
+        int expectedChars = links.size() * (200);
+        StringBuilder body = new StringBuilder(expectedChars);
+        for (GenericContent link : links) {
+            body.append("<link>");
+            buildElement(LINK_SOURCE, link.getProperty(LINK_SOURCE), body);
+            buildElement(LINK_TYPE, link.getProperty(LINK_TYPE), body);
+            buildElement(LINK_PARAM, link.getProperty(LINK_PARAM), body);
+            body.append("</link>");
+        }
+        return body.toString();
     }
 
-    public static String buildLinkRequestedBody(List<GenericContent> links) {
-        return "";
+    public static String buildLinkRequestedBody(List<GenericContent> links) throws EDBException {
+
+        StringBuilder buffer = new StringBuilder();
+        for (GenericContent link : links) {
+            buffer.append("<target>");
+            buildElement(LINK_TYPE, link.getProperty(LINK_TYPE), buffer);
+            buildElement(LINK_PARAM, link.getProperty(LINK_PARAM), buffer);
+            buffer.append("</target>");
+            buffer.append("\n");
+        }
+        return buffer.toString();
     }
 
-    public static String buildLinkExecutedBody(List<GenericContent> links) {
-        return "";
+    public static String buildLinkExecutedBody(GenericContent link, String receiver) {
+
+        StringBuilder buffer = new StringBuilder();
+        buildElement("receiver", receiver, buffer);
+        buildElement(LINK_TYPE, link.getProperty(LINK_TYPE), buffer);
+        buildElement(LINK_PARAM, link.getProperty(LINK_PARAM), buffer);
+        return buffer.toString();
     }
 
     private static String buildElement(String name, String content) {
@@ -419,6 +468,15 @@ public class XmlParserFunctions {
             }
         }
         return values;
+    }
+
+    private static GenericContent parseRegisterMessageItem(Element msgElement, String repositoryBase) {
+        GenericContent parsedMsgElement = new GenericContent(repositoryBase, new String[] {}, new String[] {});
+
+        parsedMsgElement.setProperty(LINK_SOURCE, msgElement.element(LINK_SOURCE).getTextTrim());
+        parsedMsgElement.setProperty(LINK_TYPE, msgElement.element(LINK_TYPE).getTextTrim());
+        parsedMsgElement.setProperty(LINK_PARAM, msgElement.element(LINK_PARAM).getTextTrim());
+        return parsedMsgElement;
     }
 
     private static ContentWrapper parseCommitMessageItem(Element msgElement, String repositoryBase) {

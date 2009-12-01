@@ -17,7 +17,6 @@
  */
 package org.openengsb.edb.jbi.endpoints.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.jbi.messaging.NormalizedMessage;
@@ -42,20 +41,21 @@ public class EDBExecuteLink implements EDBEndpointCommand {
     public String execute(NormalizedMessage in) throws Exception {
         String body = null;
         final String term = XmlParserFunctions.parseLinkExecutedMessage(in);
-        List<GenericContent> foundLinkTargets = new ArrayList<GenericContent>();
+        GenericContent result = new GenericContent();
         log.debug(term + " link request received.");
         try {
-
-            final List<GenericContent> result = handler.query(term, false);
-            foundLinkTargets.addAll(result);
-
+            List<GenericContent> list = handler.query(term, false);
+            if (list.size() != 0) {
+                log.debug("No link found");
+                result = list.get(0);
+            }
         } catch (final EDBException e) {
             // TODO build error message
             e.printStackTrace();
-            foundLinkTargets = new ArrayList<GenericContent>();
+            result = new GenericContent();
         }
-        body = XmlParserFunctions.buildLinkExecutedBody(foundLinkTargets);
+        // FIXME set receiver
+        body = XmlParserFunctions.buildLinkExecutedBody(result, "receiver");
         return body;
     }
-
 }
