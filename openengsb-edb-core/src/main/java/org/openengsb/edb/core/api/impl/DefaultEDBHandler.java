@@ -52,6 +52,8 @@ public class DefaultEDBHandler implements EDBHandler {
     private static final String MODE_HARD = "hard";
     private static final String DEFAULT_MSG = "commit via EDB-API";
 
+    private static final String GIT_CONFIG = ".git";
+
     private static final String ELEM_NAME = "name";
 
     protected Repository repoData;
@@ -140,7 +142,7 @@ public class DefaultEDBHandler implements EDBHandler {
         // save directories at the end of the path
         File[] files = file.listFiles();
         for (File candidate : files) {
-            if (candidate.isDirectory()) {
+            if (candidate.isDirectory() && !candidate.getName().equals(GIT_CONFIG)) {
                 GenericContent gc = new GenericContent();
                 gc.setProperty(ELEM_NAME, candidate.getName());
                 result.add(gc);

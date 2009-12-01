@@ -19,9 +19,11 @@
 package org.openengsb.edb.core.api;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -32,26 +34,26 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.edb.core.api.EDBException;
-import org.openengsb.edb.core.api.EDBHandler;
-import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.util.IO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:edbBeans.xml" })
 public class EDBHandlerTest {
+
+    private static final String[] ABSTRACT_PATH = new String[] { "x", "y", "z" };
+    private static final String[] ACTUAL_PATH_1 = new String[] { "a", "b", "c" };
+    private static final String[] ACTUAL_PATH_2 = new String[] { "a", "b1", "c1" };
 
     @Resource
     private EDBHandlerFactory factory;
 
     private EDBHandler handler;
 
-    private UUID uuid = UUID.randomUUID();
+    private final UUID uuid = UUID.randomUUID();
     private GenericContent content;
 
     private String commitId;
@@ -168,6 +170,48 @@ public class EDBHandlerTest {
         assertEquals("content", "yetAnotherValue", list.get(1).getProperty("myKey"));
     }
 
+    @Test
+    public void testQueryNodesAtDepthZero() throws Exception {
+        setupMoreCommits();
+        List<GenericContent> result = this.handler.queryNodes(Arrays.asList(new String[] {}));
+        assertEquals(2, result.size());
+        List<String> results = new ArrayList<String>();
+        // collect results
+        results.add(result.get((0)).getProperty("name"));
+        results.add(result.get((1)).getProperty("name"));
+
+        assertTrue(results.contains("a"));
+        assertTrue(results.contains("myValue"));
+    }
+
+    @Test
+    public void testQueryNodesAtDepthOne() throws Exception {
+        setupMoreCommits();
+        List<GenericContent> result = this.handler.queryNodes(Arrays.asList(new String[] { "a", }));
+        assertEquals(2, result.size());
+        List<String> results = new ArrayList<String>();
+        // collect results
+        results.add(result.get((0)).getProperty("name"));
+        results.add(result.get((1)).getProperty("name"));
+
+        assertTrue(results.contains("b"));
+        assertTrue(results.contains("b1"));
+
+    }
+
+    @Test
+    public void testQueryNodesAtDepthTwo() throws Exception {
+        setupMoreCommits();
+        List<GenericContent> result = this.handler.queryNodes(Arrays.asList(new String[] { "a", "b" }));
+        assertEquals(1, result.size());
+        List<String> results = new ArrayList<String>();
+        // collect results
+        results.add(result.get((0)).getProperty("name"));
+
+        assertTrue(results.contains("c"));
+
+    }
+
     /**
      * @param factory the factory to set
      */
@@ -176,4 +220,16 @@ public class EDBHandlerTest {
         this.factory = factory;
     }
 
+    /**
+     * Proper tests for query nodes requires some more nodes to exist
+     */
+    private void setupMoreCommits() throws Exception {
+
+        List<GenericContent> list = new ArrayList<GenericContent>();
+        list.add(new GenericContent(this.repoBase, ABSTRACT_PATH, ACTUAL_PATH_1));
+        list.add(new GenericContent(this.repoBase, ABSTRACT_PATH, ACTUAL_PATH_2));
+
+        this.handler.add(list);
+        this.commitId = this.handler.commit("myUser", "myEmail");
+    }
 }
