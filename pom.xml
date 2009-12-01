@@ -167,7 +167,7 @@
 
     <module>openengsb-connector-issues-trac</module>
     <module>openengsb-domain-issues-common</module>
-    <module>openengsb-connector-issues-trac-su</module>
+    <module>openengsb-connector-issues-trac-impl</module>
 
   </modules>
 
