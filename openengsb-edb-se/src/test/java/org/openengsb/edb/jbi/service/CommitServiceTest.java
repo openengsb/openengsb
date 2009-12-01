@@ -21,6 +21,7 @@ package org.openengsb.edb.jbi.service;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.Map.Entry;
@@ -72,10 +73,13 @@ public class CommitServiceTest extends SpringTestSupport {
     private static final UUID UUID_1 = UUID.fromString("5ff89772-0e20-44bd-9a97-d022ec2680db");
     private static final UUID UUID_2 = UUID.fromString("5ff89773-0e20-44bd-9a97-d022ec2680db");
     private static final String USER = "andreas";
-    private static final String ABSTRACT_PATH = "/first/second/";
+    private static final String ABSTRACT_PATH_COMMIT = "/first/second/";
     private static final String PATH_1 = "d2sdf000";
     private static final String PATH_2 = "any key";
     private static final String REAL_QUERY_1 = "path:/customer/projectId/region/componentNumber/cpuNumber/peripheralBoardAddress/inputOutputModule/channelName AND customer:customer";
+    private static final String[] ABSTRACT_PATH_2 = new String[] { "x", "y", "z" };
+    private static final String[] ACTUAL_PATH_1 = new String[] { "a", "b", "c" };
+    private static final String[] ACTUAL_PATH_2 = new String[] { "a", "b1", "c1" };
 
     private static final String EDB_SERVICE_NAME = "edb";
     private static GenericContent gc1;
@@ -85,6 +89,7 @@ public class CommitServiceTest extends SpringTestSupport {
     private static Document invalidResetMessage;
     private static Document validQueryMessage;
     private static Document validQueryMessageRealSample;
+    private static Document validNodeQueryMessage;
     private static Document invalidQueryMessage;
 
     /* end test-parameters */
@@ -117,11 +122,11 @@ public class CommitServiceTest extends SpringTestSupport {
 
         /* generic content */
         CommitServiceTest.gc1 = new GenericContent(CommitServiceTest.handler.getRepositoryBase().toString(), Prelude
-                .dePathize(CommitServiceTest.ABSTRACT_PATH), new String[] { CommitServiceTest.PATH_1,
+                .dePathize(CommitServiceTest.ABSTRACT_PATH_COMMIT), new String[] { CommitServiceTest.PATH_1,
                 CommitServiceTest.PATH_2, }, CommitServiceTest.UUID_1);
 
         CommitServiceTest.gc2 = new GenericContent(CommitServiceTest.handler.getRepositoryBase().toString(), Prelude
-                .dePathize(CommitServiceTest.ABSTRACT_PATH), new String[] { CommitServiceTest.PATH_1,
+                .dePathize(CommitServiceTest.ABSTRACT_PATH_COMMIT), new String[] { CommitServiceTest.PATH_1,
                 CommitServiceTest.PATH_2, }, CommitServiceTest.UUID_2);
         CommitServiceTest.gc2.setProperty("third", "some other value");
 
@@ -155,6 +160,11 @@ public class CommitServiceTest extends SpringTestSupport {
         /* invalid query */
         querybody.element("query").setText("does_not_exist");
         CommitServiceTest.invalidQueryMessage = DocumentHelper.createDocument(root);
+
+        /* valid query node search */
+        querybody.element("query").setText("path:x/y/z AND x:a");
+        CommitServiceTest.validNodeQueryMessage = DocumentHelper.createDocument(root.createCopy());
+
     }
 
     @Override
@@ -227,6 +237,21 @@ public class CommitServiceTest extends SpringTestSupport {
         if (errorObject != null) {
             fail(errorObject.asXML());
         }
+    }
+
+    /**
+     * special setup for node query test
+     */
+    private void setupTestCommitForNodeQuery() throws Exception {
+        String repobase = CommitServiceTest.handler.getRepositoryBase().toString();
+        GenericContent gc1 = new GenericContent(repobase, ABSTRACT_PATH_2, ACTUAL_PATH_1);
+        GenericContent gc2 = new GenericContent(repobase, ABSTRACT_PATH_2, ACTUAL_PATH_2);
+
+        Element root = DocumentHelper.createElement("acmPersistMessage");
+        Element body = root.addElement("body");
+        addGCToMessagePart(gc1, body, CommitServiceTest.USER);
+        addGCToMessagePart(gc2, body, CommitServiceTest.USER);
+        CommitServiceTest.persistMessage = DocumentHelper.createDocument(root);
     }
 
     @Test
@@ -332,5 +357,33 @@ public class CommitServiceTest extends SpringTestSupport {
         assertNoErrorMessage(body);
         Element object = body.element("acmMessageObjects");
         assertNull("query result was not empty", object);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testValidNodeQuery() throws Exception {
+
+        setupTestCommitForNodeQuery();
+        Document doc = sendMessageAndParseResponse(CommitServiceTest.validNodeQueryMessage);
+
+        Element root = doc.getRootElement();
+        assertEquals("acmResponseMessage", root.getName());
+        Element body = root.element("body");
+        assertNotNull(body);
+        assertNoErrorMessage(body);
+        // get all lists from body
+        List<Element> objects = body.elements("acmMessageObjects");
+        // add all sublists from body elements into one list
+        List<Element> nodes = new ArrayList<Element>();
+        for (Element object : objects) {
+            nodes.addAll(object.elements("acmMessageObject"));
+        }
+        // now extract text from all list elements
+        List<String> names = new ArrayList<String>();
+        for (Element node : nodes) {
+            names.add(node.element("value").getTextTrim());
+        }
+        assertTrue(names.contains("b"));
+        assertTrue(names.contains("b1"));
     }
 }

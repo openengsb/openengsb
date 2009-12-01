@@ -188,8 +188,8 @@ public class XmlParserFunctions {
         return doc;
     }
 
-    public static EDBOperationType getMessageType(NormalizedMessage msg) throws IOException, SAXException, TransformerException,
-            DocumentException {
+    public static EDBOperationType getMessageType(NormalizedMessage msg) throws IOException, SAXException,
+            TransformerException, DocumentException {
         Document doc = readMessage(msg);
         if (doc.getRootElement().getName().equals("acmQueryRequestMessage")) {
             return EDBOperationType.QUERY;
@@ -313,51 +313,15 @@ public class XmlParserFunctions {
         @SuppressWarnings("unchecked")
         List<Element> elements = body.elements(EdbEndpoint.QUERY_ELEMENT_NAME);
         // star search
-
         List<String> results = new ArrayList<String>();
         for (final Element element : elements) {
-            results.add(translateQuery(element.getTextTrim()));
+            String query = element.getTextTrim();
+            if (query.isEmpty()) {
+                query = "*";
+            }
+            results.add(query);
         }
-
         return results;
-
-    }
-
-    /**
-     * Hacky String replacements for jcr to lucene syntax (hotfix that lived too
-     * long)
-     */
-    @Deprecated
-    private static String translateQuery(String query) {
-        String result = query;
-        if (result.equals("/") || result.equals("")) {
-            result = "*";
-        } else {
-            // all other searches
-            String pathPart = result;
-            String propertyPart = "";
-            // search with attributes
-            if (result.contains("[")) {
-
-                pathPart = result.substring(0, result.indexOf("["));
-
-                propertyPart = result.substring(result.indexOf("["), result.length());
-
-                propertyPart = propertyPart.replace('[', ' ');
-                propertyPart = propertyPart.replaceAll("=", ":*");
-                propertyPart = propertyPart.replaceAll("\\]", "* AND ");
-                propertyPart = propertyPart.substring(0, propertyPart.length() - 5);
-            }
-            // adding wildcard at end of path
-            if (!pathPart.endsWith("*")) {
-                pathPart += "*";
-            }
-            pathPart = "path" + ":" + pathPart;
-            if (propertyPart != "") {
-                result = pathPart + " AND " + propertyPart;
-            }
-        }
-        return result;
     }
 
     public static RequestWrapper parseResetMessage(NormalizedMessage msg) throws IOException, SAXException,
