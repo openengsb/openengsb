@@ -73,7 +73,7 @@ public class SerializationTest {
         serializer = new JibxXmlSerializer();
         serializer.serialize(msg, sw);
 
-        assertEquals(FileUtils.readFileToString(validFile), sw.toString());
+        assertEquals(getWhitespaceAdjustedTextFromFile(validFile), sw.toString());
     }
 
     @Test
@@ -107,7 +107,7 @@ public class SerializationTest {
         serializer = new JibxXmlSerializer();
         serializer.serialize(msg, sw);
 
-        assertEquals(FileUtils.readFileToString(validFile), sw.toString());
+        assertEquals(getWhitespaceAdjustedTextFromFile(validFile), sw.toString());
     }
 
     @Test
@@ -124,5 +124,10 @@ public class SerializationTest {
         assertEquals(createdIssueId, msg.getCreatedIssueId());
         assertEquals(status, msg.getStatus());
         assertEquals(statusMessage, msg.getStatusMessage());
+    }
+
+    private String getWhitespaceAdjustedTextFromFile(File file) throws IOException {
+        return FileUtils.readFileToString(file).replaceAll("\n", "").replaceAll(">\\s*<", "><").replaceAll("<!--.*-->",
+                "");
     }
 }

@@ -462,6 +462,10 @@
 
             <!-- Serialization Test Data -->
             <exclude>**/src/test/resources/serialization/valid.xml</exclude>
+
+            <!-- Auto generated files for tests in openengsb-domain-issues-common -->
+            <exclude>openengsb-domain-issues-common/bin/src/test/resources/META-INF/**</exclude>
+            <exclude>openengsb-domain-issues-common/bin/src/test/resources/openengsb-domain-issues-common.xsd.wiki</exclude>
           </excludes>
         </configuration>
         <executions>
