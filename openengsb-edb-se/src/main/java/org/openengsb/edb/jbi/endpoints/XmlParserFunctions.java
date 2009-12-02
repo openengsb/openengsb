@@ -377,6 +377,7 @@ public class XmlParserFunctions {
         buildElement("receiver", receiver, buffer);
         buildElement(LINK_TYPE, link.getProperty(LINK_TYPE), buffer);
         buildElement(LINK_PARAM, link.getProperty(LINK_PARAM), buffer);
+
         return buffer.toString();
     }
 

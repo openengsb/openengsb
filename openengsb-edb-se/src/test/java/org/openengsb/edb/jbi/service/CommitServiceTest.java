@@ -440,7 +440,6 @@ public class CommitServiceTest extends SpringTestSupport {
         assertNoErrorMessage(body);
         // get all lists from body
         List<Element> objects = body.elements("link");
-        System.out.println("yyy" + root.asXML());
         // now extract text from all list elements
         List<String> names = new ArrayList<String>();
         for (Element node : objects) {
@@ -458,7 +457,7 @@ public class CommitServiceTest extends SpringTestSupport {
 
         Element root = doc.getRootElement();
         assertEquals(MESSAGE_TYPE_RESPONSE_LINK_REQUEST, root.getName());
-        System.out.println(root.asXML());
+
         Element body = root.element("body");
         assertNotNull(body);
         assertNoErrorMessage(body);
