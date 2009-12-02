@@ -36,6 +36,7 @@ public class EDBQueryTest {
     private static final String VALID_PATH_ONLY = "path:x/y/z";
     private static final String VALID_ONE_PATH_ELEMENT = "path:x/y/z AND x:42";
     private static final String VALID_REAL = "path:/customer/projectId/region/componentNumber/cpuNumber/peripheralBoardAddress/inputOutputModule/channelName AND customer:customer";
+    private static final String VALID_REAL_1 = "path:/customer/projectId/region/componentNumber/cpuNumber/peripheralBoardAddress/inputOutputModule/channelName";
 
     @SuppressWarnings("unchecked")
     private static final List<String> QUERY_LIST_1 = new ArrayList<String>(Arrays
@@ -66,7 +67,7 @@ public class EDBQueryTest {
         assertTrue(EDBQuery.isNodeQuery(VALID_PATH_ONLY));
         assertTrue(EDBQuery.isNodeQuery(VALID_ONE_PATH_ELEMENT));
         assertTrue(EDBQuery.isNodeQuery(VALID_REAL));
-
+        assertTrue(EDBQuery.isNodeQuery(VALID_REAL_1));
     }
 
     @Test

@@ -427,30 +427,57 @@ public class CommitServiceTest extends SpringTestSupport {
         assertTrue(names.contains("b1"));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    @Ignore
     public void testLinkRegister() throws Exception {
 
         Document doc = sendMessageAndParseResponse(CommitServiceTest.linkRegisterMessage);
 
         Element root = doc.getRootElement();
         assertEquals(MESSAGE_TYPE_RESPONSE_LINK_REGISTER, root.getName());
+        Element body = root.element("body");
+        assertNotNull(body);
+        assertNoErrorMessage(body);
+        // get all lists from body
+        List<Element> objects = body.elements("link");
+        System.out.println("yyy" + root.asXML());
+        // now extract text from all list elements
+        List<String> names = new ArrayList<String>();
+        for (Element node : objects) {
+            names.add(node.element("param").getTextTrim());
+        }
+        assertTrue(names.contains("/pdfs/document.pdf -page 2"));
+        assertTrue(names.contains("opm.exe -open project1.opm -sheet cpu1"));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    @Ignore
     public void testLinkRequest() throws Exception {
-
+        testLinkRegister();
         Document doc = sendMessageAndParseResponse(CommitServiceTest.linkRequestMessage);
 
         Element root = doc.getRootElement();
         assertEquals(MESSAGE_TYPE_RESPONSE_LINK_REQUEST, root.getName());
+        System.out.println(root.asXML());
+        Element body = root.element("body");
+        assertNotNull(body);
+        assertNoErrorMessage(body);
+        // get all lists from body
+        List<Element> objects = body.elements("target");
+        // now extract text from all list elements
+        List<String> names = new ArrayList<String>();
+        for (Element node : objects) {
+            names.add(node.element("param").getTextTrim());
+        }
+        assertTrue(names.contains("/pdfs/document.pdf -page 2"));
+        assertTrue(names.contains("opm.exe -open project1.opm -sheet cpu1"));
     }
 
     @Test
     @Ignore
     public void testLinkExecute() throws Exception {
 
+        testLinkRegister();
         Document doc = sendMessageAndParseResponse(CommitServiceTest.linkExecuteMessage);
 
         Element root = doc.getRootElement();
