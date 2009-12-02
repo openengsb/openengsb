@@ -88,6 +88,9 @@ public class CommitServiceTest extends SpringTestSupport {
     private static final String MESSAGE_TYPE_COMMIT_EDB = "acmPersistMessage";
     private static final String MESSAGE_TYPE_QUERY_EDB = "acmQueryRequestMessage";
     private static final String MESSAGE_TYPE_RESET_EDB = "acmResetRequestMessage";
+    private static final String MESSAGE_TYPE_RESPONSE = "acmResponseMessage";
+    private static final String MESSAGE_TYPE_RESPONSE_LINK = "LinkReply";
+    private static final String MESSAGE_TYPE_RESPONSE_LINK_EXECUTE = "LinkExecuteReply";
 
     private static final String EDB_SERVICE_NAME = "edb";
     private static GenericContent gc1;
@@ -99,6 +102,9 @@ public class CommitServiceTest extends SpringTestSupport {
     private static Document validQueryMessageRealSample;
     private static Document validNodeQueryMessage;
     private static Document invalidQueryMessage;
+    private static Document linkRegisterMessage;
+    private static Document linRequestMessage;
+    private static Document linkExecuteMessage;
 
     /* end test-parameters */
 
@@ -173,6 +179,30 @@ public class CommitServiceTest extends SpringTestSupport {
         querybody.element("query").setText("path:x/y/z AND x:a");
         CommitServiceTest.validNodeQueryMessage = DocumentHelper.createDocument(root.createCopy());
 
+        /* valid link registration */
+        root = DocumentHelper.createElement(MESSAGE_TYPE_REGISTER_LINK);
+        Element linkRegisterBody = root.addElement("body");
+        Element link_1 = linkRegisterBody.addElement("link");
+        link_1.addElement("source").setText("signal1");
+        link_1.addElement("type").setText("pdf");
+        link_1.addElement("param").setText("/pdfs/document.pdf -page 2");
+        Element link_2 = linkRegisterBody.addElement("link");
+        link_2.addElement("source").setText("signal1");
+        link_2.addElement("type").setText("pdf");
+        link_2.addElement("param").setText("opm.exe -open project1.opm -sheet cpu1");
+        CommitServiceTest.linkRegisterMessage = DocumentHelper.createDocument(root.createCopy());
+
+        /* valid link request */
+        root = DocumentHelper.createElement(MESSAGE_TYPE_QUERY_LINK);
+        Element linkRequestBody = root.addElement("body");
+        linkRequestBody.addElement("query").setText("source:signal1");
+        CommitServiceTest.linRequestMessage = DocumentHelper.createDocument(root.createCopy());
+
+        /* valid link execute ? */
+        root = DocumentHelper.createElement(MESSAGE_TYPE_EXECUTE_LINK);
+        linkRequestBody = root.addElement("body");
+        linkRegisterBody.addElement("query").setText("source:signal1");
+        CommitServiceTest.linkExecuteMessage = DocumentHelper.createDocument(root.createCopy());
     }
 
     @Override
@@ -268,7 +298,7 @@ public class CommitServiceTest extends SpringTestSupport {
         Document doc = sendMessageAndParseResponse(CommitServiceTest.persistMessage);
 
         Element root = doc.getRootElement();
-        assertEquals("acmResponseMessage", root.getName());
+        assertEquals(MESSAGE_TYPE_RESPONSE, root.getName());
         Element body = root.element("body");
         assertNotNull(body);
         @SuppressWarnings("unchecked")
@@ -290,7 +320,7 @@ public class CommitServiceTest extends SpringTestSupport {
         Document doc = sendMessageAndParseResponse(CommitServiceTest.invalidResetMessage);
 
         Element root = doc.getRootElement();
-        assertEquals("acmResponseMessage", root.getName());
+        assertEquals(MESSAGE_TYPE_RESPONSE, root.getName());
         Element body = root.element("body");
         assertNotNull(body);
         Element errorObject = body.element("acmErrorObject");
@@ -303,7 +333,7 @@ public class CommitServiceTest extends SpringTestSupport {
         Document doc = sendMessageAndParseResponse(CommitServiceTest.invalidResetMessage);
 
         Element root = doc.getRootElement();
-        assertEquals("acmResponseMessage", root.getName());
+        assertEquals(MESSAGE_TYPE_RESPONSE, root.getName());
         Element body = root.element("body");
         assertNotNull(body);
         Element errorObject = body.element("acmErrorObject");
@@ -316,7 +346,7 @@ public class CommitServiceTest extends SpringTestSupport {
         Document doc = sendMessageAndParseResponse(CommitServiceTest.resetMessage);
 
         Element root = doc.getRootElement();
-        assertEquals("acmResponseMessage", root.getName());
+        assertEquals(MESSAGE_TYPE_RESPONSE, root.getName());
         Element body = root.element("body");
         assertNotNull(body);
         assertNoErrorMessage(body);
@@ -329,7 +359,7 @@ public class CommitServiceTest extends SpringTestSupport {
         Document doc = sendMessageAndParseResponse(CommitServiceTest.validQueryMessage);
 
         Element root = doc.getRootElement();
-        assertEquals("acmResponseMessage", root.getName());
+        assertEquals(MESSAGE_TYPE_RESPONSE, root.getName());
         Element body = root.element("body");
         assertNotNull(body);
         assertNoErrorMessage(body);
@@ -344,7 +374,7 @@ public class CommitServiceTest extends SpringTestSupport {
         Document doc = sendMessageAndParseResponse(CommitServiceTest.validQueryMessageRealSample);
 
         Element root = doc.getRootElement();
-        assertEquals("acmResponseMessage", root.getName());
+        assertEquals(MESSAGE_TYPE_RESPONSE, root.getName());
         Element body = root.element("body");
         assertNotNull(body);
         assertNoErrorMessage(body);
@@ -360,7 +390,7 @@ public class CommitServiceTest extends SpringTestSupport {
         Document doc = sendMessageAndParseResponse(CommitServiceTest.invalidQueryMessage);
 
         Element root = doc.getRootElement();
-        assertEquals("acmResponseMessage", root.getName());
+        assertEquals(MESSAGE_TYPE_RESPONSE, root.getName());
         Element body = root.element("body");
         assertNotNull(body);
         assertNoErrorMessage(body);
@@ -376,7 +406,7 @@ public class CommitServiceTest extends SpringTestSupport {
         Document doc = sendMessageAndParseResponse(CommitServiceTest.validNodeQueryMessage);
 
         Element root = doc.getRootElement();
-        assertEquals("acmResponseMessage", root.getName());
+        assertEquals(MESSAGE_TYPE_RESPONSE, root.getName());
         Element body = root.element("body");
         assertNotNull(body);
         assertNoErrorMessage(body);
@@ -394,5 +424,35 @@ public class CommitServiceTest extends SpringTestSupport {
         }
         assertTrue(names.contains("b"));
         assertTrue(names.contains("b1"));
+    }
+
+    @Test
+    @Ignore
+    public void testLinkRegister() throws Exception {
+
+        Document doc = sendMessageAndParseResponse(CommitServiceTest.linkRegisterMessage);
+
+        Element root = doc.getRootElement();
+        assertEquals(MESSAGE_TYPE_RESPONSE_LINK, root.getName());
+    }
+
+    @Test
+    @Ignore
+    public void testLinkRequest() throws Exception {
+
+        Document doc = sendMessageAndParseResponse(CommitServiceTest.linRequestMessage);
+
+        Element root = doc.getRootElement();
+        assertEquals(MESSAGE_TYPE_RESPONSE_LINK, root.getName());
+    }
+
+    @Test
+    @Ignore
+    public void testLinkExecute() throws Exception {
+
+        Document doc = sendMessageAndParseResponse(CommitServiceTest.linkExecuteMessage);
+
+        Element root = doc.getRootElement();
+        assertEquals(MESSAGE_TYPE_RESPONSE_LINK_EXECUTE, root.getName());
     }
 }
