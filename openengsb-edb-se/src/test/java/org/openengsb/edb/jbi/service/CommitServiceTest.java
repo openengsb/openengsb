@@ -72,13 +72,22 @@ public class CommitServiceTest extends SpringTestSupport {
     private static final UUID UUID_1 = UUID.fromString("5ff89772-0e20-44bd-9a97-d022ec2680db");
     private static final UUID UUID_2 = UUID.fromString("5ff89773-0e20-44bd-9a97-d022ec2680db");
     private static final String USER = "andreas";
-    private static final String ABSTRACT_PATH_COMMIT = "/first/second/";
+
     private static final String PATH_1 = "d2sdf000";
     private static final String PATH_2 = "any key";
     private static final String REAL_QUERY_1 = "path:/customer/projectId/region/componentNumber/cpuNumber/peripheralBoardAddress/inputOutputModule/channelName AND customer:customer";
+
+    private static final String ABSTRACT_PATH_COMMIT = "/first/second/";
     private static final String[] ABSTRACT_PATH_2 = new String[] { "x", "y", "z" };
     private static final String[] ACTUAL_PATH_1 = new String[] { "a", "b", "c" };
     private static final String[] ACTUAL_PATH_2 = new String[] { "a", "b1", "c1" };
+
+    private static final String MESSAGE_TYPE_REGISTER_LINK = "LinkRegisterMessage";
+    private static final String MESSAGE_TYPE_QUERY_LINK = "LinkQueryRequestMessage";
+    private static final String MESSAGE_TYPE_EXECUTE_LINK = "LinkExecutedMessage";
+    private static final String MESSAGE_TYPE_COMMIT_EDB = "acmPersistMessage";
+    private static final String MESSAGE_TYPE_QUERY_EDB = "acmQueryRequestMessage";
+    private static final String MESSAGE_TYPE_RESET_EDB = "acmResetRequestMessage";
 
     private static final String EDB_SERVICE_NAME = "edb";
     private static GenericContent gc1;
@@ -131,14 +140,14 @@ public class CommitServiceTest extends SpringTestSupport {
 
         /* Request-messages */
         /* valid commit */
-        Element root = DocumentHelper.createElement("acmPersistMessage");
+        Element root = DocumentHelper.createElement(MESSAGE_TYPE_COMMIT_EDB);
         Element body = root.addElement("body");
         addGCToMessagePart(CommitServiceTest.gc1, body, CommitServiceTest.USER);
         addGCToMessagePart(CommitServiceTest.gc2, body, CommitServiceTest.USER);
         CommitServiceTest.persistMessage = DocumentHelper.createDocument(root);
 
         /* valid/invalid reset */
-        root = DocumentHelper.createElement("acmResetRequestMessage");
+        root = DocumentHelper.createElement(MESSAGE_TYPE_RESET_EDB);
         Element resetBody = root.addElement("body");
         resetBody.addElement("repoId").setText("");
         resetBody.addElement("headId").setText("something-invalid");
@@ -147,7 +156,7 @@ public class CommitServiceTest extends SpringTestSupport {
         CommitServiceTest.invalidResetMessage = DocumentHelper.createDocument(root.createCopy());
 
         /* valid query star search */
-        root = DocumentHelper.createElement("acmQueryRequestMessage");
+        root = DocumentHelper.createElement(MESSAGE_TYPE_QUERY_EDB);
         Element querybody = root.addElement("body");
         querybody.addElement("query").setText("*");
         CommitServiceTest.validQueryMessage = DocumentHelper.createDocument(root.createCopy());
