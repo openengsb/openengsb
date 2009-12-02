@@ -345,6 +345,7 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void testInvalidQuery() throws Exception {
 
         testCommit1(); // this test depends on a working commit-test.

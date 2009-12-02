@@ -55,6 +55,7 @@ public class EDBQueryTest {
     private static final String INVALID_HAS_PATH_ELEMENT = "path:x/y/z AND w:hello";
     private static final String INVALID_HAS_PATH_AND_NON_PATH_ELEMENTS = "path:a/b/c AND a:foo AND b:bar AND w:42";
     private static final String INVALID_IS_EMPTY = "";
+    private static final String INVALID_IS_ANYTHING = "aseuffe";
     private static final String INVALID_HAS_OR = "path:a/b/c AND a:foo OR b:bar";
     private static final String INVALID_NO_ROOT_ELEM = "path:a/b/c OR b:bar AND c:test";
 
@@ -86,6 +87,7 @@ public class EDBQueryTest {
         assertFalse(EDBQuery.isNodeQuery(INVALID_IS_EMPTY));
         assertFalse(EDBQuery.isNodeQuery(INVALID_HAS_OR));
         assertFalse(EDBQuery.isNodeQuery(INVALID_NO_ROOT_ELEM));
+        assertFalse(EDBQuery.isNodeQuery(INVALID_IS_ANYTHING));
     }
 
 }
