@@ -144,8 +144,8 @@ public class DefaultEDBHandler implements EDBHandler {
 //                return null;
             }
             
-            if ( found = false )
-            	return null;
+            if ( !found )
+            	return Collections.emptyList();
         }
         
         List<GenericContent> result = new ArrayList<GenericContent>();
