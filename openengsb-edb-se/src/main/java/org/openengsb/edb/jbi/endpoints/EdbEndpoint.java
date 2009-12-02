@@ -33,6 +33,11 @@ import org.openengsb.edb.jbi.endpoints.commands.EDBQuery;
 import org.openengsb.edb.jbi.endpoints.commands.EDBRegisterLink;
 import org.openengsb.edb.jbi.endpoints.commands.EDBRequestLink;
 import org.openengsb.edb.jbi.endpoints.commands.EDBReset;
+import org.openengsb.edb.jbi.endpoints.responses.DefaultAcmResponseBuilder;
+import org.openengsb.edb.jbi.endpoints.responses.EDBEndpointResponseBuilder;
+import org.openengsb.edb.jbi.endpoints.responses.LinkExecutedResponseBuilder;
+import org.openengsb.edb.jbi.endpoints.responses.LinkRegisteredResponseBuilder;
+import org.openengsb.edb.jbi.endpoints.responses.LinkRequestResponseBuilder;
 
 /**
  * @org.apache.xbean.XBean element="edb" The Endpoint to the commit-feature
@@ -61,6 +66,7 @@ public class EdbEndpoint extends AbstractEndpoint {
 
     // should be set via spring ?
     private Map<EDBOperationType, EDBEndpointCommand> commands;
+    private Map<EDBOperationType, EDBEndpointResponseBuilder> reponses;
 
     @Override
     protected void processInOutRequest(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out)
@@ -72,6 +78,7 @@ public class EdbEndpoint extends AbstractEndpoint {
 
         // see issue #179
         init(handler, linksHandler);
+        initReponseBuilder();
 
         getLog().info("parsing message");
         /*
@@ -83,8 +90,8 @@ public class EdbEndpoint extends AbstractEndpoint {
 
         body = this.commands.get(op).execute(in);
 
-        body = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><acmResponseMessage><body>" + body
-                + "</body></acmResponseMessage>";
+        body = this.reponses.get(op).wrapIntoResponse(body);
+
         Source response = new StringSource(body);
         this.logger.info(body);
         out.setContent(response);
@@ -102,5 +109,18 @@ public class EdbEndpoint extends AbstractEndpoint {
         this.commands.put(EDBOperationType.REGISTER_LINK, new EDBRegisterLink(linksHandler, this.logger));
         this.commands.put(EDBOperationType.REQUEST_LINK, new EDBRequestLink(linksHandler, this.logger));
         this.commands.put(EDBOperationType.EXECUTE_LINK, new EDBExecuteLink(linksHandler, this.logger));
+    }
+
+    /**
+     * see issue 179
+     */
+    private void initReponseBuilder() {
+        this.reponses = new HashMap<EDBOperationType, EDBEndpointResponseBuilder>();
+        this.reponses.put(EDBOperationType.COMMIT, new DefaultAcmResponseBuilder());
+        this.reponses.put(EDBOperationType.QUERY, new DefaultAcmResponseBuilder());
+        this.reponses.put(EDBOperationType.RESET, new DefaultAcmResponseBuilder());
+        this.reponses.put(EDBOperationType.REGISTER_LINK, new LinkRegisteredResponseBuilder());
+        this.reponses.put(EDBOperationType.REQUEST_LINK, new LinkRequestResponseBuilder());
+        this.reponses.put(EDBOperationType.EXECUTE_LINK, new LinkExecutedResponseBuilder());
     }
 }

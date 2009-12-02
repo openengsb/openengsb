@@ -89,8 +89,9 @@ public class CommitServiceTest extends SpringTestSupport {
     private static final String MESSAGE_TYPE_QUERY_EDB = "acmQueryRequestMessage";
     private static final String MESSAGE_TYPE_RESET_EDB = "acmResetRequestMessage";
     private static final String MESSAGE_TYPE_RESPONSE = "acmResponseMessage";
-    private static final String MESSAGE_TYPE_RESPONSE_LINK = "LinkReply";
-    private static final String MESSAGE_TYPE_RESPONSE_LINK_EXECUTE = "LinkExecuteReply";
+    private static final String MESSAGE_TYPE_RESPONSE_LINK_REQUEST = "LinkRequested";
+    private static final String MESSAGE_TYPE_RESPONSE_LINK_EXECUTE = "LinkExecuted";
+    private static final String MESSAGE_TYPE_RESPONSE_LINK_REGISTER = "LinkRegistered";
 
     private static final String EDB_SERVICE_NAME = "edb";
     private static GenericContent gc1;
@@ -103,7 +104,7 @@ public class CommitServiceTest extends SpringTestSupport {
     private static Document validNodeQueryMessage;
     private static Document invalidQueryMessage;
     private static Document linkRegisterMessage;
-    private static Document linRequestMessage;
+    private static Document linkRequestMessage;
     private static Document linkExecuteMessage;
 
     /* end test-parameters */
@@ -196,7 +197,7 @@ public class CommitServiceTest extends SpringTestSupport {
         root = DocumentHelper.createElement(MESSAGE_TYPE_QUERY_LINK);
         Element linkRequestBody = root.addElement("body");
         linkRequestBody.addElement("query").setText("source:signal1");
-        CommitServiceTest.linRequestMessage = DocumentHelper.createDocument(root.createCopy());
+        CommitServiceTest.linkRequestMessage = DocumentHelper.createDocument(root.createCopy());
 
         /* valid link execute ? */
         root = DocumentHelper.createElement(MESSAGE_TYPE_EXECUTE_LINK);
@@ -433,17 +434,17 @@ public class CommitServiceTest extends SpringTestSupport {
         Document doc = sendMessageAndParseResponse(CommitServiceTest.linkRegisterMessage);
 
         Element root = doc.getRootElement();
-        assertEquals(MESSAGE_TYPE_RESPONSE_LINK, root.getName());
+        assertEquals(MESSAGE_TYPE_RESPONSE_LINK_REGISTER, root.getName());
     }
 
     @Test
     @Ignore
     public void testLinkRequest() throws Exception {
 
-        Document doc = sendMessageAndParseResponse(CommitServiceTest.linRequestMessage);
+        Document doc = sendMessageAndParseResponse(CommitServiceTest.linkRequestMessage);
 
         Element root = doc.getRootElement();
-        assertEquals(MESSAGE_TYPE_RESPONSE_LINK, root.getName());
+        assertEquals(MESSAGE_TYPE_RESPONSE_LINK_REQUEST, root.getName());
     }
 
     @Test
