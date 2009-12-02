@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>openengsb-parent</artifactId>
+    <groupId>org.openengsb</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.openengsb</groupId>
+  <artifactId>openengsb-linking-http-se</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <name>openengsb-linking-http-se</name>
+  <packaging>jbi-component</packaging>
+  
+  <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.servicemix.tooling</groupId>
+        <artifactId>jbi-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <type>service-engine</type>
+          <component>org.openengsb.linking.http.EdbComponent</component>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.xbean</groupId>
+        <artifactId>maven-xbean-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>mapping</goal>
+            </goals>
+            <configuration>
+              <namespace>http://openengsb.org/linking-http/1.0</namespace>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <dependencies>
+  	
+<!--  	<dependency>
+  		<groupId>org.openengsb</groupId>
+  		<artifactId>openengsb-edb-se</artifactId>
+  	</dependency>-->
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-http</artifactId>
+    </dependency>
+    
+    <!-- <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>3.1</version>
+    </dependency>-->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <!-- Springframework dependencies -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+    </dependency>
+  </dependencies>
+</project>

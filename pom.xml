@@ -127,6 +127,7 @@
     <module>openengsb-edb-se</module>
     <module>openengsb-edb</module>
     <module>openengsb-edb-jms</module>
+    <module>openengsb-edb-http</module>
 
     <!-- Workflows -->
     <module>openengsb-workflow</module>
@@ -157,6 +158,7 @@
     <!-- Context -->
     <module>openengsb-context-se</module>
     <module>openengsb-context</module>
+    <module>openengsb-linking-http-se</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -625,6 +627,11 @@
         <artifactId>openengsb-edb-jms</artifactId>
         <version>${pom.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-edb-http</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
 
       <!-- Workflows -->
       <dependency>
@@ -764,6 +771,11 @@
       <dependency>
         <groupId>org.apache.servicemix</groupId>
         <artifactId>servicemix-jms</artifactId>
+        <version>${servicemix.subprojects.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-http</artifactId>
         <version>${servicemix.subprojects.version}</version>
       </dependency>
 
