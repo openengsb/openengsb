@@ -21,6 +21,7 @@ package org.openengsb.edb.core.api.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -127,17 +128,26 @@ public class DefaultEDBHandler implements EDBHandler {
     public List<GenericContent> queryNodes(List<String> query) throws EDBException {
 
         File file = this.repoData.getRepositoryBase();
+        boolean found = false;
         // iterate to end of path
         for (String elem : query) {
+        	found = false;
             File[] files = file.listFiles();
             for (File candidate : files) {
                 if (candidate.isDirectory() && candidate.getName().equalsIgnoreCase(elem)) {
-                    file = candidate;
+                    file  = candidate;
+                    found = true;
                     break;
                 }
-                return null;
+                //TODO: ask flo why this was here, it breaks any and all tests
+                // and does not seem to have any sense.
+//                return null;
             }
+            
+            if ( found = false )
+            	return null;
         }
+        
         List<GenericContent> result = new ArrayList<GenericContent>();
         // save directories at the end of the path
         File[] files = file.listFiles();

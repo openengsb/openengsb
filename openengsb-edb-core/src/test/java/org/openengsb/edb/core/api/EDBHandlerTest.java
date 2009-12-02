@@ -61,7 +61,7 @@ public class EDBHandlerTest {
 
     @Before
     public void setUp() throws Exception {
-        this.handler = this.factory.loadDefaultRepository();
+        this.handler  = this.factory.loadDefaultRepository();
         this.repoBase = this.handler.getRepositoryBase().getAbsolutePath();
 
         this.content = new GenericContent(this.repoBase, new String[] { "myKey" }, new String[] { "myValue" },
@@ -212,6 +212,23 @@ public class EDBHandlerTest {
 
     }
 
+//    @Test
+//    public void testFoo() throws Exception {
+//        setupMoreCommits();
+//        List<GenericContent> result = this.handler.queryNodes(
+//        								Arrays.asList(
+//        									new String[] { "customer", "project" }
+//        								)
+//        							);
+//        assertEquals(1, result.size());
+//        List<String> results = new ArrayList<String>();
+//        // collect results
+//        results.add(result.get((0)).getProperty("name"));
+//
+//        assertTrue(results.contains("c"));
+//
+//    }
+    
     /**
      * @param factory the factory to set
      */
