@@ -157,7 +157,11 @@
     <!-- Context -->
     <module>openengsb-context-se</module>
     <module>openengsb-context</module>
-    <module>openengsb-linking-http-se</module>
+    
+    <!-- tool-links -->
+    <module>openengsb-link-http</module>
+    <module>openengsb-link-http-processor-se</module>
+    <module>openengsb-link-http-processor</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -626,11 +630,6 @@
         <artifactId>openengsb-edb-jms</artifactId>
         <version>${pom.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-linking-http-se</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
 
       <!-- Workflows -->
       <dependency>
@@ -673,6 +672,23 @@
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-context</artifactId>
         <version>${pom.version}</version>
+      </dependency>
+      
+      <!-- tool links -->
+      <dependency>
+      	<groupId>org.openengsb</groupId>
+      	<artifactId>openengsb-link-http</artifactId>
+      	<version>${pom.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.openengsb</groupId>
+      	<artifactId>openengsb-link-http-processor-se</artifactId>
+      	<version>${pom.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.openengsb</groupId>
+      	<artifactId>openengsb-link-http-processor</artifactId>
+      	<version>${pom.version}</version>
       </dependency>
 
       <!-- Implementation Modules -->
