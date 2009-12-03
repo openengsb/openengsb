@@ -127,7 +127,6 @@
     <module>openengsb-edb-se</module>
     <module>openengsb-edb</module>
     <module>openengsb-edb-jms</module>
-    <module>openengsb-linking-http-se</module>
 
     <!-- Workflows -->
     <module>openengsb-workflow</module>
