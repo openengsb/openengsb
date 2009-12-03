@@ -127,7 +127,7 @@
     <module>openengsb-edb-se</module>
     <module>openengsb-edb</module>
     <module>openengsb-edb-jms</module>
-    <module>openengsb-edb-http</module>
+    <module>openengsb-linking-http-se</module>
 
     <!-- Workflows -->
     <module>openengsb-workflow</module>
@@ -629,7 +629,7 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-edb-http</artifactId>
+        <artifactId>openengsb-linking-http-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
