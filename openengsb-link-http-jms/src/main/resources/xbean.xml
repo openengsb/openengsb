@@ -10,12 +10,14 @@
   -->
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans/spring-beans-2.5.xsd" xmlns:sm="http://servicemix.apache.org/config/1.0"
-  xmlns:http="http://servicemix.apache.org/http/1.0" xmlns:env="urn:openengsb:linkhttp">
+  xmlns:jms="http://servicemix.apache.org/jms/1.0" xmlns:env="urn:openengsb:linkhttp">
+  <bean id="connectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+    <property name="connectionFactory">
+      <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61616" />
+      </bean>
+    </property>
+  </bean>
+  <jms:provider service="env:jms-binding" endpoint="jbi" destinationName="my.queue" connectionFactory="#connectionFactory" />
 
-  <http:consumer service="env:http-binding" endpoint="endpoint" locationURI="http://localhost:8192/Link"
-    targetService="env:link-processor">
-    <http:marshaler>
-      <bean class="org.openengsb.linking.http.LinkHttpMarshaller" />
-    </http:marshaler>
-  </http:consumer>
 </beans>

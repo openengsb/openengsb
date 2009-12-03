@@ -136,13 +136,13 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
         DOMSource linkResponse = st.toDOMSource(linkEx.getOutMessage().getContent());
 
         log.info("link-service returned message: " + st.toString(linkResponse));
-        // InOut jmsEx = this.getExchangeFactory().createInOutExchange();
-        // jmsEx.setService(jmsServiceName);
-        // NormalizedMessage jmsMsg = jmsEx.createMessage();
-        // jmsMsg.setContent(linkResonse);
-        // jmsEx.setInMessage(jmsMsg);
-        //
-        // getChannel().send(jmsEx);
+        InOut jmsEx = this.getExchangeFactory().createInOutExchange();
+        jmsEx.setService(jmsServiceName);
+        NormalizedMessage jmsMsg = jmsEx.createMessage();
+        jmsMsg.setContent(linkResponse);
+        jmsEx.setInMessage(jmsMsg);
+
+        getChannel().send(jmsEx);
 
     }
 

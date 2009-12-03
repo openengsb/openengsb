@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
   
   <properties>
-    <componentName>servicemix-http</componentName>
+    <componentName>servicemix-jms</componentName>
   </properties>
   
   <parent>
@@ -31,19 +31,19 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   
-  <artifactId>openengsb-linking-http</artifactId>
+  <artifactId>openengsb-link-http-jms</artifactId>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-linking-http</name>
+  <name>openengsb-link-http-jms</name>
 
   <description>
     TODO
   </description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-linking-http-se</artifactId>
-    </dependency>
+  	<dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-jms</artifactId>
+  	</dependency>
   </dependencies>
 
 </project>

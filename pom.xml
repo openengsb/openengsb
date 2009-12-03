@@ -162,6 +162,7 @@
     <module>openengsb-link-http</module>
     <module>openengsb-link-http-processor-se</module>
     <module>openengsb-link-http-processor</module>
+    <module>openengsb-link-http-jms</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -688,6 +689,12 @@
       <dependency>
       	<groupId>org.openengsb</groupId>
       	<artifactId>openengsb-link-http-processor</artifactId>
+      	<version>${pom.version}</version>
+      </dependency>
+
+      <dependency>
+      	<groupId>org.openengsb</groupId>
+      	<artifactId>openengsb-link-http-jms</artifactId>
       	<version>${pom.version}</version>
       </dependency>
 

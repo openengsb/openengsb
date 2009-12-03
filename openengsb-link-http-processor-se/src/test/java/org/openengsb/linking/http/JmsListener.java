@@ -17,8 +17,6 @@
  */
 package org.openengsb.linking.http;
 
-import java.util.List;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -33,18 +31,16 @@ import org.apache.activemq.command.ActiveMQQueue;
 public class JmsListener extends Thread {
 
     private boolean running;
-    private List<Object> messages;
     MessageConsumer mc;
 
-    public JmsListener(List<Object> messages) throws JMSException {
+    public JmsListener() throws JMSException {
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
         Connection connection = connectionFactory.createConnection();
         // connection.setClientID(supplierName);
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         connection.start();
-        Destination dest = new ActiveMQQueue();
+        Destination dest = new ActiveMQQueue("my.queue");
         mc = session.createConsumer(dest);
-        this.messages = messages;
         running = true;
 
     }
@@ -54,13 +50,24 @@ public class JmsListener extends Thread {
         while (running) {
             try {
                 Message msg = mc.receive();
-                msg.toString();
-                messages.add(msg);
-                messages.notify();
+                System.out.println("message recieved");
+                System.out.println(msg.toString());
+
             } catch (JMSException e) {
                 running = false;
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void main(String[] args) {
+        try {
+            new JmsListener().start();
+        } catch (JMSException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return;
+        }
+
     }
 }

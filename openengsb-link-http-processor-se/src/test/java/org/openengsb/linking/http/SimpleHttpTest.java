@@ -99,6 +99,7 @@ public class SimpleHttpTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void testHttpClientSuccess() throws Exception {
 
         GetMethod get = new GetMethod("http://localhost:8192/Link/");
