@@ -12,7 +12,7 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans/spring-beans-2.5.xsd" xmlns:sm="http://servicemix.apache.org/config/1.0"
   xmlns:http="http://servicemix.apache.org/http/1.0" xmlns:env="urn:openengsb:linkhttp">
 
-  <http:consumer service="env:http-binding" endpoint="endpoint" locationURI="http://localhost:8192/Link"
+  <http:consumer service="env:http-binding" endpoint="endpoint" locationURI="http://0.0.0.0:8192/Link"
     targetService="env:link-processor">
     <http:marshaler>
       <bean class="org.openengsb.link.http.LinkHttpMarshaler" />
