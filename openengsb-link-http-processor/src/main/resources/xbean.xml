@@ -10,11 +10,11 @@
   -->
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans/spring-beans-2.5.xsd" xmlns:sm="http://servicemix.apache.org/config/1.0"
-  xmlns:linkhttp="http://openengsb.org/link-http/1.0" xmlns:env="urn:openengsb:linkhttp">
+  xmlns:linkhttp="http://openengsb.org/link-http/1.0" xmlns:env="urn:openengsb:linkhttp" xmlns:edb="urn:openengsb:edb">
 
   <linkhttp:link-processor service="env:link-processor" endpoint="link-processor"
-    linkServiceName="env:linkService" jmsServiceName="env:jms-binding" />
+    linkServiceName="edb:edb" jmsServiceName="env:jms-binding" />
   <!-- TODO use real link-module instead of the mock -->
-  <linkhttp:link-mock service="env:linkService" endpoint="link-mock" />
+  <!-- <linkhttp:link-mock service="env:linkService" endpoint="linkEndpoint" />-->
 
 </beans>

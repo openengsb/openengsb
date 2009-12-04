@@ -42,7 +42,6 @@ public class JmsListener extends Thread {
     public JmsListener(String ip) throws JMSException {
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
         Connection connection = connectionFactory.createConnection();
-        // connection.setClientID(supplierName);
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         connection.start();
         Destination dest = new ActiveMQTopic("org.openengsb.link.http");
@@ -94,7 +93,6 @@ public class JmsListener extends Thread {
         int pos = response.indexOf("You are ");
         int pos2 = response.indexOf("</h1>");
         String ip = response.substring(pos + 8, pos2);
-        ip = "192.168.56.2";
         try {
             new JmsListener(ip).start();
         } catch (JMSException e) {

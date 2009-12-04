@@ -53,7 +53,9 @@ public class LinkHttpMarshaler extends AbstractHttpConsumerMarshaler {
     public void sendAccepted(MessageExchange exchange, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         // TODO Auto-generated method stub
-        response.getWriter().append("<html><body><h1>Request accepted</h1></body></html>");
+        // response.getWriter().append("<html><body><h1>Request accepted</h1></body></html>");
+        response.getWriter().append(
+                "<html><body><h1>You are " + request.getRemoteAddr() + "</h1>" + request.getRemoteHost() + "</body></html>");
         log.info("sendaccept");
     }
 
