@@ -79,10 +79,6 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-edb-jms</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-edb-http</artifactId>
-    </dependency>
     
     <!-- Implementation Modules -->
     <dependency>
