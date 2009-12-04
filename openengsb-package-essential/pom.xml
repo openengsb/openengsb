@@ -62,8 +62,17 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-edb-http</artifactId>
+      <artifactId>openengsb-link-http</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-link-http-processor</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-link-http-jms</artifactId>
+    </dependency>
+    
 
   </dependencies>
 
