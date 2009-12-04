@@ -17,6 +17,8 @@
  */
 package org.openengsb.linking.http;
 
+import java.io.IOException;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -27,20 +29,25 @@ import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQTopic;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.methods.GetMethod;
 
 public class JmsListener extends Thread {
 
     private boolean running;
     MessageConsumer mc;
 
-    public JmsListener() throws JMSException {
+    public JmsListener(String ip) throws JMSException {
         ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
         Connection connection = connectionFactory.createConnection();
         // connection.setClientID(supplierName);
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         connection.start();
         Destination dest = new ActiveMQTopic("org.openengsb.link.http");
-        mc = session.createConsumer(dest);
+        System.out.println("using IP: " + ip);
+        mc = session.createConsumer(dest, String.format("ip = \'%s\'", ip));
         running = true;
 
     }
@@ -61,8 +68,35 @@ public class JmsListener extends Thread {
     }
 
     public static void main(String[] args) {
+
+        HttpClient httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
+        httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(30000);
+
+        GetMethod get = new GetMethod("http://localhost:8192/Link/");
+        get.setQueryString("whoami");
+
         try {
-            new JmsListener().start();
+            if (httpClient.executeMethod(get) != 200) {
+                throw new RuntimeException("unable to determine ip for response");
+            }
+        } catch (HttpException e2) {
+            throw new RuntimeException(e2);
+        } catch (IOException e2) {
+            throw new RuntimeException(e2);
+        }
+
+        String response;
+        try {
+            response = get.getResponseBodyAsString();
+        } catch (IOException e1) {
+            throw new RuntimeException(e1);
+        }
+        int pos = response.indexOf("You are ");
+        int pos2 = response.indexOf("</h1>");
+        String ip = response.substring(pos + 8, pos2);
+        ip = "192.168.56.2";
+        try {
+            new JmsListener(ip).start();
         } catch (JMSException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

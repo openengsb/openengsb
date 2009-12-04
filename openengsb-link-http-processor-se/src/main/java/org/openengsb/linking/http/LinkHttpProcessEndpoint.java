@@ -123,6 +123,9 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
             linkId = children.item(0).getTextContent();
             ip = children.item(1).getTextContent();
         }
+        if (linkId == "whoami") {
+            return;
+        }
         /* done parsing */
         log.info("requesting Link: " + linkId + " for ip: " + ip);
 
@@ -140,6 +143,7 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
         jmsEx.setService(jmsServiceName);
         NormalizedMessage jmsMsg = jmsEx.createMessage();
         jmsMsg.setContent(linkResponse);
+        jmsMsg.setProperty("ip", ip);
         jmsEx.setInMessage(jmsMsg);
         getChannel().send(jmsEx);
 
