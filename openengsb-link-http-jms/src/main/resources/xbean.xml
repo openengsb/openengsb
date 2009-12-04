@@ -18,6 +18,7 @@
       </bean>
     </property>
   </bean>
-  <jms:provider service="env:jms-binding" endpoint="jbi" destinationName="my.queue" connectionFactory="#connectionFactory" />
+  <jms:provider service="env:jms-binding" endpoint="jbi" pubSubDomain="true" destinationName="org.openengsb.link.http"
+    connectionFactory="#connectionFactory" />
 
 </beans>

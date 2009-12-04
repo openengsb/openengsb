@@ -141,7 +141,6 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
         NormalizedMessage jmsMsg = jmsEx.createMessage();
         jmsMsg.setContent(linkResponse);
         jmsEx.setInMessage(jmsMsg);
-
         getChannel().send(jmsEx);
 
     }

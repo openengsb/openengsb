@@ -26,7 +26,7 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.command.ActiveMQQueue;
+import org.apache.activemq.command.ActiveMQTopic;
 
 public class JmsListener extends Thread {
 
@@ -39,7 +39,7 @@ public class JmsListener extends Thread {
         // connection.setClientID(supplierName);
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         connection.start();
-        Destination dest = new ActiveMQQueue("my.queue");
+        Destination dest = new ActiveMQTopic("org.openengsb.link.http");
         mc = session.createConsumer(dest);
         running = true;
 
