@@ -24,7 +24,7 @@ public class Event {
     private String toolDomainId;
 
     /**
-     *
+     * 
      * @param name name of the Event
      */
     public Event(String name) {

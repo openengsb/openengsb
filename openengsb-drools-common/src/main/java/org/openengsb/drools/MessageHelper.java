@@ -1,4 +1,3 @@
-package org.openengsb.drools;
 /**
 
 Copyright 2009 OpenEngSB Division, Vienna University of Technology
@@ -15,19 +14,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-*/
+ */
+
+package org.openengsb.drools;
 
 import java.io.Serializable;
 
 /**
  * Helper that is responsible for executing tasks specified as consequences in
  * rules.
- *
+ * 
  */
 public interface MessageHelper extends Serializable {
     /**
      * Sends an email to the specified address, with the specified content.
-     *
+     * 
      * @param email email-address to send the notification to.
      * @param subject subject-line of the email
      * @param body body of the email
@@ -37,6 +38,7 @@ public interface MessageHelper extends Serializable {
 
     /**
      * Creates an issue in the issue-tracker.
+     * 
      * @param subject one-line description of the issue
      * @param body long description of the issue
      * @return true if the execution was successful

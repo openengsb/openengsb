@@ -38,7 +38,7 @@ public class HotplugDrool {
     private DroolsComponent drools;
     private ServiceMixClient client;
 
-    private static final String URL = "http://localhost:8080/drools-guvnor/org.drools.guvnor.Guvnor/package/org.openengsb/LATEST";
+    private static final String URL = "http://localhost:8081/drools-guvnor/org.drools.guvnor.Guvnor/package/org.openengsb/LATEST";
 
     @Before
     public void setUp() throws Exception {

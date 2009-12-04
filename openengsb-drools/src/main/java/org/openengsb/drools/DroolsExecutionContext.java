@@ -17,7 +17,12 @@
  */
 package org.openengsb.drools;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Collection;
+import java.util.Map.Entry;
+import java.util.jar.JarFile;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -69,12 +74,23 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
      * @param objects the objects to insert.
      */
     private void populateWorkingMemory(Collection<Object> objects) {
-        memory.setGlobal(HELPER_KEY, new MessageHelperImpl());
+        // memory.setGlobal(HELPER_KEY, new MessageHelperImpl());
+
+        for (Entry<String, Class<?>> e : InterfaceRegistry.interfaces.entrySet()) {
+            Object proxy = createProxy(e.getKey(), e.getValue());
+            memory.setGlobal(e.getKey(), proxy);
+        }
+
         if (objects != null) {
             for (Object o : objects) {
                 memory.insert(o);
             }
         }
+    }
+
+    private Object createProxy(String name, Class<?> value) {
+        return Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { value },
+                new GuvnorProxyInvocationHandler(name));
     }
 
     /**
@@ -102,4 +118,27 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
         log.debug("Event fired rule: " + event.getActivation().getRule().getName());
     }
 
+    private class GuvnorProxyInvocationHandler implements InvocationHandler {
+
+        private String name;
+
+        public GuvnorProxyInvocationHandler(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            System.out.println("Invoking method: " + method.getName());
+
+            // context nach name fragen... projectId?? (bei endpoint auslesen)
+
+            // wenn nicht gefunden, dann exception werfen
+
+            // wenn gefunden dann jbi message anhand des methodencalls erstellen
+            // und dann
+            // aufrufen...
+
+            return null;
+        }
+    }
 }
