@@ -17,8 +17,6 @@
  */
 package org.openengsb.linking.http;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +28,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.servicemix.client.DefaultServiceMixClient;
-import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.tck.SpringTestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.junit.After;
@@ -51,8 +48,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class SimpleHttpTest extends SpringTestSupport {
     /* creators */
 
-    private static ServiceMixClient client;
+    private static final String LOCALHOST_IP = "127.0.0.1";
+    private static final String WHOAMI_REQUEST = "whoami";
+    private static final String HTTP_REQUEST_URL = "http://localhost:8192/Link/";
     private static HttpClient httpClient;
+    private static GetMethod get;
 
     /**
      * Creates a new ServiceMixClieant
@@ -74,9 +74,10 @@ public class SimpleHttpTest extends SpringTestSupport {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        client = createClient();
+        createClient();
         httpClient = new HttpClient(new MultiThreadedHttpConnectionManager());
         httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(30000);
+        get = new GetMethod(HTTP_REQUEST_URL);
     }
 
     @After
@@ -88,46 +89,44 @@ public class SimpleHttpTest extends SpringTestSupport {
     /* end implementation of abstract class */
 
     /**
-     * this test just spawns a server, and then halts execution, until enter is
-     * pressed. Useful for manual testing with a browser.
+     * sends a whoami-request to the endpoint to determine the IP-address.
      */
     @Test
-    @Ignore
-    public void dummyTest() throws Exception {
-        ServiceMixClient client = createClient();
-        new BufferedReader(new InputStreamReader(System.in)).readLine();
-    }
-
-    @Test
-    @Ignore
     public void testHttpClientSuccess() throws Exception {
 
-        GetMethod get = new GetMethod("http://localhost:8192/Link/");
-        get.setQueryString("12345");
+        get.setQueryString(WHOAMI_REQUEST);
+
         int resultCode = httpClient.executeMethod(get);
         Assert.assertEquals("HTTP-request did not return with status OK", 200, resultCode);
+
         final String responseBody = get.getResponseBodyAsString();
         Assert.assertTrue("the service did not return the correct html-page, but \"" + responseBody + "\"",
-                responseBody.contains("accept"));
+                responseBody.contains(LOCALHOST_IP));
+
     }
 
-    /**
+    /*
      * ignored because jms does not work in embedded smx.
+     * javax.jms.JMSException: Could not connect to broker URL:
+     * tcp://localhost:61616. Reason: java.net.ConnectException: Connection
+     * refused
+     */
+    /**
+     * sends a real request to the endpoint and verify the result in a
+     * jms-listener
      */
     @Test(timeout = 5000)
     @Ignore
     public void testJmsResponse() throws Exception {
-        GetMethod get = new GetMethod("http://localhost:8192/Link/");
         get.setQueryString("12345");
+
         // do not check the return-code here, that's what other tests are for.
         List<Object> messages = new ArrayList<Object>();
-        // JmsListener listener = new JmsListener(messages);
-        // listener.start();
+        JmsListener listener = new JmsListener(LOCALHOST_IP);
+        listener.start();
         httpClient.executeMethod(get);
         synchronized (messages) {
             messages.wait();
-
-            // log.debug(messages.remove(0));
         }
 
     }
