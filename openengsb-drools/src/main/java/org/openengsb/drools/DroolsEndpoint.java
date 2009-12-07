@@ -28,6 +28,8 @@ import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
@@ -189,10 +191,17 @@ public class DroolsEndpoint extends ProviderEndpoint {
      * @param exchange exchange to handle
      */
     protected void drools(MessageExchange exchange) {
-        Event e = XmlHelper.parseEvent(exchange.getMessage("in"));
+        NormalizedMessage inMessage = exchange.getMessage("in");
+        String contextId = (String) inMessage.getProperty("contextId");
+
+        Event e = XmlHelper.parseEvent(inMessage);
         Collection<Object> objects = Arrays.asList(new Object[] { e });
-        DroolsExecutionContext drools = new DroolsExecutionContext(this, objects);
+        DroolsExecutionContext drools = new DroolsExecutionContext(this, objects, contextId);
         drools.start();
     }
 
+    @Override
+    protected void sendSync(MessageExchange me) throws MessagingException {
+        super.sendSync(me);
+    }
 }

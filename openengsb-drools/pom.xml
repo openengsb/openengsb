@@ -62,6 +62,10 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
       <artifactId>openengsb-drools-common</artifactId>
     </dependency>
     <dependency>

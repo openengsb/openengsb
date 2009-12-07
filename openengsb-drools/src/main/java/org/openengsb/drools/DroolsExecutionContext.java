@@ -22,15 +22,23 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
 import java.util.Map.Entry;
-import java.util.jar.JarFile;
+
+import javax.jbi.messaging.InOut;
+import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.DefaultAgendaEventListener;
-import org.openengsb.drools.model.MessageHelperImpl;
+import org.openengsb.core.MethodCall;
+import org.openengsb.core.MethodCallTransformer;
+import org.openengsb.core.messaging.Segment;
+import org.openengsb.core.messaging.TextSegment;
 
 /**
  * Represents the execution context of the Drools rules.
@@ -47,6 +55,10 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
      */
     private final StatefulSession memory;
 
+    private final String contextId;
+
+    private DroolsEndpoint endpoint;
+
     /**
      * name of the helper-variable used in drl-rules.
      */
@@ -60,8 +72,11 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
      * 
      * @param endpoint endpoint the context belongs to
      * @param objects objects to insert into the working memory
+     * @param contextId
      */
-    public DroolsExecutionContext(DroolsEndpoint endpoint, Collection<Object> objects) {
+    public DroolsExecutionContext(DroolsEndpoint endpoint, Collection<Object> objects, String contextId) {
+        this.contextId = contextId;
+        this.endpoint = endpoint;
         this.memory = endpoint.getRuleBase().newStatefulSession();
         this.memory.addEventListener(this);
 
@@ -128,11 +143,33 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+
             System.out.println("Invoking method: " + method.getName());
 
-            // context nach name fragen... projectId?? (bei endpoint auslesen)
+            InOut inout = new InOutImpl();
+            inout.setService(new QName("urn:openengsb:context", "contextService"));
+            NormalizedMessage msg = inout.createMessage();
+            inout.setInMessage(msg);
 
+            msg.setProperty("contentType", "context/request");
+            msg.setProperty("contextId", "42");
+            TextSegment text = new TextSegment.Builder("path").text(contextId).build();
+            String xml = text.toXML();
+
+            msg.setContent(new StringSource(xml));
+
+            endpoint.sendSync(inout);
+
+            NormalizedMessage outMessage = inout.getOutMessage();
+
+            for (Object o : args) {
+                System.out.println(o.getClass().getName());
+            }
+            // context nach name fragen... projectId?? (bei endpoint auslesen)
             // wenn nicht gefunden, dann exception werfen
+
+            MethodCall methodCall = new MethodCall(method.getName(), args, method.getParameterTypes());
+            Segment segment = MethodCallTransformer.transform(methodCall);
 
             // wenn gefunden dann jbi message anhand des methodencalls erstellen
             // und dann
