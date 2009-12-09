@@ -31,8 +31,14 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.http.endpoints.AbstractHttpConsumerMarshaler;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 
+/**
+ * serves as an interface between the http-service-unit and the associated
+ * processor-service. It is responsible for the conversion of HTTP-requests to
+ * JBI-messages and vice versa
+ */
 public class LinkHttpMarshaler extends AbstractHttpConsumerMarshaler {
 
+    public static final String STRING_WHOAMI = "whoami";
     private static final Log log = LogFactory.getLog(LinkHttpMarshaler.class);
 
     @Override
@@ -41,6 +47,15 @@ public class LinkHttpMarshaler extends AbstractHttpConsumerMarshaler {
         NormalizedMessage inMessage = result.createMessage();
         String query = request.getQueryString();
         String ip = request.getRemoteAddr();
+
+        /* parse the query */
+        if (query.startsWith("UUID:")) {
+            query = query.substring(5);
+        } else if (!query.equalsIgnoreCase(STRING_WHOAMI)) {
+            return result;
+        }
+
+        /* create a message with the parsed query as content */
         String msg = "<httpLinkRequest><query>%s</query><requestorIP>%s</requestorIP></httpLinkRequest>";
         Source content = new StringSource(String.format(msg, query, ip));
         log.info("create exchange with content: " + content);
@@ -52,31 +67,35 @@ public class LinkHttpMarshaler extends AbstractHttpConsumerMarshaler {
     @Override
     public void sendAccepted(MessageExchange exchange, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
-        // TODO Auto-generated method stub
-        // response.getWriter().append("<html><body><h1>Request accepted</h1></body></html>");
+        /* always send a HTML-document containing the clients remote IP-address */
         response.getWriter().append(
-                "<html><body><h1>You are " + request.getRemoteAddr() + "</h1>" + request.getRemoteHost() + "</body></html>");
-        log.info("sendaccept");
+                "<html><body><h1>You are " + request.getRemoteAddr() + "</h1>" + request.getRemoteHost()
+                        + "</body></html>");
+        // TODO more beautiful response
+        log.debug("send HTTP-accepted");
     }
 
     @Override
     public void sendError(MessageExchange exchange, Exception error, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-        // TODO Auto-generated method stub
+        // TODO expose the error to the user completely?
+        error.printStackTrace(response.getWriter());
+        log.error(error.getMessage());
         error.printStackTrace();
-        log.info("send error");
     }
 
     @Override
     public void sendFault(MessageExchange exchange, Fault fault, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-        log.info("senf fault");
-        // TODO Auto-generated method stub
+        response.getWriter().append("JBI-fault occured: " + fault.getContent().toString());
+        log.error("send JBI-fault");
+        log.error(fault.getContent());
 
     }
 
-    public void sendOut(MessageExchange exchange, javax.jbi.messaging.NormalizedMessage outMsg,
-            HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Override
+    public void sendOut(MessageExchange exchange, NormalizedMessage outMsg, HttpServletRequest request,
+            HttpServletResponse response) throws Exception {
         log.info("send out");
     };
 
