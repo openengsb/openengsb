@@ -48,16 +48,20 @@ public class LinkHttpMarshaler extends AbstractHttpConsumerMarshaler {
         String query = request.getQueryString();
         String ip = request.getRemoteAddr();
 
+        String message;
         /* parse the query */
-        if (query.startsWith("UUID:")) {
-            query = query.substring(5);
-        } else if (!query.equalsIgnoreCase(STRING_WHOAMI)) {
-            return result;
+        if (query.equalsIgnoreCase(STRING_WHOAMI)) {
+            message = String.format("<whoami>%s</whoami>", ip);
+        } else {
+            if (!query.startsWith("UUID:")) {
+                query = "UUID:" + query;
+            }
+            message = String.format(
+                    "<httpLinkRequest><query>%s</query><requestorIP>%s</requestorIP></httpLinkRequest>", query, ip);
         }
 
         /* create a message with the parsed query as content */
-        String msg = "<httpLinkRequest><query>%s</query><requestorIP>%s</requestorIP></httpLinkRequest>";
-        Source content = new StringSource(String.format(msg, query, ip));
+        Source content = new StringSource(message);
         log.info("create exchange with content: " + content);
         inMessage.setContent(content);
         result.setInMessage(inMessage);
