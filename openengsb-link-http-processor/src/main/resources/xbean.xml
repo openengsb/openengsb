@@ -14,7 +14,5 @@
 
   <linkhttp:link-processor service="env:link-processor" endpoint="link-processor"
     linkServiceName="edb:edb" jmsServiceName="env:jms-binding" />
-  <!-- TODO use real link-module instead of the mock -->
-  <!-- <linkhttp:link-mock service="env:linkService" endpoint="linkEndpoint" />-->
 
 </beans>
