@@ -84,13 +84,11 @@ public class CommitServiceTest extends SpringTestSupport {
 
     private static final String MESSAGE_TYPE_REGISTER_LINK = "LinkRegisterMessage";
     private static final String MESSAGE_TYPE_QUERY_LINK = "LinkQueryRequestMessage";
-    private static final String MESSAGE_TYPE_EXECUTE_LINK = "LinkExecutedMessage";
     private static final String MESSAGE_TYPE_COMMIT_EDB = "acmPersistMessage";
     private static final String MESSAGE_TYPE_QUERY_EDB = "acmQueryRequestMessage";
     private static final String MESSAGE_TYPE_RESET_EDB = "acmResetRequestMessage";
     private static final String MESSAGE_TYPE_RESPONSE = "acmResponseMessage";
     private static final String MESSAGE_TYPE_RESPONSE_LINK_REQUEST = "LinkRequested";
-    private static final String MESSAGE_TYPE_RESPONSE_LINK_EXECUTE = "LinkExecuted";
     private static final String MESSAGE_TYPE_RESPONSE_LINK_REGISTER = "LinkRegistered";
 
     private static final String EDB_SERVICE_NAME = "edb";
@@ -105,7 +103,6 @@ public class CommitServiceTest extends SpringTestSupport {
     private static Document invalidQueryMessage;
     private static Document linkRegisterMessage;
     private static Document linkRequestMessage;
-    private static Document linkExecuteMessage;
 
     /* end test-parameters */
 
@@ -198,12 +195,6 @@ public class CommitServiceTest extends SpringTestSupport {
         Element linkRequestBody = root.addElement("body");
         linkRequestBody.addElement("query").setText("source:signal1");
         CommitServiceTest.linkRequestMessage = DocumentHelper.createDocument(root.createCopy());
-
-        /* valid link execute ? */
-        root = DocumentHelper.createElement(MESSAGE_TYPE_EXECUTE_LINK);
-        linkRequestBody = root.addElement("body");
-        linkRegisterBody.addElement("query").setText("source:signal1");
-        CommitServiceTest.linkExecuteMessage = DocumentHelper.createDocument(root.createCopy());
     }
 
     @Override
@@ -470,16 +461,5 @@ public class CommitServiceTest extends SpringTestSupport {
         }
         assertTrue(names.contains("/pdfs/document.pdf -page 2"));
         assertTrue(names.contains("opm.exe -open project1.opm -sheet cpu1"));
-    }
-
-    @Test
-    @Ignore
-    public void testLinkExecute() throws Exception {
-
-        testLinkRegister();
-        Document doc = sendMessageAndParseResponse(CommitServiceTest.linkExecuteMessage);
-
-        Element root = doc.getRootElement();
-        assertEquals(MESSAGE_TYPE_RESPONSE_LINK_EXECUTE, root.getName());
     }
 }

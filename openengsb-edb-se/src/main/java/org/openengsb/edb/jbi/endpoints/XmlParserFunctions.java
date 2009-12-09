@@ -52,6 +52,7 @@ public class XmlParserFunctions {
     private static final String LINK_TYPE = "type";
     private static final String LINK_PARAM = "param";
     private static final String LINK_NAME = "link";
+    private static final String LINK_UUID = "uuid";
 
     private static SourceTransformer sourceTransformer = new SourceTransformer();
 
@@ -134,8 +135,6 @@ public class XmlParserFunctions {
             return EDBOperationType.RESET;
         } else if (doc.getRootElement().getName().equals("LinkRegisterMessage")) {
             return EDBOperationType.REGISTER_LINK;
-        } else if (doc.getRootElement().getName().equals("LinkExecutedMessage")) {
-            return EDBOperationType.EXECUTE_LINK;
         } else if (doc.getRootElement().getName().equals("LinkQueryRequestMessage")) {
             return EDBOperationType.REQUEST_LINK;
         } else {
@@ -240,12 +239,6 @@ public class XmlParserFunctions {
         return result;
     }
 
-    public static String parseLinkExecutedMessage(NormalizedMessage msg) throws IOException, SAXException,
-            TransformerException, DocumentException {
-
-        return "";
-    }
-
     public static String buildCommitBody(List<ContentWrapper> persistedSignals, String commitId) {
         int expectedChars = persistedSignals.size() * (300 + 20 * 200);
         StringBuilder body = new StringBuilder(expectedChars);
@@ -292,19 +285,8 @@ public class XmlParserFunctions {
     public static String buildCommitErrorBody(String msg, String trace) {
         StringBuilder body = new StringBuilder();
 
-        // body.append("<acmMessageObjects>");
-        // body.append(buildElement("user", EdbEndpoint.DEFAULT_USER, body));
-        // body.append(buildElement(GenericContent.UUID_NAME, "uuid", body));
-        // body.append(buildElement(GenericContent.PATH_NAME, "path", body));
-        // body.append("<acmMessageObject>");
-        // body.append(buildElement("key", "none", body));
-        // body.append(buildElement("value", "none", body));
-        // body.append("</acmMessageObject>");
-        // body.append("</acmMessageObjects>");
-
         body.append("<acmErrorObject>");
         buildElement("message", msg, body);
-        // body.append(buildElement("stacktrace", trace, body));
         body.append("</acmErrorObject>");
 
         return body.toString();
@@ -365,19 +347,10 @@ public class XmlParserFunctions {
             buffer.append("<target>");
             buildElement(LINK_TYPE, link.getProperty(LINK_TYPE), buffer);
             buildElement(LINK_PARAM, link.getProperty(LINK_PARAM), buffer);
+            buildElement(LINK_UUID, link.getUUID(), buffer);
             buffer.append("</target>");
             buffer.append("\n");
         }
-        return buffer.toString();
-    }
-
-    public static String buildLinkExecutedBody(GenericContent link, String receiver) {
-
-        StringBuilder buffer = new StringBuilder();
-        buildElement("receiver", receiver, buffer);
-        buildElement(LINK_TYPE, link.getProperty(LINK_TYPE), buffer);
-        buildElement(LINK_PARAM, link.getProperty(LINK_PARAM), buffer);
-
         return buffer.toString();
     }
 
