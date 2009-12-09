@@ -118,7 +118,7 @@ public class SimpleHttpTest extends SpringTestSupport {
     @Test(timeout = 5000)
     @Ignore
     public void testJmsResponse() throws Exception {
-        get.setQueryString("12345");
+        get.setQueryString("UUID:12345");
 
         // do not check the return-code here, that's what other tests are for.
         List<Object> messages = new ArrayList<Object>();
