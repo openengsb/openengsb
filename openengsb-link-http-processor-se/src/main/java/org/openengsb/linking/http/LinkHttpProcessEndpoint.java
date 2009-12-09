@@ -17,12 +17,17 @@
  */
 package org.openengsb.linking.http;
 
+import java.io.IOException;
+
 import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.commons.logging.Log;
@@ -32,8 +37,11 @@ import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.openengsb.link.http.LinkHttpMarshaler;
+import org.openengsb.util.tuple.Triple;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * @org.apache.xbean.XBean element="link-processor"
@@ -41,13 +49,18 @@ import org.w3c.dom.NodeList;
 public class LinkHttpProcessEndpoint extends ProviderEndpoint {
 
     private static Log log = LogFactory.getLog(LinkHttpProcessEndpoint.class);
+
+    private static final String linkRequestMessageString = "  <LinkQueryRequestMessage>" + "<body>"
+            + " <query>%s</query>" + "</body>" + "</LinkQueryRequestMessage>";
+
     private static final SourceTransformer st = new SourceTransformer();
 
-    /*
-     * TODO configure with spring
-     */
-    private QName linkServiceName;
-    private QName jmsServiceName;
+    private enum RequestType {
+        WHOAMI, LINK_REQUEST,
+    }
+
+    protected QName linkServiceName;
+    protected QName jmsServiceName;
 
     @Override
     public void validate() throws DeploymentException {
@@ -100,50 +113,79 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
         // TODO Auto-generated constructor stub
     }
 
-    private static final String linkRequestMessageString = "  <LinkQueryRequestMessage>" + "<body>"
-            + " <query>%s</query>" + "</body>" + "</LinkQueryRequestMessage>";
-
+    /**
+     * creates a request-message for the link-service
+     *
+     * @param linkId
+     * @return
+     */
     private String createLinkRequestMessage(String linkId) {
         return String.format(linkRequestMessageString, linkId);
     }
 
-    private void processMessage(MessageExchange exchange, NormalizedMessage in) throws Exception {
-        String linkId;
-        String ip;
+    /*
+     * Triple-structure: a: integer inidicating the message type; b: linkId or
+     * "whoami"; c: ip
+     */
+    /**
+     * parses a query-message sent by the link-http-service
+     *
+     * @param source content of the message
+     * @return Triple containing the parsed result (messagetype, linkid, ip)
+     * @throws ParserConfigurationException if source-transformation fails
+     * @throws IOException if source-transformation fails
+     * @throws SAXException if source-transformation fails
+     * @throws TransformerException if source-transformation fails
+     */
+    private Triple<RequestType, String, String> parseQueryMessage(Source source) throws ParserConfigurationException,
+            IOException, SAXException, TransformerException {
+        DOMSource dSource = st.toDOMSource(source);
+        Node rootNode = dSource.getNode().getFirstChild();
 
-        /* parse message */
-        DOMSource source = st.toDOMSource(in.getContent());
-        Node rootNode = source.getNode().getFirstChild();
-        log.info("nodeName: " + rootNode.getNodeName());
-        NodeList children = rootNode.getChildNodes();
-        log.info(children.getLength());
-        if (children.getLength() != 2) {
-            throw new IllegalArgumentException("invalid request-xml, parameter is missing");
+        if (rootNode.getNodeName().equals("whoami")) {
+            String ip = rootNode.getFirstChild().getTextContent();
+            return new Triple<RequestType, String, String>(RequestType.WHOAMI, LinkHttpMarshaler.STRING_WHOAMI, ip);
         } else {
-            linkId = children.item(0).getTextContent();
-            ip = children.item(1).getTextContent();
+            NodeList children = rootNode.getChildNodes();
+            if (children.getLength() == 2) {
+                String linkId = children.item(0).getTextContent();
+                String ip = children.item(1).getTextContent();
+                return new Triple<RequestType, String, String>(RequestType.LINK_REQUEST, linkId, ip);
+            } else {
+                throw new IllegalArgumentException("invalid request-xml, parameter is missing. " + dSource.toString());
+            }
         }
-        if (linkId == "whoami") {
+
+    }
+
+    private void processMessage(MessageExchange exchange, NormalizedMessage in) throws Exception {
+
+        DOMSource source = st.toDOMSource(in.getContent());
+        Triple<RequestType, String, String> parsedQuery = parseQueryMessage(source);
+
+        if (parsedQuery.fst == RequestType.WHOAMI) {
             return;
         }
-        /* done parsing */
-        log.info("requesting Link: " + linkId + " for ip: " + ip);
 
+        /* request the link from the corresponding service */
         InOut linkEx = this.getExchangeFactory().createInOutExchange();
         linkEx.setService(linkServiceName);
-
         NormalizedMessage linkExIn = linkEx.createMessage();
-        linkExIn.setContent(new StringSource(createLinkRequestMessage(linkId)));
+        linkExIn.setContent(new StringSource(createLinkRequestMessage(parsedQuery.trd)));
         linkEx.setInMessage(linkExIn);
         getChannel().sendSync(linkEx);
+
         DOMSource linkResponse = st.toDOMSource(linkEx.getOutMessage().getContent());
 
+        /* forward the result to the jms-service */
         log.info("link-service returned message: " + st.toString(linkResponse));
         InOut jmsEx = this.getExchangeFactory().createInOutExchange();
         jmsEx.setService(jmsServiceName);
         NormalizedMessage jmsMsg = jmsEx.createMessage();
         jmsMsg.setContent(linkResponse);
-        jmsMsg.setProperty("ip", ip);
+
+        /* the ip-property is used as message-filter on each client. */
+        jmsMsg.setProperty("ip", parsedQuery.snd);
         jmsEx.setInMessage(jmsMsg);
         getChannel().send(jmsEx);
 
