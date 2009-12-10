@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.openengsb.core;
+package org.openengsb.core.methodcalltransformation;
 
 public class MethodCall {
     private final String methodName;

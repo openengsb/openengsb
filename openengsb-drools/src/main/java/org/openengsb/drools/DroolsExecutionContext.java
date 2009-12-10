@@ -35,10 +35,10 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.DefaultAgendaEventListener;
-import org.openengsb.core.MethodCall;
-import org.openengsb.core.MethodCallTransformer;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
+import org.openengsb.core.methodcalltransformation.MethodCall;
+import org.openengsb.core.methodcalltransformation.MethodCallTransformer;
 
 /**
  * Represents the execution context of the Drools rules.
