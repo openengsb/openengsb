@@ -92,6 +92,12 @@ public class TestMethodCallTransformer {
         MethodCall output = MethodCallTransformer.transform(intermediate);
 
         check(input, output);
+
+        TestBeanArray tbArray = (TestBeanArray) output.getArgs()[2];
+        TestBean tbA = tbArray.getTestBeanArray()[0];
+        TestBean tbB = tbArray.getTestBeanArray()[1];
+
+        Assert.assertTrue(tbA == tbB.getBean());
     }
 
     private void check(MethodCall expected, MethodCall actual) {
