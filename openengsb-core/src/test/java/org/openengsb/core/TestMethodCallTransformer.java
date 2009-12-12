@@ -18,6 +18,8 @@
 
 package org.openengsb.core;
 
+import java.util.Arrays;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -36,38 +38,22 @@ public class TestMethodCallTransformer {
         Segment intermediate = MethodCallTransformer.transform(input);
         MethodCall output = MethodCallTransformer.transform(intermediate);
 
-        Assert.assertEquals(input.getMethodName(), output.getMethodName());
-        Assert.assertEquals(input.getArgs().length, output.getArgs().length);
-        Assert.assertEquals(input.getTypes().length, output.getTypes().length);
-        Assert.assertEquals(output.getArgs().length, output.getTypes().length);
-
-        for (int i = 0; i < input.getArgs().length; i++) {
-            Assert.assertEquals(input.getTypes()[i], output.getTypes()[i]);
-            Assert.assertEquals(input.getArgs()[i], output.getArgs()[i]);
-        }
+        check(input, output);
     }
 
     @Test
     public void testBean() throws SerializationException {
-        TestBean beanA = new TestBean();
-        TestBean beanB = new TestBean();
+        TestBean beanA = new TestBean("testStringA", 42, null);
+        TestBean beanB = new TestBean("testStringB", 3, beanA);
         beanA.setBean(beanB);
-        beanB.setBean(beanA);
+
         MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, beanA }, new Class<?>[] { int.class,
                 long.class, TestBean.class });
 
         Segment intermediate = MethodCallTransformer.transform(input);
         MethodCall output = MethodCallTransformer.transform(intermediate);
 
-        Assert.assertEquals(input.getMethodName(), output.getMethodName());
-        Assert.assertEquals(input.getArgs().length, output.getArgs().length);
-        Assert.assertEquals(input.getTypes().length, output.getTypes().length);
-        Assert.assertEquals(output.getArgs().length, output.getTypes().length);
-
-        for (int i = 0; i < input.getArgs().length; i++) {
-            Assert.assertEquals(input.getTypes()[i], output.getTypes()[i]);
-            Assert.assertEquals(input.getArgs()[i], output.getArgs()[i]);
-        }
+        check(input, output);
 
         TestBean tbA = (TestBean) output.getArgs()[2];
         TestBean tbB = tbA.getBean();
@@ -77,23 +63,16 @@ public class TestMethodCallTransformer {
 
     @Test
     public void testSelfReferencingBean() throws SerializationException {
-        TestBean beanA = new TestBean();
+        TestBean beanA = new TestBean("bar", 42, null);
         beanA.setBean(beanA);
+
         MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, beanA }, new Class<?>[] { int.class,
                 long.class, TestBean.class });
 
         Segment intermediate = MethodCallTransformer.transform(input);
         MethodCall output = MethodCallTransformer.transform(intermediate);
 
-        Assert.assertEquals(input.getMethodName(), output.getMethodName());
-        Assert.assertEquals(input.getArgs().length, output.getArgs().length);
-        Assert.assertEquals(input.getTypes().length, output.getTypes().length);
-        Assert.assertEquals(output.getArgs().length, output.getTypes().length);
-
-        for (int i = 0; i < input.getArgs().length; i++) {
-            Assert.assertEquals(input.getTypes()[i], output.getTypes()[i]);
-            Assert.assertEquals(input.getArgs()[i], output.getArgs()[i]);
-        }
+        check(input, output);
 
         TestBean tbA = (TestBean) output.getArgs()[2];
         TestBean tbB = tbA.getBean();
@@ -101,10 +80,45 @@ public class TestMethodCallTransformer {
         Assert.assertTrue(tbA == tbB.getBean());
     }
 
+    @Test
+    public void testBeanWithArray() throws Exception {
+        TestBeanArray testBean = new TestBeanArray();
+        testBean.addTestData();
+
+        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, testBean }, new Class<?>[] { int.class,
+                long.class, TestBeanArray.class });
+
+        Segment intermediate = MethodCallTransformer.transform(input);
+        MethodCall output = MethodCallTransformer.transform(intermediate);
+
+        check(input, output);
+    }
+
+    private void check(MethodCall expected, MethodCall actual) {
+        Assert.assertEquals(expected.getMethodName(), actual.getMethodName());
+        Assert.assertEquals(expected.getArgs().length, actual.getArgs().length);
+        Assert.assertEquals(expected.getTypes().length, actual.getTypes().length);
+        Assert.assertEquals(actual.getArgs().length, actual.getTypes().length);
+
+        for (int i = 0; i < expected.getArgs().length; i++) {
+            Assert.assertEquals(expected.getTypes()[i], actual.getTypes()[i]);
+            Assert.assertEquals(expected.getArgs()[i], actual.getArgs()[i]);
+        }
+    }
+
     public static class TestBean {
-        private String string = "hoho";
-        private int i = 42;
+        private String string;
+        private int i;
         private TestBean bean;
+
+        public TestBean() {
+        }
+
+        public TestBean(String string, int i, TestBean bean) {
+            this.string = string;
+            this.i = i;
+            this.bean = bean;
+        }
 
         public TestBean getBean() {
             return bean;
@@ -154,6 +168,54 @@ public class TestMethodCallTransformer {
                 if (other.string != null)
                     return false;
             } else if (!string.equals(other.string))
+                return false;
+            return true;
+        }
+    }
+
+    public static class TestBeanArray {
+        private int[] intArray;
+
+        private TestBean[] testBeanArray;
+
+        public TestBeanArray() {
+        }
+
+        public void addTestData() {
+            intArray = new int[] { 42, 1, 2, 3 };
+            TestBean testBeanA = new TestBean("foo", 4, null);
+            testBeanArray = new TestBean[] { testBeanA, new TestBean("bar", 5, testBeanA) };
+        }
+
+        public int[] getIntArray() {
+            return intArray;
+        }
+
+        public TestBean[] getTestBeanArray() {
+            return testBeanArray;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + Arrays.hashCode(intArray);
+            result = prime * result + Arrays.hashCode(testBeanArray);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            TestBeanArray other = (TestBeanArray) obj;
+            if (!Arrays.equals(intArray, other.intArray))
+                return false;
+            if (!Arrays.equals(testBeanArray, other.testBeanArray))
                 return false;
             return true;
         }

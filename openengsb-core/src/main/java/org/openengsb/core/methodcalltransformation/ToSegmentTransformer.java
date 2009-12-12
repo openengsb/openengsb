@@ -18,6 +18,7 @@
 
 package org.openengsb.core.methodcalltransformation;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -64,26 +65,45 @@ class ToSegmentTransformer {
         if (PrimitiveTypes.contains(type)) {
             segments.add(new TextSegment.Builder("value").text(String.valueOf(obj)).build());
         } else {
-            Integer id = systemIdTointernalId.get(System.identityHashCode(obj));
-            if (id != null) {
-                segments.add(new TextSegment.Builder("reference").text(String.valueOf(id)).build());
-            } else {
-
-                id = counter++;
-                systemIdTointernalId.put(System.identityHashCode(obj), id);
-                segments.add(new TextSegment.Builder("id").text(String.valueOf(id)).build());
-                segments.add(buildBean(type, obj));
-            }
+            handleComplexType(type, obj, segments);
         }
 
         return segments;
+    }
+
+    private void handleComplexType(Class<?> type, Object obj, List<Segment> segments) {
+        Integer id = systemIdTointernalId.get(System.identityHashCode(obj));
+        if (id != null) {
+            segments.add(new TextSegment.Builder("reference").text(String.valueOf(id)).build());
+        } else {
+            id = counter++;
+            systemIdTointernalId.put(System.identityHashCode(obj), id);
+            segments.add(new TextSegment.Builder("id").text(String.valueOf(id)).build());
+            if (type.isArray()) {
+                segments.add(buildArray(type, obj));
+            } else {
+                segments.add(buildBean(type, obj));
+            }
+        }
+    }
+
+    private Segment buildArray(Class<?> type, Object obj) {
+        List<Segment> elements = new ArrayList<Segment>();
+        Class<?> elementType = type.getComponentType();
+
+        for (int i = 0; i < Array.getLength(obj); i++) {
+            Object elementValue = Array.get(obj, i);
+            List<Segment> segment = valueToSegment("arrayElement" + i, elementType, elementValue);
+            elements.add(new ListSegment.Builder("arrayElement").list(segment).build());
+        }
+
+        return new ListSegment.Builder("array").list(elements).build();
     }
 
     private Segment buildBean(Class<?> type, Object o) {
         List<Segment> fields = new ArrayList<Segment>();
 
         try {
-
             for (Field field : type.getDeclaredFields()) {
                 if ((field.getModifiers() & Modifier.TRANSIENT) != 0) {
                     continue;
@@ -105,4 +125,5 @@ class ToSegmentTransformer {
 
         return new ListSegment.Builder("bean").list(fields).build();
     }
+
 }

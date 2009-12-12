@@ -18,6 +18,7 @@
 
 package org.openengsb.core.methodcalltransformation;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,20 +94,29 @@ class FromSegmentTransformer {
 
         Integer id = placeholderInstances.get(System.identityHashCode(obj));
         if (id == null) {
-            for (Field field : type.getDeclaredFields()) {
-                boolean accessible = field.isAccessible();
-                field.setAccessible(true);
-                try {
-                    Object currentValue = field.get(obj);
-                    Object newValue = replace(currentValue, field.getType());
-                    field.set(obj, newValue);
-                } catch (IllegalArgumentException e) {
-                    throw new RuntimeException(e);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
 
-                field.setAccessible(accessible);
+            if (type.isArray()) {
+                for (int i = 0; i < Array.getLength(obj); i++) {
+                    Object currentValue = Array.get(obj, i);
+                    Object newValue = replace(currentValue, type.getComponentType());
+                    Array.set(obj, i, newValue);
+                }
+            } else {
+                for (Field field : type.getDeclaredFields()) {
+                    boolean accessible = field.isAccessible();
+                    field.setAccessible(true);
+                    try {
+                        Object currentValue = field.get(obj);
+                        Object newValue = replace(currentValue, field.getType());
+                        field.set(obj, newValue);
+                    } catch (IllegalArgumentException e) {
+                        throw new RuntimeException(e);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    field.setAccessible(accessible);
+                }
             }
 
             return obj;
@@ -137,19 +147,24 @@ class FromSegmentTransformer {
     private Object segmentToValue(String type, List<Segment> segments) {
         Object obj;
         Segment firstSegment = segments.get(0);
-        if (firstSegment.getName().equals("value")) {
+        String firstSegmentName = firstSegment.getName();
+        if (firstSegmentName.equals("value")) {
             String value = ((TextSegment) firstSegment).getText();
             obj = create(type, value);
-        } else if (firstSegment.getName().equals("null")) {
+        } else if (firstSegmentName.equals("null")) {
             obj = null;
-        } else if (firstSegment.getName().equals("reference")) {
+        } else if (firstSegmentName.equals("reference")) {
             int id = Integer.valueOf(((TextSegment) firstSegment).getText());
-
             obj = createPlaceholderInstance(type, id);
-
         } else {
             int id = Integer.valueOf(((TextSegment) firstSegment).getText());
-            obj = segmentToBean(type, (ListSegment) segments.get(1));
+            ListSegment secondSegment = (ListSegment) segments.get(1);
+            String secondSegmentName = secondSegment.getName();
+            if (secondSegmentName.equals("array")) {
+                obj = segmentToArray(type, (ListSegment) segments.get(1));
+            } else {
+                obj = segmentToBean(type, (ListSegment) segments.get(1));
+            }
             idToObject.put(id, obj);
         }
         return obj;
@@ -164,6 +179,27 @@ class FromSegmentTransformer {
             if (e instanceof RuntimeException) {
                 throw (RuntimeException) e;
             }
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Object segmentToArray(String type, ListSegment arrayElements) {
+        try {
+            List<Segment> arrayElementList = arrayElements.getList();
+
+            Class<?> arrayClass = Class.forName(type);
+            Object array = Array.newInstance(arrayClass.getComponentType(), arrayElementList.size());
+
+            for (int i = 0; i < arrayElementList.size(); i++) {
+                ListSegment ls = (ListSegment) arrayElementList.get(i);
+                List<Segment> list = ls.getList();
+
+                String componentType = ((TextSegment) list.get(1)).getText();
+
+                Array.set(array, i, segmentToValue(componentType, list.subList(2, list.size())));
+            }
+            return array;
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
