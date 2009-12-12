@@ -133,7 +133,6 @@
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
       <version>${servicemix-version}</version>
-      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>org.springframework</groupId>
