@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.config.view;
 
@@ -26,24 +26,24 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.openengsb.config.jbi.component.ComponentDescriptor;
+import org.openengsb.config.jbi.types.ComponentType;
 
 public class NavigationPanel extends Panel {
     private static final long serialVersionUID = 1L;
 
-    public NavigationPanel(String id, List<ComponentDescriptor> components) {
+    public NavigationPanel(String id, List<ComponentType> components) {
         super(id);
-        add(new ListView<ComponentDescriptor>("components", components) {
+        add(new ListView<ComponentType>("components", components) {
             private static final long serialVersionUID = 1L;
 
             @Override
-            protected void populateItem(ListItem<ComponentDescriptor> item) {
-                item.setModel(new CompoundPropertyModel<ComponentDescriptor>(item.getModelObject()));
+            protected void populateItem(ListItem<ComponentType> item) {
+                item.setModel(new CompoundPropertyModel<ComponentType>(item.getModelObject()));
                 final PageParameters params = new PageParameters();
                 params.put("component", item.getModelObject().getName());
                 item.add(new BookmarkablePageLink<ComponentInfoPage>("componentLink", ComponentInfoPage.class, params)
                         .add(new Label("name")));
             }
-        });
+         });
     }
 }

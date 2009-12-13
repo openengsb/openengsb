@@ -13,29 +13,19 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.config.view;
 
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.config.jbi.ComponentsRetriever;
-import org.openengsb.config.jbi.component.ComponentDescriptor;
+import org.openengsb.config.ComponentsHolder;
 
 public class BasePage extends WebPage {
     @SpringBean
-    protected ComponentsRetriever retriever;
+    protected ComponentsHolder componentsHolder;
 
     public BasePage() {
-        add(new NavigationPanel("navigationBar", retriever.lookupComponents()));
-    }
-
-    protected ComponentDescriptor getComponent(String name) {
-        for (ComponentDescriptor c : retriever.lookupComponents()) {
-            if (c.getName().equals(name)) {
-                return c;
-            }
-        }
-        return null;
+        add(new NavigationPanel("navigationBar", componentsHolder.getComponents()));
     }
 }

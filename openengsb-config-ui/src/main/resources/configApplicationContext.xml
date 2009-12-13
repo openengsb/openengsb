@@ -23,8 +23,8 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-  <bean id="componentsRetriever" class="org.openengsb.config.jbi.internal.DirectoryComponentsRetriever">
-    <property name="componentsDirectory" ref="installDir" />
+  <bean id="componentsHolder" class="org.openengsb.config.ComponentsHolder" init-method="init">
+    <property name="context" ref="servletContext" />
   </bean>
 
   <bean id="servletContext" class="org.springframework.web.context.support.ServletContextFactoryBean" />
