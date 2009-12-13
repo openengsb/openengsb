@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<Description>
+
+  <!-- Simple Data Types, useable as attributes or properties -->
+
+  <!-- TODO maxLength defaultValue for all simple types -->
+
+  <int name="" optional="false" min="unbound" max="unbound" />
+  <float name="" optional="false" min="unbound" max="unbound" />
+  <string name="" optional="false" regex=""/>
+  <url name="" optional="" />
+  <path name="" optional="" protocol="" />
+  <enum name="" optional="" type="" />
+
+  <!-- gets urn implicit -->
+  <service name="" optional="false" />
+
+  <endpointName name="" optional="false" />
+
+  <!-- reference to bean, different handling in bean and endpoint -->
+  <ref name="" optional="false" clazz="" />
+
+
+  <!-- Complex Data Types, useable only as properties -->
+
+  <!-- list, map -->
+
+
+  <!-- Bean Type, id is implicit-->
+
+  <bean clazz="">
+    <properties>
+      <!-- types here -->
+    </properties>
+  </bean>
+
+
+  <!-- Endpoint Type -->
+
+  <endpoint name="">
+    <attributes>
+      <!-- types here -->
+    </attributes>
+    <properties>
+      <!-- types here -->
+    </properties>
+  </endpoint>
+
+  <!-- Component Type -->
+
+  <component name="" namespace="" nsname="">
+    <endpoints>
+      <!-- endpoints here -->
+    </endpoints>
+    <beans>
+      <!-- beans here -->
+    </beans>
+  </component>
+</Description>
