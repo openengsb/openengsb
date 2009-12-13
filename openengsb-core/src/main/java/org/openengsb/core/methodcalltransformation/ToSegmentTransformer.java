@@ -103,24 +103,17 @@ class ToSegmentTransformer {
     private Segment buildBean(Class<?> type, Object o) {
         List<Segment> fields = new ArrayList<Segment>();
 
-        try {
-            for (Field field : type.getDeclaredFields()) {
-                if ((field.getModifiers() & Modifier.TRANSIENT) != 0) {
-                    continue;
-                }
-                Class<?> fieldType = field.getType();
-                String fieldName = field.getName();
-                boolean accessible = field.isAccessible();
-                field.setAccessible(true);
-                Object fieldValue = field.get(o);
-                field.setAccessible(accessible);
-
-                List<Segment> segment = valueToSegment(fieldName, fieldType, fieldValue);
-
-                fields.add(new ListSegment.Builder("field").list(segment).build());
+        for (Field field : type.getDeclaredFields()) {
+            if ((field.getModifiers() & Modifier.TRANSIENT) != 0) {
+                continue;
             }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            Class<?> fieldType = field.getType();
+            String fieldName = field.getName();
+            Object fieldValue = FieldAccessorUtil.getValue(field, o);
+
+            List<Segment> segment = valueToSegment(fieldName, fieldType, fieldValue);
+
+            fields.add(new ListSegment.Builder("field").list(segment).build());
         }
 
         return new ListSegment.Builder("bean").list(fields).build();
