@@ -1,0 +1,20 @@
+<component name="servicemix-file" namespace="http://servicemix.apache.org/file/1.0" nsname="file">
+  <endpoints>
+    <endpoint name="sender">
+      <attributes>
+        <service name="service" />
+        <endpointName name="endpoint" />
+        <string name="directory" />
+      </attributes>
+    </endpoint>
+    <endpoint name="poller">
+      <attributes>
+        <service name="service" />
+        <endpointName name="endpoint" />
+        <service name="targetService" />
+        <endpointName name="targetEndpoint" optional="true" />
+        <string name="file" />
+      </attributes>
+    </endpoint>
+  </endpoints>
+</component>
