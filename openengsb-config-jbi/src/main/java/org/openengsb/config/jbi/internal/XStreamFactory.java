@@ -19,6 +19,7 @@ package org.openengsb.config.jbi.internal;
 
 import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.BeanType;
+import org.openengsb.config.jbi.types.BoolType;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointNameType;
 import org.openengsb.config.jbi.types.EndpointType;
@@ -47,6 +48,7 @@ public class XStreamFactory {
         x.alias("string", StringType.class);
         x.alias("service", ServiceType.class);
         x.alias("endpointName", EndpointNameType.class);
+        x.alias("bool", BoolType.class);
     }
 
     private static void configureBeanType(XStream x) {
