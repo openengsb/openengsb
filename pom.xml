@@ -116,7 +116,7 @@
     
     <!-- Rules -->
     <module>openengsb-drools-common</module>
-    <module>openengsb-drools</module>
+    <module>openengsb-drools-se</module>
     
     <!-- Engineering Knowledge Base -->
     <module>openengsb-ekb-core</module>
@@ -594,7 +594,7 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-drools</artifactId>
+        <artifactId>openengsb-drools-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
       

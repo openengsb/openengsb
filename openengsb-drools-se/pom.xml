@@ -26,10 +26,10 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-drools</artifactId>
+  <artifactId>openengsb-drools-se</artifactId>
   <packaging>jbi-component</packaging>
 
-  <name>openengsb-drools</name>
+  <name>openengsb-drools-se</name>
   <description>A Rules Service Engine based on Drools</description>
 
   <properties>
