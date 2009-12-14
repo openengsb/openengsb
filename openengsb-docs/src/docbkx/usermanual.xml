@@ -42,4 +42,5 @@ cd <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
   <xi:include href="usermanual/howToWriteAToolConnectors.xml" />
   <xi:include href="usermanual/scmDomain.xml"/>
   <xi:include href="usermanual/drools.xml"/>
+  <xi:include href="usermanual/linkHttp.xml"/>
 </book>
