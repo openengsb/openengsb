@@ -25,6 +25,8 @@ class PrimitiveTypes {
 
     private static Map<String, Class<?>> primitiveTypes = new HashMap<String, Class<?>>();
 
+    private static Map<String, Converter> converter = new HashMap<String, Converter>();
+
     static {
         primitiveTypes.put("byte", byte.class);
         primitiveTypes.put("short", short.class);
@@ -43,6 +45,81 @@ class PrimitiveTypes {
         primitiveTypes.put("java.lang.Float", Float.class);
         primitiveTypes.put("java.lang.Double", Double.class);
         primitiveTypes.put("java.lang.Boolean", Boolean.class);
+
+        converter.put("byte", new Converter() {
+            @Override
+            public Object convert(String value) {
+                return Byte.valueOf(value);
+            }
+        });
+
+        converter.put("short", new Converter() {
+            @Override
+            public Object convert(String value) {
+                return Short.valueOf(value);
+            }
+        });
+
+        converter.put("int", new Converter() {
+            @Override
+            public Object convert(String value) {
+                return Integer.valueOf(value);
+            }
+        });
+
+        converter.put("long", new Converter() {
+            @Override
+            public Object convert(String value) {
+                return Long.valueOf(value);
+            }
+        });
+
+        converter.put("char", new Converter() {
+            @Override
+            public Object convert(String value) {
+                if (value.length() > 1) {
+                    throw new IllegalArgumentException("Can't parse char");
+                }
+                return value.charAt(0);
+            }
+        });
+
+        converter.put("float", new Converter() {
+            @Override
+            public Object convert(String value) {
+                return Float.valueOf(value);
+            }
+        });
+
+        converter.put("double", new Converter() {
+            @Override
+            public Object convert(String value) {
+                return Double.valueOf(value);
+            }
+        });
+
+        converter.put("boolean", new Converter() {
+            @Override
+            public Object convert(String value) {
+                return Boolean.valueOf(value);
+            }
+        });
+        
+        converter.put("java.lang.String", new Converter() {
+            @Override
+            public Object convert(String value) {
+                return value;
+            }
+        });
+
+        converter.put("java.lang.Byte", converter.get("byte"));
+        converter.put("java.lang.Short", converter.get("short"));
+        converter.put("java.lang.Integer", converter.get("int"));
+        converter.put("java.lang.Long", converter.get("long"));
+        converter.put("java.lang.Character", converter.get("char"));
+        converter.put("java.lang.Float", converter.get("float"));
+        converter.put("java.lang.Double", converter.get("double"));
+        converter.put("java.lang.Boolean", converter.get("boolean"));
     }
 
     private PrimitiveTypes() {
@@ -50,46 +127,17 @@ class PrimitiveTypes {
     }
 
     static Object create(String type, String value) {
-        if (type.equals("java.lang.String")) {
-            return value;
+        Converter conv = converter.get(type);
+        
+        if (conv == null) {
+            throw new IllegalStateException(String.format("Type '%s' is not supported", type));
         }
+        
+        return conv.convert(value);
+    }
 
-        if (type.equals("byte") || type.equals("java.lang.Byte")) {
-            return Byte.valueOf(value);
-        }
-
-        if (type.equals("short") || type.equals("java.lang.Short")) {
-            return Short.valueOf(value);
-        }
-
-        if (type.equals("int") || type.equals("java.lang.Integer")) {
-            return Integer.valueOf(value);
-        }
-
-        if (type.equals("long") || type.equals("java.lang.Long")) {
-            return Long.valueOf(value);
-        }
-
-        if (type.equals("char") || type.equals("java.lang.Character")) {
-            if (value.length() > 1) {
-                throw new IllegalArgumentException("Can't parse char");
-            }
-            return value.charAt(0);
-        }
-
-        if (type.equals("float") || type.equals("java.lang.Float")) {
-            return Float.valueOf(value);
-        }
-
-        if (type.equals("double") || type.equals("java.lang.Double")) {
-            return Double.valueOf(value);
-        }
-
-        if (type.equals("boolean") || type.equals("java.lang.Boolean")) {
-            return Boolean.valueOf(value);
-        }
-
-        throw new IllegalStateException(String.format("Type '%s' is not supported", type));
+    static interface Converter {
+        Object convert(String value);
     }
 
     static Class<?> get(String key) {
@@ -99,5 +147,4 @@ class PrimitiveTypes {
     static boolean contains(Class<?> type) {
         return primitiveTypes.containsValue(type);
     }
-
 }
