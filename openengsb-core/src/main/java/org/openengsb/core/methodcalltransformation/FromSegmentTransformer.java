@@ -150,7 +150,7 @@ class FromSegmentTransformer {
         String firstSegmentName = firstSegment.getName();
         if (firstSegmentName.equals("value")) {
             String value = ((TextSegment) firstSegment).getText();
-            obj = createPrimitive(type, value);
+            obj = PrimitiveTypes.create(type, value);
         } else if (firstSegmentName.equals("null")) {
             obj = null;
         } else if (firstSegmentName.equals("reference")) {
@@ -231,46 +231,5 @@ class FromSegmentTransformer {
         }
     }
 
-    private Object createPrimitive(String type, String value) {
-        if (type.equals("java.lang.String")) {
-            return value;
-        }
 
-        if (type.equals("byte")) {
-            return Byte.valueOf(value);
-        }
-
-        if (type.equals("short")) {
-            return Short.valueOf(value);
-        }
-
-        if (type.equals("int")) {
-            return Integer.valueOf(value);
-        }
-
-        if (type.equals("long")) {
-            return Long.valueOf(value);
-        }
-
-        if (type.equals("char")) {
-            if (value.length() > 1) {
-                throw new IllegalArgumentException("Can't parse char");
-            }
-            return value.charAt(0);
-        }
-
-        if (type.equals("float")) {
-            return Float.valueOf(value);
-        }
-
-        if (type.equals("double")) {
-            return Double.valueOf(value);
-        }
-
-        if (type.equals("boolean")) {
-            return Boolean.valueOf(value);
-        }
-
-        throw new IllegalStateException(String.format("Type '%s' is not supported", type));
-    }
 }

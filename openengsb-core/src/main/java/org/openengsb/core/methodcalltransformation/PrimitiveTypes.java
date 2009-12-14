@@ -35,10 +35,61 @@ class PrimitiveTypes {
         primitiveTypes.put("double", double.class);
         primitiveTypes.put("boolean", boolean.class);
         primitiveTypes.put("java.lang.String", String.class);
+        primitiveTypes.put("java.lang.Integer", Integer.class);
+        primitiveTypes.put("java.lang.Byte", Byte.class);
+        primitiveTypes.put("java.lang.Short", Short.class);
+        primitiveTypes.put("java.lang.Long", Long.class);
+        primitiveTypes.put("java.lang.Character", Character.class);
+        primitiveTypes.put("java.lang.Float", Float.class);
+        primitiveTypes.put("java.lang.Double", Double.class);
+        primitiveTypes.put("java.lang.Boolean", Boolean.class);
     }
 
     private PrimitiveTypes() {
         throw new AssertionError();
+    }
+
+    static Object create(String type, String value) {
+        if (type.equals("java.lang.String")) {
+            return value;
+        }
+
+        if (type.equals("byte") || type.equals("java.lang.Byte")) {
+            return Byte.valueOf(value);
+        }
+
+        if (type.equals("short") || type.equals("java.lang.Short")) {
+            return Short.valueOf(value);
+        }
+
+        if (type.equals("int") || type.equals("java.lang.Integer")) {
+            return Integer.valueOf(value);
+        }
+
+        if (type.equals("long") || type.equals("java.lang.Long")) {
+            return Long.valueOf(value);
+        }
+
+        if (type.equals("char") || type.equals("java.lang.Character")) {
+            if (value.length() > 1) {
+                throw new IllegalArgumentException("Can't parse char");
+            }
+            return value.charAt(0);
+        }
+
+        if (type.equals("float") || type.equals("java.lang.Float")) {
+            return Float.valueOf(value);
+        }
+
+        if (type.equals("double") || type.equals("java.lang.Double")) {
+            return Double.valueOf(value);
+        }
+
+        if (type.equals("boolean") || type.equals("java.lang.Boolean")) {
+            return Boolean.valueOf(value);
+        }
+
+        throw new IllegalStateException(String.format("Type '%s' is not supported", type));
     }
 
     static Class<?> get(String key) {

@@ -100,6 +100,22 @@ public class TestMethodCallTransformer {
         Assert.assertTrue(tbA == tbB.getBean());
     }
 
+    @Test
+    public void testPrimitiveClasses() throws Exception {
+        TestBeanArray testBean = new TestBeanArray();
+        testBean.addTestData();
+
+        MethodCall input = new MethodCall("foo", new Object[] { new Integer(42), new Byte("42"), new Short((short) 42),
+                new Long(42L), new Character('4'), new Float(42.42), new Double(42.42), new Boolean(true) },
+                new Class<?>[] { Integer.class, Byte.class, Short.class, Long.class, Character.class, Float.class,
+                        Double.class, Boolean.class });
+
+        Segment intermediate = MethodCallTransformer.transform(input);
+        MethodCall output = MethodCallTransformer.transform(intermediate);
+
+        check(input, output);
+    }
+
     private void check(MethodCall expected, MethodCall actual) {
         Assert.assertEquals(expected.getMethodName(), actual.getMethodName());
         Assert.assertEquals(expected.getArgs().length, actual.getArgs().length);
