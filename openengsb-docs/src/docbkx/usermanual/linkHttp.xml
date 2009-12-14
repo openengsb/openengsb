@@ -21,6 +21,13 @@
 		HTTP-Requests for links
   </title>
   <para>
+		<mediaobject>
+		  <imageobject>
+		    <imagedata id="new" fileref="graphics/link-http-overview.jpg" format="jpg" />
+		  </imageobject>
+		</mediaobject>
+	</para>
+  <para>
   	A http-request may look like this: http://openengsb.you.com:8192/Link/?UUID:83467585-0475975-2348565-82936498
   </para>
   <para>
