@@ -17,8 +17,6 @@
  */
 package org.openengsb.drools;
 
-public class ContextHelper {
-    public String getValue(String key) {
-        return "Value: " + key;
-    }
+public interface ContextHelper {
+    String getValue(String key);
 }

@@ -40,6 +40,7 @@ import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
 import org.openengsb.core.methodcalltransformation.MethodCall;
 import org.openengsb.core.methodcalltransformation.MethodCallTransformer;
+import org.openengsb.drools.model.ContextHelperImpl;
 
 /**
  * Represents the execution context of the Drools rules.
@@ -85,6 +86,9 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
      * @param objects the objects to insert.
      */
     private void populateWorkingMemory(Collection<Object> objects) {
+        ContextHelperImpl contextHelperImpl = new ContextHelperImpl(endpoint, contextId);
+        memory.setGlobal("ctx", contextHelperImpl);
+
         for (Entry<String, Class<?>> e : InterfaceRegistry.interfaces.entrySet()) {
             Object proxy = createProxy(e.getKey(), e.getValue());
             memory.setGlobal(e.getKey(), proxy);

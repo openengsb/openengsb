@@ -200,8 +200,9 @@ public class DroolsEndpoint extends ProviderEndpoint {
         drools.start();
     }
 
+    // make method public
     @Override
-    protected void sendSync(MessageExchange me) throws MessagingException {
+    public void sendSync(MessageExchange me) throws MessagingException {
         super.sendSync(me);
     }
 }
