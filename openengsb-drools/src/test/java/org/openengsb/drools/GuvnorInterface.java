@@ -23,7 +23,6 @@ import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
 import org.junit.Test;
 import org.openengsb.drools.model.Event;
-import org.openengsb.drools.model.MessageHelperImpl;
 
 /**
  * A Testmethod that connects to a guvnor-rulebase.
@@ -32,7 +31,7 @@ public class GuvnorInterface {
     /**
      * URL to the remote guvnor-base.
      */
-    public static final String URL = "http://localhost:8080/drools-guvnor/"
+    public static final String URL = "http://localhost:8081/drools-guvnor/"
             + "org.drools.guvnor.Guvnor/package/org.openengsb/LATEST";
 
     /**
@@ -46,12 +45,9 @@ public class GuvnorInterface {
         RuleBase ruleBase = agent.getRuleBase();
 
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
-        workingMemory.setGlobal("helper", new MessageHelperImpl());
         Event e = new Event("hello");
         workingMemory.insert(e);
 
         workingMemory.fireAllRules();
-
     }
-
 }

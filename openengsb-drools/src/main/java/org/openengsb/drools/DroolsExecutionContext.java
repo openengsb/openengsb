@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
+import java.util.UUID;
 import java.util.Map.Entry;
 
 import javax.jbi.messaging.InOut;
@@ -60,11 +61,6 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
     private DroolsEndpoint endpoint;
 
     /**
-     * name of the helper-variable used in drl-rules.
-     */
-    public static final String HELPER_KEY = "helper";
-
-    /**
      * Start a new execution context for the specified exchange.
      * 
      * This will create and fill {@link WorkingMemory} and register listeners on
@@ -75,7 +71,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
      * @param contextId
      */
     public DroolsExecutionContext(DroolsEndpoint endpoint, Collection<Object> objects, String contextId) {
-        this.contextId = contextId;
+        this.contextId = contextId == null ? "42" : contextId; // XXX
         this.endpoint = endpoint;
         this.memory = endpoint.getRuleBase().newStatefulSession();
         this.memory.addEventListener(this);
@@ -89,8 +85,6 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
      * @param objects the objects to insert.
      */
     private void populateWorkingMemory(Collection<Object> objects) {
-        // memory.setGlobal(HELPER_KEY, new MessageHelperImpl());
-
         for (Entry<String, Class<?>> e : InterfaceRegistry.interfaces.entrySet()) {
             Object proxy = createProxy(e.getKey(), e.getValue());
             memory.setGlobal(e.getKey(), proxy);
@@ -146,13 +140,14 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
             System.out.println("Invoking method: " + method.getName());
 
-            InOut inout = new InOutImpl();
+            InOut inout = new InOutImpl(UUID.randomUUID().toString());
             inout.setService(new QName("urn:openengsb:context", "contextService"));
+            inout.setInterfaceName(new QName("contextEndpoint"));
             NormalizedMessage msg = inout.createMessage();
             inout.setInMessage(msg);
 
             msg.setProperty("contentType", "context/request");
-            msg.setProperty("contextId", "42");
+            msg.setProperty("contextId", contextId);
             TextSegment text = new TextSegment.Builder("path").text(contextId).build();
             String xml = text.toXML();
 

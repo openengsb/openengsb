@@ -1,5 +1,3 @@
-package org.openengsb.drools;
-
 /**
 
  Copyright 2009 OpenEngSB Division, Vienna University of Technology
@@ -17,6 +15,7 @@ package org.openengsb.drools;
  limitations under the License.
 
  */
+package org.openengsb.drools;
 
 import java.io.IOException;
 
