@@ -27,7 +27,7 @@
   <string name="" optional="false" regex=""/>
   <url name="" optional="" />
   <path name="" optional="" protocol="" />
-  <enum name="" optional="" type="" />
+  <choice name="" optional="" values="" />
 
   <!-- gets urn implicit -->
   <service name="" optional="false" />
