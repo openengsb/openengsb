@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import org.openengsb.core.InvocationFailedException;
 
 public class MethodCall {
     private final String methodName;
