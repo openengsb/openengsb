@@ -55,6 +55,18 @@ class FromSegmentTransformer {
 
         return new MethodCall(methodName, args, types);
     }
+    
+    ReturnValue transformReturnValue(Segment segment) {
+        List<Segment> l = ((ListSegment) segment).getList();
+
+        String typeName = ((TextSegment) l.get(1)).getText();
+        Object value = segmentToValue(typeName, l.subList(2, l.size()));
+        Class<?> type = getClassForType(typeName);
+        
+        value = replace(value, type);
+        
+        return new ReturnValue(value, type);
+    }
 
     private String extractMethodName(Segment method) {
         if (!(method instanceof TextSegment)) {

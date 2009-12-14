@@ -51,6 +51,11 @@ class ToSegmentTransformer {
 
         return listSegment;
     }
+    
+    Segment transform(ReturnValue returnValue) {
+        List<Segment> list = valueToSegment("value", returnValue.getType(), returnValue.getValue());
+        return new ListSegment.Builder("returnValue").list(list).build();
+    }
 
     private List<Segment> valueToSegment(String name, Class<?> type, Object obj) {
         List<Segment> segments = new ArrayList<Segment>();
