@@ -1111,17 +1111,6 @@
       </snapshots>
     </repository>
     <repository>
-      <id>jibx.sf.net</id>
-      <name>JiBX repository</name>
-      <url>http://jibx.sf.net/maven2</url>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
       <id>mockns-snapshot</id>
       <name>MockNS Snapshot Repository</name>
       <url>http://snapshot.btmatthews.com</url>
