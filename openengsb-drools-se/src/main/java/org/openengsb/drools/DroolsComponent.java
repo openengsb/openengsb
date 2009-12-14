@@ -22,7 +22,8 @@ import java.util.List;
 import org.apache.servicemix.common.DefaultComponent;
 
 /**
- * @org.apache.xbean.XBean element="component"
+ * @org.apache.xbean.XBean element="droolsComponent"
+ *                         description="Drools Component" The Drools-component
  */
 @SuppressWarnings("unchecked")
 public class DroolsComponent extends DefaultComponent {

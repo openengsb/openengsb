@@ -69,10 +69,10 @@ public final class XmlHelper {
             throw new IllegalArgumentException("Could not parse the message", e);
         }
         Node nameNode = source.getElementsByTagName("name").item(0);
-        Event result = new Event(nameNode.getTextContent());
+        Event result = new Event(nameNode.getFirstChild().getNodeValue());
         Node contextNode = source.getElementsByTagName("contextid").item(0);
         if (contextNode != null) {
-            result.setContextId(contextNode.getTextContent());
+            result.setContextId(contextNode.getFirstChild().getNodeValue());
         }
         return result;
     }

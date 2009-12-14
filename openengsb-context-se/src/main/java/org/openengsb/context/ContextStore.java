@@ -134,6 +134,7 @@ public class ContextStore {
 
     private void load() {
         if (settings == null || !settings.isFile()) {
+            loadDefaultConfig();
             return;
         }
 
@@ -145,6 +146,11 @@ public class ContextStore {
         } catch (SerializationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void loadDefaultConfig() {
+        setValue("42/production/issuetracker", "http://localhost/issues/");
+        setValue("42/production/scm", "http://localhost/scm/");
     }
 
     private void save() {

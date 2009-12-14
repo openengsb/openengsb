@@ -18,6 +18,12 @@
 
 package org.openengsb.core.methodcalltransformation;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
+import org.openengsb.core.InvocationFailedException;
+
 public class MethodCall {
     private final String methodName;
     private final Object[] args;
@@ -27,6 +33,33 @@ public class MethodCall {
         this.methodName = methodName;
         this.args = args;
         this.types = types;
+    }
+
+    public ReturnValue invoke(Object instance) throws InvocationFailedException {
+        try {
+            Class<?> clazz = instance.getClass();
+            Method method = clazz.getMethod(methodName, types);
+            Object result = method.invoke(instance, args);
+
+            return new ReturnValue(result, method.getReturnType());
+        } catch (SecurityException e) {
+            throwException(e);
+        } catch (NoSuchMethodException e) {
+            throwException(e);
+        } catch (IllegalArgumentException e) {
+            throwException(e);
+        } catch (IllegalAccessException e) {
+            throwException(e);
+        } catch (InvocationTargetException e) {
+            throwException(e);
+        }
+
+        return null; // unreachable
+    }
+
+    private void throwException(Throwable cause) throws InvocationFailedException {
+        throw new InvocationFailedException(String.format("Invocation failed for method '%s' %s", methodName, Arrays
+                .toString(types)), cause);
     }
 
     public Class<?>[] getTypes() {

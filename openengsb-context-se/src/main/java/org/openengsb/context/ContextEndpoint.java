@@ -63,7 +63,9 @@ public class ContextEndpoint extends ProviderEndpoint {
         String messageType = getMessageType(in);
 
         String result = null;
-        if (messageType.equals("context/request")) {
+        if (messageType == null) {
+            throw new RuntimeException("MessageType not set");
+        } else if (messageType.equals("context/request")) {
             result = handleRequest(in, id);
         } else if (messageType.equals("context/store")) {
             handleStore(id, in);

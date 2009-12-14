@@ -66,7 +66,11 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-drools-common</artifactId>
+      <artifactId>openengsb-drools-domains</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-context-se</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
@@ -140,6 +144,10 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-drools</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -150,7 +158,7 @@
         <extensions>true</extensions>
         <configuration>
           <type>service-engine</type>
-          <component>org.apache.servicemix.drools.DroolsComponent</component>
+          <component>org.openengsb.drools.DroolsComponent</component>
         </configuration>
       </plugin>
       <plugin>
@@ -159,7 +167,7 @@
         <executions>
           <execution>
             <configuration>
-              <namespace>http://servicemix.apache.org/drools/1.0</namespace>
+              <namespace>http://www.openengsb.org/domain/drools/1.0</namespace>
             </configuration>
             <goals>
               <goal>mapping</goal>

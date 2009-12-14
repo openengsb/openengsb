@@ -23,14 +23,20 @@ import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
+import javax.xml.transform.TransformerException;
 
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
+import org.openengsb.context.Context;
+import org.openengsb.context.ContextSegmentTransformer;
+import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
+import org.openengsb.drools.ContextHelper;
 import org.openengsb.drools.DroolsEndpoint;
 import org.openengsb.util.serialization.SerializationException;
 
-public class ContextHelperImpl {
+public class ContextHelperImpl implements ContextHelper {
 
     private final DroolsEndpoint endpoint;
     private final String contextId;
@@ -40,16 +46,20 @@ public class ContextHelperImpl {
         this.contextId = contextId;
     }
 
-    public String getValue(String key) {
+    public String getValue(String pathAndKey) {
         try {
             InOut inout = new InOutImpl(UUID.randomUUID().toString());
             inout.setService(new QName("urn:openengsb:context", "contextService"));
-            // inout.setInterfaceName(new QName("contextEndpoint"));
 
             NormalizedMessage msg = inout.createMessage();
             inout.setInMessage(msg);
             msg.setProperty("messageType", "context/request");
-            TextSegment text = new TextSegment.Builder("path").text(contextId + "/" + key).build();
+            msg.setProperty("contextId", contextId);
+
+            String path = pathAndKey.substring(0, pathAndKey.lastIndexOf('/'));
+            String key = pathAndKey.substring(pathAndKey.lastIndexOf('/') + 1);
+
+            TextSegment text = new TextSegment.Builder("path").text(path).build();
             String xml = text.toXML();
 
             msg.setContent(new StringSource(xml));
@@ -57,12 +67,18 @@ public class ContextHelperImpl {
             endpoint.sendSync(inout);
 
             NormalizedMessage response = inout.getOutMessage();
+            String outXml = new SourceTransformer().toString(response.getContent());
+            Segment segment = Segment.fromXML(outXml);
 
-            System.out.println(response.getContent());
-            return "Value: " + key;
+            Context context = ContextSegmentTransformer.toContext(segment);
+            String value = context.get(key);
+
+            return value;
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        } catch (TransformerException e) {
             throw new RuntimeException(e);
         }
     }

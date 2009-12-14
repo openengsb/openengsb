@@ -22,7 +22,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
@@ -38,14 +40,15 @@ import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.drools.RuleBase;
+import org.drools.agent.RuleAgent;
 import org.drools.compiler.RuleBaseLoader;
 import org.openengsb.drools.model.Event;
 import org.springframework.core.io.Resource;
 
 /**
- * @org.apache.xbean.XBean element="endpoint"
+ * @org.apache.xbean.XBean element="droolsEndpoint"
+ *                         description="Drools Component"
  */
-
 public class DroolsEndpoint extends ProviderEndpoint {
 
     /**
@@ -63,20 +66,31 @@ public class DroolsEndpoint extends ProviderEndpoint {
     /**
      * List of global variables for rules to use.
      */
-    private Map<String, Object> globals;
+    private Map<String, Object> globals = new HashMap<String, Object>();
 
     /**
      * default constructor.
      */
     public DroolsEndpoint() {
+        init();
     }
 
     public DroolsEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
         super(component, endpoint);
+        init();
     }
 
     public DroolsEndpoint(ServiceUnit su, QName service, String endpoint) {
         super(su, service, endpoint);
+        init();
+    }
+
+    private void init() {
+        Properties config = new Properties();
+        config.put("url", "http://localhost:8081/drools-guvnor/org.drools.guvnor.Guvnor/package/org.openengsb/LATEST");
+        RuleAgent agent = RuleAgent.newRuleAgent(config);
+        RuleBase ruleBase = agent.getRuleBase();
+        setRuleBase(ruleBase);
     }
 
     /**

@@ -104,11 +104,16 @@
       <artifactId>openengsb-workflow</artifactId>
     </dependency>
     
-    
     <!-- Context -->
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-context</artifactId>
+    </dependency>
+
+    <!-- Drools -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-drools</artifactId>
     </dependency>
 
   </dependencies>
