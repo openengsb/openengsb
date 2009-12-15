@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinkRegisterMessage>
+  <body>
+    <link><source>signal1</source>
+      <type>pdf</type>
+      <param>/pdfs/document.pdf -page 2</param>
+    </link>
+    <link><source>signal1</source>
+      <type>opm</type>
+      <param>opm.exe -open project1.opm -sheet cpu1</param>
+    </link>
+  </body>
+</LinkRegisterMessage>

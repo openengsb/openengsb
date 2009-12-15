@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinkRequested>
+<body>
+  <target>
+    <type><![CDATA[pdf]]></type>
+    <param><![CDATA[/pdfs/document.pdf -page 2]]></param>
+    <uuid><![CDATA[f073d4df-1baf-40f7-9335-cc4654c4efe4]]></uuid>
+  </target>
+  <target>
+    <type><![CDATA[pdf]]></type>
+    <param><![CDATA[opm.exe -open project1.opm -sheet cpu1]]></param>
+    <uuid><![CDATA[a6111728-dab7-4d05-a885-6f260978c0a6]]></uuid>
+  </target>
+  </body>
+</LinkRequested>
+
