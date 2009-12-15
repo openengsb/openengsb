@@ -22,21 +22,27 @@
   <section>
     <title id="general">General</title>
 
-    <para>To communicate with the EDB instances in the OpenEngSB, you need to send JMS messages to the endpoint "edb".</para>
+    <para>To communicate with the EDB instances in the OpenEngSB, you need to send JMS messages to the queue "edb".</para>
 
   </section>
   
   <section>
     <title id="contentStorage">Content Storage</title>
 
-    <para>TODO</para>    
+    <para>The EDB endpoint can receive messages to store and query content (as well as undoing the last changes). The schema for a storing content goes as follows:</para>    
 
     <programlisting>
-      <![CDATA[persis]]>
+      <![CDATA[persist]]>
     </programlisting>
+    <para>NOTE: the field "path" defines the abstract path names of the hierachical structure of the content, where the fieldnames with the elements from "path" describe the actual path, i.e. path = "/a/b/c" is abstract and the actual path is a="any", b="real", c="pathName".</para> 
+    <para>Queries are structured as [keyname]:[valuename](AND [keyname]:[valuename])*, whereas [keyname] can be every possible fieldname of the stored content. The entire schema goes as follows</para>
 
     <programlisting>
       <![CDATA[query]]>
+    </programlisting>
+      
+    <programlisting>
+      <![CDATA[TODO:reset schema]]>
     </programlisting>
 
   </section>
@@ -44,7 +50,7 @@
   <section>
     <title id="linking">Linking</title>
 
-    <para>TODO</para>
+    <para>The messages described in this section are used to register and query for links.</para>
   
     <programlisting>
       <![CDATA[linkregister]]>
@@ -52,10 +58,6 @@
     
     <programlisting>
       <![CDATA[linkquery]]>
-    </programlisting>
-
-    <programlisting>
-      <![CDATA[localhost:8192/Link/?a6111728-dab7-4d05-a885-6f260978c0a6]]>
     </programlisting>
 
   </section>
