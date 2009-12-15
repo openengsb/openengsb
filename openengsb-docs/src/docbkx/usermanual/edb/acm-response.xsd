@@ -56,8 +56,9 @@
 	<complexType name="acmResponseBody">
 		<annotation>
 			<documentation><![CDATA[
-			Message body which is build out of an user object and an complex message object 
-			which contains exactly one acmMessageObjects object which contains all the required
+			Message body which is build out of an user object and 
+			an complex message object which contains exactly one 
+			acmMessageObjects object which contains all the required
 			data for the application.
 			]]></documentation>
 		</annotation>
