@@ -16,23 +16,29 @@
    limitations under the License.
 
 -->
-<chapter id="externalEDBCommunication">
+<chapter id="externalEDBCommunication" xmlns:xi="http://www.w3.org/2001/XInclude">
   <title>How to communicate with the Engineering Data Base</title>
   
   <section>
     <title id="general">General</title>
 
-    <para>To communicate with the EDB instances in the OpenEngSB, it is required to send JMS messages to the queue "org.openengsb.edb", while the message type defines the actual operation. Schemas and/or samples of the messages can be found in the following sections.</para>
+    <para>To communicate with the EDB instances in the OpenEngSB, it is required to send
+      JMS messages to the queue "org.openengsb.edb", while the message type defines 
+      the actual operation. Schemas and/or samples of the messages can be found in the  
+      following sections. For the reply, a destination has to be defined and added to 
+      the message as reply queue.</para>
 
   </section>
   
   <section>
     <title id="contentStorage">Content Storage</title>
 
-    <para>The EDB endpoint can receive messages to store and query content (as well as undoing the last changes). (TODO: add operation element) The schema for a storing content goes as follows:</para>    
+    <para>The EDB endpoint can receive messages to store and query content
+      (as well as undoing the last changes). (TODO: add operation element)
+      The schema for storing content goes as follows:</para>    
 
-    <programlisting>
-      <![CDATA[persist]]>
+    <programlisting language="xml">
+      <textobject><textdata fileref="../../src/docbkx/usermanual/edb/acm-persist.xsd" /></textobject>
     </programlisting>
     <para>NOTE: the field "path" defines the abstract path names of the hierachical structure of the content, where the fieldnames with the elements from "path" describe the actual path, i.e. path = "/a/b/c" is abstract and the actual path is a="any", b="real", c="pathName".</para> 
     <para>Queries are structured as [keyname]:[valuename](AND [keyname]:[valuename])*, whereas [keyname] can be every possible fieldname of the stored content. The entire schema goes as follows</para>

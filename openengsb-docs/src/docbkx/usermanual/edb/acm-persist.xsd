@@ -16,9 +16,11 @@
    limitations under the License.
 
 -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ifs.tuwien.ac.at/engsb/acm/persist"
-	xmlns:tns="http://www.ifs.tuwien.ac.at/engsb/acm/persist" xmlns:base="http://www.ifs.tuwien.ac.at/engsb/AbstractServiceMessage"
-	elementFormDefault="qualified">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+        targetNamespace="http://www.ifs.tuwien.ac.at/engsb/acm/persist"
+      	xmlns:tns="http://www.ifs.tuwien.ac.at/engsb/acm/persist"
+    	  xmlns:base="http://www.ifs.tuwien.ac.at/engsb/AbstractServiceMessage"
+      	elementFormDefault="qualified">
 
 	<import namespace="http://www.ifs.tuwien.ac.at/engsb/AbstractServiceMessage"
 		schemaLocation="abstrac-service-message.xsd" />
@@ -32,9 +34,9 @@
 	<element name="acmPersistMessage" type="tns:acmPersistMessage">
 		<annotation>
 			<documentation><![CDATA[
-			The real message wich is sent and consists out of an header and an body, where the body
-			is defined by an base definition in the abstract-message.xsd and the body is definied
-			for the message in this file.
+			The real message wich is sent and consists out of an header and an body,
+			where the body is defined by an base definition in the abstract-message.xsd
+			and the body is definied for the message in this file.
 			]]></documentation>
 		</annotation>
 	</element>
@@ -84,10 +86,11 @@
 	<complexType name="acmMessageObject">
 		<annotation>
 			<documentation><![CDATA[
-			The real message object containing the data which should be sent over the network and which
-			should be persisted by an content repository. The path element in this context describes
-			the path where in the context repostiory the file have to be persisted. This could be seen
-			as an hirarchy describing e.g. customer/project/region/...
+			The real message object containing the data which should be sent over the network 
+			and which should be persisted by an content repository.
+			The path element in this context describes the path where in the context repostiory 
+			the file have to be persisted.
+			This could be seen as a hierarchy describing e.g. customer/project/region/...
 			]]></documentation>
 		</annotation>
 		<sequence>
