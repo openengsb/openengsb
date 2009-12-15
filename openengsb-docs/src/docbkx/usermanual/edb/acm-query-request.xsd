@@ -16,8 +16,10 @@
    limitations under the License.
 
 -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ifs.tuwien.ac.at/engsb/acm/query/request"
-	xmlns:tns="http://www.ifs.tuwien.ac.at/engsb/acm/query/request" xmlns:base="http://www.ifs.tuwien.ac.at/engsb/AbstractServiceMessage"
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.ifs.tuwien.ac.at/engsb/acm/query/request"
+	xmlns:tns="http://www.ifs.tuwien.ac.at/engsb/acm/query/request"
+	xmlns:base="http://www.ifs.tuwien.ac.at/engsb/AbstractServiceMessage"
 	elementFormDefault="qualified">
 
 	<import namespace="http://www.ifs.tuwien.ac.at/engsb/AbstractServiceMessage"
@@ -32,7 +34,8 @@
 	<element name="acmQueryRequestMessage" type="tns:acmQueryRequestMessage">
 		<annotation>
 			<documentation><![CDATA[
-			Message containing a query which should be exectued agains the acm implementation.
+			Message containing a query which should be exectued against 
+			the acm implementation.
 			]]></documentation>
 		</annotation>
 	</element>
@@ -40,8 +43,9 @@
 	<complexType name="acmQueryRequestMessage">
 		<annotation>
 			<documentation><![CDATA[
-			Message with body and header where the header is an service header which also
-			contains the name of the queue where an answer should be sent to by the client.
+			Message with body and header where the header is an service header which 
+			also contains the name of the queue where an answer should be sent 
+			to the client.
 			]]></documentation>
 		</annotation>
 		<sequence>
@@ -53,7 +57,8 @@
 	<complexType name="acmQueryRequestMessageBody">
 		<annotation>
 			<documentation><![CDATA[
-			Simple element only containing the query which should be executed against the acm.
+			Simple element only containing the query which should be executed against 
+			the acm.
 			]]></documentation>
 		</annotation>
 		<sequence>
