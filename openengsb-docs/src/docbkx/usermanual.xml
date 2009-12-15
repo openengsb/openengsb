@@ -1,4 +1,4 @@
-cd <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
 <!--
 
    Copyright 2009 OpenEngSB Division, Vienna University of Technology
@@ -40,6 +40,7 @@ cd <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
   <xi:include href="usermanual/architecture.xml" />
   <xi:include href="usermanual/connectors.xml" />
   <xi:include href="usermanual/howToWriteAToolConnectors.xml" />
+  <xi:include href="usermanual/externalEDBCommunication.xml" />
   <xi:include href="usermanual/scmDomain.xml"/>
   <xi:include href="usermanual/drools.xml"/>
   <xi:include href="usermanual/linkHttp.xml"/>
