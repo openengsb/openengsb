@@ -16,6 +16,22 @@
    limitations under the License.
 
 -->
-<chapter id="writingDomain">
-  <title>How To write a Tool Connector</title>
+<chapter id="ExternalEDBCommunication">
+  <title>How to communicate with the Engineering Data Base</title>
+
+  <section>
+    <title id="general">General</title>
+  </section>
+  
+  <para>To
+  </para>
+
+  <section>
+    <title id="contentStorage">Content Storage</title>
+  </section>
+
+  <section>
+    <title id="linking">Linking</title>
+  </section>
+
 </chapter>
