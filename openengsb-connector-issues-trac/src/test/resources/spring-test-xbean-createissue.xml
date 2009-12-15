@@ -29,9 +29,9 @@
           <engsb:tracComponent>
             <engsb:endpoints>
               <engsb:create-issue service="test:tracTicketCreatorService" endpoint="executeEndpoint">
-                <property name="url" value="http://192.168.1.119:8000/trac/login/xmlrpc" />
-                <property name="username" value="david" />
-                <property name="password" value="david" />
+                <property name="url" value="http://localhost:8000/trac/login/xmlrpc" />
+                <property name="username" value="user" />
+                <property name="password" value="user" />
               </engsb:create-issue>
             </engsb:endpoints>
           </engsb:tracComponent>

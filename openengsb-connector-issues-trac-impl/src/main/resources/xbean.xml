@@ -17,16 +17,17 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:tracissues="http://openengsb.org/connector/issues/trac/1.0"
+  xmlns:trac="http://www.openengsb.org/connector/issues/trac/1.0"
   xmlns:openengsb="http://openengsb.org/serviceunits"
   xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:isu="urn:openengsb:issues"
   xsi:schemaLocation="
   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <tracissues:create-issue service="csd:tracTicketCreatorService" endpoint="executeEndpoint">
-    <property name="url" value="http://192.168.1.119:8000/trac/login/xmlrpc" />
-    <property name="username" value="david" />
-    <property name="password" value="david" />
-  </tracissues:create-issue>
+  <trac:issuesEndpoint service="isu:issuesService" endpoint="issuesEndpoint">
+    <property name="url" value="http://localhost:8000/trac/login/xmlrpc" />
+    <property name="username" value="user" />
+    <property name="password" value="user" />
+  </trac:issuesEndpoint>
 
 </beans>

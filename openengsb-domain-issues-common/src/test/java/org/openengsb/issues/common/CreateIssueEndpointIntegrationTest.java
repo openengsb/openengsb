@@ -49,7 +49,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.issues.common.endpoints.AbstractCreateIssueEndpoint;
+import org.openengsb.issues.common.endpoints.AbstractIssueEndpoint;
 import org.openengsb.issues.common.exceptions.IssueDomainException;
 import org.openengsb.issues.common.messages.CreateIssueMessage;
 import org.openengsb.issues.common.messages.CreateIssueResponseMessage;

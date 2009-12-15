@@ -27,7 +27,7 @@ public class DomainRegistry {
 
     static {
         domains.put("helper", MessageHelper.class);
-        domains.put("issues", IssuesDomain.class);
+        domains.put("issues", DroolsIssuesDomain.class);
     }
 
     private DomainRegistry() {

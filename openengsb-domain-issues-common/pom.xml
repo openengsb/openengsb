@@ -37,6 +37,14 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-util</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-drools-domains</artifactId>
+    </dependency>
 
     <!-- Springframework dependencies -->
     <dependency>

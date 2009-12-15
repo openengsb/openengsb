@@ -17,7 +17,7 @@
  */
 package org.openengsb.drools;
 
-public interface IssuesDomain {
+public interface DroolsIssuesDomain {
 
     /**
      * @return The ID of the created issue

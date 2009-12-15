@@ -14,26 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.issues.trac.se;
+package org.openengsb.issues.trac;
 
 import java.util.List;
 
 import org.apache.servicemix.common.DefaultComponent;
-import org.openengsb.issues.trac.se.endpoints.TracCreateIssueEndpoint;
 
 /**
- * @org.apache.xbean.XBean element="tracComponent"
+ * @org.apache.xbean.XBean element="issuesComponent"
  *                         description="Trac Issue Tracker Component"
  */
 public class TracComponent extends DefaultComponent {
 
-    private TracCreateIssueEndpoint[] endpoints;
+    private TracIssuesEndpoint[] endpoints;
 
-    public TracCreateIssueEndpoint[] getEndpoints() {
+    public TracIssuesEndpoint[] getEndpoints() {
         return endpoints;
     }
 
-    public void setEndpoints(TracCreateIssueEndpoint[] endpoints) {
+    public void setEndpoints(TracIssuesEndpoint[] endpoints) {
         this.endpoints = endpoints;
     }
 
@@ -42,7 +41,7 @@ public class TracComponent extends DefaultComponent {
     }
 
     protected Class[] getEndpointClasses() {
-        return new Class[] { TracCreateIssueEndpoint.class };
+        return new Class[] { TracIssuesEndpoint.class };
     }
 
 }

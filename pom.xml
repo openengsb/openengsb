@@ -676,6 +676,16 @@
         <artifactId>openengsb-domain-issues-common</artifactId>
         <version>${pom.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-connector-issues-trac-impl</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-connector-issues-trac</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
 
       <!-- Connectors -->
       <dependency>

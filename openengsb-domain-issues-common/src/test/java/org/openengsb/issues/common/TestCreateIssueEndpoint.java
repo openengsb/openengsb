@@ -18,12 +18,13 @@ limitations under the License.
 
 package org.openengsb.issues.common;
 
-import org.openengsb.issues.common.endpoints.AbstractCreateIssueEndpoint;
+import org.openengsb.drools.DroolsIssuesDomain;
+import org.openengsb.issues.common.endpoints.AbstractIssueEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="create-issue"
  */
-public class TestCreateIssueEndpoint extends AbstractCreateIssueEndpoint {
+public class TestCreateIssueEndpoint extends AbstractIssueEndpoint {
 
     private IssueDomain issueDomain;
 
@@ -38,6 +39,11 @@ public class TestCreateIssueEndpoint extends AbstractCreateIssueEndpoint {
     @Override
     protected IssueDomain createIssueDomain() {
         return getIssueDomain();
+    }
+
+    @Override
+    public DroolsIssuesDomain getImplementation() {
+        return null;
     }
 
 }

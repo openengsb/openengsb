@@ -20,7 +20,9 @@ package org.openengsb.issues.trac;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
@@ -45,8 +47,10 @@ public class TracConnector implements IssueDomain {
     private String password;
 
     private Converter converter = new Converter();
-
-    public TracConnector(String url, String username, String password) {
+    
+    private static Map<String, TracConnector> instances = new HashMap<String, TracConnector>();
+    
+    private TracConnector(String url, String username, String password) {
         this.url = url;
         this.username = username;
         this.password = password;
@@ -58,6 +62,19 @@ public class TracConnector implements IssueDomain {
         ticket = (Ticket) proxy.newInstance(Ticket.class);
 
         log.info("Instantiation done");
+    }
+
+    
+    public static TracConnector getInstance(String url, String username, String password) {
+        String key = url + username + password; // XXX
+        
+        TracConnector tracConnector = instances.get(key);
+        if (tracConnector == null) {
+            tracConnector = new TracConnector(url, username, password);
+            instances.put(key,tracConnector);
+        }
+        
+        return tracConnector;
     }
 
     @Override
@@ -96,7 +113,7 @@ public class TracConnector implements IssueDomain {
         try {
             config.setServerURL(new URL(this.url));
         } catch (MalformedURLException e) {
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
         config.setBasicUserName(this.username);
         config.setBasicPassword(this.password);

@@ -116,6 +116,12 @@
       <artifactId>openengsb-drools</artifactId>
     </dependency>
 
+    <!-- Issues -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-connector-issues-trac-impl</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

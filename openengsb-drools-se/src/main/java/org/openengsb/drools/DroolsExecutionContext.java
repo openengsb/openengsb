@@ -18,6 +18,7 @@
 package org.openengsb.drools;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
@@ -147,36 +148,42 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
         }
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            System.out.println("Invoking method: " + method.getName());
-            String namespaceURI = contextHelper.getValue("production/domain/" + name + "/namespace");
-            String serviceName = contextHelper.getValue("production/domain/" + name + "/servicename");
+        public Object invoke(Object proxy, Method method, Object[] args) {
+            try {
+                System.out.println("Invoking method: " + method.getName());
+                String namespaceURI = contextHelper.getValue("production/" + name + "/namespace");
+                String serviceName = contextHelper.getValue("production/" + name + "/servicename");
 
-            InOut inout = new InOutImpl(UUID.randomUUID().toString());
-            inout.setService(new QName(namespaceURI, serviceName));
-            inout.setOperation(new QName("methodcall"));
-            
-            NormalizedMessage msg = inout.createMessage();
-            inout.setInMessage(msg);
+                InOut inout = new InOutImpl(UUID.randomUUID().toString());
+                inout.setService(new QName(namespaceURI, serviceName));
+                inout.setOperation(new QName("methodcall"));
 
-            msg.setProperty("contentType", "methodcall");
-            msg.setProperty("contextId", contextId);
+                NormalizedMessage msg = inout.createMessage();
+                inout.setInMessage(msg);
 
-            MethodCall call = new MethodCall(method,args);
-            Segment callSegment = MethodCallTransformer.transform(call);
-            String xml = callSegment.toXML();
+                msg.setProperty("contentType", "methodcall");
+                msg.setProperty("contextId", contextId);
 
-            msg.setContent(new StringSource(xml));
+                MethodCall call = new MethodCall(method, args);
+                Segment callSegment = MethodCallTransformer.transform(call);
+                String xml = callSegment.toXML();
 
-            endpoint.sendSync(inout);
+                msg.setContent(new StringSource(xml));
 
-            NormalizedMessage outMessage = inout.getOutMessage();
-            String outXml = new SourceTransformer().toString(outMessage.getContent());
-            Segment outSegment = Segment.fromXML(outXml);
+                endpoint.sendSync(inout);
 
-            ReturnValue returnValue = ReturnValueTransformer.transform(outSegment);
-            
-            return returnValue.getValue();
+                NormalizedMessage outMessage = inout.getOutMessage();
+                String outXml = new SourceTransformer().toString(outMessage.getContent());
+                Segment outSegment = Segment.fromXML(outXml);
+
+                ReturnValue returnValue = ReturnValueTransformer.transform(outSegment);
+
+                return returnValue.getValue();
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
