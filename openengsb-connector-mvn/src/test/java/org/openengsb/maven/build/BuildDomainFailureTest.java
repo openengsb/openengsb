@@ -26,6 +26,7 @@ import javax.annotation.Resource;
 import junit.framework.TestCase;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.maven.build.constants.BuildMvnTestConstants;
@@ -37,7 +38,6 @@ import org.openengsb.maven.se.endpoints.MavenBuildEndpoint;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/testbeans.xml" })
@@ -63,6 +63,7 @@ public class BuildDomainFailureTest extends TestCase {
     }
 
     @Test
+    @Ignore
     public void buildShouldFail_clean_install() throws MavenException {
 
         Options options = new Options();

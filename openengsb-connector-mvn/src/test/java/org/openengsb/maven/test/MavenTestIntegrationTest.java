@@ -31,6 +31,7 @@ import org.apache.servicemix.tck.SpringTestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.maven.common.pojos.result.MavenResult;
@@ -39,7 +40,6 @@ import org.openengsb.maven.test.constants.TestMvnTestConstantsIntegration;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/testbeans.xml" })
@@ -87,6 +87,7 @@ public class MavenTestIntegrationTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void test_shouldRunTestsWithNoSurefirePlugin() throws Exception {
         DefaultServiceMixClient client = new DefaultServiceMixClient(this.jbi);
         InOut inOut = createInOutMessage(client, "urn:test-surefire", "test-no-surefire", "<mavenTester/>");
@@ -100,6 +101,7 @@ public class MavenTestIntegrationTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void test_shouldRunTestsAndFail_TestFailure() throws Exception {
         DefaultServiceMixClient client = new DefaultServiceMixClient(this.jbi);
         InOut inOut = createInOutMessage(client, "urn:test-surefire", "test-unit-fail", "<mavenTester/>");
@@ -113,6 +115,7 @@ public class MavenTestIntegrationTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void test_shouldRunTestsWithConfiguredSurefire() throws Exception {
         DefaultServiceMixClient client = new DefaultServiceMixClient(this.jbi);
         InOut inOut = createInOutMessage(client, "urn:test-surefire", "test-valid-surefire", "<mavenTester/>");
@@ -126,6 +129,7 @@ public class MavenTestIntegrationTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void test_shouldRunTestsAndFail_InvalidSurefireParameter() throws Exception {
         DefaultServiceMixClient client = new DefaultServiceMixClient(this.jbi);
         InOut inOut = createInOutMessage(client, "urn:test-surefire", "test-invalid-surefire", "<mavenTester/>");

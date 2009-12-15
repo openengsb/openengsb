@@ -37,6 +37,7 @@ import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.codehaus.plexus.util.FileUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.maven.common.pojos.result.MavenResult;
@@ -45,7 +46,6 @@ import org.openengsb.maven.deploy.constants.DeployMvnTestConstantsIntegration;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 
 /**
  * Collection of integration tests, that test the Component and Endpoints of the
@@ -132,6 +132,7 @@ public class MavenDeployIntegrationTest extends SpringTestSupport {
      * @throws Exception
      */
     @Test
+    @Ignore
     public void deployFile_shouldReturnSuccessfulResultWithValidArtifact() throws Exception {
         // set up and perform call
         DefaultServiceMixClient client = createClient();
@@ -163,6 +164,7 @@ public class MavenDeployIntegrationTest extends SpringTestSupport {
      * @throws Exception
      */
     @Test
+    @Ignore
     public void deployFile_houldReturnUnsuccessfulResultWithMissingPomArtifact() throws Exception {
         // set up and perform call
         DefaultServiceMixClient client = createClient();
@@ -194,6 +196,7 @@ public class MavenDeployIntegrationTest extends SpringTestSupport {
      * @throws Exception
      */
     @Test
+    @Ignore
     public void deployFile_shouldReturnUnsuccessfulResultWithNotExistingArtifact() throws Exception {
         // set up and perform call
         DefaultServiceMixClient client = createClient();
@@ -225,6 +228,7 @@ public class MavenDeployIntegrationTest extends SpringTestSupport {
      * @throws Exception
      */
     @Test
+    @Ignore
     public void execute_WithValidArtifactsShouldReturnResultListWithSuccessfulItems() throws Exception {
         // set up and perform call
         DefaultServiceMixClient client = createClient();
@@ -255,6 +259,7 @@ public class MavenDeployIntegrationTest extends SpringTestSupport {
      * @throws Exception
      */
     @Test
+    @Ignore
     public void execute_WithInvalidArtifactsShouldReturnResultListWithUnsuccessfulItems() throws Exception {
         // set up and perform call
         DefaultServiceMixClient client = createClient();

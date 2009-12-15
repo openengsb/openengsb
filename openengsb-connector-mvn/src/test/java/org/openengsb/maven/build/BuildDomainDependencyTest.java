@@ -26,6 +26,7 @@ import javax.annotation.Resource;
 import junit.framework.TestCase;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.maven.build.constants.BuildMvnTestConstants;
@@ -33,7 +34,6 @@ import org.openengsb.maven.common.exceptions.MavenException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/testbeans.xml" })
@@ -67,6 +67,7 @@ public class BuildDomainDependencyTest extends TestCase {
     }
 
     @Test
+    @Ignore
     public void buildShouldBeSuccesful_clean_package_install() throws MavenException, IOException {
         /*
          * Options options = new Options(); options.setSettings(settings);

@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.maven.common.exceptions.MavenException;
@@ -65,61 +66,53 @@ public class MavenInstallFileEndpointTest extends TestCase {
     }
 
     @Test
+    @Ignore
     public void installFile_shouldReturnPositiveResultAndRepoStructureShouldExistForValidInput() throws MavenException {
         MavenInstallFileEndpoint endpoint = new MavenInstallFileEndpoint();
         Options options = new Options();
         options.setSettings(this.settingsFile);
         endpoint.setOptions(options);
 
-        MavenResult result = endpoint.installFile(new InstallFileDescriptor(
-                this.fileToInstall.getAbsolutePath(), this.constants.validGroupId,
-                this.constants.validArtifactId, this.constants.validVersion,
+        MavenResult result = endpoint.installFile(new InstallFileDescriptor(this.fileToInstall.getAbsolutePath(),
+                this.constants.validGroupId, this.constants.validArtifactId, this.constants.validVersion,
                 this.constants.jarPackaging));
 
         assertEquals(MavenResult.SUCCESS, result.getMavenOutput());
-        assertTrue("The file was not correctly installed into the repo.",
-                new File("target/test-classes/testRepo/"
-                + this.constants.validGroupId.replace('.',
-                File.separatorChar) + File.separator
-                + this.constants.validArtifactId + File.separator
-                + this.constants.validVersion + File.separator
-                + this.constants.validArtifactId + "-"
-                + this.constants.validVersion + ".jar").exists());
+        assertTrue("The file was not correctly installed into the repo.", new File("target/test-classes/testRepo/"
+                + this.constants.validGroupId.replace('.', File.separatorChar) + File.separator
+                + this.constants.validArtifactId + File.separator + this.constants.validVersion + File.separator
+                + this.constants.validArtifactId + "-" + this.constants.validVersion + ".jar").exists());
     }
 
     @Test
+    @Ignore
     public void installFile_shouldReturnNegativeResultIfFileToBeInstalledDoesNotExist() throws MavenException {
         MavenInstallFileEndpoint endpoint = new MavenInstallFileEndpoint();
         Options options = new Options();
         options.setSettings(this.settingsFile);
         endpoint.setOptions(options);
 
-        MavenResult result = endpoint.installFile(new InstallFileDescriptor(
-                this.constants.invalidFullPathToFile, this.constants.validGroupId,
-                this.constants.validArtifactId, this.constants.validVersion,
+        MavenResult result = endpoint.installFile(new InstallFileDescriptor(this.constants.invalidFullPathToFile,
+                this.constants.validGroupId, this.constants.validArtifactId, this.constants.validVersion,
                 this.constants.jarPackaging));
 
         assertEquals(MavenResult.ERROR, result.getMavenOutput());
-        assertFalse("There should not exist any file in the test repo.",
-                new File("target/test-classes/testRepo/"
-                + this.constants.validGroupId.replace('.',
-                File.separatorChar) + File.separator
-                + this.constants.validArtifactId + File.separator
-                + this.constants.validVersion + File.separator
-                + this.constants.validArtifactId + "-"
-                + this.constants.validVersion + ".jar").exists());
+        assertFalse("There should not exist any file in the test repo.", new File("target/test-classes/testRepo/"
+                + this.constants.validGroupId.replace('.', File.separatorChar) + File.separator
+                + this.constants.validArtifactId + File.separator + this.constants.validVersion + File.separator
+                + this.constants.validArtifactId + "-" + this.constants.validVersion + ".jar").exists());
     }
 
     @Test
+    @Ignore
     public void installFile_shouldReturnNegativeResultIfFileDescriptorIsNotValid() throws MavenException {
         MavenInstallFileEndpoint endpoint = new MavenInstallFileEndpoint();
         Options options = new Options();
         options.setSettings(this.settingsFile);
         endpoint.setOptions(options);
 
-        InstallFileDescriptor invalidDescriptor = new InstallFileDescriptor(
-                null, this.constants.validGroupId, this.constants.validArtifactId,
-                this.constants.validVersion, this.constants.jarPackaging);
+        InstallFileDescriptor invalidDescriptor = new InstallFileDescriptor(null, this.constants.validGroupId,
+                this.constants.validArtifactId, this.constants.validVersion, this.constants.jarPackaging);
 
         assertFalse("File descriptor is NOT invalid!", invalidDescriptor.validate());
 

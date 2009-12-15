@@ -30,6 +30,7 @@ import junit.framework.TestCase;
 
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.maven.build.constants.BuildMvnTestConstants;
@@ -41,7 +42,6 @@ import org.openengsb.maven.se.endpoints.MavenBuildEndpoint;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/testbeans.xml" })
@@ -75,6 +75,7 @@ public class BuildDomainDefaultTest extends TestCase {
     }
 
     @Test
+    @Ignore
     public void shouldCleanProject() throws MavenEmbedderException, IOException, MavenException {
         ProjectConfiguration projectConfig = new ProjectConfiguration();
         projectConfig.setGoals(Arrays.asList(new String[] { "clean" }));
@@ -102,6 +103,7 @@ public class BuildDomainDefaultTest extends TestCase {
     }
 
     @Test
+    @Ignore
     public void shouldBuildSuccesful_JAR_clean_package() throws MavenEmbedderException, IOException, MavenException {
         ProjectConfiguration projectConfig = new ProjectConfiguration();
         projectConfig.setGoals(Arrays.asList(new String[] { "clean", "package" }));
@@ -132,6 +134,7 @@ public class BuildDomainDefaultTest extends TestCase {
     }
 
     @Test
+    @Ignore
     public void shouldBuildSuccesful_JAR_clean_install() throws MavenEmbedderException, IOException, MavenException {
         ProjectConfiguration projectConfig = new ProjectConfiguration();
         projectConfig.setGoals(Arrays.asList(new String[] { "clean", "install" }));

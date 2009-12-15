@@ -38,6 +38,7 @@ import org.apache.servicemix.tck.SpringTestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.maven.build.constants.BuildMvnTestConstantsIntegration;
@@ -101,6 +102,7 @@ public class MavenBuildIntegrationTest extends SpringTestSupport {
 
     @SuppressWarnings("unchecked")
     @Test
+    @Ignore
     public void testBuildShouldBeSuccessful() throws Exception {
         DefaultServiceMixClient client = new DefaultServiceMixClient(this.jbi);
 
@@ -125,6 +127,7 @@ public class MavenBuildIntegrationTest extends SpringTestSupport {
 
     @SuppressWarnings("unchecked")
     @Test
+    @Ignore
     public void testBuildShouldFail() throws Exception {
         DefaultServiceMixClient client = new DefaultServiceMixClient(this.jbi);
 
@@ -147,6 +150,7 @@ public class MavenBuildIntegrationTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void testBuildShouldBeSuccessfulWithDownloadDep() throws Exception {
         DefaultServiceMixClient client = new DefaultServiceMixClient(this.jbi);
 
@@ -164,6 +168,7 @@ public class MavenBuildIntegrationTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void testBuildShouldFailOfInvalidPom() throws Exception {
         DefaultServiceMixClient client = new DefaultServiceMixClient(this.jbi);
 
@@ -182,6 +187,7 @@ public class MavenBuildIntegrationTest extends SpringTestSupport {
 
     @SuppressWarnings("unchecked")
     @Test
+    @Ignore
     public void testProviderEndpoint() throws IOException, JBIException {
 
         JBIContainer jbi = new JBIContainer();

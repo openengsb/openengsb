@@ -35,6 +35,7 @@ import javax.annotation.Resource;
 import org.codehaus.plexus.util.FileUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.maven.common.domains.DeployDomain;
@@ -44,7 +45,6 @@ import org.openengsb.maven.deploy.constants.DeployMvnTestConstants;
 import org.openengsb.maven.se.endpoints.MavenDeployEndpoint;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 
 /**
  * Collection of unit tests for implementing class of DeployDomain for maven.
@@ -111,6 +111,7 @@ public class DeployDomainMavenUnitTest {
      * implementation.
      */
     @Test
+    @Ignore
     public void listFilesToDeploy_shouldReturnFilesSet() {
         DeployDomain deployDomain = createNewDeployDomain(this.CONSTANTS.VALID_ARTIFACTS);
         assertArrayEquals(this.CONSTANTS.VALID_ARTIFACTS, deployDomain.listFilesToDeploy());
@@ -124,6 +125,7 @@ public class DeployDomainMavenUnitTest {
      * @throws MavenException
      */
     @Test
+    @Ignore
     public void deployFile_shouldReturnPositiveResultAndHaveDeployedArtifactOnPositiveResult() throws MavenException {
         DeployDomain deployDomain = createNewDeployDomain(this.CONSTANTS.VALID_ARTIFACTS);
         MavenResult result = deployDomain.deployFile(this.CONSTANTS.VALID_ARTIFACT);
@@ -146,6 +148,7 @@ public class DeployDomainMavenUnitTest {
      * @throws MavenException
      */
     @Test
+    @Ignore
     public void deployFile_shouldReturnNegativeResultOnNotConfiguredFile() throws MavenException {
         DeployDomain deployDomain = createNewDeployDomain(this.CONSTANTS.VALID_ARTIFACTS);
         MavenResult result = deployDomain.deployFile(this.CONSTANTS.NON_EXISTING_ARTIFACT);
@@ -166,6 +169,7 @@ public class DeployDomainMavenUnitTest {
      * @throws MavenException
      */
     @Test
+    @Ignore
     public void deployFile_shouldReturnNegativeResultwithErrormessageAndDeployedArtifactOnInvalidPom()
             throws MavenException {
         DeployDomain deployDomain = createNewDeployDomain(this.CONSTANTS.INVALID_ARTIFACTS);
@@ -187,6 +191,7 @@ public class DeployDomainMavenUnitTest {
      * @throws MavenException
      */
     @Test
+    @Ignore
     public void deployFile_shouldReturnNegativeResultwithErrormessageAndDeployedArtifactOnMissingPom()
             throws MavenException {
         DeployDomain deployDomain = createNewDeployDomain(this.CONSTANTS.INVALID_ARTIFACTS);
@@ -208,6 +213,7 @@ public class DeployDomainMavenUnitTest {
      * @throws MavenException
      */
     @Test
+    @Ignore
     public void execute_shouldReturnPositiveResultAndHaveDeployedAllArtifactsOnEcecutionOnValidArtifacts()
             throws MavenException {
         DeployDomain deployDomain = createNewDeployDomain(this.CONSTANTS.VALID_ARTIFACTS);
@@ -232,6 +238,7 @@ public class DeployDomainMavenUnitTest {
      * @throws MavenException
      */
     @Test
+    @Ignore
     public void execute_shouldReturnNegativeResultsWithErrorMessagesAndNotHaveMovedOneFile() throws MavenException {
         DeployDomain deployDomain = createNewDeployDomain(this.CONSTANTS.INVALID_ARTIFACTS);
         List<MavenResult> resultList = deployDomain.executeDeploy();
@@ -257,6 +264,7 @@ public class DeployDomainMavenUnitTest {
      * @throws MavenException
      */
     @Test
+    @Ignore
     public void execute_shouldBehaveAppropriatelyDependingOnThePomsValidity() throws MavenException {
         DeployDomain deployDomain = createNewDeployDomain(this.CONSTANTS.SOME_VALID_SOME_INVALID_ARTIFACTS);
         List<MavenResult> resultList = deployDomain.executeDeploy();

@@ -33,6 +33,7 @@ import org.apache.servicemix.tck.SpringTestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.maven.common.pojos.InstallFileDescriptor;
@@ -57,11 +58,13 @@ public class MavenInstallFileIntegrationTest extends SpringTestSupport {
     private static final String testNamespace = "urn:test";
     private static final String serviceName = "fileInstallerService";
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
     }
 
+    @Override
     @After
     public void tearDown() throws Exception {
         super.tearDown();
@@ -82,8 +85,9 @@ public class MavenInstallFileIntegrationTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void successfulRunShouldReturnPositiveResult() throws Exception {
-        DefaultServiceMixClient client = new DefaultServiceMixClient(jbi);
+        DefaultServiceMixClient client = new DefaultServiceMixClient(this.jbi);
         InOut messageExchange = createInOutMessage(client, serviceName, InstallFileDescriptorSerializer
                 .serialize(new InstallFileDescriptor(validFilePath, groupId, artifactId, version, packaging)));
         client.sendSync(messageExchange);
@@ -99,8 +103,9 @@ public class MavenInstallFileIntegrationTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void runWithNonExistingFilePathShouldReturnError() throws Exception {
-        DefaultServiceMixClient client = new DefaultServiceMixClient(jbi);
+        DefaultServiceMixClient client = new DefaultServiceMixClient(this.jbi);
         InOut messageExchange = createInOutMessage(client, serviceName, InstallFileDescriptorSerializer
                 .serialize(new InstallFileDescriptor(invalidFilePath, groupId, artifactId, version, packaging)));
         client.sendSync(messageExchange);
@@ -116,8 +121,9 @@ public class MavenInstallFileIntegrationTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void runWithInvalidMessageFormatShouldReturnError() throws Exception {
-        DefaultServiceMixClient client = new DefaultServiceMixClient(jbi);
+        DefaultServiceMixClient client = new DefaultServiceMixClient(this.jbi);
         InOut messageExchange = createInOutMessage(client, serviceName, new StringSource(
                 "<invalidmessage invalidattribute=\"invalid\" />"));
         client.sendSync(messageExchange);
@@ -136,8 +142,9 @@ public class MavenInstallFileIntegrationTest extends SpringTestSupport {
     }
 
     @Test
+    @Ignore
     public void runWithInvalidParametersShouldReturnError() throws Exception {
-        DefaultServiceMixClient client = new DefaultServiceMixClient(jbi);
+        DefaultServiceMixClient client = new DefaultServiceMixClient(this.jbi);
 
         InOut messageExchange = createInOutMessage(client, serviceName, new StringSource(
                 "<mavenFileInstaller fileToInstall=\"\" groupId=\"\" artifactId=\"\" version=\"\" packaging=\"\"/>"));
