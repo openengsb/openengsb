@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<chapter id="quickstart">
+  <title>Get started with the OpenEngSB</title>
+  <para>
+    This chapter gives an overview how to quickly start with the OpenEngSB.  
+  </para>
+  <section id="quickstart.pre">
+    <title>Prerequisite</title>
+    <para>
+      First of all the JDK6 should be installed on the system and the JAVA_HOME variable should be set. All further steps
+      are described in the sub sections of this chapter.
+    </para>
+    <section id="quickstart.pre.git">
+      <title>Install GIT</title>
+      <para>
+        Further more its assumed that GIT had been installed. For GIT we recommend the latest Cygwin with the git 
+        packages. Please set at least the following variables:
+      </para>
+      <programlisting format="linespecific" language="xml"><![CDATA[git config --global user.name "Firstname Secondname"
+git config --global user.email "my@email.com"
+git config --global core.autcrlf input]]></programlisting>
+    </section>
+    <section id="quickstart.pre.maven">
+      <para>
+        Finally download Apache Maven and unpack it. Add the path of the maven binary to your PATH variable. Further more
+        you should add a MAVEN_OPTS variable with "-Xmx1024M -XX:MaxPermSize=512m".
+      </para>
+    </section>
+    <section id="quickstart.pre.smx">
+      <title>Install Servicemix</title>
+      <para>
+        Now download Apache Servicemix in the latest version and unpack it somewhere. In the servicemix please execute the
+        startup script bin/servicemix. 
+      </para>  
+    </section>
+  </section>
+  <section id="quickstart.essential">
+    <title>Essential Startup</title>
+    <para>
+      The simplest and most basic setup, required for all examples requires, first of all to checkout the openengsb 
+      master with the following command:
+    </para>
+    <programlisting format="linespecific" language="xml"><![CDATA[git clone git://github.com/openengsb/openengsb]]></programlisting>
+    <para>
+      Now startup Servicemix with the scripts in servicemix/bin. Finally we build and deploy the OpenEngSB to servicemix.
+    </para>
+    <programlisting format="linespecific" language="xml"><![CDATA[cd openengsb/
+mvn clean install [-Dmaven.test.skip=true]
+cd openengsb-package-essential
+mvn jbi:projectDeploy]]></programlisting>
+  </section>
+  <section id="quickstart.eclipse">
+    <title>Import Source into Eclipse</title>
+    <para>
+      Eclipse had been chosen by the OpenEngSB team as their main development environment. After checkout the code the
+      following command creates the required Eclipse project files:
+    </para>
+    <programlisting format="linespecific" language="xml"><![CDATA[mvn eclipse:eclipse]]></programlisting>
+    <para>
+      After this step all projects could be imported at once with the "import existing projects" command in Eclipse.
+    </para>
+  </section>
+</chapter>
