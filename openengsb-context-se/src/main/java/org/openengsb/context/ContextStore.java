@@ -149,8 +149,8 @@ public class ContextStore {
     }
 
     private void loadDefaultConfig() {
-        setValue("42/production/issuetracker", "http://localhost/issues/");
-        setValue("42/production/scm", "http://localhost/scm/");
+        setValue("42/production/issues/namespace", "urn:openengsb:issues");
+        setValue("42/production/issues/servicename", "issuesService");
     }
 
     private void save() {

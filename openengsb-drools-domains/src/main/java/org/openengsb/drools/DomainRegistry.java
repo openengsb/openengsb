@@ -21,11 +21,16 @@ package org.openengsb.drools;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InterfaceRegistry {
+public class DomainRegistry {
 
-    public final static Map<String, Class<?>> interfaces = new HashMap<String, Class<?>>();
+    public final static Map<String, Class<?>> domains = new HashMap<String, Class<?>>();
 
     static {
-        interfaces.put("helper", MessageHelper.class);
+        domains.put("helper", MessageHelper.class);
+        domains.put("issues", IssuesDomain.class);
+    }
+
+    private DomainRegistry() {
+        throw new AssertionError();
     }
 }

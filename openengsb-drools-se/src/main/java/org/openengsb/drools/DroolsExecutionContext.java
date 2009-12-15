@@ -26,10 +26,12 @@ import java.util.Map.Entry;
 
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.drools.StatefulSession;
@@ -40,7 +42,10 @@ import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
 import org.openengsb.core.methodcalltransformation.MethodCall;
 import org.openengsb.core.methodcalltransformation.MethodCallTransformer;
+import org.openengsb.core.methodcalltransformation.ReturnValue;
+import org.openengsb.core.methodcalltransformation.ReturnValueTransformer;
 import org.openengsb.drools.model.ContextHelperImpl;
+import org.w3c.dom.DocumentFragment;
 
 /**
  * Represents the execution context of the Drools rules.
@@ -61,6 +66,8 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
     private DroolsEndpoint endpoint;
 
+    private ContextHelper contextHelper;
+
     /**
      * Start a new execution context for the specified exchange.
      * 
@@ -76,6 +83,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
         this.endpoint = endpoint;
         this.memory = endpoint.getRuleBase().newStatefulSession();
         this.memory.addEventListener(this);
+        this.contextHelper = new ContextHelperImpl(endpoint, contextId);
 
         populateWorkingMemory(objects);
     }
@@ -86,10 +94,9 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
      * @param objects the objects to insert.
      */
     private void populateWorkingMemory(Collection<Object> objects) {
-        ContextHelperImpl contextHelperImpl = new ContextHelperImpl(endpoint, contextId);
-        memory.setGlobal("ctx", contextHelperImpl);
+        memory.setGlobal("ctx", contextHelper);
 
-        for (Entry<String, Class<?>> e : InterfaceRegistry.interfaces.entrySet()) {
+        for (Entry<String, Class<?>> e : DomainRegistry.domains.entrySet()) {
             Object proxy = createProxy(e.getKey(), e.getValue());
             memory.setGlobal(e.getKey(), proxy);
         }
@@ -141,40 +148,35 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-
             System.out.println("Invoking method: " + method.getName());
+            String namespaceURI = contextHelper.getValue("production/domain/" + name + "/namespace");
+            String serviceName = contextHelper.getValue("production/domain/" + name + "/servicename");
 
             InOut inout = new InOutImpl(UUID.randomUUID().toString());
-            inout.setService(new QName("urn:openengsb:context", "contextService"));
-            inout.setInterfaceName(new QName("contextEndpoint"));
+            inout.setService(new QName(namespaceURI, serviceName));
+            inout.setOperation(new QName("methodcall"));
+            
             NormalizedMessage msg = inout.createMessage();
             inout.setInMessage(msg);
 
-            msg.setProperty("contentType", "context/request");
+            msg.setProperty("contentType", "methodcall");
             msg.setProperty("contextId", contextId);
-            TextSegment text = new TextSegment.Builder("path").text(contextId).build();
-            String xml = text.toXML();
+
+            MethodCall call = new MethodCall(method,args);
+            Segment callSegment = MethodCallTransformer.transform(call);
+            String xml = callSegment.toXML();
 
             msg.setContent(new StringSource(xml));
 
             endpoint.sendSync(inout);
 
             NormalizedMessage outMessage = inout.getOutMessage();
+            String outXml = new SourceTransformer().toString(outMessage.getContent());
+            Segment outSegment = Segment.fromXML(outXml);
 
-            for (Object o : args) {
-                System.out.println(o.getClass().getName());
-            }
-            // context nach name fragen... projectId?? (bei endpoint auslesen)
-            // wenn nicht gefunden, dann exception werfen
-
-            MethodCall methodCall = new MethodCall(method.getName(), args, method.getParameterTypes());
-            Segment segment = MethodCallTransformer.transform(methodCall);
-
-            // wenn gefunden dann jbi message anhand des methodencalls erstellen
-            // und dann
-            // aufrufen...
-
-            return null;
+            ReturnValue returnValue = ReturnValueTransformer.transform(outSegment);
+            
+            return returnValue.getValue();
         }
     }
 }
