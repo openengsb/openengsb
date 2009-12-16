@@ -16,10 +16,10 @@
    limitations under the License.
 
 -->
-<beans xmlns:notification="http://www.openengsb.org/domain/notification/1.0" xmlns:ntf="urn:openengsb:notification"
+<beans xmlns:email="http://www.openengsb.org/connector/email/1.0" xmlns:eml="urn:openengsb:email"
   xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <notification:notificationEndpoint endpoint="notificationEndpoint" service="ntf:notificationService" />
+  <email:emailEndpoint endpoint="emailEndpoint" service="eml:emailService" />
 
 </beans>

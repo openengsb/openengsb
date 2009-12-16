@@ -27,12 +27,12 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-domain-notification-se</artifactId>
+  <artifactId>openengsb-connector-email-se</artifactId>
   <packaging>jbi-component</packaging>
-  <name>openengsb-domain-notification-se</name>
+  <name>openengsb-connector-email-se</name>
 
   <description>
-    OpenEngSB notification JBI SE
+    OpenEngSB email notification JBI SE
   </description>
 
   <build>
@@ -51,7 +51,7 @@
         <extensions>true</extensions>
         <configuration>
           <type>service-engine</type>
-          <component>org.openengsb.notification.NotificationComponent</component>
+          <component>org.openengsb.email.EMailComponent</component>
         </configuration>
       </plugin>
       <plugin>
@@ -63,7 +63,7 @@
               <goal>mapping</goal>
             </goals>
             <configuration>
-              <namespace>http://www.openengsb.org/domain/notification/1.0</namespace>
+              <namespace>http://www.openengsb.org/connector/email/1.0</namespace>
             </configuration>
           </execution>
         </executions>

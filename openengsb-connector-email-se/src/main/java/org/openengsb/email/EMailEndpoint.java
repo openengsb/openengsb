@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.notification;
+package org.openengsb.email;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
@@ -23,15 +23,15 @@ import javax.jbi.messaging.NormalizedMessage;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 
 /**
- * @org.apache.xbean.XBean element="notificationEndpoint"
- *                         description="Notification Endpoint"
+ * @org.apache.xbean.XBean element="emailEndpoint"
+ *                         description="EMail Notification Endpoint"
  */
-public class NotificationEndpoint extends ProviderEndpoint {
+public class EMailEndpoint extends ProviderEndpoint {
 
     @Override
     protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
-        // get the default notification connector using context lookup
-        // forward this message
+        // extract method call
+        // call implementation
     }
 
 }
