@@ -17,10 +17,23 @@
  */
 package org.openengsb.email;
 
+import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.namespace.QName;
+import javax.xml.transform.TransformerException;
 
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
+import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.openengsb.core.messaging.Segment;
+import org.openengsb.core.methodcalltransformation.InvocationFailedException;
+import org.openengsb.core.methodcalltransformation.MethodCall;
+import org.openengsb.core.methodcalltransformation.MethodCallTransformer;
+import org.openengsb.core.methodcalltransformation.ReturnValue;
+import org.openengsb.core.methodcalltransformation.ReturnValueTransformer;
+import org.openengsb.util.serialization.SerializationException;
 
 /**
  * @org.apache.xbean.XBean element="emailEndpoint"
@@ -28,10 +41,32 @@ import org.apache.servicemix.common.endpoints.ProviderEndpoint;
  */
 public class EMailEndpoint extends ProviderEndpoint {
 
+    private EMailNotifier emailNotifier = new EMailNotifier();
+
     @Override
     protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
-        // extract method call
-        // call implementation
+        if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
+            return;
+        }
+
+        QName operation = exchange.getOperation();
+        if (operation != null && operation.getLocalPart().equals("methodcall")) {
+            handleMethodCall(in, out);
+            return;
+        }
+    }
+
+    private void handleMethodCall(NormalizedMessage in, NormalizedMessage out) throws TransformerException,
+            SerializationException, InvocationFailedException, MessagingException {
+        String inXml = new SourceTransformer().toString(in.getContent());
+        Segment inSegment = Segment.fromXML(inXml);
+        MethodCall methodCall = MethodCallTransformer.transform(inSegment);
+
+        ReturnValue returnValue = methodCall.invoke(emailNotifier);
+
+        Segment returnValueSegment = ReturnValueTransformer.transform(returnValue);
+        String returnValueXml = returnValueSegment.toXML();
+        out.setContent(new StringSource(returnValueXml));
     }
 
 }
