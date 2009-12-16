@@ -56,6 +56,7 @@
     <wicket.version>1.4.1</wicket.version>
     <jetty.version>6.1.20</jetty.version>
     <ode.version>1.3.4.preview1</ode.version>
+    <javax.mail.version>1.4</javax.mail.version>
 
     <!-- Servicemix Library Versions -->
     <axis.version>1.3</axis.version>
@@ -1066,6 +1067,13 @@
         <artifactId>jaxen</artifactId>
         <version>${jaxen.version}</version>
       </dependency>
+      
+      <!--  Javax Dependencies -->
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>mail</artifactId>
+        <version>${javax.mail.version}</version>
+      </dependency> 
 
       <!-- Util Dependencies -->
       <dependency>

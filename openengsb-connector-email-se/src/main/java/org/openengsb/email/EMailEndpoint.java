@@ -41,7 +41,7 @@ import org.openengsb.util.serialization.SerializationException;
  */
 public class EMailEndpoint extends ProviderEndpoint {
 
-    private EMailNotifier emailNotifier = new EMailNotifier();
+    private EMailNotifier emailNotifier = new EMailNotifier("smtp.gmail.com", "openengsb@gmail.com", "pwd");
 
     @Override
     protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {

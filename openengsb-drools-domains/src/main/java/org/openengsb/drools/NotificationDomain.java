@@ -19,6 +19,6 @@ package org.openengsb.drools;
 
 public interface NotificationDomain {
 
-    boolean notify(String recipient, String subject, String text);
+    void notify(String recipient, String subject, String text);
 
 }

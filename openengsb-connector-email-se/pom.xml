@@ -72,6 +72,12 @@
   </build>
 
   <dependencies>
+    <!--  java mail -->
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+    </dependency> 
+
     <!--  Internal dependencies -->
     <dependency>
       <groupId>org.openengsb</groupId>
