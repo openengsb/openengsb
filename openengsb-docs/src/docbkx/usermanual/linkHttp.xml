@@ -23,7 +23,7 @@
   <para>
 		<mediaobject>
 		  <imageobject>
-		    <imagedata id="new" fileref="graphics/link-http-overview.jpg" format="jpg" />
+		    <imagedata id="new" fileref="../../openengsb-docs/src/docbkx/usermanual/graphics/link-http-overview.jpg" format="jpg" />
 		  </imageobject>
 		</mediaobject>
 	</para>
@@ -33,9 +33,9 @@
   <para>
 		When such a request is sent to the server (e.g. with any webbrowser) a process on the server is triggered:
 		<orderedlist>
-	  	<listitem>1. Analyze the request</listitem>
-	  	<listitem>2. Retrieve the tool-link with the given UUID from the link-service (edb)</listitem>
-			<listitem>3. Send the result back to the IP that requested the Link via JMS.</listitem>
+	  	<listitem>Analyze the request</listitem>
+	  	<listitem>Retrieve the tool-link with the given UUID from the link-service (edb)</listitem>
+			<listitem>Send the result back to the IP that requested the Link via JMS.</listitem>
 		</orderedlist>
 	</para>
   <para>
