@@ -136,6 +136,10 @@
     <module>openengsb-domain-scm-se</module>
     <module>openengsb-domain-scm-common</module>
 
+    <!--  Notification Domain -->
+    <module>openengsb-domain-notification-se</module>
+    <module>openengsb-domain-notification</module>
+
     <!-- Connectors -->
     <module>openengsb-connector-svn</module>
     <module>openengsb-connector-mvn</module>
@@ -667,6 +671,18 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domain-scm-common</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
+      <!-- Notification Domain -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domain-notification-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domain-notification</artifactId>
         <version>${pom.version}</version>
       </dependency>
 

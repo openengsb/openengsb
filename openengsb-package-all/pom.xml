@@ -80,6 +80,12 @@
       <artifactId>openengsb-edb-jms</artifactId>
     </dependency>
     
+    <!--  Domains -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domain-notification</artifactId>
+    </dependency>
+    
     <!-- Implementation Modules -->
     <dependency>
       <groupId>org.openengsb</groupId>
