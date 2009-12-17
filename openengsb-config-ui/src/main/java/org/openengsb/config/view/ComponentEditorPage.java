@@ -39,7 +39,7 @@ public class ComponentEditorPage extends BasePage {
             }
         }
 
-        EditorPanel editor = new EditorPanel("editor", endpoint) {
+        EditorPanel editor = new EditorPanel("editor", desc.getName(), endpoint) {
             @Override
             public void onSubmit() {
             }

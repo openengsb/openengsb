@@ -8,6 +8,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
 import org.openengsb.config.editor.fields.CheckboxField;
 import org.openengsb.config.editor.fields.DropdownChoiceField;
 import org.openengsb.config.editor.fields.InputField;
@@ -19,13 +20,15 @@ import org.openengsb.config.jbi.types.EndpointType;
 public abstract class EditorPanel extends Panel {
     private static final long serialVersionUID = 1L;
     private final EndpointType endpointType;
+    private final String componentId;
 
-    public EditorPanel(String id, EndpointType endpointType) {
-        this(id, endpointType, null);
+    public EditorPanel(String id, String componentId, EndpointType endpointType) {
+        this(id, componentId, endpointType, null);
     }
 
-    public EditorPanel(String id, EndpointType endpointType, IModel<?> model) {
+    public EditorPanel(String id, String componentId, EndpointType endpointType, IModel<?> model) {
         super(id, model);
+        this.componentId = componentId;
         this.endpointType = endpointType;
         createForm();
     }
@@ -48,7 +51,7 @@ public abstract class EditorPanel extends Panel {
         for (AbstractType f : endpointType.getAttributes()) {
             WebMarkupContainer row = new WebMarkupContainer(fields.newChildId());
             fields.add(row);
-            row.add(new Label("name", f.getName()));
+            row.add(new Label("name", new ResourceModel(componentId + '.' + endpointType.getName() + '.' + f.getName())));
             row.add(getEditor(f));
         }
     }

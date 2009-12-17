@@ -17,20 +17,20 @@
  */
 package org.openengsb.config;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 
+import org.openengsb.config.editor.ContextStringResourceLoader;
 import org.openengsb.config.jbi.ComponentParser;
 import org.openengsb.config.jbi.types.ComponentType;
 
 public class ComponentsHolder {
     private List<ComponentType> components;
-
     private ServletContext context;
 
     public void setContext(ServletContext context) {
@@ -42,13 +42,15 @@ public class ComponentsHolder {
     }
 
     public void init() {
-        ArrayList<URI> descriptors = new ArrayList<URI>();
-        try {
-            descriptors.add(context.getResource("/descriptors/servicemix-file.xml").toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+        ArrayList<InputStream> descriptors = new ArrayList<InputStream>();
+        Set<String> paths = context.getResourcePaths("/descriptors/");
+        for (String path : paths) {
+            if (path.endsWith(".xml")) {
+                descriptors.add(context.getResourceAsStream(path));
+            } else if (path.endsWith(".properties")) {
+                File f = new File(path.substring(0, path.lastIndexOf('.')));
+                ContextStringResourceLoader.instance.addResourceFiles(f.getName(), context.getResourceAsStream(path));
+            }
         }
         components = ComponentParser.parseComponents(descriptors);
     }
