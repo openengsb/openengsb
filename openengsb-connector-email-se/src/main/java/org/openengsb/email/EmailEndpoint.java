@@ -37,11 +37,11 @@ import org.openengsb.util.serialization.SerializationException;
 
 /**
  * @org.apache.xbean.XBean element="emailEndpoint"
- *                         description="EMail Notification Endpoint"
+ *                         description="Email Notification Endpoint"
  */
-public class xEmailEndpoint extends ProviderEndpoint {
+public class EmailEndpoint extends ProviderEndpoint {
 
-    private xEmailNotifier emailNotifier = new xEmailNotifier("smtp.gmail.com", "openengsb@gmail.com", "pwd");
+    private EmailNotifier emailNotifier = new EmailNotifier("smtp.gmail.com", "openengsb@gmail.com", "pwd");
 
     @Override
     protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {

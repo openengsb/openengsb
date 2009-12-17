@@ -28,13 +28,13 @@ import javax.mail.internet.MimeMessage;
 import org.openengsb.drools.NotificationDomain;
 import org.openengsb.drools.model.Notification;
 
-public class xEmailNotifier implements NotificationDomain {
+public class EmailNotifier implements NotificationDomain {
 
     private String smtpHost;
     private String sender;
     private String password;
 
-    public xEmailNotifier(String smtpHost, String sender, String password) {
+    public EmailNotifier(String smtpHost, String sender, String password) {
         this.smtpHost = smtpHost;
         this.sender = sender;
         this.password = password;
