@@ -5,6 +5,10 @@
         <service name="service" />
         <endpointName name="endpoint" />
         <string name="directory" />
+        <bool name="autoCreateDirectory" defaultValue="true" />
+        <bool name="append" defaultValue="false" />
+        <string name="tempFilePrefix" optional="true" defaultValue="servicemix-" />
+        <string name="tempFileSuffix" optional="true" defaultValue=".xml" />
       </attributes>
     </endpoint>
     <endpoint name="poller">
@@ -13,7 +17,11 @@
         <endpointName name="endpoint" />
         <service name="targetService" />
         <endpointName name="targetEndpoint" optional="true" />
+        <bool name="autoCreateDirectory" defaultValue="true" />
+        <int name="period" min="0" optional="true" />
         <string name="file" />
+        <bool name="deleteFile" defaultValue="true" />
+        <bool name="recursive" defaultValue="false" />
       </attributes>
     </endpoint>
   </endpoints>
