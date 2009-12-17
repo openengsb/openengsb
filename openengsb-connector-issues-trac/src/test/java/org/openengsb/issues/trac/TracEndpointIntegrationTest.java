@@ -45,6 +45,11 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.messaging.Segment;
+import org.openengsb.core.methodcalltransformation.MethodCall;
+import org.openengsb.core.methodcalltransformation.MethodCallTransformer;
+import org.openengsb.core.methodcalltransformation.ReturnValue;
+import org.openengsb.core.methodcalltransformation.ReturnValueTransformer;
 import org.openengsb.issues.common.messages.CreateIssueMessage;
 import org.openengsb.issues.common.messages.CreateIssueResponseMessage;
 import org.openengsb.issues.common.model.Issue;
@@ -52,6 +57,7 @@ import org.openengsb.issues.common.model.IssuePriority;
 import org.openengsb.issues.common.model.IssueSeverity;
 import org.openengsb.issues.common.model.IssueType;
 import org.openengsb.util.serialization.JibxXmlSerializer;
+import org.openengsb.util.serialization.SerializationException;
 import org.openengsb.util.serialization.Serializer;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -188,6 +194,49 @@ public class TracEndpointIntegrationTest extends SpringTestSupport {
 
         System.out.println(String.format("Result: %s, %s, %s", outMsg.getStatus(), outMsg.getStatusMessage(), outMsg
                 .getCreatedIssueId()));
+    }
+
+    @Test
+    @Ignore("Tests synchronous calls to trac. Needs a running trac instance.")
+    public void testMethodCall() throws Exception {
+        Runnable run = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    MethodCall call = new MethodCall("createIssue", new Object[] { "test" },
+                            new Class<?>[] { String.class });
+                    Segment segment = MethodCallTransformer.transform(call);
+                    String xml = segment.toXML();
+
+                    DefaultServiceMixClient client = createClient();
+
+                    InOut inOut = createInOutMessage(client, TEST_SERVICE_NAME, xml);
+                    inOut.setOperation(new QName("methodcall"));
+
+                    client.sendSync(inOut);
+
+                    validateReturnMessageSuccess(inOut);
+                    String outXml = new SourceTransformer().toString(inOut.getOutMessage().getContent());
+                    Segment outSegment = Segment.fromXML(outXml);
+                    ReturnValue returnValue = ReturnValueTransformer.transform(outSegment);
+
+                    System.out.println("RETURN VALUE IS: " + returnValue.getValue());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+
+        Thread[] t = new Thread[5];
+
+        for (int i = 0; i < t.length; i++) {
+            t[i] = new Thread(run);
+            t[i].start();
+        }
+
+        for (int i = 0; i < t.length; i++) {
+            t[i].join();
+        }
     }
 
 }

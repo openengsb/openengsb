@@ -66,7 +66,7 @@ public abstract class AbstractIssueEndpoint extends ProviderEndpoint {
     public void validate() throws DeploymentException {
     }
 
-    protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
+    protected synchronized void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
         if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
             return;
         }
