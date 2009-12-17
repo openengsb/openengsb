@@ -43,6 +43,8 @@ public class XStreamFactory {
     private static void configureSimpleTypes(XStream x) {
         x.useAttributeFor(AbstractType.class, "name");
         x.useAttributeFor(AbstractType.class, "optional");
+        x.useAttributeFor(AbstractType.class, "maxLength");
+        x.useAttributeFor(AbstractType.class, "defaultValue");
         x.alias("int", IntType.class);
         x.useAttributeFor(IntType.class, "min");
         x.useAttributeFor(IntType.class, "max");

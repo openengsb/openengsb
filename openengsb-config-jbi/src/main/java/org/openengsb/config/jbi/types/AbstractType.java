@@ -20,6 +20,8 @@ package org.openengsb.config.jbi.types;
 public abstract class AbstractType {
     private String name;
     private boolean optional;
+    private int maxLength;
+    private String defaultValue;
 
     public AbstractType() {
 
@@ -39,5 +41,21 @@ public abstract class AbstractType {
 
     public void setOptional(boolean optional) {
         this.optional = optional;
+    }
+
+    public int getMaxLength() {
+        return maxLength;
+    }
+
+    public void setMaxLength(int maxLength) {
+        this.maxLength = maxLength;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
     }
 }

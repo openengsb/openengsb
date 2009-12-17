@@ -22,17 +22,18 @@
 
   <!-- TODO maxLength defaultValue for all simple types -->
 
-  <int name="" optional="false" min="unbound" max="unbound" />
-  <float name="" optional="false" min="unbound" max="unbound" />
-  <string name="" optional="false" regex=""/>
-  <url name="" optional="" />
-  <path name="" optional="" protocol="" />
-  <choice name="" optional="" values="" />
+  <int name="" optional="false" defaultValue= "" min="unbound" max="unbound" />
+  <float name="" optional="false" defaultValue="" min="unbound" max="unbound" />
+  <string name="" optional="false" maxLength="" defaultValue="" regex=""/>
+  <bool name="" optional="false" defaultValue="" />
+  <url name="" optional="" defaultValue="" />
+  <path name="" optional="" defaultValue="" protocol="" />
+  <choice name="" optional="" defaultValue="" values="" />
 
   <!-- gets urn implicit -->
-  <service name="" optional="false" />
+  <service name="" optional="false" defaultValue="" />
 
-  <endpointName name="" optional="false" />
+  <endpointName name="" optional="false" defaultValue="" />
 
   <!-- reference to bean, different handling in bean and endpoint -->
   <ref name="" optional="false" clazz="" />

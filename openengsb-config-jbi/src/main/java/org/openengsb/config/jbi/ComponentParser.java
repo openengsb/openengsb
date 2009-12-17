@@ -18,8 +18,6 @@
 package org.openengsb.config.jbi;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,16 +28,15 @@ import org.openengsb.config.jbi.types.ComponentType;
 import com.thoughtworks.xstream.XStream;
 
 public class ComponentParser {
-    public static List<ComponentType> parseComponents(List<URI> descriptorFiles) {
+    public static List<ComponentType> parseComponents(List<URI> descriptors) {
         XStream x = XStreamFactory.createXStream();
         ArrayList<ComponentType> components = new ArrayList<ComponentType>();
-        for (URI uri : descriptorFiles) {
+        for (URI uri : descriptors) {
                 try {
-                    components.add((ComponentType)x.fromXML(new FileInputStream(uri.toURL().getPath())));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    Object o = x.fromXML(new FileInputStream(uri.toURL().getPath()));
+                    components.add((ComponentType)o);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
         }
         return components;
