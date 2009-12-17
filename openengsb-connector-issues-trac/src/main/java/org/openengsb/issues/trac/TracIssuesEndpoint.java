@@ -36,10 +36,10 @@ public class TracIssuesEndpoint extends AbstractIssueEndpoint {
     private DroolsIssuesDomain issuesDomain;
 
     @Override
-    protected IssueDomain createIssueDomain() throws IssueDomainException {
+    protected synchronized IssueDomain createIssueDomain() throws IssueDomainException {
         if (tracConnector == null) {
             try {
-                tracConnector = TracConnector.getInstance(url, username, password);
+                tracConnector = new TracConnector(url, username, password);
             } catch (Exception e) {
                 throw new IssueDomainException("Error creating TracConnector.", e);
             }

@@ -54,7 +54,7 @@ public class TracIssuesDomain implements DroolsIssuesDomain {
     }
 
     @Override
-    public String createIssue(String name) {
+    public synchronized String createIssue(String name) {
         Issue issue = new Issue();
         issue.setSummary(name + " (summary)");
         issue.setDescription(name + " (description)");

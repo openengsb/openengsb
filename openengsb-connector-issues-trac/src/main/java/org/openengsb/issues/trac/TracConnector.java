@@ -47,10 +47,8 @@ public class TracConnector implements IssueDomain {
     private String password;
 
     private Converter converter = new Converter();
-    
-    private static Map<String, TracConnector> instances = new HashMap<String, TracConnector>();
-    
-    private TracConnector(String url, String username, String password) {
+
+    public TracConnector(String url, String username, String password) {
         this.url = url;
         this.username = username;
         this.password = password;
@@ -62,19 +60,6 @@ public class TracConnector implements IssueDomain {
         ticket = (Ticket) proxy.newInstance(Ticket.class);
 
         log.info("Instantiation done");
-    }
-
-    
-    public static TracConnector getInstance(String url, String username, String password) {
-        String key = url + username + password; // XXX
-        
-        TracConnector tracConnector = instances.get(key);
-        if (tracConnector == null) {
-            tracConnector = new TracConnector(url, username, password);
-            instances.put(key,tracConnector);
-        }
-        
-        return tracConnector;
     }
 
     @Override
