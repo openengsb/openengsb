@@ -25,14 +25,14 @@ import org.apache.servicemix.common.DefaultComponent;
  * @org.apache.xbean.XBean element="emailComponent"
  *                         description="EMail Notification Component"
  */
-public class EMailComponent extends DefaultComponent {
-    private EMailEndpoint[] endpoints;
+public class xEmailComponent extends DefaultComponent {
+    private xEmailEndpoint[] endpoints;
 
-    public EMailEndpoint[] getEndpoints() {
+    public xEmailEndpoint[] getEndpoints() {
         return this.endpoints;
     }
 
-    public void setEndpoints(EMailEndpoint[] endpoints) {
+    public void setEndpoints(xEmailEndpoint[] endpoints) {
         this.endpoints = endpoints;
     }
 
@@ -43,7 +43,7 @@ public class EMailComponent extends DefaultComponent {
 
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class[] { EMailEndpoint.class };
+        return new Class[] { xEmailEndpoint.class };
     }
 
 }

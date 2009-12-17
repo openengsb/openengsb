@@ -26,46 +26,41 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.openengsb.drools.NotificationDomain;
+import org.openengsb.drools.model.Notification;
 
-public class EMailNotifier implements NotificationDomain {
+public class xEmailNotifier implements NotificationDomain {
 
     private String smtpHost;
     private String sender;
     private String password;
 
-    public EMailNotifier(String smtpHost, String sender, String password) {
+    public xEmailNotifier(String smtpHost, String sender, String password) {
         this.smtpHost = smtpHost;
         this.sender = sender;
         this.password = password;
     }
 
-    @Override
-    public void notify(String recipient, String subject, String text) {
+    public void notify(Notification notification) {
         try {
-            // Set the host smtp address
             Properties props = new Properties();
             props.setProperty("mail.smtp.auth", "true");
 
-            // create some properties and get the default Session
             Session session = Session.getDefaultInstance(props, null);
 
-            // create a message
             Message msg = new MimeMessage(session);
 
-            // set the from and to address
             InternetAddress addressFrom = new InternetAddress(sender);
             msg.setFrom(addressFrom);
 
-            InternetAddress addressTo = new InternetAddress(recipient);
+            InternetAddress addressTo = new InternetAddress(notification.getRecipient());
             msg.setRecipient(Message.RecipientType.TO, addressTo);
 
-            // Setting the Subject and Content Type
-            msg.setSubject(subject);
-            msg.setContent(text, "text/plain");
+            msg.setSubject(notification.getSubject());
+            msg.setContent(notification.getMessage(), "text/plain");
 
             Transport tr = session.getTransport("smtp");
             tr.connect(smtpHost, sender, password);
-            msg.saveChanges(); // don't forget this
+            msg.saveChanges();
             tr.sendMessage(msg, msg.getAllRecipients());
             tr.close();
         } catch (Exception e) {

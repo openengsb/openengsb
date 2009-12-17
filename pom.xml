@@ -56,7 +56,6 @@
     <wicket.version>1.4.1</wicket.version>
     <jetty.version>6.1.20</jetty.version>
     <ode.version>1.3.4.preview1</ode.version>
-    <javax.mail.version>1.4</javax.mail.version>
 
     <!-- Servicemix Library Versions -->
     <axis.version>1.3</axis.version>
@@ -144,12 +143,14 @@
     <!-- Connectors -->
     <module>openengsb-connector-svn</module>
     <module>openengsb-connector-mvn</module>
+    <module>openengsb-connector-email-se</module>
 
     <!-- Implementation Modules -->
     <module>openengsb-connector-mvn-build</module>
     <module>openengsb-connector-mvn-test</module>
     <module>openengsb-connector-mvn-deploy</module>
     <module>openengsb-connector-svn-impl</module>
+    <module>openengsb-connector-email</module>
 
     <!-- Packaging Modules -->
     <module>openengsb-package-all</module>
@@ -728,6 +729,16 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>file-poller-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-connector-email</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-connector-email-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
 

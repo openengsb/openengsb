@@ -17,8 +17,10 @@ limitations under the License.
  */
 package org.openengsb.drools;
 
+import org.openengsb.drools.model.Notification;
+
 public interface NotificationDomain {
 
-    void notify(String recipient, String subject, String text);
+    void notify(Notification notification);
 
 }
