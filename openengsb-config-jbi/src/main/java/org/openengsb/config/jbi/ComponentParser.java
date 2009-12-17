@@ -17,26 +17,30 @@
  */
 package org.openengsb.config.jbi;
 
-import java.io.FileInputStream;
-import java.net.URI;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.config.jbi.internal.XStreamFactory;
 import org.openengsb.config.jbi.types.ComponentType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.thoughtworks.xstream.XStream;
 
 public class ComponentParser {
-    public static List<ComponentType> parseComponents(List<URI> descriptors) {
+    private static Logger log = LoggerFactory.getLogger(ComponentParser.class);
+
+    public static List<ComponentType> parseComponents(List<InputStream> descriptors) {
         XStream x = XStreamFactory.createXStream();
         ArrayList<ComponentType> components = new ArrayList<ComponentType>();
-        for (URI uri : descriptors) {
+        for (InputStream s : descriptors) {
                 try {
-                    Object o = x.fromXML(new FileInputStream(uri.toURL().getPath()));
+                    Object o = x.fromXML(s);
                     components.add((ComponentType)o);
+                    s.close();
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    log.error("Parsing of component xml file failed", e);
                 }
         }
         return components;
