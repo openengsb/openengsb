@@ -145,3 +145,17 @@ a:hover {
   clear: both;
   height: 1px;
 }
+
+.editor td, .editor th {
+  padding-bottom: 5px;
+}
+
+.editor .fieldname {
+  text-align: right;
+  vertical-align: top;
+  padding-right: 10px;
+}
+
+.editor .fieldeditor {
+  text-align: left;
+}
