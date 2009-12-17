@@ -25,7 +25,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.methodcalltransformation.MethodCall;
-import org.openengsb.core.methodcalltransformation.MethodCallTransformer;
+import org.openengsb.core.methodcalltransformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
 
 public class TestMethodCallTransformer {
@@ -35,8 +35,8 @@ public class TestMethodCallTransformer {
         MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, "hallo" }, new Class<?>[] { int.class,
                 long.class, String.class });
 
-        Segment intermediate = MethodCallTransformer.transform(input);
-        MethodCall output = MethodCallTransformer.transform(intermediate);
+        Segment intermediate = Transformer.toSegment(input);
+        MethodCall output = Transformer.toMethodCall(intermediate);
 
         check(input, output);
     }
@@ -50,8 +50,8 @@ public class TestMethodCallTransformer {
         MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, beanA }, new Class<?>[] { int.class,
                 long.class, TestBean.class });
 
-        Segment intermediate = MethodCallTransformer.transform(input);
-        MethodCall output = MethodCallTransformer.transform(intermediate);
+        Segment intermediate = Transformer.toSegment(input);
+        MethodCall output = Transformer.toMethodCall(intermediate);
 
         check(input, output);
 
@@ -69,8 +69,8 @@ public class TestMethodCallTransformer {
         MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, beanA }, new Class<?>[] { int.class,
                 long.class, TestBean.class });
 
-        Segment intermediate = MethodCallTransformer.transform(input);
-        MethodCall output = MethodCallTransformer.transform(intermediate);
+        Segment intermediate = Transformer.toSegment(input);
+        MethodCall output = Transformer.toMethodCall(intermediate);
 
         check(input, output);
 
@@ -88,8 +88,8 @@ public class TestMethodCallTransformer {
         MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, testBean }, new Class<?>[] { int.class,
                 long.class, TestBeanArray.class });
 
-        Segment intermediate = MethodCallTransformer.transform(input);
-        MethodCall output = MethodCallTransformer.transform(intermediate);
+        Segment intermediate = Transformer.toSegment(input);
+        MethodCall output = Transformer.toMethodCall(intermediate);
 
         check(input, output);
 
@@ -110,8 +110,8 @@ public class TestMethodCallTransformer {
                 new Class<?>[] { Integer.class, Byte.class, Short.class, Long.class, Character.class, Float.class,
                         Double.class, Boolean.class });
 
-        Segment intermediate = MethodCallTransformer.transform(input);
-        MethodCall output = MethodCallTransformer.transform(intermediate);
+        Segment intermediate = Transformer.toSegment(input);
+        MethodCall output = Transformer.toMethodCall(intermediate);
 
         check(input, output);
     }

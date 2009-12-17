@@ -18,7 +18,6 @@
 package org.openengsb.drools;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
@@ -27,7 +26,6 @@ import java.util.Map.Entry;
 
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
@@ -39,14 +37,10 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.DefaultAgendaEventListener;
-import org.openengsb.core.messaging.Segment;
-import org.openengsb.core.messaging.TextSegment;
 import org.openengsb.core.methodcalltransformation.MethodCall;
-import org.openengsb.core.methodcalltransformation.MethodCallTransformer;
 import org.openengsb.core.methodcalltransformation.ReturnValue;
-import org.openengsb.core.methodcalltransformation.ReturnValueTransformer;
+import org.openengsb.core.methodcalltransformation.Transformer;
 import org.openengsb.drools.model.ContextHelperImpl;
-import org.w3c.dom.DocumentFragment;
 
 /**
  * Represents the execution context of the Drools rules.
@@ -165,8 +159,8 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
                 msg.setProperty("contextId", contextId);
 
                 MethodCall call = new MethodCall(method, args);
-                Segment callSegment = MethodCallTransformer.transform(call);
-                String xml = callSegment.toXML();
+
+                String xml = Transformer.toXml(call);
 
                 msg.setContent(new StringSource(xml));
 
@@ -174,9 +168,8 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
                 NormalizedMessage outMessage = inout.getOutMessage();
                 String outXml = new SourceTransformer().toString(outMessage.getContent());
-                Segment outSegment = Segment.fromXML(outXml);
 
-                ReturnValue returnValue = ReturnValueTransformer.transform(outSegment);
+                ReturnValue returnValue = Transformer.toReturnValue(outXml);
 
                 return returnValue.getValue();
             } catch (RuntimeException e) {

@@ -22,7 +22,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-
 public class MethodCall {
     private final String methodName;
     private final Object[] args;
@@ -33,7 +32,7 @@ public class MethodCall {
         this.args = args;
         this.types = types;
     }
-    
+
     public MethodCall(Method method, Object[] args) {
         this(method.getName(), args, method.getParameterTypes());
     }

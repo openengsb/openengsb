@@ -55,6 +55,12 @@
       <artifactId>junit</artifactId>
     </dependency>
 
+    <!-- Servicemix dependencies -->
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-shared</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>

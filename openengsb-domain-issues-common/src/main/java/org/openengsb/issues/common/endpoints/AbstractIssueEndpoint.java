@@ -23,20 +23,13 @@ import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.namespace.QName;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Logger;
-import org.apache.servicemix.common.endpoints.ProviderEndpoint;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.openengsb.core.messaging.Segment;
-import org.openengsb.core.methodcalltransformation.MethodCall;
-import org.openengsb.core.methodcalltransformation.MethodCallTransformer;
-import org.openengsb.core.methodcalltransformation.ReturnValue;
-import org.openengsb.core.methodcalltransformation.ReturnValueTransformer;
+import org.openengsb.core.OpenEngSBEndpoint;
 import org.openengsb.drools.DroolsIssuesDomain;
 import org.openengsb.issues.common.IssueDomain;
 import org.openengsb.issues.common.exceptions.IssueDomainException;
@@ -50,7 +43,7 @@ import org.openengsb.util.serialization.Serializer;
 /**
  * @org.apache.xbean.XBean element="create-issue"
  */
-public abstract class AbstractIssueEndpoint extends ProviderEndpoint {
+public abstract class AbstractIssueEndpoint extends OpenEngSBEndpoint<DroolsIssuesDomain> {
 
     private Logger log = Logger.getLogger(AbstractIssueEndpoint.class);
 
@@ -66,24 +59,9 @@ public abstract class AbstractIssueEndpoint extends ProviderEndpoint {
     public void validate() throws DeploymentException {
     }
 
-    protected synchronized void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
+    protected synchronized void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out)
+            throws Exception {
         if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
-            return;
-        }
-
-        QName operation = exchange.getOperation();
-        if (operation != null && operation.getLocalPart().equals("methodcall")) {
-            String inXml = new SourceTransformer().toString(in.getContent());
-            Segment inSegment = Segment.fromXML(inXml);
-            MethodCall methodCall = MethodCallTransformer.transform(inSegment);
-
-            DroolsIssuesDomain domainImplementation = getImplementation();
-            ReturnValue returnValue = methodCall.invoke(domainImplementation);
-            
-            Segment returnValueSegment = ReturnValueTransformer.transform(returnValue);
-            String returnValueXml = returnValueSegment.toXML();
-            out.setContent(new StringSource(returnValueXml));
-            
             return;
         }
 
@@ -121,8 +99,6 @@ public abstract class AbstractIssueEndpoint extends ProviderEndpoint {
             getChannel().send(exchange);
         }
     }
-
-    public abstract DroolsIssuesDomain getImplementation();
 
     public Serializer getSerializer() {
         return serializer;

@@ -17,56 +17,28 @@
  */
 package org.openengsb.email;
 
-import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.namespace.QName;
-import javax.xml.transform.TransformerException;
 
-import org.apache.servicemix.common.endpoints.ProviderEndpoint;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.openengsb.core.messaging.Segment;
-import org.openengsb.core.methodcalltransformation.InvocationFailedException;
-import org.openengsb.core.methodcalltransformation.MethodCall;
-import org.openengsb.core.methodcalltransformation.MethodCallTransformer;
-import org.openengsb.core.methodcalltransformation.ReturnValue;
-import org.openengsb.core.methodcalltransformation.ReturnValueTransformer;
-import org.openengsb.util.serialization.SerializationException;
+import org.openengsb.core.OpenEngSBEndpoint;
+import org.openengsb.drools.NotificationDomain;
 
 /**
  * @org.apache.xbean.XBean element="emailEndpoint"
  *                         description="Email Notification Endpoint"
  */
-public class EmailEndpoint extends ProviderEndpoint {
+public class EmailEndpoint extends OpenEngSBEndpoint<NotificationDomain> {
 
     private EmailNotifier emailNotifier = new EmailNotifier("smtp.gmail.com", "openengsb@gmail.com", "pwd");
 
     @Override
-    protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
-        if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
-            return;
-        }
-
-        QName operation = exchange.getOperation();
-        if (operation != null && operation.getLocalPart().equals("methodcall")) {
-            handleMethodCall(in, out);
-            return;
-        }
+    protected NotificationDomain getImplementation() {
+        return emailNotifier;
     }
 
-    private void handleMethodCall(NormalizedMessage in, NormalizedMessage out) throws TransformerException,
-            SerializationException, InvocationFailedException, MessagingException {
-        String inXml = new SourceTransformer().toString(in.getContent());
-        Segment inSegment = Segment.fromXML(inXml);
-        MethodCall methodCall = MethodCallTransformer.transform(inSegment);
-
-        ReturnValue returnValue = methodCall.invoke(emailNotifier);
-
-        Segment returnValueSegment = ReturnValueTransformer.transform(returnValue);
-        String returnValueXml = returnValueSegment.toXML();
-        out.setContent(new StringSource(returnValueXml));
+    @Override
+    protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
+        // TODO
     }
 
 }

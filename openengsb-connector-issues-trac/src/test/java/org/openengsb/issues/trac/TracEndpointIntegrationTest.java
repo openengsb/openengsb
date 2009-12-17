@@ -28,7 +28,6 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -45,11 +44,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.methodcalltransformation.MethodCall;
-import org.openengsb.core.methodcalltransformation.MethodCallTransformer;
 import org.openengsb.core.methodcalltransformation.ReturnValue;
-import org.openengsb.core.methodcalltransformation.ReturnValueTransformer;
+import org.openengsb.core.methodcalltransformation.Transformer;
 import org.openengsb.issues.common.messages.CreateIssueMessage;
 import org.openengsb.issues.common.messages.CreateIssueResponseMessage;
 import org.openengsb.issues.common.model.Issue;
@@ -57,7 +54,6 @@ import org.openengsb.issues.common.model.IssuePriority;
 import org.openengsb.issues.common.model.IssueSeverity;
 import org.openengsb.issues.common.model.IssueType;
 import org.openengsb.util.serialization.JibxXmlSerializer;
-import org.openengsb.util.serialization.SerializationException;
 import org.openengsb.util.serialization.Serializer;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -167,7 +163,7 @@ public class TracEndpointIntegrationTest extends SpringTestSupport {
      */
     private String transformMessageToString(NormalizedMessage msg) throws TransformerConfigurationException,
             TransformerFactoryConfigurationError, TransformerException {
-        Transformer messageTransformer = TransformerFactory.newInstance().newTransformer();
+        javax.xml.transform.Transformer messageTransformer = TransformerFactory.newInstance().newTransformer();
         StringWriter stringWriter = new StringWriter();
         messageTransformer.transform(msg.getContent(), new StreamResult(stringWriter));
         return stringWriter.toString();
@@ -205,8 +201,7 @@ public class TracEndpointIntegrationTest extends SpringTestSupport {
                 try {
                     MethodCall call = new MethodCall("createIssue", new Object[] { "test" },
                             new Class<?>[] { String.class });
-                    Segment segment = MethodCallTransformer.transform(call);
-                    String xml = segment.toXML();
+                    String xml = Transformer.toXml(call);
 
                     DefaultServiceMixClient client = createClient();
 
@@ -216,9 +211,9 @@ public class TracEndpointIntegrationTest extends SpringTestSupport {
                     client.sendSync(inOut);
 
                     validateReturnMessageSuccess(inOut);
+
                     String outXml = new SourceTransformer().toString(inOut.getOutMessage().getContent());
-                    Segment outSegment = Segment.fromXML(outXml);
-                    ReturnValue returnValue = ReturnValueTransformer.transform(outSegment);
+                    ReturnValue returnValue = Transformer.toReturnValue(outXml);
 
                     System.out.println("RETURN VALUE IS: " + returnValue.getValue());
                 } catch (Exception e) {
