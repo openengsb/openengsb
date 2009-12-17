@@ -19,6 +19,7 @@ package org.openengsb.config.view;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -29,17 +30,21 @@ import org.openengsb.config.jbi.types.EndpointType;
 public class ComponentInfoPage extends BasePage {
 
     public ComponentInfoPage(PageParameters params) {
-        String name = params.getString("component");
+        final String name = params.getString("component");
         ComponentType desc = componentsHolder.getComponent(name);
         setDefaultModel(new CompoundPropertyModel<ComponentType>(desc));
         add(new Label("name"));
         add(new Label("namespace"));
-        add(new ListView<EndpointType>("endpoints", desc.getEndpoints()) {
+        add(new ListView<EndpointType>("endpoints") {
             private static final long serialVersionUID = 1L;
 
             @Override
             protected void populateItem(ListItem<EndpointType> item) {
                 item.add(new Label("endpoint.name", item.getModelObject().getName()));
+                final PageParameters pp = new PageParameters();
+                pp.put("component", name);
+                pp.put("endpoint", item.getModelObject().getName());
+                item.add(new BookmarkablePageLink<ComponentEditorPage>("editorLink", ComponentEditorPage.class, pp).add(new Label("name", item.getModelObject().getName())) );
                 item.add(new ListView<AbstractType>("attributes", item.getModelObject().getAttributes()) {
                     private static final long serialVersionUID = 1L;
 

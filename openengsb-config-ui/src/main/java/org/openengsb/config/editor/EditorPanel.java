@@ -9,7 +9,11 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.openengsb.config.editor.fields.CheckboxField;
+import org.openengsb.config.editor.fields.DropdownChoiceField;
+import org.openengsb.config.editor.fields.InputField;
 import org.openengsb.config.jbi.types.AbstractType;
+import org.openengsb.config.jbi.types.BoolType;
+import org.openengsb.config.jbi.types.ChoiceType;
 import org.openengsb.config.jbi.types.EndpointType;
 
 public abstract class EditorPanel extends Panel {
@@ -50,6 +54,11 @@ public abstract class EditorPanel extends Panel {
     }
 
     private Component getEditor(AbstractType type) {
-       return new CheckboxField("editor", type);
+        if (type.getClass().equals(BoolType.class))
+            return new CheckboxField("editor", type);
+        else if (type.getClass().equals(ChoiceType.class))
+            return new DropdownChoiceField("editor", (ChoiceType)type);
+        else
+            return new InputField("editor", type);
     }
 }
