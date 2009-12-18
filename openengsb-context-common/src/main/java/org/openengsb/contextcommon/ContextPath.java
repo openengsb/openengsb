@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.context;
+package org.openengsb.contextcommon;
 
 class ContextPath {
 

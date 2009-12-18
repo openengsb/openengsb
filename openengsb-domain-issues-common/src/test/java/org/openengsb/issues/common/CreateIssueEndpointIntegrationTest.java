@@ -18,13 +18,14 @@ limitations under the License.
 
 package org.openengsb.issues.common;
 
-import static org.mockito.Mockito.*;
-import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import javax.annotation.Resource;
 import javax.jbi.JBIException;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;
@@ -49,7 +50,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.issues.common.endpoints.AbstractIssueEndpoint;
 import org.openengsb.issues.common.exceptions.IssueDomainException;
 import org.openengsb.issues.common.messages.CreateIssueMessage;
 import org.openengsb.issues.common.messages.CreateIssueResponseMessage;
@@ -95,7 +95,7 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
 
     /**
      * Creates a new ServiceMixClieant
-     *
+     * 
      * @return The new ServiceMixClient
      */
     private DefaultServiceMixClient createClient() throws JBIException {
@@ -104,7 +104,7 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
 
     /**
      * Creates and configures a new Message-Object for the In-Out-MEP
-     *
+     * 
      * @param client The client used to create the empty Message-Object
      * @param service The configured entpoint's name as noted in the xbean.xml
      * @param message The actual message as xml-String
@@ -122,7 +122,7 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
 
     /**
      * Creates and configures a new Message-Object for the Out-Only-MEP
-     *
+     * 
      * @param client The client used to create the empty Message-Object
      * @param service The configured entpoint's name as noted in the xbean.xml
      * @param message The actual message as xml-String
@@ -164,7 +164,7 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
 
     /**
      * Checks the message for errors and either fails or throws an Exception
-     *
+     * 
      * @param message
      * @throws Exception
      */
@@ -182,7 +182,7 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
 
     /**
      * Transforms a NormalizedMessage to its String representation.
-     *
+     * 
      * @param msg Message to be transformed to a String
      * @return String representation of the given NormalizedMessage
      * @throws TransformerConfigurationException

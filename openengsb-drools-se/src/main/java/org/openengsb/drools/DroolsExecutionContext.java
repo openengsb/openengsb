@@ -37,10 +37,11 @@ import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.DefaultAgendaEventListener;
+import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.contextcommon.ContextHelperImpl;
 import org.openengsb.core.methodcalltransformation.MethodCall;
 import org.openengsb.core.methodcalltransformation.ReturnValue;
 import org.openengsb.core.methodcalltransformation.Transformer;
-import org.openengsb.drools.model.ContextHelperImpl;
 
 /**
  * Represents the execution context of the Drools rules.
@@ -144,9 +145,8 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) {
             try {
-                System.out.println("Invoking method: " + method.getName());
-                String namespaceURI = contextHelper.getValue("production/" + name + "/namespace");
-                String serviceName = contextHelper.getValue("production/" + name + "/servicename");
+                String namespaceURI = contextHelper.getValue(name + "/namespace");
+                String serviceName = contextHelper.getValue(name + "/servicename");
 
                 InOut inout = new InOutImpl(UUID.randomUUID().toString());
                 inout.setService(new QName(namespaceURI, serviceName));

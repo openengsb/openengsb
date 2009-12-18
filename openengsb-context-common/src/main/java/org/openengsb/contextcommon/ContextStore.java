@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.context;
+package org.openengsb.contextcommon;
 
 import java.io.File;
 import java.io.IOException;
@@ -149,8 +149,15 @@ public class ContextStore {
     }
 
     private void loadDefaultConfig() {
-        setValue("42/production/issues/namespace", "urn:openengsb:issues");
-        setValue("42/production/issues/servicename", "issuesService");
+        setValue("42/issues/namespace", "urn:openengsb:issues");
+        setValue("42/issues/servicename", "issuesService");
+        setValue("42/notification/default", "email");
+        setValue("42/notification/email/servicename", "emailService");
+        setValue("42/notification/email/config/mail.smtp.auth", "true");
+        setValue("42/notification/email/config/mail.smtp.user", "user");
+        setValue("42/notification/email/config/mail.smtp.host", "user");
+        setValue("42/notification/email/user", "user");
+        setValue("42/notification/email/password", "password");
     }
 
     private void save() {

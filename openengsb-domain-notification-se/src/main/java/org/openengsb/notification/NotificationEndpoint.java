@@ -19,19 +19,36 @@ package org.openengsb.notification;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.namespace.QName;
 
-import org.apache.servicemix.common.endpoints.ProviderEndpoint;
+import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.OpenEngSBEndpoint;
+import org.openengsb.drools.NotificationDomain;
 
 /**
  * @org.apache.xbean.XBean element="notificationEndpoint"
  *                         description="Notification Endpoint"
  */
-public class NotificationEndpoint extends ProviderEndpoint {
+public class NotificationEndpoint extends OpenEngSBEndpoint<NotificationDomain> {
 
     @Override
-    protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
-        // get the default notification connector using context lookup
-        // forward this message
+    protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
+            ContextHelper contextHelper) throws Exception {
+        QName defaultConnector = getForwardTarget(contextHelper);
+        forwardMessage(exchange, in, out, defaultConnector);
+    }
+
+    @Override
+    protected NotificationDomain getImplementation(ContextHelper contextHelper) {
+        return null;
+    }
+
+    @Override
+    protected QName getForwardTarget(ContextHelper contextHelper) {
+        String defaultName = contextHelper.getValue("notification/default");
+        String serviceName = contextHelper.getValue("notification/" + defaultName + "/servicename");
+        String namespace = contextHelper.getValue("notification/" + defaultName + "/namespace");
+        return new QName(namespace, serviceName);
     }
 
 }

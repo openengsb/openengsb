@@ -38,10 +38,11 @@ import javax.xml.namespace.QName;
 
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
-import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.drools.RuleBase;
 import org.drools.agent.RuleAgent;
 import org.drools.compiler.RuleBaseLoader;
+import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.OpenEngSBEndpoint;
 import org.openengsb.drools.model.Event;
 import org.springframework.core.io.Resource;
 
@@ -49,7 +50,7 @@ import org.springframework.core.io.Resource;
  * @org.apache.xbean.XBean element="droolsEndpoint"
  *                         description="Drools Component"
  */
-public class DroolsEndpoint extends ProviderEndpoint {
+public class DroolsEndpoint extends OpenEngSBEndpoint<Object> {
 
     /**
      * Pointer to the rulebase.
@@ -184,20 +185,12 @@ public class DroolsEndpoint extends ProviderEndpoint {
     }
 
     @Override
-    public void process(MessageExchange exchange) throws Exception {
+    protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
+            ContextHelper contextHelper) throws Exception {
         if (exchange.getRole() == Role.PROVIDER && exchange.getStatus() == ExchangeStatus.ACTIVE) {
             drools(exchange);
         }
     }
-
-    // public static String getCorrelationId(MessageExchange exchange) {
-    // Object correlation = exchange.getProperty(JbiConstants.CORRELATION_ID);
-    // if (correlation == null) {
-    // return exchange.getExchangeId();
-    // } else {
-    // return correlation.toString();
-    // }
-    // }
 
     /**
      * handle the MessageExchange with drools.
@@ -218,5 +211,10 @@ public class DroolsEndpoint extends ProviderEndpoint {
     @Override
     public void sendSync(MessageExchange me) throws MessagingException {
         super.sendSync(me);
+    }
+
+    @Override
+    protected Object getImplementation(ContextHelper contextHelper) {
+        return null;
     }
 }

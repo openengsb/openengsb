@@ -18,6 +18,7 @@ limitations under the License.
 
 package org.openengsb.issues.common;
 
+import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.drools.DroolsIssuesDomain;
 import org.openengsb.issues.common.endpoints.AbstractIssueEndpoint;
 
@@ -42,7 +43,7 @@ public class TestCreateIssueEndpoint extends AbstractIssueEndpoint {
     }
 
     @Override
-    public DroolsIssuesDomain getImplementation() {
+    public DroolsIssuesDomain getImplementation(ContextHelper contextHelper) {
         return null;
     }
 

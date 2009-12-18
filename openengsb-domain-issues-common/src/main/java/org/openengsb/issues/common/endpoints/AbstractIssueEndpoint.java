@@ -29,6 +29,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Logger;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.OpenEngSBEndpoint;
 import org.openengsb.drools.DroolsIssuesDomain;
 import org.openengsb.issues.common.IssueDomain;
@@ -59,8 +60,8 @@ public abstract class AbstractIssueEndpoint extends OpenEngSBEndpoint<DroolsIssu
     public void validate() throws DeploymentException {
     }
 
-    protected synchronized void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out)
-            throws Exception {
+    protected synchronized void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
+            ContextHelper contextHelper) throws Exception {
         if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
             return;
         }

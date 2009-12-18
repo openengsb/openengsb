@@ -19,7 +19,9 @@ package org.openengsb.email;
 
 import java.util.Properties;
 
+import javax.mail.Authenticator;
 import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -30,26 +32,26 @@ import org.openengsb.drools.model.Notification;
 
 public class EmailNotifier implements NotificationDomain {
 
-    private String smtpHost;
-    private String sender;
-    private String password;
+    private Properties props;
 
-    public EmailNotifier(String smtpHost, String sender, String password) {
-        this.smtpHost = smtpHost;
-        this.sender = sender;
-        this.password = password;
+    private Authenticator authenticator;
+
+    public EmailNotifier(Properties props) {
+        this.props = props;
+    }
+
+    public EmailNotifier(Properties props, String user, String password) {
+        this.props = props;
+        authenticator = new SmtpAuthenticator(user, password);
     }
 
     public void notify(Notification notification) {
         try {
-            Properties props = new Properties();
-            props.setProperty("mail.smtp.auth", "true");
-
-            Session session = Session.getDefaultInstance(props, null);
+            Session session = Session.getDefaultInstance(props, authenticator);
 
             Message msg = new MimeMessage(session);
 
-            InternetAddress addressFrom = new InternetAddress(sender);
+            InternetAddress addressFrom = new InternetAddress(props.getProperty("mail.smtp.user"));
             msg.setFrom(addressFrom);
 
             InternetAddress addressTo = new InternetAddress(notification.getRecipient());
@@ -58,13 +60,25 @@ public class EmailNotifier implements NotificationDomain {
             msg.setSubject(notification.getSubject());
             msg.setContent(notification.getMessage(), "text/plain");
 
-            Transport tr = session.getTransport("smtp");
-            tr.connect(smtpHost, sender, password);
-            msg.saveChanges();
-            tr.sendMessage(msg, msg.getAllRecipients());
-            tr.close();
+            Transport.send(msg);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private class SmtpAuthenticator extends Authenticator {
+
+        private final String user;
+        private final String password;
+
+        public SmtpAuthenticator(String user, String password) {
+            this.user = user;
+            this.password = password;
+        }
+
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return new PasswordAuthentication(user, password);
         }
     }
 }

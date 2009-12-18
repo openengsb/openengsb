@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.context;
+package org.openengsb.contextcommon;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;

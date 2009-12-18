@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.context;
+package org.openengsb.contextcommon;
 
 import java.util.ArrayList;
 import java.util.List;

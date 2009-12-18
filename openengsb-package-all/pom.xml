@@ -127,6 +127,12 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-connector-issues-trac-impl</artifactId>
     </dependency>
+    
+    <!-- Email -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-connector-email</artifactId>
+    </dependency>
 
   </dependencies>
 

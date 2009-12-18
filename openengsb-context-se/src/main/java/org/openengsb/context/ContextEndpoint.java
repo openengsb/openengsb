@@ -25,6 +25,9 @@ import javax.xml.transform.TransformerException;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.openengsb.contextcommon.Context;
+import org.openengsb.contextcommon.ContextSegmentTransformer;
+import org.openengsb.contextcommon.ContextStore;
 import org.openengsb.core.messaging.ListSegment;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
@@ -44,7 +47,6 @@ public class ContextEndpoint extends ProviderEndpoint {
         if (!(exchange instanceof RobustInOnly)) {
             throw new UnsupportedOperationException("Unsupported MEP: " + exchange.getPattern());
         }
-        RobustInOnly ex = (RobustInOnly) exchange;
 
         String messageType = getMessageType(in);
         String id = getContextId(in);

@@ -15,8 +15,11 @@
    limitations under the License.
  */
 
-package org.openengsb.drools.model;
+package org.openengsb.contextcommon;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.jbi.messaging.InOut;
@@ -28,20 +31,17 @@ import javax.xml.transform.TransformerException;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
-import org.openengsb.context.Context;
-import org.openengsb.context.ContextSegmentTransformer;
+import org.openengsb.core.OpenEngSBEndpoint;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
-import org.openengsb.drools.ContextHelper;
-import org.openengsb.drools.DroolsEndpoint;
 import org.openengsb.util.serialization.SerializationException;
 
 public class ContextHelperImpl implements ContextHelper {
 
-    private final DroolsEndpoint endpoint;
+    private final OpenEngSBEndpoint<?> endpoint;
     private final String contextId;
 
-    public ContextHelperImpl(DroolsEndpoint endpoint, String contextId) {
+    public ContextHelperImpl(OpenEngSBEndpoint<?> endpoint, String contextId) {
         this.endpoint = endpoint;
         this.contextId = contextId;
     }
@@ -74,6 +74,44 @@ public class ContextHelperImpl implements ContextHelper {
             String value = context.get(key);
 
             return value;
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Map<String, String> getAllValues(String path) {
+        try {
+            InOut inout = new InOutImpl(UUID.randomUUID().toString());
+            inout.setService(new QName("urn:openengsb:context", "contextService"));
+
+            NormalizedMessage msg = inout.createMessage();
+            inout.setInMessage(msg);
+            msg.setProperty("messageType", "context/request");
+            msg.setProperty("contextId", contextId);
+
+            TextSegment text = new TextSegment.Builder("path").text(path).build();
+            String xml = text.toXML();
+
+            msg.setContent(new StringSource(xml));
+
+            endpoint.sendSync(inout);
+
+            NormalizedMessage response = inout.getOutMessage();
+            String outXml = new SourceTransformer().toString(response.getContent());
+            Segment segment = Segment.fromXML(outXml);
+
+            Context context = ContextSegmentTransformer.toContext(segment);
+            Set<String> keys = context.getKeys();
+            Map<String, String> values = new HashMap<String, String>();
+            for (String key : keys) {
+                values.put(key, context.get(key));
+            }
+            return values;
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         } catch (SerializationException e) {

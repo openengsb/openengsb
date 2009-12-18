@@ -17,9 +17,14 @@
  */
 package org.openengsb.email;
 
+import java.util.Map;
+import java.util.Properties;
+import java.util.Map.Entry;
+
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 
+import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.OpenEngSBEndpoint;
 import org.openengsb.drools.NotificationDomain;
 
@@ -29,15 +34,31 @@ import org.openengsb.drools.NotificationDomain;
  */
 public class EmailEndpoint extends OpenEngSBEndpoint<NotificationDomain> {
 
-    private EmailNotifier emailNotifier = new EmailNotifier("smtp.gmail.com", "openengsb@gmail.com", "pwd");
-
     @Override
-    protected NotificationDomain getImplementation() {
-        return emailNotifier;
+    protected NotificationDomain getImplementation(ContextHelper contextHelper) {
+
+        Properties props = getPropertiesFromContext(contextHelper);
+
+        String user = contextHelper.getValue("notification/email/user");
+        String password = contextHelper.getValue("notification/email/password");
+
+        return new EmailNotifier(props, user, password);
+    }
+
+    private Properties getPropertiesFromContext(ContextHelper contextHelper) {
+
+        Map<String, String> props = contextHelper.getAllValues("notification/email/config");
+
+        Properties properties = new Properties();
+        for (Entry<String, String> entry : props.entrySet()) {
+            properties.setProperty(entry.getKey(), entry.getValue());
+        }
+        return properties;
     }
 
     @Override
-    protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
+    protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
+            ContextHelper contextHelper) throws Exception {
         // TODO
     }
 

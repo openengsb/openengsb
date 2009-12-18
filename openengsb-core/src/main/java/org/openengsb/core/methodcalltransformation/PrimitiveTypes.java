@@ -36,6 +36,7 @@ class PrimitiveTypes {
         primitiveTypes.put("float", float.class);
         primitiveTypes.put("double", double.class);
         primitiveTypes.put("boolean", boolean.class);
+        primitiveTypes.put("void", void.class);
         primitiveTypes.put("java.lang.String", String.class);
         primitiveTypes.put("java.lang.Integer", Integer.class);
         primitiveTypes.put("java.lang.Byte", Byte.class);
@@ -104,7 +105,14 @@ class PrimitiveTypes {
                 return Boolean.valueOf(value);
             }
         });
-        
+
+        converter.put("void", new Converter() {
+            @Override
+            public Object convert(String value) {
+                return null;
+            }
+        });
+
         converter.put("java.lang.String", new Converter() {
             @Override
             public Object convert(String value) {
@@ -120,6 +128,7 @@ class PrimitiveTypes {
         converter.put("java.lang.Float", converter.get("float"));
         converter.put("java.lang.Double", converter.get("double"));
         converter.put("java.lang.Boolean", converter.get("boolean"));
+        converter.put("java.lang.Void", converter.get("void"));
     }
 
     private PrimitiveTypes() {
@@ -128,11 +137,11 @@ class PrimitiveTypes {
 
     static Object create(String type, String value) {
         Converter conv = converter.get(type);
-        
+
         if (conv == null) {
             throw new IllegalStateException(String.format("Type '%s' is not supported", type));
         }
-        
+
         return conv.convert(value);
     }
 
