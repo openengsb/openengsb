@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.config;
+package org.openengsb.config.service.impl;
 
 import java.io.File;
 import java.io.InputStream;
@@ -28,8 +28,9 @@ import javax.servlet.ServletContext;
 import org.openengsb.config.editor.ContextStringResourceLoader;
 import org.openengsb.config.jbi.ComponentParser;
 import org.openengsb.config.jbi.types.ComponentType;
+import org.openengsb.config.service.ComponentService;
 
-public class ComponentsHolder {
+public class ComponentServiceImpl implements ComponentService {
     private List<ComponentType> components;
     private ServletContext context;
 
@@ -37,7 +38,7 @@ public class ComponentsHolder {
         this.context = context;
     }
 
-    public ComponentsHolder() {
+    public ComponentServiceImpl() {
 
     }
 

@@ -23,7 +23,7 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-  <bean id="componentsHolder" class="org.openengsb.config.ComponentsHolder" init-method="init">
+  <bean id="componentService" class="org.openengsb.config.service.impl.ComponentServiceImpl" init-method="init">
     <property name="context" ref="servletContext" />
   </bean>
 

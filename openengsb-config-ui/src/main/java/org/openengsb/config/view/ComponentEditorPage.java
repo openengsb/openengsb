@@ -17,8 +17,6 @@
  */
 package org.openengsb.config.view;
 
-import java.util.Map;
-
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.openengsb.config.editor.EditorPanel;
@@ -29,25 +27,23 @@ public class ComponentEditorPage extends BasePage {
 
     public ComponentEditorPage(PageParameters params) {
         String name = params.getString("component");
-        ComponentType desc = componentsHolder.getComponent(name);
+        final ComponentType desc = componentService.getComponent(name);
         add(new Label("name", desc.getName()));
         add(new Label("namespace", desc.getNamespace()));
 
-        EndpointType endpoint = null;
+        EndpointType ee = null;
         for (EndpointType e : desc.getEndpoints()) {
             if (e.getName().equals(params.getString("endpoint"))) {
-                endpoint = e;
+                ee = e;
                 break;
             }
         }
+        final EndpointType endpoint = ee;
 
         EditorPanel editor = new EditorPanel("editor", desc.getName(), endpoint) {
             @Override
             public void onSubmit() {
-                System.out.println("Printing values");
-                for (Map.Entry<String,String> e : getValues().entrySet()) {
-                    System.out.println(e.getKey() + " " + e.getValue());
-                }
+
             }
         };
         add(editor);

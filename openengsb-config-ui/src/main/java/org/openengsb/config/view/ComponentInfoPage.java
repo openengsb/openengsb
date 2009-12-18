@@ -31,7 +31,7 @@ public class ComponentInfoPage extends BasePage {
 
     public ComponentInfoPage(PageParameters params) {
         final String name = params.getString("component");
-        ComponentType desc = componentsHolder.getComponent(name);
+        ComponentType desc = componentService.getComponent(name);
         setDefaultModel(new CompoundPropertyModel<ComponentType>(desc));
         add(new Label("name"));
         add(new Label("namespace"));

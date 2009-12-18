@@ -15,17 +15,23 @@
    limitations under the License.
 
  */
-package org.openengsb.config.view;
+package org.openengsb.config.service;
 
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.config.service.ComponentService;
+import java.util.List;
 
-public class BasePage extends WebPage {
-    @SpringBean
-    protected ComponentService componentService;
+import org.openengsb.config.jbi.types.ComponentType;
 
-    public BasePage() {
-        add(new NavigationPanel("navigationBar", componentService.getComponents()));
-    }
+/**
+ * Service for listing supported JBI components, creatings SU/SA zips.
+ *
+ */
+public interface ComponentService {
+    /**
+     * Returns a list of supported jbi components.
+     */
+    public List<ComponentType> getComponents();
+    /**
+     * Returns a specific jbi component or null if there is no component for the given {@code name};
+     */
+    public ComponentType getComponent(String name);
 }
