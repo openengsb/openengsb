@@ -1,6 +1,5 @@
 package org.openengsb.config.editor;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -9,6 +8,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
+import org.openengsb.config.editor.fields.AbstractField;
 import org.openengsb.config.editor.fields.CheckboxField;
 import org.openengsb.config.editor.fields.DropdownChoiceField;
 import org.openengsb.config.editor.fields.InputField;
@@ -51,12 +51,13 @@ public abstract class EditorPanel extends Panel {
         for (AbstractType f : endpointType.getAttributes()) {
             WebMarkupContainer row = new WebMarkupContainer(fields.newChildId());
             fields.add(row);
-            row.add(new Label("name", new ResourceModel(componentId + '.' + endpointType.getName() + '.' + f.getName())));
-            row.add(getEditor(f));
+            ResourceModel labelModel = new ResourceModel(componentId + '.' + endpointType.getName() + '.' + f.getName());
+            row.add(new Label("name", labelModel));
+            row.add(getEditor(f).setLabel(labelModel));
         }
     }
 
-    private Component getEditor(AbstractType type) {
+    private AbstractField getEditor(AbstractType type) {
         if (type.getClass().equals(BoolType.class))
             return new CheckboxField("editor", type);
         else if (type.getClass().equals(ChoiceType.class))
