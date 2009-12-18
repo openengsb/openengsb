@@ -19,11 +19,14 @@ package org.openengsb.config.view;
 
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.config.service.AssemblyService;
 import org.openengsb.config.service.ComponentService;
 
 public class BasePage extends WebPage {
     @SpringBean
     protected ComponentService componentService;
+    @SpringBean
+    protected AssemblyService assemblyService;
 
     public BasePage() {
         add(new NavigationPanel("navigationBar", componentService.getComponents()));
