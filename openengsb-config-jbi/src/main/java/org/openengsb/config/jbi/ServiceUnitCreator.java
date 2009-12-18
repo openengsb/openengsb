@@ -9,22 +9,20 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import org.openengsb.config.jbi.types.ComponentType;
-import org.openengsb.config.jbi.types.EndpointType;
 
 public class ServiceUnitCreator {
-    public static void createServiceUnit(OutputStream os, ComponentType component, EndpointType endpoint,
-            Map<String, String> map) throws IOException {
+    public static void createServiceUnit(OutputStream os, ServiceUnitInfo su) throws IOException {
         ZipOutputStream zip = new ZipOutputStream(os);
 
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        writeXBeanXmlFile(bout, component, endpoint, map);
+        writeXBeanXmlFile(bout, su);
 
         zip.putNextEntry(new ZipEntry("xbean.xml"));
         zip.write(bout.toByteArray());
         zip.closeEntry();
 
         bout = new ByteArrayOutputStream();
-        writeJbiXmlFile(bout, component);
+        writeJbiXmlFile(bout, su.getComponent());
 
         zip.putNextEntry(new ZipEntry("META-INF/jbi.xml"));
         zip.write(bout.toByteArray());
@@ -32,13 +30,12 @@ public class ServiceUnitCreator {
         zip.close();
     }
 
-    public static void writeXBeanXmlFile(OutputStream out, ComponentType component, EndpointType endpoint,
-            Map<String, String> map) throws IOException {
+    public static void writeXBeanXmlFile(OutputStream out, ServiceUnitInfo su) throws IOException {
         OutputStreamWriter writer = new OutputStreamWriter(out);
-        writer.write("<beans xmlns:" + component.getNsname() + "=\"" + component.getNamespace() + "\"\n");
+        writer.write("<beans xmlns:" + su.getComponent().getNsname() + "=\"" + su.getComponent().getNamespace() + "\"\n");
         writer.write("       xmlns:app=\"urn:openengsb:application\">\n");
-        writer.write("  <" + component.getNsname() + ':' + endpoint.getName() + "\n");
-        for (Map.Entry<String, String> e : map.entrySet()) {
+        writer.write("  <" + su.getComponent().getNsname() + ':' + su.getEndpoint().getName() + "\n");
+        for (Map.Entry<String, String> e : su.getMap().entrySet()) {
             writer.write("    " + e.getKey() + "=\"" + e.getValue() + "\"\n");
         }
         writer.write("  />");
