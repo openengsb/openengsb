@@ -1,5 +1,8 @@
 package org.openengsb.config.editor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -21,6 +24,7 @@ public abstract class EditorPanel extends Panel {
     private static final long serialVersionUID = 1L;
     private final EndpointType endpointType;
     private final String componentId;
+    private final Map<String, String> map;
 
     public EditorPanel(String id, String componentId, EndpointType endpointType) {
         this(id, componentId, endpointType, null);
@@ -30,7 +34,12 @@ public abstract class EditorPanel extends Panel {
         super(id, model);
         this.componentId = componentId;
         this.endpointType = endpointType;
+        map = new HashMap<String,String>();
         createForm();
+    }
+
+    public Map<String, String> getValues() {
+        return map;
     }
 
     public abstract void onSubmit();
@@ -53,16 +62,16 @@ public abstract class EditorPanel extends Panel {
             fields.add(row);
             ResourceModel labelModel = new ResourceModel(componentId + '.' + endpointType.getName() + '.' + f.getName());
             row.add(new Label("name", labelModel));
-            row.add(getEditor(f).setLabel(labelModel));
+            row.add(getEditor(f, new MapModel<String,String>(map, f.getName())).setLabel(labelModel));
         }
     }
 
-    private AbstractField getEditor(AbstractType type) {
+    private AbstractField getEditor(AbstractType type, IModel<String> model) {
         if (type.getClass().equals(BoolType.class))
-            return new CheckboxField("editor", type);
+            return new CheckboxField("editor", model, type);
         else if (type.getClass().equals(ChoiceType.class))
-            return new DropdownChoiceField("editor", (ChoiceType)type);
+            return new DropdownChoiceField("editor", model, (ChoiceType)type);
         else
-            return new InputField("editor", type);
+            return new InputField("editor", model, type);
     }
 }
