@@ -21,6 +21,7 @@ import java.util.List;
 
 public class ComponentType {
     private String name;
+    private boolean bindingComponent;
     private String namespace;
     private String nsname;
     private List<EndpointType> endpoints;
@@ -35,6 +36,14 @@ public class ComponentType {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isBindingComponent() {
+        return bindingComponent;
+    }
+
+    public void setBindingComponent(boolean bindingComponent) {
+        this.bindingComponent = bindingComponent;
     }
 
     public String getNamespace() {

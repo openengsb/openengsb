@@ -69,6 +69,7 @@ public class XStreamFactory {
     private static void configureComponentType(XStream x) {
         x.alias("component", ComponentType.class);
         x.useAttributeFor(ComponentType.class, "name");
+        x.useAttributeFor(ComponentType.class, "bindingComponent");
         x.useAttributeFor(ComponentType.class, "namespace");
         x.useAttributeFor(ComponentType.class, "nsname");
     }
