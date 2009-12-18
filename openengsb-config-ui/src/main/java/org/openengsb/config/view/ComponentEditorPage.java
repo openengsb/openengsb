@@ -18,22 +18,27 @@
 package org.openengsb.config.view;
 
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.html.basic.Label;
 import org.openengsb.config.editor.EditorPanel;
+import org.openengsb.config.jbi.ServiceUnitInfo;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointType;
 
 public class ComponentEditorPage extends BasePage {
 
     public ComponentEditorPage(PageParameters params) {
-        String name = params.getString("component");
-        final ComponentType desc = componentService.getComponent(name);
+        this(params.getString("component"), params.getString("endpoint"));
+    }
+
+    public ComponentEditorPage(String componentName, String endpointName) {
+        final ComponentType desc = componentService.getComponent(componentName);
         add(new Label("name", desc.getName()));
         add(new Label("namespace", desc.getNamespace()));
 
         EndpointType ee = null;
         for (EndpointType e : desc.getEndpoints()) {
-            if (e.getName().equals(params.getString("endpoint"))) {
+            if (e.getName().equals(endpointName)) {
                 ee = e;
                 break;
             }
@@ -43,7 +48,8 @@ public class ComponentEditorPage extends BasePage {
         EditorPanel editor = new EditorPanel("editor", desc.getName(), endpoint) {
             @Override
             public void onSubmit() {
-
+                assemblyService.getServiceUnits().add(new ServiceUnitInfo(desc, endpoint, getValues()));
+                RequestCycle.get().setResponsePage(CreateAssemblyPage.class);
             }
         };
         add(editor);

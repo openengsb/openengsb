@@ -33,6 +33,9 @@ public class NavigationPanel extends Panel {
 
     public NavigationPanel(String id, List<ComponentType> components) {
         super(id);
+        PageParameters params = new PageParameters();
+        params.put("reset", "1");
+        add(new BookmarkablePageLink<CreateAssemblyPage>("createAssemblyLink", CreateAssemblyPage.class, params));
         add(new ListView<ComponentType>("components", components) {
             private static final long serialVersionUID = 1L;
 
@@ -44,6 +47,6 @@ public class NavigationPanel extends Panel {
                 item.add(new BookmarkablePageLink<ComponentInfoPage>("componentLink", ComponentInfoPage.class, params)
                         .add(new Label("name")));
             }
-         });
+        });
     }
 }
