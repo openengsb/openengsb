@@ -558,7 +558,20 @@
 
                 <!-- OpenEngSB installers -->
 
-
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-connector-email-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-connector-issues-trac</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
                   <artifactId>openengsb-connector-mvn</artifactId>
@@ -575,7 +588,28 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-context-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domain-notification-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
                   <artifactId>openengsb-domain-scm-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-drools-se</artifactId>
                   <version>${project.version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
@@ -590,6 +624,13 @@
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
                   <artifactId>openengsb-edb-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-link-http-processor-se</artifactId>
                   <version>${project.version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
