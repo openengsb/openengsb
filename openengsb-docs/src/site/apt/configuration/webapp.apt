@@ -1,5 +1,5 @@
 ~~
-~~	Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~  Copyright 2009 OpenEngSB Division, Vienna University of Technology
 ~~
 ~~   Licensed under the Apache License, Version 2.0 (the "License");
 ~~   you may not use this file except in compliance with the License.
@@ -13,25 +13,73 @@
 ~~   See the License for the specific language governing permissions and
 ~~   limitations under the License.
 ~~
-  [ATTENTION:] This page is only a proposal! This means that everyone is allowed to edit this page and it is 
-  			   marked for change. This proposal could be seen as design idea and should be discussed in public
-  			   and visible for everyone before implemented at all.
 
 Configuration Web Application
 
-  The embedded web app adds the possibility to create, configure and monitor service assemblies through a user-friendly web interface.
+  The embedded web app adds the possibility to create, configure and monitor service assemblies through
+a user-friendly web interface.
 
 
    Creating and configuring a service assembly for an JBI-compliant ESB is mainly
-possible through editing xml text-files. Build tools like maven are helping by providing a common
-project layout and support for building the deployable zip file. Still, many errors can occur during
-writing xml, which are not found immediately but on deploy time.
+possible by editing xml text-files. Build tools like maven are helping by providing
+support for building the deployable zip file. Still, many errors can occur during
+writing the xml files, which are not found immediately but on deploy time.
 
    The provided web app should ease the process for creating, configuring and monitoring service
-assemblies by providing a feature-rich interface and immediate error validation. E.g. referencing
-an unknown service endpoint should be reported to the user.
+assemblies by providing a feature-rich interface and immediate error validation.
+
+{Current Prototype}
+
+   The web application is startable by running <<<mvn jetty:run-war>>> inside the <openengsb-embedded> project.
+Note, all openengsb projects should be installed in the local maven repository. This starts an integrated
+ServiceMix in the background and the web app at the url {{http://localhost:8080}}. Currently, there is only a descriptor
+for the {{{http://servicemix.apache.org/servicemix-file.html}servicemix-file}} JBI component.
+
+{Howto create a Service Assembly, by example}
+
+   The following <Hello World> style example creates a SA, which polls for new files in one directory and writes
+the polled file to another directory.
+
+   * Create a new SA by clicking <Create New Assembly>. A view for adding new Service Units appears.
+
+   * Create a new <servicemix-file:sender> SU.
+
+   * Configure at least the following parameters for the sender SU:
+
+     * Service: A unique name for the service, e.g. <<<fileSender>>>.
+
+     * Endpoint: A name for the endpoint, e.g. <<<endpoint>>>.
+
+     * Outbox: Directory where the file sender should put incoming files.
+
+   * Click <Save Me!> to save the SU configuration.
+
+   * Now, create a second SU of type <servicemix-file:poller>.
+
+   * Configure at least the following parameters for the poller SU:
+
+     * Service: A unique name for the service, e.g. <<<filePoller>>>.
+
+     * Endpoint: A name for the endpoint, e.g. <<<endpoint>>>.
+
+     * Target Service: Put the service name of the sender SU, e.g. <<<fileSender>>>.
+
+     * Target Endpoint: Put the endpoint name of the sender SU, e.g. <<<endpoint>>>.
+
+     * Period: Interval the SU should check for new files in the inbox, in milliseconds.
+
+     * Inbox: Directory which the SU checks for incoming files.
+
+     * Delete File: Check this if the SU should remove the files from the inbox.
+
+   * Click <Save Me!> to save the SU.
+
+   * Click <Deploy> to deploy the configured SA into the embedded ServiceMix.
+
+   * Now it should be possible to put xml files into the inbox directory. The file
+     will be picked up by ServiceMix and copied to the outbox directory.
 
 {Add support for a new JBI component}
 
-  TBD - descriptor, schema, language file
+  TBW - descriptor, schema, language file
 
