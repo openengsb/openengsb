@@ -1,0 +1,37 @@
+~~
+~~	Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+  [ATTENTION:] This page is only a proposal! This means that everyone is allowed to edit this page and it is 
+  			   marked for change. This proposal could be seen as design idea and should be discussed in public
+  			   and visible for everyone before implemented at all.
+
+Configuration Web Application
+
+  The embedded web app adds the possibility to create, configure and monitor service assemblies through a user-friendly web interface.
+
+
+   Creating and configuring a service assembly for an JBI-compliant ESB is mainly
+possible through editing xml text-files. Build tools like maven are helping by providing a common
+project layout and support for building the deployable zip file. Still, many errors can occur during
+writing xml, which are not found immediately but on deploy time.
+
+   The provided web app should ease the process for creating, configuring and monitoring service
+assemblies by providing a feature-rich interface and immediate error validation. E.g. referencing
+an unknown service endpoint should be reported to the user.
+
+{Add support for a new JBI component}
+
+  TBD - descriptor, schema, language file
+
