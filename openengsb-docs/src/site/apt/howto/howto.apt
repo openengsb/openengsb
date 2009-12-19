@@ -1,0 +1,88 @@
+~~
+~~	Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+Howto for usage Scenario of OpenEngSB (Notification)
+
+ The first step is to install Guvnor. We used the standalone version for testing purposes.
+ {{{http://www.jboss.org/drools/downloads.html}Guvnor Download}}.
+
+* Guvnor Setup
+
+  Change port of Guvnor-JBoss to be 8081 instead of 8080.
+  In server\default\deploy\jboss-web.deployer\server.xml
+  
++---  
+  <Connector port="8081" address="${jboss.bind.address}"
++---
+
+  Change port of jmx/rmi from 1099 to 10099.
+  In server/default/conf/jboss-service.xml
+  
++---
+  <mbean code="org.jboss.naming.NamingService"
+  ...
+  <attribute name="Port">10099</attribute>
++---
+
+  Maybe also change this in server/default/conf/jboss-minimal.xml as this port is also specified here.
+
+* Drools Project Setup in Guvnor
+
+  First build the openengsb-drools-domains project. Then log in to the web interface of the guvnor server (user and pwd empty).
+  {{{http://localhost:8081/drools-guvnor}http://localhost:8081/drools-guvnor}}.
+  
+  Guvnor gives you the possibility to add some test data to the empty repository. Choose "yes".
+  Now use the left navigation panel to show your knowledge bases. Create a new org.openengsb package with "Create New" -> "New Package".
+  Note: It has to be called org.openengsb, if it is called otherwise our drools component cannot connect to guvnor in a correct way.
+  Click on the package org.openengsb.
+  Add four new Globals with the given names.
+  
+  *org.openengsb.contextcommon.ContextHelper -> ctx
+  
+  *org.openengsb.drools.DroolsIssuesDomain -> issue
+  
+  *org.openengsb.drools.NotificationDomain -> notification
+  
+  *org.openengsb.drools.MessageHelper -> helper
+  
+  Note: The names have to be exactly the same as those specified in the org.openengsb.drools.DomainRegistry in the openengsb-drools-domains project.
+  Press "save and validate configuration".
+  Then use "Create New" -> "Upload POJO Model". Name it openengsb. Choose the openengsb-drools-domains jar and upload it.
+  The choose "Create New" -> "New Rule". Type is "DRL Rule (Technical rule – text editor)"
+  
+  Use for example such a rule that will execute on all events:
+  
++----  
+  when
+    e : Event( name == name )
+  then
+    Notification n = new Notification();
+    n.setSubject("test");
+    n.setMessage("This is a test scenario for the notification domain");
+    n.setRecipient("email@example.com");
+    notification.notify(n);
++----
+
+  Note: You have to press "save changes" in order to make sure that your changes to the rule take effect.
+  Build the package with "build package". Now the guvnor server set up is done.
+  
+* What it does
+
+  Start servicemix.
+  Run quickrun.sh.
+  Now a timer sends messages to the drools endpoint containing an event. 
+  The endpoint connects to the guvnor server and the rule that was specified is executed. 
+  Then a message is sent to the notification domain that notify shall be executed for the given notification. 
+  The notification domain forwards the message to its currently only connector the email connector, which sends the notification to the given recipient.
