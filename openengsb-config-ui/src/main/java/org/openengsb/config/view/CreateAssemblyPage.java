@@ -30,8 +30,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.request.target.resource.ResourceStreamRequestTarget;
-import org.apache.wicket.util.resource.FileResourceStream;
 import org.openengsb.config.jbi.ServiceAssemblyCreator;
 import org.openengsb.config.jbi.ServiceAssemblyInfo;
 import org.openengsb.config.jbi.ServiceUnitInfo;
@@ -88,12 +86,14 @@ public class CreateAssemblyPage extends BasePage {
         try {
             File tmp = File.createTempFile("openengsb", ".zip");
             FileOutputStream fos = new FileOutputStream(tmp);
-            ServiceAssemblyCreator.createServiceAssembly(fos, new ServiceAssemblyInfo("testname", assemblyService
+            ServiceAssemblyCreator.createServiceAssembly(fos, new ServiceAssemblyInfo("openengsb-test", assemblyService
                     .getServiceUnits()));
-            ResourceStreamRequestTarget target = new ResourceStreamRequestTarget(new FileResourceStream(tmp));
-            target.setFileName("testname-sa.zip");
-            RequestCycle.get().setRequestTarget(target);
-            RequestCycle.get().getResponse().setContentType("application/zip");
+            assemblyService.deploy(tmp, "openengsb-test-sa.zip");
+            assemblyService.createNewAssembly();
+            //ResourceStreamRequestTarget target = new ResourceStreamRequestTarget(new FileResourceStream(tmp));
+            //target.setFileName("testname-sa.zip");
+            //RequestCycle.get().setRequestTarget(target);
+            //RequestCycle.get().getResponse().setContentType("application/zip");
         } catch (IOException e) {
             e.printStackTrace();
         }
