@@ -16,7 +16,7 @@
     -->
 <beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:sm="http://servicemix.apache.org/config/1.0"
-  xmlns:engsb="http://openengsb.org/connector/issues/trac/1.0"
+  xmlns:engsb="http://www.openengsb.org/connector/issues/trac/1.0"
   xmlns:test="urn:test"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
@@ -26,15 +26,15 @@
 
       <sm:activationSpec>
         <sm:component>
-          <engsb:tracComponent>
+          <engsb:issuesComponent>
             <engsb:endpoints>
-              <engsb:create-issue service="test:tracTicketCreatorService" endpoint="executeEndpoint">
+              <engsb:issuesEndpoint service="test:tracTicketCreatorService" endpoint="issuesEndpoint">
                 <property name="url" value="http://localhost:8000/trac/login/xmlrpc" />
                 <property name="username" value="user" />
                 <property name="password" value="user" />
-              </engsb:create-issue>
+              </engsb:issuesEndpoint>
             </engsb:endpoints>
-          </engsb:tracComponent>
+          </engsb:issuesComponent>
         </sm:component>
       </sm:activationSpec>
 

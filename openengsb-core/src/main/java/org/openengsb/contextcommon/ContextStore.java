@@ -149,8 +149,8 @@ public class ContextStore {
     }
 
     private void loadDefaultConfig() {
-        setValue("42/issues/namespace", "urn:openengsb:issues");
-        setValue("42/issues/servicename", "issuesService");
+        setValue("42/issue/namespace", "urn:openengsb:issues");
+        setValue("42/issue/servicename", "issuesService");
         setValue("42/notification/namespace", "urn:openengsb:notification");
         setValue("42/notification/servicename", "notificationService");
         setValue("42/notification/default", "email");
