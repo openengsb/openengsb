@@ -13,29 +13,27 @@
 ~~   See the License for the specific language governing permissions and
 ~~   limitations under the License.
 ~~
-
-Configuration Web Application
+Web Configuration Interface
 
   The embedded web app adds the possibility to create, configure and monitor service assemblies through
-a user-friendly web interface.
+a web interface.
 
+   Configuration of anservice assembly for an JBI-compliant ESB is mainly
+done by editing xml-files. Build tools like maven help by providing
+support for building the deployment file. Still, writing the xml files manually is a time consuming task.
 
-   Creating and configuring a service assembly for an JBI-compliant ESB is mainly
-possible by editing xml text-files. Build tools like maven are helping by providing
-support for building the deployable zip file. Still, many errors can occur during
-writing the xml files, which are not found immediately but on deploy time.
+   The provided web app should ease the process of creating, configuring and monitoring service
+assemblies by providing an intuitive interface and immediate validation.
 
-   The provided web app should ease the process for creating, configuring and monitoring service
-assemblies by providing a feature-rich interface and immediate error validation.
-
-{Current Prototype}
+* Current Prototype
 
    The web application is startable by running <<<mvn jetty:run-war>>> inside the <openengsb-embedded> project.
-Note, all openengsb projects should be installed in the local maven repository. This starts an integrated
+
+   Note: All openengsb projects should be installed in the local maven repository. This starts an integrated
 ServiceMix in the background and the web app at the url {{http://localhost:8080}}. Currently, there is only a descriptor
 for the {{{http://servicemix.apache.org/servicemix-file.html}servicemix-file}} JBI component.
 
-{Howto create a Service Assembly, by example}
+* Creating a Service Assembly
 
    The following <Hello World> style example creates a SA, which polls for new files in one directory and writes
 the polled file to another directory.
@@ -79,7 +77,7 @@ the polled file to another directory.
    * Now it should be possible to put xml files into the inbox directory. The file
      will be picked up by ServiceMix and copied to the outbox directory.
 
-{Add support for a new JBI component}
+* Adding support for new JBI components
 
   TBW - descriptor, schema, language file
 
