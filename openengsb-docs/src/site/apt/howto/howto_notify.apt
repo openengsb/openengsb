@@ -15,8 +15,9 @@
 ~~
 HowTo - First steps with OpenEngSB (Hello World aka Notification)
 
- The first step is to install Guvnor. We used the standalone version for testing purposes.
- {{{http://www.jboss.org/drools/downloads.html}Guvnor Download}}.
+  We are using the standalone version of Drools Guvnor for this example. You can download it from the {{{http://www.jboss.org/drools/downloads.html}JBoss Drools homepage}}.
+
+  Note: At the moment OpenEngSB is only available as development release. Please refer to the {{{howto_setup.html}Developer Setup HowTo}} for detailed instructions on building OpenEngSB.
 
 * Guvnor Setup
 
@@ -42,7 +43,7 @@ HowTo - First steps with OpenEngSB (Hello World aka Notification)
 
   First build the openengsb-drools-domains project. ("mvn install -o", you can add "-Dmaven.test.skip=true" if you do not want to wait for the OpenEngSB self-test)
   
-  Note: At this time you need Apache Maven 2 to be available in the testing environment. You can fetch it from the {{{http://maven.apache.org/download.html}Maven website}}. Under some circumstances Maven seems to run out of heap space when building OpenEngSB due to its size. This can be worked around by including "-Xmx256m" (or bigger) in the environmental variable "MAVEN_OPTS" before running Maven again in a new shell.
+  Note: At this time you need Apache Maven 2 to be available in the testing environment. You can fetch it from the {{{http://maven.apache.org/download.html}Maven website}}. Under some circumstances Maven seems to run out of heap space when building OpenEngSB due to its size. This can be worked around by including "-Xmx1024M -XX:MaxPermSize=512m" in the environmental variable "MAVEN_OPTS" before running Maven again in a new shell.
 
   Then log in to the web interface of the guvnor server (user and pwd empty) at {{{http://localhost:8081/drools-guvnor}http://localhost:8081/drools-guvnor}}.
   

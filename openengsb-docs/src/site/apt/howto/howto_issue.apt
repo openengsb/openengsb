@@ -30,7 +30,7 @@ HowTo - First steps with OpenEngSB (Issue tracker)
 +----
   trac-admin trac initenv
   Project Name [My Project]> trac
-+---
++----
 
   Make sure that xmlrpc is enabled for this trac instance. For more information see the xmlrpc documentation {{{http://trac-hacks.org/wiki/XmlRpcPlugin}http://trac-hacks.org/wiki/XmlRpcPlugin}}.
   You also have to add an user named "user" with the password "user" with the htpasswd command. And after that give this user admin permissions.

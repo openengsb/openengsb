@@ -15,10 +15,22 @@
 ~~
 HowTo - First steps with OpenEngSB
 
-* 1. Hello World example
+* Using OpenEngSB
 
-  The {{{howto_notify.html}Hello World}} example (aka Notification example) shows basic setup steps and runs OpenEngSB for delivering the famous phrase. We use Guvnor as drools server for this example.
+  * Hello World example
 
-* 2. Issue ticket example
+    The {{{howto_notify.html}Hello World}} example (aka Notification example) shows basic setup steps and runs OpenEngSB for delivering the famous phrase. We use Guvnor as drools server for this example.
 
-  The {{{howto_issue.html}Issue ticket}} example presents quick integration and usage of the issue tracker domain. This one is a good stating point for customization.
+  * Issue tracker example
+
+    The {{{howto_issue.html}Issue tracker}} example presents quick integration and usage of the issue tracker domain. This one is a good stating point for customization.
+  
+  * Web configuration tutorial  
+
+    The {{{howto_embedded.html}Web deployment and configuration}} tutorial shows major runtime management capabilities of OpenEngSB. The web interface allows easy monitoring, configuration and deployment of connectors and components.
+  
+* Development
+
+  * Developer Setup HowTo
+
+    The {{{howto_setup.html}Developer Setup HowTo}} briefly explains the steps required to get all required tools and applications up and running.
