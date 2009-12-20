@@ -1,0 +1,101 @@
+~~
+~~	Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+HowTo - First steps with OpenEngSB (Hello World aka Notification)
+
+ The first step is to install Guvnor. We used the standalone version for testing purposes.
+ {{{http://www.jboss.org/drools/downloads.html}Guvnor Download}}.
+
+* Guvnor Setup
+
+  Change port of Guvnor-JBoss to be 8081 instead of 8080.
+  In server/default/deploy/jboss-web.deployer/server.xml
+  
++---  
+  <Connector port="8081" address="${jboss.bind.address}"
++---
+
+  Change port of jmx/rmi from 1099 to 10099.
+  In server/default/conf/jboss-service.xml
+  
++---
+  <mbean code="org.jboss.naming.NamingService"
+  ...
+  <attribute name="Port">10099</attribute>
++---
+
+  Maybe also change this in server/default/conf/jboss-minimal.xml as this port is also specified here.
+
+* Drools Project Setup in Guvnor
+
+  First build the openengsb-drools-domains project. ("mvn install -o", you can add "-Dmaven.test.skip=true" if you do not want to wait for the OpenEngSB self-test)
+  
+  Note: At this time you need Apache Maven 2 to be available in the testing environment. You can fetch it from the {{{http://maven.apache.org/download.html}Maven website}}. Under some circumstances Maven seems to run out of heap space when building OpenEngSB due to its size. This can be worked around by including "-Xmx256m" (or bigger) in the environmental variable "MAVEN_OPTS" before running Maven again in a new shell.
+
+  Then log in to the web interface of the guvnor server (user and pwd empty) at {{{http://localhost:8081/drools-guvnor}http://localhost:8081/drools-guvnor}}.
+  
+  Guvnor gives you the possibility to add some test data to the empty repository. Choose "yes".
+  Now use the left navigation panel to show your knowledge bases. Create a new org.openengsb package with "Create New" -> "New Package".
+  Note: It has to be called org.openengsb, if it is called otherwise our drools component cannot connect to guvnor in a correct way.
+  Click on the package org.openengsb.
+  Add four new Globals with the given names.
+  
+  *org.openengsb.contextcommon.ContextHelper -> ctx
+  
+  *org.openengsb.drools.DroolsIssuesDomain -> issue
+  
+  *org.openengsb.drools.NotificationDomain -> notification
+  
+  *org.openengsb.drools.MessageHelper -> helper
+  
+  []
+  
+  Note: The names have to be exactly the same as those specified in the org.openengsb.drools.DomainRegistry in the openengsb-drools-domains project.
+  Press "save and validate configuration".
+  Then use "Create New" -> "Upload POJO Model". Name it openengsb. Choose the openengsb-drools-domains jar and upload it.
+
+* Setting up the example
+
+  At {{{http://localhost:8081/drools-guvnor}http://localhost:8081/drools-guvnor}} choose "Create New" -> "New Rule". Type is "DRL Rule (Technical rule, text editor)"
+  
+  You could use this rule to create email notifications. The rule will be activated on any incoming event. (e.g. quickrun timer)
+  
++----  
+  when
+    e : Event( name == name )
+  then
+    Notification n = new Notification();
+    n.setSubject("My test notification");
+    n.setMessage("Hello World!");
+    n.setRecipient("email@example.com");
+    notification.notify(n);
++----
+
+  Note: You have to press "save changes" in order to make sure that your changes to the rule take effect.
+  Build the package with "build package". Now the example is set up.
+  
+* Running the example
+
+  1. Start servicemix.
+  
+  2. Run quickrun.sh.
+  
+  Now a timer sends messages to the drools endpoint containing an event. 
+  Guvnor starts executing the specified rules and the notification domain becomes active. 
+  The domain selects a suitable connector (Email in our case) and passes the notification to the given recipient.
+
+* Coming up next
+
+  The {{{howto_issue.html}Issue ticket}} example shows how to use a different domain. It is also a good starting point for customizing OpenEngSB.

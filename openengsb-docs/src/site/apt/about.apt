@@ -16,10 +16,10 @@
 About OpenEngSB
 
   In engineering environments a lot of different tools are used. Most of these
- operate on the same domain, but often interoperability is the limiting factor
- in productivity. For each project and every team integration work has to be
- done over again. In general, this ends up with numerous point-to-point
- connectors between tools which is neither a stabe solution nor a flexible one.
+ operate on the same domain, but often interoperability is the limiting factor.
+ For each new project and team memeber tool integration has to be repreated again.
+ In general, this ends up with numerous point-to-point connectors between tools
+ which are neither stabe solutions nor flexible ones.
 
   This is the point where the Open (Software) Engineering Service Bus (OpenEngSB)
  comes into play. It simplyfies design and implementation of workflows in an
