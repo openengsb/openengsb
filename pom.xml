@@ -464,7 +464,7 @@
             <exclude>openengsb-package-all/quickdeploy.sh</exclude>
 
             <!-- OpenEngSB Embedded -->
-            <exclude>openengsb-embedded/data/*</exclude>
+            <exclude>**/data/**</exclude>
 
             <!-- Serialization Test Data -->
             <exclude>**/src/test/resources/serialization/valid.xml</exclude>
