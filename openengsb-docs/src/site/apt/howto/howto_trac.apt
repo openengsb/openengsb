@@ -1,0 +1,58 @@
+~~
+~~	Copyright 2009 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+Howto for usage Scenario of OpenEngSB (Issues)
+
+  Basically the issues domain can be used like the notification domain. So if the notification domain is set up in guvnor and all steps of the
+  howto have been executed you simply have to add a rule to the technical rules of Guvnor that triggers an issue creation:
+  
++----  
+  when
+    e : Event( name == name )
+  then
+    issue.createIssue("myTestIssue");
++----
+
+* Trac setup
+  
+  To setup the trac connector. One needs a running trac instance. For information on how to install trac see {{{http://trac.edgewall.org/}http://trac.edgewall.org/}}.
+  You also have to install the xmlrpc plugin. For more information see {{{http://trac-hacks.org/wiki/XmlRpcPlugin}http://trac-hacks.org/wiki/XmlRpcPlugin}}.
+  
+  Then you need to init a project environment. It is important to name the project "trac". All other options can be left as preconfigured per default.
+  If you have called the directory trac in which the environment shall be created you can init the environment by:
+  
++----
+
+  trac-admin trac initenv
+  Project Name [My Project]> trac
++---
+
+  Make sure that xmlrpc is enabled for this trac instance. For more information see the xmlrpc documentation {{{http://trac-hacks.org/wiki/XmlRpcPlugin}http://trac-hacks.org/wiki/XmlRpcPlugin}}.
+  You also have to add an user named "user" with the password "user" with the htpasswd command. And after that give this user admin permissions.
+
++----
+
+  htpasswd -c trac\.htpasswd user
+  trac-admin trac permission add user TRAC_ADMIN
++----  
+  
+  After the initialization you can start trac using the command. (The port should also be 8000, because the trac connector is configured that way).
+  
++----
+
+  tracd -p 8000 --basic-auth=environmentname,/fullpath/environmentname/.htpasswd,/fullpath/environmentname /fullpath/environmentname
++----
+where environmentname in our case is "trac".
+
