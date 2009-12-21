@@ -63,7 +63,7 @@ public class TracIssuesDomain implements DroolsIssuesDomain {
         issue.setOwner("user");
         issue.setReporter("user");
         issue.setAffectedVersion("1.0");
-        
+
         try {
             return connector.createIssue(issue);
         } catch (IssueDomainException e) {

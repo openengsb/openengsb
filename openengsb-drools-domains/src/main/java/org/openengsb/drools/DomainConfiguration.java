@@ -6,25 +6,21 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+       http://www.apache.org/licenses/LICENSE\-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
+   
  */
 package org.openengsb.drools;
 
-public interface DroolsIssuesDomain extends Domain {
+public interface DomainConfiguration {
 
-    /**
-     * @return The ID of the created issue
-     */
-    String createIssue(String name);
+    void setToConnector(Domain domain, String connectorName);
 
-    boolean addComment(String issueId, String comment);
+    void setToDomain(Domain domain);
 
-    boolean deleteIssue(String issueId);
 }

@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class DomainRegistry {
 
-    public final static Map<String, Class<?>> domains = new HashMap<String, Class<?>>();
+    public final static Map<String, Class<? extends Domain>> domains = new HashMap<String, Class<? extends Domain>>();
 
     static {
         domains.put("helper", MessageHelper.class);

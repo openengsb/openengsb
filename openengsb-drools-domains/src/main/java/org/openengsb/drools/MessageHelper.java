@@ -25,7 +25,7 @@ import java.io.Serializable;
  * rules.
  * 
  */
-public interface MessageHelper extends Serializable {
+public interface MessageHelper extends Domain, Serializable {
     /**
      * Sends an email to the specified address, with the specified content.
      * 
@@ -44,5 +44,7 @@ public interface MessageHelper extends Serializable {
      * @return true if the execution was successful
      */
     boolean createIssue(String subject, String body);
+
     // boolean call(String name, Collection<Object> args);
+
 }

@@ -36,7 +36,6 @@ public class EmailEndpoint extends OpenEngSBEndpoint<NotificationDomain> {
 
     @Override
     protected NotificationDomain getImplementation(ContextHelper contextHelper) {
-
         Properties props = getPropertiesFromContext(contextHelper);
 
         String user = contextHelper.getValue("notification/email/user");

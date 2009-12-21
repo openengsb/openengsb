@@ -19,7 +19,7 @@ package org.openengsb.drools;
 
 import org.openengsb.drools.model.Notification;
 
-public interface NotificationDomain {
+public interface NotificationDomain extends Domain {
 
     void notify(Notification notification);
 

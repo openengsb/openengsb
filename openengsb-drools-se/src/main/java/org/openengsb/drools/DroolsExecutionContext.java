@@ -42,6 +42,7 @@ import org.openengsb.contextcommon.ContextHelperImpl;
 import org.openengsb.core.methodcalltransformation.MethodCall;
 import org.openengsb.core.methodcalltransformation.ReturnValue;
 import org.openengsb.core.methodcalltransformation.Transformer;
+import org.openengsb.drools.model.DomainConfigurationImpl;
 
 /**
  * Represents the execution context of the Drools rules.
@@ -64,6 +65,8 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
     private ContextHelper contextHelper;
 
+    private DomainConfigurationImpl domainConfiguration;
+
     /**
      * Start a new execution context for the specified exchange.
      * 
@@ -80,7 +83,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
         this.memory = endpoint.getRuleBase().newStatefulSession();
         this.memory.addEventListener(this);
         this.contextHelper = new ContextHelperImpl(endpoint, contextId);
-
+        this.domainConfiguration = new DomainConfigurationImpl(contextHelper);
         populateWorkingMemory(objects);
     }
 
@@ -91,9 +94,11 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
      */
     private void populateWorkingMemory(Collection<Object> objects) {
         memory.setGlobal("ctx", contextHelper);
+        memory.setGlobal("config", domainConfiguration);
 
-        for (Entry<String, Class<?>> e : DomainRegistry.domains.entrySet()) {
-            Object proxy = createProxy(e.getKey(), e.getValue());
+        for (Entry<String, Class<? extends Domain>> e : DomainRegistry.domains.entrySet()) {
+            Object proxy = createProxy(e.getValue());
+            domainConfiguration.addDomain((Domain) proxy, e.getKey());
             memory.setGlobal(e.getKey(), proxy);
         }
 
@@ -104,9 +109,9 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
         }
     }
 
-    private Object createProxy(String name, Class<?> value) {
+    private Object createProxy(Class<? extends Domain> value) {
         return Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { value },
-                new GuvnorProxyInvocationHandler(name));
+                new GuvnorProxyInvocationHandler());
     }
 
     /**
@@ -136,20 +141,11 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
     private class GuvnorProxyInvocationHandler implements InvocationHandler {
 
-        private String name;
-
-        public GuvnorProxyInvocationHandler(String name) {
-            this.name = name;
-        }
-
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) {
             try {
-                String namespaceURI = contextHelper.getValue(name + "/namespace");
-                String serviceName = contextHelper.getValue(name + "/servicename");
-
                 InOut inout = new InOutImpl(UUID.randomUUID().toString());
-                inout.setService(new QName(namespaceURI, serviceName));
+                inout.setService(domainConfiguration.getServiceName((Domain) proxy));
                 inout.setOperation(new QName("methodcall"));
 
                 NormalizedMessage msg = inout.createMessage();
@@ -179,4 +175,5 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
             }
         }
     }
+
 }
