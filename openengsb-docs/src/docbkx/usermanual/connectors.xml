@@ -18,447 +18,48 @@
 -->
 <chapter id="connector">
   <title>
-    Develop own connectors for the EngSB
+    Develop own connectors for the OpenEngSB
   </title>
-
   <para>
-    The EngSB stands and falls with its connectors. The core of the bus is not more than an general, controlled
-    message bus, but most of the user logic and the real work is done in its connectors.
+    Introduction bla...
   </para>
-  <para>
-    So, as palmer said, we need "developer, developer, developer"!
-  </para>
-  <para>
-    In the following chapter a step by step introduction is given in the development of connectors for the EngSB. It
-    will be presented how to create an required maven war project, how to add an user-interface to it, how to connect to
-    the database and any further information required to build a full functional connector.
-  </para>
-
-  <section id="connector.model">
-    <title>How to model use cases for the EngSB</title>
+  <section id="connector.toolDomain">
+    <title>Tool Domain</title>
     <para>
-      If you like to make the EngSB applyable for a new UC you have to start modeling the UC first. Therefore there
-      are some guidelines and technologies which are generally used and which should be explained in the following
-      chapters.
+      what is a tool domain again
     </para>
-    <section id="connector.model.bpmn">
-      <!--
-        Would be very nice if written by Thomas :)
-      -->
-      <title>BPMN</title>
+    <section id="connector.toolDomain.specification.">
+      <title>Tool Domain Specification</title>
       <para>
-        <!-- Add the general part -->
-        TBW
+        Domain Interface (org.openengsb.drools); Domain Model (org.openengsb.drools.model); Domain Registry 
+        (org.openengsb.drools.DomainRegistry)
       </para>
-      <!-- Add new sections -->
     </section>
-    <section id="connector.model.messages">
-      <!--
-        Should be written by someon from the core developer team (Andreas, Jan, Bernhard), maybe with support of Thomas
-      -->
-      <title>Messages</title>
+    <section id="connector.toolDomain.configuration.">
+      <title>Tool Domain Configuration</title>
       <para>
-        TBW
+        Create openengsb-domain-XXX-se; optional openengsb-domain-XXX-common; use e.g. 
+        org.openengsb.core.OpenEngSBForwardEndpoint.
+        differences between simple (forward) and more complex approach (custom)
       </para>
-      <section id="connector.model.messages.services">
-        <title>Services</title>
-        <para>
-          TBW
-        </para>
-      </section>
-      <section id="connector.model.messages.events">
-        <title>Eventmessages</title>
-        <para>
-          TBW
-        </para>
-      </section>
     </section>
   </section>
-
-  <section id="connector.bridgeUCs">
-    <title>Bridge from use cases to the EngSB</title>
+  <section id="connector.toolConnector">
+    <title>Tool Connector</title>
     <para>
-      After finishing the description of the use case it have to be implemented into the EngSB. This work is two
-      fold and both steps should be described here in more detail. First of all the required interfaces for the EngSB
-      have to be written. This is (actually) not part of the work of the use case developer and have to be done by the
-      EngSB developers. In further releases a graphical tool should exist which can do this work. Further more the logic
-      between the different services and events have to be described in the EngSB. This also have to be done by an EngSB
-      developer at the moment but should also be possible - in later releases of the EngSB - to be done by a graphical
-      tool. In a final step the tools which have to be connected to the EngSB have to expose its events and services via
-      a standardized protocol. After finishing these steps the implemented use case could be used.
+      what is a tool connector again; differences between common and custom
     </para>
-    <para>
-      Although the EngSB is completely written in Java it does not mean that the use case developer have to write
-      any line of code in Java. In the final version of the EngSB (or in any later beta version) it should be possible
-      to completely define domains, conenctors and business logic in configuration files and graphical tools. Actually
-      all of these tasks require an EngSB developer. But most important the tools which should be connected to the EngSB
-      have to provide their services and should have a possibility to publish its events which are all described in the
-      use case. Afterwards these events simply have to be integrated into the EngSB by an EngSB developer.
-      </para>
-    <para>
-      The EngSB supports a very wide range of protocols which could be used to access the services and transport the
-      events. Since its required to call the EngSB from the tool (events) and also the EngSB have to call the tool
-      (services) it would be best to use a protocol which allows two way calls from many different languages. Therefore
-      Java Message Service (JMS) is the preferred protocol with the ActiveMQ implementation. This implementation allows
-      to send messages from many different languages and to commincate with the connectors on the EngSB side in this
-      way. For lower level tools or tools which are written in a language which is not supported by JMS TCP or UDP
-      should be used. Nevertheless there are also other supported protocols which should only be used if non of the
-      other formats could be used. The integration of these protocols (actually) have to be done by an EngSB developer
-      who has direct access to the source code.
-    </para>
-  </section>
-
-  <section id="connector.developConnectors">
-    <title>Developing EngSB Connectors</title>
-    <para>
-    </para>
-
-    <section id="connector.developConnectors.whereProject">
-      <title>Where to create the project?</title>
+    <section id="connector.toolConnector.common">
+      <title>Common Approach</title>
       <para>
-        If you are developing an connector for your own not relevant, but here its interesting where, to place it
-        and how to name it.
-      </para>
-
-      <section id="connector.developConnectors.whereProject.place">
-        <title>Where to place it?</title>
-        <para>
-          If you're developing an connector only for your own company it is not relevant where to place it, but if
-          you're developing an connector for the official
-          <literal moreinfo="none">EngSB</literal>
-          releases your connectors should be places in the following hierarchy.
-          <programlistingco>
-            <areaspec>
-              <area coords="1" id="structure.root" />
-              <area coords="2" id="structure.root.core" />
-              <area coords="3" id="structure.root.con" />
-              <area coords="4" id="structure.root.con.proj" />
-              <area coords="5" id="structure.root.con.proj.trunk" />
-              <area coords="6" id="structure.root.con.proj.branches" />
-              <area coords="7" id="structure.root.con.proj.tags" />
-              <area coords="8" id="structure.root.sand" />
-            </areaspec>
-            <programlisting format="linespecific"><![CDATA[engsb
-|+engsb
-|-engsb-connector
-|  -engsb-connector-TYPE-NAME
-|  |  +trunk
-|  |  +branches
-|  |  +tags
-|+sandbox]]>
-            </programlisting>
-            <calloutlist>
-              <callout arearefs="structure.root">
-                <para>
-                  Rootplace in the repository... TBW
-                </para>
-              </callout>
-              <callout arearefs="structure.root.core">
-                <para>
-                  Place for the core-dev of the engsb... TBW
-                </para>
-              </callout>
-              <callout arearefs="structure.root.con">
-                <para>
-                  Place where to place your project... TBW
-                </para>
-              </callout>
-              <callout arearefs="structure.root.con.proj">
-                <para>
-                  Name of your project... see later how to name it.... TBW
-                </para>
-              </callout>
-              <callout arearefs="structure.root.con.proj.trunk">
-                <para>
-                  Default repo layout... TBW
-                </para>
-              </callout>
-              <callout arearefs="structure.root.con.proj.branches">
-                <para>
-                  Default repo layout... TBW
-                </para>
-              </callout>
-              <callout arearefs="structure.root.con.proj.tags">
-                <para>
-                  Default repo layout... TBW
-                </para>
-              </callout>
-              <callout arearefs="structure.root.sand">
-                <para>
-                  Sandbox... not interesting.... TBW
-                </para>
-              </callout>
-            </calloutlist>
-          </programlistingco>
-        </para>
-      </section>
-
-      <section id="connector.developConnectors.whereProject.name">
-        <title>How to name it?</title>
-        <para>
-          Since the module should be integrated into the core its name is also required. Regularly the connector
-          projects have to be named in the following schema:
-        </para>
-        <para>engsb-connector-TYPE-NAME</para>
-        <para>
-          The types to insert for TYPE could be found in chapter
-          <xref linkend="architecture.connector.types" />
-          .
-          The NAME field should be filled with the name of the tool which is connected to engsb or the tasks which are
-          done by it. The following list shows some examples.
-        </para>
-        <itemizedlist>
-          <listitem>
-            <para>engsb-connector-issues-trac
-            </para>
-          </listitem>
-          <listitem>
-            <para>engsb-connector-issues-jira
-            </para>
-          </listitem>
-          <listitem>
-            <para>engsb-connector-scm-git</para>
-          </listitem>
-          <listitem>
-            <para>engsb-connector-scm-svn</para>
-          </listitem>
-        </itemizedlist>
-      </section>
-    </section>
-
-    <section id="connectors.developConnectors.createProject">
-      <title>How to create the project?</title>
-      <para>
-        Each project should be a maven project. The easiest way to create such a project is with: mvn
-        archetype:generate. Since a war file is required for connectors #18 should be choosen. In further versions there
-        will be mvn artefacts for each connector type which will simplify this process a lot. 
-    </para>
-    </section>
-
-    <section id="connectors.developConnectors.configurePom">
-      <title>Configure POM</title>
-      <para>
-        After setting up a new project the most minimal references have to be added to the connector project. Therefore
-        add in the pom file the following references:
-
-        <programlisting format="linespecific" language="xml"><![CDATA[<dependency>
-  <groupId>at.ac.tuwien.ifs.asb</groupId>
-  <artifactId>asb-client-common</artifactId>
-</dependency>
-<dependency>
-  <groupId>at.ac.tuwien.ifs.asb</groupId>
-  <artifactId>asb-util</artifactId>
-</dependency>
-<dependency>
-  <groupId>org.springframework</groupId>
-  <artifactId>spring-context</artifactId>
-</dependency>
-<dependency>
-  <groupId>org.springframework</groupId>
-  <artifactId>spring-test</artifactId>
-</dependency>
-<dependency>
-  <groupId>org.springframework</groupId>
-  <artifactId>spring-aop</artifactId>
-</dependency>
-<dependency>
-  <groupId>cglib</groupId>
-  <artifactId>cglib</artifactId>
-</dependency>
-<dependency>
-  <groupId>log4j</groupId>
-  <artifactId>log4j</artifactId>
-</dependency>
-<dependency>
-  <groupId>xmlrpc</groupId>
-  <artifactId>xmlrpc-client</artifactId>
-</dependency>      
-<dependency>
-  <groupId>org.hamcrest</groupId>
-  <artifactId>hamcrest-library</artifactId>
-</dependency>
-<dependency>
-  <groupId>org.mockito</groupId>
-  <artifactId>mockito-all</artifactId>
-</dependency>]]>
-        </programlisting>
+        Linking, interface impl
       </para>
     </section>
-
-    <section id="connectors.developConnectors.connect">
-      <title>Connect to the EngSB</title>
+    <section id="connector.toolConnector.custom">
+      <title>Custom Approach</title>
       <para>
-        The EngSB is a complete message bus. The architecture at the moment is that there is one queue where you
-        send all your messages and then as many queues to consume from as you like. Exactly this part will be heavily
-        changed in further releases since this should be done in and subscribe way. Then you'll say which messages you
-        want to consume and where you want to receive them and the broker will fire up the queues at runtime and deliver
-        only the messages to you you want to receive.
-    </para>
-      <section id="connectors.developConnectors.connect.producer">
-        <title>Producer</title>
-        <para>
-          All of your producer connect to one single queue. This queue is named (at the moment) asb.in. Regulary your
-          connectors should use spring and the JMS-Templates to connect and send messages. Therefore add the following
-          to your application-beans.xml file:
-
-          <programlistingco>
-            <areaspec>
-              <area coords="1" id="connectors.connect.prdoucers.def" />
-              <area coords="2" id="connectors.connect.prdoucers.template" />
-              <area coords="3" id="connectors.connect.prdoucers.dest" />
-              <area coords="3" id="connectors.connect.prdoucers.others" />
-            </areaspec>
-            <programlisting format="linespecific" language="xml"><![CDATA[<bean id="ID" class="PRODUCER">
-  <property name="jmsTemplate" ref="jmsTemplate" />
-  <property name="destination" value="asb.in" />
-</bean>]]>
-            </programlisting>
-            <calloutlist>
-              <callout arearefs="connectors.connect.prdoucers.def">
-                <para>
-                  A class is required which should take a jmsTemplate and the destination queue to send messages
-                </para>
-              </callout>
-              <callout arearefs="connectors.connect.prdoucers.template">
-                <para>
-                  The jmsTemplate which could/should be used to send messages to the EngSB.
-              </para>
-              </callout>
-              <callout arearefs="connectors.connect.prdoucers.dest">
-                <para>
-                  The destination queue. At the moment the destination queue for ALL connectors is the asb.in queue.
-                </para>
-              </callout>
-              <callout arearefs="connectors.connect.prdoucers.others">
-                <para>
-                  After this add all other params which are required by the producer to work correctly.
-              </para>
-              </callout>
-            </calloutlist>
-          </programlistingco>
-        </para>
-      </section>
-
-      <section id="connectors.developConnectors.connect.consumer">
-        <title>Consumer</title>
-        <para>
-          Consuming messages is, because of the spring template mechanism also a quite simple thing. Simply adding a
-          container for each queue the connector is listening to and a listener for each queue.
-          <programlistingco>
-            <areaspec>
-              <area coords="1" id="connectors.connect.consum.msl" />
-              <area coords="2" id="connectors.connect.consum.con" />
-              <area coords="6" id="connectors.connect.consum.container" />
-              <area coords="8" id="connectors.connect.consum.type" />
-              <area coords="9" id="connectors.connect.consum.queue" />
-              <area coords="10" id="connectors.connect.consum.list" />
-            </areaspec>
-            <programlisting format="linespecific" language="xml"><![CDATA[<bean id="jmsMessageListener"
-    class="at.ac.tuwien.ifs.asb.connectors.jms.JmsMessageListener">
-  <property name="asbMessageListener" ref="tracApp" />
-</bean>
-
-<bean id="jmsContainer"
-    class="org.springframework.jms.listener.DefaultMessageListenerContainer">
-  <property name="connectionFactory" ref="pooledConnectionFactory" />
-  <property name="destinationName" value="CONSUMER_QUEUE" />
-  <property name="messageListener" ref="jmsMessageListener" />
-</bean>]]></programlisting>
-            <calloutlist>
-              <callout arearefs="connectors.connect.consum.msl">
-                <para>
-                  A default consumer is offered for the absolute base message type which is explained later. In
-                  future releases also more detailed message types would be provided which could be used directly.
-                </para>
-              </callout>
-              <callout arearefs="connectors.connect.consum.con">
-                <para>
-                  In this property you can add your own consumer listening on the messages. In future releases it
-                  may be interesting to add a list of elements here (detailed message consumers) to be able to consume
-                  different message types and then distribute them to your own beans.
-                </para>
-              </callout>
-              <callout arearefs="connectors.connect.consum.container">
-                <para>
-                  The container describes where to listen for new messages. The type of it is fixed by the
-                  springframework. This consumer takes a type, a queue and the receiver. All of this elements are
-                  explained at further points for their own.
-                </para>
-              </callout>
-              <callout arearefs="connectors.connect.consum.type">
-                <para>
-                  TBW (explain the different types of consumer)
-                </para>
-              </callout>
-              <callout arearefs="connectors.connect.consum.queue">
-                <para>
-                  Where to get all messages. This is at the momenta fixed type dependent on the message types you
-                  want to receive. In further releases this will be one single queue all events are received at once.
-                </para>
-              </callout>
-              <callout arearefs="connectors.connect.consum.list">
-                <para>
-                  The listener which receives all messages. This have to implement the TBW interface and should be
-                  defined as an own bean.
-                </para>
-              </callout>
-            </calloutlist>
-          </programlistingco>
-        </para>
-      </section>
-    </section>
-
-    <section id="connectors.developConnectors.messagesupport">
-      <title>Message Support</title>
-      <para>
-        Since messaging is the core part of the application it is richly supported. See chapter
-        <xref linkend="architecture.messages" />
-        . The heart of each connector is to receive and send messages via JMS queues. Exactly this part is very good
-        supported as could be seen in chapter
-        <xref linkend="connectors.developConnectors.connect" />
-        . Beyond these a Base message is used which could be seen as an object. This object contains all header data of
-        an message as objects. At the moment also the body is holded as an xml string. This should be parsed or created
-        by the application at the moment since no other parts are provided.
+        use in out from OpenEngSBEndpoint directly.
       </para>
     </section>
-
-    <section id="connectors.developConnectors.validation">
-      <title>Message Validation</title>
-      <para>
-        At the entrance of the EngSB an validator validates all your messages. This validator knows all messages
-        (found in asb-common). You should also use these messages to validate your messages before you send them or test
-        if your producer produces valid messages. In further versions this will be seperated in general submodules (e.g.
-        an scm module) containing the messages for each type.
-    </para>
-    </section>
-
-    <section id="connectors.developConnectors.limitations">
-      <title>EngSB connector limitations</title>
-      <para>
-        At the moment the EngSB project is at a very early development stage. So it could happen at all that there
-        are many things missing you whish to have. If this is so please file an issue or discuss it at the mailinglist.
-      </para>
-
-      <section id="connectors.developConnectors.limitations.types">
-        <title>Limited Types</title>
-        <para>
-          At the moment only a VERY small part of events is supported. The core developer team is working very hard
-          to "standardise" more message types for more Systems. If you require more types plesae discuss this with us on
-          the mailinglist and we'll find a solution to very quickly add your required types and produce an own release
-          for you with which you can work till the messages are standardized.
-        </para>
-      </section>
-
-      <section id="connectors.developConnectors.limitations.queues">
-        <title>Limited Queues</title>
-        <para>
-          Since the queues are (at the moment) fixed produced by the EngSB we have to change the code to add more
-          queues for you. Please talk with us on the ML if you require new queues for new types.
-        </para>
-      </section>
-
-    </section>
-
-  </section>
-
+  </section>  
 </chapter>
