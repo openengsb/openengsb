@@ -21,18 +21,15 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
 
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.NormalizedMessage;
-
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.OpenEngSBEndpoint;
+import org.openengsb.core.OpenEngSBLinkingEndpoint;
 import org.openengsb.drools.NotificationDomain;
 
 /**
  * @org.apache.xbean.XBean element="emailEndpoint"
  *                         description="Email Notification Endpoint"
  */
-public class EmailEndpoint extends OpenEngSBEndpoint<NotificationDomain> {
+public class EmailEndpoint extends OpenEngSBLinkingEndpoint<NotificationDomain> {
 
     @Override
     protected NotificationDomain getImplementation(ContextHelper contextHelper) {
@@ -53,12 +50,6 @@ public class EmailEndpoint extends OpenEngSBEndpoint<NotificationDomain> {
             properties.setProperty(entry.getKey(), entry.getValue());
         }
         return properties;
-    }
-
-    @Override
-    protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
-            ContextHelper contextHelper) throws Exception {
-        // TODO
     }
 
 }

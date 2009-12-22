@@ -23,6 +23,7 @@ import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.xml.namespace.QName;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
@@ -57,9 +58,11 @@ public abstract class AbstractIssueEndpoint extends OpenEngSBEndpoint<DroolsIssu
         this.serializer = new JibxXmlSerializer();
     }
 
+    @Override
     public void validate() throws DeploymentException {
     }
 
+    @Override
     protected synchronized void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
             ContextHelper contextHelper) throws Exception {
         if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
@@ -76,33 +79,39 @@ public abstract class AbstractIssueEndpoint extends OpenEngSBEndpoint<DroolsIssu
             StringWriter stringWriter = new StringWriter();
             messageTransformer.transform(in.getContent(), new StreamResult(stringWriter));
 
-            String issueId = domain.createIssue(serializer.deserialize(CreateIssueMessage.class,
+            String issueId = domain.createIssue(this.serializer.deserialize(CreateIssueMessage.class,
                     new StringReader(stringWriter.toString())).getIssue());
             responseMessage.setCreatedIssueId(issueId);
             responseMessage.setStatus(CreateIssueStatus.SUCCESS);
             responseMessage.setStatusMessage("Issue created successfully.");
         } catch (SerializationException e) {
-            log.error("Error deserializing incoming message.", e);
+            this.log.error("Error deserializing incoming message.", e);
             responseMessage.setStatus(CreateIssueStatus.ERROR);
             responseMessage.setStatusMessage(e.getMessage());
         } catch (IssueDomainException e) {
-            log.error("Error creating issue.", e);
+            this.log.error("Error creating issue.", e);
             responseMessage.setStatus(CreateIssueStatus.ERROR);
             responseMessage.setStatusMessage(e.getMessage());
         } catch (Exception e) {
-            log.error("Unexpected error occurred.", e);
+            this.log.error("Unexpected error occurred.", e);
             responseMessage.setStatus(CreateIssueStatus.ERROR);
             responseMessage.setStatusMessage(e.getMessage());
         } finally {
             StringWriter sw = new StringWriter();
-            serializer.serialize(responseMessage, sw);
+            this.serializer.serialize(responseMessage, sw);
             out.setContent(new StringSource(sw.toString()));
             getChannel().send(exchange);
         }
     }
 
+    @Override
+    protected QName getForwardTarget(ContextHelper contextHelper) {
+        // not required in this use case
+        return null;
+    }
+
     public Serializer getSerializer() {
-        return serializer;
+        return this.serializer;
     }
 
     public void setSerializer(Serializer serializer) {

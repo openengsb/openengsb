@@ -42,7 +42,7 @@ import org.drools.RuleBase;
 import org.drools.agent.RuleAgent;
 import org.drools.compiler.RuleBaseLoader;
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.OpenEngSBEndpoint;
+import org.openengsb.core.OpenEngSBDirectMessageHandlingEndpoint;
 import org.openengsb.drools.model.Event;
 import org.springframework.core.io.Resource;
 
@@ -50,7 +50,7 @@ import org.springframework.core.io.Resource;
  * @org.apache.xbean.XBean element="droolsEndpoint"
  *                         description="Drools Component"
  */
-public class DroolsEndpoint extends OpenEngSBEndpoint<Object> {
+public class DroolsEndpoint extends OpenEngSBDirectMessageHandlingEndpoint<Object> {
 
     /**
      * Pointer to the rulebase.
@@ -98,7 +98,7 @@ public class DroolsEndpoint extends OpenEngSBEndpoint<Object> {
      * @return the ruleBase
      */
     public RuleBase getRuleBase() {
-        return ruleBase;
+        return this.ruleBase;
     }
 
     /**
@@ -112,7 +112,7 @@ public class DroolsEndpoint extends OpenEngSBEndpoint<Object> {
      * @return the ruleBaseResource
      */
     public Resource getRuleBaseResource() {
-        return ruleBaseResource;
+        return this.ruleBaseResource;
     }
 
     /**
@@ -126,7 +126,7 @@ public class DroolsEndpoint extends OpenEngSBEndpoint<Object> {
      * @return the ruleBaseURL
      */
     public URL getRuleBaseURL() {
-        return ruleBaseURL;
+        return this.ruleBaseURL;
     }
 
     /**
@@ -140,7 +140,7 @@ public class DroolsEndpoint extends OpenEngSBEndpoint<Object> {
      * @return the variables
      */
     public Map<String, Object> getGlobals() {
-        return globals;
+        return this.globals;
     }
 
     /**
@@ -153,7 +153,7 @@ public class DroolsEndpoint extends OpenEngSBEndpoint<Object> {
     @Override
     public void validate() throws DeploymentException {
         super.validate();
-        if (ruleBase == null && ruleBaseResource == null && ruleBaseURL == null) {
+        if (this.ruleBase == null && this.ruleBaseResource == null && this.ruleBaseURL == null) {
             throw new DeploymentException("Property ruleBase, ruleBaseResource or ruleBaseURL must be set");
         }
     }
@@ -161,19 +161,19 @@ public class DroolsEndpoint extends OpenEngSBEndpoint<Object> {
     @Override
     public void start() throws Exception {
         super.start();
-        if (ruleBase == null) {
+        if (this.ruleBase == null) {
             InputStream is = null;
             try {
-                if (ruleBaseResource != null) {
-                    is = ruleBaseResource.getInputStream();
-                } else if (ruleBaseURL != null) {
-                    is = ruleBaseURL.openStream();
+                if (this.ruleBaseResource != null) {
+                    is = this.ruleBaseResource.getInputStream();
+                } else if (this.ruleBaseURL != null) {
+                    is = this.ruleBaseURL.openStream();
                 } else {
                     throw new IllegalArgumentException("Property ruleBase, ruleBaseResource "
                             + "or ruleBaseURL must be set");
                 }
                 RuleBaseLoader loader = RuleBaseLoader.getInstance();
-                ruleBase = loader.loadFromReader(new InputStreamReader(is));
+                this.ruleBase = loader.loadFromReader(new InputStreamReader(is));
             } catch (Exception e) {
                 throw new JBIException(e);
             } finally {
@@ -207,7 +207,6 @@ public class DroolsEndpoint extends OpenEngSBEndpoint<Object> {
         drools.start();
     }
 
-    // make method public
     @Override
     public void sendSync(MessageExchange me) throws MessagingException {
         super.sendSync(me);

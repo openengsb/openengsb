@@ -34,7 +34,7 @@ public class TestCreateIssueEndpoint extends AbstractIssueEndpoint {
     }
 
     public IssueDomain getIssueDomain() {
-        return issueDomain;
+        return this.issueDomain;
     }
 
     @Override

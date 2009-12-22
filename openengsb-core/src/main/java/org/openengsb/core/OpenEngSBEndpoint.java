@@ -47,9 +47,7 @@ public abstract class OpenEngSBEndpoint<T> extends ProviderEndpoint {
 
     protected abstract T getImplementation(ContextHelper contextHelper);
 
-    protected QName getForwardTarget(ContextHelper contextHelper) {
-        return null;
-    }
+    protected abstract QName getForwardTarget(ContextHelper contextHelper);
 
     protected abstract void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
             ContextHelper contextHelper) throws Exception;

@@ -15,26 +15,33 @@
    limitations under the License.
    
  */
-package org.openengsb.notification;
+package org.openengsb.core;
 
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
+import org.apache.servicemix.common.DefaultComponent;
+import org.apache.servicemix.common.ServiceUnit;
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.OpenEngSBForwardEndpoint;
-import org.openengsb.drools.NotificationDomain;
 
-/**
- * @org.apache.xbean.XBean element="notificationEndpoint"
- *                         description="Notification Endpoint"
- */
-public class NotificationEndpoint extends OpenEngSBForwardEndpoint<NotificationDomain> {
+public abstract class OpenEngSBDomainDistinctEndpoint<T> extends OpenEngSBEndpoint<T> {
+
+    public OpenEngSBDomainDistinctEndpoint() {
+        super();
+    }
+
+    public OpenEngSBDomainDistinctEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
+        super(component, endpoint);
+    }
+
+    public OpenEngSBDomainDistinctEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
+        super(serviceUnit, service, endpoint);
+    }
 
     @Override
     protected QName getForwardTarget(ContextHelper contextHelper) {
-        String defaultName = contextHelper.getValue("notification/default");
-        String serviceName = contextHelper.getValue("notification/" + defaultName + "/servicename");
-        String namespace = contextHelper.getValue("notification/" + defaultName + "/namespace");
-        return new QName(namespace, serviceName);
+        // not required for this usecase
+        return null;
     }
 
 }
