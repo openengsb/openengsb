@@ -51,7 +51,7 @@ public abstract class EditorPanel extends Panel {
         super(id, model);
         this.componentId = componentId;
         this.endpointType = endpointType;
-        map = new HashMap<String,String>();
+        map = new HashMap<String, String>();
         createForm();
     }
 
@@ -61,6 +61,7 @@ public abstract class EditorPanel extends Panel {
 
     public abstract void onSubmit();
 
+    @SuppressWarnings("unchecked")
     private void createForm() {
         Form<?> form = new Form("form") {
             @Override
@@ -79,7 +80,7 @@ public abstract class EditorPanel extends Panel {
             fields.add(row);
             ResourceModel labelModel = new ResourceModel(componentId + '.' + endpointType.getName() + '.' + f.getName());
             row.add(new Label("name", labelModel));
-            row.add(getEditor(f, new MapModel<String,String>(map, f.getName())).setLabel(labelModel));
+            row.add(getEditor(f, new MapModel<String, String>(map, f.getName())).setLabel(labelModel));
         }
     }
 
@@ -87,7 +88,7 @@ public abstract class EditorPanel extends Panel {
         if (type.getClass().equals(BoolType.class))
             return new CheckboxField("editor", model, type);
         else if (type.getClass().equals(ChoiceType.class))
-            return new DropdownChoiceField("editor", model, (ChoiceType)type);
+            return new DropdownChoiceField("editor", model, (ChoiceType) type);
         else
             return new InputField("editor", model, type);
     }

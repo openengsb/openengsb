@@ -36,11 +36,13 @@ public class TracComponent extends DefaultComponent {
         this.endpoints = endpoints;
     }
 
-    protected List getConfiguredEndpoints() {
+    @Override
+    protected List<?> getConfiguredEndpoints() {
         return asList(endpoints);
     }
 
-    protected Class[] getEndpointClasses() {
+    @Override
+    protected Class<?>[] getEndpointClasses() {
         return new Class[] { TracIssuesEndpoint.class };
     }
 

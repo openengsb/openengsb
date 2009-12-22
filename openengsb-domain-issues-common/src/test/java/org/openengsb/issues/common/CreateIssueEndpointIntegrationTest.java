@@ -32,7 +32,6 @@ import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.jbi.messaging.RobustInOnly;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -76,18 +75,18 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
     private final String TEST_SERVICE_NAME = "ticketCreatorService";
 
     private Serializer serializer;
-    private String summary = "Test Summary";
-    private String description = "Test Description";
-    private String reporter = "Test Reporter";
-    private String owner = "Test Owner";
-    private IssueType type = IssueType.BUG;
-    private IssuePriority priority = IssuePriority.HIGH;
-    private IssueSeverity severity = IssueSeverity.BLOCK;
-    private String affectedVersion = "1.0";
+    private final String summary = "Test Summary";
+    private final String description = "Test Description";
+    private final String reporter = "Test Reporter";
+    private final String owner = "Test Owner";
+    private final IssueType type = IssueType.BUG;
+    private final IssuePriority priority = IssuePriority.HIGH;
+    private final IssueSeverity severity = IssueSeverity.BLOCK;
+    private final String affectedVersion = "1.0";
 
-    private String createdIssueId = "Test Issue ID 1";
+    private final String createdIssueId = "Test Issue ID 1";
 
-    private String exceptionMessage = "Error creating ticket.";
+    private final String exceptionMessage = "Error creating ticket.";
 
     private IssueDomain mockedIssueDomain;
 
@@ -120,28 +119,11 @@ public class CreateIssueEndpointIntegrationTest extends SpringTestSupport {
         return inOut;
     }
 
-    /**
-     * Creates and configures a new Message-Object for the Out-Only-MEP
-     * 
-     * @param client The client used to create the empty Message-Object
-     * @param service The configured entpoint's name as noted in the xbean.xml
-     * @param message The actual message as xml-String
-     * @return The new and configured In-Only-Message-Object
-     * @throws MessagingException should something go wrong
-     */
-    private RobustInOnly createRobustInOnlyMessage(DefaultServiceMixClient client, String service, String message)
-            throws MessagingException {
-        RobustInOnly robustInOnly = client.createRobustInOnlyExchange();
-        robustInOnly.setService(new QName(this.TEST_NAMESPACE, service));
-        robustInOnly.getInMessage().setContent(new StringSource(message));
-
-        return robustInOnly;
-    }
-
     /* end creators */
 
     /* setup */
 
+    @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();

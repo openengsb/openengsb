@@ -20,9 +20,7 @@ package org.openengsb.issues.trac;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
@@ -38,7 +36,7 @@ import org.openengsb.issues.trac.xmlrpc.TrackerDynamicProxy;
 
 public class TracConnector implements IssueDomain {
 
-    private Logger log = Logger.getLogger(TracConnector.class);
+    private final Logger log = Logger.getLogger(TracConnector.class);
 
     private final Ticket ticket;
 
@@ -46,7 +44,7 @@ public class TracConnector implements IssueDomain {
     private String username;
     private String password;
 
-    private Converter converter = new Converter();
+    private final Converter converter = new Converter();
 
     public TracConnector(String url, String username, String password) {
         this.url = url;

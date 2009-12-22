@@ -42,6 +42,7 @@ public class ComponentServiceImpl implements ComponentService {
 
     }
 
+    @SuppressWarnings("unchecked")
     public void init() {
         ArrayList<InputStream> descriptors = new ArrayList<InputStream>();
         Set<String> paths = context.getResourcePaths("/descriptors/");

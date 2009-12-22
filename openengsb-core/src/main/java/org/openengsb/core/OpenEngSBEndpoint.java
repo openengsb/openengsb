@@ -148,19 +148,4 @@ public abstract class OpenEngSBEndpoint<T> extends ProviderEndpoint {
         NormalizedMessage outMessage = inout.getOutMessage();
         out.setContent(outMessage.getContent());
     }
-
-    private void copyProperties(MessageExchange from, MessageExchange to) {
-        for (Object prop : from.getPropertyNames()) {
-            String key = (String) prop;
-            to.setProperty(key, from.getProperty(key));
-        }
-    }
-
-    private void copyProperties(NormalizedMessage from, NormalizedMessage to) {
-        for (Object prop : from.getPropertyNames()) {
-            String key = (String) prop;
-            to.setProperty(key, from.getProperty(key));
-        }
-    }
-
 }

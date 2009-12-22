@@ -45,6 +45,7 @@ public class ListSerializer<T> extends AbstractSerializer {
         return exceptionList;
     }
 
+    @SuppressWarnings("unchecked")
     public List<T> deserializeList(Node listElement, String listName) throws TransformerException {
         NodeList nodeList = listElement.getChildNodes();
 

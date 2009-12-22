@@ -17,11 +17,8 @@
  */
 package org.openengsb.issues.trac;
 
-import java.util.List;
-
 import org.openengsb.drools.DroolsIssuesDomain;
 import org.openengsb.issues.common.exceptions.IssueDomainException;
-import org.openengsb.issues.common.model.Comment;
 import org.openengsb.issues.common.model.Issue;
 import org.openengsb.issues.common.model.IssuePriority;
 import org.openengsb.issues.common.model.IssueType;
@@ -37,20 +34,7 @@ public class TracIssuesDomain implements DroolsIssuesDomain {
     @Override
     public boolean addComment(String issueId, String comment) {
         // TODO
-        if (true) {
-            throw new UnsupportedOperationException("Not yet implemented");
-        }
-
-        Comment c = new Comment();
-        c.setText(comment);
-
-        Issue issue = new Issue();
-        List<Comment> comments = issue.getComments();
-        comments.add(c);
-
-        issue.setComments(comments);
-
-        return false;
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override

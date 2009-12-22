@@ -135,8 +135,6 @@ public class DeployDomainMavenUnitTest {
 
         // TODO check result.deployed files, once they are implemented
 
-        String name = new File(this.CONSTANTS.VALID_ARTIFACT).getName();
-
         assertThatMavenStructureExistsInRepository(new File(this.CONSTANTS.VALID_ARTIFACT).getName());
     }
 
@@ -313,8 +311,6 @@ public class DeployDomainMavenUnitTest {
     private void assertThatMavenStructureExistsInRepository(String artifactName) {
         // validate basic artifact directory
         File artifactPath = new File(this.CONSTANTS.REPOSITORY + this.CONSTANTS.GROUP_ID_PATH + artifactName);
-
-        boolean test = artifactPath.exists();
 
         assertTrue("Artifact was not created in repository", artifactPath.exists());
         assertThatMetadataExists(artifactPath);

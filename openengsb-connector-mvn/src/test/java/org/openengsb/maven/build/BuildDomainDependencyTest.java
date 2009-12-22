@@ -42,8 +42,6 @@ public class BuildDomainDependencyTest extends TestCase {
     @Resource(name = "unit_constants_build")
     private BuildMvnTestConstants CONSTANTS;
 
-    private File baseDirectory;
-
     private File settings;
 
     private File installedFile;
@@ -54,7 +52,6 @@ public class BuildDomainDependencyTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         this.res = new ClassPathResource(this.CONSTANTS.getTest_project_dep());
-        this.baseDirectory = this.res.getFile();
 
         this.res = new ClassPathResource(this.CONSTANTS.getTest_settings_file());
         this.settings = this.res.getFile();

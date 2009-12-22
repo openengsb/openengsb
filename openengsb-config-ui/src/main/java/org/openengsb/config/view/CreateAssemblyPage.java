@@ -39,12 +39,13 @@ import org.openengsb.config.jbi.types.EndpointType;
 public class CreateAssemblyPage extends BasePage {
     public String selected = "";
 
+    @SuppressWarnings("unchecked")
     public CreateAssemblyPage(PageParameters pp) {
         if (pp != null && pp.containsKey("reset")) {
             assemblyService.createNewAssembly();
         }
 
-        Form suform = new Form("suForm") {
+        Form<?> suform = new Form("suForm") {
             @Override
             protected void onSubmit() {
                 CreateAssemblyPage.this.onDeploySubmit();
@@ -62,7 +63,7 @@ public class CreateAssemblyPage extends BasePage {
         };
         add(listView);
 
-        Form form = new Form("form") {
+        Form<?> form = new Form("form") {
             @Override
             protected void onSubmit() {
                 CreateAssemblyPage.this.onSubmit();
@@ -90,10 +91,6 @@ public class CreateAssemblyPage extends BasePage {
                     .getServiceUnits()));
             assemblyService.deploy(tmp, "openengsb-test-sa.zip");
             assemblyService.createNewAssembly();
-            //ResourceStreamRequestTarget target = new ResourceStreamRequestTarget(new FileResourceStream(tmp));
-            //target.setFileName("testname-sa.zip");
-            //RequestCycle.get().setRequestTarget(target);
-            //RequestCycle.get().getResponse().setContentType("application/zip");
         } catch (IOException e) {
             e.printStackTrace();
         }
