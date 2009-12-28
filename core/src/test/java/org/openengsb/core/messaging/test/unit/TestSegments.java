@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.core.messaging;
+package org.openengsb.core.messaging.test.unit;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -26,6 +26,9 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.openengsb.core.messaging.ListSegment;
+import org.openengsb.core.messaging.Segment;
+import org.openengsb.core.messaging.TextSegment;
 import org.openengsb.util.serialization.JibxXmlSerializer;
 import org.openengsb.util.serialization.SerializationException;
 

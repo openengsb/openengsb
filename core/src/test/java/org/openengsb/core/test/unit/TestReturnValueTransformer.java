@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.core;
+package org.openengsb.core.test.unit;
 
 import java.util.Arrays;
 
@@ -24,108 +24,72 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.openengsb.core.messaging.Segment;
-import org.openengsb.core.methodcalltransformation.MethodCall;
+import org.openengsb.core.methodcalltransformation.ReturnValue;
 import org.openengsb.core.methodcalltransformation.Transformer;
-import org.openengsb.util.serialization.SerializationException;
 
-public class TestMethodCallTransformer {
+public class TestReturnValueTransformer {
 
     @Test
     public void testPrimitive() {
-        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, "hallo" }, new Class<?>[] { int.class,
-                long.class, String.class });
+        ReturnValue input = new ReturnValue("success", String.class);
 
         Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        ReturnValue output = Transformer.toReturnValue(intermediate);
 
         check(input, output);
     }
 
     @Test
-    public void testBean() throws SerializationException {
-        TestBean beanA = new TestBean("testStringA", 42, null);
-        TestBean beanB = new TestBean("testStringB", 3, beanA);
-        beanA.setBean(beanB);
-
-        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, beanA }, new Class<?>[] { int.class,
-                long.class, TestBean.class });
+    public void testBean() {
+        TestBean testBean = new TestBean("foo", 42, null);
+        ReturnValue input = new ReturnValue(testBean, TestBean.class);
 
         Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        ReturnValue output = Transformer.toReturnValue(intermediate);
 
         check(input, output);
-
-        TestBean tbA = (TestBean) output.getArgs()[2];
-        TestBean tbB = tbA.getBean();
-
-        Assert.assertTrue(tbA == tbB.getBean());
     }
 
     @Test
-    public void testSelfReferencingBean() throws SerializationException {
-        TestBean beanA = new TestBean("bar", 42, null);
-        beanA.setBean(beanA);
-
-        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, beanA }, new Class<?>[] { int.class,
-                long.class, TestBean.class });
+    public void testBeanReference() {
+        TestBean testBeanA = new TestBean("foo", 42, null);
+        TestBean testBeanB = new TestBean("bar", 44, testBeanA);
+        testBeanA.setBean(testBeanB);
+        ReturnValue input = new ReturnValue(testBeanB, TestBean.class);
 
         Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        ReturnValue output = Transformer.toReturnValue(intermediate);
 
         check(input, output);
 
-        TestBean tbA = (TestBean) output.getArgs()[2];
-        TestBean tbB = tbA.getBean();
+        TestBean beanB = ((TestBean) output.getValue());
+        TestBean beanA = beanB.getBean();
 
-        Assert.assertTrue(tbA == tbB.getBean());
+        Assert.assertTrue(beanB == beanA.getBean());
     }
 
     @Test
-    public void testBeanWithArray() throws Exception {
-        TestBeanArray testBean = new TestBeanArray();
-        testBean.addTestData();
+    public void testArray() {
+        String[] inArray = new String[] { "1", "2", "3" };
 
-        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, testBean }, new Class<?>[] { int.class,
-                long.class, TestBeanArray.class });
+        ReturnValue input = new ReturnValue(inArray, inArray.getClass());
 
         Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        ReturnValue output = Transformer.toReturnValue(intermediate);
 
-        check(input, output);
+        String[] outArray = (String[]) output.getValue();
 
-        TestBeanArray tbArray = (TestBeanArray) output.getArgs()[2];
-        TestBean tbA = tbArray.getTestBeanArray()[0];
-        TestBean tbB = tbArray.getTestBeanArray()[1];
+        Assert.assertEquals(input.getType(), output.getType());
+        Assert.assertEquals(inArray.length, outArray.length);
 
-        Assert.assertTrue(tbA == tbB.getBean());
-    }
-
-    @Test
-    public void testPrimitiveClasses() throws Exception {
-        TestBeanArray testBean = new TestBeanArray();
-        testBean.addTestData();
-
-        MethodCall input = new MethodCall("foo", new Object[] { new Integer(42), new Byte("42"), new Short((short) 42),
-                new Long(42L), new Character('4'), new Float(42.42), new Double(42.42), new Boolean(true) },
-                new Class<?>[] { Integer.class, Byte.class, Short.class, Long.class, Character.class, Float.class,
-                        Double.class, Boolean.class });
-
-        Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
-
-        check(input, output);
-    }
-
-    private void check(MethodCall expected, MethodCall actual) {
-        Assert.assertEquals(expected.getMethodName(), actual.getMethodName());
-        Assert.assertEquals(expected.getArgs().length, actual.getArgs().length);
-        Assert.assertEquals(expected.getTypes().length, actual.getTypes().length);
-        Assert.assertEquals(actual.getArgs().length, actual.getTypes().length);
-
-        for (int i = 0; i < expected.getArgs().length; i++) {
-            Assert.assertEquals(expected.getTypes()[i], actual.getTypes()[i]);
-            Assert.assertEquals(expected.getArgs()[i], actual.getArgs()[i]);
+        for (int i = 0; i < outArray.length; i++) {
+            Assert.assertEquals(inArray[i], outArray[i]);
         }
+    }
+
+    private void check(ReturnValue expected, ReturnValue actual) {
+        Assert.assertEquals(expected.getType(), actual.getType());
+        Assert.assertEquals(expected.getValue(), actual.getValue());
     }
 
     public static class TestBean {

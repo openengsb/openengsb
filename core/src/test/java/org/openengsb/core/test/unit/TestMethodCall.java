@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.core;
+package org.openengsb.core.test.unit;
 
 import junit.framework.Assert;
 
