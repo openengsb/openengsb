@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.build.constants;
+package org.openengsb.maven.test.unit.build.constants;
 
 public class BuildMvnTestConstants {
 

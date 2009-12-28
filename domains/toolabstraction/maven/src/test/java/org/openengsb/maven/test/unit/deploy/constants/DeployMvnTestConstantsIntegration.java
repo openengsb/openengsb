@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.deploy.constants;
+package org.openengsb.maven.test.unit.deploy.constants;
 
 public class DeployMvnTestConstantsIntegration {
     public String XBEAN_XML_NAME = "spring-test-xbean-deploy.xml";

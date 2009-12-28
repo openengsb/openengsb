@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.installfile.constants;
+package org.openengsb.maven.test.unit.installfile.constants;
 
 public class InstallFileMvnTestConstants {
 

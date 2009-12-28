@@ -13,10 +13,10 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 
-package org.openengsb.maven.build;
+package org.openengsb.maven.test.unit.build;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,12 +33,12 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.maven.build.constants.BuildMvnTestConstants;
 import org.openengsb.maven.common.exceptions.MavenException;
 import org.openengsb.maven.common.pojos.Options;
 import org.openengsb.maven.common.pojos.ProjectConfiguration;
 import org.openengsb.maven.common.pojos.result.MavenResult;
 import org.openengsb.maven.se.endpoints.MavenBuildEndpoint;
+import org.openengsb.maven.test.unit.build.constants.BuildMvnTestConstants;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -61,16 +61,16 @@ public class BuildDomainDefaultTest extends TestCase {
     @Before
     @Override
     public void setUp() throws Exception {
-        this.res = new ClassPathResource(this.CONSTANTS.getTest_project());
-        this.baseDirectory = this.res.getFile();
+        res = new ClassPathResource(CONSTANTS.getTest_project());
+        baseDirectory = res.getFile();
 
-        this.res = new ClassPathResource(this.CONSTANTS.getTest_settings_file());
-        this.settings = this.res.getFile();
+        res = new ClassPathResource(CONSTANTS.getTest_settings_file());
+        settings = res.getFile();
 
-        this.installedFile = new File(this.settings.getParentFile().getParentFile(),
+        installedFile = new File(settings.getParentFile().getParentFile(),
                 "testRepo/org/test/project/build-test/1.0/build-test-1.0.jar");
-        if (this.installedFile.exists()) {
-            this.installedFile.delete();
+        if (installedFile.exists()) {
+            installedFile.delete();
         }
     }
 
@@ -79,10 +79,10 @@ public class BuildDomainDefaultTest extends TestCase {
     public void shouldCleanProject() throws MavenEmbedderException, IOException, MavenException {
         ProjectConfiguration projectConfig = new ProjectConfiguration();
         projectConfig.setGoals(Arrays.asList(new String[] { "clean" }));
-        projectConfig.setBaseDirectory(this.baseDirectory);
+        projectConfig.setBaseDirectory(baseDirectory);
 
         Options options = new Options();
-        options.setSettings(this.settings);
+        options.setSettings(settings);
 
         MavenBuildEndpoint maven = new MavenBuildEndpoint();
         maven.setOptions(options);
@@ -107,10 +107,10 @@ public class BuildDomainDefaultTest extends TestCase {
     public void shouldBuildSuccesful_JAR_clean_package() throws MavenEmbedderException, IOException, MavenException {
         ProjectConfiguration projectConfig = new ProjectConfiguration();
         projectConfig.setGoals(Arrays.asList(new String[] { "clean", "package" }));
-        projectConfig.setBaseDirectory(this.baseDirectory);
+        projectConfig.setBaseDirectory(baseDirectory);
 
         Options options = new Options();
-        options.setSettings(this.settings);
+        options.setSettings(settings);
 
         MavenBuildEndpoint maven = new MavenBuildEndpoint();
         maven.setProjectConfiguration(projectConfig);
@@ -138,10 +138,10 @@ public class BuildDomainDefaultTest extends TestCase {
     public void shouldBuildSuccesful_JAR_clean_install() throws MavenEmbedderException, IOException, MavenException {
         ProjectConfiguration projectConfig = new ProjectConfiguration();
         projectConfig.setGoals(Arrays.asList(new String[] { "clean", "install" }));
-        projectConfig.setBaseDirectory(this.baseDirectory);
+        projectConfig.setBaseDirectory(baseDirectory);
 
         Options options = new Options();
-        options.setSettings(this.settings);
+        options.setSettings(settings);
 
         MavenBuildEndpoint maven = new MavenBuildEndpoint();
         maven.setProjectConfiguration(projectConfig);
@@ -159,6 +159,6 @@ public class BuildDomainDefaultTest extends TestCase {
         }
 
         assertEquals(MavenResult.SUCCESS, result.getMavenOutput());
-        assertTrue(this.installedFile.exists());
+        assertTrue(installedFile.exists());
     }
 }

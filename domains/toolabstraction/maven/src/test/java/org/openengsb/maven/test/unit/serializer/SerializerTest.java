@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.serializer;
+package org.openengsb.maven.test.unit.serializer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,12 +32,12 @@ import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.maven.build.constants.BuildMvnTestConstants;
 import org.openengsb.maven.common.exceptions.SerializationException;
 import org.openengsb.maven.common.pojos.ProjectConfiguration;
 import org.openengsb.maven.common.pojos.result.MavenResult;
 import org.openengsb.maven.common.serializer.MavenResultSerializer;
 import org.openengsb.maven.common.serializer.ProjectConfigurationSerializer;
+import org.openengsb.maven.test.unit.build.constants.BuildMvnTestConstants;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.deploy;
+package org.openengsb.maven.test.unit.deploy;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +42,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.maven.common.pojos.result.MavenResult;
 import org.openengsb.maven.common.serializer.MavenResultSerializer;
-import org.openengsb.maven.deploy.constants.DeployMvnTestConstantsIntegration;
+import org.openengsb.maven.test.unit.deploy.constants.DeployMvnTestConstantsIntegration;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

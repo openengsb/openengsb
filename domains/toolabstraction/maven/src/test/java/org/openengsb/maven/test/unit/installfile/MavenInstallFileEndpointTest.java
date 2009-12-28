@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.installfile;
+package org.openengsb.maven.test.unit.installfile;
 
 import java.io.File;
 
@@ -33,8 +33,8 @@ import org.openengsb.maven.common.exceptions.MavenException;
 import org.openengsb.maven.common.pojos.InstallFileDescriptor;
 import org.openengsb.maven.common.pojos.Options;
 import org.openengsb.maven.common.pojos.result.MavenResult;
-import org.openengsb.maven.installfile.constants.InstallFileMvnTestConstants;
 import org.openengsb.maven.se.endpoints.MavenInstallFileEndpoint;
+import org.openengsb.maven.test.unit.installfile.constants.InstallFileMvnTestConstants;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

@@ -22,7 +22,7 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
 http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
-  <bean id="unit_constants_build" class="org.openengsb.maven.build.constants.BuildMvnTestConstants">
+  <bean id="unit_constants_build" class="org.openengsb.maven.test.unit.build.constants.BuildMvnTestConstants">
     <property name="test_project" value="../test-classes/build-test" />
     <property name="test_project_fail" value="../test-classes/build-test-fail" />
     <property name="test_project_dep" value="../test-classes/build-test-dep" />
@@ -30,7 +30,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     <property name="test_settings_file" value="../test-classes/settings/settings.xml" />
   </bean>
 
-  <bean id="integration_constants_build" class="org.openengsb.maven.build.constants.BuildMvnTestConstantsIntegration">
+  <bean id="integration_constants_build" class="org.openengsb.maven.test.unit.build.constants.BuildMvnTestConstantsIntegration">
     <property name="test_project" value="../test-classes/build-test" />
     <property name="test_project_fail" value="../test-classes/build-test-fail" />
     <property name="test_project_dep" value="../test-classes/build-test-dep" />
@@ -39,7 +39,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     <property name="xbean" value="spring-test-xbean-build.xml" />
   </bean>
 
-  <bean id="unit_constants_deploy" class="org.openengsb.maven.deploy.constants.DeployMvnTestConstants">
+  <bean id="unit_constants_deploy" class="org.openengsb.maven.test.unit.deploy.constants.DeployMvnTestConstants">
     <property name="REPOSITORY" value="target/testRepository/" />
     <property name="GROUP_ID_PATH" value="com/test/groupId/" />
     <property name="VERSION" value="1.0-SNAPSHOT" />
@@ -78,7 +78,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     </property>
   </bean>
 
-  <bean id="integration_constants_deploy" class="org.openengsb.maven.deploy.constants.DeployMvnTestConstantsIntegration">
+  <bean id="integration_constants_deploy" class="org.openengsb.maven.test.unit.deploy.constants.DeployMvnTestConstantsIntegration">
     <property name="XBEAN_XML_NAME" value="spring-test-xbean-deploy.xml" />
 
     <property name="VALID_ARTIFACTS_SERVICE_NAME" value="validArtifacts" />
@@ -92,7 +92,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     <property name="MISSING_POM_ARTIFACT" value="src/test/resources/deploy-missingPom" />
   </bean>
 
-  <bean id="unit_constants_test" class="org.openengsb.maven.test.constants.TestMvnTestConstants">
+  <bean id="unit_constants_test" class="org.openengsb.maven.test.unit.constants.TestMvnTestConstants">
     <property name="test_valid_surefire" value="../test-classes/test-valid-surefire" />
     <property name="test_invalid_surefire" value="../test-classes/test-invalid-surefire" />
     <property name="test_no_surefire" value="../test-classes/test-no-surefire" />
@@ -100,7 +100,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     <property name="test_settings_file" value="../test-classes/settings/settings.xml" />
   </bean>
 
-  <bean id="integration_constants_test" class="org.openengsb.maven.test.constants.TestMvnTestConstantsIntegration">
+  <bean id="integration_constants_test" class="org.openengsb.maven.test.unit.constants.TestMvnTestConstantsIntegration">
     <property name="test_valid_surefire" value="../test-classes/test-valid-surefire" />
     <property name="test_invalid_surefire" value="../test-classes/test-invalid-surefire" />
     <property name="test_no_surefire" value="../test-classes/test-no-surefire" />
@@ -109,7 +109,7 @@ http://www.springframework.org/schema/util http://www.springframework.org/schema
     <property name="xbean" value="spring-test-xbean-test.xml" />
   </bean>
 
-  <bean id="unit_constants_installfile" class="org.openengsb.maven.installfile.constants.InstallFileMvnTestConstants">
+  <bean id="unit_constants_installfile" class="org.openengsb.maven.test.unit.installfile.constants.InstallFileMvnTestConstants">
     <property name="validFullPathToFile" value="../test-classes/installfile-valid/installfile-sample.jar" />
     <property name="validGroupId" value="com.installfilevalidgroup" />
     <property name="validArtifactId" value="installfilevalidartifact" />

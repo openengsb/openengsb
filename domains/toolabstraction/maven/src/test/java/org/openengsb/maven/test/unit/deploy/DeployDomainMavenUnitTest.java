@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.deploy;
+package org.openengsb.maven.test.unit.deploy;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -41,8 +41,8 @@ import org.junit.runner.RunWith;
 import org.openengsb.maven.common.domains.DeployDomain;
 import org.openengsb.maven.common.exceptions.MavenException;
 import org.openengsb.maven.common.pojos.result.MavenResult;
-import org.openengsb.maven.deploy.constants.DeployMvnTestConstants;
 import org.openengsb.maven.se.endpoints.MavenDeployEndpoint;
+import org.openengsb.maven.test.unit.deploy.constants.DeployMvnTestConstants;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 

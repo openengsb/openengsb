@@ -16,9 +16,9 @@
    
  */
 
-package org.openengsb.maven.build.constants;
+package org.openengsb.maven.test.unit.constants;
 
-public class BuildMvnTestConstantsIntegration extends BuildMvnTestConstants {
+public class TestMvnTestConstantsIntegration extends TestMvnTestConstants {
 
     private String xbean;
 
@@ -29,5 +29,4 @@ public class BuildMvnTestConstantsIntegration extends BuildMvnTestConstants {
     public String getXbean() {
         return this.xbean;
     }
-
 }

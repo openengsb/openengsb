@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.installfile;
+package org.openengsb.maven.test.unit.installfile;
 
 import java.util.List;
 

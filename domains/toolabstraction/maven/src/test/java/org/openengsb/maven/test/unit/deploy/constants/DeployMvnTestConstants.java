@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.deploy.constants;
+package org.openengsb.maven.test.unit.deploy.constants;
 
 public class DeployMvnTestConstants {
     public String REPOSITORY;

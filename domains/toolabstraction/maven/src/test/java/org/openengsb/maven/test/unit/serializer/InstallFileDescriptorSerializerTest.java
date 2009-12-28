@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.serializer;
+package org.openengsb.maven.test.unit.serializer;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;

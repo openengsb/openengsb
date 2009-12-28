@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.test;
+package org.openengsb.maven.test.unit;
 
 import javax.annotation.Resource;
 import javax.jbi.messaging.ExchangeStatus;
@@ -36,7 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.maven.common.pojos.result.MavenResult;
 import org.openengsb.maven.common.serializer.MavenResultSerializer;
-import org.openengsb.maven.test.constants.TestMvnTestConstantsIntegration;
+import org.openengsb.maven.test.unit.constants.TestMvnTestConstantsIntegration;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;

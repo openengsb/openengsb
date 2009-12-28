@@ -16,10 +16,10 @@
    
  */
 
-package org.openengsb.maven.build;
+package org.openengsb.maven.test.unit.build;
 
 import java.io.File;
-import java.util.Arrays;
+import java.io.IOException;
 
 import javax.annotation.Resource;
 
@@ -29,56 +29,63 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.maven.build.constants.BuildMvnTestConstants;
 import org.openengsb.maven.common.exceptions.MavenException;
-import org.openengsb.maven.common.pojos.Options;
-import org.openengsb.maven.common.pojos.ProjectConfiguration;
-import org.openengsb.maven.common.pojos.result.MavenResult;
-import org.openengsb.maven.se.endpoints.MavenBuildEndpoint;
+import org.openengsb.maven.test.unit.build.constants.BuildMvnTestConstants;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/testbeans.xml" })
-public class BuildDomainFailureTest extends TestCase {
+public class BuildDomainDependencyTest extends TestCase {
 
     @Resource(name = "unit_constants_build")
     private BuildMvnTestConstants CONSTANTS;
 
-    private File baseDirectory;
-
     private File settings;
+
+    private File installedFile;
 
     private ClassPathResource res;
 
     @Before
     @Override
     public void setUp() throws Exception {
-        this.res = new ClassPathResource(this.CONSTANTS.getTest_project_fail());
-        this.baseDirectory = this.res.getFile();
+        this.res = new ClassPathResource(this.CONSTANTS.getTest_project_dep());
 
         this.res = new ClassPathResource(this.CONSTANTS.getTest_settings_file());
         this.settings = this.res.getFile();
+
+        this.installedFile = new File(this.settings.getParentFile().getParentFile(),
+                "testRepo/org/test/project/build-test-dep/1.0/build-test-dep-1.0.jar");
+        if (this.installedFile.exists()) {
+            this.installedFile.delete();
+        }
     }
 
     @Test
     @Ignore
-    public void buildShouldFail_clean_install() throws MavenException {
-
-        Options options = new Options();
-        options.setSettings(this.settings);
-
-        ProjectConfiguration projectConfig = new ProjectConfiguration();
-        projectConfig.setGoals(Arrays.asList(new String[] { "clean", "install" }));
-        projectConfig.setBaseDirectory(this.baseDirectory);
-
-        MavenBuildEndpoint maven = new MavenBuildEndpoint();
-        maven.setOptions(options);
-        maven.setProjectConfiguration(projectConfig);
-        MavenResult result = maven.executeBuild();
-
-        assertEquals(MavenResult.FAILURE, result.getMavenOutput());
+    public void buildShouldBeSuccesful_clean_package_install() throws MavenException, IOException {
+        /*
+         * Options options = new Options(); options.setSettings(settings);
+         * 
+         * ProjectConfiguration projectConfig = new ProjectConfiguration();
+         * projectConfig.setGoals(Arrays.asList(new String[] { "clean",
+         * "package", "install" }));
+         * projectConfig.setBaseDirectory(baseDirectory);
+         * 
+         * MavenBuildEndpoint maven = new MavenBuildEndpoint();
+         * maven.setOptions(options);
+         * maven.setProjectConfiguration(projectConfig); MavenResult result =
+         * maven.executeBuild();
+         * 
+         * assertNull(result.getExceptions());
+         * 
+         * assertEquals(MavenResult.SUCCESS, result.getMavenOutput());
+         * assertTrue(maven.testsIncluded());
+         * 
+         * assertTrue(installedFile.exists());
+         */
     }
 
 }
