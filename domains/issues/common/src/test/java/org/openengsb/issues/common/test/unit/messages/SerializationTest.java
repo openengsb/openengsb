@@ -16,7 +16,7 @@ limitations under the License.
 
  */
 
-package org.openengsb.issues.common.messages;
+package org.openengsb.issues.common.test.unit.messages;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +28,9 @@ import java.net.URISyntaxException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.issues.common.messages.CreateIssueMessage;
+import org.openengsb.issues.common.messages.CreateIssueResponseMessage;
+import org.openengsb.issues.common.messages.CreateIssueStatus;
 import org.openengsb.issues.common.model.Issue;
 import org.openengsb.issues.common.model.IssuePriority;
 import org.openengsb.issues.common.model.IssueSeverity;

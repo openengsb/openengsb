@@ -16,12 +16,16 @@
 
  */
 
-package org.openengsb.issues.common.model;
+package org.openengsb.issues.common.test.unit.model;
 
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.assertFalse;
 
 import org.junit.Test;
+import org.openengsb.issues.common.model.Issue;
+import org.openengsb.issues.common.model.IssuePriority;
+import org.openengsb.issues.common.model.IssueSeverity;
+import org.openengsb.issues.common.model.IssueType;
 
 public class IssueTest {
 

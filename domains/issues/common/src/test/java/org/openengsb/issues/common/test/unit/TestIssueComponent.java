@@ -16,7 +16,7 @@ limitations under the License.
 
  */
 
-package org.openengsb.issues.common;
+package org.openengsb.issues.common.test.unit;
 
 import java.util.List;
 
