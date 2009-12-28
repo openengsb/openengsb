@@ -55,7 +55,7 @@ public abstract class AbstractIssueEndpoint extends OpenEngSBEndpoint<DroolsIssu
 
     public AbstractIssueEndpoint() {
         // set defaults
-        this.serializer = new JibxXmlSerializer();
+        serializer = new JibxXmlSerializer();
     }
 
     @Override
@@ -79,28 +79,27 @@ public abstract class AbstractIssueEndpoint extends OpenEngSBEndpoint<DroolsIssu
             StringWriter stringWriter = new StringWriter();
             messageTransformer.transform(in.getContent(), new StreamResult(stringWriter));
 
-            String issueId = domain.createIssue(this.serializer.deserialize(CreateIssueMessage.class,
+            String issueId = domain.createIssue(serializer.deserialize(CreateIssueMessage.class,
                     new StringReader(stringWriter.toString())).getIssue());
             responseMessage.setCreatedIssueId(issueId);
             responseMessage.setStatus(CreateIssueStatus.SUCCESS);
             responseMessage.setStatusMessage("Issue created successfully.");
         } catch (SerializationException e) {
-            this.log.error("Error deserializing incoming message.", e);
+            log.error("Error deserializing incoming message.", e);
             responseMessage.setStatus(CreateIssueStatus.ERROR);
             responseMessage.setStatusMessage(e.getMessage());
         } catch (IssueDomainException e) {
-            this.log.error("Error creating issue.", e);
+            log.error("Error creating issue.", e);
             responseMessage.setStatus(CreateIssueStatus.ERROR);
             responseMessage.setStatusMessage(e.getMessage());
         } catch (Exception e) {
-            this.log.error("Unexpected error occurred.", e);
+            log.error("Unexpected error occurred.", e);
             responseMessage.setStatus(CreateIssueStatus.ERROR);
             responseMessage.setStatusMessage(e.getMessage());
         } finally {
             StringWriter sw = new StringWriter();
-            this.serializer.serialize(responseMessage, sw);
+            serializer.serialize(responseMessage, sw);
             out.setContent(new StringSource(sw.toString()));
-            getChannel().send(exchange);
         }
     }
 
@@ -111,7 +110,7 @@ public abstract class AbstractIssueEndpoint extends OpenEngSBEndpoint<DroolsIssu
     }
 
     public Serializer getSerializer() {
-        return this.serializer;
+        return serializer;
     }
 
     public void setSerializer(Serializer serializer) {
