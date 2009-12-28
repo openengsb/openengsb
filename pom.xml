@@ -621,7 +621,8 @@
             <version>2.4.2</version>
             <configuration>
               <includes>
-                <include>org/openengsb/**/test/**/*Test*.java</include>
+                <include>org/openengsb/**/test/**/Test*.java</include>
+				<include>org/openengsb/**/test/**/*Test.java</include>
               </includes>
             </configuration>
           </plugin>
