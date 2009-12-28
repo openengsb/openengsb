@@ -599,7 +599,7 @@
             <configuration>
               <includes>
                 <include>org/openengsb/**/test/unit/**/*.java</include>
-                <include>org/openengsb/**/test/performace/**/*.java</include>
+                <include>org/openengsb/**/test/performance/**/*.java</include>
               </includes>
             </configuration>
           </plugin>
