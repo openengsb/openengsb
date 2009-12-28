@@ -13,10 +13,10 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 
-package org.openengsb.edb.core.api;
+package org.openengsb.edb.core.test.performance.api;
 
 import static org.junit.Assert.assertEquals;
 
@@ -31,7 +31,6 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.edb.core.api.EDBHandler;
@@ -61,42 +60,42 @@ public class EDBHandlerPerfTest {
 
     @Before
     public void setUp() throws Exception {
-        this.handler = this.factory.loadDefaultRepository();
-        this.repoBase = this.handler.getRepositoryBase().getAbsolutePath();
+        handler = factory.loadDefaultRepository();
+        repoBase = handler.getRepositoryBase().getAbsolutePath();
 
-        this.content = new GenericContent(this.repoBase, new String[] { "myKey" }, new String[] { "myValue" },
-                this.uuid);
+        content = new GenericContent(repoBase, new String[] { "myKey" }, new String[] { "myValue" },
+                uuid);
 
-        this.handler.add(Arrays.asList(this.content));
+        handler.add(Arrays.asList(content));
     }
 
     @After
     public void tearDown() throws Exception {
-        if (!IO.deleteStructure(new File(this.repoBase).getParentFile())) {
+        if (!IO.deleteStructure(new File(repoBase).getParentFile())) {
             throw new Exception("cleanup failed");
         }
     }
 
     @Test
     public void testMiniCommit() throws Exception {
-        List<GenericContent> list = buildMassGC(10, 20, this.repoBase);
+        List<GenericContent> list = buildMassGC(10, 20, repoBase);
         long a = System.currentTimeMillis();
         long time = System.currentTimeMillis();
-        this.handler.add(list);
+        handler.add(list);
 
         time = System.currentTimeMillis() - time;
         EDBHandlerPerfTest.log.info("\nadd(ms) " + time);
         time = System.currentTimeMillis();
 
         // commit with 1000 elements with 20 properties each
-        String newCommitId = this.handler.commit("myUser", "myEmail");
+        String newCommitId = handler.commit("myUser", "myEmail");
 
         time = System.currentTimeMillis() - time;
         EDBHandlerPerfTest.log.info("\ncommit(ms) " + time);
         time = System.currentTimeMillis();
 
         // check content
-        list = this.handler.query("*", true);
+        list = handler.query("*", true);
 
         time = System.currentTimeMillis() - time;
         EDBHandlerPerfTest.log.info("\nsearch(ms) " + time);
@@ -106,26 +105,25 @@ public class EDBHandlerPerfTest {
     }
 
     @Test
-    @Ignore
     public void testDualCommit() throws Exception {
-        List<GenericContent> list = buildMassGC(3500, 20, this.repoBase);
+        List<GenericContent> list = buildMassGC(3500, 20, repoBase);
         long a = System.currentTimeMillis();
         long time = System.currentTimeMillis();
-        this.handler.add(list);
+        handler.add(list);
 
         time = System.currentTimeMillis() - time;
         EDBHandlerPerfTest.log.info("\nadd(ms) " + time);
         time = System.currentTimeMillis();
 
         // commit with 1000 elements with 20 properties each
-        String newCommitId = this.handler.commit("myUser", "myEmail");
+        String newCommitId = handler.commit("myUser", "myEmail");
 
         time = System.currentTimeMillis() - time;
         EDBHandlerPerfTest.log.info("\ncommit(ms) " + time);
         time = System.currentTimeMillis();
 
         // check content
-        list = this.handler.query("*", true);
+        list = handler.query("*", true);
 
         time = System.currentTimeMillis() - time;
         EDBHandlerPerfTest.log.info("\nsearch(ms) " + time);
@@ -133,24 +131,24 @@ public class EDBHandlerPerfTest {
         assertEquals(3502, list.size());
         assertEquals("head info", newCommitId, list.get(0).getProperty("HEAD"));
 
-        list = buildMassGC(3500, 20, this.repoBase);
+        list = buildMassGC(3500, 20, repoBase);
         a = System.currentTimeMillis();
         time = System.currentTimeMillis();
-        this.handler.add(list);
+        handler.add(list);
 
         time = System.currentTimeMillis() - time;
         EDBHandlerPerfTest.log.info("\nadd(ms) " + time);
         time = System.currentTimeMillis();
 
         // commit with 1000 elements with 20 properties each
-        newCommitId = this.handler.commit("myUser", "myEmail");
+        newCommitId = handler.commit("myUser", "myEmail");
 
         time = System.currentTimeMillis() - time;
         EDBHandlerPerfTest.log.info("\ncommit(ms) " + time);
         time = System.currentTimeMillis();
 
         // check content
-        list = this.handler.query("*", true);
+        list = handler.query("*", true);
 
         time = System.currentTimeMillis() - time;
         EDBHandlerPerfTest.log.info("\nsearch(ms) " + time);
@@ -160,26 +158,25 @@ public class EDBHandlerPerfTest {
     }
 
     @Test
-    @Ignore
     public void testMassCommit() throws Exception {
-        List<GenericContent> list = buildMassGC(7000, 20, this.repoBase);
+        List<GenericContent> list = buildMassGC(7000, 20, repoBase);
         long a = System.currentTimeMillis();
         long time = System.currentTimeMillis();
-        this.handler.add(list);
+        handler.add(list);
 
         time = System.currentTimeMillis() - time;
         EDBHandlerPerfTest.log.info("\nadd(ms) " + time);
         time = System.currentTimeMillis();
 
         // commit with 1000 elements with 20 properties each
-        String newCommitId = this.handler.commit("myUser", "myEmail");
+        String newCommitId = handler.commit("myUser", "myEmail");
 
         time = System.currentTimeMillis() - time;
         EDBHandlerPerfTest.log.info("\ncommit(ms) " + time);
         time = System.currentTimeMillis();
 
         // check content
-        list = this.handler.query("*", true);
+        list = handler.query("*", true);
 
         time = System.currentTimeMillis() - time;
         EDBHandlerPerfTest.log.info("\nsearch(ms) " + time);

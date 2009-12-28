@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.edb.core.repository.jgit;
+package org.openengsb.edb.core.test.unit.repository.jgit;
 
 import java.io.File;
 import java.io.IOException;

@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.edb.core.api;
+package org.openengsb.edb.core.test.unit.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -34,6 +34,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.edb.core.api.EDBException;
+import org.openengsb.edb.core.api.EDBHandler;
+import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.util.IO;
 import org.springframework.beans.factory.annotation.Autowired;

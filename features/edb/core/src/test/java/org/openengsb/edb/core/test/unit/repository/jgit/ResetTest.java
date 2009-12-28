@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.edb.core.repository.jgit;
+package org.openengsb.edb.core.test.unit.repository.jgit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

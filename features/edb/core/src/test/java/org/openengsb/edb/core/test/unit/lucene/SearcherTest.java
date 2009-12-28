@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.edb.core.lucene;
+package org.openengsb.edb.core.test.unit.lucene;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

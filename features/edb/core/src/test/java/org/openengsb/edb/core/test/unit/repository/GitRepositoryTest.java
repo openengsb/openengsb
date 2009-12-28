@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.edb.core.repository;
+package org.openengsb.edb.core.test.unit.repository;
 
 import org.junit.Test;
 import org.openengsb.edb.core.entities.GenericContent;

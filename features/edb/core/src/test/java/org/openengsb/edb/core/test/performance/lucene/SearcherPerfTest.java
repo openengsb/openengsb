@@ -13,10 +13,10 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 
-package org.openengsb.edb.core.lucene;
+package org.openengsb.edb.core.test.performance.lucene;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,13 +29,13 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.edb.core.search.Indexer;
 import org.openengsb.edb.core.search.Searcher;
 import org.openengsb.edb.core.search.lucene.LuceneIndexer;
 import org.openengsb.edb.core.search.lucene.LuceneSearcher;
+import org.openengsb.edb.core.test.unit.lucene.ATestStub;
 import org.openengsb.util.IO;
 
 
@@ -115,7 +115,7 @@ public class SearcherPerfTest extends ATestStub {
 
     @Before
     public void setUp() throws Exception {
-        this.searcher = new LuceneSearcher(SearcherPerfTest.PATH);
+        searcher = new LuceneSearcher(SearcherPerfTest.PATH);
     }
 
     @AfterClass
@@ -125,31 +125,30 @@ public class SearcherPerfTest extends ATestStub {
 
     @Test
     public void testSearchExactMatch() {
-        this.term = SearcherPerfTest.KEY1 + ":" + SearcherPerfTest.PREFIX;
-        this.result = this.searcher.search(this.term);
-        assertNotNull(this.result);
-        assertEquals(1, this.result.size());
-        compareGC(SearcherPerfTest.singlePart, this.result.get(0));
+        term = SearcherPerfTest.KEY1 + ":" + SearcherPerfTest.PREFIX;
+        result = searcher.search(term);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        compareGC(SearcherPerfTest.singlePart, result.get(0));
 
-        this.term = SearcherPerfTest.KEY4 + ":" + SearcherPerfTest.PREFIX + SearcherPerfTest.MIDDLE
+        term = SearcherPerfTest.KEY4 + ":" + SearcherPerfTest.PREFIX + SearcherPerfTest.MIDDLE
                 + SearcherPerfTest.SUFFIX;
-        this.result = this.searcher.search(this.term);
-        assertNotNull(this.result);
-        assertEquals(1, this.result.size());
-        compareGC(SearcherPerfTest.comboPart, this.result.get(0));
+        result = searcher.search(term);
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        compareGC(SearcherPerfTest.comboPart, result.get(0));
     }
 
     @Test
-    @Ignore
     public void testBatchQuery() {
-        this.term = SearcherPerfTest.KEY1 + ":" + "nothing";
-        this.result = this.searcher.search(this.term);
+        term = SearcherPerfTest.KEY1 + ":" + "nothing";
+        result = searcher.search(term);
         for (int i = 0; i < 7000; i++) {
-            if (this.searcher.search(this.term).size() == 0) {
-                this.result.add(new GenericContent());
+            if (searcher.search(term).size() == 0) {
+                result.add(new GenericContent());
             }
         }
-        assertEquals(7000, this.result.size());
+        assertEquals(7000, result.size());
     }
 
     private static void compareGC(GenericContent expected, GenericContent actual) {
