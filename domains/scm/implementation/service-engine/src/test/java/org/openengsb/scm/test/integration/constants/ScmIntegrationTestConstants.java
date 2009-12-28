@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.scm.test.constants;
+package org.openengsb.scm.test.integration.constants;
 
 /**
  * Bean holding the constant needed for Integration-Testing.
