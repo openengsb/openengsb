@@ -400,7 +400,7 @@
         <configuration>
           <downloadSources>true</downloadSources>
           <downloadJavadocs>true</downloadJavadocs>
-          <workspace>${basedir}</workspace>
+          <workspace>eclipse-workspace</workspace>
           <workspaceCodeStylesURL>http://dev.openengsb.org/resources/eclipse/formatter.xml</workspaceCodeStylesURL>
         </configuration>
       </plugin>
@@ -584,17 +584,17 @@
       <!-- Common Modules & Helpers -->
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-timing</artifactId>
+        <artifactId>openengsb-test-timing-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-routing</artifactId>
+        <artifactId>openengsb-test-routing-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-logging</artifactId>
+        <artifactId>openengsb-test-logging-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
@@ -606,17 +606,17 @@
       <!-- Rules -->
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-drools-domains</artifactId>
+        <artifactId>openengsb-workflow-drools-domains</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-drools-se</artifactId>
+        <artifactId>openengsb-workflow-drools-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-drools</artifactId>
+        <artifactId>openengsb-workflow-drools-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
@@ -628,114 +628,109 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-ekb</artifactId>
+        <artifactId>openengsb-ekb-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
       <!-- Enterprise Data Base -->
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-edb-core</artifactId>
+        <artifactId>openengsb-features-edb-core</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-edb-se</artifactId>
+        <artifactId>openengsb-features-edb-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-edb</artifactId>
+        <artifactId>openengsb-features-edb-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-edb-jms</artifactId>
+        <artifactId>openengsb-features-edb-jms</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
       <!-- Workflows -->
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-workflow</artifactId>
+        <artifactId>openengsb-workflow-bpel-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
       <!-- SCM Domain -->
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-domain-scm-se</artifactId>
+        <artifactId>openengsb-domains-scm-implementation-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-domain-scm-common</artifactId>
+        <artifactId>openengsb-domains-scm-common</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
       <!-- Notification Domain -->
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-domain-notification-se</artifactId>
+        <artifactId>openengsb-domains-notification-implementation-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-domain-notification</artifactId>
+        <artifactId>openengsb-domains-notification-implementation-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
       <!-- Issue Domain -->
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-domain-issues-common</artifactId>
+        <artifactId>openengsb-domains-issues-common</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-connector-issues-trac-impl</artifactId>
+        <artifactId>openengsb-domains-issues-trac-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-connector-issues-trac</artifactId>
+        <artifactId>openengsb-domains-issues-trac-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
       <!-- Connectors -->
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-connector-svn</artifactId>
+        <artifactId>openengsb-domains-scm-subversion-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-connector-mvn</artifactId>
+        <artifactId>openengsb-domains-toolabstraction-maven</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-connector-issues-trac</artifactId>
+        <artifactId>openengsb-domains-issues-trac-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-connector-issues-trac-su</artifactId>
+        <artifactId>openengsb-domains-issues-trac-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>file-poller-su</artifactId>
+        <artifactId>openengsb-domains-notification-email-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-connector-email</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-connector-email-se</artifactId>
+        <artifactId>openengsb-domains-notification-email-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
@@ -747,52 +742,51 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-context</artifactId>
+        <artifactId>openengsb-context-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
       
       <!-- tool links -->
       <dependency>
       	<groupId>org.openengsb</groupId>
-      	<artifactId>openengsb-link-http</artifactId>
+      	<artifactId>openengsb-features-link-http-su</artifactId>
       	<version>${pom.version}</version>
       </dependency>
       <dependency>
       	<groupId>org.openengsb</groupId>
-      	<artifactId>openengsb-link-http-processor-se</artifactId>
+      	<artifactId>openengsb-features-link-http-processor-se</artifactId>
       	<version>${pom.version}</version>
       </dependency>
       <dependency>
       	<groupId>org.openengsb</groupId>
-      	<artifactId>openengsb-link-http-processor</artifactId>
+      	<artifactId>openengsb-features-link-http-processor-su</artifactId>
       	<version>${pom.version}</version>
       </dependency>
-
       <dependency>
       	<groupId>org.openengsb</groupId>
-      	<artifactId>openengsb-link-http-jms</artifactId>
+      	<artifactId>openengsb-features-link-http-jms-su</artifactId>
       	<version>${pom.version}</version>
       </dependency>
 
       <!-- Implementation Modules -->
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-connector-mvn-build</artifactId>
+        <artifactId>openengsb-domains-build-maven-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-connector-mvn-test</artifactId>
+        <artifactId>openengsb-domains-test-maven-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-connector-mvn-deploy</artifactId>
+        <artifactId>openengsb-domains-deploy-maven-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-connector-svn-impl</artifactId>
+        <artifactId>openengsb-domains-scm-subversion-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
 

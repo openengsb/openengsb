@@ -28,9 +28,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   
-  <artifactId>openengsb-connector-issues-trac</artifactId>
+  <artifactId>openengsb-domains-issues-trac-se</artifactId>
+  <name>openengsb-domains-issues-trac-se</name>
   <packaging>jbi-component</packaging>
-  <name>openengsb-connector-issues-trac</name>
 
   <properties>
     <servicemix-version>3.2.1</servicemix-version>
@@ -60,7 +60,7 @@
     <!-- internal scm-common Dependency -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domain-issues-common</artifactId>
+      <artifactId>openengsb-domains-issues-common</artifactId>
     </dependency>
   </dependencies>
 

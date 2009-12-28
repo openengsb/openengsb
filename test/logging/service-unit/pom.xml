@@ -31,9 +31,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-logging</artifactId>
+  <artifactId>openengsb-test-logging-su</artifactId>
+  <name>openengsb-test-logging-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-logging</name>
 
   <description>
     A simple component used for logging and monitoring messages and parts of the engsb.

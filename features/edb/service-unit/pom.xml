@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <componentName>openengsb-edb-se</componentName>
+    <componentName>openengsb-features-edb-se</componentName>
   </properties>
 
   <parent>
@@ -31,9 +31,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-edb</artifactId>
+  <artifactId>openengsb-features-edb-su</artifactId>
+  <name>openengsb-features-edb-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-edb</name>
 
   <description>
     Dummy implementation of the edb adapter. This implementation is only at time for testing
@@ -44,7 +44,7 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-edb-se</artifactId>
+      <artifactId>openengsb-features-edb-se</artifactId>
     </dependency>
   </dependencies>
 

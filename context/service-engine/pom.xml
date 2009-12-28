@@ -28,8 +28,8 @@
   </parent>
 
   <artifactId>openengsb-context-se</artifactId>
-  <packaging>jbi-component</packaging>
   <name>openengsb-context-se</name>
+  <packaging>jbi-component</packaging>
 
   <description>
     OpenEngSB Context JBI SE

@@ -27,8 +27,8 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-domain-scm-common</artifactId>
-  <name>openengsb-domain-scm-common</name>
+  <artifactId>openengsb-domains-scm-common</artifactId>
+  <name>openengsb-domains-scm-common</name>
 
   <description>
     Common implementation for all SCM-Domain-implementations.

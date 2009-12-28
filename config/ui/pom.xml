@@ -29,8 +29,8 @@
 
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-config-ui</artifactId>
-  <packaging>war</packaging>
   <name>openengsb-config-ui</name>
+  <packaging>war</packaging>
 
   <description>
   	Graphical support for openengsb configuration.

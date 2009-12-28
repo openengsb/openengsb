@@ -31,9 +31,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   
-  <artifactId>openengsb-link-http-jms</artifactId>
+  <artifactId>openengsb-features-link-http-jms-su</artifactId>
+  <name>openengsb-features-link-http-jms-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-link-http-jms</name>
 
   <description>
     TODO

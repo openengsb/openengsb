@@ -27,9 +27,8 @@
   </parent>
 
   <groupId>org.openengsb</groupId>
-  <artifactId>openengsb-drools-domains</artifactId>
-
-  <name>openengsb-drools-domains</name>
+  <artifactId>openengsb-workflow-drools-domains</artifactId>
+  <name>openengsb-workflow-drools-domains</name>
   <description>Interfaces used in openengsb-drools</description>
 
 </project>

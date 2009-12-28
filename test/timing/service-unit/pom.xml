@@ -31,9 +31,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-timing</artifactId>
+  <artifactId>openengsb-test-timing-su</artifactId>
+  <name>openengsb-test-timing-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-timing</name>
 
   <description>
     EngSB general purpose timing engine. This su should be used to call

@@ -27,9 +27,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-connector-mvn</artifactId>
+  <artifactId>openengsb-domains-toolabstraction-maven</artifactId>
+  <name>openengsb-domains-toolabstraction-maven</name>
   <packaging>jbi-component</packaging>
-  <name>openengsb-connector-mvn</name>
 
   <description>
     Implementation of the build domain connecting the maven adapter to the

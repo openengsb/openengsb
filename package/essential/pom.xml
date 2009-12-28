@@ -28,8 +28,8 @@
   </parent>
 
   <artifactId>openengsb-package-essential</artifactId>
-  <packaging>jbi-service-assembly</packaging>
   <name>openengsb-package-essential</name>
+  <packaging>jbi-service-assembly</packaging>
 
   <description>
     The package used to assembly the essential SUs which are required for the base 
@@ -54,23 +54,23 @@
     <!-- Engineering Data Base -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-edb</artifactId>
+      <artifactId>openengsb-features-edb-su</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-edb-jms</artifactId>
+      <artifactId>openengsb-features-edb-jms</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-link-http</artifactId>
+      <artifactId>openengsb-features-link-http-su</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-link-http-processor</artifactId>
+      <artifactId>openengsb-features-link-http-processor-su</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-link-http-jms</artifactId>
+      <artifactId>openengsb-features-link-http-jms-su</artifactId>
     </dependency>
     
 

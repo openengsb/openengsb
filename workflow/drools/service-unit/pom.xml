@@ -31,9 +31,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-drools</artifactId>
+  <artifactId>openengsb-workflow-drools-su</artifactId>
+  <name>openengsb-workflow-drools-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-drools</name>
 
   <description>
     Drools SU
@@ -42,7 +42,7 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-drools-se</artifactId>
+      <artifactId>openengsb-workflow-drools-se</artifactId>
     </dependency>
   </dependencies>
 

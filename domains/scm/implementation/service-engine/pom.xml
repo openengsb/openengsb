@@ -27,9 +27,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-domain-scm-se</artifactId>
+  <artifactId>openengsb-domains-scm-implementation-se</artifactId>
+  <name>openengsb-domains-scm-implementation-se</name>
   <packaging>jbi-component</packaging>
-  <name>openengsb-domain-scm-se</name>
 
   <description>
     Domain describing the functionality of the scm domain.
@@ -76,7 +76,7 @@
     <!-- internal scm-common Dependency -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domain-scm-common</artifactId>
+      <artifactId>openengsb-domains-scm-common</artifactId>
     </dependency>
 
     <!-- Servicemix dependencies -->
@@ -150,7 +150,7 @@
     <!-- dependency on the svn-connector (just for testing) -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-connector-svn</artifactId>
+      <artifactId>openengsb-domains-scm-subversion-su</artifactId>
       <scope>test</scope>
     </dependency>
 

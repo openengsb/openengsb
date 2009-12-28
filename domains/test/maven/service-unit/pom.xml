@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <componentName>openengsb-connector-mvn</componentName>
+    <componentName>openengsb-domains-toolabstraction-maven</componentName>
   </properties>
 
   <parent>
@@ -31,9 +31,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-connector-mvn-test</artifactId>
+  <artifactId>openengsb-domains-test-maven-su</artifactId>
+  <name>openengsb-domains-test-maven-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-connector-mvn-test</name>
 
   <description>
     A service engine for the integration of maven. The goals for building, testing and deploying projects.
@@ -42,7 +42,7 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-connector-mvn</artifactId>
+      <artifactId>openengsb-domains-toolabstraction-maven</artifactId>
     </dependency>
   </dependencies>
 

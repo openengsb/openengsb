@@ -27,8 +27,8 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-edb-core</artifactId>
-  <name>openengsb-edb-core</name>
+  <artifactId>openengsb-features-edb-core</artifactId>
+  <name>openengsb-features-edb-core</name>
   <packaging>jbi-shared-library</packaging>
 
   <description>

@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <componentName>openengsb-domain-notification-se</componentName>
+    <componentName>openengsb-domains-notification-implementation-se</componentName>
   </properties>
 
   <parent>
@@ -31,9 +31,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-domain-notification</artifactId>
+  <artifactId>openengsb-domains-notification-implementation-su</artifactId>
+  <name>openengsb-domains-notification-implementation-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-domain-notification</name>
 
   <description>
     Notification domain SU
@@ -42,7 +42,7 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domain-notification-se</artifactId>
+      <artifactId>openengsb-domains-notification-implementation-se</artifactId>
     </dependency>
   </dependencies>
 

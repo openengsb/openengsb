@@ -31,9 +31,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-routing</artifactId>
+  <artifactId>openengsb-test-routing-su</artifactId>
+  <name>openengsb-test-routing-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-routing</name>
 
   <description>
     A component used for static routing in the EngSB. This EIP component should only be used for

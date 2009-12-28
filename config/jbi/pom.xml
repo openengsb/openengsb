@@ -29,8 +29,8 @@
 
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-config-jbi</artifactId>
-  <packaging>jar</packaging>
   <name>openengsb-config-jbi</name>
+  <packaging>jar</packaging>
 
   <description>
   	JBI components reader and SU/SA writer.

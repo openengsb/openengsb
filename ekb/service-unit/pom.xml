@@ -31,9 +31,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-ekb</artifactId>
+  <artifactId>openengsb-ekb-su</artifactId>
+  <name>openengsb-ekb-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-ekb</name>
 
   <description>
     Engineering Knowledge Base used to transform messages into the right format.

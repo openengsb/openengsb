@@ -27,9 +27,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-edb-se</artifactId>
+  <artifactId>openengsb-features-edb-se</artifactId>
+  <name>openengsb-features-edb-se</name>
   <packaging>jbi-component</packaging>
-  <name>openengsb-edb-se</name>
 
   <description>
     JBI presentation for using the engsb-core libary.
@@ -91,7 +91,7 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-edb-core</artifactId>
+      <artifactId>openengsb-features-edb-core</artifactId>
     </dependency>
 
     <!-- Logging Dependencies -->

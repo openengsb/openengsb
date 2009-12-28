@@ -23,9 +23,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-link-http-processor</artifactId>
+  <artifactId>openengsb-features-link-http-processor-su</artifactId>
+  <name>openengsb-features-link-http-processor-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-link-http-processor</name>
 
   <description>
     TODO
@@ -34,15 +34,15 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-link-http-processor-se</artifactId>
+      <artifactId>openengsb-features-link-http-processor-se</artifactId>
     </dependency>
     <dependency>
     	<groupId>org.openengsb</groupId>
-      <artifactId>openengsb-link-http</artifactId>
+      <artifactId>openengsb-features-link-http-su</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-link-http-jms</artifactId>
+      <artifactId>openengsb-features-link-http-jms-su</artifactId>
     </dependency>
   </dependencies>
 

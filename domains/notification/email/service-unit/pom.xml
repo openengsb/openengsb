@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <componentName>openengsb-connector-email-se</componentName>
+    <componentName>openengsb-domains-notification-email-su</componentName>
   </properties>
 
   <parent>
@@ -31,9 +31,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-connector-email</artifactId>
+  <artifactId>openengsb-domains-notification-email-su</artifactId>
+  <name>openengsb-domains-notification-email-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-connector-email</name>
 
   <description>
     email connector SU
@@ -42,7 +42,7 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-connector-email-se</artifactId>
+      <artifactId>openengsb-domains-notification-email-se</artifactId>
     </dependency>
   </dependencies>
 

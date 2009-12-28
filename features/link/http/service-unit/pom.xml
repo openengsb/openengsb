@@ -31,9 +31,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   
-  <artifactId>openengsb-link-http</artifactId>
+  <artifactId>openengsb-features-link-http-su</artifactId>
+  <name>openengsb-features-link-http-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-link-http</name>
 
   <description>
     TODO

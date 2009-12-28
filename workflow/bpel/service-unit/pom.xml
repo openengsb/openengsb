@@ -31,9 +31,9 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-workflow</artifactId>
+  <artifactId>openengsb-workflow-bpel-su</artifactId>
+  <name>openengsb-workflow-bpel-su</name>
   <packaging>jbi-service-unit</packaging>
-  <name>openengsb-workflow</name>
 
   <description>
     Core component of the engsb. This component should be used to manage

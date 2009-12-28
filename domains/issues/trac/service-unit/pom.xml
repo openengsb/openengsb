@@ -28,11 +28,11 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
   
-  <artifactId>openengsb-connector-issues-trac-impl</artifactId>
-  <packaging>jbi-service-unit</packaging>
+  <artifactId>openengsb-domains-issues-trac-su</artifactId>
+  <name>openengsb-domains-issues-trac-su</name>
   <version>1.0.0-SNAPSHOT</version>
+  <packaging>jbi-service-unit</packaging>
 
-  <name>openengsb-connector-issues-trac-impl</name>
   
   <properties>
     <servicemix-version>3.2.3</servicemix-version>
@@ -41,7 +41,7 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-connector-issues-trac</artifactId>
+      <artifactId>openengsb-domains-issues-trac-se</artifactId>
     </dependency>
   </dependencies>
   

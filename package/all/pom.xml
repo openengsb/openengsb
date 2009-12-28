@@ -27,8 +27,8 @@
   </parent>
 
   <artifactId>openengsb-package-all</artifactId>
-  <packaging>jbi-service-assembly</packaging>
   <name>openengsb-package-all</name>
+  <packaging>jbi-service-assembly</packaging>
 
   <description>
     The package used to assembly all SUs which are required for the entire 
@@ -53,85 +53,85 @@
     <!-- Common Modules & Helpers -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-timing</artifactId>
+      <artifactId>openengsb-test-timing-su</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-routing</artifactId>
+      <artifactId>openengsb-test-routing-su</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-logging</artifactId>
+      <artifactId>openengsb-test-logging-su</artifactId>
     </dependency>
 
     <!-- Engineering Knowledge Base -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-ekb</artifactId>
+      <artifactId>openengsb-ekb-su</artifactId>
     </dependency>
 
     <!-- Engineering Data Base -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-edb</artifactId>
+      <artifactId>openengsb-features-edb-su</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-edb-jms</artifactId>
+      <artifactId>openengsb-features-edb-jms</artifactId>
     </dependency>
     
     <!--  Domains -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domain-notification</artifactId>
+      <artifactId>openengsb-domains-notification-implementation-su</artifactId>
     </dependency>
     
     <!-- Implementation Modules -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-connector-svn-impl</artifactId>
+      <artifactId>openengsb-domains-scm-subversion-se</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-connector-mvn-build</artifactId>
+      <artifactId>openengsb-domains-build-maven-su</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-connector-mvn-test</artifactId>
+      <artifactId>openengsb-domains-test-maven-su</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-connector-mvn-deploy</artifactId>
+      <artifactId>openengsb-domains-deploy-maven-su</artifactId>
     </dependency>
 
     <!-- Workflows -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-workflow</artifactId>
+      <artifactId>openengsb-workflow-bpel-su</artifactId>
     </dependency>
     
     <!-- Context -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-context</artifactId>
+      <artifactId>openengsb-context-su</artifactId>
     </dependency>
 
     <!-- Drools -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-drools</artifactId>
+      <artifactId>openengsb-workflow-drools-su</artifactId>
     </dependency>
 
     <!-- Issues -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-connector-issues-trac-impl</artifactId>
+      <artifactId>openengsb-domains-issues-trac-su</artifactId>
     </dependency>
     
     <!-- Email -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-connector-email</artifactId>
+      <artifactId>openengsb-domains-notification-email-su</artifactId>
     </dependency>
 
   </dependencies>
