@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.edb.jbi.endpoints;
 
@@ -67,12 +67,12 @@ public class EdbEndpoint extends AbstractEndpoint {
     private Map<EDBOperationType, EDBEndpointResponseBuilder> reponses;
 
     @Override
-    protected void processInOutRequest(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out)
-            throws Exception {
+    protected void processInOutRequest(final MessageExchange exchange, final NormalizedMessage in, final NormalizedMessage out)
+    throws Exception {
         getLog().info("init handler from factory");
 
-        EDBHandler handler = this.fullConfig.getFactory().loadDefaultRepository();
-        EDBHandler linksHandler = this.fullConfig.getFactory().loadRepository(this.fullConfig.getLinkStorage());
+        final EDBHandler handler = this.fullConfig.getFactory().loadDefaultRepository();
+        final EDBHandler linksHandler = this.fullConfig.getFactory().loadRepository(this.fullConfig.getLinkStorage());
 
         // see issue #179
         init(handler, linksHandler);
@@ -83,23 +83,22 @@ public class EdbEndpoint extends AbstractEndpoint {
          * Only check the local part. Don't care about the namespace of the
          * operation
          */
-        EDBOperationType op = XmlParserFunctions.getMessageType(in);// exchange.getOperation().getLocalPart();
+        final EDBOperationType op = XmlParserFunctions.getMessageType(in);// exchange.getOperation().getLocalPart();
         String body = null;
 
         body = this.commands.get(op).execute(in);
 
         body = this.reponses.get(op).wrapIntoResponse(body);
 
-        Source response = new StringSource(body);
+        final Source response = new StringSource(body);
         this.logger.info(body);
         out.setContent(response);
-        getChannel().send(exchange);
     }
 
     /**
      * see issue 179
      */
-    private void init(EDBHandler handler, EDBHandler linksHandler) {
+    private void init(final EDBHandler handler, final EDBHandler linksHandler) {
         this.commands = new HashMap<EDBOperationType, EDBEndpointCommand>();
         this.commands.put(EDBOperationType.COMMIT, new EDBCommit(handler, this.logger));
         this.commands.put(EDBOperationType.QUERY, new EDBQuery(handler, this.logger));
