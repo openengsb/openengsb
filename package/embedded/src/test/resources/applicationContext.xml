@@ -19,6 +19,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:sm="http://servicemix.apache.org/config/1.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
   xmlns:jencks="http://jencks.org/2.0"
+  xmlns:amq="http://activemq.apache.org/schema/core"
   xsi:schemaLocation="http://www.springframework.org/schema/beans 
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
            http://www.springframework.org/schema/context
@@ -27,8 +28,26 @@
            http://servicemix.apache.org/schema/servicemix-core-3.3.xsd
            http://jencks.org/2.0
            classpath:jencks.xsd
+           http://activemq.apache.org/schema/core
+           classpath:activemq.xsd
            ">
-
+  <amq:broker id="broker" useShutdownHook="false">
+    <amq:managementContext>
+      <bean class="org.apache.activemq.broker.jmx.ManagementContext">
+        <property name="createConnector" value="false" />
+      </bean>
+    </amq:managementContext>
+    <amq:networkConnectors>
+      <amq:networkConnector uri="multicast://default" />
+    </amq:networkConnectors>
+    <amq:persistenceAdapter>
+      <amq:amqPersistenceAdapter directory="file:./data/amq" />
+    </amq:persistenceAdapter>
+    <amq:transportConnectors>
+      <amq:transportConnector uri="tcp://localhost:61616" discoveryUri="multicast://default" />
+    </amq:transportConnectors>
+  </amq:broker>
+  
   <jencks:transactionManager id="transactionManager" transactionLogDir="./data/tx"
     defaultTransactionTimeoutSeconds="600" />
 
