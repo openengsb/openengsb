@@ -1,6 +1,6 @@
-#!/bin/bash
+#! /bin/bash
 #
-#   Copyright 2009 OpenEngSB Division, Vienna University of Technology
+#	Copyright 2009 OpenEngSB Division, Vienna University of Technology
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -22,6 +22,6 @@
 
 echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
 
-mvn install -o -Dmaven.test.skip=true
-cd package/all; mvn jbi:projectDeploy -e -o
+mvn clean install -o
+mvn jbi:projectDeploy -o
 

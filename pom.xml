@@ -103,77 +103,80 @@
 
   <modules>
     <!-- Core -->
-    <module>openengsb-core</module>
+    <module>core/openengsb</module>
 
     <!-- Documentation -->
-    <module>openengsb-docs</module>
+    <module>docs</module>
 
     <!-- Common Modules & Helpers -->
-    <module>openengsb-timing</module>
-    <module>openengsb-routing</module>
-    <module>openengsb-logging</module>
-    <module>openengsb-util</module>
+    <module>test/timing/service-unit</module>
+    <module>test/routing/service-unit</module>
+    <module>test/logging/service-unit</module>
+    <module>core/util</module>
 
     <!-- Rules -->
-    <module>openengsb-drools-domains</module>
-    <module>openengsb-drools-se</module>
-    <module>openengsb-drools</module>
+    <module>workflow/drools/domains</module>
+    <module>workflow/drools/service-engine</module>
+    <module>workflow/drools/service-unit</module>
 
     <!-- Engineering Knowledge Base -->
-    <module>openengsb-ekb-core</module>
-    <module>openengsb-ekb</module>
+    <module>ekb/core</module>
+    <module>ekb/service-unit</module>
 
     <!-- Enterprise Data Base -->
-    <module>openengsb-edb-core</module>
-    <module>openengsb-edb-se</module>
-    <module>openengsb-edb</module>
-    <module>openengsb-edb-jms</module>
+    <module>features/edb/core</module>
+    <module>features/edb/service-engine</module>
+    <module>features/edb/service-unit</module>
+    <module>features/edb/jms</module>
 
     <!-- Workflows -->
-    <module>openengsb-workflow</module>
+    <module>workflow/bpel/service-unit</module>
 
     <!-- SCM Domain -->
-    <module>openengsb-domain-scm-se</module>
-    <module>openengsb-domain-scm-common</module>
+    <module>domains/scm/implementation/service-engine</module>
+    <module>domains/scm/common</module>
 
     <!--  Notification Domain -->
-    <module>openengsb-domain-notification-se</module>
-    <module>openengsb-domain-notification</module>
+    <module>domains/notification/implementation/service-engine</module>
+    <module>domains/notification/implementation/service-unit</module>
+
+    <!-- Tool Abstraction -->
+    <module>domains/toolabstraction/maven</module>
 
     <!-- Connectors -->
-    <module>openengsb-connector-svn</module>
-    <module>openengsb-connector-mvn</module>
-    <module>openengsb-connector-email-se</module>
+    <module>domains/scm/subversion/service-engine</module>
+    <module>domains/notification/email/service-engine</module>
+    <module>domains/issues/trac/service-engine</module>
 
     <!-- Implementation Modules -->
-    <module>openengsb-connector-mvn-build</module>
-    <module>openengsb-connector-mvn-test</module>
-    <module>openengsb-connector-mvn-deploy</module>
-    <module>openengsb-connector-svn-impl</module>
-    <module>openengsb-connector-email</module>
+    <module>domains/build/maven/service-unit</module>
+    <module>domains/deploy/maven/service-unit</module>
+    <module>domains/test/maven/service-unit</module>
+    <module>domains/scm/subversion/service-unit</module>
+    <module>domains/notification/email/service-unit</module>
+    <module>domains/issues/trac/service-unit</module>
 
     <!-- Packaging Modules -->
-    <module>openengsb-package-all</module>
-    <module>openengsb-package-essential</module>
+    <module>package/all</module>
+    <module>package/essential</module>
+    <module>package/embedded</module>
 
-    <!-- Embedded -->
-    <module>openengsb-config-jbi</module>
-    <module>openengsb-config-ui</module>
-    <module>openengsb-embedded</module>
+    <!-- Config -->
+    <module>config/jbi</module>
+    <module>config/ui</module>
 
     <!-- Context -->
-    <module>openengsb-context-se</module>
-    <module>openengsb-context</module>
+    <module>core/context/service-engine</module>
+    <module>core/context/service-unit</module>
     
     <!-- tool-links -->
-    <module>openengsb-link-http</module>
-    <module>openengsb-link-http-processor-se</module>
-    <module>openengsb-link-http-processor</module>
-    <module>openengsb-link-http-jms</module>
+    <module>features/link/http/service-unit</module>
+    <module>features/link/http-jms/service-unit</module>
+    <module>features/link/http-processor/service-engine</module>
+    <module>features/link/http-processor/service-unit</module>
 
-    <module>openengsb-connector-issues-trac</module>
-    <module>openengsb-domain-issues-common</module>
-    <module>openengsb-connector-issues-trac-impl</module>
+    <!-- Issues -->
+    <module>domains/issues/common</module>
 
   </modules>
 
@@ -421,7 +424,7 @@
             <exclude>**/.metadata/**</exclude>
 
             <!-- runtime generated data -->
-            <exclude>openengsb-edb-core/easy2find/**</exclude>
+            <exclude>features/edb/core/easy2find/**</exclude>
             <exclude>**/*.dia</exclude>
             <exclude>**/*.log</exclude>
             <exclude>**/activemq-data/**</exclude>
@@ -433,14 +436,8 @@
             <exclude>**/testFiles/**</exclude>
             <exclude>**/site/docbook/empty.txt</exclude>
 
-            <!-- licensed externally -->
-            <exclude>openengsb-docs/src/docbkx/resources/css/highlight.css</exclude>
-            <exclude>openengsb-docs/src/docbkx/resources/css/html.css</exclude>
-            <exclude>openengsb-docs/src/docbkx/resources/xsl/fopdf.xsl</exclude>
-            <exclude>openengsb-docs/src/docbkx/resources/xsl/highlight-fo.xsl</exclude>
-            <exclude>openengsb-docs/src/docbkx/resources/xsl/highlight.xsl</exclude>
-            <exclude>openengsb-docs/src/docbkx/resources/xsl/html.xsl</exclude>
-            <exclude>openengsb-domain-issues-common/src/test/resources/**/*</exclude>
+            <!-- docs are checked in docs project -->
+            <exclude>docs/</exclude>
 
             <!-- notice and license -->
             <exclude>NOTICE</exclude>
@@ -450,18 +447,18 @@
             <exclude>**/**.drl</exclude>
 
             <!-- nonjava projects -->
-            <exclude>openengsb-nonjava/csharp/lib/**</exclude>
+            <exclude>nonjava/csharp/lib/**</exclude>
             <exclude>**/**.csproj</exclude>
             <exclude>**/**.sln</exclude>
 
             <!-- Scripts -->
             <exclude>quickrun.sh</exclude>
-            <exclude>openengsb-package-all/quickdeploy.sh</exclude>
+            <exclude>package/all/quickdeploy.sh</exclude>
 
             <!-- Test Data -->
-            <exclude>openengsb-util/src/test/resources/serialization/valid.xml</exclude>
-            <exclude>openengsb-package-all/quickdeploy.sh</exclude>
-            <exclude>openengsb-package-all/quickdeploy.sh</exclude>
+            <exclude>core/util/src/test/resources/serialization/valid.xml</exclude>
+            <exclude>package/all/quickdeploy.sh</exclude>
+            <exclude>**/test/resources/**</exclude>
 
             <!-- OpenEngSB Embedded -->
             <exclude>**/data/**</exclude>
@@ -470,8 +467,8 @@
             <exclude>**/src/test/resources/serialization/valid.xml</exclude>
 
             <!-- Auto generated files for tests in openengsb-domain-issues-common -->
-            <exclude>openengsb-domain-issues-common/bin/src/test/resources/META-INF/**</exclude>
-            <exclude>openengsb-domain-issues-common/bin/src/test/resources/openengsb-domain-issues-common.xsd.wiki</exclude>
+            <exclude>domains/issues/common/bin/src/test/resources/META-INF/**</exclude>
+            <exclude>domains/issues/common/bin/src/test/resources/openengsb-domain-issues-common.xsd.wiki</exclude>
           </excludes>
         </configuration>
         <executions>

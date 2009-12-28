@@ -23,5 +23,5 @@
 echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
 
 mvn clean install -Dmaven.test.skip=true
-cd openengsb-embedded;mvn jetty:run-war
+cd package/embedded; mvn jetty:run-war
 
