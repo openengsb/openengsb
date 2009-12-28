@@ -556,7 +556,7 @@
           <version>${maven.plugin.surefire}</version>
           <configuration>
             <includes>
-              <include>org/openengsb/**/test/unit/**/*.java</include>
+              <include>org/openengsb/**/test/unit/**/*Test*.java</include>
             </includes>
           </configuration>
         </plugin>
@@ -580,8 +580,8 @@
             <version>2.4.2</version>
             <configuration>
               <includes>
-                <include>org/openengsb/**/test/unit/**/*.java</include>
-                <include>org/openengsb/**/test/integration/**/*.java</include>
+                <include>org/openengsb/**/test/unit/**/*Test*.java</include>
+                <include>org/openengsb/**/test/integration/**/*Test*.java</include>
               </includes>
             </configuration>
           </plugin>
@@ -598,8 +598,8 @@
             <version>2.4.2</version>
             <configuration>
               <includes>
-                <include>org/openengsb/**/test/unit/**/*.java</include>
-                <include>org/openengsb/**/test/performance/**/*.java</include>
+                <include>org/openengsb/**/test/unit/**/*Test*.java</include>
+                <include>org/openengsb/**/test/performance/**/*Test*.java</include>
               </includes>
             </configuration>
           </plugin>
@@ -616,7 +616,7 @@
             <version>2.4.2</version>
             <configuration>
               <includes>
-                <include>org/openengsb/**/test/**/*.java</include>
+                <include>org/openengsb/**/test/**/*Test*.java</include>
               </includes>
             </configuration>
           </plugin>
