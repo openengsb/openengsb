@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.scm.common.test.constants;
+package org.openengsb.scm.common.test.unit.constants;
 
 /**
  * Class holding injected constants for testing purposes.

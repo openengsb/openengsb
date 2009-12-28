@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.scm.common.test;
+package org.openengsb.scm.common.test.unit;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -44,7 +44,7 @@ import org.openengsb.scm.common.commands.CommandFactory;
 import org.openengsb.scm.common.endpoints.GeneralScmEndpoint;
 import org.openengsb.scm.common.exceptions.ScmException;
 import org.openengsb.scm.common.pojos.MergeResult;
-import org.openengsb.scm.common.test.constants.GeneralEndpointUnitTestConstants;
+import org.openengsb.scm.common.test.unit.constants.GeneralEndpointUnitTestConstants;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 

@@ -23,7 +23,7 @@
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
-  <bean class="org.openengsb.scm.common.test.constants.GeneralEndpointUnitTestConstants">
+  <bean class="org.openengsb.scm.common.test.unit.constants.GeneralEndpointUnitTestConstants">
 
     <property name="ADD_FILE" value="addFile" />
     <property name="BLAME_FILE" value="blameFile" />
