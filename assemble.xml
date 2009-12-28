@@ -27,16 +27,37 @@
   </formats>
   <fileSets>
     <fileSet>
+      <directory>${project.basedir}/package/embedded/target</directory>
       <includes>
-        <include>${project.basedir}/README*</include>
-        <include>${project.basedir}/LICENSE*</include>
-        <include>${project.basedir}/NOTICE*</include>
+        <include>openengsb.war</include>
+      </includes>
+    </fileSet>
+    <fileSet> 
+      <outputDirectory>docs/html</outputDirectory>
+      <directory>${project.basedir}/docs/target</directory>
+      <includes>
+        <include>*.html</include>
+      </includes>
+    </fileSet>
+    <fileSet> 
+      <outputDirectory>docs/pdf</outputDirectory>
+      <directory>${project.basedir}/docs/target</directory>
+      <includes>
+        <include>*.pdf</include>
+      </includes>
+    </fileSet>
+    <fileSet> 
+      <outputDirectory>bin</outputDirectory>
+      <directory>${project.basedir}/bin</directory>
+      <includes>
+        <include>*.sh</include>
       </includes>
     </fileSet>
     <fileSet>
-      <directory>${project.build.directory}</directory>
       <includes>
-        <include>*.jar</include>
+        <include>${project.basedir}/readme.txt</include>
+        <include>${project.basedir}/LICENSE</include>
+        <include>${project.basedir}/NOTICE</include>
       </includes>
     </fileSet>
   </fileSets>
