@@ -44,5 +44,9 @@
     <constructor-arg ref="servletContext" />
     <constructor-arg value="/deploy" />
   </bean>
+  <bean id="txDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
+    <constructor-arg ref="servletContext" />
+    <constructor-arg value="/txlog" />
+  </bean>
 
 </beans>

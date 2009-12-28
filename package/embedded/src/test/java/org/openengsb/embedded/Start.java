@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.embedded;
 
@@ -33,22 +33,15 @@ import org.apache.maven.reactor.MavenExecutionException;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.openengsb.embedded.JbiTypeChecker.JbiType;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 public class Start {
     public static void main(String[] args) throws Exception {
-        ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext(ClassLoader.getSystemResource(
-                "applicationContext.xml").toString());
+        FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(new String[] {
+                "src/main/webapp/WEB-INF/applicationContext.xml", "src/test/resources/testContext.xml" });
         ctx.start();
 
-        JBIContainer jbiContainer = new JBIContainer();
-        jbiContainer.setCreateMBeanServer(true);
-        jbiContainer.setRootDir("./data/smx");
-        jbiContainer.setInstallationDirPath("./data/smx/install");
-        jbiContainer.setDeploymentDirPath("./data/smx/deploy");
-        jbiContainer.setTransactionManager(ctx.getBean("transactionManager"));
-        jbiContainer.init();
-        jbiContainer.start();
+        JBIContainer jbiContainer = (JBIContainer) ctx.getBean("jbi");
 
         Configuration configuration = new DefaultConfiguration();
         MavenEmbedder embedder = new MavenEmbedder(configuration);
@@ -77,7 +70,7 @@ public class Start {
             MavenExecutionException {
         MavenProject project = embedder.readProject(new File("pom.xml"));
         Plugin plugin = project.getPlugin("org.codehaus.mojo:dependency-maven-plugin");
-        List<PluginExecution> executions = (List<PluginExecution>) plugin.getExecutions();
+        List<PluginExecution> executions = plugin.getExecutions();
         Xpp3Dom d = (Xpp3Dom) executions.get(0).getConfiguration();
         return d.getChild("artifactItems").getChildren("artifactItem");
     }
