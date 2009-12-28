@@ -15,12 +15,13 @@
    limitations under the License.
 
  */
-package org.openengsb.config.jbi.internal;
+package org.openengsb.config.jbi.test.unit.internal;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.openengsb.config.jbi.internal.XStreamFactory;
 import org.openengsb.config.jbi.types.ChoiceType;
 import org.openengsb.config.jbi.types.IntType;
 import org.openengsb.config.jbi.types.StringType;

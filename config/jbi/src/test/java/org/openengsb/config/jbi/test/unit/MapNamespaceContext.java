@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.config.jbi;
+package org.openengsb.config.jbi.test.unit;
 
 import java.util.HashMap;
 import java.util.Iterator;

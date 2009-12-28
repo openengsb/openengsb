@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.config.jbi;
+package org.openengsb.config.jbi.test.unit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -29,6 +29,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.junit.Test;
+import org.openengsb.config.jbi.ServiceUnitCreator;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.w3c.dom.Document;
 
