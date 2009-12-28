@@ -41,7 +41,7 @@
   <para>
 		A local client-application must be present and running on the requestors machine to automatically open the program.
 		A sample implementation of the client is available in
-		openengsb-link-http-processor-se/src/test/java/org/openengsb/link/http/JmsListener.java
+		features/link/http-processor/service-engine/src/test/java/org/openengsb/link/http/JmsListener.java
 	</para>
   <section id="link.http.client">
 	  <title>Client Application</title>

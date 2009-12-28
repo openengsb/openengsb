@@ -26,7 +26,7 @@
   	running inside a JBoss Application Server. The rulebase can be managed with
   	the webinterface. For specifying conditions in rules a model is needed. A
   	model is described in simple Java objects. The default model is located in
-  	the "openengsb-drools-common"-folder. The following example shows how a rule
+  	the "workflow/drools/domains"-project. The following example shows how a rule
   	can be specified.
   </para>
   <orderedlist>
@@ -46,11 +46,11 @@
   	<listitem>
 			Build and upload the model
 			<para>
-				Open a command-shell in the "openengsb-drools-common"-directory and execute "mvn install". This compiles the
-				model and packs it to target/openengsb-drools-common-VERSION.jar. Use the webinterface to upload the model by
+				Open a command-shell in the "workflow/drools/domains"-directory and execute "mvn install". This compiles the
+				model and packs it to target/openengsb-workflow-drools-domains-VERSION.jar. Use the webinterface to upload the model by
 				selecting "Create New->Upload POJO Model jar". Enter a name (e.g. "mymodel") and confirm the dialog. Now
-				browse to the openengsb-drools-common-VERSION.jar and upload it. When that is done click "save changes" in the
-				top-left corner of the frame. Enter a commit-message (e.g. "add openengsb-drools-common-VERSION").
+				browse to the openengsb-workflow-drools-domains-VERSION.jar and upload it. When that is done click "save changes" in the
+				top-left corner of the frame. Enter a commit-message (e.g. "add openengsb-workflow-drools-domains-VERSION").
 			</para>
   	</listitem>
   	<listitem>
