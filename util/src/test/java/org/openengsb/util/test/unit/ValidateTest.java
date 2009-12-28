@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.util;
+package org.openengsb.util.test.unit;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;

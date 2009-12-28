@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.util.query;
+package org.openengsb.util.test.unit.query;
 
 import junit.framework.Assert;
 

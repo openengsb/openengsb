@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.util.serialization;
+package org.openengsb.util.test.unit.serialization;
 
 /**
  * Just a test class used to test the serializers.

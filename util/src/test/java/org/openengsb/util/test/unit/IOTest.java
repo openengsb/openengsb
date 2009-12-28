@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.util;
+package org.openengsb.util.test.unit;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
