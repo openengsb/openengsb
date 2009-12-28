@@ -554,6 +554,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${maven.plugin.surefire}</version>
+          <configuration>
+            <includes>
+              <include>org/openengsb/**/test/unit/**/*.java</include>
+            </includes>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.jibx</groupId>
