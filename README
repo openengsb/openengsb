@@ -1,0 +1,7 @@
+Create an eclipse workspace in ./eclipse-workspace. Afterwards close the workspace again and run the following commands.
+
+[pieber@coprime trunk]$ eclipse:configure-workspace 
+[pieber@coprime trunk]$ mvn clean install eclipse:clean eclipse:eclipse 
+
+Afterwards start eclipse again and import existing eclipse projects.
+
