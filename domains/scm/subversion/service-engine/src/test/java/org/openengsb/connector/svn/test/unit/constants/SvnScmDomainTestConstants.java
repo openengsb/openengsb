@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.connector.svn.constants;
+package org.openengsb.connector.svn.test.unit.constants;
 
 /**
  * Bean that holds the constants for Unit-Testing. The actual values are

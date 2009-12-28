@@ -22,7 +22,7 @@
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
-  <bean class="org.openengsb.connector.svn.constants.SvnScmDomainTestConstants">
+  <bean class="org.openengsb.connector.svn.test.unit.constants.SvnScmDomainTestConstants">
     <property name="REPOSITORY" value="target/testRepository" />
     <property name="REPOSITORY_NO_BRANCH" value="target/testRepositoryNoBranch" />
     <property name="TRUNK" value="target/testRepository/trunk" />

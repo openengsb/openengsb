@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.connector.svn.constants;
+package org.openengsb.connector.svn.test.integration.constants;
 
 public class SvnScmGeneralEndpointIntegrationTestConstants {
 

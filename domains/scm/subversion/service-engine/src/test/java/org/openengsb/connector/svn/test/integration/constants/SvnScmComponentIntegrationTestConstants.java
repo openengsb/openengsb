@@ -15,7 +15,9 @@
    limitations under the License.
    
  */
-package org.openengsb.connector.svn.constants;
+package org.openengsb.connector.svn.test.integration.constants;
+
+import org.openengsb.connector.svn.test.unit.constants.SvnScmDomainTestConstants;
 
 /**
  * Bean holding the constant needed for Integration-Testing. For
