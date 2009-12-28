@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.openengsb.config.jbi.internal.XStreamFactory;
 import org.openengsb.config.jbi.types.ChoiceType;
 import org.openengsb.config.jbi.types.IntType;
+import org.openengsb.config.jbi.types.RefType;
 import org.openengsb.config.jbi.types.StringType;
 
 import com.thoughtworks.xstream.XStream;
@@ -57,5 +58,12 @@ public class BindingTest {
         IntType o = (IntType)x.fromXML(xml);
         assertThat(o.getMin(), is(-1));
         assertThat(o.getMax(), is(2));
+    }
+
+    @Test
+    public void parseRefType() throws Exception {
+        String xml = "<ref clazz=\"java.lang.String\" />";
+        RefType o = (RefType) x.fromXML(xml);
+        assertThat(o.getTheClass(), is("java.lang.String"));
     }
 }

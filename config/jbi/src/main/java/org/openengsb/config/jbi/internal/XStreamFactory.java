@@ -25,6 +25,7 @@ import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointNameType;
 import org.openengsb.config.jbi.types.EndpointType;
 import org.openengsb.config.jbi.types.IntType;
+import org.openengsb.config.jbi.types.RefType;
 import org.openengsb.config.jbi.types.ServiceType;
 import org.openengsb.config.jbi.types.StringType;
 
@@ -54,6 +55,9 @@ public class XStreamFactory {
         x.alias("bool", BoolType.class);
         x.alias("choice", ChoiceType.class);
         x.useAttributeFor(ChoiceType.class, "values");
+        x.alias("ref", RefType.class);
+        x.useAttributeFor(RefType.class, "theClass");
+        x.aliasAttribute(RefType.class, "theClass", "clazz");
     }
 
     private static void configureBeanType(XStream x) {

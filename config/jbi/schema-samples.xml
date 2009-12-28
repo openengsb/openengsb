@@ -43,6 +43,11 @@
 
   <!-- list, map -->
 
+  <list>
+    <subtype>
+      <!-- the data type -->
+    </subtype>
+  </list>
 
   <!-- Bean Type, id is implicit-->
 
