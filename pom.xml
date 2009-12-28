@@ -103,7 +103,7 @@
 
   <modules>
     <!-- Core -->
-    <module>core/openengsb</module>
+    <module>core</module>
 
     <!-- Documentation -->
     <module>docs</module>
@@ -112,7 +112,7 @@
     <module>test/timing/service-unit</module>
     <module>test/routing/service-unit</module>
     <module>test/logging/service-unit</module>
-    <module>core/util</module>
+    <module>util</module>
 
     <!-- Rules -->
     <module>workflow/drools/domains</module>
@@ -166,8 +166,8 @@
     <module>config/ui</module>
 
     <!-- Context -->
-    <module>core/context/service-engine</module>
-    <module>core/context/service-unit</module>
+    <module>context/service-engine</module>
+    <module>context/service-unit</module>
     
     <!-- tool-links -->
     <module>features/link/http/service-unit</module>
