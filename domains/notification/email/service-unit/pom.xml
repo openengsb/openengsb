@@ -22,7 +22,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <componentName>openengsb-domains-notification-email-su</componentName>
+    <componentName>openengsb-domains-notification-email-se</componentName>
   </properties>
 
   <parent>
