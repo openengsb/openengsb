@@ -37,6 +37,11 @@ openengsb-embedded/openengsb.log
 .DS_Store
 
 #================
+#WinXP hidden files/folders
+#================
+*Thumbs.db
+
+#================
 #Documentation artifacts
 #================
 *.dia~
