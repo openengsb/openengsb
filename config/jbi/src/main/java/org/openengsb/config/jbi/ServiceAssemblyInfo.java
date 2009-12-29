@@ -22,10 +22,12 @@ import java.util.List;
 public class ServiceAssemblyInfo {
     private final String name;
     private final List<ServiceUnitInfo> serviceUnits;
+	private final List<BeanInfo> beans;
 
-    public ServiceAssemblyInfo(String name, List<ServiceUnitInfo> serviceUnits) {
+    public ServiceAssemblyInfo(String name, List<ServiceUnitInfo> serviceUnits, List<BeanInfo> beans) {
         this.name = name;
         this.serviceUnits = serviceUnits;
+		this.beans = beans;
     }
 
     public String getName() {
@@ -34,5 +36,9 @@ public class ServiceAssemblyInfo {
 
     public List<ServiceUnitInfo> getServiceUnits() {
         return serviceUnits;
+    }
+    
+    public List<BeanInfo> getBeans() {
+    	return beans;
     }
 }
