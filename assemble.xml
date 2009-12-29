@@ -34,14 +34,14 @@
     </fileSet>
     <fileSet> 
       <outputDirectory>docs/html</outputDirectory>
-      <directory>${project.basedir}/docs/target</directory>
+      <directory>${project.basedir}/docs/target/docbkx/html</directory>
       <includes>
         <include>*.html</include>
       </includes>
     </fileSet>
     <fileSet> 
       <outputDirectory>docs/pdf</outputDirectory>
-      <directory>${project.basedir}/docs/target</directory>
+      <directory>${project.basedir}/docs/target/docbkx/pdf</directory>
       <includes>
         <include>*.pdf</include>
       </includes>
@@ -55,9 +55,9 @@
     </fileSet>
     <fileSet>
       <includes>
-        <include>${project.basedir}/readme.txt</include>
-        <include>${project.basedir}/LICENSE</include>
-        <include>${project.basedir}/NOTICE</include>
+        <include>${project.basedir}/README*</include>
+        <include>${project.basedir}/LICENSE*</include>
+        <include>${project.basedir}/NOTICE*</include>
       </includes>
     </fileSet>
   </fileSets>
