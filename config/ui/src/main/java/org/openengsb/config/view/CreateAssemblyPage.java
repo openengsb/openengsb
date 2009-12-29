@@ -55,15 +55,24 @@ public class CreateAssemblyPage extends BasePage {
         };
         add(suform);
 
-        ListView<ServiceUnitInfo> listView = new ListView<ServiceUnitInfo>("serviceUnits", assemblyService
+        ListView<ServiceUnitInfo> suListView = new ListView<ServiceUnitInfo>("serviceUnits", assemblyService
                 .getServiceUnits()) {
             @Override
             protected void populateItem(ListItem<ServiceUnitInfo> item) {
                 ServiceUnitInfo su = item.getModelObject();
-                item.add(new Label("suName", su.getComponent().getName() + ":" + su.getEndpoint().getName()));
+                item.add(new Label("name", su.getComponent().getName() + ":" + su.getEndpoint().getName() + ":" + su.getMap().get("service") + ":" + su.getMap().get("endpoint")));
             }
         };
-        add(listView);
+        add(suListView);
+        ListView<BeanInfo> beanListView = new ListView<BeanInfo>("beans", assemblyService
+                .getBeans()) {
+            @Override
+            protected void populateItem(ListItem<BeanInfo> item) {
+                BeanInfo bean = item.getModelObject();
+                item.add(new Label("name", bean.getBeanType().getClazz() + ":" + bean.getMap().get("id")));
+            }
+        };
+        add(beanListView);
 
         Form<?> form = new Form("form") {
             @Override

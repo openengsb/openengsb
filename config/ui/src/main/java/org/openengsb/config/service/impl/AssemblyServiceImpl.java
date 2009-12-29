@@ -39,6 +39,7 @@ public class AssemblyServiceImpl implements AssemblyService {
     @Override
     public void createNewAssembly() {
         serviceUnits = new ArrayList<ServiceUnitInfo>();
+        beans = new ArrayList<BeanInfo>();
     }
 
     @Override

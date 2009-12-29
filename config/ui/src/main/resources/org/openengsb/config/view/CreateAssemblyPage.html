@@ -21,14 +21,21 @@
 <body>
 <wicket:extend>
   <h3><wicket:message key="createNewAssembly">[createNewAssembly]</wicket:message></h3>
+  <p><em>Service Units</em></p>
   <span wicket:id="serviceUnits">
     <p>
-      <span wicket:id="suName">[suName]</span>
+      <span wicket:id="name">[name]</span>
+    </p>
+  </span>
+  <p><em>Beans</em></p>
+  <span wicket:id="beans">
+    <p>
+      <span wicket:id="name">[name]</span>
     </p>
   </span>
   <form wicket:id="suForm"><input type="submit" value="Deploy" /></form>
   <form wicket:id="form">
-    <p>New Service Unit: <select wicket:id="suSelect" /> <input type="submit" value="Create" /></p>
+    <p>New Bean / Service Unit: <select wicket:id="suSelect" /> <input type="submit" value="Create" /></p>
   </form>
 </wicket:extend>
 </body>
