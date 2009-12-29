@@ -20,8 +20,10 @@ package org.openengsb.link.http;
 import java.io.IOException;
 
 import javax.jbi.management.DeploymentException;
+import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
@@ -32,12 +34,13 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.client.ServiceMixClient;
+import org.apache.servicemix.client.ServiceMixClientFacade;
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.openengsb.util.tuple.Triple;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -49,8 +52,8 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
 
     private static Log log = LogFactory.getLog(LinkHttpProcessEndpoint.class);
 
-    private static final String linkRequestMessageString = "  <LinkQueryRequestMessage>" + "<body>"
-            + " <query>%s</query>" + "</body>" + "</LinkQueryRequestMessage>";
+    private static final String LINK_REQUEST_MESSAGE = "  <LinkQueryRequestMessage>" + "<body>" + " <query>%s</query>"
+            + "</body>" + "</LinkQueryRequestMessage>";
 
     private static final SourceTransformer st = new SourceTransformer();
 
@@ -61,6 +64,32 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
     protected QName linkServiceName;
     protected QName jmsServiceName;
 
+    private ServiceMixClient client;
+
+    private static class RequestMessage {
+        public String ip;
+        public RequestType requestType;
+        public String linkId;
+
+        public RequestMessage(String ip, RequestType requestType, String linkId) {
+            this.ip = ip;
+            this.requestType = requestType;
+            this.linkId = linkId;
+        }
+    }
+
+    public LinkHttpProcessEndpoint() {
+        super();
+    }
+
+    public LinkHttpProcessEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
+        super(component, endpoint);
+    }
+
+    public LinkHttpProcessEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
+        super(serviceUnit, service, endpoint);
+    }
+
     @Override
     public void validate() throws DeploymentException {
         if (linkServiceName == null || jmsServiceName == null) {
@@ -69,125 +98,100 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
         super.validate();
     }
 
-    /**
-     * @return the linkServiceName
-     */
-    public final QName getLinkServiceName() {
-        return linkServiceName;
-    }
-
-    /**
-     * @param linkServiceName the linkServiceName to set
-     */
-    public final void setLinkServiceName(QName linkServiceName) {
-        this.linkServiceName = linkServiceName;
-    }
-
-    /**
-     * @return the jmsServiceName
-     */
-    public final QName getJmsServiceName() {
-        return jmsServiceName;
-    }
-
-    /**
-     * @param jmsServiceName the jmsServiceName to set
-     */
-    public final void setJmsServiceName(QName jmsServiceName) {
-        this.jmsServiceName = jmsServiceName;
-    }
-
-    public LinkHttpProcessEndpoint() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-    public LinkHttpProcessEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
-        super(component, endpoint);
-        // TODO Auto-generated constructor stub
-    }
-
-    public LinkHttpProcessEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
-        super(serviceUnit, service, endpoint);
-        // TODO Auto-generated constructor stub
-    }
-
-    /**
-     * creates a request-message for the link-service
-     *
-     * @param linkId
-     * @return
-     */
-    private String createLinkRequestMessage(String linkId) {
-        return String.format(linkRequestMessageString, linkId);
-    }
-
-    /*
-     * Triple-structure: a: integer inidicating the message type; b: linkId or
-     * "whoami"; c: ip
-     */
-    /**
-     * parses a query-message sent by the link-http-service
-     *
-     * @param source content of the message
-     * @return Triple containing the parsed result (messagetype, linkid, ip)
-     * @throws ParserConfigurationException if source-transformation fails
-     * @throws IOException if source-transformation fails
-     * @throws SAXException if source-transformation fails
-     * @throws TransformerException if source-transformation fails
-     */
-    private Triple<RequestType, String, String> parseQueryMessage(Source source) throws ParserConfigurationException,
-            IOException, SAXException, TransformerException {
-        DOMSource dSource = st.toDOMSource(source);
-        Node rootNode = dSource.getNode().getFirstChild();
-
-        if (rootNode.getNodeName().equals("whoami")) {
-            String ip = rootNode.getFirstChild().getTextContent();
-            return new Triple<RequestType, String, String>(RequestType.WHOAMI, LinkHttpMarshaler.WHOAMI, ip);
-        } else {
-            NodeList children = rootNode.getChildNodes();
-            if (children.getLength() == 2) {
-                String linkId = children.item(0).getTextContent();
-                String ip = children.item(1).getTextContent();
-                return new Triple<RequestType, String, String>(RequestType.LINK_REQUEST, linkId, ip);
-            } else {
-                throw new IllegalArgumentException("invalid request-xml, parameter is missing. " + dSource.toString());
-            }
-        }
-
+    @Override
+    public synchronized void start() throws Exception {
+        super.start();
+        client = new ServiceMixClientFacade(getContext());
     }
 
     private void processMessage(MessageExchange exchange, NormalizedMessage in) throws Exception {
-
         DOMSource source = st.toDOMSource(in.getContent());
-        Triple<RequestType, String, String> parsedQuery = parseQueryMessage(source);
+        RequestMessage parsedQuery = parseQueryMessage(source);
 
-        if (parsedQuery.fst == RequestType.WHOAMI) {
+        if (parsedQuery.requestType == RequestType.WHOAMI) {
             return;
         }
 
-        /* request the link from the corresponding service */
-        InOut linkEx = this.getExchangeFactory().createInOutExchange();
-        linkEx.setService(linkServiceName);
-        NormalizedMessage linkExIn = linkEx.createMessage();
-        linkExIn.setContent(new StringSource(createLinkRequestMessage(parsedQuery.trd)));
-        linkEx.setInMessage(linkExIn);
-        getChannel().sendSync(linkEx);
+        InOut linkExchange = requestLinkFromService(parsedQuery.linkId);
+        if(!checkForFaultAndForward(exchange, linkExchange)){
+            return;
+        }
 
-        DOMSource linkResponse = st.toDOMSource(linkEx.getOutMessage().getContent());
+        NormalizedMessage linkExchangeOut = linkExchange.getOutMessage();
+        DOMSource linkResponse = st.toDOMSource(linkExchangeOut.getContent());
 
-        /* forward the result to the jms-service */
+        /* DOMSource linkResponse = requestLinkFromService(parsedQuery.linkId); */
         log.info("link-service returned message: " + st.toString(linkResponse));
-        InOut jmsEx = this.getExchangeFactory().createInOutExchange();
+
+        InOut jmsExchange = sendJmsResponse(parsedQuery.ip, linkResponse);
+        checkForFaultAndForward(exchange, jmsExchange);
+    }
+
+    private boolean checkForFaultAndForward(MessageExchange exchange, MessageExchange subExchange)
+            throws MessagingException {
+        Fault fault = subExchange.getFault();
+        if (fault != null) {
+            log.error(exchange.getPattern() + " errored");
+            exchange.setFault(fault);
+            return false;
+        }
+        log.info(exchange.getPattern() + " worked normally");
+        return true;
+    }
+
+    private RequestMessage parseQueryMessage(Source source) throws ParserConfigurationException, IOException,
+            SAXException, TransformerException {
+        DOMSource dSource = st.toDOMSource(source);
+        Node rootNode = dSource.getNode().getFirstChild();
+
+        if (rootNode.getNodeName().equals(LinkHttpMarshaler.WHOAMI)) {
+            String ip = rootNode.getFirstChild().getTextContent();
+            return new RequestMessage(ip, RequestType.WHOAMI, LinkHttpMarshaler.WHOAMI);
+        } else {
+            return parseHttpLinkRequest(dSource, rootNode);
+        }
+    }
+
+    private RequestMessage parseHttpLinkRequest(DOMSource dSource, Node rootNode) {
+        NodeList children = rootNode.getChildNodes();
+        if (children.getLength() == 2) {
+            String linkId = children.item(0).getTextContent();
+            String ip = children.item(1).getTextContent();
+            return new RequestMessage(ip, RequestType.LINK_REQUEST, linkId);
+        }
+        throw new IllegalArgumentException("invalid request-xml, parameter is missing. " + dSource.toString());
+    }
+
+    private InOut sendJmsResponse(String ip, DOMSource linkResponse) throws MessagingException {
+        InOut jmsEx = client.createInOutExchange();
         jmsEx.setService(jmsServiceName);
-        NormalizedMessage jmsMsg = jmsEx.createMessage();
+
+        NormalizedMessage jmsMsg = jmsEx.getInMessage();
         jmsMsg.setContent(linkResponse);
-
         /* the ip-property is used as message-filter on each client. */
-        jmsMsg.setProperty("ip", parsedQuery.snd);
-        jmsEx.setInMessage(jmsMsg);
-        getChannel().send(jmsEx);
+        jmsMsg.setProperty("ip", ip);
 
+        log.info("sending jms-response");
+        client.sendSync(jmsEx);
+        return jmsEx;
+    }
+
+    private InOut requestLinkFromService(String linkId) throws MessagingException, ParserConfigurationException,
+            IOException, SAXException, TransformerException {
+        InOut linkExchange = client.createInOutExchange();
+        linkExchange.setService(linkServiceName);
+
+        NormalizedMessage linkExIn = linkExchange.getInMessage();
+        linkExIn.setContent(createLinkRequestMessage(linkId));
+        client.sendSync(linkExchange);
+
+        return linkExchange;
+
+    }
+
+    private Source createLinkRequestMessage(String linkId) {
+        String message = String.format(LINK_REQUEST_MESSAGE, linkId);
+        return new StringSource(message);
     }
 
     @Override
@@ -200,6 +204,22 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
         processMessage(exchange, in);
         // TODO return anything more or different?
         out.setContent(new StringSource("<success/>"));
+    }
+
+    public final QName getLinkServiceName() {
+        return linkServiceName;
+    }
+
+    public final void setLinkServiceName(QName linkServiceName) {
+        this.linkServiceName = linkServiceName;
+    }
+
+    public final QName getJmsServiceName() {
+        return jmsServiceName;
+    }
+
+    public final void setJmsServiceName(QName jmsServiceName) {
+        this.jmsServiceName = jmsServiceName;
     }
 
 }

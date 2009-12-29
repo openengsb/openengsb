@@ -17,7 +17,6 @@
  */
 package org.openengsb.link.http;
 
-import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 
@@ -37,9 +36,10 @@ public class LinkMock extends ProviderEndpoint {
     @Override
     protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
         log.info("mock called returning default link");
+//        Fault artificialFault = exchange.createFault();
+//        artificialFault.setContent(new StringSource("<adsf/>"));
+//        exchange.setFault(artificialFault);
         out.setContent(new StringSource("<bla/>"));
-        getChannel().send(exchange);
-        exchange.setStatus(ExchangeStatus.DONE);
     }
 
     @Override
