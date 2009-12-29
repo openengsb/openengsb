@@ -426,7 +426,7 @@
         <version>2.2-beta-5</version>
         <configuration>
           <descriptors>
-            <descriptor>assemble.xml</descriptor>
+            <descriptor>build/assemble.xml</descriptor>
           </descriptors>
         </configuration>
       </plugin>
@@ -646,6 +646,17 @@
       </build>
     </profile>
   </profiles>
+
+ <dependencies>
+
+    <!-- Jetty -->
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-zip</artifactId>
+      <version>${jetty.version}</version>
+      <type>zip</type>
+    </dependency>
+ </dependencies>
 
   <dependencyManagement>
     <dependencies>
