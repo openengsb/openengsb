@@ -17,12 +17,14 @@
  */
 package org.openengsb.config.jbi.internal;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.openengsb.config.jbi.internal.XStreamFactory;
 import org.openengsb.config.jbi.types.ChoiceType;
+import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.IntType;
 import org.openengsb.config.jbi.types.RefType;
 import org.openengsb.config.jbi.types.StringType;
@@ -66,4 +68,11 @@ public class BindingTest {
         RefType o = (RefType) x.fromXML(xml);
         assertThat(o.getTheClass(), is("java.lang.String"));
     }
+    
+    @Test
+	public void beansListIsInitialized() throws Exception {
+		String xml = "<component></component>";
+		ComponentType o = (ComponentType)x.fromXML(xml);
+		assertThat(o.getBeans(), notNullValue());
+	}
 }

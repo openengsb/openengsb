@@ -17,6 +17,7 @@
  */
 package org.openengsb.config.jbi.types;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BeanType {
@@ -24,6 +25,13 @@ public class BeanType {
     private List<AbstractType> properties;
 
     public BeanType() {
+    	readResolve();
+    }
+    
+    private Object readResolve() {
+    	if (properties == null)
+    		properties = new ArrayList<AbstractType>();
+    	return this;
     }
 
     public String getClazz() {

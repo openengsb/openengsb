@@ -26,8 +26,15 @@ public class EndpointType {
     private List<AbstractType> properties;
 
     public EndpointType() {
-    	attributes = new ArrayList<AbstractType>();
-    	properties = new ArrayList<AbstractType>();
+    	readResolve();
+    }
+    
+    private Object readResolve() {
+    	if (attributes == null)
+    		attributes = new ArrayList<AbstractType>();
+    	if (properties == null)
+    		properties = new ArrayList<AbstractType>();
+    	return this;
     }
 
     public String getName() {
