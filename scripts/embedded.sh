@@ -22,6 +22,7 @@
 
 echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
 
-mvn install -o -Dmaven.test.skip=true
-cd package/all; mvn jbi:projectDeploy -e -o
+cd ..
+mvn clean install -Dmaven.test.skip=true
+cd package/embedded; mvn jetty:run-war
 

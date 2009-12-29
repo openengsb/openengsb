@@ -1,7 +1,24 @@
+== Setup Workspace ==
 Create an eclipse workspace in ./eclipse-workspace. Afterwards close the workspace again and run the following commands.
 
 [pieber@coprime trunk]$ eclipse:configure-workspace 
 [pieber@coprime trunk]$ mvn clean install eclipse:clean eclipse:eclipse 
 
 Afterwards start eclipse again and import existing eclipse projects.
+
+== Create Project ==
+TBW
+
+== Full Run ==
+Before a commit run the following command:
+
+mvn clean install -Pall-test,license-check
+
+== Build Docs ==
+To build the documentation use the following command:
+
+mvn clean install -Pdocs
+
+== Scripts ==
+Scripts which help you to create projects, run the workspace and so on are stored in a seperated script folder. Its not required to use them but they may help you with your afford.
 
