@@ -108,7 +108,7 @@
             <configuration>
               <namespace>http://openengsb.org/test/domain/issues/1.0</namespace>
               <srcDir>${basedir}/src/test/java</srcDir>
-              <outputDir>${basedir}/target/test/resources</outputDir>
+              <outputDir>${basedir}/src/test/resources</outputDir>
             </configuration>
           </execution>
         </executions>
