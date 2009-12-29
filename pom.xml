@@ -168,7 +168,7 @@
     <!-- Context -->
     <module>context/service-engine</module>
     <module>context/service-unit</module>
-    
+
     <!-- tool-links -->
     <module>features/link/http/service-unit</module>
     <module>features/link/http-jms/service-unit</module>
@@ -405,82 +405,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <configuration>
-          <excludeSubProjects>false</excludeSubProjects>
-          <excludes>
-            <!-- scm/git -->
-            <exclude>**/.gitignore</exclude>
-            <exclude>**/.git/**</exclude>
-
-            <!-- build dir -->
-            <exclude>**/target/**</exclude>
-
-            <!-- eclipse -->
-            <exclude>**/.classpath</exclude>
-            <exclude>**/.project</exclude>
-            <exclude>**/.settings/**</exclude>
-            <exclude>**/.metadata/**</exclude>
-
-            <!-- runtime generated data -->
-            <exclude>features/edb/core/easy2find/**</exclude>
-            <exclude>**/*.dia</exclude>
-            <exclude>**/*.log</exclude>
-            <exclude>**/activemq-data/**</exclude>
-
-            <!-- raw data -->
-            <exclude>**/testRepository**/**</exclude>
-            <exclude>**/testRepositoryNoBranch/**</exclude>
-            <exclude>**/import/**</exclude>
-            <exclude>**/testFiles/**</exclude>
-            <exclude>**/site/docbook/empty.txt</exclude>
-
-            <!-- docs are checked in docs project -->
-            <exclude>docs/</exclude>
-
-            <!-- notice and license -->
-            <exclude>NOTICE</exclude>
-            <exclude>LICENSE</exclude>
-
-            <!-- drl-rules -->
-            <exclude>**/**.drl</exclude>
-
-            <!-- nonjava projects -->
-            <exclude>nonjava/csharp/lib/**</exclude>
-            <exclude>**/**.csproj</exclude>
-            <exclude>**/**.sln</exclude>
-
-            <!-- Scripts -->
-            <exclude>quickrun.sh</exclude>
-            <exclude>package/all/quickdeploy.sh</exclude>
-
-            <!-- Test Data -->
-            <exclude>core/util/src/test/resources/serialization/valid.xml</exclude>
-            <exclude>package/all/quickdeploy.sh</exclude>
-            <exclude>**/test/resources/**</exclude>
-
-            <!-- OpenEngSB Embedded -->
-            <exclude>**/data/**</exclude>
-
-            <!-- Serialization Test Data -->
-            <exclude>**/src/test/resources/serialization/valid.xml</exclude>
-
-            <!-- Auto generated files for tests in openengsb-domain-issues-common -->
-            <exclude>domains/issues/common/bin/src/test/resources/META-INF/**</exclude>
-            <exclude>domains/issues/common/bin/src/test/resources/openengsb-domain-issues-common.xsd.wiki</exclude>
-          </excludes>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>jbi-maven-plugin</artifactId>
         <extensions>true</extensions>
@@ -622,9 +546,92 @@
             <configuration>
               <includes>
                 <include>org/openengsb/**/test/**/Test*.java</include>
-				<include>org/openengsb/**/test/**/*Test.java</include>
+                <include>org/openengsb/**/test/**/*Test.java</include>
               </includes>
             </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>license-check</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.rat</groupId>
+            <artifactId>apache-rat-plugin</artifactId>
+            <configuration>
+              <excludeSubProjects>false</excludeSubProjects>
+              <excludes>
+                <!-- scm/git -->
+                <exclude>**/.gitignore</exclude>
+                <exclude>**/.git/**</exclude>
+
+                <!-- build dir -->
+                <exclude>**/target/**</exclude>
+
+                <!-- eclipse -->
+                <exclude>**/.classpath</exclude>
+                <exclude>**/.project</exclude>
+                <exclude>**/.settings/**</exclude>
+                <exclude>**/.metadata/**</exclude>
+
+                <!-- runtime generated data -->
+                <exclude>features/edb/core/easy2find/**</exclude>
+                <exclude>**/*.dia</exclude>
+                <exclude>**/*.log</exclude>
+                <exclude>**/activemq-data/**</exclude>
+
+                <!-- raw data -->
+                <exclude>**/testRepository**/**</exclude>
+                <exclude>**/testRepositoryNoBranch/**</exclude>
+                <exclude>**/import/**</exclude>
+                <exclude>**/testFiles/**</exclude>
+                <exclude>**/site/docbook/empty.txt</exclude>
+
+                <!-- docs are checked in docs project -->
+                <exclude>docs/</exclude>
+
+                <!-- notice and license -->
+                <exclude>NOTICE</exclude>
+                <exclude>LICENSE</exclude>
+
+                <!-- drl-rules -->
+                <exclude>**/**.drl</exclude>
+
+                <!-- nonjava projects -->
+                <exclude>nonjava/csharp/lib/**</exclude>
+                <exclude>**/**.csproj</exclude>
+                <exclude>**/**.sln</exclude>
+
+                <!-- Scripts -->
+                <exclude>quickrun.sh</exclude>
+                <exclude>package/all/quickdeploy.sh</exclude>
+
+                <!-- Test Data -->
+                <exclude>core/util/src/test/resources/serialization/valid.xml</exclude>
+                <exclude>package/all/quickdeploy.sh</exclude>
+                <exclude>**/test/resources/**</exclude>
+
+                <!-- OpenEngSB Embedded -->
+                <exclude>**/data/**</exclude>
+
+                <!-- Serialization Test Data -->
+                <exclude>**/src/test/resources/serialization/valid.xml</exclude>
+
+                <!-- Auto generated files for tests in openengsb-domain-issues-common -->
+                <exclude>domains/issues/common/bin/src/test/resources/META-INF/**</exclude>
+                <exclude>domains/issues/common/bin/src/test/resources/openengsb-domain-issues-common.xsd.wiki</exclude>
+              </excludes>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
@@ -812,27 +819,27 @@
         <artifactId>openengsb-context-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
-      
+
       <!-- tool links -->
       <dependency>
-      	<groupId>org.openengsb</groupId>
-      	<artifactId>openengsb-features-link-http-su</artifactId>
-      	<version>${pom.version}</version>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-features-link-http-su</artifactId>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-      	<groupId>org.openengsb</groupId>
-      	<artifactId>openengsb-features-link-http-processor-se</artifactId>
-      	<version>${pom.version}</version>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-features-link-http-processor-se</artifactId>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-      	<groupId>org.openengsb</groupId>
-      	<artifactId>openengsb-features-link-http-processor-su</artifactId>
-      	<version>${pom.version}</version>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-features-link-http-processor-su</artifactId>
+        <version>${pom.version}</version>
       </dependency>
       <dependency>
-      	<groupId>org.openengsb</groupId>
-      	<artifactId>openengsb-features-link-http-jms-su</artifactId>
-      	<version>${pom.version}</version>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-features-link-http-jms-su</artifactId>
+        <version>${pom.version}</version>
       </dependency>
 
       <!-- Implementation Modules -->
@@ -1136,13 +1143,13 @@
         <artifactId>jaxen</artifactId>
         <version>${jaxen.version}</version>
       </dependency>
-      
+
       <!--  Javax Dependencies -->
       <dependency>
         <groupId>javax.mail</groupId>
         <artifactId>mail</artifactId>
         <version>${javax.mail.version}</version>
-      </dependency> 
+      </dependency>
 
       <!-- Util Dependencies -->
       <dependency>
