@@ -29,8 +29,11 @@ import org.openengsb.config.editor.ContextStringResourceLoader;
 import org.openengsb.config.jbi.ComponentParser;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.service.ComponentService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ComponentServiceImpl implements ComponentService {
+	private static Logger log = LoggerFactory.getLogger(ComponentServiceImpl.class);
     private List<ComponentType> components;
     private ServletContext context;
 
@@ -48,6 +51,7 @@ public class ComponentServiceImpl implements ComponentService {
         Set<String> paths = context.getResourcePaths("/descriptors/");
         for (String path : paths) {
             if (path.endsWith(".xml")) {
+            	log.info("adding descriptor " + path);
                 descriptors.add(context.getResourceAsStream(path));
             } else if (path.endsWith(".properties")) {
                 File f = new File(path.substring(0, path.lastIndexOf('.')));

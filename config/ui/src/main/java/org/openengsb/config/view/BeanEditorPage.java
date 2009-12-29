@@ -17,38 +17,48 @@
  */
 package org.openengsb.config.view;
 
-import org.apache.wicket.PageParameters;
+import java.util.ArrayList;
+
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.html.basic.Label;
 import org.openengsb.config.editor.EditorPanel;
+import org.openengsb.config.editor.FieldInfos;
+import org.openengsb.config.jbi.BeanInfo;
 import org.openengsb.config.jbi.ServiceUnitInfo;
+import org.openengsb.config.jbi.types.AbstractType;
+import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointType;
 
-public class ComponentEditorPage extends BasePage {
+public class BeanEditorPage extends BasePage {
 
-    public ComponentEditorPage(PageParameters params) {
-        this(params.getString("component"), params.getString("endpoint"));
-    }
-
-    public ComponentEditorPage(String componentName, String endpointName) {
+    public BeanEditorPage(String componentName, String beanIdentifier) {
         final ComponentType desc = componentService.getComponent(componentName);
         add(new Label("name", desc.getName()));
         add(new Label("namespace", desc.getNamespace()));
 
-        EndpointType ee = null;
-        for (EndpointType e : desc.getEndpoints()) {
-            if (e.getName().equals(endpointName)) {
-                ee = e;
-                break;
-            }
+        final EndpointType endpoint = desc.getEndpoint(beanIdentifier);
+        final BeanType bean = desc.getBean(beanIdentifier);
+        
+        FieldInfos fi = null;
+        ArrayList<AbstractType> fields = new ArrayList<AbstractType>();
+        if (endpoint != null) {
+        	fields.addAll(endpoint.getAttributes());
+        	fields.addAll(endpoint.getProperties());
+        	fi = new FieldInfos(endpoint.getName(), fields);
+        } else {
+        	fields.addAll(bean.getProperties());
+        	fi = new FieldInfos(bean.getClazz(), fields);
         }
-        final EndpointType endpoint = ee;
 
-        EditorPanel editor = new EditorPanel("editor", desc.getName(), endpoint) {
+        EditorPanel editor = new EditorPanel("editor", desc.getName(), fi) {
             @Override
             public void onSubmit() {
-                assemblyService.getServiceUnits().add(new ServiceUnitInfo(desc, endpoint, getValues()));
+            	if (endpoint != null) {
+            		assemblyService.getServiceUnits().add(new ServiceUnitInfo(desc, endpoint, getValues()));
+            	} else {
+            		assemblyService.getBeans().add(new BeanInfo(bean, getValues()));
+            	}
                 RequestCycle.get().setResponsePage(CreateAssemblyPage.class);
             }
         };

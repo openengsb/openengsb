@@ -34,6 +34,7 @@ import org.openengsb.config.jbi.BeanInfo;
 import org.openengsb.config.jbi.ServiceAssemblyCreator;
 import org.openengsb.config.jbi.ServiceAssemblyInfo;
 import org.openengsb.config.jbi.ServiceUnitInfo;
+import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointType;
 
@@ -77,6 +78,9 @@ public class CreateAssemblyPage extends BasePage {
             for (EndpointType e : c.getEndpoints()) {
                 names.add(c.getName() + ":" + e.getName());
             }
+            for (BeanType b : c.getBeans()) {
+            	names.add(c.getName() + ":" + b.getClazz());
+            }
         }
         DropDownChoice<String> choice = new DropDownChoice<String>("suSelect", new PropertyModel<String>(this,
                 "selected"), names);
@@ -89,7 +93,7 @@ public class CreateAssemblyPage extends BasePage {
             File tmp = File.createTempFile("openengsb", ".zip");
             FileOutputStream fos = new FileOutputStream(tmp);
             ServiceAssemblyCreator.createServiceAssembly(fos, new ServiceAssemblyInfo("openengsb-test", assemblyService
-                    .getServiceUnits(), new ArrayList<BeanInfo>()));
+                    .getServiceUnits(), assemblyService.getBeans()));
             assemblyService.deploy(tmp, "openengsb-test-sa.zip");
             assemblyService.createNewAssembly();
         } catch (IOException e) {
@@ -99,6 +103,6 @@ public class CreateAssemblyPage extends BasePage {
 
     protected void onSubmit() {
         String[] s = selected.split(":");
-        RequestCycle.get().setResponsePage(new ComponentEditorPage(s[0], s[1]));
+        RequestCycle.get().setResponsePage(new BeanEditorPage(s[0], s[1]));
     }
 }

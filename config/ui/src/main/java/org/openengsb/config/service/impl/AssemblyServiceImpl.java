@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openengsb.config.jbi.BeanInfo;
 import org.openengsb.config.jbi.ServiceUnitInfo;
 import org.openengsb.config.service.AssemblyService;
 import org.slf4j.Logger;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
 public class AssemblyServiceImpl implements AssemblyService {
     private static final Logger log = LoggerFactory.getLogger(AssemblyServiceImpl.class);
     private ArrayList<ServiceUnitInfo> serviceUnits = new ArrayList<ServiceUnitInfo>();
+    private ArrayList<BeanInfo> beans = new ArrayList<BeanInfo>();
     private String deployPath;
 
     @Override
@@ -87,4 +89,9 @@ public class AssemblyServiceImpl implements AssemblyService {
     public void setDeployPath(String deployPath) {
         this.deployPath = deployPath;
     }
+
+	@Override
+	public List<BeanInfo> getBeans() {
+		return beans;
+	}
 }

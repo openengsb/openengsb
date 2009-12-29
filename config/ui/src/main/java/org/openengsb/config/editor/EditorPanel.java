@@ -35,22 +35,21 @@ import org.openengsb.config.editor.fields.InputField;
 import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.BoolType;
 import org.openengsb.config.jbi.types.ChoiceType;
-import org.openengsb.config.jbi.types.EndpointType;
 
 public abstract class EditorPanel extends Panel {
     private static final long serialVersionUID = 1L;
-    private final EndpointType endpointType;
     private final String componentId;
+    private final FieldInfos fieldInfos;
     private final Map<String, String> map;
 
-    public EditorPanel(String id, String componentId, EndpointType endpointType) {
-        this(id, componentId, endpointType, null);
+    public EditorPanel(String id, String componentId, FieldInfos fieldInfos) {
+        this(id, componentId, fieldInfos, null);
     }
 
-    public EditorPanel(String id, String componentId, EndpointType endpointType, IModel<?> model) {
+    public EditorPanel(String id, String componentId, FieldInfos fieldInfos, IModel<?> model) {
         super(id, model);
         this.componentId = componentId;
-        this.endpointType = endpointType;
+        this.fieldInfos = fieldInfos;
         map = new HashMap<String, String>();
         createForm();
     }
@@ -75,10 +74,10 @@ public abstract class EditorPanel extends Panel {
         form.add(fields);
         form.add(new FeedbackPanel("feedback"));
 
-        for (AbstractType f : endpointType.getAttributes()) {
+        for (AbstractType f : fieldInfos.getFieldTypes()) {
             WebMarkupContainer row = new WebMarkupContainer(fields.newChildId());
             fields.add(row);
-            ResourceModel labelModel = new ResourceModel(componentId + '.' + endpointType.getName() + '.' + f.getName());
+            ResourceModel labelModel = new ResourceModel(componentId + '.' + fieldInfos.getName() + '.' + f.getName());
             row.add(new Label("name", labelModel));
             row.add(getEditor(f, new MapModel<String, String>(map, f.getName())).setLabel(labelModel));
         }
