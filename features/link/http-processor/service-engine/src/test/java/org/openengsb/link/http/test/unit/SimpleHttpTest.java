@@ -105,29 +105,65 @@ public class SimpleHttpTest extends SpringTestSupport {
 
     }
 
+    @Test
+    public void testLinkRequest() throws Exception {
+        get.setQueryString("UUID:12345");
+
+        // List<Object> messages = new ArrayList<Object>();
+        // JmsListener listener = new JmsListener(LOCALHOST_IP);
+        // listener.start();
+        int resultcode = httpClient.executeMethod(get);
+        Assert.assertEquals("HTTP-request did not return with status OK", 200, resultcode);
+
+        final String responseBody = get.getResponseBodyAsString();
+        Assert.assertFalse("The HTML-response contained a jbi-fault.", responseBody.contains("fault"));
+    }
+
+    @Test
+    public void testInvalidURL() throws Exception {
+        get = new GetMethod("http://localhost:8192/DefinitlyNotLink");
+        int resultcode = httpClient.executeMethod(get);
+        log.info("Resultcode: " + resultcode);
+        Assert.assertNotSame("HTTP-request did not return with status OK", 200, resultcode);
+    }
+
+    @Test
+    public void testLinkRequestAutoAddUUID() throws Exception {
+        get.setQueryString("12345");
+
+        // List<Object> messages = new ArrayList<Object>();
+        // JmsListener listener = new JmsListener(LOCALHOST_IP);
+        // listener.start();
+        int resultcode = httpClient.executeMethod(get);
+        Assert.assertEquals("HTTP-request did not return with status OK", 200, resultcode);
+
+        final String responseBody = get.getResponseBodyAsString();
+        Assert.assertFalse("The HTML-response contained a jbi-fault.", responseBody.contains("fault"));
+    }
+
     /*
      * ignored because jms does not work in embedded smx.
      * javax.jms.JMSException: Could not connect to broker URL:
      * tcp://localhost:61616. Reason: java.net.ConnectException: Connection
      * refused
      */
-    /**
-     * sends a real request to the endpoint and verify the result in a
-     * jms-listener
-     */
-    @Test(timeout = 5000)
-    @Ignore
+    @Test
+    @Ignore("jms does not work in embedded smx")
     public void testJmsResponse() throws Exception {
         get.setQueryString("UUID:12345");
 
-        // do not check the return-code here, that's what other tests are for.
         List<Object> messages = new ArrayList<Object>();
         JmsListener listener = new JmsListener(LOCALHOST_IP);
         listener.start();
-        httpClient.executeMethod(get);
+        int resultcode = httpClient.executeMethod(get);
+        Assert.assertEquals("HTTP-request did not return with status OK", 200, resultcode);
+
+        final String responseBody = get.getResponseBodyAsString();
+        Assert.assertFalse("The HTML-response contained a jbi-fault.", responseBody.contains("fault"));
+
         synchronized (messages) {
             messages.wait();
         }
-
     }
+
 }
