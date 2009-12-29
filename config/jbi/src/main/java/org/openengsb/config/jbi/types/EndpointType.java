@@ -17,6 +17,7 @@
  */
 package org.openengsb.config.jbi.types;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EndpointType {
@@ -25,6 +26,8 @@ public class EndpointType {
     private List<AbstractType> properties;
 
     public EndpointType() {
+    	attributes = new ArrayList<AbstractType>();
+    	properties = new ArrayList<AbstractType>();
     }
 
     public String getName() {

@@ -17,6 +17,7 @@
  */
 package org.openengsb.config.jbi.types;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ComponentType {
@@ -28,6 +29,8 @@ public class ComponentType {
     private List<BeanType> beans;
 
     public ComponentType() {
+    	endpoints = new ArrayList<EndpointType>();
+    	beans = new ArrayList<BeanType>();
     }
 
     public String getName() {
