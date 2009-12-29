@@ -18,9 +18,12 @@
 package org.openengsb.link.http;
 
 import javax.jbi.component.ComponentContext;
+import javax.jbi.messaging.DeliveryChannel;
 import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessageExchangeFactory;
+import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,33 +41,50 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
  */
 public class LinkHttpMarshaler extends AbstractHttpConsumerMarshaler {
 
-    public static final String STRING_WHOAMI = "whoami";
+    private static final String HTML_FAULT_BODY = "JBI-fault occured: %s";
+    private static final String HTML_RESPONSE_BODY = "<html><body><h1>You are %s</h1> %s</body></html>";
+    private static final String WHOAMI_REQUEST = "<whoami>%s</whoami>";
+    private static final String LINK_REQUEST_QUERY = "<httpLinkRequest><query>%s</query><requestorIP>%s</requestorIP></httpLinkRequest>";
+    public static final String WHOAMI = "whoami";
     private static final Log log = LogFactory.getLog(LinkHttpMarshaler.class);
+
+    private InOnly createNewInOnlyExchange(ComponentContext context) throws MessagingException {
+        DeliveryChannel channel = context.getDeliveryChannel();
+        MessageExchangeFactory factory = channel.createExchangeFactory();
+        InOnly result = factory.createInOnlyExchange();
+        return result;
+    }
+
+    private String prependMissingUUID(String query) {
+        if (!query.startsWith("UUID:")) {
+            query = "UUID:" + query;
+        }
+        return query;
+    }
+
+    private String createLinkQueryMessageFromRequest(HttpServletRequest request) {
+        String query = request.getQueryString();
+        String ip = request.getRemoteAddr();
+        if (query.equalsIgnoreCase(WHOAMI)) {
+            return String.format(WHOAMI_REQUEST, ip);
+        } else {
+            query = prependMissingUUID(query);
+            return String.format(LINK_REQUEST_QUERY, query, ip);
+        }
+    }
 
     @Override
     public MessageExchange createExchange(HttpServletRequest request, ComponentContext context) throws Exception {
-        InOnly result = context.getDeliveryChannel().createExchangeFactory().createInOnlyExchange();
+        InOnly result = createNewInOnlyExchange(context);
         NormalizedMessage inMessage = result.createMessage();
-        String query = request.getQueryString();
-        String ip = request.getRemoteAddr();
 
-        String message;
-        /* parse the query */
-        if (query.equalsIgnoreCase(STRING_WHOAMI)) {
-            message = String.format("<whoami>%s</whoami>", ip);
-        } else {
-            if (!query.startsWith("UUID:")) {
-                query = "UUID:" + query;
-            }
-            message = String.format(
-                    "<httpLinkRequest><query>%s</query><requestorIP>%s</requestorIP></httpLinkRequest>", query, ip);
-        }
-
-        /* create a message with the parsed query as content */
+        String message = createLinkQueryMessageFromRequest(request);
         Source content = new StringSource(message);
-        log.info("create exchange with content: " + content);
         inMessage.setContent(content);
         result.setInMessage(inMessage);
+
+        log.info("create exchange with content: " + content);
+
         return result;
     }
 
@@ -72,17 +92,15 @@ public class LinkHttpMarshaler extends AbstractHttpConsumerMarshaler {
     public void sendAccepted(MessageExchange exchange, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         /* always send a HTML-document containing the clients remote IP-address */
-        response.getWriter().append(
-                "<html><body><h1>You are " + request.getRemoteAddr() + "</h1>" + request.getRemoteHost()
-                        + "</body></html>");
-        // TODO more beautiful response
+        // TODO maybe make more beautiful response
+        response.getWriter()
+                .append(String.format(HTML_RESPONSE_BODY, request.getRemoteAddr(), request.getRemoteHost()));
         log.debug("send HTTP-accepted");
     }
 
     @Override
     public void sendError(MessageExchange exchange, Exception error, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-        // TODO expose the error to the user completely?
         error.printStackTrace(response.getWriter());
         log.error(error.getMessage());
         error.printStackTrace();
@@ -91,7 +109,7 @@ public class LinkHttpMarshaler extends AbstractHttpConsumerMarshaler {
     @Override
     public void sendFault(MessageExchange exchange, Fault fault, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
-        response.getWriter().append("JBI-fault occured: " + fault.getContent().toString());
+        response.getWriter().append(String.format(HTML_FAULT_BODY, fault.getContent().toString()));
         log.error("send JBI-fault");
         log.error(fault.getContent());
 
@@ -101,6 +119,6 @@ public class LinkHttpMarshaler extends AbstractHttpConsumerMarshaler {
     public void sendOut(MessageExchange exchange, NormalizedMessage outMsg, HttpServletRequest request,
             HttpServletResponse response) throws Exception {
         log.info("send out");
-    };
+    }
 
 }

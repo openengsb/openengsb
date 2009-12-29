@@ -37,7 +37,6 @@ import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.openengsb.link.http.LinkHttpMarshaler;
 import org.openengsb.util.tuple.Triple;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -144,7 +143,7 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
 
         if (rootNode.getNodeName().equals("whoami")) {
             String ip = rootNode.getFirstChild().getTextContent();
-            return new Triple<RequestType, String, String>(RequestType.WHOAMI, LinkHttpMarshaler.STRING_WHOAMI, ip);
+            return new Triple<RequestType, String, String>(RequestType.WHOAMI, LinkHttpMarshaler.WHOAMI, ip);
         } else {
             NodeList children = rootNode.getChildNodes();
             if (children.getLength() == 2) {
