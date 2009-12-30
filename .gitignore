@@ -27,9 +27,8 @@ formatter.xml
 #================
 *activemq-data
 engsb-edb-core/dump
-openengsb-embedded/derby.log
-openengsb-embedded/data/
-openengsb-embedded/openengsb.log
+package/embedded/*.log
+package/embedded/data/
 
 #================
 #Mac OS X hidden files/folders
