@@ -16,7 +16,8 @@
 #
 
 cd $(dirname $0)/..
-mvn package -P all-tests,docs,license-check
+mvn package -Pall-test,license-check,docs
+
 cd build
 mvn assembly:assembly
 
