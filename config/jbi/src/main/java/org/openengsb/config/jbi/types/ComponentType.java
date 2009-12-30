@@ -31,12 +31,14 @@ public class ComponentType {
     public ComponentType() {
     	readResolve();
     }
-    
+
     private Object readResolve() {
-    	if (endpoints == null)
-    		endpoints = new ArrayList<EndpointType>();
-    	if (beans == null)
-    		beans = new ArrayList<BeanType>();
+    	if (endpoints == null) {
+			endpoints = new ArrayList<EndpointType>();
+		}
+    	if (beans == null) {
+			beans = new ArrayList<BeanType>();
+		}
     	return this;
     }
 
@@ -75,11 +77,12 @@ public class ComponentType {
     public List<EndpointType> getEndpoints() {
         return endpoints;
     }
-    
+
     public EndpointType getEndpoint(String name) {
     	for (EndpointType e : endpoints) {
-    		if (e.getName().equals(name))
-    			return e;
+    		if (e.getName().equals(name)) {
+				return e;
+			}
     	}
     	return null;
     }
@@ -91,11 +94,12 @@ public class ComponentType {
     public List<BeanType> getBeans() {
         return beans;
     }
-    
+
     public BeanType getBean(String clazz) {
     	for (BeanType b : beans) {
-    		if (b.getClazz().equals(clazz))
-    			return b;
+    		if (b.getClazz().equals(clazz)) {
+				return b;
+			}
     	}
     	return null;
     }

@@ -27,10 +27,11 @@ public class BeanType {
     public BeanType() {
     	readResolve();
     }
-    
+
     private Object readResolve() {
-    	if (properties == null)
-    		properties = new ArrayList<AbstractType>();
+    	if (properties == null) {
+			properties = new ArrayList<AbstractType>();
+		}
     	return this;
     }
 

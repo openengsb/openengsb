@@ -28,12 +28,14 @@ public class EndpointType {
     public EndpointType() {
     	readResolve();
     }
-    
+
     private Object readResolve() {
-    	if (attributes == null)
-    		attributes = new ArrayList<AbstractType>();
-    	if (properties == null)
-    		properties = new ArrayList<AbstractType>();
+    	if (attributes == null) {
+			attributes = new ArrayList<AbstractType>();
+		}
+    	if (properties == null) {
+			properties = new ArrayList<AbstractType>();
+		}
     	return this;
     }
 

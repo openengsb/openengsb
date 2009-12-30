@@ -39,7 +39,7 @@ public class BeanEditorPage extends BasePage {
 
         final EndpointType endpoint = desc.getEndpoint(beanIdentifier);
         final BeanType bean = desc.getBean(beanIdentifier);
-        
+
         FieldInfos fi = null;
         ArrayList<AbstractType> fields = new ArrayList<AbstractType>();
         if (endpoint != null) {
