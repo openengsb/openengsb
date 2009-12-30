@@ -24,51 +24,54 @@
   <formats>
     <format>zip</format>
   </formats>
- <includeBaseDirectory>false</includeBaseDirectory>
-	<dependencySets>
-		<dependencySet>
-          <outputDirectory>openengsb-${project.version}/jetty</outputDirectory>
-          <useProjectArtifact>false</useProjectArtifact>
-		  <unpack>true</unpack>
-		  <scope>runtime</scope>
-		  <includes>
-		  	<include>org.mortbay.jetty:jetty-zip</include>
-		  </includes>
-		</dependencySet>
-	</dependencySets>
+  <baseDirectory>openengsb-${project.version}</baseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>jetty</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <unpack>true</unpack>
+      <scope>runtime</scope>
+      <includes>
+        <include>org.mortbay.jetty:jetty-zip</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
 
   <fileSets>
     <fileSet>
-      <directory>${project.basedir}/package/embedded/target</directory>
-      <outputDirectory>openengsb-${project.version}/jetty/webapps</outputDirectory>
+      <directory>${project.basedir}/../package/embedded/target</directory>
+      <outputDirectory>jetty/webapps</outputDirectory>
       <includes>
         <include>openengsb.war</include>
       </includes>
     </fileSet>
     <fileSet> 
-      <outputDirectory>openengsb-${project.version}/docs/html</outputDirectory>
-      <directory>${project.basedir}/docs/target/docbkx/html</directory>
+      <outputDirectory>docs/html</outputDirectory>
+      <directory>${project.basedir}/../docs/target/docbkx/html</directory>
       <includes>
         <include>*.html</include>
       </includes>
     </fileSet>
     <fileSet> 
-      <outputDirectory>openengsb-${project.version}/docs/pdf</outputDirectory>
-      <directory>${project.basedir}/docs/target/docbkx/pdf</directory>
+      <outputDirectory>docs/pdf</outputDirectory>
+      <directory>${project.basedir}/../docs/target/docbkx/pdf</directory>
       <includes>
         <include>*.pdf</include>
       </includes>
     </fileSet>
     <fileSet> 
-      <outputDirectory>openengsb-${project.version}/bin</outputDirectory>
-      <directory>${project.basedir}/build</directory>
+      <outputDirectory>bin</outputDirectory>
+      <directory>${project.basedir}</directory>
       <includes>
         <include>*.sh</include>
       </includes>
+      <excludes>
+        <exclude>assemble.sh</exclude>
+      </excludes>
     </fileSet>
     
     <fileSet>
-      <outputDirectory>openengsb-${project.version}</outputDirectory>
+      <directory>${project.basedir}/..</directory>
       <includes>
         <include>${project.basedir}/README*</include>
         <include>${project.basedir}/LICENSE*</include>

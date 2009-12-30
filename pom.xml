@@ -87,6 +87,7 @@
     <docbkx.version>2.0.7</docbkx.version>
     <maven.plugin.release.version>2.0-beta-9</maven.plugin.release.version>
     <maven.plugin.surefire>2.4.3</maven.plugin.surefire>
+    <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
   </properties>
 
   <groupId>org.openengsb</groupId>
@@ -177,6 +178,9 @@
 
     <!-- Issues -->
     <module>domains/issues/common</module>
+
+    <!-- Assembly -->
+    <module>build</module>
 
   </modules>
 
@@ -421,15 +425,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-       <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.2-beta-5</version>
-        <configuration>
-          <descriptors>
-            <descriptor>build/assemble.xml</descriptor>
-          </descriptors>
-        </configuration>
-      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -498,6 +493,11 @@
           <groupId>org.jibx</groupId>
           <artifactId>maven-jibx-plugin</artifactId>
           <version>${jibx.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>${maven.plugin.assembly.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -619,7 +619,6 @@
 
                 <!-- Test Data -->
                 <exclude>core/util/src/test/resources/serialization/valid.xml</exclude>
-                <exclude>package/all/quickdeploy.sh</exclude>
                 <exclude>**/test/resources/**</exclude>
 
                 <!-- OpenEngSB Embedded -->
@@ -646,17 +645,6 @@
       </build>
     </profile>
   </profiles>
-
- <dependencies>
-
-    <!-- Jetty -->
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-zip</artifactId>
-      <version>${jetty.version}</version>
-      <type>zip</type>
-    </dependency>
- </dependencies>
 
   <dependencyManagement>
     <dependencies>
@@ -888,6 +876,11 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-package-all</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-assembly</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
@@ -1225,6 +1218,13 @@
         <scope>test</scope>
       </dependency>
 
+      <!-- Jetty  -->
+      <dependency>
+        <groupId>org.mortbay.jetty</groupId>
+        <artifactId>jetty-zip</artifactId>
+        <version>${jetty.version}</version>
+        <type>zip</type>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

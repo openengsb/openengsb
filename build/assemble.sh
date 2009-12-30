@@ -16,6 +16,7 @@
 #
 
 cd $(dirname $0)/..
-export JETTY_HOME=`pwd`/jetty
-$JETTY_HOME/bin/jetty.sh stop
+mvn package -P all-tests,docs,license-check
+cd build
+mvn assembly:assembly
 
