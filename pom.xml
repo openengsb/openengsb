@@ -22,11 +22,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-   
+
     <root.basedir>${project.basedir}</root.basedir>
     <!-- Library Versions -->
     <spring.version>2.5.6.SEC01</spring.version>
     <spring.activemq.version>2.1</spring.activemq.version>
+    <google.collections.version>1.0</google.collections.version>
     <jdk.version>1.6</jdk.version>
     <servicemix.tools.version>4.0</servicemix.tools.version>
     <servicemix.version>3.3.1</servicemix.version>
@@ -1382,6 +1383,11 @@
         <groupId>org.jibx</groupId>
         <artifactId>jibx-run</artifactId>
         <version>${jibx.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.collections</groupId>
+        <artifactId>google-collections</artifactId>
+        <version>${google.collections.version}</version>
       </dependency>
 
       <!-- Test Dependencies -->
