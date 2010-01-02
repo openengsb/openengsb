@@ -19,11 +19,11 @@ package org.openengsb.core.test.unit;
 
 import org.openengsb.core.model.Event;
 
-public class TestEvent extends Event {
+public class SomeEvent extends Event {
 
-    public TestEvent() {
+    public SomeEvent() {
         super.setDomain("test");
-        super.setName("testEvent");
+        super.setName("someTestEvent");
         super.setToolConnector("testTool");
     }
 
