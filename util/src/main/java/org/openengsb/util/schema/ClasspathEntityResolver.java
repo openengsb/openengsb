@@ -27,7 +27,6 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-
 /**
  * Schema resolver who looks for schemas in the classpath.
  */
@@ -39,7 +38,7 @@ public class ClasspathEntityResolver implements EntityResolver {
 
     /**
      * The full html path required for each file which should be validated. This
-     * could be for example "http://engsb.ifs.tuwien.ac.at/".
+     * could be for example "http://www.openengsb.org/".
      */
     public void setPathValidationString(String pathValidationString) {
         this.pathValidationString = pathValidationString;

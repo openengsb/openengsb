@@ -30,7 +30,6 @@ import org.openengsb.edb.core.repository.Reset;
 import org.openengsb.util.IO;
 import org.spearce.jgit.lib.Constants;
 
-
 /**
  * Class to allow basic operations on given repositories: checkout, add
  * (remove), commit. Needs to be initialized with a repository location.
@@ -40,7 +39,7 @@ public class GitRepository implements Repository {
     private static final String GIT_CONFIG = ".git";
 
     private static final String USER = "EDB";
-    private static final String EMAIL = "edb@engsb.ifs.tuwien.ac.at";
+    private static final String EMAIL = "edb@openengsb.org";
 
     private org.spearce.jgit.lib.Repository repository;
     private File repositoryPath;

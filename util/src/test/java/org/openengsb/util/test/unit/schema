@@ -37,7 +37,7 @@ public class XmlValidatorTest {
 	public void setUp() {
 		validator = new XmlValidator();
 		ClasspathEntityResolver res = new ClasspathEntityResolver();
-		res.setPathValidationString("http://engsb.ifs.tuwien.ac.at");
+		res.setPathValidationString("http://www.openengsb.org");
 		validator.setEntityResolver(res);
 	}
 

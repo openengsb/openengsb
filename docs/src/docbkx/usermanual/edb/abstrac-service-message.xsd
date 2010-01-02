@@ -18,12 +18,12 @@
 -->
 
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
-	targetNamespace="http://www.ifs.tuwien.ac.at/engsb/AbstractServiceMessage"
-	xmlns:tns="http://www.ifs.tuwien.ac.at/engsb/AbstractServiceMessage"
-	xmlns:baseType="http://www.ifs.tuwien.ac.at/asb/AbstractMessage"
+	targetNamespace="http://www.openengsb.org/engsb/AbstractServiceMessage"
+	xmlns:tns="http://www.openengsb.org/engsb/AbstractServiceMessage"
+	xmlns:baseType="http://www.openengsb.org/asb/AbstractMessage"
 	elementFormDefault="qualified">
 
-	<import namespace="http://www.ifs.tuwien.ac.at/asb/AbstractMessage"
+	<import namespace="http://www.openengsb.org/asb/AbstractMessage"
 		schemaLocation="abstract-message.xsd" />
 
 	<annotation>

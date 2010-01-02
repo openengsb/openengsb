@@ -16,7 +16,7 @@
    limitations under the License.
 
 -->
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://engsb.ifs.tuwien.ac.at/SampleMessage" elementFormDefault="qualified" targetNamespace="http://engsb.ifs.tuwien.ac.at/SampleMessage">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.openengsb.org/SampleMessage" elementFormDefault="qualified" targetNamespace="http://www.openengsb.org/SampleMessage">
 
 	<element name="sampleMessage" type="tns:theSampleMessage"/>
 

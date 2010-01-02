@@ -17,12 +17,12 @@
 
 -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
-        targetNamespace="http://www.ifs.tuwien.ac.at/engsb/acm/persist"
-      	xmlns:tns="http://www.ifs.tuwien.ac.at/engsb/acm/persist"
-    	  xmlns:base="http://www.ifs.tuwien.ac.at/engsb/AbstractServiceMessage"
+        targetNamespace="http://www.openengsb.org/engsb/acm/persist"
+      	xmlns:tns="http://www.openengsb.org/engsb/acm/persist"
+    	  xmlns:base="http://www.openengsb.org/engsb/AbstractServiceMessage"
       	elementFormDefault="qualified">
 
-	<import namespace="http://www.ifs.tuwien.ac.at/engsb/AbstractServiceMessage"
+	<import namespace="http://www.openengsb.org/engsb/AbstractServiceMessage"
 		schemaLocation="abstrac-service-message.xsd" />
 
 	<annotation>

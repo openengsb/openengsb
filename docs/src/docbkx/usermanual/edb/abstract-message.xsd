@@ -17,8 +17,8 @@
 
 -->
 
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.ifs.tuwien.ac.at/asb/AbstractMessage"
-	xmlns:tns="http://www.ifs.tuwien.ac.at/asb/AbstractMessage"
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.openengsb.org/asb/AbstractMessage"
+	xmlns:tns="http://www.openengsb.org/asb/AbstractMessage"
 	elementFormDefault="qualified">
 
 	<complexType name="asbHeader">

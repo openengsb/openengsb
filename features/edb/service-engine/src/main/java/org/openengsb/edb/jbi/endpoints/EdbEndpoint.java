@@ -54,7 +54,7 @@ public class EdbEndpoint extends AbstractEndpoint {
      */
 
     public static final String DEFAULT_USER = "EDB";
-    public static final String DEFAULT_EMAIL = "EDB@engsb.ifs.tuwien.ac.at";
+    public static final String DEFAULT_EMAIL = "EDB@openengsb.org";
 
     public static final String COMMIT_OPERATION_TAG_NAME = "operation";
     public static final String QUERY_ELEMENT_NAME = "query";
@@ -67,8 +67,8 @@ public class EdbEndpoint extends AbstractEndpoint {
     private Map<EDBOperationType, EDBEndpointResponseBuilder> reponses;
 
     @Override
-    protected void processInOutRequest(final MessageExchange exchange, final NormalizedMessage in, final NormalizedMessage out)
-    throws Exception {
+    protected void processInOutRequest(final MessageExchange exchange, final NormalizedMessage in,
+            final NormalizedMessage out) throws Exception {
         getLog().info("init handler from factory");
 
         final EDBHandler handler = this.fullConfig.getFactory().loadDefaultRepository();

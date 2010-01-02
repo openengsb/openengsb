@@ -17,8 +17,8 @@
 
 -->
 <?xml version="1.0" encoding="UTF-8"?>
-<sampleMessage xmlns="http://engsb.ifs.tuwien.ac.at/SampleMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema"
-  xsi:schemaLocation="http://engsb.ifs.tuwien.ac.at/SampleMessage http://engsb.ifs.tuwien.ac.at/sample-message.xsd">
+<sampleMessage xmlns="http://www.openengsb.org/SampleMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema"
+  xsi:schemaLocation="http://www.openengsb.org/SampleMessage http://www.openengsb.org/sample-message.xsd">
   <first>
     a test string
     <last>2009-10-02T23:42:31</last>

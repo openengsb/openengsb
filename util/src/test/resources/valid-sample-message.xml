@@ -16,8 +16,8 @@
    limitations under the License.
 
 -->
-<sampleMessage xmlns="http://engsb.ifs.tuwien.ac.at/SampleMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://engsb.ifs.tuwien.ac.at/SampleMessage http://engsb.ifs.tuwien.ac.at/sample-message.xsd">
+<sampleMessage xmlns="http://www.openengsb.org/SampleMessage" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.openengsb.org/SampleMessage http://www.openengsb.org/sample-message.xsd">
   <first>a test string</first>
   <last>2009-10-02T23:42:31.065+01:00</last>
 </sampleMessage>
