@@ -38,7 +38,7 @@
         <extensions>true</extensions>
         <configuration>
           <type>service-engine</type>
-          <component>org.openengsb.linking.http.LinkHttpProcessComponent</component>
+          <component>org.openengsb.link.http.LinkHttpProcessComponent</component>
         </configuration>
       </plugin>
       <plugin>
