@@ -23,6 +23,10 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
+  <bean id="configApplication" class="org.openengsb.config.ConfigApplication"/>
+  
+  <context:annotation-config /> 
+
   <bean id="componentService" class="org.openengsb.config.service.impl.ComponentServiceImpl" init-method="init">
     <property name="context" ref="servletContext" />
   </bean>
