@@ -24,8 +24,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.openengsb.core.messaging.Segment;
-import org.openengsb.core.methodcalltransformation.MethodCall;
-import org.openengsb.core.methodcalltransformation.Transformer;
+import org.openengsb.core.model.MethodCall;
+import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
 
 public class TestMethodCallTransformer {

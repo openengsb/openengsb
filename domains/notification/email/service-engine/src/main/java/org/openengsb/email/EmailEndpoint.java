@@ -22,7 +22,7 @@ import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.OpenEngSBLinkingEndpoint;
+import org.openengsb.core.endpoints.OpenEngSBLinkingEndpoint;
 import org.openengsb.drools.NotificationDomain;
 
 /**

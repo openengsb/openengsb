@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.core;
+package org.openengsb.core.endpoints;
 
 import java.util.UUID;
 
@@ -37,10 +37,10 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.contextcommon.ContextHelperImpl;
-import org.openengsb.core.methodcalltransformation.InvocationFailedException;
-import org.openengsb.core.methodcalltransformation.MethodCall;
-import org.openengsb.core.methodcalltransformation.ReturnValue;
-import org.openengsb.core.methodcalltransformation.Transformer;
+import org.openengsb.core.model.InvocationFailedException;
+import org.openengsb.core.model.MethodCall;
+import org.openengsb.core.model.ReturnValue;
+import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
 
 public abstract class OpenEngSBEndpoint<T> extends ProviderEndpoint {

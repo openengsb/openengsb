@@ -15,23 +15,22 @@
    limitations under the License.
    
  */
+package org.openengsb.core.model;
 
-package org.openengsb.core.methodcalltransformation;
+public class InvocationFailedException extends Exception {
 
-public class ReturnValue {
-    private final Object value;
-    private final Class<?> type;
-
-    public ReturnValue(Object value, Class<?> type) {
-        this.value = value;
-        this.type = type;
+    public InvocationFailedException() {
     }
 
-    public Object getValue() {
-        return value;
+    public InvocationFailedException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public Class<?> getType() {
-        return type;
+    public InvocationFailedException(String message) {
+        super(message);
+    }
+
+    public InvocationFailedException(Throwable cause) {
+        super(cause);
     }
 }

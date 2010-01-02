@@ -24,8 +24,8 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.openengsb.core.messaging.Segment;
-import org.openengsb.core.methodcalltransformation.ReturnValue;
-import org.openengsb.core.methodcalltransformation.Transformer;
+import org.openengsb.core.model.ReturnValue;
+import org.openengsb.core.transformation.Transformer;
 
 public class TestReturnValueTransformer {
 

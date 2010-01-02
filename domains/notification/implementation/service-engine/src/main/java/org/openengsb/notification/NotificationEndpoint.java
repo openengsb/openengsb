@@ -20,7 +20,7 @@ package org.openengsb.notification;
 import javax.xml.namespace.QName;
 
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.OpenEngSBForwardEndpoint;
+import org.openengsb.core.endpoints.OpenEngSBForwardEndpoint;
 import org.openengsb.drools.NotificationDomain;
 
 /**

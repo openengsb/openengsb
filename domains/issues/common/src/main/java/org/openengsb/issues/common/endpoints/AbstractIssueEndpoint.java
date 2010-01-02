@@ -31,7 +31,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.log4j.Logger;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.OpenEngSBEndpoint;
+import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 import org.openengsb.drools.DroolsIssuesDomain;
 import org.openengsb.issues.common.IssueDomain;
 import org.openengsb.issues.common.exceptions.IssueDomainException;

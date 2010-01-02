@@ -39,9 +39,9 @@ import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.DefaultAgendaEventListener;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.contextcommon.ContextHelperImpl;
-import org.openengsb.core.methodcalltransformation.MethodCall;
-import org.openengsb.core.methodcalltransformation.ReturnValue;
-import org.openengsb.core.methodcalltransformation.Transformer;
+import org.openengsb.core.model.MethodCall;
+import org.openengsb.core.model.ReturnValue;
+import org.openengsb.core.transformation.Transformer;
 import org.openengsb.drools.model.DomainConfigurationImpl;
 
 /**

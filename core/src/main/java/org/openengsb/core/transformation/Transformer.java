@@ -15,9 +15,12 @@
    limitations under the License.
    
  */
-package org.openengsb.core.methodcalltransformation;
+package org.openengsb.core.transformation;
 
 import org.openengsb.core.messaging.Segment;
+import org.openengsb.core.model.Event;
+import org.openengsb.core.model.MethodCall;
+import org.openengsb.core.model.ReturnValue;
 import org.openengsb.util.serialization.SerializationException;
 
 public class Transformer {
@@ -29,16 +32,24 @@ public class Transformer {
         return new ToSegmentTransformer().transform(methodCall);
     }
 
-    public static String toXml(MethodCall methodCall) throws SerializationException {
-        return toSegment(methodCall).toXML();
-    }
-
     public static Segment toSegment(ReturnValue returnValue) {
         return new ToSegmentTransformer().transform(returnValue);
     }
 
+    public static Segment toSegment(Event event) {
+        return new ToSegmentTransformer().transform(event);
+    }
+
+    public static String toXml(MethodCall methodCall) throws SerializationException {
+        return toSegment(methodCall).toXML();
+    }
+
     public static String toXml(ReturnValue returnValue) throws SerializationException {
         return toSegment(returnValue).toXML();
+    }
+
+    public static String toXml(Event event) throws SerializationException {
+        return toSegment(event).toXML();
     }
 
     public static MethodCall toMethodCall(String xml) throws SerializationException {
@@ -49,12 +60,20 @@ public class Transformer {
         return toReturnValue(Segment.fromXML(xml));
     }
 
+    public static Event toEvent(String xml) throws SerializationException {
+        return toEvent(Segment.fromXML(xml));
+    }
+
     public static MethodCall toMethodCall(Segment segment) {
         return new FromSegmentTransformer().transform(segment);
     }
 
     public static ReturnValue toReturnValue(Segment segment) {
         return new FromSegmentTransformer().transformReturnValue(segment);
+    }
+
+    public static Event toEvent(Segment segment) {
+        return new FromSegmentTransformer().transformEvent(segment);
     }
 
 }

@@ -16,11 +16,12 @@
    
  */
 
-package org.openengsb.core.methodcalltransformation;
+package org.openengsb.core.model;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+
 
 public class MethodCall {
     private final String methodName;

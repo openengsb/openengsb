@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.core.methodcalltransformation;
+package org.openengsb.core.transformation;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -28,6 +28,9 @@ import java.util.Map;
 import org.openengsb.core.messaging.ListSegment;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
+import org.openengsb.core.model.Event;
+import org.openengsb.core.model.MethodCall;
+import org.openengsb.core.model.ReturnValue;
 
 class FromSegmentTransformer {
 
@@ -55,17 +58,68 @@ class FromSegmentTransformer {
 
         return new MethodCall(methodName, args, types);
     }
-    
+
     ReturnValue transformReturnValue(Segment segment) {
         List<Segment> l = ((ListSegment) segment).getList();
 
         String typeName = ((TextSegment) l.get(1)).getText();
         Object value = segmentToValue(typeName, l.subList(2, l.size()));
         Class<?> type = getClassForType(typeName);
-        
+
         value = replace(value, type);
-        
+
         return new ReturnValue(value, type);
+    }
+
+    Event transformEvent(Segment segment) {
+        ListSegment ls = (ListSegment) segment;
+        List<Segment> list = new ArrayList<Segment>(ls.getList());
+
+        String eventType = ((TextSegment) list.remove(0)).getText();
+        String eventName = ((TextSegment) list.remove(0)).getText();
+        String domain = ((TextSegment) list.remove(0)).getText();
+        String toolConnector = null;
+        if (!list.isEmpty() && list.get(0).getName().equals("toolConnector")) {
+            toolConnector = ((TextSegment) list.remove(0)).getText();
+        }
+
+        Event event = createEvent(eventType, eventName, domain, toolConnector);
+
+        for (Segment elementList : list) {
+            if (!elementList.getName().equals("element")) {
+                throw new IllegalArgumentException("Error parsing element of event");
+            }
+
+            List<Segment> l = ((ListSegment) elementList).getList();
+
+            String key = ((TextSegment) l.get(0)).getText();
+            String type = ((TextSegment) l.get(1)).getText();
+
+            event.setValue(key, segmentToValue(type, l.subList(2, l.size())));
+        }
+
+        for (String key : event.getKeys()) {
+            Object oldValue = event.getValue(key);
+            event.setValue(key, replace(oldValue, oldValue.getClass()));
+        }
+
+        return event;
+    }
+
+    private Event createEvent(String type, String name, String domain, String toolConnector) {
+        try {
+            Class<?> eventClass = getClassForType(type);
+            Event e = (Event) eventClass.newInstance();
+            e.setDomain(domain);
+            e.setName(name);
+            e.setToolConnector(toolConnector);
+            return e;
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private String extractMethodName(Segment method) {
@@ -242,6 +296,5 @@ class FromSegmentTransformer {
             throw new RuntimeException(e);
         }
     }
-
 
 }

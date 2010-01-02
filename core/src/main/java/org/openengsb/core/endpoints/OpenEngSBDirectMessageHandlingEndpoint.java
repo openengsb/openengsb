@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.core;
+package org.openengsb.core.endpoints;
 
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;

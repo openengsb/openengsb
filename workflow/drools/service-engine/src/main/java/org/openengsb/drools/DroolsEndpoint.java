@@ -42,7 +42,7 @@ import org.drools.RuleBase;
 import org.drools.agent.RuleAgent;
 import org.drools.compiler.RuleBaseLoader;
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.OpenEngSBDirectMessageHandlingEndpoint;
+import org.openengsb.core.endpoints.OpenEngSBDirectMessageHandlingEndpoint;
 import org.openengsb.drools.model.Event;
 import org.springframework.core.io.Resource;
 

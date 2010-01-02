@@ -31,7 +31,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
-import org.openengsb.core.OpenEngSBEndpoint;
+import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
 import org.openengsb.util.serialization.SerializationException;

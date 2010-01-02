@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.core.methodcalltransformation;
+package org.openengsb.core.transformation;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -29,6 +29,9 @@ import java.util.Map;
 import org.openengsb.core.messaging.ListSegment;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
+import org.openengsb.core.model.Event;
+import org.openengsb.core.model.MethodCall;
+import org.openengsb.core.model.ReturnValue;
 
 class ToSegmentTransformer {
 
@@ -51,10 +54,31 @@ class ToSegmentTransformer {
 
         return listSegment;
     }
-    
+
     Segment transform(ReturnValue returnValue) {
         List<Segment> list = valueToSegment("value", returnValue.getType(), returnValue.getValue());
         return new ListSegment.Builder("returnValue").list(list).build();
+    }
+
+    Segment transform(Event event) {
+        List<Segment> list = new ArrayList<Segment>();
+        list.add(new TextSegment.Builder("event").text(event.getClass().getName()).build());
+        list.add(new TextSegment.Builder("name").text(event.getName()).build());
+        list.add(new TextSegment.Builder("domain").text(event.getDomain()).build());
+
+        if (event.getToolConnector() != null) {
+            list.add(new TextSegment.Builder("toolConnector").text(event.getToolConnector()).build());
+        }
+
+        for (String key : event.getKeys()) {
+            Object obj = event.getValue(key);
+            Class<?> type = obj.getClass();
+            list.add(new ListSegment.Builder("element").list(valueToSegment(key, type, obj)).build());
+        }
+
+        ListSegment listSegment = new ListSegment.Builder("event").list(list).build();
+
+        return listSegment;
     }
 
     private List<Segment> valueToSegment(String name, Class<?> type, Object obj) {

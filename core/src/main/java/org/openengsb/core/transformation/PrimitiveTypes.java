@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.core.methodcalltransformation;
+package org.openengsb.core.transformation;
 
 import java.util.HashMap;
 import java.util.Map;

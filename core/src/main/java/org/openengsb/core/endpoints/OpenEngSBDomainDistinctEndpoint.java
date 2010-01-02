@@ -15,10 +15,8 @@
    limitations under the License.
    
  */
-package org.openengsb.core;
+package org.openengsb.core.endpoints;
 
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
@@ -26,30 +24,24 @@ import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.openengsb.contextcommon.ContextHelper;
 
-public abstract class OpenEngSBForwardEndpoint<T> extends OpenEngSBEndpoint<T> {
+public abstract class OpenEngSBDomainDistinctEndpoint<T> extends OpenEngSBEndpoint<T> {
 
-    public OpenEngSBForwardEndpoint() {
+    public OpenEngSBDomainDistinctEndpoint() {
         super();
     }
 
-    public OpenEngSBForwardEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
+    public OpenEngSBDomainDistinctEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
         super(component, endpoint);
     }
 
-    public OpenEngSBForwardEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
+    public OpenEngSBDomainDistinctEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
         super(serviceUnit, service, endpoint);
     }
 
     @Override
-    protected T getImplementation(ContextHelper contextHelper) {
+    protected QName getForwardTarget(ContextHelper contextHelper) {
+        // not required for this usecase
         return null;
-    }
-
-    @Override
-    protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
-            ContextHelper contextHelper) throws Exception {
-        QName defaultConnector = getForwardTarget(contextHelper);
-        forwardMessage(exchange, in, out, defaultConnector);
     }
 
 }
