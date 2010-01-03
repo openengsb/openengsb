@@ -33,6 +33,16 @@ public class Event {
 
     private String toolConnector;
 
+    public Event(String domain, String name) {
+        this.domain = domain;
+        this.name = name;
+    }
+
+    @SuppressWarnings("unused")
+    private Event() {
+        // used by segment transformation framework
+    }
+
     public void setValue(String key, Object value) {
         elements.put(key, value);
     }

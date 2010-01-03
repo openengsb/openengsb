@@ -22,8 +22,7 @@ import org.openengsb.core.model.Event;
 public class SomeEvent extends Event {
 
     public SomeEvent() {
-        super.setDomain("test");
-        super.setName("someTestEvent");
+        super("testDomain", "someTestEvent");
         super.setToolConnector("testTool");
     }
 

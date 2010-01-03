@@ -30,9 +30,7 @@ public class TestEventTransformation {
 
     @Test
     public void testEvent() throws SerializationException {
-        Event input = new Event();
-        input.setDomain("domain");
-        input.setName("name");
+        Event input = new Event("domain", "name");
         input.setValue("foo", 42);
         input.setValue("bar", "42");
         input.setValue("buz", new Integer(42));

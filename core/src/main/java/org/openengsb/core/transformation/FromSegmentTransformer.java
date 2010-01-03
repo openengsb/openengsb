@@ -19,6 +19,7 @@
 package org.openengsb.core.transformation;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,12 +40,7 @@ class FromSegmentTransformer {
     private Map<Integer, Integer> placeholderInstances = new HashMap<Integer, Integer>();
 
     MethodCall transform(Segment segment) {
-        if (!(segment instanceof ListSegment)) {
-            throw new IllegalArgumentException("Segment is not a ListSegment");
-        }
-
         ListSegment ls = (ListSegment) segment;
-
         List<Segment> list = new ArrayList<Segment>(ls.getList());
 
         Segment method = list.remove(0);
@@ -84,7 +80,17 @@ class FromSegmentTransformer {
         }
 
         Event event = createEvent(eventType, eventName, domain, toolConnector);
+        transformEventElements(list, event);
 
+        for (String key : event.getKeys()) {
+            Object oldValue = event.getValue(key);
+            event.setValue(key, replace(oldValue, oldValue.getClass()));
+        }
+
+        return event;
+    }
+
+    private void transformEventElements(List<Segment> list, Event event) {
         for (Segment elementList : list) {
             if (!elementList.getName().equals("element")) {
                 throw new IllegalArgumentException("Error parsing element of event");
@@ -97,19 +103,18 @@ class FromSegmentTransformer {
 
             event.setValue(key, segmentToValue(type, l.subList(2, l.size())));
         }
-
-        for (String key : event.getKeys()) {
-            Object oldValue = event.getValue(key);
-            event.setValue(key, replace(oldValue, oldValue.getClass()));
-        }
-
-        return event;
     }
 
     private Event createEvent(String type, String name, String domain, String toolConnector) {
         try {
             Class<?> eventClass = getClassForType(type);
-            Event e = (Event) eventClass.newInstance();
+
+            Constructor<?> noArgConstructor = eventClass.getDeclaredConstructor();
+            boolean accessible = noArgConstructor.isAccessible();
+            noArgConstructor.setAccessible(true);
+            Event e = (Event) noArgConstructor.newInstance();
+            noArgConstructor.setAccessible(accessible);
+
             e.setDomain(domain);
             e.setName(name);
             e.setToolConnector(toolConnector);
@@ -123,10 +128,6 @@ class FromSegmentTransformer {
     }
 
     private String extractMethodName(Segment method) {
-        if (!(method instanceof TextSegment)) {
-            throw new IllegalArgumentException("Segment is not a TextSegment");
-        }
-
         TextSegment textMethod = (TextSegment) method;
         if (!textMethod.getName().equals("method")) {
             throw new IllegalArgumentException("Error parsing method call");
