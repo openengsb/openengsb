@@ -36,6 +36,7 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
+import org.openengsb.core.EventHelper;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
@@ -107,5 +108,9 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         inonly.setOperation(exchange.getOperation());
 
         sendSync(inonly);
+    }
+
+    public EventHelper createEventHelper(String contextId) {
+        return new EventHelper(this, contextId);
     }
 }
