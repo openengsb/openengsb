@@ -22,14 +22,14 @@ import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.endpoints.OpenEngSBLinkingEndpoint;
+import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.NotificationDomain;
 
 /**
  * @org.apache.xbean.XBean element="emailEndpoint"
  *                         description="Email Notification Endpoint"
  */
-public class EmailEndpoint extends OpenEngSBLinkingEndpoint<NotificationDomain> {
+public class EmailEndpoint extends LinkingEndpoint<NotificationDomain> {
 
     @Override
     protected NotificationDomain getImplementation(ContextHelper contextHelper) {

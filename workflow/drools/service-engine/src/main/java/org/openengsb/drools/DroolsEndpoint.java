@@ -42,7 +42,7 @@ import org.drools.RuleBase;
 import org.drools.agent.RuleAgent;
 import org.drools.compiler.RuleBaseLoader;
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.endpoints.OpenEngSBDirectMessageHandlingEndpoint;
+import org.openengsb.core.endpoints.DirectMessageHandlingEndpoint;
 import org.openengsb.drools.model.Event;
 import org.springframework.core.io.Resource;
 
@@ -50,7 +50,7 @@ import org.springframework.core.io.Resource;
  * @org.apache.xbean.XBean element="droolsEndpoint"
  *                         description="Drools Component"
  */
-public class DroolsEndpoint extends OpenEngSBDirectMessageHandlingEndpoint<Object> {
+public class DroolsEndpoint extends DirectMessageHandlingEndpoint<Object> {
 
     /**
      * Pointer to the rulebase.

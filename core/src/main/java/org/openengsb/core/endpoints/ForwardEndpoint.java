@@ -17,6 +17,8 @@
  */
 package org.openengsb.core.endpoints;
 
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
@@ -24,30 +26,30 @@ import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.openengsb.contextcommon.ContextHelper;
 
-public abstract class OpenEngSBDirectMessageHandlingEndpoint<T> extends OpenEngSBEndpoint<T> {
+public abstract class ForwardEndpoint<T> extends RPCEndpoint<T> {
 
-    public OpenEngSBDirectMessageHandlingEndpoint() {
+    public ForwardEndpoint() {
         super();
     }
 
-    public OpenEngSBDirectMessageHandlingEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
+    public ForwardEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
         super(component, endpoint);
     }
 
-    public OpenEngSBDirectMessageHandlingEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
+    public ForwardEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
         super(serviceUnit, service, endpoint);
     }
 
     @Override
-    protected QName getForwardTarget(ContextHelper contextHelper) {
-        // not required for this use case
+    protected T getImplementation(ContextHelper contextHelper) {
         return null;
     }
 
     @Override
-    protected T getImplementation(ContextHelper contextHelper) {
-        // not required for this use case
-        return null;
+    protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
+            ContextHelper contextHelper) throws Exception {
+        QName defaultConnector = getForwardTarget(contextHelper);
+        forwardMessage(exchange, in, out, defaultConnector);
     }
 
 }

@@ -17,6 +17,8 @@
  */
 package org.openengsb.core.endpoints;
 
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
@@ -24,23 +26,29 @@ import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.openengsb.contextcommon.ContextHelper;
 
-public abstract class OpenEngSBDomainDistinctEndpoint<T> extends OpenEngSBEndpoint<T> {
+public abstract class LinkingEndpoint<T> extends RPCEndpoint<T> {
 
-    public OpenEngSBDomainDistinctEndpoint() {
+    public LinkingEndpoint() {
         super();
     }
 
-    public OpenEngSBDomainDistinctEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
+    public LinkingEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
         super(component, endpoint);
     }
 
-    public OpenEngSBDomainDistinctEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
+    public LinkingEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
         super(serviceUnit, service, endpoint);
     }
 
     @Override
+    protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
+            ContextHelper contextHelper) throws Exception {
+        // not required in this use case
+    }
+
+    @Override
     protected QName getForwardTarget(ContextHelper contextHelper) {
-        // not required for this usecase
+        // not required in this use case
         return null;
     }
 

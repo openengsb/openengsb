@@ -20,14 +20,14 @@ package org.openengsb.notification;
 import javax.xml.namespace.QName;
 
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.endpoints.OpenEngSBForwardEndpoint;
+import org.openengsb.core.endpoints.ForwardEndpoint;
 import org.openengsb.drools.NotificationDomain;
 
 /**
  * @org.apache.xbean.XBean element="notificationEndpoint"
  *                         description="Notification Endpoint"
  */
-public class NotificationEndpoint extends OpenEngSBForwardEndpoint<NotificationDomain> {
+public class NotificationEndpoint extends ForwardEndpoint<NotificationDomain> {
 
     @Override
     protected QName getForwardTarget(ContextHelper contextHelper) {
