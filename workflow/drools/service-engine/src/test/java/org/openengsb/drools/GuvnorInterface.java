@@ -22,7 +22,7 @@ import org.drools.RuleBase;
 import org.drools.WorkingMemory;
 import org.drools.agent.RuleAgent;
 import org.junit.Test;
-import org.openengsb.drools.model.Event;
+import org.openengsb.core.model.Event;
 import org.openengsb.drools.model.MessageHelperImpl;
 
 /**
@@ -47,7 +47,7 @@ public class GuvnorInterface {
 
         WorkingMemory workingMemory = ruleBase.newStatefulSession();
         workingMemory.setGlobal("helper", new MessageHelperImpl());
-        Event e = new Event("hello");
+        Event e = new Event("domain", "name");
         workingMemory.insert(e);
 
         workingMemory.fireAllRules();
