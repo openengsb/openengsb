@@ -22,6 +22,9 @@ import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.quartz.support.DefaultQuartzMarshaler;
+import org.openengsb.core.model.Event;
+import org.openengsb.core.transformation.Transformer;
+import org.openengsb.util.serialization.SerializationException;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
@@ -32,6 +35,17 @@ public class SimpleTextMarshaler extends DefaultQuartzMarshaler {
             throws JobExecutionException, MessagingException {
         super.populateNormalizedMessage(message, context);
         message.setProperty("contextId", "42");
-        message.setContent(new StringSource("<event><name>hello</name></event>"));
+        String event = getEvent();
+        message.setContent(new StringSource(event));
+    }
+
+    private String getEvent() {
+        try {
+            Event event = new Event("domain", "name");
+            event.setValue("foo", 42);
+            return Transformer.toXml(event);
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

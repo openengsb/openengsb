@@ -32,7 +32,7 @@
     <eip:transformer>
       <!-- <eip:exchange-target operation="integrate" service="ci:ContinousIntegrationService" /> -->
 
-      <eip:exchange-target operation="forward" service="drl:droolsService" endpoint="droolsEndpoint" />
+      <eip:exchange-target operation="event" service="drl:droolsService" endpoint="droolsEndpoint" />
 
       <!-- 
       <eip:exchange-target operation="forward" service="ctx:contextService" endpoint="contextEndpoint" />

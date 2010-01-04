@@ -17,18 +17,13 @@
  */
 package org.openengsb.drools;
 
-import java.io.IOException;
-
-import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.openengsb.drools.model.Event;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
+import org.openengsb.core.model.Event;
+import org.openengsb.core.transformation.Transformer;
+import org.openengsb.util.serialization.SerializationException;
 
 /**
  * Helper-methods for parsing Xml-messages.
@@ -54,27 +49,14 @@ public final class XmlHelper {
      * @return the parsed Event-Object.
      */
     public static Event parseEvent(NormalizedMessage msg) {
-        Element source;
         try {
-            source = t.toDOMElement(msg);
-        } catch (MessagingException e) {
-            throw new IllegalArgumentException("Could not parse the message", e);
+            String xml = t.toString(msg.getContent());
+            return Transformer.toEvent(xml);
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
         } catch (TransformerException e) {
-            throw new IllegalArgumentException("Could not parse the message", e);
-        } catch (ParserConfigurationException e) {
-            throw new IllegalArgumentException("Could not parse the message", e);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not parse the message", e);
-        } catch (SAXException e) {
-            throw new IllegalArgumentException("Could not parse the message", e);
+            throw new RuntimeException(e);
         }
-        Node nameNode = source.getElementsByTagName("name").item(0);
-        Event result = new Event(nameNode.getFirstChild().getNodeValue());
-        Node contextNode = source.getElementsByTagName("contextid").item(0);
-        if (contextNode != null) {
-            result.setContextId(contextNode.getFirstChild().getNodeValue());
-        }
-        return result;
     }
 
 }
