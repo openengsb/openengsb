@@ -31,4 +31,18 @@
   <name>openengsb-workflow-drools-domains</name>
   <description>Interfaces used in openengsb-drools</description>
 
+  <build>
+   <plugins>
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-assembly-plugin</artifactId>
+       <configuration>
+         <descriptors>
+           <descriptor>guvnorUpload.xml</descriptor>
+         </descriptors>
+       </configuration>
+     </plugin>
+   </plugins>
+  </build>
+
 </project>
