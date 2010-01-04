@@ -84,7 +84,7 @@ public abstract class RPCEndpoint<T> extends OpenEngSBEndpoint {
                 throw new IllegalStateException(
                         "Neither implementation given for method call, nor forward target specified.");
             }
-            forwardMessage(exchange, in, out, forwardTarget);
+            forwardInOutMessage(exchange, in, out, forwardTarget);
             return;
         }
 

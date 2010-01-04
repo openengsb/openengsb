@@ -49,7 +49,7 @@ public abstract class ForwardEndpoint<T> extends RPCEndpoint<T> {
     protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
             ContextHelper contextHelper) throws Exception {
         QName defaultConnector = getForwardTarget(contextHelper);
-        forwardMessage(exchange, in, out, defaultConnector);
+        forwardInOutMessage(exchange, in, out, defaultConnector);
     }
 
 }

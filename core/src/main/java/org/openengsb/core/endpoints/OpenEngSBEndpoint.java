@@ -19,6 +19,7 @@ package org.openengsb.core.endpoints;
 
 import java.util.UUID;
 
+import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
@@ -33,6 +34,7 @@ import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
@@ -84,8 +86,8 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         return (String) in.getProperty("contextId");
     }
 
-    protected void forwardMessage(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out, QName service)
-            throws MessagingException {
+    protected void forwardInOutMessage(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
+            QName service) throws MessagingException {
         InOut inout = new InOutImpl(UUID.randomUUID().toString());
         inout.setService(service);
         inout.setInMessage(in);
@@ -95,5 +97,15 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
         NormalizedMessage outMessage = inout.getOutMessage();
         out.setContent(outMessage.getContent());
+    }
+
+    protected void forwardInOnlyMessage(MessageExchange exchange, NormalizedMessage in, QName service)
+            throws MessagingException {
+        InOnly inonly = new InOnlyImpl(UUID.randomUUID().toString());
+        inonly.setService(service);
+        inonly.setInMessage(in);
+        inonly.setOperation(exchange.getOperation());
+
+        sendSync(inonly);
     }
 }

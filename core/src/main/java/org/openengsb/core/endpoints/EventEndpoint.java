@@ -30,7 +30,7 @@ import org.openengsb.contextcommon.ContextHelperImpl;
 public abstract class EventEndpoint extends OpenEngSBEndpoint {
 
     @Override
-    protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
+    protected void processInOnly(MessageExchange exchange, NormalizedMessage in) throws Exception {
         if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
             return;
         }
@@ -42,10 +42,11 @@ public abstract class EventEndpoint extends OpenEngSBEndpoint {
         if (operation == null || !operation.getLocalPart().equals("event")) {
             throw new IllegalStateException("Operation should be event but is " + operation);
         }
-        handleEvent(exchange, in, out, contextHelper);
+        handleEvent(exchange, in, contextHelper);
+
     }
 
-    protected abstract void handleEvent(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
-            ContextHelper contextHelper) throws MessagingException;
+    protected abstract void handleEvent(MessageExchange exchange, NormalizedMessage in, ContextHelper contextHelper)
+            throws MessagingException;
 
 }

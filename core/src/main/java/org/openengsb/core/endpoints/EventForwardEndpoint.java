@@ -27,11 +27,11 @@ import org.openengsb.contextcommon.ContextHelper;
 public class EventForwardEndpoint extends EventEndpoint {
 
     @Override
-    protected void handleEvent(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
-            ContextHelper contextHelper) throws MessagingException {
+    protected void handleEvent(MessageExchange exchange, NormalizedMessage in, ContextHelper contextHelper)
+            throws MessagingException {
         String servicename = contextHelper.getValue("event/defaultTarget/servicename");
         String namespace = contextHelper.getValue("event/defaultTarget/namespace");
         QName service = new QName(namespace, servicename);
-        forwardMessage(exchange, in, out, service);
+        forwardInOnlyMessage(exchange, in, service);
     }
 }
