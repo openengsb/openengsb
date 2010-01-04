@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+  <bean class="org.springframework.jms.core.JmsTemplate" id="jmsTemplate" scope="prototype">
+    <property name="connectionFactory" ref="pooledConnectionFactory" />
+  </bean>
+
+  <bean class="org.apache.activemq.ActiveMQConnectionFactory" id="connectionFactory" scope="prototype">
+    <property name="brokerURL">
+      <value>tcp://localhost:61616</value>
+    </property>
+  </bean>
+
+  <bean class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop" id="pooledConnectionFactory"
+    scope="prototype">
+    <property name="connectionFactory" ref="connectionFactory" />
+  </bean>
+
+  <bean id="start" class="org.openengsb.swingclient.Start">
+    <property name="jmsService" ref="jmsService" />
+  </bean>
+
+  <bean id="jmsService" class="org.openengsb.swingclient.JmsService">
+    <property name="jmsTemplate" ref="jmsTemplate" />
+  </bean>
+
+</beans>
