@@ -31,17 +31,17 @@ import javax.xml.transform.TransformerException;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
-import org.openengsb.core.endpoints.RPCEndpoint;
+import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
 import org.openengsb.util.serialization.SerializationException;
 
 public class ContextHelperImpl implements ContextHelper {
 
-    private final RPCEndpoint<?> endpoint;
+    private final OpenEngSBEndpoint endpoint;
     private final String contextId;
 
-    public ContextHelperImpl(RPCEndpoint<?> endpoint, String contextId) {
+    public ContextHelperImpl(OpenEngSBEndpoint endpoint, String contextId) {
         this.endpoint = endpoint;
         this.contextId = contextId;
     }

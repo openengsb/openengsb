@@ -149,6 +149,8 @@ public class ContextStore {
     }
 
     private void loadDefaultConfig() {
+        setValue("42/event/defaultTarget/namespace", "urn:openengsb:drools");
+        setValue("42/event/defaultTarget/servicename", "droolsService");
         setValue("42/issue/namespace", "urn:openengsb:issues");
         setValue("42/issue/servicename", "issuesService");
         setValue("42/notification/namespace", "urn:openengsb:notification");

@@ -17,10 +17,7 @@
  */
 package org.openengsb.core.endpoints;
 
-import java.util.UUID;
-
 import javax.jbi.messaging.ExchangeStatus;
-import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
@@ -30,7 +27,6 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
-import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.contextcommon.ContextHelperImpl;
 import org.openengsb.core.model.InvocationFailedException;
@@ -97,16 +93,4 @@ public abstract class RPCEndpoint<T> extends OpenEngSBEndpoint {
         out.setContent(toSource(returnValue));
     }
 
-    protected void forwardMessage(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out, QName service)
-            throws MessagingException {
-        InOut inout = new InOutImpl(UUID.randomUUID().toString());
-        inout.setService(service);
-        inout.setInMessage(in);
-        inout.setOperation(exchange.getOperation());
-
-        sendSync(inout);
-
-        NormalizedMessage outMessage = inout.getOutMessage();
-        out.setContent(outMessage.getContent());
-    }
 }

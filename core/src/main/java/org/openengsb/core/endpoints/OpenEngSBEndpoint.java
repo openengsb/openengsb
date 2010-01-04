@@ -1,5 +1,8 @@
 package org.openengsb.core.endpoints;
 
+import java.util.UUID;
+
+import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
@@ -13,6 +16,7 @@ import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
@@ -61,5 +65,18 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
     protected String getContextId(NormalizedMessage in) {
         return (String) in.getProperty("contextId");
+    }
+
+    protected void forwardMessage(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out, QName service)
+            throws MessagingException {
+        InOut inout = new InOutImpl(UUID.randomUUID().toString());
+        inout.setService(service);
+        inout.setInMessage(in);
+        inout.setOperation(exchange.getOperation());
+
+        sendSync(inout);
+
+        NormalizedMessage outMessage = inout.getOutMessage();
+        out.setContent(outMessage.getContent());
     }
 }
