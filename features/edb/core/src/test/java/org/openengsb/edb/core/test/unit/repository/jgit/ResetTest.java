@@ -47,9 +47,8 @@ import org.openengsb.util.Prelude;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:edbBeans.xml" })
+@ContextConfiguration(locations = { "classpath*:testBeans.xml" })
 public class ResetTest {
 
     private Reset reset;

@@ -43,7 +43,7 @@ import org.openengsb.util.IO;
 public class SearcherTest extends ATestStub {
 
     private static List<GenericContent> content;
-    private static final String PATH = "dump";
+    private static final String PATH = "target/dump";
     private static final int GC_COUNT = 2000;
     private static final int FIELD_COUNT = 50;
     private static final int STUPID_ITERATIONS = 3;
@@ -136,7 +136,7 @@ public class SearcherTest extends ATestStub {
     }
 
     @Test
-	@Ignore
+    @Ignore
     public void testSearchExactMatch() {
         this.term = SearcherTest.KEY1 + ":" + SearcherTest.PREFIX;
         this.result = this.searcher.search(this.term);

@@ -41,9 +41,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:edbBeans.xml" })
+@ContextConfiguration(locations = { "classpath*:testBeans.xml" })
 public class EDBHandlerPerfTest {
 
     @Resource
@@ -51,7 +50,7 @@ public class EDBHandlerPerfTest {
 
     private EDBHandler handler;
 
-    private UUID uuid = UUID.randomUUID();
+    private final UUID uuid = UUID.randomUUID();
     private GenericContent content;
 
     private String repoBase;
@@ -63,8 +62,7 @@ public class EDBHandlerPerfTest {
         handler = factory.loadDefaultRepository();
         repoBase = handler.getRepositoryBase().getAbsolutePath();
 
-        content = new GenericContent(repoBase, new String[] { "myKey" }, new String[] { "myValue" },
-                uuid);
+        content = new GenericContent(repoBase, new String[] { "myKey" }, new String[] { "myValue" }, uuid);
 
         handler.add(Arrays.asList(content));
     }

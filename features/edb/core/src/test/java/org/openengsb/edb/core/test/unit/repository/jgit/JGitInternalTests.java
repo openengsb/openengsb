@@ -40,7 +40,6 @@ import org.spearce.jgit.lib.Tree;
 import org.spearce.jgit.lib.TreeEntry;
 import org.spearce.jgit.lib.GitIndex.Entry;
 
-
 /**
  * Internal Tests of JGit showing and testing the behaviour of JGit and for
  * regular regression to test if anything changed in the way jgit works.
@@ -57,7 +56,7 @@ public class JGitInternalTests {
         StringBuilder pathBuilder = new StringBuilder();
 
         pathBuilder.append(System.getProperty("user.dir"));
-        pathBuilder.append(File.separator).append("repo");
+        pathBuilder.append(File.separator).append("target").append(File.separator).append("repo");
 
         this.repoPath = pathBuilder.toString();
 

@@ -44,7 +44,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:edbBeans.xml" })
+@ContextConfiguration(locations = { "classpath*:testBeans.xml" })
 public class EDBHandlerTest {
 
     private static final String[] ABSTRACT_PATH = new String[] { "x", "y", "z" };
@@ -64,7 +64,7 @@ public class EDBHandlerTest {
 
     @Before
     public void setUp() throws Exception {
-        this.handler  = this.factory.loadDefaultRepository();
+        this.handler = this.factory.loadDefaultRepository();
         this.repoBase = this.handler.getRepositoryBase().getAbsolutePath();
 
         this.content = new GenericContent(this.repoBase, new String[] { "myKey" }, new String[] { "myValue" },
@@ -215,23 +215,23 @@ public class EDBHandlerTest {
 
     }
 
-//    @Test
-//    public void testFoo() throws Exception {
-//        setupMoreCommits();
-//        List<GenericContent> result = this.handler.queryNodes(
-//        								Arrays.asList(
-//        									new String[] { "customer", "project" }
-//        								)
-//        							);
-//        assertEquals(1, result.size());
-//        List<String> results = new ArrayList<String>();
-//        // collect results
-//        results.add(result.get((0)).getProperty("name"));
-//
-//        assertTrue(results.contains("c"));
-//
-//    }
-    
+    // @Test
+    // public void testFoo() throws Exception {
+    // setupMoreCommits();
+    // List<GenericContent> result = this.handler.queryNodes(
+    // Arrays.asList(
+    // new String[] { "customer", "project" }
+    // )
+    // );
+    // assertEquals(1, result.size());
+    // List<String> results = new ArrayList<String>();
+    // // collect results
+    // results.add(result.get((0)).getProperty("name"));
+    //
+    // assertTrue(results.contains("c"));
+    //
+    // }
+
     /**
      * @param factory the factory to set
      */

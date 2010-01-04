@@ -38,11 +38,10 @@ import org.openengsb.edb.core.search.lucene.LuceneSearcher;
 import org.openengsb.edb.core.test.unit.lucene.ATestStub;
 import org.openengsb.util.IO;
 
-
 public class SearcherPerfTest extends ATestStub {
 
     private static List<GenericContent> content;
-    private static final String PATH = "dump";
+    private static final String PATH = "target/dump";
     private static final int GC_COUNT = 2000;
     private static final int FIELD_COUNT = 50;
     private static final int STUPID_ITERATIONS = 3;

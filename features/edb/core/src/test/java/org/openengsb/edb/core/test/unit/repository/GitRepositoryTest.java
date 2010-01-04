@@ -24,7 +24,6 @@ import org.openengsb.edb.core.repository.Repository;
 import org.openengsb.edb.core.repository.RepositoryFactory;
 import org.openengsb.edb.core.repository.jgit.GitRepositoryFactory;
 
-
 /**
  * Tests to check if the repository wrapper works correctly.
  */
@@ -33,9 +32,9 @@ public class GitRepositoryTest {
     @Test
     public void testGitCommit() throws Exception {
         RepositoryFactory fact = new GitRepositoryFactory();
-        Repository repo = fact.loadRepository("testRepo");
+        Repository repo = fact.loadRepository("target/testRepo");
 
-        GenericContent content = new GenericContent("testRepo", new String[] { "path1", "path2", "path3", },
+        GenericContent content = new GenericContent("target/testRepo", new String[] { "path1", "path2", "path3", },
                 new String[] { "a", "b", "c", });
         content.store();
 
