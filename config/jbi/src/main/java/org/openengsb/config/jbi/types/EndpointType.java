@@ -29,6 +29,11 @@ public class EndpointType {
     	readResolve();
     }
 
+    public EndpointType(String name) {
+        this();
+        this.name = name;
+    }
+
     private Object readResolve() {
     	if (attributes == null) {
 			attributes = new ArrayList<AbstractType>();
@@ -61,5 +66,9 @@ public class EndpointType {
 
     public void setProperties(List<AbstractType> properties) {
         this.properties = properties;
+    }
+
+    public void addAttribute(AbstractType attribute) {
+        attributes.add(attribute);
     }
 }

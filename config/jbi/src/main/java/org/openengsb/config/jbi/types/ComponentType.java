@@ -32,6 +32,14 @@ public class ComponentType {
     	readResolve();
     }
 
+    public ComponentType(String name, String nsname, String namespace, boolean bindingComponent) {
+        this.name = name;
+        this.nsname = nsname;
+        this.namespace = namespace;
+        this.bindingComponent = bindingComponent;
+        readResolve();
+    }
+
     private Object readResolve() {
     	if (endpoints == null) {
 			endpoints = new ArrayList<EndpointType>();
@@ -107,5 +115,9 @@ public class ComponentType {
     public void setBeans(List<BeanType> beans) {
     	System.out.println(beans);
         this.beans = beans;
+    }
+
+    public void addEndpoint(EndpointType e) {
+        endpoints.add(e);
     }
 }

@@ -20,4 +20,8 @@ package org.openengsb.config.jbi.types;
 public class EndpointNameType extends AbstractType {
     public EndpointNameType() {
     }
+
+    public EndpointNameType(String name, boolean optional, int maxLength, String defaultValue) {
+        super(name, optional, maxLength, defaultValue);
+    }
 }

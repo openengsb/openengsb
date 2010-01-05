@@ -24,7 +24,13 @@ public abstract class AbstractType {
     private String defaultValue;
 
     public AbstractType() {
+    }
 
+    public AbstractType(String name, boolean optional, int maxLength, String defaultValue) {
+        this.name = name;
+        this.optional = optional;
+        this.maxLength = maxLength;
+        this.defaultValue = defaultValue;
     }
 
     public String getName() {
