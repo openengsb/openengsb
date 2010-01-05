@@ -89,6 +89,7 @@ public class ServiceUnitInfoTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void toZip_holdsXBeanAndJbiFile() throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         sui.toZip(out);
