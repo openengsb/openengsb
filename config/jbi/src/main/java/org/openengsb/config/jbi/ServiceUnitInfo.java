@@ -89,7 +89,7 @@ public class ServiceUnitInfo {
         Document doc = docBuilder.newDocument();
 
         Element beans = doc.createElement("beans");
-        beans.setAttribute("xmlns:"+component.getNsname(), component.getNamespace());
+        beans.setAttribute("xmlns:" + component.getNsname(), component.getNamespace());
         doc.appendChild(beans);
 
         for (EndpointInfo e : endpoints) {
@@ -130,26 +130,28 @@ public class ServiceUnitInfo {
      * Creates the service unit zip, containing the jbi.xml and xbean.xml file.
      */
     public void toZip(OutputStream os) throws IOException {
+        ZipOutputStream zip = new ZipOutputStream(os);
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+
         try {
-            ZipOutputStream zip = new ZipOutputStream(os);
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-
-            Document xbean = createXBeanXml();
-            outputXml(xbean, bout);
-            zip.putNextEntry(new ZipEntry("xbean.xml"));
-            zip.write(bout.toByteArray());
-            zip.closeEntry();
-
-            bout = new ByteArrayOutputStream();
-            Document jbi = createJbiXml();
-            outputXml(jbi, bout);
-            zip.putNextEntry(new ZipEntry("META-INF/jbi.xml"));
-            zip.write(bout.toByteArray());
-            zip.closeEntry();
-            zip.close();
+            outputXml(createXBeanXml(), bout);
         } catch (Exception e) {
             throw new IOException(e);
         }
+        zip.putNextEntry(new ZipEntry("xbean.xml"));
+        zip.write(bout.toByteArray());
+        zip.closeEntry();
+
+        bout = new ByteArrayOutputStream();
+        try {
+            outputXml(createJbiXml(), bout);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
+        zip.putNextEntry(new ZipEntry("META-INF/jbi.xml"));
+        zip.write(bout.toByteArray());
+        zip.closeEntry();
+        zip.close();
     }
 
     private void outputXml(Node xml, OutputStream out) throws TransformerFactoryConfigurationError,
