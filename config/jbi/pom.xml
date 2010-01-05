@@ -34,7 +34,7 @@
   <packaging>jar</packaging>
 
   <description>
-  	JBI components reader and SU/SA writer.
+    JBI components reader and SU/SA writer.
 	</description>
 
   <dependencies>
