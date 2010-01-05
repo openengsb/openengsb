@@ -62,6 +62,7 @@ public class ServiceAssemblyInfoTest {
         Node node = (Node) x.evaluate("/jbi/service-assembly/service-unit", doc.getDocumentElement(),
                 XPathConstants.NODE);
         assertThat(node, notNullValue());
+        assertThat(x.evaluate("identification", node, XPathConstants.NODE), notNullValue());
         assertThat(x.evaluate("target/artifacts-zip", node), is(sa.getServiceUnits().get(0).getIdentifier() + ".zip"));
     }
 }

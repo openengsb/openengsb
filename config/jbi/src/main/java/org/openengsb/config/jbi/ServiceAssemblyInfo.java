@@ -117,6 +117,7 @@ public class ServiceAssemblyInfo {
 
     private Node createServiceUnit(Document doc, ServiceUnitInfo info) {
         Node su = doc.createElement("service-unit");
+        su.appendChild(createIdentification(doc, info.getIdentifier(), ""));
         Node target = doc.createElement("target");
         su.appendChild(target);
         target.appendChild(doc.createElement("artifacts-zip")).appendChild(
