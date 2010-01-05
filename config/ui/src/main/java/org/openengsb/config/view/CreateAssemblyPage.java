@@ -88,7 +88,7 @@ public class CreateAssemblyPage extends BasePage {
                 names.add(c.getName() + ":" + e.getName());
             }
             for (BeanType b : c.getBeans()) {
-            	names.add(c.getName() + ":" + b.getClazz());
+                names.add(c.getName() + ":" + b.getClazz());
             }
         }
         DropDownChoice<String> choice = new DropDownChoice<String>("suSelect", new PropertyModel<String>(this,

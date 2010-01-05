@@ -43,22 +43,22 @@ public class BeanEditorPage extends BasePage {
         FieldInfos fi = null;
         ArrayList<AbstractType> fields = new ArrayList<AbstractType>();
         if (endpoint != null) {
-        	fields.addAll(endpoint.getAttributes());
-        	fields.addAll(endpoint.getProperties());
-        	fi = new FieldInfos(endpoint.getName(), fields);
+            fields.addAll(endpoint.getAttributes());
+            fields.addAll(endpoint.getProperties());
+            fi = new FieldInfos(endpoint.getName(), fields);
         } else {
-        	fields.addAll(bean.getProperties());
-        	fi = new FieldInfos(bean.getClazz(), fields);
+            fields.addAll(bean.getProperties());
+            fi = new FieldInfos(bean.getClazz(), fields);
         }
 
         EditorPanel editor = new EditorPanel("editor", desc.getName(), fi) {
             @Override
             public void onSubmit() {
-            	if (endpoint != null) {
-            		assemblyService.getServiceUnits().add(new ServiceUnitInfo(desc, endpoint, getValues()));
-            	} else {
-            		assemblyService.getBeans().add(new BeanInfo(bean, getValues()));
-            	}
+                if (endpoint != null) {
+                    assemblyService.getServiceUnits().add(new ServiceUnitInfo(desc, endpoint, getValues()));
+                } else {
+                    assemblyService.getBeans().add(new BeanInfo(bean, getValues()));
+                }
                 RequestCycle.get().setResponsePage(CreateAssemblyPage.class);
             }
         };

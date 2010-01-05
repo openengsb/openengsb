@@ -20,7 +20,6 @@ package org.openengsb.config.service;
 import java.io.File;
 import java.util.List;
 
-import org.apache.wicket.Component;
 import org.openengsb.config.jbi.BeanInfo;
 import org.openengsb.config.jbi.ServiceUnitInfo;
 
