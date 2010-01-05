@@ -38,7 +38,7 @@ public class ServiceAssemblyCreator {
 
         for (ServiceUnitInfo su : sa.getServiceUnits()) {
             bout = new ByteArrayOutputStream();
-            ServiceUnitCreator.createServiceUnit(bout, su);
+            su.toZip(bout);
             zip.putNextEntry(new ZipEntry(su.getIdentifier()+".zip"));
             zip.write(bout.toByteArray());
             zip.closeEntry();
