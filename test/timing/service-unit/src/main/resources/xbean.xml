@@ -16,11 +16,11 @@
    limitations under the License.
 
 -->
-<beans xmlns:quartz="http://servicemix.apache.org/quartz/1.0" xmlns:routing="urn:openengsb:routing" xmlns:timing="urn:openengsb:timing"
+<beans xmlns:quartz="http://servicemix.apache.org/quartz/1.0" xmlns:ntf="urn:openengsb:notification" xmlns:routing="urn:openengsb:routing" xmlns:timing="urn:openengsb:timing"
   xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
     http://servicemix.apache.org/quartz/1.0 http://servicemix.apache.org/schema/servicemix-quartz-2008.01.xsd">
 
-  <quartz:endpoint endpoint="endpoint" service="timing:DummyTimer" targetService="routing:CIWorkflow">
+  <quartz:endpoint endpoint="endpoint" service="timing:DummyTimer" targetOperation="event" targetService="ntf:eventService">
     <quartz:triggers>
       <quartz:simple repeatCount="5" repeatInterval="10000" />
     </quartz:triggers>

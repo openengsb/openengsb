@@ -28,11 +28,9 @@ import java.util.Properties;
 
 import javax.jbi.JBIException;
 import javax.jbi.management.DeploymentException;
-import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.jbi.messaging.MessageExchange.Role;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
@@ -42,7 +40,7 @@ import org.drools.RuleBase;
 import org.drools.agent.RuleAgent;
 import org.drools.compiler.RuleBaseLoader;
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.endpoints.DirectMessageHandlingEndpoint;
+import org.openengsb.core.endpoints.EventEndpoint;
 import org.openengsb.core.model.Event;
 import org.springframework.core.io.Resource;
 
@@ -50,7 +48,7 @@ import org.springframework.core.io.Resource;
  * @org.apache.xbean.XBean element="droolsEndpoint"
  *                         description="Drools Component"
  */
-public class DroolsEndpoint extends DirectMessageHandlingEndpoint<Object> {
+public class DroolsEndpoint extends EventEndpoint {
 
     /**
      * Pointer to the rulebase.
@@ -84,6 +82,12 @@ public class DroolsEndpoint extends DirectMessageHandlingEndpoint<Object> {
     public DroolsEndpoint(ServiceUnit su, QName service, String endpoint) {
         super(su, service, endpoint);
         init();
+    }
+
+    @Override
+    protected void handleEvent(MessageExchange exchange, NormalizedMessage in, ContextHelper contextHelper)
+            throws MessagingException {
+        drools(exchange);
     }
 
     private void init() {
@@ -184,14 +188,6 @@ public class DroolsEndpoint extends DirectMessageHandlingEndpoint<Object> {
         }
     }
 
-    @Override
-    protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
-            ContextHelper contextHelper) throws Exception {
-        if (exchange.getRole() == Role.PROVIDER && exchange.getStatus() == ExchangeStatus.ACTIVE) {
-            drools(exchange);
-        }
-    }
-
     /**
      * handle the MessageExchange with drools.
      * 
@@ -207,13 +203,4 @@ public class DroolsEndpoint extends DirectMessageHandlingEndpoint<Object> {
         drools.start();
     }
 
-    @Override
-    public void sendSync(MessageExchange me) throws MessagingException {
-        super.sendSync(me);
-    }
-
-    @Override
-    protected Object getImplementation(ContextHelper contextHelper) {
-        return null;
-    }
 }

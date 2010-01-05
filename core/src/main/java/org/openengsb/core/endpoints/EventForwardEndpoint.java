@@ -29,8 +29,8 @@ public class EventForwardEndpoint extends EventEndpoint {
     @Override
     protected void handleEvent(MessageExchange exchange, NormalizedMessage in, ContextHelper contextHelper)
             throws MessagingException {
-        String servicename = contextHelper.getValue("event/defaultTarget/servicename");
         String namespace = contextHelper.getValue("event/defaultTarget/namespace");
+        String servicename = contextHelper.getValue("event/defaultTarget/servicename");
         QName service = new QName(namespace, servicename);
         forwardInOnlyMessage(exchange, in, service);
     }

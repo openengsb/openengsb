@@ -50,7 +50,7 @@ public class EventHelper {
             String domain = event.getDomain();
 
             String namespace = contextHelper.getValue(domain + "/namespace");
-            String servicename = contextHelper.getValue(domain + "/servicename");
+            String servicename = contextHelper.getValue(domain + "/event/servicename");
 
             QName service = new QName(namespace, servicename);
             InOnly inOnly = new InOnlyImpl(UUID.randomUUID().toString());

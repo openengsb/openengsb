@@ -151,11 +151,15 @@ public class ContextStore {
     private void loadDefaultConfig() {
         setValue("42/event/defaultTarget/namespace", "urn:openengsb:drools");
         setValue("42/event/defaultTarget/servicename", "droolsService");
+
         setValue("42/issue/namespace", "urn:openengsb:issues");
         setValue("42/issue/servicename", "issuesService");
+
         setValue("42/notification/namespace", "urn:openengsb:notification");
         setValue("42/notification/servicename", "notificationService");
+        setValue("42/notification/event/servicename", "eventService");
         setValue("42/notification/default", "email");
+
         setValue("42/notification/email/namespace", "urn:openengsb:email");
         setValue("42/notification/email/servicename", "emailService");
         setValue("42/notification/email/config/mail.smtp.auth", "true");

@@ -31,6 +31,9 @@ import org.drools.agent.RuleAgent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.model.Event;
+import org.openengsb.core.transformation.Transformer;
+import org.openengsb.util.serialization.SerializationException;
 
 public class HotplugDrool {
 
@@ -72,34 +75,28 @@ public class HotplugDrool {
 
     @Test
     public void testGuvnorConnect() throws Exception {
-
         InOnly me = client.createInOnlyExchange();
         me.setService(new QName("drools"));
-        me.getInMessage().setContent(new StringSource("<event><name>hello</name></event>"));
-        me.getInMessage().setProperty("prop", Boolean.TRUE);
-        client.sendSync(me, 1000);
+        me.getInMessage().setContent(new StringSource(getEvent()));
+        client.sendSync(me);
+    }
 
-        // Source answer = client.receive(1000).getMessage("out").getContent();
-        // System.out.println("answer" + answer);
+    private String getEvent() {
+        try {
+            Event event = new Event("domain", "name");
+            event.setValue("foo", 42);
+            return Transformer.toXml(event);
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
     public void testGuvnorAction() throws Exception {
         InOnly me = client.createInOnlyExchange();
         me.setService(new QName("drools"));
-        me.getInMessage().setContent(new StringSource("<event><name>checkout</name></event>"));
-        me.getInMessage().setProperty("prop", Boolean.TRUE);
-        client.sendSync(me, 1000);
-    }
-
-    @Test
-    public void testBuildBreak() throws Exception {
-        InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("drools"));
-        me.getInMessage()
-                .setContent(new StringSource("<event><name>buildbreak</name><contextId>5</contextId></event>"));
-        me.getInMessage().setProperty("prop", Boolean.TRUE);
-        client.sendSync(me, 1000);
+        me.getInMessage().setContent(new StringSource(getEvent()));
+        client.sendSync(me);
     }
 
 }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/**
 
    Copyright 2009 OpenEngSB Division, Vienna University of Technology
 
@@ -14,13 +13,16 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+   
+ */
+package org.openengsb.notification;
 
--->
-<beans xmlns:notification="http://www.openengsb.org/domain/notification/1.0" xmlns:ntf="urn:openengsb:notification"
-  xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+import org.openengsb.core.endpoints.EventForwardEndpoint;
 
-  <notification:notificationEndpoint endpoint="notificationEndpoint" service="ntf:notificationService" />
-  <notification:eventEndpoint endpoint="eventEndpoint" service="ntf:eventService" />
+/**
+ * @org.apache.xbean.XBean element="eventEndpoint"
+ *                         description="Notification event endpoint"
+ */
+public class NotificationEventEndpoint extends EventForwardEndpoint {
 
-</beans>
+}

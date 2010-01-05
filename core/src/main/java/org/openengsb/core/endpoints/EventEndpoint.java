@@ -21,13 +21,27 @@ import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.resource.spi.IllegalStateException;
 import javax.xml.namespace.QName;
 
+import org.apache.servicemix.common.DefaultComponent;
+import org.apache.servicemix.common.ServiceUnit;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.contextcommon.ContextHelperImpl;
 
 public abstract class EventEndpoint extends OpenEngSBEndpoint {
+
+    public EventEndpoint() {
+    }
+
+    public EventEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
+        super(component, endpoint);
+    }
+
+    public EventEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
+        super(serviceUnit, service, endpoint);
+    }
 
     @Override
     protected void processInOnly(MessageExchange exchange, NormalizedMessage in) throws Exception {
