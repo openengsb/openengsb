@@ -31,7 +31,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
 import org.openengsb.config.jbi.BeanInfo;
-import org.openengsb.config.jbi.ServiceAssemblyCreator;
 import org.openengsb.config.jbi.ServiceAssemblyInfo;
 import org.openengsb.config.jbi.ServiceUnitInfo;
 import org.openengsb.config.jbi.types.BeanType;
@@ -101,8 +100,9 @@ public class CreateAssemblyPage extends BasePage {
         try {
             File tmp = File.createTempFile("openengsb", ".zip");
             FileOutputStream fos = new FileOutputStream(tmp);
-            ServiceAssemblyCreator.createServiceAssembly(fos, new ServiceAssemblyInfo("openengsb-test", assemblyService
-                    .getServiceUnits(), assemblyService.getBeans()));
+            ServiceAssemblyInfo sa = new ServiceAssemblyInfo("openengsb-test", assemblyService
+                    .getServiceUnits(), assemblyService.getBeans());
+            sa.toZip(fos);
             assemblyService.deploy(tmp, "openengsb-test-sa.zip");
             assemblyService.createNewAssembly();
         } catch (IOException e) {
