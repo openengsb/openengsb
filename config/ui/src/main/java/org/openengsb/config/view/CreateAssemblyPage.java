@@ -60,7 +60,7 @@ public class CreateAssemblyPage extends BasePage {
             @Override
             protected void populateItem(ListItem<ServiceUnitInfo> item) {
                 ServiceUnitInfo su = item.getModelObject();
-                item.add(new Label("name", su.getComponent().getName() + ":" + su.getEndpoint().getName() + ":" + su.getMap().get("service") + ":" + su.getMap().get("endpoint")));
+                item.add(new Label("name", su.getIdentifier()));
             }
         };
         add(suListView);
