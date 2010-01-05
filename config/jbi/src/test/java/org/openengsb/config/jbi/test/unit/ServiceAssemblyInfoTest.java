@@ -39,6 +39,7 @@ import org.w3c.dom.Node;
 
 public class ServiceAssemblyInfoTest {
     @Test
+    @SuppressWarnings("unchecked")
     public void toZip_shouldContainJbiXmlAndSUZips() throws Exception {
         ServiceAssemblyInfo sa = Fixtures.createSAI();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
