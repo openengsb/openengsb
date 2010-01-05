@@ -28,6 +28,11 @@ public class BeanType {
     	readResolve();
     }
 
+    public BeanType(String clazz) {
+        this.clazz = clazz;
+        readResolve();
+    }
+
     private Object readResolve() {
     	if (properties == null) {
 			properties = new ArrayList<AbstractType>();
@@ -49,5 +54,9 @@ public class BeanType {
 
     public void setProperties(List<AbstractType> properties) {
         this.properties = properties;
+    }
+
+    public void addProperty(AbstractType p) {
+        properties.add(p);
     }
 }

@@ -120,4 +120,8 @@ public class ComponentType {
     public void addEndpoint(EndpointType e) {
         endpoints.add(e);
     }
+
+    public void addBean(BeanType b) {
+        beans.add(b);
+    }
 }

@@ -23,6 +23,10 @@ public class RefType extends AbstractType {
     public RefType() {
     }
 
+    public RefType(String name, boolean optional, int maxLength, String defaultValue) {
+        super(name, optional, maxLength, defaultValue);
+    }
+
     public String getTheClass() {
         return theClass;
     }

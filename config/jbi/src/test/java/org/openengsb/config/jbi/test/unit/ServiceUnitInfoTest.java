@@ -44,7 +44,7 @@ public class ServiceUnitInfoTest {
     @Before
     public void setup() throws ParserConfigurationException {
         sui = Fixtures.createSUI();
-        doc = sui.createXBeanXml();
+        doc = sui.createXBeanXml(Fixtures.createSAI());
         x = Fixtures.newXPath();
     }
 
@@ -62,6 +62,12 @@ public class ServiceUnitInfoTest {
 	}
 
     @Test
+    public void toXBeanXml_shouldAddBeans() throws Exception {
+        String s = x.evaluate("/beans/bean/@id", doc.getDocumentElement());
+        assertThat(s, is("thebean"));
+    }
+
+    @Test
     public void toJbiXml_shouldAddBindingComponentAttribute() throws Exception {
         Document doc = sui.createJbiXml();
         String s = x.evaluate("/jbi/services/@binding-component", doc.getDocumentElement());
@@ -72,7 +78,7 @@ public class ServiceUnitInfoTest {
     @SuppressWarnings("unchecked")
     public void toZip_holdsXBeanAndJbiFile() throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        sui.toZip(out);
+        sui.toZip(Fixtures.createSAI(), out);
         ZipInputStream zip = new ZipInputStream(new ByteArrayInputStream(out.toByteArray()));
         ZipEntry e1 = zip.getNextEntry();
         ZipEntry e2 = zip.getNextEntry();

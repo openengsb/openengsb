@@ -56,8 +56,21 @@ public class EndpointType {
         return attributes;
     }
 
+    public AbstractType getAttribute(String name) {
+        for (AbstractType a : attributes) {
+            if (a.getName().equals(name)) {
+                return a;
+            }
+        }
+        return null;
+    }
+
     public void setAttributes(List<AbstractType> attributes) {
         this.attributes = attributes;
+    }
+
+    public void addAttribute(AbstractType attribute) {
+        attributes.add(attribute);
     }
 
     public List<AbstractType> getProperties() {
@@ -66,9 +79,5 @@ public class EndpointType {
 
     public void setProperties(List<AbstractType> properties) {
         this.properties = properties;
-    }
-
-    public void addAttribute(AbstractType attribute) {
-        attributes.add(attribute);
     }
 }

@@ -21,6 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -36,7 +37,9 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.ComponentType;
+import org.openengsb.config.jbi.types.RefType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -82,7 +85,7 @@ public class ServiceUnitInfo {
     /**
      * Creates the XBean xml document, containing all endpoints.
      */
-    public Document createXBeanXml() throws ParserConfigurationException {
+    public Document createXBeanXml(ServiceAssemblyInfo saInfo) throws ParserConfigurationException {
         DocumentBuilderFactory fac = DocumentBuilderFactory.newInstance();
         fac.setNamespaceAware(true);
         DocumentBuilder docBuilder = fac.newDocumentBuilder();
@@ -92,11 +95,34 @@ public class ServiceUnitInfo {
         beans.setAttribute("xmlns:" + component.getNsname(), component.getNamespace());
         doc.appendChild(beans);
 
+        List<String> beanRefs = Lists.newArrayList();
+
         for (EndpointInfo e : endpoints) {
             Element node = doc.createElementNS(component.getNamespace(), e.getEndpointType().getName());
             beans.appendChild(node);
             for (Map.Entry<String, String> entry : e.getMap().entrySet()) {
                 node.setAttribute(entry.getKey(), entry.getValue());
+                AbstractType type = e.getEndpointType().getAttribute(entry.getKey());
+                if (type.getClass().equals(RefType.class)) {
+                    beanRefs.add(entry.getValue());
+                }
+            }
+        }
+
+        for (String ref : beanRefs) {
+            BeanInfo bean = saInfo.getBean(ref);
+            Element node = doc.createElement("bean");
+            beans.appendChild(node);
+            node.setAttribute("id", bean.getMap().get("id"));
+            node.setAttribute("class", bean.getBeanType().getClazz());
+            for (Map.Entry<String, String> entry : bean.getMap().entrySet()) {
+                if (entry.getKey().equals("id")) {
+                    continue;
+                }
+                Element p = doc.createElement("property");
+                node.appendChild(p);
+                p.setAttribute("name", entry.getKey());
+                p.setAttribute("value", entry.getValue());
             }
         }
 
@@ -129,12 +155,12 @@ public class ServiceUnitInfo {
     /**
      * Creates the service unit zip, containing the jbi.xml and xbean.xml file.
      */
-    public void toZip(OutputStream os) throws IOException {
+    public void toZip(ServiceAssemblyInfo saInfo, OutputStream os) throws IOException {
         ZipOutputStream zip = new ZipOutputStream(os);
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
 
         try {
-            outputXml(createXBeanXml(), bout);
+            outputXml(createXBeanXml(saInfo), bout);
         } catch (Exception e) {
             throw new IOException(e);
         }

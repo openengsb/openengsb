@@ -72,6 +72,15 @@ public class ServiceAssemblyInfo {
         return beans;
     }
 
+    public BeanInfo getBean(String name) {
+        for (BeanInfo b : beans) {
+            if (b.getMap().get("id").equals(name)) {
+                return b;
+            }
+        }
+        return null;
+    }
+
     public void addBean(BeanInfo bean) {
         beans.add(bean);
     }
@@ -132,7 +141,7 @@ public class ServiceAssemblyInfo {
 
         for (ServiceUnitInfo su : getServiceUnits()) {
             bout = new ByteArrayOutputStream();
-            su.toZip(bout);
+            su.toZip(this, bout);
             zip.putNextEntry(new ZipEntry(su.getIdentifier() + ".zip"));
             zip.write(bout.toByteArray());
             zip.closeEntry();
