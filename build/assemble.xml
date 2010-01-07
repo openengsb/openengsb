@@ -25,19 +25,14 @@
     <format>zip</format>
   </formats>
   <baseDirectory>openengsb-${project.version}</baseDirectory>
-  <dependencySets>
-    <dependencySet>
-      <outputDirectory>jetty</outputDirectory>
-      <useProjectArtifact>false</useProjectArtifact>
-      <unpack>true</unpack>
-      <scope>runtime</scope>
-      <includes>
-        <include>org.mortbay.jetty:jetty-zip</include>
-      </includes>
-    </dependencySet>
-  </dependencySets>
-
   <fileSets>
+    <fileSet>
+      <directory>${project.basedir}/target/jetty</directory>
+      <outputDirectory>jetty</outputDirectory>
+      <includes>
+        <include>**</include>
+      </includes>
+    </fileSet>
     <fileSet>
       <directory>${project.basedir}/../package/embedded/target</directory>
       <outputDirectory>jetty/webapps</outputDirectory>
