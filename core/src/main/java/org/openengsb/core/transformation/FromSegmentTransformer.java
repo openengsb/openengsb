@@ -72,6 +72,7 @@ class FromSegmentTransformer {
         List<Segment> list = new ArrayList<Segment>(ls.getList());
 
         String eventType = ((TextSegment) list.remove(0)).getText();
+        ListSegment superClasses = (ListSegment) list.remove(0);
         String eventName = ((TextSegment) list.remove(0)).getText();
         String domain = ((TextSegment) list.remove(0)).getText();
         String toolConnector = null;
@@ -79,7 +80,8 @@ class FromSegmentTransformer {
             toolConnector = ((TextSegment) list.remove(0)).getText();
         }
 
-        Event event = createEvent(eventType, eventName, domain, toolConnector);
+        Class<?> eventClass = getEventClass(eventType, superClasses.getList());
+        Event event = createEvent(eventClass, eventName, domain, toolConnector);
         transformEventElements(list, event);
 
         for (String key : event.getKeys()) {
@@ -105,9 +107,8 @@ class FromSegmentTransformer {
         }
     }
 
-    private Event createEvent(String type, String name, String domain, String toolConnector) {
+    private Event createEvent(Class<?> eventClass, String name, String domain, String toolConnector) {
         try {
-            Class<?> eventClass = getClassForType(type);
 
             Constructor<?> noArgConstructor = eventClass.getDeclaredConstructor();
             boolean accessible = noArgConstructor.isAccessible();
@@ -125,6 +126,18 @@ class FromSegmentTransformer {
             throw new RuntimeException(e);
         }
 
+    }
+
+    private Class<?> getEventClass(String type, List<Segment> superclasses) {
+        try {
+            return Class.forName(type);
+        } catch (ClassNotFoundException e) {
+            if (superclasses.isEmpty()) {
+                throw new RuntimeException(e);
+            }
+            String superType = ((TextSegment) superclasses.get(0)).getText();
+            return getEventClass(superType, superclasses.subList(1, superclasses.size()));
+        }
     }
 
     private String extractMethodName(Segment method) {

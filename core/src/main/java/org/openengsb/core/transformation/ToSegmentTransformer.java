@@ -63,6 +63,7 @@ class ToSegmentTransformer {
     Segment transform(Event event) {
         List<Segment> list = new ArrayList<Segment>();
         list.add(new TextSegment.Builder("event").text(event.getClass().getName()).build());
+        list.add(getSuperClasses(event));
         list.add(new TextSegment.Builder("name").text(event.getName()).build());
         list.add(new TextSegment.Builder("domain").text(event.getDomain()).build());
 
@@ -79,6 +80,16 @@ class ToSegmentTransformer {
         ListSegment listSegment = new ListSegment.Builder("event").list(list).build();
 
         return listSegment;
+    }
+
+    private Segment getSuperClasses(Event event) {
+        List<Segment> superclasses = new ArrayList<Segment>();
+        Class<?> superClass = event.getClass().getSuperclass();
+        while (superClass != null) {
+            superclasses.add(new TextSegment.Builder("superclass").text(superClass.getName()).build());
+            superClass = superClass.getSuperclass();
+        }
+        return new ListSegment.Builder("superclasses").list(superclasses).build();
     }
 
     private List<Segment> valueToSegment(String name, Class<?> type, Object obj) {
