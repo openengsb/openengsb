@@ -16,5 +16,5 @@
 #
 
 cd $(dirname $0)/.. 
-mvn install -Plicense-check -DskipTests=true
+mvn validate -Plicense-check -DskipTests=true
 
