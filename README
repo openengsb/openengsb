@@ -25,10 +25,11 @@ Scripts which help you to create projects, run the workspace and so on are store
 == Assembly ==
 To assemble the project and build a distributable form of it run 
 
-mvn package -Pdocs,all-test,license-check 
+mvn package -Pintegration-test,license-check,docs
 
 in the root folder and then change to the folder 'build' and run 
 
+mvn dependency:unpack
 mvn assembly:assembly
 
 Now in the target directory of the build folder a zip file is created that contains a distributable form of the project. Furthermore you can use the shell script in the build folder called 'assemble.sh', which automates the steps explained above.

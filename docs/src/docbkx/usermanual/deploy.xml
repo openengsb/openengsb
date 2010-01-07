@@ -30,8 +30,9 @@
     <para>
       To create a distributable form of the OpenEngSB simply issue the following commands in the root directory of the project.
       <programlisting>
-        > mvn package -Pall-test,license-check,docs
+        > mvn package -Pintegration-test,license-check,docs
         > cd build
+        > mvn dependency:unpack
         > mvn assembly:assembly
       </programlisting> 
       Then a zip file is created in the folder build/target. The structure of the zip is explained in the following section.
