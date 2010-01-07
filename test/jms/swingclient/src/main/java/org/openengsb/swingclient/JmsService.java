@@ -46,7 +46,14 @@ public class JmsService {
 
     public Object doServiceCall(ClientEndpoint endpoint, String operation, String message, String context)
             throws JMSException {
-        Object obj = this.jmsTemplate.execute(new MySessionCallback(endpoint, operation, message, context), true);
+
+        Object obj;
+
+        try {
+            obj = this.jmsTemplate.execute(new MySessionCallback(endpoint, operation, message, context), true);
+        } catch (RuntimeException e) {
+            return e.getMessage();
+        }
 
         if (obj instanceof TextMessage) {
             return ((TextMessage) obj).getText();

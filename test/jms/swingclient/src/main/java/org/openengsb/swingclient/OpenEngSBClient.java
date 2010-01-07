@@ -43,7 +43,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.IOUtils;
-import org.springframework.jms.JmsException;
 
 public class OpenEngSBClient extends JFrame {
 
@@ -105,7 +104,7 @@ public class OpenEngSBClient extends JFrame {
         resetButton.addActionListener(new ResetAction());
         exitButton.addActionListener(new ExitAction());
         loadButton.addActionListener(new LoadAction());
-        
+
         operation.setEditable(true);
 
         add(configPanel, BorderLayout.NORTH);
@@ -143,14 +142,10 @@ public class OpenEngSBClient extends JFrame {
                                 JOptionPane.showMessageDialog(OpenEngSBClient.this, result);
                             }
                         });
-                    } catch (JMSException e) {
+                    } catch (final JMSException e) {
                         JOptionPane.showMessageDialog(OpenEngSBClient.this, e.getMessage(), "JMS Error",
                                 JOptionPane.ERROR_MESSAGE);
-                    } catch (JmsException e) {
-                        JOptionPane.showMessageDialog(OpenEngSBClient.this, e.getCause().getMessage(), "JMS Error",
-                                JOptionPane.ERROR_MESSAGE);
                     }
-
                 }
             });
             t.start();
@@ -194,6 +189,7 @@ public class OpenEngSBClient extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             dispose();
+            System.exit(0);
         }
     }
 
