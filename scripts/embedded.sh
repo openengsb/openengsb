@@ -22,7 +22,7 @@
 
 echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
 
-cd ..
+cd $(dirname $0)/.. 
 mvn clean install -Dmaven.test.skip=true
 cd package/embedded; mvn jetty:run-war
 

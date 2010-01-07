@@ -15,14 +15,6 @@
 #   limitations under the License.
 #
 
-# Script used to build the entire servicebus and run it directly from maven. This 
-# script actually using the jbi:servicemix maven command therefore. In future
-# version, when the project is embedded in an webserver this script is for
-# change.
-
-echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
-
-cd $(dirname $0)/..
-mvn install -o -Dmaven.test.skip=true
-cd package/all; mvn jbi:projectDeploy -e -o
+cd $(dirname $0)/.. 
+mvn install -Plicense-check -DskipTests=true
 
