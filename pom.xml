@@ -110,8 +110,6 @@
     <module>docs</module>
 
     <!-- Common Modules & Helpers -->
-    <module>test/timing/service-unit</module>
-    <module>test/routing/service-unit</module>
     <module>test/logging/service-unit</module>
     <module>test/jms/service-unit</module>
     <module>test/jms/swingclient</module>
@@ -670,16 +668,6 @@
       </dependency>
 
       <!-- Common Modules & Helpers -->
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-test-timing-su</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-test-routing-su</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-test-logging-su</artifactId>
