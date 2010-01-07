@@ -5,10 +5,16 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 
+import javax.jms.JMSException;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -18,9 +24,14 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.io.IOUtils;
+import org.springframework.jms.JmsException;
+
 public class OpenEngSBClient extends JFrame {
 
     private JTextArea textArea = new JTextArea();
+
+    private JButton loadButton = new JButton("Load...");
 
     private JButton sendButton = new JButton("Send");
 
@@ -36,9 +47,9 @@ public class OpenEngSBClient extends JFrame {
 
     private JmsService jmsService;
 
-    public OpenEngSBClient(JmsService jmsService, List<String> services) {
+    public OpenEngSBClient(JmsService jmsService, List<ClientEndpoint> endpoints) {
         this.jmsService = jmsService;
-        this.endpoint = new JComboBox(services.toArray());
+        this.endpoint = new JComboBox(endpoints.toArray());
         setTitle("OpenEngSB Testclient");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(new Dimension(650, 400));
@@ -57,17 +68,34 @@ public class OpenEngSBClient extends JFrame {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(sendButton);
+        buttonPanel.add(loadButton);
         buttonPanel.add(resetButton);
         buttonPanel.add(exitButton);
+
+        getRootPane().setDefaultButton(sendButton);
+
+        loadButton.setMnemonic('l');
+        sendButton.setMnemonic('s');
+        resetButton.setMnemonic('r');
+        exitButton.setMnemonic('x');
+
+        sendButton.setPreferredSize(loadButton.getPreferredSize());
+        resetButton.setPreferredSize(loadButton.getPreferredSize());
+        exitButton.setPreferredSize(loadButton.getPreferredSize());
 
         sendButton.addActionListener(new SendAction());
         resetButton.addActionListener(new ResetAction());
         exitButton.addActionListener(new ExitAction());
+        loadButton.addActionListener(new LoadAction());
+        
+        operation.setEditable(true);
 
         add(configPanel, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.SOUTH);
 
         setVisible(true);
+
+        new ResetAction().actionPerformed(null);
     }
 
     public JmsService getJmsService() {
@@ -84,13 +112,27 @@ public class OpenEngSBClient extends JFrame {
             Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    final String result = (String) jmsService.doServiceCall(textArea.getText(), context.getText());
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            JOptionPane.showMessageDialog(OpenEngSBClient.this, result);
-                        }
-                    });
+                    ClientEndpoint selectedEndpoint = (ClientEndpoint) endpoint.getSelectedItem();
+                    String text = textArea.getText();
+                    String ctx = context.getText();
+                    String op = (String) operation.getSelectedItem();
+
+                    try {
+                        final String result = (String) jmsService.doServiceCall(selectedEndpoint, op, text, ctx);
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                JOptionPane.showMessageDialog(OpenEngSBClient.this, result);
+                            }
+                        });
+                    } catch (JMSException e) {
+                        JOptionPane.showMessageDialog(OpenEngSBClient.this, e.getMessage(), "JMS Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    } catch (JmsException e) {
+                        JOptionPane.showMessageDialog(OpenEngSBClient.this, e.getCause().getMessage(), "JMS Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+
                 }
             });
             t.start();
@@ -101,6 +143,32 @@ public class OpenEngSBClient extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             textArea.setText("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n");
+            textArea.setCaretPosition(textArea.getText().length());
+            textArea.requestFocus();
+        }
+    }
+
+    private class LoadAction implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.showOpenDialog(OpenEngSBClient.this);
+            File file = fileChooser.getSelectedFile();
+            if (file == null) {
+                return;
+            }
+
+            try {
+                textArea.setText(IOUtils.toString(new FileReader(file)));
+                textArea.setCaretPosition(0);
+                textArea.requestFocus();
+            } catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(OpenEngSBClient.this, "File could not be found", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(OpenEngSBClient.this, "Error reading file", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 

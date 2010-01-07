@@ -18,7 +18,10 @@
 -->
 <beans xmlns:jms="http://servicemix.apache.org/jms/1.0"
        xmlns:email="urn:openengsb:email"
-       xmlns:test="urn:openengsb:test">
+       xmlns:test="urn:openengsb:test"
+       xmlns:edb="urn:openengsb:edb"
+       xmlns:drl="urn:openengsb:drools"
+       xmlns:ctx="urn:openengsb:context">
 
   <jms:consumer service="test:emailService"
                 endpoint="emailEndpoint"
@@ -27,6 +30,36 @@
                 connectionFactory="#connectionFactory"
                 targetService="email:emailService"
                 targetEndpoint="emailEndpoint"
+                concurrentConsumers="8"
+                marshaler="#marshaler" />
+
+  <jms:consumer service="test:edbService"
+                endpoint="edbEndpoint"
+                synchronous="true"
+                destinationName="org.openengsb.test.edbService"
+                connectionFactory="#connectionFactory"
+                targetService="edb:edb"
+                targetEndpoint="edb"
+                concurrentConsumers="8"
+                marshaler="#marshaler" />
+
+  <jms:consumer service="test:droolsService"
+                endpoint="droolsEndpoint"
+                synchronous="true"
+                destinationName="org.openengsb.test.droolsService"
+                connectionFactory="#connectionFactory"
+                targetService="drl:droolsService"
+                targetEndpoint="droolsEndpoint"
+                concurrentConsumers="8"
+                marshaler="#marshaler" />
+
+  <jms:consumer service="test:contextService"
+                endpoint="contextEndpoint"
+                synchronous="true"
+                destinationName="org.openengsb.test.contextService"
+                connectionFactory="#connectionFactory"
+                targetService="ctx:contextService"
+                targetEndpoint="contextEndpoint"
                 concurrentConsumers="8"
                 marshaler="#marshaler" />
 

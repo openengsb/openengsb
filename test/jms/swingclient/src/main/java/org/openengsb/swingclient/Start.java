@@ -6,19 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.io.IOUtils;
-import org.dom4j.Attribute;
 import org.dom4j.io.SAXReader;
+import org.dom4j.tree.DefaultElement;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 public class Start {
 
@@ -38,7 +32,7 @@ public class Start {
         final Start start = (Start) factory.getBean("start");
         Resource resource = context.getResource("classpath:/xbean.xml");
 
-        final List<String> services = getServices(resource.getInputStream());
+        final List<ClientEndpoint> services = getServices(resource.getInputStream());
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -48,22 +42,24 @@ public class Start {
         });
     }
 
-    private static List<String> getServices(InputStream inputStream) {
-        List<String> services = new ArrayList<String>();
+    private static List<ClientEndpoint> getServices(InputStream inputStream) {
+        List<ClientEndpoint> services = new ArrayList<ClientEndpoint>();
         try {
             SAXReader saxReader = new SAXReader();
             org.dom4j.Document doc = saxReader.read(inputStream);
 
-            List<Attribute> selectNodes = doc.selectNodes("//beans/jms:consumer/@destinationName");
+            @SuppressWarnings("unchecked")
+            List<DefaultElement> selectNodes = (List<DefaultElement>) doc.selectNodes("//beans/jms:consumer");
 
-            for (Attribute a : selectNodes) {
-                services.add(a.getValue());
+            for (DefaultElement e : selectNodes) {
+                String destinationName = e.attribute("destinationName").getValue();
+                String targetService = e.attribute("targetService").getValue();
+                services.add(new ClientEndpoint(destinationName, targetService));
             }
-            
+
             return services;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 }
