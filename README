@@ -10,7 +10,7 @@ Afterwards start eclipse again and import existing eclipse projects.
 TBW
 
 == Full Run ==
-Before a commit run the following command:
+Before a push, run the following command:
 
 mvn clean install -Pall-test,license-check
 
