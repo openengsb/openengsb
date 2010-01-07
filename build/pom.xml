@@ -47,25 +47,16 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>package</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.mortbay.jetty</groupId>
-                  <artifactId>jetty-zip</artifactId>
-                  <type>zip</type>
-                  <outputDirectory>target/jetty</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
+        <configuration>
+          <artifactItems>
+            <artifactItem>
+              <groupId>org.mortbay.jetty</groupId>
+              <artifactId>jetty-zip</artifactId>
+              <type>zip</type>
+              <outputDirectory>target/jetty</outputDirectory>
+            </artifactItem>
+          </artifactItems>
+        </configuration>
       </plugin>
     </plugins> 
   </build>

@@ -19,5 +19,6 @@ cd $(dirname $0)/..
 mvn package -Pintegration-test,license-check,docs
 
 cd build
+mvn dependency:unpack
 mvn assembly:assembly
 
