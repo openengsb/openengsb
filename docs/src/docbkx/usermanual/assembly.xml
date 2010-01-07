@@ -16,31 +16,31 @@
    limitations under the License.
 
 -->
-<chapter id="deploy">
-  <title>Deploying the OpenEngSB</title>
-  <section id="deploy.introduction">
+<chapter id="assembly">
+  <title>Assembling the OpenEngSB</title>
+  <section id="assembly.introduction">
     <title>Introduction</title>
-    <para> This chapter gives a short overview about the deployment procedure of the OpenEngSB. Furthermore a short
-      description of the structure of the deployed project is given.
+    <para> This chapter gives a short overview about the assembly procedure of the OpenEngSB. Furthermore a short
+      description of the structure of the assembled project is given.
   </para>
   </section>
 
-  <section id="deploy.howto">
-    <title>Howto deploy the OpenEngSB</title>
+  <section id="assembly.howto">
+    <title>Howto assemble the OpenEngSB</title>
     <para>
       To create a distributable form of the OpenEngSB simply issue the following commands in the root directory of the project.
       <programlisting>
         > mvn package -Pintegration-test,license-check,docs
-        > cd build
+        > cd package/assembly
         > mvn dependency:unpack
         > mvn assembly:assembly
       </programlisting> 
-      Then a zip file is created in the folder build/target. The structure of the zip is explained in the following section.
-      To ease this process a shell script is contained in the build directory (assemble.sh).
+      Then a zip file is created in the folder package/assembly/target. The structure of the zip is explained in the following section.
+      To ease this process a shell script is contained in the scripts directory (assemble.sh).
     </para>
   </section>
 
-  <section id="deploy.structure">
+  <section id="assembly.structure">
     <title>Structure</title>
     <para>
       <programlisting>

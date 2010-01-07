@@ -34,7 +34,7 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>${project.basedir}/../package/embedded/target</directory>
+      <directory>${project.basedir}/../embedded/target</directory>
       <outputDirectory>jetty/webapps</outputDirectory>
       <includes>
         <include>openengsb.war</include>
@@ -42,14 +42,14 @@
     </fileSet>
     <fileSet> 
       <outputDirectory>docs/html</outputDirectory>
-      <directory>${project.basedir}/../docs/target/docbkx/html</directory>
+      <directory>${project.basedir}/../../docs/target/docbkx/html</directory>
       <includes>
         <include>*.html</include>
       </includes>
     </fileSet>
     <fileSet> 
       <outputDirectory>docs/pdf</outputDirectory>
-      <directory>${project.basedir}/../docs/target/docbkx/pdf</directory>
+      <directory>${project.basedir}/../../docs/target/docbkx/pdf</directory>
       <includes>
         <include>*.pdf</include>
       </includes>
@@ -60,21 +60,20 @@
       <includes>
         <include>*.sh</include>
       </includes>
-      <excludes>
-        <exclude>assemble.sh</exclude>
-      </excludes>
     </fileSet>
-    
     <fileSet>
-      <directory>${project.basedir}/..</directory>
+      <!-- 
+        We have to put this strange path here, because the 
+        maven assembly plugin does not accept ${project.basedir}/../..
+      -->
+      <directory>${project.basedir}/../../docs/..</directory>
+      <outputDirectory>.</outputDirectory>
       <includes>
-        <include>${project.basedir}/README*</include>
-        <include>${project.basedir}/LICENSE*</include>
-        <include>${project.basedir}/NOTICE*</include>
+        <include>README*</include>
+        <include>LICENSE*</include>
+        <include>NOTICE*</include>
       </includes>
     </fileSet>
   </fileSets>
-  
-
 </assembly>
 

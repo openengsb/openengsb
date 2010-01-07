@@ -12,7 +12,7 @@ TBW
 == Full Run ==
 Before a push, run the following command:
 
-mvn clean install -Pall-test,license-check
+scripts/pre-push.sh
 
 == Build Docs ==
 To build the documentation use the following command:
@@ -27,10 +27,10 @@ To assemble the project and build a distributable form of it run
 
 mvn package -Pintegration-test,license-check,docs
 
-in the root folder and then change to the folder 'build' and run 
+in the root folder and then change to the folder 'package/assembly' and run 
 
 mvn dependency:unpack
 mvn assembly:assembly
 
-Now in the target directory of the build folder a zip file is created that contains a distributable form of the project. Furthermore you can use the shell script in the build folder called 'assemble.sh', which automates the steps explained above.
+Now in the target directory of the package/assembly folder a zip file is created that contains a distributable form of the project. Furthermore you can use the shell script in the scripts folder called 'assemble.sh', which automates the steps explained above.
 

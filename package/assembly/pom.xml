@@ -26,9 +26,10 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-assembly</artifactId>
-  <name>openengsb-assembly</name>
+  <artifactId>openengsb-package-assembly</artifactId>
+  <name>openengsb-package-assembly</name>
   <packaging>pom</packaging>
+
 
   <description>
     The package used to prepare openengsb for distribution.

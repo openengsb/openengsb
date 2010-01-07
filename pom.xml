@@ -22,7 +22,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-
+   
+    <root.basedir>${project.basedir}</root.basedir>
     <!-- Library Versions -->
     <spring.version>2.5.6.SEC01</spring.version>
     <spring.activemq.version>2.1</spring.activemq.version>
@@ -161,6 +162,7 @@
     <module>package/all</module>
     <module>package/essential</module>
     <module>package/embedded</module>
+    <module>package/assembly</module>
 
     <!-- Config -->
     <module>config/jbi</module>
@@ -179,8 +181,6 @@
     <!-- Issues -->
     <module>domains/issues/common</module>
 
-    <!-- Assembly -->
-    <module>build</module>
 
   </modules>
 
@@ -884,7 +884,7 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-assembly</artifactId>
+        <artifactId>openengsb-package-assembly</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
