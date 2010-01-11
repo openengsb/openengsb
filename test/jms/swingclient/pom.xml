@@ -37,6 +37,10 @@
   <dependencies>
     <dependency>
       <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
       <artifactId>openengsb-test-jms-su</artifactId>
     </dependency>
     <dependency>

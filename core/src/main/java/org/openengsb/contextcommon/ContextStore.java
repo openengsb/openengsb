@@ -73,6 +73,18 @@ public class ContextStore {
         save();
     }
 
+    public void removeValue(String path) {
+        String[] splitPath = splitPath(new ContextPath(path));
+        Context ctx = resolve(new ContextPath(splitPath[0]));
+
+        if (ctx.getChild(splitPath[1]) != null) {
+            ctx.removeChild(splitPath[1]);
+            return;
+        }
+
+        ctx.remove(splitPath[1]);
+    }
+
     public String getValue(String path) {
         try {
             String[] splitPath = splitPath(new ContextPath(path));
@@ -122,6 +134,11 @@ public class ContextStore {
             if (ctx == null) {
                 if (!create) {
                     throw new ContextNotFoundException("Can't find context " + path);
+                }
+
+                if (last.get(pathElement) != null) {
+                    throw new ContextNameClashException(String.format("An entry with name '%s' already exists",
+                            pathElement));
                 }
 
                 last.createChild(pathElement);

@@ -54,6 +54,9 @@ public class Context {
         if (key.contains("/")) {
             throw new IllegalArgumentException("Key must not contain '/'");
         }
+        if (children.containsKey(key)) {
+            throw new ContextNameClashException(String.format("A folder with name '%s' already exists", key));
+        }
         values.put(key, value);
     }
 
@@ -108,8 +111,13 @@ public class Context {
         children.remove(child);
     }
 
+    public void remove(String key) {
+        values.remove(key);
+    }
+
     @Override
     public String toString() {
         return String.format("[Context, values=%s, children=%s]", values.toString(), children.toString());
     }
+
 }

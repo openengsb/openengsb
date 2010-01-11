@@ -29,6 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.contextcommon.Context;
+import org.openengsb.contextcommon.ContextNameClashException;
 import org.openengsb.contextcommon.ContextNotFoundException;
 import org.openengsb.contextcommon.ContextStore;
 
@@ -158,5 +159,31 @@ public class TestContext {
         assertEquals("42", s3.getValue("foo/bar/buz"));
 
         datafile.delete();
+    }
+
+    @Test(expected = ContextNameClashException.class)
+    public void testCreateEntryThatIsAContext() {
+        store.setValue("foo/bar/buz", "42");
+        store.setValue("foo/bar", "x");
+    }
+
+    @Test(expected = ContextNameClashException.class)
+    public void testCreateContextThatIsAEntry() {
+        store.setValue("foo/bar", "x");
+        store.setValue("foo/bar/buz", "42");
+    }
+
+    @Test
+    public void testSimpleRemove() {
+        store.setValue("foo/bar/buz", "42");
+        store.removeValue("foo/bar/buz");
+        assertNull(store.getValue("foo/bar/buz"));
+    }
+
+    @Test(expected = ContextNotFoundException.class)
+    public void testTreeRemove() {
+        store.setValue("foo/bar/buz", "42");
+        store.removeValue("foo");
+        store.getContext("foo");
     }
 }

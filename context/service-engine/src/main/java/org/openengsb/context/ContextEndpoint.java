@@ -48,32 +48,34 @@ public class ContextEndpoint extends ProviderEndpoint {
             throw new UnsupportedOperationException("Unsupported MEP: " + exchange.getPattern());
         }
 
-        String messageType = getMessageType(in);
+        String operation = exchange.getOperation().getLocalPart();
         String id = getContextId(in);
 
-        if (messageType.equals("context/store")) {
+        if (operation.equals("store")) {
             handleStore(id, in);
         } else {
             // TODO throw specialized exception
-            throw new RuntimeException("Illegal message type: " + messageType);
+            throw new RuntimeException("Illegal operation: " + operation);
         }
     }
 
     @Override
     protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
         String id = getContextId(in);
-        String messageType = getMessageType(in);
+        String operation = exchange.getOperation().getLocalPart();
 
         String result = null;
-        if (messageType == null) {
-            throw new RuntimeException("MessageType not set");
-        } else if (messageType.equals("context/request")) {
+        if (operation == null) {
+            throw new RuntimeException("Operation not set");
+        } else if (operation.equals("request")) {
             result = handleRequest(in, id);
-        } else if (messageType.equals("context/store")) {
+        } else if (operation.equals("store")) {
             handleStore(id, in);
             result = "<result>success</result>";
+        } else if (operation.equals("remove")) {
+            handleRemove(id, in);
         } else {
-            throw new RuntimeException("Illegal message type: " + messageType);
+            throw new RuntimeException("Illegal operation: " + operation);
         }
 
         out.setContent(new StringSource(result));
@@ -90,11 +92,28 @@ public class ContextEndpoint extends ProviderEndpoint {
             handleStoreSegment((TextSegment) s, id);
         }
     }
+    
+    private void handleRemove(String id, NormalizedMessage in) throws SerializationException, TransformerException {
+        SourceTransformer sourceTransformer = new SourceTransformer();
+        String inputMessage = sourceTransformer.toString(in.getContent());
+        
+        Segment inSegment = Segment.fromXML(inputMessage);
+        ListSegment ls = (ListSegment) inSegment;
+        
+        for (Segment s : ls.getList()) {
+            handleRemoveSegment((TextSegment) s, id);
+        }
+    }
 
     private void handleStoreSegment(TextSegment s, String id) {
         String key = s.getName();
         String value = s.getText();
         contextStore.setValue(id + "/" + key, value);
+    }
+    
+    private void handleRemoveSegment(TextSegment s, String id) {
+        String key = s.getName();
+        contextStore.removeValue(id + "/" + key);
     }
 
     private String handleRequest(NormalizedMessage in, String id) throws TransformerException, SerializationException {
@@ -109,10 +128,6 @@ public class ContextEndpoint extends ProviderEndpoint {
 
         Segment segment = ContextSegmentTransformer.toSegment(ctx);
         return segment.toXML();
-    }
-
-    private String getMessageType(NormalizedMessage in) {
-        return (String) in.getProperty("messageType");
     }
 
     private String getContextId(NormalizedMessage in) {

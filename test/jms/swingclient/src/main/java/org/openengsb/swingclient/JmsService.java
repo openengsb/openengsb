@@ -44,7 +44,7 @@ public class JmsService {
         this.jmsTemplate = jmsTemplate;
     }
 
-    public Object doServiceCall(ClientEndpoint endpoint, String operation, String message, String context, String mep)
+    public String doServiceCall(ClientEndpoint endpoint, String operation, String message, String context, String mep)
             throws JMSException {
 
         Object obj;
