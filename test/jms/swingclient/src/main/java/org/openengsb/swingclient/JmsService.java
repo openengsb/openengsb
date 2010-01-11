@@ -44,13 +44,13 @@ public class JmsService {
         this.jmsTemplate = jmsTemplate;
     }
 
-    public Object doServiceCall(ClientEndpoint endpoint, String operation, String message, String context)
+    public Object doServiceCall(ClientEndpoint endpoint, String operation, String message, String context, String mep)
             throws JMSException {
 
         Object obj;
 
         try {
-            obj = this.jmsTemplate.execute(new MySessionCallback(endpoint, operation, message, context), true);
+            obj = this.jmsTemplate.execute(new MySessionCallback(endpoint, operation, message, context, mep), true);
         } catch (RuntimeException e) {
             return e.getMessage();
         }
@@ -72,12 +72,14 @@ public class JmsService {
         private String operation;
         private String message;
         private String context;
+        private String mep;
 
-        public MySessionCallback(ClientEndpoint endpoint, String operation, String message, String context) {
+        public MySessionCallback(ClientEndpoint endpoint, String operation, String message, String context, String mep) {
             this.endpoint = endpoint;
             this.operation = operation;
             this.message = message;
             this.context = context;
+            this.mep = mep;
         }
 
         @Override
@@ -90,6 +92,7 @@ public class JmsService {
             Message msg = session.createTextMessage(message);
             msg.setStringProperty("operation", operation);
             msg.setStringProperty("contextId", context);
+            msg.setStringProperty("mep", mep);
             msg.setJMSReplyTo(responseQueue);
 
             MessageProducer producer = session.createProducer(requestQueue);

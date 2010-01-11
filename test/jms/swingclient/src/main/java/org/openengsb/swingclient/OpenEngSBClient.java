@@ -62,6 +62,8 @@ public class OpenEngSBClient extends JFrame {
 
     private JComboBox operation = new JComboBox(new String[] { "none", "event", "methodcall" });
 
+    private JComboBox messageExchangePattern = new JComboBox(new String[] { "in-out", "robust-in-only" });
+
     private JmsService jmsService;
 
     public OpenEngSBClient(JmsService jmsService, List<ClientEndpoint> endpoints) {
@@ -69,7 +71,7 @@ public class OpenEngSBClient extends JFrame {
         this.endpoint = new JComboBox(endpoints.toArray());
         setTitle("OpenEngSB Testclient");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(new Dimension(650, 400));
+        setSize(new Dimension(700, 400));
         setLocationRelativeTo(null);
 
         setLayout(new BorderLayout());
@@ -82,6 +84,8 @@ public class OpenEngSBClient extends JFrame {
         configPanel.add(endpoint);
         configPanel.add(new JLabel("Operation:"));
         configPanel.add(operation);
+        configPanel.add(new JLabel("MEP:"));
+        configPanel.add(messageExchangePattern);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(sendButton);
@@ -133,9 +137,10 @@ public class OpenEngSBClient extends JFrame {
                     String text = textArea.getText();
                     String ctx = context.getText();
                     String op = (String) operation.getSelectedItem();
+                    String mep = (String) messageExchangePattern.getSelectedItem();
 
                     try {
-                        final String result = (String) jmsService.doServiceCall(selectedEndpoint, op, text, ctx);
+                        final String result = (String) jmsService.doServiceCall(selectedEndpoint, op, text, ctx, mep);
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {

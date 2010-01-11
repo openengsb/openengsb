@@ -30,6 +30,7 @@ import javax.jbi.component.ComponentContext;
 import javax.jbi.messaging.Fault;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
+import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 import javax.jms.TextMessage;
@@ -69,6 +70,7 @@ public class CustomOpenEngSBMarshaler extends AbstractJmsMarshaler implements Jm
 
     public MessageExchange createExchange(JmsContext jmsContext, ComponentContext jbiContext) throws Exception {
         Context ctx = (Context) jmsContext;
+        parseMessageExchangePattern(ctx);
         MessageExchange exchange = jbiContext.getDeliveryChannel().createExchangeFactory().createExchange(this.mep);
         NormalizedMessage inMessage = exchange.createMessage();
         populateMessage(ctx.message, inMessage);
@@ -80,6 +82,17 @@ public class CustomOpenEngSBMarshaler extends AbstractJmsMarshaler implements Jm
         exchange.setOperation(new QName(ctx.getMessage().getStringProperty("operation")));
         exchange.setMessage(inMessage, "in");
         return exchange;
+    }
+
+    private void parseMessageExchangePattern(Context ctx) throws JMSException {
+        String mep = ctx.getMessage().getStringProperty("mep");
+        if (mep.equals("in-out")) {
+            this.mep = JbiConstants.IN_OUT;
+        } else if (mep.equals("robust-in-only")) {
+            this.mep = JbiConstants.ROBUST_IN_ONLY;
+        } else {
+            throw new IllegalArgumentException("Unsupported Message Exchange Pattern " + mep);
+        }
     }
 
     public Message createOut(MessageExchange exchange, NormalizedMessage outMsg, Session session, JmsContext context)
@@ -116,7 +129,7 @@ public class CustomOpenEngSBMarshaler extends AbstractJmsMarshaler implements Jm
         error.printStackTrace(printWriter);
         printWriter.flush();
         printWriter.close();
-        
+
         TextMessage message = session.createTextMessage(baos.toString());
         message.setBooleanProperty(ERROR_JMS_PROPERTY, true);
         return message;
