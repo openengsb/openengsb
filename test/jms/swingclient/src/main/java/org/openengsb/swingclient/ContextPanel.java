@@ -145,7 +145,7 @@ public class ContextPanel extends JPanel {
             String newValue = (String) aValue;
             ContextEntry contextEntry = values.get(rowIndex);
 
-            String name = contextEntry.getName();
+            String path = contextEntry.getPath() + "/" + contextEntry.getName();
             String oldValue = contextEntry.getValue();
 
             if (contextEntry.getValue().equals(newValue)) {
@@ -153,10 +153,10 @@ public class ContextPanel extends JPanel {
             }
 
             try {
-                contextFacade.setValue(name, oldValue, newValue);
+                contextFacade.setValue(path, oldValue, newValue);
                 contextEntry.setValue(newValue);
             } catch (ConcurrentModificationException e) {
-                String currentValue = contextFacade.getValue(name);
+                String currentValue = contextFacade.getValue(path);
 
                 String message = "The value of this entry changed:\n\n";
                 message += "Old value: " + oldValue + "\n";
@@ -173,12 +173,12 @@ public class ContextPanel extends JPanel {
                 }
 
                 try {
-                    contextFacade.setValue(name, currentValue, newValue);
+                    contextFacade.setValue(path, currentValue, newValue);
                     contextEntry.setValue(newValue);
                 } catch (ConcurrentModificationException ee) {
                     JOptionPane.showMessageDialog(ContextPanel.this, "The value changed again. I'm giving up.",
                             "Error setting value", JOptionPane.ERROR_MESSAGE);
-                    contextEntry.setValue(contextFacade.getValue(name));
+                    contextEntry.setValue(contextFacade.getValue(path));
                 }
             }
         }

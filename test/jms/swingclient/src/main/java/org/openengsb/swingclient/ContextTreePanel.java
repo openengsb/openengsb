@@ -54,11 +54,13 @@ public class ContextTreePanel extends JPanel {
     }
 
     public void updateTree(Context context) {
+        int[] selectionRows = tree.getSelectionRows();
         root = transform(context, "", "/");
         tree.setModel(new DefaultTreeModel(root));
         for (int i = 0; i < tree.getRowCount(); i++) {
             tree.expandRow(i);
         }
+        tree.setSelectionRows(selectionRows);
     }
 
     public void selectRoot() {

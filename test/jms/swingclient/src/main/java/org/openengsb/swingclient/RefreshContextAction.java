@@ -31,7 +31,6 @@ public class RefreshContextAction implements ActionListener {
 
             panel.tree.updateTree(context);
 
-            panel.tree.selectRoot();
         } catch (JMSException e) {
             throw new RuntimeException(e);
         } catch (SerializationException e) {
