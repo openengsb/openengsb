@@ -55,24 +55,45 @@ public class CreateAssemblyPage extends BasePage {
         };
         add(suform);
 
-        ListView<ServiceUnitInfo> suListView = new ListView<ServiceUnitInfo>("serviceUnits", assemblyService
+        final ListView<ServiceUnitInfo> suListView = new ListView<ServiceUnitInfo>("serviceUnits", assemblyService
                 .getServiceUnits()) {
             @Override
             protected void populateItem(ListItem<ServiceUnitInfo> item) {
                 ServiceUnitInfo su = item.getModelObject();
                 item.add(new Label("name", su.getIdentifier()));
             }
+
+            @Override
+            public boolean isVisible() {
+                return !getList().isEmpty();
+            }
         };
         add(suListView);
-        ListView<BeanInfo> beanListView = new ListView<BeanInfo>("beans", assemblyService
-                .getBeans()) {
+        add(new Label("endpointsEmpty", getLocalizer().getString("endpointsEmpty", this)) {
+            @Override
+            public boolean isVisible() {
+                return !suListView.isVisible();
+            }
+        });
+        final ListView<BeanInfo> beanListView = new ListView<BeanInfo>("beans", assemblyService.getBeans()) {
             @Override
             protected void populateItem(ListItem<BeanInfo> item) {
                 BeanInfo bean = item.getModelObject();
                 item.add(new Label("name", bean.getBeanType().getClazz() + ":" + bean.getMap().get("id")));
             }
+
+            @Override
+            public boolean isVisible() {
+                return !getList().isEmpty();
+            }
         };
         add(beanListView);
+        add(new Label("beansEmpty", getLocalizer().getString("beansEmpty", this)) {
+            @Override
+            public boolean isVisible() {
+                return true; // !beanListView.isVisible();
+            }
+        });
 
         Form<?> form = new Form("form") {
             @Override
@@ -104,8 +125,8 @@ public class CreateAssemblyPage extends BasePage {
         try {
             File tmp = File.createTempFile("openengsb", ".zip");
             FileOutputStream fos = new FileOutputStream(tmp);
-            ServiceAssemblyInfo sa = new ServiceAssemblyInfo("openengsb-test", assemblyService
-                    .getServiceUnits(), assemblyService.getBeans());
+            ServiceAssemblyInfo sa = new ServiceAssemblyInfo("openengsb-test", assemblyService.getServiceUnits(),
+                    assemblyService.getBeans());
             sa.toZip(fos);
             assemblyService.deploy(tmp, "openengsb-test-sa.zip");
             assemblyService.createNewAssembly();
