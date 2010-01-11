@@ -17,6 +17,8 @@
  */
 package org.openengsb.config.view.util;
 
+import java.io.Serializable;
+
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 
 /**
@@ -24,7 +26,8 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
  * DropDownChoice}. Use in combination with a {@code new
  * ChoiceRenderer<ChoiceOption>("display", "id")}.
  */
-public class ChoiceOption {
+public class ChoiceOption implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final String id;
     private final String display;
 
