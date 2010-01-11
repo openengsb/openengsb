@@ -157,7 +157,7 @@ public class ContextPanel extends JPanel {
                 message += "New value: " + newValue + "\n";
                 message += "\nDo you want to overwrite the current value with your new value?";
 
-                int response = JOptionPane.showConfirmDialog(ContextPanel.this, message, "fof",
+                int response = JOptionPane.showConfirmDialog(ContextPanel.this, message, "Edit Conflict",
                         JOptionPane.YES_NO_OPTION);
 
                 if (response == JOptionPane.NO_OPTION) {

@@ -35,12 +35,12 @@ public class ContextFacade {
     public void setValue(String key, String oldValue, String newValue) {
         if (oldValue != null) {
             String value = getValue(key);
-            
+
             if (!value.equals(oldValue)) {
                 throw new ConcurrentModificationException();
             }
         }
-        
+
         List<Segment> list = new ArrayList<Segment>();
         list.add(new TextSegment.Builder(key).text(newValue).build());
         ListSegment listSegment = new ListSegment.Builder("/").list(list).build();
@@ -57,6 +57,10 @@ public class ContextFacade {
 
     public String getValue(String pathAndKey) {
         try {
+            if (pathAndKey.lastIndexOf('/') == -1) {
+                pathAndKey = "/" + pathAndKey;
+            }
+
             String path = pathAndKey.substring(0, pathAndKey.lastIndexOf('/'));
             String key = pathAndKey.substring(pathAndKey.lastIndexOf('/') + 1);
             TextSegment text = new TextSegment.Builder("path").text(path).build();

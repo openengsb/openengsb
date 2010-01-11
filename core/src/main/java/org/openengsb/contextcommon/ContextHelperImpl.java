@@ -56,6 +56,11 @@ public class ContextHelperImpl implements ContextHelper {
             inout.setInMessage(msg);
             msg.setProperty("contextId", contextId);
 
+            
+            if (pathAndKey.lastIndexOf('/') == -1) {
+                pathAndKey = "/" + pathAndKey;
+            }
+
             String path = pathAndKey.substring(0, pathAndKey.lastIndexOf('/'));
             String key = pathAndKey.substring(pathAndKey.lastIndexOf('/') + 1);
 
