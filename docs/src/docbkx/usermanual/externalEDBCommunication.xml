@@ -34,7 +34,9 @@
     <title id="contentStorage">Content Storage</title>
 
     <para>The EDB endpoint can receive messages to store and query content
-      (as well as undoing the last changes). (TODO: add operation element)
+      (as well as undoing the last changes). The "operation" element within the content 
+      list(not shown in schema, default is "update") can be used to specify whether the 
+      contentn should be added or removed (TODO: add operation element).
       The schema for storing content goes as follows:</para>    
 
     <programlisting language="xml">
@@ -58,6 +60,16 @@
     <programlisting>
       <![CDATA[TODO:reset schema]]>
     </programlisting>
+
+     <section>
+      <title id="testing edb general">Use with the testclient</title>
+      <para> Sample messages (i.e. for use with the testclient) can be found under 
+    [your projectpath]/features/edb/examples. First start servicemix (clean data and 
+    activemq folder prefered). Second, deploy the essential package (run "quickdeploy" 
+    script under package/essential). 
+    Third, start the testclient (run scripts/runtestclient).
+      </para>
+    </section>  
 
   </section>
 
@@ -88,6 +100,16 @@
       <textobject><textdata fileref="../../openengsb-docs/src/docbkx/usermanual/edb/LinkQueryRequestedMessage.xml" /></textobject>
     </programlisting>
 
+    <section>
+      <title id="testing linking">Use with the testclient</title>
+      <para> Sample messages (i.e. for use with the testclient) can be found under 
+    [your projectpath]/features/link/examples. First start servicemix (clean data and 
+    activemq folder prefered). Second, deploy the essential package (run "quickdeploy" 
+    script under package/essential).
+    Third, start the testclient (run scripts/runtestclient).
+      </para>
+    </section>  
+    
   </section>
 
 </chapter>
