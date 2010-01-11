@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.config.jbi.internal.XStreamFactory;
+import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointType;
 import org.slf4j.Logger;
@@ -38,7 +39,8 @@ public class ComponentParser {
         for (InputStream s : descriptors) {
                 try {
                 ComponentType c = (ComponentType) x.fromXML(s);
-                linkEndpointsToComponents(c);
+                linkEndpointsToComponent(c);
+                linkBeansToComponent(c);
                 components.add(c);
                     s.close();
                 } catch (Exception e) {
@@ -48,9 +50,15 @@ public class ComponentParser {
         return components;
     }
 
-    private static void linkEndpointsToComponents(ComponentType c) {
+    private static void linkEndpointsToComponent(ComponentType c) {
         for (EndpointType e : c.getEndpoints()) {
             e.setParent(c);
+        }
+    }
+
+    private static void linkBeansToComponent(ComponentType c) {
+        for (BeanType b : c.getBeans()) {
+            b.setParent(c);
         }
     }
 }

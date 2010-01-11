@@ -23,6 +23,7 @@ import java.util.List;
 public class BeanType {
     private String clazz;
     private List<AbstractType> properties;
+    private ComponentType parent;
 
     public BeanType() {
     	readResolve();
@@ -58,5 +59,13 @@ public class BeanType {
 
     public void addProperty(AbstractType p) {
         properties.add(p);
+    }
+
+    public ComponentType getParent() {
+        return parent;
+    }
+
+    public void setParent(ComponentType parent) {
+        this.parent = parent;
     }
 }
