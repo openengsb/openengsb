@@ -84,11 +84,12 @@ public abstract class EditorPanel extends Panel {
     }
 
     private AbstractField getEditor(AbstractType type, IModel<String> model) {
-        if (type.getClass().equals(BoolType.class))
+        if (type.getClass().equals(BoolType.class)) {
             return new CheckboxField("editor", model, type);
-        else if (type.getClass().equals(ChoiceType.class))
+        } else if (type.getClass().equals(ChoiceType.class)) {
             return new DropdownChoiceField("editor", model, (ChoiceType) type);
-        else
+        } else {
             return new InputField("editor", model, type);
+        }
     }
 }

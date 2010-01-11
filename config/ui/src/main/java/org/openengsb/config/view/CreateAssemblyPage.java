@@ -36,9 +36,10 @@ import org.openengsb.config.jbi.ServiceUnitInfo;
 import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointType;
+import org.openengsb.config.view.util.ChoiceOption;
 
 public class CreateAssemblyPage extends BasePage {
-    public String selected = "";
+    public ChoiceOption selected;
 
     @SuppressWarnings("unchecked")
     public CreateAssemblyPage(PageParameters pp) {
@@ -81,17 +82,20 @@ public class CreateAssemblyPage extends BasePage {
         };
         add(form);
 
-        ArrayList<String> names = new ArrayList<String>();
+        ArrayList<ChoiceOption> names = new ArrayList<ChoiceOption>();
         for (ComponentType c : componentService.getComponents()) {
+            String localeKey = c.getName() + ".";
             for (EndpointType e : c.getEndpoints()) {
-                names.add(c.getName() + ":" + e.getName());
+                String display = getLocalizer().getString(localeKey + e.getName() + "._name", null);
+                names.add(new ChoiceOption(c.getName() + ":" + e.getName(), display));
             }
             for (BeanType b : c.getBeans()) {
-                names.add(c.getName() + ":" + b.getClazz());
+                String display = getLocalizer().getString(localeKey + b.getClazz() + "._name", null);
+                names.add(new ChoiceOption(c.getName() + ":" + b.getClazz(), display));
             }
         }
-        DropDownChoice<String> choice = new DropDownChoice<String>("suSelect", new PropertyModel<String>(this,
-                "selected"), names);
+        DropDownChoice<ChoiceOption> choice = new DropDownChoice<ChoiceOption>("suSelect",
+                new PropertyModel<ChoiceOption>(this, "selected"), names, ChoiceOption.createRenderer());
         choice.setRequired(true);
         form.add(choice);
     }
@@ -111,7 +115,7 @@ public class CreateAssemblyPage extends BasePage {
     }
 
     protected void onSubmit() {
-        String[] s = selected.split(":");
+        String[] s = selected.getId().split(":");
         RequestCycle.get().setResponsePage(new BeanEditorPage(s[0], s[1]));
     }
 }
