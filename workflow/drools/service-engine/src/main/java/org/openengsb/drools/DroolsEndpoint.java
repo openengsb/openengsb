@@ -17,8 +17,6 @@
  */
 package org.openengsb.drools;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,8 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.jbi.JBIException;
-import javax.jbi.management.DeploymentException;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
@@ -38,7 +34,6 @@ import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.drools.RuleBase;
 import org.drools.agent.RuleAgent;
-import org.drools.compiler.RuleBaseLoader;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.endpoints.EventEndpoint;
 import org.openengsb.core.model.Event;
@@ -71,22 +66,22 @@ public class DroolsEndpoint extends EventEndpoint {
      * default constructor.
      */
     public DroolsEndpoint() {
-        init();
     }
 
     public DroolsEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
         super(component, endpoint);
-        init();
     }
 
     public DroolsEndpoint(ServiceUnit su, QName service, String endpoint) {
         super(su, service, endpoint);
-        init();
     }
 
     @Override
     protected void handleEvent(MessageExchange exchange, NormalizedMessage in, ContextHelper contextHelper)
             throws MessagingException {
+        if (ruleBase == null) {
+            init();
+        }
         drools(exchange);
     }
 
@@ -152,40 +147,6 @@ public class DroolsEndpoint extends EventEndpoint {
      */
     public void setGlobals(Map<String, Object> variables) {
         this.globals = variables;
-    }
-
-    @Override
-    public void validate() throws DeploymentException {
-        super.validate();
-        if (this.ruleBase == null && this.ruleBaseResource == null && this.ruleBaseURL == null) {
-            throw new DeploymentException("Property ruleBase, ruleBaseResource or ruleBaseURL must be set");
-        }
-    }
-
-    @Override
-    public void start() throws Exception {
-        super.start();
-        if (this.ruleBase == null) {
-            InputStream is = null;
-            try {
-                if (this.ruleBaseResource != null) {
-                    is = this.ruleBaseResource.getInputStream();
-                } else if (this.ruleBaseURL != null) {
-                    is = this.ruleBaseURL.openStream();
-                } else {
-                    throw new IllegalArgumentException("Property ruleBase, ruleBaseResource "
-                            + "or ruleBaseURL must be set");
-                }
-                RuleBaseLoader loader = RuleBaseLoader.getInstance();
-                this.ruleBase = loader.loadFromReader(new InputStreamReader(is));
-            } catch (Exception e) {
-                throw new JBIException(e);
-            } finally {
-                if (is != null) {
-                    is.close();
-                }
-            }
-        }
     }
 
     /**

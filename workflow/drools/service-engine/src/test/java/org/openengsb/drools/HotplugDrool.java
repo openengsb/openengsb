@@ -17,7 +17,6 @@
 package org.openengsb.drools;
 
 import java.util.HashMap;
-import java.util.Properties;
 
 import javax.jbi.messaging.InOnly;
 import javax.xml.namespace.QName;
@@ -26,8 +25,6 @@ import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.container.JBIContainer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.drools.RuleBase;
-import org.drools.agent.RuleAgent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,8 +38,6 @@ public class HotplugDrool {
     private DroolsComponent drools;
     private ServiceMixClient client;
 
-    private static final String URL = "http://localhost:8081/drools-guvnor/org.drools.guvnor.Guvnor/package/org.openengsb/LATEST";
-
     @Before
     public void setUp() throws Exception {
         jbi = new JBIContainer();
@@ -52,15 +47,7 @@ public class HotplugDrool {
 
         drools = new DroolsComponent();
         DroolsEndpoint endpoint = new DroolsEndpoint(drools.getServiceUnit(), new QName("drools"), "endpoint");
-        // endpoint
-        // .setRuleBaseResource(new ClassPathResource("openengsb-base.drl"));
-        Properties config = new Properties();
-        config.put("url", URL);
-        RuleAgent agent = RuleAgent.newRuleAgent(config);
-        RuleBase ruleBase = agent.getRuleBase();
-        endpoint.setRuleBase(ruleBase);
         endpoint.setGlobals(new HashMap<String, Object>());
-        // endpoint.getGlobals().put("xml", new XmlHelper());
         drools.setEndpoints(new DroolsEndpoint[] { endpoint });
         jbi.activateComponent(drools, "openengsb-drools");
 

@@ -25,7 +25,6 @@ import org.apache.servicemix.common.DefaultComponent;
  * @org.apache.xbean.XBean element="droolsComponent"
  *                         description="Drools Component" The Drools-component
  */
-@SuppressWarnings("unchecked")
 public class DroolsComponent extends DefaultComponent {
 
     /**
@@ -34,13 +33,13 @@ public class DroolsComponent extends DefaultComponent {
     private DroolsEndpoint[] endpoints;
 
     @Override
-    protected List getConfiguredEndpoints() {
+    protected List<?> getConfiguredEndpoints() {
         return asList(endpoints);
     }
 
     @Override
-    protected Class[] getEndpointClasses() {
-        return new Class[] { DroolsEndpoint.class };
+    protected Class<?>[] getEndpointClasses() {
+        return new Class<?>[] { DroolsEndpoint.class };
     }
 
     /**
