@@ -33,8 +33,11 @@ import javax.xml.xpath.XPath;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.config.jbi.ServiceAssemblyInfo;
 import org.openengsb.config.jbi.ServiceUnitInfo;
 import org.w3c.dom.Document;
+
+import com.google.common.collect.Lists;
 
 public class ServiceUnitInfoTest {
     private ServiceUnitInfo sui;
@@ -43,8 +46,10 @@ public class ServiceUnitInfoTest {
 
     @Before
     public void setup() throws ParserConfigurationException {
-        sui = Fixtures.createSUI();
-        doc = sui.createXBeanXml(Fixtures.createSAI());
+        ServiceAssemblyInfo sai = Fixtures.createSAI();
+        sui = new ServiceUnitInfo(sai.getEndpoints().get(0).getEndpointType().getParent(), Lists.newArrayList(sai
+                .getEndpoints()));
+        doc = sui.createXBeanXml(sai);
         x = Fixtures.newXPath();
     }
 

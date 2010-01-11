@@ -43,16 +43,16 @@ import com.google.common.collect.Lists;
 
 public class ServiceAssemblyInfo {
     private final String name;
-    private final List<ServiceUnitInfo> serviceUnits;
+    private final List<EndpointInfo> endpoints;
     private final List<BeanInfo> beans;
 
     public ServiceAssemblyInfo(String name) {
-        this(name, Lists.<ServiceUnitInfo> newArrayList(), Lists.<BeanInfo> newArrayList());
+        this(name, Lists.<EndpointInfo> newArrayList(), Lists.<BeanInfo> newArrayList());
     }
 
-    public ServiceAssemblyInfo(String name, List<ServiceUnitInfo> serviceUnits, List<BeanInfo> beans) {
+    public ServiceAssemblyInfo(String name, List<EndpointInfo> endpoints, List<BeanInfo> beans) {
         this.name = name;
-        this.serviceUnits = serviceUnits;
+        this.endpoints = endpoints;
         this.beans = beans;
     }
 
@@ -60,12 +60,12 @@ public class ServiceAssemblyInfo {
         return name;
     }
 
-    public List<ServiceUnitInfo> getServiceUnits() {
-        return serviceUnits;
+    public List<EndpointInfo> getEndpoints() {
+        return endpoints;
     }
 
-    public void addServiceUnit(ServiceUnitInfo su) {
-        serviceUnits.add(su);
+    public void addEndpoint(EndpointInfo ei) {
+        endpoints.add(ei);
     }
 
     public List<BeanInfo> getBeans() {
@@ -101,7 +101,7 @@ public class ServiceAssemblyInfo {
         jbi.appendChild(sa);
         sa.appendChild(createIdentification(doc, getName(), ""));
 
-        for (ServiceUnitInfo su : getServiceUnits()) {
+        for (EndpointInfo su : getEndpoints()) {
             sa.appendChild(createServiceUnit(doc, su));
         }
 
@@ -115,16 +115,21 @@ public class ServiceAssemblyInfo {
         return id;
     }
 
-    private Node createServiceUnit(Document doc, ServiceUnitInfo info) {
+    private Node createServiceUnit(Document doc, EndpointInfo info) {
         Node su = doc.createElement("service-unit");
-        su.appendChild(createIdentification(doc, info.getIdentifier(), ""));
+        String suId = createIdentifier(info);
+        su.appendChild(createIdentification(doc, suId, ""));
         Node target = doc.createElement("target");
         su.appendChild(target);
-        target.appendChild(doc.createElement("artifacts-zip")).appendChild(
-                doc.createTextNode(info.getIdentifier() + ".zip"));
+        target.appendChild(doc.createElement("artifacts-zip")).appendChild(doc.createTextNode(suId + ".zip"));
         target.appendChild(doc.createElement("component-name")).appendChild(
-                doc.createTextNode(info.getComponent().getName()));
+                doc.createTextNode(info.getEndpointType().getParent().getName()));
         return su;
+    }
+
+    private String createIdentifier(EndpointInfo e) {
+        return e.getEndpointType().getParent().getName() + "-" + e.getEndpointType().getName() + "-"
+                + e.getMap().get("service") + "-" + e.getMap().get("endpoint");
     }
 
     public void toZip(OutputStream out) throws IOException {
@@ -140,10 +145,11 @@ public class ServiceAssemblyInfo {
         zip.write(bout.toByteArray());
         zip.closeEntry();
 
-        for (ServiceUnitInfo su : getServiceUnits()) {
+        for (EndpointInfo ei : getEndpoints()) {
             bout = new ByteArrayOutputStream();
+            ServiceUnitInfo su = new ServiceUnitInfo(ei.getEndpointType().getParent(), Lists.newArrayList(ei));
             su.toZip(this, bout);
-            zip.putNextEntry(new ZipEntry(su.getIdentifier() + ".zip"));
+            zip.putNextEntry(new ZipEntry(createIdentifier(ei) + ".zip"));
             zip.write(bout.toByteArray());
             zip.closeEntry();
         }
