@@ -18,6 +18,7 @@
 
 package org.openengsb.swingclient;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.List;
 
@@ -37,6 +38,30 @@ public class OpenEngSBClient extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(new Dimension(700, 400));
         setLocationRelativeTo(null);
+        
+
+        setLayout(new BorderLayout());
+        
+        final JTabbedPane pane = new JTabbedPane();
+        
+        MessagePanel messagePanel = new MessagePanel(endpoints);
+        final ContextPanel contextPanel = new ContextPanel();
+
+        pane.addTab("Message", messagePanel);
+        pane.addTab("Context", contextPanel);
+        
+        pane.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (pane.getSelectedIndex() == 1) {
+                    new RefreshContextAction(contextPanel).actionPerformed(null);
+                    pane.removeChangeListener(this);
+                }
+            }
+        });
+        
+        add(pane);
+        setVisible(true);
     }
 
     public static String serviceCall(ClientEndpoint endpoint, String operation, String message, String context,

@@ -6,7 +6,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jms.JMSException;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -14,11 +13,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
-
-import org.openengsb.core.messaging.ListSegment;
-import org.openengsb.core.messaging.Segment;
-import org.openengsb.core.messaging.TextSegment;
-import org.openengsb.util.serialization.SerializationException;
 
 public class ContextPanel extends JPanel {
 
@@ -28,6 +22,8 @@ public class ContextPanel extends JPanel {
 
     JTable table = new JTable(model);
     private JPopupMenu popup;
+    
+    private ContextFacade contextFacade = new ContextFacade();
 
     public ContextPanel() {
         setLayout(new BorderLayout());
@@ -36,6 +32,7 @@ public class ContextPanel extends JPanel {
         JMenuItem newItem = new JMenuItem("New...");
         JMenuItem deleteItem = new JMenuItem("Delete");
 
+        newItem.addActionListener(new NewContextEntryAction(this));
         deleteItem.addActionListener(new DeleteContextEntryAction(this));
 
         popup.add(newItem);
@@ -144,25 +141,7 @@ public class ContextPanel extends JPanel {
             }
 
             contextEntry.setValue(s);
-
-            List<Segment> list = new ArrayList<Segment>();
-
-            String name = contextEntry.getName();
-            String value = contextEntry.getValue();
-            list.add(new TextSegment.Builder(name).text(value).build());
-
-            ListSegment listSegment = new ListSegment.Builder("/").list(list).build();
-
-            try {
-                String xml = listSegment.toXML();
-                OpenEngSBClient.contextCall("store", xml);
-            } catch (SerializationException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            } catch (JMSException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+            contextFacade.setValue(contextEntry.getName(), contextEntry.getValue());
         }
     }
 }
