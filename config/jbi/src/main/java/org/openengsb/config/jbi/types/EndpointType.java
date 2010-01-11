@@ -24,6 +24,7 @@ public class EndpointType {
     private String name;
     private List<AbstractType> attributes;
     private List<AbstractType> properties;
+    private ComponentType parent;
 
     public EndpointType() {
     	readResolve();
@@ -79,5 +80,13 @@ public class EndpointType {
 
     public void setProperties(List<AbstractType> properties) {
         this.properties = properties;
+    }
+
+    public ComponentType getParent() {
+        return parent;
+    }
+
+    public void setParent(ComponentType c) {
+        this.parent = c;
     }
 }
