@@ -163,6 +163,7 @@
     <module>package/essential</module>
     <module>package/embedded</module>
     <module>package/assembly</module>
+    <module>package/test</module>
 
     <!-- Config -->
     <module>config/jbi</module>
@@ -887,6 +888,22 @@
         <artifactId>openengsb-package-assembly</artifactId>
         <version>${pom.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-package-essential</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-package-embedded</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-package-test</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
 
       <!-- WebApp Modules -->
       <dependency>

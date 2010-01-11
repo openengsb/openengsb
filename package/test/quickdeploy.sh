@@ -1,6 +1,6 @@
-#!/bin/bash
+#! /bin/bash
 #
-#   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+#	Copyright 2010 OpenEngSB Division, Vienna University of Technology
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -14,10 +14,13 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
-cd $(dirname $0)
-SCRIPT_DIR=`pwd`
-cd $SCRIPT_DIR/../package/test
-mvn jbi:projectDeploy 
-cd $SCRIPT_DIR/../test/jms/swingclient 
-mvn -e exec:java -Dexec.mainClass=org.openengsb.swingclient.Start
 
+# Script used to build the entire servicebus and run it directly from maven. This 
+# script actually using the jbi:servicemix maven command therefore. In future
+# version, when the project is embedded in an webserver this script is for
+# change.
+
+echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
+
+mvn clean install -o
+mvn jbi:projectDeploy -o
