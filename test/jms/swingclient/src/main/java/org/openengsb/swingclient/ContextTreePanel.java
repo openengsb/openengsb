@@ -47,7 +47,7 @@ public class ContextTreePanel extends JPanel {
     public ContextTreePanel(ContextPanel contextPanel) {
         this.contextPanel = contextPanel;
         this.setLayout(new BorderLayout());
-        tree = new JTree(new DefaultTreeModel(new ContextTreeNode("/")));
+        tree = new JTree(new DefaultTreeModel(new ContextTreeNode("/", "")));
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(new ContextTreeSelectionListener());
         this.add(tree, BorderLayout.CENTER);
@@ -63,12 +63,16 @@ public class ContextTreePanel extends JPanel {
         tree.setSelectionRows(selectionRows);
     }
 
-    public void selectRoot() {
-        tree.setSelectionPath(new TreePath(root));
+    public ContextTreeNode getSelectedNode() {
+        TreePath selectionPath = tree.getSelectionPath();
+        if (selectionPath == null) {
+            return null;
+        }
+        return (ContextTreeNode) selectionPath.getLastPathComponent();
     }
 
     private ContextTreeNode transform(Context context, String path, String name) {
-        ContextTreeNode current = new ContextTreeNode(name);
+        ContextTreeNode current = new ContextTreeNode(name, path);
         current.setValues(toList(getValueMap(context), path));
         for (String child : context.getChildrenNames()) {
             current.addChild(transform(context.getChild(child), path + child + "/", child));
@@ -94,17 +98,20 @@ public class ContextTreePanel extends JPanel {
 
     public static class ContextTreeNode implements TreeNode {
 
-        public ContextTreeNode(String name) {
-            this.name = name;
-        }
-
         private List<TreeNode> children = new ArrayList<TreeNode>();
 
         private String name;
 
+        private String path;
+
         private List<ContextEntry> values;
 
         private TreeNode parent;
+
+        public ContextTreeNode(String name, String path) {
+            this.name = name;
+            this.path = path;
+        }
 
         @Override
         public Enumeration<TreeNode> children() {
@@ -166,6 +173,10 @@ public class ContextTreePanel extends JPanel {
 
         public String getName() {
             return name;
+        }
+
+        public String getPath() {
+            return path;
         }
 
         @Override

@@ -23,6 +23,6 @@ public class DeleteContextEntryAction implements ActionListener {
         ContextEntry removedEntry = model.remove(row);
         ((AbstractTableModel) panel.table.getModel()).fireTableDataChanged();
 
-        contextFacade.remove(removedEntry.getName());
+        contextFacade.remove(removedEntry.getPath() + removedEntry.getName());
     }
 }

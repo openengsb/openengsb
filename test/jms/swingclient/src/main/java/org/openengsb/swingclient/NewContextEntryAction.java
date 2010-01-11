@@ -2,10 +2,11 @@ package org.openengsb.swingclient;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
+
+import org.openengsb.swingclient.ContextTreePanel.ContextTreeNode;
 
 public class NewContextEntryAction implements ActionListener {
 
@@ -19,7 +20,11 @@ public class NewContextEntryAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String key = JOptionPane.showInputDialog(panel, "Enter key", "Create new entry", JOptionPane.PLAIN_MESSAGE);
+        ContextTreeNode selectedNode = panel.tree.getSelectedNode();
+        String path = selectedNode.getPath();
+
+        String key = JOptionPane.showInputDialog(panel, "Enter key for value in subtree " + path, "Create new entry",
+                JOptionPane.PLAIN_MESSAGE);
 
         if (key == null || key.equals("")) {
             return;
@@ -31,9 +36,9 @@ public class NewContextEntryAction implements ActionListener {
             return;
         }
 
-        contextFacade.setValue(key, null, value);
-        List<ContextEntry> model = panel.getModel();
-        model.add(new ContextEntry("", key, value));
+        // TODO: add check if value key already exists
+        contextFacade.setValue(path + key, null, value);
+        selectedNode.getValues().add(new ContextEntry(path, key, value));
         ((AbstractTableModel) panel.table.getModel()).fireTableDataChanged();
     }
 
