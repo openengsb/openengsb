@@ -9,7 +9,6 @@ import javax.swing.table.AbstractTableModel;
 public class DeleteContextEntryAction implements ActionListener {
 
     private ContextPanel panel;
-    
     private ContextFacade contextFacade = new ContextFacade();
 
     public DeleteContextEntryAction(ContextPanel panel) {
@@ -23,7 +22,7 @@ public class DeleteContextEntryAction implements ActionListener {
 
         ContextEntry removedEntry = model.remove(row);
         ((AbstractTableModel) panel.table.getModel()).fireTableDataChanged();
-        
+
         contextFacade.remove(removedEntry.getName());
     }
 }

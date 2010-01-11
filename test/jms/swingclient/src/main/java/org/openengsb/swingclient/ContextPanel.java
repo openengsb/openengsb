@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
@@ -23,6 +24,8 @@ public class ContextPanel extends JPanel {
     private Model model = new Model();
 
     JTable table = new JTable(model);
+    ContextTreePanel tree = new ContextTreePanel(this);
+
     private JPopupMenu popup;
 
     private ContextFacade contextFacade = new ContextFacade();
@@ -47,7 +50,11 @@ public class ContextPanel extends JPanel {
         refresh.addActionListener(new RefreshContextAction(this));
         exit.addActionListener(new ExitAction());
 
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        JSplitPane centerPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        centerPanel.setTopComponent(new JScrollPane(tree));
+        centerPanel.setBottomComponent(new JScrollPane(table));
+
+        add(centerPanel);
         add(buttonPanel, BorderLayout.SOUTH);
 
         table.addMouseListener(new PopupListener());

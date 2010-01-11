@@ -2,12 +2,22 @@ package org.openengsb.swingclient;
 
 public class ContextEntry {
 
+    private String path;
     private String name;
     private String value;
 
-    public ContextEntry(String name, String value) {
+    public ContextEntry(String path, String name, String value) {
+        this.path = path;
         this.name = name;
         this.value = value;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getName() {

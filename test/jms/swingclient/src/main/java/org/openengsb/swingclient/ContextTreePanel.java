@@ -23,11 +23,16 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JPanel;
 import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 import org.openengsb.contextcommon.Context;
 
@@ -37,26 +42,44 @@ public class ContextTreePanel extends JPanel {
 
     private ContextTreeNode root;
 
-    public ContextTreePanel(Context context) {
+    private ContextPanel contextPanel;
+
+    public ContextTreePanel(ContextPanel contextPanel) {
+        this.contextPanel = contextPanel;
         this.setLayout(new BorderLayout());
-        root = transform(context, "/");
-        tree = new JTree(new DefaultTreeModel(root));
+        tree = new JTree(new DefaultTreeModel(new ContextTreeNode("/")));
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        tree.addTreeSelectionListener(new ContextTreeSelectionListener());
         this.add(tree, BorderLayout.CENTER);
     }
 
     public void updateTree(Context context) {
-        root = transform(context, "/");
+        root = transform(context, "", "/");
         tree.setModel(new DefaultTreeModel(root));
+        for (int i = 0; i < tree.getRowCount(); i++) {
+            tree.expandRow(i);
+        }
     }
 
-    private ContextTreeNode transform(Context context, String name) {
-        ContextTreeNode current = new ContextTreeNode();
-        current.setName(name);
-        current.setValues(getValueMap(context));
+    public void selectRoot() {
+        tree.setSelectionPath(new TreePath(root));
+    }
+
+    private ContextTreeNode transform(Context context, String path, String name) {
+        ContextTreeNode current = new ContextTreeNode(name);
+        current.setValues(toList(getValueMap(context), path));
         for (String child : context.getChildrenNames()) {
-            current.addChild(transform(context.getChild(child), child));
+            current.addChild(transform(context.getChild(child), path + child + "/", child));
         }
         return current;
+    }
+
+    private List<ContextEntry> toList(Map<String, String> values, String path) {
+        List<ContextEntry> elements = new ArrayList<ContextEntry>();
+        for (Entry<String, String> e : values.entrySet()) {
+            elements.add(new ContextEntry(path, e.getKey(), e.getValue()));
+        }
+        return elements;
     }
 
     private Map<String, String> getValueMap(Context context) {
@@ -69,11 +92,15 @@ public class ContextTreePanel extends JPanel {
 
     public static class ContextTreeNode implements TreeNode {
 
+        public ContextTreeNode(String name) {
+            this.name = name;
+        }
+
         private List<TreeNode> children = new ArrayList<TreeNode>();
 
         private String name;
 
-        private Map<String, String> values;
+        private List<ContextEntry> values;
 
         private TreeNode parent;
 
@@ -109,7 +136,7 @@ public class ContextTreePanel extends JPanel {
 
         @Override
         public boolean isLeaf() {
-            return children.size() == 0;
+            return false;
         }
 
         public void setParent(ContextTreeNode parent) {
@@ -127,16 +154,12 @@ public class ContextTreePanel extends JPanel {
             }
         }
 
-        public void setValues(Map<String, String> values) {
+        public void setValues(List<ContextEntry> values) {
             this.values = values;
         }
 
-        public Map<String, String> getValues() {
+        public List<ContextEntry> getValues() {
             return values;
-        }
-
-        public void setName(String name) {
-            this.name = name;
         }
 
         public String getName() {
@@ -147,6 +170,20 @@ public class ContextTreePanel extends JPanel {
         public String toString() {
             return name;
         }
+    }
+
+    private class ContextTreeSelectionListener implements TreeSelectionListener {
+
+        @Override
+        public void valueChanged(TreeSelectionEvent e) {
+            TreePath newLeadSelectionPath = e.getNewLeadSelectionPath();
+            if (newLeadSelectionPath == null) {
+                return;
+            }
+            ContextTreeNode selectedNode = (ContextTreeNode) newLeadSelectionPath.getLastPathComponent();
+            contextPanel.updateModel(selectedNode.getValues());
+        }
+
     }
 
 }

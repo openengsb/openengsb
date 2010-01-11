@@ -33,7 +33,7 @@ public class NewContextEntryAction implements ActionListener {
 
         contextFacade.setValue(key, null, value);
         List<ContextEntry> model = panel.getModel();
-        model.add(new ContextEntry(key, value));
+        model.add(new ContextEntry("", key, value));
         ((AbstractTableModel) panel.table.getModel()).fireTableDataChanged();
     }
 
