@@ -10,7 +10,7 @@ public class DeleteContextEntryAction implements ActionListener {
 
     private ContextPanel panel;
     
-    private ContextFacade contextFacade;
+    private ContextFacade contextFacade = new ContextFacade();
 
     public DeleteContextEntryAction(ContextPanel panel) {
         this.panel = panel;

@@ -36,10 +36,9 @@ public class RefreshContextAction implements ActionListener {
             panel.updateModel(values);
 
         } catch (JMSException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } catch (SerializationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

@@ -19,19 +19,19 @@ public class NewContextEntryAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String key = JOptionPane.showInputDialog(panel, "Enter key");
+        String key = JOptionPane.showInputDialog(panel, "Enter key", "Create new entry", JOptionPane.PLAIN_MESSAGE);
 
         if (key == null || key.equals("")) {
             return;
         }
 
-        String value = JOptionPane.showInputDialog(panel, "Enter value");
+        String value = JOptionPane.showInputDialog(panel, "Enter value", "Create new entry", JOptionPane.PLAIN_MESSAGE);
 
         if (value == null || value.equals("")) {
             return;
         }
 
-        contextFacade.setValue(key, value);
+        contextFacade.setValue(key, null, value);
         List<ContextEntry> model = panel.getModel();
         model.add(new ContextEntry(key, value));
         ((AbstractTableModel) panel.table.getModel()).fireTableDataChanged();
