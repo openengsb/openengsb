@@ -25,13 +25,10 @@ import org.openengsb.config.editor.EditorPanel;
 import org.openengsb.config.editor.FieldInfos;
 import org.openengsb.config.jbi.BeanInfo;
 import org.openengsb.config.jbi.EndpointInfo;
-import org.openengsb.config.jbi.ServiceUnitInfo;
 import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointType;
-
-import com.google.common.collect.Lists;
 
 public class BeanEditorPage extends BasePage {
 
@@ -58,8 +55,7 @@ public class BeanEditorPage extends BasePage {
             @Override
             public void onSubmit() {
                 if (endpoint != null) {
-                    assemblyService.getServiceUnits().add(
-                            new ServiceUnitInfo(desc, Lists.newArrayList(new EndpointInfo(endpoint, getValues()))));
+                    assemblyService.getEndpoints().add(new EndpointInfo(endpoint, getValues()));
                 } else {
                     assemblyService.getBeans().add(new BeanInfo(bean, getValues()));
                 }

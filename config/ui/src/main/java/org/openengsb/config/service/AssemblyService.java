@@ -21,11 +21,11 @@ import java.io.File;
 import java.util.List;
 
 import org.openengsb.config.jbi.BeanInfo;
-import org.openengsb.config.jbi.ServiceUnitInfo;
+import org.openengsb.config.jbi.EndpointInfo;
 
 public interface AssemblyService {
     public void createNewAssembly();
-    public List<ServiceUnitInfo> getServiceUnits();
+    public List<EndpointInfo> getEndpoints();
     public boolean deploy(File saFile, String filename);
 	public List<BeanInfo> getBeans();
 }

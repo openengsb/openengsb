@@ -31,8 +31,8 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
 import org.openengsb.config.jbi.BeanInfo;
+import org.openengsb.config.jbi.EndpointInfo;
 import org.openengsb.config.jbi.ServiceAssemblyInfo;
-import org.openengsb.config.jbi.ServiceUnitInfo;
 import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointType;
@@ -55,12 +55,16 @@ public class CreateAssemblyPage extends BasePage {
         };
         add(suform);
 
-        final ListView<ServiceUnitInfo> suListView = new ListView<ServiceUnitInfo>("serviceUnits", assemblyService
-                .getServiceUnits()) {
+        final ListView<EndpointInfo> suListView = new ListView<EndpointInfo>("serviceUnits", assemblyService
+                .getEndpoints()) {
             @Override
-            protected void populateItem(ListItem<ServiceUnitInfo> item) {
-                ServiceUnitInfo su = item.getModelObject();
-                item.add(new Label("name", su.getIdentifier()));
+            protected void populateItem(ListItem<EndpointInfo> item) {
+                EndpointInfo e = item.getModelObject();
+                String name = getLocalizer().getString(
+                        e.getEndpointType().getParent().getName() + "." + e.getEndpointType().getName() + "._name",
+                        null);
+                item.add(new Label("name", name + " - " + e.getMap().get("service") + " - "
+                        + e.getMap().get("endpoint")));
             }
 
             @Override
@@ -78,8 +82,10 @@ public class CreateAssemblyPage extends BasePage {
         final ListView<BeanInfo> beanListView = new ListView<BeanInfo>("beans", assemblyService.getBeans()) {
             @Override
             protected void populateItem(ListItem<BeanInfo> item) {
-                BeanInfo bean = item.getModelObject();
-                item.add(new Label("name", bean.getBeanType().getClazz() + ":" + bean.getMap().get("id")));
+                BeanInfo b = item.getModelObject();
+                String name = getLocalizer().getString(
+                        b.getBeanType().getParent().getName() + "." + b.getBeanType().getClazz() + "._name", null);
+                item.add(new Label("name", name + " - " + b.getMap().get("id")));
             }
 
             @Override
@@ -125,7 +131,7 @@ public class CreateAssemblyPage extends BasePage {
         try {
             File tmp = File.createTempFile("openengsb", ".zip");
             FileOutputStream fos = new FileOutputStream(tmp);
-            ServiceAssemblyInfo sa = new ServiceAssemblyInfo("openengsb-test", assemblyService.getServiceUnits(),
+            ServiceAssemblyInfo sa = new ServiceAssemblyInfo("openengsb-test", assemblyService.getEndpoints(),
                     assemblyService.getBeans());
             sa.toZip(fos);
             assemblyService.deploy(tmp, "openengsb-test-sa.zip");
