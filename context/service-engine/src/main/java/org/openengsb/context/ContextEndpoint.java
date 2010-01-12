@@ -72,13 +72,29 @@ public class ContextEndpoint extends ProviderEndpoint {
         } else if (operation.equals("store")) {
             handleStore(id, in);
             result = "<result>success</result>";
+        } else if (operation.equals("addContext")) {
+            handleAddContext(id, in);
+            result = "<result>success</result>";
         } else if (operation.equals("remove")) {
             handleRemove(id, in);
+            result = "<result>success</result>";
         } else {
             throw new RuntimeException("Illegal operation: " + operation);
         }
 
         out.setContent(new StringSource(result));
+    }
+
+    private void handleAddContext(String id, NormalizedMessage in) throws SerializationException, TransformerException {
+        SourceTransformer sourceTransformer = new SourceTransformer();
+        String inputMessage = sourceTransformer.toString(in.getContent());
+
+        Segment inSegment = Segment.fromXML(inputMessage);
+        ListSegment ls = (ListSegment) inSegment;
+
+        for (Segment s : ls.getList()) {
+            handleAddContextSegment((TextSegment) s, id);
+        }
     }
 
     private void handleStore(String id, NormalizedMessage in) throws SerializationException, TransformerException {
@@ -92,14 +108,14 @@ public class ContextEndpoint extends ProviderEndpoint {
             handleStoreSegment((TextSegment) s, id);
         }
     }
-    
+
     private void handleRemove(String id, NormalizedMessage in) throws SerializationException, TransformerException {
         SourceTransformer sourceTransformer = new SourceTransformer();
         String inputMessage = sourceTransformer.toString(in.getContent());
-        
+
         Segment inSegment = Segment.fromXML(inputMessage);
         ListSegment ls = (ListSegment) inSegment;
-        
+
         for (Segment s : ls.getList()) {
             handleRemoveSegment((TextSegment) s, id);
         }
@@ -110,7 +126,12 @@ public class ContextEndpoint extends ProviderEndpoint {
         String value = s.getText();
         contextStore.setValue(id + "/" + key, value);
     }
-    
+
+    private void handleAddContextSegment(TextSegment s, String id) {
+        String path = s.getName();
+        contextStore.addContext(id + "/" + path);
+    }
+
     private void handleRemoveSegment(TextSegment s, String id) {
         String key = s.getName();
         contextStore.removeValue(id + "/" + key);

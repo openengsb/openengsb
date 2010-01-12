@@ -45,6 +45,7 @@ public class ContextSegmentTransformer {
             store.setValue(prefix + key, value);
         } else if (segment instanceof ListSegment) {
             ListSegment ls = (ListSegment) segment;
+            store.addContext(prefix + ls.getName());
 
             for (Segment s : ls.getList()) {
                 toContext(prefix + ls.getName() + "/", store, s);

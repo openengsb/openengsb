@@ -73,16 +73,23 @@ public class ContextStore {
         save();
     }
 
+    public void addContext(String path) {
+        resolveAndCreate(new ContextPath(path));
+        save();
+    }
+
     public void removeValue(String path) {
         String[] splitPath = splitPath(new ContextPath(path));
         Context ctx = resolve(new ContextPath(splitPath[0]));
 
         if (ctx.getChild(splitPath[1]) != null) {
             ctx.removeChild(splitPath[1]);
+            save();
             return;
         }
 
         ctx.remove(splitPath[1]);
+        save();
     }
 
     public String getValue(String path) {
@@ -201,4 +208,5 @@ public class ContextStore {
             throw new RuntimeException(e);
         }
     }
+
 }
