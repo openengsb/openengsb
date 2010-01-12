@@ -55,6 +55,21 @@ public class ContextFacade {
         }
     }
 
+    public void createContext(String key) {
+        List<Segment> list = new ArrayList<Segment>();
+        list.add(new TextSegment.Builder(key).text("").build());
+        ListSegment listSegment = new ListSegment.Builder("/").list(list).build();
+
+        try {
+            String xml = listSegment.toXML();
+            OpenEngSBClient.contextCall("addContext", xml);
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        } catch (JMSException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public String getValue(String pathAndKey) {
         try {
             if (pathAndKey.lastIndexOf('/') == -1) {

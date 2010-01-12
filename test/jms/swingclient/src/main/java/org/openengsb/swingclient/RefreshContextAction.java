@@ -25,7 +25,6 @@ public class RefreshContextAction implements ActionListener {
 
         try {
             String result = OpenEngSBClient.contextCall("request", getMessage());
-
             Segment segment = Segment.fromXML(result);
             Context context = ContextSegmentTransformer.toContext(segment);
 

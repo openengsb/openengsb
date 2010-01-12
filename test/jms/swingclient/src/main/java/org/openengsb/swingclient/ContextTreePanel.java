@@ -18,6 +18,8 @@
 package org.openengsb.swingclient;
 
 import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -25,7 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -38,11 +42,11 @@ import org.openengsb.contextcommon.Context;
 
 public class ContextTreePanel extends JPanel {
 
-    private JTree tree;
+    JTree tree;
 
     private ContextTreeNode root;
 
-    private ContextPanel contextPanel;
+    ContextPanel contextPanel;
 
     public ContextTreePanel(ContextPanel contextPanel) {
         this.contextPanel = contextPanel;
@@ -50,6 +54,20 @@ public class ContextTreePanel extends JPanel {
         tree = new JTree(new DefaultTreeModel(new ContextTreeNode("/", "")));
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(new ContextTreeSelectionListener());
+
+        JPopupMenu popup = new JPopupMenu();
+
+        JMenuItem newItem = new JMenuItem("New Subtree");
+        JMenuItem deleteItem = new JMenuItem("Delete Subtree");
+
+        newItem.addActionListener(new NewContextSubTreeAction(this));
+        deleteItem.addActionListener(new DeleteContextSubTreeAction(this));
+
+        popup.add(newItem);
+        popup.add(deleteItem);
+
+        tree.addMouseListener(new PopupListener(popup));
+
         this.add(tree, BorderLayout.CENTER);
     }
 
@@ -94,6 +112,33 @@ public class ContextTreePanel extends JPanel {
             values.put(key, context.get(key));
         }
         return values;
+    }
+
+    private class PopupListener extends MouseAdapter {
+        private JPopupMenu popup;
+
+        public PopupListener(JPopupMenu popup) {
+            this.popup = popup;
+        }
+
+        public void mousePressed(MouseEvent e) {
+            showPopup(e);
+        }
+
+        public void mouseReleased(MouseEvent e) {
+            showPopup(e);
+        }
+
+        private void showPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                int row = tree.getRowForLocation(e.getX(), e.getY());
+                tree.setSelectionRow(row);
+                if (row == -1) {
+                    return;
+                }
+                popup.show(e.getComponent(), e.getX(), e.getY());
+            }
+        }
     }
 
     public static class ContextTreeNode implements TreeNode {
@@ -191,10 +236,13 @@ public class ContextTreePanel extends JPanel {
         public void valueChanged(TreeSelectionEvent e) {
             TreePath newLeadSelectionPath = e.getNewLeadSelectionPath();
             if (newLeadSelectionPath == null) {
+                contextPanel.table.newEntry.setEnabled(false);
                 return;
             }
+            contextPanel.table.newEntry.setEnabled(true);
             ContextTreeNode selectedNode = (ContextTreeNode) newLeadSelectionPath.getLastPathComponent();
-            contextPanel.updateModel(selectedNode.getValues());
+            contextPanel.table.updateModel(selectedNode.getValues());
+
         }
 
     }

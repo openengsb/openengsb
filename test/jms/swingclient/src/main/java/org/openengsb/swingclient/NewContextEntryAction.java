@@ -21,10 +21,14 @@ public class NewContextEntryAction implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         ContextTreeNode selectedNode = panel.tree.getSelectedNode();
+        if (selectedNode == null) {
+            return;
+        }
+
         String path = selectedNode.getPath();
 
-        String key = JOptionPane.showInputDialog(panel, "Enter key for value in subtree " + path, "Create new entry",
-                JOptionPane.PLAIN_MESSAGE);
+        String key = JOptionPane.showInputDialog(panel, "Enter key for value in subtree '/" + path + "'",
+                "Create new entry", JOptionPane.PLAIN_MESSAGE);
 
         if (key == null || key.equals("")) {
             return;
@@ -39,7 +43,7 @@ public class NewContextEntryAction implements ActionListener {
         // TODO: add check if value key already exists
         contextFacade.setValue(path + key, null, value);
         selectedNode.getValues().add(new ContextEntry(path, key, value));
-        ((AbstractTableModel) panel.table.getModel()).fireTableDataChanged();
+        ((AbstractTableModel) panel.table.table.getModel()).fireTableDataChanged();
     }
 
 }
