@@ -89,6 +89,7 @@
     <maven.plugin.release.version>2.0-beta-9</maven.plugin.release.version>
     <maven.plugin.surefire>2.4.3</maven.plugin.surefire>
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
+    <servicemix.jbi.maven.version>4.1</servicemix.jbi.maven.version>
   </properties>
 
   <groupId>org.openengsb</groupId>
@@ -412,7 +413,8 @@
       <plugin>
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>jbi-maven-plugin</artifactId>
-        <extensions>true</extensions>
+	<extensions>true</extensions>
+	<version>${servicemix.jbi.maven.version}</version>
       </plugin>
       <plugin>
         <groupId>org.jibx</groupId>
