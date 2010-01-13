@@ -18,6 +18,8 @@
 package org.openengsb.config.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.html.basic.Label;
@@ -33,6 +35,10 @@ import org.openengsb.config.jbi.types.EndpointType;
 public class BeanEditorPage extends BasePage {
 
     public BeanEditorPage(String componentName, String beanIdentifier) {
+        this(componentName, beanIdentifier, new HashMap<String, String>());
+    }
+
+    public BeanEditorPage(String componentName, String beanIdentifier, Map<String, String> map) {
         final ComponentType desc = componentService.getComponent(componentName);
         add(new Label("name", desc.getName()));
         add(new Label("namespace", desc.getNamespace()));
@@ -51,7 +57,7 @@ public class BeanEditorPage extends BasePage {
             fi = new FieldInfos(bean.getClazz(), fields);
         }
 
-        EditorPanel editor = new EditorPanel("editor", desc.getName(), fi) {
+        EditorPanel editor = new EditorPanel("editor", desc.getName(), fi, map) {
             @Override
             public void onSubmit() {
                 if (endpoint != null) {

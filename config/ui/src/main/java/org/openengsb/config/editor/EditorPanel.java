@@ -17,7 +17,6 @@
  */
 package org.openengsb.config.editor;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -42,15 +41,11 @@ public abstract class EditorPanel extends Panel {
     private final FieldInfos fieldInfos;
     private final Map<String, String> map;
 
-    public EditorPanel(String id, String componentId, FieldInfos fieldInfos) {
-        this(id, componentId, fieldInfos, null);
-    }
-
-    public EditorPanel(String id, String componentId, FieldInfos fieldInfos, IModel<?> model) {
-        super(id, model);
+    public EditorPanel(String id, String componentId, FieldInfos fieldInfos, Map<String, String> map) {
+        super(id);
         this.componentId = componentId;
         this.fieldInfos = fieldInfos;
-        map = new HashMap<String, String>();
+        this.map = map;
         createForm();
     }
 

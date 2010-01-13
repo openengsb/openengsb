@@ -21,6 +21,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RequestCycle;
@@ -33,10 +36,13 @@ import org.apache.wicket.model.PropertyModel;
 import org.openengsb.config.jbi.BeanInfo;
 import org.openengsb.config.jbi.EndpointInfo;
 import org.openengsb.config.jbi.ServiceAssemblyInfo;
+import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointType;
 import org.openengsb.config.view.util.ChoiceOption;
+
+import com.google.common.collect.Maps;
 
 public class CreateAssemblyPage extends BasePage {
     public ChoiceOption selected;
@@ -143,6 +149,23 @@ public class CreateAssemblyPage extends BasePage {
 
     protected void onSubmit() {
         String[] s = selected.getId().split(":");
-        RequestCycle.get().setResponsePage(new BeanEditorPage(s[0], s[1]));
+        RequestCycle.get().setResponsePage(new BeanEditorPage(s[0], s[1], buildDefaultMap(s[0], s[1])));
+    }
+
+    private Map<String, String> buildDefaultMap(String componentType, String beanType) {
+        HashMap<String, String> map = Maps.newHashMap();
+        List<AbstractType> fields = null;
+        ComponentType c = componentService.getComponent(componentType);
+        EndpointType e = c.getEndpoint(beanType);
+        BeanType b = c.getBean(beanType);
+        if (e != null) {
+            fields = e.getAttributes();
+        } else {
+            fields = b.getProperties();
+        }
+        for (AbstractType t : fields) {
+            map.put(t.getName(), t.getDefaultValue());
+        }
+        return map;
     }
 }
