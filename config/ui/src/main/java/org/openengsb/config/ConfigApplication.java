@@ -38,6 +38,10 @@ public class ConfigApplication extends WebApplication {
 	@Autowired
 	private ApplicationContext applicationContext;
 
+    public void setApplicationContext(ApplicationContext context) {
+        this.applicationContext = context;
+    }
+
     public ConfigApplication() {
     }
 
