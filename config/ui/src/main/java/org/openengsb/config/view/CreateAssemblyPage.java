@@ -53,7 +53,7 @@ public class CreateAssemblyPage extends BasePage {
             assemblyService.createNewAssembly();
         }
 
-        Form<?> suform = new Form("suForm") {
+        Form<?> suform = new Form("saForm") {
             @Override
             protected void onSubmit() {
                 CreateAssemblyPage.this.onDeploySubmit();
@@ -61,7 +61,7 @@ public class CreateAssemblyPage extends BasePage {
         };
         add(suform);
 
-        final ListView<EndpointInfo> suListView = new ListView<EndpointInfo>("serviceUnits", assemblyService
+        final ListView<EndpointInfo> endpointList = new ListView<EndpointInfo>("endpointList", assemblyService
                 .getEndpoints()) {
             @Override
             protected void populateItem(ListItem<EndpointInfo> item) {
@@ -78,14 +78,14 @@ public class CreateAssemblyPage extends BasePage {
                 return !getList().isEmpty();
             }
         };
-        add(suListView);
-        add(new Label("endpointsEmpty", getLocalizer().getString("endpointsEmpty", this)) {
+        add(endpointList);
+        add(new Label("endpointLabel", getLocalizer().getString("endpointLabel", this)) {
             @Override
             public boolean isVisible() {
-                return !suListView.isVisible();
+                return !endpointList.isVisible();
             }
         });
-        final ListView<BeanInfo> beanListView = new ListView<BeanInfo>("beans", assemblyService.getBeans()) {
+        final ListView<BeanInfo> beanList = new ListView<BeanInfo>("beanList", assemblyService.getBeans()) {
             @Override
             protected void populateItem(ListItem<BeanInfo> item) {
                 BeanInfo b = item.getModelObject();
@@ -99,15 +99,15 @@ public class CreateAssemblyPage extends BasePage {
                 return !getList().isEmpty();
             }
         };
-        add(beanListView);
-        add(new Label("beansEmpty", getLocalizer().getString("beansEmpty", this)) {
+        add(beanList);
+        add(new Label("beanLabel", getLocalizer().getString("beanLabel", this)) {
             @Override
             public boolean isVisible() {
                 return true; // !beanListView.isVisible();
             }
         });
 
-        Form<?> form = new Form("form") {
+        Form<?> form = new Form("newComponentForm") {
             @Override
             protected void onSubmit() {
                 CreateAssemblyPage.this.onSubmit();
@@ -127,7 +127,7 @@ public class CreateAssemblyPage extends BasePage {
                 names.add(new ChoiceOption(c.getName() + ":" + b.getClazz(), display));
             }
         }
-        DropDownChoice<ChoiceOption> choice = new DropDownChoice<ChoiceOption>("suSelect",
+        DropDownChoice<ChoiceOption> choice = new DropDownChoice<ChoiceOption>("componentSelect",
                 new PropertyModel<ChoiceOption>(this, "selected"), names, ChoiceOption.createRenderer());
         choice.setRequired(true);
         form.add(choice);

@@ -31,7 +31,8 @@ public class CreateAssemblyPageTest extends WicketBase {
     @SuppressWarnings("unchecked")
     public void dropDownChoice_shouldListEndpointsAndBeans() throws Exception {
         tester.startPage(CreateAssemblyPage.class);
-        DropDownChoice<ChoiceOption> choice = extTester.assertEnabled("form:suSelect", DropDownChoice.class);
+        DropDownChoice<ChoiceOption> choice = extTester.assertEnabled("newComponentForm:componentSelect",
+                DropDownChoice.class);
         assertThat(choice.getChoices().size(), is(2));
         assertThat(choice.getChoices().get(0).getId(), is("test-connector:test"));
         assertThat(choice.getChoices().get(1).getId(), is("test-connector:connector.test.TestBean"));
@@ -40,9 +41,9 @@ public class CreateAssemblyPageTest extends WicketBase {
     @Test
     public void onEmptyLists_shouldBeInvisibleAndLabelsVisible() throws Exception {
         tester.startPage(CreateAssemblyPage.class);
-        extTester.assertVisible("endpointsEmpty");
-        extTester.assertInvisible("serviceUnits");
-        extTester.assertVisible("beansEmpty");
-        extTester.assertInvisible("beans");
+        extTester.assertVisible("endpointLabel");
+        extTester.assertInvisible("endpointList");
+        extTester.assertVisible("beanLabel");
+        extTester.assertInvisible("beanList");
     }
 }

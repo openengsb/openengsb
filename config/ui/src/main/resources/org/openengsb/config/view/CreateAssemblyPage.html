@@ -21,23 +21,23 @@
 <body>
 <wicket:extend>
   <h3><wicket:message key="createNewAssembly">[createNewAssembly]</wicket:message></h3>
-  <p><em>Service Units</em></p>
-  <span wicket:id="serviceUnits">
+  <p><em>Endpoints</em></p>
+  <span wicket:id="endpointList">
     <p>
       <span wicket:id="name">[name]</span>
     </p>
   </span>
-  <span wicket:id="endpointsEmpty">[endpointsEmpty]</span>
+  <span wicket:id="endpointLabel">[endpointLabel]</span>
   <p><em>Beans</em></p>
-  <span wicket:id="beans">
+  <span wicket:id="beanList">
     <p>
       <span wicket:id="name">[name]</span>
     </p>
   </span>
-  <span wicket:id="beansEmpty">[beansEmpty]</span>
-  <form wicket:id="suForm"><input type="submit" value="Deploy" /></form>
-  <form wicket:id="form">
-    <p>New Bean / Service Unit: <select wicket:id="suSelect" /> <input type="submit" value="Create" /></p>
+  <span wicket:id="beanLabel">[beanLabel]</span>
+  <form wicket:id="saForm"><input type="submit" value="Deploy" /></form>
+  <form wicket:id="newComponentForm">
+    <p>New Bean / Endpoint: <select wicket:id="componentSelect" /> <input type="submit" value="Create" /></p>
   </form>
 </wicket:extend>
 </body>
