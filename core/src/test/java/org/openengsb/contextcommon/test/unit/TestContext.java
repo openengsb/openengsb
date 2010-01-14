@@ -186,4 +186,31 @@ public class TestContext {
         store.removeValue("foo");
         store.getContext("foo");
     }
+
+    @Test
+    public void testAddEmptyContext() {
+        store.addContext("foo/bar");
+        assertNotNull(store.getContext("foo/bar"));
+    }
+
+    @Test(expected = ContextNameClashException.class)
+    public void testEmptyContextCollision() {
+        store.addContext("foo/bar");
+        store.setValue("foo/bar", "42");
+    }
+
+    @Test(expected = ContextNotFoundException.class)
+    public void testRemoveEmptyContext() {
+        store.addContext("foo/bar");
+        store.removeValue("foo/bar");
+        store.getContext("foo/bar");
+    }
+
+    @Test
+    public void testKeepEmptySuperContext() {
+        store.addContext("foo/bar");
+        store.removeValue("foo/bar");
+        store.getContext("foo");
+    }
+
 }
