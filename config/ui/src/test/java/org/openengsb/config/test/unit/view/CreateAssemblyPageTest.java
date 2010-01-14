@@ -20,11 +20,18 @@ package org.openengsb.config.test.unit.view;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Map;
+
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.openengsb.config.WicketBase;
+import org.openengsb.config.jbi.EndpointInfo;
 import org.openengsb.config.view.CreateAssemblyPage;
 import org.openengsb.config.view.util.ChoiceOption;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class CreateAssemblyPageTest extends WicketBase {
     @Test
@@ -45,5 +52,18 @@ public class CreateAssemblyPageTest extends WicketBase {
         extTester.assertInvisible("endpointList");
         extTester.assertVisible("beanLabel");
         extTester.assertInvisible("beanList");
+    }
+
+    @Test
+    public void addEndpointToAssembly_endpointListShouldContainEndpointInfo() throws Exception {
+        Map<String, String> map = Maps.newHashMap();
+        map.put("service", "a");
+        map.put("endpoint", "b");
+        EndpointInfo endpointInfo = new EndpointInfo(components.get(0).getEndpoints().get(0), map);
+        Mockito.when(mockedAssemblyService.getEndpoints()).thenReturn(Lists.newArrayList(endpointInfo));
+        tester.startPage(CreateAssemblyPage.class);
+        extTester.assertInvisible("endpointLabel");
+        extTester.assertVisible("endpointList");
+        tester.assertListView("endpointList", Lists.newArrayList(endpointInfo));
     }
 }

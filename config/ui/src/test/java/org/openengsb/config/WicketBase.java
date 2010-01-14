@@ -33,6 +33,8 @@ import com.google.common.collect.Lists;
 
 public class WicketBase {
     protected List<ComponentType> components;
+    protected ComponentService mockedComponentService;
+    protected AssemblyService mockedAssemblyService;
     protected WicketTester tester;
     protected ExtWicketTester extTester;
 
@@ -40,12 +42,13 @@ public class WicketBase {
     public void setup() {
         components = ComponentParser.parseComponents(Lists.newArrayList(ClassLoader
                 .getSystemResourceAsStream("test-connector.xml")));
-        ComponentService cs = Mockito.mock(ComponentService.class);
-        Mockito.when(cs.getComponents()).thenReturn(components);
-        Mockito.when(cs.getComponent("test-connector")).thenReturn(components.get(0));
+        mockedComponentService = Mockito.mock(ComponentService.class);
+        Mockito.when(mockedComponentService.getComponents()).thenReturn(components);
+        Mockito.when(mockedComponentService.getComponent("test-connector")).thenReturn(components.get(0));
+        mockedAssemblyService = Mockito.mock(AssemblyService.class);
         final AnnotApplicationContextMock ctx = new AnnotApplicationContextMock();
-        ctx.putBean(cs);
-        ctx.putBean(Mockito.mock(AssemblyService.class));
+        ctx.putBean(mockedComponentService);
+        ctx.putBean(mockedAssemblyService);
 
         ContextStringResourceLoader.instance.reset();
         ContextStringResourceLoader.instance.addResourceFiles("test-connector", ClassLoader
