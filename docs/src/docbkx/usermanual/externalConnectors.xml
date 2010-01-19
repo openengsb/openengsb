@@ -60,4 +60,13 @@
       </para>
     </section>
   </section>  
+  <section id="externalConnectors.csharp">
+      <title>Connect with CSharp</title>
+      <para>
+        The CSharp connector is written on basis of the Apache ActiveMQ NMS connector and with help of the Spring 
+        NmsTemplate. The code is checked into the repository and could be found in <literal>openengsb/openengsb-nonjava/csharp</literal>. 
+        There an EngSB.sln file. This project file had been developed with SharpDevelop3, but is also tested with 
+        VisualStudio2008 CSharp Express Edition with the .net framework 3.5.
+      </para>
+  </section>
 </chapter>

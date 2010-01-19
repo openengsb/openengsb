@@ -18,6 +18,13 @@
 -->
 <chapter id="internalConnectors">
   <title>Internal OpenEngSB Tool Connectors</title>
+  
+  <warning>
+    <para>
+      This chapter is out of date and have to be rewritten...
+    </para>
+  </warning>
+  
   <section id="internalConnectors.general">
     <title>General</title>
     <para>
