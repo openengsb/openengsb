@@ -26,12 +26,32 @@
       <author>
         <firstname>Andreas</firstname>
         <surname>Pieber</surname>
-        <affiliation>anpi@gmx.at</affiliation>
+        <affiliation>anpi [at] gmx.at</affiliation>
+      </author>
+      <author>
+        <firstname>Florian</firstname>
+        <surname>Waltersdorfer</surname>
+        <affiliation>ignatiomobius [at] gmail.com</affiliation>
+      </author>
+      <author>
+        <firstname>Michael</firstname>
+        <surname>Handler</surname>
+        <affiliation>michael.handler [at] fullstop.at</affiliation>
+      </author>
+      <author>
+        <firstname>Christoph</firstname>
+        <surname>Gritschenberger</surname>
+        <affiliation>e0525747 [at] student.tuwien.ac</affiliation>
+      </author>
+      <author>
+        <firstname>Patrick</firstname>
+        <surname>Peer</surname>
+        <affiliation>e0326352 [at] gmail.com</affiliation>
       </author>
       <author>
         <firstname>Christoph</firstname>
         <surname>Zehetner</surname>
-        <affiliation>christoph.zehetner@gmx.at</affiliation>
+        <affiliation>christoph.zehetner [at] gmx.at</affiliation>
       </author>
     </authorgroup>
   </bookinfo>
@@ -42,8 +62,7 @@
   <xi:include href="usermanual/architecture.xml" />
   <xi:include href="usermanual/externalConnectors.xml" />
   <xi:include href="usermanual/internalConnectors.xml" />
-  <xi:include href="usermanual/scmDomain.xml"/>
+  <xi:include href="usermanual/domains.xml"/>
   <xi:include href="usermanual/features.xml"/>
   <xi:include href="usermanual/workflow.xml"/>
-  <xi:include href="usermanual/nonJavaProgrammingLanguages.xml" />
 </book>
