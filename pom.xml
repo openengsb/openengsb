@@ -279,6 +279,7 @@
       </roles>
     </developer>
     <developer>
+      <id>apu</id>
       <name>Alexander Pucher</name>
       <email>engsb [at] alexander-pucher.com</email>
       <organization>Vienna University of Technology</organization>
@@ -289,6 +290,7 @@
       </roles>
     </developer>
     <developer>
+      <id>cle</id>
       <name>Christoph Leiter</name>
       <email>openengsb [at] christophleiter.com</email>
       <organization>Vienna University of Technology</organization>
@@ -299,6 +301,7 @@
       </roles>
     </developer>
     <developer>
+      <id>mha</id>
       <name>Michael Handler</name>
       <email>michael.handler [at] fullstop.at</email>
       <organization>Vienna University of Technology</organization>
@@ -328,6 +331,20 @@
     <contributor>
       <name>Michael Zoech</name>
       <email>zoech [at] qse.ifs.tuwien.ac.at</email>
+      <organization>Vienna University of Technology</organization>
+      <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Christoph Gritschenberger</name>
+      <email>e0525747 [at] student.tuwien.ac.at</email>
+      <organization>Vienna University of Technology</organization>
+      <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Christoph Gritschenberger</name>
+      <email>david [at] waldhans.at</email>
       <organization>Vienna University of Technology</organization>
       <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
