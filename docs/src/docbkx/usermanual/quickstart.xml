@@ -156,4 +156,53 @@ openengsb/domains/scm]]></programlisting>
       into this ridgin structure to make it maintain at all.
     </para>
   </section>
+  <section id="quickstart.assembly">
+    <title>Assembling the OpenEngSB</title>
+  <section id="quickstart.assembly.introduction">
+    <title>Introduction</title>
+    <para> This chapter gives a short overview about the assembly procedure of the OpenEngSB. Furthermore a short
+      description of the structure of the assembled project is given.
+  </para>
+  </section>
+  <section id="quickstart.assembly.howto">
+    <title>Howto assemble the OpenEngSB</title>
+    <para>
+      To create a distributable form of the OpenEngSB simply issue the following commands in the root directory of the project.
+      <programlisting>
+        > mvn package -Pintegration-test,license-check,docs
+        > cd package/assembly
+        > mvn dependency:unpack
+        > mvn assembly:assembly
+        > mvn antrun:run
+      </programlisting> 
+      Then a zip file is created in the folder package/assembly/target. The structure of the zip is explained in the following section.
+      To ease this process a shell script is contained in the scripts directory (assemble.sh). This scripts build the
+      OpenEngSB, assemble it and finally copy the product into the root folder with the name <literal>openengsb-VERSION.zip.</literal>
+    </para>
+  </section>
+  <section id="quickstart.assembly.structure">
+    <title>Structure</title>
+    <para>
+      <programlisting>
+        openengsb-{version}
+        |
+        |- docs
+        |    |
+        |    |- html
+        |    |- pdf
+        |
+        |- bin
+        |   |
+        |   |- run.sh (start webserver with openengsb)
+        |   |- stop.sh (stop webserver with openengsb)
+        |
+        |- README
+        |- LICENSE
+        |- NOTICE
+        |
+        |- webserver (jetty) with openengsb.war
+      </programlisting>
+    </para>
+  </section>
+  </section>
 </chapter>

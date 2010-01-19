@@ -46,5 +46,4 @@
   <xi:include href="usermanual/drools.xml"/>
   <xi:include href="usermanual/linkHttp.xml"/>
   <xi:include href="usermanual/nonJavaProgrammingLanguages.xml" />
-  <xi:include href="usermanual/assembly.xml" />
 </book>
