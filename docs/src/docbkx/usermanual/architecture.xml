@@ -22,23 +22,6 @@
     Since this manual is the user manual only a very basic overview over the architecture should be given. For more
     detailed overview use the own architectural manual also provided at openengsb.org.
   </para>
-  <section id="architecture.base">
-    <title>Base Architecture</title>
-    <para>
-      TBW
-    </para>
-    <section id="architecture.eventdriven">
-      <title>Event Driven</title>
-      <para>
-        TBW
-      </para>
-    </section>
-    <section id="architecture.messages">
-      <title>Messages</title>
-      <para>
-        TBW
-      </para>
-    </section>
     <section id="architecture.connectors">
         <title>Connectors</title>
         <para>
@@ -55,70 +38,32 @@
           <link linkend="externalConnectors">external connectors</link> we will start with them. 
         </para>
     </section>
-  </section>
-  <section id="architecture.connector.domain">
-    <title>Connector Domains</title>
-    <para>
-      Although engineering systems could be a very complex system
-      nevertheless all engineering teams are using the same
-      tools throughout all their work. Nevertheless how complex such an
-      infrastructure is you'll always find an
-      <literal moreinfo="none">Issue Tracker</literal>, a
-      <literal moreinfo="none">SCM</literal>
-      and so on. Therefore it is possible to define base messages and base
-      systems for all of them. At the moment the following types are
-      designed and avaialble (or in a short period of time).
-    </para>
-    <itemizedlist>
-      <listitem>
-        <para>issues</para>
-      </listitem>
-      <listitem>
-        <para>scm</para>
-      </listitem>
-      <listitem>
-        <para>build</para>
-      </listitem>
-      <listitem>
-        <para>test</para>
-      </listitem>
-      <listitem>
-        <para>deployment</para>
-      </listitem>
-      <listitem>
-        <para>notification</para>
-      </listitem>
-    </itemizedlist>
-    <para>
-      The following chapters describe each of these types, what the
-      developer of the
-      <literal moreinfo="none">EngSB</literal>
-      thought about them and
-      what type of events they allow and why.
-    </para>
-    <section id="architecture.connector.types.issues">
-      <title>issues</title>
-      <para>TBW</para>
+    <section id="architecture.domain">
+        <title>Domains</title>
+        <para>
+          Explain domains and 
+        </para>
     </section>
-    <section id="architecture.connector.types.scm">
-      <title>SCM</title>
-      <para>TBW</para>
+    <section id="architecture.messageFlow">
+      <title>Message flow in the OpenEngSB</title>
+      <para>
+        TBW(Describe event and message flow for the OpenEngSB)
+      </para>
+      <para>
+      !!Service Call!! Control flow (domain - rule engine interaction): event to rule engine - rule action; uses rpc 
+      endpoints (domains - drools domain package); domain may manipulate event; domain may generate new events; domain
+       may return event to rule engine
+
+      Domain structure: domain name, event type (uid, e.g. class name), tool name, data(tree structure, key-value pairs),
+      process id to identify the process afterwards and through different services and events
+
+      Tool connector structure: uses rpc endpoints (linking, ..)
+
+      !!Event Flow!! Notification process (tool to rule engine): adapter, file, .. - event; event to domain; domain 
+      enriches event payload (- data); domain forwards event to rule engine; rule engine processes event properties
+
+      Event Structure: domain name, event type (uid, e.g. class name), tool name, data (tree structure, key-value 
+      pairs); metadata: contextID and processID
+      </para>
     </section>
-    <section id="architecture.connector.types.builds">
-      <title>Build</title>
-      <para>TBW</para>
-    </section>
-    <section id="architecture.connector.types.test">
-      <title>Test</title>
-      <para>TBW</para>
-    </section>
-    <section id="architecture.connector.types.deployment">
-      <title>Deployment</title>
-      <para>TBW</para>
-    </section>
-    <section id="architecture.connector.types.notification">
-      <title>Notification</title>
-      <para>TBW</para>
-    </section>
-  </section>
 </chapter>
