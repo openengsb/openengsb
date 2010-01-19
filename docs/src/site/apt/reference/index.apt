@@ -16,6 +16,11 @@
 
 User Documentation 
 
+  The usermanual contains descriptions about how to use the OpenEngSB and how to configure it. Further more information
+ for starting with the development of connectors and domains are contained. It is thought as well for users who simply
+ want to try the OpenEngSB as for developer like to integrate tool connectors. The introduction of the user manual 
+ should be read by all and provide additional information which chapters are interesting for which target audience.
+
     * {{{html/usermanual.html} Multi-HTML page documentation}}
     
     * {{{html-single/usermanual.html} Singe HTML page documentation}}
@@ -23,6 +28,9 @@ User Documentation
     * {{{pdf/usermanual.pdf} PDF documentation}}
 
 Architectural Documentation
+
+  This document should give a deep understanding of the OpenEngSB architecture. It is thought for people who are
+ interested in contributing to the OpenEngSB project or which like to get a deeper understanding of the OpenEngSB.
 
 	* {{{pdf/architecture.pdf} PDF documentation}}
     
