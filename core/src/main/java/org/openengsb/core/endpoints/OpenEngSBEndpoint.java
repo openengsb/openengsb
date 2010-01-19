@@ -37,6 +37,7 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.openengsb.core.EventHelper;
+import org.openengsb.core.EventHelperImpl;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
@@ -111,6 +112,6 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     }
 
     public EventHelper createEventHelper(String contextId) {
-        return new EventHelper(this, contextId);
+        return new EventHelperImpl(this, contextId);
     }
 }

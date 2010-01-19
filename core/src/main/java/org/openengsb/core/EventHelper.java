@@ -1,21 +1,3 @@
-package org.openengsb.core;
-
-import java.util.UUID;
-
-import javax.jbi.messaging.InOnly;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.namespace.QName;
-
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.InOnlyImpl;
-import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.contextcommon.ContextHelperImpl;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
-import org.openengsb.core.model.Event;
-import org.openengsb.core.transformation.Transformer;
-import org.openengsb.util.serialization.SerializationException;
-
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  * 
@@ -31,45 +13,19 @@ import org.openengsb.util.serialization.SerializationException;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-public class EventHelper {
+package org.openengsb.core;
 
-    private ContextHelper contextHelper;
+import org.openengsb.core.model.Event;
 
-    private String contextId;
+public interface EventHelper {
 
-    private OpenEngSBEndpoint endpoint;
+    /**
+     * send an event to the domain specified by the event itself
+     * 
+     * @param event
+     */
+    public void sendEvent(Event event);
 
-    public EventHelper(OpenEngSBEndpoint endpoint, String contextId) {
-        this.endpoint = endpoint;
-        this.contextId = contextId;
-        this.contextHelper = new ContextHelperImpl(endpoint, contextId);
-    }
+    public void sendEvent(Event event, String targetNamespace, String targetService);
 
-    public void sendEvent(Event event) {
-        try {
-            String domain = event.getDomain();
-
-            String namespace = contextHelper.getValue(domain + "/namespace");
-            String servicename = contextHelper.getValue(domain + "/event/servicename");
-
-            QName service = new QName(namespace, servicename);
-            InOnly inOnly = new InOnlyImpl(UUID.randomUUID().toString());
-            inOnly.setService(service);
-
-            NormalizedMessage msg = inOnly.createMessage();
-            inOnly.setInMessage(msg);
-            msg.setProperty("messageType", "event");
-            msg.setProperty("contextId", contextId);
-
-            String xml = Transformer.toXml(event);
-            msg.setContent(new StringSource(xml));
-
-            endpoint.sendSync(inOnly);
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        } catch (SerializationException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 }

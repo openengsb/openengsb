@@ -29,6 +29,7 @@ public class DomainRegistry {
         domains.put("helper", MessageHelper.class);
         domains.put("issue", DroolsIssuesDomain.class);
         domains.put("notification", NotificationDomain.class);
+        domains.put("scm", ScmDomain.class);
     }
 
     private DomainRegistry() {
