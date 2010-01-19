@@ -18,32 +18,27 @@
 -->
 <chapter id="architecture">
   <title>Architecture of the EngSB</title>
-
   <para>
     Since this manual is the user manual only a very basic overview over the architecture should be given. For more
     detailed overview use the own architectural manual also provided at openengsb.org.
   </para>
-
   <section id="architecture.base">
     <title>Base Architecture</title>
     <para>
       TBW
     </para>
-
     <section id="architecture.eventdriven">
       <title>Event Driven</title>
       <para>
         TBW
       </para>
     </section>
-
     <section id="architecture.messages">
       <title>Messages</title>
       <para>
         TBW
       </para>
     </section>
-    
     <section id="architecture.connectors">
         <title>Connectors</title>
         <para>
@@ -60,11 +55,7 @@
           <link linkend="externalConnectors">external connectors</link> we will start with them. 
         </para>
     </section>
-
   </section>
-
-
-
   <section id="architecture.connector.domain">
     <title>Connector Domains</title>
     <para>
