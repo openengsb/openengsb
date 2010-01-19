@@ -16,26 +16,24 @@
    limitations under the License.
 
 -->
-<chapter id="internalConnector">
-  <title>
-    Connect external tools to the OpenEngSB
-  </title>
+<chapter id="externalConnectors">
+  <title>External OpenEngSB Tool Connectors</title>
   <para>
     Introduction bla...
   </para>
-  <section id="internalConnector.toolDomain">
+  <section id="externalConnectors.toolDomain">
     <title>Tool Domain</title>
     <para>
       what is a tool domain again
     </para>
-    <section id="internalConnector.toolDomain.specification.">
+    <section id="externalConnectors.toolDomain.specification.">
       <title>Tool Domain Specification</title>
       <para>
         Domain Interface (org.openengsb.drools); Domain Model (org.openengsb.drools.model); Domain Registry 
         (org.openengsb.drools.DomainRegistry)
       </para>
     </section>
-    <section id="internalConnector.toolDomain.configuration.">
+    <section id="externalConnectors.toolDomain.configuration.">
       <title>Tool Domain Configuration</title>
       <para>
         Create openengsb-domain-XXX-se; optional openengsb-domain-XXX-common; use e.g. 
@@ -44,18 +42,18 @@
       </para>
     </section>
   </section>
-  <section id="internalConnector.toolConnector">
+  <section id="externalConnectors.toolConnector">
     <title>Tool Connector</title>
     <para>
       what is a tool connector again; differences between common and custom
     </para>
-    <section id="internalConnector.toolConnector.common">
+    <section id="externalConnectors.toolConnector.common">
       <title>Common Approach</title>
       <para>
         Linking, interface impl
       </para>
     </section>
-    <section id="internalConnector.toolConnector.custom">
+    <section id="externalConnectors.toolConnector.custom">
       <title>Custom Approach</title>
       <para>
         use in out from OpenEngSBEndpoint directly.

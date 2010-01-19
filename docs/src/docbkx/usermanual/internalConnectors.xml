@@ -16,14 +16,14 @@
    limitations under the License.
 
 -->
-<chapter id="externalConnector">
-  <title>Connect internal tools to the OpenEngSB</title>
-  <section id="externalConnector.general">
+<chapter id="internalConnectors">
+  <title>Internal OpenEngSB Tool Connectors</title>
+  <section id="internalConnectors.general">
     <title>General</title>
     <para>
       This documentation should show newcomers how to use Apache ServiceMix components for your own issues.
       Therefore, I also show some of my own problems by the implementation of the mvn build connector.</para>
-    <section id="externalConnector.apache.servicemix.components">
+    <section id="internalConnectors.apache.servicemix.components">
       <title>Apache ServiceMix Components</title>
       <para>
         Before we start the implementation you should be familiar with the Apache ServiceMix components. You should know
@@ -48,7 +48,7 @@
         the user-guide mentioned above.
       </para>
     </section>
-    <section id="externalConnector.jbi">
+    <section id="internalConnectors.jbi">
       <title>Java Business Integration</title>
       <para>
         Another important documentation for understanding the mapping for the integration Test is the standard of JBI(
@@ -58,12 +58,12 @@
         Message Router - shows the technology with good examples.
       </para>
     </section>
-    <section id="externalConnector.writeJavadoc1">
+    <section id="internalConnectors.writeJavadoc1">
       <title>Write JavaDoc</title>
       <para>Its very important to write javadoc for a quick code review.</para>
     </section>
   </section>
-  <section id="externalConnector.preperation">
+  <section id="internalConnectors.preperation">
     <title>Preparation</title>
     <para>
       In a software engineering team its typical to use a special kind of development. In our team you should use
@@ -75,21 +75,21 @@
       <ulink url="???">infrastructure</ulink>
       ). For a deeper understanding search the web.
     </para>
-    <section id="externalConnector.cygwin">
+    <section id="internalConnectors.cygwin">
       <title>Cygwin</title>
       <para>
         If you use windows it is necessary to install cygwin to manage the git commands like push and pull. When you install cygwin you have to look for the openssh for authentification and the git libraries for
         working. For working with the cmd, set a system variable and the path.
       </para>
     </section>
-    <section id="externalConnector.rootDirectory">
+    <section id="internalConnectors.rootDirectory">
       <title>Root Directory</title>
       <para>
         In the root directory there are some helper files like shell scripts to support typical actions. Also the
         gitignore file is located in that directory for excluding unwanted files or direcotries.
       </para>
     </section>
-    <section id="externalConnector.creating.servicemix.element">
+    <section id="internalConnectors.creating.servicemix.element">
       <title>Creating ServiceMix Element</title>
       <para>
         For creating a servicemix element you can easily use the archetype command from maven by using the the
@@ -125,7 +125,7 @@
         problems with this command.
       </para>
     </section>
-    <section id="externalConnector.modifyPom">
+    <section id="internalConnectors.modifyPom">
       <title>Modify pom.xml</title>
       <para>
         The created pom.xml does not have the right dependency versions in most cases. For managing the dependencies and
@@ -144,7 +144,7 @@
       <para>
         There are a lot of implemented features where the typical pom for a domain is shown.
       </para>
-      <section id="externalConnector.junit44">
+      <section id="internalConnectors.junit44">
         <title>JUnit 4.4</title>
         <para>
           At the moment (18.09.2009) there are some problems with spring and junit 4.5 or higher. Maybe the problems
@@ -155,7 +155,7 @@
         </para>
       </section>
     </section>
-    <section id="externalConnector.plugins">
+    <section id="internalConnectors.plugins">
       <title>Plugins</title>
       <para>
         When you look at the pom.xml, you will find these plugins. The type describes what servicemix component
@@ -188,7 +188,7 @@
 </plugin>]]></programlisting>
       </para>
     </section>
-    <section id="externalConnector.components.endpoints">
+    <section id="internalConnectors.components.endpoints">
       <title>Components and Endpoints</title>
       <para>
         Components do not interact with each other directly. Instead JBI functions as an intermediary to route
@@ -283,27 +283,27 @@
    public class BuildComponent extends DefaultComponent]]></programlisting>
       </para>
     </section>
-    <section id="externalConnector.xbean">
+    <section id="internalConnectors.xbean">
       <title>XBean</title>
       <para>
         Look at the target/xbean directory for deeper information. For example you wil find a XSD File that
         describes what the WSDL will look like after building.
       </para>
     </section>
-    <section id="externalConnector.writeJavadoc2">
+    <section id="internalConnectors.writeJavadoc2">
       <title>Write JavaDoc</title>
       <para>
         It is very important to write javadoc for a quick code review.
        </para>
     </section>
   </section>
-  <section id="externalConnector.tests">
+  <section id="internalConnectors.tests">
     <title>Writing Tests</title>
     <para>
       It is helpful to write your unit tests at first. This way you can be sure that your code does what you want before
       you use ServiceMix.
     </para>
-    <section id="externalConnector.tests.unit">
+    <section id="internalConnectors.tests.unit">
       <title>Unit Tests</title>
       <para>
         Write your test cases at first and after your first step of your implementation, think about refactoring
@@ -312,9 +312,9 @@
         other patterns.
         </para>
     </section>
-    <section id="externalConnector.tests.integration">
+    <section id="internalConnectors.tests.integration">
       <title>Integration Test</title>
-      <section id="externalConnector.mapping">
+      <section id="internalConnectors.mapping">
         <title>Mapping</title>
         <para>
           In ServiceMix you use a standard component in the xbean.xml, where you define the component with its
@@ -362,7 +362,7 @@
           can be sent to activate a service, for instance build the project with the baseDirectory xy.
         </para>
       </section>
-      <section id="externalConnector.spring">
+      <section id="internalConnectors.spring">
         <title>spring.xml</title>
         <para>
           A small example of a service unit simulation for the integration test.
@@ -461,7 +461,7 @@ public class MavenIntegrationTest extends SpringTestSupport
       </section>
     </section>
   </section>
-  <section id="externalConnector.writeJavadoc3">
+  <section id="internalConnectors.writeJavadoc3">
     <title>Write JavaDoc</title>
     <para>
       Its very important to write javadoc for a quick code review.

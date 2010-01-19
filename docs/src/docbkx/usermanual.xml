@@ -39,8 +39,8 @@
   <xi:include href="usermanual/introduction.xml" />
   <xi:include href="usermanual/quickstart.xml" />
   <xi:include href="usermanual/architecture.xml" />
-  <xi:include href="usermanual/internalConnectors.xml" />
   <xi:include href="usermanual/externalConnectors.xml" />
+  <xi:include href="usermanual/internalConnectors.xml" />
   <xi:include href="usermanual/scmDomain.xml"/>
   <xi:include href="usermanual/externalEDBCommunication.xml" />  
   <xi:include href="usermanual/drools.xml"/>
