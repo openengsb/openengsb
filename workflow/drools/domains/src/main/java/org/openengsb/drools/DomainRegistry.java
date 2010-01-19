@@ -30,6 +30,9 @@ public class DomainRegistry {
         domains.put("issue", DroolsIssuesDomain.class);
         domains.put("notification", NotificationDomain.class);
         domains.put("scm", ScmDomain.class);
+        domains.put("test", TestDomain.class);
+        domains.put("build", BuildDomain.class);
+        domains.put("deploy", DeployDomain.class);
     }
 
     private DomainRegistry() {

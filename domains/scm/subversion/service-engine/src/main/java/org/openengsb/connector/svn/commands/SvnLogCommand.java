@@ -21,7 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.drools.model.LogEntry;
+import org.openengsb.drools.model.ScmLogEntry;
 import org.openengsb.scm.common.commands.Command;
 import org.openengsb.scm.common.commands.LogCommand;
 import org.openengsb.scm.common.exceptions.ScmException;
@@ -36,13 +36,13 @@ import org.tmatesoft.svn.core.wc.SVNRevision;
  * all given revisions. Implements the general contracts of
  * <code>{@link Command}</code> and <code>{@link LogCommand}</code>.
  */
-public class SvnLogCommand extends AbstractSvnCommand<LogEntry[]> implements LogCommand {
+public class SvnLogCommand extends AbstractSvnCommand<ScmLogEntry[]> implements LogCommand {
     private String[] files;
     private String startRevision;
     private String endRevision;
 
     @Override
-    public LogEntry[] execute() throws ScmException {
+    public ScmLogEntry[] execute() throws ScmException {
         // set up client
         SVNLogClient logClient = getClientManager().getLogClient();
 
@@ -54,11 +54,11 @@ public class SvnLogCommand extends AbstractSvnCommand<LogEntry[]> implements Log
         boolean discoverChangedPaths = false;
         long limit = Long.MAX_VALUE; // yes, we want it all. MUAHAHAHA
 
-        final List<LogEntry> result = new ArrayList<LogEntry>();
+        final List<ScmLogEntry> result = new ArrayList<ScmLogEntry>();
         ISVNLogEntryHandler handler = new ISVNLogEntryHandler() {
             @Override
             public void handleLogEntry(SVNLogEntry logEntry) throws SVNException {
-                result.add(new LogEntry(String.valueOf(logEntry.getRevision()), logEntry.getMessage()));
+                result.add(new ScmLogEntry(String.valueOf(logEntry.getRevision()), logEntry.getMessage()));
             }
         };
 
@@ -86,7 +86,7 @@ public class SvnLogCommand extends AbstractSvnCommand<LogEntry[]> implements Log
         // perform call
         try {
             logClient.doLog(paths, startSvnRevision, endSvnRevision, stopOnCopy, discoverChangedPaths, limit, handler);
-            return result.toArray(new LogEntry[result.size()]);
+            return result.toArray(new ScmLogEntry[result.size()]);
         } catch (SVNException exception) {
             throw new ScmException(exception);
         }

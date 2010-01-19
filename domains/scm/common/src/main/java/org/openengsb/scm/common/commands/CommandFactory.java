@@ -20,7 +20,7 @@ package org.openengsb.scm.common.commands;
 
 import javax.jbi.management.DeploymentException;
 
-import org.openengsb.drools.model.LogEntry;
+import org.openengsb.drools.model.ScmLogEntry;
 import org.openengsb.drools.model.MergeResult;
 
 /**
@@ -136,7 +136,7 @@ public interface CommandFactory {
      *        with.
      * @return The appropriate Command.
      */
-    Command<LogEntry[]> getLogCommand(String[] files, String startRevision, String endRevision);
+    Command<ScmLogEntry[]> getLogCommand(String[] files, String startRevision, String endRevision);
 
     /**
      * Returns a Command that commits all changes within the working copy and

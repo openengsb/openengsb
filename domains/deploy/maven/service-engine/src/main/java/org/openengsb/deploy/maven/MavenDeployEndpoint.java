@@ -6,7 +6,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE\-2.0
+       http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,10 +15,21 @@
    limitations under the License.
    
  */
-package org.openengsb.drools;
+package org.openengsb.deploy.maven;
 
-public interface TestDomain extends Domain {
+import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.endpoints.LinkingEndpoint;
+import org.openengsb.drools.DeployDomain;
 
-    void runTests();
+/**
+ * @org.apache.xbean.XBean element="mavenDeployEndpoint"
+ *                         description="Maven Deploy Endpoint"
+ */
+public class MavenDeployEndpoint extends LinkingEndpoint<DeployDomain> {
+
+    @Override
+    protected DeployDomain getImplementation(ContextHelper contextHelper) {
+        return new MavenDeployDomainImpl();
+    }
 
 }

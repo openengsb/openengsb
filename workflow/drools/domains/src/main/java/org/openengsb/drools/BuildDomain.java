@@ -19,4 +19,6 @@ package org.openengsb.drools;
 
 public interface BuildDomain extends Domain {
 
+    void buildProject();
+
 }

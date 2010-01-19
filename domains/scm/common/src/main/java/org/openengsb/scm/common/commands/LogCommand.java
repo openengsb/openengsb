@@ -18,7 +18,7 @@
 
 package org.openengsb.scm.common.commands;
 
-import org.openengsb.drools.model.LogEntry;
+import org.openengsb.drools.model.ScmLogEntry;
 
 /**
  * Interface that defines the parameters for the log-operation with setters. For
@@ -28,7 +28,7 @@ import org.openengsb.drools.model.LogEntry;
  * @see CommandFactory
  * @see AbstractCommandfactory
  */
-public interface LogCommand extends Command<LogEntry[]> {
+public interface LogCommand extends Command<ScmLogEntry[]> {
     void setFiles(String[] files);
 
     void setStartRevision(String startRevision);

@@ -6,7 +6,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE\-2.0
+       http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,28 +15,21 @@
    limitations under the License.
    
  */
-package org.openengsb.drools.model;
+package org.openengsb.test.maven;
 
-public class LogEntry {
+import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.endpoints.LinkingEndpoint;
+import org.openengsb.drools.TestDomain;
 
-    private String revision;
+/**
+ * @org.apache.xbean.XBean element="mavenTestEndpoint"
+ *                         description="Maven Test Endpoint"
+ */
+public class MavenTestEndpoint extends LinkingEndpoint<TestDomain> {
 
-    private String message;
-
-    public LogEntry() {
-    }
-
-    public LogEntry(String revision, String message) {
-        this.revision = revision;
-        this.message = message;
-    }
-
-    public String getRevision() {
-        return revision;
-    }
-
-    public String getMessage() {
-        return message;
+    @Override
+    protected TestDomain getImplementation(ContextHelper contextHelper) {
+        return new MavenTestDomainImpl();
     }
 
 }

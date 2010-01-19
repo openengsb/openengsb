@@ -16,14 +16,16 @@
    limitations under the License.
 
 -->
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:build="urn:openengsb:build" 
-  xmlns:mvn="http://openengsb.org/connector/mvn/1.0"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:mvn="urn:openengsb:maven-build" 
+  xmlns:maven="http://www.openengsb.org/connector/maven-build/1.0"
   xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="
     http://servicemix.apache.org/bean/1.0 http://servicemix.apache.org/schema/servicemix-bean-3.2.3.xsd
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <mvn:mavenBuilder service="build:BuildService" endpoint="builder" projectConfiguration="#projectBuildConfiguration" />
+  <maven:mavenBuildEnpoint service="mvn:mavenBuildService" endpoint="mavenBuildEndpoint" />
+  
+  <!--
 
   <bean id="projectBuildConfiguration" class="org.openengsb.maven.common.pojos.ProjectConfiguration">
     <property name="goals">
@@ -36,5 +38,7 @@
       <value>file:data/openengsb/projectOutput/</value>
     </property>
   </bean>
+
+  -->
 
 </beans>

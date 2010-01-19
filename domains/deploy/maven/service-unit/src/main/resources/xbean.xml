@@ -16,13 +16,13 @@
    limitations under the License.
 
 -->
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:deploy="urn:openengsb:deploy" 
-  xmlns:mvn="http://openengsb.org/connector/mvn/1.0"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:mvn="urn:openengsb:maven-deploy" 
+  xmlns:maven="http://www.openengsb.org/connector/maven-deploy/1.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="
     http://servicemix.apache.org/bean/1.0 http://servicemix.apache.org/schema/servicemix-bean-3.2.3.xsd
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <mvn:mavenDeployer service="deploy:DeployService" endpoint="deployer" />
+  <maven:mavenDeployEndpoint service="mvn:mavenDeployService" endpoint="mavenDeployEndpoint" />
 
 </beans>

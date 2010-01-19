@@ -17,37 +17,37 @@ limitations under the License.
  */
 package org.openengsb.drools;
 
-import org.openengsb.drools.model.LogEntry;
+import org.openengsb.drools.model.ScmLogEntry;
 import org.openengsb.drools.model.MergeResult;
 
 public interface ScmDomain extends Domain {
 
-    public void add(String fileToAdd);
+    void add(String fileToAdd);
 
-    public MergeResult update(String updatePath);
+    MergeResult update(String updatePath);
 
-    public void switchBranch(String branchName);
+    void switchBranch(String branchName);
 
-    public MergeResult merge(String branchName);
+    MergeResult merge(String branchName);
 
-    public LogEntry[] log(String[] files, String startRevision, String endRevision);
+    ScmLogEntry[] log(String[] files, String startRevision, String endRevision);
 
-    public String[] listBranches();
+    String[] listBranches();
 
-    public MergeResult doImport(String sourcePath, String destinationPath, String commitMessage, String author);
+    MergeResult doImport(String sourcePath, String destinationPath, String commitMessage, String author);
 
-    public void export(String destinationPath);
+    void export(String destinationPath);
 
-    public String diff(String oldFile, String newFile, String oldRevision, String newRevision);
+    String diff(String oldFile, String newFile, String oldRevision, String newRevision);
 
-    public void delete(String file);
+    void delete(String file);
 
-    public MergeResult commit(String author, String commitMessage, String subPath);
+    MergeResult commit(String author, String commitMessage, String subPath);
 
-    public MergeResult checkout(String author);
+    MergeResult checkout(String author);
 
-    public void branch(String branchName, String commitMessage);
+    void branch(String branchName, String commitMessage);
 
-    public String blame(String file, String revision);
+    String blame(String file, String revision);
 
 }

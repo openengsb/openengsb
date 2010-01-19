@@ -23,7 +23,7 @@ package org.openengsb.maven.common.exceptions;
  * phases. To compare the phases, a string supports the user in error message.
  * 
  */
-public class MavenException extends Exception {
+public class MavenException extends RuntimeException {
 
     /**
      * Serial version UID

@@ -200,6 +200,26 @@ public class ContextStore {
         setValue("42/scm/svn/namespace", "urn:openengsb:svn");
         setValue("42/scm/svn/servicename", "svnService");
 
+        setValue("42/test/namespace", "urn:openengsb:test");
+        setValue("42/test/servicename", "testService");
+        setValue("42/test/default", "maven-test");
+
+        setValue("42/test/maven-test/namespace", "urn:openengsb:maven-test");
+        setValue("42/test/maven-test/servicename", "mavenTestService");
+
+        setValue("42/build/namespace", "urn:openengsb:build");
+        setValue("42/build/servicename", "buildService");
+        setValue("42/build/default", "maven-build");
+
+        setValue("42/build/maven-build/namespace", "urn:openengsb:maven-build");
+        setValue("42/build/maven-build/servicename", "mavenBuildService");
+
+        setValue("42/deploy/namespace", "urn:openengsb:deploy");
+        setValue("42/deploy/servicename", "deployService");
+        setValue("42/deploy/default", "maven-deploy");
+
+        setValue("42/deploy/maven-deploy/namespace", "urn:openengsb:maven-deploy");
+        setValue("42/deploy/maven-deploy/servicename", "mavenDeployService");
     }
 
     private void save() {

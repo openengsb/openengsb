@@ -18,7 +18,7 @@
 package org.openengsb.connector.svn;
 
 import org.openengsb.drools.ScmDomain;
-import org.openengsb.drools.model.LogEntry;
+import org.openengsb.drools.model.ScmLogEntry;
 import org.openengsb.drools.model.MergeResult;
 import org.openengsb.scm.common.commands.CommandFactory;
 
@@ -81,7 +81,7 @@ public class SvnScmImplementation implements ScmDomain {
     }
 
     @Override
-    public LogEntry[] log(String[] files, String startRevision, String endRevision) {
+    public ScmLogEntry[] log(String[] files, String startRevision, String endRevision) {
         return factory.getLogCommand(files, startRevision, endRevision).execute();
     }
 

@@ -15,10 +15,28 @@
    limitations under the License.
    
  */
-package org.openengsb.drools;
+package org.openengsb.drools.model;
 
-public interface TestDomain extends Domain {
+public class ScmLogEntry {
 
-    void runTests();
+    private String revision;
+
+    private String message;
+
+    public ScmLogEntry() {
+    }
+
+    public ScmLogEntry(String revision, String message) {
+        this.revision = revision;
+        this.message = message;
+    }
+
+    public String getRevision() {
+        return revision;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 
 }

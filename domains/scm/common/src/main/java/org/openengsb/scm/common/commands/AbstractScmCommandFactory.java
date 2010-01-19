@@ -23,7 +23,7 @@ import java.net.URI;
 
 import javax.jbi.management.DeploymentException;
 
-import org.openengsb.drools.model.LogEntry;
+import org.openengsb.drools.model.ScmLogEntry;
 import org.openengsb.drools.model.MergeResult;
 
 /**
@@ -216,7 +216,7 @@ public abstract class AbstractScmCommandFactory implements CommandFactory {
     }
 
     @Override
-    public Command<LogEntry[]> getLogCommand(String[] files, String startRevision, String endRevision) {
+    public Command<ScmLogEntry[]> getLogCommand(String[] files, String startRevision, String endRevision) {
         // create command
         LogCommand command = createLogCommand();
 

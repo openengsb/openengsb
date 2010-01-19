@@ -19,4 +19,6 @@ package org.openengsb.drools;
 
 public interface DeployDomain extends Domain {
 
+    void deployProject();
+
 }

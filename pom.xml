@@ -163,6 +163,9 @@
     <module>domains/scm/subversion/service-engine</module>
     <module>domains/notification/email/service-engine</module>
     <module>domains/issues/trac/service-engine</module>
+    <module>domains/test/maven/service-engine</module>
+    <module>domains/build/maven/service-engine</module>
+    <module>domains/deploy/maven/service-engine</module>
 
     <!-- Implementation Modules -->
     <module>domains/build/maven/service-unit</module>
@@ -855,6 +858,21 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-issues-trac-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-test-maven-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-build-maven-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-deploy-maven-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
