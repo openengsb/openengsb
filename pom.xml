@@ -144,6 +144,18 @@
     <module>domains/notification/implementation/service-engine</module>
     <module>domains/notification/implementation/service-unit</module>
 
+    <!--  Test Domain -->
+    <module>domains/test/implementation/service-engine</module>
+    <module>domains/test/implementation/service-unit</module>
+
+    <!-- Build Domain -->
+    <module>domains/build/implementation/service-engine</module>
+    <module>domains/build/implementation/service-unit</module>
+
+    <!--  Deploy Domain -->
+    <module>domains/deploy/implementation/service-engine</module>
+    <module>domains/deploy/implementation/service-unit</module>
+
     <!-- Tool Abstraction -->
     <module>domains/toolabstraction/maven</module>
 
@@ -794,6 +806,43 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-notification-implementation-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
+
+      <!-- Test Domain -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-test-implementation-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-test-implementation-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
+      <!-- Build Domain -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-build-implementation-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-build-implementation-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
+      <!-- Deploy Domain -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-deploy-implementation-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-deploy-implementation-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
