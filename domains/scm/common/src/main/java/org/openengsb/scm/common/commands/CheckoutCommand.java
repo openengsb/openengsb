@@ -18,7 +18,7 @@
 
 package org.openengsb.scm.common.commands;
 
-import org.openengsb.scm.common.pojos.MergeResult;
+import org.openengsb.drools.model.MergeResult;
 
 /**
  * Interface that defines the parameters for the checkout-operation with

@@ -21,10 +21,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.openengsb.drools.model.MergeResult;
 import org.openengsb.scm.common.commands.Command;
 import org.openengsb.scm.common.commands.MergeCommand;
 import org.openengsb.scm.common.exceptions.ScmException;
-import org.openengsb.scm.common.pojos.MergeResult;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
@@ -33,7 +33,6 @@ import org.tmatesoft.svn.core.wc.SVNEvent;
 import org.tmatesoft.svn.core.wc.SVNEventAction;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNRevisionRange;
-
 
 /**
  * A Command that merges the current working copy with a branch. Implements the

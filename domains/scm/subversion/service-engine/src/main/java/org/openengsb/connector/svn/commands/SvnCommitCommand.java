@@ -20,10 +20,10 @@ package org.openengsb.connector.svn.commands;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.openengsb.drools.model.MergeResult;
 import org.openengsb.scm.common.commands.Command;
 import org.openengsb.scm.common.commands.CommitCommand;
 import org.openengsb.scm.common.exceptions.ScmException;
-import org.openengsb.scm.common.pojos.MergeResult;
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
@@ -31,7 +31,6 @@ import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.wc.SVNCommitClient;
 import org.tmatesoft.svn.core.wc.SVNEvent;
 import org.tmatesoft.svn.core.wc.SVNEventAction;
-
 
 /**
  * A Command that commits all changes within the whole working copy or a

@@ -44,7 +44,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.scm.common.pojos.MergeResult;
+import org.openengsb.drools.model.MergeResult;
 import org.openengsb.scm.common.util.MergeResultSerializer;
 import org.openengsb.scm.exceptions.UnknownIdException;
 import org.openengsb.scm.test.integration.constants.ScmIntegrationTestConstants;
@@ -60,7 +60,7 @@ import org.tmatesoft.svn.core.wc.SVNStatusType;
  * of messages and errors to and from the actual Connector is handled correctly.
  * For more thorough tests (i.e. the whole functionality of the domain), have a
  * look at the specific connectors (SVN, Git, etc...)
- *
+ * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @Ignore("Spring setup for tests does not work for windows")
@@ -80,7 +80,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
 
     /**
      * Creates a new ServiceMixClieant
-     *
+     * 
      * @return The new ServiceMixClient
      */
     private DefaultServiceMixClient createClient() throws JBIException {
@@ -89,7 +89,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
 
     /**
      * Creates and configures a new Message-Object for the In-Out-MEP
-     *
+     * 
      * @param client The client used to create the empty Message-Object
      * @param service The configured entpoint's name as noted in the xbean.xml
      * @param message The actual message as xml-String
@@ -107,7 +107,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
 
     /**
      * Creates and configures a new Message-Object for the Out-Only-MEP
-     *
+     * 
      * @param client The client used to create the empty Message-Object
      * @param service The configured entpoint's name as noted in the xbean.xml
      * @param message The actual message as xml-String
@@ -162,7 +162,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
     /**
      * Verifies, that an InOut-MEP is forwarded correctly (to the correct
      * connector), by issuing a call for checkout.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -181,7 +181,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
     /**
      * Verifies, that two distinct calls to two distict connectors are handled
      * properly (InOut-MEP)
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -203,7 +203,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
 
     /**
      * Asserts that a call with an unknown ID fails (InOut).
-     *
+     * 
      * @throws Exception
      */
     @Test(expected = UnknownIdException.class)
@@ -215,7 +215,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
     /**
      * Verifies, that an RobustInOnly-MEP is forwarded correctly (to the correct
      * connector), by issuing a deletion of a file.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -235,7 +235,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
     /**
      * Verifies, that two distinct calls to two distinct connectors are handled
      * properly (RobustInOnly-MEP)
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -261,7 +261,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
 
     /**
      * Asserts that a call with an unknown ID fails (RobustInOnly).
-     *
+     * 
      * @throws Exception
      */
     @Test(expected = UnknownIdException.class)
@@ -274,7 +274,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
      * Asserts that a call to an operation, that requires an InOut-MEP, fails,
      * when InOnly is used. This is accomplished by calling checkout with
      * InOnly.
-     *
+     * 
      * @throws Exception
      */
     @Test(expected = UnsupportedOperationException.class)
@@ -293,15 +293,14 @@ public class ScmIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that a call to an operation, that requires an InOnly-MEP, fails,
      * when InOut is used. This is accomplished by calling delete with InOut.
-     *
+     * 
      * @throws Exception
      */
     @Test(expected = UnsupportedOperationException.class)
     public void inOnly_shouldFailWhenActuallyCallingInOutOperation() throws Exception {
         DefaultServiceMixClient client = createClient();
-        InOut inOut = createInOutMessage(client, CONSTANTS.TEST_SERVICE_NAME, "<execute id=\""
-                + CONSTANTS.SERVICE_ID1 + "\">" + "<delete fileToDelete=\"" + CONSTANTS.TEST_FILE1 + "\"/>"
-                + "</execute>");
+        InOut inOut = createInOutMessage(client, CONSTANTS.TEST_SERVICE_NAME, "<execute id=\"" + CONSTANTS.SERVICE_ID1
+                + "\">" + "<delete fileToDelete=\"" + CONSTANTS.TEST_FILE1 + "\"/>" + "</execute>");
 
         client.sendSync(inOut);
 
@@ -316,7 +315,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
 
     /**
      * Checks the message for errors and either fails or throws an Exception
-     *
+     * 
      * @param message
      * @throws Exception
      */
@@ -335,7 +334,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
     /**
      * Triggers a jbi-call (sends normalized message) to check out a repository.
      * Used to test InOut calls.
-     *
+     * 
      * @param id The id of the real service to lookup and call.
      * @return The deserialized MergeReusult.
      * @throws Exception
@@ -358,7 +357,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
     /**
      * Triggers a jbi-call (sends normalized message) to delete a file. Used to
      * test InOnly calls.
-     *
+     * 
      * @param deletePath The file to delete.
      * @param id The id of the real service to lookup and call.
      * @throws Exception
@@ -377,7 +376,7 @@ public class ScmIntegrationTest extends SpringTestSupport {
      * Copied and modified from {@link http
      * ://stackoverflow.com/questions/318239/
      * how-do-i-set-environment-variables-from-java}
-     *
+     * 
      * @param name The environment variable's name
      * @param value The environment varibale's value
      * @throws Exception
@@ -415,10 +414,8 @@ public class ScmIntegrationTest extends SpringTestSupport {
 
     private void setUpRepository() throws IOException {
         deleteRepository();
-        FileUtils.copyDirectoryStructure(new File(CONSTANTS.REFERENCE_REPOSITORY1), new File(
-                CONSTANTS.REPOSITORY1));
-        FileUtils.copyDirectoryStructure(new File(CONSTANTS.REFERENCE_REPOSITORY2), new File(
-                CONSTANTS.REPOSITORY2));
+        FileUtils.copyDirectoryStructure(new File(CONSTANTS.REFERENCE_REPOSITORY1), new File(CONSTANTS.REPOSITORY1));
+        FileUtils.copyDirectoryStructure(new File(CONSTANTS.REFERENCE_REPOSITORY2), new File(CONSTANTS.REPOSITORY2));
     }
 
     private void deleteRepository() throws IOException {

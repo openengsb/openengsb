@@ -20,12 +20,11 @@ package org.openengsb.scm.common.commands;
 
 import java.io.File;
 import java.net.URI;
-import java.util.Map;
 
 import javax.jbi.management.DeploymentException;
 
-import org.openengsb.scm.common.pojos.MergeResult;
-
+import org.openengsb.drools.model.LogEntry;
+import org.openengsb.drools.model.MergeResult;
 
 /**
  * A default implementation of the CommandFactory. It actually implements all
@@ -121,18 +120,17 @@ public abstract class AbstractScmCommandFactory implements CommandFactory {
 
         return command;
     }
-    
+
     @Override
-    public Command<MergeResult> getCheckoutOrUpdateCommand (String author)
-    {
-    	Command<MergeResult>	command;
-    	
-    	if (getWorkingCopyFile().exists())
-    		command	= getUpdateCommand();
-    	else
-    		command	= getCheckoutCommand (author);
-    	
-    	return command;
+    public Command<MergeResult> getCheckoutOrUpdateCommand(String author) {
+        Command<MergeResult> command;
+
+        if (getWorkingCopyFile().exists())
+            command = getUpdateCommand();
+        else
+            command = getCheckoutCommand(author);
+
+        return command;
     }
 
     @Override
@@ -218,7 +216,7 @@ public abstract class AbstractScmCommandFactory implements CommandFactory {
     }
 
     @Override
-    public Command<Map<String, String>> getLogCommand(String[] files, String startRevision, String endRevision) {
+    public Command<LogEntry[]> getLogCommand(String[] files, String startRevision, String endRevision) {
         // create command
         LogCommand command = createLogCommand();
 

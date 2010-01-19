@@ -35,6 +35,10 @@
   </description>
 
   <dependencies>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-workflow-drools-domains</artifactId>
+    </dependency>
 
     <!-- Servicemix dependencies -->
     <dependency>

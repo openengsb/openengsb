@@ -18,12 +18,10 @@
 
 package org.openengsb.scm.common.commands;
 
-import java.util.Map;
-
 import javax.jbi.management.DeploymentException;
 
-import org.openengsb.scm.common.pojos.MergeResult;
-
+import org.openengsb.drools.model.LogEntry;
+import org.openengsb.drools.model.MergeResult;
 
 /**
  * Interface all CommandFactories used throughout the SCM-Domain
@@ -84,11 +82,12 @@ public interface CommandFactory {
     /**
      * Returns either a CheckoutCommand or an UpdateCommand. The decision is
      * based on whether the working copy already exists or not.
+     * 
      * @param author
      * @return
      */
-    Command<MergeResult> getCheckoutOrUpdateCommand (String author);
-    
+    Command<MergeResult> getCheckoutOrUpdateCommand(String author);
+
     /**
      * Returns a Command that marks a file for deletion from version control.
      * 
@@ -137,7 +136,7 @@ public interface CommandFactory {
      *        with.
      * @return The appropriate Command.
      */
-    Command<Map<String, String>> getLogCommand(String[] files, String startRevision, String endRevision);
+    Command<LogEntry[]> getLogCommand(String[] files, String startRevision, String endRevision);
 
     /**
      * Returns a Command that commits all changes within the working copy and

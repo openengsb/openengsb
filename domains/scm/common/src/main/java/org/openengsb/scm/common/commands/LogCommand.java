@@ -18,7 +18,7 @@
 
 package org.openengsb.scm.common.commands;
 
-import java.util.Map;
+import org.openengsb.drools.model.LogEntry;
 
 /**
  * Interface that defines the parameters for the log-operation with setters. For
@@ -28,7 +28,7 @@ import java.util.Map;
  * @see CommandFactory
  * @see AbstractCommandfactory
  */
-public interface LogCommand extends Command<Map<String, String>> {
+public interface LogCommand extends Command<LogEntry[]> {
     void setFiles(String[] files);
 
     void setStartRevision(String startRevision);

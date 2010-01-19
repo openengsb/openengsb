@@ -21,9 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.annotation.Resource;
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
@@ -39,15 +36,15 @@ import org.apache.servicemix.jbi.messaging.RobustInOnlyImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.drools.model.LogEntry;
+import org.openengsb.drools.model.MergeResult;
 import org.openengsb.scm.common.commands.Command;
 import org.openengsb.scm.common.commands.CommandFactory;
 import org.openengsb.scm.common.endpoints.GeneralScmEndpoint;
 import org.openengsb.scm.common.exceptions.ScmException;
-import org.openengsb.scm.common.pojos.MergeResult;
 import org.openengsb.scm.common.test.unit.constants.GeneralEndpointUnitTestConstants;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 
 /**
  * Unit Test for the {@link GeneralEndpoint}. It simply tests, whether the
@@ -73,7 +70,7 @@ public class GeneralEndpointUnitTest {
     private static Command<Object> exportCommand;
     private static Command<MergeResult> importCommand;
     private static Command<String[]> listBranchesCommand;
-    private static Command<Map<String, String>> logCommand;
+    private static Command<LogEntry[]> logCommand;
     private static Command<MergeResult> mergeCommand;
     private static Command<Object> switchBranchCommand;
     private static Command<MergeResult> updateCommand;
@@ -202,7 +199,7 @@ public class GeneralEndpointUnitTest {
 
         verify(GeneralEndpointUnitTest.checkoutCommand).execute();
     }
-    
+
     @Test(expected = UnsupportedOperationException.class)
     public void checkout_shouldFailWhenWrongMepIsUsed() throws Exception {
         MessageExchange messageExchange = createRobustInOnlyMessageExchange("<checkout author=\""
@@ -211,7 +208,7 @@ public class GeneralEndpointUnitTest {
         // exception expected here
         GeneralEndpointUnitTest.endpoint.process(messageExchange);
     }
-    
+
     @Test
     public void checkoutOrUpdate_shouldCallCheckoutOrUpdateCommand() throws Exception {
         MessageExchange messageExchange = createInOutMessageExchange("<checkoutOrUpdate author=\""
@@ -220,7 +217,7 @@ public class GeneralEndpointUnitTest {
 
         verify(GeneralEndpointUnitTest.checkoutOrUpdateCommand).execute();
     }
-    
+
     @Test(expected = UnsupportedOperationException.class)
     public void checkoutOrUpdate_shouldFailWhenWrongMepIsUsed() throws Exception {
         MessageExchange messageExchange = createRobustInOnlyMessageExchange("<checkoutOrUpdate author=\""
@@ -454,7 +451,7 @@ public class GeneralEndpointUnitTest {
         when(GeneralEndpointUnitTest.commitCommand.execute()).thenReturn(new MergeResult());
         when(GeneralEndpointUnitTest.importCommand.execute()).thenReturn(new MergeResult());
         when(GeneralEndpointUnitTest.listBranchesCommand.execute()).thenReturn(new String[0]);
-        when(GeneralEndpointUnitTest.logCommand.execute()).thenReturn(new HashMap<String, String>(0));
+        when(GeneralEndpointUnitTest.logCommand.execute()).thenReturn(new LogEntry[0]);
         when(GeneralEndpointUnitTest.mergeCommand.execute()).thenReturn(new MergeResult());
         when(GeneralEndpointUnitTest.updateCommand.execute()).thenReturn(new MergeResult());
     }
@@ -472,8 +469,8 @@ public class GeneralEndpointUnitTest {
                         this.CONSTANTS.BRANCH_COMMIT_MESSAGE)).thenReturn(GeneralEndpointUnitTest.branchCommand);
         when(GeneralEndpointUnitTest.commandFactory.getCheckoutCommand(this.CONSTANTS.CHECKOUT_AUTHOR)).thenReturn(
                 GeneralEndpointUnitTest.checkoutCommand);
-        when(GeneralEndpointUnitTest.commandFactory.getCheckoutOrUpdateCommand(this.CONSTANTS.CHECKOUT_AUTHOR)).thenReturn(
-                GeneralEndpointUnitTest.checkoutOrUpdateCommand);
+        when(GeneralEndpointUnitTest.commandFactory.getCheckoutOrUpdateCommand(this.CONSTANTS.CHECKOUT_AUTHOR))
+                .thenReturn(GeneralEndpointUnitTest.checkoutOrUpdateCommand);
         when(
                 GeneralEndpointUnitTest.commandFactory.getCommitCommand(this.CONSTANTS.COMMIT_AUTHOR,
                         this.CONSTANTS.COMMIT_MESSAGE)).thenReturn(GeneralEndpointUnitTest.commitCommand);
@@ -539,7 +536,7 @@ public class GeneralEndpointUnitTest {
 
     private interface CheckoutDummy extends Command<MergeResult> {
     }
-    
+
     private interface CheckoutOrUpdateDummy extends Command<MergeResult> {
     }
 
@@ -561,7 +558,7 @@ public class GeneralEndpointUnitTest {
     private interface ListBranchesDummy extends Command<String[]> {
     }
 
-    private interface LogDummy extends Command<Map<String, String>> {
+    private interface LogDummy extends Command<LogEntry[]> {
     }
 
     private interface MergeDummy extends Command<MergeResult> {

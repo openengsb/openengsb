@@ -50,8 +50,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.connector.svn.test.integration.constants.SvnScmComponentIntegrationTestConstants;
+import org.openengsb.drools.model.MergeResult;
 import org.openengsb.scm.common.exceptions.ScmException;
-import org.openengsb.scm.common.pojos.MergeResult;
 import org.openengsb.scm.common.util.MergeResultSerializer;
 import org.openengsb.scm.common.util.StringArraySerializer;
 import org.openengsb.scm.common.util.StringMapSerializer;
@@ -69,7 +69,7 @@ import org.tmatesoft.svn.core.wc.SVNStatusType;
  * SVN deploy domain by simulating a call from a fictive component. These tests
  * are more or less the same as in the UnitTest. They set up the calls
  * differently, but essentially perform the same checks and assertions.
- *
+ * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @Ignore("Spring setup does not work for windows users")
@@ -89,7 +89,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Creates a new ServiceMixClieant
-     *
+     * 
      * @return The new ServiceMixClient
      */
     private DefaultServiceMixClient createClient() throws JBIException {
@@ -98,7 +98,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Creates and configures a new Message-Object for the In-Out-MEP
-     *
+     * 
      * @param client The client used to create the empty Message-Object
      * @param service The configured entpoint's name as noted in the xbean.xml
      * @param message The actual message as xml-String
@@ -116,7 +116,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Creates and configures a new Message-Object for the Out-Only-MEP
-     *
+     * 
      * @param client The client used to create the empty Message-Object
      * @param service The configured entpoint's name as noted in the xbean.xml
      * @param message The actual message as xml-String
@@ -173,7 +173,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Tests basic checkout behavior
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -196,7 +196,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Tests whether the developerConnection is prefered over the connection
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -213,7 +213,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Tests whether the connection is actually used, when the
      * developerConnection is missing
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -227,7 +227,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Asserts that checkout checks out the repository to the default directory
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -235,13 +235,13 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
         doCheckoutRepository(CONSTANTS.CHECKOUT_NO_WORKING_COPY_SET_SERVICE_NAME);
 
         // assert that workingcopy was put in ./workingCopies/trunk
-        assertTrue("Could not find " + CONSTANTS.DEFAULT_WORKING_COPY, new File(
-                CONSTANTS.DEFAULT_WORKING_COPY).exists());
+        assertTrue("Could not find " + CONSTANTS.DEFAULT_WORKING_COPY, new File(CONSTANTS.DEFAULT_WORKING_COPY)
+                .exists());
     }
 
     /**
      * Tests basic ability to add files to the working copy.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -251,8 +251,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
         // copy the file to add
         File resourcesFileToAdd = new File(CONSTANTS.FILE_TO_ADD);
-        File addedFile = doAddFile(resourcesFileToAdd, CONSTANTS.WORKING_COPIES[0], null,
-                CONSTANTS.ADD_SERVICE_NAME);
+        File addedFile = doAddFile(resourcesFileToAdd, CONSTANTS.WORKING_COPIES[0], null, CONSTANTS.ADD_SERVICE_NAME);
 
         // check if file was actually added
         SVNStatus status = SvnScmComponentIntegrationTest.clientManager.getStatusClient().doStatus(addedFile, false);
@@ -261,7 +260,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Tries to add a not existing file, which should result in an ScmException
-     *
+     * 
      * @throws Exception is expected to be thrown
      */
     @Test(expected = ScmException.class)
@@ -273,8 +272,8 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
         // set up and perform add
         DefaultServiceMixClient client = createClient();
-        RobustInOnly robustinOnly = createRobustInOnlyMessage(client, CONSTANTS.ADD_SERVICE_NAME,
-                "<add fileToAdd=\"" + CONSTANTS.NOT_EXISTING_FILE + "\"/>");
+        RobustInOnly robustinOnly = createRobustInOnlyMessage(client, CONSTANTS.ADD_SERVICE_NAME, "<add fileToAdd=\""
+                + CONSTANTS.NOT_EXISTING_FILE + "\"/>");
 
         client.sendSync(robustinOnly);
         validateReturnMessageSuccess(robustinOnly); // exception expected here
@@ -282,7 +281,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Tests basic ability to mark files for deletion
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -303,7 +302,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Tries to delete a not existing file, which should result in an
      * ScmException
-     *
+     * 
      * @throws Exception is expected to be thrown
      */
     @Test(expected = ScmException.class)
@@ -320,7 +319,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
      * Tests basic ability to commit changes to the repository. Also extends the
      * tests for add and delete since those changes are expected to go into a
      * repository sooner or later
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -347,8 +346,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
         // check result
         assertEquals(0, result.getConflicts().length);
         assertEquals(1, result.getDeletions().length);
-        assertEquals(
-                new File(new File(CONSTANTS.WORKING_COPIES[0]), CONSTANTS.DELETE_FILE).getAbsolutePath(),
+        assertEquals(new File(new File(CONSTANTS.WORKING_COPIES[0]), CONSTANTS.DELETE_FILE).getAbsolutePath(),
                 new File(result.getDeletions()[0]).getAbsolutePath());
         assertEquals(1, result.getAdds().length);
         assertEquals(addedFile.getAbsolutePath(), new File(result.getAdds()[0]).getAbsolutePath());
@@ -370,7 +368,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Test the ability to commit changes only from a sub-path within the
      * working copy.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -380,16 +378,14 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
         // add file in root
         File resourcesFileToAdd = new File(CONSTANTS.FILE_TO_ADD);
-        File addedFile = doAddFile(resourcesFileToAdd, CONSTANTS.WORKING_COPIES[0], null,
-                CONSTANTS.ADD_SERVICE_NAME);
+        File addedFile = doAddFile(resourcesFileToAdd, CONSTANTS.WORKING_COPIES[0], null, CONSTANTS.ADD_SERVICE_NAME);
 
         // add file in subpath
-        File addedSubPathFile = doAddFile(resourcesFileToAdd, CONSTANTS.WORKING_COPIES[0],
-                CONSTANTS.SUB_PATH, CONSTANTS.ADD_SERVICE_NAME);
+        File addedSubPathFile = doAddFile(resourcesFileToAdd, CONSTANTS.WORKING_COPIES[0], CONSTANTS.SUB_PATH,
+                CONSTANTS.ADD_SERVICE_NAME);
 
         // set up and perform commit
-        MergeResult result = doCommit("someArbitraryMessage", CONSTANTS.SUB_PATH,
-                CONSTANTS.COMMIT_SERVICE_NAMES[0]);
+        MergeResult result = doCommit("someArbitraryMessage", CONSTANTS.SUB_PATH, CONSTANTS.COMMIT_SERVICE_NAMES[0]);
 
         // check result
         assertEquals(0, result.getConflicts().length);
@@ -411,7 +407,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Tests that commit fails, when unsolvable (by SVN) conflicts between the
      * working-copy and the repository arise
-     *
+     * 
      * @throws Exception is expected to be thrown
      */
     @Test(expected = ScmException.class)
@@ -442,7 +438,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that commit fails, if we may not write to the repository (i.e.
      * the connection, not the developerConnection was used)
-     *
+     * 
      * @throws Exception
      */
     @Test(expected = ScmException.class)
@@ -452,8 +448,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
         // modify file
         String modifyContent = "someContent";
-        File fileToModify = new File(new File(new File(CONSTANTS.WORKING_COPIES[0]), "trunk"),
-                CONSTANTS.UPDATE_FILE);
+        File fileToModify = new File(new File(new File(CONSTANTS.WORKING_COPIES[0]), "trunk"), CONSTANTS.UPDATE_FILE);
         appendContentToFile(fileToModify, modifyContent);
 
         // commit
@@ -464,7 +459,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Tests basic ability to update the working copy with changes from the
      * repository.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -478,8 +473,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
         // do some changes to the files:
         // + add file
         File resourcesFileToAdd = new File(CONSTANTS.FILE_TO_ADD);
-        File addedFile = doAddFile(resourcesFileToAdd, CONSTANTS.WORKING_COPIES[0], null,
-                CONSTANTS.ADD_SERVICE_NAME);
+        File addedFile = doAddFile(resourcesFileToAdd, CONSTANTS.WORKING_COPIES[0], null, CONSTANTS.ADD_SERVICE_NAME);
 
         // + delete file
         doDeleteFile(CONSTANTS.DELETE_FILE, CONSTANTS.DELETE_SERVICE_NAME);
@@ -498,12 +492,11 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
         // check result
         assertEquals(0, result.getConflicts().length);
         assertEquals(1, result.getDeletions().length);
-        assertEquals(
-                new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.DELETE_FILE).getAbsolutePath(),
+        assertEquals(new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.DELETE_FILE).getAbsolutePath(),
                 new File(result.getDeletions()[0]).getAbsolutePath());
         assertEquals(1, result.getAdds().length);
-        assertEquals(new File(new File(CONSTANTS.WORKING_COPIES[1]), addedFile.getName()).getAbsolutePath(),
-                new File(result.getAdds()[0]).getAbsolutePath());
+        assertEquals(new File(new File(CONSTANTS.WORKING_COPIES[1]), addedFile.getName()).getAbsolutePath(), new File(
+                result.getAdds()[0]).getAbsolutePath());
         assertEquals(2, result.getMerges().length);
         String[] expectedMerges = new String[] { new File(CONSTANTS.WORKING_COPIES[1]).getAbsolutePath(),
                 new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.UPDATE_FILE).getAbsolutePath() };
@@ -519,7 +512,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Tests the ability to update only a sub-path within the working copy
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -535,8 +528,8 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
         doAddFile(resourcesFileToAdd, CONSTANTS.WORKING_COPIES[0], null, CONSTANTS.ADD_SERVICE_NAME);
 
         // 4. add file in subpath in first working copy
-        File addedSubPathFile = doAddFile(resourcesFileToAdd, CONSTANTS.WORKING_COPIES[0],
-                CONSTANTS.SUB_PATH, CONSTANTS.ADD_SERVICE_NAME);
+        File addedSubPathFile = doAddFile(resourcesFileToAdd, CONSTANTS.WORKING_COPIES[0], CONSTANTS.SUB_PATH,
+                CONSTANTS.ADD_SERVICE_NAME);
 
         // 5. commit changes
         doCommit("added files", null, CONSTANTS.COMMIT_SERVICE_NAMES[0]);
@@ -549,11 +542,11 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
         assertEquals(0, result.getConflicts().length);
         assertEquals(0, result.getDeletions().length);
         assertEquals(1, result.getAdds().length);
-        assertEquals(new File(new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.SUB_PATH),
-                fileToAddName).getAbsolutePath(), new File(result.getAdds()[0]).getAbsolutePath());
+        assertEquals(new File(new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.SUB_PATH), fileToAddName)
+                .getAbsolutePath(), new File(result.getAdds()[0]).getAbsolutePath());
         assertEquals(1, result.getMerges().length);
-        assertEquals(new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.SUB_PATH).getAbsolutePath(),
-                new File(result.getMerges()[0]).getAbsolutePath());
+        assertEquals(new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.SUB_PATH).getAbsolutePath(), new File(
+                result.getMerges()[0]).getAbsolutePath());
 
         // 8. check filesystem
         File secondWorkingCopy = new File(CONSTANTS.WORKING_COPIES[1]);
@@ -564,7 +557,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that update fails with an ScmException when unsolvable (by SVN)
      * conlicts arise.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -594,7 +587,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Tests basic checkout behavior
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -613,7 +606,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Tests basic ability to update the working copy with changes from the
      * repository.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -646,7 +639,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Tests the basic ability to create a new branch.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -673,7 +666,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Tests the fault-tolerant behavior to create a new branch, even if the
      * expected branches-directory does not yet exist.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -699,7 +692,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Asserts that no two branches with the same name may be created.
-     *
+     * 
      * @throws Exception is expected to be thrown.
      */
     @Test(expected = ScmException.class)
@@ -719,7 +712,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that no branch with the name TRUNK can be created. This is
      * necessary to be able to switch back to trunk again later on.
-     *
+     * 
      * @throws Exception
      */
     @Test(expected = ScmException.class)
@@ -736,7 +729,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that branch fails, when the repository is read only (i.e.
      * connection, not developerConnection, was set)
-     *
+     * 
      * @throws Exception
      */
     @Test(expected = ScmException.class)
@@ -752,7 +745,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Tests basic ability to list all created branches.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -778,7 +771,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that an empty list (instead of an Excption) is returned, if the
      * branches-directory does not exist.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -793,7 +786,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Tests the basic ability to switch to a(nother) branch.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -820,14 +813,13 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
         // check out branch and assert changes
         doCheckoutRepository(CONSTANTS.CHECKOUT_WC2_BRANCHES_SERVICE_NAME);
 
-        File testFileWc2 = new File(new File(new File(CONSTANTS.WORKING_COPIES[1]), branchName),
-                CONSTANTS.TEST_FILE);
+        File testFileWc2 = new File(new File(new File(CONSTANTS.WORKING_COPIES[1]), branchName), CONSTANTS.TEST_FILE);
         assertThatFileWasModified(testFileWc2, appendContent);
     }
 
     /**
      * Tests the ability to switch back to trunk again.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -905,7 +897,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Tests basic ability to annotate a file's lines with author and revision
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -930,7 +922,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Tests basic ability to compute the differences between revisions
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -948,8 +940,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
         long revision = Long.parseLong(result.getRevision());
 
         // 3. execute dif-call
-        String differences = doDiff(CONSTANTS.TEST_FILE, String.valueOf(revision - 1),
-                CONSTANTS.DIFF_SERVICE_NAME);
+        String differences = doDiff(CONSTANTS.TEST_FILE, String.valueOf(revision - 1), CONSTANTS.DIFF_SERVICE_NAME);
 
         // 4. validate differences
         assertDifferences(differences, new File(new File(CONSTANTS.WORKING_COPIES[0]), CONSTANTS.TEST_FILE),
@@ -959,7 +950,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Tests the basic ability to export the working copy's contents without
      * SVN-metadata
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -983,7 +974,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that export fails with an ScmException, should the destination
      * already exist.
-     *
+     * 
      * @throws Exception is expected to be thrown.
      */
     @Test(expected = ScmException.class)
@@ -1003,7 +994,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Tests the basic ability to import an unversioned filesystem-tree into the
      * repository
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -1032,7 +1023,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that import fails, when the repository is read only (i.e.
      * connection, not developerConnection, was set)
-     *
+     * 
      * @throws Exception
      */
     @Test(expected = ScmException.class)
@@ -1049,7 +1040,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Tests the basic ability to collect commit-messages for files and
      * revisions.
-     *
+     * 
      * @throws Exception
      */
     @Test
@@ -1071,8 +1062,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
         String[] files = new String[] { testFile.getName() };
 
         // call
-        Map<String, String> logs = doLog(files, result.getRevision(), result.getRevision(),
-                CONSTANTS.LOG_SERVICE_NAME);
+        Map<String, String> logs = doLog(files, result.getRevision(), result.getRevision(), CONSTANTS.LOG_SERVICE_NAME);
 
         // 4. examine logs
         assertEquals(1, logs.size());
@@ -1094,7 +1084,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Checks the message for errors and either fails or throws an Exception
-     *
+     * 
      * @param message
      * @throws Exception
      */
@@ -1112,7 +1102,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Asserts that all elements from expected are also in actual.
-     *
+     * 
      * @param expected the expected elements
      * @param actual the actual elements
      */
@@ -1141,7 +1131,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that the tow different representations of Files (absolute and
      * relative to workingCopy) do equal.
-     *
+     * 
      * @param workingCopy the basepath for the relative expected files
      * @param expected the expected files, relative to workingCopy
      * @param actual the absolute, actual files
@@ -1169,7 +1159,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Appends content to file
-     *
+     * 
      * @param file The file to append the content to.
      * @param content The content to be appended.
      * @throws IOException if something unforseen happenes
@@ -1186,7 +1176,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that a file was modified. Actually it only checks it the content
      * was appended to it.
-     *
+     * 
      * @param file The file to check.
      * @param modifyContent The content which is expected to be appended.
      * @throws IOException if something unforseen happens
@@ -1205,7 +1195,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that a file was not modified. Actually it only checks it the
      * content was not appended to it.
-     *
+     * 
      * @param file The file to check.
      * @param modifyContent The content which is expected not to be appended.
      * @throws IOException if something unforseen happens
@@ -1224,7 +1214,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that the blamed content of a file is formatted correctly (very
      * specific to one test and not to be used generically)
-     *
+     * 
      * @param blamedContent
      * @param addedLine
      * @param addedLineAuthor
@@ -1254,7 +1244,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Asserts that the diff for a file on two revisions is formatted correctly
      * (very specific to one test and not to be used generically)
-     *
+     * 
      * @param differences
      * @param file
      * @param addedContent
@@ -1298,7 +1288,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Triggers a jbi-call (sends normalized message) to check out a repository
-     *
+     * 
      * @param serviceName the service's name
      * @param repository The repository to check out from
      * @return The deserialized MergeReusult
@@ -1307,8 +1297,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     private MergeResult doCheckoutRepository(String serviceName) throws Exception {
         // set up and perform call
         DefaultServiceMixClient client = createClient();
-        InOut inOut = createInOutMessage(client, serviceName, "<checkout " + " author=\"" + CONSTANTS.AUTHOR
-                + "\"/>");
+        InOut inOut = createInOutMessage(client, serviceName, "<checkout " + " author=\"" + CONSTANTS.AUTHOR + "\"/>");
 
         client.sendSync(inOut);
         validateReturnMessageSuccess(inOut);
@@ -1325,7 +1314,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Triggers a jbi-call (sends normalized message) to check out or update a
      * repository
-     *
+     * 
      * @param serviceName the service's name
      * @param repository The repository to check out from
      * @return The deserialized MergeReusult
@@ -1334,8 +1323,8 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     private MergeResult doCheckoutOrUpdate(String serviceName) throws Exception {
         // set up and perform call
         DefaultServiceMixClient client = createClient();
-        InOut inOut = createInOutMessage(client, serviceName, "<checkoutOrUpdate " + " author=\""
-                + CONSTANTS.AUTHOR + "\"/>");
+        InOut inOut = createInOutMessage(client, serviceName, "<checkoutOrUpdate " + " author=\"" + CONSTANTS.AUTHOR
+                + "\"/>");
 
         client.sendSync(inOut);
         validateReturnMessageSuccess(inOut);
@@ -1352,7 +1341,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Copies a File to the Working copy and the triggers a jbi-call (sends
      * normalized message) to add that file
-     *
+     * 
      * @param fileToAdd The file to add (not in the working copy
      * @param workingCopy The path to the working copy. This is only needed to
      *        compute the fileToAdd correctly and should be the same as
@@ -1392,7 +1381,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Triggers a jbi-call (sends normalized message) to delete a file.
-     *
+     * 
      * @param deletePath The file to delete.
      * @param serviceName The service's name.
      * @throws Exception
@@ -1409,7 +1398,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Triggers a jbi-call (sends normalized message) to commit a working copy
      * to the repository
-     *
+     * 
      * @param message The commit message.
      * @param subPath Optional subpath that shall be committed instead of the
      *        whole working copy
@@ -1444,7 +1433,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Triggers a jbi-call (sends normalized message) to update the working copy
      * from the repository.
-     *
+     * 
      * @param serviceName The service's name
      * @param subPath Optional subpath to be updated instead of the whole
      *        working copy
@@ -1475,7 +1464,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Triggers a jbi-call (sends normalized message) to create a new branch.
-     *
+     * 
      * @param branchName The branch's name that shall be created.
      * @param commitMessage The commit-message.
      * @param serviceName The service's name.
@@ -1492,7 +1481,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Triggers a jbi-call (sends normalized message) to list all branches.
-     *
+     * 
      * @param serviceName the service's name.
      * @return A list of branches.
      * @throws Exception
@@ -1513,7 +1502,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Triggers a jbi-call (sends normalized message) to switch to a branch.
-     *
+     * 
      * @param branchName The branch's name to switch to.
      * @param serviceName the service's name.
      * @throws Exception
@@ -1530,7 +1519,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Triggers a jbi-call (sends normalized message) to merge a branch into the
      * working copy.
-     *
+     * 
      * @param branchName The branch's name to merge.
      * @param serviceName The service's name.
      * @return the merge-result
@@ -1555,7 +1544,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     /**
      * Triggers a jbi-call (sends normalized message) to blame/annotate a file.
-     *
+     * 
      * @param file the file's name relative to the working-copy
      * @param serviceName The service's name
      * @return The annotaten content of the file.
@@ -1581,7 +1570,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Triggers a jbi-call (sends normalized message) to perform a diff on a
      * file between revion and HEAD.
-     *
+     * 
      * @param file The file to compute the diff for.
      * @param revision The revision to start with.
      * @param serviceName The service's name.
@@ -1609,7 +1598,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Triggers a jbi-call (sends normalized message) to export a working copy
      * without SVN-metadata.
-     *
+     * 
      * @param exportPath The path to eport to
      * @param serviceName The service's name
      * @throws Exception
@@ -1626,7 +1615,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Triggers a jbi-call (sends normalized message) to import an unversionen
      * file-tree into the repository
-     *
+     * 
      * @param importSourcePath the path to the location to be imported
      * @param importDestinationPath The destination within the repository to
      *        import to
@@ -1666,7 +1655,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
     /**
      * Triggers a jbi-call (sends normalized message) to collect commit-messages
      * over files and revisions
-     *
+     * 
      * @param files The files to collect the commit-messages for
      * @param startRevision The revision to start to collect
      * @param endRevision The revision to end to collect
@@ -1713,7 +1702,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
      * Copied and modified from {@link http
      * ://stackoverflow.com/questions/318239/
      * how-do-i-set-environment-variables-from-java}
-     *
+     * 
      * @param name The environment variable's name
      * @param value The environment varibale's value
      * @throws Exception
@@ -1763,8 +1752,7 @@ public class SvnScmComponentIntegrationTest extends SpringTestSupport {
 
     private void setUpRepository() throws IOException, SVNException {
         deleteRepository();
-        FileUtils.copyDirectoryStructure(new File(CONSTANTS.REFERENCE_REPOSITORY), new File(
-                CONSTANTS.REPOSITORY));
+        FileUtils.copyDirectoryStructure(new File(CONSTANTS.REFERENCE_REPOSITORY), new File(CONSTANTS.REPOSITORY));
         FileUtils.copyDirectoryStructure(new File(CONSTANTS.REFERENCE_REPOSITORY_NO_BRANCH), new File(
                 CONSTANTS.REPOSITORY_NO_BRANCH));
     }

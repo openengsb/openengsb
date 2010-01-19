@@ -17,17 +17,14 @@
  */
 package org.openengsb.scm.common.endpoints;
 
-import java.util.Map;
-
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 
+import org.openengsb.drools.model.LogEntry;
 import org.openengsb.scm.common.ParameterNames;
 import org.openengsb.scm.common.commands.Command;
 import org.openengsb.scm.common.util.StringArraySerializer;
-import org.openengsb.scm.common.util.StringMapSerializer;
 import org.w3c.dom.Node;
-
 
 /**
  * The Endpoint to the log-feature
@@ -75,11 +72,13 @@ public class LogEndpoint extends AbstractScmEndpoint {
         String[] files = StringArraySerializer.deserialize(filesNode);
 
         // execute call
-        Command<Map<String, String>> command = getCommandFactory().getLogCommand(files, startRevision, endRevision);
-        Map<String, String> result = command.execute();
+        Command<LogEntry[]> command = getCommandFactory().getLogCommand(files, startRevision, endRevision);
+        LogEntry[] result = command.execute();
 
+        // TODO fix this problem which followed from changing the result type of
+        // the log command
         // xml-ify result and send it back
-        out.setContent(StringMapSerializer.serialize(result, "logs"));
+        // out.setContent(StringMapSerializer.serialize(result, "logs"));
         // getChannel ().send (exchange);
     }
 

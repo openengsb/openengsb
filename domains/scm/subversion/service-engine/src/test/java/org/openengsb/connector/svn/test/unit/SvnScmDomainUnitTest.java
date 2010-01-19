@@ -27,7 +27,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Map;
 
 import org.codehaus.plexus.util.FileUtils;
 import org.junit.After;
@@ -37,9 +36,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.connector.svn.commands.SvnCommandFactory;
 import org.openengsb.connector.svn.test.unit.constants.SvnScmDomainTestConstants;
+import org.openengsb.drools.model.LogEntry;
+import org.openengsb.drools.model.MergeResult;
 import org.openengsb.scm.common.commands.CommandFactory;
 import org.openengsb.scm.common.exceptions.ScmException;
-import org.openengsb.scm.common.pojos.MergeResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
@@ -70,7 +70,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Creates a new CommandFactory, to be exact an implementation thereof for
      * SVN
-     *
+     * 
      * @param workingCopy The basepath, where all operations are based on.
      * @param connection The default connection to check out contents from the
      *        repository. Read only.
@@ -118,8 +118,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     @Before
     public void setUpRepository() throws IOException, SVNException {
         deleteRepository();
-        FileUtils.copyDirectoryStructure(new File(CONSTANTS.REFERENCE_REPOSITORY), new File(
-                CONSTANTS.REPOSITORY));
+        FileUtils.copyDirectoryStructure(new File(CONSTANTS.REFERENCE_REPOSITORY), new File(CONSTANTS.REPOSITORY));
         FileUtils.copyDirectoryStructure(new File(CONSTANTS.REFERENCE_REPOSITORY_NO_BRANCH), new File(
                 CONSTANTS.REPOSITORY_NO_BRANCH));
     }
@@ -171,7 +170,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Tests basic checkout behavior
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -196,7 +195,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Tests whether the developerConnection is prefered over the connection
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -213,7 +212,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Tests whether the connection is actually used, when the
      * developerConnection is missing
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -229,7 +228,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Asserts that checkout fails, when no connection was set
-     *
+     * 
      * @throws ScmException
      */
     @Test(expected = ScmException.class)
@@ -242,7 +241,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Asserts that checkout checks out the repository to the default directory
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -252,13 +251,13 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
         commandFactory.getCheckoutCommand(CONSTANTS.AUTHOR).execute();
 
         // assert that workingcopy was put in ./workingCopies/trunk
-        assertTrue("Could not find " + CONSTANTS.DEFAULT_WORKING_COPY, new File(
-                CONSTANTS.DEFAULT_WORKING_COPY).exists());
+        assertTrue("Could not find " + CONSTANTS.DEFAULT_WORKING_COPY, new File(CONSTANTS.DEFAULT_WORKING_COPY)
+                .exists());
     }
 
     /**
      * Tests basic ability to add files to the working copy.
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      * @throws SVNException
@@ -288,7 +287,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Tries to add a not existing file, which should result in an ScmException
-     *
+     * 
      * @throws ScmException is expected to be thrown
      */
     @Test(expected = ScmException.class)
@@ -311,7 +310,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
      * hard to do since the arguments passed to the add call are considered
      * relative to the working-copy. However, we play the mean guy and expect an
      * ScmException
-     *
+     * 
      * @throws ScmException is expected to be thrown
      */
     @Test(expected = ScmException.class)
@@ -331,7 +330,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Tests basic ability to mark files for deletion
-     *
+     * 
      * @throws ScmException
      * @throws SVNException
      */
@@ -355,7 +354,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Tries to delete a not existing file, which should result in an
      * ScmException
-     *
+     * 
      * @throws ScmException is expected to be thrown
      */
     @Test(expected = ScmException.class)
@@ -375,7 +374,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
      * usually hard to do since the arguments passed to the add call are
      * considered relative to the working-copy. However, we play the mean guy
      * and expect an ScmException
-     *
+     * 
      * @throws ScmException is expected to be thrown
      */
     @Test(expected = ScmException.class)
@@ -394,7 +393,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
      * Tests basic ability to commit changes to the repository. Also extends the
      * tests for add and delete since those changes are expected to go into a
      * repository sooner or later
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      */
@@ -429,8 +428,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
         // check result
         assertEquals(0, result.getConflicts().length);
         assertEquals(1, result.getDeletions().length);
-        assertEquals(
-                new File(new File(CONSTANTS.WORKING_COPIES[0]), CONSTANTS.DELETE_FILE).getAbsolutePath(),
+        assertEquals(new File(new File(CONSTANTS.WORKING_COPIES[0]), CONSTANTS.DELETE_FILE).getAbsolutePath(),
                 new File(result.getDeletions()[0]).getAbsolutePath());
         assertEquals(1, result.getAdds().length);
         assertEquals(workingCopyFileToAdd.getAbsolutePath(), new File(result.getAdds()[0]).getAbsolutePath());
@@ -455,7 +453,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Test the ability to commit changes only from a sub-path within the
      * working copy.
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      */
@@ -475,14 +473,14 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
         commandFactory.getAddCommand(fileToAddName).execute();
 
         // add file in subpath
-        File workingCopyFileToAddSubPath = new File(new File(new File(CONSTANTS.WORKING_COPIES[0]),
-                CONSTANTS.SUB_PATH), fileToAddName);
+        File workingCopyFileToAddSubPath = new File(
+                new File(new File(CONSTANTS.WORKING_COPIES[0]), CONSTANTS.SUB_PATH), fileToAddName);
         FileUtils.copyFile(resourcesFileToAdd, workingCopyFileToAddSubPath);
         commandFactory.getAddCommand(new File(new File(CONSTANTS.SUB_PATH), fileToAddName).getPath()).execute();
 
         // actual call
-        MergeResult result = commandFactory.getCommitCommand(CONSTANTS.AUTHOR, "ordinary commit",
-                CONSTANTS.SUB_PATH).execute();
+        MergeResult result = commandFactory.getCommitCommand(CONSTANTS.AUTHOR, "ordinary commit", CONSTANTS.SUB_PATH)
+                .execute();
 
         // check result
         assertEquals(0, result.getConflicts().length);
@@ -507,7 +505,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Tests that commit fails, when unsolvable (by SVN) conflicts between the
      * working-copy and the repository arise
-     *
+     * 
      * @throws ScmException is expected to be thrown
      * @throws IOException
      */
@@ -543,15 +541,15 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that commit fails, if we may not write to the repository (i.e.
      * the connection, not the developerConnection was used)
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      */
     @Test(expected = ScmException.class)
     public void commit_shouldFailWhenConnectionInsteadOfDeveloperConnectionWasSet() throws ScmException, IOException {
         // check out initial working copy
-        CommandFactory commandFactory = createCommandFactory(CONSTANTS.WORKING_COPIES[0],
-                SvnScmDomainUnitTest.TRUNK, null);
+        CommandFactory commandFactory = createCommandFactory(CONSTANTS.WORKING_COPIES[0], SvnScmDomainUnitTest.TRUNK,
+                null);
         commandFactory.getCheckoutCommand(CONSTANTS.AUTHOR).execute();
 
         // modify file
@@ -567,7 +565,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Tests basic ability to update the working copy with changes from the
      * repository.
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      */
@@ -609,12 +607,11 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
         // check result
         assertEquals(0, result.getConflicts().length);
         assertEquals(1, result.getDeletions().length);
-        assertEquals(
-                new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.DELETE_FILE).getAbsolutePath(),
+        assertEquals(new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.DELETE_FILE).getAbsolutePath(),
                 new File(result.getDeletions()[0]).getAbsolutePath());
         assertEquals(1, result.getAdds().length);
-        assertEquals(new File(new File(CONSTANTS.WORKING_COPIES[1]), fileToAddName).getAbsolutePath(), new File(
-                result.getAdds()[0]).getAbsolutePath());
+        assertEquals(new File(new File(CONSTANTS.WORKING_COPIES[1]), fileToAddName).getAbsolutePath(), new File(result
+                .getAdds()[0]).getAbsolutePath());
         assertEquals(2, result.getMerges().length);
         String[] expectedMerges = new String[] { new File(CONSTANTS.WORKING_COPIES[1]).getAbsolutePath(),
                 new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.UPDATE_FILE).getAbsolutePath() };
@@ -630,7 +627,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Tests the ability to update only a sub-path within the working copy
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      */
@@ -654,8 +651,8 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
         commandFactory.getAddCommand(fileToAddName).execute();
 
         // add file in subpath in first working copy
-        File workingCopyFileToAddSubPath = new File(new File(new File(CONSTANTS.WORKING_COPIES[0]),
-                CONSTANTS.SUB_PATH), fileToAddName);
+        File workingCopyFileToAddSubPath = new File(
+                new File(new File(CONSTANTS.WORKING_COPIES[0]), CONSTANTS.SUB_PATH), fileToAddName);
         FileUtils.copyFile(resourcesFileToAdd, workingCopyFileToAddSubPath);
         commandFactory.getAddCommand(new File(new File(CONSTANTS.SUB_PATH), fileToAddName).getPath()).execute();
 
@@ -669,11 +666,11 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
         assertEquals(0, result.getConflicts().length);
         assertEquals(0, result.getDeletions().length);
         assertEquals(1, result.getAdds().length);
-        assertEquals(new File(new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.SUB_PATH),
-                fileToAddName).getAbsolutePath(), new File(result.getAdds()[0]).getAbsolutePath());
+        assertEquals(new File(new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.SUB_PATH), fileToAddName)
+                .getAbsolutePath(), new File(result.getAdds()[0]).getAbsolutePath());
         assertEquals(1, result.getMerges().length);
-        assertEquals(new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.SUB_PATH).getAbsolutePath(),
-                new File(result.getMerges()[0]).getAbsolutePath());
+        assertEquals(new File(new File(CONSTANTS.WORKING_COPIES[1]), CONSTANTS.SUB_PATH).getAbsolutePath(), new File(
+                result.getMerges()[0]).getAbsolutePath());
 
         // check filesystem
         File secondWorkingCopy = new File(CONSTANTS.WORKING_COPIES[1]);
@@ -684,7 +681,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that update fails with an ScmException when unsolvable (by SVN)
      * conlicts arise.
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      */
@@ -720,7 +717,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that repository is checked out, when the workingcopy does not yet
      * exist
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -740,7 +737,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Asserts that the working copy is updated when it alread exists
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      */
@@ -777,7 +774,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Tests the basic ability to create a new branch.
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -813,7 +810,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Tests the fault-tolerant behavior to create a new branch, even if the
      * expected branches-directory does not yet exist.
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -848,7 +845,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Asserts that no two branches with the same name may be created.
-     *
+     * 
      * @throws ScmException is expected to be thrown.
      */
     @Test(expected = ScmException.class)
@@ -868,7 +865,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that no branch with the name TRUNK can be created. This is
      * necessary to be able to switch back to trunk again later on.
-     *
+     * 
      * @throws ScmException
      */
     @Test(expected = ScmException.class)
@@ -887,14 +884,14 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that branch fails, when the reopsitory is read only (i.e.
      * connection, not developerconnection, was set)
-     *
+     * 
      * @throws ScmException
      */
     @Test(expected = ScmException.class)
     public void branch_shouldFailWhenConnectionInsteadofDeveloperConnectionWasSet() throws ScmException {
         // check out initial working copy
-        CommandFactory commandFactory = createCommandFactory(CONSTANTS.WORKING_COPIES[0],
-                SvnScmDomainUnitTest.TRUNK, null);
+        CommandFactory commandFactory = createCommandFactory(CONSTANTS.WORKING_COPIES[0], SvnScmDomainUnitTest.TRUNK,
+                null);
         commandFactory.getCheckoutCommand(CONSTANTS.AUTHOR).execute();
 
         // branch
@@ -904,7 +901,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Tests basic ability to list all created branches.
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -932,7 +929,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that an empty list (instead of an Excption) is returned, if the
      * branches-directory does not exist.
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -948,7 +945,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Tests the basic ability to switch to a(nother) branch.
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      */
@@ -988,7 +985,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Tests the ability to switch back to trunk again.
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      */
@@ -1071,7 +1068,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Asserts that merge fails with an ScmException should conflicts arise.
-     *
+     * 
      * @throws ScmException is expected to be thrown
      * @throws IOException
      */
@@ -1105,8 +1102,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
         appendContentToFile(mergeFile, appendContent2);
 
         // commit changes
-        commandFactory.getCommitCommand(CONSTANTS.AUTHOR, "changed mergeFile (again but this time on trunk)")
-                .execute();
+        commandFactory.getCommitCommand(CONSTANTS.AUTHOR, "changed mergeFile (again but this time on trunk)").execute();
 
         // 7. merge branch in trunk
         // exception expected here
@@ -1115,7 +1111,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Tests basic ability to annotate a file's lines with author and revision
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      */
@@ -1141,7 +1137,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Tests basic ability to compute the differences between revisions
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      */
@@ -1161,8 +1157,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
         MergeResult result = commandFactory.getCommitCommand(CONSTANTS.AUTHOR, "changed testfile").execute();
         long revision = Long.parseLong(result.getRevision());
 
-        String differences = commandFactory.getDiffCommand(CONSTANTS.TEST_FILE, String.valueOf(revision - 1))
-                .execute();
+        String differences = commandFactory.getDiffCommand(CONSTANTS.TEST_FILE, String.valueOf(revision - 1)).execute();
 
         // 3. validate differences
         assertDifferences(differences, new File(new File(CONSTANTS.WORKING_COPIES[0]), CONSTANTS.TEST_FILE),
@@ -1172,7 +1167,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Tests the basic ability to export the working copy's contents without
      * SVN-metadata
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -1198,7 +1193,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that export fails with an ScmException, should the destination
      * already exist.
-     *
+     * 
      * @throws ScmException is expected to be thrown.
      */
     @Test(expected = ScmException.class)
@@ -1220,7 +1215,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Tests the basic ability to import an unversioned filesystem-tree into the
      * repository
-     *
+     * 
      * @throws ScmException
      */
     @Test
@@ -1253,26 +1248,25 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that import fails, when the repository is read only (i.e.
      * connection, not developerConnection, was set)
-     *
+     * 
      * @throws ScmException
      */
     @Test(expected = ScmException.class)
     public void import_shouldFailWhenConnectionInsteadofDeveloperConnectionWasSet() throws ScmException {
         // 1. check out initial working copy
-        CommandFactory commandFactory = createCommandFactory(CONSTANTS.WORKING_COPIES[0],
-                SvnScmDomainUnitTest.TRUNK, null);
+        CommandFactory commandFactory = createCommandFactory(CONSTANTS.WORKING_COPIES[0], SvnScmDomainUnitTest.TRUNK,
+                null);
         commandFactory.getCheckoutCommand(CONSTANTS.AUTHOR).execute();
 
         // 2. import
         // exception expected here
-        commandFactory.getImportCommand(CONSTANTS.IMPORT_PATH, null, "importing files", CONSTANTS.AUTHOR)
-                .execute();
+        commandFactory.getImportCommand(CONSTANTS.IMPORT_PATH, null, "importing files", CONSTANTS.AUTHOR).execute();
     }
 
     /**
      * Tests the basic ability to collect commit-messages for files and
      * revisions.
-     *
+     * 
      * @throws ScmException
      * @throws IOException
      */
@@ -1297,12 +1291,13 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
         String[] files = new String[] { testFile.getName() };
 
         // call
-        Map<String, String> logs = commandFactory.getLogCommand(files, result.getRevision(), result.getRevision())
-                .execute();
+        LogEntry[] logs = commandFactory.getLogCommand(files, result.getRevision(), result.getRevision()).execute();
 
         // 4. examine logs
-        assertEquals(1, logs.size());
-        assertEquals(CONSTANTS.AUTHOR + ":\n" + commitMessage, logs.get(result.getRevision()));
+        assertEquals(1, logs.length);
+        LogEntry logEntry = logs[0];
+        assertEquals(result.getRevision(), logEntry.getRevision());
+        assertEquals(CONSTANTS.AUTHOR + ":\n" + commitMessage, logEntry.getMessage());
     }
 
     /* tests end */
@@ -1311,7 +1306,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Asserts that all elements from expected are also in actual.
-     *
+     * 
      * @param expected the expected elements
      * @param actual the actual elements
      */
@@ -1340,7 +1335,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that the tow different representations of Files (absolute and
      * relative to workingCopy) do equal.
-     *
+     * 
      * @param workingCopy the basepath for the relative expected files
      * @param expected the expected files, relative to workingCopy
      * @param actual the absolute, actual files
@@ -1368,7 +1363,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
 
     /**
      * Appends content to file
-     *
+     * 
      * @param file The file to append the content to.
      * @param content The content to be appended.
      * @throws IOException if something unforseen happenes
@@ -1385,7 +1380,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that a file was modified. Actually it only checks it the content
      * was appended to it.
-     *
+     * 
      * @param file The file to check.
      * @param modifyContent The content which is expected to be appended.
      * @throws IOException if something unforseen happens
@@ -1404,7 +1399,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that a file was not modified. Actually it only checks it the
      * content was not appended to it.
-     *
+     * 
      * @param file The file to check.
      * @param modifyContent The content which is expected not to be appended.
      * @throws IOException if something unforseen happens
@@ -1423,7 +1418,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that the blamed content of a file is formatted correctly (very
      * specific to one test and not to be used generically)
-     *
+     * 
      * @param blamedContent
      * @param addedLine
      * @param addedLineAuthor
@@ -1453,7 +1448,7 @@ public class SvnScmDomainUnitTest extends AbstractJUnit4SpringContextTests {
     /**
      * Asserts that the diff for a file on two revisions is formatted correctly
      * (very specific to one test and not to be used generically)
-     *
+     * 
      * @param differences
      * @param file
      * @param addedContent

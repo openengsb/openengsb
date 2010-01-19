@@ -16,26 +16,11 @@
    limitations under the License.
 
 -->
-<beans xmlns:svn="http://openengsb.org/connector/svn/1.0" xmlns:repo="urn:openengsb:svn"
+<beans xmlns:svn="http://openengsb.org/connector/svn/1.0" xmlns:subversion="urn:openengsb:svn"
   xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <!-- Service Configurations available by the svn module. -->
-  <svn:checkout service="repo:checkout" endpoint="checkoutPlain" configuration="#workingCopy" />
-  <svn:checkoutOrUpdate configuration="#workingCopy" endpoint="checkout" service="repo:SourceControlManagmentService" />
-  <svn:add service="repo:addService" endpoint="add" configuration="#workingCopy" />
-  <svn:delete service="repo:deleteService" endpoint="delete" configuration="#workingCopy" />
-  <svn:commit service="repo:commitService" endpoint="commit" configuration="#workingCopy" />
-  <svn:update service="repo:updateService" endpoint="update" configuration="#workingCopy" />
-  <svn:branch service="repo:branchService" endpoint="branch" configuration="#workingCopy" />
-  <svn:listBranches service="repo:listBranchesService" endpoint="listBranches" configuration="#workingCopy" />
-  <svn:switchBranch service="repo:switchBranchService" endpoint="switchBranch" configuration="#workingCopy" />
-  <svn:merge service="repo:mergeService" endpoint="merge" configuration="#workingCopy" />
-  <svn:blame service="repo:blameService" endpoint="blame" configuration="#workingCopy" />
-  <svn:diff service="repo:diffService" endpoint="diff" configuration="#workingCopy" />
-  <svn:export service="repo:exportService" endpoint="export" configuration="#workingCopy" />
-  <svn:import service="repo:importService" endpoint="import" configuration="#workingCopy" />
-  <svn:log service="repo:logService" endpoint="log" configuration="#workingCopy" />
+  <svn:svnEndpoint service="subversion:svnService" endpoint="svnEndpoint" configuration="#workingCopy" />
 
   <!-- Configuration bean for the SVN implementation. -->
   <bean id="workingCopy" class="org.openengsb.connector.svn.SvnConfiguration">

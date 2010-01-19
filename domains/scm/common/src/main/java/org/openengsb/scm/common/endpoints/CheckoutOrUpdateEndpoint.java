@@ -21,11 +21,10 @@ package org.openengsb.scm.common.endpoints;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 
+import org.openengsb.drools.model.MergeResult;
 import org.openengsb.scm.common.ParameterNames;
 import org.openengsb.scm.common.commands.Command;
-import org.openengsb.scm.common.pojos.MergeResult;
 import org.openengsb.scm.common.util.MergeResultSerializer;
-
 
 /**
  * The Endpoint to the checkout-feature
@@ -55,9 +54,9 @@ public class CheckoutOrUpdateEndpoint extends AbstractScmEndpoint {
             // throw new IllegalArgumentException ("Missing " +
             // ParameterNames.AUTHOR);
         }
-        
+
         // execute call
-        Command<MergeResult> command = getCommandFactory().getCheckoutOrUpdateCommand (author);
+        Command<MergeResult> command = getCommandFactory().getCheckoutOrUpdateCommand(author);
         MergeResult result = command.execute();
 
         // xml-ify result and send it back

@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.scm.common.pojos;
+package org.openengsb.drools.model;
 
 /**
  * A standard POJO that holds references to files, that were changed in some
@@ -34,19 +34,9 @@ public class MergeResult {
         String[] emptyArray = new String[0];
         setConflicts(emptyArray);
         setMerges(emptyArray);
-        // setUpdates (emptyArray);
         setAdds(emptyArray);
         setDeletions(emptyArray);
     }
-
-    // public String getStringResult()
-    // {
-    // return stringResult;
-    // }
-    // public void setStringResult (String stringResult)
-    // {
-    // this.stringResult = stringResult;
-    // }
 
     public String[] getConflicts() {
         return this.conflicts;
@@ -63,15 +53,6 @@ public class MergeResult {
     public void setMerges(String[] merges) {
         this.merges = merges;
     }
-
-    // public String[] getUpdates()
-    // {
-    // return updates;
-    // }
-    // public void setUpdates (String[] updates)
-    // {
-    // this.updates = updates;
-    // }
 
     public String[] getAdds() {
         return this.adds;

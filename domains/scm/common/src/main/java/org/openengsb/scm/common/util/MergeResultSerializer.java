@@ -27,14 +27,13 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
+import org.openengsb.drools.model.MergeResult;
 import org.openengsb.scm.common.exceptions.SerialisationException;
-import org.openengsb.scm.common.pojos.MergeResult;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 
 /**
  * A Serializer for MergeResult, that can serialize a MergeResult-object to XML

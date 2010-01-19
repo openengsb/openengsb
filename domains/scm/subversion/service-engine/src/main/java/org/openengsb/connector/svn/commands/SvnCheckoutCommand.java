@@ -19,10 +19,10 @@ package org.openengsb.connector.svn.commands;
 
 import java.util.ArrayList;
 
+import org.openengsb.drools.model.MergeResult;
 import org.openengsb.scm.common.commands.CheckoutCommand;
 import org.openengsb.scm.common.commands.Command;
 import org.openengsb.scm.common.exceptions.ScmException;
-import org.openengsb.scm.common.pojos.MergeResult;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
@@ -30,7 +30,6 @@ import org.tmatesoft.svn.core.wc.SVNEvent;
 import org.tmatesoft.svn.core.wc.SVNEventAction;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
-
 
 /**
  * A Command that checks out the remote repository's content into the folder

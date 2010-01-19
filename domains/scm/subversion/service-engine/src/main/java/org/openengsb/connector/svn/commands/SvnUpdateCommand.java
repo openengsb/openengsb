@@ -20,17 +20,16 @@ package org.openengsb.connector.svn.commands;
 import java.io.File;
 import java.util.ArrayList;
 
+import org.openengsb.drools.model.MergeResult;
 import org.openengsb.scm.common.commands.Command;
 import org.openengsb.scm.common.commands.UpdateCommand;
 import org.openengsb.scm.common.exceptions.ScmException;
-import org.openengsb.scm.common.pojos.MergeResult;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.wc.SVNEvent;
 import org.tmatesoft.svn.core.wc.SVNEventAction;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
-
 
 /**
  * A Command that performs an update on the whole working copy or on a sub-path
