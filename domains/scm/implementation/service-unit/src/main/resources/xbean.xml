@@ -21,5 +21,6 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
   <softwareConfigurationManagement:scmEndpoint endpoint="scmEndpoint" service="scm:scmService" />
-
+  <softwareConfigurationManagement:eventEndpoint endpoint="eventEndpoint" service="scm:eventService" />
+  
 </beans>

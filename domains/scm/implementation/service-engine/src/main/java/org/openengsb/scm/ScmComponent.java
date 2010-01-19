@@ -44,7 +44,7 @@ public class ScmComponent extends DefaultComponent {
 
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class[] { ScmEndpoint.class };
+        return new Class[] { ScmEndpoint.class, ScmEventEndpoint.class };
     }
 
 }
