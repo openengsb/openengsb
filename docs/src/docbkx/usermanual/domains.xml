@@ -17,7 +17,13 @@
 
 -->
 <chapter>
-  <title>The SCM-Domain</title>
+  <title>OpenEngsB Tool Domains</title>
+  
+  <warning>
+    <para>
+      This chapter is out of date and have to be rewritten...
+    </para>
+  </warning>
 
   <section>
     <title>Abstract</title>
