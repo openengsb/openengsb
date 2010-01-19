@@ -35,6 +35,7 @@
     The package used to prepare openengsb for distribution.
   </description>
   <build>
+    <finalName>openengsb</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -58,6 +59,14 @@
             </artifactItem>
           </artifactItems>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+          <configuration>
+            <tasks>
+              <move file="${project.build.directory}/openengsb-openengsb.zip" tofile="${project.build.directory}/openengsb-${pom.version}.zip" />
+            </tasks>
+          </configuration>
       </plugin>
     </plugins> 
   </build>

@@ -46,3 +46,8 @@ openengsb-embedded/openengsb.log
 #================
 *.dia~
 
+#================
+#Assembly artifacts
+#================
+*.zip
+

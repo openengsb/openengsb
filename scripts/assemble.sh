@@ -15,10 +15,20 @@
 #   limitations under the License.
 #
 
-cd $(dirname $0)/..
+# get and save path of script dir in SCRIPT_DIR
+cd $(dirname $0)
+SCRIPT_DIR=`pwd`
+
+# build entire project from root
+cd $SCRIPT_DIR/../
 mvn package -Pintegration-test,license-check,docs
 
+# assembly product
 cd package/assembly
 mvn dependency:unpack
 mvn assembly:assembly
+mvn antrun:run
+
+# copy assembly to root folder
+cp target/*.zip $SCRIPT_DIR/../
 
