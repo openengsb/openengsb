@@ -43,7 +43,7 @@
   <xi:include href="usermanual/externalConnectors.xml" />
   <xi:include href="usermanual/internalConnectors.xml" />
   <xi:include href="usermanual/scmDomain.xml"/>
-  <xi:include href="usermanual/drools.xml"/>
   <xi:include href="usermanual/features.xml"/>
+  <xi:include href="usermanual/workflow.xml"/>
   <xi:include href="usermanual/nonJavaProgrammingLanguages.xml" />
 </book>
