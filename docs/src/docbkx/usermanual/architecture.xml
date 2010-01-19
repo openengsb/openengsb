@@ -43,6 +43,23 @@
         TBW
       </para>
     </section>
+    
+    <section id="architecture.connectors">
+        <title>Connectors</title>
+        <para>
+          TBW(General parts about the connctors)
+        </para>
+        <para>
+          Actually there are two different kinds of connectors - internal and external ones. 
+          <link linkend="internalConnectors">Internal connectors</link> are directly implemented into the OpenEngSB
+          and could be used to access external tools or be able to embed tools completely into the OpenEngSB. Differently
+          <link linkend="externalConnectors">external connectors</link> are written outside of the OpenEngSB. This requires
+          them to be available from the bus and to communicate with the bus. Both ways of communication have to be established
+          via an external protocol, since the internal communication module could not be used. Since most connectors
+          not directly produced by the OpenEngSB team or contributors will be 
+          <link linkend="externalConnectors">external connectors</link> we will start with them. 
+        </para>
+    </section>
 
   </section>
 
