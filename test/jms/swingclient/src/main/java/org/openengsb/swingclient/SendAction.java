@@ -48,7 +48,7 @@ public class SendAction implements ActionListener {
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            JOptionPane.showMessageDialog(panel, result);
+                            new InfoDialog("Result", result);
                         }
                     });
                 } catch (final JMSException e) {

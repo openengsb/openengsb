@@ -192,6 +192,14 @@ public class ContextStore {
         setValue("42/notification/email/config/mail.smtp.host", "smtp.gmail.com");
         setValue("42/notification/email/user", "openengsb.notification.test@gmail.com");
         setValue("42/notification/email/password", "pwd-openengsb");
+
+        setValue("42/scm/namespace", "urn:openengsb:scm");
+        setValue("42/scm/servicename", "scmService");
+        setValue("42/scm/default", "svn");
+
+        setValue("42/scm/svn/namespace", "urn:openengsb:svn");
+        setValue("42/scm/svn/servicename", "svnService");
+
     }
 
     private void save() {

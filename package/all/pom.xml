@@ -81,11 +81,16 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-notification-implementation-su</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-scm-implementation-su</artifactId>
+    </dependency>
     
     <!-- Implementation Modules -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domains-scm-subversion-se</artifactId>
+      <artifactId>openengsb-domains-scm-subversion-su</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>

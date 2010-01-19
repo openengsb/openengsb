@@ -20,21 +20,20 @@ package org.openengsb.connector.svn;
 import java.util.List;
 
 import org.apache.servicemix.common.DefaultComponent;
-import org.openengsb.scm.common.endpoints.AbstractScmEndpoint;
-
+import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="svnComponent" description="SVN Component"
  *                         The SVN-component
  */
 public class SvnComponent extends DefaultComponent {
-    private AbstractScmEndpoint[] endpoints;
+    private OpenEngSBEndpoint[] endpoints;
 
-    public AbstractScmEndpoint[] getEndpoints() {
+    public OpenEngSBEndpoint[] getEndpoints() {
         return this.endpoints;
     }
 
-    public void setEndpoints(AbstractScmEndpoint[] endpoints) {
+    public void setEndpoints(OpenEngSBEndpoint[] endpoints) {
         this.endpoints = endpoints;
     }
 
@@ -45,7 +44,7 @@ public class SvnComponent extends DefaultComponent {
 
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class[] { AbstractScmEndpoint.class };
+        return new Class[] { SvnEndpoint.class };
     }
 
 }

@@ -20,22 +20,21 @@ package org.openengsb.connector.svn;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.ScmDomain;
-import org.openengsb.scm.common.commands.CommandFactory;
 
 /**
  * @org.apache.xbean.XBean element="svnEndpoint" description="SVN SCM Endpoint"
  */
 public class SvnEndpoint extends LinkingEndpoint<ScmDomain> {
 
-    private CommandFactory commandFactory = null;
+    private SvnConfiguration configuration = null;
 
     @Override
     protected ScmDomain getImplementation(ContextHelper contextHelper) {
-        return new SvnScmImplementation(commandFactory);
+        return new SvnScmImplementation(configuration);
     }
 
-    public void setCommandFactory(CommandFactory commandFactory) {
-        this.commandFactory = commandFactory;
+    public void setConfiguration(SvnConfiguration configuration) {
+        this.configuration = configuration;
     }
 
 }

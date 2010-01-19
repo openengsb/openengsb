@@ -20,19 +20,20 @@ package org.openengsb.scm;
 import java.util.List;
 
 import org.apache.servicemix.common.DefaultComponent;
+import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
- * @org.apache.xbean.XBean element="scmComponent" description="SVN Component"
+ * @org.apache.xbean.XBean element="scmComponent" description="SCM Component"
  *                         The SCM-component
  */
 public class ScmComponent extends DefaultComponent {
-    private ScmEndpoint[] endpoints;
+    private OpenEngSBEndpoint[] endpoints;
 
-    public ScmEndpoint[] getEndpoints() {
+    public OpenEngSBEndpoint[] getEndpoints() {
         return this.endpoints;
     }
 
-    public void setEndpoints(ScmEndpoint[] endpoints) {
+    public void setEndpoints(OpenEngSBEndpoint[] endpoints) {
         this.endpoints = endpoints;
     }
 

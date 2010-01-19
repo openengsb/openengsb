@@ -137,6 +137,7 @@
 
     <!-- SCM Domain -->
     <module>domains/scm/implementation/service-engine</module>
+    <module>domains/scm/implementation/service-unit</module>
     <module>domains/scm/common</module>
 
     <!--  Notification Domain -->
@@ -771,6 +772,11 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-scm-implementation-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-scm-implementation-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>

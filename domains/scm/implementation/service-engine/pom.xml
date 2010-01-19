@@ -63,7 +63,7 @@
               <goal>mapping</goal>
             </goals>
             <configuration>
-              <namespace>http://openengsb.org/domain/scm/1.0</namespace>
+              <namespace>http://www.openengsb.org/domain/scm/1.0</namespace>
             </configuration>
           </execution>
         </executions>
@@ -77,6 +77,10 @@
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-scm-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-core</artifactId>
     </dependency>
 
     <!-- Servicemix dependencies -->

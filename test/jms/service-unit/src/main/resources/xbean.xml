@@ -18,6 +18,7 @@
 -->
 <beans xmlns:jms="http://servicemix.apache.org/jms/1.0"
        xmlns:email="urn:openengsb:email"
+       xmlns:subversion="urn:openengsb:svn"
        xmlns:test="urn:openengsb:test"
        xmlns:edb="urn:openengsb:edb"
        xmlns:drl="urn:openengsb:drools"
@@ -30,6 +31,16 @@
                 connectionFactory="#connectionFactory"
                 targetService="email:emailService"
                 targetEndpoint="emailEndpoint"
+                concurrentConsumers="8"
+                marshaler="#marshaler" />
+
+  <jms:consumer service="test:svnService"
+                endpoint="svnEndpoint"
+                synchronous="true"
+                destinationName="org.openengsb.test.svnService"
+                connectionFactory="#connectionFactory"
+                targetService="subversion:svnService"
+                targetEndpoint="svnEndpoint"
                 concurrentConsumers="8"
                 marshaler="#marshaler" />
 
