@@ -16,18 +16,18 @@
    limitations under the License.
 
 -->
-<chapter id="quickstart">
-  <title>Get started with the OpenEngSB</title>
+<chapter id="devQuickstart">
+  <title>Quickstart for OpenEngSB Developer</title>
   <para>
     This chapter gives an overview how to quickly start with the OpenEngSB.  
   </para>
-  <section id="quickstart.pre">
+  <section id="devQickstart.pre">
     <title>Prerequisite</title>
     <para>
       First of all the JDK6 should be installed on the system and the JAVA_HOME variable should be set. All further steps
       are described in the sub sections of this chapter.
     </para>
-    <section id="quickstart.pre.git">
+    <section id="devQickstart.pre.git">
       <title>Install GIT</title>
       <para>
         Further more its assumed that GIT had been installed. For GIT we recommend the latest Cygwin with the git 
@@ -37,13 +37,13 @@
 git config --global user.email "my@email.com"
 git config --global core.autcrlf input]]></programlisting>
     </section>
-    <section id="quickstart.pre.maven">
+    <section id="devQickstart.pre.maven">
       <para>
         Finally download Apache Maven and unpack it. Add the path of the maven binary to your PATH variable. Further more
         you should add a MAVEN_OPTS variable with "-Xmx1024M -XX:MaxPermSize=512m".
       </para>
     </section>
-    <section id="quickstart.pre.smx">
+    <section id="devQickstart.pre.smx">
       <title>Install Servicemix</title>
       <para>
         Now download Apache Servicemix in the latest version and unpack it somewhere. In the servicemix please execute the
@@ -51,7 +51,7 @@ git config --global core.autcrlf input]]></programlisting>
       </para>  
     </section>
   </section>
-  <section id="quickstart.essential">
+  <section id="devQickstart.essential">
     <title>Essential Startup</title>
     <para>
       The simplest and most basic setup, required for all examples requires, first of all to checkout the openengsb 
@@ -66,7 +66,7 @@ mvn clean install [-Dmaven.test.skip=true]
 cd openengsb-package-essential
 mvn jbi:projectDeploy]]></programlisting>
   </section>
-  <section id="quickstart.eclipse">
+  <section id="devQickstart.eclipse">
     <title>Import Source into Eclipse</title>
     <para>
       Eclipse had been chosen by the OpenEngSB team as their main development environment. After checkout the code the
@@ -77,7 +77,7 @@ mvn jbi:projectDeploy]]></programlisting>
       After this step all projects could be imported at once with the "import existing projects" command in Eclipse.
     </para>
   </section>
-  <section id="quickstart.structure">
+  <section id="devQickstart.structure">
     <title>Folder Structure</title>
     <para>
       This section describes the (sub)folder structure of the OpenEngSB. Since this project contains a huge amount of
@@ -156,15 +156,15 @@ openengsb/domains/scm]]></programlisting>
       into this ridgin structure to make it maintain at all.
     </para>
   </section>
-  <section id="quickstart.assembly">
+  <section id="devQickstart.assembly">
     <title>Assembling the OpenEngSB</title>
-  <section id="quickstart.assembly.introduction">
+  <section id="devQickstart.assembly.introduction">
     <title>Introduction</title>
     <para> This chapter gives a short overview about the assembly procedure of the OpenEngSB. Furthermore a short
       description of the structure of the assembled project is given.
   </para>
   </section>
-  <section id="quickstart.assembly.howto">
+  <section id="devQickstart.assembly.howto">
     <title>Howto assemble the OpenEngSB</title>
     <para>
       To create a distributable form of the OpenEngSB simply issue the following commands in the root directory of the project.
@@ -180,7 +180,7 @@ openengsb/domains/scm]]></programlisting>
       OpenEngSB, assemble it and finally copy the product into the root folder with the name <literal>openengsb-VERSION.zip.</literal>
     </para>
   </section>
-  <section id="quickstart.assembly.structure">
+  <section id="devQickstart.assembly.structure">
     <title>Structure</title>
     <para>
       <programlisting>
