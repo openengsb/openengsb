@@ -27,6 +27,12 @@ User Documentation
     
     * {{{pdf/usermanual.pdf} PDF documentation}}
 
+Tool Domain Documentation
+
+  Since all tools... (TBW)
+  
+    * {{{pdf/domains.pdf} PDF documentation}}
+
 Architectural Documentation
 
   This document should give a deep understanding of the OpenEngSB architecture. It is thought for people who are

@@ -135,6 +135,7 @@
                     </copy>
                     <move failonerror="false" file="target/site/reference/pdf/usermanual.pdf" tofile="target/site/reference/pdf/usermanual.pdf" />
                     <move failonerror="false" file="target/site/reference/pdf/architecture.pdf" tofile="target/site/reference/pdf/architecture.pdf" />
+                    <move failonerror="false" file="target/site/reference/pdf/domains.pdf" tofile="target/site/reference/pdf/domains.pdf" />
                   </postProcess>
                 </configuration>
                 <phase>compile</phase>
