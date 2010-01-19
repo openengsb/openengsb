@@ -31,8 +31,8 @@ public class SvnScmImplementation implements ScmDomain {
     }
 
     @Override
-    public Object add(String fileToAdd) {
-        return factory.getAddCommand(fileToAdd).execute();
+    public void add(String fileToAdd) {
+        factory.getAddCommand(fileToAdd).execute();
     }
 
     @Override
@@ -41,8 +41,8 @@ public class SvnScmImplementation implements ScmDomain {
     }
 
     @Override
-    public Object branch(String branchName, String commitMessage) {
-        return factory.getBranchCommand(branchName, commitMessage).execute();
+    public void branch(String branchName, String commitMessage) {
+        factory.getBranchCommand(branchName, commitMessage).execute();
     }
 
     @Override
@@ -56,8 +56,8 @@ public class SvnScmImplementation implements ScmDomain {
     }
 
     @Override
-    public Object delete(String file) {
-        return factory.getDeleteCommand(file).execute();
+    public void delete(String file) {
+        factory.getDeleteCommand(file).execute();
     }
 
     @Override
@@ -71,8 +71,8 @@ public class SvnScmImplementation implements ScmDomain {
     }
 
     @Override
-    public Object export(String destinationPath) {
-        return factory.getExportCommand(destinationPath).execute();
+    public void export(String destinationPath) {
+        factory.getExportCommand(destinationPath).execute();
     }
 
     @Override
@@ -91,8 +91,8 @@ public class SvnScmImplementation implements ScmDomain {
     }
 
     @Override
-    public Object switchBranch(String branchName) {
-        return factory.getSwitchBranchCommand(branchName).execute();
+    public void switchBranch(String branchName) {
+        factory.getSwitchBranchCommand(branchName).execute();
     }
 
     @Override

@@ -22,11 +22,11 @@ import org.openengsb.drools.model.MergeResult;
 
 public interface ScmDomain extends Domain {
 
-    public Object add(String fileToAdd);
+    public void add(String fileToAdd);
 
     public MergeResult update(String updatePath);
 
-    public Object switchBranch(String branchName);
+    public void switchBranch(String branchName);
 
     public MergeResult merge(String branchName);
 
@@ -36,17 +36,17 @@ public interface ScmDomain extends Domain {
 
     public MergeResult doImport(String sourcePath, String destinationPath, String commitMessage, String author);
 
-    public Object export(String destinationPath);
+    public void export(String destinationPath);
 
     public String diff(String oldFile, String newFile, String oldRevision, String newRevision);
 
-    public Object delete(String file);
+    public void delete(String file);
 
     public MergeResult commit(String author, String commitMessage, String subPath);
 
     public MergeResult checkout(String author);
 
-    public Object branch(String branchName, String commitMessage);
+    public void branch(String branchName, String commitMessage);
 
     public String blame(String file, String revision);
 
