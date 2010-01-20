@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.common.exceptions;
+package org.openengsb.maven.common;
 
 /**
  * This exception describes every exception thrown from Maven during different

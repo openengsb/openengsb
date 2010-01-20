@@ -29,13 +29,13 @@ public class LogLevelMaven {
     public final static int INFO = 1;
     public final static int WARN = 2;
     public final static int ERROR = 3;
-    public final static int VERBOSE = 5;
-    public final static int QUIET = 4;
+    public final static int FATAL = 4;
+    public final static int QUIET = 5;
 
     /**
      * actual value of the log level
      */
-    public static int ACTUAL_LEVEL = LogLevelMaven.INFO;
+    private int actualLevel = LogLevelMaven.INFO;
 
     /**
      * check it the log level is set on the warn level
@@ -43,7 +43,7 @@ public class LogLevelMaven {
      * @return true it the log level is set on the warn level, else false
      */
     public boolean isWarnEnabled() {
-        if (LogLevelMaven.ACTUAL_LEVEL == LogLevelMaven.WARN) {
+        if (actualLevel <= LogLevelMaven.WARN) {
             return true;
         }
         return false;
@@ -55,7 +55,7 @@ public class LogLevelMaven {
      * @return true it the log level is set on the info level, else false
      */
     public boolean isInfoEnabled() {
-        if (LogLevelMaven.ACTUAL_LEVEL == LogLevelMaven.INFO) {
+        if (actualLevel <= LogLevelMaven.INFO) {
             return true;
         }
         return false;
@@ -67,7 +67,7 @@ public class LogLevelMaven {
      * @return true it the log level is set on the error level, else false
      */
     public boolean isErrorEnabled() {
-        if (LogLevelMaven.ACTUAL_LEVEL == LogLevelMaven.ERROR) {
+        if (actualLevel <= LogLevelMaven.ERROR) {
             return true;
         }
         return false;
@@ -79,7 +79,7 @@ public class LogLevelMaven {
      * @return true it the log level is set on the debug level, else false
      */
     public boolean isDebugEnabled() {
-        if (LogLevelMaven.ACTUAL_LEVEL == LogLevelMaven.DEBUG) {
+        if (actualLevel <= LogLevelMaven.DEBUG) {
             return true;
         }
         return false;
@@ -90,8 +90,8 @@ public class LogLevelMaven {
      * 
      * @return true it the log level is set on the verbose level, else false
      */
-    public boolean isVerboseEnabled() {
-        if (LogLevelMaven.ACTUAL_LEVEL == LogLevelMaven.VERBOSE) {
+    public boolean isFatalEnabled() {
+        if (actualLevel <= LogLevelMaven.FATAL) {
             return true;
         }
         return false;
@@ -103,13 +103,18 @@ public class LogLevelMaven {
      * @return true it the log level is set on the quiet level, else false
      */
     public boolean isQuietEnabled() {
-        if (LogLevelMaven.ACTUAL_LEVEL == LogLevelMaven.QUIET) {
+        if (actualLevel <= LogLevelMaven.QUIET) {
             return true;
         }
         return false;
     }
 
-    public void setACTUAL_LEVEL(int ACTUAL_LEVEL) {
-        LogLevelMaven.ACTUAL_LEVEL = ACTUAL_LEVEL;
+    public void setActualLevel(int actualLevel) {
+        this.actualLevel = actualLevel;
     }
+
+    public int getActualLevel() {
+        return actualLevel;
+    }
+
 }

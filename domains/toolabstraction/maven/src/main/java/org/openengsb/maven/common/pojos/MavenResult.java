@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.common.pojos.result;
+package org.openengsb.maven.common.pojos;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class MavenResult {
     private long timestamp;
     private String mavenOutput;
     private String task;
-    private List<Exception> exceptions;
+    private List<Throwable> exceptions;
     private String errorMessage;
 
     private String file;
@@ -100,7 +100,7 @@ public class MavenResult {
      * 
      * @param exceptions - list of exception when build failure
      */
-    public void setExceptions(List<Exception> exceptions) {
+    public void setExceptions(List<Throwable> exceptions) {
         this.exceptions = exceptions;
     }
 
@@ -109,7 +109,7 @@ public class MavenResult {
      * 
      * @return exceptions - list of exceptions
      */
-    public List<Exception> getExceptions() {
+    public List<Throwable> getExceptions() {
         return this.exceptions;
     }
 
