@@ -29,7 +29,7 @@ public class MavenTestEndpoint extends LinkingEndpoint<TestDomain> {
 
     @Override
     protected TestDomain getImplementation(ContextHelper contextHelper) {
+
         return new MavenTestDomainImpl();
     }
-
 }

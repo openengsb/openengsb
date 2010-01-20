@@ -61,12 +61,6 @@
 
   <dependencies>
 
-    <!-- util dependencies -->
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-
     <!-- maven dependencies -->
     <dependency>
       <groupId>org.apache.maven</groupId>

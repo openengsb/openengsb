@@ -16,9 +16,8 @@
    
  */
 
-package org.openengsb.maven.common.pojos;
+package org.openengsb.maven.common;
 
-import java.util.List;
 
 /**
  * The BuildResult represents the possible values, that the build engine
@@ -37,7 +36,6 @@ public class MavenResult {
     private long timestamp;
     private String mavenOutput;
     private String task;
-    private List<Throwable> exceptions;
     private String errorMessage;
 
     private String file;
@@ -93,24 +91,6 @@ public class MavenResult {
      */
     public String getTask() {
         return this.task;
-    }
-
-    /**
-     * Sets the exceptions, if build failed
-     * 
-     * @param exceptions - list of exception when build failure
-     */
-    public void setExceptions(List<Throwable> exceptions) {
-        this.exceptions = exceptions;
-    }
-
-    /**
-     * Returns the list of Exception if build failed, else null
-     * 
-     * @return exceptions - list of exceptions
-     */
-    public List<Throwable> getExceptions() {
-        return this.exceptions;
     }
 
     /**

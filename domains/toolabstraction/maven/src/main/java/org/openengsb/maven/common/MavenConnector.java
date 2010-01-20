@@ -19,6 +19,7 @@
 package org.openengsb.maven.common;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 
@@ -35,47 +36,112 @@ import org.apache.maven.execution.ReactorManager;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.reactor.MavenExecutionException;
-import org.openengsb.maven.common.pojos.LogLevelMaven;
-import org.openengsb.maven.common.pojos.MavenResult;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 public class MavenConnector {
+
+    public enum LogLevel {
+        DEBUG(0), INFO(1), WARN(2), ERROR(3), FATAL(4), QUIET(5);
+
+        private final int level;
+
+        private LogLevel(int level) {
+            this.level = level;
+        }
+
+        public int getLevel() {
+            return level;
+        }
+    }
+
+    /**
+     * Directory in which the pom.xml is expected
+     */
+    private File baseDirectory;
+
+    /**
+     * Goals to execute for the pom.xml in the directory specified by parameter
+     * 'file'
+     */
+    private String[] goals;
+
+    private File userSettings;
+
+    private Properties executionRequestProperties;
+
+    /**
+     * logLevel one of the values DEBUG, INFO, WARN, ERROR, FATAL, or QUIET
+     */
+    private LogLevel logLevel;
+
+    public MavenConnector(File baseDirectory, String[] goals, Properties executionRequestProperties) {
+        this.baseDirectory = baseDirectory;
+        this.goals = goals;
+        this.executionRequestProperties = executionRequestProperties;
+    }
+
+    public File getBaseDirectory() {
+        return baseDirectory;
+    }
+
+    public void setBaseDirectory(File baseDirectory) {
+        this.baseDirectory = baseDirectory;
+    }
+
+    public String[] getGoals() {
+        return goals;
+    }
+
+    public void setGoals(String[] goals) {
+        this.goals = goals;
+    }
+
+    public File getUserSettings() {
+        return userSettings;
+    }
+
+    public void setUserSettings(File userSettings) {
+        this.userSettings = userSettings;
+    }
+
+    public Properties getExecutionRequestProperties() {
+        return executionRequestProperties;
+    }
+
+    public void setExecutionRequestProperties(Properties executionRequestProperties) {
+        this.executionRequestProperties = executionRequestProperties;
+    }
+
+    public LogLevel getLogLevel() {
+        return logLevel;
+    }
+
+    public void setLogLevel(LogLevel logLevel) {
+        this.logLevel = logLevel;
+    }
 
     /**
      * Executes the given Maven goals in the given directory.
      * 
-     * @param baseDirectory Directory in which the pom.xml is expected
-     * @param goals Goals to execute for the pom.xml in the directory specified
-     *        by parameter 'file'
-     * @param userSettings
-     * @param properties the properties for the maven execution request
-     * @param logLevel one of the values specified in {@link LogLevelMaven}
      * @return Result of the Maven goal execution.
      * @throws MavenException
      */
-    protected MavenResult execute(File baseDirectory, String[] goals, File userSettings, Properties properties,
-            int logLevel) {
-        MavenResult mavenResult = new MavenResult();
+    public MavenResult execute() {
+        MavenEmbedder embedder = setUpEmbedder();
 
-        MavenEmbedder embedder = setUpEmbedder(userSettings, logLevel);
-
-        // further set up call
         MavenExecutionRequest request = new DefaultMavenExecutionRequest().setBaseDirectory(baseDirectory).setGoals(
-                Arrays.asList(goals)).setProperties(properties);
-
+                Arrays.asList(goals)).setProperties(executionRequestProperties);
         request.setPom(new File(baseDirectory, "/pom.xml"));
 
+        MavenResult mavenResult = new MavenResult();
         MavenExecutionResult executionResult = embedder.execute(request);
 
-        readResult(mavenResult, baseDirectory, embedder, executionResult);
-
+        readResult(mavenResult, embedder, executionResult);
         mavenResult.setTimestamp(new Date().getTime());
 
         return mavenResult;
     }
 
-    private MavenEmbedder setUpEmbedder(File userSettings, int logLevel) {
+    private MavenEmbedder setUpEmbedder() {
         Configuration configuration = new DefaultConfiguration().setClassLoader(Thread.currentThread()
                 .getContextClassLoader());
 
@@ -95,17 +161,14 @@ public class MavenConnector {
 
         // default logging is info level
         MavenEmbedderConsoleLogger consoleLogger = new MavenEmbedderConsoleLogger();
-        consoleLogger.setThreshold(logLevel);
+        consoleLogger.setThreshold(logLevel.getLevel());
 
         embedder.setLogger(consoleLogger);
         return embedder;
     }
 
-    @SuppressWarnings("unchecked")
-    private void readResult(MavenResult mavenResult, File baseDirectory, MavenEmbedder embedder,
-            MavenExecutionResult executionResult) {
+    private void readResult(MavenResult mavenResult, MavenEmbedder embedder, MavenExecutionResult executionResult) {
         if (executionResult.hasExceptions()) {
-            mavenResult.setExceptions(executionResult.getExceptions());
             mavenResult.setMavenOutput(MavenResult.ERROR);
 
             // construct errormessage
@@ -125,14 +188,13 @@ public class MavenConnector {
 
             mavenResult.setErrorMessage(stringBuilder.toString());
 
-            readReactorResult(mavenResult, baseDirectory, embedder, executionResult);
+            readReactorResult(mavenResult, embedder, executionResult);
         } else {
             mavenResult.setMavenOutput(MavenResult.SUCCESS);
         }
     }
 
-    private void readReactorResult(MavenResult mavenResult, File baseDirectory, MavenEmbedder embedder,
-            MavenExecutionResult executionResult) {
+    private void readReactorResult(MavenResult mavenResult, MavenEmbedder embedder, MavenExecutionResult executionResult) {
         ReactorManager reactor = executionResult.getReactorManager();
 
         if (reactor != null && reactor.hasBuildFailures()) {
