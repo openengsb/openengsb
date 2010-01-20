@@ -39,4 +39,6 @@ Architectural Documentation
  interested in contributing to the OpenEngSB project or which like to get a deeper understanding of the OpenEngSB.
 
 	* {{{pdf/architecture.pdf} PDF documentation}}
+	
+	* {{{communication.html} Communication model}}
     
