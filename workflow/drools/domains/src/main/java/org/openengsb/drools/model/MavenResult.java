@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.maven.common;
+package org.openengsb.drools.model;
 
 
 /**

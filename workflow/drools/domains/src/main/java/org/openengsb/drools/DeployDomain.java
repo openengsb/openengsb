@@ -17,8 +17,10 @@
  */
 package org.openengsb.drools;
 
+import org.openengsb.drools.model.MavenResult;
+
 public interface DeployDomain extends Domain {
 
-    void deployProject();
+    MavenResult deployProject();
 
 }

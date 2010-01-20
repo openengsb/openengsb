@@ -206,6 +206,9 @@ public class ContextStore {
 
         setValue("42/test/maven-test/namespace", "urn:openengsb:maven-test");
         setValue("42/test/maven-test/servicename", "mavenTestService");
+        setValue("42/test/maven-test/config/goals", "test");
+        setValue("42/test/maven-test/config/baseDirectory", "./");
+        addContext("42/test/maven-test/config/executionRequestProperties");
 
         setValue("42/build/namespace", "urn:openengsb:build");
         setValue("42/build/servicename", "buildService");

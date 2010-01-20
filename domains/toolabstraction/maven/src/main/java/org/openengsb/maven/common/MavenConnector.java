@@ -36,6 +36,7 @@ import org.apache.maven.execution.ReactorManager;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.reactor.MavenExecutionException;
+import org.openengsb.drools.model.MavenResult;
 
 public class MavenConnector {
 
@@ -71,7 +72,7 @@ public class MavenConnector {
     /**
      * logLevel one of the values DEBUG, INFO, WARN, ERROR, FATAL, or QUIET
      */
-    private LogLevel logLevel;
+    private LogLevel logLevel = LogLevel.INFO;
 
     public MavenConnector(File baseDirectory, String[] goals, Properties executionRequestProperties) {
         this.baseDirectory = baseDirectory;
@@ -159,7 +160,6 @@ public class MavenConnector {
             throw new MavenException(exception);
         }
 
-        // default logging is info level
         MavenEmbedderConsoleLogger consoleLogger = new MavenEmbedderConsoleLogger();
         consoleLogger.setThreshold(logLevel.getLevel());
 

@@ -37,29 +37,11 @@
     used for, like e.g. test, build, deploy.
   </description>
 
-  <build>
-    <testResources>
-      <testResource>
-        <directory>src/test/resources/</directory>
-        <includes>
-          <include>**</include>
-        </includes>
-      </testResource>
-    </testResources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>org/openengsb/**/*Test.java</include>
-          </includes>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-workflow-drools-domains</artifactId>
+    </dependency>
 
     <!-- maven dependencies -->
     <dependency>
