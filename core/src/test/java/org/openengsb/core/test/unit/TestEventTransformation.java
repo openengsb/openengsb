@@ -36,7 +36,7 @@ public class TestEventTransformation {
         input.setValue("buz", new Integer(42));
 
         String xml = Transformer.toXml(input);
-
+        System.out.println(xml);
         Event result = Transformer.toEvent(xml);
 
         checkFields(input, result);

@@ -106,11 +106,12 @@
     </dependency>
 
     <!-- Workflows -->
+    <!-- 
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-workflow-bpel-su</artifactId>
     </dependency>
-    
+     -->
     <!-- Context -->
     <dependency>
       <groupId>org.openengsb</groupId>

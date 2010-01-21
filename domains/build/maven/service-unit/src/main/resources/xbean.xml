@@ -23,7 +23,7 @@
     http://servicemix.apache.org/bean/1.0 http://servicemix.apache.org/schema/servicemix-bean-3.2.3.xsd
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <maven:mavenBuildEnpoint service="mvn:mavenBuildService" endpoint="mavenBuildEndpoint" />
+  <maven:mavenBuildEndpoint service="mvn:mavenBuildService" endpoint="mavenBuildEndpoint" />
   
   <!--
 

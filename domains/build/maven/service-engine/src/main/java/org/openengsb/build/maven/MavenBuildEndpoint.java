@@ -29,7 +29,7 @@ public class MavenBuildEndpoint extends LinkingEndpoint<BuildDomain> {
 
     @Override
     protected BuildDomain getImplementation(ContextHelper contextHelper) {
-        return new MavenBuildDomainImpl();
+        return new MavenBuildDomainImpl(contextHelper);
     }
 
 }

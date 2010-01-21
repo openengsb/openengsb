@@ -18,7 +18,6 @@
 
 package org.openengsb.drools.model;
 
-
 /**
  * The BuildResult represents the possible values, that the build engine
  * provides. The values of Maven are Error, Failure and Succes.
@@ -127,6 +126,10 @@ public class MavenResult {
      */
     public String getErrorMessage() {
         return this.errorMessage;
+    }
+
+    public boolean isSuccess() {
+        return SUCCESS.equals(this.mavenOutput);
     }
 
 }

@@ -29,7 +29,7 @@ public class MavenDeployEndpoint extends LinkingEndpoint<DeployDomain> {
 
     @Override
     protected DeployDomain getImplementation(ContextHelper contextHelper) {
-        return new MavenDeployDomainImpl();
+        return new MavenDeployDomainImpl(contextHelper);
     }
 
 }

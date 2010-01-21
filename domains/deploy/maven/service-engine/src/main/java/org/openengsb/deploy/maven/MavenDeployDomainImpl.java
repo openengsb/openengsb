@@ -1,14 +1,19 @@
 package org.openengsb.deploy.maven;
 
+import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.drools.DeployDomain;
 import org.openengsb.drools.model.MavenResult;
+import org.openengsb.maven.common.AbstractMavenDomainImpl;
 
-public class MavenDeployDomainImpl implements DeployDomain {
+public class MavenDeployDomainImpl extends AbstractMavenDomainImpl implements DeployDomain {
+
+    public MavenDeployDomainImpl(ContextHelper contextHelper) {
+        super(contextHelper);
+    }
 
     @Override
     public MavenResult deployProject() {
-        return null;
-        // TODO: has to be implemented (forward to common maven tool connector9
+        return callMaven("deploy/maven-deploy");
     }
 
 }

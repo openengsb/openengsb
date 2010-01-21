@@ -77,4 +77,8 @@ public class MergeResult {
     public void setRevision(String revision) {
         this.revision = revision;
     }
+
+    public boolean hasConflicts() {
+        return this.conflicts != null && this.conflicts.length > 0;
+    }
 }

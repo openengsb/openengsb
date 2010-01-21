@@ -43,6 +43,7 @@ import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
 import org.openengsb.drools.model.DomainConfigurationImpl;
+import org.openengsb.drools.model.DroolsHelperImpl;
 
 /**
  * Represents the execution context of the Drools rules.
@@ -67,6 +68,8 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
     private DomainConfigurationImpl domainConfiguration;
 
+    private DroolsHelper droolsHelper;
+
     /**
      * Start a new execution context for the specified exchange.
      * 
@@ -84,6 +87,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
         this.memory.addEventListener(this);
         this.contextHelper = new ContextHelperImpl(endpoint, contextId);
         this.domainConfiguration = new DomainConfigurationImpl(contextHelper);
+        this.droolsHelper = new DroolsHelperImpl(endpoint.getRuleBase());
         populateWorkingMemory(objects);
     }
 
@@ -95,6 +99,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
     private void populateWorkingMemory(Collection<Object> objects) {
         memory.setGlobal("ctx", contextHelper);
         memory.setGlobal("config", domainConfiguration);
+        memory.setGlobal("droolsHelper", droolsHelper);
 
         for (Entry<String, Class<? extends Domain>> e : DomainRegistry.domains.entrySet()) {
             Object proxy = createProxy(e.getValue());
