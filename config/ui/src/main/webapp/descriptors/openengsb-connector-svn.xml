@@ -21,28 +21,28 @@
       <attributes>
         <service name="service" />
         <endpointName name="endpoint" />
-        <ref name="configuration" />
+        <ref name="configuration" theClass="org.openengsb.connector.svn.SvnConfiguration" />
       </attributes>
     </endpoint>
     <endpoint name="add">
       <attributes>
         <service name="service" />
         <endpointName name="endpoint" />
-        <ref name="configuration" />
+        <ref name="configuration" theClass="org.openengsb.connector.svn.SvnConfiguration" />
       </attributes>
     </endpoint>
     <endpoint name="delete">
       <attributes>
         <service name="service" />
         <endpointName name="endpoint" />
-        <ref name="configuration" />
+        <ref name="configuration" theClass="org.openengsb.connector.svn.SvnConfiguration" />
       </attributes>
     </endpoint>
     <endpoint name="commit">
       <attributes>
         <service name="service" />
         <endpointName name="endpoint" />
-        <ref name="configuration" />
+        <ref name="configuration" theClass="org.openengsb.connector.svn.SvnConfiguration" />
       </attributes>
     </endpoint>
   </endpoints>
