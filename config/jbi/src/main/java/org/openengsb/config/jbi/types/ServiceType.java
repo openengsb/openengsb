@@ -18,10 +18,20 @@
 package org.openengsb.config.jbi.types;
 
 public class ServiceType extends AbstractType {
+    private boolean target;
+
     public ServiceType() {
     }
 
     public ServiceType(String name, boolean optional, int maxLength, String defaultValue) {
         super(name, optional, maxLength, defaultValue);
+    }
+
+    public boolean isTarget() {
+        return target;
+    }
+
+    public void setTarget(boolean target) {
+        this.target = target;
     }
 }

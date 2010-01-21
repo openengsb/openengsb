@@ -51,7 +51,9 @@ public class XStreamFactory {
         x.useAttributeFor(IntType.class, "max");
         x.alias("string", StringType.class);
         x.alias("service", ServiceType.class);
+        x.useAttributeFor(ServiceType.class, "target");
         x.alias("endpointName", EndpointNameType.class);
+        x.useAttributeFor(EndpointNameType.class, "target");
         x.alias("bool", BoolType.class);
         x.alias("choice", ChoiceType.class);
         x.useAttributeFor(ChoiceType.class, "values");

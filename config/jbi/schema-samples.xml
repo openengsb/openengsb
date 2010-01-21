@@ -31,9 +31,9 @@
   <choice name="" optional="" defaultValue="" values="" />
 
   <!-- gets urn implicit -->
-  <service name="" optional="false" defaultValue="" />
+  <service name="" optional="false" defaultValue="" target="false" />
 
-  <endpointName name="" optional="false" defaultValue="" />
+  <endpointName name="" optional="false" defaultValue="" target="false" />
 
   <!-- reference to bean, different handling in bean and endpoint -->
   <ref name="" optional="false" clazz="" />

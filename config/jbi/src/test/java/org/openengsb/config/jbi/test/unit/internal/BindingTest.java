@@ -19,14 +19,17 @@ package org.openengsb.config.jbi.internal;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.openengsb.config.jbi.internal.XStreamFactory;
 import org.openengsb.config.jbi.types.ChoiceType;
 import org.openengsb.config.jbi.types.ComponentType;
+import org.openengsb.config.jbi.types.EndpointNameType;
 import org.openengsb.config.jbi.types.IntType;
 import org.openengsb.config.jbi.types.RefType;
+import org.openengsb.config.jbi.types.ServiceType;
 import org.openengsb.config.jbi.types.StringType;
 
 import com.thoughtworks.xstream.XStream;
@@ -75,4 +78,18 @@ public class BindingTest {
 		ComponentType o = (ComponentType)x.fromXML(xml);
 		assertThat(o.getBeans(), notNullValue());
 	}
+    
+    @Test
+    public void endpointParseTargetAttribute() throws Exception {
+        String xml = "<endpointName target=\"true\" />";
+        EndpointNameType o = (EndpointNameType)x.fromXML(xml);
+        assertThat(o.isTarget(), is(true));
+    }
+    
+    @Test
+    public void serviceParseTargetAttribute() throws Exception {
+        String xml = "<service target=\"true\" />";
+        ServiceType o = (ServiceType)x.fromXML(xml);
+        assertThat(o.isTarget(), is(true));
+    }
 }
