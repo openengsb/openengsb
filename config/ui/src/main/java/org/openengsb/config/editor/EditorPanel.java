@@ -17,6 +17,7 @@
  */
 package org.openengsb.config.editor;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -27,19 +28,31 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.config.editor.fields.AbstractField;
 import org.openengsb.config.editor.fields.CheckboxField;
 import org.openengsb.config.editor.fields.DropdownChoiceField;
 import org.openengsb.config.editor.fields.InputField;
+import org.openengsb.config.jbi.BeanInfo;
 import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.BoolType;
 import org.openengsb.config.jbi.types.ChoiceType;
+import org.openengsb.config.jbi.types.RefType;
+import org.openengsb.config.service.AssemblyService;
+
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 public abstract class EditorPanel extends Panel {
     private static final long serialVersionUID = 1L;
     private final String componentId;
     private final FieldInfos fieldInfos;
     private final Map<String, String> map;
+    @SpringBean
+    private AssemblyService assemblyService;
 
     public EditorPanel(String id, String componentId, FieldInfos fieldInfos, Map<String, String> map) {
         super(id);
@@ -83,6 +96,14 @@ public abstract class EditorPanel extends Panel {
             return new CheckboxField("editor", model, type);
         } else if (type.getClass().equals(ChoiceType.class)) {
             return new DropdownChoiceField("editor", model, (ChoiceType) type);
+        } else if (type.getClass().equals(RefType.class)) {
+            List<BeanInfo> beans = assemblyService.getBeansForType(((RefType) type).getTheClass());
+            List<String> values = Lists.transform(beans, new Function<BeanInfo,String>() {
+                public String apply(BeanInfo input) {
+                    return input.getMap().get("id");
+                }
+            });
+            return new DropdownChoiceField("editor", model, type, values);
         } else {
             return new InputField("editor", model, type);
         }

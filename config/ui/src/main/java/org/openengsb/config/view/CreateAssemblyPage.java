@@ -108,7 +108,7 @@ public class CreateAssemblyPage extends BasePage {
         add(new Label("beanLabel", getLocalizer().getString("beanLabel", this)) {
             @Override
             public boolean isVisible() {
-                return true; // !beanListView.isVisible();
+                return !beanList.isVisible();
             }
         });
 

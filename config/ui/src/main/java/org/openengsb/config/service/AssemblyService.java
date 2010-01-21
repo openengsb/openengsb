@@ -28,4 +28,5 @@ public interface AssemblyService {
     public List<EndpointInfo> getEndpoints();
     public boolean deploy(File saFile, String filename);
 	public List<BeanInfo> getBeans();
+	public List<BeanInfo> getBeansForType(String theClass);
 }

@@ -30,6 +30,8 @@ import org.openengsb.config.service.AssemblyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
+
 public class AssemblyServiceImpl implements AssemblyService {
     private static final Logger log = LoggerFactory.getLogger(AssemblyServiceImpl.class);
     private ArrayList<EndpointInfo> serviceUnits = new ArrayList<EndpointInfo>();
@@ -95,5 +97,15 @@ public class AssemblyServiceImpl implements AssemblyService {
 	@Override
 	public List<BeanInfo> getBeans() {
 		return beans;
+	}
+
+	@Override
+	public List<BeanInfo> getBeansForType(String theClass) {
+		ArrayList<BeanInfo> list = Lists.newArrayList();
+		for (BeanInfo b : beans) {
+			if (b.getBeanType().getClazz().equals(theClass))
+				list.add(b);
+		}
+		return list;
 	}
 }
