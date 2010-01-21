@@ -16,20 +16,20 @@
 
 -->
 <html xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
-<head>
-</head>
+
 <body>
-<wicket:panel>
-  <div id="navigationBar">
-    <div class="navigationEntry">
-      <h3><a href="#" wicket:id="createAssemblyLink"><wicket:message key="createAssembly">[createAssembly]</wicket:message></a></h3>
-      <h3><a href="#" wicket:id="editContextLink"><wicket:message key="editContext">[editContext]</wicket:message></a></h3>
-      <h3><wicket:message key="components">[components]</wicket:message></h3>
-      <ul wicket:id="components">
-        <li><a href="#" wicket:id="componentLink"><span wicket:id="name">[name]</span></a></li>
-      </ul>
-    </div>
+<wicket:extend>
+  <h3><wicket:message key="title">[title]</wicket:message></h3>
+  <div>
+  	<form wicket:id="form">
+      <div>
+        <textarea wicket:id="area" rows="30" cols="100"></textarea>
+      </div>
+      <div>
+        <input type="submit" wicket:message="value:save" />
+      </div>
+  	</form>
   </div>
-</wicket:panel>
+</wicket:extend>
 </body>
 </html>
