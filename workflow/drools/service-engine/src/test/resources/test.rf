@@ -10,11 +10,12 @@
   <nodes>
     <start id="1" name="Start" x="100" y="100" />
     <actionNode id="2" name="Action" x="116" y="206" >
-        <action type="expression" dialect="java" >Notification n = new Notification();
-    n.setSubject("My test notification");
-    n.setMessage("Hello World!");
-    n.setRecipient("e0515280@student.tuwien.ac.at");
-    notification.notify(n);</action>
+        <action type="expression" dialect="java" >System.out.println("it worked!");
+Notification n = new Notification();
+n.setSubject("My test notification");
+n.setMessage("Hello World!");
+n.setRecipient("e0515280@student.tuwien.ac.at");
+notification.notify(n);</action>
     </actionNode>
     <end id="3" name="End" x="136" y="313" />
   </nodes>
