@@ -42,8 +42,8 @@ import org.openengsb.contextcommon.ContextHelperImpl;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
-import org.openengsb.drools.model.DomainConfigurationImpl;
-import org.openengsb.drools.model.DroolsHelperImpl;
+import org.openengsb.drools.helper.DomainConfigurationImpl;
+import org.openengsb.drools.helper.DroolsHelperImpl;
 
 /**
  * Represents the execution context of the Drools rules.
@@ -87,7 +87,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
         this.memory.addEventListener(this);
         this.contextHelper = new ContextHelperImpl(endpoint, contextId);
         this.domainConfiguration = new DomainConfigurationImpl(contextHelper);
-        this.droolsHelper = new DroolsHelperImpl(endpoint.getRuleBase());
+        this.droolsHelper = new DroolsHelperImpl(memory);
         populateWorkingMemory(objects);
     }
 

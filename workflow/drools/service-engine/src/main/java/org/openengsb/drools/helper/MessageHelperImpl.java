@@ -1,4 +1,4 @@
-package org.openengsb.drools.model;
+package org.openengsb.drools.helper;
 
 /**
 

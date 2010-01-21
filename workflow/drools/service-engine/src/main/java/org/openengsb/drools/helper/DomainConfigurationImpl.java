@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.drools.model;
+package org.openengsb.drools.helper;
 
 import java.util.HashMap;
 import java.util.Map;
