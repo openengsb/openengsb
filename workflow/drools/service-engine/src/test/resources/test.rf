@@ -18,11 +18,21 @@ n.setRecipient("e0515280@student.tuwien.ac.at");
 notification.notify(n);</action>
     </actionNode>
     <end id="3" name="End" x="136" y="313" />
+    <split id="4" name="Split" x="200" y="147" width="80" height="40" type="2" >
+      <constraints>
+        <constraint toNodeId="2" toType="DROOLS_DEFAULT" name="checkout success" priority="1" type="code" dialect="java" >MergeResult mr = scm.checkout("michael");
+return mr.hasConflicts();</constraint>
+        <constraint toNodeId="5" toType="DROOLS_DEFAULT" name="otherwise" priority="2" type="rule" dialect="mvel" >eval(true)</constraint>
+      </constraints>
+    </split>
+    <end id="5" name="End" x="327" y="214" />
   </nodes>
 
   <connections>
-    <connection from="1" to="2" />
+    <connection from="4" to="2" />
     <connection from="2" to="3" />
+    <connection from="1" to="4" />
+    <connection from="4" to="5" />
   </connections>
 
 </process>

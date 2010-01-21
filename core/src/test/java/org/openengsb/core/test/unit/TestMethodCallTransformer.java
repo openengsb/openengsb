@@ -31,11 +31,23 @@ import org.openengsb.util.serialization.SerializationException;
 public class TestMethodCallTransformer {
 
     @Test
+    public void testNoArg() {
+        MethodCall input = new MethodCall("foo", new Object[0], new Class<?>[0]);
+
+        Segment intermediate = Transformer.toSegment(input);
+
+        MethodCall output = Transformer.toMethodCall(intermediate);
+
+        check(input, output);
+    }
+
+    @Test
     public void testPrimitive() {
         MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, "hallo" }, new Class<?>[] { int.class,
                 long.class, String.class });
 
         Segment intermediate = Transformer.toSegment(input);
+
         MethodCall output = Transformer.toMethodCall(intermediate);
 
         check(input, output);
@@ -98,6 +110,26 @@ public class TestMethodCallTransformer {
         TestBean tbB = tbArray.getTestBeanArray()[1];
 
         Assert.assertTrue(tbA == tbB.getBean());
+    }
+
+    @Test
+    public void testBeanWithTwoEqualArrays() throws Exception {
+        TestBeanArray2 testBean = new TestBeanArray2();
+        testBean.addTestData();
+
+        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, testBean }, new Class<?>[] { int.class,
+                long.class, TestBeanArray2.class });
+
+        Segment intermediate = Transformer.toSegment(input);
+        MethodCall output = Transformer.toMethodCall(intermediate);
+
+        check(input, output);
+
+        TestBeanArray2 tbArray = (TestBeanArray2) output.getArgs()[2];
+        String[] array = tbArray.getArray();
+        String[] array2 = tbArray.getArray2();
+
+        Assert.assertTrue(array == array2);
     }
 
     @Test
@@ -241,6 +273,52 @@ public class TestMethodCallTransformer {
                 return false;
             return true;
         }
+    }
 
+    public static class TestBeanArray2 {
+        private String[] array;
+
+        private String[] array2;
+
+        public TestBeanArray2() {
+        }
+
+        public void addTestData() {
+            array = new String[0];
+            array2 = array;
+        }
+
+        public String[] getArray() {
+            return array;
+        }
+
+        public String[] getArray2() {
+            return array2;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + Arrays.hashCode(array);
+            result = prime * result + Arrays.hashCode(array2);
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            TestBeanArray2 other = (TestBeanArray2) obj;
+            if (!Arrays.equals(array, other.array))
+                return false;
+            if (!Arrays.equals(array2, other.array2))
+                return false;
+            return true;
+        }
     }
 }

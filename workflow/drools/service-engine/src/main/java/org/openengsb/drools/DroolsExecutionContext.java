@@ -148,6 +148,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) {
+            Object[] arguments = checkArgs(args);
             try {
                 InOut inout = new InOutImpl(UUID.randomUUID().toString());
                 inout.setService(domainConfiguration.getServiceName((Domain) proxy));
@@ -159,7 +160,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
                 msg.setProperty("contentType", "methodcall");
                 msg.setProperty("contextId", contextId);
 
-                MethodCall call = new MethodCall(method, args);
+                MethodCall call = new MethodCall(method, arguments);
 
                 String xml = Transformer.toXml(call);
 
@@ -178,6 +179,13 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        private Object[] checkArgs(Object[] args) {
+            if (args != null) {
+                return args;
+            }
+            return new Object[0];
         }
     }
 

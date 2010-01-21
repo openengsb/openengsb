@@ -144,7 +144,7 @@ class ToSegmentTransformer {
         List<Segment> fields = new ArrayList<Segment>();
 
         for (Field field : type.getDeclaredFields()) {
-            if ((field.getModifiers() & Modifier.TRANSIENT) != 0) {
+            if (Modifier.isTransient(field.getModifiers()) || Modifier.isStatic(field.getModifiers())) {
                 continue;
             }
             Class<?> fieldType = field.getType();

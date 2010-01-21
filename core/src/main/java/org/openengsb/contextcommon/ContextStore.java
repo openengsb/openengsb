@@ -207,7 +207,7 @@ public class ContextStore {
         setValue("42/test/maven-test/namespace", "urn:openengsb:maven-test");
         setValue("42/test/maven-test/servicename", "mavenTestService");
         setValue("42/test/maven-test/config/goals", "test");
-        setValue("42/test/maven-test/config/baseDirectory", "./");
+        setValue("42/test/maven-test/config/baseDirectory", "data/openengsb/testProject");
         addContext("42/test/maven-test/config/executionRequestProperties");
 
         setValue("42/build/namespace", "urn:openengsb:build");
@@ -217,7 +217,7 @@ public class ContextStore {
         setValue("42/build/maven-build/namespace", "urn:openengsb:maven-build");
         setValue("42/build/maven-build/servicename", "mavenBuildService");
         setValue("42/build/maven-build/config/goals", "package");
-        setValue("42/build/maven-build/config/baseDirectory", "./");
+        setValue("42/build/maven-build/config/baseDirectory", "data/openengsb/testProject");
         addContext("42/build/maven-build/config/executionRequestProperties");
 
         setValue("42/deploy/namespace", "urn:openengsb:deploy");
@@ -227,7 +227,7 @@ public class ContextStore {
         setValue("42/deploy/maven-deploy/namespace", "urn:openengsb:maven-deploy");
         setValue("42/deploy/maven-deploy/servicename", "mavenDeployService");
         setValue("42/deploy/maven-deploy/config/goals", "deploy");
-        setValue("42/deploy/maven-deploy/config/baseDirectory", "./");
+        setValue("42/deploy/maven-deploy/config/baseDirectory", "data/openengsb/testProject");
         addContext("42/deploy/maven-deploy/config/executionRequestProperties");
     }
 

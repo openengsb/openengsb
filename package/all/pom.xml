@@ -86,6 +86,21 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-scm-implementation-su</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-test-implementation-su</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-build-implementation-su</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-deploy-implementation-su</artifactId>
+    </dependency>
     
     <!-- Implementation Modules -->
     <dependency>

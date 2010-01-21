@@ -18,6 +18,7 @@
 package org.openengsb.core.transformation;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 class FieldAccessorUtil {
 
@@ -39,6 +40,9 @@ class FieldAccessorUtil {
     }
 
     static void setValue(Field field, Object obj, Object value) {
+        if (Modifier.isStatic(field.getModifiers())) {
+            return;
+        }
         boolean accessible = field.isAccessible();
         try {
             field.setAccessible(true);

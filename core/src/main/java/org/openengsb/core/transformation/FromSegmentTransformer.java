@@ -257,7 +257,15 @@ class FromSegmentTransformer {
 
     private Object createPlaceholderInstance(String type, Integer id) {
         try {
-            Object obj = Class.forName(type).newInstance();
+
+            Class<?> clazz = Class.forName(type);
+            Object obj;
+            if (clazz.isArray()) {
+                Object referencedArray = idToObject.get(id);
+                obj = Array.newInstance(clazz.getComponentType(), Array.getLength(referencedArray));
+            } else {
+                obj = clazz.newInstance();
+            }
             placeholderInstances.put(System.identityHashCode(obj), id);
             return obj;
         } catch (Exception e) {
