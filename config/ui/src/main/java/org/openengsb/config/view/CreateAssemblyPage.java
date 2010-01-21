@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -60,6 +61,10 @@ public class CreateAssemblyPage extends BasePage {
             }
         };
         add(suform);
+        
+        Button suButton = new Button("saButton");
+        suButton.setEnabled(!assemblyService.getEndpoints().isEmpty());
+        suform.add(suButton);
 
         final ListView<EndpointInfo> endpointList = new ListView<EndpointInfo>("endpointList", assemblyService
                 .getEndpoints()) {
