@@ -19,12 +19,14 @@
 package org.openengsb.maven.common;
 
 import java.io.File;
-import java.io.PrintStream;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.embedder.Configuration;
 import org.apache.maven.embedder.DefaultConfiguration;
 import org.apache.maven.embedder.MavenEmbedder;
@@ -38,7 +40,6 @@ import org.apache.maven.execution.ReactorManager;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.reactor.MavenExecutionException;
-import org.mortbay.io.WriterOutputStream;
 
 public class MavenConnector {
 
@@ -129,10 +130,7 @@ public class MavenConnector {
      * @throws MavenException
      */
     public MavenResult execute() {
-        PrintStream sysout = System.out;
         StringWriter writer = new StringWriter();
-        System.setOut(new PrintStream(new WriterOutputStream(writer)));
-
         MavenEmbedderStringLogger stringLogger = new MavenEmbedderStringLogger(writer);
         stringLogger.setThreshold(logLevel.getLevel());
         MavenEmbedder embedder = setUpEmbedder(stringLogger);
@@ -146,11 +144,35 @@ public class MavenConnector {
 
         readResult(mavenResult, embedder, executionResult);
         mavenResult.setTimestamp(new Date().getTime());
+
+        if (Arrays.binarySearch(goals, "test") != -1) {
+            appendTestResults(writer);
+        }
+
         mavenResult.setOutput(stringLogger.getContent());
 
-        System.setOut(sysout);
-
         return mavenResult;
+    }
+
+    private void appendTestResults(StringWriter writer) {
+        File surefireReportDir = new File(baseDirectory, "target/surefire-reports");
+        if (!surefireReportDir.exists()) {
+            return;
+        }
+        File[] testReports = surefireReportDir.listFiles(new FilenameFilter() {
+
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith("txt");
+            }
+        });
+        for (File testReport : testReports) {
+            try {
+                writer.append(FileUtils.readFileToString(testReport));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private MavenEmbedder setUpEmbedder(MavenEmbedderLogger logger) {
