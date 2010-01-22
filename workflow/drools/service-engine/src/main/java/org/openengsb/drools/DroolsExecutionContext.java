@@ -138,16 +138,14 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
     @Override
     public void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory) {
-        /*
-         * TODO add auditing features, for tracking fired rules.
-         * event.getActivation().getRule();
-         */
         log.debug("Event fired rule: " + event.getActivation().getRule().getName());
     }
 
     public void changeMessageProperties(MessageProperties msgProperties) {
         this.msgProperties = msgProperties;
         this.contextHelper = new ContextHelperImpl(endpoint, msgProperties);
+        this.domainConfiguration.setContextHelper(contextHelper);
+        memory.setGlobal("ctx", contextHelper);
     }
 
     private class GuvnorProxyInvocationHandler implements InvocationHandler {
@@ -163,9 +161,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
                 NormalizedMessage msg = inout.createMessage();
                 inout.setInMessage(msg);
 
-                msg.setProperty("contentType", "methodcall");
                 msgProperties.applyToMessage(msg);
-
                 MethodCall call = new MethodCall(method, arguments);
 
                 String xml = Transformer.toXml(call);

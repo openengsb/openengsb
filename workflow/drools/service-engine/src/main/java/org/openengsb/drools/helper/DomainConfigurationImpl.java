@@ -76,4 +76,8 @@ public class DomainConfigurationImpl implements DomainConfiguration {
             this.connectorName = connectorName;
         }
     }
+
+    public void setContextHelper(ContextHelper contextHelper) {
+        this.contextHelper = contextHelper;
+    }
 }

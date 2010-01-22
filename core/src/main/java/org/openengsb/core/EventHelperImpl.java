@@ -63,10 +63,10 @@ public class EventHelperImpl implements EventHelper {
             QName service = new QName(targetNamespace, targetService);
             InOnly inOnly = new InOnlyImpl(UUID.randomUUID().toString());
             inOnly.setService(service);
+            inOnly.setOperation(new QName("event"));
 
             NormalizedMessage msg = inOnly.createMessage();
             inOnly.setInMessage(msg);
-            msg.setProperty("messageType", "event");
             msgProperties.applyToMessage(msg);
 
             String xml = Transformer.toXml(event);
