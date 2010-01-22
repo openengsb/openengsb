@@ -24,59 +24,75 @@ import org.apache.maven.embedder.AbstractMavenEmbedderLogger;
 
 public class MavenEmbedderStringLogger extends AbstractMavenEmbedderLogger {
 
-    private StringBuilder sb = new StringBuilder();
+    private StringWriter writer;
+
+    public MavenEmbedderStringLogger(StringWriter writer) {
+        this.writer = writer;
+    }
 
     @Override
     public void close() {
         // do nothing
     }
 
-    public void clear() {
-        sb.setLength(0);
-    }
-
     @Override
     public void debug(String message, Throwable throwable) {
-        sb.append("DEBUG: ");
+        if (!isDebugEnabled()) {
+            return;
+        }
+        writer.append("DEBUG: ");
         append(message, throwable);
     }
 
     private void append(String message, Throwable throwable) {
         if (throwable != null) {
-            sb.append("\n");
-            sb.append(getStackTrace(throwable));
-            sb.append("\n");
+            writer.append("\n");
+            writer.append(getStackTrace(throwable));
+            writer.append("\n");
         } else {
-            sb.append(message);
+            writer.append(message);
+            writer.append("\n");
         }
     }
 
     @Override
     public void error(String message, Throwable throwable) {
-        sb.append("DEBUG: ");
+        if (!isErrorEnabled()) {
+            return;
+        }
+        writer.append("DEBUG: ");
         append(message, throwable);
     }
 
     @Override
     public void fatalError(String message, Throwable throwable) {
-        sb.append("FATAL: ");
+        if (!isFatalErrorEnabled()) {
+            return;
+        }
+        writer.append("FATAL: ");
         append(message, throwable);
     }
 
     @Override
     public void info(String message, Throwable throwable) {
-        sb.append("INFO: ");
+        if (!isInfoEnabled()) {
+            return;
+        }
+        writer.append("INFO: ");
         append(message, throwable);
     }
 
     @Override
     public void warn(String message, Throwable throwable) {
-        sb.append("WARN: ");
+        if (!isWarnEnabled()) {
+            return;
+        }
+        writer.append("WARN: ");
         append(message, throwable);
     }
 
     public String getContent() {
-        return sb.toString();
+        return writer.toString();
     }
 
     private String getStackTrace(Throwable throwable) {

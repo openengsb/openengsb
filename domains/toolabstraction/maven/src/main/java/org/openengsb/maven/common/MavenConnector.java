@@ -19,6 +19,8 @@
 package org.openengsb.maven.common;
 
 import java.io.File;
+import java.io.PrintStream;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Properties;
@@ -27,6 +29,7 @@ import org.apache.maven.embedder.Configuration;
 import org.apache.maven.embedder.DefaultConfiguration;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
+import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.execution.BuildFailure;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
@@ -35,6 +38,7 @@ import org.apache.maven.execution.ReactorManager;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.reactor.MavenExecutionException;
+import org.mortbay.io.WriterOutputStream;
 
 public class MavenConnector {
 
@@ -125,11 +129,13 @@ public class MavenConnector {
      * @throws MavenException
      */
     public MavenResult execute() {
-        MavenEmbedder embedder = setUpEmbedder();
+        PrintStream sysout = System.out;
+        StringWriter writer = new StringWriter();
+        System.setOut(new PrintStream(new WriterOutputStream(writer)));
 
-        MavenEmbedderStringLogger stringLogger = new MavenEmbedderStringLogger();
+        MavenEmbedderStringLogger stringLogger = new MavenEmbedderStringLogger(writer);
         stringLogger.setThreshold(logLevel.getLevel());
-        embedder.setLogger(stringLogger);
+        MavenEmbedder embedder = setUpEmbedder(stringLogger);
 
         MavenExecutionRequest request = new DefaultMavenExecutionRequest().setBaseDirectory(baseDirectory).setGoals(
                 Arrays.asList(goals)).setProperties(executionRequestProperties);
@@ -142,12 +148,16 @@ public class MavenConnector {
         mavenResult.setTimestamp(new Date().getTime());
         mavenResult.setOutput(stringLogger.getContent());
 
+        System.setOut(sysout);
+
         return mavenResult;
     }
 
-    private MavenEmbedder setUpEmbedder() {
+    private MavenEmbedder setUpEmbedder(MavenEmbedderLogger logger) {
         Configuration configuration = new DefaultConfiguration().setClassLoader(Thread.currentThread()
                 .getContextClassLoader());
+
+        configuration.setMavenEmbedderLogger(logger);
 
         if (userSettings != null) {
             configuration.setUserSettingsFile(userSettings);
