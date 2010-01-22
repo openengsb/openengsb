@@ -17,7 +17,6 @@
  */
 package org.openengsb.drools;
 
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,7 +36,6 @@ import org.drools.agent.RuleAgent;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.endpoints.EventEndpoint;
 import org.openengsb.core.model.Event;
-import org.springframework.core.io.Resource;
 
 /**
  * @org.apache.xbean.XBean element="droolsEndpoint"
@@ -45,26 +43,13 @@ import org.springframework.core.io.Resource;
  */
 public class DroolsEndpoint extends EventEndpoint {
 
-    /**
-     * Pointer to the rulebase.
-     */
     private RuleBase ruleBase;
-    /**
-     * Some Resource to read the rulebase from.
-     */
-    private Resource ruleBaseResource;
-    /**
-     * URL to remote guvnor-rulebase.
-     */
-    private URL ruleBaseURL;
+
     /**
      * List of global variables for rules to use.
      */
     private Map<String, Object> globals = new HashMap<String, Object>();
 
-    /**
-     * default constructor.
-     */
     public DroolsEndpoint() {
     }
 
@@ -93,58 +78,18 @@ public class DroolsEndpoint extends EventEndpoint {
         setRuleBase(ruleBase);
     }
 
-    /**
-     * @return the ruleBase
-     */
     public RuleBase getRuleBase() {
         return this.ruleBase;
     }
 
-    /**
-     * @param ruleBase the ruleBase to set
-     */
     public void setRuleBase(RuleBase ruleBase) {
         this.ruleBase = ruleBase;
     }
 
-    /**
-     * @return the ruleBaseResource
-     */
-    public Resource getRuleBaseResource() {
-        return this.ruleBaseResource;
-    }
-
-    /**
-     * @param ruleBaseResource the ruleBaseResource to set
-     */
-    public void setRuleBaseResource(Resource ruleBaseResource) {
-        this.ruleBaseResource = ruleBaseResource;
-    }
-
-    /**
-     * @return the ruleBaseURL
-     */
-    public URL getRuleBaseURL() {
-        return this.ruleBaseURL;
-    }
-
-    /**
-     * @param ruleBaseURL the ruleBaseURL to set
-     */
-    public void setRuleBaseURL(URL ruleBaseURL) {
-        this.ruleBaseURL = ruleBaseURL;
-    }
-
-    /**
-     * @return the variables
-     */
     public Map<String, Object> getGlobals() {
         return this.globals;
     }
 
-    /**
-     * @param variables the variables to set
-     */
     public void setGlobals(Map<String, Object> variables) {
         this.globals = variables;
     }
@@ -161,7 +106,16 @@ public class DroolsEndpoint extends EventEndpoint {
         Event e = XmlHelper.parseEvent(inMessage);
         Collection<Object> objects = Arrays.asList(new Object[] { e });
         DroolsExecutionContext drools = new DroolsExecutionContext(this, objects, contextId);
-        drools.start();
+        try {
+            drools.start();
+        } finally {
+            shutdown(drools);
+        }
+    }
+
+    private void shutdown(DroolsExecutionContext drools) {
+        drools.stop();
+        this.ruleBase = null;
     }
 
 }

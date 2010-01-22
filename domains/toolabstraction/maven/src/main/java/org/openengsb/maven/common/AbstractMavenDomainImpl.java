@@ -6,7 +6,6 @@ import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.drools.model.MavenResult;
 
 public class AbstractMavenDomainImpl {
 

@@ -36,7 +36,6 @@ import org.apache.maven.execution.ReactorManager;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.reactor.MavenExecutionException;
-import org.openengsb.drools.model.MavenResult;
 
 public class MavenConnector {
 

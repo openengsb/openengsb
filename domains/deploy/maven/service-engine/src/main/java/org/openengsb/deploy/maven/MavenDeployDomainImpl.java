@@ -2,7 +2,6 @@ package org.openengsb.deploy.maven;
 
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.drools.DeployDomain;
-import org.openengsb.drools.model.MavenResult;
 import org.openengsb.maven.common.AbstractMavenDomainImpl;
 
 public class MavenDeployDomainImpl extends AbstractMavenDomainImpl implements DeployDomain {
@@ -12,8 +11,8 @@ public class MavenDeployDomainImpl extends AbstractMavenDomainImpl implements De
     }
 
     @Override
-    public MavenResult deployProject() {
-        return callMaven("deploy/maven-deploy");
+    public boolean deployProject() {
+        return callMaven("deploy/maven-deploy").isSuccess();
     }
 
 }

@@ -17,10 +17,8 @@
  */
 package org.openengsb.drools;
 
-import org.openengsb.drools.model.MavenResult;
-
 public interface BuildDomain extends Domain {
 
-    MavenResult buildProject();
+    boolean buildProject();
 
 }

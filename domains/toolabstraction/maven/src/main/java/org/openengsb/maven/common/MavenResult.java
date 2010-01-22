@@ -16,11 +16,11 @@
    
  */
 
-package org.openengsb.drools.model;
+package org.openengsb.maven.common;
 
 /**
  * The BuildResult represents the possible values, that the build engine
- * provides. The values of Maven are Error, Failure and Succes.
+ * provides. The values of Maven are Error, Failure and Success.
  * 
  * Additional Properties like timestamp, the failure task or the exception list
  * should describe the Output of the Build Engine.

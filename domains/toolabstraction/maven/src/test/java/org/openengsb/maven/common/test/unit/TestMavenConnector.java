@@ -7,8 +7,8 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.drools.model.MavenResult;
 import org.openengsb.maven.common.MavenConnector;
+import org.openengsb.maven.common.MavenResult;
 
 public class TestMavenConnector {
 

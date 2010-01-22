@@ -2,7 +2,6 @@ package org.openengsb.test.maven;
 
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.drools.TestDomain;
-import org.openengsb.drools.model.MavenResult;
 import org.openengsb.maven.common.AbstractMavenDomainImpl;
 
 public class MavenTestDomainImpl extends AbstractMavenDomainImpl implements TestDomain {
@@ -12,8 +11,8 @@ public class MavenTestDomainImpl extends AbstractMavenDomainImpl implements Test
     }
 
     @Override
-    public MavenResult runTests() {
-        return callMaven("test/maven-test");
+    public boolean runTests() {
+        return callMaven("test/maven-test").isSuccess();
     }
 
 }
