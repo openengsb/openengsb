@@ -18,17 +18,28 @@
 package org.openengsb.build.maven;
 
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.EventHelper;
 import org.openengsb.drools.BuildDomain;
+import org.openengsb.drools.events.BuildEvent;
 import org.openengsb.maven.common.AbstractMavenDomainImpl;
+import org.openengsb.maven.common.MavenResult;
 
 public class MavenBuildDomainImpl extends AbstractMavenDomainImpl implements BuildDomain {
 
-    public MavenBuildDomainImpl(ContextHelper contextHelper) {
+    private EventHelper eventHelper;
+
+    public MavenBuildDomainImpl(ContextHelper contextHelper, EventHelper eventHelper) {
         super(contextHelper);
+        this.eventHelper = eventHelper;
     }
 
     @Override
     public boolean buildProject() {
-        return callMaven("build/maven-build").isSuccess();
+        MavenResult mavenResult = callMaven("build/maven-build");
+        BuildEvent event = new BuildEvent();
+        event.setBuildSuccessful(mavenResult.isSuccess());
+        event.setBuildOutput(mavenResult.getOutput());
+        eventHelper.sendEvent(event);
+        return mavenResult.isSuccess();
     }
 }

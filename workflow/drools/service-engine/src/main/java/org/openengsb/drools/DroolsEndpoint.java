@@ -23,9 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.jbi.messaging.MessageExchange;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
@@ -34,14 +31,15 @@ import org.apache.servicemix.common.ServiceUnit;
 import org.drools.RuleBase;
 import org.drools.agent.RuleAgent;
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.endpoints.EventEndpoint;
+import org.openengsb.core.MessageProperties;
+import org.openengsb.core.endpoints.SimpleEventEndpoint;
 import org.openengsb.core.model.Event;
 
 /**
  * @org.apache.xbean.XBean element="droolsEndpoint"
  *                         description="Drools Component"
  */
-public class DroolsEndpoint extends EventEndpoint {
+public class DroolsEndpoint extends SimpleEventEndpoint {
 
     private RuleBase ruleBase;
 
@@ -62,12 +60,11 @@ public class DroolsEndpoint extends EventEndpoint {
     }
 
     @Override
-    protected void handleEvent(MessageExchange exchange, NormalizedMessage in, ContextHelper contextHelper)
-            throws MessagingException {
+    protected void handleEvent(Event e, ContextHelper contextHelper, MessageProperties msgProperties) {
         if (ruleBase == null) {
             init();
         }
-        drools(exchange);
+        drools(e, msgProperties);
     }
 
     private void init() {
@@ -97,15 +94,11 @@ public class DroolsEndpoint extends EventEndpoint {
     /**
      * handle the MessageExchange with drools.
      * 
-     * @param exchange exchange to handle
+     * @param e2 exchange to handle
      */
-    protected void drools(MessageExchange exchange) {
-        NormalizedMessage inMessage = exchange.getMessage("in");
-        String contextId = (String) inMessage.getProperty("contextId");
-
-        Event e = XmlHelper.parseEvent(inMessage);
+    protected void drools(Event e, MessageProperties msgProperties) {
         Collection<Object> objects = Arrays.asList(new Object[] { e });
-        DroolsExecutionContext drools = new DroolsExecutionContext(this, objects, contextId);
+        DroolsExecutionContext drools = new DroolsExecutionContext(this, objects, msgProperties);
         try {
             drools.start();
         } finally {

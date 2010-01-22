@@ -38,6 +38,7 @@ import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.EventHelperImpl;
+import org.openengsb.core.MessageProperties;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
@@ -88,6 +89,22 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         return (String) in.getProperty("contextId");
     }
 
+    protected String getCorrelationId(NormalizedMessage in) {
+        String correlationId = (String) in.getProperty("contextId");
+        if (correlationId == null) {
+            return UUID.randomUUID().toString();
+        }
+        return correlationId;
+    }
+
+    protected String getWorkflowId(NormalizedMessage in) {
+        return (String) in.getProperty("contextId");
+    }
+
+    protected MessageProperties readProperties(NormalizedMessage in) {
+        return new MessageProperties(getContextId(in), getCorrelationId(in), getWorkflowId(in));
+    }
+
     protected void forwardInOutMessage(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
             QName service) throws MessagingException {
         InOut inout = new InOutImpl(UUID.randomUUID().toString());
@@ -111,7 +128,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         sendSync(inonly);
     }
 
-    public EventHelper createEventHelper(String contextId) {
-        return new EventHelperImpl(this, contextId);
+    public EventHelper createEventHelper(MessageProperties msgProperties) {
+        return new EventHelperImpl(this, msgProperties);
     }
 }

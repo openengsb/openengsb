@@ -18,19 +18,26 @@
 package org.openengsb.drools.helper;
 
 import org.drools.StatefulSession;
+import org.openengsb.core.MessageProperties;
+import org.openengsb.drools.DroolsExecutionContext;
 import org.openengsb.drools.DroolsHelper;
 
 public class DroolsHelperImpl implements DroolsHelper {
 
     private StatefulSession session;
+    private DroolsExecutionContext executionContext;
 
-    public DroolsHelperImpl(StatefulSession session) {
+    public DroolsHelperImpl(DroolsExecutionContext executionContext, StatefulSession session) {
+        this.executionContext = executionContext;
         this.session = session;
     }
 
     @Override
     public void runFlow(String flowId) {
+        MessageProperties old = executionContext.getMessageProperties();
+        MessageProperties flowProps = new MessageProperties(old.getContextId(), old.getCorrelationId(), flowId);
+        executionContext.changeMessageProperties(flowProps);
         session.startProcess(flowId);
+        executionContext.changeMessageProperties(old);
     }
-
 }

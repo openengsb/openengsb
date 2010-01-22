@@ -29,6 +29,7 @@ import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.contextcommon.ContextHelperImpl;
+import org.openengsb.core.MessageProperties;
 
 public abstract class EventEndpoint extends OpenEngSBEndpoint {
 
@@ -49,18 +50,19 @@ public abstract class EventEndpoint extends OpenEngSBEndpoint {
             return;
         }
 
-        String contextId = getContextId(in);
-        ContextHelper contextHelper = new ContextHelperImpl(this, contextId);
+        MessageProperties msgProperties = readProperties(in);
+        ContextHelper contextHelper = new ContextHelperImpl(this, msgProperties);
 
         QName operation = exchange.getOperation();
         if (operation == null || !operation.getLocalPart().equals("event")) {
             throw new IllegalStateException("Operation should be event but is " + operation);
         }
-        handleEvent(exchange, in, contextHelper);
+
+        handleEvent(exchange, in, contextHelper, msgProperties);
 
     }
 
-    protected abstract void handleEvent(MessageExchange exchange, NormalizedMessage in, ContextHelper contextHelper)
-            throws MessagingException;
+    protected abstract void handleEvent(MessageExchange exchange, NormalizedMessage in, ContextHelper contextHelper,
+            MessageProperties msgProperties) throws MessagingException;
 
 }

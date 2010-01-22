@@ -31,6 +31,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
+import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
@@ -39,11 +40,11 @@ import org.openengsb.util.serialization.SerializationException;
 public class ContextHelperImpl implements ContextHelper {
 
     private final OpenEngSBEndpoint endpoint;
-    private final String contextId;
+    private final MessageProperties msgProperties;
 
-    public ContextHelperImpl(OpenEngSBEndpoint endpoint, String contextId) {
+    public ContextHelperImpl(OpenEngSBEndpoint endpoint, MessageProperties msgProperties) {
         this.endpoint = endpoint;
-        this.contextId = contextId;
+        this.msgProperties = msgProperties;
     }
 
     public String getValue(String pathAndKey) {
@@ -54,9 +55,8 @@ public class ContextHelperImpl implements ContextHelper {
 
             NormalizedMessage msg = inout.createMessage();
             inout.setInMessage(msg);
-            msg.setProperty("contextId", contextId);
+            msgProperties.applyToMessage(msg);
 
-            
             if (pathAndKey.lastIndexOf('/') == -1) {
                 pathAndKey = "/" + pathAndKey;
             }
@@ -97,7 +97,7 @@ public class ContextHelperImpl implements ContextHelper {
 
             NormalizedMessage msg = inout.createMessage();
             inout.setInMessage(msg);
-            msg.setProperty("contextId", contextId);
+            msgProperties.applyToMessage(msg);
 
             TextSegment text = new TextSegment.Builder("path").text(path).build();
             String xml = text.toXML();

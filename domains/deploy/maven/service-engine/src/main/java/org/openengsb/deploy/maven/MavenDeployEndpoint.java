@@ -18,6 +18,7 @@
 package org.openengsb.deploy.maven;
 
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.DeployDomain;
 
@@ -28,8 +29,8 @@ import org.openengsb.drools.DeployDomain;
 public class MavenDeployEndpoint extends LinkingEndpoint<DeployDomain> {
 
     @Override
-    protected DeployDomain getImplementation(ContextHelper contextHelper) {
-        return new MavenDeployDomainImpl(contextHelper);
+    protected DeployDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
+        return new MavenDeployDomainImpl(contextHelper, createEventHelper(msgProperties));
     }
 
 }

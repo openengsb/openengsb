@@ -37,14 +37,14 @@ public class EventHelperImpl implements EventHelper {
 
     private ContextHelper contextHelper;
 
-    private String contextId;
+    private MessageProperties msgProperties;
 
     private OpenEngSBEndpoint endpoint;
 
-    public EventHelperImpl(OpenEngSBEndpoint endpoint, String contextId) {
+    public EventHelperImpl(OpenEngSBEndpoint endpoint, MessageProperties msgProperties) {
         this.endpoint = endpoint;
-        this.contextId = contextId;
-        this.contextHelper = new ContextHelperImpl(endpoint, contextId);
+        this.msgProperties = msgProperties;
+        this.contextHelper = new ContextHelperImpl(endpoint, msgProperties);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class EventHelperImpl implements EventHelper {
             NormalizedMessage msg = inOnly.createMessage();
             inOnly.setInMessage(msg);
             msg.setProperty("messageType", "event");
-            msg.setProperty("contextId", contextId);
+            msgProperties.applyToMessage(msg);
 
             String xml = Transformer.toXml(event);
             msg.setContent(new StringSource(xml));

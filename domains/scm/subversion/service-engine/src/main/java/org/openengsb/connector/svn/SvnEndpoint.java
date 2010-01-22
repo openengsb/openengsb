@@ -18,6 +18,7 @@
 package org.openengsb.connector.svn;
 
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.ScmDomain;
 
@@ -29,7 +30,7 @@ public class SvnEndpoint extends LinkingEndpoint<ScmDomain> {
     private SvnConfiguration configuration = null;
 
     @Override
-    protected ScmDomain getImplementation(ContextHelper contextHelper) {
+    protected ScmDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         return new SvnScmImplementation(configuration);
     }
 

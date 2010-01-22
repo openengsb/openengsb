@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.NotificationDomain;
 
@@ -32,7 +33,7 @@ import org.openengsb.drools.NotificationDomain;
 public class EmailEndpoint extends LinkingEndpoint<NotificationDomain> {
 
     @Override
-    protected NotificationDomain getImplementation(ContextHelper contextHelper) {
+    protected NotificationDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         Properties props = getPropertiesFromContext(contextHelper);
 
         String user = contextHelper.getValue("notification/email/user");

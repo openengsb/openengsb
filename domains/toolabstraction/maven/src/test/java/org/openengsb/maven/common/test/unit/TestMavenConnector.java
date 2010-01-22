@@ -42,35 +42,35 @@ public class TestMavenConnector {
     public void testRunTestGoalSuccess() {
         File basedir = new File("target/test-classes/test-unit-success");
         MavenResult result = runGoals(basedir, new String[] { "test" });
-        Assert.assertEquals(MavenResult.SUCCESS, result.getMavenOutput());
+        Assert.assertEquals(MavenResult.SUCCESS, result.getResult());
     }
 
     @Test
     public void testRunTestGoalError() {
         File basedir = new File("target/test-classes/test-unit-fail");
         MavenResult result = runGoals(basedir, new String[] { "test" });
-        Assert.assertEquals(MavenResult.FAILURE, result.getMavenOutput());
+        Assert.assertEquals(MavenResult.FAILURE, result.getResult());
     }
 
     @Test
     public void testRunBuildGoalSuccess() {
         File basedir = new File("target/test-classes/build-test");
         MavenResult result = runGoals(basedir, new String[] { "package" });
-        Assert.assertEquals(MavenResult.SUCCESS, result.getMavenOutput());
+        Assert.assertEquals(MavenResult.SUCCESS, result.getResult());
     }
 
     @Test
     public void testRunDeployGoalSuccess() {
         File basedir = new File("target/test-classes/deploy-test");
         MavenResult result = runGoals(basedir, new String[] { "deploy" });
-        Assert.assertEquals(MavenResult.SUCCESS, result.getMavenOutput());
+        Assert.assertEquals(MavenResult.SUCCESS, result.getResult());
     }
 
     @Test
     public void testInvalidPom() {
         File basedir = new File("target/test-classes/test-invalid-pom");
         MavenResult result = runGoals(basedir, new String[] { "package" });
-        Assert.assertEquals(MavenResult.ERROR, result.getMavenOutput());
+        Assert.assertEquals(MavenResult.ERROR, result.getResult());
     }
 
     private MavenResult runGoals(File basedir, String[] goals) {

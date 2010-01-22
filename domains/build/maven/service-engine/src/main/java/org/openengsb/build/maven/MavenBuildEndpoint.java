@@ -18,6 +18,7 @@
 package org.openengsb.build.maven;
 
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.BuildDomain;
 
@@ -28,8 +29,8 @@ import org.openengsb.drools.BuildDomain;
 public class MavenBuildEndpoint extends LinkingEndpoint<BuildDomain> {
 
     @Override
-    protected BuildDomain getImplementation(ContextHelper contextHelper) {
-        return new MavenBuildDomainImpl(contextHelper);
+    protected BuildDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
+        return new MavenBuildDomainImpl(contextHelper, createEventHelper(msgProperties));
     }
 
 }

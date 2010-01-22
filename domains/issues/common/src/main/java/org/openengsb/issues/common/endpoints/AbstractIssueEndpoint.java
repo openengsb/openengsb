@@ -31,6 +31,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.log4j.Logger;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.RPCEndpoint;
 import org.openengsb.drools.DroolsIssuesDomain;
 import org.openengsb.issues.common.IssueDomain;
@@ -64,7 +65,7 @@ public abstract class AbstractIssueEndpoint extends RPCEndpoint<DroolsIssuesDoma
 
     @Override
     protected synchronized void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
-            ContextHelper contextHelper) throws Exception {
+            ContextHelper contextHelper, MessageProperties msgProperties) throws Exception {
         if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
             return;
         }

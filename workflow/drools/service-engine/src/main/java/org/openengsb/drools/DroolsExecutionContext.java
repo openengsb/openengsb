@@ -39,6 +39,7 @@ import org.drools.event.ActivationCreatedEvent;
 import org.drools.event.DefaultAgendaEventListener;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.contextcommon.ContextHelperImpl;
+import org.openengsb.core.MessageProperties;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
@@ -60,7 +61,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
      */
     private final StatefulSession memory;
 
-    private final String contextId;
+    private MessageProperties msgProperties;
 
     private DroolsEndpoint endpoint;
 
@@ -80,14 +81,14 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
      * @param objects objects to insert into the working memory
      * @param contextId
      */
-    public DroolsExecutionContext(DroolsEndpoint endpoint, Collection<Object> objects, String contextId) {
-        this.contextId = contextId == null ? "42" : contextId; // XXX
+    public DroolsExecutionContext(DroolsEndpoint endpoint, Collection<Object> objects, MessageProperties msgProperties) {
+        this.msgProperties = msgProperties;
         this.endpoint = endpoint;
         this.memory = endpoint.getRuleBase().newStatefulSession();
         this.memory.addEventListener(this);
-        this.contextHelper = new ContextHelperImpl(endpoint, contextId);
+        this.contextHelper = new ContextHelperImpl(endpoint, msgProperties);
         this.domainConfiguration = new DomainConfigurationImpl(contextHelper);
-        this.droolsHelper = new DroolsHelperImpl(memory);
+        this.droolsHelper = new DroolsHelperImpl(this, memory);
         populateWorkingMemory(objects);
     }
 
@@ -144,6 +145,11 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
         log.debug("Event fired rule: " + event.getActivation().getRule().getName());
     }
 
+    public void changeMessageProperties(MessageProperties msgProperties) {
+        this.msgProperties = msgProperties;
+        this.contextHelper = new ContextHelperImpl(endpoint, msgProperties);
+    }
+
     private class GuvnorProxyInvocationHandler implements InvocationHandler {
 
         @Override
@@ -158,7 +164,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
                 inout.setInMessage(msg);
 
                 msg.setProperty("contentType", "methodcall");
-                msg.setProperty("contextId", contextId);
+                msgProperties.applyToMessage(msg);
 
                 MethodCall call = new MethodCall(method, arguments);
 
@@ -187,6 +193,10 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
             }
             return new Object[0];
         }
+    }
+
+    public MessageProperties getMessageProperties() {
+        return this.msgProperties;
     }
 
 }

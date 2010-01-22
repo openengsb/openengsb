@@ -18,6 +18,7 @@
 package org.openengsb.test.maven;
 
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.TestDomain;
 
@@ -28,8 +29,8 @@ import org.openengsb.drools.TestDomain;
 public class MavenTestEndpoint extends LinkingEndpoint<TestDomain> {
 
     @Override
-    protected TestDomain getImplementation(ContextHelper contextHelper) {
-        return new MavenTestDomainImpl(contextHelper);
+    protected TestDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
+        return new MavenTestDomainImpl(contextHelper, createEventHelper(msgProperties));
     }
 
 }

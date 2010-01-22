@@ -25,6 +25,7 @@ import javax.xml.namespace.QName;
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
 
 public abstract class ForwardEndpoint<T> extends RPCEndpoint<T> {
 
@@ -41,13 +42,13 @@ public abstract class ForwardEndpoint<T> extends RPCEndpoint<T> {
     }
 
     @Override
-    protected T getImplementation(ContextHelper contextHelper) {
+    protected T getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         return null;
     }
 
     @Override
     protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
-            ContextHelper contextHelper) throws Exception {
+            ContextHelper contextHelper, MessageProperties msgProperties) throws Exception {
         QName defaultConnector = getForwardTarget(contextHelper);
         forwardInOutMessage(exchange, in, out, defaultConnector);
     }

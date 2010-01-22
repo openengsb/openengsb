@@ -18,18 +18,29 @@
 package org.openengsb.test.maven;
 
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.EventHelper;
 import org.openengsb.drools.TestDomain;
+import org.openengsb.drools.events.TestEvent;
 import org.openengsb.maven.common.AbstractMavenDomainImpl;
+import org.openengsb.maven.common.MavenResult;
 
 public class MavenTestDomainImpl extends AbstractMavenDomainImpl implements TestDomain {
 
-    public MavenTestDomainImpl(ContextHelper contextHelper) {
+    private EventHelper eventHelper;
+
+    public MavenTestDomainImpl(ContextHelper contextHelper, EventHelper eventHelper) {
         super(contextHelper);
+        this.eventHelper = eventHelper;
     }
 
     @Override
     public boolean runTests() {
-        return callMaven("test/maven-test").isSuccess();
+        MavenResult mavenResult = callMaven("test/maven-test");
+        TestEvent event = new TestEvent();
+        event.setTestRunSuccessful(mavenResult.isSuccess());
+        event.setTestOutput(mavenResult.getOutput());
+        eventHelper.sendEvent(event);
+        return mavenResult.isSuccess();
     }
 
 }

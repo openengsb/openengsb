@@ -19,6 +19,7 @@ limitations under the License.
 package org.openengsb.issues.trac;
 
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
 import org.openengsb.drools.DroolsIssuesDomain;
 import org.openengsb.issues.common.IssueDomain;
 import org.openengsb.issues.common.endpoints.AbstractIssueEndpoint;
@@ -81,7 +82,7 @@ public class TracIssuesEndpoint extends AbstractIssueEndpoint {
     }
 
     @Override
-    public DroolsIssuesDomain getImplementation(ContextHelper contextHelper) {
+    public DroolsIssuesDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         try {
             if (issuesDomain == null) {
                 if (tracConnector == null) {

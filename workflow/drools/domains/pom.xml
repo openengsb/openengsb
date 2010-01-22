@@ -30,7 +30,14 @@
   <artifactId>openengsb-workflow-drools-domains</artifactId>
   <name>openengsb-workflow-drools-domains</name>
   <description>Interfaces used in openengsb-drools</description>
-
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-core</artifactId>
+    </dependency>
+  </dependencies>
+  
   <build>
    <plugins>
      <plugin>

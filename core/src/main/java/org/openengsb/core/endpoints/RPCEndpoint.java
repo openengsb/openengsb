@@ -29,6 +29,7 @@ import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.contextcommon.ContextHelperImpl;
+import org.openengsb.core.MessageProperties;
 import org.openengsb.core.model.InvocationFailedException;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
@@ -36,12 +37,12 @@ import org.openengsb.util.serialization.SerializationException;
 
 public abstract class RPCEndpoint<T> extends OpenEngSBEndpoint {
 
-    protected abstract T getImplementation(ContextHelper contextHelper);
+    protected abstract T getImplementation(ContextHelper contextHelper, MessageProperties msgProperties);
 
     protected abstract QName getForwardTarget(ContextHelper contextHelper);
 
     protected abstract void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
-            ContextHelper contextHelper) throws Exception;
+            ContextHelper contextHelper, MessageProperties msgProperties) throws Exception;
 
     public RPCEndpoint() {
     }
@@ -61,23 +62,23 @@ public abstract class RPCEndpoint<T> extends OpenEngSBEndpoint {
             return;
         }
 
-        String contextId = getContextId(in);
-        ContextHelper contextHelper = new ContextHelperImpl(this, contextId);
+        MessageProperties msgProperties = readProperties(in);
+        ContextHelper contextHelper = new ContextHelperImpl(this, msgProperties);
 
         QName operation = exchange.getOperation();
         if (operation != null && operation.getLocalPart().equals("methodcall")) {
-            handleMethodCall(exchange, in, out, contextHelper);
+            handleMethodCall(exchange, in, out, contextHelper, msgProperties);
             return;
         }
 
-        inOut(exchange, in, out, contextHelper);
+        inOut(exchange, in, out, contextHelper, msgProperties);
     }
 
     private void handleMethodCall(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
-            ContextHelper contextHelper) throws TransformerException, SerializationException,
-            InvocationFailedException, MessagingException {
+            ContextHelper contextHelper, MessageProperties msgProperties) throws TransformerException,
+            SerializationException, InvocationFailedException, MessagingException {
         MethodCall methodCall = toMethodCall(in.getContent());
-        T implementation = getImplementation(contextHelper);
+        T implementation = getImplementation(contextHelper, msgProperties);
         if (implementation == null) {
             QName forwardTarget = getForwardTarget(contextHelper);
             if (forwardTarget == null) {

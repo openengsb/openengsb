@@ -23,6 +23,7 @@ import javax.xml.namespace.QName;
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
 
 public abstract class DirectMessageHandlingEndpoint<T> extends RPCEndpoint<T> {
 
@@ -45,7 +46,7 @@ public abstract class DirectMessageHandlingEndpoint<T> extends RPCEndpoint<T> {
     }
 
     @Override
-    protected T getImplementation(ContextHelper contextHelper) {
+    protected T getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         // not required for this use case
         return null;
     }

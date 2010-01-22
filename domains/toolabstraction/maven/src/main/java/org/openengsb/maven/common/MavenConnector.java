@@ -26,7 +26,6 @@ import java.util.Properties;
 import org.apache.maven.embedder.Configuration;
 import org.apache.maven.embedder.DefaultConfiguration;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.embedder.MavenEmbedderConsoleLogger;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.execution.BuildFailure;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
@@ -128,6 +127,10 @@ public class MavenConnector {
     public MavenResult execute() {
         MavenEmbedder embedder = setUpEmbedder();
 
+        MavenEmbedderStringLogger stringLogger = new MavenEmbedderStringLogger();
+        stringLogger.setThreshold(logLevel.getLevel());
+        embedder.setLogger(stringLogger);
+
         MavenExecutionRequest request = new DefaultMavenExecutionRequest().setBaseDirectory(baseDirectory).setGoals(
                 Arrays.asList(goals)).setProperties(executionRequestProperties);
         request.setPom(new File(baseDirectory, "/pom.xml"));
@@ -137,6 +140,7 @@ public class MavenConnector {
 
         readResult(mavenResult, embedder, executionResult);
         mavenResult.setTimestamp(new Date().getTime());
+        mavenResult.setOutput(stringLogger.getContent());
 
         return mavenResult;
     }
@@ -159,16 +163,12 @@ public class MavenConnector {
             throw new MavenException(exception);
         }
 
-        MavenEmbedderConsoleLogger consoleLogger = new MavenEmbedderConsoleLogger();
-        consoleLogger.setThreshold(logLevel.getLevel());
-
-        embedder.setLogger(consoleLogger);
         return embedder;
     }
 
     private void readResult(MavenResult mavenResult, MavenEmbedder embedder, MavenExecutionResult executionResult) {
         if (executionResult.hasExceptions()) {
-            mavenResult.setMavenOutput(MavenResult.ERROR);
+            mavenResult.setResult(MavenResult.ERROR);
 
             // construct errormessage
             StringBuilder stringBuilder = new StringBuilder();
@@ -189,7 +189,7 @@ public class MavenConnector {
 
             readReactorResult(mavenResult, embedder, executionResult);
         } else {
-            mavenResult.setMavenOutput(MavenResult.SUCCESS);
+            mavenResult.setResult(MavenResult.SUCCESS);
         }
     }
 
@@ -204,7 +204,7 @@ public class MavenConnector {
                 if (reactor.hasBuildFailures()) {
                     BuildFailure buildFailure = executionResult.getReactorManager().getBuildFailure(mavenProject);
                     mavenResult.setTask(buildFailure.getTask());
-                    mavenResult.setMavenOutput(MavenResult.FAILURE);
+                    mavenResult.setResult(MavenResult.FAILURE);
                 }
 
             } catch (ProjectBuildingException e) {

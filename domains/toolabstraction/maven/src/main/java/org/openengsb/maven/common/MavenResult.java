@@ -33,9 +33,10 @@ public class MavenResult {
     public static final String SUCCESS = "Success";
 
     private long timestamp;
-    private String mavenOutput;
+    private String result;
     private String task;
     private String errorMessage;
+    private String output;
 
     private String file;
     private String[] deployedFiles;
@@ -93,21 +94,21 @@ public class MavenResult {
     }
 
     /**
-     * Sets the output of the maven process
+     * Sets the result of the maven process
      * 
-     * @param mavenOutput - possible values are error, failure, success
+     * @param result - possible values are error, failure, success
      */
-    public void setMavenOutput(String mavenOutput) {
-        this.mavenOutput = mavenOutput;
+    public void setResult(String result) {
+        this.result = result;
     }
 
     /**
-     * Returns the output of the maven process
+     * Returns the result of the maven process
      * 
-     * @return mavenoutput - possible values are error, failure, success
+     * @return result - possible values are error, failure, success
      */
-    public String getMavenOutput() {
-        return this.mavenOutput;
+    public String getResult() {
+        return this.result;
     }
 
     /**
@@ -128,8 +129,16 @@ public class MavenResult {
         return this.errorMessage;
     }
 
+    public String getOutput() {
+        return output;
+    }
+
+    public void setOutput(String output) {
+        this.output = output;
+    }
+
     public boolean isSuccess() {
-        return SUCCESS.equals(this.mavenOutput);
+        return SUCCESS.equals(this.result);
     }
 
 }

@@ -18,18 +18,29 @@
 package org.openengsb.deploy.maven;
 
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.EventHelper;
 import org.openengsb.drools.DeployDomain;
+import org.openengsb.drools.events.DeployEvent;
 import org.openengsb.maven.common.AbstractMavenDomainImpl;
+import org.openengsb.maven.common.MavenResult;
 
 public class MavenDeployDomainImpl extends AbstractMavenDomainImpl implements DeployDomain {
 
-    public MavenDeployDomainImpl(ContextHelper contextHelper) {
+    private EventHelper eventHelper;
+
+    public MavenDeployDomainImpl(ContextHelper contextHelper, EventHelper eventHelper) {
         super(contextHelper);
+        this.eventHelper = eventHelper;
     }
 
     @Override
     public boolean deployProject() {
-        return callMaven("deploy/maven-deploy").isSuccess();
+        MavenResult mavenResult = callMaven("deploy/maven-deploy");
+        DeployEvent event = new DeployEvent();
+        event.setDeploySuccessful(mavenResult.isSuccess());
+        event.setDeployOutput(mavenResult.getOutput());
+        eventHelper.sendEvent(event);
+        return mavenResult.isSuccess();
     }
 
 }

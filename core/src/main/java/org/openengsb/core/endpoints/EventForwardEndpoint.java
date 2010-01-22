@@ -23,12 +23,13 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
 
 public class EventForwardEndpoint extends EventEndpoint {
 
     @Override
-    protected void handleEvent(MessageExchange exchange, NormalizedMessage in, ContextHelper contextHelper)
-            throws MessagingException {
+    protected void handleEvent(MessageExchange exchange, NormalizedMessage in, ContextHelper contextHelper,
+            MessageProperties msgProperties) throws MessagingException {
         String namespace = contextHelper.getValue("event/defaultTarget/namespace");
         String servicename = contextHelper.getValue("event/defaultTarget/servicename");
         QName service = new QName(namespace, servicename);
