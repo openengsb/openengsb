@@ -121,7 +121,7 @@
     </dependency>
 
     <!-- Workflows -->
-    <!-- 
+    <!-- we now use drools flow for workflows - the bpel component is therefore not up to date and cannot be deployed
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-workflow-bpel-su</artifactId>
