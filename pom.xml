@@ -144,6 +144,10 @@
     <module>domains/notification/implementation/service-engine</module>
     <module>domains/notification/implementation/service-unit</module>
 
+    <!--  Report Domain -->
+    <module>domains/report/implementation/service-engine</module>
+    <module>domains/report/implementation/service-unit</module>
+
     <!--  Test Domain -->
     <module>domains/test/implementation/service-engine</module>
     <module>domains/test/implementation/service-unit</module>
@@ -162,6 +166,7 @@
     <!-- Connectors -->
     <module>domains/scm/subversion/service-engine</module>
     <module>domains/notification/email/service-engine</module>
+    <module>domains/report/plaintext/service-engine</module>
     <module>domains/issues/trac/service-engine</module>
     <module>domains/test/maven/service-engine</module>
     <module>domains/build/maven/service-engine</module>
@@ -173,6 +178,7 @@
     <module>domains/test/maven/service-unit</module>
     <module>domains/scm/subversion/service-unit</module>
     <module>domains/notification/email/service-unit</module>
+    <module>domains/report/plaintext/service-unit</module>
     <module>domains/issues/trac/service-unit</module>
 
     <!-- Packaging Modules -->
@@ -812,6 +818,17 @@
         <version>${pom.version}</version>
       </dependency>
 
+      <!-- Report Domain -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-report-implementation-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-report-implementation-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
 
       <!-- Test Domain -->
       <dependency>
@@ -910,6 +927,16 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-notification-email-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-report-plaintext-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-report-plaintext-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
 

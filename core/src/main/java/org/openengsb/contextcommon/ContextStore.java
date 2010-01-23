@@ -233,6 +233,14 @@ public class ContextStore {
         setValue("42/deploy/maven-deploy/config/goals", "deploy");
         setValue("42/deploy/maven-deploy/config/baseDirectory", "data/openengsb/testProject");
         addContext("42/deploy/maven-deploy/config/executionRequestProperties");
+
+        setValue("42/report/namespace", "urn:openengsb:report");
+        setValue("42/report/servicename", "reportService");
+        setValue("42/report/event/servicename", "eventService");
+        setValue("42/report/default", "plaintext");
+
+        setValue("42/report/plaintext/namespace", "urn:openengsb:plaintext-report");
+        setValue("42/report/plaintext/servicename", "plaintextReportService");
     }
 
     private void save() {

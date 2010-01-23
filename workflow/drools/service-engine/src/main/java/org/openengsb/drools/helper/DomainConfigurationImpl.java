@@ -40,7 +40,7 @@ public class DomainConfigurationImpl implements DomainConfiguration {
         this.domains.put(System.identityHashCode(domain), new DomainInfo(name, null));
     }
 
-    public QName getServiceName(Domain domain) {
+    public QName getFullServiceName(Domain domain) {
         DomainInfo domainInfo = domains.get(System.identityHashCode(domain));
         String domainName = domainInfo.name;
         String connectorName = domainInfo.connectorName;
@@ -67,6 +67,20 @@ public class DomainConfigurationImpl implements DomainConfiguration {
         this.domains.put(System.identityHashCode(domain), new DomainInfo(oldInfo.name, null));
     }
 
+    @Override
+    public String getNamespace(Domain domain) {
+        DomainInfo domainInfo = domains.get(System.identityHashCode(domain));
+        String domainName = domainInfo.name;
+        return contextHelper.getValue(domainName + "/namespace");
+    }
+
+    @Override
+    public String getServiceName(Domain domain) {
+        DomainInfo domainInfo = domains.get(System.identityHashCode(domain));
+        String domainName = domainInfo.name;
+        return contextHelper.getValue(domainName + "/servicename");
+    }
+
     private class DomainInfo {
         private final String name;
         private final String connectorName;
@@ -80,4 +94,5 @@ public class DomainConfigurationImpl implements DomainConfiguration {
     public void setContextHelper(ContextHelper contextHelper) {
         this.contextHelper = contextHelper;
     }
+
 }

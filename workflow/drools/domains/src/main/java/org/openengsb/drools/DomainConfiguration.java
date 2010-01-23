@@ -23,4 +23,8 @@ public interface DomainConfiguration {
 
     void setToDomain(Domain domain);
 
+    String getNamespace(Domain domain);
+
+    String getServiceName(Domain domain);
+
 }

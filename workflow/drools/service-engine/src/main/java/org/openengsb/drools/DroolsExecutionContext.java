@@ -155,7 +155,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
             Object[] arguments = checkArgs(args);
             try {
                 InOut inout = new InOutImpl(UUID.randomUUID().toString());
-                inout.setService(domainConfiguration.getServiceName((Domain) proxy));
+                inout.setService(domainConfiguration.getFullServiceName((Domain) proxy));
                 inout.setOperation(new QName("methodcall"));
 
                 NormalizedMessage msg = inout.createMessage();
