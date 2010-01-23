@@ -33,6 +33,7 @@ public class DomainRegistry {
         domains.put("test", TestDomain.class);
         domains.put("build", BuildDomain.class);
         domains.put("deploy", DeployDomain.class);
+        domains.put("report", ReportDomain.class);
     }
 
     private DomainRegistry() {
