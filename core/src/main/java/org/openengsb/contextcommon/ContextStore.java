@@ -195,6 +195,7 @@ public class ContextStore {
 
         setValue("42/scm/namespace", "urn:openengsb:scm");
         setValue("42/scm/servicename", "scmService");
+        setValue("42/scm/event/servicename", "eventService");
         setValue("42/scm/default", "svn");
 
         setValue("42/scm/svn/namespace", "urn:openengsb:svn");
@@ -202,6 +203,7 @@ public class ContextStore {
 
         setValue("42/test/namespace", "urn:openengsb:test");
         setValue("42/test/servicename", "testService");
+        setValue("42/test/event/servicename", "eventService");
         setValue("42/test/default", "maven-test");
 
         setValue("42/test/maven-test/namespace", "urn:openengsb:maven-test");
@@ -212,6 +214,7 @@ public class ContextStore {
 
         setValue("42/build/namespace", "urn:openengsb:build");
         setValue("42/build/servicename", "buildService");
+        setValue("42/build/event/servicename", "eventService");
         setValue("42/build/default", "maven-build");
 
         setValue("42/build/maven-build/namespace", "urn:openengsb:maven-build");
@@ -222,6 +225,7 @@ public class ContextStore {
 
         setValue("42/deploy/namespace", "urn:openengsb:deploy");
         setValue("42/deploy/servicename", "deployService");
+        setValue("42/deploy/event/servicename", "eventService");
         setValue("42/deploy/default", "maven-deploy");
 
         setValue("42/deploy/maven-deploy/namespace", "urn:openengsb:maven-deploy");
