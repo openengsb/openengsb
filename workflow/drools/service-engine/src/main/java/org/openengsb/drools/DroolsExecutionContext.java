@@ -17,51 +17,21 @@
  */
 package org.openengsb.drools;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Collection;
-import java.util.Map.Entry;
 
-import javax.xml.namespace.QName;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
-import org.drools.event.ActivationCreatedEvent;
-import org.drools.event.DefaultAgendaEventListener;
-import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.contextcommon.ContextHelperImpl;
 import org.openengsb.core.MessageProperties;
-import org.openengsb.core.MethodCallHelper;
-import org.openengsb.drools.helper.DomainConfigurationImpl;
-import org.openengsb.drools.helper.DroolsHelperImpl;
 
 /**
  * Represents the execution context of the Drools rules.
  */
-public class DroolsExecutionContext extends DefaultAgendaEventListener {
-
-    /**
-     * the logger.
-     */
-    private static Log log = LogFactory.getLog(DroolsExecutionContext.class);
+public class DroolsExecutionContext {
 
     /**
      * Memory of the session handling the event.
      */
     private final StatefulSession memory;
-
-    private MessageProperties msgProperties;
-
-    private DroolsEndpoint endpoint;
-
-    private ContextHelper contextHelper;
-
-    private DomainConfigurationImpl domainConfiguration;
-
-    private DroolsHelper droolsHelper;
 
     /**
      * Start a new execution context for the specified exchange.
@@ -74,42 +44,8 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
      * @param contextId
      */
     public DroolsExecutionContext(DroolsEndpoint endpoint, Collection<Object> objects, MessageProperties msgProperties) {
-        this.msgProperties = msgProperties;
-        this.endpoint = endpoint;
-        this.memory = endpoint.getRuleBase().newStatefulSession();
-        this.memory.addEventListener(this);
-        this.contextHelper = new ContextHelperImpl(endpoint, msgProperties);
-        this.domainConfiguration = new DomainConfigurationImpl(contextHelper);
-        this.droolsHelper = new DroolsHelperImpl(this, memory);
-        populateWorkingMemory(objects);
-    }
-
-    /**
-     * inserts objects into the kb.
-     * 
-     * @param objects the objects to insert.
-     */
-    private void populateWorkingMemory(Collection<Object> objects) {
-        memory.setGlobal("ctx", contextHelper);
-        memory.setGlobal("config", domainConfiguration);
-        memory.setGlobal("droolsHelper", droolsHelper);
-
-        for (Entry<String, Class<? extends Domain>> e : DomainRegistry.domains.entrySet()) {
-            Object proxy = createProxy(e.getValue());
-            domainConfiguration.addDomain((Domain) proxy, e.getKey());
-            memory.setGlobal(e.getKey(), proxy);
-        }
-
-        if (objects != null) {
-            for (Object o : objects) {
-                memory.insert(o);
-            }
-        }
-    }
-
-    private Object createProxy(Class<? extends Domain> value) {
-        return Proxy.newProxyInstance(getClass().getClassLoader(), new Class[] { value },
-                new GuvnorProxyInvocationHandler());
+        DroolsSession session = new DroolsSession(msgProperties, endpoint);
+        this.memory = session.createSession(objects);
     }
 
     /**
@@ -124,34 +60,7 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
      * contents.
      */
     public void stop() {
-        memory.removeEventListener(this);
         memory.dispose();
-    }
-
-    @Override
-    public void activationCreated(ActivationCreatedEvent event, WorkingMemory workingMemory) {
-        log.debug("Event fired rule: " + event.getActivation().getRule().getName());
-    }
-
-    public void changeMessageProperties(MessageProperties msgProperties) {
-        this.msgProperties = msgProperties;
-        this.contextHelper = new ContextHelperImpl(endpoint, msgProperties);
-        this.domainConfiguration.setContextHelper(contextHelper);
-        memory.setGlobal("ctx", contextHelper);
-    }
-
-    private class GuvnorProxyInvocationHandler implements InvocationHandler {
-
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) {
-            QName service = domainConfiguration.getFullServiceName((Domain) proxy);
-            return MethodCallHelper.sendMethodCall(endpoint, service, method, args, msgProperties);
-        }
-
-    }
-
-    public MessageProperties getMessageProperties() {
-        return this.msgProperties;
     }
 
 }

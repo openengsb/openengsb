@@ -17,27 +17,33 @@
  */
 package org.openengsb.drools.helper;
 
+import java.util.Collections;
+
 import org.drools.StatefulSession;
 import org.openengsb.core.MessageProperties;
-import org.openengsb.drools.DroolsExecutionContext;
+import org.openengsb.drools.DroolsEndpoint;
 import org.openengsb.drools.DroolsHelper;
+import org.openengsb.drools.DroolsSession;
 
 public class DroolsHelperImpl implements DroolsHelper {
 
-    private StatefulSession session;
-    private DroolsExecutionContext executionContext;
+    private MessageProperties msgProperties;
 
-    public DroolsHelperImpl(DroolsExecutionContext executionContext, StatefulSession session) {
-        this.executionContext = executionContext;
-        this.session = session;
+    private DroolsEndpoint endpoint;
+
+    public DroolsHelperImpl(MessageProperties msgProperties, DroolsEndpoint endpoint) {
+        this.msgProperties = msgProperties;
+        this.endpoint = endpoint;
     }
 
     @Override
     public void runFlow(String flowId) {
-        MessageProperties old = executionContext.getMessageProperties();
-        MessageProperties flowProps = new MessageProperties(old.getContextId(), old.getCorrelationId(), flowId);
-        executionContext.changeMessageProperties(flowProps);
-        session.startProcess(flowId);
-        executionContext.changeMessageProperties(old);
+        MessageProperties flowProps = new MessageProperties(msgProperties.getContextId(), msgProperties
+                .getCorrelationId(), flowId);
+
+        DroolsSession session = new DroolsSession(flowProps, endpoint);
+        StatefulSession memory = session.createSession(Collections.emptyList());
+        memory.startProcess(flowId);
     }
+
 }

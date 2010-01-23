@@ -17,6 +17,8 @@
  */
 package org.openengsb.report.plaintext;
 
+import java.io.File;
+
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
@@ -30,7 +32,8 @@ public class PlaintextReportEndpoint extends LinkingEndpoint<ReportDomain> {
 
     @Override
     protected ReportDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-        return null;// TODO
+        String dirName = contextHelper.getValue("report/plaintext-report/config/reportDirectory");
+        return new PlainTextReportDomainImpl(contextHelper, this, msgProperties, new File(dirName));
     }
 
 }

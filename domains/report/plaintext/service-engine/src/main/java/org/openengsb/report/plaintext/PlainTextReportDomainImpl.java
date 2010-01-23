@@ -23,6 +23,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.xml.namespace.QName;
@@ -42,14 +44,14 @@ public class PlainTextReportDomainImpl implements ReportDomain {
 
     private MessageProperties msgProperties;
 
-    private File reportFile;
+    private File reportDirectory;
 
     public PlainTextReportDomainImpl(ContextHelper contextHelper, PlaintextReportEndpoint endpoint,
-            MessageProperties msgProperties, File reportFile) {
+            MessageProperties msgProperties, File reportDirectory) {
         this.contextHelper = contextHelper;
         this.endpoint = endpoint;
         this.msgProperties = msgProperties;
-        this.reportFile = reportFile;
+        this.reportDirectory = reportDirectory;
     }
 
     @Override
@@ -75,18 +77,32 @@ public class PlainTextReportDomainImpl implements ReportDomain {
 
     @Override
     public void generateReport(Event[] events) {
+        reportDirectory.mkdirs();
+        File reportFile = new File(reportDirectory, getFileName());
+
         Writer writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(reportFile, true));
-            writer.append("\n\n----------------------");
+            writer.append("\n\n-----------------------\n");
             writer.append(new Date().toString());
+            writer.append("\n");
             for (Event e : events) {
-                writer.append("----------------------");
+                writer.append("---------event---------\n");
+                writer.append("name: ");
+                writer.append(e.getName());
+                writer.append(" / domain: ");
+                writer.append(e.getDomain());
+                writer.append(" / toolconnector: ");
+                writer.append(String.valueOf(e.getToolConnector()));
+                writer.append("\n");
                 for (String key : e.getKeys()) {
                     writer.append(key);
                     writer.append(": ");
                     writer.append(String.valueOf(e.getValue(key)));
+                    writer.append("\n");
                 }
+                writer.append("\n");
+                writer.append("\n");
             }
             writer.append("\n");
         } catch (IOException e) {
@@ -94,6 +110,12 @@ public class PlainTextReportDomainImpl implements ReportDomain {
         } finally {
             IOUtils.closeQuietly(writer);
         }
+    }
+
+    private String getFileName() {
+        Date current = new Date();
+        DateFormat format = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
+        return format.format(current) + ".txt";
     }
 
     private Method getMethod(String name, Class<?>... parameterTypes) {

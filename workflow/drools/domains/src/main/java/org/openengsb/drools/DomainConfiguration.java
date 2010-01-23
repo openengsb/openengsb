@@ -27,4 +27,6 @@ public interface DomainConfiguration {
 
     String getServiceName(Domain domain);
 
+    String getEventServiceName(Domain domain);
+
 }

@@ -237,10 +237,11 @@ public class ContextStore {
         setValue("42/report/namespace", "urn:openengsb:report");
         setValue("42/report/servicename", "reportService");
         setValue("42/report/event/servicename", "eventService");
-        setValue("42/report/default", "plaintext");
+        setValue("42/report/default", "plaintext-report");
 
-        setValue("42/report/plaintext/namespace", "urn:openengsb:plaintext-report");
-        setValue("42/report/plaintext/servicename", "plaintextReportService");
+        setValue("42/report/plaintext-report/namespace", "urn:openengsb:plaintext-report");
+        setValue("42/report/plaintext-report/servicename", "plaintextReportService");
+        setValue("42/report/plaintext-report/config/reportDirectory", "data/openengsb/reports");
     }
 
     private void save() {

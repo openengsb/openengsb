@@ -18,14 +18,15 @@
 
 package org.openengsb.core.model;
 
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class Event {
 
-    private Map<String, Object> elements = new HashMap<String, Object>();
+    private Map<String, Object> elements = new TreeMap<String, Object>(new EventKeyComparator());
 
     private String domain;
 
@@ -124,6 +125,14 @@ public class Event {
         } else if (!elements.equals(other.elements))
             return false;
         return true;
+    }
+
+    private class EventKeyComparator implements Comparator<String> {
+
+        @Override
+        public int compare(String key1, String key2) {
+            return key1.compareTo(key2);
+        }
     }
 
 }

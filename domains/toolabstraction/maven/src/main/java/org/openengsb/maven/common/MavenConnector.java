@@ -145,7 +145,7 @@ public class MavenConnector {
         readResult(mavenResult, embedder, executionResult);
         mavenResult.setTimestamp(new Date().getTime());
 
-        if (Arrays.binarySearch(goals, "test") != -1) {
+        if (Arrays.binarySearch(goals, "test") >= 0) {
             appendTestResults(writer);
         }
 
@@ -168,6 +168,7 @@ public class MavenConnector {
         });
         for (File testReport : testReports) {
             try {
+                writer.append("\n\n ------ test report ------\n");
                 writer.append(FileUtils.readFileToString(testReport));
             } catch (IOException e) {
                 throw new RuntimeException(e);

@@ -81,6 +81,13 @@ public class DomainConfigurationImpl implements DomainConfiguration {
         return contextHelper.getValue(domainName + "/servicename");
     }
 
+    @Override
+    public String getEventServiceName(Domain domain) {
+        DomainInfo domainInfo = domains.get(System.identityHashCode(domain));
+        String domainName = domainInfo.name;
+        return contextHelper.getValue(domainName + "/event/servicename");
+    }
+
     private class DomainInfo {
         private final String name;
         private final String connectorName;

@@ -30,6 +30,7 @@ public class InMemoryEventStore implements EventStore {
     private Map<EventStorageType, Map<String, List<Event>>> maps;
 
     public InMemoryEventStore() {
+        maps = new HashMap<EventStorageType, Map<String, List<Event>>>();
         for (EventStorageType type : EventStorageType.values()) {
             maps.put(type, new HashMap<String, List<Event>>());
         }
