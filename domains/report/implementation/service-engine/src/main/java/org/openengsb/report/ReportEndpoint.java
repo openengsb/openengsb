@@ -17,24 +17,38 @@
  */
 package org.openengsb.report;
 
-import javax.xml.namespace.QName;
-
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.endpoints.ForwardEndpoint;
+import org.openengsb.core.MessageProperties;
+import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.ReportDomain;
+import org.openengsb.report.datastore.EventStore;
 
 /**
  * @org.apache.xbean.XBean element="reportEndpoint"
  *                         description="Report Endpoint"
  */
-public class ReportEndpoint extends ForwardEndpoint<ReportDomain> {
+public class ReportEndpoint extends LinkingEndpoint<ReportDomain> {
+
+    private ReportDomainImpl reportDomainImpl;
+
+    public ReportEndpoint() {
+        reportDomainImpl = new ReportDomainImpl();
+        reportDomainImpl.setEndpoint(this);
+    }
 
     @Override
-    protected QName getForwardTarget(ContextHelper contextHelper) {
-        String defaultName = contextHelper.getValue("report/default");
-        String serviceName = contextHelper.getValue("report/" + defaultName + "/servicename");
-        String namespace = contextHelper.getValue("report/" + defaultName + "/namespace");
-        return new QName(namespace, serviceName);
+    protected ReportDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
+        reportDomainImpl.setContextHelper(contextHelper);
+        reportDomainImpl.setMessageProperties(msgProperties);
+        return reportDomainImpl;
+    }
+
+    public void setEventStore(EventStore eventStore) {
+        reportDomainImpl.setEventStore(eventStore);
+    }
+
+    public void setPolicy(EventStoragePolicy policy) {
+        reportDomainImpl.setPolicy(policy);
     }
 
 }

@@ -1,0 +1,97 @@
+package org.openengsb.report;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.xml.namespace.QName;
+
+import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
+import org.openengsb.core.MethodCallHelper;
+import org.openengsb.core.model.Event;
+import org.openengsb.drools.ReportDomain;
+import org.openengsb.report.datastore.EventStore;
+import org.openengsb.report.datastore.StorageKey;
+
+public class ReportDomainImpl implements ReportDomain {
+
+    private Map<String, StorageKey> toCollect = new HashMap<String, StorageKey>();
+
+    private EventStoragePolicy policy;
+
+    private EventStore eventStore;
+
+    private ReportEndpoint endpoint;
+
+    private MessageProperties msgProperties;
+
+    private ContextHelper contextHelper;
+
+    @Override
+    public String collectData(String idType, String id) {
+        String reportId = UUID.randomUUID().toString();
+        StorageKey storageKey = new StorageKey(idType, id);
+        toCollect.put(reportId, storageKey);
+        policy.storeEventsFor(storageKey);
+        return reportId;
+    }
+
+    @Override
+    public void generateReport(String reportId) {
+        StorageKey storageKey = toCollect.remove(reportId);
+        if (storageKey == null) {
+            throw new IllegalArgumentException("No report for the given report id.");
+        }
+        policy.stopStoringEventsFor(storageKey);
+        List<Event> events = eventStore.getEvents(storageKey);
+        eventStore.clearEvents(storageKey);
+        generateReport(events.toArray(new Event[events.size()]));
+    }
+
+    @Override
+    public void generateReport(Event[] events) {
+        QName toolConnector = getToolConnectorQName();
+        Method method;
+        method = getGenerateReportMethod();
+        MethodCallHelper.sendMethodCall(endpoint, toolConnector, method, new Object[] { events }, msgProperties);
+    }
+
+    private Method getGenerateReportMethod() {
+        try {
+            return getClass().getMethod("generateReport", Event[].class);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private QName getToolConnectorQName() {
+        String defaultName = contextHelper.getValue("report/default");
+        String serviceName = contextHelper.getValue("report/" + defaultName + "/servicename");
+        String namespace = contextHelper.getValue("report/" + defaultName + "/namespace");
+        return new QName(namespace, serviceName);
+    }
+
+    public void setPolicy(EventStoragePolicy policy) {
+        this.policy = policy;
+    }
+
+    public void setEventStore(EventStore eventStore) {
+        this.eventStore = eventStore;
+    }
+
+    public void setContextHelper(ContextHelper contextHelper) {
+        this.contextHelper = contextHelper;
+    }
+
+    public void setMessageProperties(MessageProperties msgProperties) {
+        this.msgProperties = msgProperties;
+    }
+
+    public void setEndpoint(ReportEndpoint endpoint) {
+        this.endpoint = endpoint;
+    }
+
+}

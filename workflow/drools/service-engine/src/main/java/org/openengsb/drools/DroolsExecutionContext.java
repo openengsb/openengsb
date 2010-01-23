@@ -21,18 +21,12 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Collection;
-import java.util.UUID;
 import java.util.Map.Entry;
 
-import javax.jbi.messaging.InOut;
-import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.event.ActivationCreatedEvent;
@@ -40,9 +34,7 @@ import org.drools.event.DefaultAgendaEventListener;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.contextcommon.ContextHelperImpl;
 import org.openengsb.core.MessageProperties;
-import org.openengsb.core.model.MethodCall;
-import org.openengsb.core.model.ReturnValue;
-import org.openengsb.core.transformation.Transformer;
+import org.openengsb.core.MethodCallHelper;
 import org.openengsb.drools.helper.DomainConfigurationImpl;
 import org.openengsb.drools.helper.DroolsHelperImpl;
 
@@ -152,43 +144,10 @@ public class DroolsExecutionContext extends DefaultAgendaEventListener {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) {
-            Object[] arguments = checkArgs(args);
-            try {
-                InOut inout = new InOutImpl(UUID.randomUUID().toString());
-                inout.setService(domainConfiguration.getFullServiceName((Domain) proxy));
-                inout.setOperation(new QName("methodcall"));
-
-                NormalizedMessage msg = inout.createMessage();
-                inout.setInMessage(msg);
-
-                msgProperties.applyToMessage(msg);
-                MethodCall call = new MethodCall(method, arguments);
-
-                String xml = Transformer.toXml(call);
-
-                msg.setContent(new StringSource(xml));
-
-                endpoint.sendSync(inout);
-
-                NormalizedMessage outMessage = inout.getOutMessage();
-                String outXml = new SourceTransformer().toString(outMessage.getContent());
-
-                ReturnValue returnValue = Transformer.toReturnValue(outXml);
-
-                return returnValue.getValue();
-            } catch (RuntimeException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            QName service = domainConfiguration.getFullServiceName((Domain) proxy);
+            return MethodCallHelper.sendMethodCall(endpoint, service, method, args, msgProperties);
         }
 
-        private Object[] checkArgs(Object[] args) {
-            if (args != null) {
-                return args;
-            }
-            return new Object[0];
-        }
     }
 
     public MessageProperties getMessageProperties() {

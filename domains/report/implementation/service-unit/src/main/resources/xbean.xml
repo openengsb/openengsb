@@ -20,7 +20,10 @@
   xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <report:reportEndpoint endpoint="reportEndpoint" service="rpt:reportService" />
-  <report:eventEndpoint endpoint="eventEndpoint" service="rpt:eventService" />
+  <report:reportEndpoint endpoint="reportEndpoint" service="rpt:reportService" policy="#policy" eventStore="#eventStore" />
+  <report:eventEndpoint endpoint="eventEndpoint" service="rpt:eventService" policy="#policy" eventStore="#eventStore" />
+
+  <bean id="policy" class="org.openengsb.report.EventStoragePolicy" />
+  <bean id="eventStore" class="org.openengsb.report.datastore.InMemoryEventStore"  />
 
 </beans>
