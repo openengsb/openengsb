@@ -24,6 +24,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.openengsb.core.messaging.Segment;
+import org.openengsb.core.model.Event;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
@@ -146,6 +147,31 @@ public class TestMethodCallTransformer {
         MethodCall output = Transformer.toMethodCall(intermediate);
 
         check(input, output);
+    }
+
+    @Test
+    public void testEvent() throws Exception {
+        Event event = new Event("domain", "name");
+
+        MethodCall input = new MethodCall("foo", new Object[] { event }, new Class<?>[] { Event.class });
+
+        Segment intermediate = Transformer.toSegment(input);
+        MethodCall output = Transformer.toMethodCall(intermediate);
+
+        check(input, output);
+    }
+
+    @Test
+    public void testEventArray() throws Exception {
+        Event[] events = new Event[] { new Event("domain", "name") };
+
+        MethodCall input = new MethodCall("foo", new Object[] { events }, new Class<?>[] { Event[].class });
+
+        Segment intermediate = Transformer.toSegment(input);
+        MethodCall output = Transformer.toMethodCall(intermediate);
+
+        Event[] outEvents = (Event[]) output.getArgs()[0];
+        Assert.assertTrue(Arrays.equals(events, outEvents));
     }
 
     private void check(MethodCall expected, MethodCall actual) {

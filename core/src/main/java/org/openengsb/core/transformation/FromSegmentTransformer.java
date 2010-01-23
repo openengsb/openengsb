@@ -248,6 +248,8 @@ class FromSegmentTransformer {
         ListSegment secondSegment = (ListSegment) segments.get(1);
         if (secondSegment.getName().equals("array")) {
             obj = segmentToArray(type, (ListSegment) segments.get(1));
+        } else if (secondSegment.getName().equals("event")) {
+            obj = transformEvent((ListSegment) segments.get(1));
         } else {
             obj = segmentToBean(type, (ListSegment) segments.get(1));
         }

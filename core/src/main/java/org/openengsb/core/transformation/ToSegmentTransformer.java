@@ -121,6 +121,8 @@ class ToSegmentTransformer {
             segments.add(new TextSegment.Builder("id").text(String.valueOf(id)).build());
             if (type.isArray()) {
                 segments.add(buildArray(type, obj));
+            } else if (Event.class.isAssignableFrom(type)) {
+                segments.add(transform((Event) obj));
             } else {
                 segments.add(buildBean(type, obj));
             }

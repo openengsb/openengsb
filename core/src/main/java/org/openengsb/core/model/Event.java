@@ -83,4 +83,47 @@ public class Event {
         this.toolConnector = toolConnector;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((domain == null) ? 0 : domain.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((toolConnector == null) ? 0 : toolConnector.hashCode());
+        result = prime * result + ((elements == null) ? 0 : elements.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Event other = (Event) obj;
+        if (domain == null) {
+            if (other.domain != null)
+                return false;
+        } else if (!domain.equals(other.domain))
+            return false;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        if (toolConnector == null) {
+            if (other.toolConnector != null)
+                return false;
+        } else if (!toolConnector.equals(other.toolConnector))
+            return false;
+        if (elements == null) {
+            if (other.elements != null)
+                return false;
+        } else if (!elements.equals(other.elements))
+            return false;
+        return true;
+    }
+
 }
