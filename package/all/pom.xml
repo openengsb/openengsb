@@ -114,6 +114,11 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-scm-subversion-jms-su</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-build-maven-su</artifactId>
     </dependency>
     <dependency>

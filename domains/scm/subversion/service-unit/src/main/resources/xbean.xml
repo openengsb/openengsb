@@ -21,6 +21,7 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
   <svn:svnEndpoint service="subversion:svnService" endpoint="svnEndpoint" configuration="#workingCopy" />
+  <svn:eventEndpoint service="subversion:eventService" endpoint="eventEndpoint" configuration="#workingCopy" />
 
   <!-- Configuration bean for the SVN implementation. -->
   <bean id="workingCopy" class="org.openengsb.connector.svn.SvnConfiguration">

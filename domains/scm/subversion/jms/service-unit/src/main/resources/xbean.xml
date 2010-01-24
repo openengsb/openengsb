@@ -17,15 +17,16 @@
 
 -->
 <beans xmlns:jms="http://servicemix.apache.org/jms/1.0"
-       xmlns:subversion="urn:openengsb:svn">
+       xmlns:subversion="urn:openengsb:svn"
+       xmlns:svn-jmx="urn:openengsb:svn-jmx">
 
-  <jms:consumer service="test:svnService"
-                endpoint="svnEndpoint"
+  <jms:consumer service="svn-jmx:eventService"
+                endpoint="eventEndpoint"
                 synchronous="true"
                 destinationName="org.openengsb.domains.scm.subversion.svn.jmsQueue"
                 connectionFactory="#connectionFactory"
-                targetService="subversion:svnService"
-                targetEndpoint="svnEndpoint"
+                targetService="subversion:eventService"
+                targetEndpoint="eventEndpoint"
                 concurrentConsumers="8"
                 marshaler="#marshaler" />
 
@@ -34,14 +35,15 @@
   <bean id="connectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
     <property name="connectionFactory">
       <bean class="org.apache.activemq.ActiveMQConnectionFactory">
-        <property name="brokerURL" value="stomp://localhost:61613" />
         <property name="password" value="pwd" />
         <property name="userName" value="user" />
+        <property name="brokerURL" value="stomp://localhost:61613" />
       </bean>
     </property>
   </bean>
   
-  <bean id="marshaler" class="org.openengsb.client.CustomOpenEngSBMarshaler">
+  
+  <bean id="marshaler" class="org.openengsb.connector.svn.jms.CustomOpenEngSBMarshaler">
   </bean>
   
 </beans>

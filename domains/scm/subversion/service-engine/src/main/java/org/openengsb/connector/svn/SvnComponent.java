@@ -44,7 +44,7 @@ public class SvnComponent extends DefaultComponent {
 
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class[] { SvnEndpoint.class };
+        return new Class[] { SvnEndpoint.class, SvnEventEndpoint.class };
     }
 
 }
