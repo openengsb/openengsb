@@ -17,6 +17,8 @@
  */
 package org.openengsb.report;
 
+import java.util.Set;
+
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.SimpleEventEndpoint;
@@ -33,31 +35,31 @@ public class ReportEventEndpoint extends SimpleEventEndpoint {
 
     private EventStore eventStore;
 
-    private EventStoragePolicy policy;
+    private EventStorageRegistry policy;
 
     @Override
     protected void handleEvent(Event e, ContextHelper contextHelper, MessageProperties msgProperties) {
         testAndStore(EventStorageType.contextId, msgProperties.getContextId(), e);
         testAndStore(EventStorageType.correlationId, msgProperties.getCorrelationId(), e);
-        testAndStore(EventStorageType.flowId, msgProperties.getWorkflowId(), e);
+        testAndStore(EventStorageType.workflowId, msgProperties.getWorkflowId(), e);
+        testAndStore(EventStorageType.workflowInstanceId, msgProperties.getWorkflowInstanceId(), e);
     }
 
     private void testAndStore(EventStorageType idType, String id, Event event) {
         if (id == null) {
             return;
         }
-        StorageKey key = new StorageKey(idType, id);
-        if (!policy.areEventsStoredFor(key)) {
-            return;
+        Set<StorageKey> storeEventsFor = policy.getStorageKeysFor(idType, id);
+        for (StorageKey key : storeEventsFor) {
+            eventStore.storeEvent(key, event);
         }
-        eventStore.storeEvent(key, event);
     }
 
     public void setEventStore(EventStore eventStore) {
         this.eventStore = eventStore;
     }
 
-    public void setPolicy(EventStoragePolicy policy) {
+    public void setPolicy(EventStorageRegistry policy) {
         this.policy = policy;
     }
 

@@ -47,7 +47,7 @@ public class ReportEndpoint extends LinkingEndpoint<ReportDomain> {
         reportDomainImpl.setEventStore(eventStore);
     }
 
-    public void setPolicy(EventStoragePolicy policy) {
+    public void setPolicy(EventStorageRegistry policy) {
         reportDomainImpl.setPolicy(policy);
     }
 

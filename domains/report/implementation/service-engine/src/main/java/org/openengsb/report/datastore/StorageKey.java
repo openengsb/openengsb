@@ -18,16 +18,22 @@
 package org.openengsb.report.datastore;
 
 public class StorageKey {
+    private final String reportId;
     private final EventStorageType type;
     private final String id;
 
-    public StorageKey(String type, String id) {
-        this(EventStorageType.fromString(type), id);
+    public StorageKey(String reportId, String type, String id) {
+        this(reportId, EventStorageType.fromString(type), id);
     }
 
-    public StorageKey(EventStorageType type, String id) {
+    public StorageKey(String reportId, EventStorageType type, String id) {
+        this.reportId = reportId;
         this.type = type;
         this.id = id;
+    }
+
+    public String getReportId() {
+        return reportId;
     }
 
     public EventStorageType getType() {
@@ -42,6 +48,7 @@ public class StorageKey {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((reportId == null) ? 0 : reportId.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
@@ -56,6 +63,11 @@ public class StorageKey {
         if (getClass() != obj.getClass())
             return false;
         StorageKey other = (StorageKey) obj;
+        if (reportId == null) {
+            if (other.reportId != null)
+                return false;
+        } else if (!reportId.equals(other.reportId))
+            return false;
         if (id == null) {
             if (other.id != null)
                 return false;

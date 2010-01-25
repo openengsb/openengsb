@@ -17,9 +17,11 @@
  */
 package org.openengsb.report.datastore;
 
+import edu.emory.mathcs.backport.java.util.Arrays;
+
 public enum EventStorageType {
 
-    contextId, correlationId, flowId, customId;
+    contextId, correlationId, workflowId, workflowInstanceId;
 
     public static EventStorageType fromString(String string) {
         for (EventStorageType type : EventStorageType.values()) {
@@ -27,7 +29,8 @@ public enum EventStorageType {
                 return type;
             }
         }
-        return customId;
+        throw new IllegalArgumentException("Unknown event storage type. Only "
+                + Arrays.toString(EventStorageType.values()) + " are supported.");
     }
 
 }

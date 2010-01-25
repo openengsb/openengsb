@@ -23,7 +23,8 @@ public interface ReportDomain extends Domain {
 
     public static final String contextId = "contextId";
     public static final String correlationId = "correlationId";
-    public static final String flowId = "flowId";
+    public static final String workflowId = "workflowId";
+    public static final String workflowInstanceId = "workflowInstanceId";
 
     void generateReport(String reportId);
 

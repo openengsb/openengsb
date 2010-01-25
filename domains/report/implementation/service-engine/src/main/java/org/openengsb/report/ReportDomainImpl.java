@@ -37,7 +37,7 @@ public class ReportDomainImpl implements ReportDomain {
 
     private Map<String, StorageKey> toCollect = new HashMap<String, StorageKey>();
 
-    private EventStoragePolicy policy;
+    private EventStorageRegistry policy;
 
     private EventStore eventStore;
 
@@ -50,7 +50,7 @@ public class ReportDomainImpl implements ReportDomain {
     @Override
     public String collectData(String idType, String id) {
         String reportId = UUID.randomUUID().toString();
-        StorageKey storageKey = new StorageKey(idType, id);
+        StorageKey storageKey = new StorageKey(reportId, idType, id);
         toCollect.put(reportId, storageKey);
         policy.storeEventsFor(storageKey);
         return reportId;
@@ -91,7 +91,7 @@ public class ReportDomainImpl implements ReportDomain {
         return new QName(namespace, serviceName);
     }
 
-    public void setPolicy(EventStoragePolicy policy) {
+    public void setPolicy(EventStorageRegistry policy) {
         this.policy = policy;
     }
 

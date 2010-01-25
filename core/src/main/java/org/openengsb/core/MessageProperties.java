@@ -56,6 +56,10 @@ public class MessageProperties {
         return workflowId;
     }
 
+    public String getWorkflowInstanceId() {
+        return workflowInstanceId;
+    }
+
     public void applyToMessage(NormalizedMessage message) {
         message.setProperty("contextId", contextId);
         message.setProperty("correlationId", correlationId);

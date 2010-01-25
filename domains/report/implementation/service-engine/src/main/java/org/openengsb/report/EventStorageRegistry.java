@@ -20,9 +20,10 @@ package org.openengsb.report;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.openengsb.report.datastore.EventStorageType;
 import org.openengsb.report.datastore.StorageKey;
 
-public class EventStoragePolicy {
+public class EventStorageRegistry {
     private Set<StorageKey> toCollect = new HashSet<StorageKey>();
 
     public void storeEventsFor(StorageKey storageKey) {
@@ -33,7 +34,13 @@ public class EventStoragePolicy {
         toCollect.remove(storageKey);
     }
 
-    public boolean areEventsStoredFor(StorageKey storageKey) {
-        return toCollect.contains(storageKey);
+    public Set<StorageKey> getStorageKeysFor(EventStorageType type, String id) {
+        Set<StorageKey> result = new HashSet<StorageKey>();
+        for (StorageKey key : toCollect) {
+            if (key.getType().equals(type) && key.getId().equals(id)) {
+                result.add(key);
+            }
+        }
+        return result;
     }
 }

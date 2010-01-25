@@ -27,18 +27,11 @@ import org.openengsb.core.model.Event;
 
 public class InMemoryEventStore implements EventStore {
 
-    private Map<EventStorageType, Map<String, List<Event>>> maps;
-
-    public InMemoryEventStore() {
-        maps = new HashMap<EventStorageType, Map<String, List<Event>>>();
-        for (EventStorageType type : EventStorageType.values()) {
-            maps.put(type, new HashMap<String, List<Event>>());
-        }
-    }
+    private Map<StorageKey, List<Event>> eventMap = new HashMap<StorageKey, List<Event>>();
 
     @Override
     public List<Event> getEvents(StorageKey key) {
-        List<Event> list = maps.get(key.getType()).get(key.getId());
+        List<Event> list = eventMap.get(key);
         if (list == null) {
             return Collections.emptyList();
         }
@@ -47,23 +40,17 @@ public class InMemoryEventStore implements EventStore {
 
     @Override
     public void storeEvent(StorageKey key, Event event) {
-        Map<String, List<Event>> map = maps.get(key.getType());
-        enterValue(map, key.getId(), event);
+        List<Event> list = eventMap.get(key);
+        if (list == null) {
+            list = new ArrayList<Event>();
+            eventMap.put(key, list);
+        }
+        list.add(event);
     }
 
     @Override
     public void clearEvents(StorageKey key) {
-        Map<String, List<Event>> map = maps.get(key.getType());
-        map.remove(key.getId());
-    }
-
-    private void enterValue(Map<String, List<Event>> map, String key, Event data) {
-        List<Event> list = map.get(key);
-        if (list == null) {
-            list = new ArrayList<Event>();
-            map.put(key, list);
-        }
-        list.add(data);
+        eventMap.remove(key);
     }
 
 }
