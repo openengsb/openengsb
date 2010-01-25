@@ -35,8 +35,8 @@ Tool Domain Documentation
 
 Architectural Documentation
 
-  This document should give a deep understanding of the OpenEngSB architecture. It is thought for people who are
- interested in contributing to the OpenEngSB project or which like to get a deeper understanding of the OpenEngSB.
+  These documents give an in-depth look on the OpenEngSB architecture. They are provided for developers and people are
+ are interested in contributing to the OpenEngSB project or like to get a better understanding of it's inner working.
 
 	* {{{pdf/architecture.pdf} PDF documentation}}
 	
