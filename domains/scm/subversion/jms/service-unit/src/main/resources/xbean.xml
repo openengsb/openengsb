@@ -23,7 +23,7 @@
   <jms:consumer service="svn-jmx:eventService"
                 endpoint="eventEndpoint"
                 synchronous="true"
-                destinationName="org.openengsb.domains.scm.subversion.svn.jmsQueue"
+                destinationName="org.openengsb.scm.subversion.jmx.eventService"
                 connectionFactory="#connectionFactory"
                 targetService="subversion:eventService"
                 targetEndpoint="eventEndpoint"
@@ -37,7 +37,7 @@
       <bean class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="password" value="pwd" />
         <property name="userName" value="user" />
-        <property name="brokerURL" value="stomp://localhost:61613" />
+        <property name="brokerURL" value="tcp://localhost:61616" />
       </bean>
     </property>
   </bean>
