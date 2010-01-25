@@ -29,6 +29,10 @@ Communication model
   
   They participate in the internal control flow as well as in any notification process started externally - e.g. by activity of a connected tool.
 
+* Infrastructure example
+
+[../images/communication_architecture.png] OpenEngSB communication infrastructure example
+  
 * Notification process (tool activity)
   
   * adapter creates an event
