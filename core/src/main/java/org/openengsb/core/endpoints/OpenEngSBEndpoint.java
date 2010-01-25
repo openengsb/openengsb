@@ -90,7 +90,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     }
 
     protected String getCorrelationId(NormalizedMessage in) {
-        String correlationId = (String) in.getProperty("contextId");
+        String correlationId = (String) in.getProperty("correlationId");
         if (correlationId == null) {
             return UUID.randomUUID().toString();
         }
@@ -98,11 +98,16 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     }
 
     protected String getWorkflowId(NormalizedMessage in) {
-        return (String) in.getProperty("contextId");
+        return (String) in.getProperty("workflowId");
+    }
+
+    protected String getWorkflowInstanceId(NormalizedMessage in) {
+        return (String) in.getProperty("workflowInstanceId");
     }
 
     protected MessageProperties readProperties(NormalizedMessage in) {
-        return new MessageProperties(getContextId(in), getCorrelationId(in), getWorkflowId(in));
+        return new MessageProperties(getContextId(in), getCorrelationId(in), getWorkflowId(in),
+                getWorkflowInstanceId(in));
     }
 
     protected void forwardInOutMessage(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,

@@ -27,14 +27,21 @@ public class MessageProperties {
 
     private final String workflowId;
 
+    private final String workflowInstanceId;
+
     public MessageProperties(String contextId, String correlationId) {
         this(contextId, correlationId, null);
     }
 
     public MessageProperties(String contextId, String correlationId, String workflowId) {
+        this(contextId, correlationId, workflowId, null);
+    }
+
+    public MessageProperties(String contextId, String correlationId, String workflowId, String workflowInstanceId) {
         this.contextId = contextId;
         this.correlationId = correlationId;
         this.workflowId = workflowId;
+        this.workflowInstanceId = workflowInstanceId;
     }
 
     public String getContextId() {
@@ -54,6 +61,9 @@ public class MessageProperties {
         message.setProperty("correlationId", correlationId);
         if (workflowId != null) {
             message.setProperty("workflowId", workflowId);
+        }
+        if (workflowInstanceId != null) {
+            message.setProperty("workflowInstaceId", workflowInstanceId);
         }
     }
 

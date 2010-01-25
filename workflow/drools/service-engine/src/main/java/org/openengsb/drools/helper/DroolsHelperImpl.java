@@ -18,6 +18,7 @@
 package org.openengsb.drools.helper;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import org.drools.StatefulSession;
 import org.openengsb.core.MessageProperties;
@@ -39,7 +40,7 @@ public class DroolsHelperImpl implements DroolsHelper {
     @Override
     public void runFlow(String flowId) {
         MessageProperties flowProps = new MessageProperties(msgProperties.getContextId(), msgProperties
-                .getCorrelationId(), flowId);
+                .getCorrelationId(), flowId, UUID.randomUUID().toString());
 
         DroolsSession session = new DroolsSession(flowProps, endpoint);
         StatefulSession memory = session.createSession(Collections.emptyList());
