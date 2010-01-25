@@ -37,6 +37,7 @@ public class MavenDeployDomainImpl extends AbstractMavenDomainImpl implements De
     public boolean deployProject() {
         MavenResult mavenResult = callMaven("deploy/maven-deploy");
         DeployEvent event = new DeployEvent();
+        event.setToolConnector("maven-deploy");
         event.setDeploySuccessful(mavenResult.isSuccess());
         event.setDeployOutput(mavenResult.getOutput());
         eventHelper.sendEvent(event);

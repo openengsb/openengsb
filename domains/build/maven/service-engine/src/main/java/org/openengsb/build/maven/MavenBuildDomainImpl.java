@@ -37,6 +37,7 @@ public class MavenBuildDomainImpl extends AbstractMavenDomainImpl implements Bui
     public boolean buildProject() {
         MavenResult mavenResult = callMaven("build/maven-build");
         BuildEvent event = new BuildEvent();
+        event.setToolConnector("maven-build");
         event.setBuildSuccessful(mavenResult.isSuccess());
         event.setBuildOutput(mavenResult.getOutput());
         eventHelper.sendEvent(event);

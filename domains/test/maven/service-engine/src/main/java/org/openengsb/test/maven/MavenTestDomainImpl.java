@@ -37,6 +37,7 @@ public class MavenTestDomainImpl extends AbstractMavenDomainImpl implements Test
     public boolean runTests() {
         MavenResult mavenResult = callMaven("test/maven-test");
         TestEvent event = new TestEvent();
+        event.setToolConnector("maven-test");
         event.setTestRunSuccessful(mavenResult.isSuccess());
         event.setTestOutput(mavenResult.getOutput());
         eventHelper.sendEvent(event);
