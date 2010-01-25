@@ -18,12 +18,12 @@
 -->
 <beans xmlns:jms="http://servicemix.apache.org/jms/1.0"
        xmlns:subversion="urn:openengsb:svn"
-       xmlns:svn-jmx="urn:openengsb:svn-jmx">
+       xmlns:svn-jmx="urn:openengsb:svn-jms">
 
-  <jms:consumer service="svn-jmx:eventService"
+  <jms:consumer service="svn-jms:eventService"
                 endpoint="eventEndpoint"
                 synchronous="true"
-                destinationName="org.openengsb.scm.subversion.jmx.eventService"
+                destinationName="org.openengsb.scm.subversion.jms.eventService"
                 connectionFactory="#connectionFactory"
                 targetService="subversion:eventService"
                 targetEndpoint="eventEndpoint"
