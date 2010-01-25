@@ -8,4 +8,12 @@ public class ScmCheckInEvent extends Event {
         super("scm", "scmCheckInEvent");
     }
 
+    public void setRevision(String revision) {
+        setValue("revision", revision);
+    }
+
+    public String getRevision() {
+        return (String) getValue("revision");
+    }
+
 }

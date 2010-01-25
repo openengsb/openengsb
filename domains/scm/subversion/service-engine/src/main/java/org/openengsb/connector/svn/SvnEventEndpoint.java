@@ -18,9 +18,12 @@
 package org.openengsb.connector.svn;
 
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.EventHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.SimpleEventEndpoint;
 import org.openengsb.core.model.Event;
+import org.openengsb.drools.events.ScmCheckInEvent;
+import org.openengsb.drools.model.MergeResult;
 
 /**
  * @org.apache.xbean.XBean element="eventEndpoint"
@@ -32,8 +35,14 @@ public class SvnEventEndpoint extends SimpleEventEndpoint {
 
     @Override
     protected void handleEvent(Event e, ContextHelper contextHelper, MessageProperties msgProperties) {
-        System.out.println("Received event: " + e.getName());
-        // MergeResult checkout = svn.checkout("openengsb");
+        if (!(e instanceof ScmCheckInEvent)) {
+            return;
+        }
+        ScmCheckInEvent event = (ScmCheckInEvent) e;
+        MergeResult checkoutResult = svn.checkout("openengsb");
+        event.setRevision(checkoutResult.getRevision());
+        EventHelper eventHelper = createEventHelper(msgProperties);
+        eventHelper.sendEvent(event);
     }
 
     public void setConfiguration(SvnConfiguration configuration) {
