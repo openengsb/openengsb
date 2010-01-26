@@ -49,7 +49,7 @@ import org.openengsb.drools.events.ScmCheckInEvent;
 
 public class CustomOpenEngSBMarshaler extends AbstractJmsMarshaler implements JmsConsumerMarshaler {
 
-    private URI mep = JbiConstants.ROBUST_IN_ONLY;;
+    private URI mep = JbiConstants.IN_ONLY;
 
     public JmsContext createContext(Message message) throws Exception {
         return new Context(message);
