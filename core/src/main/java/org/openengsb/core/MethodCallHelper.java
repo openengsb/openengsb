@@ -20,6 +20,7 @@ package org.openengsb.core;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
+import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
@@ -54,6 +55,8 @@ public class MethodCallHelper {
 
             endpoint.sendSync(inout);
 
+            checkFailure(inout, method);
+
             NormalizedMessage outMessage = inout.getOutMessage();
             String outXml = new SourceTransformer().toString(outMessage.getContent());
 
@@ -65,6 +68,17 @@ public class MethodCallHelper {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void checkFailure(InOut inout, Method method) {
+        if (inout.getStatus() != ExchangeStatus.ERROR) {
+            return;
+        }
+        Exception e = inout.getError();
+        if (e != null) {
+            throw new RuntimeException(e);
+        }
+        throw new RuntimeException("Failure invoking method " + method + ". No result delivered.");
     }
 
     private static Object[] checkArgs(Object[] args) {

@@ -298,7 +298,12 @@ class FromSegmentTransformer {
     private Object segmentToBean(String beanType, ListSegment beanFields) {
         try {
             Class<?> beanClass = getClassForType(beanType);
-            Object bean = beanClass.newInstance();
+
+            Constructor<?> noArgConstructor = beanClass.getDeclaredConstructor();
+            boolean accessible = noArgConstructor.isAccessible();
+            noArgConstructor.setAccessible(true);
+            Object bean = noArgConstructor.newInstance();
+            noArgConstructor.setAccessible(accessible);
 
             for (Segment segment : beanFields.getList()) {
                 ListSegment ls = (ListSegment) segment;

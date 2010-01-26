@@ -67,7 +67,7 @@ public class MessageProperties {
             message.setProperty("workflowId", workflowId);
         }
         if (workflowInstanceId != null) {
-            message.setProperty("workflowInstaceId", workflowInstanceId);
+            message.setProperty("workflowInstanceId", workflowInstanceId);
         }
     }
 
