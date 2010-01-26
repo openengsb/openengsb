@@ -8,34 +8,60 @@
   </header>
 
   <nodes>
-    <start id="1" name="Start" x="75" y="16" width="80" height="40" />
-    <actionNode id="5" name="deployProject" x="54" y="235" width="103" height="40" >
-        <action type="expression" dialect="java" >deploy.deployProject();</action>
+    <start id="1" name="Start" x="19" y="410" width="80" height="40" />
+    <actionNode id="5" name="deployProject" x="634" y="86" width="103" height="40" >
+        <action type="expression" dialect="java" >if(deploy.deployProject()) {
+  droolsHelper.storeValue("processSuccess", true);
+}</action>
     </actionNode>
-    <end id="6" name="End" x="78" y="304" width="80" height="40" />
-    <end id="9" name="End" x="242" y="233" width="80" height="40" />
-    <end id="10" name="End" x="3" y="175" width="80" height="40" />
-    <split id="11" name="runTests" x="128" y="160" width="93" height="40" type="2" >
+    <end id="6" name="End" x="420" y="407" width="80" height="40" />
+    <split id="11" name="runTests" x="427" y="77" width="93" height="54" type="2" >
       <constraints>
-        <constraint toNodeId="9" toType="DROOLS_DEFAULT" name="otherwise" priority="2" type="code" dialect="java" >return true;</constraint>
+        <constraint toNodeId="13" toType="DROOLS_DEFAULT" name="otherwise" priority="2" type="rule" dialect="mvel" >eval(true)</constraint>
         <constraint toNodeId="5" toType="DROOLS_DEFAULT" name="tests worked" priority="1" type="code" dialect="java" >return test.runTests();</constraint>
       </constraints>
     </split>
-    <split id="12" name="buildProject" x="63" y="88" width="104" height="40" type="2" >
+    <split id="12" name="buildProject" x="128" y="83" width="104" height="40" type="2" >
       <constraints>
-        <constraint toNodeId="10" toType="DROOLS_DEFAULT" name="otherwise" priority="2" type="code" dialect="java" >return true;</constraint>
+        <constraint toNodeId="13" toType="DROOLS_DEFAULT" name="otherwise" priority="2" type="rule" dialect="mvel" >eval(true)</constraint>
         <constraint toNodeId="11" toType="DROOLS_DEFAULT" name="build worked" priority="1" type="code" dialect="java" >return build.buildProject();</constraint>
       </constraints>
     </split>
+    <join id="13" name="join" x="439" y="233" width="45" height="34" type="2" />
+    <actionNode id="14" name="sendReport" x="422" y="310" width="80" height="40" >
+        <action type="expression" dialect="java" >String reportId = (String) droolsHelper.removeValue("reportId");
+boolean success = (Boolean) droolsHelper.removeValue("processSuccess");
+
+String status = success ? "success" : "fail";
+
+Report r = report.generateReport(reportId);
+
+Notification n = new Notification();
+n.setSubject("cit process "+status);
+n.setMessage("Cit process finished with result: "+status+"\nThe report of the cit process is attached to this mail.");
+n.setRecipient("e0515280@student.tuwien.ac.at");
+Attachment a = new Attachment(r.getContent(), r.getContentType(), r.getName());
+n.setAttachments(new Attachment[] { a });
+notification.notify(n);</action>
+    </actionNode>
+    <actionNode id="15" name="startReport" x="17" y="300" width="80" height="40" >
+        <action type="expression" dialect="java" >String instanceId = droolsHelper.getCurrentWorkflowInstanceId();
+String reportId = report.collectData(report.workflowInstanceId, instanceId);
+droolsHelper.storeValue("reportId", reportId);
+droolsHelper.storeValue("processSuccess", false);</action>
+    </actionNode>
   </nodes>
 
   <connections>
     <connection from="11" to="5" />
-    <connection from="5" to="6" />
-    <connection from="11" to="9" />
-    <connection from="12" to="10" />
+    <connection from="14" to="6" />
     <connection from="12" to="11" />
-    <connection from="1" to="12" />
+    <connection from="15" to="12" />
+    <connection from="5" to="13" />
+    <connection from="11" to="13" />
+    <connection from="12" to="13" />
+    <connection from="13" to="14" />
+    <connection from="1" to="15" />
   </connections>
 
 </process>
