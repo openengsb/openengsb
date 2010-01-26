@@ -15,20 +15,34 @@
    limitations under the License.
    
  */
-package org.openengsb.drools;
+package org.openengsb.drools.model;
 
-public interface DroolsHelper {
+public class Attachment {
+    private byte[] data;
+    private String type;
+    private String name;
 
-    void runFlow(String flowId);
+    @SuppressWarnings("unused")
+    private Attachment() {
+        // for the rpc framework
+    }
 
-    String getCurrentWorkflowInstanceId();
+    public Attachment(byte[] data, String type, String name) {
+        this.data = data;
+        this.type = type;
+        this.name = name;
+    }
 
-    String getCurrentWorkflowId();
+    public byte[] getData() {
+        return data;
+    }
 
-    void storeValue(String key, Object value);
+    public String getType() {
+        return type;
+    }
 
-    Object loadValue(String key);
-
-    Object removeValue(String key);
+    public String getName() {
+        return name;
+    }
 
 }

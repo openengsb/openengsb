@@ -18,6 +18,8 @@
 package org.openengsb.drools.helper;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.drools.StatefulSession;
@@ -32,6 +34,8 @@ public class DroolsHelperImpl implements DroolsHelper {
 
     private DroolsEndpoint endpoint;
 
+    private Map<String, Object> sessionStore = new HashMap<String, Object>();
+
     public DroolsHelperImpl(MessageProperties msgProperties, DroolsEndpoint endpoint) {
         this.msgProperties = msgProperties;
         this.endpoint = endpoint;
@@ -45,6 +49,31 @@ public class DroolsHelperImpl implements DroolsHelper {
         DroolsSession session = new DroolsSession(flowProps, endpoint);
         StatefulSession memory = session.createSession(Collections.emptyList());
         memory.startProcess(flowId);
+    }
+
+    @Override
+    public String getCurrentWorkflowId() {
+        return msgProperties.getWorkflowId();
+    }
+
+    @Override
+    public String getCurrentWorkflowInstanceId() {
+        return msgProperties.getWorkflowInstanceId();
+    }
+
+    @Override
+    public Object loadValue(String key) {
+        return sessionStore.get(key);
+    }
+
+    @Override
+    public Object removeValue(String key) {
+        return sessionStore.remove(key);
+    }
+
+    @Override
+    public void storeValue(String key, Object value) {
+        sessionStore.put(key, value);
     }
 
 }

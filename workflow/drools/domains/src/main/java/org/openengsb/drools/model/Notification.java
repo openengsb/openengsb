@@ -18,11 +18,12 @@
 
 package org.openengsb.drools.model;
 
+
 public class Notification {
     private String subject;
     private String message;
     private String recipient;
-    private byte[] data;
+    private Attachment attachments[];
 
     public String getSubject() {
         return subject;
@@ -48,11 +49,14 @@ public class Notification {
         this.recipient = recipient;
     }
 
-    public byte[] getData() {
-        return data;
+    public void setAttachments(Attachment attachments[]) {
+        this.attachments = attachments;
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
+    public Attachment[] getAttachments() {
+        if (attachments == null) {
+            return new Attachment[0];
+        }
+        return attachments;
     }
 }

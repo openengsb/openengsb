@@ -19,15 +19,22 @@ package org.openengsb.email;
 
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.mail.Authenticator;
 import javax.mail.Message;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
+import org.apache.servicemix.util.jaf.ByteArrayDataSource;
 import org.openengsb.drools.NotificationDomain;
+import org.openengsb.drools.model.Attachment;
 import org.openengsb.drools.model.Notification;
 
 public class EmailNotifier implements NotificationDomain {
@@ -58,8 +65,27 @@ public class EmailNotifier implements NotificationDomain {
             msg.setRecipient(Message.RecipientType.TO, addressTo);
 
             msg.setSubject(notification.getSubject());
-            msg.setContent(notification.getMessage(), "text/plain");
 
+            // create the message part
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+            // fill in message
+            messageBodyPart.setText(notification.getMessage());
+
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+
+            for (Attachment attachment : notification.getAttachments()) {
+                // Part two is attachment
+                messageBodyPart = new MimeBodyPart();
+                DataSource source = new ByteArrayDataSource(attachment.getData(), attachment.getType());
+                messageBodyPart.setDataHandler(new DataHandler(source));
+                messageBodyPart.setFileName(attachment.getName());
+                multipart.addBodyPart(messageBodyPart);
+            }
+
+            // Put parts in message
+            msg.setContent(multipart);
             Transport.send(msg);
         } catch (Exception e) {
             throw new RuntimeException(e);
