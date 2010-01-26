@@ -35,7 +35,7 @@ public class InMemoryEventStore implements EventStore {
         if (list == null) {
             return Collections.emptyList();
         }
-        return list;
+        return new ArrayList<Event>(list);
     }
 
     @Override

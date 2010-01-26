@@ -18,6 +18,7 @@
 package org.openengsb.drools;
 
 import org.openengsb.core.model.Event;
+import org.openengsb.drools.model.Report;
 
 public interface ReportDomain extends Domain {
 
@@ -26,9 +27,9 @@ public interface ReportDomain extends Domain {
     public static final String workflowId = "workflowId";
     public static final String workflowInstanceId = "workflowInstanceId";
 
-    void generateReport(String reportId);
+    Report generateReport(String reportId);
 
-    void generateReport(Event[] events);
+    Report generateReport(Event[] events);
 
     /**
      * Start collecting data for all arriving events with the given id of the

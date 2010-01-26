@@ -18,9 +18,11 @@
 package org.openengsb.report.plaintext;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
@@ -35,6 +37,7 @@ import org.openengsb.core.MessageProperties;
 import org.openengsb.core.MethodCallHelper;
 import org.openengsb.core.model.Event;
 import org.openengsb.drools.ReportDomain;
+import org.openengsb.drools.model.Report;
 
 public class PlainTextReportDomainImpl implements ReportDomain {
 
@@ -69,42 +72,64 @@ public class PlainTextReportDomainImpl implements ReportDomain {
     }
 
     @Override
-    public void generateReport(String reportId) {
+    public Report generateReport(String reportId) {
         Method m = getMethod("generateReport", String.class);
         QName domainService = getDomainQName();
-        MethodCallHelper.sendMethodCall(endpoint, domainService, m, new Object[] { reportId }, msgProperties);
+        return (Report) MethodCallHelper.sendMethodCall(endpoint, domainService, m, new Object[] { reportId },
+                msgProperties);
     }
 
     @Override
-    public void generateReport(Event[] events) {
+    public Report generateReport(Event[] events) {
         reportDirectory.mkdirs();
-        File reportFile = new File(reportDirectory, getFileName());
+        File reportFile = new File(reportDirectory, getReportName());
+        writeToFile(events, reportFile);
+        byte[] data = getBytes(events);
+        return new Report(data, "text/plain", getReportName());
+    }
 
-        Writer writer = null;
+    private byte[] getBytes(Event[] events) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        OutputStreamWriter writer = new OutputStreamWriter(baos);
         try {
-            writer = new BufferedWriter(new FileWriter(reportFile, true));
-            writer.append("\n\n-----------------------\n");
-            writer.append(new Date().toString());
+            writeEvents(writer, events);
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return baos.toByteArray();
+    }
+
+    private void writeEvents(Writer writer, Event[] events) throws IOException {
+        writer.append("\n\n-----------------------\n");
+        writer.append(new Date().toString());
+        writer.append("\n");
+        for (Event e : events) {
+            writer.append("---------event---------\n");
+            writer.append("name: ");
+            writer.append(e.getName());
+            writer.append(" / domain: ");
+            writer.append(e.getDomain());
+            writer.append(" / toolconnector: ");
+            writer.append(String.valueOf(e.getToolConnector()));
             writer.append("\n");
-            for (Event e : events) {
-                writer.append("---------event---------\n");
-                writer.append("name: ");
-                writer.append(e.getName());
-                writer.append(" / domain: ");
-                writer.append(e.getDomain());
-                writer.append(" / toolconnector: ");
-                writer.append(String.valueOf(e.getToolConnector()));
-                writer.append("\n");
-                for (String key : e.getKeys()) {
-                    writer.append(key);
-                    writer.append(": ");
-                    writer.append(String.valueOf(e.getValue(key)));
-                    writer.append("\n");
-                }
-                writer.append("\n");
+            for (String key : e.getKeys()) {
+                writer.append(key);
+                writer.append(": ");
+                writer.append(String.valueOf(e.getValue(key)));
                 writer.append("\n");
             }
             writer.append("\n");
+            writer.append("\n");
+        }
+        writer.append("\n");
+    }
+
+    private void writeToFile(Event[] events, File reportFile) {
+        Writer writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(reportFile, true));
+            writeEvents(writer, events);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -112,7 +137,7 @@ public class PlainTextReportDomainImpl implements ReportDomain {
         }
     }
 
-    private String getFileName() {
+    private String getReportName() {
         Date current = new Date();
         DateFormat format = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
         return format.format(current) + ".txt";

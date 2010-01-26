@@ -43,4 +43,5 @@ public class EventStorageRegistry {
         }
         return result;
     }
+
 }

@@ -30,6 +30,7 @@ import org.openengsb.core.MessageProperties;
 import org.openengsb.core.MethodCallHelper;
 import org.openengsb.core.model.Event;
 import org.openengsb.drools.ReportDomain;
+import org.openengsb.drools.model.Report;
 import org.openengsb.report.datastore.EventStore;
 import org.openengsb.report.datastore.StorageKey;
 
@@ -57,7 +58,7 @@ public class ReportDomainImpl implements ReportDomain {
     }
 
     @Override
-    public void generateReport(String reportId) {
+    public Report generateReport(String reportId) {
         StorageKey storageKey = toCollect.remove(reportId);
         if (storageKey == null) {
             throw new IllegalArgumentException("No report for the given report id.");
@@ -65,15 +66,16 @@ public class ReportDomainImpl implements ReportDomain {
         registry.stopStoringEventsFor(storageKey);
         List<Event> events = eventStore.getEvents(storageKey);
         eventStore.clearEvents(storageKey);
-        generateReport(events.toArray(new Event[events.size()]));
+        return generateReport(events.toArray(new Event[events.size()]));
     }
 
     @Override
-    public void generateReport(Event[] events) {
+    public Report generateReport(Event[] events) {
         QName toolConnector = getToolConnectorQName();
         Method method;
         method = getGenerateReportMethod();
-        MethodCallHelper.sendMethodCall(endpoint, toolConnector, method, new Object[] { events }, msgProperties);
+        return (Report) MethodCallHelper.sendMethodCall(endpoint, toolConnector, method, new Object[] { events },
+                msgProperties);
     }
 
     private Method getGenerateReportMethod() {

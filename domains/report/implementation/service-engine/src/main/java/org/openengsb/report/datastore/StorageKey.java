@@ -81,4 +81,9 @@ public class StorageKey {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "StorageKey [reportId=" + reportId + ", id=" + id + ", type=" + type + "]";
+    }
+
 }
