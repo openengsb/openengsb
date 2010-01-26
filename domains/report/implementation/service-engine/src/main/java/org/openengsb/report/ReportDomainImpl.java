@@ -37,7 +37,7 @@ public class ReportDomainImpl implements ReportDomain {
 
     private Map<String, StorageKey> toCollect = new HashMap<String, StorageKey>();
 
-    private EventStorageRegistry policy;
+    private EventStorageRegistry registry;
 
     private EventStore eventStore;
 
@@ -52,7 +52,7 @@ public class ReportDomainImpl implements ReportDomain {
         String reportId = UUID.randomUUID().toString();
         StorageKey storageKey = new StorageKey(reportId, idType, id);
         toCollect.put(reportId, storageKey);
-        policy.storeEventsFor(storageKey);
+        registry.storeEventsFor(storageKey);
         return reportId;
     }
 
@@ -62,7 +62,7 @@ public class ReportDomainImpl implements ReportDomain {
         if (storageKey == null) {
             throw new IllegalArgumentException("No report for the given report id.");
         }
-        policy.stopStoringEventsFor(storageKey);
+        registry.stopStoringEventsFor(storageKey);
         List<Event> events = eventStore.getEvents(storageKey);
         eventStore.clearEvents(storageKey);
         generateReport(events.toArray(new Event[events.size()]));
@@ -91,8 +91,8 @@ public class ReportDomainImpl implements ReportDomain {
         return new QName(namespace, serviceName);
     }
 
-    public void setPolicy(EventStorageRegistry policy) {
-        this.policy = policy;
+    public void setRegistry(EventStorageRegistry registry) {
+        this.registry = registry;
     }
 
     public void setEventStore(EventStore eventStore) {

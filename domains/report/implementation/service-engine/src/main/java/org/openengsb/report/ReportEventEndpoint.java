@@ -35,7 +35,7 @@ public class ReportEventEndpoint extends SimpleEventEndpoint {
 
     private EventStore eventStore;
 
-    private EventStorageRegistry policy;
+    private EventStorageRegistry registry;
 
     @Override
     protected void handleEvent(Event e, ContextHelper contextHelper, MessageProperties msgProperties) {
@@ -49,7 +49,7 @@ public class ReportEventEndpoint extends SimpleEventEndpoint {
         if (id == null) {
             return;
         }
-        Set<StorageKey> storeEventsFor = policy.getStorageKeysFor(idType, id);
+        Set<StorageKey> storeEventsFor = registry.getStorageKeysFor(idType, id);
         for (StorageKey key : storeEventsFor) {
             eventStore.storeEvent(key, event);
         }
@@ -59,8 +59,8 @@ public class ReportEventEndpoint extends SimpleEventEndpoint {
         this.eventStore = eventStore;
     }
 
-    public void setPolicy(EventStorageRegistry policy) {
-        this.policy = policy;
+    public void setRegistry(EventStorageRegistry policy) {
+        this.registry = policy;
     }
 
 }
