@@ -36,10 +36,12 @@ String status = success ? "success" : "fail";
 
 Report r = report.generateReport(reportId);
 
+String recipient = ctx.getValue("workflows/ci/notification/email");
+
 Notification n = new Notification();
 n.setSubject("cit process "+status);
 n.setMessage("Cit process finished with result: "+status+"\nThe report of the cit process is attached to this mail.");
-n.setRecipient("e0515280@student.tuwien.ac.at");
+n.setRecipient(recipient);
 Attachment a = new Attachment(r.getContent(), r.getContentType(), r.getName());
 n.setAttachments(new Attachment[] { a });
 notification.notify(n);</action>
