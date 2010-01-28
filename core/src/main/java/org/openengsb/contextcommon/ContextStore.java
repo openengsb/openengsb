@@ -176,7 +176,7 @@ public class ContextStore {
         setValue("42/event/defaultTarget/namespace", "urn:openengsb:drools");
         setValue("42/event/defaultTarget/servicename", "droolsService");
 
-        setValue("42/workflows/ci/notification/email", "email@openengsb.org");
+        setValue("42/workflows/ci/notification/recipient", "email@openengsb.org");
 
         setValue("42/issue/namespace", "urn:openengsb:issues");
         setValue("42/issue/servicename", "issuesService");
