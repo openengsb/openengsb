@@ -19,7 +19,7 @@ HowTo - Continuous Integration and Test Workflow
 
   If you have not set up Guvnor yet, please take a look at the {{{howto_guvnor.html}Guvnor Setup}}.
 
-* Additional servicemix setup
+* Additional Servicemix Setup
 
   The perm gen space of Servicemix has to be increased. This can be done by setting the JAVA_OPTS environment variable before starting Servicemix.
   
