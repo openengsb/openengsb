@@ -1,0 +1,95 @@
+~~
+~~	Copyright 2010 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+HowTo - Continuous Integration and Test Workflow
+
+* Drools setup
+
+  If you have not set up Guvnor yet, please take a look at the {{{howto_guvnor.html}Guvnor Setup}}.
+
+* Additional servicemix setup
+
+  The perm gen space of Servicemix has to be increased. This can be done by setting the JAVA_OPTS environment variable before starting Servicemix.
+  
++---
+  JAVA_OPTS="$JAVA_OPTS -XX:PermSize=256m -XX:MaxPermSize=256m"
++---
+
+  Further more to use the commit hook (see end of this section) the Stomp protocol has to be enabled for Activemq.
+  Add the line containing the Stomp transport connector to the activemq.xml in the conf directory of Servicemix.
+  
++---
+  <amq:transportConnectors>
+     <!-- Activate a TCP connector with multicast discovery.
+          Note that multicast may be disabled if your computer
+          is not on a network, which may prevent the broker to start.
+          In such a case, just remove the discoveryUri attribute.
+       -->
+     <amq:transportConnector uri="tcp://localhost:61616" discoveryUri="multicast://default"/>
+     <amq:transportConnector uri="stomp://localhost:61613" />
+  </amq:transportConnectors>
++---
+
+* Setting up the example
+  
+  In this example a workflow shall be used to model the behaviour, which is triggered by a rule. 
+
+  At {{{http://localhost:8081/drools-guvnor}http://localhost:8081/drools-guvnor}} choose "Create New" -> "New RuleFlow" call it 'ci' and upload the ci.rf from workflow/drools/service-engine/src/main/resources.
+
+[../images/cit_workflow.png]
+  
+  To configure the email address to which the report will be sent, set the value '<contextId>/workflows/ci/notification/recipient' in the context. This can be done by the test client.
+  
+  At {{{http://localhost:8081/drools-guvnor}http://localhost:8081/drools-guvnor}} choose "Create New" -> "New Rule". Type is "DRL Rule (Technical rule, text editor)"
+
++----  
+  when
+    e : ScmCheckInEvent ()
+  then
+    droolsHelper.runFlow("ci");
++----
+
+  Note: You have to press "save changes" in order to make sure that your changes to the rule take effect.
+
+  Then add another rule (same type):
+  
++----
+  when
+    e : Event()
+  then
+    String namespace = config.getNamespace(report);
+    String service = config.getEventServiceName(report);
+    eventHelper.sendEvent(e, namespace, service);
++----
+
+  The first rule states that whenever an event of type ScmCheckInEvent happens the workflow with the id 'ci' shall be started.
+  The second rule forwards every event to the report domain.
+
+  Build the package with "build package". Now after an ScmCheckInEvent is triggered the workflow will be started.
+
+* Running the example
+
+  1. Start servicemix.
+  
+  2. Run quickrun.sh.
+
+  3. Trigger an ScmCheckInEvent.
+  
+* The Subversion Stomp Commit Hook
+
+  The third step from the list in the section 'Running the example' can be accomplished by usinng a commit hook in the SCM tool.
+  A small Perl program was developed which sends a JMS message using the Stomp protocol into a queue. 
+  A specialized JMS consumer of the tool connector reads from this queue and informs the Subversion tool connector that a check in has happened. 
+  The tool connector creates the ScmCheckInEvent and sends it to the OpenEngSB. The Perl script can be found in domains/scm/subversion/hooks/stomp-client.

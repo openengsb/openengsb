@@ -17,7 +17,7 @@ HowTo - First steps with OpenEngSB (Issue tracker)
 
 * Drools setup
 
-  If you have not set up Guvnor yet, please take a look at the {{{howto_notify.html}Hello World example}}.
+  If you have not set up Guvnor yet, please take a look at the {{{howto_guvnor.html}Guvnor Setup}} and {{{howto_notify.html}Hello World example}}.
   
 * Trac setup
   

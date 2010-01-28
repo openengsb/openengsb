@@ -1,0 +1,87 @@
+~~
+~~	Copyright 2010 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+HowTo - Guvnor Setup
+
+  We are using the standalone version of Drools Guvnor for this example. You can download it from the {{{http://www.jboss.org/drools/downloads.html}JBoss Drools homepage}}.
+
+* Guvnor Setup
+
+  Change port of Guvnor-JBoss to be 8081 instead of 8080.
+  In server/default/deploy/jboss-web.deployer/server.xml
+  
++---  
+  <Connector port="8081" address="${jboss.bind.address}"
++---
+
+  Change port of jmx/rmi from 1099 to 10099.
+  In server/default/conf/jboss-service.xml
+  
++---
+  <mbean code="org.jboss.naming.NamingService"
+  ...
+  <attribute name="Port">10099</attribute>
++---
+
+  Maybe also change this in server/default/conf/jboss-minimal.xml as this port is also specified here.
+
+* Drools Project Setup in Guvnor
+
+  To create the model for guvnor run the shell script create-guvnor-model.sh in the scripts directory. This will place a jar file in the project main target directory (in the root folder of the OpenEngSB project).
+  
+  Note: At this time you need Apache Maven 2 to be available in the testing environment. You can fetch it from the {{{http://maven.apache.org/download.html}Maven website}}. Under some circumstances Maven seems to run out of heap space when building OpenEngSB due to its size. This can be worked around by including "-Xmx1024M -XX:MaxPermSize=512m" in the environmental variable "MAVEN_OPTS" before running Maven again in a new shell.
+
+  Then log in to the web interface of the guvnor server (user and pwd empty) at {{{http://localhost:8081/drools-guvnor}http://localhost:8081/drools-guvnor}}.
+  
+  Guvnor gives you the possibility to add some test data to the empty repository. Choose "no".
+  Use the left navigation panel and move to 'Administration' and then 'Category' and add a new category named openengsb.
+  
+  Now use the left navigation panel to show your knowledge bases. Create a new org.openengsb package with "Create New" -> "New Package".
+  Note: It has to be called org.openengsb, if it is called otherwise our drools component cannot connect to guvnor in a correct way.
+  Click on the package org.openengsb.
+  
+  Then use "Create New" -> "Upload POJO Model". Name it openengsb. Choose the openengsb-guvnor-model.jar from the target directory and upload it.
+  
+  Back in the org.openengsb package tab, click in the configuration section on 'Advanced View' and paste the following lines to define the proper imports and globals. 
+  You can also do this by hand in the basic view, but you have to keep the naming of the globals.
+  
++-----
+  import org.openengsb.drools.events.BuildEvent
+  import org.openengsb.drools.events.DeployEvent
+  import org.openengsb.drools.events.ScmCheckInEvent
+  import org.openengsb.drools.events.TestEvent
+  import org.openengsb.drools.model.Attachment
+  import org.openengsb.drools.model.MergeResult
+  import org.openengsb.drools.model.Notification
+  import org.openengsb.drools.model.Report
+  import org.openengsb.drools.model.ScmLogEntry
+  import org.openengsb.core.model.Event
+  global org.openengsb.drools.BuildDomain build
+  global org.openengsb.drools.DeployDomain deploy
+  global org.openengsb.drools.DomainConfiguration config
+  global org.openengsb.drools.DroolsHelper droolsHelper
+  global org.openengsb.drools.DroolsIssuesDomain issue
+  global org.openengsb.drools.NotificationDomain notification
+  global org.openengsb.drools.ReportDomain report
+  global org.openengsb.drools.ScmDomain scm
+  global org.openengsb.drools.TestDomain test
+  global org.openengsb.contextcommon.ContextHelper ctx
+  global org.openengsb.core.EventHelper eventHelper
++-----
+  
+  Note: The names have to be exactly the same as those specified in the org.openengsb.drools.DomainRegistry in the openengsb-drools-domains project.
+  Press "save and validate configuration".
+
+  Now you can write your rules and build the org.openengsb package to make it accessible by the OpenEngSB.
