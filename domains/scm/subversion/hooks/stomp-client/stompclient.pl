@@ -13,7 +13,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
-use lib 'lib';
+use lib 'lib/lib/perl5';
 use Net::Stomp;
 
 # set up connection
