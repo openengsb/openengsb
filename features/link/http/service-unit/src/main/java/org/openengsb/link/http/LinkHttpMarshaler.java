@@ -56,8 +56,11 @@ public class LinkHttpMarshaler extends AbstractHttpConsumerMarshaler {
     }
 
     private String prependMissingUUID(String query) {
-        if (!query.startsWith("UUID:")) {
-            query = "UUID:" + query;
+        String[] list = query.split(":");
+        if(list.length == 1){
+            query = "uuid:" + query;
+        } else if(list.length == 2){
+            query = list[0].toLowerCase() + ":" + list[1];
         }
         return query;
     }
