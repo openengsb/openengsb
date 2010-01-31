@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Null type as field of a bean -->
+<list name="field" format="" domainConcept="">
+  <text name="name" format="" domainConcept="">fieldName</text>
+  <text name="type" format="" domainConcept="">java.lang.String</text>
+  <text name="null" format="" domainConcept=""></text>
+</list>
+
+<!-- Null type as argument of a method call -->
+<list name="argument" format="" domainConcept="">
+  <text name="name" format="" domainConcept="">arg0</text>
+  <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
+  <text name="null" format="" domainConcept=""></text>
+</list>
+
+<!-- Null type as element of an event -->
+<list name="element" format="" domainConcept="">
+  <text name="name" format="" domainConcept="">elementName</text>
+  <text name="type" format="" domainConcept="">java.lang.Integer</text>
+  <text name="null" format="" domainConcept=""></text>
+</list>

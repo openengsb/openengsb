@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Array type as field of a bean -->
+<list name="field" format="" domainConcept="">
+  <text name="name" format="" domainConcept="">fieldName</text>
+  <text name="type" format="" domainConcept="">[Ljava.lang.String;</text>
+  <text name="id" format="" domainConcept="">0</text>
+  <list name="array" format="" domainConcept="">
+    <list name="arrayElement" format="" domainConcept="">
+      <text name="name" format="" domainConcept="">arrayElement0</text>
+      <text name="type" format="" domainConcept="">java.lang.String</text>
+      <text name="value" format="" domainConcept="">42</text>
+    </list>
+    <list name="arrayElement" format="" domainConcept="">
+      <text name="name" format="" domainConcept="">arrayElement1</text>
+      <text name="type" format="" domainConcept="">java.lang.String</text>
+      <text name="value" format="" domainConcept="">43</text>
+    </list>
+  </list>
+</list>
+
+<!-- Primitive type as argument of a method call -->
+<list name="argument" format="" domainConcept="">
+  <text name="name" format="" domainConcept="">arg0</text>
+  <text name="type" format="" domainConcept="">[I</text>
+  <text name="id" format="" domainConcept="">0</text>
+  <list name="array" format="" domainConcept="">
+    <list name="arrayElement" format="" domainConcept="">
+      <text name="name" format="" domainConcept="">arrayElement0</text>
+      <text name="type" format="" domainConcept="">int</text>
+      <text name="value" format="" domainConcept="">42</text>
+    </list>
+    <list name="arrayElement" format="" domainConcept="">
+      <text name="name" format="" domainConcept="">arrayElement1</text>
+      <text name="type" format="" domainConcept="">int</text>
+      <text name="value" format="" domainConcept="">43</text>
+    </list>
+  </list>
+</list>
+
+<!-- Primitive type as element of an event -->
+<list name="element" format="" domainConcept="">
+  <text name="name" format="" domainConcept="">elementName</text>
+  <text name="type" format="" domainConcept="">[I</text>
+  <text name="id" format="" domainConcept="">0</text>
+  <list name="array" format="" domainConcept="">
+    <list name="arrayElement" format="" domainConcept="">
+      <text name="name" format="" domainConcept="">arrayElement0</text>
+      <text name="type" format="" domainConcept="">int</text>
+      <text name="value" format="" domainConcept="">42</text>
+    </list>
+  </list>
+</list>

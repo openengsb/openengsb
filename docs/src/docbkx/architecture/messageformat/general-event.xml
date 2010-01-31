@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <!-- Event type as field of a bean -->
+<list name="field" format="" domainConcept="">
+  <text name="name" format="" domainConcept="">fieldName</text>
+  <text name="type" format="" domainConcept="">org.openengsb.SomeEvent</text>
+  <text name="id" format="" domainConcept="">0</text>
+  <list name="event" format="" domainConcept="">
+    <text name="event" format="" domainConcept="">org.openengsb.SomeEvent</text>
+    <list name="superclasses" format="" domainConcept="">
+      <text name="superclass" format="" domainConcept="">org.openengsb.core.model.Event</text>
+      <text name="superclass" format="" domainConcept="">java.lang.Object</text>
+    </list>
+    <text name="name" format="" domainConcept="">someEvent</text>
+    <text name="domain" format="" domainConcept="">domain</text>
+    <text name="toolConnector" format="" domainConcept="">someTool</text>
+  </list>
+</list>
+
+  <!-- Event type as argument of a method call -->
+<list name="argument" format="" domainConcept="">
+  <text name="name" format="" domainConcept="">arg0</text>
+  <text name="type" format="" domainConcept="">org.openengsb.SomeEvent</text>
+  <text name="id" format="" domainConcept="">0</text>
+  <list name="event" format="" domainConcept="">
+    <text name="event" format="" domainConcept="">org.openengsb.SomeEvent</text>
+    <list name="superclasses" format="" domainConcept="">
+      <text name="superclass" format="" domainConcept="">org.openengsb.core.model.Event</text>
+      <text name="superclass" format="" domainConcept="">java.lang.Object</text>
+    </list>
+    <text name="name" format="" domainConcept="">someEvent</text>
+    <text name="domain" format="" domainConcept="">domain</text>
+    <text name="toolConnector" format="" domainConcept="">someTool</text>
+  </list>
+</list>
+
+  <!-- Event type as element of another event -->
+<list name="element" format="" domainConcept="">
+  <text name="name" format="" domainConcept="">elementName</text>
+  <text name="type" format="" domainConcept="">org.openengsb.SomeEvent</text>
+  <text name="id" format="" domainConcept="">0</text>
+  <list name="event" format="" domainConcept="">
+    <text name="event" format="" domainConcept="">org.openengsb.SomeEvent</text>
+    <list name="superclasses" format="" domainConcept="">
+      <text name="superclass" format="" domainConcept="">org.openengsb.core.model.Event</text>
+      <text name="superclass" format="" domainConcept="">java.lang.Object</text>
+    </list>
+    <text name="name" format="" domainConcept="">someEvent</text>
+    <text name="domain" format="" domainConcept="">domain</text>
+    <text name="toolConnector" format="" domainConcept="">someTool</text>
+  </list>
+</list>
