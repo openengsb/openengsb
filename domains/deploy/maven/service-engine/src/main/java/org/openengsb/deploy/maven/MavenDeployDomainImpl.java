@@ -21,7 +21,9 @@ import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.EventHelper;
 import org.openengsb.drools.DeployDomain;
 import org.openengsb.drools.events.DeployEvent;
+import org.openengsb.drools.events.DeployStartEvent;
 import org.openengsb.maven.common.AbstractMavenDomainImpl;
+import org.openengsb.maven.common.MavenParameters;
 import org.openengsb.maven.common.MavenResult;
 
 public class MavenDeployDomainImpl extends AbstractMavenDomainImpl implements DeployDomain {
@@ -35,7 +37,13 @@ public class MavenDeployDomainImpl extends AbstractMavenDomainImpl implements De
 
     @Override
     public boolean deployProject() {
-        MavenResult mavenResult = callMaven("deploy/maven-deploy");
+        DeployStartEvent startEvent = new DeployStartEvent();
+        MavenParameters params = getMavenParametersForMavenCall("deploy/maven-deploy");
+        startEvent.setToolConnector("maven-deploy");
+        startEvent.setParameters(params.toString());
+        eventHelper.sendEvent(startEvent);
+
+        MavenResult mavenResult = callMaven(params);
         DeployEvent event = new DeployEvent();
         event.setToolConnector("maven-deploy");
         event.setDeploySuccessful(mavenResult.isSuccess());

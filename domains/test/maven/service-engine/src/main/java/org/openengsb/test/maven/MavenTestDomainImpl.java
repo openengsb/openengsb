@@ -21,7 +21,9 @@ import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.EventHelper;
 import org.openengsb.drools.TestDomain;
 import org.openengsb.drools.events.TestEvent;
+import org.openengsb.drools.events.TestStartEvent;
 import org.openengsb.maven.common.AbstractMavenDomainImpl;
+import org.openengsb.maven.common.MavenParameters;
 import org.openengsb.maven.common.MavenResult;
 
 public class MavenTestDomainImpl extends AbstractMavenDomainImpl implements TestDomain {
@@ -35,7 +37,13 @@ public class MavenTestDomainImpl extends AbstractMavenDomainImpl implements Test
 
     @Override
     public boolean runTests() {
-        MavenResult mavenResult = callMaven("test/maven-test");
+        TestStartEvent startEvent = new TestStartEvent();
+        MavenParameters params = getMavenParametersForMavenCall("test/maven-test");
+        startEvent.setToolConnector("maven-test");
+        startEvent.setParameters(params.toString());
+        eventHelper.sendEvent(startEvent);
+
+        MavenResult mavenResult = callMaven(params);
         TestEvent event = new TestEvent();
         event.setToolConnector("maven-test");
         event.setTestRunSuccessful(mavenResult.isSuccess());

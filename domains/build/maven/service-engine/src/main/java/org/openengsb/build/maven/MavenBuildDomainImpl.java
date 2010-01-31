@@ -21,7 +21,9 @@ import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.EventHelper;
 import org.openengsb.drools.BuildDomain;
 import org.openengsb.drools.events.BuildEvent;
+import org.openengsb.drools.events.BuildStartEvent;
 import org.openengsb.maven.common.AbstractMavenDomainImpl;
+import org.openengsb.maven.common.MavenParameters;
 import org.openengsb.maven.common.MavenResult;
 
 public class MavenBuildDomainImpl extends AbstractMavenDomainImpl implements BuildDomain {
@@ -35,7 +37,13 @@ public class MavenBuildDomainImpl extends AbstractMavenDomainImpl implements Bui
 
     @Override
     public boolean buildProject() {
-        MavenResult mavenResult = callMaven("build/maven-build");
+        BuildStartEvent startEvent = new BuildStartEvent();
+        MavenParameters params = getMavenParametersForMavenCall("build/maven-build");
+        startEvent.setToolConnector("maven-build");
+        startEvent.setParameters(params.toString());
+        eventHelper.sendEvent(startEvent);
+
+        MavenResult mavenResult = callMaven(params);
         BuildEvent event = new BuildEvent();
         event.setToolConnector("maven-build");
         event.setBuildSuccessful(mavenResult.isSuccess());

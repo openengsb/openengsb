@@ -32,16 +32,24 @@ public class AbstractMavenDomainImpl {
         this.contextHelper = contextHelper;
     }
 
-    protected MavenResult callMaven(String pathPrefix) {
+    protected MavenParameters getMavenParametersForMavenCall(String pathPrefix) {
+        MavenParameters params = new MavenParameters();
+
         Properties executionRequestProperties = getPropertiesFromContext(pathPrefix
                 + "/config/executionRequestProperties");
+        params.setExecutionRequestProperties(executionRequestProperties);
 
         String baseDir = contextHelper.getValue(pathPrefix + "/config/baseDirectory");
-        File baseDirectory = new File(baseDir);
+        params.setBaseDir(new File(baseDir));
 
-        String[] goals = getValuesFromContext(pathPrefix + "/config/goals");
+        params.setGoals(getValuesFromContext(pathPrefix + "/config/goals"));
 
-        MavenConnector maven = new MavenConnector(baseDirectory, goals, executionRequestProperties);
+        return params;
+    }
+
+    protected MavenResult callMaven(MavenParameters params) {
+        MavenConnector maven = new MavenConnector(params.getBaseDir(), params.getGoals(), params
+                .getExecutionRequestProperties());
         return maven.execute();
     }
 

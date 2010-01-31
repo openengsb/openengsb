@@ -68,6 +68,9 @@ HowTo - Guvnor Setup
   import org.openengsb.drools.model.Report
   import org.openengsb.drools.model.ScmLogEntry
   import org.openengsb.core.model.Event
+  import org.openengsb.drools.events.BuildStartEvent
+  import org.openengsb.drools.events.DeployStartEvent
+  import org.openengsb.drools.events.TestStartEvent
   global org.openengsb.drools.BuildDomain build
   global org.openengsb.drools.DeployDomain deploy
   global org.openengsb.drools.DomainConfiguration config

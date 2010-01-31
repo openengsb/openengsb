@@ -17,8 +17,8 @@ limitations under the License.
  */
 package org.openengsb.drools;
 
-import org.openengsb.drools.model.ScmLogEntry;
 import org.openengsb.drools.model.MergeResult;
+import org.openengsb.drools.model.ScmLogEntry;
 
 public interface ScmDomain extends Domain {
 
