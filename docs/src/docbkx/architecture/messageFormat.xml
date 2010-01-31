@@ -20,7 +20,7 @@
   <title>Message Format</title>
   <para>
     In this chapter the common message format of all JBI messages shall be explained in detail. The message
-    properties and message exchange patters that are used in the OpenEngSB will be explained as well as the payload
+    properties and message exchange patterns that are used in the OpenEngSB will be explained as well as the payload
     structure both for service-call messages and event messages.
   </para>
   
@@ -54,10 +54,10 @@
   <section id="messageFormat.mep">
     <title>Message Exchange Patterns and the Operation Field</title>
     <para>
-      Using service-call messages and event messages the message exchange pattern used by the OpenEngSB is different. While
-      for service messages the in-out pattern is used and the return value will be sent back in the out message for event
+      The message exchange pattern used by the OpenEngSB is different for service-call messages and event messages. While
+      for service-call messages the in-out pattern is used and the return value will be sent back in the out message, for event
       messages the in-only message exchange pattern is used. If error feedback is necessary for the event producing
-      component use the robust-in-only message exchange pattern.
+      component the robust-in-only message exchange pattern can be used.
     </para>
     <para>
       JBI messages can also define a "operation" field for messages. This field has to be set to "methodcall" for
@@ -301,7 +301,10 @@
           </programlisting>
         </listitem>
         <listitem>
-          Events - Events are also allowed as parameters, return values, bean fields, etc.
+          Events - Events are also allowed as parameters, return values, bean fields, etc. 
+          Events have to define their superclasses, to give the receiver the possibility to instantiate the
+          most specialized type he has in his classpath. The list of superclasses must be ordered and has to start
+          with the direct superclass of the event.
           <programlisting language="xml">
             <![CDATA[ 
 <!-- Event type as field of a bean -->
@@ -374,6 +377,11 @@
     <text name="name" format="" domainConcept="">arg0</text>
     <text name="type" format="" domainConcept="">java.lang.String</text>
     <text name="value" format="" domainConcept="">some text</text>
+  </list>
+  <list name="argument" format="" domainConcept="">
+    <text name="name" format="" domainConcept="">arg1</text>
+    <text name="type" format="" domainConcept="">int</text>
+    <text name="value" format="" domainConcept="">42</text>
   </list>
 </list>
         ]]>
