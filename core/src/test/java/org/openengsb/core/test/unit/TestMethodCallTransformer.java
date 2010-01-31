@@ -36,7 +36,6 @@ public class TestMethodCallTransformer {
         MethodCall input = new MethodCall("foo", new Object[0], new Class<?>[0]);
 
         Segment intermediate = Transformer.toSegment(input);
-
         MethodCall output = Transformer.toMethodCall(intermediate);
 
         check(input, output);
@@ -48,10 +47,23 @@ public class TestMethodCallTransformer {
                 long.class, String.class });
 
         Segment intermediate = Transformer.toSegment(input);
-
         MethodCall output = Transformer.toMethodCall(intermediate);
 
         check(input, output);
+    }
+
+    @Test
+    public void testArray() throws SerializationException {
+        int[] intArray = new int[] { 42, 43 };
+        String[] stringArray = new String[] { "42", "43" };
+        MethodCall input = new MethodCall("foo", new Object[] { intArray, stringArray }, new Class<?>[] { int[].class,
+                String[].class });
+
+        Segment intermediate = Transformer.toSegment(input);
+        MethodCall output = Transformer.toMethodCall(intermediate);
+
+        Assert.assertTrue(Arrays.equals(intArray, (int[]) output.getArgs()[0]));
+        Assert.assertTrue(Arrays.equals(stringArray, (String[]) output.getArgs()[1]));
     }
 
     @Test

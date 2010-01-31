@@ -26,11 +26,12 @@ import org.junit.Test;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
+import org.openengsb.util.serialization.SerializationException;
 
 public class TestReturnValueTransformer {
 
     @Test
-    public void testPrimitive() {
+    public void testPrimitive() throws SerializationException {
         ReturnValue input = new ReturnValue("success", String.class);
 
         Segment intermediate = Transformer.toSegment(input);
@@ -40,7 +41,7 @@ public class TestReturnValueTransformer {
     }
 
     @Test
-    public void testBean() {
+    public void testBean() throws SerializationException {
         TestBean testBean = new TestBean("foo", 42, null);
         ReturnValue input = new ReturnValue(testBean, TestBean.class);
 

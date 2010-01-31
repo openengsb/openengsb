@@ -36,7 +36,50 @@ public class TestEventTransformation {
         input.setValue("buz", new Integer(42));
 
         String xml = Transformer.toXml(input);
-        System.out.println(xml);
+        Event result = Transformer.toEvent(xml);
+
+        checkFields(input, result);
+        checkKeys(input, result);
+    }
+
+    @Test
+    public void testEventWithBean() throws SerializationException {
+        Event input = new Event("domain", "name");
+        input.setValue("foo", "42");
+        input.setValue("bar", 42);
+        input.setValue("buz", new Bean());
+
+        String xml = Transformer.toXml(input);
+        Event result = Transformer.toEvent(xml);
+
+        checkFields(input, result);
+        checkKeys(input, result);
+    }
+
+    @Test
+    public void testEventWithEventElement() throws SerializationException {
+        Event input = new Event("domain", "name");
+
+        Event someEvent = new SomeEvent();
+
+        input.setValue("foo", someEvent);
+
+        String xml = Transformer.toXml(input);
+        Event result = Transformer.toEvent(xml);
+
+        checkFields(input, result);
+        checkKeys(input, result);
+    }
+
+    @Test
+    public void testEventWithBeanReference() throws SerializationException {
+        Bean bean = new Bean();
+
+        Event input = new Event("domain", "name");
+        input.setValue("foo", bean);
+        input.setValue("bar", bean);
+
+        String xml = Transformer.toXml(input);
         Event result = Transformer.toEvent(xml);
 
         checkFields(input, result);
