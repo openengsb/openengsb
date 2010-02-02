@@ -115,6 +115,9 @@
                   <chunkedOutput>false</chunkedOutput>
                   <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html.xsl</htmlCustomization>
                   <foCustomization>${basedir}/src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
+                  <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>
+                  <xincludeSupported>true</xincludeSupported>
+                  <imgSrcPath>${basedir}/src/docbkx/resources/images/</imgSrcPath>
                   <postProcess>
                     <copy todir="${basedir}/target/site/reference">
                       <fileset dir="${basedir}/target/docbkx">

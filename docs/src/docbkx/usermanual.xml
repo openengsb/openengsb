@@ -59,6 +59,7 @@
   <xi:include href="usermanual/introduction.xml" />
   <xi:include href="usermanual/userQuickstart.xml" />
   <xi:include href="usermanual/devQuickstart.xml" />
+  <xi:include href="usermanual/testclient.xml" />
   <xi:include href="usermanual/architecture.xml" />
   <xi:include href="usermanual/externalConnectors.xml" />
   <xi:include href="usermanual/internalConnectors.xml" />
