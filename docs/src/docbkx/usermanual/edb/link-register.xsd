@@ -26,9 +26,9 @@
 		]]></documentation>
 	</annotation>
 
-	<element name="LinkRegister" type="tns:LinkRegister" />
+	<element name="LinkRegisterMessage" type="tns:LinkRegisterMessage" />
 
-	<complexType name="LinkRegister">
+	<complexType name="LinkRegisterMessage">
 		<sequence>
 			<element name="body" type="tns:LinkRegisterBody" />
 		</sequence>
