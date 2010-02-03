@@ -31,7 +31,7 @@ import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointNameType;
 import org.openengsb.config.jbi.types.EndpointType;
 import org.openengsb.config.jbi.types.RefType;
-import org.openengsb.config.jbi.types.ServiceType;
+import org.openengsb.config.jbi.types.ServiceNameType;
 import org.openengsb.config.jbi.types.StringType;
 
 import com.google.common.collect.Maps;
@@ -52,7 +52,7 @@ public class Fixtures {
     public static EndpointInfo createEI(ComponentType c) {
         EndpointType e = new EndpointType("a");
         e.setParent(c);
-        e.addAttribute(new ServiceType("service", false, 0, ""));
+        e.addAttribute(new ServiceNameType("service", false, 0, ""));
         e.addAttribute(new EndpointNameType("endpoint", false, 0, ""));
         RefType ref = new RefType("beanRef", true, 0, "");
         ref.setTheClass("a.b.C");

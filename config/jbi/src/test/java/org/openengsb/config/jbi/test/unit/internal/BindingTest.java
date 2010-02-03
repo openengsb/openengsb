@@ -29,7 +29,7 @@ import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointNameType;
 import org.openengsb.config.jbi.types.IntType;
 import org.openengsb.config.jbi.types.RefType;
-import org.openengsb.config.jbi.types.ServiceType;
+import org.openengsb.config.jbi.types.ServiceNameType;
 import org.openengsb.config.jbi.types.StringType;
 
 import com.thoughtworks.xstream.XStream;
@@ -88,8 +88,8 @@ public class BindingTest {
     
     @Test
     public void serviceParseTargetAttribute() throws Exception {
-        String xml = "<service target=\"true\" />";
-        ServiceType o = (ServiceType)x.fromXML(xml);
+        String xml = "<serviceName target=\"true\" />";
+        ServiceNameType o = (ServiceNameType)x.fromXML(xml);
         assertThat(o.isTarget(), is(true));
     }
 }
