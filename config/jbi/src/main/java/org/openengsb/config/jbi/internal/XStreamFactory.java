@@ -26,6 +26,7 @@ import org.openengsb.config.jbi.types.EndpointNameType;
 import org.openengsb.config.jbi.types.EndpointType;
 import org.openengsb.config.jbi.types.IntType;
 import org.openengsb.config.jbi.types.RefType;
+import org.openengsb.config.jbi.types.ServiceEndpointTargetType;
 import org.openengsb.config.jbi.types.ServiceNameType;
 import org.openengsb.config.jbi.types.StringType;
 
@@ -60,6 +61,9 @@ public class XStreamFactory {
         x.alias("ref", RefType.class);
         x.useAttributeFor(RefType.class, "theClass");
         x.aliasAttribute(RefType.class, "theClass", "clazz");
+        x.alias("endpointTarget", ServiceEndpointTargetType.class);
+        x.useAttributeFor(ServiceEndpointTargetType.class, "serviceName");
+        x.useAttributeFor(ServiceEndpointTargetType.class, "endpointName");
     }
 
     private static void configureBeanType(XStream x) {
