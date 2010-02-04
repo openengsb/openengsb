@@ -18,9 +18,13 @@ Roadmap
 *Core
 
   * Visual Configuration 
+
   * Role-Matrix (Connection between User/Role/Access Rights and Tasks)
+
   * Upgrade to Service Mix 4
+
   * Authorisation and Authentication of Services, Connectors, ... 
+
   * LDAP?
 
 
@@ -28,21 +32,34 @@ Roadmap
 *Engineering Knowledge Base
 
   * Distributed storage for ontologies
+
   * Basic ontologies for engineering knowledgebase (EKB) and tool ontologies
+
   * Integration of EKB into the bus
+
   * Transformations
+
   * Execution of Queries
 
 
 *Connectors
 
   * GIT (SCM)	
+
   * Mercurial (SCM)	
+
   * ANT (build)	
+
   * Github (issues)	
+
   * Google Code (issues)	
+
   * Jabber (notification)	
+
   * ICQ (notification)	
+
   * SMS[research] (notification)	
+
   * Webdav (CMS)	
+
   * PIM-connectors	
