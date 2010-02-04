@@ -28,6 +28,10 @@ HowTo - First steps with OpenEngSB
   * Web configuration tutorial  
 
     The {{{howto_embedded.html}Web deployment and configuration}} tutorial shows major runtime management capabilities of OpenEngSB. The web interface allows easy monitoring, configuration and deployment of connectors and components.
+
+  * Continuous Integration tutorial
+
+    Full {{{howto_cit.html}Continuous integration}} tutorial showing how more complex use cases could be implemented with the OpenEngSB.
   
 * Development
 
