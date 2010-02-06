@@ -20,8 +20,13 @@
 # version, when the project is embedded in an webserver this script is for
 # change.
 
-echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
-
 cd $(dirname $0)/../package/all
-mvn jbi:projectDeploy -e -o
+if [[ "-online" == "$1" ]] ; then
+  mvn clean install
+  mvn jbi:projectDeploy
+else
+  echo "This script may fail because executing in offline mode. If you use it for the first time please use the -online option to start it in online mode"
+  mvn clean install -o
+  mvn jbi:projectDeploy -o
+fi
 
