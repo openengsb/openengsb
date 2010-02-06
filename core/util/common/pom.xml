@@ -27,8 +27,8 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-util</artifactId>
-  <name>openengsb-util</name>
+  <artifactId>openengsb-util-common</artifactId>
+  <name>openengsb-util-common</name>
   <packaging>jar</packaging>
 
   <description>

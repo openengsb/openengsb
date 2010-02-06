@@ -41,7 +41,7 @@
     <!-- EngSB Dependencies -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-util</artifactId>
+      <artifactId>openengsb-util-common</artifactId>
     </dependency>
 
     <!-- jgit (google repo) -->

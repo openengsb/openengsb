@@ -110,7 +110,9 @@
   <modules>
     <!-- Core -->
     <module>core/core</module>
-    <module>core/util</module>
+    <module>core/util/common</module>
+
+    <!-- Specific Utils -->
 
     <!-- Documentation -->
     <module>docs</module>
@@ -663,7 +665,7 @@
                 <exclude>package/all/quickdeploy.sh</exclude>
 
                 <!-- Test Data -->
-                <exclude>core/util/src/test/resources/serialization/valid.xml</exclude>
+                <exclude>core/util/common/src/test/resources/serialization/valid.xml</exclude>
                 <exclude>**/test/resources/**</exclude>
 
                 <!-- OpenEngSB Embedded -->
@@ -728,7 +730,8 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-util</artifactId>
+        <artifactId>openengsb-util-common</artifactId>
+    
         <version>${pom.version}</version>
       </dependency>
       
