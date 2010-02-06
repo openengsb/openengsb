@@ -25,26 +25,11 @@ import org.apache.servicemix.jbi.listener.MessageExchangeListener;
 public class ExistLogger implements MessageExchangeListener {
 
     public void onMessageExchange(final MessageExchange exchange) throws MessagingException {
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-        System.out.println("OUT OUT OUT OUT OUT");
-
-        System.out.println("Received exchange: " + exchange);
+        try {
+            Put.main(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

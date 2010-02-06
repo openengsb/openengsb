@@ -40,6 +40,8 @@
   </description>
 
   <dependencies>
+
+    <!-- Servicemix -->
     <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-bean</artifactId>
@@ -48,6 +50,51 @@
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-core</artifactId>
     </dependency>
+
+    <!-- Exist DB Client Dependencies -->
+    <dependency>
+      <groupId>exist</groupId>
+      <artifactId>exist</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>exist</groupId>
+      <artifactId>exist-xmldb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.xmlrpc</groupId>
+      <artifactId>xmlrpc-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-pool</groupId>
+      <artifactId>commons-pool</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+
   </dependencies>
 
 </project>
