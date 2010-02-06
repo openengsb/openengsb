@@ -53,10 +53,6 @@
     <!-- Common Modules & Helpers -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-test-logging-su</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb</groupId>
       <artifactId>openengsb-test-jms-su</artifactId>
     </dependency>
     

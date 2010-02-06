@@ -113,7 +113,6 @@
     <module>docs</module>
 
     <!-- Testing Support -->
-    <module>test/logging/service-unit</module>
     <module>test/jms/service-unit</module>
     <module>test/jms/swingclient</module>
 
@@ -717,11 +716,6 @@
       </dependency>
 
       <!-- Common Modules & Helpers -->
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-test-logging-su</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-test-jms-su</artifactId>
