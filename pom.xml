@@ -109,36 +109,33 @@
 
   <modules>
     <!-- Core -->
-    <module>core</module>
-    <module>util</module>
+    <module>core/core</module>
+    <module>core/util</module>
 
     <!-- Documentation -->
     <module>docs</module>
 
     <!-- Testing Support -->
-    <module>test/jms/service-unit</module>
-    <module>test/jms/swingclient</module>
+    <module>core/testclient/jms/service-unit</module>
+    <module>core/testclient/jms/swingclient</module>
 
     <!-- Logging -->
-    <module>logging/service-unit</module>
+    <module>core/logging/service-unit</module>
 
     <!-- Rules -->
-    <module>workflow/drools/domains</module>
-    <module>workflow/drools/service-engine</module>
-    <module>workflow/drools/service-unit</module>
+    <module>core/workflow/drools/domains</module>
+    <module>core/workflow/drools/service-engine</module>
+    <module>core/workflow/drools/service-unit</module>
 
     <!-- Engineering Knowledge Base -->
-    <module>ekb/core</module>
-    <module>ekb/service-unit</module>
+    <module>core/ekb/core</module>
+    <module>core/ekb/service-unit</module>
 
     <!-- Enterprise Data Base -->
     <module>features/edb/core</module>
     <module>features/edb/service-engine</module>
     <module>features/edb/service-unit</module>
     <module>features/edb/jms</module>
-
-    <!-- Workflows -->
-    <module>workflow/bpel/service-unit</module>
 
     <!-- SCM Domain -->
     <module>domains/scm/implementation/service-engine</module>
@@ -195,12 +192,12 @@
     <module>package/test</module>
 
     <!-- Config -->
-    <module>config/jbi</module>
-    <module>config/ui</module>
+    <module>core/config/jbi</module>
+    <module>core/config/ui</module>
 
     <!-- Context -->
-    <module>context/service-engine</module>
-    <module>context/service-unit</module>
+    <module>core/context/service-engine</module>
+    <module>core/context/service-unit</module>
 
     <!-- tool-links -->
     <module>features/link/http/service-unit</module>
@@ -790,13 +787,6 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-features-edb-jms</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
-
-      <!-- Workflows -->
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-workflow-bpel-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
 

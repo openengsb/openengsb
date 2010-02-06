@@ -1,6 +1,6 @@
 package org.openengsb.logging;
 
-import java.util.Date;
+import java.util.UUID;
 
 import org.exist.storage.DBBroker;
 import org.xmldb.api.DatabaseManager;
@@ -44,8 +44,9 @@ public class Put {
             col = mgtService.createCollection("/db/andi".substring((DBBroker.ROOT_COLLECTION + "/").length()));
         }
         // create new XMLResource
-        XMLResource document = (XMLResource) col.createResource("test" + new Date().getTime(), "XMLResource");
-        document.setContent("<test>" + new Date().getTime() + "</test>");
+        String fileName = UUID.randomUUID().toString();
+        XMLResource document = (XMLResource) col.createResource(fileName, "XMLResource");
+        document.setContent("<test>" + fileName + "</test>");
         System.out.println("---------------------");
         System.out.println("---------------------");
         System.out.print("storing document " + document.getId() + "...");
