@@ -59,6 +59,18 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-test-jms-su</artifactId>
     </dependency>
+    
+    <!-- Context -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-context-su</artifactId>
+    </dependency>
+
+    <!-- Drools -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-workflow-drools-su</artifactId>
+    </dependency>
 
     <!-- Engineering Knowledge Base -->
     <dependency>
@@ -76,38 +88,21 @@
       <artifactId>openengsb-features-edb-jms</artifactId>
     </dependency>
     
-    <!--  Domains -->
+    <!--  Notification -->
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-notification-implementation-su</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-notification-email-su</artifactId>
+    </dependency>
 
+    <!-- SCM -->
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-scm-implementation-su</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domains-test-implementation-su</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domains-build-implementation-su</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domains-deploy-implementation-su</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domains-report-implementation-su</artifactId>
-    </dependency>
-    
-    <!-- Implementation Modules -->
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-scm-subversion-su</artifactId>
@@ -117,56 +112,52 @@
       <artifactId>openengsb-domains-scm-subversion-jms-su</artifactId>
     </dependency>
 
+    <!-- Test -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domains-build-maven-su</artifactId>
+      <artifactId>openengsb-domains-test-implementation-su</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-test-maven-su</artifactId>
+    </dependency>
+
+    <!-- Build -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-build-implementation-su</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-build-maven-su</artifactId>
+    </dependency>
+
+    <!-- Deploy -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-deploy-implementation-su</artifactId>
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-deploy-maven-su</artifactId>
     </dependency>
 
-    <!-- Workflows -->
-    <!-- we now use drools flow for workflows - the bpel component is therefore not up to date and cannot be deployed
+    <!-- Reporting -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-workflow-bpel-su</artifactId>
+      <artifactId>openengsb-domains-report-implementation-su</artifactId>
     </dependency>
-     -->
-    <!-- Context -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-context-su</artifactId>
+      <artifactId>openengsb-domains-report-plaintext-su</artifactId>
     </dependency>
-
-    <!-- Drools -->
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-workflow-drools-su</artifactId>
-    </dependency>
-
+    
     <!-- Issues -->
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-issues-trac-su</artifactId>
     </dependency>
     
-    <!-- Email -->
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domains-notification-email-su</artifactId>
-    </dependency>
-
-    <!-- Plaintext Report -->
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domains-report-plaintext-su</artifactId>
-    </dependency>
-
   </dependencies>
 
 </project>
