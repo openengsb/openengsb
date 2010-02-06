@@ -22,12 +22,18 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
+import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
+import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
 
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
+import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.drools.RuleBase;
 import org.drools.agent.RuleAgent;
 import org.openengsb.contextcommon.ContextHelper;
@@ -61,10 +67,31 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
 
     @Override
     protected void handleEvent(Event e, ContextHelper contextHelper, MessageProperties msgProperties) {
-        if (ruleBase == null) {
+        if (this.ruleBase == null) {
             init();
         }
         drools(e, msgProperties);
+    }
+
+    @Override
+    protected void handleEvent(MessageExchange exchange, NormalizedMessage in, ContextHelper contextHelper,
+            MessageProperties msgProperties) throws MessagingException {
+        forwardMessageToLogEndpoint(in);
+        super.handleEvent(exchange, in, contextHelper, msgProperties);
+    }
+
+    private void forwardMessageToLogEndpoint(NormalizedMessage messageToLog) throws MessagingException {
+        InOnly loggingMessageExchange = new InOnlyImpl(UUID.randomUUID().toString());
+        QName loggingServiceIdentification = getLoggingServiceIdentification();
+        loggingMessageExchange.setService(loggingServiceIdentification);
+        loggingMessageExchange.setInMessage(messageToLog);
+        send(loggingMessageExchange);
+    }
+
+    private QName getLoggingServiceIdentification() {
+        String loggingNamespace = "urn:openengsb:logging";
+        String loggingServiceName = "logging";
+        return new QName(loggingNamespace, loggingServiceName);
     }
 
     private void init() {

@@ -60,6 +60,13 @@
       <artifactId>openengsb-test-jms-su</artifactId>
     </dependency>
     
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-logging-su</artifactId>
+      <version>${pom.version}</version>
+    </dependency>
+    
     <!-- Context -->
     <dependency>
       <groupId>org.openengsb</groupId>

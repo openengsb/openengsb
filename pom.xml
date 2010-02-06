@@ -117,6 +117,9 @@
     <module>test/jms/service-unit</module>
     <module>test/jms/swingclient</module>
 
+    <!-- Logging -->
+    <module>logging/service-unit</module>
+
     <!-- Rules -->
     <module>workflow/drools/domains</module>
     <module>workflow/drools/service-engine</module>
@@ -732,6 +735,13 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-util</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      
+      <!-- Logging -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-logging-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
