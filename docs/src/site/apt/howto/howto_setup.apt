@@ -56,3 +56,29 @@ mvn clean install [-Dmaven.test.skip=true]
 cd openengsb-package-essential
 mvn jbi:projectDeploy
 +----
+
+* Guvnor
+
+  TBW
+
+* Logging
+
+  The logging component is deployed as a standard component with each package provided with the OpenEngSB. But to make
+ it work nevertheless it is required to start exist first.
+ 
+  Since exist runs on the default port 8080 which is also used by other configuration utils it have to be set to port
+ 8093: 
+ 
+  To change the eXist default server port, open $EXIST_HOME/bin/functions.d/eXist-settings.sh file and find OPTIONS 
+ line which should look like:
+
++---- 
+OPTIONS="-Dexist.home=$EXIST_HOME"
++----
+
+  Then alter that line adding new port number at the end:
+
++----
+OPTIONS="-Dexist.home=$EXIST_HOME -Djetty.port=8093"
+
++----
