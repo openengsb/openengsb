@@ -107,15 +107,15 @@
   <modules>
     <!-- Core -->
     <module>core</module>
+    <module>util</module>
 
     <!-- Documentation -->
     <module>docs</module>
 
-    <!-- Common Modules & Helpers -->
+    <!-- Testing Support -->
     <module>test/logging/service-unit</module>
     <module>test/jms/service-unit</module>
     <module>test/jms/swingclient</module>
-    <module>util</module>
 
     <!-- Rules -->
     <module>workflow/drools/domains</module>
