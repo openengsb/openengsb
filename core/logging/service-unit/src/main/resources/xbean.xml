@@ -24,6 +24,16 @@
 
   <bean:endpoint bean="#loggerBean" endpoint="existEndpoint" service="logging:logging" />
 
-  <bean class="org.openengsb.logging.ExistLogger" id="loggerBean" />
+  <bean id="loggerBean" class="org.openengsb.logging.ExistLogger">
+    <property name="loggingHelper" ref="loggingHelper" />
+  </bean>
+
+  <bean id="loggingHelper" class="org.openengsb.util.exist.ExistLoggingHelper">
+    <property name="databaseConnection" ref="databaseConnection" />
+  </bean>
+
+  <bean id="databaseConnection" class="org.openengsb.util.exist.ExistDatabaseConnection">
+    <property name="connectionUri" value="xmldb:exist://localhost:8093/exist/xmlrpc" />
+  </bean>
 
 </beans>
