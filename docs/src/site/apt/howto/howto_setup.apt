@@ -15,11 +15,52 @@
 ~~
 HowTo - First steps with OpenEngSB (Setup)
 
-  This section describes the setup process required for OpenEngSB development. If you have been working with Apache ServiceMix before and got an idea about GIT version control there are not any surprises. You could skip directly to the {{{howto_notify.html}Hello World}} example.
+  This section describes the setup process required for OpenEngSB development. If you have been working with Apache 
+ ServiceMix before and got an idea about GIT version control there are not any surprises. You could skip directly to 
+ the {{{howto_notify.html}Hello World}} example.
 
 * Java Development Kit 6
   
-  First of all the JDK6 should be installed on the system and the JAVA_HOME variable should be set. ({{{http://java.sun.com/javase/downloads}Java download}})
+   First of all the JDK6 should be installed on the system and the JAVA_HOME variable should be set. 
+  ({{{http://java.sun.com/javase/downloads}Java download}})
+
+* eXist
+
+  The logging component is deployed as a standard component with each package provided with the OpenEngSB. But to make
+ it work nevertheless it is required to start exist first. First of all download and install the latest version of eXist
+ as explained {{{http://exist.sourceforge.net/quickstart.html#sect2}here}}. Since exist runs on the default port 8080 
+ which is also used by other configuration utils it have to be set to port 8093. To change the eXist default server port, 
+ open $EXIST_HOME/bin/functions.d/eXist-settings.sh file and find OPTIONS line which should look like:
+
++---- 
+OPTIONS="-Dexist.home=$EXIST_HOME"
++----
+
+  Then alter that line adding new port number at the end:
+
++----
+OPTIONS="-Dexist.home=$EXIST_HOME -Djetty.port=8093"
++----
+
+  Finally startup eXist by using the $EXIST_HOME/bin/startup.[sh||bat] script file. Please keep in mind that this have
+ be done BEFORE Guvnor starts! Guvnor tries to opens ports which are also required for eXist. But Guvnor works well without
+ them, but eXist doesent.
+
+* Guvnor
+
+  TBW
+  
+* Servicemix 3
+
+  Now download Apache Servicemix 3 in the latest version and unpack it. ({{{http://servicemix.apache.org/download.html}ServceMix download}})
+ In the servicemix directory please execute the startup script "bin/servicemix".
+ 
+  TBW (additional parameters which have to be set for SMX to run properly).
+
+* Maven 2
+
+  Finally download Apache Maven and unpack it. ({{{http://maven.apache.org/download.html}Maven download}}) Add the path
+ of the maven binary to your PATH variable. Further more you should add a MAVEN_OPTS variable with "-Xmx1024M -XX:MaxPermSize=512m".
 
 * GIT version control
 
@@ -30,15 +71,6 @@ git config --global user.name "Firstname Secondname"
 git config --global user.email "my@email.com"
 git config --global core.autcrlf input
 +----
-
-* Maven 2
-
-  Finally download Apache Maven and unpack it. ({{{http://maven.apache.org/download.html}Maven download}}) Add the path of the maven binary to your PATH variable. Further more you should add a MAVEN_OPTS variable with "-Xmx1024M -XX:MaxPermSize=512m".
-
-* Servicemix 3
-
-  Now download Apache Servicemix 3 in the latest version and unpack it. ({{{http://servicemix.apache.org/download.html}ServceMix download}}) In the servicemix directory please execute the
-  startup script "bin/servicemix". 
 
 * Getting OpenEngSB
 
@@ -55,30 +87,4 @@ cd openengsb/
 mvn clean install [-Dmaven.test.skip=true]
 cd openengsb-package-essential
 mvn jbi:projectDeploy
-+----
-
-* Guvnor
-
-  TBW
-
-* Logging
-
-  The logging component is deployed as a standard component with each package provided with the OpenEngSB. But to make
- it work nevertheless it is required to start exist first.
- 
-  Since exist runs on the default port 8080 which is also used by other configuration utils it have to be set to port
- 8093: 
- 
-  To change the eXist default server port, open $EXIST_HOME/bin/functions.d/eXist-settings.sh file and find OPTIONS 
- line which should look like:
-
-+---- 
-OPTIONS="-Dexist.home=$EXIST_HOME"
-+----
-
-  Then alter that line adding new port number at the end:
-
-+----
-OPTIONS="-Dexist.home=$EXIST_HOME -Djetty.port=8093"
-
 +----
