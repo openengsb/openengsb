@@ -113,6 +113,7 @@
     <module>core/util/common</module>
 
     <!-- Specific Utils -->
+    <module>core/util/exist</module>
 
     <!-- Documentation -->
     <module>docs</module>
@@ -125,9 +126,9 @@
     <module>core/logging/service-unit</module>
 
     <!-- Rules -->
-    <module>core/workflow/drools/domains</module>
-    <module>core/workflow/drools/service-engine</module>
-    <module>core/workflow/drools/service-unit</module>
+    <module>core/workflow/domains</module>
+    <module>core/workflow/service-engine</module>
+    <module>core/workflow/service-unit</module>
 
     <!-- Engineering Knowledge Base -->
     <module>core/ekb/core</module>
@@ -731,7 +732,13 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-util-common</artifactId>
-    
+        <version>${pom.version}</version>
+      </dependency>
+      
+      <!-- Specific Util Modules -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-util-exist</artifactId>
         <version>${pom.version}</version>
       </dependency>
       
@@ -745,17 +752,17 @@
       <!-- Rules -->
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-workflow-drools-domains</artifactId>
+        <artifactId>openengsb-workflow-domains</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-workflow-drools-se</artifactId>
+        <artifactId>openengsb-workflow-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-workflow-drools-su</artifactId>
+        <artifactId>openengsb-workflow-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
 

@@ -79,7 +79,7 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-workflow-drools-domains</artifactId>
+      <artifactId>openengsb-workflow-domains</artifactId>
     </dependency>
     
     <!-- internal scm-common Dependency -->

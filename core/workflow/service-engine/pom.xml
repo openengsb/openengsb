@@ -26,9 +26,10 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-workflow-drools-se</artifactId>
-  <name>openengsb-workflow-drools-se</name>
+  <artifactId>openengsb-workflow-se</artifactId>
+  <name>openengsb-workflow-se</name>
   <packaging>jbi-component</packaging>
+  
   <description>A Rules Service Engine based on Drools</description>
 
   <properties>
@@ -65,7 +66,7 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-workflow-drools-domains</artifactId>
+      <artifactId>openengsb-workflow-domains</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix</groupId>

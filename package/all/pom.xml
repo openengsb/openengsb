@@ -72,7 +72,7 @@
     <!-- Drools -->
     <dependency>
       <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-workflow-drools-su</artifactId>
+      <artifactId>openengsb-workflow-su</artifactId>
     </dependency>
 
     <!-- Engineering Knowledge Base -->
