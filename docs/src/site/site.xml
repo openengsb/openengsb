@@ -81,7 +81,7 @@
     </menu>
 
     <menu name="Community">
-      <item href="mail-lists.html" name="Mailing Lists" />
+      <item href="contribute/mailinglists.html" name="Mailing Lists" />
       <item href="roadmap.html" name="Roadmap" />
       <item href="contribute/git.html" name="Github" />
       <item href="contribute/codingstyle.html" name="Coding Guidelines" />
