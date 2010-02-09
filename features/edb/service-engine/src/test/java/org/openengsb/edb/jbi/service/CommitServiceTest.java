@@ -137,11 +137,11 @@ public class CommitServiceTest extends SpringTestSupport {
         /* generic content */
         CommitServiceTest.gc1 = new GenericContent(CommitServiceTest.handler.getRepositoryBase().toString(), Prelude
                 .dePathize(CommitServiceTest.ABSTRACT_PATH_COMMIT), new String[] { CommitServiceTest.PATH_1,
-            CommitServiceTest.PATH_2, }, CommitServiceTest.UUID_1);
+                CommitServiceTest.PATH_2, }, CommitServiceTest.UUID_1);
 
         CommitServiceTest.gc2 = new GenericContent(CommitServiceTest.handler.getRepositoryBase().toString(), Prelude
                 .dePathize(CommitServiceTest.ABSTRACT_PATH_COMMIT), new String[] { CommitServiceTest.PATH_1,
-            CommitServiceTest.PATH_2, }, CommitServiceTest.UUID_2);
+                CommitServiceTest.PATH_2, }, CommitServiceTest.UUID_2);
         CommitServiceTest.gc2.setProperty("third", "some other value");
 
         /* Request-messages */
@@ -186,10 +186,12 @@ public class CommitServiceTest extends SpringTestSupport {
         link_1.addElement("source").setText("signal1");
         link_1.addElement("type").setText("pdf");
         link_1.addElement("param").setText("/pdfs/document.pdf -page 2");
+        link_1.addElement("description").setText("This is a text.");
         final Element link_2 = linkRegisterBody.addElement("link");
         link_2.addElement("source").setText("signal1");
         link_2.addElement("type").setText("pdf");
         link_2.addElement("param").setText("opm.exe -open project1.opm -sheet cpu1");
+        link_2.addElement("description").setText("This is another text.");
         CommitServiceTest.linkRegisterMessage = DocumentHelper.createDocument(root.createCopy());
 
         /* valid link request */
@@ -241,17 +243,18 @@ public class CommitServiceTest extends SpringTestSupport {
         return inOut;
     }
 
-    private Document sendMessageAndParseResponse(final Document doc) throws MessagingException, IOException, SAXException,
-    TransformerException {
+    private Document sendMessageAndParseResponse(final Document doc) throws MessagingException, IOException,
+            SAXException, TransformerException {
         final InOut inout = createInOutMessage(doc.asXML());
         this.client.sendSync(inout);
-        if(inout.getStatus() == ExchangeStatus.ERROR){
+        if (inout.getStatus() == ExchangeStatus.ERROR) {
             fail("received error");
         }
         return parseResponse(inout.getOutMessage());
     }
 
-    private Document parseResponse(final NormalizedMessage response) throws IOException, SAXException, TransformerException {
+    private Document parseResponse(final NormalizedMessage response) throws IOException, SAXException,
+            TransformerException {
         final SourceTransformer st = new SourceTransformer();
         final SAXSource rSource = st.toSAXSource(response.getContent());
         final SAXReader saxreader = new SAXReader(rSource.getXMLReader());
@@ -303,8 +306,7 @@ public class CommitServiceTest extends SpringTestSupport {
         final Element body = root.element("body");
         assertNotNull(body);
         @SuppressWarnings("unchecked")
-        final
-        List<Element> messageObjects = body.elements("acmMessageObjects");
+        final List<Element> messageObjects = body.elements("acmMessageObjects");
         assertEquals(2, messageObjects.size());
         assertNoErrorMessage(body);
     }

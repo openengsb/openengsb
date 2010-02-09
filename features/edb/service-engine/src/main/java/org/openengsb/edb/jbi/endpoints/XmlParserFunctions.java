@@ -53,6 +53,7 @@ public class XmlParserFunctions {
     private static final String LINK_PARAM = "param";
     private static final String LINK_NAME = "link";
     private static final String LINK_UUID = "uuid";
+    private static final String LINK_TEXT = "description";
 
     private static SourceTransformer sourceTransformer = new SourceTransformer();
 
@@ -336,6 +337,7 @@ public class XmlParserFunctions {
             wrapIntoXMLLikeElement(LINK_SOURCE, link.getProperty(LINK_SOURCE), body);
             wrapIntoXMLLikeElement(LINK_TYPE, link.getProperty(LINK_TYPE), body);
             wrapIntoXMLLikeElement(LINK_PARAM, link.getProperty(LINK_PARAM), body);
+            wrapIntoXMLLikeElement(LINK_NAME, link.getProperty(LINK_NAME), body);
             body.append("</link>");
         }
         return body.toString();
@@ -350,6 +352,7 @@ public class XmlParserFunctions {
             wrapIntoXMLLikeElement(LINK_PARAM, link.getProperty(LINK_PARAM), buffer);
             wrapIntoXMLLikeElement(LINK_UUID, link.getUUID(), buffer);
             wrapIntoXMLLikeElement(LINK_SOURCE, link.getProperty(LINK_SOURCE), buffer);
+            wrapIntoXMLLikeElement(LINK_NAME, link.getProperty(LINK_NAME), buffer);
             buffer.append("</target>");
             buffer.append("\n");
         }
@@ -465,6 +468,7 @@ public class XmlParserFunctions {
         parsedMsgElement.setProperty(LINK_SOURCE, msgElement.element(LINK_SOURCE).getTextTrim());
         parsedMsgElement.setProperty(LINK_TYPE, msgElement.element(LINK_TYPE).getTextTrim());
         parsedMsgElement.setProperty(LINK_PARAM, msgElement.element(LINK_PARAM).getTextTrim());
+        parsedMsgElement.setProperty(LINK_TEXT, msgElement.element(LINK_TEXT).getTextTrim());
         return parsedMsgElement;
     }
 
