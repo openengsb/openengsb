@@ -297,9 +297,9 @@ public class XmlParserFunctions {
         String name = UUID.randomUUID().toString();
         File store = new File(name);
         try {
-            storeToTmp(store, foundSignals);
+            storeReplyContentToTmpFile(store, foundSignals);
             foundSignals.clear();
-            return loadFromTmpStore(store);
+            return loadReplyContentFromTmpFileAndCleanup(store);
         } catch (IOException e) {
             try {
                 store.delete();
@@ -373,7 +373,7 @@ public class XmlParserFunctions {
         return builder;
     }
 
-    private static void storeToTmp(File store, List<GenericContent> foundSignals) throws IOException {
+    private static void storeReplyContentToTmpFile(File store, List<GenericContent> foundSignals) throws IOException {
         if (store.exists()) {
             store.delete();
         }
@@ -402,7 +402,7 @@ public class XmlParserFunctions {
         writer.close();
     }
 
-    private static String loadFromTmpStore(File file) throws IOException {
+    private static String loadReplyContentFromTmpFileAndCleanup(File file) throws IOException {
         try {
             StringBuilder builder = new StringBuilder((int) file.length());
             BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -420,7 +420,7 @@ public class XmlParserFunctions {
             return builder.toString();
 
         } catch (NegativeArraySizeException e) {
-            throw new IOException("tmp store is seriously too large (or does exist)");
+            throw new IOException("tmp store is seriously too large (or does not exist)");
         }
     }
 
