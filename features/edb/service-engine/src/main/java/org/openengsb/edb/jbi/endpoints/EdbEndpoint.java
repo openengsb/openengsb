@@ -74,7 +74,7 @@ public class EdbEndpoint extends AbstractEndpoint {
         final EDBHandler handler = this.fullConfig.getFactory().loadDefaultRepository();
         final EDBHandler linksHandler = this.fullConfig.getFactory().loadRepository(this.fullConfig.getLinkStorage());
 
-        // see issue #179
+        // see issue #84
         init(handler, linksHandler);
         initReponseBuilder();
 
@@ -96,7 +96,7 @@ public class EdbEndpoint extends AbstractEndpoint {
     }
 
     /**
-     * see issue 179
+     * see issue #84
      */
     private void init(final EDBHandler handler, final EDBHandler linksHandler) {
         this.commands = new HashMap<EDBOperationType, EDBEndpointCommand>();
@@ -108,7 +108,7 @@ public class EdbEndpoint extends AbstractEndpoint {
     }
 
     /**
-     * see issue 179
+     * see issue #84
      */
     private void initReponseBuilder() {
         this.reponses = new HashMap<EDBOperationType, EDBEndpointResponseBuilder>();
