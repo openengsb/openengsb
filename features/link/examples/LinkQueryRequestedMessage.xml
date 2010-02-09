@@ -23,12 +23,14 @@
     <param><![CDATA[/pdfs/document.pdf -page 2]]></param>
     <uuid><![CDATA[f073d4df-1baf-40f7-9335-cc4654c4efe4]]></uuid>
     <source>signal1</source>
+	<description><![CDATA[This is a text.]]></description>
   </target>
   <target>
     <type><![CDATA[pdf]]></type>
     <param><![CDATA[opm.exe -open project1.opm -sheet cpu1]]></param>
     <uuid><![CDATA[a6111728-dab7-4d05-a885-6f260978c0a6]]></uuid>
     <source>signal1</source>
+	<description><![CDATA[This is another text.]]></description>
   </target>
   </body>
 </LinkRequested>

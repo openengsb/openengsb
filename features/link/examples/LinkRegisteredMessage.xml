@@ -22,11 +22,13 @@
       <source><![CDATA[signal1]]></source>
       <type><![CDATA[pdf]]></type>
       <param><![CDATA[/pdfs/document.pdf -page 2]]></param>
+	  <description><![CDATA[This is a text.]]></description>
     </link>
     <link>
       <source><![CDATA[signal1]]></source>
       <type><![CDATA[pdf]]></type>
       <param><![CDATA[opm.exe -open project1.opm -sheet cpu1]]></param>
+	  <description><![CDATA[This is a text.]]></description>
   </link>
   </body>
 </LinkRegistered>

@@ -47,6 +47,7 @@
 			<element name="param" type="string" minOccurs="1" maxOccurs="1" />
 			<element name="uuid" type="string" minOccurs="1" maxOccurs="1" />
 			<element name="source" type="string" minOccurs="1" maxOccurs="1" />
+			<element name="description" type="string" minOccurs="1" maxOccurs="1" />
 		</sequence>
 	</complexType>
 
