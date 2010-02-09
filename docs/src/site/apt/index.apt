@@ -42,10 +42,14 @@ OpenEngSB Community
 
 * Getting involved
   
-  * {{{http://github.com/openengsb/openengsb}Source repository}}
+  * {{{http://git.openengsb.org/}Source repository}}
   
-  * {{{http://github.com/openengsb/openengsb/issues}Issue tracker}}
+  * {{{http://issues.openengsb.org}Issue tracker}}
   
-  * {{{http://groups.google.com/group/openengsb-user}Mailing lists}}
+  * {{{http://build.openengsb.org}Build server}}
+  
+  * {{{http://maven.openengsb.org}Maven repository}}
+  
+  * {{{contribute/mailinglists.html}Mailing lists}}
   
   * {{{http://www.facebook.com/group.php?gid=208312030232}OpenEngSB on facebook}}
