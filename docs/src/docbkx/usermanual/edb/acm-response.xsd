@@ -48,7 +48,6 @@
 			]]></documentation>
 		</annotation>
 		<sequence>
-			<element name="header" type="base:asbHeader" />
 			<element name="body" type="tns:acmResponseBody" />
 		</sequence>
 	</complexType>
