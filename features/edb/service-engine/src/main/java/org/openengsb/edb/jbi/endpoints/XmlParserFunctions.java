@@ -245,12 +245,12 @@ public class XmlParserFunctions {
 
         if (persistedSignals.size() == 0) {
             body.append("<acmMessageObjects>");
-            buildElement("user", EdbEndpoint.DEFAULT_USER, body);
-            buildElement(GenericContent.UUID_NAME, UUID.randomUUID().toString(), body);
-            buildElement(GenericContent.PATH_NAME, "", body);
+            wrapIntoXMLLikeElement("user", EdbEndpoint.DEFAULT_USER, body);
+            wrapIntoXMLLikeElement(GenericContent.UUID_NAME, UUID.randomUUID().toString(), body);
+            wrapIntoXMLLikeElement(GenericContent.PATH_NAME, "", body);
             body.append("<acmMessageObject>");
-            buildElement("key", "emptyKey", body);
-            buildElement("value", "emptyValue", body);
+            wrapIntoXMLLikeElement("key", "emptyKey", body);
+            wrapIntoXMLLikeElement("value", "emptyValue", body);
             body.append("</acmMessageObject>");
             body.append("</acmMessageObjects>");
         } else {
@@ -260,14 +260,14 @@ public class XmlParserFunctions {
 
                 body.append("<acmMessageObjects>");
 
-                buildElement("user", EdbEndpoint.DEFAULT_USER, body);
-                buildElement(GenericContent.UUID_NAME, signal.getUUID(), body);
-                buildElement(GenericContent.PATH_NAME, signal.getPath(), body);
+                wrapIntoXMLLikeElement("user", EdbEndpoint.DEFAULT_USER, body);
+                wrapIntoXMLLikeElement(GenericContent.UUID_NAME, signal.getUUID(), body);
+                wrapIntoXMLLikeElement(GenericContent.PATH_NAME, signal.getPath(), body);
 
                 for (Entry<Object, Object> entry : signal.getEntireContent()) {
                     body.append("<acmMessageObject>");
-                    buildElement("key", entry.getKey().toString(), body);
-                    buildElement("value", entry.getValue().toString(), body);
+                    wrapIntoXMLLikeElement("key", entry.getKey().toString(), body);
+                    wrapIntoXMLLikeElement("value", entry.getValue().toString(), body);
                     body.append("</acmMessageObject>");
                 }
 
@@ -277,7 +277,7 @@ public class XmlParserFunctions {
             }
         }
 
-        buildElement("headId", commitId, body);
+        wrapIntoXMLLikeElement("headId", commitId, body);
 
         return body.toString();
     }
@@ -286,7 +286,7 @@ public class XmlParserFunctions {
         StringBuilder body = new StringBuilder();
 
         body.append("<acmErrorObject>");
-        buildElement("message", msg, body);
+        wrapIntoXMLLikeElement("message", msg, body);
         body.append("</acmErrorObject>");
 
         return body.toString();
@@ -313,15 +313,15 @@ public class XmlParserFunctions {
 
     public static String buildResetBody(String headId) {
         StringBuilder sb = new StringBuilder();
-        return buildElement("headId", headId, sb).toString();
+        return wrapIntoXMLLikeElement("headId", headId, sb).toString();
     }
 
     public static String buildResetErrorBody(String msg, String trace) {
 
         StringBuilder body = new StringBuilder();
         body.append("<acmErrorObject>");
-        buildElement("message", msg, body);
-        buildElement("stacktrace", trace, body);
+        wrapIntoXMLLikeElement("message", msg, body);
+        wrapIntoXMLLikeElement("stacktrace", trace, body);
         body.append("</acmErrorObject>");
 
         return body.toString();
@@ -333,9 +333,9 @@ public class XmlParserFunctions {
         StringBuilder body = new StringBuilder(expectedChars);
         for (GenericContent link : links) {
             body.append("<link>");
-            buildElement(LINK_SOURCE, link.getProperty(LINK_SOURCE), body);
-            buildElement(LINK_TYPE, link.getProperty(LINK_TYPE), body);
-            buildElement(LINK_PARAM, link.getProperty(LINK_PARAM), body);
+            wrapIntoXMLLikeElement(LINK_SOURCE, link.getProperty(LINK_SOURCE), body);
+            wrapIntoXMLLikeElement(LINK_TYPE, link.getProperty(LINK_TYPE), body);
+            wrapIntoXMLLikeElement(LINK_PARAM, link.getProperty(LINK_PARAM), body);
             body.append("</link>");
         }
         return body.toString();
@@ -346,16 +346,16 @@ public class XmlParserFunctions {
         StringBuilder buffer = new StringBuilder();
         for (GenericContent link : links) {
             buffer.append("<target>");
-            buildElement(LINK_TYPE, link.getProperty(LINK_TYPE), buffer);
-            buildElement(LINK_PARAM, link.getProperty(LINK_PARAM), buffer);
-            buildElement(LINK_UUID, link.getUUID(), buffer);
+            wrapIntoXMLLikeElement(LINK_TYPE, link.getProperty(LINK_TYPE), buffer);
+            wrapIntoXMLLikeElement(LINK_PARAM, link.getProperty(LINK_PARAM), buffer);
+            wrapIntoXMLLikeElement(LINK_UUID, link.getUUID(), buffer);
             buffer.append("</target>");
             buffer.append("\n");
         }
         return buffer.toString();
     }
 
-    private static String buildElement(String name, String content) {
+    private static String wrapIntoXMLLikeElement(String name, String content) {
         StringBuilder block = new StringBuilder();
         block.append("<").append(name).append(">");
         block.append("<![CDATA[").append(content).append("]]>");
@@ -364,7 +364,7 @@ public class XmlParserFunctions {
         return block.toString();
     }
 
-    private static StringBuilder buildElement(String name, String content, StringBuilder builder) {
+    private static StringBuilder wrapIntoXMLLikeElement(String name, String content, StringBuilder builder) {
 
         builder.append("<").append(name).append(">");
         builder.append("<![CDATA[").append(content).append("]]>");
@@ -381,25 +381,38 @@ public class XmlParserFunctions {
 
         FileWriter writer = new FileWriter(store);
         for (GenericContent signal : foundSignals) {
-            writer.append("<acmMessageObjects>");
-
-            // TODO extract from incoming msg;
-            writer.append(buildElement("user", "dummyUser"));
-            writer.append(buildElement(GenericContent.UUID_NAME, signal.getUUID()));
-            writer.append(buildElement(GenericContent.PATH_NAME, signal.getPath()));
-
-            for (Entry<Object, Object> entry : signal.getEntireContent()) {
-                writer.append("<acmMessageObject>");
-                writer.append(buildElement("key", entry.getKey().toString()));
-                writer.append(buildElement("value", entry.getValue().toString()));
-                writer.append("</acmMessageObject>");
-            }
-
-            writer.append("</acmMessageObjects>");
-            writer.append("\n");
+            appendSingleEntryToWriter(writer, signal);
         }
         writer.flush();
         writer.close();
+    }
+
+    private static void appendSingleEntryToWriter(FileWriter writer, GenericContent signal) throws IOException {
+        writer.append("<acmMessageObjects>");
+
+        addUserNameIfExists(writer, signal);
+        writer.append(wrapIntoXMLLikeElement(GenericContent.UUID_NAME, signal.getUUID()));
+        writer.append(wrapIntoXMLLikeElement(GenericContent.PATH_NAME, signal.getPath()));
+
+        for (Entry<Object, Object> entry : signal.getEntireContent()) {
+            writer.append("<acmMessageObject>");
+            writer.append(wrapIntoXMLLikeElement("key", entry.getKey().toString()));
+            writer.append(wrapIntoXMLLikeElement("value", entry.getValue().toString()));
+            writer.append("</acmMessageObject>");
+        }
+
+        writer.append("</acmMessageObjects>");
+        writer.append("\n");
+    }
+
+    private static void addUserNameIfExists(FileWriter writer, GenericContent signal) throws IOException{
+        String user = signal.getProperty("user");
+        if (user == null) {
+            user = "dummyuser";
+        } else if (user.isEmpty()) {
+            user = "dummyuser";
+        }
+        writer.append(wrapIntoXMLLikeElement("user", user));
     }
 
     private static String loadReplyContentFromTmpFileAndCleanup(File file) throws IOException {
