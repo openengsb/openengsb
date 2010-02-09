@@ -303,8 +303,9 @@ public class XmlParserFunctions {
         } catch (IOException e) {
             try {
                 store.delete();
-            } catch (Exception e1) {
+            } catch (SecurityException e1) {
                 XmlParserFunctions.logger.warn("tmp store file could not be deleted");
+
             }
             throw new EDBException(e);
         }
