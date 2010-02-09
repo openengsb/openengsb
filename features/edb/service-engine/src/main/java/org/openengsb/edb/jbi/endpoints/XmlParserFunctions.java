@@ -349,6 +349,7 @@ public class XmlParserFunctions {
             wrapIntoXMLLikeElement(LINK_TYPE, link.getProperty(LINK_TYPE), buffer);
             wrapIntoXMLLikeElement(LINK_PARAM, link.getProperty(LINK_PARAM), buffer);
             wrapIntoXMLLikeElement(LINK_UUID, link.getUUID(), buffer);
+            wrapIntoXMLLikeElement(LINK_SOURCE, link.getProperty(LINK_SOURCE), buffer);
             buffer.append("</target>");
             buffer.append("\n");
         }
@@ -405,7 +406,7 @@ public class XmlParserFunctions {
         writer.append("\n");
     }
 
-    private static void addUserNameIfExists(FileWriter writer, GenericContent signal) throws IOException{
+    private static void addUserNameIfExists(FileWriter writer, GenericContent signal) throws IOException {
         String user = signal.getProperty("user");
         if (user == null) {
             user = "dummyuser";
