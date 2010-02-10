@@ -32,7 +32,7 @@
   <packaging>jar</packaging>
 
   <description>
-    Documentation project for the Engineering Service Bus Project
+    Documentation project of Open Engineering Service Bus
   </description>
 
   <distributionManagement>
@@ -103,33 +103,18 @@
           <plugin>
             <groupId>com.agilejava.docbkx</groupId>
             <artifactId>docbkx-maven-plugin</artifactId>
-            <version>2.0.7</version>
+            <version>${docbkx.version}</version>
             <executions>
               <execution>
-                <id>single-page</id>
+                <id>html-single</id>
                 <goals>
                   <goal>generate-html</goal>
-                  <goal>generate-pdf</goal>
                 </goals>
                 <configuration>
                   <chunkedOutput>false</chunkedOutput>
                   <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html.xsl</htmlCustomization>
-                  <foCustomization>${basedir}/src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
-                  <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>
-                  <xincludeSupported>true</xincludeSupported>
-                  <imgSrcPath>${basedir}/src/docbkx/resources/images/</imgSrcPath>
                   <postProcess>
-                    <copy todir="${basedir}/target/site/reference">
-                      <fileset dir="${basedir}/target/docbkx">
-                        <include name="**/*.pdf" />
-                      </fileset>
-                    </copy>
-                    <copy todir="${basedir}/target/site/reference/html-single">
-                      <fileset dir="${basedir}/target/docbkx/html">
-                        <include name="**/*.html" />
-                      </fileset>
-                    </copy>
-                    <copy todir="${basedir}/target/site/reference/html-single">
+                    <copy todir="${basedir}/target/docbkx/html">
                       <fileset dir="${basedir}/src/docbkx/resources">
                         <include name="**/*.css" />
                         <include name="**/*.png" />
@@ -137,15 +122,17 @@
                         <include name="**/*.jpg" />
                       </fileset>
                     </copy>
-                    <move failonerror="false" file="target/site/reference/pdf/usermanual.pdf" tofile="target/site/reference/pdf/usermanual.pdf" />
-                    <move failonerror="false" file="target/site/reference/pdf/architecture.pdf" tofile="target/site/reference/pdf/architecture.pdf" />
-                    <move failonerror="false" file="target/site/reference/pdf/domains.pdf" tofile="target/site/reference/pdf/domains.pdf" />
+                    <copy todir="${basedir}/target/site/reference/html-single">
+                      <fileset dir="${basedir}/target/docbkx/html">
+                        <include name="**/*" />
+                      </fileset>
+                    </copy>
                   </postProcess>
                 </configuration>
                 <phase>compile</phase>
               </execution>
               <execution>
-                <id>multi-page</id>
+                <id>html-multi</id>
                 <goals>
                   <goal>generate-html</goal>
                 </goals>
@@ -153,17 +140,35 @@
                   <chunkedOutput>true</chunkedOutput>
                   <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>
                   <postProcess>
-                    <copy todir="${basedir}/target/site/reference">
-                      <fileset dir="${basedir}/target/docbkx">
-                        <include name="**/*.html" />
-                      </fileset>
-                    </copy>
-                    <copy todir="${basedir}/target/site/reference/html">
+                    <copy todir="${basedir}/target/docbkx/html">
                       <fileset dir="${basedir}/src/docbkx/resources">
                         <include name="**/*.css" />
                         <include name="**/*.png" />
                         <include name="**/*.gif" />
                         <include name="**/*.jpg" />
+                      </fileset>
+                    </copy>
+                    <copy todir="${basedir}/target/site/reference/html">
+                      <fileset dir="${basedir}/target/docbkx/html">
+                        <include name="**/*" />
+                      </fileset>
+                    </copy>
+                  </postProcess>
+                </configuration>
+                <phase>compile</phase>
+              </execution>
+              <execution>
+                <id>pdf-single</id>
+                <goals>
+                  <goal>generate-pdf</goal>
+                </goals>
+                <configuration>
+                  <foCustomization>${basedir}/src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
+                  <imgSrcPath>file:///${basedir}/src/docbkx/</imgSrcPath>
+				  <postProcess>
+                    <copy todir="${basedir}/target/site/reference">
+                      <fileset dir="${basedir}/target/docbkx/pdf">
+                        <include name="**/*.pdf" />
                       </fileset>
                     </copy>
                   </postProcess>
@@ -202,12 +207,6 @@
               <highlightDefaultLanguage />
               <!-- callouts -->
               <calloutsExtension>1</calloutsExtension>
-              <entities>
-                <entity>
-                  <name>version</name>
-                  <value>${version}</value>
-                </entity>
-              </entities>
             </configuration>
           </plugin>
           <plugin>
