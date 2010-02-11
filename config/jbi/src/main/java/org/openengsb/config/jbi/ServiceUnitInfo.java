@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -100,11 +99,10 @@ public class ServiceUnitInfo {
         for (EndpointInfo e : endpoints) {
             Element node = doc.createElementNS(component.getNamespace(), e.getEndpointType().getName());
             beans.appendChild(node);
-            for (Map.Entry<String, String> entry : e.getMap().entrySet()) {
-                node.setAttribute(entry.getKey(), entry.getValue());
-                AbstractType type = e.getEndpointType().getAttribute(entry.getKey());
-                if (type.getClass().equals(RefType.class)) {
-                    beanRefs.add(entry.getValue());
+            for (AbstractType t : e.getEndpointType().getAttributes()) {
+                t.toAttributeOnElement(e.getMap(), node);
+                if (t.getClass().equals(RefType.class)) {
+                    beanRefs.add(e.getMap().get(t.getName()));
                 }
             }
         }
@@ -115,14 +113,11 @@ public class ServiceUnitInfo {
             beans.appendChild(node);
             node.setAttribute("id", bean.getMap().get("id"));
             node.setAttribute("class", bean.getBeanType().getClazz());
-            for (Map.Entry<String, String> entry : bean.getMap().entrySet()) {
-                if (entry.getKey().equals("id")) {
+            for (AbstractType t : bean.getBeanType().getProperties()) {
+                if (t.getName().equals("id")) {
                     continue;
                 }
-                Element p = doc.createElement("property");
-                node.appendChild(p);
-                p.setAttribute("name", entry.getKey());
-                p.setAttribute("value", entry.getValue());
+                t.toPropertyOnElement(bean.getMap(), node);
             }
         }
 

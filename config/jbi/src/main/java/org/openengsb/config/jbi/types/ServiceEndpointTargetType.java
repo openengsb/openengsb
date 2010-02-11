@@ -17,10 +17,14 @@
  */
 package org.openengsb.config.jbi.types;
 
+import java.util.Map;
+
+import org.w3c.dom.Element;
+
 public class ServiceEndpointTargetType extends AbstractType {
     private String serviceName;
     private String endpointName;
-    
+
     public ServiceEndpointTargetType() {
     }
 
@@ -35,15 +39,15 @@ public class ServiceEndpointTargetType extends AbstractType {
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
     }
-    
+
     public String getEndpointName() {
         return endpointName;
     }
-    
+
     public void setEndpointName(String endpointName) {
         this.endpointName = endpointName;
     }
-    
+
     private Object readResolve() {
         if (serviceName == null) {
             serviceName = "targetService";
@@ -52,5 +56,16 @@ public class ServiceEndpointTargetType extends AbstractType {
             endpointName = "targetEndpoint";
         }
         return this;
+    }
+
+    @Override
+    public void toAttributeOnElement(Map<String, String> context, Element elem) {
+        elem.setAttribute(serviceName, context.get(serviceName));
+        elem.setAttribute(endpointName, context.get(endpointName));
+    }
+
+    @Override
+    public void toPropertyOnElement(Map<String, String> context, Element elem) {
+        throw new UnsupportedOperationException();
     }
 }
