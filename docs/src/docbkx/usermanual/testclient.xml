@@ -33,9 +33,10 @@
     <para>
       <mediaobject>
         <imageobject>
-          <imagedata id="new" fileref="testclient_message.png"
+          <imagedata id="new" fileref="graphics/testclient_message.png"
             format="png" />
         </imageobject>
+		<caption>Messaging</caption>
       </mediaobject>
     </para>
 
@@ -63,9 +64,10 @@
     <para>
       <mediaobject>
         <imageobject>
-          <imagedata id="new" fileref="testclient_context.png"
+          <imagedata id="new" fileref="graphics/testclient_context.png"
             format="png" />
         </imageobject>
+		<caption>Context information</caption>
       </mediaobject>
     </para>
     <para>

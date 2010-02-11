@@ -46,7 +46,7 @@
       </para>
       <programlisting language="xml">
         <textobject>
-          <textdata fileref="../../docs/src/docbkx/usermanual/edb/acm-persist.xsd" />
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/acm-persist.xsd" />
         </textobject>
       </programlisting>
       <para>NOTE: the field "path" defines the abstract path names of the hierachical structure of the content, where
@@ -58,7 +58,7 @@
       </para>
       <programlisting language="xml">
         <textobject>
-          <textdata fileref="../../docs/src/docbkx/usermanual/edb/acm-query-request.xsd" />
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/acm-query-request.xsd" />
         </textobject>
       </programlisting>
       <para>The reply for both messages (successfully persisted or found) contains a list of object, much like as in the
@@ -66,7 +66,7 @@
       </para>
       <programlisting language="xml">
         <textobject>
-          <textdata fileref="../../docs/src/docbkx/usermanual/edb/acm-response.xsd" />
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/acm-response.xsd" />
         </textobject>
       </programlisting>
       <para>
@@ -95,7 +95,7 @@
       </para>
       <programlisting language="xml">
         <textobject>
-          <textdata fileref="../../docs/src/docbkx/usermanual/edb/LinkRegisterMessage.xml" />
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/LinkRegisterMessage.xml" />
         </textobject>
       </programlisting>
       <para>
@@ -103,7 +103,7 @@
       </para>
       <programlisting language="xml">
         <textobject>
-          <textdata fileref="../../docs/src/docbkx/usermanual/edb/LinkRegisteredMessage.xml" />
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/LinkRegisteredMessage.xml" />
         </textobject>
       </programlisting>
       <para>The LinkQuerMessage is used to retrieve all links matching the given search criteria. The usual single
@@ -111,7 +111,7 @@
       </para>
       <programlisting language="xml">
         <textobject>
-          <textdata fileref="../../docs/src/docbkx/usermanual/edb/LinkQueryRequestMessage.xml" />
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/LinkQueryRequestMessage.xml" />
         </textobject>
       </programlisting>
       <para>
@@ -119,7 +119,7 @@
       </para>
       <programlisting language="xml">
         <textobject>
-          <textdata fileref="../../docs/src/docbkx/usermanual/edb/LinkQueryRequestedMessage.xml" />
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/LinkQueryRequestedMessage.xml" />
         </textobject>
       </programlisting>
       <section id="features.linking.testing">
@@ -139,9 +139,9 @@
     <para>
       <mediaobject>
         <imageobject>
-          <imagedata id="new" fileref="../../docs/src/docbkx/usermanual/graphics/link-http-overview.jpg"
-            format="jpg" />
+          <imagedata id="new" fileref="graphics/link-http-overview.jpg" format="jpg" />
         </imageobject>
+		<caption>Linking via HTTP-Request</caption>
       </mediaobject>
     </para>
     <para>
