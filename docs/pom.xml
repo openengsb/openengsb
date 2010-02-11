@@ -122,6 +122,14 @@
                         <include name="**/*.jpg" />
                       </fileset>
                     </copy>
+                    <copy todir="${basedir}/target/docbkx/html/graphics" flatten="true">
+                      <fileset dir="${basedir}/src/docbkx/">
+					    <exclude name="resources/**" />
+                        <include name="**/*.png" />
+                        <include name="**/*.gif" />
+                        <include name="**/*.jpg" />
+                      </fileset>
+                    </copy>
                     <copy todir="${basedir}/target/site/reference/html-single">
                       <fileset dir="${basedir}/target/docbkx/html">
                         <include name="**/*" />
@@ -148,6 +156,14 @@
                         <include name="**/*.jpg" />
                       </fileset>
                     </copy>
+                    <copy todir="${basedir}/target/docbkx/html/graphics" flatten="true">
+                      <fileset dir="${basedir}/src/docbkx/">
+					    <exclude name="resources/**" />
+                        <include name="**/*.png" />
+                        <include name="**/*.gif" />
+                        <include name="**/*.jpg" />
+                      </fileset>
+                    </copy>
                     <copy todir="${basedir}/target/site/reference/html">
                       <fileset dir="${basedir}/target/docbkx/html">
                         <include name="**/*" />
@@ -166,7 +182,7 @@
                   <foCustomization>${basedir}/src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
                   <imgSrcPath>file:///${basedir}/src/docbkx/</imgSrcPath>
 				  <postProcess>
-                    <copy todir="${basedir}/target/site/reference">
+                    <copy todir="${basedir}/target/site/reference/pdf">
                       <fileset dir="${basedir}/target/docbkx/pdf">
                         <include name="**/*.pdf" />
                       </fileset>
