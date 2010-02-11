@@ -28,6 +28,7 @@ import org.openengsb.config.jbi.ComponentParser;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.service.AssemblyService;
 import org.openengsb.config.service.ComponentService;
+import org.openengsb.config.service.ContextService;
 
 import com.google.common.collect.Lists;
 
@@ -49,6 +50,7 @@ public class WicketBase {
         final AnnotApplicationContextMock ctx = new AnnotApplicationContextMock();
         ctx.putBean(mockedComponentService);
         ctx.putBean(mockedAssemblyService);
+        ctx.putBean(Mockito.mock(ContextService.class));
 
         ContextStringResourceLoader.instance.reset();
         ContextStringResourceLoader.instance.addResourceFiles("test-connector", ClassLoader

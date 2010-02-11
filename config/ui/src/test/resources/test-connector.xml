@@ -19,7 +19,7 @@
   <endpoints>
     <endpoint name="test">
       <attributes>
-        <service name="service" />
+        <serviceName name="service" />
         <endpointName name="endpoint" />
         <ref name="configuration" clazz="org.openengsb.connector.test.TestBean"/>
         <choice name="simpleChoice" values="a,b,c" />
