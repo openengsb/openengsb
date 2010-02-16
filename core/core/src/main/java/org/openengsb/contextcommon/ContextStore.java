@@ -223,7 +223,7 @@ public class ContextStore {
         setValue("42/build/maven-build/servicename", "mavenBuildService");
         setValue("42/build/maven-build/config/goals", "package");
         setValue("42/build/maven-build/config/baseDirectory", "data/openengsb/testProject");
-        addContext("42/build/maven-build/config/executionRequestProperties");
+        setValue("42/build/maven-build/config/executionRequestProperties/skipTests", "true");
 
         setValue("42/deploy/namespace", "urn:openengsb:deploy");
         setValue("42/deploy/servicename", "deployService");
@@ -234,7 +234,7 @@ public class ContextStore {
         setValue("42/deploy/maven-deploy/servicename", "mavenDeployService");
         setValue("42/deploy/maven-deploy/config/goals", "deploy");
         setValue("42/deploy/maven-deploy/config/baseDirectory", "data/openengsb/testProject");
-        addContext("42/deploy/maven-deploy/config/executionRequestProperties");
+        setValue("42/deploy/maven-deploy/config/executionRequestProperties/skipTests", "true");
 
         setValue("42/report/namespace", "urn:openengsb:report");
         setValue("42/report/servicename", "reportService");
