@@ -48,7 +48,7 @@ OPTIONS="-Dexist.home=$EXIST_HOME -Djetty.port=8093"
 
 * Guvnor
 
-  TBW
+  {{{howto_guvnor.html}Guvnor Setup}}
   
 * Servicemix 3
 
