@@ -60,6 +60,14 @@ public class TestMavenConnector {
     }
 
     @Test
+    public void testRunBuildGoalWithoutTestsSuccess() {
+        File basedir = new File("target/test-classes/build-test");
+        executionRequestProperties.setProperty("skipTests", "true");
+        MavenResult result = runGoals(basedir, new String[] { "package" });
+        Assert.assertEquals(MavenResult.SUCCESS, result.getResult());
+    }
+
+    @Test
     public void testRunDeployGoalSuccess() {
         File basedir = new File("target/test-classes/deploy-test");
         MavenResult result = runGoals(basedir, new String[] { "deploy" });
