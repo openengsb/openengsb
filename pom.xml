@@ -190,7 +190,6 @@
     <!-- Packaging Modules -->
     <module>package/all</module>
     <module>package/essential</module>
-    <module>package/embedded</module>
     <module>package/assembly</module>
     <module>package/test</module>
 
