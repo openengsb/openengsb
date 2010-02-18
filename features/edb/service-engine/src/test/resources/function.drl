@@ -17,8 +17,8 @@
 function void send(NotificationDomain notification, String author, String name, String subject, String message) {
 	if(!author.equals(name)){
 		Notification n = new Notification();
-		n.setSubject("subject");
-		n.setRecipient("recipient");
+		n.setSubject("Openengsb - EDB-commit-notification");
+		n.setRecipient(name);
 		n.setMessage("message");
 		notification.notify(n);
 		System.out.println(name + " notified");
