@@ -34,7 +34,7 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>../../../core/target/classes</directory>
+      <directory>../../core/target/classes</directory>
       <outputDirectory>.</outputDirectory>
       <includes>
         <include>org/openengsb/core/model/Event.class</include>
