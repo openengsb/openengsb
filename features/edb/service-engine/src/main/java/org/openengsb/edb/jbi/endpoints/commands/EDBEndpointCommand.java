@@ -13,12 +13,20 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.edb.jbi.endpoints.commands;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.jbi.messaging.NormalizedMessage;
 
 public interface EDBEndpointCommand {
-	public String execute(NormalizedMessage in) throws Exception;
+    public static class CommandResult {
+        public String responseString;
+        public Map<String, Object> eventAttributes = new HashMap<String, Object>();
+    }
+
+    public CommandResult execute(NormalizedMessage in) throws Exception;
 }

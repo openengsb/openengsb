@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.edb.jbi.endpoints.commands;
 
@@ -34,7 +34,8 @@ public class EDBReset implements EDBEndpointCommand {
         this.log = log;
     }
 
-    public String execute(NormalizedMessage in) throws Exception {
+    @Override
+    public CommandResult execute(NormalizedMessage in) throws Exception {
         String body = null;
         final RequestWrapper req = XmlParserFunctions.parseResetMessage(in);
         log.debug(String.format("Reset request %s %s received, processing now.", req.getHeadId(), req.getDepth()));
@@ -43,7 +44,9 @@ public class EDBReset implements EDBEndpointCommand {
         } catch (final EDBException e) {
             body = XmlParserFunctions.buildResetErrorResponseBody(e.getMessage(), e.getStackTrace().toString());
         }
-        return body;
+        CommandResult result = new CommandResult();
+        result.responseString = body;
+        return result;
     }
 
 }

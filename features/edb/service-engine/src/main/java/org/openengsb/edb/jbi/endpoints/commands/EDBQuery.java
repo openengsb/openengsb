@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.edb.jbi.endpoints.commands;
 
@@ -47,7 +47,7 @@ public class EDBQuery implements EDBEndpointCommand {
         this.log = log;
     }
 
-    public String execute(NormalizedMessage in) throws Exception {
+    public CommandResult execute(NormalizedMessage in) throws Exception {
 
         String body = null;
         final List<String> terms = XmlParserFunctions.parseQueryMessage(in);
@@ -74,7 +74,9 @@ public class EDBQuery implements EDBEndpointCommand {
             foundSignals = new ArrayList<GenericContent>();
         }
         body = XmlParserFunctions.buildQueryResponseBody(foundSignals);
-        return body;
+        CommandResult result = new CommandResult();
+        result.responseString = body;
+        return result;
     }
 
     public static boolean isNodeQuery(String query) throws ArrayIndexOutOfBoundsException {

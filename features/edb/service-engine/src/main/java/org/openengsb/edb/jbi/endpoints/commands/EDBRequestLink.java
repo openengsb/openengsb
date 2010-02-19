@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.edb.jbi.endpoints.commands;
 
@@ -38,7 +38,7 @@ public class EDBRequestLink implements EDBEndpointCommand {
         this.log = log;
     }
 
-    public String execute(NormalizedMessage in) throws Exception {
+    public CommandResult execute(NormalizedMessage in) throws Exception {
 
         String body = null;
         final String term = XmlParserFunctions.parseLinkRequestMessage(in);
@@ -54,7 +54,9 @@ public class EDBRequestLink implements EDBEndpointCommand {
             foundLinkTargets = new ArrayList<GenericContent>();
         }
         body = XmlParserFunctions.buildLinkRequestedBody(foundLinkTargets);
-        return body;
+        CommandResult result = new CommandResult();
+        result.responseString = body;
+        return result;
     }
 
 }

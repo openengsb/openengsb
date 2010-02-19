@@ -28,6 +28,7 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.EventHelperImpl;
 import org.openengsb.core.MessageProperties;
+import org.openengsb.core.model.Event;
 import org.openengsb.drools.events.EdbCommitEvent;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.jbi.endpoints.commands.EDBCommit;
@@ -37,10 +38,13 @@ import org.openengsb.edb.jbi.endpoints.commands.EDBQuery;
 import org.openengsb.edb.jbi.endpoints.commands.EDBRegisterLink;
 import org.openengsb.edb.jbi.endpoints.commands.EDBRequestLink;
 import org.openengsb.edb.jbi.endpoints.commands.EDBReset;
+import org.openengsb.edb.jbi.endpoints.commands.EDBEndpointCommand.CommandResult;
 import org.openengsb.edb.jbi.endpoints.responses.DefaultAcmResponseBuilder;
 import org.openengsb.edb.jbi.endpoints.responses.EDBEndpointResponseBuilder;
 import org.openengsb.edb.jbi.endpoints.responses.LinkRegisteredResponseBuilder;
 import org.openengsb.edb.jbi.endpoints.responses.LinkRequestResponseBuilder;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * @org.apache.xbean.XBean element="edb" The Endpoint to the commit-feature
@@ -71,6 +75,24 @@ public class EdbEndpoint extends AbstractEndpoint {
     private Map<EDBOperationType, EDBEndpointCommand> commands;
     private Map<EDBOperationType, EDBEndpointResponseBuilder> reponses;
 
+    @SuppressWarnings("unchecked")
+    private static Map<EDBOperationType, Class<? extends Event>> makeEventMap() {
+        Map<EDBOperationType, Class<? extends Event>> map;
+        map = new HashMap<EDBOperationType, Class<? extends Event>>();
+        map.put(EDBOperationType.COMMIT, EdbCommitEvent.class);
+        // TODO add Events for other operations
+        /*
+         * map.put(EDBOperationType.QUERY, Event.class);
+         * map.put(EDBOperationType.REGISTER_LINK, Event.class);
+         * map.put(EDBOperationType.REQUEST_LINK, Event.class);
+         * map.put(EDBOperationType.RESET, Event.class);
+         */
+        return Collections.unmodifiableMap(map);
+    }
+
+    // maps operation types to corresponding events
+    private static final Map<EDBOperationType, Class<? extends Event>> eventMap = makeEventMap();
+
     @Override
     protected void processInOutRequest(final MessageExchange exchange, final NormalizedMessage in,
             final NormalizedMessage out) throws Exception {
@@ -89,23 +111,26 @@ public class EdbEndpoint extends AbstractEndpoint {
          * operation
          */
         final EDBOperationType op = XmlParserFunctions.getMessageType(in);// exchange.getOperation().getLocalPart();
-        String body = null;
-
-        body = this.commands.get(op).execute(in);
-
+        CommandResult cmdResult = this.commands.get(op).execute(in);
+        String body = cmdResult.responseString;
         body = this.reponses.get(op).wrapIntoResponse(body);
 
         final Source response = new StringSource(body);
         this.logger.info(body);
         out.setContent(response);
 
-        // TODO more generic solution, this is just to make the example usecase
-        // work
-        if (op == EDBOperationType.COMMIT) {
+        Map<String, Object> eventAttributes = cmdResult.eventAttributes;
+        Class<? extends Event> eventClass = eventMap.get(op);
+        if (eventClass != null) {
+            Event event = eventClass.newInstance();
+            for (String key : eventAttributes.keySet()) {
+                Object value = eventAttributes.get(key);
+                event.setValue(key, value);
+            }
             MessageProperties msgProperties = readProperties(in);
             EventHelper helper = new EventHelperImpl(this, msgProperties);
-            EdbCommitEvent event = new EdbCommitEvent();
-            event.setAuthor("max.mustermann@openengsb.org");
+            // TODO figure out why context /Edb cannot be found
+            // helper.sendEvent(event);
             helper.sendEvent(event, "urn:openengsb:drools", "droolsService");
         }
     }
