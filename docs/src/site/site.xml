@@ -37,8 +37,8 @@
 
   <body>
     <links>
-      <item name="Source" href="http://www.github.com/openengsb/openengsb" />
-      <item name="Issues" href="http://issues.openengsb.org/mantis"/>
+      <item name="Source" href="http://github.com/openengsb/openengsb/" />
+      <item name="Issues" href="http://github.com/openengsb/openengsb/issues"/>
       <item name="Build" href="http://build.openengsb.org/hudson"/>
     </links>
 
