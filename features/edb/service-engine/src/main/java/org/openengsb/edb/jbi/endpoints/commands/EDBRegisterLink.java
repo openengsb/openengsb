@@ -51,7 +51,7 @@ public class EDBRegisterLink implements EDBEndpointCommand {
             handler.commit(EdbEndpoint.DEFAULT_USER, EdbEndpoint.DEFAULT_EMAIL);
             body = XmlParserFunctions.buildLinkRegisteredBody(links);
         } catch (EDBException e) {
-            body = XmlParserFunctions.buildCommitErrorBody(e.getMessage(), makeStackTraceString(e));
+            body = XmlParserFunctions.buildCommitErrorResponseBody(e.getMessage(), makeStackTraceString(e));
             this.log.info(body);
         }
         return body;

@@ -208,6 +208,22 @@ public class XmlParserFunctions {
         return req;
     }
 
+    public static String parseFullResetMessage(NormalizedMessage msg) throws IOException, SAXException,
+            TransformerException, DocumentException {
+
+        Document doc = readMessage(msg);
+
+        // TODO exception handling required?
+        XmlParserFunctions.logger.info(doc.asXML());
+        Element body = doc.getRootElement().element("body");
+
+        if (body.element("repoId") == null) {
+            return "";
+        } else {
+            return body.element("repoId").getTextTrim();
+        }
+    }
+
     public static String parseLinkRequestMessage(NormalizedMessage msg) throws IOException, SAXException,
             TransformerException, DocumentException {
 
@@ -240,7 +256,7 @@ public class XmlParserFunctions {
         return result;
     }
 
-    public static String buildCommitBody(List<ContentWrapper> persistedSignals, String commitId) {
+    public static String buildCommitResponseBody(List<ContentWrapper> persistedSignals, String commitId) {
         int expectedChars = persistedSignals.size() * (300 + 20 * 200);
         StringBuilder body = new StringBuilder(expectedChars);
 
@@ -283,7 +299,7 @@ public class XmlParserFunctions {
         return body.toString();
     }
 
-    public static String buildCommitErrorBody(String msg, String trace) {
+    public static String buildCommitErrorResponseBody(String msg, String trace) {
         StringBuilder body = new StringBuilder();
 
         body.append("<acmErrorObject>");
@@ -293,7 +309,7 @@ public class XmlParserFunctions {
         return body.toString();
     }
 
-    public static String buildQueryBody(List<GenericContent> foundSignals) throws EDBException {
+    public static String buildQueryResponseBody(List<GenericContent> foundSignals) throws EDBException {
 
         String name = UUID.randomUUID().toString();
         File store = new File(name);
@@ -312,12 +328,17 @@ public class XmlParserFunctions {
         }
     }
 
-    public static String buildResetBody(String headId) {
+    public static String buildResetResponseBody(String headId) {
         StringBuilder sb = new StringBuilder();
         return wrapIntoXMLLikeElement("headId", headId, sb).toString();
     }
 
-    public static String buildResetErrorBody(String msg, String trace) {
+    public static String buildFullResetResponseBody(String repoId) {
+        StringBuilder sb = new StringBuilder();
+        return wrapIntoXMLLikeElement("repoId", repoId, sb).toString();
+    }
+
+    public static String buildResetErrorResponseBody(String msg, String trace) {
 
         StringBuilder body = new StringBuilder();
         body.append("<acmErrorObject>");

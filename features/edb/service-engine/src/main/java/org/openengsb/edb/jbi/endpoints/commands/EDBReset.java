@@ -39,9 +39,9 @@ public class EDBReset implements EDBEndpointCommand {
         final RequestWrapper req = XmlParserFunctions.parseResetMessage(in);
         log.debug(String.format("Reset request %s %s received, processing now.", req.getHeadId(), req.getDepth()));
         try {
-            body = XmlParserFunctions.buildResetBody(handler.reset(req.getHeadId(), req.getDepth()));
+            body = XmlParserFunctions.buildResetResponseBody(handler.reset(req.getHeadId(), req.getDepth()));
         } catch (final EDBException e) {
-            body = XmlParserFunctions.buildResetErrorBody(e.getMessage(), e.getStackTrace().toString());
+            body = XmlParserFunctions.buildResetErrorResponseBody(e.getMessage(), e.getStackTrace().toString());
         }
         return body;
     }

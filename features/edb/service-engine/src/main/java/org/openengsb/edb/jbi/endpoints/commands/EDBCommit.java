@@ -65,9 +65,9 @@ public class EDBCommit implements EDBEndpointCommand {
             handler.remove(listRemove);
 
             String commitId = handler.commit(EdbEndpoint.DEFAULT_USER, EdbEndpoint.DEFAULT_EMAIL);
-            body = XmlParserFunctions.buildCommitBody(contentWrappers, commitId);
+            body = XmlParserFunctions.buildCommitResponseBody(contentWrappers, commitId);
         } catch (EDBException e) {
-            body = XmlParserFunctions.buildCommitErrorBody(e.getMessage(), makeStackTraceString(e));
+            body = XmlParserFunctions.buildCommitErrorResponseBody(e.getMessage(), makeStackTraceString(e));
             this.log.info(body);
         }
         return body;

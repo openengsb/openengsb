@@ -73,7 +73,7 @@ public class EDBQuery implements EDBEndpointCommand {
             e.printStackTrace();
             foundSignals = new ArrayList<GenericContent>();
         }
-        body = XmlParserFunctions.buildQueryBody(foundSignals);
+        body = XmlParserFunctions.buildQueryResponseBody(foundSignals);
         return body;
     }
 
