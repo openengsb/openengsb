@@ -25,6 +25,8 @@ public class Report {
 
     private String name;
 
+    private Attachment[] attachments;
+
     @SuppressWarnings("unused")
     private Report() {
         // for rpc framework
@@ -46,5 +48,16 @@ public class Report {
 
     public String getName() {
         return name;
+    }
+
+    public void setAttachments(Attachment attachments[]) {
+        this.attachments = attachments;
+    }
+
+    public Attachment[] getAttachments() {
+        if (attachments == null) {
+            return new Attachment[0];
+        }
+        return attachments;
     }
 }

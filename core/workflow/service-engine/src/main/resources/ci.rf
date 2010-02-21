@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?> 
 <!--
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
---> 
+-->
 <process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
@@ -59,8 +59,16 @@ Notification n = new Notification();
 n.setSubject("cit process "+status);
 n.setMessage("Cit process finished with result: "+status+"\nThe report of the cit process is attached to this notification.");
 n.setRecipient(recipient);
+
 Attachment a = new Attachment(r.getContent(), r.getContentType(), r.getName());
-n.setAttachments(new Attachment[] { a });
+Attachment[] reportAttachments = r.getAttachments();
+Attachment[] attachments = new Attachment[reportAttachments.length + 1];
+attachments[0] = a;
+for (int i = 0; i &lt; reportAttachments.length; i++) {
+  attachments[i + 1] = reportAttachments[i];
+}
+n.setAttachments(attachments);
+
 notification.notify(n);</action>
     </actionNode>
     <actionNode id="15" name="startReport" x="218" y="60" width="80" height="40" >

@@ -27,16 +27,20 @@ import java.io.Writer;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.MethodCallHelper;
 import org.openengsb.core.model.Event;
 import org.openengsb.drools.ReportDomain;
+import org.openengsb.drools.model.Attachment;
 import org.openengsb.drools.model.Report;
 
 public class PlainTextReportDomainImpl implements ReportDomain {
@@ -84,15 +88,18 @@ public class PlainTextReportDomainImpl implements ReportDomain {
         reportDirectory.mkdirs();
         File reportFile = new File(reportDirectory, getReportName());
         writeToFile(events, reportFile);
-        byte[] data = getBytes(events);
-        return new Report(data, "text/plain", getReportName());
+        List<Attachment> attachments = new ArrayList<Attachment>();
+        byte[] data = getBytes(events, attachments);
+        Report report = new Report(data, "text/plain", getReportName());
+        report.setAttachments(attachments.toArray(new Attachment[attachments.size()]));
+        return report;
     }
 
-    private byte[] getBytes(Event[] events) {
+    private byte[] getBytes(Event[] events, List<Attachment> attachments) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         OutputStreamWriter writer = new OutputStreamWriter(baos);
         try {
-            writeEvents(writer, events);
+            writeEvents(writer, events, attachments);
             writer.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -100,40 +107,73 @@ public class PlainTextReportDomainImpl implements ReportDomain {
         return baos.toByteArray();
     }
 
-    private void writeEvents(Writer writer, Event[] events) throws IOException {
+    private void writeEvents(Writer writer, Event[] events, List<Attachment> attachments) throws IOException {
         writer.append("\n\n-----------------------\n");
         writer.append(new Date().toString());
         writer.append("\n");
         for (Event e : events) {
-            writer.append("---------event---------\n");
-            writer.append("name: ");
-            writer.append(e.getName());
-            writer.append(" / domain: ");
-            writer.append(e.getDomain());
-            writer.append(" / toolconnector: ");
-            writer.append(String.valueOf(e.getToolConnector()));
-            writer.append("\n");
+            writeEventIntro(writer, e);
             for (String key : e.getKeys()) {
-                writer.append(key);
-                writer.append(": ");
-                writer.append(String.valueOf(e.getValue(key)));
-                writer.append("\n");
+                writeKeyValuePair(writer, attachments, e, key);
             }
-            writer.append("\n");
-            writer.append("\n");
+            writeEventTail(writer);
         }
         writer.append("\n");
+    }
+
+    private void writeEventIntro(Writer writer, Event e) throws IOException {
+        writer.append("---------event---------\n");
+        writer.append("name: ");
+        writer.append(e.getName());
+        writer.append(" / domain: ");
+        writer.append(e.getDomain());
+        writer.append(" / toolconnector: ");
+        writer.append(String.valueOf(e.getToolConnector()));
+        writer.append("\n");
+    }
+
+    private void writeKeyValuePair(Writer writer, List<Attachment> attachments, Event e, String key) throws IOException {
+        if (e.getValue(key) instanceof byte[]) {
+            addAttachment(key, (byte[]) e.getValue(key), (String) e.getValue(key + ".type"), attachments);
+        } else {
+            writer.append(key);
+            writer.append(": ");
+            writer.append(String.valueOf(e.getValue(key)));
+            writer.append("\n");
+        }
+    }
+
+    private void writeEventTail(Writer writer) throws IOException {
+        writer.append("\n");
+        writer.append("\n");
+    }
+
+    private void addAttachment(String name, byte[] data, String type, List<Attachment> attachments) {
+        String actualType = type;
+        if (actualType == null) {
+            actualType = "text/plain";
+        }
+        attachments.add(new Attachment(data, actualType, name));
     }
 
     private void writeToFile(Event[] events, File reportFile) {
         Writer writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(reportFile, true));
-            writeEvents(writer, events);
+            List<Attachment> attachments = new ArrayList<Attachment>();
+            writeEvents(writer, events, attachments);
+            writeAttachmentsToFile(reportFile, attachments);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
             IOUtils.closeQuietly(writer);
+        }
+    }
+
+    private void writeAttachmentsToFile(File reportFile, List<Attachment> attachments) throws IOException {
+        for (Attachment attachment : attachments) {
+            FileUtils.writeByteArrayToFile(new File(reportFile.getParent(), attachment.getName()), attachment
+                    .getData());
         }
     }
 
