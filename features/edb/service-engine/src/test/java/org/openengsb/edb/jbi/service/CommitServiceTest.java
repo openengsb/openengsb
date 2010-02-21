@@ -297,7 +297,7 @@ public class CommitServiceTest extends SpringTestSupport {
     }
 
     @Test
-    public void testCommit1() throws Exception {
+    public void testValidCommit() throws Exception {
 
         final Document doc = sendMessageAndParseResponse(CommitServiceTest.persistMessage);
 
@@ -359,7 +359,7 @@ public class CommitServiceTest extends SpringTestSupport {
     @Test
     public void testValidQuery() throws Exception {
 
-        testCommit1(); // this test depends on a working commit-test.
+        testValidCommit(); // this test depends on a working commit-test.
         final Document doc = sendMessageAndParseResponse(CommitServiceTest.validQueryMessage);
 
         final Element root = doc.getRootElement();
@@ -374,7 +374,7 @@ public class CommitServiceTest extends SpringTestSupport {
     @Test
     public void testHydroSampleQuery() throws Exception {
 
-        testCommit1(); // this test depends on a working commit-test.
+        testValidCommit(); // this test depends on a working commit-test.
         final Document doc = sendMessageAndParseResponse(CommitServiceTest.validQueryMessageRealSample);
 
         final Element root = doc.getRootElement();
@@ -390,7 +390,7 @@ public class CommitServiceTest extends SpringTestSupport {
     @Ignore
     public void testInvalidQuery() throws Exception {
 
-        testCommit1(); // this test depends on a working commit-test.
+        testValidCommit(); // this test depends on a working commit-test.
         final Document doc = sendMessageAndParseResponse(CommitServiceTest.invalidQueryMessage);
 
         final Element root = doc.getRootElement();
