@@ -23,27 +23,16 @@ import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 
-import javax.annotation.Resource;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.edb.core.repository.Repository;
 import org.openengsb.edb.core.repository.RepositoryFactory;
 import org.openengsb.edb.core.repository.jgit.GitRepositoryFactory;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests to check if the repository wrapper works correctly.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath*:testBeans.xml" })
 public class GitRepositoryTest {
-
-    @Resource
-    private EDBHandlerFactory factory;
 
     @Test
     public void testGitCommit() throws Exception {
