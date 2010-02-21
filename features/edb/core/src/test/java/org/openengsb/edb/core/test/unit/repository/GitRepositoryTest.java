@@ -18,21 +18,36 @@
 
 package org.openengsb.edb.core.test.unit.repository;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.File;
+
+import javax.annotation.Resource;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.edb.core.repository.Repository;
 import org.openengsb.edb.core.repository.RepositoryFactory;
 import org.openengsb.edb.core.repository.jgit.GitRepositoryFactory;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * Tests to check if the repository wrapper works correctly.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath*:testBeans.xml" })
 public class GitRepositoryTest {
+
+    @Resource
+    private EDBHandlerFactory factory;
 
     @Test
     public void testGitCommit() throws Exception {
-        RepositoryFactory fact = new GitRepositoryFactory();
-        Repository repo = fact.loadRepository("target/testRepo");
+        RepositoryFactory factory = new GitRepositoryFactory();
+        Repository repo = factory.loadRepository("target/testRepo");
 
         GenericContent content = new GenericContent("target/testRepo", new String[] { "path1", "path2", "path3", },
                 new String[] { "a", "b", "c", });
@@ -53,6 +68,15 @@ public class GitRepositoryTest {
         repo.prepareCommit().add(content).setAuthor("Andreas Pieber", "anpi@gmx.at").setMessage("CommitD").commit();
 
         repo.removeRepository();
+    }
+
+    @Test
+    public void testRemoveRepository() throws Exception {
+        RepositoryFactory factory = new GitRepositoryFactory();
+        Repository repo = factory.loadRepository("target/testDeleteRepo");
+        assertEquals(true, new File("target/testDeleteRepo").exists());
+        repo.removeRepository();
+        assertEquals(false, new File("target/testDeleteRepo").exists());
     }
 
 }
