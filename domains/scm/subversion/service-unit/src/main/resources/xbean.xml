@@ -26,7 +26,7 @@
   <!-- Configuration bean for the SVN implementation. -->
   <bean id="workingCopy" class="org.openengsb.connector.svn.SvnConfiguration">
     <property name="workingCopy" value="testProject" />
-    <property name="developerConnection" value="http://svn.openengsb.org/repos/test/openengsb-testrepo/" />
+    <property name="developerConnection" value="svn://localhost/testProject" />
   </bean>
 
 </beans>
