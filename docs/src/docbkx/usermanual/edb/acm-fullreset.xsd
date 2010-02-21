@@ -17,8 +17,8 @@
 
 -->
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
-targetNamespace="http://www.openengsb.org/engsb/acm/reset/request"
-	xmlns:tns="http://www.openengsb.org/engsb/acm/reset/request"
+targetNamespace="http://www.openengsb.org/engsb/acm/fullreset/request"
+	xmlns:tns="http://www.openengsb.org/engsb/acm/fullreset/request"
 	xmlns:base="http://www.openengsb.org/engsb/AbstractServiceMessage"
 	elementFormDefault="qualified">
 
@@ -27,45 +27,32 @@ targetNamespace="http://www.openengsb.org/engsb/acm/reset/request"
 
 	<annotation>
 		<documentation><![CDATA[
-		Message used to perform an edb reset operation against the underlying repositories.
+		Message to start a full edb instance reset (For test uses only).
 		]]></documentation>
 	</annotation>
 
-	<element name="acmResetRequestMessage" type="tns:acmResetRequestMessage">
+	<element name="acmResetFullRequestMessage" type="tns:acmFullResetRequestMessage">
 		<annotation>
 			<documentation><![CDATA[
-			Message containing a reset reuqest with repoId, headId (to ensure the reste is made
-			only if a the requestor knows the actual acm state.
-			the acm implementation.
+			Message containing an edb instance nameto fully reset.
 			]]></documentation>
 		</annotation>
 	</element>
 
-	<complexType name="acmResetRequestMessage">
-		<annotation>
-			<documentation><![CDATA[
-			Message with body and header where the header is an service header which 
-			also contains the name of the queue where an answer should be sent 
-			to the client.
-			]]></documentation>
-		</annotation>
+	<complexType name="acmFullResetRequestMessage">
 		<sequence>
-			<element name="body" type="tns:acmResetRequestMessageBody" />
+			<element name="body" type="tns:acmFullResetRequestMessageBody" />
 		</sequence>
 	</complexType>
 
-	<complexType name="acmResetRequestMessageBody">
+	<complexType name="acmFullResetRequestMessageBody">
 		<annotation>
 			<documentation><![CDATA[
-			Simple element containing the list of parameters
+			Simple element containing the id of the repository.
 			]]></documentation>
 		</annotation>
-		<sequence>
 			<element name="repoId" type="string" />
-			<element name="headId" type="string" />
-			<element name="depth" type="string" />
 			<repoId>
-		</sequence>
 	</complexType>
 
 </schema>
