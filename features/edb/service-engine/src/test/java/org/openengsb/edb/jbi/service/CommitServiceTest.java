@@ -130,7 +130,7 @@ public class CommitServiceTest extends SpringTestSupport {
      * It is required to override these methods for some reason.
      */
 
-    public static void makeParameters(final EDBHandlerFactory config) {
+    private static void makeParameters(final EDBHandlerFactory config) {
 
         CommitServiceTest.handler = config.loadDefaultRepository();
 
