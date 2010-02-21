@@ -18,6 +18,9 @@
 
 package org.openengsb.maven.common;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The BuildResult represents the possible values, that the build engine
  * provides. The values of Maven are Error, Failure and Success.
@@ -40,6 +43,8 @@ public class MavenResult {
 
     private String file;
     private String[] deployedFiles;
+
+    private Map<String, byte[]> testReports;
 
     public String getFile() {
         return this.file;
@@ -139,6 +144,17 @@ public class MavenResult {
 
     public boolean isSuccess() {
         return SUCCESS.equals(this.result);
+    }
+
+    public void setTestReports(Map<String, byte[]> testReports) {
+        this.testReports = testReports;
+    }
+
+    public Map<String, byte[]> getTestReports() {
+        if (this.testReports == null) {
+            return new HashMap<String, byte[]>();
+        }
+        return testReports;
     }
 
 }

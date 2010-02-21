@@ -17,6 +17,8 @@
  */
 package org.openengsb.test.maven;
 
+import java.util.Map.Entry;
+
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.EventHelper;
 import org.openengsb.drools.TestDomain;
@@ -48,8 +50,11 @@ public class MavenTestDomainImpl extends AbstractMavenDomainImpl implements Test
         event.setToolConnector("maven-test");
         event.setTestRunSuccessful(mavenResult.isSuccess());
         event.setTestOutput(mavenResult.getOutput());
+        for (Entry<String, byte[]> report : mavenResult.getTestReports().entrySet()) {
+            event.setValue("testReport-" + report.getKey(), report.getValue());
+            event.setValue("testReport-" + report.getKey() + ".type", "text/xml");
+        }
         eventHelper.sendEvent(event);
         return mavenResult.isSuccess();
     }
-
 }

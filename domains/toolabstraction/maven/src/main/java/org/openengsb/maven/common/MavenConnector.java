@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
@@ -146,7 +148,7 @@ public class MavenConnector {
         mavenResult.setTimestamp(new Date().getTime());
 
         if (Arrays.binarySearch(goals, "test") >= 0) {
-            appendTestResults(writer);
+            appendTestResults(writer, mavenResult);
         }
 
         mavenResult.setOutput(stringLogger.getContent());
@@ -154,19 +156,43 @@ public class MavenConnector {
         return mavenResult;
     }
 
-    private void appendTestResults(StringWriter writer) {
+    private void appendTestResults(StringWriter writer, MavenResult mavenResult) {
         File surefireReportDir = new File(baseDirectory, "target/surefire-reports");
         if (!surefireReportDir.exists()) {
             return;
         }
-        File[] testReports = surefireReportDir.listFiles(new FilenameFilter() {
+        appendTextualTestReports(writer, surefireReportDir);
+        addXmlReports(mavenResult, surefireReportDir);
+    }
+
+    private void addXmlReports(MavenResult mavenResult, File surefireReportDir) {
+        File[] xmlTestReports = surefireReportDir.listFiles(new FilenameFilter() {
+
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith("xml");
+            }
+        });
+        for (File testReport : xmlTestReports) {
+            Map<String, byte[]> reports = new HashMap<String, byte[]>();
+            try {
+                reports.put(testReport.getName(), FileUtils.readFileToByteArray(testReport));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            mavenResult.setTestReports(reports);
+        }
+    }
+
+    private void appendTextualTestReports(StringWriter writer, File surefireReportDir) {
+        File[] textualTestReports = surefireReportDir.listFiles(new FilenameFilter() {
 
             @Override
             public boolean accept(File dir, String name) {
                 return name.endsWith("txt");
             }
         });
-        for (File testReport : testReports) {
+        for (File testReport : textualTestReports) {
             try {
                 writer.append("\n\n ------ test report ------\n");
                 writer.append(FileUtils.readFileToString(testReport));
