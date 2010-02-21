@@ -157,7 +157,7 @@ public class ContextStore {
     }
 
     private void load() {
-        if (settings == null || !settings.isFile()) {
+        if (settings == null || !settings.isFile() || !settings.exists()) {
             loadDefaultConfig();
             return;
         }
