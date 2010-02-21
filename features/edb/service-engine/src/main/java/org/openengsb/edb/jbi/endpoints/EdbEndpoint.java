@@ -28,6 +28,7 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.jbi.endpoints.commands.EDBCommit;
 import org.openengsb.edb.jbi.endpoints.commands.EDBEndpointCommand;
+import org.openengsb.edb.jbi.endpoints.commands.EDBFullReset;
 import org.openengsb.edb.jbi.endpoints.commands.EDBQuery;
 import org.openengsb.edb.jbi.endpoints.commands.EDBRegisterLink;
 import org.openengsb.edb.jbi.endpoints.commands.EDBRequestLink;
@@ -103,6 +104,7 @@ public class EdbEndpoint extends AbstractEndpoint {
         this.commands.put(EDBOperationType.COMMIT, new EDBCommit(handler, this.logger));
         this.commands.put(EDBOperationType.QUERY, new EDBQuery(handler, this.logger));
         this.commands.put(EDBOperationType.RESET, new EDBReset(handler, this.logger));
+        this.commands.put(EDBOperationType.FULL_RESET, new EDBFullReset(handler, this.logger));
         this.commands.put(EDBOperationType.REGISTER_LINK, new EDBRegisterLink(linksHandler, this.logger));
         this.commands.put(EDBOperationType.REQUEST_LINK, new EDBRequestLink(linksHandler, this.logger));
     }
@@ -115,6 +117,7 @@ public class EdbEndpoint extends AbstractEndpoint {
         this.reponses.put(EDBOperationType.COMMIT, new DefaultAcmResponseBuilder());
         this.reponses.put(EDBOperationType.QUERY, new DefaultAcmResponseBuilder());
         this.reponses.put(EDBOperationType.RESET, new DefaultAcmResponseBuilder());
+        this.reponses.put(EDBOperationType.FULL_RESET, new DefaultAcmResponseBuilder());
         this.reponses.put(EDBOperationType.REGISTER_LINK, new LinkRegisteredResponseBuilder());
         this.reponses.put(EDBOperationType.REQUEST_LINK, new LinkRequestResponseBuilder());
     }
