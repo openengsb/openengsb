@@ -60,14 +60,16 @@ public class EDBHandlerTest {
     private GenericContent content;
 
     private String commitId;
-    private String repoBase;
+    private String dataRepoBaseDir;
+    private String edbBaseDir;
 
     @Before
     public void setUp() throws Exception {
         this.handler = this.factory.loadDefaultRepository();
-        this.repoBase = this.handler.getRepositoryBase().getAbsolutePath();
+        this.dataRepoBaseDir = this.handler.getRepositoryBase().getAbsolutePath();
+        this.edbBaseDir = new File(this.dataRepoBaseDir).getParentFile().getAbsolutePath();
 
-        this.content = new GenericContent(this.repoBase, new String[] { "myKey" }, new String[] { "myValue" },
+        this.content = new GenericContent(this.dataRepoBaseDir, new String[] { "myKey" }, new String[] { "myValue" },
                 this.uuid);
 
         this.handler.add(Arrays.asList(this.content));
@@ -77,7 +79,13 @@ public class EDBHandlerTest {
 
     @After
     public void tearDown() throws Exception {
-        IO.deleteStructure(new File(this.repoBase).getParentFile());
+        IO.deleteStructure(new File(this.edbBaseDir));
+    }
+
+    @Test
+    public void testRemoveRepository() throws Exception {
+        this.handler.removeRepository();
+        assertEquals(false, new File(this.edbBaseDir).exists());
     }
 
     @Test
@@ -110,7 +118,7 @@ public class EDBHandlerTest {
     @Test
     public void testResetDepth0() throws Exception {
         // add another revision
-        GenericContent myContent = new GenericContent(this.repoBase, new String[] { "myKey" },
+        GenericContent myContent = new GenericContent(this.dataRepoBaseDir, new String[] { "myKey" },
                 new String[] { "yetAnotherValue" }, this.uuid);
         this.handler.add(Arrays.asList(myContent));
         String newCommitId = this.handler.commit("myUser", "myEmail");
@@ -132,7 +140,7 @@ public class EDBHandlerTest {
     @Test
     public void testResetDepth1() throws Exception {
         // add another revision
-        GenericContent myContent = new GenericContent(this.repoBase, new String[] { "myKey" },
+        GenericContent myContent = new GenericContent(this.dataRepoBaseDir, new String[] { "myKey" },
                 new String[] { "yetAnotherValue" }, this.uuid);
         this.handler.add(Arrays.asList(myContent));
         String newCommitId = this.handler.commit("myUser", "myEmail");
@@ -160,7 +168,7 @@ public class EDBHandlerTest {
     @Test
     public void testCommit() throws Exception {
         // add another revision
-        GenericContent myContent = new GenericContent(this.repoBase, new String[] { "myKey" },
+        GenericContent myContent = new GenericContent(this.dataRepoBaseDir, new String[] { "myKey" },
                 new String[] { "yetAnotherValue" }, this.uuid);
         this.handler.add(Arrays.asList(myContent));
         String newCommitId = this.handler.commit("myUser", "myEmail");
@@ -215,23 +223,6 @@ public class EDBHandlerTest {
 
     }
 
-    // @Test
-    // public void testFoo() throws Exception {
-    // setupMoreCommits();
-    // List<GenericContent> result = this.handler.queryNodes(
-    // Arrays.asList(
-    // new String[] { "customer", "project" }
-    // )
-    // );
-    // assertEquals(1, result.size());
-    // List<String> results = new ArrayList<String>();
-    // // collect results
-    // results.add(result.get((0)).getProperty("name"));
-    //
-    // assertTrue(results.contains("c"));
-    //
-    // }
-
     /**
      * @param factory the factory to set
      */
@@ -246,8 +237,8 @@ public class EDBHandlerTest {
     private void setupMoreCommits() throws Exception {
 
         List<GenericContent> list = new ArrayList<GenericContent>();
-        list.add(new GenericContent(this.repoBase, ABSTRACT_PATH, ACTUAL_PATH_1));
-        list.add(new GenericContent(this.repoBase, ABSTRACT_PATH, ACTUAL_PATH_2));
+        list.add(new GenericContent(this.dataRepoBaseDir, ABSTRACT_PATH, ACTUAL_PATH_1));
+        list.add(new GenericContent(this.dataRepoBaseDir, ABSTRACT_PATH, ACTUAL_PATH_2));
 
         this.handler.add(list);
         this.commitId = this.handler.commit("myUser", "myEmail");

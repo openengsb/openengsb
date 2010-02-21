@@ -131,23 +131,23 @@ public class DefaultEDBHandler implements EDBHandler {
         boolean found = false;
         // iterate to end of path
         for (String elem : query) {
-        	found = false;
+            found = false;
             File[] files = file.listFiles();
             for (File candidate : files) {
                 if (candidate.isDirectory() && candidate.getName().equalsIgnoreCase(elem)) {
-                    file  = candidate;
+                    file = candidate;
                     found = true;
                     break;
                 }
-                //TODO: ask flo why this was here, it breaks any and all tests
+                // TODO: ask flo why this was here, it breaks any and all tests
                 // and does not seem to have any sense.
-//                return null;
+                // return null;
             }
-            
-            if ( !found )
-            	return Collections.emptyList();
+
+            if (!found)
+                return Collections.emptyList();
         }
-        
+
         List<GenericContent> result = new ArrayList<GenericContent>();
         // save directories at the end of the path
         File[] files = file.listFiles();
@@ -344,5 +344,12 @@ public class DefaultEDBHandler implements EDBHandler {
 
     public synchronized File getRepositoryBase() {
         return this.repoData.getRepositoryBase();
+    }
+
+    public void removeRepository() {
+        File edbBaseDir = repoData.getRepositoryBase().getParentFile();
+        this.repoData.removeRepository();
+        this.repoSearch.removeRepository();
+        edbBaseDir.delete();
     }
 }
