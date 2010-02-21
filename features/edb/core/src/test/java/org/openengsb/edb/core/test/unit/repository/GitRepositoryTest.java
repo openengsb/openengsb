@@ -19,6 +19,7 @@
 package org.openengsb.edb.core.test.unit.repository;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 
@@ -76,7 +77,7 @@ public class GitRepositoryTest {
         Repository repo = factory.loadRepository("target/testDeleteRepo");
         assertEquals(true, new File("target/testDeleteRepo").exists());
         repo.removeRepository();
-        assertEquals(false, new File("target/testDeleteRepo").exists());
+        assertFalse(new File("target/testDeleteRepo").exists());
     }
 
 }
