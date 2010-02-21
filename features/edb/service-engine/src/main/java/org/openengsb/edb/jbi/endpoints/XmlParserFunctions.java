@@ -132,6 +132,8 @@ public class XmlParserFunctions {
             return EDBOperationType.QUERY;
         } else if (doc.getRootElement().getName().equals("acmPersistMessage")) {
             return EDBOperationType.COMMIT;
+        } else if (doc.getRootElement().getName().equals("acmResetFullRequestMessage")) {
+            return EDBOperationType.FULL_RESET;
         } else if (doc.getRootElement().getName().equals("acmResetRequestMessage")) {
             return EDBOperationType.RESET;
         } else if (doc.getRootElement().getName().equals("LinkRegisterMessage")) {

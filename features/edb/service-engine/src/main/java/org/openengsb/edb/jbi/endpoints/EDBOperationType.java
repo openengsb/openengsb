@@ -18,6 +18,6 @@
 package org.openengsb.edb.jbi.endpoints;
 
 public enum EDBOperationType {
-    RESET, COMMIT, QUERY, REGISTER_LINK, REQUEST_LINK,
+    RESET, COMMIT, QUERY, REGISTER_LINK, REQUEST_LINK, FULL_RESET
 
 }

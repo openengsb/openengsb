@@ -1,0 +1,55 @@
+package org.openengsb.edb.jbi.command;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import java.util.UUID;
+
+import javax.jbi.messaging.InOut;
+import javax.jbi.messaging.NormalizedMessage;
+
+import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.apache.servicemix.jbi.messaging.InOutImpl;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.junit.Before;
+import org.junit.Test;
+import org.openengsb.edb.core.api.EDBHandler;
+import org.openengsb.edb.core.api.impl.DefaultEDBHandler;
+import org.openengsb.edb.jbi.endpoints.commands.EDBFullReset;
+
+public class EDBFullResetTest {
+
+    private EDBHandler handler = mock(DefaultEDBHandler.class);
+    private EDBFullReset resetCommand = new EDBFullReset(handler, LogFactory.getLog(EDBFullResetTest.class));
+    private NormalizedMessage msg;
+
+    private static final String MESSAGE_TYPE_FULLRESET = "acmResetFullRequestMessage";
+    private static Document fullResetMessage;
+
+    @Before
+    public void setUp() throws Exception {
+        final InOut inOut = new InOutImpl(UUID.randomUUID().toString());
+        makeParameters();
+        msg = inOut.createMessage();
+        msg.setContent(new StringSource(fullResetMessage.asXML()));
+    }
+
+    @Test
+    public void testExecuteCallsHandler() throws Exception {
+        resetCommand.execute(msg);
+        verify(handler).removeRepository();
+    }
+
+    private static void makeParameters() {
+        /* valid full reset */
+        Element root = DocumentHelper.createElement(MESSAGE_TYPE_FULLRESET);
+        final Element resetBody = root.addElement("body");
+        resetBody.addElement("repoId").setText("_default_");
+        EDBFullResetTest.fullResetMessage = DocumentHelper.createDocument(root);
+
+    }
+
+}
