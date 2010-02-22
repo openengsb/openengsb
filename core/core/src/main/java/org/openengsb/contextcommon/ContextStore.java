@@ -178,6 +178,10 @@ public class ContextStore {
 
         setValue("42/workflows/ci/notification/recipient", "email@openengsb.org");
 
+        /* hydro-edb-commit-usecase */
+        setValue("42/workflows/edbcommit/notification/email/max.mustermann@openengsb.org", "true");
+        setValue("42/workflows/edbcommit/notification/email/martina.musterfrau@openegnsb.org", "true");
+
         setValue("42/issue/namespace", "urn:openengsb:issues");
         setValue("42/issue/servicename", "issuesService");
 
