@@ -25,6 +25,10 @@ import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.Source;
 
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.openengsb.core.EventHelper;
+import org.openengsb.core.EventHelperImpl;
+import org.openengsb.core.MessageProperties;
+import org.openengsb.core.model.Event;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.jbi.endpoints.commands.EDBCommit;
 import org.openengsb.edb.jbi.endpoints.commands.EDBEndpointCommand;
@@ -94,6 +98,15 @@ public class EdbEndpoint extends AbstractEndpoint {
         final Source response = new StringSource(body);
         this.logger.info(body);
         out.setContent(response);
+
+        // TODO more generic solution, this is just to make the example usecase work
+        if (op == EDBOperationType.COMMIT) {
+            MessageProperties msgProperties = new MessageProperties("42", getCorrelationId(in));
+            EventHelper helper = new EventHelperImpl(this, msgProperties);
+            Event event = new Event("edb", "commit");
+            event.setValue("author", "max.mustermann@openengsb.org");
+            helper.sendEvent(event, "urn:openengsb:drools", "droolsService");
+        }
     }
 
     /**

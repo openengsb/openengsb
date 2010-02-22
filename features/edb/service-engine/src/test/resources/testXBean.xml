@@ -16,17 +16,19 @@
    limitations under the License.
 
 -->
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:my="http://openengsb.org/edb/1.0"
-  xmlns:sm="http://servicemix.apache.org/config/1.0"
-  xmlns:test="urn:test" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:my="http://openengsb.org/edb/1.0" xmlns:sm="http://servicemix.apache.org/config/1.0"
+  xmlns:test="urn:test" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:drools="http://www.openengsb.org/domain/drools/1.0"
+  xmlns:drl="urn:openengsb:drools" xmlns:context="http://www.openengsb.org/domain/context/1.0" xmlns:ctx="urn:openengsb:context"
+  xmlns:email="http://www.openengsb.org/connector/email/1.0" xmlns:eml="urn:openengsb:email"
+  xmlns:notification="http://www.openengsb.org/domain/notification/1.0" xmlns:ntf="urn:openengsb:notification"
   xsi:schemaLocation="
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <import resource="classpath:/edbBeans.xml" />
   <import resource="classpath:/testBeans.xml" />
-
   <sm:container createMBeanServer="false" embedded="true" id="jbi">
     <sm:activationSpecs>
+
       <sm:activationSpec>
         <sm:component>
           <my:edbComponent>
@@ -37,6 +39,47 @@
         </sm:component>
       </sm:activationSpec>
 
+      <sm:activationSpec>
+        <sm:component>
+          <drools:droolsComponent>
+            <drools:endpoints>
+              <drools:droolsEndpoint noRemoteLogging="true" endpoint="droolsEndpoint" service="drl:droolsService" />
+            </drools:endpoints>
+          </drools:droolsComponent>
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec>
+        <sm:component>
+          <context:contextComponent>
+            <context:endpoints>
+              <context:contextEndpoint endpoint="contextEndpoint" service="ctx:contextService" />
+            </context:endpoints>
+          </context:contextComponent>
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec>
+        <sm:component>
+          <email:emailComponent>
+            <email:endpoints>
+              <email:emailEndpoint endpoint="emailEndpoint" service="eml:emailService" />
+            </email:endpoints>
+          </email:emailComponent>
+        </sm:component>
+      </sm:activationSpec>
+
+      <sm:activationSpec>
+        <sm:component>
+          <notification:notificationComponent>
+            <notification:endpoints>
+              <notification:notificationEndpoint endpoint="notificationEndpoint"
+                service="ntf:notificationService" />
+            </notification:endpoints>
+          </notification:notificationComponent>
+        </sm:component>
+      </sm:activationSpec>
+      
     </sm:activationSpecs>
   </sm:container>
 
