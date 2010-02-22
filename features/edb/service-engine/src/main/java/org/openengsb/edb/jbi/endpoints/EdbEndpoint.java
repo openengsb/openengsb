@@ -20,17 +20,22 @@ package org.openengsb.edb.jbi.endpoints;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.transform.Source;
 
+import org.apache.commons.logging.Log;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.EventHelperImpl;
 import org.openengsb.core.MessageProperties;
+import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 import org.openengsb.core.model.Event;
 import org.openengsb.drools.events.EdbCommitEvent;
 import org.openengsb.edb.core.api.EDBHandler;
+import org.openengsb.edb.core.api.EDBHandlerFactory;
+import org.openengsb.edb.core.api.impl.DefaultEDBHandlerFactory;
 import org.openengsb.edb.jbi.endpoints.commands.EDBCommit;
 import org.openengsb.edb.jbi.endpoints.commands.EDBEndpointCommand;
 import org.openengsb.edb.jbi.endpoints.commands.EDBFullReset;
@@ -48,17 +53,17 @@ import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * @org.apache.xbean.XBean element="edb" The Endpoint to the commit-feature
- * 
+ *
  */
-public class EdbEndpoint extends AbstractEndpoint {
+public class EdbEndpoint extends OpenEngSBEndpoint {
     /*
      * Operations
-     * 
+     *
      * Strings to identify an operation. {@link
      * javax.jbi.messaging.MessageExchange} requires a QName as operation.
-     * 
+     *
      * setOperation(new QName(OPERATION_COMMIT))
-     * 
+     *
      * The namespace is ignored in the operation-check
      */
 
@@ -75,6 +80,34 @@ public class EdbEndpoint extends AbstractEndpoint {
     private Map<EDBOperationType, EDBEndpointCommand> commands;
     private Map<EDBOperationType, EDBEndpointResponseBuilder> reponses;
 
+    protected EDBHandlerFactory factory;
+    protected EDBEndPointConfig fullConfig;
+
+    // maps operation types to corresponding events
+    private static final Map<EDBOperationType, Class<? extends Event>> eventMap = makeEventMap();
+
+    public EdbEndpoint() {
+        this.factory = new DefaultEDBHandlerFactory();
+        this.fullConfig = new EDBEndPointConfig();
+        this.fullConfig.setLinkStorage("links");
+    }
+
+    public final EDBHandlerFactory getFactory() {
+        return this.factory;
+    }
+
+    public final void setFactory(EDBHandlerFactory factory) {
+        this.factory = factory;
+    }
+
+    public final EDBEndPointConfig getFullConfig() {
+        return this.fullConfig;
+    }
+
+    public final void setFullConfig(EDBEndPointConfig fullConfig) {
+        this.fullConfig = fullConfig;
+    }
+
     @SuppressWarnings("unchecked")
     private static Map<EDBOperationType, Class<? extends Event>> makeEventMap() {
         Map<EDBOperationType, Class<? extends Event>> map;
@@ -90,12 +123,13 @@ public class EdbEndpoint extends AbstractEndpoint {
         return Collections.unmodifiableMap(map);
     }
 
-    // maps operation types to corresponding events
-    private static final Map<EDBOperationType, Class<? extends Event>> eventMap = makeEventMap();
-
     @Override
-    protected void processInOutRequest(final MessageExchange exchange, final NormalizedMessage in,
-            final NormalizedMessage out) throws Exception {
+    protected void processInOut(final MessageExchange exchange, final NormalizedMessage in, final NormalizedMessage out)
+            throws Exception {
+        if (exchange.getStatus() != ExchangeStatus.ACTIVE) {
+            getLog().warn("exchange was not active, ignoring...");
+            return;
+        }
         getLog().info("init handler from factory");
 
         final EDBHandler handler = this.fullConfig.getFactory().loadDefaultRepository();
@@ -129,7 +163,6 @@ public class EdbEndpoint extends AbstractEndpoint {
             }
             MessageProperties msgProperties = readProperties(in);
             EventHelper helper = new EventHelperImpl(this, msgProperties);
-            // TODO figure out why context /Edb cannot be found
             helper.sendEvent(event);
         }
     }
@@ -158,5 +191,16 @@ public class EdbEndpoint extends AbstractEndpoint {
         this.reponses.put(EDBOperationType.FULL_RESET, new DefaultAcmResponseBuilder());
         this.reponses.put(EDBOperationType.REGISTER_LINK, new LinkRegisteredResponseBuilder());
         this.reponses.put(EDBOperationType.REQUEST_LINK, new LinkRequestResponseBuilder());
+    }
+
+    /**
+     * This method may seem not very useful, since logger is protected already
+     * and could be accessed directly. It exists to change loggers easily. I.e.
+     * to exchange the jbi-default-logger with a self-instantiated one.
+     *
+     * @return
+     */
+    protected Log getLog() {
+        return this.logger;
     }
 }
