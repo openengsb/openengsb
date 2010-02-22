@@ -17,7 +17,7 @@
 
 -->
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:my="http://openengsb.org/edb/1.0" xmlns:sm="http://servicemix.apache.org/config/1.0"
-  xmlns:test="urn:test" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:drools="http://www.openengsb.org/domain/drools/1.0"
+  xmlns:edb="urn:openengsb:edb" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:drools="http://www.openengsb.org/domain/drools/1.0"
   xmlns:drl="urn:openengsb:drools" xmlns:context="http://www.openengsb.org/domain/context/1.0" xmlns:ctx="urn:openengsb:context"
   xmlns:email="http://www.openengsb.org/connector/email/1.0" xmlns:eml="urn:openengsb:email"
   xmlns:notification="http://www.openengsb.org/domain/notification/1.0" xmlns:ntf="urn:openengsb:notification"
@@ -33,7 +33,8 @@
         <sm:component>
           <my:edbComponent>
             <my:endpoints>
-              <my:edb fullConfig="#fullConfig" endpoint="edb" service="test:edb" />
+              <my:edb fullConfig="#fullConfig" endpoint="edb" service="edb:edb" />
+              <my:edbEvent endpoint="edbEvent" service="edb:edbEvent" />
             </my:endpoints>
           </my:edbComponent>
         </sm:component>

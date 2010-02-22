@@ -130,8 +130,7 @@ public class EdbEndpoint extends AbstractEndpoint {
             MessageProperties msgProperties = readProperties(in);
             EventHelper helper = new EventHelperImpl(this, msgProperties);
             // TODO figure out why context /Edb cannot be found
-            // helper.sendEvent(event);
-            helper.sendEvent(event, "urn:openengsb:drools", "droolsService");
+            helper.sendEvent(event);
         }
     }
 

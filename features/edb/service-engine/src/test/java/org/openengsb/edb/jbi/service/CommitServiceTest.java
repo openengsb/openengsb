@@ -70,7 +70,7 @@ public class CommitServiceTest extends SpringTestSupport {
     private EDBHandlerFactory config;
 
     /* test-parameters */
-    private static String TEST_NAMESPACE = "urn:test";
+    private static String TEST_NAMESPACE = "urn:openengsb:edb";
     private static final UUID UUID_1 = UUID.fromString("5ff89772-0e20-44bd-9a97-d022ec2680db");
     private static final UUID UUID_2 = UUID.fromString("5ff89773-0e20-44bd-9a97-d022ec2680db");
     private static final String USER = "andreas";
@@ -134,6 +134,7 @@ public class CommitServiceTest extends SpringTestSupport {
         IO.deleteStructure(CommitServiceTest.handler.getRepositoryBase().getParentFile());
         IO.deleteStructure(new File("links"));
         super.tearDown();
+        IO.deleteStructure(new File("data"));
     }
 
     @Test
@@ -406,7 +407,7 @@ public class CommitServiceTest extends SpringTestSupport {
 
     /**
      * Creates a new ServiceMixClieant
-     * 
+     *
      * @return The new ServiceMixClient
      */
     private DefaultServiceMixClient createClient() throws JBIException {
@@ -434,9 +435,10 @@ public class CommitServiceTest extends SpringTestSupport {
 
         final NormalizedMessage inMsg = inOut.createMessage();
         inMsg.setContent(new StringSource(message));
-
+        inMsg.setProperty("contextId", "42");
         inOut.setInMessage(inMsg);
         inOut.setService(new QName(CommitServiceTest.TEST_NAMESPACE, CommitServiceTest.EDB_SERVICE_NAME));
+
         return inOut;
     }
 
