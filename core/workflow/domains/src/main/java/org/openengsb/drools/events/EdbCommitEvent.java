@@ -24,7 +24,7 @@ public class EdbCommitEvent extends Event {
     private static final String AUTHOR = "author";
 
     public EdbCommitEvent() {
-        super("Edb", "commit");
+        super("edb", "commit");
     }
 
     public void setAuthor(String value) {
