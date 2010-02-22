@@ -72,7 +72,7 @@
   </build>
 
   <dependencies>
-   
+
     <!-- Servicemix dependencies -->
     <dependency>
       <groupId>org.apache.servicemix</groupId>
@@ -93,7 +93,23 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-features-edb-core</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-workflow-se</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-context-se</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-notification-email-se</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-notification-implementation-se</artifactId>
+    </dependency>
+    
     <!-- Logging Dependencies -->
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -155,7 +171,7 @@
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>
     </dependency>
-    
+
   </dependencies>
 
 </project>
