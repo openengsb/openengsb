@@ -24,6 +24,7 @@ import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
+import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.api.impl.DefaultEDBHandlerFactory;
 
@@ -32,7 +33,7 @@ import org.openengsb.edb.core.api.impl.DefaultEDBHandlerFactory;
  * functionality for EDB.
  * 
  */
-public abstract class AbstractEndpoint extends ProviderEndpoint {
+public abstract class AbstractEndpoint extends OpenEngSBEndpoint {
 
 	protected EDBHandlerFactory factory;
 	protected EDBEndPointConfig fullConfig;
