@@ -49,6 +49,8 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
 
     private RuleBase ruleBase;
 
+    private RuleBaseSource ruleSource;
+
     /**
      * List of global variables for rules to use.
      */
@@ -95,11 +97,16 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
     }
 
     private void init() {
-        Properties config = new Properties();
-        config.put("url", "http://localhost:8081/drools-guvnor/org.drools.guvnor.Guvnor/package/org.openengsb/LATEST");
-        RuleAgent agent = RuleAgent.newRuleAgent(config);
-        RuleBase ruleBase = agent.getRuleBase();
-        setRuleBase(ruleBase);
+        if (ruleSource != null) {
+            setRuleBase(ruleSource.getRulebase());
+        } else {
+            Properties config = new Properties();
+            config.put("url",
+                    "http://localhost:8081/drools-guvnor/org.drools.guvnor.Guvnor/package/org.openengsb/LATEST");
+            RuleAgent agent = RuleAgent.newRuleAgent(config);
+            RuleBase ruleBase = agent.getRuleBase();
+            setRuleBase(ruleBase);
+        }
     }
 
     public RuleBase getRuleBase() {
@@ -108,6 +115,14 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
 
     public void setRuleBase(RuleBase ruleBase) {
         this.ruleBase = ruleBase;
+    }
+
+    public final RuleBaseSource getRuleSource() {
+        return this.ruleSource;
+    }
+
+    public final void setRuleSource(RuleBaseSource ruleSource) {
+        this.ruleSource = ruleSource;
     }
 
     public Map<String, Object> getGlobals() {
