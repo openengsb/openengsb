@@ -38,7 +38,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.model.Event;
-import org.openengsb.drools.DroolsComponent;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -47,7 +46,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(locations = { "classpath*:testBeans.xml" })
 public class DroolsEndpointTest extends SpringTestSupport {
     private static ServiceMixClient client;
-    private static DroolsComponent drools;
 
     private static final String TEST_EVENT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
     "<list xmlns=\"http://org.openengsb/util/serialization\" domainConcept=\"\" format=\"\" name=\"event\">" +
