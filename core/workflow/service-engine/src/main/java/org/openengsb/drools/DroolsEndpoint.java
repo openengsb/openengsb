@@ -51,6 +51,8 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
 
     private RuleBaseSource ruleSource;
 
+    private boolean noRemoteLogging;
+
     /**
      * List of global variables for rules to use.
      */
@@ -83,6 +85,9 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
     }
 
     private void forwardMessageToLogEndpoint(NormalizedMessage messageToLog) throws MessagingException {
+        if(noRemoteLogging){
+            return;
+        }
         InOnly loggingMessageExchange = new InOnlyImpl(UUID.randomUUID().toString());
         QName loggingServiceIdentification = getLoggingServiceIdentification();
         loggingMessageExchange.setService(loggingServiceIdentification);
@@ -107,6 +112,14 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
             RuleBase ruleBase = agent.getRuleBase();
             setRuleBase(ruleBase);
         }
+    }
+
+    public final boolean isNoRemoteLogging() {
+        return this.noRemoteLogging;
+    }
+
+    public final void setNoRemoteLogging(boolean noRemoteLogging) {
+        this.noRemoteLogging = noRemoteLogging;
     }
 
     public RuleBase getRuleBase() {
