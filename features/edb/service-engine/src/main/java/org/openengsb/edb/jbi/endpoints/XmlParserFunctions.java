@@ -360,7 +360,7 @@ public class XmlParserFunctions {
             wrapIntoXMLLikeElement(LINK_SOURCE, link.getProperty(LINK_SOURCE), body);
             wrapIntoXMLLikeElement(LINK_TYPE, link.getProperty(LINK_TYPE), body);
             wrapIntoXMLLikeElement(LINK_PARAM, link.getProperty(LINK_PARAM), body);
-            wrapIntoXMLLikeElement(LINK_NAME, link.getProperty(LINK_NAME), body);
+            wrapIntoXMLLikeElement(LINK_TEXT, link.getProperty(LINK_TEXT), body);
             body.append("</link>");
         }
         return body.toString();
@@ -375,7 +375,7 @@ public class XmlParserFunctions {
             wrapIntoXMLLikeElement(LINK_PARAM, link.getProperty(LINK_PARAM), buffer);
             wrapIntoXMLLikeElement(LINK_UUID, link.getUUID(), buffer);
             wrapIntoXMLLikeElement(LINK_SOURCE, link.getProperty(LINK_SOURCE), buffer);
-            wrapIntoXMLLikeElement(LINK_NAME, link.getProperty(LINK_NAME), buffer);
+            wrapIntoXMLLikeElement(LINK_TEXT, link.getProperty(LINK_TEXT), buffer);
             buffer.append("</target>");
             buffer.append("\n");
         }
