@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.drools;
 
@@ -104,7 +104,7 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
         return new QName(loggingNamespace, loggingServiceName);
     }
 
-    private void init() {
+    private void init() throws RuleBaseException {
         if (ruleSource != null) {
             setRuleBase(ruleSource.getRulebase());
         } else {
@@ -151,7 +151,7 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
 
     /**
      * handle the MessageExchange with drools.
-     * 
+     *
      * @param e2 exchange to handle
      */
     protected void drools(Event e, MessageProperties msgProperties) {

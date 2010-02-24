@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.drools;
 
@@ -40,7 +40,7 @@ public class FileRuleSource implements RuleBaseSource {
     }
 
     @Override
-    public RuleBase getRulebase() {
+    public RuleBase getRulebase() throws RuleBaseException{
         if (this.path == null) {
             throw new IllegalStateException("path must be set");
         }
@@ -52,9 +52,9 @@ public class FileRuleSource implements RuleBaseSource {
             is = rbaseResource.getInputStream();
             return loader.loadFromReader(new InputStreamReader(is));
         } catch (IOException e) {
-            throw new IllegalStateException("Cannot initialize rulebase from path " + this.path, e);
+            throw new RuleBaseException("Cannot initialize rulebase from path " + this.path, e);
         } catch (CheckedDroolsException e) {
-            throw new IllegalStateException("Cannot initialize rulebase from path" + this.path, e);
+            throw new RuleBaseException("Cannot initialize rulebase from path " + this.path, e);
         }
     }
 }
