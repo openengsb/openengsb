@@ -69,17 +69,6 @@
           </email:emailComponent>
         </sm:component>
       </sm:activationSpec>
-
-      <sm:activationSpec>
-        <sm:component>
-          <notification:notificationComponent>
-            <notification:endpoints>
-              <notification:notificationEndpoint endpoint="notificationEndpoint"
-                service="ntf:notificationService" />
-            </notification:endpoints>
-          </notification:notificationComponent>
-        </sm:component>
-      </sm:activationSpec>
       
     </sm:activationSpecs>
   </sm:container>

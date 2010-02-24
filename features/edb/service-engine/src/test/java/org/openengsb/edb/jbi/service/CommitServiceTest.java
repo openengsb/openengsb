@@ -38,6 +38,7 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.servicemix.client.DefaultServiceMixClient;
+import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
@@ -111,6 +112,7 @@ public class CommitServiceTest extends SpringTestSupport {
     /* test-variables */
     private DefaultServiceMixClient client;
     private static EDBHandler handler;
+    private static NotificationMockEndpoint notificationEndpoint;
 
     @Override
     protected AbstractXmlApplicationContext createBeanFactory() {
@@ -121,6 +123,15 @@ public class CommitServiceTest extends SpringTestSupport {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+
+        DefaultComponent comp = new DefaultComponent();
+        notificationEndpoint = new NotificationMockEndpoint();
+        notificationEndpoint.setServiceUnit(comp.getServiceUnit());
+        notificationEndpoint.setService(new QName("urn:openengsb:notification", "notificationService"));
+        notificationEndpoint.setEndpoint("notificationEndpoint");
+        comp.addEndpoint(notificationEndpoint);
+        jbi.activateComponent(comp, "notification");
+
         makeParameters(this.config);
         CommitServiceTest.handler = this.config.loadDefaultRepository();
         this.client = createClient();
@@ -150,6 +161,12 @@ public class CommitServiceTest extends SpringTestSupport {
         final List<Element> messageObjects = body.elements("acmMessageObjects");
         assertEquals(2, messageObjects.size());
         assertNoErrorMessage(body);
+    }
+
+    @Test
+    public void testCommitNotification() throws Exception {
+        testValidCommit();
+        assertFalse(notificationEndpoint.getReceivedNotifications().isEmpty());
     }
 
     /*
