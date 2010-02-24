@@ -44,7 +44,7 @@
         <sm:component>
           <drools:droolsComponent>
             <drools:endpoints>
-              <drools:droolsEndpoint noRemoteLogging="true" endpoint="droolsEndpoint" service="drl:droolsService" />
+              <drools:droolsEndpoint ruleSource="#ruleSource" noRemoteLogging="true" endpoint="droolsEndpoint" service="drl:droolsService" />
             </drools:endpoints>
           </drools:droolsComponent>
         </sm:component>
