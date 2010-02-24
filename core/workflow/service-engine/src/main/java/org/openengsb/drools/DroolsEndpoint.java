@@ -70,10 +70,13 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
     }
 
     @Override
+    public synchronized void start() throws Exception {
+        super.start();
+        init();
+    }
+
+    @Override
     protected void handleEvent(Event e, ContextHelper contextHelper, MessageProperties msgProperties) {
-        if (this.ruleBase == null) {
-            init();
-        }
         drools(e, msgProperties);
     }
 
@@ -85,7 +88,7 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
     }
 
     private void forwardMessageToLogEndpoint(NormalizedMessage messageToLog) throws MessagingException {
-        if(noRemoteLogging){
+        if (noRemoteLogging) {
             return;
         }
         InOnly loggingMessageExchange = new InOnlyImpl(UUID.randomUUID().toString());
