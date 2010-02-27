@@ -15,6 +15,10 @@
 #   limitations under the License.
 #
 
+# general introduction to handle whitespaces in files may be introduced in future
+set -eu
+IFS=`printf '\n\t'`
+
 # Script used to build the entire servicebus and run it directly from maven. This 
 # script actually using the jbi:servicemix maven command therefore. In future
 # version, when the project is embedded in an webserver this script is for

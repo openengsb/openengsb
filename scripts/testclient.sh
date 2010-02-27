@@ -14,6 +14,11 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
+
+# general introduction to handle whitespaces in files may be introduced in future
+set -eu
+IFS=`printf '\n\t'`
+
 cd $(dirname $0)
 SCRIPT_DIR=`pwd`
 cd $SCRIPT_DIR/../package/test

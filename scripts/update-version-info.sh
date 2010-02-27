@@ -15,6 +15,10 @@
 #   limitations under the License.
 #
 
+# general introduction to handle whitespaces in files may be introduced in future
+set -eu
+IFS=`printf '\n\t'`
+
 # This script changes the copyright header version from one year to another. Simply provide
 # the actual year as first param and the next year as the second param. Finally the year have
 # to be set manually in the following files:

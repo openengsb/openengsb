@@ -15,6 +15,10 @@
 #   limitations under the License.
 #
 
+# general introduction to handle whitespaces in files may be introduced in future
+set -eu
+IFS=`printf '\n\t'`
+
 # Script for creating projects according to the archetype pattern for the engsb project.
 # This script takes two parameters where the first one specifies which archetype to
 # take where all archetypes could be found here: 
