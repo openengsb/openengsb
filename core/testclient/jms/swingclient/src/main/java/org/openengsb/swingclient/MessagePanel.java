@@ -43,7 +43,7 @@ public class MessagePanel extends JPanel {
 
     JComboBox operation = new JComboBox(new String[] { "none", "event", "methodcall" });
 
-    JComboBox mep = new JComboBox(new String[] { "in-out", "robust-in-only" });
+    JComboBox mep = new JComboBox(new String[] { "in-out", "in-only" });
 
     JTextField context = new JTextField(8);
 

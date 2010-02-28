@@ -88,8 +88,8 @@ public class CustomOpenEngSBMarshaler extends AbstractJmsMarshaler implements Jm
         String mep = ctx.getMessage().getStringProperty("mep");
         if (mep.equals("in-out")) {
             this.mep = JbiConstants.IN_OUT;
-        } else if (mep.equals("robust-in-only")) {
-            this.mep = JbiConstants.ROBUST_IN_ONLY;
+        } else if (mep.equals("in-only")) {
+            this.mep = JbiConstants.IN_ONLY;
         } else {
             throw new IllegalArgumentException("Unsupported Message Exchange Pattern " + mep);
         }
