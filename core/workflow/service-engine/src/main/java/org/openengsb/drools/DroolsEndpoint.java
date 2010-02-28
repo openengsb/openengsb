@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 
 import javax.jbi.messaging.InOnly;
@@ -35,7 +34,6 @@ import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.drools.RuleBase;
-import org.drools.agent.RuleAgent;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.SimpleEventEndpoint;
@@ -72,12 +70,16 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
     @Override
     public synchronized void start() throws Exception {
         super.start();
-        init();
     }
 
     @Override
-    protected void handleEvent(Event e, ContextHelper contextHelper, MessageProperties msgProperties) {
-        drools(e, msgProperties);
+    protected void handleEvent(Event event, ContextHelper contextHelper, MessageProperties msgProperties) {
+        try {
+            init();
+        } catch (RuleBaseException e) {
+            throw new RuntimeException(e);
+        }
+        drools(event, msgProperties);
     }
 
     @Override
@@ -108,12 +110,7 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
         if (ruleSource != null) {
             setRuleBase(ruleSource.getRulebase());
         } else {
-            Properties config = new Properties();
-            config.put("url",
-                    "http://localhost:8081/drools-guvnor/org.drools.guvnor.Guvnor/package/org.openengsb/LATEST");
-            RuleAgent agent = RuleAgent.newRuleAgent(config);
-            RuleBase ruleBase = agent.getRuleBase();
-            setRuleBase(ruleBase);
+            throw new NullPointerException("Error initializing DroolsEndpoint - no ruleSource specified.");
         }
     }
 
@@ -151,7 +148,7 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
 
     /**
      * handle the MessageExchange with drools.
-     *
+     * 
      * @param e2 exchange to handle
      */
     protected void drools(Event e, MessageProperties msgProperties) {
