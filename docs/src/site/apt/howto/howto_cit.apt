@@ -24,7 +24,7 @@ HowTo - Continuous Integration and Test Workflow
   The perm gen space of Servicemix has to be increased. This can be done by setting the JAVA_OPTS environment variable before starting Servicemix.
   
 +---
-  JAVA_OPTS="$JAVA_OPTS -XX:PermSize=256m -XX:MaxPermSize=256m"
+  JAVA_OPTS="$JAVA_OPTS -XX:PermSize=256m -XX:MaxPermSize=256m -Xmx1024M"
 +---
 
   Further more to use the commit hook (see end of this section) the Stomp protocol has to be enabled for Activemq.

@@ -36,6 +36,13 @@ HowTo - Guvnor Setup
 +---
 
   Maybe also change this in server/default/conf/jboss-minimal.xml as this port is also specified here.
+  
+  Change port in server/default/deploy/jms/uil2-service.xml from 8093 to 8094.
+
++---
+  <!-- The bind port -->
+  <attribute name="ServerBindPort">8094</attribute>
++---
 
 * Drools Project Setup in Guvnor
 
