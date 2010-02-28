@@ -70,6 +70,8 @@ HowTo - First steps with OpenEngSB (Issue tracker)
   
   2. Run quickrun.sh.
   
+  3. Send the same message with the same configuration as shown in the {{{howto_notify.html}Hello World example}}.
+  
   The issue domain selects a suitable connector (Trac in our case) and creates the specified issue tickets.
   
   Note: If the notification rule still exists you will receive those messages too.
