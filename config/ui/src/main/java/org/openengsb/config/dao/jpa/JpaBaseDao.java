@@ -1,13 +1,16 @@
 package org.openengsb.config.dao.jpa;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.openengsb.config.dao.BaseDao;
 import org.openengsb.config.domain.AbstractDomainObject;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 public class JpaBaseDao<T extends AbstractDomainObject> implements BaseDao<T> {
 
     @PersistenceContext
@@ -28,6 +31,11 @@ public class JpaBaseDao<T extends AbstractDomainObject> implements BaseDao<T> {
     @Override
     public T find(Long id) {
         return em.find(persistenceClass, id);
+    }
+
+    @Override
+    public List<T> findAll() {
+        return em.createNamedQuery(persistenceClass.getSimpleName() + ".findAll").getResultList();
     }
 
     @Override

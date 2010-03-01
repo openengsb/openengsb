@@ -1,4 +1,4 @@
-/**
+<!--
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
@@ -14,26 +14,18 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
- */
-package org.openengsb.config.domain;
+-->
+<html xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
 
-import java.io.Serializable;
-
-import javax.persistence.MappedSuperclass;
-
-@MappedSuperclass
-public abstract class AbstractDomainObject implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Gets the id
-     */
-    public abstract Long getId();
-
-    /**
-     * Sets the id
-     *
-     * @param id
-     */
-    public abstract void setId(Long id);
-}
+<body>
+<wicket:extend>
+  <h3><wicket:message key="title">[title]</wicket:message></h3>
+  <div>
+  	<form wicket:id="form">
+      <input wicket:id="name"></input>
+      <input type="submit" wicket:message="value:save" />
+  	</form>
+  </div>
+</wicket:extend>
+</body>
+</html>

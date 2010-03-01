@@ -34,6 +34,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
+import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.jbi.BeanInfo;
 import org.openengsb.config.jbi.EndpointInfo;
 import org.openengsb.config.jbi.ServiceAssemblyInfo;
@@ -48,6 +49,10 @@ import com.google.common.collect.Maps;
 public class ShowServiceAssemblyPage extends BasePage {
     public ChoiceOption selected;
 
+    public ShowServiceAssemblyPage(ServiceAssembly sa) {
+
+    }
+
     @SuppressWarnings("unchecked")
     public ShowServiceAssemblyPage(PageParameters pp) {
         if (pp != null && pp.containsKey("reset")) {
@@ -61,7 +66,7 @@ public class ShowServiceAssemblyPage extends BasePage {
             }
         };
         add(suform);
-        
+
         Button suButton = new Button("saButton");
         suButton.setEnabled(!assemblyService.getEndpoints().isEmpty());
         suform.add(suButton);

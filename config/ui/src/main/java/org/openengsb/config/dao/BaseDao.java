@@ -17,11 +17,15 @@
  */
 package org.openengsb.config.dao;
 
+import java.util.List;
+
 import org.openengsb.config.domain.AbstractDomainObject;
 
 public interface BaseDao<T extends AbstractDomainObject> {
 
     T find(Long id);
+
+    List<T> findAll();
 
     void persist(T toPersist);
 

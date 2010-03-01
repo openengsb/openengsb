@@ -22,20 +22,40 @@ import java.util.List;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.config.dao.ServiceAssemblyDao;
+import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.jbi.types.ComponentType;
 
 public class NavigationPanel extends Panel {
     private static final long serialVersionUID = 1L;
 
+    @SpringBean
+    ServiceAssemblyDao saDao;
+
     public NavigationPanel(String id, List<ComponentType> components) {
         super(id);
-        PageParameters params = new PageParameters();
-        params.put("reset", "1");
-        add(new BookmarkablePageLink<ShowServiceAssemblyPage>("createAssemblyLink", ShowServiceAssemblyPage.class, params));
+        add(new ListView<ServiceAssembly>("serviceAssemblies", saDao.findAll()) {
+            private static final long serialVersionUID = 1L;
+            @Override
+            protected void populateItem(final ListItem<ServiceAssembly> item) {
+                Link link = new Link("serviceAssemblyLink") {
+                    private static final long serialVersionUID = 1L;
+                    @Override
+                    public void onClick() {
+                        this.setResponsePage(new ShowServiceAssemblyPage(item.getModelObject()));
+                    }
+                };
+                link.add(new Label("serviceAssemblyName", item.getModelObject().getName()));
+                item.add(link);
+            }
+        });
+        add(new BookmarkablePageLink<CreateServiceAssemblyPage>("createAssemblyLink", CreateServiceAssemblyPage.class));
         add(new BookmarkablePageLink<EditContextPage>("editContextLink", EditContextPage.class));
         add(new ListView<ComponentType>("components", components) {
             private static final long serialVersionUID = 1L;
