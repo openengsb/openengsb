@@ -45,11 +45,11 @@ import org.openengsb.config.view.util.ChoiceOption;
 
 import com.google.common.collect.Maps;
 
-public class CreateAssemblyPage extends BasePage {
+public class ShowServiceAssemblyPage extends BasePage {
     public ChoiceOption selected;
 
     @SuppressWarnings("unchecked")
-    public CreateAssemblyPage(PageParameters pp) {
+    public ShowServiceAssemblyPage(PageParameters pp) {
         if (pp != null && pp.containsKey("reset")) {
             assemblyService.createNewAssembly();
         }
@@ -57,7 +57,7 @@ public class CreateAssemblyPage extends BasePage {
         Form<?> suform = new Form("saForm") {
             @Override
             protected void onSubmit() {
-                CreateAssemblyPage.this.onDeploySubmit();
+                ShowServiceAssemblyPage.this.onDeploySubmit();
             }
         };
         add(suform);
@@ -115,7 +115,7 @@ public class CreateAssemblyPage extends BasePage {
         Form<?> form = new Form("newComponentForm") {
             @Override
             protected void onSubmit() {
-                CreateAssemblyPage.this.onSubmit();
+                ShowServiceAssemblyPage.this.onSubmit();
             }
         };
         add(form);

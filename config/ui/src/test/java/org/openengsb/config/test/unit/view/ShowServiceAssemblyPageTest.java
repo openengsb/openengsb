@@ -27,17 +27,17 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.config.WicketBase;
 import org.openengsb.config.jbi.EndpointInfo;
-import org.openengsb.config.view.CreateAssemblyPage;
+import org.openengsb.config.view.ShowServiceAssemblyPage;
 import org.openengsb.config.view.util.ChoiceOption;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public class CreateAssemblyPageTest extends WicketBase {
+public class ShowServiceAssemblyPageTest extends WicketBase {
     @Test
     @SuppressWarnings("unchecked")
     public void dropDownChoice_shouldListEndpointsAndBeans() throws Exception {
-        tester.startPage(CreateAssemblyPage.class);
+        tester.startPage(ShowServiceAssemblyPage.class);
         DropDownChoice<ChoiceOption> choice = extTester.assertEnabled("newComponentForm:componentSelect",
                 DropDownChoice.class);
         assertThat(choice.getChoices().size(), is(2));
@@ -47,7 +47,7 @@ public class CreateAssemblyPageTest extends WicketBase {
 
     @Test
     public void onEmptyLists_shouldBeInvisibleAndLabelsVisible() throws Exception {
-        tester.startPage(CreateAssemblyPage.class);
+        tester.startPage(ShowServiceAssemblyPage.class);
         extTester.assertVisible("endpointLabel");
         extTester.assertInvisible("endpointList");
         extTester.assertVisible("beanLabel");
@@ -61,7 +61,7 @@ public class CreateAssemblyPageTest extends WicketBase {
         map.put("endpoint", "b");
         EndpointInfo endpointInfo = new EndpointInfo(components.get(0).getEndpoints().get(0), map);
         Mockito.when(mockedAssemblyService.getEndpoints()).thenReturn(Lists.newArrayList(endpointInfo));
-        tester.startPage(CreateAssemblyPage.class);
+        tester.startPage(ShowServiceAssemblyPage.class);
         extTester.assertInvisible("endpointLabel");
         extTester.assertVisible("endpointList");
         tester.assertListView("endpointList", Lists.newArrayList(endpointInfo));

@@ -65,7 +65,7 @@ public class BeanEditorPage extends BasePage {
                 } else {
                     assemblyService.getBeans().add(new BeanInfo(bean, getValues()));
                 }
-                RequestCycle.get().setResponsePage(CreateAssemblyPage.class);
+                RequestCycle.get().setResponsePage(ShowServiceAssemblyPage.class);
             }
         };
         add(editor);

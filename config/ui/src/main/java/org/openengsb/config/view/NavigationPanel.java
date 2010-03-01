@@ -35,7 +35,7 @@ public class NavigationPanel extends Panel {
         super(id);
         PageParameters params = new PageParameters();
         params.put("reset", "1");
-        add(new BookmarkablePageLink<CreateAssemblyPage>("createAssemblyLink", CreateAssemblyPage.class, params));
+        add(new BookmarkablePageLink<ShowServiceAssemblyPage>("createAssemblyLink", ShowServiceAssemblyPage.class, params));
         add(new BookmarkablePageLink<EditContextPage>("editContextLink", EditContextPage.class));
         add(new ListView<ComponentType>("components", components) {
             private static final long serialVersionUID = 1L;
