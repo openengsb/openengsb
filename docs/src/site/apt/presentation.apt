@@ -16,14 +16,15 @@
 Presentation Material
 
   This page contains all material which can be used to present
- the openEngSB to the public. This includes actual presentation material, logos,
+ the OpenEngSB to the public. This includes actual presentation material, logos,
  pictures and so on. The material is provided by supporters of the project and
- can be reused for representing the openEngSB.
- If you have created your own material and want to provide it to the community,
- please contact us by the {{{http://www.googlegroups.com/group/engsb-user}mailing list}}.
- 
- * {{{http://www.openengsb.org/svn/engsb/engsb/documents/architecturalSlides/trunk/engsb-full.ppt}Long presentation about the EngSB}} - Stefan Biffl, et al. (Vienna University of Technology)
- 
- * {{{http://www.openengsb.org/svn/engsb/engsb/documents/architecturalSlides/trunk/engsb-short.ppt}Short presentation about the EngSB}} - Stefan Biffl, et al. (Vienna University of Technology)
+ can be reused for representing the OpenEngSB.
 
- * {{{http://www.openengsb.org/svn/engsb/engsb/additionalMaterial/eip.vss}VSS for EIP according to Hohpe}}
+  If you have created your own material and want to provide it to the community,
+ please contact us by the developer mailing list}}.
+ 
+~~ * {{{http://www.openengsb.org/svn/engsb/engsb/documents/architecturalSlides/trunk/engsb-full.ppt}Long presentation about the EngSB}} - Stefan Biffl, et al. (Vienna University of Technology)
+ 
+~~ * {{{http://www.openengsb.org/svn/engsb/engsb/documents/architecturalSlides/trunk/engsb-short.ppt}Short presentation about the EngSB}} - Stefan Biffl, et al. (Vienna University of Technology)
+
+ ~~ * {{{http://www.openengsb.org/svn/engsb/engsb/additionalMaterial/eip.vss}VSS for EIP according to Hohpe}}

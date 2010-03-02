@@ -89,7 +89,7 @@ HowTo - Continuous Integration and Test Workflow
   
 * The Subversion Stomp Commit Hook
 
-  The third step from the list in the section 'Running the example' can be accomplished by usinng a commit hook in the SCM tool.
+  The third step from the list in the section 'Running the example' can be accomplished by using a commit hook in the SCM tool.
   A small Perl program was developed which sends a JMS message using the Stomp protocol into a queue. 
   A specialized JMS consumer of the tool connector reads from this queue and informs the Subversion tool connector that a check in has happened. 
   The tool connector creates the ScmCheckInEvent and sends it to the OpenEngSB. The Perl script can be found in domains/scm/subversion/hooks/stomp-client.

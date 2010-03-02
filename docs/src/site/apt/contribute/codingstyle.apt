@@ -18,7 +18,7 @@ Java Coding Style
 
 * Sun Coding Guidelines
 
-  The openEngSB Coding Guidelines are based upon the
+  The OpenEngSB Coding Guidelines are based upon the
  {{{http://java.sun.com/docs/codeconv/html/CodeConvTOC.doc.html}Code
  Conventions for the Java Programming Language}}.  There are some additions and
  deviations for this project.
@@ -30,7 +30,7 @@ size and resolution a length of 120 is more reasonable.
 
 ** 4.2 Wrapping
 
-  Use the autoformatter of your IDE. Import the
+  Use the auto-formatter of your IDE. Import the
   {{{http://dev.openengsb.org/resources/eclipse/formatter.xml}Eclipse Formatter file}}.
 
 ** 6.1 Number of declarations per line
@@ -51,7 +51,7 @@ size and resolution a length of 120 is more reasonable.
 ** File Format
 
   Every Java file has to be UTF-8 encoded and has to use UNIX line endings.
- Indentations consist of four spaces, tabstops are not allowed.
+ Indentations consist of four spaces, tab-stops are not allowed.
 
 
 ** Header
@@ -248,7 +248,7 @@ be acceptable but you should try to annotate the problematic statements instead.
 
  * Use runtime exceptions where possible.
 
- * Wrap exeptions in a RuntimeException if you don't want to specify the Exception in
+ * Wrap exceptions in a RuntimeException if you don't want to specify the Exception in
    your method signature and you can't handle it.
 
  * Write meaningful exception message.

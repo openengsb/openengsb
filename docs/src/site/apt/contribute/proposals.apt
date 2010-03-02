@@ -18,7 +18,7 @@ Proposals
   A main directive of OpenEngSB is its continuous extension. Most ideas are discussed
  in the mailinglist first, but at some point a more consistent way of specification is required.
  For the OpenEngSB project this should be done via written proposals in the proposals
- section. This articel explains in more details what this means and how it should be handled.
+ section. This article explains in more details what this means and how it should be handled.
  
 *General
 
@@ -30,7 +30,7 @@ Proposals
 *Domain Description
 
   This section describes what should be contained in the proposal for an interface description.
- The structure of the documents themself should be done in the following form:
+ The structure of the documents themselves should be done in the following form:
  
  [[1]] Which tools exist for the domain
  

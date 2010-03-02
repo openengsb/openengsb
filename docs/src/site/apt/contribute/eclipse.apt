@@ -13,7 +13,7 @@
 ~~   See the License for the specific language governing permissions and
 ~~   limitations under the License.
 ~~
-Setup Eclipse for the EngSB
+Setup Eclipse for the OpenEngSB
 
   The following page describes how to setup the actual code as an eclipse project
  with two different focuses. One directly on the core development team and how

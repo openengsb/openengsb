@@ -18,7 +18,7 @@ Web Configuration Interface
   The embedded web app adds the possibility to create, configure and monitor service assemblies through
 a web interface.
 
-   Configuration of anservice assembly for an JBI-compliant ESB is mainly
+   Configuration of an service assembly for an JBI-compliant ESB is mainly
 done by editing xml-files. Build tools like maven help by providing
 support for building the deployment file. Still, writing the xml files manually is a time consuming task.
 
