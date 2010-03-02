@@ -17,16 +17,18 @@
  */
 package org.openengsb.config.service;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.jbi.BeanInfo;
 import org.openengsb.config.jbi.EndpointInfo;
 
 public interface AssemblyService {
     public void createNewAssembly();
     public List<EndpointInfo> getEndpoints();
-    public boolean deploy(File saFile, String filename);
+
+    public void deploy(ServiceAssembly sa) throws IOException;
 	public List<BeanInfo> getBeans();
 	public List<BeanInfo> getBeansForType(String theClass);
 }

@@ -24,8 +24,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.jbi.BeanInfo;
 import org.openengsb.config.jbi.EndpointInfo;
+import org.openengsb.config.jbi.ServiceAssemblyInfo;
 import org.openengsb.config.service.AssemblyService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,15 +52,18 @@ public class AssemblyServiceImpl implements AssemblyService {
     }
 
     @Override
-    public boolean deploy(File saFile, String filename) {
-        if (deployPath != null) {
-            File to = new File(deployPath, filename);
-            if (!saFile.renameTo(to)) {
-                return copyFile(saFile, to);
+    public void deploy(ServiceAssembly sa) throws IOException {
+        File tmp = File.createTempFile(sa.getName(), ".zip");
+        FileOutputStream fos = new FileOutputStream(tmp);
+        ServiceAssemblyInfo sai = new ServiceAssemblyInfo(sa.getName(), Lists.<EndpointInfo> newArrayList(), Lists
+                .<BeanInfo> newArrayList());
+        sai.toZip(fos);
+        File to = new File(deployPath, sa.getName() + ".zip");
+        if (!tmp.renameTo(to)) {
+            if (!copyFile(tmp, to)) {
+                throw new IOException();
             }
-            return true;
         }
-        return false;
     }
 
     private boolean copyFile(File from, File to) {
@@ -80,12 +85,18 @@ public class AssemblyServiceImpl implements AssemblyService {
             log.error("deploying service assembly failed", e);
             return false;
         } finally {
-            try { if (in != null) {
-                in.close();
-            } } catch (IOException e) { }
-            try { if (out != null) {
-                out.close();
-            } } catch (IOException e) { }
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
+            }
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+            }
         }
         return to.exists();
     }
@@ -94,18 +105,19 @@ public class AssemblyServiceImpl implements AssemblyService {
         this.deployPath = deployPath;
     }
 
-	@Override
-	public List<BeanInfo> getBeans() {
-		return beans;
-	}
+    @Override
+    public List<BeanInfo> getBeans() {
+        return beans;
+    }
 
-	@Override
-	public List<BeanInfo> getBeansForType(String theClass) {
-		ArrayList<BeanInfo> list = Lists.newArrayList();
-		for (BeanInfo b : beans) {
-			if (b.getBeanType().getClazz().equals(theClass))
-				list.add(b);
-		}
-		return list;
-	}
+    @Override
+    public List<BeanInfo> getBeansForType(String theClass) {
+        ArrayList<BeanInfo> list = Lists.newArrayList();
+        for (BeanInfo b : beans) {
+            if (b.getBeanType().getClazz().equals(theClass)) {
+                list.add(b);
+            }
+        }
+        return list;
+    }
 }

@@ -31,6 +31,14 @@
   <form wicket:id="newComponentForm">
     <p><wicket:message key="newComponentLabel"></wicket:message> <select wicket:id="componentSelect" /> <input type="submit" value="Create" /></p>
   </form>
+  <div>
+    <h3>Actions</h3>
+    <form wicket:id="actionForm">
+      <input wicket:id="deployButton" type="submit" value="Deploy" />
+      <input wicket:id="deleteButton" type="submit" value="Delete" />
+    </form>
+  </div>
+  <div wicket:id="feedback">[Feedback Panel]</div>
   <!-- 
   <h3><wicket:message key="createNewAssembly">[createNewAssembly]</wicket:message></h3>
   <p><em>Endpoints</em></p>
