@@ -28,9 +28,12 @@ import javax.servlet.ServletContext;
 import org.openengsb.config.editor.ContextStringResourceLoader;
 import org.openengsb.config.jbi.ComponentParser;
 import org.openengsb.config.jbi.types.ComponentType;
+import org.openengsb.config.jbi.types.EndpointType;
 import org.openengsb.config.service.ComponentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Lists;
 
 public class ComponentServiceImpl implements ComponentService {
 	private static Logger log = LoggerFactory.getLogger(ComponentServiceImpl.class);
@@ -67,9 +70,19 @@ public class ComponentServiceImpl implements ComponentService {
 
     public ComponentType getComponent(String name) {
         for (ComponentType c : components) {
-            if (c.getName().equals(name))
+            if (c.getName().equals(name)) {
                 return c;
+            }
         }
         return null;
+    }
+
+    @Override
+    public List<EndpointType> getEndpoints() {
+        ArrayList<EndpointType> list = Lists.newArrayList();
+        for (ComponentType c : components) {
+            list.addAll(c.getEndpoints());
+        }
+        return list;
     }
 }

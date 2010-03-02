@@ -31,6 +31,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.config.dao.ServiceAssemblyDao;
 import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.jbi.types.ComponentType;
+import org.openengsb.config.model.Models;
 
 public class NavigationPanel extends Panel {
     private static final long serialVersionUID = 1L;
@@ -44,11 +45,12 @@ public class NavigationPanel extends Panel {
             private static final long serialVersionUID = 1L;
             @Override
             protected void populateItem(final ListItem<ServiceAssembly> item) {
-                Link link = new Link("serviceAssemblyLink") {
+                Link<ServiceAssembly> link = new Link<ServiceAssembly>("serviceAssemblyLink", Models.domain(saDao,
+                        item.getModelObject())) {
                     private static final long serialVersionUID = 1L;
                     @Override
                     public void onClick() {
-                        this.setResponsePage(new ShowServiceAssemblyPage(item.getModelObject()));
+                        this.setResponsePage(new ShowServiceAssemblyPage(getModelObject()));
                     }
                 };
                 link.add(new Label("serviceAssemblyName", item.getModelObject().getName()));

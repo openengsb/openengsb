@@ -20,6 +20,18 @@
 </head>
 <body>
 <wicket:extend>
+  <h3><span wicket:id="name">[name]</span></h3>
+  <p><em><wicket:message key="endpointList"></wicket:message></em></p>
+  <ul wicket:id="endpoints">
+    <li>
+      <span wicket:id="name">[name]</span>
+    </li>
+  </ul>
+  <span wicket:id="endpointLabel">[endpointLabel]</span>
+  <form wicket:id="newComponentForm">
+    <p><wicket:message key="newComponentLabel"></wicket:message> <select wicket:id="componentSelect" /> <input type="submit" value="Create" /></p>
+  </form>
+  <!-- 
   <h3><wicket:message key="createNewAssembly">[createNewAssembly]</wicket:message></h3>
   <p><em>Endpoints</em></p>
   <span wicket:id="endpointList">
@@ -39,6 +51,7 @@
   <form wicket:id="newComponentForm">
     <p>New Bean / Endpoint: <select wicket:id="componentSelect" /> <input type="submit" value="Create" /></p>
   </form>
+  -->
 </wicket:extend>
 </body>
 </html>

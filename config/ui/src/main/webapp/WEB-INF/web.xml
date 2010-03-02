@@ -27,6 +27,16 @@
   </context-param>
 
   <filter>
+    <filter-name>openEntityManagerInViewFilter</filter-name>
+    <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>openEntityManagerInViewFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
     <filter-name>wicket.openengsb-config-ui</filter-name>
     <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
     <init-param>
@@ -39,6 +49,7 @@
     <filter-name>wicket.openengsb-config-ui</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+
 
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>

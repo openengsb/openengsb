@@ -17,30 +17,25 @@
  */
 package org.openengsb.config.domain;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 
 @Entity
-@NamedQueries( { @NamedQuery(name = "ServiceAssembly.findAll", query = "from ServiceAssembly") })
-public class ServiceAssembly extends AbstractDomainObject {
+@NamedQueries( { @NamedQuery(name = "Endpoint.findAll", query = "from Endpoint") })
+public class Endpoint extends AbstractDomainObject {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(unique = true, nullable = false)
     private String name;
-    @OneToMany(mappedBy = "serviceAssembly", cascade = { CascadeType.REMOVE })
-    private List<Endpoint> endpoints;
+    @ManyToOne(optional = false)
+    private ServiceAssembly serviceAssembly;
 
     @Override
     public Long getId() {
@@ -60,11 +55,11 @@ public class ServiceAssembly extends AbstractDomainObject {
         this.name = name;
     }
 
-    public void setEndpoints(List<Endpoint> endpoints) {
-        this.endpoints = endpoints;
+    public void setServiceAssembly(ServiceAssembly serviceAssembly) {
+        this.serviceAssembly = serviceAssembly;
     }
 
-    public List<Endpoint> getEndpoints() {
-        return endpoints;
+    public ServiceAssembly getServiceAssembly() {
+        return serviceAssembly;
     }
 }

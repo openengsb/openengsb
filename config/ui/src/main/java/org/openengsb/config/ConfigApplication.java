@@ -48,8 +48,7 @@ public class ConfigApplication extends WebApplication {
     @Override
     protected void init() {
         super.init();
-		this.addComponentInstantiationListener(new SpringComponentInjector(
-				this, applicationContext));
+        this.addComponentInstantiationListener(new SpringComponentInjector(this, applicationContext));
         this.getResourceSettings().addStringResourceLoader(ContextStringResourceLoader.instance);
     }
 

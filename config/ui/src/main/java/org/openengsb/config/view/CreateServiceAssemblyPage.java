@@ -19,10 +19,10 @@ package org.openengsb.config.view;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.config.dao.ServiceAssemblyDao;
 import org.openengsb.config.domain.ServiceAssembly;
+import org.openengsb.config.model.Models;
 
 public class CreateServiceAssemblyPage extends BasePage {
     @SpringBean
@@ -33,16 +33,12 @@ public class CreateServiceAssemblyPage extends BasePage {
 			private static final long serialVersionUID = 1L;
             @Override
 			public void onSubmit() {
-                ServiceAssembly sa = getModelObject();
-                CreateServiceAssemblyPage.this.dao.persist(sa);
+                dao.persist(getModelObject());
                 setResponsePage(OverviewPage.class);
 			}
 		};
-		add(form);
-
-        form.setModel(new CompoundPropertyModel<ServiceAssembly>(new ServiceAssembly()));
-        TextField<String> tf = new TextField<String>("name");
-        tf.setRequired(true);
-		form.add(tf);
+        form.setModel(Models.compound(new ServiceAssembly()));
+        form.add(new TextField<String>("name").setRequired(true));
+        add(form);
 	}
 }

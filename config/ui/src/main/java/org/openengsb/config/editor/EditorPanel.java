@@ -41,9 +41,6 @@ import org.openengsb.config.jbi.types.RefType;
 import org.openengsb.config.service.AssemblyService;
 
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 public abstract class EditorPanel extends Panel {
