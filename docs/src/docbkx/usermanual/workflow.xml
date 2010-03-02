@@ -24,7 +24,7 @@
     First of all a <link linkend="workflow.events">rule based event approach</link>. This way allows to define actions
     based on events which where thrown in or to the bus. Events are very practical for "short-time-handling" since they
     are also easy to replace and extend. For long running business processes the secondary workflow method could be used
-    which is <link linkend="workflow.processes">based on processes described in BPEL</link>. 
+    which is <link linkend="workflow.processes">based on processes described in Drools-Flow.</link>. 
   </para>
 
   <section id="workflow.events">
@@ -40,9 +40,9 @@
       <listitem>
         Login guvnor
         <para>
-          Take the browser to the guvnor webinterface (e.g. http://127.0.0.1:8080/drools-guvnor) and login with your
+          Take the browser to the guvnor webinterface (e.g. http://localhost:8080/drools-guvnor) and login with your
           credentials. 
-			</para>
+		</para>
       </listitem>
       <listitem>
         Setup package
@@ -53,24 +53,23 @@
       <listitem>
         Build and upload the model
         <para>
-          Open a command-shell in the "workflow/drools/domains"-directory and execute "mvn install". This compiles the
-          model and packs it to target/openengsb-workflow-drools-domains-VERSION.jar. Use the webinterface to upload the model by
-          selecting "Create New->Upload POJO Model jar". Enter a name (e.g. "mymodel") and confirm the dialog. Now
-          browse to the openengsb-workflow-drools-domains-VERSION.jar and upload it. When that is done click "save
-          changes" in the
-          top-left corner of the frame. Enter a commit-message (e.g. "add openengsb-workflow-drools-domains-VERSION").
-			</para>
+          Execute the shell script "create-guvnor-model.sh" in the scripts folder. This compiles the
+          model and packs it to target/openengsb-guvnor-model.jar. Use the webinterface to upload the model by
+          selecting "Create New->Upload POJO Model jar". Enter a name (e.g. "openengsb") and confirm the dialog. Now
+          browse to the openengsb-guvnor-model.jar and upload it. When that is done click "save
+          changes" in the top-left corner of the frame. Enter a commit-message (e.g. "add openengsb-guvnor-model").
+		</para>
       </listitem>
       <listitem>
-        Create a new rule with the webinterface
+        Create a new rule with the web interface
         <para>
           Select "Create New->New Rule" and enter a name for the new rule. Assign it to a category (does not influence
           functionality of the rule). Then choose which type of rule you would like to create. The easiest to use type
           is the "Business Rule (guided editor)". In the WHEN-area you may specify conditions (e.g. using the
           Event-model). In the THEN-area you may specify the actions. In actions you can modify the knowledge
-          (e.g. the current event) or trigger actions in openengsb. To trigger actions select "call method on helper...".
+          (e.g. the current event) or trigger actions in the OpenEngSB. To trigger actions select "call method on ...".
           You can use information contained in the event by binding it to a variable. Click on the field in the
-          when-condition and providing a variable name.
+          when-condition and provide a variable name.
   		</para>
       </listitem>
       <listitem>
@@ -92,7 +91,7 @@
   <section id="workflow.processes">
     <title>Processes</title>
     <para>
-      TBW(explain BPEL processes on the OpenEngSB)
+      TBW(explain Drools-Flow processes on the OpenEngSB)
     </para>
   </section>
 </chapter>
