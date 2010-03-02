@@ -69,7 +69,7 @@ public class ShowServiceAssemblyPage extends BasePage {
             }
         });
 
-        Form<?> form = new Form<Object>("newComponentForm") {
+        Form<?> newComponentForm = new Form<Object>("newComponentForm") {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -82,7 +82,7 @@ public class ShowServiceAssemblyPage extends BasePage {
                         new BeanEditorPage(selected.getParent().getName(), selected.getName(), map));
             }
         };
-        add(form);
+        add(newComponentForm);
 
         DropDownChoice<EndpointType> choice = new DropDownChoice<EndpointType>("componentSelect",
                 new PropertyModel<EndpointType>(this, "selected"), componentService.getEndpoints(),
@@ -91,9 +91,8 @@ public class ShowServiceAssemblyPage extends BasePage {
 
                     @Override
                     public Object getDisplayValue(EndpointType e) {
-                        // TODO localize endpoint? and/or component?
-                        // getLocalizer().getString(localeKey + e.getName() + "._name", null);
-                        return e.getParent().getName() + " - " + e.getName();
+                        return new StringResourceModel(e.getParent().getName() + "." + e.getName() + "._name",
+                                ShowServiceAssemblyPage.this, null).getString();
                     }
 
                     @Override
@@ -102,7 +101,7 @@ public class ShowServiceAssemblyPage extends BasePage {
                     }
                 });
         choice.setRequired(true);
-        form.add(choice);
+        newComponentForm.add(choice);
 
         Form<?> actionForm = new Form<Object>("actionForm");
         add(actionForm);
