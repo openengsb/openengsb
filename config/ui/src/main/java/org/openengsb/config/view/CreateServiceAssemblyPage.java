@@ -33,8 +33,9 @@ public class CreateServiceAssemblyPage extends BasePage {
 			private static final long serialVersionUID = 1L;
             @Override
 			public void onSubmit() {
-                dao.persist(getModelObject());
-                setResponsePage(OverviewPage.class);
+                ServiceAssembly sa = getModelObject();
+                dao.persist(sa);
+                setResponsePage(new ShowServiceAssemblyPage(sa));
 			}
 		};
         form.setModel(Models.compound(new ServiceAssembly()));

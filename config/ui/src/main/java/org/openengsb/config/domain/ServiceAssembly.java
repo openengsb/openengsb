@@ -17,6 +17,7 @@
  */
 package org.openengsb.config.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -41,6 +42,11 @@ public class ServiceAssembly extends AbstractDomainObject {
     private String name;
     @OneToMany(mappedBy = "serviceAssembly", cascade = { CascadeType.REMOVE })
     private List<Endpoint> endpoints;
+
+    public ServiceAssembly() {
+        name = "";
+        endpoints = new ArrayList<Endpoint>();
+    }
 
     @Override
     public Long getId() {
