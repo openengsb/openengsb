@@ -58,13 +58,14 @@ public class Twitter4JTwitterConnector implements TwitterConnector {
     public static void zipAttachments(Attachment[] attachments, String filePath) throws IOException {
         FileOutputStream dest = new FileOutputStream(filePath);
         ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+        //Highest compression level
+        out.setLevel(9);
         for (Attachment attachment : attachments) {
             ZipEntry entry = new ZipEntry(attachment.getName());
             out.putNextEntry(entry);
             out.write(attachment.getData());
             out.closeEntry();
         }
-        out.finish();
         out.close();
         dest.close();
     }

@@ -76,20 +76,24 @@ public class TestTwitter4JTwitter {
     }
 
     @Test
-    public void testZipAttachments() throws IOException {
-        String[] files = new String[] {"gb.png", "de.png", "es.png", "fr.png"};
-        Attachment[] attachments = new Attachment[4];
-        for(int i = 0; i < 4; i++)
+    public void testZipAttachments() throws IOException {   
+        String[] files = new String[] {"testfile1.jpg", "testfile2.jpg", "testfile3.jpg"};
+        Attachment[] attachments = new Attachment[files.length];
+        for(int i = 0; i < files.length; i++)
         {
-            File file = new File("C:\\Documents and Settings\\mheil3\\Desktop\\" + files[i]);
-            FileInputStream fileInputStream = new FileInputStream(file);
-            byte[] data = new byte[(int) file.length()];
+            File src = new File("target\\test-classes\\" + files[i]);
+            FileInputStream fileInputStream = new FileInputStream(src);
+            byte[] data = new byte[(int) src.length()];
             fileInputStream.read(data);
             fileInputStream.close();
             attachments[i] = new Attachment(data, "image", files[i]);
         }
+
+        Twitter4JTwitterConnector.zipAttachments(attachments, "target\\test-classes\\testarchive.zip");
         
-        Twitter4JTwitterConnector.zipAttachments(attachments, "C:\\affe.zip");
+        File zip = new File("target\\test-classes\\testarchive.zip");
+        assertTrue(zip.exists());
+        assertTrue(zip.length() > 0);
     }
     
     @Test
