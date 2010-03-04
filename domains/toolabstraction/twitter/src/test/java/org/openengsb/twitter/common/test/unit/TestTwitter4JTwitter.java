@@ -18,6 +18,7 @@
 package org.openengsb.twitter.common.test.unit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -100,6 +101,7 @@ public class TestTwitter4JTwitter {
     public void testTinyUrl() throws HttpException, IOException {
         String s = "http://maps.google.at/maps/place?cid=2469784843158832493&q=tu+wien&hl=de&cd=1&cad=src:pplink&ei=yKOPS-jIA4mH_Qb5pPA7";
         String tiny = Twitter4JTwitterConnector.getTinyUrl(s);
+        assertNotNull(tiny);
         assertTrue(s.length() > tiny.length());
     }
 >>>>>>> create and test zip-file of attachments, create and test tinyurl, update configuration
