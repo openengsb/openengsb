@@ -129,7 +129,6 @@ public class MavenConnector {
      * Executes the given Maven goals in the given directory.
      * 
      * @return Result of the Maven goal execution.
-     * @throws MavenException
      */
     public MavenResult execute() {
         StringWriter writer = new StringWriter();

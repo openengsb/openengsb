@@ -17,6 +17,9 @@
  */
 package org.openengsb.test.common;
 
-public class TwitterConnector {
-
+public interface TwitterConnector {
+    
+    public static void updateStatus(String username, String password, String message) throws TwitterException;
+    
+    public void sendMessage(String username, String password, String target, String message) throws TwitterException;
 }

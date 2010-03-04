@@ -15,16 +15,25 @@
    limitations under the License.
    
  */
-package org.openengsb.twitter.common.test.unit;
+package org.openengsb.test.common;
 
-import static org.junit.Assert.assertTrue;
+@SuppressWarnings("serial")
+public class TwitterException extends Exception {
 
-import org.junit.Test;
-
-public class TestTwitter {
-    
-    @Test
-    public void testTest() {
-        assertTrue(true);
+    public TwitterException() {
+        super();
     }
+
+    public TwitterException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public TwitterException(String message) {
+        super(message);
+    }
+
+    public TwitterException(Throwable cause) {
+        super(cause);
+    }
+
 }
