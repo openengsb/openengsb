@@ -41,6 +41,12 @@
       <artifactId>openengsb-workflow-domains</artifactId>
     </dependency>
     
+    <!-- Springframework dependencies -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+    </dependency>
+    
     <!-- twitter dependencies -->
     <dependency>
       <groupId>org.twitter4j</groupId>

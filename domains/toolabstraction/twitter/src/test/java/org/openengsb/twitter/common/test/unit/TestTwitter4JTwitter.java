@@ -32,7 +32,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.drools.model.Attachment;
 import org.openengsb.test.common.Twitter4JTwitterConnector;
-import org.openengsb.test.common.TwitterException;
+import org.openengsb.test.common.OpenEngSBTwitterException;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
@@ -61,7 +61,7 @@ public class TestTwitter4JTwitter {
     }
 =======
     @Ignore
-    public void testUpdateStatus() throws TwitterException, twitter4j.TwitterException {
+    public void testUpdateStatus() throws OpenEngSBTwitterException, twitter4j.TwitterException {
         String s = "test " + new Date();
         new Twitter4JTwitterConnector().updateStatus("OpenEngSBTest", "tsetbsgnenepo", s);
         assertEquals(twitter.getHomeTimeline().get(0).getText(), s);
@@ -69,7 +69,7 @@ public class TestTwitter4JTwitter {
 
     @Test
     @Ignore
-    public void testSendMessage() throws TwitterException, twitter4j.TwitterException {
+    public void testSendMessage() throws OpenEngSBTwitterException, twitter4j.TwitterException {
         String s = "test " + new Date();
         new Twitter4JTwitterConnector().sendMessage("OpenEngSBTest", "tsetbsgnenepo", "OpenEngSBTest", s);
         assertEquals(twitter.getDirectMessages().get(0).getSender().getScreenName(), "OpenEngSBTest");

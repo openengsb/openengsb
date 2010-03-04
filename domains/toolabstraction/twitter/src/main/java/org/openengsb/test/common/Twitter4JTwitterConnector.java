@@ -31,27 +31,28 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.openengsb.drools.model.Attachment;
 
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
 public class Twitter4JTwitterConnector implements TwitterConnector {
 
     @Override
-    public void updateStatus(String username, String password, String message) throws TwitterException {
+    public void updateStatus(String username, String password, String message) throws OpenEngSBTwitterException {
         Twitter twitter = new TwitterFactory().getInstance(username, password);
         try {
             twitter.updateStatus(message);
-        } catch (twitter4j.TwitterException e) {
-            throw new TwitterException();
+        } catch (TwitterException e) {
+            throw new OpenEngSBTwitterException();
         }
     }
 
     @Override
-    public void sendMessage(String username, String password, String target, String message) throws TwitterException {
+    public void sendMessage(String username, String password, String target, String message) throws OpenEngSBTwitterException {
         Twitter twitter = new TwitterFactory().getInstance(username, password);
         try {
             twitter.sendDirectMessage(target, message);
-        } catch (twitter4j.TwitterException e) {
-            throw new TwitterException();
+        } catch (TwitterException e) {
+            throw new OpenEngSBTwitterException();
         }
     }
 

@@ -125,11 +125,6 @@ public class MavenConnector {
         this.logLevel = logLevel;
     }
 
-    /**
-     * Executes the given Maven goals in the given directory.
-     * 
-     * @return Result of the Maven goal execution.
-     */
     public MavenResult execute() {
         StringWriter writer = new StringWriter();
         MavenEmbedderStringLogger stringLogger = new MavenEmbedderStringLogger(writer);

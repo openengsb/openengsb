@@ -18,21 +18,21 @@
 package org.openengsb.test.common;
 
 @SuppressWarnings("serial")
-public class TwitterException extends Exception {
+public class OpenEngSBTwitterException extends Exception {
 
-    public TwitterException() {
+    public OpenEngSBTwitterException() {
         super();
     }
 
-    public TwitterException(String message, Throwable cause) {
+    public OpenEngSBTwitterException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public TwitterException(String message) {
+    public OpenEngSBTwitterException(String message) {
         super(message);
     }
 
-    public TwitterException(Throwable cause) {
+    public OpenEngSBTwitterException(Throwable cause) {
         super(cause);
     }
 

@@ -19,7 +19,11 @@ package org.openengsb.test.common;
 
 public interface TwitterConnector {
     
+<<<<<<< HEAD
     public static void updateStatus(String username, String password, String message) throws TwitterException;
+=======
+    public void updateStatus(String username, String password, String message) throws OpenEngSBTwitterException;
+>>>>>>> TwitterException renamed
     
-    public void sendMessage(String username, String password, String target, String message) throws TwitterException;
+    public void sendMessage(String username, String password, String target, String message) throws OpenEngSBTwitterException;
 }
