@@ -17,6 +17,19 @@
  */
 package org.openengsb.test.common;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.openengsb.drools.model.Attachment;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 
@@ -40,5 +53,29 @@ public class Twitter4JTwitterConnector implements TwitterConnector {
         } catch (twitter4j.TwitterException e) {
             throw new TwitterException();
         }
+    }
+
+    public static void zipAttachments(Attachment[] attachments, String filePath) throws IOException {
+        FileOutputStream dest = new FileOutputStream(filePath);
+        ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+        for (Attachment attachment : attachments) {
+            ZipEntry entry = new ZipEntry(attachment.getName());
+            out.putNextEntry(entry);
+            out.write(attachment.getData());
+            out.closeEntry();
+        }
+        out.finish();
+        out.close();
+        dest.close();
+    }
+
+    public static String getTinyUrl(String fullUrl) throws HttpException, IOException {
+        HttpClient httpclient = new HttpClient();
+        HttpMethod method = new GetMethod("http://tinyurl.com/api-create.php");
+        method.setQueryString(new NameValuePair[] { new NameValuePair("url", fullUrl) });
+        httpclient.executeMethod(method);
+        String tinyUrl = method.getResponseBodyAsString();
+        method.releaseConnection();
+        return tinyUrl;
     }
 }
