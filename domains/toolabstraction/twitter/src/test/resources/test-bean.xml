@@ -14,6 +14,9 @@
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <bean id="username" class="java.lang.String">
+    <description>
+      Also used for direct injection to the UseTest-class
+    </description>
     <constructor-arg value="OpenEngSBTest" />
   </bean>
 

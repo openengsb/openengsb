@@ -21,11 +21,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
+import javax.annotation.Resource;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.twitter.common.TwitterConnector;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -134,17 +135,17 @@ public class Twitter4JTwitterUseTest {
 >>>>>>> Refactoring (seperating Util-classes, include spring)
 =======
     
-    @Autowired
+    @Resource
     public void setOurTwitter(TwitterConnector ourTwitter) {
         this.ourTwitter = ourTwitter;
     }
     
-    @Autowired
+    @Resource
     public void setTwitter(Twitter twitter) {
         this.twitter = twitter;
     }
 
-    @Autowired
+    @Resource
     public void setUsername(String username) {
         this.username = username;
     }
