@@ -46,6 +46,7 @@ public class TestTwitter4JTwitter {
 public class Twitter4JTwitterUseTest {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> Refactoring and correction due to comments:domains/toolabstraction/twitter/src/test/java/org/openengsb/twitter/common/test/Twitter4JTwitterUseTest.java
 
 =======
@@ -72,8 +73,13 @@ public class Twitter4JTwitterUseTest {
 >>>>>>> Refactoring and correction due to comments:domains/toolabstraction/twitter/src/test/java/org/openengsb/twitter/common/test/Twitter4JTwitterUseTest.java
     }
 =======
+=======
+    @Resource
+>>>>>>> @Resource tag corrected
     private Twitter twitter;
+    @Resource
     private TwitterConnector ourTwitter;
+    @Resource
     private String username;
 >>>>>>> Refactoring - Spring now injects Twitter library and other properties
 
@@ -100,6 +106,7 @@ public class Twitter4JTwitterUseTest {
         assertEquals(twitter.getDirectMessages().get(0).getSender().getScreenName(), username);
         assertEquals(twitter.getDirectMessages().get(0).getText(), s);
     }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 
@@ -150,4 +157,6 @@ public class Twitter4JTwitterUseTest {
         this.username = username;
     }
 >>>>>>> Refactoring - Spring now injects Twitter library and other properties
+=======
+>>>>>>> @Resource tag corrected
 }
