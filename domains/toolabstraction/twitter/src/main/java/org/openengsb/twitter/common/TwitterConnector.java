@@ -15,15 +15,28 @@
    limitations under the License.
    
  */
-package org.openengsb.test.common;
+package org.openengsb.twitter.common;
+
+import java.io.IOException;
+
+import org.apache.commons.httpclient.HttpException;
+import org.openengsb.drools.model.Attachment;
 
 public interface TwitterConnector {
     
+<<<<<<< HEAD:domains/toolabstraction/twitter/src/main/java/org/openengsb/test/common/TwitterConnector.java
 <<<<<<< HEAD
     public static void updateStatus(String username, String password, String message) throws TwitterException;
 =======
     public void updateStatus(String username, String password, String message) throws OpenEngSBTwitterException;
 >>>>>>> TwitterException renamed
+=======
+    public void updateStatus(String message);
     
-    public void sendMessage(String username, String password, String target, String message) throws OpenEngSBTwitterException;
+    public void sendMessage(String receiver, String message);
+    
+    public void zipAttachments(Attachment[] attachments, String filePath) throws IOException;
+>>>>>>> Refactoring and correction due to comments:domains/toolabstraction/twitter/src/main/java/org/openengsb/twitter/common/TwitterConnector.java
+    
+    public String getTinyUrl(String fullUrl) throws HttpException, IOException;
 }

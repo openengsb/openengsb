@@ -168,6 +168,7 @@
 
     <!-- Tool Abstraction -->
     <module>domains/toolabstraction/maven</module>
+    <module>domains/toolabstraction/twitter</module>
 
     <!-- Connectors -->
     <module>domains/scm/subversion/service-engine</module>
@@ -898,6 +899,11 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-toolabstraction-maven</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-toolabstraction-twitter</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
