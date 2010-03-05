@@ -13,7 +13,7 @@
   xsi:schemaLocation="
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="ourTwitter" class="org.openengsb.twitter.common.Twitter4JTwitterConnector">
+  <bean id="ourTwitter" class="org.openengsb.twitter.common.Twitter4JTwitterConnector" init-method="init">
     <property name="username" value="OpenEngSBTest" />
     <property name="password" value="tsetbsgnenepo" />
   </bean>

@@ -18,20 +18,13 @@
 package org.openengsb.twitter.common.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Date;
 
-import org.apache.commons.httpclient.HttpException;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.drools.model.Attachment;
 import org.openengsb.twitter.common.TwitterConnector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -52,8 +45,11 @@ public class TestTwitter4JTwitter {
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:../test-classes/test-bean.xml" })
 public class Twitter4JTwitterUseTest {
+<<<<<<< HEAD
 >>>>>>> Refactoring and correction due to comments:domains/toolabstraction/twitter/src/test/java/org/openengsb/twitter/common/test/Twitter4JTwitterUseTest.java
 
+=======
+>>>>>>> Refactoring (seperating Util-classes, include spring)
     private static Twitter twitter;
     private TwitterConnector ourTwitter;
 
@@ -75,7 +71,6 @@ public class Twitter4JTwitterUseTest {
         twitter = new TwitterFactory().getInstance(USERNAME, PASSWORD);
 >>>>>>> Refactoring and correction due to comments:domains/toolabstraction/twitter/src/test/java/org/openengsb/twitter/common/test/Twitter4JTwitterUseTest.java
     }
-    
 
     @Test
 <<<<<<< HEAD
@@ -100,6 +95,7 @@ public class Twitter4JTwitterUseTest {
         assertEquals(twitter.getDirectMessages().get(0).getSender().getScreenName(), USERNAME);
         assertEquals(twitter.getDirectMessages().get(0).getText(), s);
     }
+<<<<<<< HEAD
 
     @Test
     public void testZipAttachments() throws IOException {
@@ -129,4 +125,6 @@ public class Twitter4JTwitterUseTest {
         assertTrue(s.length() > tiny.length());
     }
 >>>>>>> create and test zip-file of attachments, create and test tinyurl, update configuration
+=======
+>>>>>>> Refactoring (seperating Util-classes, include spring)
 }
