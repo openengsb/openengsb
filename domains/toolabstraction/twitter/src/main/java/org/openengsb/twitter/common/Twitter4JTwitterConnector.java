@@ -22,20 +22,11 @@ import org.apache.commons.logging.LogFactory;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 
 public class Twitter4JTwitterConnector implements TwitterConnector {
     private Log log = LogFactory.getLog(getClass());
-
-    private String username;
-    private String password;
     
     private Twitter twitter;
-    
-    public void init()
-    {
-        twitter = new TwitterFactory().getInstance(username, password);
-    }
 
     @Override
     public void updateStatus(String message) {
@@ -72,11 +63,7 @@ public class Twitter4JTwitterConnector implements TwitterConnector {
         }
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+    public void setTwitter(Twitter twitter) {
+        this.twitter = twitter;
     }
 }

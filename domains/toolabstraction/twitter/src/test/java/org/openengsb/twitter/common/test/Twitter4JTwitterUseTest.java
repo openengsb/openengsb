@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +31,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
 
 <<<<<<< HEAD:domains/toolabstraction/twitter/src/test/java/org/openengsb/twitter/common/test/unit/TestTwitter4JTwitter.java
 public class TestTwitter4JTwitter {
@@ -45,6 +43,7 @@ public class TestTwitter4JTwitter {
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:../test-classes/test-bean.xml" })
 public class Twitter4JTwitterUseTest {
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> Refactoring and correction due to comments:domains/toolabstraction/twitter/src/test/java/org/openengsb/twitter/common/test/Twitter4JTwitterUseTest.java
 
@@ -71,6 +70,11 @@ public class Twitter4JTwitterUseTest {
         twitter = new TwitterFactory().getInstance(USERNAME, PASSWORD);
 >>>>>>> Refactoring and correction due to comments:domains/toolabstraction/twitter/src/test/java/org/openengsb/twitter/common/test/Twitter4JTwitterUseTest.java
     }
+=======
+    private Twitter twitter;
+    private TwitterConnector ourTwitter;
+    private String username;
+>>>>>>> Refactoring - Spring now injects Twitter library and other properties
 
     @Test
 <<<<<<< HEAD
@@ -91,10 +95,11 @@ public class Twitter4JTwitterUseTest {
     @Ignore
     public void testSendMessage() throws TwitterException {
         String s = "test " + new Date();
-        ourTwitter.sendMessage(USERNAME, s);
-        assertEquals(twitter.getDirectMessages().get(0).getSender().getScreenName(), USERNAME);
+        ourTwitter.sendMessage(username, s);
+        assertEquals(twitter.getDirectMessages().get(0).getSender().getScreenName(), username);
         assertEquals(twitter.getDirectMessages().get(0).getText(), s);
     }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
     @Test
@@ -127,4 +132,21 @@ public class Twitter4JTwitterUseTest {
 >>>>>>> create and test zip-file of attachments, create and test tinyurl, update configuration
 =======
 >>>>>>> Refactoring (seperating Util-classes, include spring)
+=======
+    
+    @Autowired
+    public void setOurTwitter(TwitterConnector ourTwitter) {
+        this.ourTwitter = ourTwitter;
+    }
+    
+    @Autowired
+    public void setTwitter(Twitter twitter) {
+        this.twitter = twitter;
+    }
+
+    @Autowired
+    public void setUsername(String username) {
+        this.username = username;
+    }
+>>>>>>> Refactoring - Spring now injects Twitter library and other properties
 }

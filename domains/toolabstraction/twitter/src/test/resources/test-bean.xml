@@ -13,9 +13,19 @@
   xsi:schemaLocation="
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="ourTwitter" class="org.openengsb.twitter.common.Twitter4JTwitterConnector" init-method="init">
-    <property name="username" value="OpenEngSBTest" />
-    <property name="password" value="tsetbsgnenepo" />
+  <bean id="username" class="java.lang.String">
+    <constructor-arg value="OpenEngSBTest" />
   </bean>
 
+  <bean id="twitterFactory" class="twitter4j.TwitterFactory" />
+  
+  <bean id="twitter" factory-bean="twitterFactory" factory-method="getInstance">
+    <constructor-arg index="0" ref="username" />
+    <constructor-arg index="1" value="tsetbsgnenepo" />
+  </bean>
+  
+  <bean id="ourTwitter" class="org.openengsb.twitter.common.Twitter4JTwitterConnector">
+    <property name="twitter" ref="twitter" />
+  </bean>
+  
 </beans>
