@@ -25,13 +25,18 @@ import twitter4j.TwitterException;
 
 public class Twitter4JTwitterConnector implements TwitterConnector {
     private Log log = LogFactory.getLog(getClass());
-    
+
     private Twitter twitter;
 
     @Override
-    public void updateStatus(String message) {
+    public void updateStatus(String status) {
+        if (status == null || status.equals("")) {
+            throw new IllegalArgumentException("Status must be provided.");
+        }
+
         try {
-            twitter.updateStatus(message);
+            twitter.updateStatus(status);
+            log.info("Successfully updated user status.");
         } catch (TwitterException e) {
             handleTwitterException(e);
         }
@@ -39,8 +44,16 @@ public class Twitter4JTwitterConnector implements TwitterConnector {
 
     @Override
     public void sendMessage(String receiver, String message) {
+        if (message == null || message.equals("")) {
+            throw new IllegalArgumentException("Message must be provided.");
+        }
+        if (receiver == null || receiver.equals("")) {
+            throw new IllegalArgumentException("Receiver must be provided.");
+        }
+
         try {
             twitter.sendDirectMessage(receiver, message);
+            log.info("Successfully sent message to " + receiver + ".");
         } catch (TwitterException e) {
             handleTwitterException(e);
         }

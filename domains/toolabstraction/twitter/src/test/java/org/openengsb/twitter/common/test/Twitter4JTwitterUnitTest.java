@@ -28,7 +28,7 @@ import twitter4j.TwitterException;
 public class Twitter4JTwitterUnitTest {
     private Twitter4JTwitterConnector ourTwitter;
     private Twitter twitter;
-    
+
     @Before
     public void setUp() {
         twitter = Mockito.mock(Twitter.class);
@@ -36,12 +36,22 @@ public class Twitter4JTwitterUnitTest {
         ourTwitter.setTwitter(twitter);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidStatus() {
+        ourTwitter.updateStatus(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvalidMessage() {
+        ourTwitter.sendMessage(null, null);
+    }
+
     @Test
     public void testUpdateStatus() throws TwitterException {
         ourTwitter.updateStatus("test");
         Mockito.verify(twitter, Mockito.times(1)).updateStatus(Mockito.eq("test"));
     }
-    
+
     @Test
     public void testSendMessage() throws TwitterException {
         ourTwitter.sendMessage("test", "test");

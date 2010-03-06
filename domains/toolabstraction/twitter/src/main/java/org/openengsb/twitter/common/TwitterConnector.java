@@ -19,6 +19,7 @@ package org.openengsb.twitter.common;
 
 public interface TwitterConnector {
 <<<<<<< HEAD
+<<<<<<< HEAD
     
 <<<<<<< HEAD:domains/toolabstraction/twitter/src/main/java/org/openengsb/test/common/TwitterConnector.java
 <<<<<<< HEAD
@@ -37,6 +38,9 @@ public interface TwitterConnector {
     public String getTinyUrl(String fullUrl) throws HttpException, IOException;
 =======
     public void updateStatus(String message);
+=======
+    public void updateStatus(String status);
+>>>>>>> Logging update, error handling and tests
     
     public void sendMessage(String receiver, String message);
 >>>>>>> Refactoring (seperating Util-classes, include spring)
