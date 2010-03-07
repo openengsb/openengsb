@@ -928,6 +928,16 @@
         <artifactId>openengsb-domains-notification-email-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
+	  <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-notification-twitter-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+	  <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-notification-twitter-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-report-plaintext-su</artifactId>

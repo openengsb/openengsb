@@ -198,6 +198,11 @@ public class ContextStore {
         setValue("42/notification/email/config/mail.smtp.host", "smtp.gmail.com");
         setValue("42/notification/email/user", "openengsb.notification.test@gmail.com");
         setValue("42/notification/email/password", "pwd-openengsb");
+        
+        setValue("42/notification/twitter/namespace", "urn:openengsb:twitter");
+        setValue("42/notification/twitter/servicename", "twitterService");
+        setValue("42/notification/twitter/user", "OpenEngSbTest");
+        setValue("42/notification/twitter/password", "tsetbsgnenepo");
 
         setValue("42/scm/namespace", "urn:openengsb:scm");
         setValue("42/scm/servicename", "scmService");
