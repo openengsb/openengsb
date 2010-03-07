@@ -17,10 +17,6 @@
  */
 package org.openengsb.twitter;
 
-import java.util.Map;
-import java.util.Properties;
-import java.util.Map.Entry;
-
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
@@ -31,16 +27,11 @@ import org.openengsb.drools.NotificationDomain;
  *                         description="Twitter Notification Endpoint"
  */
 public class TwitterEndpoint extends LinkingEndpoint<NotificationDomain> {
-
     @Override
     protected NotificationDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-
-        //String user = contextHelper.getValue("notification/twitter/user");
-        //String password = contextHelper.getValue("notification/twitter/password");
-    	String user = "OpenEngSbTest";
-    	String password = "tsetbsgnenepo";
+        String user = contextHelper.getValue("notification/twitter/user");
+        String password = contextHelper.getValue("notification/twitter/password");
 
         return new TwitterNotifier(user, password);
     }
-
 }

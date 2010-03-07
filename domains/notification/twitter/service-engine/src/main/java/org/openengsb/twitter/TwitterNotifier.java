@@ -19,9 +19,6 @@ package org.openengsb.twitter;
 
 import java.util.Properties;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-
 import org.openengsb.drools.NotificationDomain;
 import org.openengsb.drools.model.Notification;
 import org.openengsb.twitter.common.Twitter4JTwitterConnector;
@@ -30,7 +27,6 @@ import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 
 public class TwitterNotifier implements NotificationDomain {
-
     private Properties props;
     private Twitter4JTwitterConnector twitterCon;
     private Twitter twitter;
@@ -40,22 +36,24 @@ public class TwitterNotifier implements NotificationDomain {
     }
 
     public TwitterNotifier(String user, String password) {
-    	twitterCon = new Twitter4JTwitterConnector();
-    	twitter = new TwitterFactory().getInstance(user, password);
-    	twitterCon.setTwitter(twitter);
+        twitterCon = new Twitter4JTwitterConnector();
+        twitter = new TwitterFactory().getInstance(user, password);
+        twitterCon.setTwitter(twitter);
     }
 
     public void notify(Notification notification) {
-    	
-    	if(notification.getAttachments().length>0){
-    		//Has Attachments --> zip, upload, shortenurl + attach url to message
-    	}
-    	
-    	if(notification.getRecipient().length()>0){
-    		//got Recipient --> Direct Message
-    		twitterCon.sendMessage(notification.getRecipient(), notification.getMessage());
-    	}else {
-    		twitterCon.updateStatus(notification.getMessage());
-    	}
+
+        if (notification.getAttachments().length > 0) {
+            // Has Attachments --> zip, upload, shortenurl + attach url to
+            // message
+        }
+
+        if (notification.getRecipient() == null || notification.getRecipient().equals("")) {
+            twitterCon.updateStatus(notification.getMessage());
+
+        } else {
+            // got Recipient --> Direct Message
+            twitterCon.sendMessage(notification.getRecipient(), notification.getMessage());
+        }
     }
 }
