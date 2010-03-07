@@ -36,14 +36,16 @@ public class Twitter4JTwitterUnitTest {
         ourTwitter.setTwitter(twitter);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testInvalidStatus() {
-        ourTwitter.updateStatus(null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testInvalidMessage() {
-        ourTwitter.sendMessage(null, null);
+    /**
+     * Test correct error-catching of Twitter implementation (nothing should be thrown)
+     */
+    @Test
+    public void testErrorCatching() throws TwitterException {
+        Mockito.when(twitter.updateStatus(Mockito.anyString())).thenThrow(new TwitterException("test"));
+        ourTwitter.updateStatus("test");
+        
+        Mockito.when(twitter.sendDirectMessage(Mockito.anyString(), Mockito.anyString())).thenThrow(new TwitterException("test"));
+        ourTwitter.sendMessage("test", "test");
     }
 
     @Test

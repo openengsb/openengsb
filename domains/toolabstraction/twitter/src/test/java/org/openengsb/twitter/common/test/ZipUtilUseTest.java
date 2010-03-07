@@ -32,6 +32,7 @@ public class ZipUtilUseTest {
     public void testZipAttachments() throws IOException {
         String[] files = new String[] { "testfile1.jpg", "testfile2.jpg", "testfile3.jpg" };
         Attachment[] attachments = new Attachment[files.length];
+        
         for (int i = 0; i < files.length; i++) {
             File src = new File("target\\test-classes\\" + files[i]);
             FileInputStream fileInputStream = new FileInputStream(src);

@@ -30,10 +30,6 @@ public class Twitter4JTwitterConnector implements TwitterConnector {
 
     @Override
     public void updateStatus(String status) {
-        if (status == null || status.equals("")) {
-            throw new IllegalArgumentException("Status must be provided.");
-        }
-
         try {
             twitter.updateStatus(status);
             log.info("Successfully updated user status.");
@@ -44,13 +40,6 @@ public class Twitter4JTwitterConnector implements TwitterConnector {
 
     @Override
     public void sendMessage(String receiver, String message) {
-        if (message == null || message.equals("")) {
-            throw new IllegalArgumentException("Message must be provided.");
-        }
-        if (receiver == null || receiver.equals("")) {
-            throw new IllegalArgumentException("Receiver must be provided.");
-        }
-
         try {
             twitter.sendDirectMessage(receiver, message);
             log.info("Successfully sent message to " + receiver + ".");

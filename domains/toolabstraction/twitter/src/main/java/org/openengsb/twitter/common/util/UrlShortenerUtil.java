@@ -31,6 +31,7 @@ public class UrlShortenerUtil {
         HttpMethod method = new GetMethod("http://tinyurl.com/api-create.php");
         method.setQueryString(new NameValuePair[] { new NameValuePair("url", fullUrl) });
         httpclient.executeMethod(method);
+        
         String tinyUrl = method.getResponseBodyAsString();
         method.releaseConnection();
         return tinyUrl;
