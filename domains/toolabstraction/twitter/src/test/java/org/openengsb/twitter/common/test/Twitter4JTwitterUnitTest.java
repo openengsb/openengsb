@@ -36,14 +36,14 @@ public class Twitter4JTwitterUnitTest {
         ourTwitter.setTwitter(twitter);
     }
 
-    /**
-     * Test correct error-catching of Twitter implementation (nothing should be thrown)
-     */
     @Test
-    public void testErrorCatching() throws TwitterException {
+    public void testStatusErrorCatching() throws TwitterException {
         Mockito.when(twitter.updateStatus(Mockito.anyString())).thenThrow(new TwitterException("test"));
         ourTwitter.updateStatus("test");
-        
+    }
+    
+    @Test
+    public void testMessageErrorCatching() throws TwitterException {
         Mockito.when(twitter.sendDirectMessage(Mockito.anyString(), Mockito.anyString())).thenThrow(new TwitterException("test"));
         ourTwitter.sendMessage("test", "test");
     }
