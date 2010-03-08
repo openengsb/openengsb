@@ -21,17 +21,28 @@ import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.NotificationDomain;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @org.apache.xbean.XBean element="twitterEndpoint"
  *                         description="Twitter Notification Endpoint"
  */
 public class TwitterEndpoint extends LinkingEndpoint<NotificationDomain> {
+    
+    private String user;
+    private String password;
+    
     @Override
     protected NotificationDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-        String user = contextHelper.getValue("notification/twitter/user");
-        String password = contextHelper.getValue("notification/twitter/password");
-
         return new TwitterNotifier(user, password);
     }
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }

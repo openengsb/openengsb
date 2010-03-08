@@ -22,6 +22,8 @@ import java.util.Properties;
 import org.openengsb.drools.NotificationDomain;
 import org.openengsb.drools.model.Notification;
 import org.openengsb.twitter.common.Twitter4JTwitterConnector;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
@@ -30,7 +32,7 @@ public class TwitterNotifier implements NotificationDomain {
     private Properties props;
     private Twitter4JTwitterConnector twitterCon;
     private Twitter twitter;
-
+    
     public TwitterNotifier(Properties props) {
         this.props = props;
     }
