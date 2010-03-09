@@ -46,5 +46,6 @@
   </bean>
   
   <bean id="serviceAssemblyDao" class="org.openengsb.config.dao.jpa.JpaServiceAssemblyDao" />
+  <bean id="endpointDao" class="org.openengsb.config.dao.jpa.JpaEndpointDao" />
 
 </beans>
