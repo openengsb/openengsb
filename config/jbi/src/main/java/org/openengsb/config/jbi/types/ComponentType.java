@@ -17,10 +17,12 @@
  */
 package org.openengsb.config.jbi.types;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ComponentType {
+public class ComponentType implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String name;
     private boolean bindingComponent;
     private String namespace;

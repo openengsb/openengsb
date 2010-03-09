@@ -17,11 +17,13 @@
  */
 package org.openengsb.config.jbi.types;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.w3c.dom.Element;
 
-public abstract class AbstractType {
+public abstract class AbstractType implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String name;
     private boolean optional;
     private int maxLength;
