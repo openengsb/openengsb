@@ -159,3 +159,11 @@ a:hover {
 .editor .fieldeditor {
   text-align: left;
 }
+
+table.endpoints {
+	margin-left: 25px;
+}
+
+table.endpoints td {
+	padding-left: 8px;
+}

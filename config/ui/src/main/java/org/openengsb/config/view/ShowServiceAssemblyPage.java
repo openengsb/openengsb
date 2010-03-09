@@ -26,12 +26,14 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.config.dao.EndpointDao;
 import org.openengsb.config.dao.ServiceAssemblyDao;
 import org.openengsb.config.domain.Endpoint;
 import org.openengsb.config.domain.KeyValue;
@@ -47,6 +49,8 @@ public class ShowServiceAssemblyPage extends BasePage {
 
     @SpringBean
     private ServiceAssemblyDao dao;
+    @SpringBean
+    private EndpointDao endpointDao;
 
     public ShowServiceAssemblyPage(final ServiceAssembly sa) {
         setDefaultModel(Models.compoundDomain(dao, sa));
@@ -58,6 +62,26 @@ public class ShowServiceAssemblyPage extends BasePage {
             @Override
             protected void populateItem(ListItem<Endpoint> item) {
                 item.add(new Label("name", item.getModelObject().getName()));
+                item.add(new Link<Endpoint>("editLink", item.getModel()) {
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public void onClick() {
+                        RequestCycle.get().setResponsePage(new BeanEditorPage(getModelObject()));
+                    }
+                });
+                item.add(new Link<Endpoint>("deleteLink", item.getModel()) {
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public void onClick() {
+                        endpointDao.delete(getModelObject());
+                        ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this
+                                .getDefaultModelObject();
+                        dao.refresh(sa);
+                        RequestCycle.get().setResponsePage(new ShowServiceAssemblyPage(sa));
+                    }
+                });
             }
         };
         add(endpointList);

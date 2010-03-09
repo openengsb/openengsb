@@ -22,11 +22,28 @@
 <wicket:extend>
   <h3><span wicket:id="name">[name]</span></h3>
   <p><em><wicket:message key="endpointList"></wicket:message></em></p>
-  <ul wicket:id="endpoints">
-    <li>
-      <span wicket:id="name">[name]</span>
-    </li>
-  </ul>
+  <table class="endpoints">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody wicket:id="endpoints">
+    <tr>
+      <td>
+        <span wicket:id="name">[name]</span>
+      </td>
+      <td>
+        <a wicket:id="editLink" href="#">Edit</a>
+      </td>
+      <td>
+        <a wicket:id="deleteLink" hre="#">Delete</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
   <span wicket:id="endpointLabel">[endpointLabel]</span>
   <form wicket:id="newComponentForm">
     <p><wicket:message key="newComponentLabel"></wicket:message> <select wicket:id="componentSelect" /> <input type="submit" value="Create" /></p>
