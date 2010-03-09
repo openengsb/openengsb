@@ -34,6 +34,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.config.dao.ServiceAssemblyDao;
 import org.openengsb.config.domain.Endpoint;
+import org.openengsb.config.domain.KeyValue;
 import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.EndpointType;
@@ -74,12 +75,22 @@ public class ShowServiceAssemblyPage extends BasePage {
 
             @Override
             protected void onSubmit() {
-                HashMap<String, String> map = Maps.newHashMap();
+                Endpoint endpoint = new Endpoint();
+                ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this.getDefaultModelObject();
+                endpoint.setServiceAssembly(sa);
+                endpoint.setName("");
+                endpoint.setComponentType(selected.getParent().getName());
+                endpoint.setEndpointType(selected.getName());
+                HashMap<String, KeyValue> map = Maps.newHashMap();
                 for (AbstractType t : selected.getAttributes()) {
-                    map.put(t.getName(), t.getDefaultValue());
+                    KeyValue kv = new KeyValue();
+                    kv.setKey(t.getName());
+                    kv.setValue(t.getDefaultValue());
+                    kv.setEndpoint(endpoint);
+                    map.put(t.getName(), kv);
                 }
-                RequestCycle.get().setResponsePage(
-                        new BeanEditorPage(selected.getParent().getName(), selected.getName(), map));
+                endpoint.setValues(map);
+                RequestCycle.get().setResponsePage(new BeanEditorPage(endpoint));
             }
         };
         add(newComponentForm);

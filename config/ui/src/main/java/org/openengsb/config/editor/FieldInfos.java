@@ -17,11 +17,13 @@
  */
 package org.openengsb.config.editor;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.openengsb.config.jbi.types.AbstractType;
 
-public class FieldInfos {
+public class FieldInfos implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final String name;
     private final List<AbstractType> fieldTypes;
 

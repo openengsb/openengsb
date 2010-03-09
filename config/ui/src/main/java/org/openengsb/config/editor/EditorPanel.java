@@ -82,7 +82,7 @@ public abstract class EditorPanel extends Panel {
         for (AbstractType f : fieldInfos.getFieldTypes()) {
             WebMarkupContainer row = new WebMarkupContainer(fields.newChildId());
             fields.add(row);
-            ResourceModel labelModel = new ResourceModel(componentId + '.' + fieldInfos.getName() + '.' + f.getName());
+            ResourceModel labelModel = new ResourceModel(fieldInfos.getName() + '.' + f.getName());
             row.add(new Label("name", labelModel));
             row.add(getEditor(f, new MapModel<String, String>(map, f.getName())).setLabel(labelModel));
         }
