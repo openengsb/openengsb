@@ -1,0 +1,66 @@
+~~
+~~	Copyright 2010 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+  ~~ Add the place in the repository where the connector development takes place
+*-------------------+
+| <<Source:>>  http://github.com/openengsb/openengsb    |
+*-------------------+
+
+  ~~ Add the place where the issue management takes place
+*-------------------+
+| <<IssueManagement:>>  http://issues.openengsb.org/    |
+*-------------------+
+
+  ~~ Add a comma seperated list of supported openEngSB versions. This field should
+  ~~ be used to make sure that no connectors are used for openEngSB versions
+  ~~ that do not fit.
+  [Supported in version(s):] openengsb-1.0.0
+
+
+  ~~ Add the full name of the plugin as root heading
+connector-notification-twitter
+
+  This connector enables OpenEngSB to post messages via Twitter. It currently uses the
+  {{{http://twitter4j.org/en/index.jsp}Twitter4J-library}} for communication with the Twitter API.
+  
+  Two possible ways of communication are supported:
+  
+  * Update user status for messages without a receiver
+  
+  * Send direct messages for messages containing a receiver
+  
+  []
+  
+  If attachments are delivered, they all get packed together in a single zip-file, uploaded to a server and finally
+  the URL leading to this file is sent through a URL Shortener (currently {{{http://tinyurl.com}Tinyurl}}) and posted
+  in the message. (To be so in the future.)
+  
+  Due to the fact Twitter allows messages to contain a maximum of 140 characters, it is possible that a message
+  is getting truncated. To prevent URLs being corrupted, they are placed at the very beginning of a message.
+  
+  ~~ Add as many subsections as you like
+  
+  ~~ At least one section should be describing what to do to setup the 
+  ~~ connector correctly. This also includes how which properties have to
+  ~~ be set and so on. There could be subsections about the different versions
+  ~~ if they are differently to setup. 
+* Setup
+
+  There is currently no other step required than to provide username and password for authentication
+  in the xbean.xml of the connector's SU.
+  
+  ~~ At least one section pointing to the download locations in the staging
+  ~~ repository should be given. This page should contain a table holding
+  ~~ the right download for the right EngSB version.

@@ -18,3 +18,5 @@ Notification Connectors
   TBW
   
   * {{{email.html}engsb-connector-notification-email}}
+  
+  * {{{twitter.html}engsb-connector-notification-twitter}}
