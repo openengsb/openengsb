@@ -17,13 +17,21 @@
  */
 package org.openengsb.config.domain;
 
+import java.util.Map;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+
+import com.google.common.collect.Maps;
 
 @Entity
 @NamedQueries( { @NamedQuery(name = "Endpoint.findAll", query = "from Endpoint") })
@@ -33,9 +41,15 @@ public class Endpoint extends AbstractDomainObject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(nullable = false, unique = true)
     private String name;
     @ManyToOne(optional = false)
     private ServiceAssembly serviceAssembly;
+    private String componentType;
+    private String endpointType;
+    @OneToMany(mappedBy = "endpoint", cascade = { CascadeType.ALL })
+    @MapKey(name = "key")
+    private Map<String, KeyValue> values;
 
     @Override
     public Long getId() {
@@ -61,5 +75,37 @@ public class Endpoint extends AbstractDomainObject {
 
     public ServiceAssembly getServiceAssembly() {
         return serviceAssembly;
+    }
+
+    public String getComponentType() {
+        return componentType;
+    }
+
+    public void setComponentType(String componentType) {
+        this.componentType = componentType;
+    }
+
+    public String getEndpointType() {
+        return endpointType;
+    }
+
+    public void setEndpointType(String endpointType) {
+        this.endpointType = endpointType;
+    }
+
+    public void setValues(Map<String, KeyValue> values) {
+        this.values = values;
+    }
+
+    public Map<String, KeyValue> getValues() {
+        return values;
+    }
+
+    public Map<String, String> getDetachedValues() {
+        Map<String, String> map = Maps.newHashMap();
+        for (Map.Entry<String, KeyValue> e : values.entrySet()) {
+            map.put(e.getKey(), e.getValue().getValue());
+        }
+        return map;
     }
 }
