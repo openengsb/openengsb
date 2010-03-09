@@ -21,26 +21,19 @@ import java.util.Properties;
 
 import org.openengsb.drools.NotificationDomain;
 import org.openengsb.drools.model.Notification;
-import org.openengsb.twitter.common.Twitter4JTwitterConnector;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.openengsb.twitter.common.TwitterConnector;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterFactory;
 
 public class TwitterNotifier implements NotificationDomain {
     private Properties props;
-    private Twitter4JTwitterConnector twitterCon;
-    private Twitter twitter;
+    private TwitterConnector twitterCon;
     
+	public TwitterNotifier(){
+		
+	}
+	
     public TwitterNotifier(Properties props) {
         this.props = props;
-    }
-
-    public TwitterNotifier(String user, String password) {
-        twitterCon = new Twitter4JTwitterConnector();
-        twitter = new TwitterFactory().getInstance(user, password);
-        twitterCon.setTwitter(twitter);
     }
 
     public void notify(Notification notification) {
@@ -58,4 +51,8 @@ public class TwitterNotifier implements NotificationDomain {
             twitterCon.sendMessage(notification.getRecipient(), notification.getMessage());
         }
     }
+    
+    public void setTwitterCon(TwitterConnector twitterCon) {
+		this.twitterCon = twitterCon;
+	}
 }
