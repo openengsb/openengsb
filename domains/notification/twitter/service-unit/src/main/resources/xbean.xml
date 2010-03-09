@@ -20,18 +20,12 @@
   xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <bean id="username" class="java.lang.String">
-    <constructor-arg value="OpenEngSBTest" />
-  </bean>
-  <bean id="password" class="java.lang.String">
-    <constructor-arg value="tsetbsgnenepo" />
-  </bean>
   
   <bean id="twitterFactory" class="twitter4j.TwitterFactory" />
   
   <bean id="twitter" factory-bean="twitterFactory" factory-method="getInstance">
-    <constructor-arg index="0" ref="username" />
-    <constructor-arg index="1" ref="password" />
+    <constructor-arg index="0" value="OpenEngSBTest" />
+    <constructor-arg index="1" value="tsetbsgnenepo" />
   </bean>
   
   <bean id="ourTwitter" class="org.openengsb.twitter.common.Twitter4JTwitterConnector">
