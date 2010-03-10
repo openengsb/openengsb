@@ -15,10 +15,6 @@
 #   limitations under the License.
 #
 
-# general introduction to handle whitespaces in files may be introduced in future
-set -eu
-IFS=`printf '\n\t'`
-
 # get and save path of script dir in SCRIPT_DIR
 cd $(dirname $0)
 SCRIPT_DIR=`pwd`

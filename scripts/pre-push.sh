@@ -15,10 +15,6 @@
 #   limitations under the License.
 #
 
-# general introduction to handle whitespaces in files may be introduced in future
-set -eu
-IFS=`printf '\n\t'`
-
 cd $(dirname $0)/.. 
 mvn clean install -Plicense-check
 
