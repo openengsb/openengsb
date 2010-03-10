@@ -61,7 +61,11 @@
     <jetty.version>6.1.20</jetty.version>
     <ode.version>1.3.4.preview1</ode.version>
     <exist.version>1.4.0</exist.version>
+<<<<<<< HEAD
     <twitter4j.version>[2.1,)</twitter4j.version>
+=======
+    <smack.version>3.1.0</smack.version>
+>>>>>>> aa65eaf... First implementation of XMPP NotificationSE
 
     <!-- Servicemix Library Versions -->
     <axis.version>1.3</axis.version>
@@ -174,7 +178,11 @@
     <!-- Connectors -->
     <module>domains/scm/subversion/service-engine</module>
     <module>domains/notification/email/service-engine</module>
+<<<<<<< HEAD
     <module>domains/notification/twitter/service-engine</module>
+=======
+    <module>domains/notification/xmpp/service-engine</module>
+>>>>>>> aa65eaf... First implementation of XMPP NotificationSE
     <module>domains/report/plaintext/service-engine</module>
     <module>domains/issues/trac/service-engine</module>
     <module>domains/test/maven/service-engine</module>
@@ -188,7 +196,11 @@
     <module>domains/scm/subversion/service-unit</module>
     <module>domains/scm/subversion/jms/service-unit</module>
     <module>domains/notification/email/service-unit</module>
+<<<<<<< HEAD
     <module>domains/notification/twitter/service-unit</module>
+=======
+    <module>domains/notification/xmpp/service-unit</module>
+>>>>>>> aa65eaf... First implementation of XMPP NotificationSE
     <module>domains/report/plaintext/service-unit</module>
     <module>domains/issues/trac/service-unit</module>
 
@@ -822,7 +834,7 @@
         <artifactId>openengsb-domains-notification-implementation-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
-
+      
       <!-- Report Domain -->
       <dependency>
         <groupId>org.openengsb</groupId>
@@ -947,6 +959,16 @@
 	  <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-notification-twitter-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-notification-xmpp-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-notification-xmpp-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
       <dependency>
@@ -1423,13 +1445,25 @@
         <version>${jetty.version}</version>
         <type>zip</type>
       </dependency>
-      
+     
       <!-- Twitter -->
       <dependency>
         <groupId>org.twitter4j</groupId>
         <artifactId>twitter4j-core</artifactId>
         <version>${twitter4j.version}</version>
-    </dependency>
+      </dependency>
+
+      <!-- OpenFire XMPP -->
+      <dependency>
+        <groupId>jivesoftware</groupId>
+        <artifactId>smack</artifactId>
+        <version>${smack.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>jivesoftware</groupId>
+        <artifactId>smackx</artifactId>
+        <version>${smack.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

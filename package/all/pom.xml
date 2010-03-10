@@ -105,6 +105,11 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-notification-twitter-su</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-notification-xmpp-su</artifactId>
+    </dependency>
+
 
     <!-- SCM -->
     <dependency>
