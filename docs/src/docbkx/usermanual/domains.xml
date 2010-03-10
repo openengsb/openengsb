@@ -21,7 +21,7 @@
   
   <warning>
     <para>
-      This chapter is out of date and have to be rewritten...
+      This chapter is out of date and has to be rewritten...
     </para>
   </warning>
 
@@ -29,7 +29,7 @@
     <title>Abstract</title>
 
     <para>This chapter describes the SCM-Domain for the ENGineeringServiceBus. Since it does not only show you what it
-      does and is capable of, but also covers it's internals and will show you how to implement your own connector (i.e.
+      does and is capable of, but also covers its internals and will show you how to implement your own connector (i.e.
       an implementation for a concrete SCM-tool like GIT, or Bazaar), you should have some understanding of JBI in
       general and at least an idea how to write your own SE (service engine) to be able to follow this chapter. If you
       have not done so already, I'd suggest to (at very least) read through the chapter "How To write a Tool Connector".
