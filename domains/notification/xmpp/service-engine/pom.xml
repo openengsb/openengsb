@@ -134,5 +134,4 @@
       <artifactId>log4j</artifactId>
     </dependency>
   </dependencies>
-
 </project>

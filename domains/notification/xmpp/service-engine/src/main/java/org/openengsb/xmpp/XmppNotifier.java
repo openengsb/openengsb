@@ -17,11 +17,17 @@
  */
 package org.openengsb.xmpp;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 
 import org.openengsb.drools.NotificationDomain;
 import org.openengsb.drools.model.Attachment;
@@ -41,7 +47,11 @@ public class XmppNotifier implements NotificationDomain {
         this.user = user;
         this.password = password;
 
-        this.server = server;
+        if(server != null){
+            this.server = server;
+        }else{
+            this.server = "localhost";
+        }
         try {
             this.port = Integer.parseInt(port);
         } catch (Exception e) {
@@ -61,7 +71,7 @@ public class XmppNotifier implements NotificationDomain {
     }
 
     private void connect(String server, int port) {
-        if (this.connection != null) {
+        if (this.connection.isConnected()) {
             throw new XMPPException("Already an open connection, disconnect first.");
         }
 
@@ -79,7 +89,7 @@ public class XmppNotifier implements NotificationDomain {
     }
 
     public void disconnect() {
-        if (this.connection != null) {
+        if (this.connection.isConnected()) {
             this.connection.disconnect();
         }
     }
@@ -112,27 +122,25 @@ public class XmppNotifier implements NotificationDomain {
             throw new XMPPException("Message transmission failed", e);
         }
 
-        /*
-         * TODO: check filetransfer with this
-         * http://www.igniterealtime.org/fisheye/browse/svn
-         * -org/spark/trunk/src/java
-         * /org/jivesoftware/spark/filetransfer/SparkTransferManager
-         * .java?r=10980#l97
-         * 
-         * FileTransferManager transferManager = new
-         * FileTransferManager(connection);
-         * transferManager.addFileTransferListener(new
-         * PlaygroundTransferListener());
-         * 
-         * OutgoingFileTransfer out =
-         * transferManager.createOutgoingFileTransfer(
-         * "gdawg@jabber.org/server/resource");
-         * System.out.println("Creating file transfer");
-         * 
-         * try{ out.sendFile(new File("shakespeare_complete_works.txt"),
-         * "Test123!"); } catch(Exception E){ System.err.println("Error: " + E);
-         * }
-         */
+        for(Attachment attachment : attach){
+            FileTransferManager transferManager = new FileTransferManager(connection);
+            OutgoingFileTransfer transfer = transferManager.createOutgoingFileTransfer(target);
+            
+            try{
+                transfer.sendStream(new ByteArrayInputStream(attachment.getData()), attachment.getName(), attachment.getData().length, attachment.getType());
+            } catch(Exception e){ 
+                throw new XMPPException("Transmission of Attachment", e);
+            }
+        }
+         
+    }
+
+    public XMPPConnection getConnection() {
+        return connection;
+    }
+
+    public void setConnection(XMPPConnection connection) {
+        this.connection = connection;
     }
 
 }
