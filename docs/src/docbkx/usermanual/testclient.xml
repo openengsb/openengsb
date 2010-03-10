@@ -52,9 +52,13 @@
       Note: The load button can be used to load text from a file into the content textarea.
       The list of available endpoints is built from the list of consumers specified in the xbean.xml of the openengsb-test-jms-su, which can be found
       in the directory test/jms/service-unit/src/main/resources.
+    </para>
+    
+    <para>
+    To add additional endpoints add jms:consumer elements to the xbean.xml in src/main/resources in the openengsb-test-jms-su.
     </para> 
   </section>
-
+  
   <section>
     <title>The Context Tab</title>
     <para>
