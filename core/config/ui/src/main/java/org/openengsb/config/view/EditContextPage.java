@@ -22,23 +22,23 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.Model;
 
 public class EditContextPage extends BasePage {
-	private Model<String> contextModel;
+    private final Model<String> contextModel;
 
-	public EditContextPage() {
-		Form form = new Form("form") {
-			@Override
-			public void onSubmit() {
-				EditContextPage.this.onSubmit();
-			}
-		};
-		add(form);
-		
-		contextModel = new Model<String>(contextService.getContext());
-		TextArea<String> area = new TextArea<String>("area", contextModel);
-		form.add(area);
-	}
+    public EditContextPage() {
+        Form form = new Form("form") {
+            @Override
+            public void onSubmit() {
+                EditContextPage.this.onSubmit();
+            }
+        };
+        add(form);
 
-	protected void onSubmit() {
-		contextService.updateContext(contextModel.getObject());
-	}
+        contextModel = new Model<String>(contextService.getContext());
+        TextArea<String> area = new TextArea<String>("area", contextModel);
+        form.add(area);
+    }
+
+    protected void onSubmit() {
+        contextService.updateContext(contextModel.getObject());
+    }
 }

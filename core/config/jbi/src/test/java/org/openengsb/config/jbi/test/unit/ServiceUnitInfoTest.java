@@ -58,13 +58,13 @@ public class ServiceUnitInfoTest {
         assertThat(x.evaluate("/beans/ns:a", doc.getDocumentElement()), notNullValue());
     }
 
-	@Test
+    @Test
     public void toXBeanXml_shouldAddEndpointAttributes() throws Exception {
         String s = x.evaluate("/beans/ns:a/@service", doc.getDocumentElement());
         assertThat(s, is("servicename"));
         s = x.evaluate("/beans/ns:a/@endpoint", doc.getDocumentElement());
         assertThat(s, is("endpointname"));
-	}
+    }
 
     @Test
     public void toXBeanXml_shouldAddBeans() throws Exception {

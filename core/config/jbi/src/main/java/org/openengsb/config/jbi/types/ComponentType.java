@@ -31,7 +31,7 @@ public class ComponentType implements Serializable {
     private List<BeanType> beans;
 
     public ComponentType() {
-    	readResolve();
+        readResolve();
     }
 
     public ComponentType(String name, String nsname, String namespace, boolean bindingComponent) {
@@ -43,13 +43,13 @@ public class ComponentType implements Serializable {
     }
 
     private Object readResolve() {
-    	if (endpoints == null) {
-			endpoints = new ArrayList<EndpointType>();
-		}
-    	if (beans == null) {
-			beans = new ArrayList<BeanType>();
-		}
-    	return this;
+        if (endpoints == null) {
+            endpoints = new ArrayList<EndpointType>();
+        }
+        if (beans == null) {
+            beans = new ArrayList<BeanType>();
+        }
+        return this;
     }
 
     public String getName() {
@@ -89,12 +89,12 @@ public class ComponentType implements Serializable {
     }
 
     public EndpointType getEndpoint(String name) {
-    	for (EndpointType e : endpoints) {
-    		if (e.getName().equals(name)) {
-				return e;
-			}
-    	}
-    	return null;
+        for (EndpointType e : endpoints) {
+            if (e.getName().equals(name)) {
+                return e;
+            }
+        }
+        return null;
     }
 
     public void setEndpoints(List<EndpointType> endpoints) {
@@ -106,16 +106,16 @@ public class ComponentType implements Serializable {
     }
 
     public BeanType getBean(String clazz) {
-    	for (BeanType b : beans) {
-    		if (b.getClazz().equals(clazz)) {
-				return b;
-			}
-    	}
-    	return null;
+        for (BeanType b : beans) {
+            if (b.getClazz().equals(clazz)) {
+                return b;
+            }
+        }
+        return null;
     }
 
     public void setBeans(List<BeanType> beans) {
-    	System.out.println(beans);
+        System.out.println(beans);
         this.beans = beans;
     }
 

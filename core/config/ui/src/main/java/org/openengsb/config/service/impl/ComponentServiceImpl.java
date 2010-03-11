@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 
 public class ComponentServiceImpl implements ComponentService {
-	private static Logger log = LoggerFactory.getLogger(ComponentServiceImpl.class);
+    private static Logger log = LoggerFactory.getLogger(ComponentServiceImpl.class);
     private List<ComponentType> components;
     private ServletContext context;
 
@@ -54,7 +54,7 @@ public class ComponentServiceImpl implements ComponentService {
         Set<String> paths = context.getResourcePaths("/descriptors/");
         for (String path : paths) {
             if (path.endsWith(".xml")) {
-            	log.info("adding descriptor " + path);
+                log.info("adding descriptor " + path);
                 descriptors.add(context.getResourceAsStream(path));
             } else if (path.endsWith(".properties")) {
                 File f = new File(path.substring(0, path.lastIndexOf('.')));

@@ -28,18 +28,19 @@ public class CreateServiceAssemblyPage extends BasePage {
     @SpringBean
     ServiceAssemblyDao dao;
 
-	public CreateServiceAssemblyPage() {
-		Form<ServiceAssembly> form = new Form<ServiceAssembly>("form") {
-			private static final long serialVersionUID = 1L;
+    public CreateServiceAssemblyPage() {
+        Form<ServiceAssembly> form = new Form<ServiceAssembly>("form") {
+            private static final long serialVersionUID = 1L;
+
             @Override
-			public void onSubmit() {
+            public void onSubmit() {
                 ServiceAssembly sa = getModelObject();
                 dao.persist(sa);
                 setResponsePage(new ShowServiceAssemblyPage(sa));
-			}
-		};
+            }
+        };
         form.setModel(Models.compound(new ServiceAssembly()));
         form.add(new TextField<String>("name").setRequired(true));
         add(form);
-	}
+    }
 }

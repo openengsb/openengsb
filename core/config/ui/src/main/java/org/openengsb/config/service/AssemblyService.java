@@ -26,9 +26,12 @@ import org.openengsb.config.jbi.EndpointInfo;
 
 public interface AssemblyService {
     public void createNewAssembly();
+
     public List<EndpointInfo> getEndpoints();
 
     public void deploy(ServiceAssembly sa) throws IOException;
-	public List<BeanInfo> getBeans();
-	public List<BeanInfo> getBeansForType(String theClass);
+
+    public List<BeanInfo> getBeans();
+
+    public List<BeanInfo> getBeansForType(String theClass);
 }

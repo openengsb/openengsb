@@ -29,7 +29,7 @@ public class EndpointType implements Serializable {
     private ComponentType parent;
 
     public EndpointType() {
-    	readResolve();
+        readResolve();
     }
 
     public EndpointType(String name) {
@@ -38,13 +38,13 @@ public class EndpointType implements Serializable {
     }
 
     private Object readResolve() {
-    	if (attributes == null) {
-			attributes = new ArrayList<AbstractType>();
-		}
-    	if (properties == null) {
-			properties = new ArrayList<AbstractType>();
-		}
-    	return this;
+        if (attributes == null) {
+            attributes = new ArrayList<AbstractType>();
+        }
+        if (properties == null) {
+            properties = new ArrayList<AbstractType>();
+        }
+        return this;
     }
 
     public String getName() {

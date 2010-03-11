@@ -18,6 +18,7 @@
 package org.openengsb.config.service;
 
 public interface ContextService {
-	String getContext();
-	void updateContext(String context);
+    String getContext();
+
+    void updateContext(String context);
 }

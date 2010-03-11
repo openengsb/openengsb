@@ -28,7 +28,7 @@ public class BeanType implements Serializable {
     private ComponentType parent;
 
     public BeanType() {
-    	readResolve();
+        readResolve();
     }
 
     public BeanType(String clazz) {
@@ -37,10 +37,10 @@ public class BeanType implements Serializable {
     }
 
     private Object readResolve() {
-    	if (properties == null) {
-			properties = new ArrayList<AbstractType>();
-		}
-    	return this;
+        if (properties == null) {
+            properties = new ArrayList<AbstractType>();
+        }
+        return this;
     }
 
     public String getClazz() {

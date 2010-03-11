@@ -20,15 +20,15 @@ package org.openengsb.config.service.impl;
 import org.openengsb.config.service.ContextService;
 
 public class DummyContextService implements ContextService {
-	private String context;
-	
-	@Override
-	public String getContext() {
-		return context;
-	}
+    private String context;
 
-	@Override
-	public void updateContext(String context) {
-		this.context = context;
-	}
+    @Override
+    public String getContext() {
+        return context;
+    }
+
+    @Override
+    public void updateContext(String context) {
+        this.context = context;
+    }
 }

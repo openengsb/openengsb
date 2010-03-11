@@ -35,8 +35,8 @@ import org.springframework.context.ApplicationContext;
 public class ConfigApplication extends WebApplication {
     private static final Logger log = LoggerFactory.getLogger(ConfigApplication.class);
 
-	@Autowired
-	private ApplicationContext applicationContext;
+    @Autowired
+    private ApplicationContext applicationContext;
 
     public void setApplicationContext(ApplicationContext context) {
         this.applicationContext = context;
