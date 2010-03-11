@@ -18,30 +18,7 @@
 package org.openengsb.twitter.common;
 
 public interface TwitterConnector {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    
-<<<<<<< HEAD:domains/toolabstraction/twitter/src/main/java/org/openengsb/test/common/TwitterConnector.java
-<<<<<<< HEAD
-    public static void updateStatus(String username, String password, String message) throws TwitterException;
-=======
-    public void updateStatus(String username, String password, String message) throws OpenEngSBTwitterException;
->>>>>>> TwitterException renamed
-=======
-    public void updateStatus(String message);
-    
-    public void sendMessage(String receiver, String message);
-    
-    public void zipAttachments(Attachment[] attachments, String filePath) throws IOException;
->>>>>>> Refactoring and correction due to comments:domains/toolabstraction/twitter/src/main/java/org/openengsb/twitter/common/TwitterConnector.java
-    
-    public String getTinyUrl(String fullUrl) throws HttpException, IOException;
-=======
-    public void updateStatus(String message);
-=======
     public void updateStatus(String status);
->>>>>>> Logging update, error handling and tests
     
     public void sendMessage(String receiver, String message);
->>>>>>> Refactoring (seperating Util-classes, include spring)
 }

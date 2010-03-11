@@ -25,7 +25,7 @@ This product includes software (the ASN1 codec in the org.apache.geronimo.asn1
 package) which was developed by the Bouncy Castle project. 
 (http://www.bouncycastle.org/) 
 
-     Copyright (c) 2000-2005 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)
+      Copyright (c) 2000-2005 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)
 
 
 =========================================================================
@@ -76,6 +76,21 @@ rod.johnson@interface21.com or juergen.hoeller@interface21.com.
 
 This product includes software developed by the MX4J project 
 (http://sourceforge.net/projects/mx4j).
+
+
+=========================================================================
+==  Twitter4J Notice                                                   ==
+=========================================================================
+
+This product includes software developed by the Twitter4J project
+released under the BSD license.
+(http://twitter4j.org).
+
+      Copyright (c) 2007-2010, Yusuke Yamamoto
+
+Twitter4J includes software from JSON.org to parse JSON response from
+the Twitter API.
+(http://www.json.org/license.html)
 
 
 =========================================================================

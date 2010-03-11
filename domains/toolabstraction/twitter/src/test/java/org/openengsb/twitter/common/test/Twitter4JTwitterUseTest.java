@@ -33,64 +33,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-<<<<<<< HEAD:domains/toolabstraction/twitter/src/test/java/org/openengsb/twitter/common/test/unit/TestTwitter4JTwitter.java
-public class TestTwitter4JTwitter {
-<<<<<<< HEAD
-    
-    private Twitter twitter;
-    
-=======
-=======
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:../test-classes/test-bean.xml" })
 public class Twitter4JTwitterUseTest {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> Refactoring and correction due to comments:domains/toolabstraction/twitter/src/test/java/org/openengsb/twitter/common/test/Twitter4JTwitterUseTest.java
-
-=======
->>>>>>> Refactoring (seperating Util-classes, include spring)
-    private static Twitter twitter;
-    private TwitterConnector ourTwitter;
-
-    private static final String USERNAME = "OpenEngSBTest";
-    private static final String PASSWORD = "tsetbsgnenepo";
-
-    @Autowired
-    public void setOurTwitter(TwitterConnector ourTwitter) {
-        this.ourTwitter = ourTwitter;
-    }
-
->>>>>>> create and test zip-file of attachments, create and test tinyurl, update configuration
-    @BeforeClass
-<<<<<<< HEAD:domains/toolabstraction/twitter/src/test/java/org/openengsb/twitter/common/test/unit/TestTwitter4JTwitter.java
-    public void setUp() {
-        twitter = new TwitterFactory().getInstance("OpenEngSBTest", "tsetbsgnenepo");
-=======
-    public static void setUp() {
-        twitter = new TwitterFactory().getInstance(USERNAME, PASSWORD);
->>>>>>> Refactoring and correction due to comments:domains/toolabstraction/twitter/src/test/java/org/openengsb/twitter/common/test/Twitter4JTwitterUseTest.java
-    }
-=======
-=======
     @Resource
->>>>>>> @Resource tag corrected
     private Twitter twitter;
     @Resource
     private TwitterConnector ourTwitter;
     @Resource
     private String username;
->>>>>>> Refactoring - Spring now injects Twitter library and other properties
 
     @Test
-<<<<<<< HEAD
-    public void testTest() throws TwitterException, twitter4j.TwitterException {
-        String s = "test" + new Date();
-        new Twitter4JTwitterConnector().updateStatus("OpenEngSBTest", "tsetbsgnenepo", s);
-        assertEquals(twitter.getHomeTimeline().get(0).getText(), s);
-    }
-=======
     @Ignore
     public void testUpdateStatus() throws TwitterException {
         String s = "test " + new Date();
@@ -106,57 +59,4 @@ public class Twitter4JTwitterUseTest {
         assertEquals(twitter.getDirectMessages().get(0).getSender().getScreenName(), username);
         assertEquals(twitter.getDirectMessages().get(0).getText(), s);
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-    @Test
-    public void testZipAttachments() throws IOException {
-        String[] files = new String[] { "testfile1.jpg", "testfile2.jpg", "testfile3.jpg" };
-        Attachment[] attachments = new Attachment[files.length];
-        for (int i = 0; i < files.length; i++) {
-            File src = new File("target\\test-classes\\" + files[i]);
-            FileInputStream fileInputStream = new FileInputStream(src);
-            byte[] data = new byte[(int) src.length()];
-            fileInputStream.read(data);
-            fileInputStream.close();
-            attachments[i] = new Attachment(data, "image", files[i]);
-        }
-
-        ourTwitter.zipAttachments(attachments, "target\\test-classes\\testarchive.zip");
-
-        File zip = new File("target\\test-classes\\testarchive.zip");
-        assertTrue(zip.exists());
-        assertTrue(zip.length() > 0);
-    }
-
-    @Test
-    public void testTinyUrl() throws HttpException, IOException {
-        String s = "http://maps.google.at/maps/place?cid=2469784843158832493&q=tu+wien&hl=de&cd=1&cad=src:pplink&ei=yKOPS-jIA4mH_Qb5pPA7";
-        String tiny = ourTwitter.getTinyUrl(s);
-        assertNotNull(tiny);
-        assertTrue(s.length() > tiny.length());
-    }
->>>>>>> create and test zip-file of attachments, create and test tinyurl, update configuration
-=======
->>>>>>> Refactoring (seperating Util-classes, include spring)
-=======
-    
-    @Resource
-    public void setOurTwitter(TwitterConnector ourTwitter) {
-        this.ourTwitter = ourTwitter;
-    }
-    
-    @Resource
-    public void setTwitter(Twitter twitter) {
-        this.twitter = twitter;
-    }
-
-    @Resource
-    public void setUsername(String username) {
-        this.username = username;
-    }
->>>>>>> Refactoring - Spring now injects Twitter library and other properties
-=======
->>>>>>> @Resource tag corrected
 }
