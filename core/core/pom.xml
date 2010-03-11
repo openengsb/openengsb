@@ -49,6 +49,18 @@
       <groupId>org.jibx</groupId>
       <artifactId>jibx-run</artifactId>
     </dependency>
+    
+    <!-- Apache Dependencies -->
+    <dependency>
+      <groupId>commons-net</groupId>
+      <artifactId>commons-net</artifactId>
+    </dependency>
+    
+    <!-- Springframework dependencies -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+    </dependency>
 
     <!-- Testing Dependencies -->
     <dependency>

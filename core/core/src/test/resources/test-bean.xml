@@ -13,22 +13,31 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+  <bean id="hostname" class="java.lang.String">
+    <description>
+      Also used for direct injection to the UseTest-class
+    </description>
+    <constructor-arg value="localhost" />
+  </bean>
+
   <bean id="username" class="java.lang.String">
     <description>
       Also used for direct injection to the UseTest-class
     </description>
-    <constructor-arg value="OpenEngSBTest" />
+    <constructor-arg value="anonymous" />
+  </bean>
+  
+  <bean id="password" class="java.lang.String">
+    <description>
+      Also used for direct injection to the UseTest-class
+    </description>
+    <constructor-arg value="" />
   </bean>
 
-  <bean id="twitterFactory" class="twitter4j.TwitterFactory" />
-
-  <bean id="twitter" factory-bean="twitterFactory" factory-method="getInstance">
-    <constructor-arg index="0" ref="username" />
-    <constructor-arg index="1" value="tsetbsgnenepo" />
-  </bean>
-
-  <bean id="ourTwitter" class="org.openengsb.twitter.common.Twitter4JTwitterConnector">
-    <property name="twitter" ref="twitter" />
+  <bean id="fileUpload" class="org.openengsb.core.util.FTPFileUpload">
+    <property name="hostname" ref="hostname" />
+    <property name="username" ref="username" />
+    <property name="password" ref="password" />
   </bean>
 
 </beans>
