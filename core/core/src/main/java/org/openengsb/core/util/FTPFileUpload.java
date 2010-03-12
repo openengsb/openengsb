@@ -50,6 +50,7 @@ public class FTPFileUpload implements FileUpload {
             
             client.logout();
             client.disconnect();
+            log.info("Successfully uploaded file to " + hostname + ".");
         } catch (SocketException e) {
             log.error("Error while communicating with FTP-server. SocketException: " + e.getMessage());
         } catch (IOException e) {

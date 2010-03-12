@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.core.test.unit;
+package org.openengsb.core.util.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

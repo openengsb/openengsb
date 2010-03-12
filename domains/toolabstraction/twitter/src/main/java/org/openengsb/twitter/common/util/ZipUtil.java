@@ -23,9 +23,13 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.drools.model.Attachment;
 
 public class ZipUtil {
+    private static Log log = LogFactory.getLog(ZipUtil.class);
+    
     public static void zipAttachments(Attachment[] attachments, String filePath) throws IOException {
         FileOutputStream dest = new FileOutputStream(filePath);
         ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
@@ -41,5 +45,6 @@ public class ZipUtil {
         
         out.close();
         dest.close();
+        log.info("Successfully zipped attachment(s).");
     }
 }

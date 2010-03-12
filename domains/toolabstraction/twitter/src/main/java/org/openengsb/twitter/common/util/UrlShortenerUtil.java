@@ -24,8 +24,12 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class UrlShortenerUtil {
+    private static Log log = LogFactory.getLog(UrlShortenerUtil.class);
+    
     public static String getTinyUrl(String fullUrl) throws HttpException, IOException {
         HttpClient httpclient = new HttpClient();
         HttpMethod method = new GetMethod("http://tinyurl.com/api-create.php");
@@ -34,6 +38,8 @@ public class UrlShortenerUtil {
         
         String tinyUrl = method.getResponseBodyAsString();
         method.releaseConnection();
+        
+        log.info("Successfully shortened URL via tinyurl.");
         return tinyUrl;
     }
 }
