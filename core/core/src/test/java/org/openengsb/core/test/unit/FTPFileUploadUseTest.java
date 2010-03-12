@@ -58,11 +58,12 @@ public class FTPFileUploadUseTest {
         fileInputStream.read(data);
         fileInputStream.close();
         
-        String url = fileUpload.uploadFile(data, "txt");
-        assertTrue(url.startsWith("ftp://" + hostname + "/"));
-        assertTrue(url.endsWith(".txt"));
+        URL url = fileUpload.uploadFile(data, "txt");
+        assertTrue(url.getProtocol().equals("ftp"));
+        assertTrue(url.getHost().equals(hostname));
+        assertTrue(url.getFile().endsWith("txt"));
         
-        URLConnection con = new URL("ftp://" + username + ":" + (password.equals("") ? ":" : password) + "@" + url.substring(6)).openConnection();
+        URLConnection con = new URL("ftp://" + username + ":" + (password.equals("") ? ":" : password) + "@" + url.getHost() + url.getFile()).openConnection();
         BufferedInputStream in = new BufferedInputStream(con.getInputStream());
         byte[] data2 = new byte[(int) src.length()];
         in.read(data2);

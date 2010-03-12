@@ -20,6 +20,7 @@ package org.openengsb.core.util;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.SocketException;
+import java.net.URL;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
@@ -34,18 +35,18 @@ public class FTPFileUpload implements FileUpload {
     private String password;
 
     @Override
-    public String uploadFile(byte[] file, String extension) {
-        String url = "ftp://" + hostname;
-
+    public URL uploadFile(byte[] file, String extension) {
+        URL url = null;
         FTPClient client = new FTPClient();
+        
         try {
             client.connect(hostname);
             client.login(username, password);
             client.setFileType(FTPClient.BINARY_FILE_TYPE);
             
-            String s = new Date().getTime() + "." + extension;
-            client.storeFile(s, new ByteArrayInputStream(file));
-            url += "/" + s;
+            String name = new Date().getTime() + "." + extension;
+            client.storeFile(name, new ByteArrayInputStream(file));
+            url = new URL("ftp", hostname, "/" + name);
             
             client.logout();
             client.disconnect();

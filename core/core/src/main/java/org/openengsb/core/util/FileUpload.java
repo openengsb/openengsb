@@ -17,6 +17,8 @@
  */
 package org.openengsb.core.util;
 
+import java.net.URL;
+
 public interface FileUpload {
-    public String uploadFile(byte[] file, String extension);
+    public URL uploadFile(byte[] file, String extension);
 }
