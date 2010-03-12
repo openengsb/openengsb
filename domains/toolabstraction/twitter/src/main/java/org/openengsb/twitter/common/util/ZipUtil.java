@@ -17,8 +17,7 @@
  */
 package org.openengsb.twitter.common.util;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -30,9 +29,9 @@ import org.openengsb.drools.model.Attachment;
 public class ZipUtil {
     private static Log log = LogFactory.getLog(ZipUtil.class);
     
-    public static void zipAttachments(Attachment[] attachments, String filePath) throws IOException {
-        FileOutputStream dest = new FileOutputStream(filePath);
-        ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+    public static byte[] zipAttachments(Attachment[] attachments) throws IOException {
+        ByteArrayOutputStream dest = new ByteArrayOutputStream();
+        ZipOutputStream out = new ZipOutputStream(dest);
         // Highest compression level
         out.setLevel(9);
         
@@ -45,6 +44,8 @@ public class ZipUtil {
         
         out.close();
         dest.close();
+        
         log.info("Successfully zipped attachment(s).");
+        return dest.toByteArray();
     }
 }

@@ -18,6 +18,7 @@
 package org.openengsb.twitter.common.util;
 
 import java.io.IOException;
+import java.net.URL;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -29,6 +30,10 @@ import org.apache.commons.logging.LogFactory;
 
 public class UrlShortenerUtil {
     private static Log log = LogFactory.getLog(UrlShortenerUtil.class);
+    
+    public static String getTinyUrl(URL fullUrl) throws HttpException, IOException {
+        return getTinyUrl(fullUrl.toString());
+    }
     
     public static String getTinyUrl(String fullUrl) throws HttpException, IOException {
         HttpClient httpclient = new HttpClient();

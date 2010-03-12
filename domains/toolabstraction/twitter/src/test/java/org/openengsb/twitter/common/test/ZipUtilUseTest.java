@@ -17,6 +17,7 @@
  */
 package org.openengsb.twitter.common.test;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -42,10 +43,9 @@ public class ZipUtilUseTest {
             attachments[i] = new Attachment(data, "image", files[i]);
         }
 
-        ZipUtil.zipAttachments(attachments, "target\\test-classes\\testarchive.zip");
+        byte[] zip = ZipUtil.zipAttachments(attachments);
 
-        File zip = new File("target\\test-classes\\testarchive.zip");
-        assertTrue(zip.exists());
-        assertTrue(zip.length() > 0);
+        assertNotNull(zip);
+        assertTrue(zip.length > 0);
     }
 }

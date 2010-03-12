@@ -17,30 +17,35 @@
  */
 package org.openengsb.twitter;
 
-import java.util.Properties;
+import java.io.IOException;
+import java.net.URL;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.util.FileUpload;
 import org.openengsb.drools.NotificationDomain;
 import org.openengsb.drools.model.Notification;
 import org.openengsb.twitter.common.TwitterConnector;
-
+import org.openengsb.twitter.common.util.UrlShortenerUtil;
+import org.openengsb.twitter.common.util.ZipUtil;
 
 public class TwitterNotifier implements NotificationDomain {
-    private Properties props;
+    private Log log = LogFactory.getLog(getClass());
     private TwitterConnector twitterCon;
-    
-	public TwitterNotifier(){
-		
-	}
-	
-    public TwitterNotifier(Properties props) {
-        this.props = props;
-    }
+    private FileUpload fileUpload;
 
     public void notify(Notification notification) {
-
         if (notification.getAttachments().length > 0) {
-            // Has Attachments --> zip, upload, shortenurl + attach url to
-            // message
+            try {
+                byte[] zip = ZipUtil.zipAttachments(notification.getAttachments());
+                URL url = fileUpload.uploadFile(zip, "zip");
+                String shortUrl = UrlShortenerUtil.getTinyUrl(url);
+
+                notification.setMessage("Attachments: " + shortUrl + "\n" + notification.getMessage());
+                log.info("Attachments successfully added.");
+            } catch (IOException e) {
+                log.error("Error creating ZIP-file. Attachments will be skipped.");
+            }
         }
 
         if (notification.getRecipient() == null || notification.getRecipient().equals("")) {
@@ -51,8 +56,12 @@ public class TwitterNotifier implements NotificationDomain {
             twitterCon.sendMessage(notification.getRecipient(), notification.getMessage());
         }
     }
-    
+
     public void setTwitterCon(TwitterConnector twitterCon) {
-		this.twitterCon = twitterCon;
-	}
+        this.twitterCon = twitterCon;
+    }
+
+    public void setFileUpload(FileUpload fileUpload) {
+        this.fileUpload = fileUpload;
+    }
 }

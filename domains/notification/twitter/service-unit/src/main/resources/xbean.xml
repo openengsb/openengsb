@@ -32,8 +32,15 @@
     <property name="twitter" ref="twitter" />
   </bean>
   
+  <bean id="fileUpload" class="org.openengsb.core.util.FTPFileUpload">
+    <property name="hostname" value="localhost" />
+    <property name="username" value="anonymous" />
+    <property name="password" value="" />
+  </bean>
+  
   <bean id="ourNotifier" class="org.openengsb.twitter.TwitterNotifier">
     <property name="twitterCon" ref="ourTwitter" />
+    <property name="fileUpload" ref="fileUpload" />
   </bean>
 
   <twitter:twitterEndpoint endpoint="twitterEndpoint" service="twtr:twitterService" twitterNotifier="#ourNotifier" />
