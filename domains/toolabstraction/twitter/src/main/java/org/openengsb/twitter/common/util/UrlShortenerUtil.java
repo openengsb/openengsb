@@ -30,13 +30,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class UrlShortenerUtil {
-    private static Log log = LogFactory.getLog(UrlShortenerUtil.class);
+    private Log log = LogFactory.getLog(getClass());
 
-    public static String getTinyUrl(URL fullUrl) throws HttpException, IOException {
+    public String getTinyUrl(URL fullUrl) throws HttpException, IOException {
         return getTinyUrl(fullUrl.toString());
     }
 
-    public static String getTinyUrl(String fullUrl) throws HttpException, IOException {
+    public String getTinyUrl(String fullUrl) throws HttpException, IOException {
         HttpClient httpclient = new HttpClient();
         HttpMethod method = new GetMethod("http://tinyurl.com/api-create.php");
         method.setQueryString(new NameValuePair[] { new NameValuePair("url", fullUrl) });
@@ -50,7 +50,7 @@ public class UrlShortenerUtil {
         String tinyUrl = sb.toString();
         method.releaseConnection();
 
-        log.info("Successfully shortened URL via tinyurl.");
+        log.info("Successfully shortened URL " + fullUrl + " via tinyurl to " + tinyUrl + ".");
         return tinyUrl;
     }
 }

@@ -27,9 +27,9 @@ import org.apache.commons.logging.LogFactory;
 import org.openengsb.drools.model.Attachment;
 
 public class ZipUtil {
-    private static Log log = LogFactory.getLog(ZipUtil.class);
+    private Log log = LogFactory.getLog(getClass());
     
-    public static byte[] zipAttachments(Attachment[] attachments) throws IOException {
+    public byte[] zipAttachments(Attachment[] attachments) throws IOException {
         ByteArrayOutputStream dest = new ByteArrayOutputStream();
         ZipOutputStream out = new ZipOutputStream(dest);
         // Highest compression level
@@ -44,7 +44,7 @@ public class ZipUtil {
         out.close();
         dest.close();
         
-        log.info("Successfully zipped attachment(s).");
+        log.info("Successfully zipped " + attachments.length + " attachment" + (attachments.length > 1 ? "s" : "") + " to " + dest.size() + " bytes.");
         return dest.toByteArray();
     }
 }

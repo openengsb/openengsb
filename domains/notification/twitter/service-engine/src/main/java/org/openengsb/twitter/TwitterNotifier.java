@@ -31,22 +31,25 @@ import org.openengsb.twitter.common.util.ZipUtil;
 
 public class TwitterNotifier implements NotificationDomain {
     private Log log = LogFactory.getLog(getClass());
+    
     private TwitterConnector twitterCon;
     private FileUpload fileUpload;
+    private ZipUtil zipUtil;
+    private UrlShortenerUtil urlShortener;
     
     private static int maxChars = 140;
 
     public void notify(Notification notification) {
         if (notification.getAttachments().length > 0) {
             try {
-                byte[] zip = ZipUtil.zipAttachments(notification.getAttachments());
+                byte[] zip = zipUtil.zipAttachments(notification.getAttachments());
                 URL url = fileUpload.uploadFile(zip, "zip");
-                String shortUrl = UrlShortenerUtil.getTinyUrl(url);
+                String shortUrl = urlShortener.getTinyUrl(url);
 
                 notification.setMessage("Attachment: " + shortUrl + "\n" + notification.getMessage());
                 log.info("Attachments successfully added.");
             } catch (IOException e) {
-                log.error("Error creating ZIP-file. Attachments will be skipped.");
+                log.error("Error processing attachments, they will be skipped. Reason: " + e.getMessage());
             }
         }
 
@@ -69,5 +72,13 @@ public class TwitterNotifier implements NotificationDomain {
 
     public void setFileUpload(FileUpload fileUpload) {
         this.fileUpload = fileUpload;
+    }
+    
+    public void setZipUtil(ZipUtil zipUtil) {
+        this.zipUtil = zipUtil;
+    }
+
+    public void setUrlShortener(UrlShortenerUtil urlShortener) {
+        this.urlShortener = urlShortener;
     }
 }

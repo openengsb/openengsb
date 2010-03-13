@@ -22,15 +22,25 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.httpclient.HttpException;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openengsb.twitter.common.util.UrlShortenerUtil;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:../test-classes/test-bean.xml" })
 public class UrlShortenerUseTest {
+    @Resource
+    private UrlShortenerUtil urlShortener;
+    
     @Test
     public void testTinyUrl() throws HttpException, IOException {
         String s = "http://maps.google.at/maps/place?cid=2469784843158832493&q=tu+wien&hl=de&cd=1&cad=src:pplink&ei=yKOPS-jIA4mH_Qb5pPA7";
-        String tiny = UrlShortenerUtil.getTinyUrl(s);
+        String tiny = urlShortener.getTinyUrl(s);
         assertNotNull(tiny);
         assertTrue(s.length() > tiny.length());
     }

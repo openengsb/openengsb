@@ -24,11 +24,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import javax.annotation.Resource;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openengsb.drools.model.Attachment;
 import org.openengsb.twitter.common.util.ZipUtil;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:../test-classes/test-bean.xml" })
 public class ZipUtilUseTest {
+    @Resource
+    private ZipUtil zipUtil;
+    
     @Test
     public void testZipAttachments() throws IOException {
         String[] files = new String[] { "testfile1.jpg", "testfile2.jpg", "testfile3.jpg" };
@@ -43,7 +53,7 @@ public class ZipUtilUseTest {
             attachments[i] = new Attachment(data, "image", files[i]);
         }
 
-        byte[] zip = ZipUtil.zipAttachments(attachments);
+        byte[] zip = zipUtil.zipAttachments(attachments);
 
         assertNotNull(zip);
         assertTrue(zip.length > 0);

@@ -28,7 +28,6 @@ import org.openengsb.drools.NotificationDomain;
  *                         description="Notification Endpoint"
  */
 public class NotificationEndpoint extends ForwardEndpoint<NotificationDomain> {
-
     @Override
     protected QName getForwardTarget(ContextHelper contextHelper) {
         String defaultName = contextHelper.getValue("notification/default");
@@ -36,5 +35,4 @@ public class NotificationEndpoint extends ForwardEndpoint<NotificationDomain> {
         String namespace = contextHelper.getValue("notification/" + defaultName + "/namespace");
         return new QName(namespace, serviceName);
     }
-
 }
