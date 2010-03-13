@@ -18,6 +18,7 @@
 package org.openengsb.twitter.common.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -30,20 +31,25 @@ import org.apache.commons.logging.LogFactory;
 
 public class UrlShortenerUtil {
     private static Log log = LogFactory.getLog(UrlShortenerUtil.class);
-    
+
     public static String getTinyUrl(URL fullUrl) throws HttpException, IOException {
         return getTinyUrl(fullUrl.toString());
     }
-    
+
     public static String getTinyUrl(String fullUrl) throws HttpException, IOException {
         HttpClient httpclient = new HttpClient();
         HttpMethod method = new GetMethod("http://tinyurl.com/api-create.php");
         method.setQueryString(new NameValuePair[] { new NameValuePair("url", fullUrl) });
         httpclient.executeMethod(method);
-        
-        String tinyUrl = method.getResponseBodyAsString();
+
+        InputStream is = method.getResponseBodyAsStream();
+        StringBuilder sb = new StringBuilder();
+        for (int i = is.read(); i != -1; i = is.read()) {
+            sb.append((char) i);
+        }
+        String tinyUrl = sb.toString();
         method.releaseConnection();
-        
+
         log.info("Successfully shortened URL via tinyurl.");
         return tinyUrl;
     }

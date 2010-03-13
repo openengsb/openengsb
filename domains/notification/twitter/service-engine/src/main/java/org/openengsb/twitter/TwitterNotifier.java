@@ -33,6 +33,8 @@ public class TwitterNotifier implements NotificationDomain {
     private Log log = LogFactory.getLog(getClass());
     private TwitterConnector twitterCon;
     private FileUpload fileUpload;
+    
+    private static int maxChars = 140;
 
     public void notify(Notification notification) {
         if (notification.getAttachments().length > 0) {
@@ -41,11 +43,15 @@ public class TwitterNotifier implements NotificationDomain {
                 URL url = fileUpload.uploadFile(zip, "zip");
                 String shortUrl = UrlShortenerUtil.getTinyUrl(url);
 
-                notification.setMessage("Attachments: " + shortUrl + "\n" + notification.getMessage());
+                notification.setMessage("Attachment: " + shortUrl + "\n" + notification.getMessage());
                 log.info("Attachments successfully added.");
             } catch (IOException e) {
                 log.error("Error creating ZIP-file. Attachments will be skipped.");
             }
+        }
+
+        if (notification.getMessage().length() > maxChars) {
+            log.warn("Your message is going to be truncated.");
         }
 
         if (notification.getRecipient() == null || notification.getRecipient().equals("")) {

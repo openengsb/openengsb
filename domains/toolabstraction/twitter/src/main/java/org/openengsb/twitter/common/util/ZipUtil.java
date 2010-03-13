@@ -41,7 +41,6 @@ public class ZipUtil {
             out.write(attachment.getData());
             out.closeEntry();
         }
-        
         out.close();
         dest.close();
         

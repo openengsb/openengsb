@@ -1,48 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
+  <!--
 
-   Copyright 2010 OpenEngSB Division, Vienna University of Technology
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-
--->
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology Licensed under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the
+    License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied. See the License for the specific language governing permissions and limitations
+    under the License.
+  -->
 <beans xmlns:twitter="http://www.openengsb.org/connector/twitter/1.0" xmlns:twtr="urn:openengsb:twitter"
   xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  
   <bean id="twitterFactory" class="twitter4j.TwitterFactory" />
-  
+
   <bean id="twitter" factory-bean="twitterFactory" factory-method="getInstance">
     <constructor-arg index="0" value="OpenEngSBTest" />
     <constructor-arg index="1" value="tsetbsgnenepo" />
   </bean>
-  
+
   <bean id="ourTwitter" class="org.openengsb.twitter.common.Twitter4JTwitterConnector">
     <property name="twitter" ref="twitter" />
   </bean>
-  
+
   <bean id="fileUpload" class="org.openengsb.core.util.FTPFileUpload">
     <property name="hostname" value="localhost" />
     <property name="username" value="anonymous" />
     <property name="password" value="" />
   </bean>
-  
+
   <bean id="ourNotifier" class="org.openengsb.twitter.TwitterNotifier">
     <property name="twitterCon" ref="ourTwitter" />
     <property name="fileUpload" ref="fileUpload" />
   </bean>
 
-  <twitter:twitterEndpoint endpoint="twitterEndpoint" service="twtr:twitterService" twitterNotifier="#ourNotifier" />
+  <twitter:twitterEndpoint endpoint="twitterEndpoint" service="twtr:twitterService"
+    twitterNotifier="#ourNotifier" />
 </beans>
 
