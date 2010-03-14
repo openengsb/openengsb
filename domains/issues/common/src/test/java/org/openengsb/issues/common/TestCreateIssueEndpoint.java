@@ -16,12 +16,11 @@ limitations under the License.
 
  */
 
-package org.openengsb.issues.common.test.unit;
+package org.openengsb.issues.common;
 
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.drools.DroolsIssuesDomain;
-import org.openengsb.issues.common.IssueDomain;
 import org.openengsb.issues.common.endpoints.AbstractIssueEndpoint;
 
 /**

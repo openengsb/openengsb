@@ -16,7 +16,10 @@ limitations under the License.
 
  */
 
-package org.openengsb.issues.common.test.unit.messages;
+package org.openengsb.issues.common.messages;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,9 +31,6 @@ import java.net.URISyntaxException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.issues.common.messages.CreateIssueMessage;
-import org.openengsb.issues.common.messages.CreateIssueResponseMessage;
-import org.openengsb.issues.common.messages.CreateIssueStatus;
 import org.openengsb.issues.common.model.Issue;
 import org.openengsb.issues.common.model.IssuePriority;
 import org.openengsb.issues.common.model.IssueSeverity;
@@ -39,24 +39,22 @@ import org.openengsb.util.serialization.JibxXmlSerializer;
 import org.openengsb.util.serialization.SerializationException;
 import org.openengsb.util.serialization.Serializer;
 
-import static org.junit.Assert.*;
-
 public class SerializationTest {
 
     private Serializer serializer;
 
-    private String summary = "Test Summary";
-    private String description = "Test Description";
-    private String reporter = "Test Reporter";
-    private String owner = "Test Owner";
-    private IssueType type = IssueType.BUG;
-    private IssuePriority priority = IssuePriority.HIGH;
-    private IssueSeverity severity = IssueSeverity.BLOCK;
-    private String affectedVersion = "1.0";
+    private final String summary = "Test Summary";
+    private final String description = "Test Description";
+    private final String reporter = "Test Reporter";
+    private final String owner = "Test Owner";
+    private final IssueType type = IssueType.BUG;
+    private final IssuePriority priority = IssuePriority.HIGH;
+    private final IssueSeverity severity = IssueSeverity.BLOCK;
+    private final String affectedVersion = "1.0";
 
-    private String createdIssueId = "Test Issue ID 1";
-    private CreateIssueStatus status = CreateIssueStatus.SUCCESS;
-    private String statusMessage = "Test Status Message";
+    private final String createdIssueId = "Test Issue ID 1";
+    private final CreateIssueStatus status = CreateIssueStatus.SUCCESS;
+    private final String statusMessage = "Test Status Message";
 
     @Before
     public void setup() {
