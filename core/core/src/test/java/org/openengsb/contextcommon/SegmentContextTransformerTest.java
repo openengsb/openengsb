@@ -24,8 +24,6 @@ import junit.framework.Assert;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openengsb.contextcommon.Context;
-import org.openengsb.contextcommon.ContextSegmentTransformer;
 import org.openengsb.core.messaging.ListSegment;
 import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;

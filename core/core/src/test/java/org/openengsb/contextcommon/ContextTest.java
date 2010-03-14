@@ -28,10 +28,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openengsb.contextcommon.Context;
-import org.openengsb.contextcommon.ContextNameClashException;
-import org.openengsb.contextcommon.ContextNotFoundException;
-import org.openengsb.contextcommon.ContextStore;
 
 public class ContextTest {
 

@@ -16,7 +16,7 @@ limitations under the License.
 
  */
 
-package org.openengsb.issues.trac.test.unit;
+package org.openengsb.issues.trac;
 
 import java.io.StringReader;
 import java.io.StringWriter;
