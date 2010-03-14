@@ -90,12 +90,14 @@ connector-notification-twitter
   </bean>
 +----
   
-  [[3]] In the end both beans are injected to our TwitterNotifier bean.
+  [[3]] In the end both beans and two additional util-beans (which don't need any parameters) are injected to our TwitterNotifier bean.
   
 +----
   <bean id="ourNotifier" class="org.openengsb.twitter.TwitterNotifier">
     <property name="twitterCon" ref="ourTwitter" />
     <property name="fileUpload" ref="fileUpload" />
+    <property name="zipUtil" ref="zipUtil" />
+    <property name="urlShortener" ref="urlShortener" />
   </bean>
 +----
   
