@@ -401,6 +401,16 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>org/openengsb/**/test/unit/**/*Test.java</include>
+            <include>org/openengsb/**/test/unit/**/Test*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
         <configuration>
           <reportSets>
@@ -529,12 +539,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>${maven.plugin.surefire}</version>
-          <configuration>
-            <includes>
-              <include>org/openengsb/**/test/unit/**/*Test.java</include>
-              <include>org/openengsb/**/test/unit/**/Test*.java</include>
-            </includes>
-          </configuration>
         </plugin>
         <plugin>
           <groupId>org.jibx</groupId>
