@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.maven.common.test.unit;
+package org.openengsb.maven.common;
 
 import java.io.File;
 import java.util.Properties;
@@ -25,11 +25,9 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openengsb.maven.common.MavenConnector;
-import org.openengsb.maven.common.MavenResult;
 
 @Ignore("tests do not run on hudson - locally they should run without any problems")
-public class TestMavenConnector {
+public class MavenConnectorTest {
 
     private Properties executionRequestProperties;
 
