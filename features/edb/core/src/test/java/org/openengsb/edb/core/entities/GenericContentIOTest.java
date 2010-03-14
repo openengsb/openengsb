@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.edb.core.test.unit.entities;
+package org.openengsb.edb.core.entities;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
-import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.util.IO;
 
 

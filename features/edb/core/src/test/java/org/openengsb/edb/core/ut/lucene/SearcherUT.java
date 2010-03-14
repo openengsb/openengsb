@@ -16,7 +16,7 @@
 
  */
 
-package org.openengsb.edb.core.test.performance.lucene;
+package org.openengsb.edb.core.ut.lucene;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -31,14 +31,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openengsb.edb.core.entities.GenericContent;
+import org.openengsb.edb.core.lucene.ATestStub;
 import org.openengsb.edb.core.search.Indexer;
 import org.openengsb.edb.core.search.Searcher;
 import org.openengsb.edb.core.search.lucene.LuceneIndexer;
 import org.openengsb.edb.core.search.lucene.LuceneSearcher;
-import org.openengsb.edb.core.test.unit.lucene.ATestStub;
 import org.openengsb.util.IO;
 
-public class SearcherPerfTest extends ATestStub {
+public class SearcherUT extends ATestStub {
 
     private static List<GenericContent> content;
     private static final String PATH = "target/dump";
@@ -75,36 +75,36 @@ public class SearcherPerfTest extends ATestStub {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        SearcherPerfTest.singlePart = new GenericContent();
-        SearcherPerfTest.singlePart.setProperty(SearcherPerfTest.KEY1, SearcherPerfTest.PREFIX);
-        SearcherPerfTest.singlePart.setProperty(SearcherPerfTest.KEY2, SearcherPerfTest.MIDDLE);
-        SearcherPerfTest.singlePart.setProperty(SearcherPerfTest.KEY3, SearcherPerfTest.SUFFIX);
-        SearcherPerfTest.singlePart.setProperty(SearcherPerfTest.KEY4, SearcherPerfTest.EMPTY);
-        SearcherPerfTest.singlePart.setProperty(SearcherPerfTest.UUID_KEY, SearcherPerfTest.UUID_VALUE_1);
-        SearcherPerfTest.singlePart.setPath(SearcherPerfTest.PATH1);
+        SearcherUT.singlePart = new GenericContent();
+        SearcherUT.singlePart.setProperty(SearcherUT.KEY1, SearcherUT.PREFIX);
+        SearcherUT.singlePart.setProperty(SearcherUT.KEY2, SearcherUT.MIDDLE);
+        SearcherUT.singlePart.setProperty(SearcherUT.KEY3, SearcherUT.SUFFIX);
+        SearcherUT.singlePart.setProperty(SearcherUT.KEY4, SearcherUT.EMPTY);
+        SearcherUT.singlePart.setProperty(SearcherUT.UUID_KEY, SearcherUT.UUID_VALUE_1);
+        SearcherUT.singlePart.setPath(SearcherUT.PATH1);
 
-        SearcherPerfTest.comboPart = new GenericContent();
-        SearcherPerfTest.comboPart
-                .setProperty(SearcherPerfTest.KEY1, SearcherPerfTest.PREFIX + SearcherPerfTest.MIDDLE);
-        SearcherPerfTest.comboPart
-                .setProperty(SearcherPerfTest.KEY2, SearcherPerfTest.MIDDLE + SearcherPerfTest.SUFFIX);
-        SearcherPerfTest.comboPart
-                .setProperty(SearcherPerfTest.KEY3, SearcherPerfTest.PREFIX + SearcherPerfTest.SUFFIX);
-        SearcherPerfTest.comboPart.setProperty(SearcherPerfTest.KEY4, SearcherPerfTest.PREFIX + SearcherPerfTest.MIDDLE
-                + SearcherPerfTest.SUFFIX);
-        SearcherPerfTest.comboPart.setProperty(SearcherPerfTest.UUID_KEY, SearcherPerfTest.UUID_VALUE_2);
-        SearcherPerfTest.comboPart.setPath(SearcherPerfTest.PATH2);
+        SearcherUT.comboPart = new GenericContent();
+        SearcherUT.comboPart
+                .setProperty(SearcherUT.KEY1, SearcherUT.PREFIX + SearcherUT.MIDDLE);
+        SearcherUT.comboPart
+                .setProperty(SearcherUT.KEY2, SearcherUT.MIDDLE + SearcherUT.SUFFIX);
+        SearcherUT.comboPart
+                .setProperty(SearcherUT.KEY3, SearcherUT.PREFIX + SearcherUT.SUFFIX);
+        SearcherUT.comboPart.setProperty(SearcherUT.KEY4, SearcherUT.PREFIX + SearcherUT.MIDDLE
+                + SearcherUT.SUFFIX);
+        SearcherUT.comboPart.setProperty(SearcherUT.UUID_KEY, SearcherUT.UUID_VALUE_2);
+        SearcherUT.comboPart.setPath(SearcherUT.PATH2);
 
-        Indexer indexer = new LuceneIndexer(SearcherPerfTest.PATH);
+        Indexer indexer = new LuceneIndexer(SearcherUT.PATH);
 
-        indexer.addDocuments(Arrays.asList(new GenericContent[] { SearcherPerfTest.singlePart,
-                SearcherPerfTest.comboPart, }));
-        SearcherPerfTest.content = buildGC(SearcherPerfTest.GC_COUNT, SearcherPerfTest.FIELD_COUNT,
-                SearcherPerfTest.PATH);
+        indexer.addDocuments(Arrays.asList(new GenericContent[] { SearcherUT.singlePart,
+                SearcherUT.comboPart, }));
+        SearcherUT.content = buildGC(SearcherUT.GC_COUNT, SearcherUT.FIELD_COUNT,
+                SearcherUT.PATH);
 
         try {
-            for (int i = 0; i < SearcherPerfTest.STUPID_ITERATIONS; i++) {
-                indexer.addDocuments(SearcherPerfTest.content);
+            for (int i = 0; i < SearcherUT.STUPID_ITERATIONS; i++) {
+                indexer.addDocuments(SearcherUT.content);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,33 +114,33 @@ public class SearcherPerfTest extends ATestStub {
 
     @Before
     public void setUp() throws Exception {
-        searcher = new LuceneSearcher(SearcherPerfTest.PATH);
+        searcher = new LuceneSearcher(SearcherUT.PATH);
     }
 
     @AfterClass
     public static void tearDownAfterClass() {
-        IO.deleteStructure(new File(SearcherPerfTest.PATH));
+        IO.deleteStructure(new File(SearcherUT.PATH));
     }
 
     @Test
     public void testSearchExactMatch() {
-        term = SearcherPerfTest.KEY1 + ":" + SearcherPerfTest.PREFIX;
+        term = SearcherUT.KEY1 + ":" + SearcherUT.PREFIX;
         result = searcher.search(term);
         assertNotNull(result);
         assertEquals(1, result.size());
-        compareGC(SearcherPerfTest.singlePart, result.get(0));
+        compareGC(SearcherUT.singlePart, result.get(0));
 
-        term = SearcherPerfTest.KEY4 + ":" + SearcherPerfTest.PREFIX + SearcherPerfTest.MIDDLE
-                + SearcherPerfTest.SUFFIX;
+        term = SearcherUT.KEY4 + ":" + SearcherUT.PREFIX + SearcherUT.MIDDLE
+                + SearcherUT.SUFFIX;
         result = searcher.search(term);
         assertNotNull(result);
         assertEquals(1, result.size());
-        compareGC(SearcherPerfTest.comboPart, result.get(0));
+        compareGC(SearcherUT.comboPart, result.get(0));
     }
 
     @Test
     public void testBatchQuery() {
-        term = SearcherPerfTest.KEY1 + ":" + "nothing";
+        term = SearcherUT.KEY1 + ":" + "nothing";
         result = searcher.search(term);
         for (int i = 0; i < 7000; i++) {
             if (searcher.search(term).size() == 0) {
@@ -151,11 +151,11 @@ public class SearcherPerfTest extends ATestStub {
     }
 
     private static void compareGC(GenericContent expected, GenericContent actual) {
-        assertEquals(expected.getProperty(SearcherPerfTest.KEY1), actual.getProperty(SearcherPerfTest.KEY1));
-        assertEquals(expected.getProperty(SearcherPerfTest.KEY2), actual.getProperty(SearcherPerfTest.KEY2));
-        assertEquals(expected.getProperty(SearcherPerfTest.KEY3), actual.getProperty(SearcherPerfTest.KEY3));
-        assertEquals(expected.getProperty(SearcherPerfTest.KEY4), actual.getProperty(SearcherPerfTest.KEY4));
-        assertEquals(expected.getProperty(SearcherPerfTest.UUID), actual.getProperty(SearcherPerfTest.UUID));
+        assertEquals(expected.getProperty(SearcherUT.KEY1), actual.getProperty(SearcherUT.KEY1));
+        assertEquals(expected.getProperty(SearcherUT.KEY2), actual.getProperty(SearcherUT.KEY2));
+        assertEquals(expected.getProperty(SearcherUT.KEY3), actual.getProperty(SearcherUT.KEY3));
+        assertEquals(expected.getProperty(SearcherUT.KEY4), actual.getProperty(SearcherUT.KEY4));
+        assertEquals(expected.getProperty(SearcherUT.UUID), actual.getProperty(SearcherUT.UUID));
         assertEquals(expected.getPath(), actual.getPath());
     }
 

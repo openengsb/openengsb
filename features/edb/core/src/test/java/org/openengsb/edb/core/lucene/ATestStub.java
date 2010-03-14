@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.edb.core.test.unit.lucene;
+package org.openengsb.edb.core.lucene;
 
 import java.util.ArrayList;
 import java.util.List;

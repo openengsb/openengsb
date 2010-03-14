@@ -16,7 +16,7 @@
 
  */
 
-package org.openengsb.edb.core.test.performance.api;
+package org.openengsb.edb.core.ut.api;
 
 import static org.junit.Assert.assertEquals;
 
@@ -43,7 +43,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:testBeans.xml" })
-public class EDBHandlerPerfTest {
+public class EDBHandlerUT {
 
     @Resource
     private EDBHandlerFactory factory;
@@ -55,7 +55,7 @@ public class EDBHandlerPerfTest {
 
     private String repoBase;
 
-    private static Logger log = Logger.getLogger(EDBHandlerPerfTest.class);
+    private static Logger log = Logger.getLogger(EDBHandlerUT.class);
 
     @Before
     public void setUp() throws Exception {
@@ -82,22 +82,22 @@ public class EDBHandlerPerfTest {
         handler.add(list);
 
         time = System.currentTimeMillis() - time;
-        EDBHandlerPerfTest.log.info("\nadd(ms) " + time);
+        EDBHandlerUT.log.info("\nadd(ms) " + time);
         time = System.currentTimeMillis();
 
         // commit with 1000 elements with 20 properties each
         String newCommitId = handler.commit("myUser", "myEmail");
 
         time = System.currentTimeMillis() - time;
-        EDBHandlerPerfTest.log.info("\ncommit(ms) " + time);
+        EDBHandlerUT.log.info("\ncommit(ms) " + time);
         time = System.currentTimeMillis();
 
         // check content
         list = handler.query("*", true);
 
         time = System.currentTimeMillis() - time;
-        EDBHandlerPerfTest.log.info("\nsearch(ms) " + time);
-        EDBHandlerPerfTest.log.info("\n----test---- (ms) " + (System.currentTimeMillis() - a));
+        EDBHandlerUT.log.info("\nsearch(ms) " + time);
+        EDBHandlerUT.log.info("\n----test---- (ms) " + (System.currentTimeMillis() - a));
         assertEquals(12, list.size());
         assertEquals("head info", newCommitId, list.get(0).getProperty("HEAD"));
     }
@@ -110,22 +110,22 @@ public class EDBHandlerPerfTest {
         handler.add(list);
 
         time = System.currentTimeMillis() - time;
-        EDBHandlerPerfTest.log.info("\nadd(ms) " + time);
+        EDBHandlerUT.log.info("\nadd(ms) " + time);
         time = System.currentTimeMillis();
 
         // commit with 1000 elements with 20 properties each
         String newCommitId = handler.commit("myUser", "myEmail");
 
         time = System.currentTimeMillis() - time;
-        EDBHandlerPerfTest.log.info("\ncommit(ms) " + time);
+        EDBHandlerUT.log.info("\ncommit(ms) " + time);
         time = System.currentTimeMillis();
 
         // check content
         list = handler.query("*", true);
 
         time = System.currentTimeMillis() - time;
-        EDBHandlerPerfTest.log.info("\nsearch(ms) " + time);
-        EDBHandlerPerfTest.log.info("\n----test---- (ms) " + (System.currentTimeMillis() - a));
+        EDBHandlerUT.log.info("\nsearch(ms) " + time);
+        EDBHandlerUT.log.info("\n----test---- (ms) " + (System.currentTimeMillis() - a));
         assertEquals(3502, list.size());
         assertEquals("head info", newCommitId, list.get(0).getProperty("HEAD"));
 
@@ -135,22 +135,22 @@ public class EDBHandlerPerfTest {
         handler.add(list);
 
         time = System.currentTimeMillis() - time;
-        EDBHandlerPerfTest.log.info("\nadd(ms) " + time);
+        EDBHandlerUT.log.info("\nadd(ms) " + time);
         time = System.currentTimeMillis();
 
         // commit with 1000 elements with 20 properties each
         newCommitId = handler.commit("myUser", "myEmail");
 
         time = System.currentTimeMillis() - time;
-        EDBHandlerPerfTest.log.info("\ncommit(ms) " + time);
+        EDBHandlerUT.log.info("\ncommit(ms) " + time);
         time = System.currentTimeMillis();
 
         // check content
         list = handler.query("*", true);
 
         time = System.currentTimeMillis() - time;
-        EDBHandlerPerfTest.log.info("\nsearch(ms) " + time);
-        EDBHandlerPerfTest.log.info("\n----test---- (ms) " + (System.currentTimeMillis() - a));
+        EDBHandlerUT.log.info("\nsearch(ms) " + time);
+        EDBHandlerUT.log.info("\n----test---- (ms) " + (System.currentTimeMillis() - a));
         assertEquals(7002, list.size());
         assertEquals("head info", newCommitId, list.get(0).getProperty("HEAD"));
     }
@@ -163,22 +163,22 @@ public class EDBHandlerPerfTest {
         handler.add(list);
 
         time = System.currentTimeMillis() - time;
-        EDBHandlerPerfTest.log.info("\nadd(ms) " + time);
+        EDBHandlerUT.log.info("\nadd(ms) " + time);
         time = System.currentTimeMillis();
 
         // commit with 1000 elements with 20 properties each
         String newCommitId = handler.commit("myUser", "myEmail");
 
         time = System.currentTimeMillis() - time;
-        EDBHandlerPerfTest.log.info("\ncommit(ms) " + time);
+        EDBHandlerUT.log.info("\ncommit(ms) " + time);
         time = System.currentTimeMillis();
 
         // check content
         list = handler.query("*", true);
 
         time = System.currentTimeMillis() - time;
-        EDBHandlerPerfTest.log.info("\nsearch(ms) " + time);
-        EDBHandlerPerfTest.log.info("\n----test---- (ms) " + (System.currentTimeMillis() - a));
+        EDBHandlerUT.log.info("\nsearch(ms) " + time);
+        EDBHandlerUT.log.info("\n----test---- (ms) " + (System.currentTimeMillis() - a));
         assertEquals(7002, list.size());
         assertEquals("head info", newCommitId, list.get(0).getProperty("HEAD"));
     }

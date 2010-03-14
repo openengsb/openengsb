@@ -16,7 +16,7 @@
 
  */
 
-package org.openengsb.edb.core.test.unit;
+package org.openengsb.edb.core;
 
 import java.util.ArrayList;
 import java.util.HashMap;

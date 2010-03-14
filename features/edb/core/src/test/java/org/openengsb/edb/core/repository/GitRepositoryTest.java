@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.edb.core.test.unit.repository;
+package org.openengsb.edb.core.repository;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -25,8 +25,6 @@ import java.io.File;
 
 import org.junit.Test;
 import org.openengsb.edb.core.entities.GenericContent;
-import org.openengsb.edb.core.repository.Repository;
-import org.openengsb.edb.core.repository.RepositoryFactory;
 import org.openengsb.edb.core.repository.jgit.GitRepositoryFactory;
 
 /**
