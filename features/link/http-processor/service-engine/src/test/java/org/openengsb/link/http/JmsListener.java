@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.link.http.test.unit;
+package org.openengsb.link.http;
 
 import java.io.IOException;
 
