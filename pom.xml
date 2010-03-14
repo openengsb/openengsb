@@ -99,7 +99,7 @@
   <artifactId>openengsb-parent</artifactId>
   <packaging>pom</packaging>
   <version>1.0.0-SNAPSHOT</version>
-  <name>openengsb-trunk</name>
+  <name>openengsb-parent</name>
 
   <description> Parent project of all OpenEngSB subprojects. The OpenEngSB could be seen as an extension to an
     Enterprise Service Bus and is based on JBI (Service Mix). With this project it is tried to provide as many as
