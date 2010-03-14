@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.report.test.unit;
+package org.openengsb.report;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,13 +25,12 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.model.Event;
-import org.openengsb.report.EventStorageRegistry;
 import org.openengsb.report.datastore.EventStorageType;
 import org.openengsb.report.datastore.EventStore;
 import org.openengsb.report.datastore.InMemoryEventStore;
 import org.openengsb.report.datastore.StorageKey;
 
-public class TestEventStore {
+public class EventStoreTest {
 
     private EventStorageRegistry registry;
 
