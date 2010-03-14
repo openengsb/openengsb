@@ -45,10 +45,6 @@ public class TwitterNotifier implements NotificationDomain {
                 byte[] zip = zipUtil.zipAttachments(notification.getAttachments());
                 URL url = fileUpload.uploadFile(zip, "zip");
                 String shortUrl = urlShortener.getTinyUrl(url);
-
-                if(shortUrl == null || shortUrl.equals("")) {
-                    throw new IOException("No short URL returned.");
-                }
                 
                 notification.setMessage("Attachment: " + shortUrl + "\n" + notification.getMessage());
                 log.info("Attachments successfully added.");

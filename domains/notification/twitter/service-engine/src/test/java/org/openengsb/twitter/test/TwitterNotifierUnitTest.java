@@ -98,6 +98,19 @@ public class TwitterNotifierUnitTest {
         checkAttachment(true);
     }
     
+    @Test
+    public void testAttachmentErrorCatching() throws IOException {
+        Mockito.when(urlShortener.getTinyUrl(Mockito.any(URL.class))).thenThrow(new IOException());
+        
+        Notification n = new Notification();
+        n.setMessage("testmessage");
+        n.setAttachments(prepareAttachments());
+        notifier.notify(n);
+        
+        Mockito.verify(twitter, Mockito.times(1)).updateStatus(Mockito.eq("testmessage"));
+        checkAttachment(true);
+    }
+    
     private void setUpMocking() throws IOException {
         Mockito.when(zipUtil.zipAttachments(Mockito.any(Attachment[].class))).thenReturn(new byte[] {1, 2, 3, 4, 5});
         Mockito.when(fileUpload.uploadFile(Mockito.any(byte[].class), Mockito.anyString())).thenReturn(new URL("ftp://testURL"));
