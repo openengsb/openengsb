@@ -15,14 +15,11 @@
    limitations under the License.
    
  */
-package org.openengsb.util.test.unit.query;
+package org.openengsb.util.query;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.openengsb.util.query.LuceneQueryBuilder;
-import org.openengsb.util.query.LuceneQueryBuilderException;
-
 
 /**
  * Testsuite to check if the queries produced by the {@link LuceneQueryBuilder}

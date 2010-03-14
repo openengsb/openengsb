@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.util.test.unit;
+package org.openengsb.util;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
@@ -24,9 +24,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
-import org.openengsb.util.Validate;
-import org.openengsb.util.Validator;
-
 
 public class ValidateTest {
     @Test

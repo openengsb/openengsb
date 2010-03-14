@@ -15,22 +15,19 @@
    limitations under the License.
    
  */
-package org.openengsb.test.unit.util.exist;
+package org.openengsb.util.exist;
 
 import java.util.UUID;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openengsb.util.exist.DatabaseConnection;
-import org.openengsb.util.exist.DatabaseException;
-import org.openengsb.util.exist.ExistDatabaseConnection;
 
 /**
  * Tests only trying to analyse the behaviour of exist and the little
  * implementation we have to do. These tests are not meant to run each time, but
  * only to learn the interface or if it gets updated.
  */
-public class ExistDatabaseConnectionUseTests {
+public class ExistDatabaseConnectionUseTest {
 
     private final static String DATABASE_CONNECTION_URI = "xmldb:exist://localhost:8093/exist/xmlrpc";
 

@@ -15,15 +15,13 @@
    limitations under the License.
    
  */
-package org.openengsb.util.test.unit;
+package org.openengsb.util;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
-import org.openengsb.util.Prelude;
-
 
 public class PreludeTest {
     @Test

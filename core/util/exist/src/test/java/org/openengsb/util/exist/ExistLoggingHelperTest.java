@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.test.unit.util.exist;
+package org.openengsb.util.exist;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,9 +25,6 @@ import javax.jbi.messaging.NormalizedMessage;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.util.exist.DatabaseConnection;
-import org.openengsb.util.exist.ExistLoggingHelper;
-import org.openengsb.util.exist.LoggingHelper;
 
 public class ExistLoggingHelperTest {
 

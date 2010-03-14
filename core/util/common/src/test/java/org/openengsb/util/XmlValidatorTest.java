@@ -15,20 +15,15 @@
    limitations under the License.
    
  */
-package at.ac.tuwien.ifs.engsb.util.schema;
+package org.openengsb.util;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.io.IOException;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-import at.ac.tuwien.ifs.engsb.util.IO;
+import org.openengsb.util.schema.ClasspathEntityResolver;
+import org.openengsb.util.schema.XmlValidator;
 
 public class XmlValidatorTest {
 	private XmlValidator validator;

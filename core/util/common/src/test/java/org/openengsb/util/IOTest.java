@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.util.test.unit;
+package org.openengsb.util;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -24,8 +24,6 @@ import java.io.File;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openengsb.util.IO;
-
 
 public class IOTest {
     @Test
