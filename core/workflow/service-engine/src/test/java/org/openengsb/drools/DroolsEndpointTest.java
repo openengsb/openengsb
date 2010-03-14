@@ -14,7 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
  */
-package org.openengsb.drools.test.unit;
+package org.openengsb.drools;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
