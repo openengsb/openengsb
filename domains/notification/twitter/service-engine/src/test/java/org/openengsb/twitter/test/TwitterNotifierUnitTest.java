@@ -79,11 +79,7 @@ public class TwitterNotifierUnitTest {
     public void testUpdateStatusWithAttachments() throws IOException {
         Notification n = new Notification();
         n.setMessage("testmessage");
-        Attachment[] as = new Attachment[3];
-        as[0] = new Attachment(new byte[] {1, 2, 3}, "test", "test1");
-        as[1] = new Attachment(new byte[] {2, 3, 4}, "test", "test2");
-        as[2] = new Attachment(new byte[] {4, 5, 6}, "test", "test3");
-        n.setAttachments(as);
+        n.setAttachments(prepareAttachments());
         notifier.notify(n);
         
         Mockito.verify(twitter, Mockito.times(1)).updateStatus(Mockito.eq("Attachment: testShortURL\ntestmessage"));
@@ -95,11 +91,7 @@ public class TwitterNotifierUnitTest {
         Notification n = new Notification();
         n.setMessage("testmessage");
         n.setRecipient("test");
-        Attachment[] as = new Attachment[3];
-        as[0] = new Attachment(new byte[] {1, 2, 3}, "test", "test1");
-        as[1] = new Attachment(new byte[] {2, 3, 4}, "test", "test2");
-        as[2] = new Attachment(new byte[] {4, 5, 6}, "test", "test3");
-        n.setAttachments(as);
+        n.setAttachments(prepareAttachments());
         notifier.notify(n);
         
         Mockito.verify(twitter, Mockito.times(1)).sendMessage(Mockito.eq("test"), Mockito.eq("Attachment: testShortURL\ntestmessage"));
@@ -110,6 +102,15 @@ public class TwitterNotifierUnitTest {
         Mockito.when(zipUtil.zipAttachments(Mockito.any(Attachment[].class))).thenReturn(new byte[] {1, 2, 3, 4, 5});
         Mockito.when(fileUpload.uploadFile(Mockito.any(byte[].class), Mockito.anyString())).thenReturn(new URL("ftp://testURL"));
         Mockito.when(urlShortener.getTinyUrl(Mockito.any(URL.class))).thenReturn("testShortURL");
+    }
+    
+    private Attachment[] prepareAttachments() {
+        Attachment[] as = new Attachment[3];
+        as[0] = new Attachment(new byte[] {1, 2, 3}, "test", "test1");
+        as[1] = new Attachment(new byte[] {2, 3, 4}, "test", "test2");
+        as[2] = new Attachment(new byte[] {4, 5, 6}, "test", "test3");
+        
+        return as;
     }
     
     private void checkAttachment(boolean attachments) throws IOException {
