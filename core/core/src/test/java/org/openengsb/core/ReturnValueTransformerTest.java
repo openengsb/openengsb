@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.core.test.unit;
+package org.openengsb.core;
 
 import java.util.Arrays;
 
@@ -28,7 +28,7 @@ import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
 
-public class TestReturnValueTransformer {
+public class ReturnValueTransformerTest {
 
     @Test
     public void testPrimitive() throws SerializationException {

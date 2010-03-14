@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.core.test.unit;
+package org.openengsb.core;
 
 import java.util.Arrays;
 
@@ -29,7 +29,7 @@ import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
 
-public class TestMethodCallTransformer {
+public class MethodCallTransformerTest {
 
     @Test
     public void testNoArg() {

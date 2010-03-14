@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.contextcommon.test.unit;
+package org.openengsb.contextcommon;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -33,7 +33,7 @@ import org.openengsb.contextcommon.ContextNameClashException;
 import org.openengsb.contextcommon.ContextNotFoundException;
 import org.openengsb.contextcommon.ContextStore;
 
-public class TestContext {
+public class ContextTest {
 
     private ContextStore store;
 

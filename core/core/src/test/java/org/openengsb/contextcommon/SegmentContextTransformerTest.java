@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.contextcommon.test.unit;
+package org.openengsb.contextcommon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.messaging.TextSegment;
 import org.openengsb.util.serialization.SerializationException;
 
-public class TestSegmentContextTransformer {
+public class SegmentContextTransformerTest {
 
     @Test
     @Ignore

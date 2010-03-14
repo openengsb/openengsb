@@ -16,17 +16,17 @@
    
  */
 
-package org.openengsb.core.test.unit;
+package org.openengsb.core;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.openengsb.core.SomeEvent.Bean;
 import org.openengsb.core.model.Event;
-import org.openengsb.core.test.unit.SomeEvent.Bean;
 import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
 
-public class TestEventTransformation {
+public class EventTransformationTest {
 
     @Test
     public void testEvent() throws SerializationException {

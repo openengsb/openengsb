@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.core.test.unit;
+package org.openengsb.core;
 
 import org.openengsb.core.model.Event;
 

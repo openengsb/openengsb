@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.core.messaging.test.unit;
+package org.openengsb.core.messaging;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -32,7 +32,7 @@ import org.openengsb.core.messaging.TextSegment;
 import org.openengsb.util.serialization.JibxXmlSerializer;
 import org.openengsb.util.serialization.SerializationException;
 
-public class TestSegments {
+public class SegmentsTest {
 
     private JibxXmlSerializer serializer = new JibxXmlSerializer();
 
