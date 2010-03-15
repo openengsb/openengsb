@@ -17,31 +17,43 @@
  */
 package org.openengsb.twitter.common.test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
+import java.util.Date;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.httpclient.HttpException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.twitter.common.util.UrlShortenerUtil;
+import org.openengsb.twitter.common.TwitterConnector;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:../test-classes/test-bean.xml" })
-public class UrlShortenerUseTest {
+public class Twitter4JTwitterUT {
     @Resource
-    private UrlShortenerUtil urlShortener;
-    
+    private Twitter twitter;
+    @Resource
+    private TwitterConnector ourTwitter;
+    @Resource
+    private String username;
+
     @Test
-    public void testTinyUrl() throws HttpException, IOException {
-        String s = "http://maps.google.at/maps/place?cid=2469784843158832493&q=tu+wien&hl=de&cd=1&cad=src:pplink&ei=yKOPS-jIA4mH_Qb5pPA7";
-        String tiny = urlShortener.getTinyUrl(s);
-        assertNotNull(tiny);
-        assertTrue(s.length() > tiny.length());
+    public void testUpdateStatus() throws TwitterException {
+        String s = "test " + new Date();
+        this.ourTwitter.updateStatus(s);
+        assertEquals(this.twitter.getHomeTimeline().get(0).getText(), s);
+    }
+
+    @Test
+    public void testSendMessage() throws TwitterException {
+        String s = "test " + new Date();
+        this.ourTwitter.sendMessage(this.username, s);
+        assertEquals(this.twitter.getDirectMessages().get(0).getSender().getScreenName(), this.username);
+        assertEquals(this.twitter.getDirectMessages().get(0).getText(), s);
     }
 }

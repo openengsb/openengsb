@@ -17,46 +17,31 @@
  */
 package org.openengsb.twitter.common.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
+import java.io.IOException;
 
 import javax.annotation.Resource;
 
-import org.junit.Ignore;
+import org.apache.commons.httpclient.HttpException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.twitter.common.TwitterConnector;
+import org.openengsb.twitter.common.util.UrlShortenerUtil;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:../test-classes/test-bean.xml" })
-public class Twitter4JTwitterUseTest {
+public class UrlShortenerIT {
     @Resource
-    private Twitter twitter;
-    @Resource
-    private TwitterConnector ourTwitter;
-    @Resource
-    private String username;
-
+    private UrlShortenerUtil urlShortener;
+    
     @Test
-    @Ignore
-    public void testUpdateStatus() throws TwitterException {
-        String s = "test " + new Date();
-        ourTwitter.updateStatus(s);
-        assertEquals(twitter.getHomeTimeline().get(0).getText(), s);
-    }
-
-    @Test
-    @Ignore
-    public void testSendMessage() throws TwitterException {
-        String s = "test " + new Date();
-        ourTwitter.sendMessage(username, s);
-        assertEquals(twitter.getDirectMessages().get(0).getSender().getScreenName(), username);
-        assertEquals(twitter.getDirectMessages().get(0).getText(), s);
+    public void testTinyUrl() throws HttpException, IOException {
+        String s = "http://maps.google.at/maps/place?cid=2469784843158832493&q=tu+wien&hl=de&cd=1&cad=src:pplink&ei=yKOPS-jIA4mH_Qb5pPA7";
+        String tiny = urlShortener.getTinyUrl(s);
+        assertNotNull(tiny);
+        assertTrue(s.length() > tiny.length());
     }
 }

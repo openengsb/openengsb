@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.core.util.test;
+package org.openengsb.core.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -34,13 +34,12 @@ import javax.annotation.Resource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.util.FileUpload;
-
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:../test-classes/test-bean.xml" })
-public class FTPFileUploadUseTest {
+public class FTPFileUploadUT {
     @Resource
     private String hostname;
     @Resource
@@ -52,23 +51,24 @@ public class FTPFileUploadUseTest {
 
     @Test
     public void testUploadFile() throws MalformedURLException, IOException {
-        File src = new File("target\\test-classes\\text.txt");
+        File src = new File("target/test-classes/text.txt");
         FileInputStream fileInputStream = new FileInputStream(src);
         byte[] data = new byte[(int) src.length()];
         fileInputStream.read(data);
         fileInputStream.close();
-        
-        URL url = fileUpload.uploadFile(data, "txt");
+
+        URL url = this.fileUpload.uploadFile(data, "txt");
         assertTrue(url.getProtocol().equals("ftp"));
-        assertTrue(url.getHost().equals(hostname));
+        assertTrue(url.getHost().equals(this.hostname));
         assertTrue(url.getFile().endsWith("txt"));
-        
-        URLConnection con = new URL("ftp://" + username + ":" + (password.equals("") ? ":" : password) + "@" + url.getHost() + url.getFile()).openConnection();
+
+        URLConnection con = new URL("ftp://" + this.username + ":" + (this.password.equals("") ? ":" : this.password)
+                + "@" + url.getHost() + url.getFile()).openConnection();
         BufferedInputStream in = new BufferedInputStream(con.getInputStream());
         byte[] data2 = new byte[(int) src.length()];
         in.read(data2);
         in.close();
-        
+
         assertEquals(Arrays.hashCode(data), Arrays.hashCode(data2));
     }
 }

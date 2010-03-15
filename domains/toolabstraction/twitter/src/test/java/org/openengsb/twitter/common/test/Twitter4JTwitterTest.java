@@ -25,7 +25,7 @@ import org.openengsb.twitter.common.Twitter4JTwitterConnector;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-public class Twitter4JTwitterUnitTest {
+public class Twitter4JTwitterTest {
     private Twitter4JTwitterConnector ourTwitter;
     private Twitter twitter;
 

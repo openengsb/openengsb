@@ -38,14 +38,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class ZipUtilUseTest {
     @Resource
     private ZipUtil zipUtil;
-    
+
     @Test
     public void testZipAttachments() throws IOException {
         String[] files = new String[] { "testfile1.jpg", "testfile2.jpg", "testfile3.jpg" };
         Attachment[] attachments = new Attachment[files.length];
-        
+
         for (int i = 0; i < files.length; i++) {
-            File src = new File("target\\test-classes\\" + files[i]);
+            File src = new File("target/test-classes/" + files[i]);
             FileInputStream fileInputStream = new FileInputStream(src);
             byte[] data = new byte[(int) src.length()];
             fileInputStream.read(data);
@@ -53,7 +53,7 @@ public class ZipUtilUseTest {
             attachments[i] = new Attachment(data, "image", files[i]);
         }
 
-        byte[] zip = zipUtil.zipAttachments(attachments);
+        byte[] zip = this.zipUtil.zipAttachments(attachments);
 
         assertNotNull(zip);
         assertTrue(zip.length > 0);
