@@ -103,6 +103,29 @@ connector-notification-twitter
   
   []
   
+** Drools example rule
+
++----
+  when
+    e : Event( name == "twitter" )
+  then
+    config.setToConnector(notification, "twitter");
+    
+    Notification n = new Notification();
+    n.setMessage("Testmessage");
+  
+    String s = "testfile";
+
+    Attachment a1 = new Attachment(s.getBytes(), "txt", "file1.txt");
+    Attachment a2 = new Attachment(s.getBytes(), "pdf", "file2.pdf");
+    Attachment a3 = new Attachment(s.getBytes(), "jpg", "file3.jpg");
+
+    n.setAttachments(new Attachment[] {a1, a2, a3});
+    notification.notify(n);
+
+    config.setToDomain(notification);
++----
+  
   ~~ At least one section pointing to the download locations in the staging
   ~~ repository should be given. This page should contain a table holding
   ~~ the right download for the right EngSB version.
