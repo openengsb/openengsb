@@ -48,7 +48,6 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.edb.core.api.EDBHandler;
@@ -61,7 +60,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
-@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:testBeans.xml" })
 public class RepositoryRemoveTest extends SpringTestSupport {
@@ -69,7 +67,7 @@ public class RepositoryRemoveTest extends SpringTestSupport {
     private EDBHandlerFactory config;
 
     /* test-parameters */
-    private static String TEST_NAMESPACE = "urn:test";
+    private static String TEST_NAMESPACE = "urn:openengsb:edb";
     private static final UUID UUID_1 = UUID.fromString("5ff89772-0e20-44bd-9a97-d022ec2680db");
     private static final UUID UUID_2 = UUID.fromString("5ff89773-0e20-44bd-9a97-d022ec2680db");
     private static final String USER = "andreas";
@@ -180,7 +178,7 @@ public class RepositoryRemoveTest extends SpringTestSupport {
 
         final NormalizedMessage inMsg = inOut.createMessage();
         inMsg.setContent(new StringSource(message));
-
+        inMsg.setProperty("contextId", "42");
         inOut.setInMessage(inMsg);
         inOut.setService(new QName(RepositoryRemoveTest.TEST_NAMESPACE, RepositoryRemoveTest.EDB_SERVICE_NAME));
         return inOut;
