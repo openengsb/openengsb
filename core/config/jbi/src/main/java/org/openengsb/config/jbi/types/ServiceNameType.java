@@ -17,6 +17,7 @@
  */
 package org.openengsb.config.jbi.types;
 
+@SuppressWarnings("serial")
 public class ServiceNameType extends AbstractType {
     private boolean target;
 

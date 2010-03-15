@@ -22,8 +22,8 @@ import java.util.List;
 
 import org.openengsb.config.jbi.types.AbstractType;
 
+@SuppressWarnings("serial")
 public class FieldInfos implements Serializable {
-    private static final long serialVersionUID = 1L;
     private final String name;
     private final List<AbstractType> fieldTypes;
 

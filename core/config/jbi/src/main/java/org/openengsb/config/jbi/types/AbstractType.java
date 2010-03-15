@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
+@SuppressWarnings("serial")
 public abstract class AbstractType implements Serializable {
-    private static final long serialVersionUID = 1L;
     private String name;
     private boolean optional;
     private int maxLength;

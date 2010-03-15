@@ -25,11 +25,8 @@ import org.apache.wicket.model.IModel;
 import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.ChoiceType;
 
-import com.google.common.collect.Lists;
-
+@SuppressWarnings("serial")
 public class DropdownChoiceField extends AbstractField {
-    private static final long serialVersionUID = 1L;
-
     public DropdownChoiceField(String id, IModel<String> model, ChoiceType choiceType) {
         this(id, model, choiceType, Arrays.asList(choiceType.getValues()));
     }

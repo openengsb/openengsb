@@ -43,6 +43,7 @@ public class BeanEditorPage extends BasePage {
     @SpringBean
     ServiceAssemblyDao sadao;
 
+    @SuppressWarnings("serial")
     public BeanEditorPage(Endpoint endpoint) {
         if (endpoint.getId() != null) {
             setDefaultModel(Models.domain(dao, endpoint));
@@ -62,8 +63,6 @@ public class BeanEditorPage extends BasePage {
         FieldInfos fi = new FieldInfos(ct.getName() + '.' + et.getName(), fields);
 
         EditorPanel editor = new EditorPanel("editor", ct.getName(), fi, endpoint.getDetachedValues()) {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void onSubmit() {
                 BeanEditorPage.this.onSubmit(getValues());

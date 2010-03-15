@@ -51,6 +51,7 @@ public class JpaBaseDao<T extends AbstractDomainObject> implements BaseDao<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<T> findAll() {
         return em.createNamedQuery(persistenceClass.getSimpleName() + ".findAll").getResultList();
     }

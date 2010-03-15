@@ -35,9 +35,8 @@ import com.google.common.collect.Maps;
 
 @Entity
 @NamedQueries( { @NamedQuery(name = "Endpoint.findAll", query = "from Endpoint") })
+@SuppressWarnings("serial")
 public class Endpoint extends AbstractDomainObject {
-    private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

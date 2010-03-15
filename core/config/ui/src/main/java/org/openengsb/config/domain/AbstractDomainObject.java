@@ -22,9 +22,8 @@ import java.io.Serializable;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
+@SuppressWarnings("serial")
 public abstract class AbstractDomainObject implements Serializable {
-    private static final long serialVersionUID = 1L;
-
     /**
      * Gets the id
      */

@@ -36,8 +36,8 @@ public class IntTypeValidators {
         return a;
     }
 
+    @SuppressWarnings("serial")
     public static class MinValidator extends IntTypeValidator {
-        private static final long serialVersionUID = 1L;
         private final int min;
 
         public MinValidator(int min) {
@@ -55,8 +55,8 @@ public class IntTypeValidators {
         }
     }
 
+    @SuppressWarnings("serial")
     public static class MaxValidator extends IntTypeValidator {
-        private static final long serialVersionUID = 1L;
         private final int max;
 
         public MaxValidator(int max) {
@@ -74,9 +74,8 @@ public class IntTypeValidators {
         }
     }
 
+    @SuppressWarnings("serial")
     public static abstract class IntTypeValidator implements IValidator<String> {
-        private static final long serialVersionUID = 1L;
-
         @Override
         public void validate(IValidatable<String> validatable) {
             String value = validatable.getValue();

@@ -22,8 +22,8 @@ import org.apache.wicket.model.IModel;
 import org.openengsb.config.editor.BoolToStringModel;
 import org.openengsb.config.jbi.types.AbstractType;
 
+@SuppressWarnings("serial")
 public class CheckboxField extends AbstractField {
-    private static final long serialVersionUID = 1L;
     private final CheckBox cb;
 
     public CheckboxField(String id, IModel<String> model, AbstractType abstractType) {

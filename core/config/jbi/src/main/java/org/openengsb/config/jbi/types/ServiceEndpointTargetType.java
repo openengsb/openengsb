@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
+@SuppressWarnings("serial")
 public class ServiceEndpointTargetType extends AbstractType {
     private String serviceName;
     private String endpointName;

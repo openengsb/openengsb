@@ -21,8 +21,6 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.openengsb.config.editor.ContextStringResourceLoader;
 import org.openengsb.config.view.OverviewPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
@@ -33,8 +31,6 @@ import org.springframework.context.ApplicationContext;
  * @see org.openengsb.config.Start#main(String[])
  */
 public class ConfigApplication extends WebApplication {
-    private static final Logger log = LoggerFactory.getLogger(ConfigApplication.class);
-
     @Autowired
     private ApplicationContext applicationContext;
 

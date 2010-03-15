@@ -32,9 +32,8 @@ import javax.persistence.OneToMany;
 
 @Entity
 @NamedQueries( { @NamedQuery(name = "ServiceAssembly.findAll", query = "from ServiceAssembly") })
+@SuppressWarnings("serial")
 public class ServiceAssembly extends AbstractDomainObject {
-    private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

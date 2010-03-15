@@ -52,27 +52,22 @@ public class ShowServiceAssemblyPage extends BasePage {
     @SpringBean
     private EndpointDao endpointDao;
 
+    @SuppressWarnings("serial")
     public ShowServiceAssemblyPage(final ServiceAssembly sa) {
         setDefaultModel(Models.compoundDomain(dao, sa));
         add(new Label("name"));
 
         ListView<Endpoint> endpointList = new ListView<Endpoint>("endpoints") {
-            private static final long serialVersionUID = 1L;
-
             @Override
             protected void populateItem(ListItem<Endpoint> item) {
                 item.add(new Label("name", item.getModelObject().getName()));
                 item.add(new Link<Endpoint>("editLink", item.getModel()) {
-                    private static final long serialVersionUID = 1L;
-
                     @Override
                     public void onClick() {
                         RequestCycle.get().setResponsePage(new BeanEditorPage(getModelObject()));
                     }
                 });
                 item.add(new Link<Endpoint>("deleteLink", item.getModel()) {
-                    private static final long serialVersionUID = 1L;
-
                     @Override
                     public void onClick() {
                         endpointDao.delete(getModelObject());
@@ -86,8 +81,6 @@ public class ShowServiceAssemblyPage extends BasePage {
         };
         add(endpointList);
         add(new Label("endpointLabel", getLocalizer().getString("endpointLabel", this)) {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public boolean isVisible() {
                 return sa.getEndpoints().isEmpty();
@@ -95,8 +88,6 @@ public class ShowServiceAssemblyPage extends BasePage {
         });
 
         Form<?> newComponentForm = new Form<Object>("newComponentForm") {
-            private static final long serialVersionUID = 1L;
-
             @Override
             protected void onSubmit() {
                 Endpoint endpoint = new Endpoint();
@@ -122,8 +113,6 @@ public class ShowServiceAssemblyPage extends BasePage {
         DropDownChoice<EndpointType> choice = new DropDownChoice<EndpointType>("componentSelect",
                 new PropertyModel<EndpointType>(this, "selected"), componentService.getEndpoints(),
                 new IChoiceRenderer<EndpointType>() {
-                    private static final long serialVersionUID = 1L;
-
                     @Override
                     public Object getDisplayValue(EndpointType e) {
                         return new StringResourceModel(e.getParent().getName() + "." + e.getName() + "._name",
@@ -141,8 +130,6 @@ public class ShowServiceAssemblyPage extends BasePage {
         Form<?> actionForm = new Form<Object>("actionForm");
         add(actionForm);
         actionForm.add(new Button("deployButton") {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void onSubmit() {
                 try {
@@ -153,8 +140,6 @@ public class ShowServiceAssemblyPage extends BasePage {
             }
         });
         actionForm.add(new Button("deleteButton") {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void onSubmit() {
                 dao.delete((ServiceAssembly) ShowServiceAssemblyPage.this.getDefaultModelObject());

@@ -43,8 +43,8 @@ import org.openengsb.config.service.AssemblyService;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
+@SuppressWarnings("serial")
 public abstract class EditorPanel extends Panel {
-    private static final long serialVersionUID = 1L;
     private final String componentId;
     private final FieldInfos fieldInfos;
     private final Map<String, String> map;
@@ -65,7 +65,7 @@ public abstract class EditorPanel extends Panel {
 
     public abstract void onSubmit();
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( { "unchecked", "serial" })
     private void createForm() {
         Form<?> form = new Form("form") {
             @Override

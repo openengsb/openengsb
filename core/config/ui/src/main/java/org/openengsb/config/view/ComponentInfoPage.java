@@ -29,6 +29,7 @@ import org.openengsb.config.jbi.types.EndpointType;
 
 public class ComponentInfoPage extends BasePage {
 
+    @SuppressWarnings("serial")
     public ComponentInfoPage(PageParameters params) {
         final String name = params.getString("component");
         ComponentType desc = componentService.getComponent(name);
@@ -36,7 +37,6 @@ public class ComponentInfoPage extends BasePage {
         add(new Label("name"));
         add(new Label("namespace"));
         add(new ListView<EndpointType>("endpoints") {
-            private static final long serialVersionUID = 1L;
 
             @Override
             protected void populateItem(ListItem<EndpointType> item) {
@@ -46,7 +46,6 @@ public class ComponentInfoPage extends BasePage {
                 pp.put("endpoint", item.getModelObject().getName());
                 item.add(new BookmarkablePageLink<BeanEditorPage>("editorLink", BeanEditorPage.class, pp).add(new Label("name", item.getModelObject().getName())) );
                 item.add(new ListView<AbstractType>("attributes", item.getModelObject().getAttributes()) {
-                    private static final long serialVersionUID = 1L;
 
                     @Override
                     protected void populateItem(ListItem<AbstractType> item) {

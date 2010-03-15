@@ -21,8 +21,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("serial")
 public class BeanType implements Serializable {
-    private static final long serialVersionUID = 1L;
     private String clazz;
     private List<AbstractType> properties;
     private ComponentType parent;

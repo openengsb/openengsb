@@ -28,10 +28,9 @@ public class CreateServiceAssemblyPage extends BasePage {
     @SpringBean
     ServiceAssemblyDao dao;
 
+    @SuppressWarnings("serial")
     public CreateServiceAssemblyPage() {
         Form<ServiceAssembly> form = new Form<ServiceAssembly>("form") {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public void onSubmit() {
                 ServiceAssembly sa = getModelObject();

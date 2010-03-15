@@ -27,9 +27,8 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries( { @NamedQuery(name = "KeyValue.findAll", query = "from KeyValue") })
+@SuppressWarnings("serial")
 public class KeyValue extends AbstractDomainObject {
-    private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

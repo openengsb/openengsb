@@ -21,9 +21,8 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.openengsb.config.dao.BaseDao;
 import org.openengsb.config.domain.AbstractDomainObject;
 
+@SuppressWarnings("serial")
 public class DomainModel<T extends AbstractDomainObject> extends LoadableDetachableModel<T> {
-    private static final long serialVersionUID = 1L;
-
     private final BaseDao<T> dao;
     private final Long id;
 

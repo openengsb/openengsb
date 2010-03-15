@@ -39,15 +39,14 @@ public class NavigationPanel extends Panel {
     @SpringBean
     ServiceAssemblyDao saDao;
 
+    @SuppressWarnings("serial")
     public NavigationPanel(String id, List<ComponentType> components) {
         super(id);
         add(new ListView<ServiceAssembly>("serviceAssemblies", saDao.findAll()) {
-            private static final long serialVersionUID = 1L;
             @Override
             protected void populateItem(final ListItem<ServiceAssembly> item) {
                 Link<ServiceAssembly> link = new Link<ServiceAssembly>("serviceAssemblyLink", Models.domain(saDao,
                         item.getModelObject())) {
-                    private static final long serialVersionUID = 1L;
                     @Override
                     public void onClick() {
                         this.setResponsePage(new ShowServiceAssemblyPage(getModelObject()));
@@ -60,8 +59,6 @@ public class NavigationPanel extends Panel {
         add(new BookmarkablePageLink<CreateServiceAssemblyPage>("createAssemblyLink", CreateServiceAssemblyPage.class));
         add(new BookmarkablePageLink<EditContextPage>("editContextLink", EditContextPage.class));
         add(new ListView<ComponentType>("components", components) {
-            private static final long serialVersionUID = 1L;
-
             @Override
             protected void populateItem(ListItem<ComponentType> item) {
                 item.setModel(new CompoundPropertyModel<ComponentType>(item.getModelObject()));

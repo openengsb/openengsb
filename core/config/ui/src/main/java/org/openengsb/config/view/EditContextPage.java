@@ -24,8 +24,9 @@ import org.apache.wicket.model.Model;
 public class EditContextPage extends BasePage {
     private final Model<String> contextModel;
 
+    @SuppressWarnings("serial")
     public EditContextPage() {
-        Form form = new Form("form") {
+        Form<?> form = new Form<Object>("form") {
             @Override
             public void onSubmit() {
                 EditContextPage.this.onSubmit();
