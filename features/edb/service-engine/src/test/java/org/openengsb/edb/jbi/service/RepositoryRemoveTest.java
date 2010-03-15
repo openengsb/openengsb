@@ -48,6 +48,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.edb.core.api.EDBHandler;
@@ -60,6 +61,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:testBeans.xml" })
 public class RepositoryRemoveTest extends SpringTestSupport {
