@@ -34,7 +34,7 @@ import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.RPCEndpoint;
 import org.openengsb.drools.DroolsIssuesDomain;
-import org.openengsb.issues.common.IssueDomain;
+//import org.openengsb.issues.common.IssueDomain;
 import org.openengsb.issues.common.exceptions.IssueDomainException;
 import org.openengsb.issues.common.messages.CreateIssueMessage;
 import org.openengsb.issues.common.messages.CreateIssueResponseMessage;
@@ -52,7 +52,7 @@ public abstract class AbstractIssueEndpoint extends RPCEndpoint<DroolsIssuesDoma
 
     private Serializer serializer;
 
-    protected abstract IssueDomain createIssueDomain() throws IssueDomainException;
+    protected abstract DroolsIssuesDomain createIssueDomain() throws IssueDomainException;
 
     public AbstractIssueEndpoint() {
         // set defaults
@@ -73,7 +73,7 @@ public abstract class AbstractIssueEndpoint extends RPCEndpoint<DroolsIssuesDoma
         CreateIssueResponseMessage responseMessage = new CreateIssueResponseMessage();
 
         try {
-            IssueDomain domain = createIssueDomain();
+            DroolsIssuesDomain domain = createIssueDomain();
 
             // transform message to string
             Transformer messageTransformer = TransformerFactory.newInstance().newTransformer();

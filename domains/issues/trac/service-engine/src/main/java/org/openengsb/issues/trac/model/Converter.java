@@ -22,9 +22,9 @@ import java.util.Hashtable;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
-import org.openengsb.issues.common.model.Issue;
-import org.openengsb.issues.common.model.IssuePriority;
-import org.openengsb.issues.common.model.IssueType;
+import org.openengsb.drools.model.Issue;
+import org.openengsb.drools.model.Issue.IssuePriority;
+import org.openengsb.drools.model.Issue.IssueType;
 
 public class Converter {
 

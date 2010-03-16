@@ -18,7 +18,7 @@ limitations under the License.
 
 package org.openengsb.issues.common.messages;
 
-import org.openengsb.issues.common.model.Issue;
+import org.openengsb.drools.model.Issue;
 
 public class CreateIssueMessage {
     private Issue issue;

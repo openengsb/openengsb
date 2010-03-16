@@ -21,7 +21,6 @@ package org.openengsb.issues.trac;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.drools.DroolsIssuesDomain;
-import org.openengsb.issues.common.IssueDomain;
 import org.openengsb.issues.common.endpoints.AbstractIssueEndpoint;
 import org.openengsb.issues.common.exceptions.IssueDomainException;
 
@@ -38,7 +37,7 @@ public class TracIssuesEndpoint extends AbstractIssueEndpoint {
     private DroolsIssuesDomain issuesDomain;
 
     @Override
-    protected synchronized IssueDomain createIssueDomain() throws IssueDomainException {
+    protected synchronized DroolsIssuesDomain createIssueDomain() throws IssueDomainException {
         if (tracConnector == null) {
             try {
                 tracConnector = new TracConnector(url, username, password);
@@ -47,6 +46,18 @@ public class TracIssuesEndpoint extends AbstractIssueEndpoint {
             }
         }
         return tracConnector;
+    }
+
+    @Override
+    public DroolsIssuesDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
+        try {
+            if (tracConnector == null) {
+                createIssueDomain();
+            }
+            return issuesDomain;
+        } catch (IssueDomainException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getUrl() {
@@ -73,28 +84,12 @@ public class TracIssuesEndpoint extends AbstractIssueEndpoint {
         this.password = password;
     }
 
-    public IssueDomain getIssueDomain() {
+    public DroolsIssuesDomain getIssueDomain() {
         return tracConnector;
     }
 
-    public void setIssueDomain(IssueDomain issueDomain) {
+    public void setIssueDomain(DroolsIssuesDomain issueDomain) {
         this.tracConnector = (TracConnector) issueDomain;
     }
-
-    @Override
-    public DroolsIssuesDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-        try {
-            if (issuesDomain == null) {
-                if (tracConnector == null) {
-                    createIssueDomain();
-                }
-                issuesDomain = new TracIssuesDomain(tracConnector);
-            }
-
-            return issuesDomain;
-        } catch (IssueDomainException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
+    
 }

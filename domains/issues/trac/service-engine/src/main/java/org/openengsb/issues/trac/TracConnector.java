@@ -26,15 +26,15 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import org.openengsb.issues.common.IssueDomain;
+import org.openengsb.drools.DroolsIssuesDomain;
 import org.openengsb.issues.common.exceptions.IssueDomainException;
-import org.openengsb.issues.common.model.Issue;
+import org.openengsb.drools.model.Issue;
 import org.openengsb.issues.trac.model.Converter;
 import org.openengsb.issues.trac.model.TracIssue;
 import org.openengsb.issues.trac.services.Ticket;
 import org.openengsb.issues.trac.xmlrpc.TrackerDynamicProxy;
 
-public class TracConnector implements IssueDomain {
+public class TracConnector implements DroolsIssuesDomain {
 
     private final Logger log = Logger.getLogger(TracConnector.class);
 

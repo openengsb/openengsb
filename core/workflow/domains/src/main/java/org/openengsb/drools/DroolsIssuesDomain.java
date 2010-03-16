@@ -17,14 +17,32 @@
  */
 package org.openengsb.drools;
 
+import org.openengsb.drools.model.Issue;
+
 public interface DroolsIssuesDomain extends Domain {
 
     /**
-     * @return The ID of the created issue
+     * Creates an issue in an issue tracking system.
+     *
+     * @param issue The issue to create.
+     * @return ID of created issue
      */
-    String createIssue(String name);
+    String createIssue(Issue issue) throws Exception;
 
-    boolean addComment(String issueId, String comment);
+    /**
+     * Updates the given issue.
+     *
+     * @param issue The issue to update (the ID of the issue must be set).
+     * @throws IssueDomainException
+     */
+    void updateIssue(Issue issue) throws Exception;
 
-    boolean deleteIssue(String issueId);
+    /**
+     * Deletes the issue with the given ID.
+     *
+     * @param id ID of the issue being deleted.
+     * @throws IssueDomainException
+     */
+    void deleteIssue(String id) throws Exception;
+
 }
