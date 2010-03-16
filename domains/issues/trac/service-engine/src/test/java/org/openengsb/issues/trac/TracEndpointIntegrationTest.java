@@ -47,12 +47,12 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
-import org.openengsb.issues.common.messages.CreateIssueMessage;
-import org.openengsb.issues.common.messages.CreateIssueResponseMessage;
-import org.openengsb.issues.common.model.Issue;
-import org.openengsb.issues.common.model.IssuePriority;
-import org.openengsb.issues.common.model.IssueSeverity;
-import org.openengsb.issues.common.model.IssueType;
+//import org.openengsb.issues.common.messages.CreateIssueMessage;
+//import org.openengsb.issues.common.messages.CreateIssueResponseMessage;
+//import org.openengsb.issues.common.model.Issue;
+//import org.openengsb.issues.common.model.IssuePriority;
+//import org.openengsb.issues.common.model.IssueSeverity;
+//import org.openengsb.issues.common.model.IssueType;
 import org.openengsb.util.serialization.JibxXmlSerializer;
 import org.openengsb.util.serialization.Serializer;
 import org.springframework.context.support.AbstractXmlApplicationContext;
@@ -73,9 +73,9 @@ public class TracEndpointIntegrationTest extends SpringTestSupport {
     private String description = "Test Description";
     private String reporter = "Test Reporter";
     private String owner = "Test Owner";
-    private IssueType type = IssueType.BUG;
-    private IssuePriority priority = IssuePriority.HIGH;
-    private IssueSeverity severity = IssueSeverity.BLOCK;
+//    private IssueType type = IssueType.BUG;
+//    private IssuePriority priority = IssuePriority.HIGH;
+//    private IssueSeverity severity = IssueSeverity.BLOCK;
     private String affectedVersion = "1.0";
 
     /* creators */
@@ -161,36 +161,36 @@ public class TracEndpointIntegrationTest extends SpringTestSupport {
      * @throws TransformerFactoryConfigurationError
      * @throws TransformerException
      */
-    private String transformMessageToString(NormalizedMessage msg) throws TransformerConfigurationException,
-            TransformerFactoryConfigurationError, TransformerException {
-        javax.xml.transform.Transformer messageTransformer = TransformerFactory.newInstance().newTransformer();
-        StringWriter stringWriter = new StringWriter();
-        messageTransformer.transform(msg.getContent(), new StreamResult(stringWriter));
-        return stringWriter.toString();
-    }
-
-    @Ignore(value = "This test is meant only for manual verification that the endpoint communicates with a running "
-            + "trac instance correctly. It requires a running trac instance which can be configured in the file "
-            + "spring-test-xbean-createissue.xml")
-    @Test
-    public void validInputShouldReturnValidResponse() throws Exception {
-        DefaultServiceMixClient client = createClient();
-        CreateIssueMessage inMsg = new CreateIssueMessage(new Issue(summary, description, reporter, owner, type,
-                priority, severity, affectedVersion));
-
-        StringWriter sw = new StringWriter();
-        serializer.serialize(inMsg, sw);
-        InOut inOut = createInOutMessage(client, this.TEST_SERVICE_NAME, sw.toString());
-
-        client.sendSync(inOut);
-
-        validateReturnMessageSuccess(inOut);
-        CreateIssueResponseMessage outMsg = serializer.deserialize(CreateIssueResponseMessage.class, new StringReader(
-                transformMessageToString(inOut.getOutMessage())));
-
-        System.out.println(String.format("Result: %s, %s, %s", outMsg.getStatus(), outMsg.getStatusMessage(), outMsg
-                .getCreatedIssueId()));
-    }
+//    private String transformMessageToString(NormalizedMessage msg) throws TransformerConfigurationException,
+//            TransformerFactoryConfigurationError, TransformerException {
+//        javax.xml.transform.Transformer messageTransformer = TransformerFactory.newInstance().newTransformer();
+//        StringWriter stringWriter = new StringWriter();
+//        messageTransformer.transform(msg.getContent(), new StreamResult(stringWriter));
+//        return stringWriter.toString();
+//    }
+//
+//    @Ignore(value = "This test is meant only for manual verification that the endpoint communicates with a running "
+//            + "trac instance correctly. It requires a running trac instance which can be configured in the file "
+//            + "spring-test-xbean-createissue.xml")
+//    @Test
+//    public void validInputShouldReturnValidResponse() throws Exception {
+//        DefaultServiceMixClient client = createClient();
+//        CreateIssueMessage inMsg = new CreateIssueMessage(new Issue(summary, description, reporter, owner, type,
+//                priority, severity, affectedVersion));
+//
+//        StringWriter sw = new StringWriter();
+//        serializer.serialize(inMsg, sw);
+//        InOut inOut = createInOutMessage(client, this.TEST_SERVICE_NAME, sw.toString());
+//
+//        client.sendSync(inOut);
+//
+//        validateReturnMessageSuccess(inOut);
+//        CreateIssueResponseMessage outMsg = serializer.deserialize(CreateIssueResponseMessage.class, new StringReader(
+//                transformMessageToString(inOut.getOutMessage())));
+//
+//        System.out.println(String.format("Result: %s, %s, %s", outMsg.getStatus(), outMsg.getStatusMessage(), outMsg
+//                .getCreatedIssueId()));
+//    }
 
     @Test
     @Ignore("Tests synchronous calls to trac. Needs a running trac instance.")

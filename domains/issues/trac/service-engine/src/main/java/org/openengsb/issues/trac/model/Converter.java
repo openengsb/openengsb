@@ -65,8 +65,8 @@ public class Converter {
         specific.setDescription(generic.getDescription());
         specific.setOwner(generic.getOwner());
         specific.setReporter(generic.getReporter());
-        specific.setPriority(priorityMapping.get(generic.getPriority()));
-        specific.setType(typeMapping.get(generic.getType()));
+//        specific.setPriority(priorityMapping.get(generic.getPriority()));
+//        specific.setType(typeMapping.get(generic.getType()));
         specific.setVersion(generic.getAffectedVersion());
 
         return specific;

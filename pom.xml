@@ -206,11 +206,7 @@
     <module>features/link/http-jms/service-unit</module>
     <module>features/link/http-processor/service-engine</module>
     <module>features/link/http-processor/service-unit</module>
-
-    <!-- Issues -->
-    <module>domains/issues/common</module>
-
-
+    
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -654,10 +650,6 @@
                 <!-- Serialization Test Data -->
                 <exclude>**/src/test/resources/serialization/valid.xml</exclude>
 
-                <!-- Auto generated files for tests in openengsb-domain-issues-common -->
-                <exclude>domains/issues/common/bin/src/test/resources/META-INF/**</exclude>
-                <exclude>domains/issues/common/bin/src/test/resources/openengsb-domain-issues-common.xsd.wiki</exclude>
-
                 <!-- Examples files -->
                 <exclude>features/edb/examples/**</exclude>
                
@@ -857,11 +849,6 @@
       </dependency>
 
       <!-- Issue Domain -->
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-domains-issues-common</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-issues-trac-su</artifactId>

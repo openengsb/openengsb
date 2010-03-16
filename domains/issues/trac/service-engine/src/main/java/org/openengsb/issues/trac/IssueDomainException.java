@@ -16,25 +16,16 @@ limitations under the License.
 
  */
 
-package org.openengsb.issues.common.messages;
+package org.openengsb.issues.trac;
 
-import org.openengsb.drools.model.Issue;
+public class IssueDomainException extends Exception {
 
-public class CreateIssueMessage {
-    private Issue issue;
-
-    public CreateIssueMessage() {
+    public IssueDomainException(String message) {
+        super(message);
     }
 
-    public CreateIssueMessage(Issue issue) {
-        this.issue = issue;
+    public IssueDomainException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    public void setIssue(Issue issue) {
-        this.issue = issue;
-    }
-
-    public Issue getIssue() {
-        return issue;
-    }
 }

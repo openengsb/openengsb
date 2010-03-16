@@ -20,23 +20,20 @@ package org.openengsb.issues.trac;
 
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
+import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.DroolsIssuesDomain;
-import org.openengsb.issues.common.endpoints.AbstractIssueEndpoint;
-import org.openengsb.issues.common.exceptions.IssueDomainException;
 
 /**
  * @org.apache.xbean.XBean element="issuesEndpoint"
  */
-public class TracIssuesEndpoint extends AbstractIssueEndpoint {
+public class TracIssuesEndpoint extends LinkingEndpoint<DroolsIssuesDomain> {
 
     private String url;
     private String username;
     private String password;
 
     private TracConnector tracConnector;
-    private DroolsIssuesDomain issuesDomain;
 
-    @Override
     protected synchronized DroolsIssuesDomain createIssueDomain() throws IssueDomainException {
         if (tracConnector == null) {
             try {
@@ -48,13 +45,12 @@ public class TracIssuesEndpoint extends AbstractIssueEndpoint {
         return tracConnector;
     }
 
-    @Override
     public DroolsIssuesDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         try {
             if (tracConnector == null) {
                 createIssueDomain();
             }
-            return issuesDomain;
+            return tracConnector;
         } catch (IssueDomainException e) {
             throw new RuntimeException(e);
         }

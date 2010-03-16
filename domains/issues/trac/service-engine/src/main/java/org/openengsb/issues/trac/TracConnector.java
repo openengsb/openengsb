@@ -27,7 +27,6 @@ import org.apache.log4j.Logger;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.openengsb.drools.DroolsIssuesDomain;
-import org.openengsb.issues.common.exceptions.IssueDomainException;
 import org.openengsb.drools.model.Issue;
 import org.openengsb.issues.trac.model.Converter;
 import org.openengsb.issues.trac.model.TracIssue;
@@ -65,10 +64,10 @@ public class TracConnector implements DroolsIssuesDomain {
         TracIssue tracIssue = converter.convertGenericIssueToSpecificIssue(issue);
 
         Hashtable<String, String> attributes = new Hashtable<String, String>();
-        attributes.put("type", tracIssue.getType());
+//        attributes.put("type", tracIssue.getType());
         attributes.put("owner", tracIssue.getOwner());
         attributes.put("reporter", tracIssue.getReporter());
-        attributes.put("priority", tracIssue.getPriority());
+//        attributes.put("priority", tracIssue.getPriority());
         attributes.put("version", tracIssue.getVersion());
 
         String issueId;
