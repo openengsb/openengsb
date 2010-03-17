@@ -22,89 +22,30 @@
   
   <modelVersion>4.0.0</modelVersion>
   
+  <properties>
+    <componentName>openengsb-domains-issues-trac-se</componentName>
+  </properties>
+  
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../../../..</relativePath>
   </parent>
-  
+
   <artifactId>openengsb-domains-issues-trac-su</artifactId>
   <name>openengsb-domains-issues-trac-su</name>
-  <version>1.0.0-SNAPSHOT</version>
   <packaging>jbi-service-unit</packaging>
 
-  
-  <properties>
-    <servicemix-version>3.2.3</servicemix-version>
-  </properties>
-  
+  <description>
+    Trac connector SU
+  </description>
+
   <dependencies>
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-issues-trac-se</artifactId>
     </dependency>
   </dependencies>
-  
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>**/*</include>
-        </includes>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.servicemix.tooling</groupId>
-        <artifactId>jbi-maven-plugin</artifactId>
-        <version>${servicemix-version}</version>
-        <extensions>true</extensions>
-      </plugin>
-    </plugins>
-  </build>
-  
-  <repositories>
-    <repository>
-      <releases />
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>apache</id>
-      <name>Apache Repository</name>
-      <url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</url>
-    </repository>
-    <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots />
-      <id>apache.snapshots</id>
-      <name>Apache Snapshots Repository</name>
-      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-    </repository>
-  </repositories>
-  
-  <pluginRepositories>
-    <pluginRepository>
-      <releases />
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>apache</id>
-      <name>Apache Repository</name>
-      <url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</url>
-    </pluginRepository>
-    <pluginRepository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots />
-      <id>apache.snapshots</id>
-      <name>Apache Snapshots Repository</name>
-      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-    </pluginRepository>
-  </pluginRepositories>
 
 </project>

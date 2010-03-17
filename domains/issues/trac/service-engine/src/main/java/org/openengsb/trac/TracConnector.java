@@ -17,7 +17,9 @@
  */
 package org.openengsb.trac;
 
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Vector;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
@@ -53,12 +55,19 @@ public class TracConnector implements IssuesDomain {
 
     @Override
     public void deleteIssue(int id) {
-        throw new NotImplementedException();
+        ticket.delete(id);
     }
 
     @Override
     public void addComment(int id, Comment comment) {
-        throw new NotImplementedException();
+        ticket.update(id, comment.getText());
+    }
+    
+    /**
+     * just for testing to see which fields are available, see TracTest
+     */
+    public Vector<HashMap<?, ?>> getFields() {
+        return ticket.getTicketFields();
     }
 
     private Hashtable<String, String> generateAttributes(Issue issue) {
@@ -74,9 +83,6 @@ public class TracConnector implements IssuesDomain {
                 break;
             case LOW:
                 attributes.put("priority", "trivial");
-                break;
-            case NONE:
-                attributes.put("priority", "none");
                 break;
             case NORMAL:
                 attributes.put("priority", "minor");
@@ -94,11 +100,49 @@ public class TracConnector implements IssuesDomain {
             case IMPROVEMENT:
                 attributes.put("type", "enhancement");
                 break;
-            case NEW_FEATURE:
-                attributes.put("type", "feature");
-                break;
+//            case NEW_FEATURE:
+//                attributes.put("type", "feature");
+//                break;
             case TASK:
-                attributes.put("type", "ntaskone");
+                attributes.put("type", "task");
+                break;
+            }
+        }
+        if (issue.getStatus() != null) {
+            switch (issue.getStatus()) {
+            case ASSIGNED:
+                attributes.put("status", "assigned");
+                break;
+            case NEW:
+                attributes.put("status", "new");
+                break;
+            case CLOSED:
+                attributes.put("status", "closed");
+                break;
+            }
+        }
+        if (issue.getResolution() != null) {
+            switch (issue.getResolution()) {
+            case FIXED:
+                attributes.put("resolution", "fixed");
+                break;
+            case INVALID:
+                attributes.put("resolution", "invalid");
+                break;
+            case NOTFIXABLE:
+                attributes.put("resolution", "wontfix");
+                break;
+            case WONTFIX:
+                attributes.put("resolution", "wontfix");
+                break;
+            case DUPLICATE:
+                attributes.put("resolution", "duplicate");
+                break;
+            case WORKSFORME:
+                attributes.put("resolution", "worksforme");
+                break;
+            case UNABLETOPRODUCE:
+                attributes.put("resolution", "worksforme");
                 break;
             }
         }
@@ -111,7 +155,6 @@ public class TracConnector implements IssuesDomain {
         if (issue.getAffectedVersion() != null) {
             attributes.put("version", issue.getAffectedVersion());
         }
-
         return attributes;
     }
 

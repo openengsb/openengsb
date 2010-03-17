@@ -17,16 +17,15 @@
  */
 package org.openengsb.drools.model;
 
-import java.util.Date;
 import java.util.List;
 
 public class Issue {
     public enum IssuePriority {
-        IMMEDIATE, URGENT, HIGH, NORMAL, LOW, NONE
+        IMMEDIATE, URGENT, HIGH, NORMAL, LOW
     }
 
     public enum IssueResolution {
-        OPEN, REOPENED, FIXED, INVALID, WONTFIX, DUPLICATE, WORKSFORM, UNABLETOPRODUCE, NOTFIXABLE, NOCHANGEREQUIRED, SUSPENDED
+        FIXED, INVALID, WONTFIX, DUPLICATE, WORKSFORME, UNABLETOPRODUCE, NOTFIXABLE
     }
 
     public enum IssueSeverity {
@@ -53,8 +52,6 @@ public class Issue {
     private IssueStatus status;
     private IssueType type;
     private List<Comment> comments;
-    private Date creationTime;
-    private Date lastChange;
 
     public Integer getId() {
         return id;
@@ -150,22 +147,6 @@ public class Issue {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
-    }
-
-    public Date getCreationTime() {
-        return creationTime;
-    }
-
-    public void setCreationTime(Date creationTime) {
-        this.creationTime = creationTime;
-    }
-
-    public Date getLastChange() {
-        return lastChange;
-    }
-
-    public void setLastChange(Date lastChange) {
-        this.lastChange = lastChange;
     }
 
 }

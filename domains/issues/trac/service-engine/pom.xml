@@ -32,18 +32,49 @@
   <artifactId>openengsb-domains-issues-trac-se</artifactId>
   <name>openengsb-domains-issues-trac-se</name>
   <packaging>jbi-component</packaging>
-
-  <properties>
-    <servicemix-version>3.2.1</servicemix-version>
-    <xbean-version>3.2</xbean-version>
-  </properties>
+  
+  <description>
+    OpenEngSB trac issue JBI SE
+  </description>
+  
+  <build>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.servicemix.tooling</groupId>
+        <artifactId>jbi-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <type>service-engine</type>
+          <component>org.openengsb.trac.TracComponent</component>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.xbean</groupId>
+        <artifactId>maven-xbean-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>mapping</goal>
+            </goals>
+            <configuration>
+              <namespace>http://www.openengsb.org/connector/trac/1.0</namespace>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
   <dependencies>
       <!-- OpenEngSB dependencies -->
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-util-common</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-core</artifactId>
@@ -71,79 +102,25 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
     </dependency>
+    
+    <!-- logging support -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+    </dependency>
 
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.servicemix.tooling</groupId>
-        <artifactId>jbi-maven-plugin</artifactId>
-        <version>${servicemix-version}</version>
-        <extensions>true</extensions>
-        <configuration>
-          <type>service-engine</type>
-          <component>org.openengsb.trac.TracComponent</component>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.xbean</groupId>
-        <artifactId>maven-xbean-plugin</artifactId>
-        <version>${xbean-version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>mapping</goal>
-            </goals>
-            <configuration>
-              <namespace>http://www.openengsb.org/connector/trac/1.0</namespace>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-  
-  <repositories>
-    <repository>
-      <releases />
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>apache</id>
-      <name>Apache Repository</name>
-      <url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</url>
-    </repository>
-    <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots />
-      <id>apache.snapshots</id>
-      <name>Apache Snapshots Repository</name>
-      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-    </repository>
-  </repositories>
-  
-  <pluginRepositories>
-    <pluginRepository>
-      <releases />
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>apache</id>
-      <name>Apache Repository</name>
-      <url>http://people.apache.org/repo/m2-ibiblio-rsync-repository</url>
-    </pluginRepository>
-    <pluginRepository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots />
-      <id>apache.snapshots</id>
-      <name>Apache Snapshots Repository</name>
-      <url>http://people.apache.org/repo/m2-snapshot-repository</url>
-    </pluginRepository>
-  </pluginRepositories>
-  
 </project>
