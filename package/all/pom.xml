@@ -159,6 +159,10 @@
     <!-- Issues -->
     <dependency>
       <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-domains-issues-implementation-su</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-issues-trac-su</artifactId>
     </dependency>
     

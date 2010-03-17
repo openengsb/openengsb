@@ -148,6 +148,10 @@
     <!--  Notification Domain -->
     <module>domains/notification/implementation/service-engine</module>
     <module>domains/notification/implementation/service-unit</module>
+    
+    <!--  Issues Domain -->
+    <module>domains/issues/implementation/service-engine</module>
+    <module>domains/issues/implementation/service-unit</module>
 
     <!--  Report Domain -->
     <module>domains/report/implementation/service-engine</module>
@@ -851,9 +855,16 @@
       <!-- Issue Domain -->
       <dependency>
         <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-domains-issues-trac-su</artifactId>
+        <artifactId>openengsb-domains-issues-implementation-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-issues-implementation-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      
+      <!-- ??? -->
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-test-maven-se</artifactId>
@@ -867,11 +878,6 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-deploy-maven-se</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-domains-issues-trac-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
 

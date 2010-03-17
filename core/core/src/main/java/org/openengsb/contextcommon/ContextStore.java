@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 
 package org.openengsb.contextcommon;
@@ -184,6 +184,8 @@ public class ContextStore {
 
         setValue("42/issue/namespace", "urn:openengsb:issues");
         setValue("42/issue/servicename", "issuesService");
+        setValue("42/issue/event/servicename", "eventService");
+        setValue("42/issue/default", "trac");
 
         setValue("42/notification/namespace", "urn:openengsb:notification");
         setValue("42/notification/servicename", "notificationService");
