@@ -17,14 +17,10 @@
  */
 package org.openengsb.drools.model;
 
-import java.util.Date;
-
 public class Comment {
     private String id;
     private String reporter;
     private String text;
-    private Date creationTime;
-    private Date lastChange;
 
     public String getId() {
         return id;
@@ -49,20 +45,5 @@ public class Comment {
     public void setText(String text) {
         this.text = text;
     }
-
-    public Date getCreationTime() {
-        return creationTime;
-    }
-
-    public void setCreationTime(Date creationTime) {
-        this.creationTime = creationTime;
-    }
-
-    public Date getLastChange() {
-        return lastChange;
-    }
-
-    public void setLastChange(Date lastChange) {
-        this.lastChange = lastChange;
-    }
+    
 }

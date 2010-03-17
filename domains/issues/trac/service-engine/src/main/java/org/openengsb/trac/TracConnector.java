@@ -27,6 +27,10 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.openengsb.drools.IssuesDomain;
 import org.openengsb.drools.model.Comment;
 import org.openengsb.drools.model.Issue;
+import org.openengsb.drools.model.Issue.IssuePriority;
+import org.openengsb.drools.model.Issue.IssueResolution;
+import org.openengsb.drools.model.Issue.IssueStatus;
+import org.openengsb.drools.model.Issue.IssueType;
 import org.openengsb.trac.xmlrpc.Ticket;
 
 public class TracConnector implements IssuesDomain {
@@ -35,17 +39,17 @@ public class TracConnector implements IssuesDomain {
     private Ticket ticket;
 
     @Override
-    public int createIssue(Issue issue) {
+    public Integer createIssue(Issue issue) {
         Hashtable<String, String> attributes = generateAttributes(issue);
-        int id = -1;
+        Integer issueId = -1;
 
         try {
-            id = ticket.create(issue.getSummary(), issue.getDescription(), attributes);
+            issueId = ticket.create(issue.getSummary(), issue.getDescription(), attributes);
         } catch (XmlRpcException e) {
             log.error("Error creating Issue. XMLRPC failed.");
         }
 
-        return id;
+        return issueId;
     }
 
     @Override
@@ -54,12 +58,12 @@ public class TracConnector implements IssuesDomain {
     }
 
     @Override
-    public void deleteIssue(int id) {
+    public void deleteIssue(Integer id) {
         ticket.delete(id);
     }
 
     @Override
-    public void addComment(int id, Comment comment) {
+    public void addComment(Integer id, Comment comment) {
         ticket.update(id, comment.getText());
     }
     
@@ -73,8 +77,26 @@ public class TracConnector implements IssuesDomain {
     private Hashtable<String, String> generateAttributes(Issue issue) {
         Hashtable<String, String> attributes = new Hashtable<String, String>();
 
-        if (issue.getPriority() != null) {
-            switch (issue.getPriority()) {
+        addPriority(attributes, issue.getPriority());
+        addType(attributes, issue.getType());
+        addStatus(attributes, issue.getStatus());
+        addResolution(attributes, issue.getResolution());
+        
+        if (issue.getOwner() != null) {
+            attributes.put("owner", issue.getOwner());
+        }
+        if (issue.getReporter() != null) {
+            attributes.put("reporter", issue.getReporter());
+        }
+        if (issue.getAffectedVersion() != null) {
+            attributes.put("version", issue.getAffectedVersion());
+        }
+        return attributes;
+    }
+    
+    private void addPriority(Hashtable<String, String> attributes, IssuePriority priority) {
+        if (priority != null) {
+            switch (priority) {
             case HIGH:
                 attributes.put("priority", "major");
                 break;
@@ -92,8 +114,11 @@ public class TracConnector implements IssuesDomain {
                 break;
             }
         }
-        if (issue.getType() != null) {
-            switch (issue.getType()) {
+    }
+    
+    private void addType(Hashtable<String, String> attributes, IssueType type) {
+        if (type != null) {
+            switch (type) {
             case BUG:
                 attributes.put("type", "defect");
                 break;
@@ -108,8 +133,11 @@ public class TracConnector implements IssuesDomain {
                 break;
             }
         }
-        if (issue.getStatus() != null) {
-            switch (issue.getStatus()) {
+    }
+    
+    private void addStatus(Hashtable<String, String> attributes, IssueStatus status) {
+        if (status != null) {
+            switch (status) {
             case ASSIGNED:
                 attributes.put("status", "assigned");
                 break;
@@ -121,8 +149,11 @@ public class TracConnector implements IssuesDomain {
                 break;
             }
         }
-        if (issue.getResolution() != null) {
-            switch (issue.getResolution()) {
+    }
+    
+    private void addResolution(Hashtable<String, String> attributes, IssueResolution resolution) {
+        if (resolution != null) {
+            switch (resolution) {
             case FIXED:
                 attributes.put("resolution", "fixed");
                 break;
@@ -146,16 +177,6 @@ public class TracConnector implements IssuesDomain {
                 break;
             }
         }
-        if (issue.getOwner() != null) {
-            attributes.put("owner", issue.getOwner());
-        }
-        if (issue.getReporter() != null) {
-            attributes.put("reporter", issue.getReporter());
-        }
-        if (issue.getAffectedVersion() != null) {
-            attributes.put("version", issue.getAffectedVersion());
-        }
-        return attributes;
     }
 
     public void setTicket(Ticket ticket) {

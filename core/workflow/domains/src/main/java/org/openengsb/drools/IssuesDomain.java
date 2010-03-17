@@ -21,11 +21,11 @@ import org.openengsb.drools.model.Comment;
 import org.openengsb.drools.model.Issue;
 
 public interface IssuesDomain extends Domain {
-    int createIssue(Issue issue);
+    Integer createIssue(Issue issue);
 
     void updateIssue(Issue issue);
 
-    void deleteIssue(int id);
+    void deleteIssue(Integer id);
     
-    void addComment(int id, Comment comment);
+    void addComment(Integer id, Comment comment);
 }
