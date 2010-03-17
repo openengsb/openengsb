@@ -21,12 +21,12 @@ package org.openengsb.issues.trac;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
-import org.openengsb.drools.DroolsIssuesDomain;
+import org.openengsb.drools.IssuesDomain;
 
 /**
  * @org.apache.xbean.XBean element="issuesEndpoint"
  */
-public class TracIssuesEndpoint extends LinkingEndpoint<DroolsIssuesDomain> {
+public class TracIssuesEndpoint extends LinkingEndpoint<IssuesDomain> {
 
     private String url;
     private String username;
@@ -34,7 +34,7 @@ public class TracIssuesEndpoint extends LinkingEndpoint<DroolsIssuesDomain> {
 
     private TracConnector tracConnector;
 
-    protected synchronized DroolsIssuesDomain createIssueDomain() throws IssueDomainException {
+    protected synchronized IssuesDomain createIssueDomain() throws IssueDomainException {
         if (tracConnector == null) {
             try {
                 tracConnector = new TracConnector(url, username, password);
@@ -45,7 +45,7 @@ public class TracIssuesEndpoint extends LinkingEndpoint<DroolsIssuesDomain> {
         return tracConnector;
     }
 
-    public DroolsIssuesDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
+    public IssuesDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         try {
             if (tracConnector == null) {
                 createIssueDomain();
@@ -80,11 +80,11 @@ public class TracIssuesEndpoint extends LinkingEndpoint<DroolsIssuesDomain> {
         this.password = password;
     }
 
-    public DroolsIssuesDomain getIssueDomain() {
+    public IssuesDomain getIssueDomain() {
         return tracConnector;
     }
 
-    public void setIssueDomain(DroolsIssuesDomain issueDomain) {
+    public void setIssueDomain(IssuesDomain issueDomain) {
         this.tracConnector = (TracConnector) issueDomain;
     }
     

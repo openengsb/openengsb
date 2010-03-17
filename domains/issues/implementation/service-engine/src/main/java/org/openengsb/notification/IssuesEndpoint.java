@@ -21,13 +21,13 @@ import javax.xml.namespace.QName;
 
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.endpoints.ForwardEndpoint;
-import org.openengsb.drools.DroolsIssuesDomain;
+import org.openengsb.drools.IssuesDomain;
 
 /**
  * @org.apache.xbean.XBean element="issuesEndpoint"
  *                         description="Issues Endpoint"
  */
-public class IssuesEndpoint extends ForwardEndpoint<DroolsIssuesDomain> {
+public class IssuesEndpoint extends ForwardEndpoint<IssuesDomain> {
 
     @Override
     protected QName getForwardTarget(ContextHelper contextHelper) {

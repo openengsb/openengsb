@@ -26,16 +26,17 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
-import org.openengsb.drools.DroolsIssuesDomain;
+import org.openengsb.drools.IssuesDomain;
+import org.openengsb.drools.model.Comment;
 import org.openengsb.drools.model.Issue;
 import org.openengsb.issues.trac.model.Converter;
 import org.openengsb.issues.trac.model.TracIssue;
 import org.openengsb.issues.trac.services.Ticket;
 import org.openengsb.issues.trac.xmlrpc.TrackerDynamicProxy;
 
-public class TracConnector implements DroolsIssuesDomain {
+public class TracConnector implements IssuesDomain {
 
-    private final Logger log = Logger.getLogger(TracConnector.class);
+    private final Logger log = Logger.getLogger(getClass());
 
     private final Ticket ticket;
 
@@ -60,33 +61,38 @@ public class TracConnector implements DroolsIssuesDomain {
     }
 
     @Override
-    public String createIssue(Issue issue) throws IssueDomainException {
+    public int createIssue(Issue issue) throws IssueDomainException {
         TracIssue tracIssue = converter.convertGenericIssueToSpecificIssue(issue);
 
         Hashtable<String, String> attributes = new Hashtable<String, String>();
-//        attributes.put("type", tracIssue.getType());
+        // attributes.put("type", tracIssue.getType());
         attributes.put("owner", tracIssue.getOwner());
         attributes.put("reporter", tracIssue.getReporter());
-//        attributes.put("priority", tracIssue.getPriority());
+        // attributes.put("priority", tracIssue.getPriority());
         attributes.put("version", tracIssue.getVersion());
 
-        String issueId;
+        int id;
         try {
-            issueId = ticket.create(tracIssue.getSummary(), tracIssue.getDescription(), attributes).toString();
+            id = ticket.create(tracIssue.getSummary(), tracIssue.getDescription(), attributes);
         } catch (Exception e) {
             throw new IssueDomainException(e.getMessage(), e);
         }
 
-        return issueId;
+        return id;
     }
 
     @Override
-    public void deleteIssue(String arg0) throws IssueDomainException {
+    public void updateIssue(Issue issue) {
         throw new NotImplementedException();
     }
 
     @Override
-    public void updateIssue(Issue arg0) throws IssueDomainException {
+    public void deleteIssue(int id) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public void addComment(int id, Comment comment) {
         throw new NotImplementedException();
     }
 
@@ -129,5 +135,4 @@ public class TracConnector implements DroolsIssuesDomain {
     public void setPassword(String password) {
         this.password = password;
     }
-
 }
