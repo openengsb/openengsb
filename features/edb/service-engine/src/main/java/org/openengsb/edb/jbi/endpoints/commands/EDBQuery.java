@@ -18,6 +18,7 @@
 package org.openengsb.edb.jbi.endpoints.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.jbi.messaging.NormalizedMessage;
@@ -28,8 +29,6 @@ import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.edb.jbi.endpoints.XmlParserFunctions;
 import org.openengsb.util.Prelude;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 public class EDBQuery implements EDBEndpointCommand {
 
@@ -113,7 +112,6 @@ public class EDBQuery implements EDBEndpointCommand {
         }
 
         // contains last path element ?
-        @SuppressWarnings("unchecked")
         List<String> pathNames = new ArrayList<String>(Arrays.asList(Prelude.dePathize(path)));
         if (fields.contains(pathNames.get(pathNames.size() - 1))) {
             return false;
@@ -143,7 +141,6 @@ public class EDBQuery implements EDBEndpointCommand {
 
         List<String> result = new ArrayList<String>();
 
-        @SuppressWarnings("unchecked")
         List<String> tmp = new ArrayList<String>(Arrays.asList(query.split(ELEM_AND)));
         String path = "";
         for (int i = 0; i < tmp.size(); i++) {

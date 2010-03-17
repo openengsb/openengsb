@@ -22,12 +22,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 import org.openengsb.edb.jbi.endpoints.commands.EDBQuery;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 public class EDBQueryTest {
 
@@ -38,17 +37,12 @@ public class EDBQueryTest {
     private static final String VALID_REAL = "path:/customer/projectId/region/componentNumber/cpuNumber/peripheralBoardAddress/inputOutputModule/channelName AND customer:customer";
     private static final String VALID_REAL_1 = "path:/customer/projectId/region/componentNumber/cpuNumber/peripheralBoardAddress/inputOutputModule/channelName";
 
-    @SuppressWarnings("unchecked")
     private static final List<String> QUERY_LIST_1 = new ArrayList<String>(Arrays
             .asList(new String[] { "foo", "bar", }));
-    @SuppressWarnings("unchecked")
     private static final List<String> QUERY_LIST_2 = new ArrayList<String>(Arrays
             .asList(new String[] { "42", "1337", }));
-    @SuppressWarnings("unchecked")
     private static final List<String> QUERY_LIST_3 = new ArrayList<String>(Arrays.asList(new String[] {}));
-    @SuppressWarnings("unchecked")
     private static final List<String> QUERY_LIST_4 = new ArrayList<String>(Arrays.asList(new String[] { "42", }));
-    @SuppressWarnings("unchecked")
     private static final List<String> QUERY_LIST_5 = new ArrayList<String>(Arrays.asList(new String[] { "customer", }));
 
     private static final String INVALID_IS_FULL_PATH = "path:a/b/c AND a:foo AND b:bar AND c:test";

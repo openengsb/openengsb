@@ -17,7 +17,7 @@
  */
 package org.openengsb.report.datastore;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
+import java.util.Arrays;
 
 public enum EventStorageType {
 

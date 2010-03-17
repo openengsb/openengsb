@@ -17,6 +17,7 @@
  */
 package org.openengsb.edb.jbi.endpoints;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +50,6 @@ import org.openengsb.edb.jbi.endpoints.responses.EDBEndpointResponseBuilder;
 import org.openengsb.edb.jbi.endpoints.responses.LinkRegisteredResponseBuilder;
 import org.openengsb.edb.jbi.endpoints.responses.LinkRequestResponseBuilder;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * @org.apache.xbean.XBean element="edb" The Endpoint to the commit-feature
@@ -108,7 +108,6 @@ public class EdbEndpoint extends OpenEngSBEndpoint {
         this.fullConfig = fullConfig;
     }
 
-    @SuppressWarnings("unchecked")
     private static Map<EDBOperationType, Class<? extends Event>> makeEventMap() {
         Map<EDBOperationType, Class<? extends Event>> map;
         map = new HashMap<EDBOperationType, Class<? extends Event>>();
