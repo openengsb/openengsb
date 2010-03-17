@@ -52,11 +52,16 @@
     <dependency>
         <groupId>org.apache.activemq</groupId>
         <artifactId>activemq-pool</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>activemq</groupId>
-        <artifactId>activemq-spring</artifactId>
-      </dependency>
+    </dependency>
+    <dependency>
+      <groupId>activemq</groupId>
+      <artifactId>activemq-spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+    </dependency>
+    
   </dependencies>
 
 </project>
