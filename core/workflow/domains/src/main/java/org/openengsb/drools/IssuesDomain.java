@@ -21,14 +21,8 @@ import org.openengsb.drools.model.Comment;
 import org.openengsb.drools.model.Issue;
 
 public interface IssuesDomain extends Domain {
-    int createIssue(Issue issue) throws Exception;
+    int createIssue(Issue issue);
 
-    /**
-     * Updates the given issue.
-     *
-     * @param issue The issue to update (the ID of the issue must be set).
-     * @throws IssueDomainException
-     */
     void updateIssue(Issue issue);
 
     void deleteIssue(int id);

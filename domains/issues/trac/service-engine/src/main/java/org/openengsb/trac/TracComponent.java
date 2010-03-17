@@ -15,37 +15,35 @@
    limitations under the License.
    
  */
-package org.openengsb.notification;
+package org.openengsb.trac;
 
 import java.util.List;
 
 import org.apache.servicemix.common.DefaultComponent;
-import org.openengsb.core.endpoints.EventForwardEndpoint;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="issuesComponent"
- *                         description="Issues Component"
+ *                         description="Trac Issue Tracker Component"
  */
-public class IssuesComponent extends DefaultComponent {
-    private OpenEngSBEndpoint[] endpoints;
+public class TracComponent extends DefaultComponent {
+    private TracEndpoint[] endpoints;
 
-    public OpenEngSBEndpoint[] getEndpoints() {
-        return this.endpoints;
+    public TracEndpoint[] getEndpoints() {
+        return endpoints;
     }
 
-    public void setEndpoints(OpenEngSBEndpoint[] endpoints) {
+    public void setEndpoints(TracEndpoint[] endpoints) {
         this.endpoints = endpoints;
     }
 
     @Override
     protected List<?> getConfiguredEndpoints() {
-        return asList(this.endpoints);
+        return asList(endpoints);
     }
 
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class[] { IssuesEndpoint.class, EventForwardEndpoint.class };
+        return new Class[] { TracEndpoint.class };
     }
 
 }

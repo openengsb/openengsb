@@ -83,7 +83,7 @@
         <extensions>true</extensions>
         <configuration>
           <type>service-engine</type>
-          <component>org.openengsb.issues.trac.TracComponent</component>
+          <component>org.openengsb.trac.TracComponent</component>
         </configuration>
       </plugin>
       <plugin>

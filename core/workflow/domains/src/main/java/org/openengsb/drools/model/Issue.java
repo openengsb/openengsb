@@ -13,18 +13,35 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
+   
  */
-
-
 package org.openengsb.drools.model;
 
 import java.util.Date;
 import java.util.List;
 
 public class Issue {
+    public enum IssuePriority {
+        IMMEDIATE, URGENT, HIGH, NORMAL, LOW, NONE
+    }
 
-    private String id;
+    public enum IssueResolution {
+        OPEN, REOPENED, FIXED, INVALID, WONTFIX, DUPLICATE, WORKSFORM, UNABLETOPRODUCE, NOTFIXABLE, NOCHANGEREQUIRED, SUSPENDED
+    }
+
+    public enum IssueSeverity {
+        BLOCK, CRASH, MAJOR, MINOR, TWEAK, TEXT, TRIVIAL, FEATURE
+    }
+
+    public enum IssueStatus {
+        NEW, ASSIGNED, CLOSED
+    }
+
+    public enum IssueType {
+        BUG, IMPROVEMENT, NEW_FEATURE, TASK
+    }
+
+    private Integer id;
     private String summary;
     private String description;
     private String reporter;
@@ -39,170 +56,116 @@ public class Issue {
     private Date creationTime;
     private Date lastChange;
 
-    public Issue() {
+    public Integer getId() {
+        return id;
     }
 
-    public Issue(String summary, String description, String reporter, String owner, IssueType type,
-            IssuePriority priority, IssueSeverity severity, String affectedVersion) {
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getReporter() {
+        return reporter;
+    }
+
+    public void setReporter(String reporter) {
         this.reporter = reporter;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
         this.owner = owner;
-        this.type = type;
-        this.priority = priority;
-        this.severity = severity;
+    }
+
+    public String getAffectedVersion() {
+        return affectedVersion;
+    }
+
+    public void setAffectedVersion(String affectedVersion) {
         this.affectedVersion = affectedVersion;
     }
 
-    /**
-     * Compares this Issue to another Issue
-     *
-     * @param obj
-     * @return true if the given Issue is equal to this Issue, false otherwise
-     */
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Issue))
-            return false;
-
-        Issue other = (Issue) obj;
-
-        return (equalOrBothNull(this.id, other.id) && equalOrBothNull(this.summary, other.summary)
-                && equalOrBothNull(this.description, other.description)
-                && equalOrBothNull(this.reporter, other.reporter) && equalOrBothNull(this.owner, other.owner)
-                && equalOrBothNull(this.priority, other.priority) && equalOrBothNull(this.type, other.type)
-                && equalOrBothNull(this.severity, other.severity) && equalOrBothNull(this.affectedVersion,
-                other.affectedVersion));
+    public IssuePriority getPriority() {
+        return priority;
     }
 
-    private boolean equalOrBothNull(Object o1, Object o2) {
-        return ((o1 == null && o2 == null) || o1.equals(o2));
-    }
-    public enum IssuePriority {
-        IMMEDIATE, URGENT, HIGH, NORMAL, LOW, NONE
+    public void setPriority(IssuePriority priority) {
+        this.priority = priority;
     }
 
-    public enum IssueResolution {
-        OPEN, REOPENED, FIXED, INVALID, WONTFIX, DUPLICATE, WORKSFORM, UNABLETOPRODUCE, NOTFIXABLE, NOCHANGEREQUIRED, SUSPENDED
+    public IssueSeverity getSeverity() {
+        return severity;
     }
-    public enum IssueSeverity {
-        BLOCK, CRASH, MAJOR, MINOR, TWEAK, TEXT, TRIVIAL, FEATURE
+
+    public void setSeverity(IssueSeverity severity) {
+        this.severity = severity;
     }
-    public enum IssueStatus {
-        NEW, ASSIGNED, CLOSED
+
+    public IssueResolution getResolution() {
+        return resolution;
     }
-    public enum IssueType {
-        BUG, IMPROVEMENT, NEW_FEATURE, TASK
+
+    public void setResolution(IssueResolution resolution) {
+        this.resolution = resolution;
     }
-	public String getId() {
-		return id;
-	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public IssueStatus getStatus() {
+        return status;
+    }
 
-	public String getSummary() {
-		return summary;
-	}
+    public void setStatus(IssueStatus status) {
+        this.status = status;
+    }
 
-	public void setSummary(String summary) {
-		this.summary = summary;
-	}
+    public IssueType getType() {
+        return type;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setType(IssueType type) {
+        this.type = type;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public List<Comment> getComments() {
+        return comments;
+    }
 
-	public String getReporter() {
-		return reporter;
-	}
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 
-	public void setReporter(String reporter) {
-		this.reporter = reporter;
-	}
+    public Date getCreationTime() {
+        return creationTime;
+    }
 
-	public String getOwner() {
-		return owner;
-	}
+    public void setCreationTime(Date creationTime) {
+        this.creationTime = creationTime;
+    }
 
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
+    public Date getLastChange() {
+        return lastChange;
+    }
 
-	public String getAffectedVersion() {
-		return affectedVersion;
-	}
+    public void setLastChange(Date lastChange) {
+        this.lastChange = lastChange;
+    }
 
-	public void setAffectedVersion(String affectedVersion) {
-		this.affectedVersion = affectedVersion;
-	}
-
-	public IssuePriority getPriority() {
-		return priority;
-	}
-
-	public void setPriority(IssuePriority priority) {
-		this.priority = priority;
-	}
-
-	public IssueSeverity getSeverity() {
-		return severity;
-	}
-
-	public void setSeverity(IssueSeverity severity) {
-		this.severity = severity;
-	}
-
-	public IssueResolution getResolution() {
-		return resolution;
-	}
-
-	public void setResolution(IssueResolution resolution) {
-		this.resolution = resolution;
-	}
-
-	public IssueStatus getStatus() {
-		return status;
-	}
-
-	public void setStatus(IssueStatus status) {
-		this.status = status;
-	}
-
-	public IssueType getType() {
-		return type;
-	}
-
-	public void setType(IssueType type) {
-		this.type = type;
-	}
-
-	public List<Comment> getComments() {
-		return comments;
-	}
-
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
-	}
-
-	public Date getCreationTime() {
-		return creationTime;
-	}
-
-	public void setCreationTime(Date creationTime) {
-		this.creationTime = creationTime;
-	}
-
-	public Date getLastChange() {
-		return lastChange;
-	}
-
-	public void setLastChange(Date lastChange) {
-		this.lastChange = lastChange;
-	}
-    
 }

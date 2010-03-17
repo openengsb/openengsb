@@ -15,26 +15,26 @@
    limitations under the License.
    
  */
-package org.openengsb.notification;
-
-import javax.xml.namespace.QName;
+package org.openengsb.trac;
 
 import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.endpoints.ForwardEndpoint;
+import org.openengsb.core.MessageProperties;
+import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.IssuesDomain;
 
 /**
  * @org.apache.xbean.XBean element="issuesEndpoint"
- *                         description="Issues Endpoint"
+ *                         description="Trac Issues Endpoint"
  */
-public class IssuesEndpoint extends ForwardEndpoint<IssuesDomain> {
+public class TracEndpoint extends LinkingEndpoint<IssuesDomain> {
+    private TracConnector tracConnector;
 
     @Override
-    protected QName getForwardTarget(ContextHelper contextHelper) {
-        String defaultName = contextHelper.getValue("issue/default");
-        String serviceName = contextHelper.getValue("issue/" + defaultName + "/servicename");
-        String namespace = contextHelper.getValue("issue/" + defaultName + "/namespace");
-        return new QName(namespace, serviceName);
+    protected TracConnector getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
+        return tracConnector;
     }
 
+    public void setTracConnector(TracConnector tracConnector) {
+        this.tracConnector = tracConnector;
+    }
 }
