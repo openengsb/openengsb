@@ -23,7 +23,7 @@ import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.IssuesDomain;
 
 /**
- * @org.apache.xbean.XBean element="issuesEndpoint"
+ * @org.apache.xbean.XBean element="tracEndpoint"
  *                         description="Trac Issues Endpoint"
  */
 public class TracEndpoint extends LinkingEndpoint<IssuesDomain> {

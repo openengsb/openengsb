@@ -96,7 +96,7 @@
               <goal>mapping</goal>
             </goals>
             <configuration>
-              <namespace>http://www.openengsb.org/connector/issues/trac/1.0</namespace>
+              <namespace>http://www.openengsb.org/connector/trac/1.0</namespace>
             </configuration>
           </execution>
         </executions>

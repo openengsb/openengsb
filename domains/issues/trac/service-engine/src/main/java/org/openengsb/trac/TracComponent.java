@@ -22,7 +22,7 @@ import java.util.List;
 import org.apache.servicemix.common.DefaultComponent;
 
 /**
- * @org.apache.xbean.XBean element="issuesComponent"
+ * @org.apache.xbean.XBean element="tracComponent"
  *                         description="Trac Issue Tracker Component"
  */
 public class TracComponent extends DefaultComponent {

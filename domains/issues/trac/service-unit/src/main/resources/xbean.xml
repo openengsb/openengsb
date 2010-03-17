@@ -17,9 +17,9 @@
     limitations under the License.
 
 -->
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:trac="http://www.openengsb.org/connector/issues/trac/1.0"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:trac="http://www.openengsb.org/connector/trac/1.0"
   xmlns:openengsb="http://openengsb.org/serviceunits" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:isu="urn:openengsb:issues"
+  xmlns:trc="urn:openengsb:trac"
   xsi:schemaLocation="
   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
   
@@ -29,15 +29,15 @@
     <property name="basicPassword" value="user" />
   </bean>
   
-  <bean id="client" class="org.apache.xmlrpc.client.XmlRpcClient">
+  <bean id="client" class="org.openengsb.trac.xmlrpc.XmlRpcClientSpringHelper">
     <property name="config" ref="config" />
   </bean>
   
   <bean id="proxy" class="org.openengsb.trac.xmlrpc.TrackerDynamicProxy">
-    <property name="client" ref="client" />
+    <constructor-arg index="0" ref="client" />
   </bean>
   
-  <bean id="ticket" factory-bean="proxy" factory-method="getInstance">
+  <bean id="ticket" factory-bean="proxy" factory-method="newInstance">
     <constructor-arg index="0"><value type="java.lang.Class">org.openengsb.trac.xmlrpc.Ticket</value></constructor-arg>
   </bean>
 
@@ -45,6 +45,6 @@
     <property name="ticket" ref="ticket" />
   </bean>
   
-  <trac:issuesEndpoint service="isu:issuesService" endpoint="issuesEndpoint" tracConnector="#tracConnector" />
+  <trac:tracEndpoint service="trc:tracService" endpoint="tracEndpoint" tracConnector="#tracConnector" />
 
 </beans>
