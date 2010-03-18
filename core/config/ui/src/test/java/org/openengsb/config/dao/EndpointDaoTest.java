@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.config.test.unit.dao;
+package org.openengsb.config.dao;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;

@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.config.test.unit.dao;
+package org.openengsb.config.dao;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
