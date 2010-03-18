@@ -381,6 +381,20 @@
       <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
+    <contributor>
+      <name>Michael Heil</name>
+      <email>michael.heil [at] chello.at</email>
+      <organization>Vienna University of Technology</organization>
+      <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Lukas Puschmann</name>
+      <email>lukas.puschmann [at] gmx.at</email>
+      <organization>Vienna University of Technology</organization>
+      <organizationUrl>http://ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+    </contributor>
   </contributors>
 
   <build>
