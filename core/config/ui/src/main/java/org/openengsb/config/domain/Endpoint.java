@@ -34,7 +34,7 @@ import javax.persistence.OneToMany;
 import com.google.common.collect.Maps;
 
 @Entity
-@NamedQueries( { @NamedQuery(name = "Endpoint.findAll", query = "from Endpoint") })
+@NamedQueries( { @NamedQuery(name = "Endpoint.findAll", query = "select e from Endpoint e") })
 @SuppressWarnings("serial")
 public class Endpoint extends AbstractDomainObject {
     @Id
@@ -48,7 +48,20 @@ public class Endpoint extends AbstractDomainObject {
     private String endpointType;
     @OneToMany(mappedBy = "endpoint", cascade = { CascadeType.ALL })
     @MapKey(name = "key")
-    private Map<String, KeyValue> values;
+    private Map<String, Attribute> attributes;
+
+    public Endpoint() {
+        name = "";
+        componentType = "";
+        endpointType = "";
+        attributes = Maps.newHashMap();
+    }
+
+    public Endpoint(String name, ServiceAssembly sa) {
+        super();
+        this.name = name;
+        this.serviceAssembly = sa;
+    }
 
     @Override
     public Long getId() {
@@ -92,18 +105,18 @@ public class Endpoint extends AbstractDomainObject {
         this.endpointType = endpointType;
     }
 
-    public void setValues(Map<String, KeyValue> values) {
-        this.values = values;
+    public Map<String, Attribute> getAttributes() {
+        return attributes;
     }
 
-    public Map<String, KeyValue> getValues() {
-        return values;
+    public void setAttributes(Map<String, Attribute> attributes) {
+        this.attributes = attributes;
     }
 
     public Map<String, String> getDetachedValues() {
         Map<String, String> map = Maps.newHashMap();
-        for (Map.Entry<String, KeyValue> e : values.entrySet()) {
-            map.put(e.getKey(), e.getValue().getValue());
+        for (Map.Entry<String, Attribute> e : attributes.entrySet()) {
+            map.put(e.getKey(), e.getValue().toStringValue());
         }
         return map;
     }

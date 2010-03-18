@@ -31,7 +31,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 @Entity
-@NamedQueries( { @NamedQuery(name = "ServiceAssembly.findAll", query = "from ServiceAssembly") })
+@NamedQueries( { @NamedQuery(name = "ServiceAssembly.findAll", query = "select sa from ServiceAssembly sa") })
 @SuppressWarnings("serial")
 public class ServiceAssembly extends AbstractDomainObject {
     @Id
@@ -44,6 +44,11 @@ public class ServiceAssembly extends AbstractDomainObject {
 
     public ServiceAssembly() {
         name = "";
+        endpoints = new ArrayList<Endpoint>();
+    }
+
+    public ServiceAssembly(String name) {
+        this.name = name;
         endpoints = new ArrayList<Endpoint>();
     }
 

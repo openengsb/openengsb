@@ -21,28 +21,26 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 
 @Entity
-@NamedQueries( { @NamedQuery(name = "KeyValue.findAll", query = "from KeyValue") })
-@SuppressWarnings("serial")
-public class KeyValue extends AbstractDomainObject {
+@Inheritance
+public abstract class Attribute extends AbstractDomainObject {
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String key;
-    private String value;
     @ManyToOne(optional = false)
     private Endpoint endpoint;
 
-    public KeyValue() {
+    public Attribute() {
     }
 
-    public KeyValue(Endpoint endpoint, String key, String value) {
+    public Attribute(Endpoint endpoint, String key) {
         this.key = key;
-        this.value = value;
         this.endpoint = endpoint;
     }
 
@@ -64,14 +62,6 @@ public class KeyValue extends AbstractDomainObject {
         this.key = key;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public Endpoint getEndpoint() {
         return endpoint;
     }
@@ -79,4 +69,6 @@ public class KeyValue extends AbstractDomainObject {
     public void setEndpoint(Endpoint endpoint) {
         this.endpoint = endpoint;
     }
+
+    protected abstract String toStringValue();
 }

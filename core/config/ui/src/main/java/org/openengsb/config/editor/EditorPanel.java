@@ -29,34 +29,30 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.config.dao.EndpointDao;
+import org.openengsb.config.domain.Endpoint;
+import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.editor.fields.AbstractField;
-import org.openengsb.config.editor.fields.CheckboxField;
 import org.openengsb.config.editor.fields.DropdownChoiceField;
 import org.openengsb.config.editor.fields.InputField;
-import org.openengsb.config.jbi.BeanInfo;
 import org.openengsb.config.jbi.types.AbstractType;
-import org.openengsb.config.jbi.types.BoolType;
-import org.openengsb.config.jbi.types.ChoiceType;
-import org.openengsb.config.jbi.types.RefType;
-import org.openengsb.config.service.AssemblyService;
+import org.openengsb.config.jbi.types.ServiceEndpointTargetType;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 @SuppressWarnings("serial")
 public abstract class EditorPanel extends Panel {
-    private final String componentId;
     private final FieldInfos fieldInfos;
     private final Map<String, String> map;
     @SpringBean
-    private AssemblyService assemblyService;
+    private EndpointDao endpointDao;
 
-    public EditorPanel(String id, String componentId, FieldInfos fieldInfos, Map<String, String> map) {
+    public EditorPanel(String id, ServiceAssembly sa, FieldInfos fieldInfos, Map<String, String> map) {
         super(id);
-        this.componentId = componentId;
         this.fieldInfos = fieldInfos;
         this.map = map;
-        createForm();
+        createForm(sa);
     }
 
     public Map<String, String> getValues() {
@@ -65,8 +61,8 @@ public abstract class EditorPanel extends Panel {
 
     public abstract void onSubmit();
 
-    @SuppressWarnings( { "unchecked", "serial" })
-    private void createForm() {
+    @SuppressWarnings("unchecked")
+    private void createForm(ServiceAssembly sa) {
         Form<?> form = new Form("form") {
             @Override
             protected void onSubmit() {
@@ -84,25 +80,39 @@ public abstract class EditorPanel extends Panel {
             fields.add(row);
             ResourceModel labelModel = new ResourceModel(fieldInfos.getName() + '.' + f.getName());
             row.add(new Label("name", labelModel));
-            row.add(getEditor(f, new MapModel<String, String>(map, f.getName())).setLabel(labelModel));
+            row.add(getEditor(sa, f, new MapModel<String, String>(map, f.getName())).setLabel(labelModel));
         }
     }
 
-    private AbstractField getEditor(AbstractType type, IModel<String> model) {
-        if (type.getClass().equals(BoolType.class)) {
-            return new CheckboxField("editor", model, type);
-        } else if (type.getClass().equals(ChoiceType.class)) {
-            return new DropdownChoiceField("editor", model, (ChoiceType) type);
-        } else if (type.getClass().equals(RefType.class)) {
-            List<BeanInfo> beans = assemblyService.getBeansForType(((RefType) type).getTheClass());
-            List<String> values = Lists.transform(beans, new Function<BeanInfo,String>() {
-                public String apply(BeanInfo input) {
-                    return input.getMap().get("id");
+    private AbstractField getEditor(ServiceAssembly sa, AbstractType type, IModel<String> model) {
+        if (type.getClass().equals(ServiceEndpointTargetType.class)) {
+            List<Endpoint> endpoints = endpointDao.findByServiceAssembly(sa);
+            List<String> values = Lists.transform(endpoints, new Function<Endpoint, String>() {
+                public String apply(Endpoint e) {
+                    return e.getName();
                 }
             });
             return new DropdownChoiceField("editor", model, type, values);
         } else {
             return new InputField("editor", model, type);
         }
+
+        // if (type.getClass().equals(BoolType.class)) {
+        // return new CheckboxField("editor", model, type);
+        // } else if (type.getClass().equals(ChoiceType.class)) {
+        // return new DropdownChoiceField("editor", model, (ChoiceType) type);
+        // } else if (type.getClass().equals(RefType.class)) {
+        // List<BeanInfo> beans = assemblyService.getBeansForType(((RefType)
+        // type).getTheClass());
+        // List<String> values = Lists.transform(beans, new
+        // Function<BeanInfo,String>() {
+        // public String apply(BeanInfo input) {
+        // return input.getMap().get("id");
+        // }
+        // });
+        // return new DropdownChoiceField("editor", model, type, values);
+        // } else {
+        // return new InputField("editor", model, type);
+        // }
     }
 }

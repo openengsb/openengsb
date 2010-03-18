@@ -25,8 +25,10 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.config.dao.EndpointDao;
 import org.openengsb.config.dao.ServiceAssemblyDao;
+import org.openengsb.config.domain.Attribute;
 import org.openengsb.config.domain.Endpoint;
-import org.openengsb.config.domain.KeyValue;
+import org.openengsb.config.domain.ReferenceAttribute;
+import org.openengsb.config.domain.ValueAttribute;
 import org.openengsb.config.editor.EditorPanel;
 import org.openengsb.config.editor.FieldInfos;
 import org.openengsb.config.jbi.types.AbstractType;
@@ -62,7 +64,7 @@ public class BeanEditorPage extends BasePage {
         fields.addAll(et.getProperties());
         FieldInfos fi = new FieldInfos(ct.getName() + '.' + et.getName(), fields);
 
-        EditorPanel editor = new EditorPanel("editor", ct.getName(), fi, endpoint.getDetachedValues()) {
+        EditorPanel editor = new EditorPanel("editor", endpoint.getServiceAssembly(), fi, endpoint.getDetachedValues()) {
             @Override
             public void onSubmit() {
                 BeanEditorPage.this.onSubmit(getValues());
@@ -75,16 +77,20 @@ public class BeanEditorPage extends BasePage {
         Endpoint endpoint = (Endpoint) getDefaultModelObject();
 
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            KeyValue kv = endpoint.getValues().get(entry.getKey());
-            if (kv == null) {
-                endpoint.getValues().put(entry.getKey(), new KeyValue(endpoint, entry.getKey(), entry.getValue()));
+            Attribute a = endpoint.getAttributes().get(entry.getKey());
+            if (a instanceof ValueAttribute) {
+                ValueAttribute va = (ValueAttribute)a;
+                va.setValue(entry.getValue());
+            } else if (a instanceof ReferenceAttribute) {
+                ReferenceAttribute ra = (ReferenceAttribute)a;
+                ra.setReference(dao.findByName(entry.getValue()));
             } else {
-                kv.setValue(entry.getValue());
+                throw new UnsupportedOperationException();
             }
         }
-
-        endpoint.setName(endpoint.getValues().get("service").getValue() + "."
-                + endpoint.getValues().get("endpoint").getValue());
+        
+        endpoint.setName(((ValueAttribute)endpoint.getAttributes().get("service")).getValue() + "."
+                + ((ValueAttribute)endpoint.getAttributes().get("endpoint")).getValue());
         dao.persist(endpoint);
 
         RequestCycle.get().setResponsePage(

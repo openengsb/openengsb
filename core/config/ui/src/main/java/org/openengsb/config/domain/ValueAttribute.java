@@ -15,25 +15,35 @@
    limitations under the License.
 
  */
-package org.openengsb.config.dao;
+package org.openengsb.config.domain;
 
-import java.util.List;
+import javax.persistence.Entity;
 
-import org.openengsb.config.domain.Endpoint;
-import org.openengsb.config.domain.ServiceAssembly;
+@Entity
+public class ValueAttribute extends Attribute {
+    private static final long serialVersionUID = 1L;
 
-public interface EndpointDao extends BaseDao<Endpoint> {
-    /**
-     * Returns the endpoint with the unique name or null if no endpoints with
-     * the given name exists.
-     *
-     * @param name the unique name of the endpoint
-     */
-    Endpoint findByName(String name);
+    private String value;
 
-    /**
-     * Returns a list of all endpoints ordered by their name for the given
-     * @{code ServiceAssembly}.
-     */
-    List<Endpoint> findByServiceAssembly(ServiceAssembly sa);
+    public ValueAttribute() {
+        value = "";
+    }
+
+    public ValueAttribute(Endpoint endpoint, String key, String value) {
+        super(endpoint, key);
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    @Override
+    protected String toStringValue() {
+        return value;
+    }
 }

@@ -17,11 +17,31 @@
  */
 package org.openengsb.config.dao.jpa;
 
+import java.util.List;
+
+import javax.persistence.NoResultException;
+
 import org.openengsb.config.dao.EndpointDao;
 import org.openengsb.config.domain.Endpoint;
+import org.openengsb.config.domain.ServiceAssembly;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public class JpaEndpointDao extends JpaBaseDao<Endpoint> implements EndpointDao {
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Endpoint> findByServiceAssembly(ServiceAssembly sa) {
+        return em.createQuery("select e from Endpoint e where e.serviceAssembly = :sa order by name")
+                .setParameter("sa", sa).getResultList();
+    }
 
+    @Override
+    public Endpoint findByName(String name) {
+        try {
+            return (Endpoint) em.createQuery("select e from Endpoint e where e.name = :name")
+                    .setParameter("name", name).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }

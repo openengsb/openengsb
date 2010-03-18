@@ -40,7 +40,7 @@ public class ServiceAssemblyDaoTest {
     private ServiceAssemblyDao dao;
 
     @Test
-    public void persist_persistingValidSa_persistsSaToDatabase() {
+    public void persist_validSa_persistsSaToDatabase() {
         ServiceAssembly sa = new ServiceAssembly();
         sa.setName("a");
         dao.persist(sa);

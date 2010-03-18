@@ -18,7 +18,6 @@
 package org.openengsb.config.view;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.html.basic.Label;
@@ -36,13 +35,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.config.dao.EndpointDao;
 import org.openengsb.config.dao.ServiceAssemblyDao;
 import org.openengsb.config.domain.Endpoint;
-import org.openengsb.config.domain.KeyValue;
+import org.openengsb.config.domain.ReferenceAttribute;
 import org.openengsb.config.domain.ServiceAssembly;
+import org.openengsb.config.domain.ValueAttribute;
 import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.EndpointType;
+import org.openengsb.config.jbi.types.ServiceEndpointTargetType;
 import org.openengsb.config.model.Models;
-
-import com.google.common.collect.Maps;
 
 public class ShowServiceAssemblyPage extends BasePage {
     public EndpointType selected;
@@ -93,18 +92,16 @@ public class ShowServiceAssemblyPage extends BasePage {
                 Endpoint endpoint = new Endpoint();
                 ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this.getDefaultModelObject();
                 endpoint.setServiceAssembly(sa);
-                endpoint.setName("");
-                endpoint.setComponentType(selected.getParent().getName());
                 endpoint.setEndpointType(selected.getName());
-                HashMap<String, KeyValue> map = Maps.newHashMap();
+                endpoint.setComponentType(selected.getParent().getName());
                 for (AbstractType t : selected.getAttributes()) {
-                    KeyValue kv = new KeyValue();
-                    kv.setKey(t.getName());
-                    kv.setValue(t.getDefaultValue());
-                    kv.setEndpoint(endpoint);
-                    map.put(t.getName(), kv);
+                    if (t.getClass().equals(ServiceEndpointTargetType.class)) {
+                        endpoint.getAttributes().put(t.getName(), new ReferenceAttribute(endpoint, t.getName(), null));
+                    } else {
+                        endpoint.getAttributes().put(t.getName(),
+                                new ValueAttribute(endpoint, t.getName(), t.getDefaultValue()!=null?t.getDefaultValue():""));
+                    }
                 }
-                endpoint.setValues(map);
                 RequestCycle.get().setResponsePage(new BeanEditorPage(endpoint));
             }
         };
