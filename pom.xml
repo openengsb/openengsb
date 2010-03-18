@@ -309,19 +309,8 @@
       <roles>
         <role>Developer</role>
       </roles>
-    </developer>
-    <developer>
-      <id>apu</id>
-      <name>Alexander Pucher</name>
-      <email>engsb [at] alexander-pucher.com</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
+     </developer>
+     <developer>
       <id>cle</id>
       <name>Christoph Leiter</name>
       <email>openengsb [at] christophleiter.com</email>
@@ -356,6 +345,13 @@
     <contributor>
       <name>Christoph Zehetner</name>
       <email>christoph.zehetner [at] gmx.at</email>
+      <organization>Vienna University of Technology</organization>
+      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Alexander Pucher</name>
+      <email>engsb [at] alexander-pucher.com</email>
       <organization>Vienna University of Technology</organization>
       <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
