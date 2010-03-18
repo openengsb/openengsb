@@ -17,10 +17,6 @@
  */
 package org.openengsb.xmpp;
 
-import java.util.Map;
-import java.util.Properties;
-import java.util.Map.Entry;
-
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
@@ -31,28 +27,14 @@ import org.openengsb.drools.NotificationDomain;
  *                         description="Xmpp Notification Endpoint"
  */
 public class XmppEndpoint extends LinkingEndpoint<NotificationDomain> {
-
+    private XmppNotifier xmppNotifier;
+    
     @Override
     protected NotificationDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-        Properties props = getPropertiesFromContext(contextHelper);
-
-        String user = contextHelper.getValue("notification/xmpp/user");
-        String password = contextHelper.getValue("notification/xmpp/password");
-        String server = contextHelper.getValue("notification/xmpp/server");
-        String port = contextHelper.getValue("notification/xmpp/port");
-
-        return new XmppNotifier(server, port, user, password);
+        return xmppNotifier;
     }
 
-    private Properties getPropertiesFromContext(ContextHelper contextHelper) {
-
-        Map<String, String> props = contextHelper.getAllValues("notification/xmpp/config");
-
-        Properties properties = new Properties();
-        for (Entry<String, String> entry : props.entrySet()) {
-            properties.setProperty(entry.getKey(), entry.getValue());
-        }
-        return properties;
+    public void setXmppNotifier(XmppNotifier xmppNotifier) {
+        this.xmppNotifier = xmppNotifier;
     }
-
 }

@@ -18,129 +18,134 @@
 package org.openengsb.xmpp;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
-import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
-
 import org.openengsb.drools.NotificationDomain;
 import org.openengsb.drools.model.Attachment;
 import org.openengsb.drools.model.Notification;
 
 public class XmppNotifier implements NotificationDomain {
 
-    private String user;
-    private String password;
-
-    private String server;
-    private int port;
-
     private XMPPConnection connection;
+    private String password;
+    private String resources;
 
-    public XmppNotifier(String server, String port, String user, String password) {
+    private FileTransferManager transferManager;
+
+    private String user;
+
+    public XmppNotifier(String user, String password, String resources) {
         this.user = user;
         this.password = password;
-
-        if(server != null){
-            this.server = server;
-        }else{
-            this.server = "localhost";
-        }
-        try {
-            this.port = Integer.parseInt(port);
-        } catch (Exception e) {
-            this.port = 5222;
-        }
+        this.resources = resources;
     }
 
-    public void notify(Notification notification) {
-        this.connect(this.server, this.port);
-
-        this.login(this.user, this.password, "/openengsb/xmppNotifer");
-
-        this.sendMessage(notification.getRecipient(), notification.getSubject(), notification.getMessage(),
-                notification.getAttachments());
-
-        this.disconnect();
-    }
-
-    private void connect(String server, int port) {
+    private void connect() {
         if (this.connection.isConnected()) {
-            throw new XMPPException("Already an open connection, disconnect first.");
+            throw new XMPPNotifierException("Already an open connection, disconnect first.");
         }
-
-        ConnectionConfiguration config = new ConnectionConfiguration(server, port);
-        config.setCompressionEnabled(true);
-        config.setSASLAuthenticationEnabled(true);
-
-        this.connection = new XMPPConnection(config);
 
         try {
             connection.connect();
-        } catch (Exception e) {
-            throw new XMPPException("Connect to server failed", e);
+        } catch (XMPPException e) {
+            throw new XMPPNotifierException("Connect to server failed", e);
         }
     }
 
-    public void disconnect() {
+    private Chat createChat(String target) {
+        ChatManager chatmanager = this.connection.getChatManager();
+        Chat chat = chatmanager.createChat(target, null);
+        return chat;
+    }
+
+    private void disconnect() {
         if (this.connection.isConnected()) {
             this.connection.disconnect();
         }
-    }
-
-    private void login(String username, String password, String resources) {
-        if (connection == null) {
-            throw new XMPPException("Cannot login, if no connection is opened");
-        }
-        try {
-            connection.login(username, password, resources);
-        } catch (Exception e) {
-            throw new XMPPException("Login to server failed", e);
-        }
-    }
-
-    public void sendMessage(String target, String subject, String msg, Attachment[] attach) {
-        if (this.connection == null) {
-            throw new XMPPException("Not connected to XMPP Server.");
-        }
-        ChatManager chatmanager = this.connection.getChatManager();
-
-        Chat chat = chatmanager.createChat(target, null);
-
-        Message message = new Message();
-        message.setSubject(subject);
-        message.setBody(msg);
-        try {
-            chat.sendMessage(message);
-        } catch (Exception e) {
-            throw new XMPPException("Message transmission failed", e);
-        }
-
-        for(Attachment attachment : attach){
-            FileTransferManager transferManager = new FileTransferManager(connection);
-            OutgoingFileTransfer transfer = transferManager.createOutgoingFileTransfer(target);
-            
-            try{
-                transfer.sendStream(new ByteArrayInputStream(attachment.getData()), attachment.getName(), attachment.getData().length, attachment.getType());
-            } catch(Exception e){ 
-                throw new XMPPException("Transmission of Attachment", e);
-            }
-        }
-         
     }
 
     public XMPPConnection getConnection() {
         return connection;
     }
 
+    private void login() {
+        if (connection == null) {
+            throw new XMPPNotifierException("Cannot login because connection is not open");
+        }
+        try {
+            connection.login(this.user, this.password, this.resources);
+        } catch (XMPPException e) {
+            throw new XMPPNotifierException("Login to server failed", e);
+        }
+    }
+
+    public void notify(Notification notification) {
+        this.connect();
+
+        this.login();
+
+        this.sendMessage(notification.getRecipient(), notification.getSubject(), notification.getMessage());
+
+        this.sendAttachments(notification.getRecipient(), notification.getAttachments());
+
+        this.disconnect();
+    }
+
+    private void sendAttachments(String target, Attachment[] attach) {
+        for (Attachment attachment : attach) {
+            OutgoingFileTransfer transfer = transferManager.createOutgoingFileTransfer(target);
+
+            transfer.sendStream(new ByteArrayInputStream(attachment.getData()), attachment.getName(), attachment
+                    .getData().length, attachment.getType());
+        }
+    }
+
+    private void sendMessage(String target, String subject, String msg) {
+        if (this.connection == null) {
+            throw new XMPPNotifierException("Not connected to XMPP Server.");
+        }
+        Chat chat = this.createChat(target);
+
+        Message message = this.setupMessage(subject, msg);
+
+        try {
+            chat.sendMessage(message);
+        } catch (XMPPException e) {
+            throw new XMPPNotifierException("Message transmission failed", e);
+        }
+    }
+
     public void setConnection(XMPPConnection connection) {
         this.connection = connection;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setResources(String resources) {
+        this.resources = resources;
+    }
+
+    public void setTransferManager(FileTransferManager transferManager) {
+        this.transferManager = transferManager;
+    }
+
+    private Message setupMessage(String subject, String body) {
+        Message message = new Message();
+        message.setSubject(subject);
+        message.setBody(body);
+        return message;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
 }

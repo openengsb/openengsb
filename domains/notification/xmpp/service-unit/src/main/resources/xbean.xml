@@ -20,6 +20,27 @@
   xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <xmpp:xmppEndpoint endpoint="xmppEndpoint" service="xmpp:xmppService" />
+  <xmpp:xmppEndpoint endpoint="xmppEndpoint" service="xmpp:xmppService" xmppNotifier="#xmppNotifier" />
+  
+  <bean id="xmppNotifier" class="org.openengsb.xmpp.XmppNotifier"> 
+    <property name="connection" ref="xmppConnection" />
+    <property name="transferManager" ref="xmppTransferManager" />
+    <property name="user" value="openengsb" />
+    <property name="password" value="openengsb" />
+    <property name="resources" value="/openengsb/xmppNotifier" />
+  </bean>
 
+  <bean id="xmppConnection" class="org.jivesoftware.smack.XMPPConnection">
+    <constructor-arg ref="xmppConfig"/>
+  </bean>
+
+  <bean id="xmppConfig" class="org.jivesoftware.smack.ConnectionConfiguration">
+    <constructor-arg value="localhost" />
+    <constructor-arg value="5122" />
+  </bean>
+
+  <bean id="xmppTransferManager" class="org.jivesoftware.smack.FileTransferManager">
+    <constructor-arg ref="xmppConnection" />
+  </bean>
+    
 </beans>

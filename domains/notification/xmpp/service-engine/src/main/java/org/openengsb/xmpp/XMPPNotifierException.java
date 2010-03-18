@@ -17,20 +17,20 @@
  */
 package org.openengsb.xmpp;
 
-public class XMPPException extends RuntimeException {
+public class XMPPNotifierException extends RuntimeException {
 
-    public XMPPException() {
+    public XMPPNotifierException() {
     }
 
-    public XMPPException(String message) {
+    public XMPPNotifierException(String message) {
         super(message);
     }
 
-    public XMPPException(Throwable cause) {
+    public XMPPNotifierException(Throwable cause) {
         super(cause);
     }
 
-    public XMPPException(String message, Throwable cause) {
+    public XMPPNotifierException(String message, Throwable cause) {
         super(message, cause);
     }
 }
