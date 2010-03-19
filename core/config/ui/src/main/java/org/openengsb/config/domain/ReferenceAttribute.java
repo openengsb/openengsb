@@ -45,6 +45,6 @@ public class ReferenceAttribute extends Attribute {
 
     @Override
     protected String toStringValue() {
-        return reference != null ? reference.toString() : "";
+        return reference != null ? reference.getName() : "";
     }
 }
