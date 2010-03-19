@@ -28,8 +28,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.config.dao.EndpointDao;
 import org.openengsb.config.domain.Endpoint;
 import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.editor.fields.AbstractField;
@@ -45,8 +43,6 @@ import com.google.common.collect.Lists;
 public abstract class EditorPanel extends Panel {
     private final FieldInfos fieldInfos;
     private final Map<String, String> map;
-    @SpringBean
-    private EndpointDao endpointDao;
 
     public EditorPanel(String id, ServiceAssembly sa, FieldInfos fieldInfos, Map<String, String> map) {
         super(id);
@@ -86,7 +82,7 @@ public abstract class EditorPanel extends Panel {
 
     private AbstractField getEditor(ServiceAssembly sa, AbstractType type, IModel<String> model) {
         if (type.getClass().equals(ServiceEndpointTargetType.class)) {
-            List<Endpoint> endpoints = endpointDao.findByServiceAssembly(sa);
+            List<Endpoint> endpoints = sa.getEndpoints();
             List<String> values = Lists.transform(endpoints, new Function<Endpoint, String>() {
                 public String apply(Endpoint e) {
                     return e.getName();
