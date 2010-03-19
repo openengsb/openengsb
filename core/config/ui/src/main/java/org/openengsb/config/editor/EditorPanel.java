@@ -36,7 +36,6 @@ import org.openengsb.config.editor.fields.InputField;
 import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.ServiceEndpointTargetType;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 @SuppressWarnings("serial")
@@ -82,13 +81,11 @@ public abstract class EditorPanel extends Panel {
 
     private AbstractField getEditor(ServiceAssembly sa, AbstractType type, IModel<String> model) {
         if (type.getClass().equals(ServiceEndpointTargetType.class)) {
-            List<Endpoint> endpoints = sa.getEndpoints();
-            List<String> values = Lists.transform(endpoints, new Function<Endpoint, String>() {
-                public String apply(Endpoint e) {
-                    return e.getName();
-                }
-            });
-            return new DropdownChoiceField("editor", model, type, values);
+            List<String> names = Lists.newArrayList();
+            for (Endpoint e : sa.getEndpoints()) {
+                names.add(e.getName());
+            }
+            return new DropdownChoiceField("editor", model, type, names);
         } else {
             return new InputField("editor", model, type);
         }
