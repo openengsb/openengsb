@@ -264,6 +264,31 @@ be acceptable but you should try to annotate the problematic statements instead.
  * Install a shutdown hook for test data files. This assures that they will be deleted and the
    project remains in a clean state.
 
+** Naming Scheme
+
+  The maven profiles for running the tests are configured to filter based on the
+naming of the test class. The package layout is just a further convenience for the
+developer for running the tests manually.
+
+ * Unit Tests
+
+  * Filenames end with <<<Test.java>>>
+
+  * located in the normal package structure,
+    i.e. <<<\<outer.project.package\>.\<inner.project.package\>>>>
+
+ * Integration Tests
+
+  * Filenames end with <<<IT.java>>>
+
+  * located in <<<\<outer.project.package\>.it.\<inner.project.package\>>>>
+
+ * User Tests
+
+  * Filenames end with <<<UT.java>>>
+
+  * located in <<<\<outer.project.package\>.ut.\<inner.project.package\>>>>
+
 XML Formatting
 
 * File Format
