@@ -52,8 +52,11 @@ public class TracConnector implements IssuesDomain {
     @Override
     public void updateIssue(Integer id, String comment, Hashtable<Issue.IssueField, Object> changes) {
         Hashtable<String, String> attributes = translateChanges(changes);
-        
+
         try {
+            if (comment == null || comment.equals("")) {
+                comment = "[No comment added by author]";
+            }
             ticket.update(id, comment, attributes);
             log.info("Successfully updated issue " + id + " with " + changes.size() + " changes.");
         } catch (XmlRpcException e) {
