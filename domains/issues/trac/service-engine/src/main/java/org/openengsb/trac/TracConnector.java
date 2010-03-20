@@ -21,11 +21,9 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcException;
 import org.openengsb.drools.IssuesDomain;
-import org.openengsb.drools.model.Comment;
 import org.openengsb.drools.model.Issue;
 import org.openengsb.drools.model.Issue.IssuePriority;
 import org.openengsb.drools.model.Issue.IssueStatus;
@@ -43,28 +41,46 @@ public class TracConnector implements IssuesDomain {
 
         try {
             issueId = ticket.create(issue.getSummary(), issue.getDescription(), attributes);
+            log.info("Successfully created issue " + issue.getSummary() + ", ID is: " + issueId + ".");
         } catch (XmlRpcException e) {
-            log.error("Error creating Issue. XMLRPC failed.");
+            log.error("Error creating issue " + issue.getSummary() + ". XMLRPC call failed.");
         }
 
         return issueId;
     }
 
     @Override
-    public void updateIssue(Issue issue) {
-        throw new NotImplementedException();
+    public void updateIssue(Integer id, String comment, Hashtable<Issue.IssueField, Object> changes) {
+        Hashtable<String, String> attributes = translateChanges(changes);
+        
+        try {
+            ticket.update(id, comment, attributes);
+            log.info("Successfully updated issue " + id + " with " + changes.size() + " changes.");
+        } catch (XmlRpcException e) {
+            log.error("Error updating issue " + id + ". XMLRPC call failed.");
+        }
     }
 
     @Override
     public void deleteIssue(Integer id) {
-        ticket.delete(id);
+        try {
+            ticket.delete(id);
+            log.info("Successfully deleted issue " + id + ".");
+        } catch (XmlRpcException e) {
+            log.error("Error deleting issue " + id + ". XMLRPC call failed.");
+        }
     }
 
     @Override
-    public void addComment(Integer id, Comment comment) {
-        ticket.update(id, comment.getText());
+    public void addComment(Integer id, String comment) {
+        try {
+            ticket.update(id, comment);
+            log.info("Successfully added comment to issue " + id + ".");
+        } catch (XmlRpcException e) {
+            log.error("Error adding comment to issue " + id + ". XMLRPC call failed.");
+        }
     }
-    
+
     /**
      * just for testing to see which fields are available, see TracTest
      */
@@ -74,20 +90,53 @@ public class TracConnector implements IssuesDomain {
 
     private Hashtable<String, String> generateAttributes(Issue issue) {
         Hashtable<String, String> attributes = new Hashtable<String, String>();
-        
+
         if (issue.getOwner() != null) {
             attributes.put("owner", issue.getOwner());
         }
         if (issue.getReporter() != null) {
             attributes.put("reporter", issue.getReporter());
         }
-        
+
         addPriority(attributes, issue.getPriority());
         addStatus(attributes, issue.getStatus());
-        
+
         return attributes;
     }
-    
+
+    private Hashtable<String, String> translateChanges(Hashtable<Issue.IssueField, Object> changes) {
+        Hashtable<String, String> attributes = new Hashtable<String, String>();
+
+        for (Issue.IssueField field : changes.keySet()) {
+            try {
+                switch (field) {
+                case DESCRIPTION:
+                    attributes.put("description", (String) changes.get(field));
+                    break;
+                case OWNER:
+                    attributes.put("owner", (String) changes.get(field));
+                    break;
+                case REPORTER:
+                    attributes.put("reporter", (String) changes.get(field));
+                    break;
+                case SUMMARY:
+                    attributes.put("summary", (String) changes.get(field));
+                    break;
+                case PRIORITY:
+                    addPriority(attributes, (IssuePriority) changes.get(field));
+                    break;
+                case STATUS:
+                    addStatus(attributes, (IssueStatus) changes.get(field));
+                    break;
+                }
+            } catch (ClassCastException e) {
+                log.error("Wrong value provided for field " + field + ": " + changes.get(field).getClass().getName());
+            }
+        }
+
+        return attributes;
+    }
+
     private void addPriority(Hashtable<String, String> attributes, IssuePriority priority) {
         if (priority != null) {
             switch (priority) {
@@ -106,13 +155,13 @@ public class TracConnector implements IssuesDomain {
             case URGENT:
                 attributes.put("priority", "critical");
                 break;
-//            case NONE:
-//                attributes.put("priority", "???");
-//                break;
+            // case NONE:
+            // attributes.put("priority", "???");
+            // break;
             }
         }
     }
-        
+
     private void addStatus(Hashtable<String, String> attributes, IssueStatus status) {
         if (status != null) {
             switch (status) {
@@ -132,4 +181,5 @@ public class TracConnector implements IssuesDomain {
     public void setTicket(Ticket ticket) {
         this.ticket = ticket;
     }
+
 }

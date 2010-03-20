@@ -58,21 +58,21 @@ public interface Ticket {
 
     Vector<?> query(String qstr);
 
-    Integer delete(Integer id);
+    Integer delete(Integer id) throws XmlRpcException;
 
-    Integer create(String summary, String description);
+    Integer create(String summary, String description) throws XmlRpcException;
 
     Integer create(String summary, String description, Hashtable<?, ?> attribute) throws XmlRpcException;
 
-    Integer create(String summary, String description, Hashtable<?, ?> attribute, Boolean notify);
+    Integer create(String summary, String description, Hashtable<?, ?> attribute, Boolean notify) throws XmlRpcException;
 
-    Vector<?> get(Integer id);
+    Vector<?> get(Integer id) throws XmlRpcException;
 
-    Vector<?> update(Integer id, String comment);
+    Vector<?> update(Integer id, String comment) throws XmlRpcException;
 
-    Vector<?> update(Integer id, String comment, Hashtable<?, ?> attributes);
+    Vector<?> update(Integer id, String comment, Hashtable<?, ?> attributes) throws XmlRpcException;
 
-    Vector<?> update(Integer id, String comment, Hashtable<?, ?> attributes, Boolean notify);
+    Vector<?> update(Integer id, String comment, Hashtable<?, ?> attributes, Boolean notify) throws XmlRpcException;
 
     Hashtable<?, ?> changeLog(Integer id);
 

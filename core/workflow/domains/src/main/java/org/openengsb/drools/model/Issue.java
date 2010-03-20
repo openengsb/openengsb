@@ -18,6 +18,10 @@
 package org.openengsb.drools.model;
 
 public class Issue {
+    public enum IssueField {
+        SUMMARY, DESCRIPTION, OWNER, REPORTER, PRIORITY, STATUS
+    }
+    
     public enum IssuePriority {
         IMMEDIATE, URGENT, HIGH, NORMAL, LOW, NONE
     }

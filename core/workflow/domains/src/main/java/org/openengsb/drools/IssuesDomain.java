@@ -17,15 +17,16 @@
  */
 package org.openengsb.drools;
 
-import org.openengsb.drools.model.Comment;
+import java.util.Hashtable;
+
 import org.openengsb.drools.model.Issue;
 
 public interface IssuesDomain extends Domain {
     Integer createIssue(Issue issue);
 
-    void updateIssue(Issue issue);
+    void updateIssue(Integer id, String comment, Hashtable<Issue.IssueField, Object> changes);
 
     void deleteIssue(Integer id);
     
-    void addComment(Integer id, Comment comment);
+    void addComment(Integer id, String comment);
 }
