@@ -25,8 +25,8 @@ import org.apache.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcException;
 import org.openengsb.drools.IssuesDomain;
 import org.openengsb.drools.model.Issue;
-import org.openengsb.drools.model.Issue.IssuePriority;
-import org.openengsb.drools.model.Issue.IssueStatus;
+//import org.openengsb.drools.model.Issue.IssuePriority;
+//import org.openengsb.drools.model.Issue.IssueStatus;
 import org.openengsb.trac.xmlrpc.Ticket;
 
 public class TracConnector implements IssuesDomain {
@@ -50,7 +50,7 @@ public class TracConnector implements IssuesDomain {
     }
 
     @Override
-    public void updateIssue(Integer id, String comment, Hashtable<Issue.IssueField, Object> changes) {
+    public void updateIssue(Integer id, String comment, Hashtable<String, Object> changes) {
         Hashtable<String, String> attributes = translateChanges(changes);
 
         try {
@@ -58,7 +58,7 @@ public class TracConnector implements IssuesDomain {
                 comment = "[No comment added by author]";
             }
             ticket.update(id, comment, attributes);
-            log.info("Successfully updated issue " + id + " with " + changes.size() + " changes.");
+            log.info("Successfully updated issue " + id + " with " + changes.keySet().size() + " changes.");
         } catch (XmlRpcException e) {
             log.error("Error updating issue " + id + ". XMLRPC call failed.");
         }
@@ -107,12 +107,25 @@ public class TracConnector implements IssuesDomain {
         return attributes;
     }
 
-    private Hashtable<String, String> translateChanges(Hashtable<Issue.IssueField, Object> changes) {
+    private Hashtable<String, String> translateChanges(Hashtable<String, Object> changes) {
         Hashtable<String, String> attributes = new Hashtable<String, String>();
 
-        for (Issue.IssueField field : changes.keySet()) {
+        for (String field : changes.keySet()) {
             try {
-                switch (field) {
+            	if(field.equals(Issue.fieldDESCRIPTION)){
+            		attributes.put("description", (String) changes.get(field));
+            	}else if(field.equals(Issue.fieldOWNER)){
+            		attributes.put("owner", (String) changes.get(field));
+            	}else if(field.equals(Issue.fieldREPORTER)){
+            		attributes.put("reporter", (String) changes.get(field));
+            	}else if(field.equals(Issue.fieldSUMMARY)){
+            		attributes.put("summary", (String) changes.get(field));
+            	}else if(field.equals(Issue.fieldPRIORITY)){
+            		addPriority(attributes, (String) changes.get(field));
+            	}else if(field.equals(Issue.fieldSTATUS)){
+            		addStatus(attributes, (String) changes.get(field));
+            	}
+                /*switch (field) {
                 case DESCRIPTION:
                     attributes.put("description", (String) changes.get(field));
                     break;
@@ -131,7 +144,7 @@ public class TracConnector implements IssuesDomain {
                 case STATUS:
                     addStatus(attributes, (IssueStatus) changes.get(field));
                     break;
-                }
+                }*/
             } catch (ClassCastException e) {
                 log.error("Wrong value provided for field " + field + ": " + changes.get(field).getClass().getName());
             }
@@ -140,9 +153,23 @@ public class TracConnector implements IssuesDomain {
         return attributes;
     }
 
-    private void addPriority(Hashtable<String, String> attributes, IssuePriority priority) {
+    private void addPriority(Hashtable<String, String> attributes, String priority) {
         if (priority != null) {
-            switch (priority) {
+        	if(priority.equals(Issue.priorityHIGH)){
+        		attributes.put("priority", "major");
+        	}else if(priority.equals(Issue.priorityIMMEDIATE)){
+        		attributes.put("priority", "blocker");
+        	}
+        	else if(priority.equals(Issue.priorityLOW)){
+        		attributes.put("priority", "trivial");
+        	}
+        	else if(priority.equals(Issue.priorityNORMAL)){
+        		attributes.put("priority", "minor");
+        	}
+        	else if(priority.equals(Issue.priorityURGENT)){
+        		attributes.put("priority", "critical");
+        	}
+            /*switch (priority) {
             case HIGH:
                 attributes.put("priority", "major");
                 break;
@@ -161,13 +188,24 @@ public class TracConnector implements IssuesDomain {
             // case NONE:
             // attributes.put("priority", "???");
             // break;
-            }
+            }*/
         }
     }
 
-    private void addStatus(Hashtable<String, String> attributes, IssueStatus status) {
+    private void addStatus(Hashtable<String, String> attributes, String status) {
         if (status != null) {
-            switch (status) {
+        	if(status.equals(Issue.statusNEW)){
+        		log.info("NEW");
+        		attributes.put("status", "new");
+        	}else if(status.equals(Issue.statusASSIGNED)){
+        		log.info("ASSIGNED");
+        		attributes.put("status", "assigned");
+        	}else if(status.equals(Issue.statusCLOSED)){
+        		log.info("CLOSED");
+        		attributes.put("status", "closed");
+        	}
+        	
+            /*switch (status) {
             case NEW:
                 attributes.put("status", "new");
                 break;
@@ -177,7 +215,7 @@ public class TracConnector implements IssuesDomain {
             case CLOSED:
                 attributes.put("status", "closed");
                 break;
-            }
+            }*/
         }
     }
 

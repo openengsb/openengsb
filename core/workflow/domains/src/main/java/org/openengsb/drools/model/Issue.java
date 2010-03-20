@@ -18,7 +18,7 @@
 package org.openengsb.drools.model;
 
 public class Issue {
-    public enum IssueField {
+    /*public enum IssueField {
         SUMMARY, DESCRIPTION, OWNER, REPORTER, PRIORITY, STATUS
     }
     
@@ -28,15 +28,33 @@ public class Issue {
 
     public enum IssueStatus {
         NEW, ASSIGNED, CLOSED
-    }
-
+    }*/
+	
+	public final static String priorityIMMEDIATE = "IMMEDIATE";
+	public final static String priorityURGENT = "URGEND";
+	public final static String priorityHIGH = "HIGH";
+	public final static String priorityNORMAL = "NORMAL";
+	public final static String priorityLOW = "LOW";
+	public final static String priorityNONE = "NONE";
+	
+	public final static String statusNEW = "NEW";
+	public final static String statusASSIGNED = "ASSIGNED";
+	public final static String statusCLOSED = "CLOSED";
+	
+	public final static String fieldSUMMARY = "SUMMARY";
+	public final static String fieldDESCRIPTION = "DESCRIPTION";
+	public final static String fieldOWNER = "OWNER";
+	public final static String fieldREPORTER = "REPORTER";
+	public final static String fieldPRIORITY = "PRIORITY";
+	public final static String fieldSTATUS = "STATUS";
+	
     private Integer id;
     private String summary;
     private String description;
     private String owner;
     private String reporter;
-    private IssuePriority priority;
-    private IssueStatus status;
+    private String priority;
+    private String status;
 
     public Integer getId() {
         return id;
@@ -78,19 +96,19 @@ public class Issue {
         this.reporter = reporter;
     }
 
-    public IssuePriority getPriority() {
+    public String getPriority() {
         return priority;
     }
 
-    public void setPriority(IssuePriority priority) {
+    public void setPriority(String priority) {
         this.priority = priority;
     }
 
-    public IssueStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(IssueStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

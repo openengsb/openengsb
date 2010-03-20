@@ -51,9 +51,9 @@ public class TracTest {
         i.setSummary(s);
         i.setDescription("testdescription");
         i.setOwner("testowner");
-        i.setPriority(Issue.IssuePriority.URGENT);
+        i.setPriority(Issue.priorityURGENT);
         i.setReporter("testreporter");
-        i.setStatus(Issue.IssueStatus.NEW);
+        i.setStatus(Issue.statusNEW);
         
         Hashtable<String, String> attributes = new Hashtable<String, String>();
         attributes.put("owner", "testowner");
@@ -75,5 +75,16 @@ public class TracTest {
     public void testDeleteIssue() throws XmlRpcException {
         tracConnector.deleteIssue(5);
         Mockito.verify(ticket, Mockito.times(1)).delete(Mockito.eq(5));
+    }
+    
+    @Test
+    public void testUpdateIssue() throws XmlRpcException {
+    	Hashtable<String, Object> changes = new Hashtable<String, Object>();
+    	changes.put(Issue.fieldSTATUS, Issue.statusCLOSED);
+    	Hashtable<String, String> result = new Hashtable<String, String>();
+    	result.put("status", "closed");
+    	tracConnector.updateIssue(3, "Issue closed", changes);
+    	Mockito.verify(ticket, Mockito.times(1)).update(Mockito.eq(3), Mockito.eq("Issue closed"), Mockito.eq(result));
+    	
     }
 }
