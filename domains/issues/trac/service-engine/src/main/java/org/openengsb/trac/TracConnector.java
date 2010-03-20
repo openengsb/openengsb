@@ -28,9 +28,7 @@ import org.openengsb.drools.IssuesDomain;
 import org.openengsb.drools.model.Comment;
 import org.openengsb.drools.model.Issue;
 import org.openengsb.drools.model.Issue.IssuePriority;
-import org.openengsb.drools.model.Issue.IssueResolution;
 import org.openengsb.drools.model.Issue.IssueStatus;
-import org.openengsb.drools.model.Issue.IssueType;
 import org.openengsb.trac.xmlrpc.Ticket;
 
 public class TracConnector implements IssuesDomain {
@@ -76,11 +74,6 @@ public class TracConnector implements IssuesDomain {
 
     private Hashtable<String, String> generateAttributes(Issue issue) {
         Hashtable<String, String> attributes = new Hashtable<String, String>();
-
-        addPriority(attributes, issue.getPriority());
-        addType(attributes, issue.getType());
-        addStatus(attributes, issue.getStatus());
-        addResolution(attributes, issue.getResolution());
         
         if (issue.getOwner() != null) {
             attributes.put("owner", issue.getOwner());
@@ -88,9 +81,10 @@ public class TracConnector implements IssuesDomain {
         if (issue.getReporter() != null) {
             attributes.put("reporter", issue.getReporter());
         }
-        if (issue.getAffectedVersion() != null) {
-            attributes.put("version", issue.getAffectedVersion());
-        }
+        
+        addPriority(attributes, issue.getPriority());
+        addStatus(attributes, issue.getStatus());
+        
         return attributes;
     }
     
@@ -112,68 +106,24 @@ public class TracConnector implements IssuesDomain {
             case URGENT:
                 attributes.put("priority", "critical");
                 break;
-            }
-        }
-    }
-    
-    private void addType(Hashtable<String, String> attributes, IssueType type) {
-        if (type != null) {
-            switch (type) {
-            case BUG:
-                attributes.put("type", "defect");
-                break;
-            case IMPROVEMENT:
-                attributes.put("type", "enhancement");
-                break;
-//            case NEW_FEATURE:
-//                attributes.put("type", "feature");
+//            case NONE:
+//                attributes.put("priority", "???");
 //                break;
-            case TASK:
-                attributes.put("type", "task");
-                break;
             }
         }
     }
-    
+        
     private void addStatus(Hashtable<String, String> attributes, IssueStatus status) {
         if (status != null) {
             switch (status) {
-            case ASSIGNED:
-                attributes.put("status", "assigned");
-                break;
             case NEW:
                 attributes.put("status", "new");
                 break;
+            case ASSIGNED:
+                attributes.put("status", "assigned");
+                break;
             case CLOSED:
                 attributes.put("status", "closed");
-                break;
-            }
-        }
-    }
-    
-    private void addResolution(Hashtable<String, String> attributes, IssueResolution resolution) {
-        if (resolution != null) {
-            switch (resolution) {
-            case FIXED:
-                attributes.put("resolution", "fixed");
-                break;
-            case INVALID:
-                attributes.put("resolution", "invalid");
-                break;
-            case NOTFIXABLE:
-                attributes.put("resolution", "wontfix");
-                break;
-            case WONTFIX:
-                attributes.put("resolution", "wontfix");
-                break;
-            case DUPLICATE:
-                attributes.put("resolution", "duplicate");
-                break;
-            case WORKSFORME:
-                attributes.put("resolution", "worksforme");
-                break;
-            case UNABLETOPRODUCE:
-                attributes.put("resolution", "worksforme");
                 break;
             }
         }

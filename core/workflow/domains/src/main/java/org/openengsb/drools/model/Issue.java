@@ -17,41 +17,22 @@
  */
 package org.openengsb.drools.model;
 
-import java.util.List;
-
 public class Issue {
     public enum IssuePriority {
-        IMMEDIATE, URGENT, HIGH, NORMAL, LOW
-    }
-
-    public enum IssueResolution {
-        FIXED, INVALID, WONTFIX, DUPLICATE, WORKSFORME, UNABLETOPRODUCE, NOTFIXABLE
-    }
-
-    public enum IssueSeverity {
-        BLOCK, CRASH, MAJOR, MINOR, TWEAK, TEXT, TRIVIAL, FEATURE
+        IMMEDIATE, URGENT, HIGH, NORMAL, LOW, NONE
     }
 
     public enum IssueStatus {
         NEW, ASSIGNED, CLOSED
     }
 
-    public enum IssueType {
-        BUG, IMPROVEMENT, NEW_FEATURE, TASK
-    }
-
     private Integer id;
     private String summary;
     private String description;
-    private String reporter;
     private String owner;
-    private String affectedVersion;
+    private String reporter;
     private IssuePriority priority;
-    private IssueSeverity severity;
-    private IssueResolution resolution;
     private IssueStatus status;
-    private IssueType type;
-    private List<Comment> comments;
 
     public Integer getId() {
         return id;
@@ -77,14 +58,6 @@ public class Issue {
         this.description = description;
     }
 
-    public String getReporter() {
-        return reporter;
-    }
-
-    public void setReporter(String reporter) {
-        this.reporter = reporter;
-    }
-
     public String getOwner() {
         return owner;
     }
@@ -93,12 +66,12 @@ public class Issue {
         this.owner = owner;
     }
 
-    public String getAffectedVersion() {
-        return affectedVersion;
+    public String getReporter() {
+        return reporter;
     }
 
-    public void setAffectedVersion(String affectedVersion) {
-        this.affectedVersion = affectedVersion;
+    public void setReporter(String reporter) {
+        this.reporter = reporter;
     }
 
     public IssuePriority getPriority() {
@@ -109,44 +82,12 @@ public class Issue {
         this.priority = priority;
     }
 
-    public IssueSeverity getSeverity() {
-        return severity;
-    }
-
-    public void setSeverity(IssueSeverity severity) {
-        this.severity = severity;
-    }
-
-    public IssueResolution getResolution() {
-        return resolution;
-    }
-
-    public void setResolution(IssueResolution resolution) {
-        this.resolution = resolution;
-    }
-
     public IssueStatus getStatus() {
         return status;
     }
 
     public void setStatus(IssueStatus status) {
         this.status = status;
-    }
-
-    public IssueType getType() {
-        return type;
-    }
-
-    public void setType(IssueType type) {
-        this.type = type;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 
 }
