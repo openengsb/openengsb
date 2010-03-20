@@ -25,8 +25,6 @@ import org.apache.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcException;
 import org.openengsb.drools.IssuesDomain;
 import org.openengsb.drools.model.Issue;
-//import org.openengsb.drools.model.Issue.IssuePriority;
-//import org.openengsb.drools.model.Issue.IssueStatus;
 import org.openengsb.trac.xmlrpc.Ticket;
 
 public class TracConnector implements IssuesDomain {
@@ -125,26 +123,6 @@ public class TracConnector implements IssuesDomain {
             	}else if(field.equals(Issue.fieldSTATUS)){
             		addStatus(attributes, (String) changes.get(field));
             	}
-                /*switch (field) {
-                case DESCRIPTION:
-                    attributes.put("description", (String) changes.get(field));
-                    break;
-                case OWNER:
-                    attributes.put("owner", (String) changes.get(field));
-                    break;
-                case REPORTER:
-                    attributes.put("reporter", (String) changes.get(field));
-                    break;
-                case SUMMARY:
-                    attributes.put("summary", (String) changes.get(field));
-                    break;
-                case PRIORITY:
-                    addPriority(attributes, (IssuePriority) changes.get(field));
-                    break;
-                case STATUS:
-                    addStatus(attributes, (IssueStatus) changes.get(field));
-                    break;
-                }*/
             } catch (ClassCastException e) {
                 log.error("Wrong value provided for field " + field + ": " + changes.get(field).getClass().getName());
             }
@@ -169,26 +147,6 @@ public class TracConnector implements IssuesDomain {
         	else if(priority.equals(Issue.priorityURGENT)){
         		attributes.put("priority", "critical");
         	}
-            /*switch (priority) {
-            case HIGH:
-                attributes.put("priority", "major");
-                break;
-            case IMMEDIATE:
-                attributes.put("priority", "blocker");
-                break;
-            case LOW:
-                attributes.put("priority", "trivial");
-                break;
-            case NORMAL:
-                attributes.put("priority", "minor");
-                break;
-            case URGENT:
-                attributes.put("priority", "critical");
-                break;
-            // case NONE:
-            // attributes.put("priority", "???");
-            // break;
-            }*/
         }
     }
 
@@ -204,18 +162,6 @@ public class TracConnector implements IssuesDomain {
         		log.info("CLOSED");
         		attributes.put("status", "closed");
         	}
-        	
-            /*switch (status) {
-            case NEW:
-                attributes.put("status", "new");
-                break;
-            case ASSIGNED:
-                attributes.put("status", "assigned");
-                break;
-            case CLOSED:
-                attributes.put("status", "closed");
-                break;
-            }*/
         }
     }
 

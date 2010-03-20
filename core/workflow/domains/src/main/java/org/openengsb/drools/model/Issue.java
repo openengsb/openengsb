@@ -18,17 +18,6 @@
 package org.openengsb.drools.model;
 
 public class Issue {
-    /*public enum IssueField {
-        SUMMARY, DESCRIPTION, OWNER, REPORTER, PRIORITY, STATUS
-    }
-    
-    public enum IssuePriority {
-        IMMEDIATE, URGENT, HIGH, NORMAL, LOW, NONE
-    }
-
-    public enum IssueStatus {
-        NEW, ASSIGNED, CLOSED
-    }*/
 	
 	public final static String priorityIMMEDIATE = "IMMEDIATE";
 	public final static String priorityURGENT = "URGEND";
