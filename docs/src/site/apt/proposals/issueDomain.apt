@@ -111,130 +111,71 @@ Issue Tracker Domain
 |votes|int|You can vote to prioritise the open issue. This option is for opensource project to integrate all internal and external members|-|-|+|-|
 *------------------+--------+---------------------+----------+----------+------------+--------+
 
-** Comparison of issue trackers
+**Issue Object
 
-	1) component vs. project/product
-	The component field has different meanings accross the issue trackers.
-	Bugzilla supports a project object(more abstract), that has more components where the 
-	issues are noted. Other do not have this abstraction and the component describes the project. 
-	For example trac describe it like this: "The project module or subsystem this ticket concerns. "
+  We decided to use the least common delimiter to keep the issue object as small as possible while still containing all the basic features.
+  
+  Used Fields:
+  
+  * id
+  
+  * summary
+  
+  * description
+  
+  * owner
+  
+  * reporter
+  
+  * priority (immediate, urgent, high, normal, low, none)
+  
+  * status (new, assigned, closed)
+  
+  []
 
-	Mantis, Trac(is named component but it is described differently) use project objects to add issue. 
-	Github only supports label that describes the component, the assigend person or the build. 
-	For integrating GitHub to TiTA you should define the labels to filter it and use the content of it. 
-	Bugzilla design a additional layer that has to be mapped for the TiTA interface.
+  We are using constants for priority and status instead of enums because they can't be accessed in Drools which will most likely get fixed with version 5.1
+  
+  Comments are added to the issue via the addComment function of the domain.
+  
+**Issue Domain
 
-	2) Status vs. Resolution
-	The issue tracker have different statuses. For example, GitHub has only three, not realy typically states: Open, Unread, Closed.
-	For the interface a enum of all declared states is defined to support more than one issue tracker for the 
-	resolution, but for the mappind of the issue status only that all provide.
+  The domain currently implements four basic methods (see interface description):
+  
+  * createIssue
+  
+  * addComment
+  
+  * updateIssue
+  
+  * deleteIssue
+  
+  []
+
+**Projects
+
+  The project will be handled by the connectors. Basically there will be one endpoint per project per connector.
+  The connector needs to add the issue to the right project.
+  See tracConnector for Examples
 
 
-* IssueNotes
-
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|<<Fields/Options>>|<<Type>>|<<Short description>>|<<Mantis>>|<<GitHub>>|<<Bugzilla>>|<<Trac>>|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|id|int|Identifies the issue note|+|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|reporter|String|The person who wrote the note.|+|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|text|String|The comment itself.|+|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|view state|String|The view state describes the point of view(public, private, any)|+|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|date submitted|Date|The time when the note was submitted.|+|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|last modified|Date|The time when the note was the last time updated.|+|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|The time when the note was the last time updated.|int|estimated work time|-|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-
-* Project for Issues
-
-	WebService Object for Bugzilla is unstable, but the object extists in the backend. The additional fields of Bugzilla are not listed.
-
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|<<Fields/Options>>|<<Type>>|<<Short description>>|<<Mantis>>|<<GitHub>>|<<Bugzilla>>|<<Trac>>|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|id|int|Identifies the project.|+|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|name|String|The name of the project.|+|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|status|String|A status that describes the whole project..|+|-|-|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|enabled|boolean|To lock any activities for the project.|+|-|-|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|view state|String|The view state describes the point of view(public, private, any)|+|-|-|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|access min|Object|To manage the access to the project.|+|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|file path|String|File path to the project in the filesystem.|+|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|description|String|The time when the note was the last time updated.|+|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|subproject|List|Defined supbprojects for the project.|+|-|+|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-|inherit_global|boolean|no info|+|-|-|-|
-*------------------+--------+---------------------+----------+----------+------------+--------+
-
-	Subprojects are not included in the actual releases # no support.
 	
 * Interface description
 
 ---
-package org.openengsb.issues.common;
+package org.openengsb.drools;
 
-import org.openengsb.issues.common.exceptions.IssueDomainException;
-import org.openengsb.issues.common.model.Issue;
+import java.util.Hashtable;
 
-/**
- * Interface describing a generic issue domain.
- */
-public interface IssueDomain {
+import org.openengsb.drools.model.Issue;
 
-    /**
-     * Creates an issue.
-     *
-     * @param issue The issue to create.
-     * @return ID of created issue
-     */
-    String createIssue(Issue issue) throws IssueDomainException;
+public interface IssuesDomain extends Domain {
+    Integer createIssue(Issue issue);
 
-    /**
-     * Updates the given issue.
-     *
-     * @param issue The issue to update (the ID of the issue must be set).
-     * @throws IssueDomainException
-     */
-    void updateIssue(Issue issue) throws IssueDomainException;
+    void updateIssue(Integer id, String comment, Hashtable<String, Object> changes);
 
-    /**
-     * Deletes the issue with the given ID.
-     *
-     * @param id ID of the issue being deleted.
-     * @throws IssueDomainException
-     */
-    void deleteIssue(String id) throws IssueDomainException;
-
-}
----
-
-* Exceptions
-
----
-package org.openengsb.issues.common.exceptions;
-
-public class IssueDomainException extends Exception {
-
-    public IssueDomainException(String message) {
-        super(message);
-    }
-
-    public IssueDomainException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
+    void deleteIssue(Integer id);
+    
+    void addComment(Integer id, String comment);
 }
 ---
 
@@ -243,125 +184,50 @@ public class IssueDomainException extends Exception {
 ** Domain object for Issue/Task/Bug
 
 ---
-package org.openengsb.issues.common.model;
-
-import java.util.Date;
-import java.util.List;
+package org.openengsb.drools.model;
 
 public class Issue {
-
-    private String id;
+    private Integer id;
     private String summary;
     private String description;
-    private String reporter;
     private String owner;
-    private String affectedVersion;
-    private IssuePriority priority;
-    private IssueSeverity severity;
-    private IssueResolution resolution;
-    private IssueStatus status;
-    private IssueType type;
-    private List<Comment> comments;
-    private Project project;
-    private Date creationTime;
-    private Date lastChange;
-
-}
----
-
-** Domain object for Comment
-
----
-package org.openengsb.issues.common.model;
-
-import java.util.Date;
-
-public class Comment {
-
-    private String id;
     private String reporter;
-    private String text;
-    private ViewState viewState;
-    private Date creationTime;
-    private Date lastChange;
-
+    private String priority;
+    private String status;
 }
 ---
 
-** Domain object for Project
-
----
-package org.openengsb.issues.common.model;
-
-import java.net.URI;
-import java.util.List;
-
-public class Project {
-
-    private String id;
-    private String name;
-    private ProjectStatus status;
-    private String description;
-    private URI uri;
-    private List<Issue> issues;
-
-}
----
-
-
-** Enums
+** Constants
 
 ---
 /**
- * Describes the possibilities for priorities
+ * Priorities
  */
-public enum IssuePriority {
-	IMMEDIATE, URGENT, HIGH, NORMAL, LOW, NONE
-}
+	public final static String priorityIMMEDIATE = "IMMEDIATE";
+	public final static String priorityURGENT = "URGENT";
+	public final static String priorityHIGH = "HIGH";
+	public final static String priorityNORMAL = "NORMAL";
+	public final static String priorityLOW = "LOW";
+	public final static String priorityNONE = "NONE";
+
 
 /**
- * Describes the possibilities for resolution
+ * Status
  */
-public enum IssueResolution {
-	OPEN, REOPENED, FIXED, INVALID, WONTFIX, 
-        DUPLICATE, WORKSFORM, UNABLETOPRODUCE, 
-        NOTFIXABLE, NOCHANGEREQUIRED, SUSPENDED
-}
+	public final static String statusNEW = "NEW";
+	public final static String statusASSIGNED = "ASSIGNED";
+	public final static String statusCLOSED = "CLOSED";
 
 /**
- * Describes the possibilities for severity
+ * fields that are used for the changes Hashtable in updateIssue
  */
-public enum IssueSeverity {
-	BLOCK, CRASH, MAJOR, MINOR, TWEAK, TEXT, TRIVIAL, FEATURE
-}
-
-/**
- * Describes the possibilities for issue states
- */
-public enum IssueStatus {
-	NEW, ASSIGNED, CLOSED
-}
-
-/**
- * Describes the possibilities for the issue type
- */
-public enum IssueType {
-    BUG, IMPROVEMENT, NEW_FEATURE, TASK
-}
-
-/**
- * Describes the possibilities for project states
- */
-public enum ProjectStatus {
-	OPEN, ENABLED, DISABLE, CLOSED
-}
-
-/**
- * Describes the possibilities for the view state
- */
-public enum ViewState {
-	PUBLIC, PRIVATE, ANY
-}
+	public final static String fieldSUMMARY = "SUMMARY";
+	public final static String fieldDESCRIPTION = "DESCRIPTION";
+	public final static String fieldOWNER = "OWNER";
+	public final static String fieldREPORTER = "REPORTER";
+	public final static String fieldPRIORITY = "PRIORITY";
+	public final static String fieldSTATUS = "STATUS";
+	
 ---
 
 
