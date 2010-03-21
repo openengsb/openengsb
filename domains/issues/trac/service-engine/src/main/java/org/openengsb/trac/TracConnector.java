@@ -48,7 +48,7 @@ public class TracConnector implements IssuesDomain {
     }
 
     @Override
-    public void updateIssue(Integer id, String comment, Hashtable<String, Object> changes) {
+    public void updateIssue(Integer id, String comment, HashMap<String, Object> changes) {
         Hashtable<String, String> attributes = translateChanges(changes);
 
         try {
@@ -105,7 +105,7 @@ public class TracConnector implements IssuesDomain {
         return attributes;
     }
 
-    private Hashtable<String, String> translateChanges(Hashtable<String, Object> changes) {
+    private Hashtable<String, String> translateChanges(HashMap<String, Object> changes) {
         Hashtable<String, String> attributes = new Hashtable<String, String>();
 
         for (String field : changes.keySet()) {

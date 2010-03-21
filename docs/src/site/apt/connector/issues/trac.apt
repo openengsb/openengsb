@@ -16,7 +16,8 @@
 
 connector-issues-trac
 
-  This connector enables OpenEngSB to create issues on a trac instance. You will need to install the {{{http://trac-hacks.org/wiki/XmlRpcPlugin}XmlRpc Plugin}} on your trac instance.
+  This connector enables OpenEngSB to create issues on a trac instance. You will need to install the
+  {{{http://trac-hacks.org/wiki/XmlRpcPlugin}XmlRpc Plugin}} on your trac instance.
 
   The connector implements following methods of the issue domain:
   
@@ -24,7 +25,7 @@ connector-issues-trac
   
   * addComment
   
-  * updateIssue
+  * updateIssue (ATTENTION: Currently not available due to the lack of transportability of a HashMap!)
   
   * deleteIssue
   
@@ -70,7 +71,8 @@ global org.openengsb.drools.IssuesDomain issue
 **Adding your endpoint to the contextstore
 
   Finally you will have to add your projects servicepoint to the contextstore.
-  Insert following lines to the loadIssueConfig() method in contextstore.java (openengsb-core) and replace SERVICENAME(from the xbean.xml), CONTEXTSTORENAME.
+  Insert following lines to the loadIssueConfig() method in contextstore.java (openengsb-core) and replace
+  SERVICENAME(from the xbean.xml), CONTEXTSTORENAME.
 
 ---
   setValue("42/issue/CONTEXTSTORENAME/namespace", "urn:openengsb:trac");

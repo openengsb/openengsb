@@ -18,6 +18,7 @@
 package org.openengsb.trac.test;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 import org.apache.xmlrpc.XmlRpcException;
@@ -81,7 +82,7 @@ public class TracTest {
 
     @Test
     public void testUpdateIssue() throws XmlRpcException {
-        Hashtable<String, Object> changes = new Hashtable<String, Object>();
+        HashMap<String, Object> changes = new HashMap<String, Object>();
         changes.put(Issue.fieldSTATUS, Issue.statusCLOSED);
 
         Hashtable<String, String> result = new Hashtable<String, String>();

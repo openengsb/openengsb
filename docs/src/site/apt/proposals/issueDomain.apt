@@ -156,8 +156,6 @@ Issue Tracker Domain
   The project will be handled by the connectors. Basically there will be one endpoint per project per connector.
   The connector needs to add the issue to the right project.
   See tracConnector for Examples
-
-
 	
 * Interface description
 
@@ -229,17 +227,3 @@ public class Issue {
 	public final static String fieldSTATUS = "STATUS";
 	
 ---
-
-
-
-
-
-
-
-
-
-
-
-
-
-
