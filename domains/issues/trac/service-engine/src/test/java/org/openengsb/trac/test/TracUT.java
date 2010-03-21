@@ -52,42 +52,42 @@ public class TracUT {
         attributes.put("owner", "testowner");
         attributes.put("reporter", "testreporter");
         String s = "test " + new Date();
-        
+
         Integer id = ticket.create(s, "testdescription", attributes);
-        
+
         Vector<?> v = ticket.get(id);
         long l = ((Date) v.get(1)).getTime();
-        
+
         assertEquals(v.get(0), id);
         assertTrue(l < System.currentTimeMillis() && l + 10000000 > System.currentTimeMillis());
         assertEquals(v.get(1), v.get(2));
-        
+
         HashMap<String, String> attributes2 = (HashMap<String, String>) v.get(3);
         assertEquals(attributes2.get("summary"), s);
         assertEquals(attributes2.get("description"), "testdescription");
-        assertEquals(attributes2.get("status"), "new");
-        assertEquals(attributes2.get("priority"), "critical");
-        assertEquals(attributes2.get("owner"), "testowner");
-        assertEquals(attributes2.get("reporter"), "testreporter");
+        assertEquals(attributes2.get("status"), attributes.get("status"));
+        assertEquals(attributes2.get("priority"), attributes2.get("priority"));
+        assertEquals(attributes2.get("owner"), attributes2.get("owner"));
+        assertEquals(attributes2.get("reporter"), attributes2.get("reporter"));
     }
-    
+
     @Test(expected = XmlRpcException.class)
     @Ignore
     public void testDeleteIssue() throws XmlRpcException {
         Integer id = ticket.create("testsummary", "testdescription");
         assertNotNull(ticket.get(id));
-        
+
         ticket.delete(id);
         ticket.get(id);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Test
     @Ignore
     public void testUpdateIssue() throws XmlRpcException {
         Integer id = ticket.create("testsummary", "testdescription");
         assertNotNull(ticket.get(id));
-        
+
         Hashtable<String, String> attributes = new Hashtable<String, String>();
         attributes.put("status", "closed");
         attributes.put("owner", "testowner");
@@ -95,17 +95,17 @@ public class TracUT {
         attributes.put("priority", "critical");
         attributes.put("summary", "testsummary2");
         attributes.put("description", "testdescription2");
-        
+
         ticket.update(id, "testcomment", attributes);
-        
+
         Vector<?> v = ticket.get(id);
-        
+
         HashMap<String, String> attributes2 = (HashMap<String, String>) v.get(3);
-        assertEquals(attributes2.get("status"), "closed");
-        assertEquals(attributes2.get("priority"), "critical");
-        assertEquals(attributes2.get("owner"), "testowner");
-        assertEquals(attributes2.get("reporter"), "testreporter");
-        assertEquals(attributes2.get("summary"), "testsummary2");
-        assertEquals(attributes2.get("description"), "testdescription2");
+        assertEquals(attributes2.get("status"), attributes.get("status"));
+        assertEquals(attributes2.get("priority"), attributes2.get("priority"));
+        assertEquals(attributes2.get("owner"), attributes2.get("owner"));
+        assertEquals(attributes2.get("reporter"), attributes2.get("reporter"));
+        assertEquals(attributes2.get("summary"), attributes2.get("summary"));
+        assertEquals(attributes2.get("description"), attributes2.get("description"));
     }
 }

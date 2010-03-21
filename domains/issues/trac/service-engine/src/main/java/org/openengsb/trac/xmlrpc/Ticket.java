@@ -64,7 +64,8 @@ public interface Ticket {
 
     Integer create(String summary, String description, Hashtable<?, ?> attribute) throws XmlRpcException;
 
-    Integer create(String summary, String description, Hashtable<?, ?> attribute, Boolean notify) throws XmlRpcException;
+    Integer create(String summary, String description, Hashtable<?, ?> attribute, Boolean notify)
+            throws XmlRpcException;
 
     Vector<?> get(Integer id) throws XmlRpcException;
 

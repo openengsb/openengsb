@@ -27,6 +27,6 @@ public interface IssuesDomain extends Domain {
     void updateIssue(Integer id, String comment, Hashtable<String, Object> changes);
 
     void deleteIssue(Integer id);
-    
+
     void addComment(Integer id, String comment);
 }

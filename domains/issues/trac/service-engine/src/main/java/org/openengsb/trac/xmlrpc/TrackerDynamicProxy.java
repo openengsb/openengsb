@@ -33,7 +33,7 @@ public class TrackerDynamicProxy {
 
     /**
      * Creates a new instance.
-     *
+     * 
      * @param client A fully configured XML-RPC client, which is used internally
      *        to perform XML-RPC calls.
      * @param typeConverterFactory Creates instances of
@@ -47,11 +47,11 @@ public class TrackerDynamicProxy {
 
     /**
      * Creates a new instance. Shortcut for
-     *
+     * 
      * <pre>
      * new ClientFactory(pClient, new TypeConverterFactoryImpl());
      * </pre>
-     *
+     * 
      * @param client A fully configured XML-RPC client, which is used internally
      *        to perform XML-RPC calls.
      * @see TypeConverterFactoryImpl
