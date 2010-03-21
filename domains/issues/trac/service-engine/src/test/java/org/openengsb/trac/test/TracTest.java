@@ -59,8 +59,8 @@ public class TracTest {
         Hashtable<String, String> attributes = new Hashtable<String, String>();
         attributes.put(TracConstants.FIELD_OWNER, "testowner");
         attributes.put(TracConstants.FIELD_REPORTER, "testreporter");
-        attributes.put(TracConstants.FIELD_PRIORITY, "critical");
-        attributes.put(TracConstants.FIELD_STATUS, "new");
+        attributes.put(TracConstants.FIELD_PRIORITY, TracConstants.PRIORITY_URGENT);
+        attributes.put(TracConstants.FIELD_STATUS, TracConstants.STATUS_NEW);
 
         tracConnector.createIssue(i);
         Mockito.verify(ticket, Mockito.times(1)).create(Mockito.eq(s), Mockito.eq("testdescription"),
