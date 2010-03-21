@@ -93,10 +93,10 @@ public class TracConnector implements IssuesDomain {
         Hashtable<String, String> attributes = new Hashtable<String, String>();
 
         if (issue.getOwner() != null) {
-            attributes.put("owner", issue.getOwner());
+            attributes.put(TracConstants.FIELD_OWNER, issue.getOwner());
         }
         if (issue.getReporter() != null) {
-            attributes.put("reporter", issue.getReporter());
+            attributes.put(TracConstants.FIELD_REPORTER, issue.getReporter());
         }
 
         addPriority(attributes, issue.getPriority());
@@ -111,13 +111,13 @@ public class TracConnector implements IssuesDomain {
         for (String field : changes.keySet()) {
             try {
                 if (field.equals(Issue.fieldDESCRIPTION)) {
-                    attributes.put("description", (String) changes.get(field));
+                    attributes.put(TracConstants.FIELD_DESCRIPTION, (String) changes.get(field));
                 } else if (field.equals(Issue.fieldOWNER)) {
-                    attributes.put("owner", (String) changes.get(field));
+                    attributes.put(TracConstants.FIELD_OWNER, (String) changes.get(field));
                 } else if (field.equals(Issue.fieldREPORTER)) {
-                    attributes.put("reporter", (String) changes.get(field));
+                    attributes.put(TracConstants.FIELD_REPORTER, (String) changes.get(field));
                 } else if (field.equals(Issue.fieldSUMMARY)) {
-                    attributes.put("summary", (String) changes.get(field));
+                    attributes.put(TracConstants.FIELD_SUMMARY, (String) changes.get(field));
                 } else if (field.equals(Issue.fieldPRIORITY)) {
                     addPriority(attributes, (String) changes.get(field));
                 } else if (field.equals(Issue.fieldSTATUS)) {
@@ -134,15 +134,15 @@ public class TracConnector implements IssuesDomain {
     private void addPriority(Hashtable<String, String> attributes, String priority) {
         if (priority != null) {
             if (priority.equals(Issue.priorityHIGH)) {
-                attributes.put("priority", "major");
+                attributes.put(TracConstants.FIELD_PRIORITY, TracConstants.PRIORITY_HIGH);
             } else if (priority.equals(Issue.priorityIMMEDIATE)) {
-                attributes.put("priority", "blocker");
+                attributes.put(TracConstants.FIELD_PRIORITY, TracConstants.PRIORITY_IMMEDIATE);
             } else if (priority.equals(Issue.priorityLOW)) {
-                attributes.put("priority", "trivial");
+                attributes.put(TracConstants.FIELD_PRIORITY, TracConstants.PRIORITY_LOW);
             } else if (priority.equals(Issue.priorityNORMAL)) {
-                attributes.put("priority", "minor");
+                attributes.put(TracConstants.FIELD_PRIORITY, TracConstants.PRIORITY_NORMAL);
             } else if (priority.equals(Issue.priorityURGENT)) {
-                attributes.put("priority", "critical");
+                attributes.put(TracConstants.FIELD_PRIORITY, TracConstants.PRIORITY_URGENT);
             }
         }
     }
@@ -150,14 +150,11 @@ public class TracConnector implements IssuesDomain {
     private void addStatus(Hashtable<String, String> attributes, String status) {
         if (status != null) {
             if (status.equals(Issue.statusNEW)) {
-                log.info("NEW");
-                attributes.put("status", "new");
+                attributes.put(TracConstants.FIELD_STATUS, TracConstants.STATUS_NEW);
             } else if (status.equals(Issue.statusASSIGNED)) {
-                log.info("ASSIGNED");
-                attributes.put("status", "assigned");
+                attributes.put(TracConstants.FIELD_STATUS, TracConstants.STATUS_ASSIGNED);
             } else if (status.equals(Issue.statusCLOSED)) {
-                log.info("CLOSED");
-                attributes.put("status", "closed");
+                attributes.put(TracConstants.FIELD_STATUS, TracConstants.STATUS_CLOSED);
             }
         }
     }

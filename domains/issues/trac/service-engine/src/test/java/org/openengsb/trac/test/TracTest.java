@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.openengsb.drools.model.Issue;
 import org.openengsb.trac.TracConnector;
+import org.openengsb.trac.TracConstants;
 import org.openengsb.trac.xmlrpc.Ticket;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -56,10 +57,10 @@ public class TracTest {
         i.setStatus(Issue.statusNEW);
 
         Hashtable<String, String> attributes = new Hashtable<String, String>();
-        attributes.put("owner", "testowner");
-        attributes.put("reporter", "testreporter");
-        attributes.put("priority", "critical");
-        attributes.put("status", "new");
+        attributes.put(TracConstants.FIELD_OWNER, "testowner");
+        attributes.put(TracConstants.FIELD_REPORTER, "testreporter");
+        attributes.put(TracConstants.FIELD_PRIORITY, "critical");
+        attributes.put(TracConstants.FIELD_STATUS, "new");
 
         tracConnector.createIssue(i);
         Mockito.verify(ticket, Mockito.times(1)).create(Mockito.eq(s), Mockito.eq("testdescription"),
@@ -84,7 +85,7 @@ public class TracTest {
         changes.put(Issue.fieldSTATUS, Issue.statusCLOSED);
 
         Hashtable<String, String> result = new Hashtable<String, String>();
-        result.put("status", "closed");
+        result.put(TracConstants.FIELD_STATUS, TracConstants.STATUS_CLOSED);
 
         tracConnector.updateIssue(3, "Issue closed", changes);
         Mockito.verify(ticket, Mockito.times(1)).update(Mockito.eq(3), Mockito.eq("Issue closed"), Mockito.eq(result));
