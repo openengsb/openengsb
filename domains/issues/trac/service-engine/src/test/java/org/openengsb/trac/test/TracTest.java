@@ -81,8 +81,10 @@ public class TracTest {
     public void testUpdateIssue() throws XmlRpcException {
     	Hashtable<String, Object> changes = new Hashtable<String, Object>();
     	changes.put(Issue.fieldSTATUS, Issue.statusCLOSED);
+    	
     	Hashtable<String, String> result = new Hashtable<String, String>();
     	result.put("status", "closed");
+    	
     	tracConnector.updateIssue(3, "Issue closed", changes);
     	Mockito.verify(ticket, Mockito.times(1)).update(Mockito.eq(3), Mockito.eq("Issue closed"), Mockito.eq(result));
     	

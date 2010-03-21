@@ -18,25 +18,24 @@
 package org.openengsb.drools.model;
 
 public class Issue {
-	
-	public final static String priorityIMMEDIATE = "IMMEDIATE";
-	public final static String priorityURGENT = "URGEND";
-	public final static String priorityHIGH = "HIGH";
-	public final static String priorityNORMAL = "NORMAL";
-	public final static String priorityLOW = "LOW";
-	public final static String priorityNONE = "NONE";
-	
-	public final static String statusNEW = "NEW";
-	public final static String statusASSIGNED = "ASSIGNED";
-	public final static String statusCLOSED = "CLOSED";
-	
-	public final static String fieldSUMMARY = "SUMMARY";
-	public final static String fieldDESCRIPTION = "DESCRIPTION";
-	public final static String fieldOWNER = "OWNER";
-	public final static String fieldREPORTER = "REPORTER";
-	public final static String fieldPRIORITY = "PRIORITY";
-	public final static String fieldSTATUS = "STATUS";
-	
+    public final static String priorityIMMEDIATE = "IMMEDIATE";
+    public final static String priorityURGENT = "URGEND";
+    public final static String priorityHIGH = "HIGH";
+    public final static String priorityNORMAL = "NORMAL";
+    public final static String priorityLOW = "LOW";
+    public final static String priorityNONE = "NONE";
+
+    public final static String statusNEW = "NEW";
+    public final static String statusASSIGNED = "ASSIGNED";
+    public final static String statusCLOSED = "CLOSED";
+
+    public final static String fieldSUMMARY = "SUMMARY";
+    public final static String fieldDESCRIPTION = "DESCRIPTION";
+    public final static String fieldOWNER = "OWNER";
+    public final static String fieldREPORTER = "REPORTER";
+    public final static String fieldPRIORITY = "PRIORITY";
+    public final static String fieldSTATUS = "STATUS";
+
     private Integer id;
     private String summary;
     private String description;

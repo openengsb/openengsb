@@ -80,4 +80,32 @@ public class TracUT {
         ticket.delete(id);
         ticket.get(id);
     }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    @Ignore
+    public void testUpdateIssue() throws XmlRpcException {
+        Integer id = ticket.create("testsummary", "testdescription");
+        assertNotNull(ticket.get(id));
+        
+        Hashtable<String, String> attributes = new Hashtable<String, String>();
+        attributes.put("status", "closed");
+        attributes.put("owner", "testowner");
+        attributes.put("reporter", "testreporter");
+        attributes.put("priority", "critical");
+        attributes.put("summary", "testsummary2");
+        attributes.put("description", "testdescription2");
+        
+        ticket.update(id, "testcomment", attributes);
+        
+        Vector<?> v = ticket.get(id);
+        
+        HashMap<String, String> attributes2 = (HashMap<String, String>) v.get(3);
+        assertEquals(attributes2.get("status"), "closed");
+        assertEquals(attributes2.get("priority"), "critical");
+        assertEquals(attributes2.get("owner"), "testowner");
+        assertEquals(attributes2.get("reporter"), "testreporter");
+        assertEquals(attributes2.get("summary"), "testsummary2");
+        assertEquals(attributes2.get("description"), "testdescription2");
+    }
 }
