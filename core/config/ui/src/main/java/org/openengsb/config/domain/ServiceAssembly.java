@@ -89,4 +89,14 @@ public class ServiceAssembly extends AbstractDomainObject {
         }
         return list;
     }
+
+    public List<PersistedObject> getBeans() {
+        List<PersistedObject> list = Lists.newArrayList();
+        for (PersistedObject p : persistedObjects) {
+            if (p.getPersistedType().equals(PersistedObject.Type.Bean)) {
+                list.add(p);
+            }
+        }
+        return list;
+    }
 }

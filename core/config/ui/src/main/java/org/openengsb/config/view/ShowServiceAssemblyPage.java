@@ -18,6 +18,7 @@
 package org.openengsb.config.view;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.html.basic.Label;
@@ -56,35 +57,8 @@ public class ShowServiceAssemblyPage extends BasePage {
         setDefaultModel(Models.compoundDomain(dao, sa));
         add(new Label("name"));
 
-        ListView<PersistedObject> endpointList = new ListView<PersistedObject>("endpoints") {
-            @Override
-            protected void populateItem(ListItem<PersistedObject> item) {
-                item.add(new Label("name", item.getModelObject().getName()));
-                item.add(new Link<PersistedObject>("editLink", item.getModel()) {
-                    @Override
-                    public void onClick() {
-                        RequestCycle.get().setResponsePage(new BeanEditorPage(getModelObject()));
-                    }
-                });
-                item.add(new Link<PersistedObject>("deleteLink", item.getModel()) {
-                    @Override
-                    public void onClick() {
-                        poDao.delete(getModelObject());
-                        ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this
-                                .getDefaultModelObject();
-                        dao.refresh(sa);
-                        RequestCycle.get().setResponsePage(new ShowServiceAssemblyPage(sa));
-                    }
-                });
-            }
-        };
-        add(endpointList);
-        add(new Label("endpointLabel", getLocalizer().getString("endpointLabel", this)) {
-            @Override
-            public boolean isVisible() {
-                return sa.getEndpoints().isEmpty();
-            }
-        });
+        createPersistedObjectList("endpoint");
+        createPersistedObjectList("bean");
 
         Form<?> newComponentForm = new Form<Object>("newComponentForm") {
             @Override
@@ -92,6 +66,7 @@ public class ShowServiceAssemblyPage extends BasePage {
                 PersistedObject po = new PersistedObject();
                 ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this.getDefaultModelObject();
                 po.setServiceAssembly(sa);
+                po.setPersistedType(PersistedObject.Type.Endpoint);
                 po.setDeclaredType(selected.getName());
                 po.setComponentType(selected.getParent().getName());
                 for (AbstractType t : selected.getAttributes()) {
@@ -147,5 +122,40 @@ public class ShowServiceAssemblyPage extends BasePage {
         });
 
         add(new FeedbackPanel("feedback"));
+    }
+
+    @SuppressWarnings("serial")
+    private void createPersistedObjectList(String startName) {
+        final ListView<PersistedObject> list = new ListView<PersistedObject>(startName + "s") {
+            @Override
+            protected void populateItem(ListItem<PersistedObject> item) {
+                item.add(new Label("name", item.getModelObject().getName()));
+                item.add(new Link<PersistedObject>("editLink", item.getModel()) {
+                    @Override
+                    public void onClick() {
+                        RequestCycle.get().setResponsePage(new BeanEditorPage(getModelObject()));
+                    }
+                });
+                item.add(new Link<PersistedObject>("deleteLink", item.getModel()) {
+                    @Override
+                    public void onClick() {
+                        poDao.delete(getModelObject());
+                        ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this
+                                .getDefaultModelObject();
+                        dao.refresh(sa);
+                        RequestCycle.get().setResponsePage(new ShowServiceAssemblyPage(sa));
+                    }
+                });
+            }
+        };
+        add(list);
+        @SuppressWarnings("unchecked")
+        final boolean empty = ((List<PersistedObject>) list.getDefaultModel().getObject()).isEmpty();
+        add(new Label(startName + "Label", getLocalizer().getString(startName + "Label", this)) {
+            @Override
+            public boolean isVisible() {
+                return empty;
+            }
+        });
     }
 }

@@ -43,11 +43,11 @@ public class ShowServiceAssemblyPageTest extends WicketBase {
     public void onEmptyLists_LabelsAreVisible() throws Exception {
         tester.startPage(new ShowServiceAssemblyPage(new ServiceAssembly()));
         extTester.assertVisible("endpointLabel");
-        // extTester.assertVisible("beanLabel");
+        extTester.assertVisible("beanLabel");
     }
 
     @Test
-    public void addEndpointToAssembly_endpointListShouldContainEndpointInfo() throws Exception {
+    public void assemblyWithEndpoints_endpointListIsShown() throws Exception {
         ServiceAssembly sa = new ServiceAssembly();
         PersistedObject e = new PersistedObject(PersistedObject.Type.Endpoint, "a", sa);
         sa.getPersistedObjects().add(e);
@@ -57,5 +57,15 @@ public class ShowServiceAssemblyPageTest extends WicketBase {
         // TODO this fails because of the used compound model, although
         // rendering works just fine
         // tester.assertListView("endpoints", Lists.newArrayList(e));
+    }
+
+    @Test
+    public void assemblyWithBeans_beanListIsShown() {
+        ServiceAssembly sa = new ServiceAssembly();
+        PersistedObject b = new PersistedObject(PersistedObject.Type.Bean, "a", sa);
+        sa.getPersistedObjects().add(b);
+        tester.startPage(new ShowServiceAssemblyPage(sa));
+        extTester.assertInvisible("beanLabel");
+        extTester.assertVisible("beans");
     }
 }

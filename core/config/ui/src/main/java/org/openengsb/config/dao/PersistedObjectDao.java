@@ -24,9 +24,9 @@ import org.openengsb.config.domain.ServiceAssembly;
 
 public interface PersistedObjectDao extends BaseDao<PersistedObject> {
     /**
-     * Returns the endpoint with the unique name or null if no endpoints with
-     * the given name exists.
-     *
+     * Returns the {@code PersistedObject} with the unique name or null if no
+     * {@code PersistedObject} with the given name exists.
+     * 
      * @param name the unique name of the endpoint
      */
     PersistedObject findByName(String name);

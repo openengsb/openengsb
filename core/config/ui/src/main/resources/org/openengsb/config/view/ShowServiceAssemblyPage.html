@@ -39,14 +39,38 @@
         <a wicket:id="editLink" href="#">Edit</a>
       </td>
       <td>
-        <a wicket:id="deleteLink" hre="#">Delete</a>
+        <a wicket:id="deleteLink" href="#">Delete</a>
       </td>
     </tr>
     </tbody>
   </table>
   <span wicket:id="endpointLabel">[endpointLabel]</span>
+  <p><em><wicket:message key="beanList"></wicket:message></em></p>
+  <table class="endpoints">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody wicket:id="beans">
+    <tr>
+      <td>
+        <span wicket:id="name">[name]</span>
+      </td>
+      <td>
+        <a wicket:id="editLink" href="#">Edit</a>
+      </td>
+      <td>
+        <a wicket:id="deleteLink" href="#">Delete</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <span wicket:id="beanLabel">[beanLabel]</span>
   <form wicket:id="newComponentForm">
-    <p><wicket:message key="newComponentLabel"></wicket:message> <select wicket:id="componentSelect" /> <input type="submit" value="Create" /></p>
+    <p><wicket:message key="newComponentLabel"></wicket:message> <select wicket:id="componentSelect"></select> <input type="submit" value="Create"></input> </p>
   </form>
   <div>
     <h3>Actions</h3>

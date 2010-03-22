@@ -100,8 +100,12 @@ public class BeanEditorPage extends BasePage {
             }
         }
 
-        po.setName(((ValueAttribute) po.getAttributes().get("service")).getValue() + "."
-                + ((ValueAttribute) po.getAttributes().get("endpoint")).getValue());
+        if (po.isBean()) {
+            po.setName(((ValueAttribute) po.getAttributes().get("id")).getValue());
+        } else {
+            po.setName(((ValueAttribute) po.getAttributes().get("service")).getValue() + "."
+                    + ((ValueAttribute) po.getAttributes().get("endpoint")).getValue());
+        }
         dao.persist(po);
 
         RequestCycle.get().setResponsePage(new ShowServiceAssemblyPage(sadao.find(po.getServiceAssembly().getId())));
