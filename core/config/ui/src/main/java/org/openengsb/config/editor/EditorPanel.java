@@ -31,9 +31,12 @@ import org.apache.wicket.model.ResourceModel;
 import org.openengsb.config.domain.PersistedObject;
 import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.editor.fields.AbstractField;
+import org.openengsb.config.editor.fields.CheckboxField;
 import org.openengsb.config.editor.fields.DropdownChoiceField;
 import org.openengsb.config.editor.fields.InputField;
 import org.openengsb.config.jbi.types.AbstractType;
+import org.openengsb.config.jbi.types.BoolType;
+import org.openengsb.config.jbi.types.ChoiceType;
 import org.openengsb.config.jbi.types.RefType;
 import org.openengsb.config.jbi.types.ServiceEndpointTargetType;
 
@@ -93,26 +96,12 @@ public abstract class EditorPanel extends Panel {
                 names.add(e.getName());
             }
             return new DropdownChoiceField("editor", model, type, names);
+        } else if (type.getClass().equals(BoolType.class)) {
+            return new CheckboxField("editor", model, type);
+        } else if (type.getClass().equals(ChoiceType.class)) {
+            return new DropdownChoiceField("editor", model, (ChoiceType) type);
         } else {
             return new InputField("editor", model, type);
         }
-
-        // if (type.getClass().equals(BoolType.class)) {
-        // return new CheckboxField("editor", model, type);
-        // } else if (type.getClass().equals(ChoiceType.class)) {
-        // return new DropdownChoiceField("editor", model, (ChoiceType) type);
-        // } else if (type.getClass().equals(RefType.class)) {
-        // List<BeanInfo> beans = assemblyService.getBeansForType(((RefType)
-        // type).getTheClass());
-        // List<String> values = Lists.transform(beans, new
-        // Function<BeanInfo,String>() {
-        // public String apply(BeanInfo input) {
-        // return input.getMap().get("id");
-        // }
-        // });
-        // return new DropdownChoiceField("editor", model, type, values);
-        // } else {
-        // return new InputField("editor", model, type);
-        // }
     }
 }
