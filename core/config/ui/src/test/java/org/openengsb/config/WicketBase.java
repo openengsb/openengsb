@@ -35,24 +35,25 @@ import org.openengsb.config.service.ContextService;
 import com.google.common.collect.Lists;
 
 public class WicketBase {
-    protected List<ComponentType> components;
-    protected ComponentService mockedComponentService;
-    protected AssemblyService mockedAssemblyService;
+    protected ComponentService mockComponentService;
     protected WicketTester tester;
     protected ExtWicketTester extTester;
 
+    private void mockComponentService() {
+        List<ComponentType> components = ComponentParser.parseComponents(Lists.newArrayList(ClassLoader
+                .getSystemResourceAsStream("test-connector.xml")));
+        mockComponentService = Mockito.mock(ComponentService.class);
+        Mockito.when(mockComponentService.getComponents()).thenReturn(components);
+        Mockito.when(mockComponentService.getComponent("test-connector")).thenReturn(components.get(0));
+        Mockito.when(mockComponentService.getEndpoints()).thenReturn(components.get(0).getEndpoints());
+    }
+
     @Before
     public void setup() {
-        components = ComponentParser.parseComponents(Lists.newArrayList(ClassLoader
-                .getSystemResourceAsStream("test-connector.xml")));
-        mockedComponentService = Mockito.mock(ComponentService.class);
-        Mockito.when(mockedComponentService.getComponents()).thenReturn(components);
-        Mockito.when(mockedComponentService.getComponent("test-connector")).thenReturn(components.get(0));
-        Mockito.when(mockedComponentService.getEndpoints()).thenReturn(components.get(0).getEndpoints());
-        mockedAssemblyService = Mockito.mock(AssemblyService.class);
-        final AnnotApplicationContextMock ctx = new AnnotApplicationContextMock();
-        ctx.putBean(mockedComponentService);
-        ctx.putBean(mockedAssemblyService);
+        mockComponentService();
+        AnnotApplicationContextMock ctx = new AnnotApplicationContextMock();
+        ctx.putBean(mockComponentService);
+        ctx.putBean(Mockito.mock(AssemblyService.class));
         ctx.putBean(Mockito.mock(ContextService.class));
         ctx.putBean(Mockito.mock(ServiceAssemblyDao.class));
         ctx.putBean(Mockito.mock(EndpointDao.class));

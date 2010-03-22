@@ -17,20 +17,32 @@
 -->
 <component name="test-connector" bindingComponent="false" namespace="urn:test" nsname="test">
   <endpoints>
-    <endpoint name="test">
+    <endpoint name="simple">
       <attributes>
         <serviceName name="service" />
         <endpointName name="endpoint" />
-        <ref name="configuration" clazz="org.openengsb.connector.test.TestBean"/>
-        <choice name="simpleChoice" values="a,b,c" />
+      </attributes>
+    </endpoint>
+    <endpoint name="referencingEndpoint">
+      <attributes>
+        <serviceName name="service" />
+        <endpointName name="endpoint" />
+        <endpointTarget name="target" service="targetService" endpoint="targetEndpoint" />
+      </attributes>
+    </endpoint>
+    <endpoint name="beanReferencingEndpoint">
+      <attributes>
+        <serviceName name="service" />
+        <endpointName name="endpoint" />
+        <ref name="configuration" clazz="org.openengsb.connector.test.TestBean" optional="true" />
       </attributes>
     </endpoint>
   </endpoints>
   <beans>
-    <bean clazz="connector.test.TestBean">
+    <bean clazz="org.openengsb.connector.test.TestBean">
       <properties>
         <string name="id" />
-        <int name="duration" defaultValue="1000" min="1"/>
+        <int name="duration" defaultValue="1000" min="0"/>
       </properties>
     </bean>
   </beans>
