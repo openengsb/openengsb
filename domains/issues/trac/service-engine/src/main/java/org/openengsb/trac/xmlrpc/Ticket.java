@@ -23,6 +23,11 @@ import java.util.Vector;
 
 import org.apache.xmlrpc.XmlRpcException;
 
+/**
+ * This class is copied and slightly modified from the Trac XML-RPC Plugin Java
+ * example (http://trac-hacks.org/wiki/XmlRpcPlugin#UsingfromJava).
+ * See NOTICE for further details
+ */
 public interface Ticket {
     public interface TicketProperty {
         Vector<?> getAll();

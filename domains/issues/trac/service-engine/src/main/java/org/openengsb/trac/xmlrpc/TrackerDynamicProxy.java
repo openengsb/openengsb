@@ -26,6 +26,11 @@ import org.apache.xmlrpc.common.TypeConverter;
 import org.apache.xmlrpc.common.TypeConverterFactory;
 import org.apache.xmlrpc.common.TypeConverterFactoryImpl;
 
+/**
+ * This class is copied and slightly modified from the Trac XML-RPC Plugin Java
+ * example (http://trac-hacks.org/wiki/XmlRpcPlugin#UsingfromJava).
+ * See NOTICE for further details
+ */
 public class TrackerDynamicProxy {
     private final XmlRpcClient client;
     private final TypeConverterFactory typeConverterFactory;
