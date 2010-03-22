@@ -90,7 +90,32 @@ public class TracTest {
         Hashtable<String, String> result = new Hashtable<String, String>();
         result.put(TracFieldConstants.FIELD_STATUS, TracStatusConstants.STATUS_CLOSED);
 
-        tracConnector.updateIssue(3, "Issue closed", changes);
-        Mockito.verify(ticket, Mockito.times(1)).update(Mockito.eq(3), Mockito.eq("Issue closed"), Mockito.eq(result));
+        tracConnector.updateIssue(3, null, changes);
+        Mockito.verify(ticket, Mockito.times(1)).update(Mockito.eq(3), Mockito.eq("[No comment added by author]"),
+                Mockito.eq(result));
+    }
+
+    @Test
+    public void testCreateXmlRpcErrorCatching() throws XmlRpcException {
+        Mockito.when(ticket.create(Mockito.anyString(), Mockito.anyString(), Mockito.any(Hashtable.class))).thenThrow(new XmlRpcException("test"));
+        tracConnector.createIssue(new Issue());
+    }
+    
+    @Test
+    public void testUpdateXmlRpcErrorCatching() throws XmlRpcException {
+        Mockito.when(ticket.update(Mockito.anyInt(), Mockito.anyString(), Mockito.any(Hashtable.class))).thenThrow(new XmlRpcException("test"));
+        tracConnector.updateIssue(0, "test", new HashMap<String, Object>());
+    }
+    
+    @Test
+    public void testCommentXmlRpcErrorCatching() throws XmlRpcException {
+        Mockito.when(ticket.update(Mockito.anyInt(), Mockito.anyString())).thenThrow(new XmlRpcException("test"));
+        tracConnector.addComment(0, "test");
+    }
+    
+    @Test
+    public void testDeleteXmlRpcErrorCatching() throws XmlRpcException {
+        Mockito.when(ticket.delete(Mockito.anyInt())).thenThrow(new XmlRpcException("test"));
+        tracConnector.deleteIssue(0);
     }
 }
