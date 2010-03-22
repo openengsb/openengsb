@@ -28,7 +28,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.openengsb.drools.model.Issue;
 import org.openengsb.trac.TracConnector;
-import org.openengsb.trac.TracConstants;
+import org.openengsb.trac.constants.TracFieldConstants;
+import org.openengsb.trac.constants.TracPriorityConstants;
+import org.openengsb.trac.constants.TracStatusConstants;
 import org.openengsb.trac.xmlrpc.Ticket;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -58,10 +60,10 @@ public class TracTest {
         i.setStatus(Issue.statusNEW);
 
         Hashtable<String, String> attributes = new Hashtable<String, String>();
-        attributes.put(TracConstants.FIELD_OWNER, "testowner");
-        attributes.put(TracConstants.FIELD_REPORTER, "testreporter");
-        attributes.put(TracConstants.FIELD_PRIORITY, TracConstants.PRIORITY_URGENT);
-        attributes.put(TracConstants.FIELD_STATUS, TracConstants.STATUS_NEW);
+        attributes.put(TracFieldConstants.FIELD_OWNER, "testowner");
+        attributes.put(TracFieldConstants.FIELD_REPORTER, "testreporter");
+        attributes.put(TracFieldConstants.FIELD_PRIORITY, TracPriorityConstants.PRIORITY_URGENT);
+        attributes.put(TracFieldConstants.FIELD_STATUS, TracStatusConstants.STATUS_NEW);
 
         tracConnector.createIssue(i);
         Mockito.verify(ticket, Mockito.times(1)).create(Mockito.eq(s), Mockito.eq("testdescription"),
@@ -86,10 +88,9 @@ public class TracTest {
         changes.put(Issue.fieldSTATUS, Issue.statusCLOSED);
 
         Hashtable<String, String> result = new Hashtable<String, String>();
-        result.put(TracConstants.FIELD_STATUS, TracConstants.STATUS_CLOSED);
+        result.put(TracFieldConstants.FIELD_STATUS, TracStatusConstants.STATUS_CLOSED);
 
         tracConnector.updateIssue(3, "Issue closed", changes);
         Mockito.verify(ticket, Mockito.times(1)).update(Mockito.eq(3), Mockito.eq("Issue closed"), Mockito.eq(result));
-
     }
 }

@@ -15,23 +15,12 @@
    limitations under the License.
    
  */
-package org.openengsb.trac;
+package org.openengsb.trac.constants;
 
-public class TracConstants {
-    public final static String FIELD_OWNER = "owner";
-    public final static String FIELD_REPORTER = "reporter";
-    public final static String FIELD_SUMMARY = "summary";
-    public final static String FIELD_DESCRIPTION = "description";
-    public final static String FIELD_PRIORITY = "priority";
-    public final static String FIELD_STATUS = "status";
-    
+public class TracPriorityConstants {
     public final static String PRIORITY_HIGH = "major";
     public final static String PRIORITY_IMMEDIATE = "blocker";
     public final static String PRIORITY_LOW = "trivial";
     public final static String PRIORITY_NORMAL = "minor";
     public final static String PRIORITY_URGENT = "critical";
-    
-    public final static String STATUS_NEW = "new";
-    public final static String STATUS_ASSIGNED = "assigned";
-    public final static String STATUS_CLOSED = "closed";
 }
