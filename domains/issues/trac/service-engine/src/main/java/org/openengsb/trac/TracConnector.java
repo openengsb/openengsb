@@ -19,7 +19,6 @@ package org.openengsb.trac;
 
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcException;
@@ -83,13 +82,6 @@ public class TracConnector implements IssuesDomain {
         } catch (XmlRpcException e) {
             log.error("Error adding comment to issue " + id + ". XMLRPC call failed.");
         }
-    }
-
-    /**
-     * just for testing to see which fields are available, see TracTest
-     */
-    public Vector<HashMap<?, ?>> getFields() {
-        return ticket.getTicketFields();
     }
 
     private Hashtable<String, String> generateAttributes(Issue issue) {
