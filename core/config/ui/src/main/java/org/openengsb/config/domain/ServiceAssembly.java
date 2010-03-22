@@ -30,6 +30,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+import com.google.common.collect.Lists;
+
 @Entity
 @NamedQueries( { @NamedQuery(name = "ServiceAssembly.findAll", query = "select sa from ServiceAssembly sa") })
 @SuppressWarnings("serial")
@@ -40,16 +42,16 @@ public class ServiceAssembly extends AbstractDomainObject {
     @Column(unique = true, nullable = false)
     private String name;
     @OneToMany(mappedBy = "serviceAssembly", cascade = { CascadeType.REMOVE })
-    private List<Endpoint> endpoints;
+    private List<PersistedObject> persistedObjects;
 
     public ServiceAssembly() {
         name = "";
-        endpoints = new ArrayList<Endpoint>();
+        persistedObjects = new ArrayList<PersistedObject>();
     }
 
     public ServiceAssembly(String name) {
         this.name = name;
-        endpoints = new ArrayList<Endpoint>();
+        persistedObjects = new ArrayList<PersistedObject>();
     }
 
     @Override
@@ -70,11 +72,21 @@ public class ServiceAssembly extends AbstractDomainObject {
         this.name = name;
     }
 
-    public void setEndpoints(List<Endpoint> endpoints) {
-        this.endpoints = endpoints;
+    public List<PersistedObject> getPersistedObjects() {
+        return persistedObjects;
     }
 
-    public List<Endpoint> getEndpoints() {
-        return endpoints;
+    public void setPersistedObjects(List<PersistedObject> persistedObjects) {
+        this.persistedObjects = persistedObjects;
+    }
+
+    public List<PersistedObject> getEndpoints() {
+        List<PersistedObject> list = Lists.newArrayList();
+        for (PersistedObject p : persistedObjects) {
+            if (p.getPersistedType().equals(PersistedObject.Type.Endpoint)) {
+                list.add(p);
+            }
+        }
+        return list;
     }
 }

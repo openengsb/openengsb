@@ -20,17 +20,16 @@ package org.openengsb.config.domain;
 import javax.persistence.Entity;
 
 @Entity
+@SuppressWarnings("serial")
 public class ValueAttribute extends Attribute {
-    private static final long serialVersionUID = 1L;
-
     private String value;
 
     public ValueAttribute() {
         value = "";
     }
 
-    public ValueAttribute(Endpoint endpoint, String key, String value) {
-        super(endpoint, key);
+    public ValueAttribute(PersistedObject parent, String key, String value) {
+        super(parent, key);
         this.value = value;
     }
 

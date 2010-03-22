@@ -28,10 +28,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.config.dao.EndpointDao;
-import org.openengsb.config.dao.ServiceAssemblyDao;
-import org.openengsb.config.domain.Endpoint;
+import org.openengsb.config.domain.PersistedObject;
 import org.openengsb.config.domain.ServiceAssembly;
+import org.openengsb.config.domain.PersistedObject.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -40,10 +39,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/daoContextTest.xml" })
 @Transactional
-public class EndpointDaoTest {
+public class PersistedObjectDaoTest {
 
     @Autowired
-    private EndpointDao dao;
+    private PersistedObjectDao dao;
     @Autowired
     private ServiceAssemblyDao sadao;
 
@@ -53,9 +52,9 @@ public class EndpointDaoTest {
     public void setup() {
         sa = new ServiceAssembly("a");
         sadao.persist(sa);
-        dao.persist(new Endpoint("b", sa));
-        dao.persist(new Endpoint("a", sa));
-        dao.persist(new Endpoint("c", sa));
+        dao.persist(new PersistedObject(Type.Endpoint, "b", sa));
+        dao.persist(new PersistedObject(Type.Endpoint, "a", sa));
+        dao.persist(new PersistedObject(Type.Endpoint, "c", sa));
     }
 
     @After
@@ -64,23 +63,23 @@ public class EndpointDaoTest {
     }
 
     @Test
-    public void findByName_existingName_returnsTheEndpoint() {
-        Endpoint e = dao.findByName("a");
-        assertThat(e.getName(), is("a"));
+    public void findByName_existingName_returnsThePO() {
+        PersistedObject p = dao.findByName("a");
+        assertThat(p.getName(), is("a"));
     }
 
     @Test
     public void findByName_unknownName_returnsNull() {
-        Endpoint e = dao.findByName("unknown");
-        assertThat(e, nullValue());
+        PersistedObject p = dao.findByName("unknown");
+        assertThat(p, nullValue());
     }
 
     @Test
-    public void findByServiceAssembly_existingSA_returnsEndpointsOrderedByName() {
-        List<Endpoint> endpoints = dao.findByServiceAssembly(sa);
-        assertThat(endpoints.size(), Matchers.is(3));
-        assertThat(endpoints.get(0).getName(), is("a"));
-        assertThat(endpoints.get(1).getName(), is("b"));
-        assertThat(endpoints.get(2).getName(), is("c"));
+    public void findByServiceAssembly_existingSA_returnsPOsOrderedByName() {
+        List<PersistedObject> pos = dao.findByServiceAssembly(sa);
+        assertThat(pos.size(), Matchers.is(3));
+        assertThat(pos.get(0).getName(), is("a"));
+        assertThat(pos.get(1).getName(), is("b"));
+        assertThat(pos.get(2).getName(), is("c"));
     }
 }

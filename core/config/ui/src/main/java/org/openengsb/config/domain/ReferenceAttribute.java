@@ -21,25 +21,24 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 @Entity
+@SuppressWarnings("serial")
 public class ReferenceAttribute extends Attribute {
-    private static final long serialVersionUID = 1L;
-
     @ManyToOne
-    private Endpoint reference;
+    private PersistedObject reference;
 
     public ReferenceAttribute() {
     }
 
-    public ReferenceAttribute(Endpoint parentEndpoint, String key, Endpoint reference) {
-        super(parentEndpoint, key);
+    public ReferenceAttribute(PersistedObject parent, String key, PersistedObject reference) {
+        super(parent, key);
         this.reference = reference;
     }
 
-    public Endpoint getReference() {
+    public PersistedObject getReference() {
         return reference;
     }
 
-    public void setReference(Endpoint reference) {
+    public void setReference(PersistedObject reference) {
         this.reference = reference;
     }
 

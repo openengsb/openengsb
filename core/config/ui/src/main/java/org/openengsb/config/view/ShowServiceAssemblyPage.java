@@ -32,9 +32,9 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.config.dao.EndpointDao;
+import org.openengsb.config.dao.PersistedObjectDao;
 import org.openengsb.config.dao.ServiceAssemblyDao;
-import org.openengsb.config.domain.Endpoint;
+import org.openengsb.config.domain.PersistedObject;
 import org.openengsb.config.domain.ReferenceAttribute;
 import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.domain.ValueAttribute;
@@ -49,27 +49,27 @@ public class ShowServiceAssemblyPage extends BasePage {
     @SpringBean
     private ServiceAssemblyDao dao;
     @SpringBean
-    private EndpointDao endpointDao;
+    private PersistedObjectDao poDao;
 
     @SuppressWarnings("serial")
     public ShowServiceAssemblyPage(final ServiceAssembly sa) {
         setDefaultModel(Models.compoundDomain(dao, sa));
         add(new Label("name"));
 
-        ListView<Endpoint> endpointList = new ListView<Endpoint>("endpoints") {
+        ListView<PersistedObject> endpointList = new ListView<PersistedObject>("endpoints") {
             @Override
-            protected void populateItem(ListItem<Endpoint> item) {
+            protected void populateItem(ListItem<PersistedObject> item) {
                 item.add(new Label("name", item.getModelObject().getName()));
-                item.add(new Link<Endpoint>("editLink", item.getModel()) {
+                item.add(new Link<PersistedObject>("editLink", item.getModel()) {
                     @Override
                     public void onClick() {
                         RequestCycle.get().setResponsePage(new BeanEditorPage(getModelObject()));
                     }
                 });
-                item.add(new Link<Endpoint>("deleteLink", item.getModel()) {
+                item.add(new Link<PersistedObject>("deleteLink", item.getModel()) {
                     @Override
                     public void onClick() {
-                        endpointDao.delete(getModelObject());
+                        poDao.delete(getModelObject());
                         ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this
                                 .getDefaultModelObject();
                         dao.refresh(sa);
@@ -89,20 +89,22 @@ public class ShowServiceAssemblyPage extends BasePage {
         Form<?> newComponentForm = new Form<Object>("newComponentForm") {
             @Override
             protected void onSubmit() {
-                Endpoint endpoint = new Endpoint();
+                PersistedObject po = new PersistedObject();
                 ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this.getDefaultModelObject();
-                endpoint.setServiceAssembly(sa);
-                endpoint.setEndpointType(selected.getName());
-                endpoint.setComponentType(selected.getParent().getName());
+                po.setServiceAssembly(sa);
+                po.setDeclaredType(selected.getName());
+                po.setComponentType(selected.getParent().getName());
                 for (AbstractType t : selected.getAttributes()) {
                     if (t.getClass().equals(ServiceEndpointTargetType.class)) {
-                        endpoint.getAttributes().put(t.getName(), new ReferenceAttribute(endpoint, t.getName(), null));
+                        po.getAttributes().put(t.getName(), new ReferenceAttribute(po, t.getName(), null));
                     } else {
-                        endpoint.getAttributes().put(t.getName(),
-                                new ValueAttribute(endpoint, t.getName(), t.getDefaultValue()!=null?t.getDefaultValue():""));
+                        po.getAttributes().put(
+                                t.getName(),
+                                new ValueAttribute(po, t.getName(), t.getDefaultValue() != null ? t.getDefaultValue()
+                                        : ""));
                     }
                 }
-                RequestCycle.get().setResponsePage(new BeanEditorPage(endpoint));
+                RequestCycle.get().setResponsePage(new BeanEditorPage(po));
             }
         };
         add(newComponentForm);

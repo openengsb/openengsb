@@ -21,7 +21,7 @@
   <persistence-unit name="configDS" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <class>org.openengsb.config.domain.Attribute</class>
-    <class>org.openengsb.config.domain.Endpoint</class>
+    <class>org.openengsb.config.domain.PersistedObject</class>
     <class>org.openengsb.config.domain.ReferenceAttribute</class>
     <class>org.openengsb.config.domain.ServiceAssembly</class>
     <class>org.openengsb.config.domain.ValueAttribute</class>

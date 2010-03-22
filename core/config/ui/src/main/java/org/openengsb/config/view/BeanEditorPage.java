@@ -23,15 +23,16 @@ import java.util.Map;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.config.dao.EndpointDao;
+import org.openengsb.config.dao.PersistedObjectDao;
 import org.openengsb.config.dao.ServiceAssemblyDao;
 import org.openengsb.config.domain.Attribute;
-import org.openengsb.config.domain.Endpoint;
+import org.openengsb.config.domain.PersistedObject;
 import org.openengsb.config.domain.ReferenceAttribute;
 import org.openengsb.config.domain.ValueAttribute;
 import org.openengsb.config.editor.EditorPanel;
 import org.openengsb.config.editor.FieldInfos;
 import org.openengsb.config.jbi.types.AbstractType;
+import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointType;
 import org.openengsb.config.model.Models;
@@ -41,30 +42,40 @@ import com.google.common.collect.Lists;
 public class BeanEditorPage extends BasePage {
 
     @SpringBean
-    EndpointDao dao;
+    PersistedObjectDao dao;
     @SpringBean
     ServiceAssemblyDao sadao;
 
     @SuppressWarnings("serial")
-    public BeanEditorPage(Endpoint endpoint) {
-        if (endpoint.getId() != null) {
-            setDefaultModel(Models.domain(dao, endpoint));
+    public BeanEditorPage(PersistedObject po) {
+        if (po.getId() != null) {
+            setDefaultModel(Models.domain(dao, po));
         } else {
-            setDefaultModel(Models.model(endpoint));
+            setDefaultModel(Models.model(po));
         }
 
-        final ComponentType ct = componentService.getComponent(endpoint.getComponentType());
-        final EndpointType et = ct.getEndpoint(endpoint.getEndpointType());
+        final ComponentType ct = componentService.getComponent(po.getComponentType());
 
         add(new Label("name", ct.getName()));
         add(new Label("namespace", ct.getNamespace()));
 
         ArrayList<AbstractType> fields = Lists.newArrayList();
-        fields.addAll(et.getAttributes());
-        fields.addAll(et.getProperties());
-        FieldInfos fi = new FieldInfos(ct.getName() + '.' + et.getName(), fields);
+        String name = ct.getName() + '.';
 
-        EditorPanel editor = new EditorPanel("editor", endpoint.getServiceAssembly(), fi, endpoint.getDetachedValues()) {
+        if (po.isBean()) {
+            BeanType bt = ct.getBean(po.getDeclaredType());
+            name += bt.getClazz();
+            fields.addAll(bt.getProperties());
+        } else {
+            EndpointType et = ct.getEndpoint(po.getDeclaredType());
+            name += et.getName();
+            fields.addAll(et.getAttributes());
+            fields.addAll(et.getProperties());
+        }
+
+        FieldInfos fi = new FieldInfos(name, fields);
+
+        EditorPanel editor = new EditorPanel("editor", po.getServiceAssembly(), fi, po.getDetachedValues()) {
             @Override
             public void onSubmit() {
                 BeanEditorPage.this.onSubmit(getValues());
@@ -74,10 +85,10 @@ public class BeanEditorPage extends BasePage {
     }
 
     private void onSubmit(Map<String, String> map) {
-        Endpoint endpoint = (Endpoint) getDefaultModelObject();
+        PersistedObject po = (PersistedObject) getDefaultModelObject();
 
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            Attribute a = endpoint.getAttributes().get(entry.getKey());
+            Attribute a = po.getAttributes().get(entry.getKey());
             if (a instanceof ValueAttribute) {
                 ValueAttribute va = (ValueAttribute)a;
                 va.setValue(entry.getValue());
@@ -88,51 +99,11 @@ public class BeanEditorPage extends BasePage {
                 throw new UnsupportedOperationException();
             }
         }
-        
-        endpoint.setName(((ValueAttribute)endpoint.getAttributes().get("service")).getValue() + "."
-                + ((ValueAttribute)endpoint.getAttributes().get("endpoint")).getValue());
-        dao.persist(endpoint);
 
-        RequestCycle.get().setResponsePage(
-                new ShowServiceAssemblyPage(sadao.find(endpoint.getServiceAssembly().getId())));
+        po.setName(((ValueAttribute) po.getAttributes().get("service")).getValue() + "."
+                + ((ValueAttribute) po.getAttributes().get("endpoint")).getValue());
+        dao.persist(po);
+
+        RequestCycle.get().setResponsePage(new ShowServiceAssemblyPage(sadao.find(po.getServiceAssembly().getId())));
     }
-
-    // public BeanEditorPage(String componentName, String beanIdentifier) {
-    // this(componentName, beanIdentifier, new HashMap<String, String>());
-    // }
-
-    // public BeanEditorPage(String componentName, String beanIdentifier,
-    // Map<String, String> map) {
-    // final ComponentType desc = componentService.getComponent(componentName);
-    // add(new Label("name", desc.getName()));
-    // add(new Label("namespace", desc.getNamespace()));
-    //
-    // final EndpointType endpoint = desc.getEndpoint(beanIdentifier);
-    // final BeanType bean = desc.getBean(beanIdentifier);
-    //
-    // FieldInfos fi = null;
-    // ArrayList<AbstractType> fields = new ArrayList<AbstractType>();
-    // if (endpoint != null) {
-    // fields.addAll(endpoint.getAttributes());
-    // fields.addAll(endpoint.getProperties());
-    // fi = new FieldInfos(endpoint.getName(), fields);
-    // } else {
-    // fields.addAll(bean.getProperties());
-    // fi = new FieldInfos(bean.getClazz(), fields);
-    // }
-    //
-    // EditorPanel editor = new EditorPanel("editor", desc.getName(), fi, map) {
-    // @Override
-    // public void onSubmit() {
-    // if (endpoint != null) {
-    // assemblyService.getEndpoints().add(new EndpointInfo(endpoint,
-    // getValues()));
-    // } else {
-    // assemblyService.getBeans().add(new BeanInfo(bean, getValues()));
-    // }
-    // RequestCycle.get().setResponsePage(ShowServiceAssemblyPage.class);
-    // }
-    // };
-    // add(editor);
-    // }
 }

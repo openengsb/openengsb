@@ -23,7 +23,7 @@ import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.mockito.Mockito;
-import org.openengsb.config.dao.EndpointDao;
+import org.openengsb.config.dao.PersistedObjectDao;
 import org.openengsb.config.dao.ServiceAssemblyDao;
 import org.openengsb.config.editor.ContextStringResourceLoader;
 import org.openengsb.config.jbi.ComponentParser;
@@ -56,7 +56,7 @@ public class WicketBase {
         ctx.putBean(Mockito.mock(AssemblyService.class));
         ctx.putBean(Mockito.mock(ContextService.class));
         ctx.putBean(Mockito.mock(ServiceAssemblyDao.class));
-        ctx.putBean(Mockito.mock(EndpointDao.class));
+        ctx.putBean(Mockito.mock(PersistedObjectDao.class));
 
         ContextStringResourceLoader.instance.reset();
         ContextStringResourceLoader.instance.addResourceFiles("test-connector", ClassLoader

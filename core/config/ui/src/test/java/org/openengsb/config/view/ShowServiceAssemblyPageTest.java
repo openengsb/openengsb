@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.junit.Test;
 import org.openengsb.config.WicketBase;
-import org.openengsb.config.domain.Endpoint;
+import org.openengsb.config.domain.PersistedObject;
 import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.jbi.types.EndpointType;
 
@@ -49,9 +49,8 @@ public class ShowServiceAssemblyPageTest extends WicketBase {
     @Test
     public void addEndpointToAssembly_endpointListShouldContainEndpointInfo() throws Exception {
         ServiceAssembly sa = new ServiceAssembly();
-        Endpoint e = new Endpoint();
-        e.setName("a");
-        sa.getEndpoints().add(e);
+        PersistedObject e = new PersistedObject(PersistedObject.Type.Endpoint, "a", sa);
+        sa.getPersistedObjects().add(e);
         tester.startPage(new ShowServiceAssemblyPage(sa));
         extTester.assertInvisible("endpointLabel");
         extTester.assertVisible("endpoints");

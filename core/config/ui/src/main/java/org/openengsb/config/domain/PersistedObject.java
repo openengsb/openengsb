@@ -34,31 +34,42 @@ import javax.persistence.OneToMany;
 import com.google.common.collect.Maps;
 
 @Entity
-@NamedQueries( { @NamedQuery(name = "Endpoint.findAll", query = "select e from Endpoint e") })
+@NamedQueries( { @NamedQuery(name = "PersistedObject", query = "select p from PersistedObject p") })
 @SuppressWarnings("serial")
-public class Endpoint extends AbstractDomainObject {
+public class PersistedObject extends AbstractDomainObject {
+    public static enum Type {
+        Bean, Endpoint
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(nullable = false)
+    private Type persistedType;
+
     @Column(nullable = false, unique = true)
     private String name;
+
     @ManyToOne(optional = false)
     private ServiceAssembly serviceAssembly;
     private String componentType;
-    private String endpointType;
-    @OneToMany(mappedBy = "endpoint", cascade = { CascadeType.ALL })
+    private String declaredType;
+
+    @OneToMany(mappedBy = "parent", cascade = { CascadeType.ALL })
     @MapKey(name = "key")
     private Map<String, Attribute> attributes;
 
-    public Endpoint() {
+    public PersistedObject() {
         name = "";
         componentType = "";
-        endpointType = "";
+        declaredType = "";
         attributes = Maps.newHashMap();
     }
 
-    public Endpoint(String name, ServiceAssembly sa) {
-        super();
+    public PersistedObject(Type type, String name, ServiceAssembly sa) {
+        this();
+        this.persistedType = type;
         this.name = name;
         this.serviceAssembly = sa;
     }
@@ -71,6 +82,14 @@ public class Endpoint extends AbstractDomainObject {
     @Override
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Type getPersistedType() {
+        return persistedType;
+    }
+
+    public void setPersistedType(Type persistedType) {
+        this.persistedType = persistedType;
     }
 
     public String getName() {
@@ -97,12 +116,12 @@ public class Endpoint extends AbstractDomainObject {
         this.componentType = componentType;
     }
 
-    public String getEndpointType() {
-        return endpointType;
+    public String getDeclaredType() {
+        return declaredType;
     }
 
-    public void setEndpointType(String endpointType) {
-        this.endpointType = endpointType;
+    public void setDeclaredType(String declaredType) {
+        this.declaredType = declaredType;
     }
 
     public Map<String, Attribute> getAttributes() {
@@ -119,5 +138,13 @@ public class Endpoint extends AbstractDomainObject {
             map.put(e.getKey(), e.getValue().toStringValue());
         }
         return map;
+    }
+
+    public boolean isBean() {
+        return Type.Bean.equals(persistedType);
+    }
+
+    public boolean isEndpoint() {
+        return Type.Endpoint.equals(persistedType);
     }
 }

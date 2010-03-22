@@ -28,7 +28,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
-import org.openengsb.config.domain.Endpoint;
+import org.openengsb.config.domain.PersistedObject;
 import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.editor.fields.AbstractField;
 import org.openengsb.config.editor.fields.DropdownChoiceField;
@@ -82,7 +82,7 @@ public abstract class EditorPanel extends Panel {
     private AbstractField getEditor(ServiceAssembly sa, AbstractType type, IModel<String> model) {
         if (type.getClass().equals(ServiceEndpointTargetType.class)) {
             List<String> names = Lists.newArrayList();
-            for (Endpoint e : sa.getEndpoints()) {
+            for (PersistedObject e : sa.getEndpoints()) {
                 names.add(e.getName());
             }
             return new DropdownChoiceField("editor", model, type, names);

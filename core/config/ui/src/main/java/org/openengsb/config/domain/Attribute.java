@@ -34,14 +34,14 @@ public abstract class Attribute extends AbstractDomainObject {
     private Long id;
     private String key;
     @ManyToOne(optional = false)
-    private Endpoint endpoint;
+    private PersistedObject parent;
 
     public Attribute() {
     }
 
-    public Attribute(Endpoint endpoint, String key) {
+    public Attribute(PersistedObject parent, String key) {
         this.key = key;
-        this.endpoint = endpoint;
+        this.parent = parent;
     }
 
     @Override
@@ -62,12 +62,12 @@ public abstract class Attribute extends AbstractDomainObject {
         this.key = key;
     }
 
-    public Endpoint getEndpoint() {
-        return endpoint;
+    public PersistedObject getParent() {
+        return parent;
     }
 
-    public void setEndpoint(Endpoint endpoint) {
-        this.endpoint = endpoint;
+    public void setParent(PersistedObject parent) {
+        this.parent = parent;
     }
 
     protected abstract String toStringValue();
