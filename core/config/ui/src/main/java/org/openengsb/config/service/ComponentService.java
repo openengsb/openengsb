@@ -19,6 +19,7 @@ package org.openengsb.config.service;
 
 import java.util.List;
 
+import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointType;
 
@@ -42,4 +43,9 @@ public interface ComponentService {
      * Returns a list of all supported endpoints.
      */
     public List<EndpointType> getEndpoints();
+
+    /**
+     * Returns a list of all supported beans;
+     */
+    public List<BeanType> getBeans();
 }

@@ -40,12 +40,14 @@ import org.openengsb.config.domain.ReferenceAttribute;
 import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.domain.ValueAttribute;
 import org.openengsb.config.jbi.types.AbstractType;
+import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.EndpointType;
 import org.openengsb.config.jbi.types.ServiceEndpointTargetType;
 import org.openengsb.config.model.Models;
 
 public class ShowServiceAssemblyPage extends BasePage {
-    public EndpointType selected;
+    public EndpointType selectedEndpointType;
+    public BeanType selectedBeanType;
 
     @SpringBean
     private ServiceAssemblyDao dao;
@@ -57,35 +59,19 @@ public class ShowServiceAssemblyPage extends BasePage {
         setDefaultModel(Models.compoundDomain(dao, sa));
         add(new Label("name"));
 
-        createPersistedObjectList("endpoint");
-        createPersistedObjectList("bean");
+        addPersistedObjectList("endpoint");
+        addPersistedObjectList("bean");
 
-        Form<?> newComponentForm = new Form<Object>("newComponentForm") {
+        Form<?> newEndpointForm = new Form<Object>("newEndpointForm") {
             @Override
             protected void onSubmit() {
-                PersistedObject po = new PersistedObject();
-                ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this.getDefaultModelObject();
-                po.setServiceAssembly(sa);
-                po.setPersistedType(PersistedObject.Type.Endpoint);
-                po.setDeclaredType(selected.getName());
-                po.setComponentType(selected.getParent().getName());
-                for (AbstractType t : selected.getAttributes()) {
-                    if (t.getClass().equals(ServiceEndpointTargetType.class)) {
-                        po.getAttributes().put(t.getName(), new ReferenceAttribute(po, t.getName(), null));
-                    } else {
-                        po.getAttributes().put(
-                                t.getName(),
-                                new ValueAttribute(po, t.getName(), t.getDefaultValue() != null ? t.getDefaultValue()
-                                        : ""));
-                    }
-                }
-                RequestCycle.get().setResponsePage(new BeanEditorPage(po));
+                createNewEndpointClicked();
             }
         };
-        add(newComponentForm);
+        add(newEndpointForm);
 
-        DropDownChoice<EndpointType> choice = new DropDownChoice<EndpointType>("componentSelect",
-                new PropertyModel<EndpointType>(this, "selected"), componentService.getEndpoints(),
+        DropDownChoice<EndpointType> choice = new DropDownChoice<EndpointType>("endpointSelect",
+                new PropertyModel<EndpointType>(this, "selectedEndpointType"), componentService.getEndpoints(),
                 new IChoiceRenderer<EndpointType>() {
                     @Override
                     public Object getDisplayValue(EndpointType e) {
@@ -99,7 +85,31 @@ public class ShowServiceAssemblyPage extends BasePage {
                     }
                 });
         choice.setRequired(true);
-        newComponentForm.add(choice);
+        newEndpointForm.add(choice);
+
+        Form<?> newBeanForm = new Form<Object>("newBeanForm") {
+            @Override
+            protected void onSubmit() {
+                createNewBeanClicked();
+            }
+        };
+        add(newBeanForm);
+
+        DropDownChoice<BeanType> beanChoice = new DropDownChoice<BeanType>("beanSelect", new PropertyModel<BeanType>(
+                this, "selectedBeanType"), componentService.getBeans(), new IChoiceRenderer<BeanType>() {
+            @Override
+            public Object getDisplayValue(BeanType e) {
+                return new StringResourceModel(e.getParent().getName() + "." + e.getClazz() + "._name",
+                        ShowServiceAssemblyPage.this, null).getString();
+            }
+
+            @Override
+            public String getIdValue(BeanType e, int index) {
+                return Integer.toString(index);
+            }
+        });
+        choice.setRequired(true);
+        newBeanForm.add(beanChoice);
 
         Form<?> actionForm = new Form<Object>("actionForm");
         add(actionForm);
@@ -125,7 +135,7 @@ public class ShowServiceAssemblyPage extends BasePage {
     }
 
     @SuppressWarnings("serial")
-    private void createPersistedObjectList(String startName) {
+    private void addPersistedObjectList(String startName) {
         final ListView<PersistedObject> list = new ListView<PersistedObject>(startName + "s") {
             @Override
             protected void populateItem(ListItem<PersistedObject> item) {
@@ -140,8 +150,7 @@ public class ShowServiceAssemblyPage extends BasePage {
                     @Override
                     public void onClick() {
                         poDao.delete(getModelObject());
-                        ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this
-                                .getDefaultModelObject();
+                        ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this.getDefaultModelObject();
                         dao.refresh(sa);
                         RequestCycle.get().setResponsePage(new ShowServiceAssemblyPage(sa));
                     }
@@ -157,5 +166,34 @@ public class ShowServiceAssemblyPage extends BasePage {
                 return empty;
             }
         });
+    }
+
+    private void createNewEndpointClicked() {
+        createNewPO(PersistedObject.Type.Endpoint, selectedEndpointType.getParent().getName(), selectedEndpointType
+                .getName(), selectedEndpointType.getAttributes());
+    }
+
+    private void createNewBeanClicked() {
+        createNewPO(PersistedObject.Type.Bean, selectedBeanType.getParent().getName(), selectedBeanType.getClazz(),
+                selectedBeanType.getProperties());
+    }
+
+    private void createNewPO(PersistedObject.Type persistedType, String componentType, String declaredType,
+            List<AbstractType> fields) {
+        PersistedObject po = new PersistedObject();
+        ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this.getDefaultModelObject();
+        po.setServiceAssembly(sa);
+        po.setPersistedType(persistedType);
+        po.setDeclaredType(declaredType);
+        po.setComponentType(componentType);
+        for (AbstractType t : fields) {
+            if (t.getClass().equals(ServiceEndpointTargetType.class)) {
+                po.getAttributes().put(t.getName(), new ReferenceAttribute(po, t.getName(), null));
+            } else {
+                po.getAttributes().put(t.getName(),
+                        new ValueAttribute(po, t.getName(), t.getDefaultValue() != null ? t.getDefaultValue() : ""));
+            }
+        }
+        RequestCycle.get().setResponsePage(new BeanEditorPage(po));
     }
 }

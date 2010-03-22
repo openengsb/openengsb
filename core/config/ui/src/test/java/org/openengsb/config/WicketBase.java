@@ -46,6 +46,7 @@ public class WicketBase {
         Mockito.when(mockComponentService.getComponents()).thenReturn(components);
         Mockito.when(mockComponentService.getComponent("test-connector")).thenReturn(components.get(0));
         Mockito.when(mockComponentService.getEndpoints()).thenReturn(components.get(0).getEndpoints());
+        Mockito.when(mockComponentService.getBeans()).thenReturn(components.get(0).getBeans());
     }
 
     @Before

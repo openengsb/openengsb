@@ -30,13 +30,19 @@ import org.openengsb.config.jbi.types.EndpointType;
 public class ShowServiceAssemblyPageTest extends WicketBase {
     @Test
     @SuppressWarnings("unchecked")
-    public void dropDownChoice_listsEndpointsAndBeans() throws Exception {
+    public void endpointChoice_listsSupportedEndpoints() throws Exception {
         tester.startPage(new ShowServiceAssemblyPage(new ServiceAssembly()));
-        DropDownChoice<EndpointType> choice = extTester.assertEnabled("newComponentForm:componentSelect",
+        DropDownChoice<EndpointType> choice = extTester.assertEnabled("newEndpointForm:endpointSelect",
                 DropDownChoice.class);
-        assertThat(choice.getChoices().size(), is(3));
-        // assertThat(choice.getChoices().get(0),
-        // is(components.get(0).getEndpoints().get(0)));
+        assertThat(choice.getChoices().size(), is(mockComponentService.getEndpoints().size()));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void beanChoice_listsSupportedBeans() throws Exception {
+        tester.startPage(new ShowServiceAssemblyPage(new ServiceAssembly()));
+        DropDownChoice<EndpointType> choice = extTester.assertEnabled("newBeanForm:beanSelect", DropDownChoice.class);
+        assertThat(choice.getChoices().size(), is(mockComponentService.getBeans().size()));
     }
 
     @Test

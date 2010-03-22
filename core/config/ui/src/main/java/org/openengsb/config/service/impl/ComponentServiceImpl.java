@@ -27,6 +27,7 @@ import javax.servlet.ServletContext;
 
 import org.openengsb.config.editor.ContextStringResourceLoader;
 import org.openengsb.config.jbi.ComponentParser;
+import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.EndpointType;
 import org.openengsb.config.service.ComponentService;
@@ -82,6 +83,15 @@ public class ComponentServiceImpl implements ComponentService {
         ArrayList<EndpointType> list = Lists.newArrayList();
         for (ComponentType c : components) {
             list.addAll(c.getEndpoints());
+        }
+        return list;
+    }
+
+    @Override
+    public List<BeanType> getBeans() {
+        ArrayList<BeanType> list = Lists.newArrayList();
+        for (ComponentType c : components) {
+            list.addAll(c.getBeans());
         }
         return list;
     }
