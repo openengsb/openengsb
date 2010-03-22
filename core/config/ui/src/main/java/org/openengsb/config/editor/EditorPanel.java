@@ -34,6 +34,7 @@ import org.openengsb.config.editor.fields.AbstractField;
 import org.openengsb.config.editor.fields.DropdownChoiceField;
 import org.openengsb.config.editor.fields.InputField;
 import org.openengsb.config.jbi.types.AbstractType;
+import org.openengsb.config.jbi.types.RefType;
 import org.openengsb.config.jbi.types.ServiceEndpointTargetType;
 
 import com.google.common.collect.Lists;
@@ -83,6 +84,12 @@ public abstract class EditorPanel extends Panel {
         if (type.getClass().equals(ServiceEndpointTargetType.class)) {
             List<String> names = Lists.newArrayList();
             for (PersistedObject e : sa.getEndpoints()) {
+                names.add(e.getName());
+            }
+            return new DropdownChoiceField("editor", model, type, names);
+        } else if (type.getClass().equals(RefType.class)) {
+            List<String> names = Lists.newArrayList();
+            for (PersistedObject e : sa.getBeans()) {
                 names.add(e.getName());
             }
             return new DropdownChoiceField("editor", model, type, names);

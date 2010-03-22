@@ -42,6 +42,7 @@ import org.openengsb.config.domain.ValueAttribute;
 import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.EndpointType;
+import org.openengsb.config.jbi.types.RefType;
 import org.openengsb.config.jbi.types.ServiceEndpointTargetType;
 import org.openengsb.config.model.Models;
 
@@ -187,7 +188,7 @@ public class ShowServiceAssemblyPage extends BasePage {
         po.setDeclaredType(declaredType);
         po.setComponentType(componentType);
         for (AbstractType t : fields) {
-            if (t.getClass().equals(ServiceEndpointTargetType.class)) {
+            if (t.getClass().equals(ServiceEndpointTargetType.class) || t.getClass().equals(RefType.class)) {
                 po.getAttributes().put(t.getName(), new ReferenceAttribute(po, t.getName(), null));
             } else {
                 po.getAttributes().put(t.getName(),
