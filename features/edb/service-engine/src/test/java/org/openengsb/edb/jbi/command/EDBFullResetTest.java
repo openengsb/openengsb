@@ -20,14 +20,11 @@ package org.openengsb.edb.jbi.command;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.util.UUID;
-
-import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.commons.logging.LogFactory;
+import org.apache.servicemix.common.util.MessageUtil.NormalizedMessageImpl;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -48,9 +45,8 @@ public class EDBFullResetTest {
 
     @Before
     public void setUp() throws Exception {
-        final InOut inOut = new InOutImpl(UUID.randomUUID().toString());
         makeParameters();
-        msg = inOut.createMessage();
+        msg = new NormalizedMessageImpl();
         msg.setContent(new StringSource(fullResetMessage.asXML()));
     }
 

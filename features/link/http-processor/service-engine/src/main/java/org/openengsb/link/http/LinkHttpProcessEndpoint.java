@@ -34,11 +34,10 @@ import javax.xml.transform.dom.DOMSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.client.ServiceMixClient;
-import org.apache.servicemix.client.ServiceMixClientFacade;
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
+import org.apache.servicemix.jbi.api.ServiceMixClient;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.w3c.dom.Node;
@@ -101,7 +100,6 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
     @Override
     public synchronized void start() throws Exception {
         super.start();
-        client = new ServiceMixClientFacade(getContext());
     }
 
     private void processMessage(MessageExchange exchange, NormalizedMessage in) throws Exception {
@@ -113,7 +111,7 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
         }
 
         InOut linkExchange = requestLinkFromService(parsedQuery.linkId);
-        if(!checkForFaultAndForward(exchange, linkExchange)){
+        if (!checkForFaultAndForward(exchange, linkExchange)) {
             return;
         }
 
@@ -178,12 +176,12 @@ public class LinkHttpProcessEndpoint extends ProviderEndpoint {
 
     private InOut requestLinkFromService(String linkId) throws MessagingException, ParserConfigurationException,
             IOException, SAXException, TransformerException {
-        InOut linkExchange = client.createInOutExchange();
+        InOut linkExchange = getExchangeFactory().createInOutExchange();
         linkExchange.setService(linkServiceName);
 
         NormalizedMessage linkExIn = linkExchange.getInMessage();
         linkExIn.setContent(createLinkRequestMessage(linkId));
-        client.sendSync(linkExchange);
+        sendSync(linkExchange);
 
         return linkExchange;
 

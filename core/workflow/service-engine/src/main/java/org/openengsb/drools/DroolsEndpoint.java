@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessageExchange;
@@ -32,7 +31,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
-import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.drools.RuleBase;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
@@ -93,7 +91,7 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
         if (noRemoteLogging) {
             return;
         }
-        InOnly loggingMessageExchange = new InOnlyImpl(UUID.randomUUID().toString());
+        InOnly loggingMessageExchange = getExchangeFactory().createInOnlyExchange();
         QName loggingServiceIdentification = getLoggingServiceIdentification();
         loggingMessageExchange.setService(loggingServiceIdentification);
         loggingMessageExchange.setInMessage(messageToLog);
