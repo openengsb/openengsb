@@ -30,7 +30,7 @@
     <jdk.version>1.6</jdk.version>
     <servicemix.tools.version>4.0</servicemix.tools.version>
     <servicemix.version>3.3.1</servicemix.version>
-    <servicemix.subprojects.version>2009.01</servicemix.subprojects.version>
+    <servicemix.subprojects.version>2010.01</servicemix.subprojects.version>
     <servicemix-specs-version>1.3.0</servicemix-specs-version>
     <slf4j.version>1.5.8</slf4j.version>
     <svnkit.version>1.3.0</svnkit.version>
@@ -96,7 +96,7 @@
     <maven.plugin.release.version>2.0-beta-9</maven.plugin.release.version>
     <maven.plugin.surefire>2.4.3</maven.plugin.surefire>
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
-    <servicemix.jbi.maven.version>4.1</servicemix.jbi.maven.version>
+    <servicemix.jbi.maven.version>4.4-SNAPSHOT</servicemix.jbi.maven.version>
   </properties>
 
   <groupId>org.openengsb</groupId>
@@ -1445,6 +1445,21 @@
     </dependencies>
   </dependencyManagement>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <id>apache.snapshots</id>
+      <name>apache snapshot repository</name>
+      <url>http://repository.apache.org/snapshots</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+         <enabled>false</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+
+
   <repositories>
     <repository>
       <id>thirdparty</id>
@@ -1467,6 +1482,17 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
+    </repository>
+    <repository>
+      <id>apache.snapshots</id>
+      <name>apache snapshot repository</name>
+      <url>http://repository.apache.org/snapshots</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
     </repository>
   </repositories>
 
