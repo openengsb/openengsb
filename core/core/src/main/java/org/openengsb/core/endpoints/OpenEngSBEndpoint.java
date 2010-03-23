@@ -34,8 +34,6 @@ import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.InOnlyImpl;
-import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.EventHelperImpl;
 import org.openengsb.core.MessageProperties;
@@ -112,7 +110,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
     protected void forwardInOutMessage(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
             QName service) throws MessagingException {
-        InOut inout = new InOutImpl(UUID.randomUUID().toString());
+        InOut inout = getExchangeFactory().createInOutExchange();
         inout.setService(service);
         inout.setInMessage(in);
         inout.setOperation(exchange.getOperation());
@@ -125,7 +123,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
     protected void forwardInOnlyMessage(MessageExchange exchange, NormalizedMessage in, QName service)
             throws MessagingException {
-        InOnly inonly = new InOnlyImpl(UUID.randomUUID().toString());
+        InOnly inonly = getExchangeFactory().createInOnlyExchange();
         inonly.setService(service);
         inonly.setInMessage(in);
         inonly.setOperation(exchange.getOperation());
