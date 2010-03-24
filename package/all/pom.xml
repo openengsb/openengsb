@@ -110,7 +110,6 @@
       <artifactId>openengsb-domains-notification-xmpp-su</artifactId>
     </dependency>
 
-
     <!-- SCM -->
     <dependency>
       <groupId>org.openengsb</groupId>

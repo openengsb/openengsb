@@ -39,7 +39,7 @@
     <constructor-arg value="5122" />
   </bean>
 
-  <bean id="xmppTransferManager" class="org.jivesoftware.smack.FileTransferManager">
+  <bean id="xmppTransferManager" class="org.jivesoftware.smackx.filetransfer.FileTransferManager">
     <constructor-arg ref="xmppConnection" />
   </bean>
     

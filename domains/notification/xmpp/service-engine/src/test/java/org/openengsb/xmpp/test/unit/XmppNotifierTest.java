@@ -63,7 +63,10 @@ public class XmppNotifierTest {
 
     @Before
     public void setUp() {
-        target = new XmppNotifier(username, password, resources);
+        target = new XmppNotifier();
+        target.setUser(username);
+        target.setPassword(password);
+        target.setResources(resources);
         notification = createNotification();
 
         conn = Mockito.mock(XMPPConnection.class);

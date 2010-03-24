@@ -40,12 +40,6 @@ public class XmppNotifier implements NotificationDomain {
 
     private String user;
 
-    public XmppNotifier(String user, String password, String resources) {
-        this.user = user;
-        this.password = password;
-        this.resources = resources;
-    }
-
     private void connect() {
         if (this.connection.isConnected()) {
             throw new XMPPNotifierException("Already an open connection, disconnect first.");
