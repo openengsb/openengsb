@@ -147,4 +147,12 @@ public class PersistedObject extends AbstractDomainObject {
     public boolean isEndpoint() {
         return Type.Endpoint.equals(persistedType);
     }
+
+    public String extractNewName(Map<String, String> map) {
+        if (persistedType.equals(Type.Bean)) {
+            return map.get("id");
+        } else {
+            return map.get("service") + '.' + map.get("endpoint");
+        }
+    }
 }

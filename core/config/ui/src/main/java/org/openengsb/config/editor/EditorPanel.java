@@ -46,6 +46,7 @@ import com.google.common.collect.Lists;
 public abstract class EditorPanel extends Panel {
     private final FieldInfos fieldInfos;
     private final Map<String, String> map;
+    private Form<?> form;
 
     public EditorPanel(String id, ServiceAssembly sa, FieldInfos fieldInfos, Map<String, String> map) {
         super(id);
@@ -62,7 +63,7 @@ public abstract class EditorPanel extends Panel {
 
     @SuppressWarnings("unchecked")
     private void createForm(ServiceAssembly sa) {
-        Form<?> form = new Form("form") {
+        form = new Form("form") {
             @Override
             protected void onSubmit() {
                 EditorPanel.this.onSubmit();
@@ -103,5 +104,9 @@ public abstract class EditorPanel extends Panel {
         } else {
             return new InputField("editor", model, type);
         }
+    }
+
+    public void showError(String message) {
+        form.error(message);
     }
 }

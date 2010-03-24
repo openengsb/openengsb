@@ -47,6 +47,8 @@
     <property name="deployPath" ref="installDir" />
   </bean>
   
+  <bean id="editorService" class="org.openengsb.config.service.impl.EditorServiceImpl" />
+  
   <bean id="contextService" class="org.openengsb.config.service.impl.DummyContextService" />
 
   <bean id="servletContext" class="org.springframework.web.context.support.ServletContextFactoryBean" />
