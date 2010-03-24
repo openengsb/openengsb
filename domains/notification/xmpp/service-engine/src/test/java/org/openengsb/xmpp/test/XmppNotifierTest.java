@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.xmpp.test.unit;
+package org.openengsb.xmpp.test;
 
 import java.io.ByteArrayInputStream;
 
@@ -83,7 +83,8 @@ public class XmppNotifierTest {
 
     private void setupMocking() {
         Mockito.when(conn.getChatManager()).thenReturn(chatManager);
-        Mockito.when(chatManager.createChat(Mockito.anyString(), (MessageListener) Mockito.anyObject())).thenReturn(chat);
+        Mockito.when(chatManager.createChat(Mockito.anyString(), (MessageListener) Mockito.anyObject())).thenReturn(
+                chat);
         Mockito.when(transferManager.createOutgoingFileTransfer(notification.getRecipient())).thenReturn(transfer);
         Mockito.when(conn.isConnected()).thenReturn(false);
     }
@@ -120,7 +121,8 @@ public class XmppNotifierTest {
     @Test
     public void testNotifyCreateChat() throws XMPPException {
         target.notify(notification);
-        Mockito.verify(chatManager, Mockito.times(1)).createChat(Mockito.eq(notification.getRecipient()), (MessageListener) Mockito.anyObject());
+        Mockito.verify(chatManager, Mockito.times(1)).createChat(Mockito.eq(notification.getRecipient()),
+                (MessageListener) Mockito.anyObject());
     }
 
     @Test
@@ -135,7 +137,8 @@ public class XmppNotifierTest {
     @Test
     public void testNotifyCreateOutgoingFileTransfer() throws XMPPException {
         target.notify(notification);
-        Mockito.verify(transferManager, Mockito.times(notification.getAttachments().length)).createOutgoingFileTransfer(notification.getRecipient());
+        Mockito.verify(transferManager, Mockito.times(notification.getAttachments().length))
+                .createOutgoingFileTransfer(notification.getRecipient());
     }
 
     @Test

@@ -36,7 +36,7 @@
 
   <bean id="xmppConfig" class="org.jivesoftware.smack.ConnectionConfiguration">
     <constructor-arg value="localhost" />
-    <constructor-arg value="5122" />
+    <constructor-arg value="5222" />
   </bean>
 
   <bean id="xmppTransferManager" class="org.jivesoftware.smackx.filetransfer.FileTransferManager">
