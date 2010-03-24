@@ -44,4 +44,15 @@ public class JpaPersistedObjectDao extends JpaBaseDao<PersistedObject> implement
             return null;
         }
     }
+
+    @Override
+    public PersistedObject findByName(ServiceAssembly sa, String name) {
+        try {
+            return (PersistedObject) em.createQuery(
+                    "select p from PersistedObject p where p.name = :name and p.serviceAssembly = :sa").setParameter(
+                    "name", name).setParameter("sa", sa).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
 }

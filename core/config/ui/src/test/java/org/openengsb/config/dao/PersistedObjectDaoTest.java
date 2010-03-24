@@ -47,11 +47,14 @@ public class PersistedObjectDaoTest {
     private ServiceAssemblyDao sadao;
 
     private ServiceAssembly sa;
+    private ServiceAssembly otherSa;
 
     @Before
     public void setup() {
         sa = new ServiceAssembly("a");
+        otherSa = new ServiceAssembly("b");
         sadao.persist(sa);
+        sadao.persist(otherSa);
         dao.persist(new PersistedObject(Type.Endpoint, "b", sa));
         dao.persist(new PersistedObject(Type.Endpoint, "a", sa));
         dao.persist(new PersistedObject(Type.Endpoint, "c", sa));
@@ -81,5 +84,21 @@ public class PersistedObjectDaoTest {
         assertThat(pos.get(0).getName(), is("a"));
         assertThat(pos.get(1).getName(), is("b"));
         assertThat(pos.get(2).getName(), is("c"));
+    }
+
+    @Test
+    public void findByName_existingNameAndSa_returnsThePO() {
+        PersistedObject p = dao.findByName(sa, "a");
+        assertThat(p.getName(), is("a"));
+    }
+
+    @Test
+    public void findByName_existingNameOtherSa_returnsNull() {
+        assertThat(dao.findByName(otherSa, "a"), nullValue());
+    }
+
+    @Test
+    public void findByName_nonexistingNameExistingSa_returnsNull() {
+        assertThat(dao.findByName(sa, "nonExisting"), nullValue());
     }
 }

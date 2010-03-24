@@ -48,7 +48,7 @@ public class PersistedObject extends AbstractDomainObject {
     @Column(nullable = false)
     private Type persistedType;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne(optional = false)

@@ -26,14 +26,23 @@ public interface PersistedObjectDao extends BaseDao<PersistedObject> {
     /**
      * Returns the {@code PersistedObject} with the unique name or null if no
      * {@code PersistedObject} with the given name exists.
-     * 
+     *
      * @param name the unique name of the endpoint
      */
     PersistedObject findByName(String name);
 
     /**
-     * Returns a list of all endpoints ordered by their name for the given
+     * Returns a list of all {@code PersistedObject}s ordered by their name for
+     * the given
+     * 
      * @{code ServiceAssembly}.
      */
     List<PersistedObject> findByServiceAssembly(ServiceAssembly sa);
+
+    /**
+     * Returns the {@code PersistdObject} with the unique name or null if no
+     * {@code PersistedObject} with the given name for the given {@code
+     * ServiceAssembly} exists.
+     */
+    PersistedObject findByName(ServiceAssembly sa, String name);
 }
