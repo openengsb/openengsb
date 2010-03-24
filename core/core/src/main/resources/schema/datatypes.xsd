@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:oes="http://openengsb.org/serialization/1.0/">
+
+  <xs:complexType name="XMLPrimitive">
+    <xs:choice>
+      <xs:element name="string" type="xs:string" />
+      <xs:element name="float" type="xs:float" />
+      <xs:element name="double" type="xs:double" />
+      <xs:element name="boolean" type="xs:boolean" />
+      <xs:element name="int" type="xs:int" />
+      <xs:element name="short" type="xs:short" />
+      <xs:element name="byte" type="xs:byte" />
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="XMLMapable">
+    <xs:choice>
+      <xs:element name="value" type="XMLPrimitive" />
+      <xs:element name="array" type="XMLMapable" maxOccurs="unbounded" />
+      <xs:element name="event" type="XMLEvent" />
+      <xs:element name="map" type="XMLMapEntry" maxOccurs="unbounded" />
+    </xs:choice>
+    <xs:attribute name="domainConcept" type="xs:string" />
+  </xs:complexType>
+
+  <xs:complexType name="XMLEvent">
+    <xs:sequence>
+      <xs:element name="domain" type="xs:string" />
+      <xs:element name="name" type="xs:string" />
+      <xs:element name="toolConnector" type="xs:string" />
+      <xs:element name="elements" type="XMLMapEntry" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="XMLMapEntry">
+    <xs:sequence>
+      <xs:element name="key" type="xs:string" />
+      <xs:element name="value" type="XMLMapable" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="XMLReturnValue">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="value" type="XMLMapable" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="XMLMethodCall">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="methodName" type="xs:string" />
+        <xs:element name="args" type="XMLMapable" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>
