@@ -1,0 +1,229 @@
+~~
+~~	Copyright 2010 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+  [ATTENTION:] This page is only a proposal! This means that everyone is allowed to edit this page and it is 
+  			   marked for change. This proposal could be seen as design idea and should be discussed in public
+  			   and visible for everyone before implemented at all.
+
+Issue Tracker Domain
+
+  This page provides object and interface descriptions needed for the integration of issue tracking systems into OpenEngSB.
+  The mapping between the interface of the specific issue tracker and OpenEngSB is designed to
+  be easily extensible (e.g. adding new fields from issue trackers). There are a lot of issue trackers on the market.
+  The focus lies on open source issue trackers. To model the interface 4 widespread systems were chosen:
+  
+  * Mantis
+  
+  * GitHub
+  
+  * Bugzilla
+  
+  * Trac
+
+
+* Comparison
+
+** Issue/Task
+
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|<<Fields/Options>>|<<Type>>|<<Short description>>|<<Mantis>>|<<GitHub>>|<<Bugzilla>>|<<Trac>>|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|id|long or int|identify the issue|+|+|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|project|String|The name of the product/project the bug is being filed against|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|component|String|The name of a component in the product above. 1) Different meanings|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|summary or title|String|A brief description of the bug being filed.|+|+|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|version|String|A version of the product above; the version the bug was found in.|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|description|String|The initial description for this bug.|+|+|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|os|String|The operating system the bug was discovered on.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|os version|String|The version of the operating system.|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|platform|String|What type of hardware the bug was experienced on.|+|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|priority|String|What order the bug will be fixed in by the developer, compared to the developers other bugs.|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|severity|String|How severe the bug is.|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|alias|String|The alias of this bug. If there is no alias or aliases are disabled, this will be an empty string.|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|assigned_to / owner|String|The login name of the user to whom the bug is assigned.|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|creation_time|Date|When the bug was created.|+|+|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|dupe_of|int|The bug ID of the bug that this bug is a duplicate of. If this bug isn't a duplicate of any bug, this will be an empty int.|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|is_open|boolean|Returns true (1) if this bug is open, false (0) if it is closed.|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|update_time|Date|When the bug was last changed.|+|+|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|status|String|The current status of the bug.|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|creation time|Date|When the bug was created.|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|resolution|String|The current resolution of the bug, or an empty string if the bug is open.|+|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|reporter|String|The author of the ticket.|+|+|-|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|monitor|String|The persons who monitor the issue.|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|keywords|String|Keywords that a ticket is marked with. Useful for searching and report generation.|-|-|-|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|milestone / targetversion|String|When this issue should be resolved at the latest.|+|-|-|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|cc|String|A comma-separated list of other users or E-Mail addresses to notify. Note that this does not imply responsiblity or any other policy.|-|-|+|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|fixed in version|String|The version the issue was fixed|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|type|String|The nature of the ticket (for example, defect or enhancement request) or self-defined categories|+|-|-|+|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|view state|String|The view state describes the point of view(public, private, any).|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|build|String|The version of the build|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|notes|List|Added notes after creation.|+|+|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|addtional information|String|These information should give more details of the issue.|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|steps to reproduce|String|If it is a bug, you can describe what you have to do to reproduce the error.|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|eta|String|no info|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|projection|String|no info|+|-|-|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+|votes|int|You can vote to prioritise the open issue. This option is for opensource project to integrate all internal and external members|-|-|+|-|
+*------------------+--------+---------------------+----------+----------+------------+--------+
+
+**Issue Object
+
+  We decided to use the least common delimiter to keep the issue object as small as possible while still containing all the basic features.
+  
+  Used Fields:
+  
+  * id
+  
+  * summary
+  
+  * description
+  
+  * owner
+  
+  * reporter
+  
+  * priority (immediate, urgent, high, normal, low, none)
+  
+  * status (new, assigned, closed)
+  
+  []
+
+  We are using constants for priority and status instead of enums because they can't be accessed in Drools which will most likely get fixed with version 5.1
+  
+  Comments are added to the issue via the addComment function of the domain.
+  
+**Issue Domain
+
+  The domain currently implements four basic methods (see interface description):
+  
+  * createIssue
+  
+  * addComment
+  
+  * updateIssue
+  
+  * deleteIssue
+  
+  []
+
+**Projects
+
+  The project will be handled by the connectors. Basically there will be one endpoint per project per connector.
+  The connector needs to add the issue to the right project.
+  See tracConnector for Examples
+	
+* Interface description
+
+---
+package org.openengsb.drools;
+
+import java.util.Hashtable;
+
+import org.openengsb.drools.model.Issue;
+
+public interface IssuesDomain extends Domain {
+    Integer createIssue(Issue issue);
+
+    void updateIssue(Integer id, String comment, Hashtable<String, Object> changes);
+
+    void deleteIssue(Integer id);
+    
+    void addComment(Integer id, String comment);
+}
+---
+
+* Domain model
+
+** Domain object for Issue/Task/Bug
+
+---
+package org.openengsb.drools.model;
+
+public class Issue {
+    private Integer id;
+    private String summary;
+    private String description;
+    private String owner;
+    private String reporter;
+    private String priority;
+    private String status;
+}
+---
+
+** Constants
+
+---
+/**
+ * Priorities
+ */
+	public final static String priorityIMMEDIATE = "IMMEDIATE";
+	public final static String priorityURGENT = "URGENT";
+	public final static String priorityHIGH = "HIGH";
+	public final static String priorityNORMAL = "NORMAL";
+	public final static String priorityLOW = "LOW";
+	public final static String priorityNONE = "NONE";
+
+
+/**
+ * Status
+ */
+	public final static String statusNEW = "NEW";
+	public final static String statusASSIGNED = "ASSIGNED";
+	public final static String statusCLOSED = "CLOSED";
+
+/**
+ * fields that are used for the changes Hashtable in updateIssue
+ */
+	public final static String fieldSUMMARY = "SUMMARY";
+	public final static String fieldDESCRIPTION = "DESCRIPTION";
+	public final static String fieldOWNER = "OWNER";
+	public final static String fieldREPORTER = "REPORTER";
+	public final static String fieldPRIORITY = "PRIORITY";
+	public final static String fieldSTATUS = "STATUS";
+	
+---

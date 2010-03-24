@@ -13,9 +13,8 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
- */
 
+ */
 package org.openengsb.contextcommon;
 
 import java.io.File;
@@ -182,9 +181,27 @@ public class ContextStore {
         setValue("42/workflows/edbcommit/notification/email/max.mustermann@openengsb.org", "true");
         setValue("42/workflows/edbcommit/notification/email/martina.musterfrau@openegnsb.org", "true");
 
+        loadIssueConfig();
+        loadNotificationConfig();
+        loadScmConfig();
+        loadTestConfig();
+        loadBuildConfig();
+        loadDeployConfig();
+        loadReportConfig();
+        loadEdbConfig();
+    }
+
+    private void loadIssueConfig() {
         setValue("42/issue/namespace", "urn:openengsb:issues");
         setValue("42/issue/servicename", "issuesService");
+        setValue("42/issue/event/servicename", "eventService");
+        setValue("42/issue/default", "trac");
 
+        setValue("42/issue/trac/namespace", "urn:openengsb:trac");
+        setValue("42/issue/trac/servicename", "tracService");
+    }
+
+    private void loadNotificationConfig() {
         setValue("42/notification/namespace", "urn:openengsb:notification");
         setValue("42/notification/servicename", "notificationService");
         setValue("42/notification/event/servicename", "eventService");
@@ -203,7 +220,9 @@ public class ContextStore {
         setValue("42/notification/twitter/servicename", "twitterService");
         setValue("42/notification/twitter/user", "OpenEngSbTest");
         setValue("42/notification/twitter/password", "tsetbsgnenepo");
+    }
 
+    private void loadScmConfig() {
         setValue("42/scm/namespace", "urn:openengsb:scm");
         setValue("42/scm/servicename", "scmService");
         setValue("42/scm/event/servicename", "eventService");
@@ -211,7 +230,9 @@ public class ContextStore {
 
         setValue("42/scm/svn/namespace", "urn:openengsb:svn");
         setValue("42/scm/svn/servicename", "svnService");
+    }
 
+    private void loadTestConfig() {
         setValue("42/test/namespace", "urn:openengsb:test");
         setValue("42/test/servicename", "testService");
         setValue("42/test/event/servicename", "eventService");
@@ -222,7 +243,9 @@ public class ContextStore {
         setValue("42/test/maven-test/config/goals", "test");
         setValue("42/test/maven-test/config/baseDirectory", "data/openengsb/testProject");
         addContext("42/test/maven-test/config/executionRequestProperties");
+    }
 
+    private void loadBuildConfig() {
         setValue("42/build/namespace", "urn:openengsb:build");
         setValue("42/build/servicename", "buildService");
         setValue("42/build/event/servicename", "eventService");
@@ -233,7 +256,9 @@ public class ContextStore {
         setValue("42/build/maven-build/config/goals", "package");
         setValue("42/build/maven-build/config/baseDirectory", "data/openengsb/testProject");
         setValue("42/build/maven-build/config/executionRequestProperties/skipTests", "true");
+    }
 
+    private void loadDeployConfig() {
         setValue("42/deploy/namespace", "urn:openengsb:deploy");
         setValue("42/deploy/servicename", "deployService");
         setValue("42/deploy/event/servicename", "eventService");
@@ -244,7 +269,9 @@ public class ContextStore {
         setValue("42/deploy/maven-deploy/config/goals", "deploy");
         setValue("42/deploy/maven-deploy/config/baseDirectory", "data/openengsb/testProject");
         setValue("42/deploy/maven-deploy/config/executionRequestProperties/skipTests", "true");
+    }
 
+    private void loadReportConfig() {
         setValue("42/report/namespace", "urn:openengsb:report");
         setValue("42/report/servicename", "reportService");
         setValue("42/report/event/servicename", "eventService");
@@ -253,7 +280,9 @@ public class ContextStore {
         setValue("42/report/plaintext-report/namespace", "urn:openengsb:plaintext-report");
         setValue("42/report/plaintext-report/servicename", "plaintextReportService");
         setValue("42/report/plaintext-report/config/reportDirectory", "data/openengsb/reports");
+    }
 
+    private void loadEdbConfig() {
         setValue("42/edb/namespace", "urn:openengsb:edb");
         setValue("42/edb/servicename", "edb");
         setValue("42/edb/event/servicename", "edbEvent");

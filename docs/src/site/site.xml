@@ -58,7 +58,7 @@
     <menu name="Documentation">
       <item href="reference/index.html" name="Userguide" />
       <item collapse="true" href="connector/issues/issues.html" name="Issue-Connectors">
-        <item href="connector/issues/issueDomain.html" name="Issue domain" />
+        <item href="proposals/issueDomain.html" name="Issue domain" />
         <item href="connector/issues/trac.html" name="Trac" />
         <item href="connector/issues/mantis.html" name="Mantis" />
       </item>
