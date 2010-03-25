@@ -159,7 +159,7 @@ public class ContextStore {
             return;
         }
         try {
-            rootContext = ContextSegmentTransformer.fromXml(FileUtils.readFileToString(settings));
+            rootContext = ContextTransformer.fromXml(FileUtils.readFileToString(settings));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -288,7 +288,7 @@ public class ContextStore {
         }
 
         try {
-            String xml = ContextSegmentTransformer.toXml(rootContext);
+            String xml = ContextTransformer.toXml(rootContext);
             FileUtils.writeStringToFile(settings, xml, "UTF-8");
         } catch (IOException e) {
             throw new RuntimeException(e);

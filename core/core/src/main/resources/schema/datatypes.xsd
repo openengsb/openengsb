@@ -14,14 +14,18 @@
   </xs:complexType>
 
   <xs:complexType name="XMLMapable">
-    <xs:choice>
-      <xs:element name="primitive" type="XMLPrimitive" />
-      <xs:element name="bean" type="XMLBean" />
-      <xs:element name="list" type="XMLMapable" maxOccurs="unbounded" />
-      <xs:element name="event" type="XMLEvent" />
-      <xs:element name="map" type="XMLMapEntry" maxOccurs="unbounded" />
-      <xs:element name="context" type="XMLContext" />
-    </xs:choice>
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="reference" type="XMLReference" />
+        <xs:element name="primitive" type="XMLPrimitive" />
+        <xs:element name="bean" type="XMLBean" />
+        <xs:element name="list" type="XMLMapable" maxOccurs="unbounded" />
+        <xs:element name="event" type="XMLEvent" />
+        <xs:element name="map" type="XMLMapEntry" maxOccurs="unbounded" />
+        <xs:element name="context" type="XMLContext" />
+      </xs:choice>
+      <xs:element name="id" type="xs:string" />    
+    </xs:sequence>
     <xs:attribute name="domainConcept" type="xs:string" />
   </xs:complexType>
 
@@ -44,14 +48,14 @@
 
   <xs:complexType name="XMLField">
     <xs:sequence>
-      <xs:element name="className" type="xs:string" />
+      <xs:element name="fieldName" type="xs:string" />
       <xs:element name="value" type="XMLMapable"/>
     </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="XMLMapEntry">
     <xs:sequence>
-      <xs:element name="key" type="xs:string" />
+      <xs:element name="key" type="XMLMapable" />
       <xs:element name="value" type="XMLMapable" />
     </xs:sequence>
   </xs:complexType>
@@ -84,6 +88,12 @@
   <xs:complexType name="XMLContext">
     <xs:sequence>
       <xs:element name="entries" type="XMLContextEntry" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="XMLReference">
+    <xs:sequence>
+      <xs:element name="id" type="xs:int" />
     </xs:sequence>
   </xs:complexType>
 

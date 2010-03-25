@@ -6,7 +6,7 @@ package org.openengsb.core.xmlmapping;
  * <pre>
  * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLMapEntry">
  *   &lt;xs:sequence>
- *     &lt;xs:element type="xs:string" name="key"/>
+ *     &lt;xs:element type="XMLMapable" name="key"/>
  *     &lt;xs:element type="XMLMapable" name="value"/>
  *   &lt;/xs:sequence>
  * &lt;/xs:complexType>
@@ -14,7 +14,7 @@ package org.openengsb.core.xmlmapping;
  */
 public class XMLMapEntry
 {
-    private String key;
+    private XMLMapable key;
     private XMLMapable value;
 
     /** 
@@ -22,7 +22,7 @@ public class XMLMapEntry
      * 
      * @return value
      */
-    public String getKey() {
+    public XMLMapable getKey() {
         return key;
     }
 
@@ -31,7 +31,7 @@ public class XMLMapEntry
      * 
      * @param key
      */
-    public void setKey(String key) {
+    public void setKey(XMLMapable key) {
         this.key = key;
     }
 

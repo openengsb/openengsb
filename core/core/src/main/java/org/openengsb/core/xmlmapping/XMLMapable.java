@@ -15,18 +15,21 @@ import java.util.List;
 public class XMLMapable
 {
     private int choiceSelect = -1;
-    private static final int PRIMITIVE_CHOICE = 0;
-    private static final int BEAN_CHOICE = 1;
-    private static final int LIST_CHOICE = 2;
-    private static final int EVENT_CHOICE = 3;
-    private static final int MAP_CHOICE = 4;
-    private static final int CONTEXT_CHOICE = 5;
+    private static final int REFERENCE_CHOICE = 0;
+    private static final int PRIMITIVE_CHOICE = 1;
+    private static final int BEAN_CHOICE = 2;
+    private static final int LIST_CHOICE = 3;
+    private static final int EVENT_CHOICE = 4;
+    private static final int MAP_CHOICE = 5;
+    private static final int CONTEXT_CHOICE = 6;
+    private XMLReference reference;
     private XMLPrimitive primitive;
     private XMLBean bean;
     private List<XMLMapable> listList = new ArrayList<XMLMapable>();
     private XMLEvent event;
     private List<XMLMapEntry> mapList = new ArrayList<XMLMapEntry>();
     private XMLContext context;
+    private String id;
     private String domainConcept;
 
     private void setChoiceSelect(int choice) {
@@ -43,6 +46,34 @@ public class XMLMapable
      */
     public void clearChoiceSelect() {
         choiceSelect = -1;
+    }
+
+    /** 
+     * Check if Reference is current selection for choice.
+     * 
+     * @return <code>true</code> if selection, <code>false</code> if not
+     */
+    public boolean ifReference() {
+        return choiceSelect == REFERENCE_CHOICE;
+    }
+
+    /** 
+     * Get the 'reference' element value.
+     * 
+     * @return value
+     */
+    public XMLReference getReference() {
+        return reference;
+    }
+
+    /** 
+     * Set the 'reference' element value.
+     * 
+     * @param reference
+     */
+    public void setReference(XMLReference reference) {
+        setChoiceSelect(REFERENCE_CHOICE);
+        this.reference = reference;
     }
 
     /** 
@@ -211,6 +242,24 @@ public class XMLMapable
     public void setContext(XMLContext context) {
         setChoiceSelect(CONTEXT_CHOICE);
         this.context = context;
+    }
+
+    /** 
+     * Get the 'id' element value.
+     * 
+     * @return value
+     */
+    public String getId() {
+        return id;
+    }
+
+    /** 
+     * Set the 'id' element value.
+     * 
+     * @param id
+     */
+    public void setId(String id) {
+        this.id = id;
     }
 
     /** 

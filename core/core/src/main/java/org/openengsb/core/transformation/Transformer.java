@@ -44,10 +44,11 @@ public class Transformer {
     public static String toXml(MethodCall methodCall) throws SerializationException {
         XMLMethodCall xmc = new XMLMethodCall();
         xmc.setMethodName(methodCall.getMethodName());
+        ToXmlTypesTransformer transformer = new ToXmlTypesTransformer();
 
         List<XMLMapable> mapables = new ArrayList<XMLMapable>();
         for (Object o : methodCall.getArgs()) {
-            mapables.add(ToXmlTypesTransformer.toMapable(o));
+            mapables.add(transformer.toMapable(o));
         }
 
         xmc.setArgs(mapables);
@@ -56,8 +57,9 @@ public class Transformer {
     }
 
     public static String toXml(ReturnValue returnValue) throws SerializationException {
+        ToXmlTypesTransformer transformer = new ToXmlTypesTransformer();
         XMLReturnValue xrv = new XMLReturnValue();
-        xrv.setValue(ToXmlTypesTransformer.toMapable(returnValue.getValue()));
+        xrv.setValue(transformer.toMapable(returnValue.getValue()));
         return xml(xrv);
     }
 
@@ -66,12 +68,13 @@ public class Transformer {
         xe.setDomain(event.getDomain());
         xe.setName(event.getName());
         xe.setToolConnector(event.getToolConnector());
+        ToXmlTypesTransformer transformer = new ToXmlTypesTransformer();
 
         ArrayList<XMLMapEntry> list = new ArrayList<XMLMapEntry>();
         for (String key : event.getKeys()) {
             XMLMapEntry entry = new XMLMapEntry();
             entry.setKey(key);
-            entry.setValue(ToXmlTypesTransformer.toMapable(event.getValue(key)));
+            entry.setValue(transformer.toMapable(event.getValue(key)));
             list.add(entry);
         }
 

@@ -27,7 +27,7 @@ import org.openengsb.core.xmlmapping.XMLContextEntry;
 import org.openengsb.util.serialization.JibxXmlSerializer;
 import org.openengsb.util.serialization.SerializationException;
 
-public class ContextSegmentTransformer {
+public class ContextTransformer {
 
     private final static JibxXmlSerializer serializer = new JibxXmlSerializer();
 
@@ -52,7 +52,7 @@ public class ContextSegmentTransformer {
         }
     }
 
-    private static XMLContext toXmlContext(Context ctx) {
+    public static XMLContext toXmlContext(Context ctx) {
         XMLContext xmlContext = new XMLContext();
         List<XMLContextEntry> entries = new ArrayList<XMLContextEntry>();
         toXmlContext(entries, "/", ctx);
@@ -60,7 +60,7 @@ public class ContextSegmentTransformer {
         return xmlContext;
     }
 
-    private static Context toContext(XMLContext xmlContext) {
+    public static Context toContext(XMLContext xmlContext) {
         ContextStore store = new ContextStore();
         toContext(store, xmlContext);
         return store.getContext("/");

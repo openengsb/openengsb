@@ -6,7 +6,7 @@ package org.openengsb.core.xmlmapping;
  * <pre>
  * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLField">
  *   &lt;xs:sequence>
- *     &lt;xs:element type="xs:string" name="className"/>
+ *     &lt;xs:element type="xs:string" name="fieldName"/>
  *     &lt;xs:element type="XMLMapable" name="value"/>
  *   &lt;/xs:sequence>
  * &lt;/xs:complexType>
@@ -14,25 +14,25 @@ package org.openengsb.core.xmlmapping;
  */
 public class XMLField
 {
-    private String className;
+    private String fieldName;
     private XMLMapable value;
 
     /** 
-     * Get the 'className' element value.
+     * Get the 'fieldName' element value.
      * 
      * @return value
      */
-    public String getClassName() {
-        return className;
+    public String getFieldName() {
+        return fieldName;
     }
 
     /** 
-     * Set the 'className' element value.
+     * Set the 'fieldName' element value.
      * 
-     * @param className
+     * @param fieldName
      */
-    public void setClassName(String className) {
-        this.className = className;
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
     }
 
     /** 
