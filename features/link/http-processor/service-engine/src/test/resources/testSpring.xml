@@ -22,4 +22,18 @@
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
     http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd">
 
+<<<<<<< HEAD:features/link/http-processor/service-engine/src/test/resources/testSpring.xml
  </beans>
+=======
+public interface DroolsIssuesDomain extends Domain {
+
+    /**
+     * @return The ID of the created issue
+     */
+    String createIssue(String name);
+
+    Boolean addComment(String issueId, String comment);
+
+    Boolean deleteIssue(String issueId);
+}
+>>>>>>> Refactored domains to use object types instead of primitives and lists instead of arrays.:core/workflow/domains/src/main/java/org/openengsb/drools/DroolsIssuesDomain.java

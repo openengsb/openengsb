@@ -27,7 +27,7 @@ import org.openengsb.core.MessageProperties;
 import org.openengsb.core.MethodCallHelper;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
-public class ContextHelperImpl implements ContextHelper {
+public class ContextHelperImpl implements ContextHelperExtended {
 
     private final OpenEngSBEndpoint endpoint;
     private final MessageProperties msgProperties;

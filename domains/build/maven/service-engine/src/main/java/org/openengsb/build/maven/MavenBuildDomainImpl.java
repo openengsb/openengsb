@@ -36,7 +36,7 @@ public class MavenBuildDomainImpl extends AbstractMavenDomainImpl implements Bui
     }
 
     @Override
-    public boolean buildProject() {
+    public Boolean buildProject() {
         BuildStartEvent startEvent = new BuildStartEvent();
         MavenParameters params = getMavenParametersForMavenCall("build/maven-build");
         startEvent.setToolConnector("maven-build");

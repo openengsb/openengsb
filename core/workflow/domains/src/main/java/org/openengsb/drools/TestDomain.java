@@ -17,9 +17,8 @@
  */
 package org.openengsb.drools;
 
-
 public interface TestDomain extends Domain {
 
-    boolean runTests();
+    Boolean runTests();
 
 }

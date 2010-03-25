@@ -17,20 +17,11 @@
  */
 package org.openengsb.contextcommon;
 
-import java.util.List;
 import java.util.Map;
 
 public interface ContextHelper {
     String getValue(String pathAndKey);
 
     Map<String, String> getAllValues(String path);
-
-    void store(Map<String, String> values);
-
-    void addEmptyContext(List<String> paths);
-
-    void remove(List<String> paths);
-
-    Context getContext(String path);
 
 }

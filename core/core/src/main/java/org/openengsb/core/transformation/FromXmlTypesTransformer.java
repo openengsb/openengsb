@@ -130,6 +130,8 @@ public class FromXmlTypesTransformer {
             return primitive.getString();
         } else if (primitive.ifLong()) {
             return primitive.getLong();
+        } else if (primitive.ifBase64Binary()) {
+            return primitive.getBase64Binary();
         }
         throw new IllegalStateException();
     }

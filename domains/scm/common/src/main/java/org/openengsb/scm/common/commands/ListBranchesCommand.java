@@ -18,6 +18,8 @@
 
 package org.openengsb.scm.common.commands;
 
+import java.util.List;
+
 /**
  * Interface that defines the parameters for the listBranches-operation with
  * setters. For the meaning of the parameters see the
@@ -27,6 +29,6 @@ package org.openengsb.scm.common.commands;
  * @see CommandFactory
  * @see AbstractCommandfactory
  */
-public interface ListBranchesCommand extends Command<String[]> {
+public interface ListBranchesCommand extends Command<List<String>> {
 
 }

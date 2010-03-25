@@ -18,10 +18,12 @@
 
 package org.openengsb.scm.common.commands;
 
+import java.util.List;
+
 import javax.jbi.management.DeploymentException;
 
-import org.openengsb.drools.model.ScmLogEntry;
 import org.openengsb.drools.model.MergeResult;
+import org.openengsb.drools.model.ScmLogEntry;
 
 /**
  * Interface all CommandFactories used throughout the SCM-Domain
@@ -136,7 +138,7 @@ public interface CommandFactory {
      *        with.
      * @return The appropriate Command.
      */
-    Command<ScmLogEntry[]> getLogCommand(String[] files, String startRevision, String endRevision);
+    Command<List<ScmLogEntry>> getLogCommand(List<String> files, String startRevision, String endRevision);
 
     /**
      * Returns a Command that commits all changes within the working copy and
@@ -178,7 +180,7 @@ public interface CommandFactory {
      * 
      * @return The appropriate Command.
      */
-    Command<String[]> getListBranchesCommand();
+    Command<List<String>> getListBranchesCommand();
 
     /**
      * Returns a command that merges the current working copy with a branch.

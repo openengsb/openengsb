@@ -201,6 +201,11 @@ public class ToXmlTypesTransformer {
             return p;
         }
 
+        if (o instanceof byte[]) {
+            p.setBase64Binary((byte[]) o);
+            return p;
+        }
+
         throw new IllegalStateException("Type not supported: " + o.getClass());
     }
 

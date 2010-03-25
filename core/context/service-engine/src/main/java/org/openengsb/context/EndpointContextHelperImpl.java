@@ -7,11 +7,11 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.openengsb.contextcommon.Context;
-import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.contextcommon.ContextHelperExtended;
 import org.openengsb.contextcommon.ContextStore;
 import org.openengsb.util.WorkingDirectory;
 
-public class EndpointContextHelperImpl implements ContextHelper {
+public class EndpointContextHelperImpl implements ContextHelperExtended {
 
     private ContextStore contextStore = new ContextStore(WorkingDirectory.getFile("context", "contextdata.xml"));
 

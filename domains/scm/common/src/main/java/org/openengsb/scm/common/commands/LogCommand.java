@@ -18,6 +18,8 @@
 
 package org.openengsb.scm.common.commands;
 
+import java.util.List;
+
 import org.openengsb.drools.model.ScmLogEntry;
 
 /**
@@ -28,8 +30,8 @@ import org.openengsb.drools.model.ScmLogEntry;
  * @see CommandFactory
  * @see AbstractCommandfactory
  */
-public interface LogCommand extends Command<ScmLogEntry[]> {
-    void setFiles(String[] files);
+public interface LogCommand extends Command<List<ScmLogEntry>> {
+    void setFiles(List<String> files);
 
     void setStartRevision(String startRevision);
 

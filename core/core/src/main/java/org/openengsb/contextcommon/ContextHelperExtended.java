@@ -15,10 +15,19 @@
    limitations under the License.
    
  */
-package org.openengsb.drools;
+package org.openengsb.contextcommon;
 
-public interface BuildDomain extends Domain {
+import java.util.List;
+import java.util.Map;
 
-    Boolean buildProject();
+public interface ContextHelperExtended extends ContextHelper {
+
+    void store(Map<String, String> values);
+
+    void addEmptyContext(List<String> paths);
+
+    void remove(List<String> paths);
+
+    Context getContext(String path);
 
 }

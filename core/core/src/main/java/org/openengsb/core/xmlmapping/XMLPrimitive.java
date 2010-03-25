@@ -14,6 +14,7 @@ package org.openengsb.core.xmlmapping;
  *     &lt;xs:element type="xs:long" name="long"/>
  *     &lt;xs:element type="xs:short" name="short"/>
  *     &lt;xs:element type="xs:byte" name="byte"/>
+ *     &lt;xs:element type="xs:base64Binary" name="base64Binary"/>
  *   &lt;/xs:choice>
  * &lt;/xs:complexType>
  * </pre>
@@ -29,6 +30,7 @@ public class XMLPrimitive
     private static final int LONG_CHOICE = 5;
     private static final int SHORT_CHOICE = 6;
     private static final int BYTE_CHOICE = 7;
+    private static final int BASE64_BINARY_CHOICE = 8;
     private String string;
     private Float _float;
     private Double _double;
@@ -37,6 +39,7 @@ public class XMLPrimitive
     private long _long;
     private short _short;
     private byte _byte;
+    private byte[] base64Binary;
 
     private void setChoiceSelect(int choice) {
         if (choiceSelect == -1) {
@@ -276,5 +279,33 @@ public class XMLPrimitive
     public void setByte(byte _byte) {
         setChoiceSelect(BYTE_CHOICE);
         this._byte = _byte;
+    }
+
+    /** 
+     * Check if Base64Binary is current selection for choice.
+     * 
+     * @return <code>true</code> if selection, <code>false</code> if not
+     */
+    public boolean ifBase64Binary() {
+        return choiceSelect == BASE64_BINARY_CHOICE;
+    }
+
+    /** 
+     * Get the 'base64Binary' element value.
+     * 
+     * @return value
+     */
+    public byte[] getBase64Binary() {
+        return base64Binary;
+    }
+
+    /** 
+     * Set the 'base64Binary' element value.
+     * 
+     * @param base64Binary
+     */
+    public void setBase64Binary(byte[] base64Binary) {
+        setChoiceSelect(BASE64_BINARY_CHOICE);
+        this.base64Binary = base64Binary;
     }
 }

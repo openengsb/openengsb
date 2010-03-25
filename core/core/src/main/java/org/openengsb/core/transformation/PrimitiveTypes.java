@@ -33,6 +33,7 @@ class PrimitiveTypes {
         supportedTypes.add(Float.class);
         supportedTypes.add(Double.class);
         supportedTypes.add(Boolean.class);
+        supportedTypes.add(byte[].class);
 
     }
 

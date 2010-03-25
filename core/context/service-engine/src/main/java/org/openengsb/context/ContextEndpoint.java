@@ -18,6 +18,7 @@
 package org.openengsb.context;
 
 import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.contextcommon.ContextHelperExtended;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
 
@@ -25,12 +26,12 @@ import org.openengsb.core.endpoints.LinkingEndpoint;
  * @org.apache.xbean.XBean element="contextEndpoint"
  *                         description="Context Component"
  */
-public class ContextEndpoint extends LinkingEndpoint<ContextHelper> {
+public class ContextEndpoint extends LinkingEndpoint<ContextHelperExtended> {
 
     private EndpointContextHelperImpl contextImpl = new EndpointContextHelperImpl();
 
     @Override
-    protected ContextHelper getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
+    protected ContextHelperExtended getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         contextImpl.setCurrentId(msgProperties.getContextId());
         return contextImpl;
     }

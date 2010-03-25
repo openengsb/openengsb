@@ -17,6 +17,8 @@ limitations under the License.
  */
 package org.openengsb.drools;
 
+import java.util.List;
+
 import org.openengsb.drools.model.MergeResult;
 import org.openengsb.drools.model.ScmLogEntry;
 
@@ -30,9 +32,9 @@ public interface ScmDomain extends Domain {
 
     MergeResult merge(String branchName);
 
-    ScmLogEntry[] log(String[] files, String startRevision, String endRevision);
+    List<ScmLogEntry> log(List<String> files, String startRevision, String endRevision);
 
-    String[] listBranches();
+    List<String> listBranches();
 
     MergeResult doImport(String sourcePath, String destinationPath, String commitMessage, String author);
 
