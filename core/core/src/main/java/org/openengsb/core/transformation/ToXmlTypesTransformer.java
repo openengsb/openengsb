@@ -114,7 +114,7 @@ public class ToXmlTypesTransformer {
         return ContextTransformer.toXmlContext(context);
     }
 
-    private XMLEvent toXmlEvent(Event event) {
+    XMLEvent toXmlEvent(Event event) {
         XMLEvent xmlEvent = new XMLEvent();
         xmlEvent.setClassName(event.getClass().getName());
         xmlEvent.setDomain(event.getDomain());

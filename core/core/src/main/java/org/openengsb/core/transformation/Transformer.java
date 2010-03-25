@@ -26,7 +26,6 @@ import org.openengsb.core.model.Event;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.xmlmapping.XMLEvent;
-import org.openengsb.core.xmlmapping.XMLMapEntry;
 import org.openengsb.core.xmlmapping.XMLMapable;
 import org.openengsb.core.xmlmapping.XMLMethodCall;
 import org.openengsb.core.xmlmapping.XMLReturnValue;
@@ -64,22 +63,8 @@ public class Transformer {
     }
 
     public static String toXml(Event event) throws SerializationException {
-        XMLEvent xe = new XMLEvent();
-        xe.setDomain(event.getDomain());
-        xe.setName(event.getName());
-        xe.setToolConnector(event.getToolConnector());
         ToXmlTypesTransformer transformer = new ToXmlTypesTransformer();
-
-        ArrayList<XMLMapEntry> list = new ArrayList<XMLMapEntry>();
-        for (String key : event.getKeys()) {
-            XMLMapEntry entry = new XMLMapEntry();
-            entry.setKey(key);
-            entry.setValue(transformer.toMapable(event.getValue(key)));
-            list.add(entry);
-        }
-
-        xe.setElements(list);
-
+        XMLEvent xe = transformer.toXmlEvent(event);
         return xml(xe);
     }
 
