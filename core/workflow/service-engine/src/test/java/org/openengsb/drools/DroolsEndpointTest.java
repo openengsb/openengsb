@@ -47,15 +47,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class DroolsEndpointTest extends SpringTestSupport {
     private static ServiceMixClient client;
 
-    private static final String TEST_EVENT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-    "<list xmlns=\"http://org.openengsb/util/serialization\" domainConcept=\"\" format=\"\" name=\"event\">" +
-    "    <text domainConcept=\"\" format=\"\" name=\"event\">org.openengsb.core.model.Event</text>" +
-    "    <list domainConcept=\"\" format=\"\" name=\"superclasses\">" +
-    "        <text domainConcept=\"\" format=\"\" name=\"superclass\">java.lang.Object</text>" +
-    "    </list>" +
-    "    <text domainConcept=\"\" format=\"\" name=\"name\">testevent</text>" +
-    "    <text domainConcept=\"\" format=\"\" name=\"domain\">drools</text>" +
-    "</list>";
+    private static final String TEST_EVENT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XMLEvent><className>org.openengsb.core.model.Event</className><domain>domain</domain><name>name</name><elements><key><primitive><string>buz</string></primitive><id>0</id></key><value><primitive><int>42</int></primitive><id>1</id></value></elements><elements><key><primitive><string>foo</string></primitive><id>2</id></key><value><primitive><int>42</int></primitive><id>3</id></value></elements><elements><key><primitive><string>bar</string></primitive><id>4</id></key><value><primitive><string>42</string></primitive><id>5</id></value></elements></XMLEvent>";
 
     @Override
     protected AbstractXmlApplicationContext createBeanFactory() {

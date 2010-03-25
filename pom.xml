@@ -640,6 +640,10 @@
                 <exclude>**/testFiles/**</exclude>
                 <exclude>**/site/docbook/empty.txt</exclude>
 
+                <!-- Jibx generated stuff -->
+                <exclude>**/src/main/java/binding.xml</exclude>
+                <exclude>**/src/main/java/org/openengsb/core/xmlmapping/*.java</exclude>
+
                 <!-- docs are checked in docs project -->
                 <exclude>docs/</exclude>
 

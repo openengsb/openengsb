@@ -110,9 +110,9 @@
               <goal>schema-codegen</goal>
             </goals>
             <configuration>
-              <directory>src/main/resources/schema</directory>
+              <directory>${basedir}/src/main/resources/schema</directory>
               <defaultPackage>org.openengsb.core.xmlmapping</defaultPackage>
-              <targetDirectory>src/main/java/</targetDirectory>
+              <targetDirectory>${basedir}/src/main/java/</targetDirectory>
               <includes>
                 <include>
                   *.xsd
