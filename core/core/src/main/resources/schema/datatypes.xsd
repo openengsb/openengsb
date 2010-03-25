@@ -15,8 +15,9 @@
 
   <xs:complexType name="XMLMapable">
     <xs:choice>
-      <xs:element name="value" type="XMLPrimitive" />
-      <xs:element name="array" type="XMLMapable" maxOccurs="unbounded" />
+      <xs:element name="primitive" type="XMLPrimitive" />
+      <xs:element name="bean" type="XMLBean" />
+      <xs:element name="list" type="XMLMapable" maxOccurs="unbounded" />
       <xs:element name="event" type="XMLEvent" />
       <xs:element name="map" type="XMLMapEntry" maxOccurs="unbounded" />
       <xs:element name="context" type="XMLContext" />
@@ -26,10 +27,25 @@
 
   <xs:complexType name="XMLEvent">
     <xs:sequence>
+      <xs:element name="className" type="xs:string" />
       <xs:element name="domain" type="xs:string" />
       <xs:element name="name" type="xs:string" />
       <xs:element name="toolConnector" type="xs:string" />
       <xs:element name="elements" type="XMLMapEntry" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="XMLBean">
+    <xs:sequence>
+      <xs:element name="className" type="xs:string" />
+      <xs:element name="fields" type="XMLField" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="XMLField">
+    <xs:sequence>
+      <xs:element name="className" type="xs:string" />
+      <xs:element name="value" type="XMLMapable"/>
     </xs:sequence>
   </xs:complexType>
 
@@ -54,6 +70,7 @@
         <xs:element name="methodName" type="xs:string" />
         <xs:element name="args" type="XMLMapable" maxOccurs="unbounded" />
       </xs:sequence>
+      <xs:attribute name="domainConcept" type="xs:string" />
     </xs:complexType>
   </xs:element>
   

@@ -15,13 +15,15 @@ import java.util.List;
 public class XMLMapable
 {
     private int choiceSelect = -1;
-    private static final int VALUE_CHOICE = 0;
-    private static final int ARRAY_CHOICE = 1;
-    private static final int EVENT_CHOICE = 2;
-    private static final int MAP_CHOICE = 3;
-    private static final int CONTEXT_CHOICE = 4;
-    private XMLPrimitive value;
-    private List<XMLMapable> arrayList = new ArrayList<XMLMapable>();
+    private static final int PRIMITIVE_CHOICE = 0;
+    private static final int BEAN_CHOICE = 1;
+    private static final int LIST_CHOICE = 2;
+    private static final int EVENT_CHOICE = 3;
+    private static final int MAP_CHOICE = 4;
+    private static final int CONTEXT_CHOICE = 5;
+    private XMLPrimitive primitive;
+    private XMLBean bean;
+    private List<XMLMapable> listList = new ArrayList<XMLMapable>();
     private XMLEvent event;
     private List<XMLMapEntry> mapList = new ArrayList<XMLMapEntry>();
     private XMLContext context;
@@ -44,59 +46,87 @@ public class XMLMapable
     }
 
     /** 
-     * Check if Value is current selection for choice.
+     * Check if Primitive is current selection for choice.
      * 
      * @return <code>true</code> if selection, <code>false</code> if not
      */
-    public boolean ifValue() {
-        return choiceSelect == VALUE_CHOICE;
+    public boolean ifPrimitive() {
+        return choiceSelect == PRIMITIVE_CHOICE;
     }
 
     /** 
-     * Get the 'value' element value.
+     * Get the 'primitive' element value.
      * 
      * @return value
      */
-    public XMLPrimitive getValue() {
-        return value;
+    public XMLPrimitive getPrimitive() {
+        return primitive;
     }
 
     /** 
-     * Set the 'value' element value.
+     * Set the 'primitive' element value.
      * 
-     * @param value
+     * @param primitive
      */
-    public void setValue(XMLPrimitive value) {
-        setChoiceSelect(VALUE_CHOICE);
-        this.value = value;
+    public void setPrimitive(XMLPrimitive primitive) {
+        setChoiceSelect(PRIMITIVE_CHOICE);
+        this.primitive = primitive;
     }
 
     /** 
-     * Check if Arraies is current selection for choice.
+     * Check if Bean is current selection for choice.
      * 
      * @return <code>true</code> if selection, <code>false</code> if not
      */
-    public boolean ifArray() {
-        return choiceSelect == ARRAY_CHOICE;
+    public boolean ifBean() {
+        return choiceSelect == BEAN_CHOICE;
     }
 
     /** 
-     * Get the list of 'array' element items.
+     * Get the 'bean' element value.
+     * 
+     * @return value
+     */
+    public XMLBean getBean() {
+        return bean;
+    }
+
+    /** 
+     * Set the 'bean' element value.
+     * 
+     * @param bean
+     */
+    public void setBean(XMLBean bean) {
+        setChoiceSelect(BEAN_CHOICE);
+        this.bean = bean;
+    }
+
+    /** 
+     * Check if Lists is current selection for choice.
+     * 
+     * @return <code>true</code> if selection, <code>false</code> if not
+     */
+    public boolean ifList() {
+        return choiceSelect == LIST_CHOICE;
+    }
+
+    /** 
+     * Get the list of 'list' element items.
      * 
      * @return list
      */
-    public List<XMLMapable> getArraies() {
-        return arrayList;
+    public List<XMLMapable> getLists() {
+        return listList;
     }
 
     /** 
-     * Set the list of 'array' element items.
+     * Set the list of 'list' element items.
      * 
      * @param list
      */
-    public void setArraies(List<XMLMapable> list) {
-        setChoiceSelect(ARRAY_CHOICE);
-        arrayList = list;
+    public void setLists(List<XMLMapable> list) {
+        setChoiceSelect(LIST_CHOICE);
+        listList = list;
     }
 
     /** 

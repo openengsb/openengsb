@@ -9,6 +9,7 @@ import java.util.List;
  * <pre>
  * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLEvent">
  *   &lt;xs:sequence>
+ *     &lt;xs:element type="xs:string" name="className"/>
  *     &lt;xs:element type="xs:string" name="domain"/>
  *     &lt;xs:element type="xs:string" name="name"/>
  *     &lt;xs:element type="xs:string" name="toolConnector"/>
@@ -19,10 +20,29 @@ import java.util.List;
  */
 public class XMLEvent
 {
+    private String className;
     private String domain;
     private String name;
     private String toolConnector;
     private List<XMLMapEntry> elementList = new ArrayList<XMLMapEntry>();
+
+    /** 
+     * Get the 'className' element value.
+     * 
+     * @return value
+     */
+    public String getClassName() {
+        return className;
+    }
+
+    /** 
+     * Set the 'className' element value.
+     * 
+     * @param className
+     */
+    public void setClassName(String className) {
+        this.className = className;
+    }
 
     /** 
      * Get the 'domain' element value.
