@@ -7,13 +7,11 @@ import java.util.List;
 /** 
  * Schema fragment(s) for this class:
  * <pre>
- * &lt;xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLContext">
- *   &lt;xs:complexType>
- *     &lt;xs:sequence>
- *       &lt;xs:element type="XMLContextEntry" name="entries" maxOccurs="unbounded"/>
- *     &lt;/xs:sequence>
- *   &lt;/xs:complexType>
- * &lt;/xs:element>
+ * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLContext">
+ *   &lt;xs:sequence>
+ *     &lt;xs:element type="XMLContextEntry" name="entries" maxOccurs="unbounded"/>
+ *   &lt;/xs:sequence>
+ * &lt;/xs:complexType>
  * </pre>
  */
 public class XMLContext

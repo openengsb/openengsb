@@ -19,6 +19,7 @@
       <xs:element name="array" type="XMLMapable" maxOccurs="unbounded" />
       <xs:element name="event" type="XMLEvent" />
       <xs:element name="map" type="XMLMapEntry" maxOccurs="unbounded" />
+      <xs:element name="context" type="XMLContext" />
     </xs:choice>
     <xs:attribute name="domainConcept" type="xs:string" />
   </xs:complexType>
@@ -63,13 +64,11 @@
     </xs:sequence>
   </xs:complexType>
   
-  <xs:element name="XMLContext">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="entries" type="XMLContextEntry" maxOccurs="unbounded" />
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
+  <xs:complexType name="XMLContext">
+    <xs:sequence>
+      <xs:element name="entries" type="XMLContextEntry" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
 
 
 

@@ -62,6 +62,11 @@ public class EndpointContextHelperImpl implements ContextHelper {
         }
     }
 
+    @Override
+    public Context getContext(String path) {
+        return contextStore.getContext(path);
+    }
+
     public void setCurrentId(String currentId) {
         this.currentId = currentId;
     }

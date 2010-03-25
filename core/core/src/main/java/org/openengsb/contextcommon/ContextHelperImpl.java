@@ -75,6 +75,14 @@ public class ContextHelperImpl implements ContextHelper {
         MethodCallHelper.sendMethodCall(endpoint, contextEndpoint, method, new Object[] { values }, msgProperties);
     }
 
+    @Override
+    public Context getContext(String path) {
+        QName contextEndpoint = getContextEndpoint();
+        Method method = getMethod("getContext", String.class);
+        return (Context) MethodCallHelper.sendMethodCall(endpoint, contextEndpoint, method, new Object[] { path },
+                msgProperties);
+    }
+
     private Method getMethod(String name, Class<?>... params) {
         try {
             return getClass().getMethod(name, params);

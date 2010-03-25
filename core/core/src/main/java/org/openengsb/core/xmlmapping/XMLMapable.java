@@ -19,10 +19,12 @@ public class XMLMapable
     private static final int ARRAY_CHOICE = 1;
     private static final int EVENT_CHOICE = 2;
     private static final int MAP_CHOICE = 3;
+    private static final int CONTEXT_CHOICE = 4;
     private XMLPrimitive value;
     private List<XMLMapable> arrayList = new ArrayList<XMLMapable>();
     private XMLEvent event;
     private List<XMLMapEntry> mapList = new ArrayList<XMLMapEntry>();
+    private XMLContext context;
     private String domainConcept;
 
     private void setChoiceSelect(int choice) {
@@ -151,6 +153,34 @@ public class XMLMapable
     public void setMaps(List<XMLMapEntry> list) {
         setChoiceSelect(MAP_CHOICE);
         mapList = list;
+    }
+
+    /** 
+     * Check if Context is current selection for choice.
+     * 
+     * @return <code>true</code> if selection, <code>false</code> if not
+     */
+    public boolean ifContext() {
+        return choiceSelect == CONTEXT_CHOICE;
+    }
+
+    /** 
+     * Get the 'context' element value.
+     * 
+     * @return value
+     */
+    public XMLContext getContext() {
+        return context;
+    }
+
+    /** 
+     * Set the 'context' element value.
+     * 
+     * @param context
+     */
+    public void setContext(XMLContext context) {
+        setChoiceSelect(CONTEXT_CHOICE);
+        this.context = context;
     }
 
     /** 

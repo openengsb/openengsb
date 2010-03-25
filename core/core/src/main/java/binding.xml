@@ -20,6 +20,7 @@
       <collection test-method="ifMap" get-method="getMaps" set-method="setMaps" usage="optional" create-type="java.util.ArrayList">
         <structure map-as="XMLMapEntry" name="map"/>
       </collection>
+      <structure map-as="XMLContext" test-method="ifContext" get-method="getContext" set-method="setContext" usage="optional" name="context"/>
     </structure>
     <value style="attribute" name="domainConcept" get-method="getDomainConcept" set-method="setDomainConcept" usage="optional"/>
   </mapping>
@@ -48,7 +49,7 @@
     <value style="element" name="key" get-method="getKey" set-method="setKey"/>
     <value style="element" name="value" get-method="getValue" set-method="setValue"/>
   </mapping>
-  <mapping class="org.openengsb.core.xmlmapping.XMLContext" name="XMLContext">
+  <mapping abstract="true" type-name="XMLContext" class="org.openengsb.core.xmlmapping.XMLContext">
     <collection get-method="getEntries" set-method="setEntries" create-type="java.util.ArrayList">
       <structure map-as="XMLContextEntry" name="entries"/>
     </collection>

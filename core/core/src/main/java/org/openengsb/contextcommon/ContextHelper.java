@@ -31,4 +31,6 @@ public interface ContextHelper {
 
     void remove(List<String> paths);
 
+    Context getContext(String path);
+
 }
