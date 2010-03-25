@@ -43,6 +43,11 @@ public class ToXmlTypesTransformer {
     private int counter = 0;
 
     XMLMapable toMapable(Object o) {
+        if (o == null) {
+            XMLMapable m = new XMLMapable();
+            m.setNull("null");
+            return m;
+        }
 
         ObjectId objectId = new ObjectId(System.identityHashCode(o), o.getClass());
         if (objectIdToId.containsKey(objectId)) {
@@ -93,7 +98,7 @@ public class ToXmlTypesTransformer {
             if (Modifier.isTransient(field.getModifiers()) || Modifier.isStatic(field.getModifiers())) {
                 continue;
             }
-            XMLMapable value = toMapable(FieldAccessorUtil.getValue(field, o));
+            XMLMapable value = toMapable(TransformerUtil.getValue(field, o));
 
             XMLField xmlField = new XMLField();
             xmlField.setFieldName(field.getName());
@@ -156,6 +161,11 @@ public class ToXmlTypesTransformer {
 
         if (o instanceof Integer) {
             p.setInt((Integer) o);
+            return p;
+        }
+
+        if (o instanceof Long) {
+            p.setLong((Long) o);
             return p;
         }
 

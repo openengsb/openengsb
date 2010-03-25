@@ -17,12 +17,13 @@
  */
 package org.openengsb.core.transformation;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-class FieldAccessorUtil {
+class TransformerUtil {
 
-    private FieldAccessorUtil() {
+    private TransformerUtil() {
         throw new AssertionError();
     }
 
@@ -51,6 +52,36 @@ class FieldAccessorUtil {
             throw new RuntimeException(e);
         } finally {
             field.setAccessible(accessible);
+        }
+    }
+
+    public static Class<?> simpleGetClass(String type) {
+        try {
+            return Class.forName(type);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Object getInstance(Class<?> clazz) {
+        try {
+            Constructor<?> noArgConstructor = clazz.getDeclaredConstructor();
+            boolean accessible = noArgConstructor.isAccessible();
+            noArgConstructor.setAccessible(true);
+            Object o = noArgConstructor.newInstance();
+            noArgConstructor.setAccessible(accessible);
+            return o;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static Field getField(Class<?> clazz, String name) {
+        try {
+            return clazz.getDeclaredField(name);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

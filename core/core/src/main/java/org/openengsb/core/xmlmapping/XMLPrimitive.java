@@ -11,6 +11,7 @@ package org.openengsb.core.xmlmapping;
  *     &lt;xs:element type="xs:double" name="double"/>
  *     &lt;xs:element type="xs:boolean" name="boolean"/>
  *     &lt;xs:element type="xs:int" name="int"/>
+ *     &lt;xs:element type="xs:long" name="long"/>
  *     &lt;xs:element type="xs:short" name="short"/>
  *     &lt;xs:element type="xs:byte" name="byte"/>
  *   &lt;/xs:choice>
@@ -25,13 +26,15 @@ public class XMLPrimitive
     private static final int DOUBLE_CHOICE = 2;
     private static final int BOOLEAN_CHOICE = 3;
     private static final int INT_CHOICE = 4;
-    private static final int SHORT_CHOICE = 5;
-    private static final int BYTE_CHOICE = 6;
+    private static final int LONG_CHOICE = 5;
+    private static final int SHORT_CHOICE = 6;
+    private static final int BYTE_CHOICE = 7;
     private String string;
     private Float _float;
     private Double _double;
     private boolean _boolean;
     private int _int;
+    private long _long;
     private short _short;
     private byte _byte;
 
@@ -189,6 +192,34 @@ public class XMLPrimitive
     public void setInt(int _int) {
         setChoiceSelect(INT_CHOICE);
         this._int = _int;
+    }
+
+    /** 
+     * Check if Long is current selection for choice.
+     * 
+     * @return <code>true</code> if selection, <code>false</code> if not
+     */
+    public boolean ifLong() {
+        return choiceSelect == LONG_CHOICE;
+    }
+
+    /** 
+     * Get the 'long' element value.
+     * 
+     * @return value
+     */
+    public long getLong() {
+        return _long;
+    }
+
+    /** 
+     * Set the 'long' element value.
+     * 
+     * @param _long
+     */
+    public void setLong(long _long) {
+        setChoiceSelect(LONG_CHOICE);
+        this._long = _long;
     }
 
     /** 

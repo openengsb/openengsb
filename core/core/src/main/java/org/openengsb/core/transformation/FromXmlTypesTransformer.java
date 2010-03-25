@@ -17,77 +17,110 @@
  */
 package org.openengsb.core.transformation;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.openengsb.contextcommon.Context;
+import org.openengsb.contextcommon.ContextTransformer;
+import org.openengsb.core.model.Event;
 import org.openengsb.core.xmlmapping.XMLBean;
 import org.openengsb.core.xmlmapping.XMLContext;
 import org.openengsb.core.xmlmapping.XMLEvent;
+import org.openengsb.core.xmlmapping.XMLField;
 import org.openengsb.core.xmlmapping.XMLMapEntry;
 import org.openengsb.core.xmlmapping.XMLMapable;
 import org.openengsb.core.xmlmapping.XMLPrimitive;
 
 public class FromXmlTypesTransformer {
 
-    static Object toObject(XMLMapable mapable) {
-        if (mapable.ifPrimitive()) {
+    private Map<Integer, Object> references = new HashMap<Integer, Object>();
+
+    Object toObject(XMLMapable mapable) {
+        if (mapable.ifNull()) {
+            return null;
+        } else if (mapable.ifPrimitive()) {
             return toObject(mapable.getPrimitive());
         } else if (mapable.ifList()) {
-            return xmlListToObject(mapable.getLists()); // ...
+            return toList(mapable.getLists(), mapable.getId()); // ...
         } else if (mapable.ifMap()) {
-            return xmlMapToObject(mapable.getMaps());
+            return toMap(mapable.getMaps(), mapable.getId());
         } else if (mapable.ifEvent()) {
-            return toObject(mapable.getEvent());
+            return toEvent(mapable.getEvent(), mapable.getId());
         } else if (mapable.ifContext()) {
-            return toObject(mapable.getContext());
+            return toContext(mapable.getContext(), mapable.getId());
         } else if (mapable.ifBean()) {
-            return toObject(mapable.getBean());
+            return toBean(mapable.getBean(), mapable.getId());
+        } else if (mapable.ifReference()) {
+            return references.get(mapable.getReference().getId());
         }
         throw new IllegalStateException();
     }
 
-    private static Object toObject(XMLBean bean) {
-        // TODO Auto-generated method stub
-        return null;
+    private Object toBean(XMLBean bean, int id) {
+        Class<?> clazz = TransformerUtil.simpleGetClass(bean.getClassName());
+        Object beanObject = TransformerUtil.getInstance(clazz);
+        references.put(id, beanObject);
+        for (XMLField xmlField : bean.getFields()) {
+            Field field = TransformerUtil.getField(clazz, xmlField.getFieldName());
+            TransformerUtil.setValue(field, beanObject, toObject(xmlField.getValue()));
+        }
+        return beanObject;
     }
 
-    private static Object toObject(XMLContext context) {
-        // TODO Auto-generated method stub
-        return null;
+    private Context toContext(XMLContext context, int id) {
+        Context result = ContextTransformer.toContext(context);
+        references.put(id, result);
+        return result;
     }
 
-    private static Object xmlListToObject(List<XMLMapable> list) {
-        return null; // TODO
+    private Object toList(List<XMLMapable> list, int id) {
+        List<Object> result = new ArrayList<Object>(list.size());
+        references.put(id, result);
+        for (XMLMapable m : list) {
+            result.add(toObject(m));
+        }
+        return result;
     }
 
-    private static Object xmlMapToObject(List<XMLMapEntry> map) {
-        return null; // TODO
+    private Object toMap(List<XMLMapEntry> map, int id) {
+        Map<Object, Object> result = new HashMap<Object, Object>(map.size());
+        references.put(id, result);
+        for (XMLMapEntry entry : map) {
+            result.put(toObject(entry.getKey()), toObject(entry.getValue()));
+        }
+        return result;
     }
 
-    private static Object toObject(XMLEvent event) {
-        return null; // TODO
+    Event toEvent(XMLEvent xmlEvent, int id) {
+        Event event = new Event(xmlEvent.getDomain(), xmlEvent.getName());
+        event.setToolConnector(xmlEvent.getToolConnector());
+        references.put(id, event);
+        for (XMLMapEntry entry : xmlEvent.getElements()) {
+            event.setValue((String) toObject(entry.getKey()), toObject(entry.getValue()));
+        }
+        return event;
     }
 
-    private static Object toObject(XMLPrimitive primitive) {
+    private Object toObject(XMLPrimitive primitive) {
         if (primitive.ifBoolean()) {
             return primitive.isBoolean();
-        }
-        if (primitive.ifByte()) {
+        } else if (primitive.ifByte()) {
             return primitive.getByte();
-        }
-        if (primitive.ifDouble()) {
+        } else if (primitive.ifDouble()) {
             return primitive.getDouble();
-        }
-        if (primitive.ifFloat()) {
+        } else if (primitive.ifFloat()) {
             return primitive.getFloat();
-        }
-        if (primitive.ifInt()) {
+        } else if (primitive.ifInt()) {
             return primitive.getInt();
-        }
-        if (primitive.ifShort()) {
+        } else if (primitive.ifShort()) {
             return primitive.getShort();
-        }
-        if (primitive.ifString()) {
+        } else if (primitive.ifString()) {
             return primitive.getString();
+        } else if (primitive.ifLong()) {
+            return primitive.getLong();
         }
         throw new IllegalStateException();
     }

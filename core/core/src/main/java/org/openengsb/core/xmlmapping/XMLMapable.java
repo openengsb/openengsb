@@ -15,13 +15,15 @@ import java.util.List;
 public class XMLMapable
 {
     private int choiceSelect = -1;
-    private static final int REFERENCE_CHOICE = 0;
-    private static final int PRIMITIVE_CHOICE = 1;
-    private static final int BEAN_CHOICE = 2;
-    private static final int LIST_CHOICE = 3;
-    private static final int EVENT_CHOICE = 4;
-    private static final int MAP_CHOICE = 5;
-    private static final int CONTEXT_CHOICE = 6;
+    private static final int NULL_CHOICE = 0;
+    private static final int REFERENCE_CHOICE = 1;
+    private static final int PRIMITIVE_CHOICE = 2;
+    private static final int BEAN_CHOICE = 3;
+    private static final int LIST_CHOICE = 4;
+    private static final int EVENT_CHOICE = 5;
+    private static final int MAP_CHOICE = 6;
+    private static final int CONTEXT_CHOICE = 7;
+    private String _null;
     private XMLReference reference;
     private XMLPrimitive primitive;
     private XMLBean bean;
@@ -29,7 +31,7 @@ public class XMLMapable
     private XMLEvent event;
     private List<XMLMapEntry> mapList = new ArrayList<XMLMapEntry>();
     private XMLContext context;
-    private String id;
+    private int id;
     private String domainConcept;
 
     private void setChoiceSelect(int choice) {
@@ -46,6 +48,34 @@ public class XMLMapable
      */
     public void clearChoiceSelect() {
         choiceSelect = -1;
+    }
+
+    /** 
+     * Check if Null is current selection for choice.
+     * 
+     * @return <code>true</code> if selection, <code>false</code> if not
+     */
+    public boolean ifNull() {
+        return choiceSelect == NULL_CHOICE;
+    }
+
+    /** 
+     * Get the 'null' element value.
+     * 
+     * @return value
+     */
+    public String getNull() {
+        return _null;
+    }
+
+    /** 
+     * Set the 'null' element value.
+     * 
+     * @param _null
+     */
+    public void setNull(String _null) {
+        setChoiceSelect(NULL_CHOICE);
+        this._null = _null;
     }
 
     /** 
@@ -249,7 +279,7 @@ public class XMLMapable
      * 
      * @return value
      */
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -258,7 +288,7 @@ public class XMLMapable
      * 
      * @param id
      */
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -26,9 +26,9 @@ import org.openengsb.core.model.Event;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.xmlmapping.XMLEvent;
-import org.openengsb.core.xmlmapping.XMLMapable;
 import org.openengsb.core.xmlmapping.XMLMethodCall;
 import org.openengsb.core.xmlmapping.XMLReturnValue;
+import org.openengsb.core.xmlmapping.XMLTypedValue;
 import org.openengsb.util.serialization.JibxXmlSerializer;
 import org.openengsb.util.serialization.SerializationException;
 
@@ -45,12 +45,16 @@ public class Transformer {
         xmc.setMethodName(methodCall.getMethodName());
         ToXmlTypesTransformer transformer = new ToXmlTypesTransformer();
 
-        List<XMLMapable> mapables = new ArrayList<XMLMapable>();
-        for (Object o : methodCall.getArgs()) {
-            mapables.add(transformer.toMapable(o));
+        List<XMLTypedValue> arguments = new ArrayList<XMLTypedValue>();
+        for (int i = 0; i < methodCall.getArgs().length; i++) {
+            Object o = methodCall.getArgs()[i];
+            XMLTypedValue arg = new XMLTypedValue();
+            arg.setValue(transformer.toMapable(o));
+            arg.setType(methodCall.getTypes()[i].getName());
+            arguments.add(arg);
         }
 
-        xmc.setArgs(mapables);
+        xmc.setArgs(arguments);
 
         return xml(xmc);
     }
@@ -58,7 +62,13 @@ public class Transformer {
     public static String toXml(ReturnValue returnValue) throws SerializationException {
         ToXmlTypesTransformer transformer = new ToXmlTypesTransformer();
         XMLReturnValue xrv = new XMLReturnValue();
-        xrv.setValue(transformer.toMapable(returnValue.getValue()));
+
+        XMLTypedValue typedValue = new XMLTypedValue();
+        typedValue.setType(returnValue.getType().getName());
+
+        typedValue.setValue(transformer.toMapable(returnValue.getValue()));
+
+        xrv.setValue(typedValue);
         return xml(xrv);
     }
 
@@ -79,31 +89,33 @@ public class Transformer {
     }
 
     public static MethodCall toMethodCall(String xml) throws SerializationException {
+
+        FromXmlTypesTransformer transformer = new FromXmlTypesTransformer();
         XMLMethodCall xmc = serializer.deserialize(XMLMethodCall.class, new StringReader(xml));
 
         List<Object> args = new ArrayList<Object>();
         List<Class<?>> types = new ArrayList<Class<?>>();
 
-        for (XMLMapable mapable : xmc.getArgs()) {
-            Object o = FromXmlTypesTransformer.toObject(mapable);
+        for (XMLTypedValue arg : xmc.getArgs()) {
+            Object o = transformer.toObject(arg.getValue());
             args.add(o);
-            types.add(o.getClass());
+            types.add(TransformerUtil.simpleGetClass(arg.getType()));
         }
 
         return new MethodCall(xmc.getMethodName(), args.toArray(), types.toArray(new Class<?>[types.size()]));
     }
 
     public static ReturnValue toReturnValue(String xml) throws SerializationException {
+        FromXmlTypesTransformer transformer = new FromXmlTypesTransformer();
         XMLReturnValue xrv = serializer.deserialize(XMLReturnValue.class, new StringReader(xml));
-        Object o = FromXmlTypesTransformer.toObject(xrv.getValue());
-        return new ReturnValue(o, o.getClass());
+        XMLTypedValue typedValue = xrv.getValue();
+        Object o = transformer.toObject(typedValue.getValue());
+        return new ReturnValue(o, TransformerUtil.simpleGetClass(typedValue.getType()));
     }
 
     public static Event toEvent(String xml) throws SerializationException {
         XMLEvent xrv = serializer.deserialize(XMLEvent.class, new StringReader(xml));
-        Event e = new Event(xrv.getDomain(), xrv.getName());
-        e.setToolConnector(xrv.getToolConnector());
-        // e.setValue(key, value) TODO
-        return e;
+        FromXmlTypesTransformer transformer = new FromXmlTypesTransformer();
+        return transformer.toEvent(xrv, -1);
     }
 }

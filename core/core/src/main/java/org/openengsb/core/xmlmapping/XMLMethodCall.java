@@ -11,7 +11,7 @@ import java.util.List;
  *   &lt;xs:complexType>
  *     &lt;xs:sequence>
  *       &lt;xs:element type="xs:string" name="methodName"/>
- *       &lt;xs:element type="XMLMapable" name="args" maxOccurs="unbounded"/>
+ *       &lt;xs:element type="XMLTypedValue" name="args" maxOccurs="unbounded"/>
  *     &lt;/xs:sequence>
  *     &lt;xs:attribute type="xs:string" name="domainConcept"/>
  *   &lt;/xs:complexType>
@@ -21,7 +21,7 @@ import java.util.List;
 public class XMLMethodCall
 {
     private String methodName;
-    private List<XMLMapable> argList = new ArrayList<XMLMapable>();
+    private List<XMLTypedValue> argList = new ArrayList<XMLTypedValue>();
     private String domainConcept;
 
     /** 
@@ -47,7 +47,7 @@ public class XMLMethodCall
      * 
      * @return list
      */
-    public List<XMLMapable> getArgs() {
+    public List<XMLTypedValue> getArgs() {
         return argList;
     }
 
@@ -56,7 +56,7 @@ public class XMLMethodCall
      * 
      * @param list
      */
-    public void setArgs(List<XMLMapable> list) {
+    public void setArgs(List<XMLTypedValue> list) {
         argList = list;
     }
 

@@ -27,6 +27,7 @@ class PrimitiveTypes {
     static {
         supportedTypes.add(String.class);
         supportedTypes.add(Integer.class);
+        supportedTypes.add(Long.class);
         supportedTypes.add(Byte.class);
         supportedTypes.add(Short.class);
         supportedTypes.add(Float.class);
