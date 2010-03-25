@@ -19,6 +19,7 @@
 package org.openengsb.core;
 
 import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -68,22 +69,23 @@ public class ReturnValueTransformerTest {
         Assert.assertTrue(beanB == beanA.getBean());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void testArray() throws SerializationException {
-        String[] inArray = new String[] { "1", "2", "3" };
+    public void testList() throws SerializationException {
+        List<String> inList = Arrays.asList("1", "2", "3");
 
-        ReturnValue input = new ReturnValue(inArray, inArray.getClass());
+        ReturnValue input = new ReturnValue(inList, inList.getClass());
 
         String xml = Transformer.toXml(input);
         ReturnValue output = Transformer.toReturnValue(xml);
 
-        String[] outArray = (String[]) output.getValue();
+        List<String> outList = (List<String>) output.getValue();
 
         Assert.assertEquals(input.getType(), output.getType());
-        Assert.assertEquals(inArray.length, outArray.length);
+        Assert.assertEquals(inList.size(), outList.size());
 
-        for (int i = 0; i < outArray.length; i++) {
-            Assert.assertEquals(inArray[i], outArray[i]);
+        for (int i = 0; i < inList.size(); i++) {
+            Assert.assertEquals(inList.get(i), outList.get(i));
         }
     }
 

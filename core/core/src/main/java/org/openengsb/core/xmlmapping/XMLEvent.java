@@ -12,7 +12,7 @@ import java.util.List;
  *     &lt;xs:element type="xs:string" name="className"/>
  *     &lt;xs:element type="xs:string" name="domain"/>
  *     &lt;xs:element type="xs:string" name="name"/>
- *     &lt;xs:element type="xs:string" name="toolConnector"/>
+ *     &lt;xs:element type="xs:string" nillable="true" name="toolConnector"/>
  *     &lt;xs:element type="XMLMapEntry" name="elements" maxOccurs="unbounded"/>
  *   &lt;/xs:sequence>
  * &lt;/xs:complexType>

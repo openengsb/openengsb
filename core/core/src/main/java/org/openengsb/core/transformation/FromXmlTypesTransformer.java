@@ -44,9 +44,9 @@ public class FromXmlTypesTransformer {
         } else if (mapable.ifPrimitive()) {
             return toObject(mapable.getPrimitive());
         } else if (mapable.ifList()) {
-            return toList(mapable.getLists(), mapable.getId()); // ...
+            return toList(mapable.getList().getMapables(), mapable.getId()); // ...
         } else if (mapable.ifMap()) {
-            return toMap(mapable.getMaps(), mapable.getId());
+            return toMap(mapable.getMap().getMapEntries(), mapable.getId());
         } else if (mapable.ifEvent()) {
             return toEvent(mapable.getEvent(), mapable.getId());
         } else if (mapable.ifContext()) {
@@ -95,7 +95,16 @@ public class FromXmlTypesTransformer {
     }
 
     Event toEvent(XMLEvent xmlEvent, int id) {
-        Event event = new Event(xmlEvent.getDomain(), xmlEvent.getName());
+        Event event = null;
+        try {
+            Class<?> clazz = TransformerUtil.simpleGetClass(xmlEvent.getClassName());
+            event = (Event) TransformerUtil.getInstance(clazz);
+            event.setDomain(xmlEvent.getDomain());
+            event.setName(xmlEvent.getName());
+        } catch (Exception e) {
+            // fallback
+            event = new Event(xmlEvent.getDomain(), xmlEvent.getName());
+        }
         event.setToolConnector(xmlEvent.getToolConnector());
         references.put(id, event);
         for (XMLMapEntry entry : xmlEvent.getElements()) {

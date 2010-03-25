@@ -49,6 +49,22 @@
       <groupId>org.jibx</groupId>
       <artifactId>jibx-run</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jibx</groupId>
+      <artifactId>jibx-extras</artifactId>
+      <version>${jibx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jibx</groupId>
+      <artifactId>jibx-bind</artifactId>
+      <version>${jibx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jibx</groupId>
+      <artifactId>jibx-tools</artifactId>
+      <version>${jibx.version}</version>
+    </dependency>
+    
     
     <!-- Apache Dependencies -->
     <dependency>
@@ -87,23 +103,40 @@
         <groupId>org.jibx</groupId>
         <artifactId>maven-jibx-plugin</artifactId>
         <version>1.2.2</version>
-        <configuration>
-          <directory>src/main/resources/schema</directory>
-          <defaultPackage>org.openengsb.core.xmlmapping</defaultPackage>
-          <targetDirectory>src/main/java/</targetDirectory>
-          <includes>
-            <include>
-              *.xsd
-            </include>
-          </includes>
-          <verbose>true</verbose>
-        </configuration>
         <executions>
-            <execution>
-                <goals>
-                    <goal>schema-codegen</goal>
-                </goals>
-            </execution>
+          <execution>
+            <id>generate-java-code-from-schema</id>
+            <goals>
+              <goal>schema-codegen</goal>
+            </goals>
+            <configuration>
+              <directory>src/main/resources/schema</directory>
+              <defaultPackage>org.openengsb.core.xmlmapping</defaultPackage>
+              <targetDirectory>src/main/java/</targetDirectory>
+              <includes>
+                <include>
+                  *.xsd
+                </include>
+              </includes>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+          <execution>
+            <id>compile-binding</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>bind</goal>
+            </goals>
+            <configuration>
+              <directory>src/main/java/</directory>
+              <includes>
+                <include>
+                  binding.xml
+                </include>
+              </includes>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>

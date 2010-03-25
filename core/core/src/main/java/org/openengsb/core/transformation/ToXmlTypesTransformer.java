@@ -32,7 +32,9 @@ import org.openengsb.core.xmlmapping.XMLContext;
 import org.openengsb.core.xmlmapping.XMLEvent;
 import org.openengsb.core.xmlmapping.XMLField;
 import org.openengsb.core.xmlmapping.XMLMapEntry;
+import org.openengsb.core.xmlmapping.XMLMapEntryList;
 import org.openengsb.core.xmlmapping.XMLMapable;
+import org.openengsb.core.xmlmapping.XMLMapableList;
 import org.openengsb.core.xmlmapping.XMLPrimitive;
 import org.openengsb.core.xmlmapping.XMLReference;
 
@@ -51,9 +53,10 @@ public class ToXmlTypesTransformer {
 
         ObjectId objectId = new ObjectId(System.identityHashCode(o), o.getClass());
         if (objectIdToId.containsKey(objectId)) {
-            return toReference(o);
+            return toReference(objectId, o);
         }
         XMLMapable m = new XMLMapable();
+        m.setId(counter);
         objectIdToId.put(objectId, counter++);
         if (o instanceof Event) {
             m.setEvent(toXmlEvent((Event) o));
@@ -62,23 +65,27 @@ public class ToXmlTypesTransformer {
         } else if (o instanceof Map<?, ?>) {
             Map<?, ?> map = (Map<?, ?>) o;
             List<XMLMapEntry> mapEntries = toMapEntries(map);
-            m.setMaps(mapEntries);
+            XMLMapEntryList mapEntryList = new XMLMapEntryList();
+            mapEntryList.setMapEntries(mapEntries);
+            m.setMap(mapEntryList);
         } else if (o instanceof List<?>) {
-            m.setLists(toXmlList((List<?>) o));
+            List<XMLMapable> mapables = toXmlList((List<?>) o);
+            XMLMapableList mapableList = new XMLMapableList();
+            mapableList.setMapables(mapables);
+            m.setList(mapableList);
         } else if (isPrimitive(o)) {
             XMLPrimitive primitive = toPrimitive(o);
             m.setPrimitive(primitive);
-            objectIdToId.remove(objectId);
         } else {
             m.setBean(toXmlBean(o));
         }
         return m;
     }
 
-    private XMLMapable toReference(Object o) {
+    private XMLMapable toReference(ObjectId objectId, Object o) {
         XMLMapable m = new XMLMapable();
         XMLReference ref = new XMLReference();
-        ref.setId(System.identityHashCode(o));
+        ref.setId(objectIdToId.get(objectId));
         m.setReference(ref);
         return m;
     }

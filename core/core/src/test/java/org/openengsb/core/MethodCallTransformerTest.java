@@ -18,11 +18,14 @@
 
 package org.openengsb.core;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.openengsb.core.ReturnValueTransformerTest.TestBeanArray;
 import org.openengsb.core.model.Event;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.transformation.Transformer;
@@ -42,8 +45,8 @@ public class MethodCallTransformerTest {
 
     @Test
     public void testPrimitive() throws SerializationException {
-        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, "hallo" }, new Class<?>[] { int.class,
-                long.class, String.class });
+        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, "hallo" }, new Class<?>[] { Integer.class,
+                Long.class, String.class });
 
         String xml = Transformer.toXml(input);
         MethodCall output = Transformer.toMethodCall(xml);
@@ -52,17 +55,23 @@ public class MethodCallTransformerTest {
     }
 
     @Test
-    public void testArray() throws SerializationException {
-        int[] intArray = new int[] { 42, 43 };
-        String[] stringArray = new String[] { "42", "43" };
-        MethodCall input = new MethodCall("foo", new Object[] { intArray, stringArray }, new Class<?>[] { int[].class,
-                String[].class });
+    public void testList() throws SerializationException {
+        List<Integer> intList = new ArrayList<Integer>();
+        intList.add(42);
+        intList.add(43);
+
+        List<String> stringList = new ArrayList<String>();
+        stringList.add("42");
+        stringList.add("43");
+
+        MethodCall input = new MethodCall("foo", new Object[] { intList, stringList }, new Class<?>[] { List.class,
+                List.class });
 
         String xml = Transformer.toXml(input);
         MethodCall output = Transformer.toMethodCall(xml);
 
-        Assert.assertTrue(Arrays.equals(intArray, (int[]) output.getArgs()[0]));
-        Assert.assertTrue(Arrays.equals(stringArray, (String[]) output.getArgs()[1]));
+        Assert.assertEquals(intList, output.getArgs()[0]);
+        Assert.assertEquals(stringList, output.getArgs()[1]);
     }
 
     @Test
@@ -71,8 +80,8 @@ public class MethodCallTransformerTest {
         TestBean beanB = new TestBean("testStringB", 3, beanA);
         beanA.setBean(beanB);
 
-        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, beanA }, new Class<?>[] { int.class,
-                long.class, TestBean.class });
+        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, beanA }, new Class<?>[] { Integer.class,
+                Long.class, TestBean.class });
 
         String xml = Transformer.toXml(input);
         MethodCall output = Transformer.toMethodCall(xml);
@@ -90,8 +99,8 @@ public class MethodCallTransformerTest {
         TestBean beanA = new TestBean("bar", 42, null);
         beanA.setBean(beanA);
 
-        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, beanA }, new Class<?>[] { int.class,
-                long.class, TestBean.class });
+        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, beanA }, new Class<?>[] { Integer.class,
+                Long.class, TestBean.class });
 
         String xml = Transformer.toXml(input);
         MethodCall output = Transformer.toMethodCall(xml);
@@ -105,43 +114,41 @@ public class MethodCallTransformerTest {
     }
 
     @Test
-    public void testBeanWithArray() throws Exception {
-        TestBeanArray testBean = new TestBeanArray();
+    public void testBeanWithList() throws Exception {
+        TestBeanList testBean = new TestBeanList();
         testBean.addTestData();
 
-        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, testBean }, new Class<?>[] { int.class,
-                long.class, TestBeanArray.class });
+        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, testBean }, new Class<?>[] { Integer.class,
+                Long.class, TestBeanList.class });
 
         String xml = Transformer.toXml(input);
         MethodCall output = Transformer.toMethodCall(xml);
 
-        check(input, output);
-
-        TestBeanArray tbArray = (TestBeanArray) output.getArgs()[2];
-        TestBean tbA = tbArray.getTestBeanArray()[0];
-        TestBean tbB = tbArray.getTestBeanArray()[1];
+        TestBeanList tbList = (TestBeanList) output.getArgs()[2];
+        TestBean tbA = tbList.getTestBeanList().get(0);
+        TestBean tbB = tbList.getTestBeanList().get(1);
 
         Assert.assertTrue(tbA == tbB.getBean());
     }
 
     @Test
-    public void testBeanWithTwoEqualArrays() throws Exception {
-        TestBeanArray2 testBean = new TestBeanArray2();
+    public void testBeanWithTwoEqualLists() throws Exception {
+        TestBeanList2 testBean = new TestBeanList2();
         testBean.addTestData();
 
-        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, testBean }, new Class<?>[] { int.class,
-                long.class, TestBeanArray2.class });
+        MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, testBean }, new Class<?>[] { Integer.class,
+                Long.class, TestBeanList2.class });
 
         String xml = Transformer.toXml(input);
         MethodCall output = Transformer.toMethodCall(xml);
 
         check(input, output);
 
-        TestBeanArray2 tbArray = (TestBeanArray2) output.getArgs()[2];
-        String[] array = tbArray.getArray();
-        String[] array2 = tbArray.getArray2();
+        TestBeanList2 tbArray = (TestBeanList2) output.getArgs()[2];
+        List<String> list = tbArray.getList();
+        List<String> list2 = tbArray.getList2();
 
-        Assert.assertTrue(array == array2);
+        Assert.assertTrue(list == list2);
     }
 
     @Test
@@ -150,9 +157,8 @@ public class MethodCallTransformerTest {
         testBean.addTestData();
 
         MethodCall input = new MethodCall("foo", new Object[] { new Integer(42), new Byte("42"), new Short((short) 42),
-                new Long(42L), new Character('4'), new Float(42.42), new Double(42.42), new Boolean(true) },
-                new Class<?>[] { Integer.class, Byte.class, Short.class, Long.class, Character.class, Float.class,
-                        Double.class, Boolean.class });
+                new Long(42L), new Float(42.42), new Double(42.42), new Boolean(true) }, new Class<?>[] {
+                Integer.class, Byte.class, Short.class, Long.class, Float.class, Double.class, Boolean.class });
 
         String xml = Transformer.toXml(input);
         MethodCall output = Transformer.toMethodCall(xml);
@@ -172,17 +178,18 @@ public class MethodCallTransformerTest {
         check(input, output);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void testEventArray() throws Exception {
-        Event[] events = new Event[] { new Event("domain", "name") };
+    public void testEventList() throws Exception {
+        List<Event> events = Arrays.asList(new Event("domain", "name"));
 
-        MethodCall input = new MethodCall("foo", new Object[] { events }, new Class<?>[] { Event[].class });
+        MethodCall input = new MethodCall("foo", new Object[] { events }, new Class<?>[] { List.class });
 
         String xml = Transformer.toXml(input);
         MethodCall output = Transformer.toMethodCall(xml);
 
-        Event[] outEvents = (Event[]) output.getArgs()[0];
-        Assert.assertTrue(Arrays.equals(events, outEvents));
+        List<Event> outEvents = (List<Event>) output.getArgs()[0];
+        Assert.assertEquals(events, outEvents);
     }
 
     private void check(MethodCall expected, MethodCall actual) {
@@ -199,7 +206,7 @@ public class MethodCallTransformerTest {
 
     public static class TestBean {
         private String string;
-        private int i;
+        private Integer i;
         private TestBean bean;
 
         public TestBean() {
@@ -264,34 +271,34 @@ public class MethodCallTransformerTest {
         }
     }
 
-    public static class TestBeanArray {
-        private int[] intArray;
+    public static class TestBeanList {
+        private List<Integer> intList;
 
-        private TestBean[] testBeanArray;
+        private List<TestBean> testBeanList;
 
-        public TestBeanArray() {
+        public TestBeanList() {
         }
 
         public void addTestData() {
-            intArray = new int[] { 42, 1, 2, 3 };
+            intList = Arrays.asList(42, 1, 2, 3);
             TestBean testBeanA = new TestBean("foo", 4, null);
-            testBeanArray = new TestBean[] { testBeanA, new TestBean("bar", 5, testBeanA) };
+            testBeanList = Arrays.asList(testBeanA, new TestBean("bar", 5, testBeanA));
         }
 
-        public int[] getIntArray() {
-            return intArray;
+        public List<Integer> getIntList() {
+            return intList;
         }
 
-        public TestBean[] getTestBeanArray() {
-            return testBeanArray;
+        public List<TestBean> getTestBeanList() {
+            return testBeanList;
         }
 
         @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + Arrays.hashCode(intArray);
-            result = prime * result + Arrays.hashCode(testBeanArray);
+            result = prime * result + ((intList == null) ? 0 : intList.hashCode());
+            result = prime * result + ((testBeanList == null) ? 0 : testBeanList.hashCode());
             return result;
         }
 
@@ -303,42 +310,49 @@ public class MethodCallTransformerTest {
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            TestBeanArray other = (TestBeanArray) obj;
-            if (!Arrays.equals(intArray, other.intArray))
+            TestBeanList other = (TestBeanList) obj;
+            if (intList == null) {
+                if (other.intList != null)
+                    return false;
+            } else if (!intList.equals(other.intList))
                 return false;
-            if (!Arrays.equals(testBeanArray, other.testBeanArray))
+            if (testBeanList == null) {
+                if (other.testBeanList != null)
+                    return false;
+            } else if (!testBeanList.equals(other.testBeanList))
                 return false;
             return true;
         }
+
     }
 
-    public static class TestBeanArray2 {
-        private String[] array;
+    public static class TestBeanList2 {
+        private List<String> list;
 
-        private String[] array2;
+        private List<String> list2;
 
-        public TestBeanArray2() {
+        public TestBeanList2() {
         }
 
         public void addTestData() {
-            array = new String[0];
-            array2 = array;
+            list = new ArrayList<String>();
+            list2 = list;
         }
 
-        public String[] getArray() {
-            return array;
+        public List<String> getList() {
+            return list;
         }
 
-        public String[] getArray2() {
-            return array2;
+        public List<String> getList2() {
+            return list2;
         }
 
         @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            result = prime * result + Arrays.hashCode(array);
-            result = prime * result + Arrays.hashCode(array2);
+            result = prime * result + ((list == null) ? 0 : list.hashCode());
+            result = prime * result + ((list2 == null) ? 0 : list2.hashCode());
             return result;
         }
 
@@ -350,12 +364,19 @@ public class MethodCallTransformerTest {
                 return false;
             if (getClass() != obj.getClass())
                 return false;
-            TestBeanArray2 other = (TestBeanArray2) obj;
-            if (!Arrays.equals(array, other.array))
+            TestBeanList2 other = (TestBeanList2) obj;
+            if (list == null) {
+                if (other.list != null)
+                    return false;
+            } else if (!list.equals(other.list))
                 return false;
-            if (!Arrays.equals(array2, other.array2))
+            if (list2 == null) {
+                if (other.list2 != null)
+                    return false;
+            } else if (!list2.equals(other.list2))
                 return false;
             return true;
         }
+
     }
 }

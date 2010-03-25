@@ -17,26 +17,35 @@
       <structure map-as="XMLReference" test-method="ifReference" get-method="getReference" set-method="setReference" usage="optional" name="reference"/>
       <structure map-as="XMLPrimitive" test-method="ifPrimitive" get-method="getPrimitive" set-method="setPrimitive" usage="optional" name="primitive"/>
       <structure map-as="XMLBean" test-method="ifBean" get-method="getBean" set-method="setBean" usage="optional" name="bean"/>
-      <collection test-method="ifList" get-method="getLists" set-method="setLists" usage="optional" create-type="java.util.ArrayList">
-        <structure map-as="XMLMapable" name="list"/>
-      </collection>
+      <structure map-as="XMLMapableList" test-method="ifList" get-method="getList" set-method="setList" usage="optional" name="list"/>
       <structure map-as="XMLEvent" test-method="ifEvent" get-method="getEvent" set-method="setEvent" usage="optional" name="event"/>
-      <collection test-method="ifMap" get-method="getMaps" set-method="setMaps" usage="optional" create-type="java.util.ArrayList">
-        <structure map-as="XMLMapEntry" name="map"/>
-      </collection>
+      <structure map-as="XMLMapEntryList" test-method="ifMap" get-method="getMap" set-method="setMap" usage="optional" name="map"/>
       <structure map-as="XMLContext" test-method="ifContext" get-method="getContext" set-method="setContext" usage="optional" name="context"/>
     </structure>
     <value style="element" name="id" get-method="getId" set-method="setId"/>
     <value style="attribute" name="domainConcept" get-method="getDomainConcept" set-method="setDomainConcept" usage="optional"/>
   </mapping>
+  <mapping abstract="true" type-name="XMLMapableList" class="org.openengsb.core.xmlmapping.XMLMapableList">
+    <collection get-method="getMapables" set-method="setMapables" create-type="java.util.ArrayList">
+      <structure map-as="XMLMapable" name="mapable"/>
+    </collection>
+  </mapping>
+  <mapping abstract="true" type-name="XMLMapEntryList" class="org.openengsb.core.xmlmapping.XMLMapEntryList">
+    <collection get-method="getMapEntries" set-method="setMapEntries" create-type="java.util.ArrayList">
+      <structure map-as="XMLMapEntry" name="mapEntry"/>
+    </collection>
+  </mapping>
   <mapping abstract="true" type-name="XMLEvent" class="org.openengsb.core.xmlmapping.XMLEvent">
     <value style="element" name="className" get-method="getClassName" set-method="setClassName"/>
     <value style="element" name="domain" get-method="getDomain" set-method="setDomain"/>
     <value style="element" name="name" get-method="getName" set-method="setName"/>
-    <value style="element" name="toolConnector" get-method="getToolConnector" set-method="setToolConnector"/>
+    <value style="element" name="toolConnector" get-method="getToolConnector" set-method="setToolConnector" usage="optional"/>
     <collection get-method="getElements" set-method="setElements" create-type="java.util.ArrayList">
       <structure map-as="XMLMapEntry" name="elements"/>
     </collection>
+  </mapping>
+  <mapping class="org.openengsb.core.xmlmapping.XMLEvent" name="XMLEvent">
+    <structure map-as="XMLEvent"/>
   </mapping>
   <mapping abstract="true" type-name="XMLBean" class="org.openengsb.core.xmlmapping.XMLBean">
     <value style="element" name="className" get-method="getClassName" set-method="setClassName"/>
@@ -74,6 +83,9 @@
     <collection get-method="getEntries" set-method="setEntries" create-type="java.util.ArrayList">
       <structure map-as="XMLContextEntry" name="entries"/>
     </collection>
+  </mapping>
+  <mapping class="org.openengsb.core.xmlmapping.XMLContext" name="XMLContext">
+    <structure map-as="XMLContext"/>
   </mapping>
   <mapping abstract="true" type-name="XMLReference" class="org.openengsb.core.xmlmapping.XMLReference">
     <value style="element" name="id" get-method="getId" set-method="setId"/>

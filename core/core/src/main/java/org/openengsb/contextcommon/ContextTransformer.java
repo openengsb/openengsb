@@ -79,6 +79,7 @@ public class ContextTransformer {
             XMLContextEntry xmlContextEntry = new XMLContextEntry();
             xmlContextEntry.setKey(path + key);
             xmlContextEntry.setValue(ctx.get(key));
+            entries.add(xmlContextEntry);
         }
 
         for (String child : ctx.getChildrenNames()) {

@@ -1,14 +1,24 @@
 
 package org.openengsb.core.xmlmapping;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /** 
  * Schema fragment(s) for this class:
  * <pre>
  * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLMapable">
- *   &lt;!-- Reference to class org.openengsb.core.xmlmapping.XMLMapable -->
+ *   &lt;xs:sequence>
+ *     &lt;xs:choice>
+ *       &lt;xs:element type="xs:string" name="null"/>
+ *       &lt;xs:element type="XMLReference" name="reference"/>
+ *       &lt;xs:element type="XMLPrimitive" name="primitive"/>
+ *       &lt;xs:element type="XMLBean" name="bean"/>
+ *       &lt;xs:element type="XMLMapableList" name="list"/>
+ *       &lt;xs:element type="XMLEvent" name="event"/>
+ *       &lt;xs:element type="XMLMapEntryList" name="map"/>
+ *       &lt;xs:element type="XMLContext" name="context"/>
+ *     &lt;/xs:choice>
+ *     &lt;xs:element type="xs:int" name="id"/>
+ *   &lt;/xs:sequence>
+ *   &lt;xs:attribute type="xs:string" name="domainConcept"/>
  * &lt;/xs:complexType>
  * </pre>
  */
@@ -27,9 +37,9 @@ public class XMLMapable
     private XMLReference reference;
     private XMLPrimitive primitive;
     private XMLBean bean;
-    private List<XMLMapable> listList = new ArrayList<XMLMapable>();
+    private XMLMapableList list;
     private XMLEvent event;
-    private List<XMLMapEntry> mapList = new ArrayList<XMLMapEntry>();
+    private XMLMapEntryList map;
     private XMLContext context;
     private int id;
     private String domainConcept;
@@ -163,7 +173,7 @@ public class XMLMapable
     }
 
     /** 
-     * Check if Lists is current selection for choice.
+     * Check if List is current selection for choice.
      * 
      * @return <code>true</code> if selection, <code>false</code> if not
      */
@@ -172,22 +182,22 @@ public class XMLMapable
     }
 
     /** 
-     * Get the list of 'list' element items.
+     * Get the 'list' element value.
      * 
-     * @return list
+     * @return value
      */
-    public List<XMLMapable> getLists() {
-        return listList;
+    public XMLMapableList getList() {
+        return list;
     }
 
     /** 
-     * Set the list of 'list' element items.
+     * Set the 'list' element value.
      * 
      * @param list
      */
-    public void setLists(List<XMLMapable> list) {
+    public void setList(XMLMapableList list) {
         setChoiceSelect(LIST_CHOICE);
-        listList = list;
+        this.list = list;
     }
 
     /** 
@@ -219,7 +229,7 @@ public class XMLMapable
     }
 
     /** 
-     * Check if Maps is current selection for choice.
+     * Check if Map is current selection for choice.
      * 
      * @return <code>true</code> if selection, <code>false</code> if not
      */
@@ -228,22 +238,22 @@ public class XMLMapable
     }
 
     /** 
-     * Get the list of 'map' element items.
+     * Get the 'map' element value.
      * 
-     * @return list
+     * @return value
      */
-    public List<XMLMapEntry> getMaps() {
-        return mapList;
+    public XMLMapEntryList getMap() {
+        return map;
     }
 
     /** 
-     * Set the list of 'map' element items.
+     * Set the 'map' element value.
      * 
-     * @param list
+     * @param map
      */
-    public void setMaps(List<XMLMapEntry> list) {
+    public void setMap(XMLMapEntryList map) {
         setChoiceSelect(MAP_CHOICE);
-        mapList = list;
+        this.map = map;
     }
 
     /** 
