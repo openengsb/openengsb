@@ -13,21 +13,28 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
+   
  */
-package org.openengsb.edb.jbi.service;
+package org.openengsb.core;
 
-import org.openengsb.core.OpenEngSBComponent;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
+import java.util.List;
 
-/**
- * @org.apache.xbean.XBean element="edbComponent" description="edb Component"
- *                         The edb-jbi-component
- */
-public class EdbComponent extends OpenEngSBComponent<OpenEngSBEndpoint> {
+import org.apache.servicemix.common.DefaultComponent;
+
+public class OpenEngSBComponent<T> extends DefaultComponent {
+    private T[] endpoints;
+
+    public T[] getEndpoints() {
+        return endpoints;
+    }
+
+    public void setEndpoints(T[] endpoints) {
+        this.endpoints = endpoints;
+    }
+
     @Override
-    protected Class<?>[] getEndpointClasses() {
-        return new Class[] { OpenEngSBEndpoint.class };
+    protected List<?> getConfiguredEndpoints() {
+        return asList(endpoints);
     }
     
 }
