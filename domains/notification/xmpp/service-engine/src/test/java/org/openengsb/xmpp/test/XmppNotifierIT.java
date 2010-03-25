@@ -38,13 +38,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class XmppNotifierIT extends SpringTestSupport {
     private static ServiceMixClient client;
 
-    private static final String TEST_EVENT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    private static final String TEST_EVENT = 
+              "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
             + "<list xmlns=\"http://org.openengsb/util/serialization\" domainConcept=\"\" format=\"\" name=\"event\">"
             + "    <text domainConcept=\"\" format=\"\" name=\"event\">org.openengsb.core.model.Event</text>"
             + "    <list domainConcept=\"\" format=\"\" name=\"superclasses\">"
             + "        <text domainConcept=\"\" format=\"\" name=\"superclass\">java.lang.Object</text>"
-            + "    </list>" + "    <text domainConcept=\"\" format=\"\" name=\"name\">testevent</text>"
-            + "    <text domainConcept=\"\" format=\"\" name=\"domain\">drools</text>" + "</list>";
+            + "    </list>" 
+            + "    <text domainConcept=\"\" format=\"\" name=\"name\">testevent</text>"
+            + "    <text domainConcept=\"\" format=\"\" name=\"domain\">drools</text>" 
+            + "</list>";
 
     @Override
     protected AbstractXmlApplicationContext createBeanFactory() {
@@ -67,7 +70,7 @@ public class XmppNotifierIT extends SpringTestSupport {
     @Test
     public void testSendSampleMessage() throws Exception {
         InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("xmpp:xmppNotifier", "xmpp"));
+        me.setService(new QName("urn:test", "xmpp"));
         me.getInMessage().setContent(new StringSource(TEST_EVENT));
         me.setOperation(new QName("event"));
         me.getInMessage().setProperty("operation", Boolean.TRUE);

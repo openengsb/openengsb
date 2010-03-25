@@ -204,6 +204,9 @@ public class ContextStore {
         setValue("42/notification/twitter/user", "OpenEngSbTest");
         setValue("42/notification/twitter/password", "tsetbsgnenepo");
 
+        setValue("42/notification/xmpp/namespace", "urn:openengsb:xmpp");
+        setValue("42/notification/xmpp/servicename", "xmppService");
+        
         setValue("42/scm/namespace", "urn:openengsb:scm");
         setValue("42/scm/servicename", "scmService");
         setValue("42/scm/event/servicename", "eventService");

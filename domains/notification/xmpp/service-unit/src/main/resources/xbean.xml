@@ -16,11 +16,11 @@
    limitations under the License.
 
 -->
-<beans xmlns:xmpp="http://www.openengsb.org/connector/xmpp/1.0" xmlns:eml="urn:openengsb:xmpp"
+<beans xmlns:xmpp="http://www.openengsb.org/connector/xmpp/1.0" xmlns:xm2p="urn:openengsb:xmpp"
   xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <xmpp:xmppEndpoint endpoint="xmppEndpoint" service="xmpp:xmppService" xmppNotifier="#xmppNotifier" />
+  <xmpp:xmppEndpoint endpoint="xmppEndpoint" service="xm2p:xmppService" xmppNotifier="#xmppNotifier" />
   
   <bean id="xmppNotifier" class="org.openengsb.xmpp.XmppNotifier"> 
     <property name="connection" ref="xmppConnection" />
