@@ -55,5 +55,22 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
+  
+  <xs:complexType  name="XMLContextEntry">
+    <xs:sequence>
+      <xs:element name="key" type="xs:string" />
+      <xs:element name="value" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:element name="XMLContext">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="entries" type="XMLContextEntry" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
 
 </xs:schema>

@@ -23,7 +23,6 @@ import java.util.Arrays;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.model.Event;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.transformation.Transformer;
@@ -32,22 +31,22 @@ import org.openengsb.util.serialization.SerializationException;
 public class MethodCallTransformerTest {
 
     @Test
-    public void testNoArg() {
+    public void testNoArg() throws SerializationException {
         MethodCall input = new MethodCall("foo", new Object[0], new Class<?>[0]);
 
-        Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        String xml = Transformer.toXml(input);
+        MethodCall output = Transformer.toMethodCall(xml);
 
         check(input, output);
     }
 
     @Test
-    public void testPrimitive() {
+    public void testPrimitive() throws SerializationException {
         MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, "hallo" }, new Class<?>[] { int.class,
                 long.class, String.class });
 
-        Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        String xml = Transformer.toXml(input);
+        MethodCall output = Transformer.toMethodCall(xml);
 
         check(input, output);
     }
@@ -59,8 +58,8 @@ public class MethodCallTransformerTest {
         MethodCall input = new MethodCall("foo", new Object[] { intArray, stringArray }, new Class<?>[] { int[].class,
                 String[].class });
 
-        Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        String xml = Transformer.toXml(input);
+        MethodCall output = Transformer.toMethodCall(xml);
 
         Assert.assertTrue(Arrays.equals(intArray, (int[]) output.getArgs()[0]));
         Assert.assertTrue(Arrays.equals(stringArray, (String[]) output.getArgs()[1]));
@@ -75,8 +74,8 @@ public class MethodCallTransformerTest {
         MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, beanA }, new Class<?>[] { int.class,
                 long.class, TestBean.class });
 
-        Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        String xml = Transformer.toXml(input);
+        MethodCall output = Transformer.toMethodCall(xml);
 
         check(input, output);
 
@@ -94,8 +93,8 @@ public class MethodCallTransformerTest {
         MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, beanA }, new Class<?>[] { int.class,
                 long.class, TestBean.class });
 
-        Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        String xml = Transformer.toXml(input);
+        MethodCall output = Transformer.toMethodCall(xml);
 
         check(input, output);
 
@@ -113,8 +112,8 @@ public class MethodCallTransformerTest {
         MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, testBean }, new Class<?>[] { int.class,
                 long.class, TestBeanArray.class });
 
-        Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        String xml = Transformer.toXml(input);
+        MethodCall output = Transformer.toMethodCall(xml);
 
         check(input, output);
 
@@ -133,8 +132,8 @@ public class MethodCallTransformerTest {
         MethodCall input = new MethodCall("foo", new Object[] { 1, 42L, testBean }, new Class<?>[] { int.class,
                 long.class, TestBeanArray2.class });
 
-        Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        String xml = Transformer.toXml(input);
+        MethodCall output = Transformer.toMethodCall(xml);
 
         check(input, output);
 
@@ -155,8 +154,8 @@ public class MethodCallTransformerTest {
                 new Class<?>[] { Integer.class, Byte.class, Short.class, Long.class, Character.class, Float.class,
                         Double.class, Boolean.class });
 
-        Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        String xml = Transformer.toXml(input);
+        MethodCall output = Transformer.toMethodCall(xml);
 
         check(input, output);
     }
@@ -167,8 +166,8 @@ public class MethodCallTransformerTest {
 
         MethodCall input = new MethodCall("foo", new Object[] { event }, new Class<?>[] { Event.class });
 
-        Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        String xml = Transformer.toXml(input);
+        MethodCall output = Transformer.toMethodCall(xml);
 
         check(input, output);
     }
@@ -179,8 +178,8 @@ public class MethodCallTransformerTest {
 
         MethodCall input = new MethodCall("foo", new Object[] { events }, new Class<?>[] { Event[].class });
 
-        Segment intermediate = Transformer.toSegment(input);
-        MethodCall output = Transformer.toMethodCall(intermediate);
+        String xml = Transformer.toXml(input);
+        MethodCall output = Transformer.toMethodCall(xml);
 
         Event[] outEvents = (Event[]) output.getArgs()[0];
         Assert.assertTrue(Arrays.equals(events, outEvents));

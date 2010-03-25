@@ -44,4 +44,13 @@
       <structure map-as="XMLMapable" name="args"/>
     </collection>
   </mapping>
+  <mapping abstract="true" type-name="XMLContextEntry" class="org.openengsb.core.xmlmapping.XMLContextEntry">
+    <value style="element" name="key" get-method="getKey" set-method="setKey"/>
+    <value style="element" name="value" get-method="getValue" set-method="setValue"/>
+  </mapping>
+  <mapping class="org.openengsb.core.xmlmapping.XMLContext" name="XMLContext">
+    <collection get-method="getEntries" set-method="setEntries" create-type="java.util.ArrayList">
+      <structure map-as="XMLContextEntry" name="entries"/>
+    </collection>
+  </mapping>
 </binding>

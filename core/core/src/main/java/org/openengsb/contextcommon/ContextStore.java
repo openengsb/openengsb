@@ -21,8 +21,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.openengsb.core.messaging.Segment;
-import org.openengsb.util.serialization.SerializationException;
 
 public class ContextStore {
 
@@ -160,13 +158,9 @@ public class ContextStore {
             loadDefaultConfig();
             return;
         }
-
         try {
-            Segment segment = Segment.fromXML(FileUtils.readFileToString(settings));
-            rootContext = ContextSegmentTransformer.toContext(segment);
+            rootContext = ContextSegmentTransformer.fromXml(FileUtils.readFileToString(settings));
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SerializationException e) {
             throw new RuntimeException(e);
         }
     }
@@ -215,7 +209,7 @@ public class ContextStore {
         setValue("42/notification/email/config/mail.smtp.host", "smtp.gmail.com");
         setValue("42/notification/email/user", "openengsb.notification.test@gmail.com");
         setValue("42/notification/email/password", "pwd-openengsb");
-        
+
         setValue("42/notification/twitter/namespace", "urn:openengsb:twitter");
         setValue("42/notification/twitter/servicename", "twitterService");
         setValue("42/notification/twitter/user", "OpenEngSbTest");
@@ -294,10 +288,8 @@ public class ContextStore {
         }
 
         try {
-            Segment segment = ContextSegmentTransformer.toSegment(rootContext);
-            FileUtils.writeStringToFile(settings, segment.toXML(), "UTF-8");
-        } catch (SerializationException e) {
-            throw new RuntimeException(e);
+            String xml = ContextSegmentTransformer.toXml(rootContext);
+            FileUtils.writeStringToFile(settings, xml, "UTF-8");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

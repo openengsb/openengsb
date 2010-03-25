@@ -23,7 +23,6 @@ import java.util.Arrays;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.openengsb.core.messaging.Segment;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
@@ -34,8 +33,8 @@ public class ReturnValueTransformerTest {
     public void testPrimitive() throws SerializationException {
         ReturnValue input = new ReturnValue("success", String.class);
 
-        Segment intermediate = Transformer.toSegment(input);
-        ReturnValue output = Transformer.toReturnValue(intermediate);
+        String xml = Transformer.toXml(input);
+        ReturnValue output = Transformer.toReturnValue(xml);
 
         check(input, output);
     }
@@ -45,21 +44,21 @@ public class ReturnValueTransformerTest {
         TestBean testBean = new TestBean("foo", 42, null);
         ReturnValue input = new ReturnValue(testBean, TestBean.class);
 
-        Segment intermediate = Transformer.toSegment(input);
-        ReturnValue output = Transformer.toReturnValue(intermediate);
+        String xml = Transformer.toXml(input);
+        ReturnValue output = Transformer.toReturnValue(xml);
 
         check(input, output);
     }
 
     @Test
-    public void testBeanReference() {
+    public void testBeanReference() throws SerializationException {
         TestBean testBeanA = new TestBean("foo", 42, null);
         TestBean testBeanB = new TestBean("bar", 44, testBeanA);
         testBeanA.setBean(testBeanB);
         ReturnValue input = new ReturnValue(testBeanB, TestBean.class);
 
-        Segment intermediate = Transformer.toSegment(input);
-        ReturnValue output = Transformer.toReturnValue(intermediate);
+        String xml = Transformer.toXml(input);
+        ReturnValue output = Transformer.toReturnValue(xml);
 
         check(input, output);
 
@@ -70,13 +69,13 @@ public class ReturnValueTransformerTest {
     }
 
     @Test
-    public void testArray() {
+    public void testArray() throws SerializationException {
         String[] inArray = new String[] { "1", "2", "3" };
 
         ReturnValue input = new ReturnValue(inArray, inArray.getClass());
 
-        Segment intermediate = Transformer.toSegment(input);
-        ReturnValue output = Transformer.toReturnValue(intermediate);
+        String xml = Transformer.toXml(input);
+        ReturnValue output = Transformer.toReturnValue(xml);
 
         String[] outArray = (String[]) output.getValue();
 

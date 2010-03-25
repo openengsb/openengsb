@@ -17,56 +17,72 @@
  */
 package org.openengsb.contextcommon;
 
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.core.messaging.ListSegment;
-import org.openengsb.core.messaging.Segment;
-import org.openengsb.core.messaging.TextSegment;
+import org.openengsb.core.xmlmapping.XMLContext;
+import org.openengsb.core.xmlmapping.XMLContextEntry;
+import org.openengsb.util.serialization.JibxXmlSerializer;
+import org.openengsb.util.serialization.SerializationException;
 
 public class ContextSegmentTransformer {
 
-    public static Segment toSegment(Context ctx) {
-        return toSegment("/", ctx);
+    private final static JibxXmlSerializer serializer = new JibxXmlSerializer();
+
+    public static String toXml(Context ctx) {
+        XMLContext xmlContext = toXmlContext(ctx);
+        try {
+            StringWriter writer = new StringWriter();
+            serializer.serialize(xmlContext, writer);
+            return writer.toString();
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static Context toContext(Segment segment) {
+    public static Context fromXml(String xml) {
+        try {
+            StringReader reader = new StringReader(xml);
+            XMLContext xmlContext = serializer.deserialize(XMLContext.class, reader);
+            return toContext(xmlContext);
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static XMLContext toXmlContext(Context ctx) {
+        XMLContext xmlContext = new XMLContext();
+        List<XMLContextEntry> entries = new ArrayList<XMLContextEntry>();
+        toXmlContext(entries, "/", ctx);
+        xmlContext.setEntries(entries);
+        return xmlContext;
+    }
+
+    private static Context toContext(XMLContext xmlContext) {
         ContextStore store = new ContextStore();
-        toContext("", store, segment);
+        toContext(store, xmlContext);
         return store.getContext("/");
     }
 
-    private static void toContext(String prefix, ContextStore store, Segment segment) {
-        if (segment instanceof TextSegment) {
-            TextSegment ts = (TextSegment) segment;
-            String value = ts.getText();
-            String key = ts.getName();
-
-            store.setValue(prefix + key, value);
-        } else if (segment instanceof ListSegment) {
-            ListSegment ls = (ListSegment) segment;
-            store.addContext(prefix + ls.getName());
-
-            for (Segment s : ls.getList()) {
-                toContext(prefix + ls.getName() + "/", store, s);
-            }
+    private static void toContext(ContextStore store, XMLContext segment) {
+        for (XMLContextEntry entry : segment.getEntries()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            store.setValue(key, value);
         }
     }
 
-    private static Segment toSegment(String current, Context ctx) {
-        List<Segment> list = new ArrayList<Segment>();
-
+    private static void toXmlContext(List<XMLContextEntry> entries, String path, Context ctx) {
         for (String key : ctx.getKeys()) {
-            Segment text = new TextSegment.Builder().name(key).text(ctx.get(key)).build();
-            list.add(text);
+            XMLContextEntry xmlContextEntry = new XMLContextEntry();
+            xmlContextEntry.setKey(path + key);
+            xmlContextEntry.setValue(ctx.get(key));
         }
 
         for (String child : ctx.getChildrenNames()) {
-            list.add(toSegment(child, ctx.getChild(child)));
+            toXmlContext(entries, path + child + "/", ctx.getChild(child));
         }
-
-        Segment root = new ListSegment.Builder().name(current).list(list).build();
-
-        return root;
     }
 }

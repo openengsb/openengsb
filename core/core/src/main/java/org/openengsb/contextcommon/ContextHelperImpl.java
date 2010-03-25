@@ -17,25 +17,15 @@
 
 package org.openengsb.contextcommon;
 
-import java.util.HashMap;
+import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
 
-import javax.jbi.messaging.InOut;
-import javax.jbi.messaging.MessagingException;
-import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
-import javax.xml.transform.TransformerException;
 
-import org.apache.servicemix.jbi.jaxp.SourceTransformer;
-import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.openengsb.core.MessageProperties;
+import org.openengsb.core.MethodCallHelper;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
-import org.openengsb.core.messaging.Segment;
-import org.openengsb.core.messaging.TextSegment;
-import org.openengsb.util.serialization.SerializationException;
 
 public class ContextHelperImpl implements ContextHelper {
 
@@ -47,82 +37,54 @@ public class ContextHelperImpl implements ContextHelper {
         this.msgProperties = msgProperties;
     }
 
-    public String getValue(String pathAndKey) {
-        try {
-            InOut inout = new InOutImpl(UUID.randomUUID().toString());
-            inout.setService(new QName("urn:openengsb:context", "contextService"));
-            inout.setOperation(new QName("request"));
+    @Override
+    public void addEmptyContext(List<String> paths) {
+        QName contextEndpoint = getContextEndpoint();
+        Method method = getMethod("addEmptyContext", List.class);
+        MethodCallHelper.sendMethodCall(endpoint, contextEndpoint, method, new Object[] { paths }, msgProperties);
+    }
 
-            NormalizedMessage msg = inout.createMessage();
-            inout.setInMessage(msg);
-            msgProperties.applyToMessage(msg);
-
-            if (pathAndKey.lastIndexOf('/') == -1) {
-                pathAndKey = "/" + pathAndKey;
-            }
-
-            String path = pathAndKey.substring(0, pathAndKey.lastIndexOf('/'));
-            String key = pathAndKey.substring(pathAndKey.lastIndexOf('/') + 1);
-
-            TextSegment text = new TextSegment.Builder("path").text(path).build();
-            String xml = text.toXML();
-
-            msg.setContent(new StringSource(xml));
-
-            endpoint.sendSync(inout);
-
-            NormalizedMessage response = inout.getOutMessage();
-            String outXml = new SourceTransformer().toString(response.getContent());
-            Segment segment = Segment.fromXML(outXml);
-
-            Context context = ContextSegmentTransformer.toContext(segment);
-            String value = context.get(key);
-
-            return value;
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        } catch (SerializationException e) {
-            throw new RuntimeException(e);
-        } catch (TransformerException e) {
-            throw new RuntimeException(e);
-        }
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, String> getAllValues(String path) {
+        QName contextEndpoint = getContextEndpoint();
+        Method method = getMethod("getAllValues", String.class);
+        return (Map<String, String>) MethodCallHelper.sendMethodCall(endpoint, contextEndpoint, method,
+                new Object[] { path }, msgProperties);
     }
 
     @Override
-    public Map<String, String> getAllValues(String path) {
+    public String getValue(String pathAndKey) {
+        QName contextEndpoint = getContextEndpoint();
+        Method method = getMethod("getValue", String.class);
+        return (String) MethodCallHelper.sendMethodCall(endpoint, contextEndpoint, method, new Object[] { pathAndKey },
+                msgProperties);
+    }
+
+    @Override
+    public void remove(List<String> paths) {
+        QName contextEndpoint = getContextEndpoint();
+        Method method = getMethod("remove", List.class);
+        MethodCallHelper.sendMethodCall(endpoint, contextEndpoint, method, new Object[] { paths }, msgProperties);
+    }
+
+    @Override
+    public void store(Map<String, String> values) {
+        QName contextEndpoint = getContextEndpoint();
+        Method method = getMethod("store", Map.class);
+        MethodCallHelper.sendMethodCall(endpoint, contextEndpoint, method, new Object[] { values }, msgProperties);
+    }
+
+    private Method getMethod(String name, Class<?>... params) {
         try {
-            InOut inout = new InOutImpl(UUID.randomUUID().toString());
-            inout.setService(new QName("urn:openengsb:context", "contextService"));
-            inout.setOperation(new QName("request"));
-
-            NormalizedMessage msg = inout.createMessage();
-            inout.setInMessage(msg);
-            msgProperties.applyToMessage(msg);
-
-            TextSegment text = new TextSegment.Builder("path").text(path).build();
-            String xml = text.toXML();
-
-            msg.setContent(new StringSource(xml));
-
-            endpoint.sendSync(inout);
-
-            NormalizedMessage response = inout.getOutMessage();
-            String outXml = new SourceTransformer().toString(response.getContent());
-            Segment segment = Segment.fromXML(outXml);
-
-            Context context = ContextSegmentTransformer.toContext(segment);
-            Set<String> keys = context.getKeys();
-            Map<String, String> values = new HashMap<String, String>();
-            for (String key : keys) {
-                values.put(key, context.get(key));
-            }
-            return values;
-        } catch (MessagingException e) {
-            throw new RuntimeException(e);
-        } catch (SerializationException e) {
-            throw new RuntimeException(e);
-        } catch (TransformerException e) {
+            return getClass().getMethod(name, params);
+        } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }
+
+    private QName getContextEndpoint() {
+        return new QName("urn:openengsb:context", "contextService");
+    }
+
 }

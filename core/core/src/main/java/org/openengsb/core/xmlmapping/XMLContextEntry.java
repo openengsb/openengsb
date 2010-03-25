@@ -4,18 +4,18 @@ package org.openengsb.core.xmlmapping;
 /** 
  * Schema fragment(s) for this class:
  * <pre>
- * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLMapEntry">
+ * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLContextEntry">
  *   &lt;xs:sequence>
  *     &lt;xs:element type="xs:string" name="key"/>
- *     &lt;xs:element type="XMLMapable" name="value"/>
+ *     &lt;xs:element type="xs:string" name="value"/>
  *   &lt;/xs:sequence>
  * &lt;/xs:complexType>
  * </pre>
  */
-public class XMLMapEntry
+public class XMLContextEntry
 {
     private String key;
-    private XMLMapable value;
+    private String value;
 
     /** 
      * Get the 'key' element value.
@@ -40,7 +40,7 @@ public class XMLMapEntry
      * 
      * @return value
      */
-    public XMLMapable getValue() {
+    public String getValue() {
         return value;
     }
 
@@ -49,7 +49,7 @@ public class XMLMapEntry
      * 
      * @param value
      */
-    public void setValue(XMLMapable value) {
+    public void setValue(String value) {
         this.value = value;
     }
 }
