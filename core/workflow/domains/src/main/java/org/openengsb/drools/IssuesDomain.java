@@ -17,14 +17,14 @@
  */
 package org.openengsb.drools;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.openengsb.drools.model.Issue;
 
 public interface IssuesDomain extends Domain {
     Integer createIssue(Issue issue);
 
-    void updateIssue(Integer id, String comment, HashMap<String, Object> changes);
+    void updateIssue(Integer id, String comment, Map<String, Object> changes);
 
     void deleteIssue(Integer id);
 

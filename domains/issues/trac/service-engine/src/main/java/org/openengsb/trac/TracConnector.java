@@ -17,8 +17,8 @@
  */
 package org.openengsb.trac;
 
-import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcException;
@@ -50,12 +50,12 @@ public class TracConnector implements IssuesDomain {
     }
 
     @Override
-    public void updateIssue(Integer id, String comment, HashMap<String, Object> changes) {
+    public void updateIssue(Integer id, String comment, Map<String, Object> changes) {
         Hashtable<String, String> attributes = translateChanges(changes);
         if (comment == null || comment.equals("")) {
             comment = "[No comment added by author]";
         }
-        
+
         try {
             ticket.update(id, comment, attributes);
             log.info("Successfully updated issue " + id + " with " + changes.size() + " changes.");
@@ -100,7 +100,7 @@ public class TracConnector implements IssuesDomain {
         return attributes;
     }
 
-    private Hashtable<String, String> translateChanges(HashMap<String, Object> changes) {
+    private Hashtable<String, String> translateChanges(Map<String, Object> changes) {
         Hashtable<String, String> attributes = new Hashtable<String, String>();
 
         for (String field : changes.keySet()) {
