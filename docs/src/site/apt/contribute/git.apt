@@ -44,24 +44,8 @@ Starting up and configure
   
   [[6]] git config --global core.autocrlf "input"
   
-Getting the repository
+Creating and register your ssh key
 
-  The git repositories could be checked out in two different permission levels. Read or write. The following two
- subsections explain how to get the code.
-
-Readonly
-
-  For a readonly access to the git repos simply clone the repository
-  
-+--------------+
-git clone git://host/REPO (e.g. git clone git://github.com/openengsb/openengsb.git)
-+--------------+
-
-Write
-
-  To get write access to the repositries an additional step is required. First of all you have to create an
- ssh-key (in cygwin on windows! Otherwise simply in the bash).
- 
 +-------------+
 ssh-keygen
 +-------------+
@@ -72,80 +56,96 @@ ssh-keygen
   To understand the workflow you have to have a basic understanding of git. Nevertheless the approach will also
  work with "pattern matching".
  
-+-------------+
-[1. create working feature; if not exists; WORKING = name of the feature; e.g. info]
-git checkout -b WORKING master
-git push origin WORKING
-git checkout master
-git branch -D WORKING
-git checkout -b WORKING origin/WORKING
-git checkout -b devWORKING WORKING
-[2. producing context]
-git checkout -b devWORKING
-HACK HACK HACK
-git add FILES
-git rm FILES
-git commit -s
-[3. push changes or continue with 2.]
-git checkout WORKING
-git pull
-git rebase WORKING devWORKING
-git checkout WORKING
-git merge devWORKING
-// test if everything still works...
-git push
-[4. feature completed and merged by an admin to the master; or go back to 2.]
-git push origin :WORKING
-git checkout master
-git branch -D devWORKING
-git branch -D WORKING
-[5. go back to 1. and create new feature branch]
-+-------------+ 
+Contributor Workflow
 
-Workflow
+*Initial setup
 
-Initial setup:
+ * create a fork on github from the openengsb repository (http://github.com/openengsb/openengsb)
 
-* create a fork on github
-* clone the original repo:
-$ git clone git@github.com/openengsb/openengsb
-* add your fork as remote
-$ git remote add <username> git@github.com/<username>/openengsb
-Example:
-$ git remote add ChristophGr git@github.com/ChristophGr/openengsb
+ * clone the original repo:
 
-To start some new feature:
-* be sure your master is up-to-date
-$ git checkout master
-$ git pull origin master
+ $ git clone git@github.com/openengsb/openengsb
 
-* then create a new devbranch
-$ git checkout -b newfeature
+ * add your fork as remote branch:
 
-* and start committing to your local branch.
+ $ git remote add <username> git@github.com/<username>/openengsb (e.g. git remote add ChristophGr git@github.com/ChristophGr/openengsb)
 
-* To publish the branch on github do:
-$ git push <username> newfeature
+*Start some new feature
 
-// TODO implement rule 5
------------------------------------------
-* If the development in the branch takes some time, it may happen, that the master-branch changes in a way that affects your featurebranch.
-To check how your branch behaves on the current master you can merge the changes into your devbranch.
+ * update remote branches
 
-$ git checkout newfeature
-$ git merge --no-commit --no-ff master
+ $ git remote update -p
 
-If it does not affect your development in any way, do not commit the merge, but rather undo it.
-$ git reset --hard
+ * create a feature branch
 
-If it does affect your development, you need to commit the merge.
-If the merge breaks something in your dev-branch, fix all issues before commiting the merge.
-When done fixing potential issues do
-$ git commit
-------------------------------------------- // rule 5?
+ $ git checkout -b <myfeature> origin/master
 
+ * push the new feature to your fork:
 
-If your feature ready to be merged to master:
+ $ git push <username> <myfeature>
+
+ * go to the admin page of your fork and set the new branch to your default branch to <myfeature>
+
+ * then create a new devbranch
+ 
+ $ git checkout -b devbranch <myfeature>
+
+*Develop my feature
+
+ * and start committing to your devbranch
+
+*Publish your work
+
+ * update your local feature branch by changing from devbranch to <myfeature>
+
+ $ git checkout <myfeature>
+
+ * sync your feature with your remote repository
+
+ $ git pull <username> <myfeature>
+
+ * rebase your dev branch with your feature branch
+
+ $ git rebase <myfeature> devbranch
+
+ * go back to the feature branch
+
+ $ git checkout <myfeature>
+
+ * merge your dev branch into the feature
+
+ $ git merge devbranch
+
+ * push the changes again
+
+ $ git push <username> <myfeature>
+
+ * go back to your dev branch and do further development
+
+ $ git checkout devbranch
+
+*Long-Time Development Features
+
+  If the development in the branch takes some time, it may happen, that the master-branch changes in a way that affects your featurebranch.
+ To check how your branch behaves on the current master you can merge the changes into your devbranch.
+
+ $ git checkout <myfeature> 
+
+ $ git merge --no-commit --no-ff origin/master
+
+  If it does not affect your development in any way, do not commit the merge, but rather undo it.
+
+ $ git reset --hard
+
+ If it does affect your development, you need to commit the merge. If the merge breaks something in your dev-branch, fix all issues before commiting the merge.  When done fixing potential issues do
+ 
+ $ git commit
+
+*Finish Feature
+
+  If you think you are finished with your feature please post to the OpenEngSB developer list. A commiter will decide if he will merge your branch or give you feedback.
+
+Commiter Workflow
 
 $ git checkout master
 $ git merge --no-ff --no-commit <username>/newfeature # we use the remote name here
