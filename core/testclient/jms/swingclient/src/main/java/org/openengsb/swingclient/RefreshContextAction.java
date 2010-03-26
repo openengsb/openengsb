@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 import javax.jms.JMSException;
 
 import org.openengsb.contextcommon.Context;
-import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.contextcommon.ContextHelperExtended;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
@@ -56,7 +56,7 @@ public class RefreshContextAction implements ActionListener {
 
     private String getMessage() {
         try {
-            Method method = ContextHelper.class.getMethod("getContext", String.class);
+            Method method = ContextHelperExtended.class.getMethod("getContext", String.class);
             MethodCall call = new MethodCall(method, new Object[] { "/" });
             String xml = Transformer.toXml(call);
             return xml;

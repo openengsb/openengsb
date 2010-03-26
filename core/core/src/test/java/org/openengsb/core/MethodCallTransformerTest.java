@@ -35,9 +35,10 @@ public class MethodCallTransformerTest {
 
     @Test
     public void testNoArg() throws SerializationException {
-        MethodCall input = new MethodCall("foo", new Object[0], new Class<?>[0]);
+        MethodCall input = new MethodCall("getAllValues", new Object[] { "path" }, new Class<?>[] { String.class });
 
         String xml = Transformer.toXml(input);
+        System.out.println(xml);
         MethodCall output = Transformer.toMethodCall(xml);
 
         check(input, output);

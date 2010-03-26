@@ -31,6 +31,16 @@ import org.openengsb.util.serialization.SerializationException;
 public class ReturnValueTransformerTest {
 
     @Test
+    public void testVoid() throws SerializationException {
+        ReturnValue input = new ReturnValue(null, void.class);
+
+        String xml = Transformer.toXml(input);
+        ReturnValue output = Transformer.toReturnValue(xml);
+
+        check(input, output);
+    }
+
+    @Test
     public void testPrimitive() throws SerializationException {
         ReturnValue input = new ReturnValue("success", String.class);
 

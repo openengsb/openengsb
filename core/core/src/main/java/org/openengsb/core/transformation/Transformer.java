@@ -110,7 +110,13 @@ public class Transformer {
         XMLReturnValue xrv = serializer.deserialize(XMLReturnValue.class, new StringReader(xml));
         XMLTypedValue typedValue = xrv.getValue();
         Object o = transformer.toObject(typedValue.getValue());
-        return new ReturnValue(o, TransformerUtil.simpleGetClass(typedValue.getType()));
+        Class<?> simpleGetClass = null;
+        if (typedValue.getType().equals("void")) {
+            simpleGetClass = void.class;
+        } else {
+            simpleGetClass = TransformerUtil.simpleGetClass(typedValue.getType());
+        }
+        return new ReturnValue(o, simpleGetClass);
     }
 
     public static Event toEvent(String xml) throws SerializationException {

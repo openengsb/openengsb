@@ -65,7 +65,8 @@ HowTo - Guvnor Setup
   You can also do this by hand in the basic view, but you have to keep the naming of the globals.
   
 +-----
-  import java.util.HashMap
+  import java.util.List
+  import java.util.Map
   import org.openengsb.drools.events.BuildEvent
   import org.openengsb.drools.events.DeployEvent
   import org.openengsb.drools.events.ScmCheckInEvent
@@ -80,6 +81,7 @@ HowTo - Guvnor Setup
   import org.openengsb.drools.events.BuildStartEvent
   import org.openengsb.drools.events.DeployStartEvent
   import org.openengsb.drools.events.TestStartEvent
+  
   global org.openengsb.drools.BuildDomain build
   global org.openengsb.drools.DeployDomain deploy
   global org.openengsb.drools.DomainConfiguration config

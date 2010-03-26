@@ -26,7 +26,7 @@ import java.util.Map;
 
 import javax.jms.JMSException;
 
-import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.contextcommon.ContextHelperExtended;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
@@ -90,7 +90,7 @@ public class ContextFacade {
 
     private String getMessage(String methodName, Object[] args, Class<?>... argClasses) {
         try {
-            Method method = ContextHelper.class.getMethod(methodName, argClasses);
+            Method method = ContextHelperExtended.class.getMethod(methodName, argClasses);
             MethodCall call = new MethodCall(method, args);
             String xml = Transformer.toXml(call);
             return xml;

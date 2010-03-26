@@ -42,9 +42,9 @@ public class FromXmlTypesTransformer {
         if (mapable.ifNull()) {
             return null;
         } else if (mapable.ifPrimitive()) {
-            return toObject(mapable.getPrimitive());
+            return toObject(mapable.getPrimitive(), mapable.getId());
         } else if (mapable.ifList()) {
-            return toList(mapable.getList().getMapables(), mapable.getId()); // ...
+            return toList(mapable.getList().getMapables(), mapable.getId());
         } else if (mapable.ifMap()) {
             return toMap(mapable.getMap().getMapEntries(), mapable.getId());
         } else if (mapable.ifEvent()) {
@@ -113,25 +113,31 @@ public class FromXmlTypesTransformer {
         return event;
     }
 
-    private Object toObject(XMLPrimitive primitive) {
+    private Object toObject(XMLPrimitive primitive, int id) {
+        Object result = null;
         if (primitive.ifBoolean()) {
-            return primitive.isBoolean();
+            result = primitive.isBoolean();
         } else if (primitive.ifByte()) {
-            return primitive.getByte();
+            result = primitive.getByte();
         } else if (primitive.ifDouble()) {
-            return primitive.getDouble();
+            result = primitive.getDouble();
         } else if (primitive.ifFloat()) {
-            return primitive.getFloat();
+            result = primitive.getFloat();
         } else if (primitive.ifInt()) {
-            return primitive.getInt();
+            result = primitive.getInt();
         } else if (primitive.ifShort()) {
-            return primitive.getShort();
+            result = primitive.getShort();
         } else if (primitive.ifString()) {
-            return primitive.getString();
+            result = primitive.getString();
         } else if (primitive.ifLong()) {
-            return primitive.getLong();
+            result = primitive.getLong();
         } else if (primitive.ifBase64Binary()) {
-            return primitive.getBase64Binary();
+            result = primitive.getBase64Binary();
+        }
+
+        if (result != null) {
+            references.put(id, result);
+            return result;
         }
         throw new IllegalStateException();
     }
