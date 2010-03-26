@@ -122,6 +122,6 @@ public class Transformer {
     public static Event toEvent(String xml) throws SerializationException {
         XMLEvent xrv = serializer.deserialize(XMLEvent.class, new StringReader(xml));
         FromXmlTypesTransformer transformer = new FromXmlTypesTransformer();
-        return transformer.toEvent(xrv, -1);
+        return transformer.toEvent(xrv, "-1");
     }
 }

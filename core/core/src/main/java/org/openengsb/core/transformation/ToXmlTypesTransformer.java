@@ -56,7 +56,7 @@ public class ToXmlTypesTransformer {
             return toReference(objectId, o);
         }
         XMLMapable m = new XMLMapable();
-        m.setId(counter);
+        m.setId(String.valueOf(counter));
         objectIdToId.put(objectId, counter++);
         if (o instanceof Event) {
             m.setEvent(toXmlEvent((Event) o));
@@ -85,7 +85,7 @@ public class ToXmlTypesTransformer {
     private XMLMapable toReference(ObjectId objectId, Object o) {
         XMLMapable m = new XMLMapable();
         XMLReference ref = new XMLReference();
-        ref.setId(objectIdToId.get(objectId));
+        ref.setId(String.valueOf(objectIdToId.get(objectId)));
         m.setReference(ref);
         return m;
     }

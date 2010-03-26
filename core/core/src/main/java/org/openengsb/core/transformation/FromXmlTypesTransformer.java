@@ -36,7 +36,7 @@ import org.openengsb.core.xmlmapping.XMLPrimitive;
 
 public class FromXmlTypesTransformer {
 
-    private Map<Integer, Object> references = new HashMap<Integer, Object>();
+    private Map<String, Object> references = new HashMap<String, Object>();
 
     Object toObject(XMLMapable mapable) {
         if (mapable.ifNull()) {
@@ -59,7 +59,7 @@ public class FromXmlTypesTransformer {
         throw new IllegalStateException();
     }
 
-    private Object toBean(XMLBean bean, int id) {
+    private Object toBean(XMLBean bean, String id) {
         Class<?> clazz = TransformerUtil.simpleGetClass(bean.getClassName());
         Object beanObject = TransformerUtil.getInstance(clazz);
         references.put(id, beanObject);
@@ -70,13 +70,13 @@ public class FromXmlTypesTransformer {
         return beanObject;
     }
 
-    private Context toContext(XMLContext context, int id) {
+    private Context toContext(XMLContext context, String id) {
         Context result = ContextTransformer.toContext(context);
         references.put(id, result);
         return result;
     }
 
-    private Object toList(List<XMLMapable> list, int id) {
+    private Object toList(List<XMLMapable> list, String id) {
         List<Object> result = new ArrayList<Object>(list.size());
         references.put(id, result);
         for (XMLMapable m : list) {
@@ -85,7 +85,7 @@ public class FromXmlTypesTransformer {
         return result;
     }
 
-    private Object toMap(List<XMLMapEntry> map, int id) {
+    private Object toMap(List<XMLMapEntry> map, String id) {
         Map<Object, Object> result = new HashMap<Object, Object>(map.size());
         references.put(id, result);
         for (XMLMapEntry entry : map) {
@@ -94,7 +94,7 @@ public class FromXmlTypesTransformer {
         return result;
     }
 
-    Event toEvent(XMLEvent xmlEvent, int id) {
+    Event toEvent(XMLEvent xmlEvent, String id) {
         Event event = null;
         try {
             Class<?> clazz = TransformerUtil.simpleGetClass(xmlEvent.getClassName());
@@ -113,7 +113,7 @@ public class FromXmlTypesTransformer {
         return event;
     }
 
-    private Object toObject(XMLPrimitive primitive, int id) {
+    private Object toObject(XMLPrimitive primitive, String string) {
         Object result = null;
         if (primitive.ifBoolean()) {
             result = primitive.isBoolean();
@@ -136,7 +136,7 @@ public class FromXmlTypesTransformer {
         }
 
         if (result != null) {
-            references.put(id, result);
+            references.put(string, result);
             return result;
         }
         throw new IllegalStateException();

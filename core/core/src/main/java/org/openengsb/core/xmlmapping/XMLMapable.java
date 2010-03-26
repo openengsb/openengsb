@@ -16,7 +16,7 @@ package org.openengsb.core.xmlmapping;
  *       &lt;xs:element type="XMLMapEntryList" name="map"/>
  *       &lt;xs:element type="XMLContext" name="context"/>
  *     &lt;/xs:choice>
- *     &lt;xs:element type="xs:int" name="id"/>
+ *     &lt;xs:element type="xs:string" nillable="true" name="id"/>
  *   &lt;/xs:sequence>
  *   &lt;xs:attribute type="xs:string" name="domainConcept"/>
  * &lt;/xs:complexType>
@@ -41,7 +41,7 @@ public class XMLMapable
     private XMLEvent event;
     private XMLMapEntryList map;
     private XMLContext context;
-    private int id;
+    private String id;
     private String domainConcept;
 
     private void setChoiceSelect(int choice) {
@@ -289,7 +289,7 @@ public class XMLMapable
      * 
      * @return value
      */
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -298,7 +298,7 @@ public class XMLMapable
      * 
      * @param id
      */
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

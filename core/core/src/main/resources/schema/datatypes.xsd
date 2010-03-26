@@ -44,7 +44,7 @@
         <xs:element name="map" type="XMLMapEntryList" />
         <xs:element name="context" type="XMLContext" />
       </xs:choice>
-      <xs:element name="id" type="xs:int" />    
+      <xs:element name="id" type="xs:string" nillable="true" />    
     </xs:sequence>
     <xs:attribute name="domainConcept" type="xs:string" />
   </xs:complexType>
@@ -136,7 +136,7 @@
 
   <xs:complexType name="XMLReference">
     <xs:sequence>
-      <xs:element name="id" type="xs:int" />
+      <xs:element name="id" type="xs:string" />
     </xs:sequence>
   </xs:complexType>
 

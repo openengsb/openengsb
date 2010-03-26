@@ -23,7 +23,7 @@
       <structure map-as="XMLMapEntryList" test-method="ifMap" get-method="getMap" set-method="setMap" usage="optional" name="map"/>
       <structure map-as="XMLContext" test-method="ifContext" get-method="getContext" set-method="setContext" usage="optional" name="context"/>
     </structure>
-    <value style="element" name="id" get-method="getId" set-method="setId"/>
+    <value style="element" name="id" get-method="getId" set-method="setId" usage="optional"/>
     <value style="attribute" name="domainConcept" get-method="getDomainConcept" set-method="setDomainConcept" usage="optional"/>
   </mapping>
   <mapping abstract="true" type-name="XMLMapableList" class="org.openengsb.core.xmlmapping.XMLMapableList">
