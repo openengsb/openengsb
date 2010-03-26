@@ -28,7 +28,6 @@ import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 
 public abstract class LinkingEndpoint<T> extends RPCEndpoint<T> {
-
     public LinkingEndpoint() {
         super();
     }

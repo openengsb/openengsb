@@ -17,11 +17,18 @@
  */
 package org.openengsb.core;
 
+import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.apache.servicemix.common.DefaultComponent;
 
 public class OpenEngSBComponent<T> extends DefaultComponent {
+    private Logger log = Logger.getLogger(getClass());
+
+    private HashMap<String, String> contextProperties;
+    private boolean registered;
+
     private T[] endpoints;
 
     public T[] getEndpoints() {
@@ -36,5 +43,34 @@ public class OpenEngSBComponent<T> extends DefaultComponent {
     protected List<?> getConfiguredEndpoints() {
         return asList(endpoints);
     }
-    
+
+    public HashMap<String, String> getContextProperties() {
+        return contextProperties;
+    }
+
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
+    }
+
+    @Override
+    protected void doInit() throws Exception {
+        log.info("Loading SE");
+        registered = false;
+        // TODO: read Properties from file and store them in contextProperties
+
+        super.doInit();
+    }
+
+    @Override
+    protected void doShutDown() throws Exception {
+        log.info("Unloading SE");
+        contextProperties = null;
+
+        super.doShutDown();
+    }
+
 }

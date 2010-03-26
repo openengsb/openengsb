@@ -29,6 +29,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 
+import org.apache.log4j.Logger;
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
@@ -39,12 +40,14 @@ import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.EventHelperImpl;
 import org.openengsb.core.MessageProperties;
+import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
 
 public class OpenEngSBEndpoint extends ProviderEndpoint {
+    private Logger log = Logger.getLogger(getClass());
 
     public OpenEngSBEndpoint() {
     }
@@ -135,5 +138,37 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
     public EventHelper createEventHelper(MessageProperties msgProperties) {
         return new EventHelperImpl(this, msgProperties);
+    }
+
+    @Override
+    public void activate() throws Exception {
+        log.info("Checking in SU having SE " + serviceUnit.getComponent().getComponentName());
+        // TODO: somehow get HashMap of SU properties
+        // TODO: and register them here
+
+        OpenEngSBComponent<?> component = ((OpenEngSBComponent<?>) serviceUnit.getComponent());
+
+        if (!component.isRegistered()) {
+            log.info("Registering SE");
+            // TODO: register SEs properties using:
+            component.getContextProperties();
+
+            component.setRegistered(true);
+        } else {
+            log.info("SE already registered");
+        }
+
+        super.activate();
+    }
+
+    @Override
+    public void deactivate() throws Exception {
+        log.info("Checking out SU having SE " + serviceUnit.getComponent().getComponentName());
+        // TODO: unregister SU here
+
+        // TODO: it currently seems impossible to unregister a SE because the SE
+        // does not know of its Endpoints
+
+        super.deactivate();
     }
 }
