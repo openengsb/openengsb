@@ -84,7 +84,7 @@
     <menu name="Community">
       <item href="contribute/mailinglists.html" name="Mailing Lists" />
       <item href="roadmap.html" name="Roadmap" />
-      <item href="contribute/git.html" name="Github" />
+      <item href="contribute/git.html" name="Git Workflow" />
       <item href="contribute/codingstyle.html" name="Coding Guidelines" />
       <item href="contribute/format.html" name="APT Format" />
       <item href="contribute/eclipse.html" name="Eclipse Setup" />
