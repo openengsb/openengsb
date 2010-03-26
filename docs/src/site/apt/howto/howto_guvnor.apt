@@ -66,7 +66,9 @@ HowTo - Guvnor Setup
   
 +-----
   import java.util.List
+  import java.util.ArrayList
   import java.util.Map
+  import java.util.HashMap
   import org.openengsb.drools.events.BuildEvent
   import org.openengsb.drools.events.DeployEvent
   import org.openengsb.drools.events.ScmCheckInEvent
