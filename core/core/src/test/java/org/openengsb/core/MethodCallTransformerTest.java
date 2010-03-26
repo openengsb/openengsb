@@ -38,7 +38,6 @@ public class MethodCallTransformerTest {
         MethodCall input = new MethodCall("getAllValues", new Object[] { "path" }, new Class<?>[] { String.class });
 
         String xml = Transformer.toXml(input);
-        System.out.println(xml);
         MethodCall output = Transformer.toMethodCall(xml);
 
         check(input, output);
