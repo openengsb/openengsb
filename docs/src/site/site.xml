@@ -60,7 +60,6 @@
       <item collapse="true" href="connector/issues/issues.html" name="Issue-Connectors">
         <item href="proposals/issueDomain.html" name="Issue domain" />
         <item href="connector/issues/trac.html" name="Trac" />
-        <item href="connector/issues/mantis.html" name="Mantis" />
       </item>
       <item collapse="true" href="connector/build/build.html" name="Build-Connectors">
         <item href="connector/build/buildDomain.html" name="Build domain" />

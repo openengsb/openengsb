@@ -50,6 +50,11 @@
   </build>
 
   <dependencies>
+    <!-- Context -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-context-su</artifactId>
+    </dependency>
 
     <!-- Common Modules & Helpers -->
     <dependency>
@@ -62,12 +67,6 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-logging-su</artifactId>
       <version>${pom.version}</version>
-    </dependency>
-    
-    <!-- Context -->
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-context-su</artifactId>
     </dependency>
 
     <!-- Drools -->

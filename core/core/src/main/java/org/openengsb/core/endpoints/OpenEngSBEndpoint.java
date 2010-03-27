@@ -146,7 +146,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         // TODO: somehow get HashMap of SU properties
         // TODO: and register them here
 
-        OpenEngSBComponent<?> component = ((OpenEngSBComponent<?>) serviceUnit.getComponent());
+        OpenEngSBComponent<?> component = (OpenEngSBComponent<?>) serviceUnit.getComponent();
 
         if (!component.isRegistered()) {
             log.info("Registering SE");
