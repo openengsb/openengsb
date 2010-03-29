@@ -20,3 +20,5 @@ Notification Connectors
   * {{{email.html}engsb-connector-notification-email}}
   
   * {{{twitter.html}engsb-connector-notification-twitter}}
+
+  * {{{xmpp.html}engsb-connector-notification-xmpp}}
