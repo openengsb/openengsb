@@ -485,6 +485,9 @@
         <artifactId>jbi-maven-plugin</artifactId>
 	<extensions>true</extensions>
 	<version>${servicemix.jbi.maven.version}</version>
+        <configuration>
+          <jndiPath>/karaf-root</jndiPath>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.jibx</groupId>
