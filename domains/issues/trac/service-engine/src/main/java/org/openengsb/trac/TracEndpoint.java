@@ -17,6 +17,9 @@
  */
 package org.openengsb.trac;
 
+import java.util.HashMap;
+
+import org.apache.log4j.Logger;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
@@ -28,7 +31,7 @@ import org.openengsb.drools.IssuesDomain;
  */
 public class TracEndpoint extends LinkingEndpoint<IssuesDomain> {
     private TracConnector tracConnector;
-
+    
     @Override
     protected TracConnector getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         return tracConnector;

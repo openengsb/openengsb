@@ -26,7 +26,7 @@ import org.apache.servicemix.common.DefaultComponent;
 public class OpenEngSBComponent<T> extends DefaultComponent {
     private Logger log = Logger.getLogger(getClass());
 
-    private HashMap<String, String> contextProperties;
+    private HashMap<String, String> contextProperties = new HashMap<String, String>();
     private boolean registered;
 
     private T[] endpoints;
@@ -46,6 +46,10 @@ public class OpenEngSBComponent<T> extends DefaultComponent {
 
     public HashMap<String, String> getContextProperties() {
         return contextProperties;
+    }
+
+    public void setContextProperties(HashMap<String, String> contextProperties) {
+        this.contextProperties = contextProperties;
     }
 
     public boolean isRegistered() {

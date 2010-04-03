@@ -17,6 +17,8 @@
  */
 package org.openengsb.core.endpoints;
 
+import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.jbi.messaging.InOnly;
@@ -37,6 +39,7 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
+import org.openengsb.contextcommon.ContextStore;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.EventHelperImpl;
 import org.openengsb.core.MessageProperties;
@@ -44,11 +47,16 @@ import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
+import org.openengsb.util.WorkingDirectory;
 import org.openengsb.util.serialization.SerializationException;
 
 public class OpenEngSBEndpoint extends ProviderEndpoint {
     private Logger log = Logger.getLogger(getClass());
-
+    
+    private HashMap<String, String> contextProperties = new HashMap<String, String>();
+    //String contextProperties;
+    
+    
     public OpenEngSBEndpoint() {
     }
 
@@ -145,6 +153,13 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         log.info("Checking in SU having SE " + serviceUnit.getComponent().getComponentName());
         // TODO: somehow get HashMap of SU properties
         // TODO: and register them here
+        
+        ContextStore contextStore = new ContextStore(WorkingDirectory.getFile("context", "contextdata.xml"));
+        Set<String> keySet = contextProperties.keySet();
+        for(String key : keySet){
+            log.info("Adding Path: " + key +" with Value: " + contextProperties.get(key));
+            contextStore.setValue(key, contextProperties.get(key));
+        }
 
         OpenEngSBComponent<?> component = (OpenEngSBComponent<?>) serviceUnit.getComponent();
 
@@ -152,7 +167,6 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
             log.info("Registering SE");
             // TODO: register SEs properties using:
             component.getContextProperties();
-
             component.setRegistered(true);
         } else {
             log.info("SE already registered");
@@ -170,5 +184,9 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         // does not know of its Endpoints
 
         super.deactivate();
+    }
+    
+    public void setContextProperties(HashMap<String, String> contextProperties) {
+        this.contextProperties = contextProperties;
     }
 }

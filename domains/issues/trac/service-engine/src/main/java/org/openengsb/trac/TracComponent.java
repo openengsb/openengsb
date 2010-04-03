@@ -17,6 +17,7 @@
  */
 package org.openengsb.trac;
 
+import org.apache.log4j.Logger;
 import org.openengsb.core.OpenEngSBComponent;
 
 /**
@@ -24,6 +25,7 @@ import org.openengsb.core.OpenEngSBComponent;
  *                         description="Trac Issue Tracker Component"
  */
 public class TracComponent extends OpenEngSBComponent<TracEndpoint> {
+    
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { TracEndpoint.class };
