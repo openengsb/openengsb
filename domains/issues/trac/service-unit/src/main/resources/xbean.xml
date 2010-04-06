@@ -55,7 +55,4 @@
   </bean>
     
   <trac:tracEndpoint service="trc:tracService" endpoint="tracEndpoint" tracConnector="#tracConnector" contextProperties="#contextPropertiesSU" />
-
-
-
 </beans>

@@ -18,6 +18,7 @@
 package org.openengsb.core;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -27,21 +28,31 @@ public class OpenEngSBComponent<T> extends DefaultComponent {
     private Logger log = Logger.getLogger(getClass());
 
     private HashMap<String, String> contextProperties = new HashMap<String, String>();
-    private boolean registered;
+    private List<T> endpoints = new LinkedList<T>();
 
-    private T[] endpoints;
-
+    @SuppressWarnings("unchecked")
     public T[] getEndpoints() {
-        return endpoints;
+        return (T[]) endpoints.toArray();
     }
 
     public void setEndpoints(T[] endpoints) {
-        this.endpoints = endpoints;
+        this.endpoints = new LinkedList<T>();
+        for (T t : endpoints) {
+            this.endpoints.add(t);
+        }
+    }
+
+    public void addEndpoint(T endpoint) {
+        endpoints.add(endpoint);
+    }
+    
+    public void removeEndpoint(T endpoint) {
+        endpoints.remove(endpoint);
     }
 
     @Override
     protected List<?> getConfiguredEndpoints() {
-        return asList(endpoints);
+        return endpoints;
     }
 
     public HashMap<String, String> getContextProperties() {
@@ -52,18 +63,13 @@ public class OpenEngSBComponent<T> extends DefaultComponent {
         this.contextProperties = contextProperties;
     }
 
-    public boolean isRegistered() {
-        return registered;
-    }
-
-    public void setRegistered(boolean registered) {
-        this.registered = registered;
+    public boolean hasNoEndpoints() {
+        return endpoints.size() == 0;
     }
 
     @Override
     protected void doInit() throws Exception {
         log.info("Loading SE");
-        registered = false;
         // TODO: read Properties from file and store them in contextProperties
 
         super.doInit();
@@ -76,5 +82,4 @@ public class OpenEngSBComponent<T> extends DefaultComponent {
 
         super.doShutDown();
     }
-
 }

@@ -163,11 +163,11 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
         OpenEngSBComponent<?> component = (OpenEngSBComponent<?>) serviceUnit.getComponent();
 
-        if (!component.isRegistered()) {
+        if (component.hasNoEndpoints()) {
             log.info("Registering SE");
             // TODO: register SEs properties using:
             component.getContextProperties();
-            component.setRegistered(true);
+            component.addEndpoint(this);
         } else {
             log.info("SE already registered");
         }
@@ -180,8 +180,13 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         log.info("Checking out SU having SE " + serviceUnit.getComponent().getComponentName());
         // TODO: unregister SU here
 
-        // TODO: it currently seems impossible to unregister a SE because the SE
-        // does not know of its Endpoints
+        OpenEngSBComponent<?> component = (OpenEngSBComponent<?>) serviceUnit.getComponent();
+        component.removeEndpoint(this);
+        
+        if(component.hasNoEndpoints()) {
+            log.info("Unregistering SE");
+            //TODO: unregister SE here
+        }
 
         super.deactivate();
     }
