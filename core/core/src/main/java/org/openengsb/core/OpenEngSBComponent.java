@@ -42,7 +42,7 @@ public class OpenEngSBComponent extends DefaultComponent {
     public void addCustomEndpoint(OpenEngSBEndpoint endpoint) {
         endpoints.add(endpoint);
     }
-    
+
     public void removeCustomEndpoint(OpenEngSBEndpoint endpoint) {
         endpoints.remove(endpoint);
     }
@@ -59,7 +59,7 @@ public class OpenEngSBComponent extends DefaultComponent {
     public boolean hasNoEndpoints() {
         return endpoints.size() == 0;
     }
-    
+
     public boolean hasContextProperties() {
         return contextProperties.size() != 0;
     }

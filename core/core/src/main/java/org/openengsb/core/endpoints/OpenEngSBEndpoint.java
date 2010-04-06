@@ -152,18 +152,18 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     public void activate() throws Exception {
         super.activate();
         OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
-        
+
         log.info("Checking in SU having SE " + component.getComponentName());
 
         if (contextProperties.size() != 0) {
             log.info("Registering SU");
             contextHelper.store(addSource(contextProperties, "SU/" + endpoint));
         }
-        
+
         if (component.hasNoEndpoints()) {
             if (component.hasContextProperties()) {
                 log.info("Registering SE");
-                contextHelper.store(addSource(component.getContextProperties(),"SE"));
+                contextHelper.store(addSource(component.getContextProperties(), "SE"));
             }
             component.addCustomEndpoint(this);
         } else if (component.hasContextProperties()) {
@@ -174,7 +174,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     @Override
     public void deactivate() throws Exception {
         log.info("Checking out SU having SE " + serviceUnit.getComponent().getComponentName());
-        
+
         if (contextProperties.size() != 0) {
             log.info("Unregistering SU");
             contextHelper.remove(addSource(contextProperties.keySet(), "SU/" + endpoint));
@@ -194,7 +194,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     public void setContextProperties(HashMap<String, String> contextProperties) {
         this.contextProperties = contextProperties;
     }
-    
+
     private HashMap<String, String> addSource(HashMap<String, String> properties, String src) {
         HashMap<String, String> newProperties = new HashMap<String, String>(properties.size());
         for (String key : properties.keySet()) {
@@ -205,7 +205,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         }
         return newProperties;
     }
-    
+
     private ArrayList<String> addSource(Set<String> keys, String src) {
         ArrayList<String> newKeys = new ArrayList<String>(keys.size());
         for (String key : keys) {
