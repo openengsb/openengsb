@@ -23,7 +23,7 @@ import org.openengsb.core.OpenEngSBComponent;
  * @org.apache.xbean.XBean element="contextComponent"
  *                         description="Context Component" The Context-component
  */
-public class ContextComponent extends OpenEngSBComponent<ContextEndpoint> {
+public class ContextComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { ContextEndpoint.class };

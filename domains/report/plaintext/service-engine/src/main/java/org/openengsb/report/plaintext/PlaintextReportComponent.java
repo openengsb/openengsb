@@ -23,7 +23,7 @@ import org.openengsb.core.OpenEngSBComponent;
  * @org.apache.xbean.XBean element="plaintextReportComponent"
  *                         description="Plaintext Report Component"
  */
-public class PlaintextReportComponent extends OpenEngSBComponent<PlaintextReportEndpoint> {
+public class PlaintextReportComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { PlaintextReportEndpoint.class };

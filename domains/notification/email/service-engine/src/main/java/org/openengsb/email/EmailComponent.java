@@ -23,7 +23,7 @@ import org.openengsb.core.OpenEngSBComponent;
  * @org.apache.xbean.XBean element="emailComponent"
  *                         description="Email Notification Component"
  */
-public class EmailComponent extends OpenEngSBComponent<EmailEndpoint> {
+public class EmailComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { EmailEndpoint.class };

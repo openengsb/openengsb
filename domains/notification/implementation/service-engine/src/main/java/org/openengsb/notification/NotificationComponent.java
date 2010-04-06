@@ -19,13 +19,12 @@ package org.openengsb.notification;
 
 import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.core.endpoints.EventForwardEndpoint;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="notificationComponent"
  *                         description="Notification Component"
  */
-public class NotificationComponent extends OpenEngSBComponent<OpenEngSBEndpoint> {
+public class NotificationComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { NotificationEndpoint.class, EventForwardEndpoint.class };

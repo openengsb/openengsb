@@ -23,7 +23,7 @@ import org.openengsb.core.OpenEngSBComponent;
  * @org.apache.xbean.XBean element="twitterComponent"
  *                         description="Twitter Notification Component"
  */
-public class TwitterComponent extends OpenEngSBComponent<TwitterEndpoint> {
+public class TwitterComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { TwitterEndpoint.class };

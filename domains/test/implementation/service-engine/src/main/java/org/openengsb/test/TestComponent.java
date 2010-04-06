@@ -19,13 +19,12 @@ package org.openengsb.test;
 
 import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.core.endpoints.EventForwardEndpoint;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="testComponent"
  *                         description="Test domain Component"
  */
-public class TestComponent extends OpenEngSBComponent<OpenEngSBEndpoint> {
+public class TestComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { TestEndpoint.class, EventForwardEndpoint.class };

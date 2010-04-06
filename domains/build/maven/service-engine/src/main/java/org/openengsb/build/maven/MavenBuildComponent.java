@@ -18,13 +18,12 @@
 package org.openengsb.build.maven;
 
 import org.openengsb.core.OpenEngSBComponent;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="mavenBuildComponent"
  *                         description="maven connector component for the build domain"
  */
-public class MavenBuildComponent extends OpenEngSBComponent<OpenEngSBEndpoint> {
+public class MavenBuildComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { MavenBuildEndpoint.class };

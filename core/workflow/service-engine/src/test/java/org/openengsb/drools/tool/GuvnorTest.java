@@ -65,7 +65,7 @@ public class GuvnorTest {
 
         endpoint.setRuleBase(ruleBase);
         endpoint.setGlobals(new HashMap<String, Object>());
-        drools.setEndpoints(new DroolsEndpoint[] { endpoint });
+        drools.addCustomEndpoint(endpoint);
         jbi.activateComponent(drools, "openengsb-drools");
 
         jbi.start();

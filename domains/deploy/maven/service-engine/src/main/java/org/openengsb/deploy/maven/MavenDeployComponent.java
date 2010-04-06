@@ -18,13 +18,12 @@
 package org.openengsb.deploy.maven;
 
 import org.openengsb.core.OpenEngSBComponent;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="mavenDeployComponent"
  *                         description="Deploy maven connector component"
  */
-public class MavenDeployComponent extends OpenEngSBComponent<OpenEngSBEndpoint> {
+public class MavenDeployComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { MavenDeployEndpoint.class };

@@ -18,13 +18,12 @@
 package org.openengsb.scm;
 
 import org.openengsb.core.OpenEngSBComponent;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="scmComponent" description="SCM Component"
  *                         The SCM-component
  */
-public class ScmComponent extends OpenEngSBComponent<OpenEngSBEndpoint> {
+public class ScmComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { ScmEndpoint.class, ScmEventEndpoint.class };

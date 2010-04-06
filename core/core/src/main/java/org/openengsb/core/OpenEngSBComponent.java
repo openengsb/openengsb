@@ -23,30 +23,30 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.servicemix.common.DefaultComponent;
+import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
-public class OpenEngSBComponent<T> extends DefaultComponent {
+public class OpenEngSBComponent extends DefaultComponent {
     private Logger log = Logger.getLogger(getClass());
 
     private HashMap<String, String> contextProperties = new HashMap<String, String>();
-    private List<T> endpoints = new LinkedList<T>();
+    private List<OpenEngSBEndpoint> endpoints = new LinkedList<OpenEngSBEndpoint>();
 
-    @SuppressWarnings("unchecked")
-    public T[] getEndpoints() {
-        return (T[]) endpoints.toArray();
+    public OpenEngSBEndpoint[] getEndpoints() {
+        return (OpenEngSBEndpoint[]) endpoints.toArray();
     }
 
-    public void setEndpoints(T[] endpoints) {
-        this.endpoints = new LinkedList<T>();
-        for (T t : endpoints) {
+    public void setEndpoints(OpenEngSBEndpoint[] endpoints) {
+        this.endpoints = new LinkedList<OpenEngSBEndpoint>();
+        for (OpenEngSBEndpoint t : endpoints) {
             this.endpoints.add(t);
         }
     }
 
-    public void addEndpoint(T endpoint) {
+    public void addCustomEndpoint(OpenEngSBEndpoint endpoint) {
         endpoints.add(endpoint);
     }
     
-    public void removeEndpoint(T endpoint) {
+    public void removeCustomEndpoint(OpenEngSBEndpoint endpoint) {
         endpoints.remove(endpoint);
     }
 

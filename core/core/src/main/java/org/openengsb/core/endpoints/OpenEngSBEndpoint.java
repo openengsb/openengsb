@@ -18,7 +18,6 @@
 package org.openengsb.core.endpoints;
 
 import java.util.HashMap;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.jbi.messaging.InOnly;
@@ -39,7 +38,7 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
-import org.openengsb.contextcommon.ContextStore;
+import org.openengsb.contextcommon.ContextHelperImpl;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.EventHelperImpl;
 import org.openengsb.core.MessageProperties;
@@ -47,16 +46,15 @@ import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
-import org.openengsb.util.WorkingDirectory;
 import org.openengsb.util.serialization.SerializationException;
 
 public class OpenEngSBEndpoint extends ProviderEndpoint {
     private Logger log = Logger.getLogger(getClass());
-    
+
     private HashMap<String, String> contextProperties = new HashMap<String, String>();
-    //String contextProperties;
-    
-    
+
+    // String contextProperties;
+
     public OpenEngSBEndpoint() {
     }
 
@@ -150,29 +148,25 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
     @Override
     public void activate() throws Exception {
-        log.info("Checking in SU having SE " + serviceUnit.getComponent().getComponentName());
-        // TODO: somehow get HashMap of SU properties
-        // TODO: and register them here
+        super.activate();
         
-        ContextStore contextStore = new ContextStore(WorkingDirectory.getFile("context", "contextdata.xml"));
-        Set<String> keySet = contextProperties.keySet();
-        for(String key : keySet){
-            log.info("Adding Path: " + key +" with Value: " + contextProperties.get(key));
-            contextStore.setValue(key, contextProperties.get(key));
+        log.info("Checking in SU having SE " + serviceUnit.getComponent().getComponentName());
+
+        if(contextProperties != null && contextProperties.size() != 0) {
+            log.info("Registering SU");
+            ContextHelperImpl contextHelper = new ContextHelperImpl(this, new MessageProperties("42", "administration"));
+            contextHelper.store(contextProperties);
         }
 
-        OpenEngSBComponent<?> component = (OpenEngSBComponent<?>) serviceUnit.getComponent();
-
+        OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
         if (component.hasNoEndpoints()) {
             log.info("Registering SE");
             // TODO: register SEs properties using:
             component.getContextProperties();
-            component.addEndpoint(this);
+            component.addCustomEndpoint(this);
         } else {
             log.info("SE already registered");
         }
-
-        super.activate();
     }
 
     @Override
@@ -180,17 +174,17 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         log.info("Checking out SU having SE " + serviceUnit.getComponent().getComponentName());
         // TODO: unregister SU here
 
-        OpenEngSBComponent<?> component = (OpenEngSBComponent<?>) serviceUnit.getComponent();
-        component.removeEndpoint(this);
-        
-        if(component.hasNoEndpoints()) {
+        OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
+        component.removeCustomEndpoint(this);
+
+        if (component.hasNoEndpoints()) {
             log.info("Unregistering SE");
-            //TODO: unregister SE here
+            // TODO: unregister SE here
         }
 
         super.deactivate();
     }
-    
+
     public void setContextProperties(HashMap<String, String> contextProperties) {
         this.contextProperties = contextProperties;
     }

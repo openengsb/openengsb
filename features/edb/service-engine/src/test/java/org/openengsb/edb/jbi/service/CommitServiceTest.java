@@ -38,7 +38,6 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.servicemix.client.DefaultServiceMixClient;
-import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
@@ -54,6 +53,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
@@ -124,7 +124,7 @@ public class CommitServiceTest extends SpringTestSupport {
     public void setUp() throws Exception {
         super.setUp();
 
-        DefaultComponent comp = new DefaultComponent();
+        OpenEngSBComponent comp = new OpenEngSBComponent();
         notificationEndpoint = new NotificationMockEndpoint();
         notificationEndpoint.setServiceUnit(comp.getServiceUnit());
         notificationEndpoint.setService(new QName("urn:openengsb:notification", "notificationService"));

@@ -19,13 +19,12 @@ package org.openengsb.deploy;
 
 import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.core.endpoints.EventForwardEndpoint;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="deployComponent"
  *                         description="Deploy Component"
  */
-public class DeployComponent extends OpenEngSBComponent<OpenEngSBEndpoint> {
+public class DeployComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { DeployEndpoint.class, EventForwardEndpoint.class };

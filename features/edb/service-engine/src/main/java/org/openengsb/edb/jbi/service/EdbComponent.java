@@ -24,7 +24,7 @@ import org.openengsb.core.endpoints.OpenEngSBEndpoint;
  * @org.apache.xbean.XBean element="edbComponent" description="edb Component"
  *                         The edb-jbi-component
  */
-public class EdbComponent extends OpenEngSBComponent<OpenEngSBEndpoint> {
+public class EdbComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { OpenEngSBEndpoint.class };

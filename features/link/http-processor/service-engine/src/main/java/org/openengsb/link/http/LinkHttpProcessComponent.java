@@ -24,7 +24,7 @@ import org.openengsb.core.OpenEngSBComponent;
  * @org.apache.xbean.XBean element="linkhttpComponent"
  *                         description="edb Component" The edb-jbi-component
  */
-public class LinkHttpProcessComponent extends OpenEngSBComponent<Endpoint> {
+public class LinkHttpProcessComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { Endpoint.class };

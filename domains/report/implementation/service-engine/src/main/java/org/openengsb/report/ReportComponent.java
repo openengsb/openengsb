@@ -18,13 +18,12 @@
 package org.openengsb.report;
 
 import org.openengsb.core.OpenEngSBComponent;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="reportComponent"
  *                         description="Report Component"
  */
-public class ReportComponent extends OpenEngSBComponent<OpenEngSBEndpoint> {
+public class ReportComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { ReportEndpoint.class, ReportEventEndpoint.class };

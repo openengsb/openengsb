@@ -23,7 +23,7 @@ import org.openengsb.core.OpenEngSBComponent;
  * @org.apache.xbean.XBean element="droolsComponent"
  *                         description="Drools Component" The Drools-component
  */
-public class DroolsComponent extends OpenEngSBComponent<DroolsEndpoint> {
+public class DroolsComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { DroolsEndpoint.class };

@@ -18,13 +18,12 @@
 package org.openengsb.connector.svn;
 
 import org.openengsb.core.OpenEngSBComponent;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="svnComponent" description="SVN Component"
  *                         The SVN-component
  */
-public class SvnComponent extends OpenEngSBComponent<OpenEngSBEndpoint> {
+public class SvnComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { SvnEndpoint.class, SvnEventEndpoint.class };

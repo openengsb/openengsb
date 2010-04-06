@@ -23,7 +23,7 @@ import org.openengsb.core.OpenEngSBComponent;
  * @org.apache.xbean.XBean element="tracComponent"
  *                         description="Trac Issue Tracker Component"
  */
-public class TracComponent extends OpenEngSBComponent<TracEndpoint> {
+public class TracComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { TracEndpoint.class };

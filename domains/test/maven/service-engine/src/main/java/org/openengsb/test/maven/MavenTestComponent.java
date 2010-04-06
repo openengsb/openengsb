@@ -23,7 +23,7 @@ import org.openengsb.core.OpenEngSBComponent;
  * @org.apache.xbean.XBean element="mavenTestComponent"
  *                         description="Test maven connector Component"
  */
-public class MavenTestComponent extends OpenEngSBComponent<MavenTestEndpoint> {
+public class MavenTestComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { MavenTestEndpoint.class };
