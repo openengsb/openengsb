@@ -200,7 +200,8 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         for (String key : properties.keySet()) {
             int pos = key.lastIndexOf("/");
             String first = key.substring(0, pos);
-            String last = key.substring(pos, key.length());
+            String last = key.substring(pos);
+            
             newProperties.put(first + "/" + src + last, properties.get(key));
         }
         return newProperties;
@@ -211,7 +212,8 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         for (String key : keys) {
             int pos = key.lastIndexOf("/");
             String first = key.substring(0, pos);
-            String last = key.substring(pos, key.length());
+            String last = key.substring(pos);
+            
             newKeys.add(first + "/" + src + last);
         }
         return newKeys;

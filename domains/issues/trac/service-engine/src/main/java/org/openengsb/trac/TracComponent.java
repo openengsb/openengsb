@@ -24,11 +24,6 @@ import org.openengsb.core.OpenEngSBComponent;
  *                         description="Trac Issue Tracker Component"
  */
 public class TracComponent extends OpenEngSBComponent {
-    public TracComponent() {
-        contextProperties.put("issue/trac/servicename", "tracService");
-        contextProperties.put("issue/trac/namespace", "urn:openengsb:trac");
-    }
-
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { TracEndpoint.class };

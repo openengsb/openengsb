@@ -53,7 +53,26 @@ public class EndpointContextHelperImpl implements ContextHelperExtended {
         String key = pathAndKey.substring(pathAndKey.lastIndexOf('/') + 1);
 
         Context ctx = contextStore.getContext(currentId + "/" + path);
-        return ctx.get(key);
+
+        do {
+            if (ctx.containsKey(key)) {
+                return ctx.get(key);
+            } else if (ctx.getChild("SU") != null) {
+                Context sUs = ctx.getChild("SU");
+                for (String name : sUs.getChildrenNames()) {
+                    Context sU = sUs.getChild(name);
+                    if (sU.containsKey(key)) {
+                        return sU.get(key);
+                    }
+                }
+            }
+            if (ctx.getChild("SE") != null && ctx.getChild("SE").containsKey(key)) {
+                return ctx.getChild("SE").get(key);
+            }
+            ctx = ctx.getParent();
+        } while (ctx != null);
+        
+        return null;
     }
 
     @Override

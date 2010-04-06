@@ -191,8 +191,8 @@ public class ContextStore {
         setValue("42/issue/event/servicename", "eventService");
         setValue("42/issue/default", "trac");
 
-        setValue("42/issue/trac/namespace", "urn:openengsb:trac");
-        setValue("42/issue/trac/servicename", "tracService");
+        // setValue("42/issue/trac/namespace", "urn:openengsb:trac");
+        // setValue("42/issue/trac/servicename", "tracService");
     }
 
     private void loadNotificationConfig() {
