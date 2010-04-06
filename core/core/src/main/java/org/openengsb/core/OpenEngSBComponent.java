@@ -21,13 +21,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.apache.servicemix.common.DefaultComponent;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 public class OpenEngSBComponent extends DefaultComponent {
-    private Logger log = Logger.getLogger(getClass());
-
     private HashMap<String, String> contextProperties = new HashMap<String, String>();
     private List<OpenEngSBEndpoint> endpoints = new LinkedList<OpenEngSBEndpoint>();
 
@@ -66,20 +63,8 @@ public class OpenEngSBComponent extends DefaultComponent {
     public boolean hasNoEndpoints() {
         return endpoints.size() == 0;
     }
-
-    @Override
-    protected void doInit() throws Exception {
-        log.info("Loading SE");
-        // TODO: read Properties from file and store them in contextProperties
-
-        super.doInit();
-    }
-
-    @Override
-    protected void doShutDown() throws Exception {
-        log.info("Unloading SE");
-        contextProperties = null;
-
-        super.doShutDown();
+    
+    public boolean hasContextProperties() {
+        return contextProperties.size() != 0;
     }
 }

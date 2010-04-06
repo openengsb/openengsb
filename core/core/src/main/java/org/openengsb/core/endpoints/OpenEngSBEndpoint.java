@@ -17,6 +17,7 @@
  */
 package org.openengsb.core.endpoints;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -53,7 +54,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
     private HashMap<String, String> contextProperties = new HashMap<String, String>();
 
-    // String contextProperties;
+    private ContextHelperImpl contextHelper = new ContextHelperImpl(this, new MessageProperties("42", null));
 
     public OpenEngSBEndpoint() {
     }
@@ -149,20 +150,19 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     @Override
     public void activate() throws Exception {
         super.activate();
-        
         log.info("Checking in SU having SE " + serviceUnit.getComponent().getComponentName());
 
-        if(contextProperties != null && contextProperties.size() != 0) {
+        if (contextProperties.size() != 0) {
             log.info("Registering SU");
-            ContextHelperImpl contextHelper = new ContextHelperImpl(this, new MessageProperties("42", "administration"));
             contextHelper.store(contextProperties);
         }
 
         OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
         if (component.hasNoEndpoints()) {
-            log.info("Registering SE");
-            // TODO: register SEs properties using:
-            component.getContextProperties();
+            if (component.hasContextProperties()) {
+                log.info("Registering SE");
+                contextHelper.store(component.getContextProperties());
+            }
             component.addCustomEndpoint(this);
         } else {
             log.info("SE already registered");
@@ -172,14 +172,18 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     @Override
     public void deactivate() throws Exception {
         log.info("Checking out SU having SE " + serviceUnit.getComponent().getComponentName());
-        // TODO: unregister SU here
+        
+        if (contextProperties.size() != 0) {
+            log.info("Unregistering SU");
+            contextHelper.remove(new ArrayList<String>(contextProperties.keySet()));
+        }
 
         OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
         component.removeCustomEndpoint(this);
 
-        if (component.hasNoEndpoints()) {
+        if (component.hasNoEndpoints() && component.hasContextProperties()) {
             log.info("Unregistering SE");
-            // TODO: unregister SE here
+            contextHelper.remove(new ArrayList<String>(component.getContextProperties().keySet()));
         }
 
         super.deactivate();
