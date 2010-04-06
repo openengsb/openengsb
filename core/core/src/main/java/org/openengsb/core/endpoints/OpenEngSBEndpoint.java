@@ -57,9 +57,9 @@ import org.springframework.core.io.Resource;
 public class OpenEngSBEndpoint extends ProviderEndpoint {
     private Logger log = Logger.getLogger(getClass());
 
-    private HashMap<String, String> contextProperties = new HashMap<String, String>();
+    private HashMap<String, HashMap<String, String>> contextProperties = new HashMap<String, HashMap<String,String>>();
 
-    private ContextHelperImpl contextHelper = new ContextHelperImpl(this, new MessageProperties("42", null));
+    private ContextHelperImpl contextHelper; 
 
     public OpenEngSBEndpoint() {
     }
@@ -161,20 +161,28 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
         if (contextProperties.size() != 0) {
             log.info("Registering SU");
-            contextHelper.store(addSource(contextProperties, "SU/" + endpoint));
+            Set<String> keyset=contextProperties.keySet();
+            for(String key : keyset){
+                contextHelper = new ContextHelperImpl(this, new MessageProperties(key, null));
+                contextHelper.store(addSource(contextProperties.get(key), "SU/" + endpoint));
+            }
         }
 
         if (component.hasNoEndpoints()) {
             try{
                 ClassPathResource res = new ClassPathResource("contextProperties.xml");
                 XmlBeanFactory factory = new XmlBeanFactory(res);
-                component.setContextProperties( (HashMap<String, String>) factory.getBean("contextProperties"));
+                component.setContextProperties( (HashMap<String, HashMap<String,String>>) factory.getBean("contextProperties"));
             }catch(Exception e){
-                System.out.println("Kein Propertyfile für diese SE");
+                log.info("No Configuration file found for SE");
             }
             if (component.hasContextProperties()) {
                 log.info("Registering SE");
-                contextHelper.store(addSource(component.getContextProperties(), "SE"));
+                Set<String> keyset=component.getContextProperties().keySet();
+                for(String key : keyset){
+                    contextHelper = new ContextHelperImpl(this, new MessageProperties(key, null));
+                    contextHelper.store(addSource(component.getContextProperties().get(key), "SE"));
+                }
             }
             component.addCustomEndpoint(this);
         } else if (component.hasContextProperties()) {
@@ -202,7 +210,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         super.deactivate();
     }
 
-    public void setContextProperties(HashMap<String, String> contextProperties) {
+    public void setContextProperties(HashMap<String, HashMap<String,String>> contextProperties) {
         this.contextProperties = contextProperties;
     }
 

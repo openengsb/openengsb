@@ -21,13 +21,17 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
   <bean id="contextProperties" class="java.util.HashMap">
-    <constructor-arg type="java.util.Map">
-      <map key-type="java.lang.String" value-type="java.lang.String">
-        <entry key="notification/email/config/mail.smtp.host" value="smtp.gmail.com" />
-      </map>
-    </constructor-arg>
+	  <constructor-arg type="java.util.Map">
+		  	<map key-type="java.lang.String" value-type="java.util.Map">
+		  		<entry key="42">
+		  				<map key-type="java.lang.String" value-type="java.lang.String">
+		  				  <entry key="notification/email/config/mail.smtp.host" value="smtp.gmail.com" />
+		  				</map>
+		  		</entry>
+		  	</map>
+	  	</constructor-arg>
   </bean>
-  
+
   <email:emailEndpoint endpoint="emailEndpoint" service="eml:emailService" contextProperties="#contextProperties" />
 
 </beans>
