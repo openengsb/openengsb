@@ -24,6 +24,10 @@ import org.openengsb.core.OpenEngSBComponent;
  *                         description="Email Notification Component"
  */
 public class EmailComponent extends OpenEngSBComponent {
+    public EmailComponent() {
+        contextProperties.put("notification/email/config/mail.smtp.user", "openengsb.notification.test@gmail.com");
+        contextProperties.put("notification/email/config/mail.smtp.starttls.enable", "true");
+    }
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { EmailEndpoint.class };

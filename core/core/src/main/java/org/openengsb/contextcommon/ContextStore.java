@@ -205,8 +205,8 @@ public class ContextStore {
         setValue("42/notification/email/servicename", "emailService");
         setValue("42/notification/email/config/mail.smtp.auth", "true");
         setValue("42/notification/email/config/mail.smtp.user", "openengsb.notification.test@gmail.com");
-        setValue("42/notification/email/config/mail.smtp.starttls.enable", "true");
-        setValue("42/notification/email/config/mail.smtp.host", "smtp.gmail.com");
+        // setValue("42/notification/email/config/mail.smtp.starttls.enable", "true");
+        // setValue("42/notification/email/config/mail.smtp.host", "smtp.gmail.com");
         setValue("42/notification/email/user", "openengsb.notification.test@gmail.com");
         setValue("42/notification/email/password", "pwd-openengsb");
 
