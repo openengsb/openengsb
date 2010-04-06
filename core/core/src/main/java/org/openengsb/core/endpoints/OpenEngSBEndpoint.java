@@ -19,6 +19,7 @@ package org.openengsb.core.endpoints;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.jbi.messaging.InOnly;
@@ -150,21 +151,22 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     @Override
     public void activate() throws Exception {
         super.activate();
-        log.info("Checking in SU having SE " + serviceUnit.getComponent().getComponentName());
+        OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
+        
+        log.info("Checking in SU having SE " + component.getComponentName());
 
         if (contextProperties.size() != 0) {
             log.info("Registering SU");
-            contextHelper.store(contextProperties);
+            contextHelper.store(addSource(contextProperties, "SU/" + endpoint));
         }
-
-        OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
+        
         if (component.hasNoEndpoints()) {
             if (component.hasContextProperties()) {
                 log.info("Registering SE");
-                contextHelper.store(component.getContextProperties());
+                contextHelper.store(addSource(component.getContextProperties(),"SE"));
             }
             component.addCustomEndpoint(this);
-        } else {
+        } else if (component.hasContextProperties()) {
             log.info("SE already registered");
         }
     }
@@ -175,7 +177,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         
         if (contextProperties.size() != 0) {
             log.info("Unregistering SU");
-            contextHelper.remove(new ArrayList<String>(contextProperties.keySet()));
+            contextHelper.remove(addSource(contextProperties.keySet(), "SU/" + endpoint));
         }
 
         OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
@@ -183,7 +185,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
         if (component.hasNoEndpoints() && component.hasContextProperties()) {
             log.info("Unregistering SE");
-            contextHelper.remove(new ArrayList<String>(component.getContextProperties().keySet()));
+            contextHelper.remove(addSource(component.getContextProperties().keySet(), "SE"));
         }
 
         super.deactivate();
@@ -191,5 +193,27 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
     public void setContextProperties(HashMap<String, String> contextProperties) {
         this.contextProperties = contextProperties;
+    }
+    
+    private HashMap<String, String> addSource(HashMap<String, String> properties, String src) {
+        HashMap<String, String> newProperties = new HashMap<String, String>(properties.size());
+        for (String key : properties.keySet()) {
+            int pos = key.lastIndexOf("/");
+            String first = key.substring(0, pos);
+            String last = key.substring(pos, key.length());
+            newProperties.put(first + "/" + src + last, properties.get(key));
+        }
+        return newProperties;
+    }
+    
+    private ArrayList<String> addSource(Set<String> keys, String src) {
+        ArrayList<String> newKeys = new ArrayList<String>(keys.size());
+        for (String key : keys) {
+            int pos = key.lastIndexOf("/");
+            String first = key.substring(0, pos);
+            String last = key.substring(pos, key.length());
+            newKeys.add(first + "/" + src + last);
+        }
+        return newKeys;
     }
 }

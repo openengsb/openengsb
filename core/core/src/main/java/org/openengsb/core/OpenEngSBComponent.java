@@ -25,7 +25,7 @@ import org.apache.servicemix.common.DefaultComponent;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 public class OpenEngSBComponent extends DefaultComponent {
-    private HashMap<String, String> contextProperties = new HashMap<String, String>();
+    protected HashMap<String, String> contextProperties = new HashMap<String, String>();
     private List<OpenEngSBEndpoint> endpoints = new LinkedList<OpenEngSBEndpoint>();
 
     public OpenEngSBEndpoint[] getEndpoints() {
@@ -54,10 +54,6 @@ public class OpenEngSBComponent extends DefaultComponent {
 
     public HashMap<String, String> getContextProperties() {
         return contextProperties;
-    }
-
-    public void setContextProperties(HashMap<String, String> contextProperties) {
-        this.contextProperties = contextProperties;
     }
 
     public boolean hasNoEndpoints() {
