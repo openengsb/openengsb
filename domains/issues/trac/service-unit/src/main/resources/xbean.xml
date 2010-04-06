@@ -49,7 +49,6 @@
   	<constructor-arg type="java.util.Map">
 	  	<map key-type="java.lang.String" value-type="java.lang.String">
 			<entry key="issue/trac/namespace" value="urn:openengsb:trac" />
-			<entry key="issue/trac/servicename" value="tracService" />
 	  	</map>
   	</constructor-arg>
   </bean>

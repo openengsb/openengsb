@@ -49,6 +49,10 @@ import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 public class OpenEngSBEndpoint extends ProviderEndpoint {
     private Logger log = Logger.getLogger(getClass());
@@ -161,6 +165,13 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         }
 
         if (component.hasNoEndpoints()) {
+            try{
+                ClassPathResource res = new ClassPathResource("contextProperties.xml");
+                XmlBeanFactory factory = new XmlBeanFactory(res);
+                component.setContextProperties( (HashMap<String, String>) factory.getBean("contextProperties"));
+            }catch(Exception e){
+                System.out.println("Kein Propertyfile für diese SE");
+            }
             if (component.hasContextProperties()) {
                 log.info("Registering SE");
                 contextHelper.store(addSource(component.getContextProperties(), "SE"));
