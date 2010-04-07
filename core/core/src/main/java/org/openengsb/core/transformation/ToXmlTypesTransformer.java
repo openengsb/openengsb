@@ -33,8 +33,8 @@ import org.openengsb.core.xmlmapping.XMLEvent;
 import org.openengsb.core.xmlmapping.XMLField;
 import org.openengsb.core.xmlmapping.XMLMapEntry;
 import org.openengsb.core.xmlmapping.XMLMapEntryList;
-import org.openengsb.core.xmlmapping.XMLMapable;
-import org.openengsb.core.xmlmapping.XMLMapableList;
+import org.openengsb.core.xmlmapping.XMLMappable;
+import org.openengsb.core.xmlmapping.XMLMappableList;
 import org.openengsb.core.xmlmapping.XMLPrimitive;
 import org.openengsb.core.xmlmapping.XMLReference;
 
@@ -44,9 +44,9 @@ public class ToXmlTypesTransformer {
 
     private int counter = 0;
 
-    XMLMapable toMapable(Object o) {
+    XMLMappable toMappable(Object o) {
         if (o == null) {
-            XMLMapable m = new XMLMapable();
+            XMLMappable m = new XMLMappable();
             m.setNull("null");
             return m;
         }
@@ -55,7 +55,7 @@ public class ToXmlTypesTransformer {
         if (objectIdToId.containsKey(objectId)) {
             return toReference(objectId, o);
         }
-        XMLMapable m = new XMLMapable();
+        XMLMappable m = new XMLMappable();
         m.setId(String.valueOf(counter));
         objectIdToId.put(objectId, counter++);
         if (o instanceof Event) {
@@ -69,10 +69,10 @@ public class ToXmlTypesTransformer {
             mapEntryList.setMapEntries(mapEntries);
             m.setMap(mapEntryList);
         } else if (o instanceof List<?>) {
-            List<XMLMapable> mapables = toXmlList((List<?>) o);
-            XMLMapableList mapableList = new XMLMapableList();
-            mapableList.setMapables(mapables);
-            m.setList(mapableList);
+            List<XMLMappable> mappables = toXmlList((List<?>) o);
+            XMLMappableList mappableList = new XMLMappableList();
+            mappableList.setMappables(mappables);
+            m.setList(mappableList);
         } else if (isPrimitive(o)) {
             XMLPrimitive primitive = toPrimitive(o);
             m.setPrimitive(primitive);
@@ -82,18 +82,18 @@ public class ToXmlTypesTransformer {
         return m;
     }
 
-    private XMLMapable toReference(ObjectId objectId, Object o) {
-        XMLMapable m = new XMLMapable();
+    private XMLMappable toReference(ObjectId objectId, Object o) {
+        XMLMappable m = new XMLMappable();
         XMLReference ref = new XMLReference();
         ref.setId(String.valueOf(objectIdToId.get(objectId)));
         m.setReference(ref);
         return m;
     }
 
-    private List<XMLMapable> toXmlList(List<?> list) {
-        List<XMLMapable> result = new ArrayList<XMLMapable>(list.size());
+    private List<XMLMappable> toXmlList(List<?> list) {
+        List<XMLMappable> result = new ArrayList<XMLMappable>(list.size());
         for (Object o : list) {
-            result.add(toMapable(o));
+            result.add(toMappable(o));
         }
         return result;
     }
@@ -105,7 +105,7 @@ public class ToXmlTypesTransformer {
             if (Modifier.isTransient(field.getModifiers()) || Modifier.isStatic(field.getModifiers())) {
                 continue;
             }
-            XMLMapable value = toMapable(TransformerUtil.getValue(field, o));
+            XMLMappable value = toMappable(TransformerUtil.getValue(field, o));
 
             XMLField xmlField = new XMLField();
             xmlField.setFieldName(field.getName());
@@ -137,8 +137,8 @@ public class ToXmlTypesTransformer {
 
         for (String key : event.getKeys()) {
             XMLMapEntry entry = new XMLMapEntry();
-            entry.setKey(toMapable(key));
-            entry.setValue(toMapable(event.getValue(key)));
+            entry.setKey(toMappable(key));
+            entry.setValue(toMappable(event.getValue(key)));
             elements.add(entry);
         }
 
@@ -150,8 +150,8 @@ public class ToXmlTypesTransformer {
         List<XMLMapEntry> elements = new ArrayList<XMLMapEntry>();
         for (Object key : map.keySet()) {
             XMLMapEntry entry = new XMLMapEntry();
-            entry.setKey(toMapable(key));
-            entry.setValue(toMapable(map.get(key)));
+            entry.setKey(toMappable(key));
+            entry.setValue(toMappable(map.get(key)));
             elements.add(entry);
         }
 
