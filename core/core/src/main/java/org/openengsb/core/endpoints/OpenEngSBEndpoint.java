@@ -150,7 +150,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     @Override
     public void activate() throws Exception {
         super.activate();
-        
+
         log.info("Checking in SU having SE " + ((OpenEngSBComponent) serviceUnit.getComponent()).getComponentName());
         register();
     }
@@ -159,10 +159,10 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     public void deactivate() throws Exception {
         log.info("Checking out SU having SE " + serviceUnit.getComponent().getComponentName());
         unregister();
-        
+
         super.deactivate();
     }
-    
+
     private void register() {
         OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
 
@@ -179,7 +179,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
             log.info("SE already registered");
         }
     }
-    
+
     private void unregister() {
         if (contextProperties != null && contextProperties.size() != 0) {
             unregisterSU();
@@ -211,14 +211,13 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
     private void registerService(HashMap<String, HashMap<String, String>> contextProperties, boolean su,
             boolean register) {
-        log.info((!register ? "Unr" : "R") + "egistering " + (su ? "SU" : "SE"));
-        Set<String> keyset = contextProperties.keySet();
-        for (String key : keyset) {
+        log.info((register ? "R" : "Unr") + "egistering " + (su ? "SU" : "SE"));
+        for (String key : contextProperties.keySet()) {
             contextHelper.setContext(key);
             if (register) {
                 contextHelper.store(addSource(contextProperties.get(key), su ? ("SU/" + endpoint) : "SE"));
             } else {
-                contextHelper.remove(addSource(contextProperties.keySet(), su ? ("SU/" + endpoint) : "SE"));
+                contextHelper.remove(addSource(contextProperties.get(key).keySet(), su ? ("SU/" + endpoint) : "SE"));
             }
         }
     }
@@ -249,9 +248,5 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
     public void setContextProperties(HashMap<String, HashMap<String, String>> contextProperties) {
         this.contextProperties = contextProperties;
-    }
-
-    public void setContextHelper(ContextHelperImpl contextHelper) {
-        this.contextHelper = contextHelper;
     }
 }
