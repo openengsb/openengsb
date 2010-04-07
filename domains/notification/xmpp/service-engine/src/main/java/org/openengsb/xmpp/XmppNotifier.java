@@ -24,7 +24,9 @@ import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.FileTransferNegotiator;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 import org.openengsb.drools.NotificationDomain;
 import org.openengsb.drools.model.Attachment;
@@ -47,6 +49,12 @@ public class XmppNotifier implements NotificationDomain {
 
         try {
             connection.connect();
+            // must set up a new ServiceDiscoveryManager and a new
+            // FileTransferManager at each connect,
+            // otherwise Filetransfer won't work
+            ServiceDiscoveryManager sm = new ServiceDiscoveryManager(connection);
+            transferManager = new FileTransferManager(connection);
+            FileTransferNegotiator.setServiceEnabled(connection, true);
         } catch (XMPPException e) {
             throw new XMPPNotifierException("Connect to server failed", e);
         }
@@ -94,9 +102,30 @@ public class XmppNotifier implements NotificationDomain {
     private void sendAttachments(String target, Attachment[] attach) {
         for (Attachment attachment : attach) {
             OutgoingFileTransfer transfer = transferManager.createOutgoingFileTransfer(target);
+            try {
+                transfer.sendStream(new ByteArrayInputStream(attachment.getData()), attachment.getName(), attachment
+                        .getData().length, attachment.getType());
+                // transfer.sendFile(new File("/home/grumpo/testfile"),
+                // "You won't believe this!");
+            } catch (Exception e1) {
+                System.out.println("Sending File failed.");
+                e1.printStackTrace();
+            }
+            while (!transfer.isDone()) {
+                System.out.println("STATE: " + transfer.getStatus() + transfer.getException());
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                }
 
-            transfer.sendStream(new ByteArrayInputStream(attachment.getData()), attachment.getName(), attachment
-                    .getData().length, attachment.getType());
+            }
+            if (!FileTransferNegotiator.isServiceEnabled(connection))
+                System.out.println("Service is not enabled!");
+            else
+                System.out.println("Service is enabled!");
+            System.out.println("Status :: " + transfer.getStatus() + " Error :: " + transfer.getError()
+                    + " Exception :: " + transfer.getException());
+            System.out.println("Is it done? " + transfer.isDone());
         }
     }
 
@@ -141,5 +170,4 @@ public class XmppNotifier implements NotificationDomain {
     public void setUser(String user) {
         this.user = user;
     }
-
 }

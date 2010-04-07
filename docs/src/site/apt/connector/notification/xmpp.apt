@@ -99,8 +99,9 @@ connector-notification-xmpp
 
   To run the user test, configure the test bean like the xmpp connector bean (see Setup).
   Additionally you have to set the recipient to an existing user ({{{http://de.wikipedia.org/wiki/Jabber_Identifier}Jabber Identifier}})
-  of your XMPP server. Log on to your server using this user with any XMPP client (like {{{http://www.igniterealtime.com/projects/spark}Spark}}).
-  If you now start the test, you should receive the message specified in the test bean.
+  of your XMPP server. Log on to your server using this user with a XMPP client (like Pidgin). Note that the file send test has been tested 
+  with Pidgin only and may not work in other clients.
+  If you now start the test, you should receive the message specified in the test bean and the test files.
   
   
   ** Drools example rule

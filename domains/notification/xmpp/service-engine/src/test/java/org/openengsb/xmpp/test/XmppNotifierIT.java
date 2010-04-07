@@ -29,6 +29,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.model.Event;
+import org.openengsb.core.transformation.Transformer;
+import org.openengsb.util.serialization.SerializationException;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -38,16 +41,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class XmppNotifierIT extends SpringTestSupport {
     private static ServiceMixClient client;
 
-    private static final String TEST_EVENT = 
-              "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-            + "<list xmlns=\"http://org.openengsb/util/serialization\" domainConcept=\"\" format=\"\" name=\"event\">"
-            + "    <text domainConcept=\"\" format=\"\" name=\"event\">org.openengsb.core.model.Event</text>"
-            + "    <list domainConcept=\"\" format=\"\" name=\"superclasses\">"
-            + "        <text domainConcept=\"\" format=\"\" name=\"superclass\">java.lang.Object</text>"
-            + "    </list>" 
-            + "    <text domainConcept=\"\" format=\"\" name=\"name\">testevent</text>"
-            + "    <text domainConcept=\"\" format=\"\" name=\"domain\">drools</text>" 
-            + "</list>";
+    private final String TEST_EVENT = getTestEvent();
 
     @Override
     protected AbstractXmlApplicationContext createBeanFactory() {
@@ -74,7 +68,16 @@ public class XmppNotifierIT extends SpringTestSupport {
         me.getInMessage().setContent(new StringSource(TEST_EVENT));
         me.setOperation(new QName("event"));
         me.getInMessage().setProperty("operation", Boolean.TRUE);
-        client.sendSync(me);
+        client.send(me);
         assertNotSame("Exchange was not processed correctly", ExchangeStatus.ERROR, me.getStatus());
+    }
+
+    private String getTestEvent() {
+        try {
+            Event event = new Event("notification", "xmpp");
+            return Transformer.toXml(event);
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

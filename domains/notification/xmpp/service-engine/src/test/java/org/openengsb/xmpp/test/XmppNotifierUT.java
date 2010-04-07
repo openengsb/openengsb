@@ -66,9 +66,9 @@ public class XmppNotifierUT {
     
     private Attachment[] prepareAttachments() {
         Attachment[] as = new Attachment[3];
-        as[0] = new Attachment(new byte[] {1, 2, 3, 0}, "test", "test1");
-        as[1] = new Attachment(new byte[] {2, 3, 4, 0}, "test", "test2");
-        as[2] = new Attachment(new byte[] {4, 5, 6, 0}, "test", "test3");
+        as[0] = new Attachment(new byte[] {'1', '2', '3', '0'}, "test", "test1");
+        as[1] = new Attachment(new byte[] {'2', '3', '4', '0'}, "test", "test2");
+        as[2] = new Attachment(new byte[] {'4', '5', '6', '0'}, "test", "test3");
         
         return as;
     }
