@@ -6,23 +6,23 @@ package org.openengsb.core.xmlmapping;
  * <pre>
  * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLMapEntry">
  *   &lt;xs:sequence>
- *     &lt;xs:element type="XMLMapable" name="key"/>
- *     &lt;xs:element type="XMLMapable" name="value"/>
+ *     &lt;xs:element type="XMLMappable" name="key"/>
+ *     &lt;xs:element type="XMLMappable" name="value"/>
  *   &lt;/xs:sequence>
  * &lt;/xs:complexType>
  * </pre>
  */
 public class XMLMapEntry
 {
-    private XMLMapable key;
-    private XMLMapable value;
+    private XMLMappable key;
+    private XMLMappable value;
 
     /** 
      * Get the 'key' element value.
      * 
      * @return value
      */
-    public XMLMapable getKey() {
+    public XMLMappable getKey() {
         return key;
     }
 
@@ -31,7 +31,7 @@ public class XMLMapEntry
      * 
      * @param key
      */
-    public void setKey(XMLMapable key) {
+    public void setKey(XMLMappable key) {
         this.key = key;
     }
 
@@ -40,7 +40,7 @@ public class XMLMapEntry
      * 
      * @return value
      */
-    public XMLMapable getValue() {
+    public XMLMappable getValue() {
         return value;
     }
 
@@ -49,7 +49,7 @@ public class XMLMapEntry
      * 
      * @param value
      */
-    public void setValue(XMLMapable value) {
+    public void setValue(XMLMappable value) {
         this.value = value;
     }
 }

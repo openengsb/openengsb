@@ -12,13 +12,13 @@
       <value style="element" name="base64Binary" test-method="ifBase64Binary" get-method="getBase64Binary" set-method="setBase64Binary" usage="optional"/>
     </structure>
   </mapping>
-  <mapping abstract="true" type-name="XMLMapable" class="org.openengsb.core.xmlmapping.XMLMapable">
+  <mapping abstract="true" type-name="XMLMappable" class="org.openengsb.core.xmlmapping.XMLMappable">
     <structure ordered="false" choice="true">
       <value style="element" name="null" test-method="ifNull" get-method="getNull" set-method="setNull" usage="optional"/>
       <structure map-as="XMLReference" test-method="ifReference" get-method="getReference" set-method="setReference" usage="optional" name="reference"/>
       <structure map-as="XMLPrimitive" test-method="ifPrimitive" get-method="getPrimitive" set-method="setPrimitive" usage="optional" name="primitive"/>
       <structure map-as="XMLBean" test-method="ifBean" get-method="getBean" set-method="setBean" usage="optional" name="bean"/>
-      <structure map-as="XMLMapableList" test-method="ifList" get-method="getList" set-method="setList" usage="optional" name="list"/>
+      <structure map-as="XMLMappableList" test-method="ifList" get-method="getList" set-method="setList" usage="optional" name="list"/>
       <structure map-as="XMLEvent" test-method="ifEvent" get-method="getEvent" set-method="setEvent" usage="optional" name="event"/>
       <structure map-as="XMLMapEntryList" test-method="ifMap" get-method="getMap" set-method="setMap" usage="optional" name="map"/>
       <structure map-as="XMLContext" test-method="ifContext" get-method="getContext" set-method="setContext" usage="optional" name="context"/>
@@ -26,9 +26,9 @@
     <value style="element" name="id" get-method="getId" set-method="setId" usage="optional"/>
     <value style="attribute" name="domainConcept" get-method="getDomainConcept" set-method="setDomainConcept" usage="optional"/>
   </mapping>
-  <mapping abstract="true" type-name="XMLMapableList" class="org.openengsb.core.xmlmapping.XMLMapableList">
-    <collection get-method="getMapables" set-method="setMapables" create-type="java.util.ArrayList">
-      <structure map-as="XMLMapable" name="mapable"/>
+  <mapping abstract="true" type-name="XMLMappableList" class="org.openengsb.core.xmlmapping.XMLMappableList">
+    <collection get-method="getMappables" set-method="setMappables" create-type="java.util.ArrayList">
+      <structure map-as="XMLMappable" name="mappable"/>
     </collection>
   </mapping>
   <mapping abstract="true" type-name="XMLMapEntryList" class="org.openengsb.core.xmlmapping.XMLMapEntryList">
@@ -56,11 +56,11 @@
   </mapping>
   <mapping abstract="true" type-name="XMLField" class="org.openengsb.core.xmlmapping.XMLField">
     <value style="element" name="fieldName" get-method="getFieldName" set-method="setFieldName"/>
-    <structure map-as="XMLMapable" get-method="getValue" set-method="setValue" name="value"/>
+    <structure map-as="XMLMappable" get-method="getValue" set-method="setValue" name="value"/>
   </mapping>
   <mapping abstract="true" type-name="XMLMapEntry" class="org.openengsb.core.xmlmapping.XMLMapEntry">
-    <structure map-as="XMLMapable" get-method="getKey" set-method="setKey" name="key"/>
-    <structure map-as="XMLMapable" get-method="getValue" set-method="setValue" name="value"/>
+    <structure map-as="XMLMappable" get-method="getKey" set-method="setKey" name="key"/>
+    <structure map-as="XMLMappable" get-method="getValue" set-method="setValue" name="value"/>
   </mapping>
   <mapping class="org.openengsb.core.xmlmapping.XMLReturnValue" name="XMLReturnValue">
     <structure map-as="XMLTypedValue" get-method="getValue" set-method="setValue" name="value"/>
@@ -74,7 +74,7 @@
   </mapping>
   <mapping abstract="true" type-name="XMLTypedValue" class="org.openengsb.core.xmlmapping.XMLTypedValue">
     <value style="element" name="type" get-method="getType" set-method="setType"/>
-    <structure map-as="XMLMapable" get-method="getValue" set-method="setValue" name="value"/>
+    <structure map-as="XMLMappable" get-method="getValue" set-method="setValue" name="value"/>
   </mapping>
   <mapping abstract="true" type-name="XMLContextEntry" class="org.openengsb.core.xmlmapping.XMLContextEntry">
     <value style="element" name="key" get-method="getKey" set-method="setKey"/>
