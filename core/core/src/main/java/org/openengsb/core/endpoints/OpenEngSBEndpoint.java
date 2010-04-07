@@ -218,10 +218,10 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         HashMap<String, String> newProperties = new HashMap<String, String>(properties.size());
         for (String key : properties.keySet()) {
             int pos = key.lastIndexOf("/");
-            String first = key.substring(0, pos);
-            String last = key.substring(pos);
+            String path = key.substring(0, pos);
+            String name = key.substring(pos);
             
-            newProperties.put(first + "/" + src + last, properties.get(key));
+            newProperties.put(path + "/" + src + name, properties.get(key));
         }
         return newProperties;
     }
@@ -230,10 +230,10 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         ArrayList<String> newKeys = new ArrayList<String>(keys.size());
         for (String key : keys) {
             int pos = key.lastIndexOf("/");
-            String first = key.substring(0, pos);
-            String last = key.substring(pos);
+            String path = key.substring(0, pos);
+            String name = key.substring(pos);
             
-            newKeys.add(first + "/" + src + last);
+            newKeys.add(path + "/" + src + name);
         }
         return newKeys;
     }
