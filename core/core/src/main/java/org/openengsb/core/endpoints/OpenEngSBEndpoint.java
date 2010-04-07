@@ -150,9 +150,21 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     @Override
     public void activate() throws Exception {
         super.activate();
+        
+        log.info("Checking in SU having SE " + ((OpenEngSBComponent) serviceUnit.getComponent()).getComponentName());
+        register();
+    }
 
+    @Override
+    public void deactivate() throws Exception {
+        log.info("Checking out SU having SE " + serviceUnit.getComponent().getComponentName());
+        unregister();
+        
+        super.deactivate();
+    }
+    
+    private void register() {
         OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
-        log.info("Checking in SU having SE " + component.getComponentName());
 
         if (contextProperties != null && contextProperties.size() != 0) {
             registerSU();
@@ -167,11 +179,8 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
             log.info("SE already registered");
         }
     }
-
-    @Override
-    public void deactivate() throws Exception {
-        log.info("Checking out SU having SE " + serviceUnit.getComponent().getComponentName());
-
+    
+    private void unregister() {
         if (contextProperties != null && contextProperties.size() != 0) {
             unregisterSU();
         }
@@ -182,8 +191,6 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
         if (component.hasNoEndpoints() && component.hasContextProperties()) {
             unregisterSE(component.getContextProperties());
         }
-
-        super.deactivate();
     }
 
     private void registerSU() {

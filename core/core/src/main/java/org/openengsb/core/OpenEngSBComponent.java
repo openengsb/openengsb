@@ -67,7 +67,7 @@ public class OpenEngSBComponent extends DefaultComponent {
     }
 
     public boolean hasContextProperties() {
-        return contextProperties.size() != 0;
+        return contextProperties != null && contextProperties.size() != 0;
     }
 
     public void setContextProperties(HashMap<String, HashMap<String, String>> contextProperties) {
