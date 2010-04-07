@@ -42,7 +42,7 @@ public class ContextRegistrationTest {
     private ContextHelperImpl contextHelper;
 
     @Resource
-    private HashMap<String, HashMap<String, String>> settings1;
+    private HashMap<String, HashMap<String, String>> properties;
 
     @Before
     public void setUp() {
@@ -66,23 +66,23 @@ public class ContextRegistrationTest {
         OpenEngSBEndpoint endpoint = new OpenEngSBEndpoint(new OpenEngSBComponent(), Mockito
                 .mock(ServiceEndpoint.class));
         endpoint.setEndpoint("testendpoint");
-        endpoint.setContextProperties(settings1);
+        endpoint.setContextProperties(properties);
         setContextHelper(endpoint);
         callMethod(endpoint, "register");
 
-        for (String key : settings1.keySet()) {
+        for (String key : properties.keySet()) {
             Mockito.verify(contextHelper, Mockito.times(1)).setContext(Mockito.eq(key));
             Mockito.verify(contextHelper, Mockito.times(1)).store(
-                    Mockito.eq(addSource(settings1.get(key), "SU/testendpoint")));
+                    Mockito.eq(addSource(properties.get(key), "SU/testendpoint")));
         }
 
         clearContextHelper(endpoint);
         callMethod(endpoint, "unregister");
 
-        for (String key : settings1.keySet()) {
+        for (String key : properties.keySet()) {
             Mockito.verify(contextHelper, Mockito.times(1)).setContext(Mockito.eq(key));
             Mockito.verify(contextHelper, Mockito.times(1)).remove(
-                    Mockito.eq(addSource(settings1.get(key).keySet(), "SU/testendpoint")));
+                    Mockito.eq(addSource(properties.get(key).keySet(), "SU/testendpoint")));
         }
     }
 
@@ -91,12 +91,12 @@ public class ContextRegistrationTest {
     public void testSELifecycle() throws Exception {
         OpenEngSBComponent component = new OpenEngSBComponent();
         OpenEngSBEndpoint endpoint = new OpenEngSBEndpoint(component, Mockito.mock(ServiceEndpoint.class));
-        component.setContextProperties(settings1);
+        component.setContextProperties(properties);
         setContextHelper(endpoint);
         callMethod(endpoint, "register");
 
-        for (String key : settings1.keySet()) {
-            Mockito.verify(contextHelper, Mockito.times(1)).store(Mockito.eq(addSource(settings1.get(key), "SE")));
+        for (String key : properties.keySet()) {
+            Mockito.verify(contextHelper, Mockito.times(1)).store(Mockito.eq(addSource(properties.get(key), "SE")));
         }
 
         clearContextHelper(endpoint);
@@ -106,11 +106,16 @@ public class ContextRegistrationTest {
 
         clearContextHelper(endpoint);
         callMethod(endpoint, "unregister");
+        
+        Mockito.verify(contextHelper, Mockito.never()).store(Mockito.anyMap());
 
-        for (String key : settings1.keySet()) {
+        clearContextHelper(endpoint);
+        callMethod(endpoint, "unregister");
+
+        for (String key : properties.keySet()) {
             Mockito.verify(contextHelper, Mockito.times(1)).setContext(Mockito.eq(key));
             Mockito.verify(contextHelper, Mockito.times(1)).remove(
-                    Mockito.eq(addSource(settings1.get(key).keySet(), "SE")));
+                    Mockito.eq(addSource(properties.get(key).keySet(), "SE")));
         }
     }
 

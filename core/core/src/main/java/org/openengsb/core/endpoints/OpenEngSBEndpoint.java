@@ -170,14 +170,14 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
             registerSU();
         }
 
-        if (component.hasNoEndpoints()) {
-            if (component.hasContextProperties()) {
+        if (component.hasContextProperties()) {
+            if (component.hasNoEndpoints()) {
                 registerSE(component.getContextProperties());
+            } else {
+                log.info("SE already registered");
             }
-            component.addCustomEndpoint(this);
-        } else if (component.hasContextProperties()) {
-            log.info("SE already registered");
         }
+        component.addCustomEndpoint(this);
     }
 
     private void unregister() {

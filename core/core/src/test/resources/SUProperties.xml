@@ -20,13 +20,19 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="settings1" class="java.util.HashMap">
+  <bean id="properties" class="java.util.HashMap">
     <constructor-arg type="java.util.Map">
       <map key-type="java.lang.String" value-type="java.util.Map">
         <entry key="42">
           <map key-type="java.lang.String" value-type="java.lang.String">
-            <entry key="domain/component/key1" value="value1" />
-            <entry key="domain/component/key2" value="value2" />
+            <entry key="domain1/component1/key1" value="value1" />
+            <entry key="domain1/component1/key2" value="value2" />
+          </map>
+        </entry>
+        <entry key="43">
+          <map key-type="java.lang.String" value-type="java.lang.String">
+            <entry key="domain2/component1/key1" value="value1" />
+            <entry key="domain2/component1/key2" value="value2" />
           </map>
         </entry>
       </map>
