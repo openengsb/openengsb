@@ -31,7 +31,7 @@ import org.springframework.core.io.ClassPathResource;
 public class OpenEngSBComponent extends DefaultComponent {
     private Logger log = Logger.getLogger(getClass());
 
-    protected HashMap<String, HashMap<String, String>> contextProperties;
+    private HashMap<String, HashMap<String, String>> contextProperties;
     private List<OpenEngSBEndpoint> endpoints = new LinkedList<OpenEngSBEndpoint>();
 
     public OpenEngSBEndpoint[] getEndpoints() {
@@ -74,9 +74,14 @@ public class OpenEngSBComponent extends DefaultComponent {
         this.contextProperties = contextProperties;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void doInit() throws Exception {
+        loadConfiguration();
+        super.doInit();
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void loadConfiguration() {
         try {
             ClassPathResource res = new ClassPathResource("contextProperties.xml");
             XmlBeanFactory factory = new XmlBeanFactory(res);
@@ -84,6 +89,5 @@ public class OpenEngSBComponent extends DefaultComponent {
         } catch (BeansException e) {
             log.info("No configuration file found for SE or it is corrupted.");
         }
-        super.doInit();
     }
 }

@@ -53,7 +53,7 @@ import org.openengsb.util.serialization.SerializationException;
 public class OpenEngSBEndpoint extends ProviderEndpoint {
     private Logger log = Logger.getLogger(getClass());
 
-    private HashMap<String, HashMap<String, String>> contextProperties = new HashMap<String, HashMap<String, String>>();
+    private HashMap<String, HashMap<String, String>> contextProperties;
     private ContextHelperImpl contextHelper = new ContextHelperImpl(this, null);
 
     public OpenEngSBEndpoint() {
@@ -150,27 +150,17 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     @Override
     public void activate() throws Exception {
         super.activate();
-        OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
 
+        OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
         log.info("Checking in SU having SE " + component.getComponentName());
 
-        if (contextProperties.size() != 0) {
-            log.info("Registering SU");
-            Set<String> keyset = contextProperties.keySet();
-            for (String key : keyset) {
-                contextHelper.setContext(key);
-                contextHelper.store(addSource(contextProperties.get(key), "SU/" + endpoint));
-            }
+        if (contextProperties != null && contextProperties.size() != 0) {
+            registerSU();
         }
 
         if (component.hasNoEndpoints()) {
             if (component.hasContextProperties()) {
-                log.info("Registering SE");
-                Set<String> keyset = component.getContextProperties().keySet();
-                for (String key : keyset) {
-                    contextHelper.setContext(key);
-                    contextHelper.store(addSource(component.getContextProperties().get(key), "SE"));
-                }
+                registerSE(component.getContextProperties());
             }
             component.addCustomEndpoint(this);
         } else if (component.hasContextProperties()) {
@@ -182,36 +172,48 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     public void deactivate() throws Exception {
         log.info("Checking out SU having SE " + serviceUnit.getComponent().getComponentName());
 
-        if (contextProperties.size() != 0) {
-            log.info("Unregistering SU");
-            Set<String> keyset = contextProperties.keySet();
-            for (String key : keyset) {
-                contextHelper.setContext(key);
-                contextHelper.remove(addSource(contextProperties.keySet(), "SU/" + endpoint));
-            }
+        if (contextProperties != null && contextProperties.size() != 0) {
+            unregisterSU();
         }
 
         OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
         component.removeCustomEndpoint(this);
 
         if (component.hasNoEndpoints() && component.hasContextProperties()) {
-            log.info("Unregistering SE");
-            Set<String> keyset = component.getContextProperties().keySet();
-            for (String key : keyset) {
-                contextHelper.setContext(key);
-                contextHelper.remove(addSource(component.getContextProperties().keySet(), "SE"));
-            }
+            unregisterSE(component.getContextProperties());
         }
 
         super.deactivate();
     }
 
-    public void setContextProperties(HashMap<String, HashMap<String, String>> contextProperties) {
-        this.contextProperties = contextProperties;
+    private void registerSU() {
+        registerService(contextProperties, true, true);
     }
-    
-    public void setContextHelper(ContextHelperImpl contextHelper) {
-        this.contextHelper = contextHelper;
+
+    private void registerSE(HashMap<String, HashMap<String, String>> contextProperties) {
+        registerService(contextProperties, false, true);
+    }
+
+    private void unregisterSU() {
+        registerService(contextProperties, true, false);
+    }
+
+    private void unregisterSE(HashMap<String, HashMap<String, String>> contextProperties) {
+        registerService(contextProperties, false, false);
+    }
+
+    private void registerService(HashMap<String, HashMap<String, String>> contextProperties, boolean su,
+            boolean register) {
+        log.info((!register ? "Unr" : "R") + "egistering " + (su ? "SU" : "SE"));
+        Set<String> keyset = contextProperties.keySet();
+        for (String key : keyset) {
+            contextHelper.setContext(key);
+            if (register) {
+                contextHelper.store(addSource(contextProperties.get(key), su ? ("SU/" + endpoint) : "SE"));
+            } else {
+                contextHelper.remove(addSource(contextProperties.keySet(), su ? ("SU/" + endpoint) : "SE"));
+            }
+        }
     }
 
     private HashMap<String, String> addSource(HashMap<String, String> properties, String src) {
@@ -236,5 +238,13 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
             newKeys.add(path + "/" + src + name);
         }
         return newKeys;
+    }
+
+    public void setContextProperties(HashMap<String, HashMap<String, String>> contextProperties) {
+        this.contextProperties = contextProperties;
+    }
+
+    public void setContextHelper(ContextHelperImpl contextHelper) {
+        this.contextHelper = contextHelper;
     }
 }

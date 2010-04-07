@@ -18,7 +18,6 @@ package org.openengsb.context;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import org.openengsb.contextcommon.Context;
@@ -37,33 +36,31 @@ public class EndpointContextHelperImpl implements ContextHelperExtended {
         Context ctx = contextStore.getContext(currentId + "/" + path);
         Map<String, String> values = new HashMap<String, String>();
 
-        Set<String> keys = ctx.getKeys();
-        for (String key : keys) {
-            values.put(key, ctx.get(key));
-        }
+        collectValuesFromContext(values, ctx);
 
         if (ctx.getChild("SU") != null) {
-            Context sUs = ctx.getChild("SU");
-            for (String name : sUs.getChildrenNames()) {
-                Context su = sUs.getChild(name);
-                for (String key : su.getKeys()) {
-                    if (!values.containsKey(key)) {
-                        values.put(key, su.get(key));
-                    }
-                }
-            }
+            collectSUValues(values, ctx.getChild("SU"));
         }
 
         if (ctx.getChild("SE") != null) {
-            Context se = ctx.getChild("SE");
-            for (String key : se.getKeys()) {
-                if (!values.containsKey(key)) {
-                    values.put(key, se.get(key));
-                }
-            }
+            collectValuesFromContext(values, ctx.getChild("SE"));
         }
 
         return values;
+    }
+    
+    private void collectValuesFromContext(Map<String, String> values, Context ctx) {
+        for (String key : ctx.getKeys()) {
+            if (!values.containsKey(key)) {
+                values.put(key, ctx.get(key));
+            }
+        }
+    }
+    
+    private void collectSUValues(Map<String, String> values, Context sUs) {
+        for (String name : sUs.getChildrenNames()) {
+            collectValuesFromContext(values, sUs.getChild(name));
+        }
     }
 
     @Override
@@ -78,22 +75,32 @@ public class EndpointContextHelperImpl implements ContextHelperExtended {
         Context ctx = contextStore.getContext(currentId + "/" + path);
 
         do {
-            if (ctx.containsKey(key)) {
-                return ctx.get(key);
-            } else if (ctx.getChild("SU") != null) {
-                Context sUs = ctx.getChild("SU");
-                for (String name : sUs.getChildrenNames()) {
-                    Context su = sUs.getChild(name);
-                    if (su.containsKey(key)) {
-                        return su.get(key);
-                    }
-                }
+            String value = getValueFromCoreSUSE(ctx, key);
+            if (value != null) {
+                return value;
             }
-            if (ctx.getChild("SE") != null && ctx.getChild("SE").containsKey(key)) {
-                return ctx.getChild("SE").get(key);
-            }
+
             ctx = ctx.getParent();
         } while (ctx != null);
+
+        return null;
+    }
+
+    private String getValueFromCoreSUSE(Context ctx, String key) {
+        if (ctx.containsKey(key)) {
+            return ctx.get(key);
+        } else if (ctx.getChild("SU") != null) {
+            Context sUs = ctx.getChild("SU");
+            for (String name : sUs.getChildrenNames()) {
+                Context su = sUs.getChild(name);
+                if (su.containsKey(key)) {
+                    return su.get(key);
+                }
+            }
+        }
+        if (ctx.getChild("SE") != null && ctx.getChild("SE").containsKey(key)) {
+            return ctx.getChild("SE").get(key);
+        }
 
         return null;
     }
