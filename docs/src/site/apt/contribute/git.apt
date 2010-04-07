@@ -199,6 +199,8 @@ Commiter Workflow
 Additional Rules
 
  [[1]] (Contributor/Commiter) All development is done in forks (also of the core developers)
+ 
+   [[a]] (Commiter) One exception to this rule exists: Small fixes and maintenance work which is NOT related to a new feature and does not exceed 2 commits should be rebased and merged (or cherry-picked) into the master directly.
 
  [[2]] (Contributor/Commiter) Rebase is NOT dead (although we use merges). NEVER EVER commit local
  merges. You still have to develop in local dev branches and rebasing them
