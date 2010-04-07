@@ -19,17 +19,17 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
-  
+
   <bean id="contextProperties" class="java.util.HashMap">
-  	<constructor-arg type="java.util.Map">
-	  	<map key-type="java.lang.String" value-type="java.util.Map">
-	  		<entry key="42">
-	  				<map key-type="java.lang.String" value-type="java.lang.String">
-	  					<entry key="issue/trac/namespace" value="urn:openengsb:trac" />
-	  					<entry key="issue/trac/servicename" value="tracService" />
-	  				</map>
-	  		</entry>
-	  	</map>
-  	</constructor-arg>
+    <constructor-arg type="java.util.Map">
+      <map key-type="java.lang.String" value-type="java.util.Map">
+        <entry key="42">
+          <map key-type="java.lang.String" value-type="java.lang.String">
+            <entry key="issue/trac/namespace" value="urn:openengsb:trac" />
+            <entry key="issue/trac/servicename" value="tracService" />
+          </map>
+        </entry>
+      </map>
+    </constructor-arg>
   </bean>
 </beans>

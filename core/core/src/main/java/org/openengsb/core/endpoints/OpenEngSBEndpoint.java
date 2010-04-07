@@ -49,17 +49,12 @@ import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 
 public class OpenEngSBEndpoint extends ProviderEndpoint {
     private Logger log = Logger.getLogger(getClass());
 
-    private HashMap<String, HashMap<String, String>> contextProperties = new HashMap<String, HashMap<String,String>>();
-
-    private ContextHelperImpl contextHelper; 
+    private HashMap<String, HashMap<String, String>> contextProperties = new HashMap<String, HashMap<String, String>>();
+    private ContextHelperImpl contextHelper = new ContextHelperImpl(this, null);
 
     public OpenEngSBEndpoint() {
     }
@@ -161,26 +156,19 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
         if (contextProperties.size() != 0) {
             log.info("Registering SU");
-            Set<String> keyset=contextProperties.keySet();
-            for(String key : keyset){
-                contextHelper = new ContextHelperImpl(this, new MessageProperties(key, null));
+            Set<String> keyset = contextProperties.keySet();
+            for (String key : keyset) {
+                contextHelper.setContext(key);
                 contextHelper.store(addSource(contextProperties.get(key), "SU/" + endpoint));
             }
         }
 
         if (component.hasNoEndpoints()) {
-            try{
-                ClassPathResource res = new ClassPathResource("contextProperties.xml");
-                XmlBeanFactory factory = new XmlBeanFactory(res);
-                component.setContextProperties( (HashMap<String, HashMap<String,String>>) factory.getBean("contextProperties"));
-            }catch(Exception e){
-                log.info("No Configuration file found for SE");
-            }
             if (component.hasContextProperties()) {
                 log.info("Registering SE");
-                Set<String> keyset=component.getContextProperties().keySet();
-                for(String key : keyset){
-                    contextHelper = new ContextHelperImpl(this, new MessageProperties(key, null));
+                Set<String> keyset = component.getContextProperties().keySet();
+                for (String key : keyset) {
+                    contextHelper.setContext(key);
                     contextHelper.store(addSource(component.getContextProperties().get(key), "SE"));
                 }
             }
@@ -196,7 +184,11 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
         if (contextProperties.size() != 0) {
             log.info("Unregistering SU");
-            contextHelper.remove(addSource(contextProperties.keySet(), "SU/" + endpoint));
+            Set<String> keyset = contextProperties.keySet();
+            for (String key : keyset) {
+                contextHelper.setContext(key);
+                contextHelper.remove(addSource(contextProperties.keySet(), "SU/" + endpoint));
+            }
         }
 
         OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
@@ -204,14 +196,22 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
         if (component.hasNoEndpoints() && component.hasContextProperties()) {
             log.info("Unregistering SE");
-            contextHelper.remove(addSource(component.getContextProperties().keySet(), "SE"));
+            Set<String> keyset = component.getContextProperties().keySet();
+            for (String key : keyset) {
+                contextHelper.setContext(key);
+                contextHelper.remove(addSource(component.getContextProperties().keySet(), "SE"));
+            }
         }
 
         super.deactivate();
     }
 
-    public void setContextProperties(HashMap<String, HashMap<String,String>> contextProperties) {
+    public void setContextProperties(HashMap<String, HashMap<String, String>> contextProperties) {
         this.contextProperties = contextProperties;
+    }
+    
+    public void setContextHelper(ContextHelperImpl contextHelper) {
+        this.contextHelper = contextHelper;
     }
 
     private HashMap<String, String> addSource(HashMap<String, String> properties, String src) {
@@ -220,7 +220,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
             int pos = key.lastIndexOf("/");
             String path = key.substring(0, pos);
             String name = key.substring(pos);
-            
+
             newProperties.put(path + "/" + src + name, properties.get(key));
         }
         return newProperties;
@@ -232,7 +232,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
             int pos = key.lastIndexOf("/");
             String path = key.substring(0, pos);
             String name = key.substring(pos);
-            
+
             newKeys.add(path + "/" + src + name);
         }
         return newKeys;

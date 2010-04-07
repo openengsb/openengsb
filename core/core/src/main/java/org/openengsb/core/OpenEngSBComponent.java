@@ -21,11 +21,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.apache.servicemix.common.DefaultComponent;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ClassPathResource;
 
 public class OpenEngSBComponent extends DefaultComponent {
-    protected HashMap<String, HashMap<String, String>> contextProperties = new HashMap<String, HashMap<String,String>>();
+    private Logger log = Logger.getLogger(getClass());
+
+    protected HashMap<String, HashMap<String, String>> contextProperties;
     private List<OpenEngSBEndpoint> endpoints = new LinkedList<OpenEngSBEndpoint>();
 
     public OpenEngSBEndpoint[] getEndpoints() {
@@ -52,7 +58,7 @@ public class OpenEngSBComponent extends DefaultComponent {
         return endpoints;
     }
 
-    public HashMap<String, HashMap<String,String>> getContextProperties() {
+    public HashMap<String, HashMap<String, String>> getContextProperties() {
         return contextProperties;
     }
 
@@ -64,7 +70,20 @@ public class OpenEngSBComponent extends DefaultComponent {
         return contextProperties.size() != 0;
     }
 
-    public void setContextProperties(HashMap<String, HashMap<String,String>> contextProperties) {
+    public void setContextProperties(HashMap<String, HashMap<String, String>> contextProperties) {
         this.contextProperties = contextProperties;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void doInit() throws Exception {
+        try {
+            ClassPathResource res = new ClassPathResource("contextProperties.xml");
+            XmlBeanFactory factory = new XmlBeanFactory(res);
+            contextProperties = (HashMap<String, HashMap<String, String>>) factory.getBean("contextProperties");
+        } catch (BeansException e) {
+            log.info("No configuration file found for SE or it is corrupted.");
+        }
+        super.doInit();
     }
 }
