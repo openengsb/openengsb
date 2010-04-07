@@ -156,12 +156,12 @@ public class ContextStore {
     private void load() {
         if (settings == null || !settings.isFile() || !settings.exists()) {
             loadDefaultConfig();
-            return;
-        }
-        try {
-            rootContext = ContextTransformer.fromXml(FileUtils.readFileToString(settings));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } else {
+            try {
+                rootContext = ContextTransformer.fromXml(FileUtils.readFileToString(settings));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -205,8 +205,10 @@ public class ContextStore {
         setValue("42/notification/email/servicename", "emailService");
         setValue("42/notification/email/config/mail.smtp.auth", "true");
         setValue("42/notification/email/config/mail.smtp.user", "openengsb.notification.test@gmail.com");
-        // setValue("42/notification/email/config/mail.smtp.starttls.enable", "true");
-        // setValue("42/notification/email/config/mail.smtp.host", "smtp.gmail.com");
+        // setValue("42/notification/email/config/mail.smtp.starttls.enable",
+        // "true");
+        // setValue("42/notification/email/config/mail.smtp.host",
+        // "smtp.gmail.com");
         setValue("42/notification/email/user", "openengsb.notification.test@gmail.com");
         setValue("42/notification/email/password", "pwd-openengsb");
 
