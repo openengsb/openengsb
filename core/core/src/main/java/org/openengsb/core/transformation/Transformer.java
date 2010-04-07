@@ -49,7 +49,7 @@ public class Transformer {
         for (int i = 0; i < methodCall.getArgs().length; i++) {
             Object o = methodCall.getArgs()[i];
             XMLTypedValue arg = new XMLTypedValue();
-            arg.setValue(transformer.toMapable(o));
+            arg.setValue(transformer.toMappable(o));
             arg.setType(methodCall.getTypes()[i].getName());
             arguments.add(arg);
         }
@@ -66,7 +66,7 @@ public class Transformer {
         XMLTypedValue typedValue = new XMLTypedValue();
         typedValue.setType(returnValue.getType().getName());
 
-        typedValue.setValue(transformer.toMapable(returnValue.getValue()));
+        typedValue.setValue(transformer.toMappable(returnValue.getValue()));
 
         xrv.setValue(typedValue);
         return xml(xrv);
