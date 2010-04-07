@@ -47,8 +47,8 @@
 
     <!-- jgit (google repo) -->
     <dependency>
-      <groupId>org.spearce</groupId>
-      <artifactId>jgit</artifactId>
+      <groupId>org.eclipse.jgit</groupId>
+      <artifactId>org.eclipse.jgit</artifactId>
     </dependency>
 
     <!-- Logging Dependencies -->

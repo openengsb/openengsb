@@ -22,13 +22,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.eclipse.jgit.lib.Constants;
 import org.openengsb.edb.core.repository.Commit;
 import org.openengsb.edb.core.repository.Repository;
 import org.openengsb.edb.core.repository.RepositoryManagementException;
 import org.openengsb.edb.core.repository.RepositoryStateException;
 import org.openengsb.edb.core.repository.Reset;
 import org.openengsb.util.IO;
-import org.spearce.jgit.lib.Constants;
 
 /**
  * Class to allow basic operations on given repositories: checkout, add
@@ -41,7 +41,7 @@ public class GitRepository implements Repository {
     private static final String USER = "EDB";
     private static final String EMAIL = "edb@openengsb.org";
 
-    private org.spearce.jgit.lib.Repository repository;
+    private org.eclipse.jgit.lib.Repository repository;
     private File repositoryPath;
 
     @Override
@@ -51,7 +51,7 @@ public class GitRepository implements Repository {
         this.repositoryPath = new File(pathBuilder.toString());
 
         try {
-            this.repository = new org.spearce.jgit.lib.Repository(new File(pathBuilder.append(GitRepository.GIT_CONFIG)
+            this.repository = new org.eclipse.jgit.lib.Repository(new File(pathBuilder.append(GitRepository.GIT_CONFIG)
                     .toString()));
         } catch (IOException e) {
             throw new RepositoryManagementException("Cant create a new repository...", e);
