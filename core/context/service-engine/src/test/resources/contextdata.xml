@@ -40,11 +40,19 @@
   
   <entries>
     <key>/42/domain2/key1</key>
-    <value>value1</value>
+    <value>value11</value>
   </entries>
   <entries>
     <key>/42/domain2/component/key1</key>
     <value>value1</value>
+  </entries>
+  <entries>
+    <key>/42/domain2/component/SE/key1</key>
+    <value>value1se</value>
+  </entries>
+  <entries>
+    <key>/42/domain2/component/SU/1/key1</key>
+    <value>value1su</value>
   </entries>
   <entries>
     <key>/42/domain2/component/SE/key2</key>
