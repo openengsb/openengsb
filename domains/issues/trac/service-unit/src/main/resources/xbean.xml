@@ -44,18 +44,6 @@
   <bean id="tracConnector" class="org.openengsb.trac.TracConnector">
     <property name="ticket" ref="ticket" />
   </bean>
-  
-  <bean id="contextPropertiesSU" class="java.util.HashMap">
-  	<constructor-arg type="java.util.Map">
-	  	<map key-type="java.lang.String" value-type="java.util.Map">
-	  		<entry key="42">
-	  				<map key-type="java.lang.String" value-type="java.lang.String">
-	  					<entry key="issue/trac/namespace" value="urn:openengsb:trac" />
-	  				</map>
-	  		</entry>
-	  	</map>
-  	</constructor-arg>
-  </bean>
     
-  <trac:tracEndpoint service="trc:tracService" endpoint="tracEndpoint" tracConnector="#tracConnector" contextProperties="#contextPropertiesSU" />
+  <trac:tracEndpoint service="trc:tracService" endpoint="tracEndpoint" tracConnector="#tracConnector" />
 </beans>
