@@ -26,15 +26,18 @@
       is targeted to developers who want to connect a tool to OpenEngSB.
       A tool connector is an adapter between a tool and OpenEngSB.
       Every connector belongs to a tool domain which defines the common interface of
-      all its tool connectors.
+      all its tool connectors. So the tool connector has to translate all calls to the
+      functions defined by the domain to the tool API. Further more it has to send Event-Objects
+      to the bus when certain events happen in the tool. The Event-Objects are also defined by the
+      tool domain.
     </para>
   </section>
 
   <section>
     <title>Prerequisites</title>
     <para>
-      If you don't know what a tool domain is you should read the chapter
-      "OpenEngsB Tool Domains" first.
+      If you don't know what a tool domain is and how it defines the interface for
+      the tool connector you should read the chapter "OpenEngsB Tool Domains" first.
       If no matching domain exists already you have to create it. Read the chapter mentioned above
       for more information about writing domains.
     </para>
@@ -43,22 +46,23 @@
   <section>
     <title>Context</title>
     <para>
-      A connector is a JBI component. It implements the design pattern "Adapter".
-      The connector implements the domain interface.
-      Calls to it have to be translated (adapted) and forwarded to the tool using the tool API.
+      A connector is a JBI component. It implements the design pattern "Adapter". A tool connector
+      has to translate (adapt) between functions and events defined by the domain interface and the tool API.
     </para>
   </section>
 
 
   <section>
     <title>Description</title>
-
+    <para>
+      The following step by step description shows how to create a tool connector.
+    </para>
     <section>
       <title>Project Setup</title>
       <para>
         The first step is to create new projects (Service Engine and Service Unit) for your tool.
-        These projects have to be
-        located at domains/<emphasis>domain</emphasis>/<emphasis>toolname</emphasis>/{service-engine, service-unit}/.
+        These projects have to be located at
+        domains/<emphasis>domain</emphasis>/<emphasis>toolname</emphasis>/{service-engine, service-unit}/.
         An easy way to get started is to copy an existing connector. The most simple connector is the email
         connector of the notification domain.
       </para>
@@ -131,6 +135,15 @@
         in the modules section. Also add dependencies to your SE and your SU.
       </para>
     </section>
+
+    <section>
+      <title>Adding the service-unit to the service assembly</title>
+      <para>
+        Finally to get your new connector deployed in ServiceMix it is necessary to add a dependency to the newly
+        created service unit to the pom.xml of the packaging project it shall be added to. In most cases this will
+        be the openengsb-package-all project.
+      </para>
+    </section>
   </section>
 
   <section>
@@ -139,7 +152,10 @@
       If you have problems these points could help:
       <itemizedlist>
         <listitem>Check whether you got the xbean annotations right.</listitem>
-        <listitem>In the pom.xml of the SU the property componentName must not be missing.</listitem>
+        <listitem>Check whether you have the xbean.xml right and that all values match the values in the xbean annotations.</listitem>
+        <listitem>Check that the pom.xml of the SU the property componentName is not be missing.</listitem>
+        <listitem>Check that the new components are correctly added to the root pom.xml</listitem>
+        <listitem>Check that the service-unit is included in the service assembly.</listitem>
       </itemizedlist>
     </para>
   </section>
