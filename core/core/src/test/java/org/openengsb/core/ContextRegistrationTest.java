@@ -106,7 +106,7 @@ public class ContextRegistrationTest {
 
         clearContextHelper(endpoint);
         callMethod(endpoint, "unregister");
-        
+
         Mockito.verify(contextHelper, Mockito.never()).store(Mockito.anyMap());
 
         clearContextHelper(endpoint);

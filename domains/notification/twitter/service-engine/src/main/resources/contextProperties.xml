@@ -25,7 +25,7 @@
       <map key-type="java.lang.String" value-type="java.util.Map">
         <entry key="42">
           <map key-type="java.lang.String" value-type="java.lang.String">
-            <entry key="notification/email/servicename" value="twitterService" />
+            <entry key="notification/twitter/servicename" value="twitterService" />
             <entry key="notification/twitter/namespace" value="urn:openengsb:twitter" />
             <entry key="notification/twitter/user" value="OpenEngSbTest" />
             <entry key="notification/twitter/password" value="tsetbsgnenepo" />

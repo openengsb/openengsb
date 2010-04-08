@@ -87,7 +87,7 @@ public class OpenEngSBComponent extends DefaultComponent {
             XmlBeanFactory factory = new XmlBeanFactory(res);
             contextProperties = (HashMap<String, HashMap<String, String>>) factory.getBean("contextProperties");
         } catch (BeansException e) {
-            log.info("No configuration file found for SE or it is corrupted.");
+            log.info("No configuration file found (or it is corrupted)");
         }
     }
 }

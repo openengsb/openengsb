@@ -154,7 +154,7 @@ public class ContextStore {
     }
 
     private void load() {
-        if (settings == null || !settings.isFile() || !settings.exists()) {
+        if (fileExists()) {
             loadDefaultConfig();
         } else {
             try {
@@ -163,6 +163,10 @@ public class ContextStore {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private boolean fileExists() {
+        return settings == null || !settings.isFile() || !settings.exists();
     }
 
     private void loadDefaultConfig() {
@@ -175,9 +179,9 @@ public class ContextStore {
         setValue("42/workflows/edbcommit/notification/email/max.mustermann@openengsb.org", "true");
         setValue("42/workflows/edbcommit/notification/email/martina.musterfrau@openegnsb.org", "true");
 
-        //FIXME: What is this for? It seems that this path is not even created
+        // FIXME: What is this for? It seems that this path is not even created
         addContext("42/test/maven-test/config/executionRequestProperties");
-        
+
         setValue("42/edb/namespace", "urn:openengsb:edb");
         setValue("42/edb/servicename", "edb");
         setValue("42/edb/event/servicename", "edbEvent");

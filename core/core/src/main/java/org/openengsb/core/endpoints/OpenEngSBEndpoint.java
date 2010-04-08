@@ -150,16 +150,12 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
     @Override
     public void activate() throws Exception {
         super.activate();
-
-        log.info("Checking in SU having SE " + ((OpenEngSBComponent) serviceUnit.getComponent()).getComponentName());
         register();
     }
 
     @Override
     public void deactivate() throws Exception {
-        log.info("Checking out SU having SE " + serviceUnit.getComponent().getComponentName());
         unregister();
-
         super.deactivate();
     }
 
@@ -174,7 +170,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
             if (component.hasNoEndpoints()) {
                 registerSE(component.getContextProperties());
             } else {
-                log.info("SE already registered");
+                log.info("Corresponding SE already registered");
             }
         }
         component.addCustomEndpoint(this);
@@ -211,7 +207,7 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
     private void registerService(HashMap<String, HashMap<String, String>> contextProperties, boolean su,
             boolean register) {
-        log.info((register ? "R" : "Unr") + "egistering " + (su ? "SU" : "SE"));
+        log.info((register ? "R" : "Unr") + "egistering " + (su ? "SU" : "corresponding SE"));
         for (String key : contextProperties.keySet()) {
             contextHelper.setContext(key);
             if (register) {

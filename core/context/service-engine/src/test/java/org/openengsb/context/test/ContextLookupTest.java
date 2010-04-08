@@ -57,16 +57,16 @@ public class ContextLookupTest {
         assertEquals(context.getValue("domain/key1"), "value1");
         assertEquals(context.getValue("domain/component/key1"), "value1core");
 
-        context.remove(getKeyList("domain/component/key1"));
+        context.remove(getListOfKey("domain/component/key1"));
         assertEquals(context.getValue("domain/component/key1"), "value1su");
 
-        context.remove(getKeyList("domain/component/SU/1/key1"));
+        context.remove(getListOfKey("domain/component/SU/1/key1"));
         assertEquals(context.getValue("domain/component/key1"), "value1su");
 
-        context.remove(getKeyList("domain/component/SU/2/key1"));
+        context.remove(getListOfKey("domain/component/SU/2/key1"));
         assertEquals(context.getValue("domain/component/key1"), "value1se");
 
-        context.remove(getKeyList("domain/component/SE/key1"));
+        context.remove(getListOfKey("domain/component/SE/key1"));
         assertEquals(context.getValue("domain/component/key1"), "value1");
     }
 
@@ -88,7 +88,7 @@ public class ContextLookupTest {
         field.set(context, new ContextStore(new File("target/test-classes/contextdata.xml")));
     }
 
-    private List<String> getKeyList(String key) {
+    private List<String> getListOfKey(String key) {
         ArrayList<String> list = new ArrayList<String>();
         list.add(key);
         return list;
