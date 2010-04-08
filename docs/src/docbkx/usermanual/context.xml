@@ -14,8 +14,8 @@
     In OpenEngSB every component, be it a ServiceEngine or a ServiceUnit, can have its own configuration. This
     configuration consists of key value pairs, both strings. The keys of this "context store" are built up hierachically
     and basically follow this structure:
-    <literal>contextId/domainName/componentName/keyName</literal>
-    . These configuration settings are stored in an XML file named
+    <literal>contextId/domainName/componentName/keyName</literal>.
+    These configuration settings are stored in an XML file named
     <literal>contextdata.xml</literal>
     located in the
     <literal>data/openengsb/context/</literal>
@@ -36,55 +36,56 @@
           any properties can be set "hard coded" within the
           <literal>loadDefaultConfig()</literal>
           method in the
-          <literal>ContextStore</literal>
-          -class. Values provided by this way are referred as "core" properties.
+          <literal>ContextStore</literal>-class. Values provided by this way are called "core" properties.
         </para>
       </listitem>
       <listitem>
         In SUs
         <para>
           Each SU, to be more precise each endpoint, has a property called "contextProperties" which is of the type
-          <literal>HashMap&lt;String, HashMap&lt;String, String>></literal>
-          . The string keys provide the contextId the corresponding HashMap is for (of course the keys there don't need
-          to contain the contextId any more). This property is normally injected via Spring and defined in the xbean.xml
-          file.
-
-          Example:
+          <literal>HashMap&lt;String, HashMap&lt;String, String>></literal>.
+          The string keys provide the contextId the corresponding HashMap is for (of course the keys there don't need
+          to contain the contextId any more). This property is normally injected to the endpoint via Spring and
+          defined in the xbean.xml file.
+        </para>
+        <para>
+          Example for such bean:
           <programlisting format="linespecific" language="xml">
-            <bean id="contextProperties" class="java.util.HashMap">
-              <constructor-arg type="java.util.Map">
-                <map key-type="java.lang.String" value-type="java.util.Map">
-                  <entry key="42">
-                    <map key-type="java.lang.String" value-type="java.lang.String">
-                      <entry key="scm/svn/namespace" value="urn:openengsb:svn" />
-                      <entry key="scm/svn/servicename" value="svnService" />
-                    </map>
-                  </entry>
-                </map>
-              </constructor-arg>
-            </bean>
+            &lt;bean id="contextProperties" class="java.util.HashMap">
+              &lt;constructor-arg type="java.util.Map">
+                &lt;map key-type="java.lang.String" value-type="java.util.Map">
+                  &lt;entry key="42">
+                    &lt;map key-type="java.lang.String" value-type="java.lang.String">
+                      &lt;entry key="scm/svn/namespace" value="urn:openengsb:svn" />
+                      &lt;entry key="scm/svn/servicename" value="svnService" />
+                    &lt;/map>
+                  &lt;/entry>
+                &lt;/map>
+              &lt;/constructor-arg>
+            &lt;/bean>
           </programlisting>
-
+        </para>
+        <para>
           When a SU gets started, these values, if provided, are sent to the context to get stored there. To mark them
           as SU values, two hierarchy levels are added making an entry look like
-          <literal>contextId/domainName/componentName/SU/endpointName/keyName</literal>
-          . When an endpoint is closed, it unregisters its values. Therefore the endpointName was added to the path to
+          <literal>contextId/domainName/componentName/SU/endpointName/keyName</literal>.
+          When an endpoint is closed, it unregisters its values. Therefore the endpointName was added to the path to
           make its belongings unique.
         </para>
       </listitem>
       <listitem>
         In SEs
         <para>
-          Just like the SUs, SEs, or components, have such property which gets loaded from the file
+          Just like the SUs, SEs (or components) have such property which gets loaded from the file
           <literal>contextProperties.xml</literal>
           located in the ClassPath at startup. When this file is missing that means that there are no properties to
           register. Due to the fact that a service engine cannot sent messages to the message router by itself, it is
           dependent on a service unit to undertake this job. So when an endpoint of this SE is to be started, it looks
           up whether its SE has values needed to be registered and if so, it gets its properties and passes them to the
           context. The structure of SE properties looks like this:
-          <literal>contextId/domainName/componentName/SE/keyName</literal>
-          .
-
+          <literal>contextId/domainName/componentName/SE/keyName</literal>.
+        </para>
+        <para>
           Similar to SUs, this properties also need to be deleted at shutdown of the SE. Due to the fact that it is
           already too late for that when the component is to be shut down (the endpoints are already gone at that
           point), the values are deleted anticipatory when the last endpoint of this SE gets deactivated. When the
@@ -102,7 +103,8 @@
         The lookup strategy for properties is Core -> SU -> SE. By doing this, default values of SEs can be
         overwritten by SUs, and they anon can be overwritten from the core. When the key was not found on that
         hierarchical level, the search continues one level up and so on.
-
+      </para>
+      <para>
         Let's give an example: if you request the key
         <literal>context/domain/component/key</literal>
         and the store contains these values:
@@ -113,9 +115,7 @@
           context/domain/component/SU/endpoint2/key value4
         </programlisting>
         you would get either
-        <listing>value3</listing>
-        or
-        <listing>value4</listing>
+        <literal>value3</literal> or <literal>value4</literal>
         (basically you would get value3 because the list is sorted but that does not matter within this context).
       </para>
     </section>
@@ -124,7 +124,8 @@
       <para>
         When a request is made to get all keys and values of a certain path, the whole core, SU and SE-structure
         is examined and all keys are collected considering the above mentioned order.
-
+      </para>
+      <para>
         Giving an example: you request all values from
         <literal>context/domain/component</literal>
         and the store holds these values:
@@ -138,8 +139,7 @@
           context/domain/component/SU/2/key4 value4
         </programlisting>
         the values you get are
-        <literal>value1, value2, value3 and value4</literal>
-        .
+        <literal>value1, value2, value3 and value4</literal>.
       </para>
     </section>
   </section>
