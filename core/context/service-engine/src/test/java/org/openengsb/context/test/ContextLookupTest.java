@@ -17,13 +17,15 @@
  */
 package org.openengsb.context.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.codehaus.plexus.util.FileUtils;
 import org.junit.After;
@@ -42,10 +44,10 @@ public class ContextLookupTest {
         context.setCurrentId("42");
     }
 
-    @After
     /**
      * Delete automatically created configuration file
      */
+    @After
     public void tearDown() throws IOException {
         FileUtils.deleteDirectory("data");
     }
@@ -54,15 +56,29 @@ public class ContextLookupTest {
     public void testValueLookup() {
         assertEquals(context.getValue("domain/key1"), "value1");
         assertEquals(context.getValue("domain/component/key1"), "value1core");
-        
+
         context.remove(getKeyList("domain/component/key1"));
         assertEquals(context.getValue("domain/component/key1"), "value1su");
-        
+
         context.remove(getKeyList("domain/component/SU/1/key1"));
         assertEquals(context.getValue("domain/component/key1"), "value1su");
-        
+
         context.remove(getKeyList("domain/component/SU/2/key1"));
         assertEquals(context.getValue("domain/component/key1"), "value1se");
+
+        context.remove(getKeyList("domain/component/SE/key1"));
+        assertEquals(context.getValue("domain/component/key1"), "value1");
+    }
+
+    @Test
+    public void testAllValuesLookup() {
+        Map<String, String> keys = new HashMap<String, String>();
+        keys.put("key1", "value1");
+        keys.put("key2", "value2");
+        keys.put("key3", "value3");
+        keys.put("key4", "value4");
+
+        assertEquals(context.getAllValues("domain2/component"), keys);
     }
 
     private void setContextStore() throws IllegalArgumentException, IllegalAccessException, SecurityException,
@@ -71,7 +87,7 @@ public class ContextLookupTest {
         field.setAccessible(true);
         field.set(context, new ContextStore(new File("target/test-classes/contextdata.xml")));
     }
-    
+
     private List<String> getKeyList(String key) {
         ArrayList<String> list = new ArrayList<String>();
         list.add(key);

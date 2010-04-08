@@ -37,4 +37,25 @@
     <key>/42/domain/component/SU/2/key1</key>
     <value>value1su</value>
   </entries>
+  
+  <entries>
+    <key>/42/domain2/key1</key>
+    <value>value1</value>
+  </entries>
+  <entries>
+    <key>/42/domain2/component/key1</key>
+    <value>value1</value>
+  </entries>
+  <entries>
+    <key>/42/domain2/component/SE/key2</key>
+    <value>value2</value>
+  </entries>
+  <entries>
+    <key>/42/domain2/component/SU/1/key3</key>
+    <value>value3</value>
+  </entries>
+  <entries>
+    <key>/42/domain2/component/SU/2/key4</key>
+    <value>value4</value>
+  </entries>
 </XMLContext>
