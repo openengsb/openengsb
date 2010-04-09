@@ -19,6 +19,8 @@ package org.openengsb.xmpp;
 
 public class XMPPNotifierException extends RuntimeException {
 
+    private static final long serialVersionUID = -8417956479960537854L;
+
     public XMPPNotifierException() {
     }
 

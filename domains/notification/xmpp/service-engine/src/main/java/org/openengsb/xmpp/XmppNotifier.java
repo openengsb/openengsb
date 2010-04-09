@@ -19,6 +19,8 @@ package org.openengsb.xmpp;
 
 import java.io.ByteArrayInputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
 import org.jivesoftware.smack.XMPPConnection;
@@ -33,6 +35,7 @@ import org.openengsb.drools.model.Attachment;
 import org.openengsb.drools.model.Notification;
 
 public class XmppNotifier implements NotificationDomain {
+    private Log log = LogFactory.getLog(getClass());
 
     private XMPPConnection connection;
     private String password;
@@ -44,7 +47,7 @@ public class XmppNotifier implements NotificationDomain {
 
     private void connect() {
         if (this.connection.isConnected()) {
-            throw new XMPPNotifierException("Already an open connection, disconnect first.");
+            throw new XMPPNotifierException("Connection already open, disconnect first.");
         }
 
         try {
@@ -56,7 +59,7 @@ public class XmppNotifier implements NotificationDomain {
             transferManager = new FileTransferManager(connection);
             FileTransferNegotiator.setServiceEnabled(connection, true);
         } catch (XMPPException e) {
-            throw new XMPPNotifierException("Connect to server failed", e);
+            throw new XMPPNotifierException("Connecting to server failed.", e);
         }
     }
 
@@ -105,27 +108,29 @@ public class XmppNotifier implements NotificationDomain {
             try {
                 transfer.sendStream(new ByteArrayInputStream(attachment.getData()), attachment.getName(), attachment
                         .getData().length, attachment.getType());
-                // transfer.sendFile(new File("/home/grumpo/testfile"),
-                // "You won't believe this!");
             } catch (Exception e1) {
-                System.out.println("Sending File failed.");
-                e1.printStackTrace();
+                log.error("Sending File failed. Reason: " + e1.getMessage());
             }
-            while (!transfer.isDone()) {
-                System.out.println("STATE: " + transfer.getStatus() + transfer.getException());
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                }
+            waitForTransfer(transfer);
+            if (!FileTransferNegotiator.isServiceEnabled(connection)) {
+                log.error("FileTransfer Service is not enabled!");
+            } else {
+                log.info("FileTransfer Service is enabled!");
+            }
+            log.debug("Status :: " + transfer.getStatus() + " Error :: " + transfer.getError() + " Exception :: "
+                    + transfer.getException());
+            log.debug("Is it done? " + transfer.isDone());
+        }
+    }
 
+    private void waitForTransfer(OutgoingFileTransfer transfer) {
+        while (!transfer.isDone()) {
+            log.debug("STATE: " + transfer.getStatus() + transfer.getException());
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                log.error("Waiting for Transfer failed. Reason: " + e.getMessage());
             }
-            if (!FileTransferNegotiator.isServiceEnabled(connection))
-                System.out.println("Service is not enabled!");
-            else
-                System.out.println("Service is enabled!");
-            System.out.println("Status :: " + transfer.getStatus() + " Error :: " + transfer.getError()
-                    + " Exception :: " + transfer.getException());
-            System.out.println("Is it done? " + transfer.isDone());
         }
     }
 
