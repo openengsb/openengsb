@@ -59,6 +59,7 @@ public class ContextRegistrationTest {
         callMethod(endpoint, "unregister");
 
         Mockito.verify(contextHelper, Mockito.never()).store(Mockito.anyMap());
+        Mockito.verify(contextHelper, Mockito.never()).remove(Mockito.anyList());
     }
 
     @Test
