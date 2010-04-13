@@ -181,10 +181,6 @@ public class ContextStore {
 
         // FIXME: What is this for? It seems that this path is not even created
         addContext("42/test/maven-test/config/executionRequestProperties");
-
-        setValue("42/edb/namespace", "urn:openengsb:edb");
-        setValue("42/edb/servicename", "edb");
-        setValue("42/edb/event/servicename", "edbEvent");
     }
 
     private void save() {
