@@ -210,7 +210,12 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     private void init() {
         setupLibrary();
-        SvnCommandFactory.clientManager = SVNClientManager.newInstance();
+        if(username != null && password != null) {
+            SvnCommandFactory.clientManager = SVNClientManager.newInstance(null, username, password);
+        }
+        else {
+            SvnCommandFactory.clientManager = SVNClientManager.newInstance();
+        }
     }
 
     private SVNClientManager getClientManager() {

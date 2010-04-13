@@ -48,6 +48,8 @@ public class SvnListBranchesCommand extends AbstractSvnCommand<List<String>> imp
         SVNRepository repository;
         try {
             repository = SVNRepositoryFactory.create(repositoryUrl);
+            // FIXME: how to get username and password?
+            // repository.setAuthenticationManager(new BasicAuthenticationManager(username, password));
         } catch (SVNException exception) {
             throw new ScmException(exception);
         }

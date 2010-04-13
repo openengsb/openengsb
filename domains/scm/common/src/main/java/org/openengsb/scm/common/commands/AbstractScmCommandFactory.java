@@ -51,6 +51,9 @@ public abstract class AbstractScmCommandFactory implements CommandFactory {
     private String developerConnection; // expected to have full access
     private URI developerConnectionUri;
 
+    protected String username;
+    protected String password;
+
     /* interface implementation */
 
     /**
@@ -293,6 +296,14 @@ public abstract class AbstractScmCommandFactory implements CommandFactory {
 
     public void setDeveloperConnection(String developerConnection) {
         this.developerConnection = developerConnection;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     /* end getters and setters */
