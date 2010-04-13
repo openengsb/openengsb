@@ -1,16 +1,3 @@
-package org.openengsb.context;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import org.openengsb.contextcommon.Context;
-import org.openengsb.contextcommon.ContextHelperExtended;
-import org.openengsb.contextcommon.ContextStore;
-import org.openengsb.util.WorkingDirectory;
-
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  * 
@@ -26,6 +13,18 @@ import org.openengsb.util.WorkingDirectory;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+package org.openengsb.context;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.openengsb.contextcommon.Context;
+import org.openengsb.contextcommon.ContextHelperExtended;
+import org.openengsb.contextcommon.ContextStore;
+import org.openengsb.util.WorkingDirectory;
+
 public class EndpointContextHelperImpl implements ContextHelperExtended {
 
     private ContextStore contextStore = new ContextStore(WorkingDirectory.getFile("context", "contextdata.xml"));
@@ -35,12 +34,33 @@ public class EndpointContextHelperImpl implements ContextHelperExtended {
     @Override
     public Map<String, String> getAllValues(String path) {
         Context ctx = contextStore.getContext(currentId + "/" + path);
-        Set<String> keys = ctx.getKeys();
         Map<String, String> values = new HashMap<String, String>();
-        for (String key : keys) {
-            values.put(key, ctx.get(key));
+
+        collectValuesFromContext(values, ctx);
+
+        if (ctx.getChild("SU") != null) {
+            collectSUValues(values, ctx.getChild("SU"));
         }
+
+        if (ctx.getChild("SE") != null) {
+            collectValuesFromContext(values, ctx.getChild("SE"));
+        }
+
         return values;
+    }
+    
+    private void collectValuesFromContext(Map<String, String> values, Context ctx) {
+        for (String key : ctx.getKeys()) {
+            if (!values.containsKey(key)) {
+                values.put(key, ctx.get(key));
+            }
+        }
+    }
+    
+    private void collectSUValues(Map<String, String> values, Context sUs) {
+        for (String name : sUs.getChildrenNames()) {
+            collectValuesFromContext(values, sUs.getChild(name));
+        }
     }
 
     @Override
@@ -53,7 +73,36 @@ public class EndpointContextHelperImpl implements ContextHelperExtended {
         String key = pathAndKey.substring(pathAndKey.lastIndexOf('/') + 1);
 
         Context ctx = contextStore.getContext(currentId + "/" + path);
-        return ctx.get(key);
+
+        do {
+            String value = getValueFromCoreSUSE(ctx, key);
+            if (value != null) {
+                return value;
+            }
+
+            ctx = ctx.getParent();
+        } while (ctx != null);
+
+        return null;
+    }
+
+    private String getValueFromCoreSUSE(Context ctx, String key) {
+        if (ctx.containsKey(key)) {
+            return ctx.get(key);
+        } else if (ctx.getChild("SU") != null) {
+            Context sUs = ctx.getChild("SU");
+            for (String name : sUs.getChildrenNames()) {
+                Context su = sUs.getChild(name);
+                if (su.containsKey(key)) {
+                    return su.get(key);
+                }
+            }
+        }
+        if (ctx.getChild("SE") != null && ctx.getChild("SE").containsKey(key)) {
+            return ctx.getChild("SE").get(key);
+        }
+
+        return null;
     }
 
     @Override
@@ -85,5 +134,4 @@ public class EndpointContextHelperImpl implements ContextHelperExtended {
     public void setCurrentId(String currentId) {
         this.currentId = currentId;
     }
-
 }

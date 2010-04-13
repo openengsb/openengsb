@@ -30,11 +30,15 @@ import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 public class ContextHelperImpl implements ContextHelperExtended {
 
     private final OpenEngSBEndpoint endpoint;
-    private final MessageProperties msgProperties;
+    private MessageProperties msgProperties;
 
     public ContextHelperImpl(OpenEngSBEndpoint endpoint, MessageProperties msgProperties) {
         this.endpoint = endpoint;
         this.msgProperties = msgProperties;
+    }
+    
+    public void setContext(String context) {
+        this.msgProperties = new MessageProperties(context, null);
     }
 
     @Override

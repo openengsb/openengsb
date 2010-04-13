@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.Map.Entry;
@@ -38,7 +39,6 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.servicemix.client.DefaultServiceMixClient;
-import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
@@ -54,6 +54,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.contextcommon.ContextHelperImpl;
+import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
@@ -124,13 +126,15 @@ public class CommitServiceTest extends SpringTestSupport {
     public void setUp() throws Exception {
         super.setUp();
 
-        DefaultComponent comp = new DefaultComponent();
+        OpenEngSBComponent comp = new OpenEngSBComponent();
         notificationEndpoint = new NotificationMockEndpoint();
         notificationEndpoint.setServiceUnit(comp.getServiceUnit());
-        notificationEndpoint.setService(new QName("urn:openengsb:notification", "notificationService"));
+        notificationEndpoint.setService(new QName("urn:openengsb:testnotification", "notificationTestService"));
         notificationEndpoint.setEndpoint("notificationEndpoint");
         comp.addEndpoint(notificationEndpoint);
         jbi.activateComponent(comp, "notification");
+
+        storeNotificationContext();
 
         makeParameters(this.config);
         CommitServiceTest.handler = this.config.loadDefaultRepository();
@@ -424,7 +428,7 @@ public class CommitServiceTest extends SpringTestSupport {
 
     /**
      * Creates a new ServiceMixClieant
-     *
+     * 
      * @return The new ServiceMixClient
      */
     private DefaultServiceMixClient createClient() throws JBIException {
@@ -510,5 +514,15 @@ public class CommitServiceTest extends SpringTestSupport {
         addGCToMessagePart(gc1, body, CommitServiceTest.USER);
         addGCToMessagePart(gc2, body, CommitServiceTest.USER);
         CommitServiceTest.persistMessage = DocumentHelper.createDocument(root);
+    }
+    
+    private void storeNotificationContext() {
+        ContextHelperImpl contextHelper = new ContextHelperImpl(notificationEndpoint, null);
+        contextHelper.setContext("42");
+        
+        HashMap<String, String> newProperties = new HashMap<String, String>();
+        newProperties.put("notification/namespace", "urn:openengsb:testnotification");
+        newProperties.put("notification/servicename", "notificationTestService");
+        contextHelper.store(newProperties);
     }
 }

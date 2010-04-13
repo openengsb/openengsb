@@ -28,7 +28,7 @@ import org.openengsb.drools.IssuesDomain;
  */
 public class TracEndpoint extends LinkingEndpoint<IssuesDomain> {
     private TracConnector tracConnector;
-
+    
     @Override
     protected TracConnector getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         return tracConnector;

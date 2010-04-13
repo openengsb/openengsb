@@ -25,7 +25,7 @@ connector-issues-trac
   
   * addComment
   
-  * updateIssue (ATTENTION: Currently not available due to the lack of transportability of a HashMap!)
+  * updateIssue
   
   * deleteIssue
   
@@ -40,6 +40,7 @@ connector-issues-trac
   To create rules for the issue domain you will need to add following imports to drools (knowledge bases > org.openengsb > advanced view)
   
 ---
+import java.util.HashMap
 import org.openengsb.drools.IssuesDomain
 import org.openengsb.drools.model.Issue
 
@@ -88,6 +89,8 @@ global org.openengsb.drools.IssuesDomain issue
 
   With config.setToConnector(issue, "CONTEXTSTORENAME") you can switch your projects tracConnector
 
+**Example for creating an issue
+
 ---
 when
    e : Event( name == "tracOpenEngSBcreate" )
@@ -99,4 +102,16 @@ then
    i.setReporter("user");
    i.setPriority(Issue.priorityURGENT);
    issue.createIssue(i);
+--- 
+
+**Example for updating an issue
+
+---
+dialect 'java'
+when
+    e : Event( name == "tracOpenEngSBcreate" )
+then
+   HashMap<String, Object> changes = new HashMap<String, Object>();
+   changes.put(Issue.fieldPRIORITY, Issue.priorityNORMAL);
+   issue.updateIssue(2, "Update comment", changes);
 --- 

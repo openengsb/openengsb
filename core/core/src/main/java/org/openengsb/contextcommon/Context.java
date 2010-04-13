@@ -88,6 +88,10 @@ public class Context {
     public Set<String> getChildrenNames() {
         return new TreeSet<String>(children.keySet());
     }
+    
+    public boolean containsKey(String key) {
+        return values.containsKey(key);
+    }
 
     public Set<String> getKeys() {
         return new TreeSet<String>(values.keySet());
@@ -113,6 +117,10 @@ public class Context {
 
     public void remove(String key) {
         values.remove(key);
+    }
+    
+    public Context getParent() {
+        return parent;
     }
 
     @Override

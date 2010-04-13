@@ -21,6 +21,7 @@ package org.openengsb.edb.jbi.service;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.Map.Entry;
 
@@ -50,6 +51,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.contextcommon.ContextHelperImpl;
+import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
@@ -106,6 +109,8 @@ public class RepositoryRemoveTest extends SpringTestSupport {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        storeEDBContext();
+        
         makeParameters(this.config);
         RepositoryRemoveTest.handler = this.config.loadDefaultRepository();
         this.client = createClient();
@@ -184,14 +189,32 @@ public class RepositoryRemoveTest extends SpringTestSupport {
         return inOut;
     }
 
-    private Document sendMessageAndParseResponse(final Document doc) throws MessagingException, IOException,
-            SAXException, TransformerException {
+    private Document sendMessageAndParseResponse(final Document doc) throws Exception {
         final InOut inout = createInOutMessage(doc.asXML());
         this.client.sendSync(inout);
         if (inout.getStatus() == ExchangeStatus.ERROR) {
             fail("received error");
         }
         return parseResponse(inout.getOutMessage());
+    }
+    
+    private void storeEDBContext() throws Exception {
+        OpenEngSBComponent comp = new OpenEngSBComponent();
+        NotificationMockEndpoint dummy = new NotificationMockEndpoint();
+        dummy.setServiceUnit(comp.getServiceUnit());
+        dummy.setService(new QName("urn:openengsb:test", "TestService"));
+        dummy.setEndpoint("dummyEndpoint");
+        comp.addEndpoint(dummy);
+        jbi.activateComponent(comp, "dummy");
+        
+        ContextHelperImpl contextHelper = new ContextHelperImpl(dummy, null);
+        contextHelper.setContext("42");
+        
+        HashMap<String, String> newProperties = new HashMap<String, String>();
+        newProperties.put("edb/namespace", "urn:openengsb:edb");
+        newProperties.put("edb/servicename", "edb");
+        
+        contextHelper.store(newProperties);
     }
 
     private Document parseResponse(final NormalizedMessage response) throws IOException, SAXException,

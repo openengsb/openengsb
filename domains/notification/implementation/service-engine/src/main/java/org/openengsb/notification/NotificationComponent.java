@@ -17,32 +17,14 @@
  */
 package org.openengsb.notification;
 
-import java.util.List;
-
-import org.apache.servicemix.common.DefaultComponent;
+import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.core.endpoints.EventForwardEndpoint;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="notificationComponent"
  *                         description="Notification Component"
  */
-public class NotificationComponent extends DefaultComponent {
-    private OpenEngSBEndpoint[] endpoints;
-
-    public OpenEngSBEndpoint[] getEndpoints() {
-        return this.endpoints;
-    }
-
-    public void setEndpoints(OpenEngSBEndpoint[] endpoints) {
-        this.endpoints = endpoints;
-    }
-
-    @Override
-    protected List<?> getConfiguredEndpoints() {
-        return asList(this.endpoints);
-    }
-
+public class NotificationComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { NotificationEndpoint.class, EventForwardEndpoint.class };

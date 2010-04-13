@@ -53,6 +53,11 @@
         <surname>Zehetner</surname>
         <affiliation>christoph.zehetner [at] gmx.at</affiliation>
       </author>
+      <author>
+        <firstname>Michael</firstname>
+        <surname>Heil</surname>
+        <affiliation>michael.heil [at] chello.at</affiliation>
+      </author>
     </authorgroup>
   </bookinfo>
 
@@ -66,4 +71,5 @@
   <xi:include href="usermanual/domains.xml"/>
   <xi:include href="usermanual/features.xml"/>
   <xi:include href="usermanual/workflow.xml"/>
+  <xi:include href="usermanual/context.xml"/>
 </book>

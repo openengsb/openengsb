@@ -44,7 +44,6 @@
   <bean id="tracConnector" class="org.openengsb.trac.TracConnector">
     <property name="ticket" ref="ticket" />
   </bean>
-  
+    
   <trac:tracEndpoint service="trc:tracService" endpoint="tracEndpoint" tracConnector="#tracConnector" />
-
 </beans>

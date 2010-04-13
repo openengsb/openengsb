@@ -20,6 +20,19 @@
   xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <email:emailEndpoint endpoint="emailEndpoint" service="eml:emailService" />
+  <bean id="contextProperties" class="java.util.HashMap">
+    <constructor-arg type="java.util.Map">
+      <map key-type="java.lang.String" value-type="java.util.Map">
+        <entry key="42">
+          <map key-type="java.lang.String" value-type="java.lang.String">
+            <entry key="notification/email/user" value="openengsb.notification.test@gmail.com" />
+            <entry key="notification/email/password" value="pwd-openengsb" />
+          </map>
+        </entry>
+      </map>
+    </constructor-arg>
+  </bean>
+
+  <email:emailEndpoint endpoint="emailEndpoint" service="eml:emailService" contextProperties="#contextProperties" />
 
 </beans>

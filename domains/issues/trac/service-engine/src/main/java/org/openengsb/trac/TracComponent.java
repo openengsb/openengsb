@@ -17,30 +17,13 @@
  */
 package org.openengsb.trac;
 
-import java.util.List;
-
-import org.apache.servicemix.common.DefaultComponent;
+import org.openengsb.core.OpenEngSBComponent;
 
 /**
  * @org.apache.xbean.XBean element="tracComponent"
  *                         description="Trac Issue Tracker Component"
  */
-public class TracComponent extends DefaultComponent {
-    private TracEndpoint[] endpoints;
-
-    public TracEndpoint[] getEndpoints() {
-        return endpoints;
-    }
-
-    public void setEndpoints(TracEndpoint[] endpoints) {
-        this.endpoints = endpoints;
-    }
-
-    @Override
-    protected List<?> getConfiguredEndpoints() {
-        return asList(endpoints);
-    }
-
+public class TracComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { TracEndpoint.class };
