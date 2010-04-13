@@ -26,8 +26,8 @@
       is targeted to developers who want to connect a tool to OpenEngSB.
       A tool connector is an adapter between a tool and OpenEngSB.
       Every connector belongs to a tool domain which defines the common interface of
-      all its tool connectors. So the tool connector has to translate all calls to the
-      functions defined by the domain to the tool API. Further more it has to send Event-Objects
+      all its tool connectors. This means that the tool connector has to translate all calls to the
+      methods defined by the domain to the tool API. Furthermore it has to send Event-Objects
       to the bus when certain events happen in the tool. The Event-Objects are also defined by the
       tool domain.
     </para>
@@ -64,7 +64,7 @@
         These projects have to be located at
         domains/<emphasis>domain</emphasis>/<emphasis>toolname</emphasis>/{service-engine, service-unit}/.
         An easy way to get started is to copy an existing connector. The most simple connector is the email
-        connector of the notification domain.
+        connector of the notification domain. You should use it.
       </para>
     </section>
 
