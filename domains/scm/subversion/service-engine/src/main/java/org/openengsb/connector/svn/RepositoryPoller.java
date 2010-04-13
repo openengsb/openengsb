@@ -23,12 +23,19 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 public class RepositoryPoller implements Job {
+    private MergeResult checkoutResult;
+
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        SvnScmImplementation svn = new SvnScmImplementation((SvnConfiguration) context.getJobDetail().getJobDataMap()
-                .get("configuration"));
+        if (checkoutResult == null) {
+            SvnScmImplementation svn = new SvnScmImplementation((SvnConfiguration) context.getJobDetail()
+                    .getJobDataMap().get("configuration"));
 
-        MergeResult checkoutResult = svn.checkout("openengsb");
+            checkoutResult = svn.checkout("openengsb");
+        }
+        if (checkoutResult.getAdds().size() > 0) {
+            // Got new adds - create event
+        }
     }
 
 }
