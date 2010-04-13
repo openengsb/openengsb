@@ -23,34 +23,44 @@ import org.openengsb.drools.model.MergeResult;
 
 public class RepositoryPoller{
     private MergeResult checkoutResult;
-    private List<String> branches;
+    private List<String> branches = null;
     private SvnConfiguration configuration = null;
 
     public void poll() {
+        
         SvnScmImplementation svn = new SvnScmImplementation((SvnConfiguration) configuration);
-
+        
+        
         if (checkoutResult == null) {
             checkoutResult = svn.checkout("openengsb");
         }
-
-        List<String> tempbranches = svn.listBranches();
-        if ((branches == null && tempbranches.size() > 0) || (branches.size() < tempbranches.size())) {
-            // Got new branches - create event
-        } else if (branches != null && branches.size() > tempbranches.size()) {
-            // Lost some branches - create event
-        } else if (branches != null) {
-            for (int i = 0; i < branches.size(); i++) {
-                if (!branches.get(i).equals(tempbranches.get(i))) {
-                    // Branch changed - create event
-                }
-            }
-        }
-
+       
+        List<String> tempbranches = svn.listBranches(); 
+        if (branches == null) { 
+            branches = tempbranches; 
+            System.out.println(tempbranches); 
+        } else { 
+            System.out.println(tempbranches.size() + " " + branches.size()); 
+            if (branches.size() < tempbranches.size()) { 
+                System.out.println("// Got new branches - create event"); 
+            } else if (branches.size() > tempbranches.size()) { 
+                System.out.println("// Lost some branches - create event"); 
+            } else { 
+                for (int i = 0; i < branches.size(); i++) { 
+                    if (!branches.get(i).equals(tempbranches.get(i))) { 
+                        System.out.println("// Branch changed - create event:" + branches.get(i) + "-" 
+                                + tempbranches.get(i)); 
+                    } 
+                } 
+            } 
+        } 
+ 
         branches = tempbranches;
-
+        
         if (checkoutResult.getAdds().size() > 0) {
             // Got new adds - create event
         }
+        
     }
     public void setConfiguration(SvnConfiguration configuration) {
         this.configuration = configuration;

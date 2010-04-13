@@ -23,9 +23,9 @@
   <!-- Configuration bean for the SVN implementation. -->
   <bean id="workingCopy" class="org.openengsb.connector.svn.SvnConfiguration">
     <property name="workingCopy" value="testProject" />
-    <property name="developerConnection" value="svn://localhost/testProject" />
-    <property name="username" value="user" />
-    <property name="password" value="password" />
+    <property name="developerConnection" value="https://localhost/svn/test/test/trunk" />
+    <property name="username" value="test" />
+    <property name="password" value="test" />
   </bean>
 
   <bean id="repositoryPoller" class="org.openengsb.connector.svn.RepositoryPoller">
