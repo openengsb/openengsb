@@ -26,7 +26,7 @@ import org.openengsb.core.OpenEngSBComponent;
 public class SvnComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class[] { SvnEventEndpoint.class };
+        return new Class[] { SvnEndpoint.class, SvnEventEndpoint.class };
     }
 
 }

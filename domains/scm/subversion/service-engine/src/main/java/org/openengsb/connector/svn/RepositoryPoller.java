@@ -24,11 +24,9 @@ import org.openengsb.drools.model.MergeResult;
 public class RepositoryPoller {
     private MergeResult checkoutResult;
     private List<String> branches;
-    private SvnConfiguration configuration;
+    private SvnConnector svn;
 
     public void poll() {
-        SvnConnector svn = new SvnConnector(configuration);
-
         if (checkoutResult == null) {
             checkoutResult = svn.checkout("openengsb");
         }
@@ -58,7 +56,7 @@ public class RepositoryPoller {
     }
 
     public void setConfiguration(SvnConfiguration configuration) {
-        this.configuration = configuration;
+        svn = new SvnConnector(configuration);
     }
 
 }

@@ -61,26 +61,24 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
     private SVNClientManager clientManager;
 
     public SvnConnector(SvnConfiguration configuration) {
-        username = configuration.getUsername();
-        password = configuration.getPassword();
-        workingCopy = configuration.getWorkingCopy();
-        developerConnection = configuration.getDeveloperConnection();
+        setUsername(configuration.getUsername());
+        setPassword(configuration.getPassword());
+        setWorkingCopy(configuration.getWorkingCopy());
+        setDeveloperConnection(configuration.getDeveloperConnection());
 
         setupLibrary();
-        if (username != null && password != null) {
-            clientManager = SVNClientManager.newInstance(null, username, password);
+        if (getUsername() != null && getPassword() != null) {
+            clientManager = SVNClientManager.newInstance(null, getUsername(), getPassword());
         } else {
             clientManager = SVNClientManager.newInstance();
         }
-
-        workingCopyFile = calculateWorkingCopyFile();
     }
 
     @Override
     public void add(String fileToAdd) {
         SVNWCClient client = clientManager.getWCClient();
 
-        File newFile = new File(workingCopy, fileToAdd);
+        File newFile = new File(getWorkingCopyFile(), fileToAdd);
         boolean force = false;
         boolean mkdir = newFile.isDirectory();
         boolean climbUnversionedParents = true;
@@ -93,7 +91,7 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
             throw new ScmException("File " + fileToAdd + " does not exist in working copy.");
         }
 
-        if (!newFile.getAbsolutePath().startsWith(workingCopyFile.getAbsolutePath())) {
+        if (!newFile.getAbsolutePath().startsWith(getWorkingCopyFile().getAbsolutePath())) {
             throw new ScmException("File " + fileToAdd
                     + " left the working copy. Are you trying to do something nasty?");
         }
@@ -147,8 +145,9 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
     public MergeResult checkout(String author) {
         try {
             // set up parameters
-            SVNURL svnUrl = SVNURL.create(getRepositoryUri().getScheme(), getRepositoryUri().getUserInfo(),
-                    getRepositoryUri().getHost(), getRepositoryUri().getPort(), getRepositoryUri().getPath(), true);
+            SVNURL svnUrl = SVNURL.create(getDeveloperConnectionUri().getScheme(), getDeveloperConnectionUri()
+                    .getUserInfo(), getDeveloperConnectionUri().getHost(), getDeveloperConnectionUri().getPort(),
+                    getDeveloperConnectionUri().getPath(), true);
             SVNRevision revision = SVNRevision.HEAD;
             SVNDepth depth = SVNDepth.INFINITY;
 
@@ -167,7 +166,7 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
             });
 
             // call checkout
-            long longRevision = client.doCheckout(svnUrl, workingCopyFile, revision, revision, depth, true);
+            long longRevision = client.doCheckout(svnUrl, getWorkingCopyFile(), revision, revision, depth, true);
 
             MergeResult result = new MergeResult();
             result.setAdds(checkedOutFiles);
@@ -185,7 +184,7 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
         }
 
         // set up parameters
-        File[] paths = new File[] { workingCopyFile };
+        File[] paths = new File[] { getWorkingCopyFile() };
         if (subPath != null && !subPath.isEmpty()) {
             paths[0] = new File(paths[0], subPath);
         }
@@ -260,7 +259,7 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
         SVNWCClient client = clientManager.getWCClient();
 
         // set up parameters
-        File fileToDelete = new File(workingCopyFile, file);
+        File fileToDelete = new File(getWorkingCopyFile(), file);
         boolean force = false;
         boolean dryRun = false;
 
@@ -269,7 +268,7 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
             throw new ScmException("File " + fileToDelete + " does not exist in working copy.");
         }
 
-        if (!fileToDelete.getAbsolutePath().startsWith(workingCopyFile.getAbsolutePath())) {
+        if (!fileToDelete.getAbsolutePath().startsWith(getWorkingCopyFile().getAbsolutePath())) {
             throw new ScmException("File " + fileToDelete
                     + " left the working copy. Are you trying to do something nasty?");
         }
@@ -291,8 +290,8 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
         SVNRepository repository;
         try {
             repository = SVNRepositoryFactory.create(repositoryUrl);
-            if (username != null && password != null) {
-                repository.setAuthenticationManager(new BasicAuthenticationManager(username, password));
+            if (getUsername() != null && getPassword() != null) {
+                repository.setAuthenticationManager(new BasicAuthenticationManager(getUsername(), getPassword()));
             }
         } catch (SVNException exception) {
             throw new ScmException(exception);
@@ -357,8 +356,8 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
             boolean depthIsSticky = true;
 
             // perform call
-            client.doSwitch(workingCopyFile, branchUrl, pegRevision, revision, depth, allowUnversionedObstructions,
-                    depthIsSticky);
+            client.doSwitch(getWorkingCopyFile(), branchUrl, pegRevision, revision, depth,
+                    allowUnversionedObstructions, depthIsSticky);
         } catch (SVNException exception) {
             throw new ScmException(exception);
         }
@@ -396,9 +395,9 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
         // set up parameters
         File path = null;
         if (updatePath == null || HEAD_KEYWORD.equals(updatePath)) {
-            path = workingCopyFile;
+            path = getWorkingCopyFile();
         } else {
-            path = new File(workingCopyFile, updatePath);
+            path = new File(getWorkingCopyFile(), updatePath);
         }
 
         SVNRevision revision = SVNRevision.HEAD;
@@ -438,13 +437,14 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
          * For using over http:// and https://
          */
         DAVRepositoryFactory.setup();
-        /** Returns a Command that annotates each line of a file's content
-         * with additional data (revision and author of last modification) and
+        /**
+         * Returns a Command that annotates each line of a file's content with
+         * additional data (revision and author of last modification) and
          * returns the content. This call equals <code>getBlameCommand (file,
          * null);</code>
          * 
          * @param file The path to the file to be blamed. For using over svn://
-         * and svn+xxx://
+         *        and svn+xxx://
          */
         SVNRepositoryFactoryImpl.setup();
         /*
@@ -457,7 +457,7 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
         try {
             SVNRevision revision = null;
 
-            SVNInfo info = this.clientManager.getWCClient().doInfo(workingCopyFile, revision);
+            SVNInfo info = this.clientManager.getWCClient().doInfo(getWorkingCopyFile(), revision);
             SVNURL repositoryUrl = info.getRepositoryRootURL();
 
             return repositoryUrl;

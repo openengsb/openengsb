@@ -30,7 +30,6 @@ import org.openengsb.drools.model.MergeResult;
  *                         description="SVN event endpoint"
  */
 public class SvnEventEndpoint extends SimpleEventEndpoint {
-
     private SvnConnector svn;
 
     @Override
