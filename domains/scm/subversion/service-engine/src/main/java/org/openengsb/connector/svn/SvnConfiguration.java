@@ -17,14 +17,42 @@
  */
 package org.openengsb.connector.svn;
 
-import org.openengsb.connector.svn.commands.SvnCommandFactory;
+public class SvnConfiguration {
+    private String workingCopy;
+    private String developerConnection;
+    private String username;
+    private String password;
 
-/**
- * A sub-class of the SvnCommandFactory simply to be able to call it
- * Configfuration. This is done to hide the fact that CommandFactories are used
- * and instead suggest that they are Configuration-objects (which is actually
- * not untrue). This makes an SU-writer's job potentially less confusing.
- */
-public class SvnConfiguration extends SvnCommandFactory {
+    public String getWorkingCopy() {
+        return workingCopy;
+    }
+
+    public void setWorkingCopy(String workingCopy) {
+        this.workingCopy = workingCopy;
+    }
+
+    public String getDeveloperConnection() {
+        return developerConnection;
+    }
+
+    public void setDeveloperConnection(String developerConnection) {
+        this.developerConnection = developerConnection;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
 }

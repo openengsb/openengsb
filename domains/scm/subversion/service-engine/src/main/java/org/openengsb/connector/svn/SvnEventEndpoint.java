@@ -31,7 +31,7 @@ import org.openengsb.drools.model.MergeResult;
  */
 public class SvnEventEndpoint extends SimpleEventEndpoint {
 
-    private SvnScmImplementation svn;
+    private SvnConnector svn;
 
     @Override
     protected void handleEvent(Event e, ContextHelper contextHelper, MessageProperties msgProperties) {
@@ -46,7 +46,7 @@ public class SvnEventEndpoint extends SimpleEventEndpoint {
     }
 
     public void setConfiguration(SvnConfiguration configuration) {
-        svn = new SvnScmImplementation(configuration);
+        svn = new SvnConnector(configuration);
     }
 
 }

@@ -17,63 +17,24 @@
  */
 package org.openengsb.connector.svn;
 
-import java.util.Date;
-
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.ScmDomain;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.Trigger;
-import org.quartz.TriggerUtils;
-import org.quartz.impl.StdSchedulerFactory;
 
 /**
  * @org.apache.xbean.XBean element="svnEndpoint" description="SVN SCM Endpoint"
  */
 public class SvnEndpoint extends LinkingEndpoint<ScmDomain> {
-    private SvnConfiguration configuration = null;
-    private Scheduler scheduler;
-    private Integer pollInterval;
+    private SvnConfiguration configuration;
 
     @Override
     protected ScmDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-        return new SvnScmImplementation(configuration);
-    }
-
-    @Override
-    public void activate() throws Exception {
-        super.activate();
-
-        if (pollInterval != null) {
-            scheduler = new StdSchedulerFactory().getScheduler();
-            JobDetail job = new JobDetail("RepositoryPoller", null, RepositoryPoller.class);
-            job.getJobDataMap().put("configuration", configuration);
-            Trigger trigger = TriggerUtils.makeSecondlyTrigger(pollInterval);
-            trigger.setStartTime(new Date());
-            trigger.setName("PollTrigger");
-
-            scheduler.scheduleJob(job, trigger);
-            scheduler.start();
-        }
-    }
-
-    @Override
-    public void deactivate() throws Exception {
-        if (pollInterval != null) {
-            scheduler.shutdown();
-        }
-
-        super.deactivate();
+        return new SvnConnector(configuration);
     }
 
     public void setConfiguration(SvnConfiguration configuration) {
         this.configuration = configuration;
-    }
-
-    public void setPollInterval(Integer pollInterval) {
-        this.pollInterval = pollInterval;
     }
 
 }

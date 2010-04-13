@@ -21,27 +21,31 @@ import java.util.List;
 
 import org.openengsb.drools.model.MergeResult;
 
-public class RepositoryPoller{
+public class RepositoryPoller {
     private MergeResult checkoutResult;
     private List<String> branches;
-    private SvnConfiguration configuration = null;
+    private SvnConfiguration configuration;
 
     public void poll() {
-        SvnScmImplementation svn = new SvnScmImplementation((SvnConfiguration) configuration);
+        SvnConnector svn = new SvnConnector(configuration);
 
         if (checkoutResult == null) {
             checkoutResult = svn.checkout("openengsb");
         }
 
         List<String> tempbranches = svn.listBranches();
-        if ((branches == null && tempbranches.size() > 0) || (branches.size() < tempbranches.size())) {
-            // Got new branches - create event
-        } else if (branches != null && branches.size() > tempbranches.size()) {
-            // Lost some branches - create event
-        } else if (branches != null) {
-            for (int i = 0; i < branches.size(); i++) {
-                if (!branches.get(i).equals(tempbranches.get(i))) {
-                    // Branch changed - create event
+        if (branches == null) {
+            branches = tempbranches;
+        } else {
+            if (branches.size() < tempbranches.size()) {
+                // Got new branches - create event
+            } else if (branches.size() > tempbranches.size()) {
+                // Lost some branches - create event
+            } else {
+                for (int i = 0; i < branches.size(); i++) {
+                    if (!branches.get(i).equals(tempbranches.get(i))) {
+                        // Branch changed - create event
+                    }
                 }
             }
         }
@@ -52,6 +56,7 @@ public class RepositoryPoller{
             // Got new adds - create event
         }
     }
+
     public void setConfiguration(SvnConfiguration configuration) {
         this.configuration = configuration;
     }

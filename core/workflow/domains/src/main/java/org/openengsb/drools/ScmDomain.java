@@ -20,36 +20,22 @@ package org.openengsb.drools;
 import java.util.List;
 
 import org.openengsb.drools.model.MergeResult;
-import org.openengsb.drools.model.ScmLogEntry;
 
 public interface ScmDomain extends Domain {
+    public void add(String fileToAdd);
 
-    void add(String fileToAdd);
+    public MergeResult update(String updatePath);
 
-    MergeResult update(String updatePath);
+    public void switchBranch(String branchName);
 
-    void switchBranch(String branchName);
+    public List<String> listBranches();
 
-    MergeResult merge(String branchName);
+    public void delete(String file);
 
-    List<ScmLogEntry> log(List<String> files, String startRevision, String endRevision);
+    public MergeResult commit(String author, String commitMessage, String subPath);
 
-    List<String> listBranches();
+    public MergeResult checkout(String author);
 
-    MergeResult doImport(String sourcePath, String destinationPath, String commitMessage, String author);
-
-    void export(String destinationPath);
-
-    String diff(String oldFile, String newFile, String oldRevision, String newRevision);
-
-    void delete(String file);
-
-    MergeResult commit(String author, String commitMessage, String subPath);
-
-    MergeResult checkout(String author);
-
-    void branch(String branchName, String commitMessage);
-
-    String blame(String file, String revision);
+    public void branch(String branchName, String commitMessage);
 
 }

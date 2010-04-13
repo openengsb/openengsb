@@ -21,7 +21,7 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
   <!-- Configuration bean for the SVN implementation. -->
-  <bean id="workingCopy" class="org.openengsb.connector.svn.SvnConfiguration">
+  <bean id="configuration" class="org.openengsb.connector.svn.SvnConfiguration">
     <property name="workingCopy" value="testProject" />
     <property name="developerConnection" value="svn://localhost/testProject" />
     <property name="username" value="user" />
@@ -29,7 +29,7 @@
   </bean>
 
   <bean id="repositoryPoller" class="org.openengsb.connector.svn.RepositoryPoller">
-  	<property name="configuration" ref="workingCopy" />
+  	<property name="configuration" ref="configuration" />
   </bean>
   
   <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -52,6 +52,6 @@
     </property>
   </bean>
 
-  <svn:eventEndpoint service="subversion:eventService" endpoint="eventEndpoint" configuration="#workingCopy" />
+  <svn:eventEndpoint service="subversion:eventService" endpoint="eventEndpoint" configuration="#configuration" />
 
 </beans>
