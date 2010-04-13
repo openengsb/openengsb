@@ -20,18 +20,14 @@ package org.openengsb.connector.svn;
 import java.util.List;
 
 import org.openengsb.drools.model.MergeResult;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
-public class RepositoryPoller implements Job {
+public class RepositoryPoller{
     private MergeResult checkoutResult;
     private List<String> branches;
+    private SvnConfiguration configuration = null;
 
-    @Override
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        SvnScmImplementation svn = new SvnScmImplementation((SvnConfiguration) context.getJobDetail().getJobDataMap()
-                .get("configuration"));
+    public void poll() {
+        SvnScmImplementation svn = new SvnScmImplementation((SvnConfiguration) configuration);
 
         if (checkoutResult == null) {
             checkoutResult = svn.checkout("openengsb");
@@ -55,6 +51,9 @@ public class RepositoryPoller implements Job {
         if (checkoutResult.getAdds().size() > 0) {
             // Got new adds - create event
         }
+    }
+    public void setConfiguration(SvnConfiguration configuration) {
+        this.configuration = configuration;
     }
 
 }

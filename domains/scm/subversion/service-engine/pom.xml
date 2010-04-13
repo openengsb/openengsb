@@ -125,6 +125,10 @@
       <artifactId>servicemix-core</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-quartz</artifactId>
+    </dependency>
 
     <!-- Springframework dependencies -->
     <dependency>
@@ -156,11 +160,6 @@
       <artifactId>log4j</artifactId>
     </dependency>
     
-    <!-- Quartz -->
-    <dependency>
-      <groupId>quartz</groupId>
-      <artifactId>quartz</artifactId>
-    </dependency>
 
   </dependencies>
 

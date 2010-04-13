@@ -28,7 +28,30 @@
     <property name="password" value="password" />
   </bean>
 
-  <svn:svnEndpoint service="subversion:svnService" endpoint="svnEndpoint" configuration="#workingCopy" pollInterval="1" />
+  <bean id="repositoryPoller" class="org.openengsb.connector.svn.RepositoryPoller">
+  	<property name="configuration" ref="workingCopy" />
+  </bean>
+  
+  <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+    <property name="targetObject" ref="repositoryPoller" />
+    <property name="targetMethod" value="poll" />
+  </bean>
+  
+  <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+    <!-- see the example of method invoking job above -->
+    <property name="jobDetail" ref="jobDetail" />
+    <property name="startDelay" value="1000" />
+    <property name="repeatInterval" value="5000" />
+  </bean>
+  
+  <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <property name="triggers">
+        <list>
+            <ref bean="simpleTrigger" />
+        </list>
+    </property>
+  </bean>
+
   <svn:eventEndpoint service="subversion:eventService" endpoint="eventEndpoint" configuration="#workingCopy" />
 
 </beans>
