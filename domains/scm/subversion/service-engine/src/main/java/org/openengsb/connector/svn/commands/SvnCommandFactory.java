@@ -37,7 +37,6 @@ import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 
-
 /**
  * Actual implementation of the AbstractCommandFactory-template. All
  * SVN-specific Command-implementations are instantiated here and filled with
@@ -51,7 +50,6 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public AddCommand createAddCommand() {
-        // create and set up command
         SvnAddCommand command = new SvnAddCommand();
         setUpCommand(command);
 
@@ -60,7 +58,6 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public BlameCommand createBlameCommand() {
-        // create and set up command
         SvnBlameCommand command = new SvnBlameCommand();
         setUpCommand(command);
 
@@ -69,7 +66,6 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public BranchCommand createBranchCommand() {
-        // create and set up command
         SvnBranchCommand command = new SvnBranchCommand();
         setUpCommand(command);
 
@@ -78,7 +74,6 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public CheckoutCommand createCheckoutCommand() {
-        // create and set up command
         SvnCheckoutCommand command = new SvnCheckoutCommand();
         setUpCommand(command);
 
@@ -87,7 +82,6 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public CommitCommand createCommitCommand() {
-        // create and set up command
         SvnCommitCommand command = new SvnCommitCommand();
         setUpCommand(command);
 
@@ -105,7 +99,6 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public DiffCommand createDiffCommand() {
-        // create and set up command
         SvnDiffCommand command = new SvnDiffCommand();
         setUpCommand(command);
 
@@ -114,7 +107,6 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public ExportCommand createExportCommand() {
-        // create and set up command
         SvnExportCommand command = new SvnExportCommand();
         setUpCommand(command);
 
@@ -123,7 +115,6 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public ImportCommand createImportCommand() {
-        // create and set up command
         SvnImportCommand command = new SvnImportCommand();
         setUpCommand(command);
 
@@ -132,8 +123,7 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public ListBranchesCommand createListBranchesCommand() {
-        // create and set up command
-        SvnListBranchesCommand command = new SvnListBranchesCommand();
+        SvnListBranchesCommand command = new SvnListBranchesCommand(username, password);
         setUpCommand(command);
 
         return command;
@@ -141,7 +131,6 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public LogCommand createLogCommand() {
-        // create and set up command
         SvnLogCommand command = new SvnLogCommand();
         setUpCommand(command);
 
@@ -150,7 +139,6 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public MergeCommand createMergeCommand() {
-        // create and set up command
         SvnMergeCommand command = new SvnMergeCommand();
         setUpCommand(command);
 
@@ -159,7 +147,6 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public SwitchBranchCommand createSwitchBranchCommand() {
-        // create and set up command
         SvnSwitchBranchCommand command = new SvnSwitchBranchCommand();
         setUpCommand(command);
 
@@ -168,7 +155,6 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     @Override
     public UpdateCommand createUpdateCommand() {
-        // create and set up command
         SvnUpdateCommand command = new SvnUpdateCommand();
         setUpCommand(command);
 
@@ -210,10 +196,9 @@ public class SvnCommandFactory extends AbstractScmCommandFactory {
 
     private void init() {
         setupLibrary();
-        if(username != null && password != null) {
+        if (username != null && password != null) {
             SvnCommandFactory.clientManager = SVNClientManager.newInstance(null, username, password);
-        }
-        else {
+        } else {
             SvnCommandFactory.clientManager = SVNClientManager.newInstance();
         }
     }

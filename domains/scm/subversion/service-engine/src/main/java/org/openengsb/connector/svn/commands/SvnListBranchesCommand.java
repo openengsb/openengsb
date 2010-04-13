@@ -29,6 +29,7 @@ import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
 import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 
@@ -38,6 +39,13 @@ import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
  * <code>{@link ListBranchesCommand}</code>.
  */
 public class SvnListBranchesCommand extends AbstractSvnCommand<List<String>> implements ListBranchesCommand {
+    private String username;
+    private String password;
+
+    public SvnListBranchesCommand(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     @Override
     public List<String> execute() throws ScmException {
@@ -48,8 +56,7 @@ public class SvnListBranchesCommand extends AbstractSvnCommand<List<String>> imp
         SVNRepository repository;
         try {
             repository = SVNRepositoryFactory.create(repositoryUrl);
-            // FIXME: how to get username and password?
-            // repository.setAuthenticationManager(new BasicAuthenticationManager(username, password));
+            repository.setAuthenticationManager(new BasicAuthenticationManager(username, password));
         } catch (SVNException exception) {
             throw new ScmException(exception);
         }
