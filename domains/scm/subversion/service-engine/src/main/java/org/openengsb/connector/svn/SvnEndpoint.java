@@ -35,7 +35,7 @@ import org.quartz.impl.StdSchedulerFactory;
 public class SvnEndpoint extends LinkingEndpoint<ScmDomain> {
     private SvnConfiguration configuration = null;
     private Scheduler scheduler;
-    private int pollInterval;
+    private Integer pollInterval;
 
     @Override
     protected ScmDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
@@ -46,19 +46,24 @@ public class SvnEndpoint extends LinkingEndpoint<ScmDomain> {
     public void activate() throws Exception {
         super.activate();
 
-        scheduler = new StdSchedulerFactory().getScheduler();
-        JobDetail job = new JobDetail("RepositoryPoller", null, RepositoryPoller.class);
-        Trigger trigger = TriggerUtils.makeSecondlyTrigger(pollInterval);
-        trigger.setStartTime(new Date());
-        trigger.setName("PollTrigger");
+        if (pollInterval != null) {
+            scheduler = new StdSchedulerFactory().getScheduler();
+            JobDetail job = new JobDetail("RepositoryPoller", null, RepositoryPoller.class);
+            job.getJobDataMap().put("configuration", configuration);
+            Trigger trigger = TriggerUtils.makeSecondlyTrigger(pollInterval);
+            trigger.setStartTime(new Date());
+            trigger.setName("PollTrigger");
 
-        scheduler.scheduleJob(job, trigger);
-        scheduler.start();
+            scheduler.scheduleJob(job, trigger);
+            scheduler.start();
+        }
     }
 
     @Override
     public void deactivate() throws Exception {
-        scheduler.shutdown();
+        if (pollInterval != null) {
+            scheduler.shutdown();
+        }
 
         super.deactivate();
     }
@@ -67,7 +72,7 @@ public class SvnEndpoint extends LinkingEndpoint<ScmDomain> {
         this.configuration = configuration;
     }
 
-    public void setPollInterval(int pollInterval) {
+    public void setPollInterval(Integer pollInterval) {
         this.pollInterval = pollInterval;
     }
 

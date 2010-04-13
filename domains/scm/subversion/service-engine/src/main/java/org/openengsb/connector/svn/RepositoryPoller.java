@@ -17,6 +17,7 @@
  */
 package org.openengsb.connector.svn;
 
+import org.openengsb.drools.model.MergeResult;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -24,7 +25,10 @@ import org.quartz.JobExecutionException;
 public class RepositoryPoller implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        SvnScmImplementation svn = new SvnScmImplementation((SvnConfiguration) context.getJobDetail().getJobDataMap()
+                .get("configuration"));
 
+        MergeResult checkoutResult = svn.checkout("openengsb");
     }
 
 }
