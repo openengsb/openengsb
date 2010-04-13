@@ -883,7 +883,7 @@
         <version>${pom.version}</version>
       </dependency>
       
-      <!-- ??? -->
+      <!-- Maven things -->
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-test-maven-se</artifactId>
@@ -1366,9 +1366,9 @@
         <version>${commons.pool.version}</version>
       </dependency>
       <dependency>
-              <groupId>commons-net</groupId>
-              <artifactId>commons-net</artifactId>
-              <version>${commons.net.version}</version>
+        <groupId>commons-net</groupId>
+        <artifactId>commons-net</artifactId>
+        <version>${commons.net.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
@@ -1426,7 +1426,14 @@
         <groupId>org.twitter4j</groupId>
         <artifactId>twitter4j-core</artifactId>
         <version>${twitter4j.version}</version>
-    </dependency>
+      </dependency>
+      
+      <!-- Quartz -->
+      <dependency>
+        <groupId>quartz</groupId>
+        <artifactId>quartz</artifactId>
+        <version>${quartz.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

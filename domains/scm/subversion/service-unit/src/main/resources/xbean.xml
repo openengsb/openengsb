@@ -20,13 +20,15 @@
   xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <svn:svnEndpoint service="subversion:svnService" endpoint="svnEndpoint" configuration="#workingCopy" />
-  <svn:eventEndpoint service="subversion:eventService" endpoint="eventEndpoint" configuration="#workingCopy" />
-
   <!-- Configuration bean for the SVN implementation. -->
   <bean id="workingCopy" class="org.openengsb.connector.svn.SvnConfiguration">
     <property name="workingCopy" value="testProject" />
     <property name="developerConnection" value="svn://localhost/testProject" />
+    <property name="username" value="user" />
+    <property name="password" value="password" />
   </bean>
+
+  <svn:svnEndpoint service="subversion:svnService" endpoint="svnEndpoint" configuration="#workingCopy" pollInterval="1" />
+  <svn:eventEndpoint service="subversion:eventService" endpoint="eventEndpoint" configuration="#workingCopy" />
 
 </beans>

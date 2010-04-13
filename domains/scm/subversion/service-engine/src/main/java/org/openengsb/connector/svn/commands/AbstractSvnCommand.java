@@ -27,7 +27,6 @@ import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNInfo;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
-
 /**
  * An abstract implementation of the Command-interface to be used by all
  * SVN-Commands. It holds svn-specific members (with their getters and setters),

@@ -56,7 +56,9 @@ public class SvnListBranchesCommand extends AbstractSvnCommand<List<String>> imp
         SVNRepository repository;
         try {
             repository = SVNRepositoryFactory.create(repositoryUrl);
-            repository.setAuthenticationManager(new BasicAuthenticationManager(username, password));
+            if (username != null && password != null) {
+                repository.setAuthenticationManager(new BasicAuthenticationManager(username, password));
+            }
         } catch (SVNException exception) {
             throw new ScmException(exception);
         }
