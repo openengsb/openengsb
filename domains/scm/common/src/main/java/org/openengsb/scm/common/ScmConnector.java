@@ -15,7 +15,6 @@
    limitations under the License.
    
  */
-
 package org.openengsb.scm.common;
 
 import java.io.File;

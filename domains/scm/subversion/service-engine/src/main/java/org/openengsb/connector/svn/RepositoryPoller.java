@@ -24,9 +24,9 @@ import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 import org.openengsb.drools.events.ScmBranchCreatedEvent;
 import org.openengsb.drools.events.ScmBranchDeletedEvent;
 import org.openengsb.drools.events.ScmCheckInEvent;
+import org.openengsb.drools.events.ScmDirectoryEvent;
 import org.openengsb.drools.events.ScmTagCreatedEvent;
 import org.openengsb.drools.events.ScmTagDeletedEvent;
-import org.openengsb.scm.common.UpdateResult;
 
 public class RepositoryPoller {
     private Logger log = Logger.getLogger(getClass());
@@ -46,47 +46,42 @@ public class RepositoryPoller {
         if (result.getAddedBranches().size() > 0) {
             log.info("Added branches: " + result.getAddedBranches().size());
             for (String dir : result.getAddedBranches()) {
-                ScmBranchCreatedEvent e = new ScmBranchCreatedEvent();
-                e.setDirectory(dir);
-                eventHelper.sendEvent(e);
+                sendEvent(new ScmBranchCreatedEvent(), dir);
             }
         }
 
         if (result.getAddedTags().size() > 0) {
             log.info("Added tags: " + result.getAddedTags().size());
             for (String dir : result.getAddedTags()) {
-                ScmTagCreatedEvent e = new ScmTagCreatedEvent();
-                e.setDirectory(dir);
-                eventHelper.sendEvent(e);
+                sendEvent(new ScmTagCreatedEvent(), dir);
             }
         }
 
         if (result.getDeletedBranches().size() > 0) {
             log.info("Deleted branches: " + result.getDeletedBranches().size());
             for (String dir : result.getDeletedBranches()) {
-                ScmBranchDeletedEvent e = new ScmBranchDeletedEvent();
-                e.setDirectory(dir);
-                eventHelper.sendEvent(e);
+                sendEvent(new ScmBranchDeletedEvent(), dir);
             }
         }
 
         if (result.getDeletedTags().size() > 0) {
             log.info("Deleted tags: " + result.getDeletedTags().size());
             for (String dir : result.getDeletedTags()) {
-                ScmTagDeletedEvent e = new ScmTagDeletedEvent();
-                e.setDirectory(dir);
-                eventHelper.sendEvent(e);
+                sendEvent(new ScmTagDeletedEvent(), dir);
             }
         }
 
         if (result.getCommitted().size() > 0) {
-            log.info("Commited directories: " + result.getCommitted().size());
+            log.info("Committed directories: " + result.getCommitted().size());
             for (String dir : result.getCommitted()) {
-                ScmCheckInEvent e = new ScmCheckInEvent();
-                e.setDirectory(dir);
-                eventHelper.sendEvent(e);
+                sendEvent(new ScmCheckInEvent(), dir);
             }
         }
+    }
+    
+    private void sendEvent(ScmDirectoryEvent e, String dir) {
+        e.setDirectory(dir);
+        eventHelper.sendEvent(e);
     }
 
     public void setConfiguration(SvnConfiguration configuration) {

@@ -22,7 +22,6 @@ import java.net.URI;
 
 import org.apache.log4j.Logger;
 import org.openengsb.scm.common.ScmConnector;
-import org.openengsb.scm.common.UpdateResult;
 import org.openengsb.scm.common.exceptions.ScmException;
 import org.tmatesoft.svn.core.SVNCancelException;
 import org.tmatesoft.svn.core.SVNDepth;
