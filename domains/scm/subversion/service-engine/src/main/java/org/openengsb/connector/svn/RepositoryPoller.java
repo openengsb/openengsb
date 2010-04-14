@@ -17,118 +17,82 @@
  */
 package org.openengsb.connector.svn;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.log4j.Logger;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
-import org.openengsb.drools.events.ScmBranchAlteredEvent;
 import org.openengsb.drools.events.ScmBranchCreatedEvent;
 import org.openengsb.drools.events.ScmBranchDeletedEvent;
 import org.openengsb.drools.events.ScmCheckInEvent;
-import org.openengsb.drools.events.ScmDirectoryEvent;
 import org.openengsb.drools.events.ScmTagCreatedEvent;
+import org.openengsb.drools.events.ScmTagDeletedEvent;
+import org.openengsb.scm.common.UpdateResult;
 
 public class RepositoryPoller {
     private Logger log = Logger.getLogger(getClass());
 
     private SvnConnector svn;
-    private String author;
     private String context;
 
     private EventHelper eventHelper;
 
-    private String revision;
-    private List<String> branches;
-    private List<String> tags;
-
-    public void poll() {
-        inspectCheckins();
-        inspectBranches();
-        inspectTags();
+    public void init() {
+        svn.checkout();
     }
 
-    private void inspectBranches() {
-        List<String> newBranches = svn.listBranches();
-        ScmDirectoryEvent e = null;
-        Set<String> branchNames = null;
+    public void poll() {
+        UpdateResult result = svn.update();
 
-        if (branches != null) {
-            if (branches.size() < newBranches.size()) {
-                e = new ScmBranchCreatedEvent();
-
-                branchNames = new HashSet<String>(newBranches);
-                branchNames.removeAll(branches);
-
-                log.info("Found " + branchNames.size() + " new branches");
-            } else if (branches.size() > newBranches.size()) {
-                e = new ScmBranchDeletedEvent();
-
-                branchNames = new HashSet<String>(branches);
-                branchNames.removeAll(newBranches);
-
-                log.info("Found " + branchNames.size() + " deleted branches");
-            } else {
-                branchNames = new HashSet<String>(branches);
-                branchNames.removeAll(newBranches);
-
-                if (branchNames.size() > 0) {
-                    e = new ScmBranchAlteredEvent();
-                    log.info("Found " + branchNames.size() + " changed branches");
-                }
-            }
-
-            if (e != null) {
-                e.setDirectories(new ArrayList<String>(branchNames));
+        if (result.getAddedBranches().size() > 0) {
+            log.info("Added branches: " + result.getAddedBranches().size());
+            for (String dir : result.getAddedBranches()) {
+                ScmBranchCreatedEvent e = new ScmBranchCreatedEvent();
+                e.setDirectory(dir);
                 eventHelper.sendEvent(e);
             }
         }
 
-        branches = newBranches;
-    }
-
-    private void inspectTags() {
-        List<String> newTags = svn.listTags();
-
-        if (tags != null && tags.size() < newTags.size()) {
-            Set<String> tagNames = new HashSet<String>(newTags);
-            tagNames.removeAll(tags);
-            log.info("Found " + tagNames.size() + " new tags");
-
-            ScmTagCreatedEvent e = new ScmTagCreatedEvent();
-            e.setDirectories(new ArrayList<String>(tagNames));
-            eventHelper.sendEvent(e);
+        if (result.getAddedTags().size() > 0) {
+            log.info("Added tags: " + result.getAddedTags().size());
+            for (String dir : result.getAddedTags()) {
+                ScmTagCreatedEvent e = new ScmTagCreatedEvent();
+                e.setDirectory(dir);
+                eventHelper.sendEvent(e);
+            }
         }
 
-        tags = newTags;
-    }
-
-    private void inspectCheckins() {
-        String newRevision = svn.checkout(author).getRevision();
-
-        if (revision != null && !newRevision.equals(revision)) {
-            log.info("Detected checkin to revision " + newRevision);
-
-            ScmCheckInEvent e = new ScmCheckInEvent();
-            e.setRevision(newRevision);
-            eventHelper.sendEvent(e);
+        if (result.getDeletedBranches().size() > 0) {
+            log.info("Deleted branches: " + result.getDeletedBranches().size());
+            for (String dir : result.getDeletedBranches()) {
+                ScmBranchDeletedEvent e = new ScmBranchDeletedEvent();
+                e.setDirectory(dir);
+                eventHelper.sendEvent(e);
+            }
         }
 
-        revision = newRevision;
+        if (result.getDeletedTags().size() > 0) {
+            log.info("Deleted tags: " + result.getDeletedTags().size());
+            for (String dir : result.getDeletedTags()) {
+                ScmTagDeletedEvent e = new ScmTagDeletedEvent();
+                e.setDirectory(dir);
+                eventHelper.sendEvent(e);
+            }
+        }
+
+        if (result.getCommitted().size() > 0) {
+            log.info("Commited directories: " + result.getCommitted().size());
+            for (String dir : result.getCommitted()) {
+                ScmCheckInEvent e = new ScmCheckInEvent();
+                e.setDirectory(dir);
+                eventHelper.sendEvent(e);
+            }
+        }
     }
 
     public void setConfiguration(SvnConfiguration configuration) {
         svn = new SvnConnector(configuration);
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-    
     public void setContext(String context) {
         this.context = context;
     }

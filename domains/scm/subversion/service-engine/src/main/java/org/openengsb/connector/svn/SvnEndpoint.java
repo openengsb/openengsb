@@ -20,16 +20,15 @@ package org.openengsb.connector.svn;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
-import org.openengsb.drools.ScmDomain;
 
 /**
  * @org.apache.xbean.XBean element="svnEndpoint" description="SVN SCM Endpoint"
  */
-public class SvnEndpoint extends LinkingEndpoint<ScmDomain> {
+public class SvnEndpoint extends LinkingEndpoint<SvnConnector> {
     private SvnConfiguration configuration;
 
     @Override
-    protected ScmDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
+    protected SvnConnector getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         return new SvnConnector(configuration);
     }
 
