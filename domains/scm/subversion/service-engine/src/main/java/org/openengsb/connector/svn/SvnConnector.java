@@ -56,6 +56,7 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
     private static final String HEAD_KEYWORD = "HEAD";
     private static final String TRUNK_KEYWORD = "TRUNK";
     private static final String BRANCHES = "branches";
+    private static final String TAGS = "tags";
     private static final String TRUNK = "trunk";
 
     private SVNClientManager clientManager;
@@ -283,52 +284,44 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
 
     @Override
     public List<String> listBranches() {
-        // compute branches-url
-        SVNURL repositoryUrl = getRepositoryUrl();
+        return listDirectories(true);
+    }
 
-        // prepare objects to list the contents of the branches directory
+    @Override
+    public List<String> listTags() {
+        return listDirectories(false);
+    }
+
+    private List<String> listDirectories(boolean branch) {
         SVNRepository repository;
         try {
-            repository = SVNRepositoryFactory.create(repositoryUrl);
+            repository = SVNRepositoryFactory.create(getRepositoryUrl());
             if (getUsername() != null && getPassword() != null) {
                 repository.setAuthenticationManager(new BasicAuthenticationManager(getUsername(), getPassword()));
             }
         } catch (SVNException exception) {
             throw new ScmException(exception);
         }
-        long revision = -1; // means: do not use revision
-        SVNProperties properties = null;
-        Collection<?> dirEntries = null;
 
-        // list branches
-        Collection<?> branches;
+        Collection<?> directories;
         try {
-            branches = repository.getDir(BRANCHES, revision, properties, dirEntries);
+            directories = repository.getDir(branch ? BRANCHES : TAGS, -1, (SVNProperties) null, (Collection<?>) null);
         } catch (SVNException exception) {
-            /*
-             * should branches not exist, we do not need to report an error,
-             * since branch() would create the branches-directory upon it's
-             * first call anyway...
-             */
             return new ArrayList<String>();
         }
 
-        // build string-array
-        ArrayList<String> branchesStringList = new ArrayList<String>(branches.size());
-        for (Object svnDirEntryObject : branches) {
-            // java 1.4 style typecheck and -cast sh*t
+        ArrayList<String> directoriesStringList = new ArrayList<String>(directories.size());
+        for (Object svnDirEntryObject : directories) {
             if (svnDirEntryObject instanceof SVNDirEntry) {
                 SVNDirEntry entry = (SVNDirEntry) svnDirEntryObject;
 
-                // only add name if the entry is really a directory
                 if (entry.getKind() == SVNNodeKind.DIR) {
-                    branchesStringList.add(entry.getName());
+                    directoriesStringList.add(entry.getName());
                 }
             }
-            // else ignore
         }
 
-        return branchesStringList;
+        return directoriesStringList;
     }
 
     @Override

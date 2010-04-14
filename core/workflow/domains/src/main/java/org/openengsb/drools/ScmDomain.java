@@ -29,6 +29,8 @@ public interface ScmDomain extends Domain {
     public void switchBranch(String branchName);
 
     public List<String> listBranches();
+    
+    public List<String> listTags();
 
     public void delete(String file);
 

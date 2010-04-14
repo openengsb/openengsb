@@ -17,9 +17,23 @@
  */
 package org.openengsb.drools.events;
 
-public class ScmBranchCreatedEvent extends ScmDirectoryEvent {
-    public ScmBranchCreatedEvent() {
-        super("scmBranchCreatedEvent");
+import java.util.List;
+
+import org.openengsb.core.model.Event;
+
+public abstract class ScmDirectoryEvent extends Event {
+
+    public ScmDirectoryEvent(String name) {
+        super("scm", name);
+    }
+
+    public void setDirectories(List<String> directories) {
+        setValue("directories", directories);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<String> getDirectories() {
+        return (List<String>) getValue("directories");
     }
 
 }

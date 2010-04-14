@@ -17,7 +17,7 @@
  */
 package org.openengsb.drools.events;
 
-public class ScmBranchAlteredEvent extends ScmBranchEvent {
+public class ScmBranchAlteredEvent extends ScmDirectoryEvent {
     public ScmBranchAlteredEvent() {
         super("scmBranchAlteredEvent");
     }

@@ -28,8 +28,9 @@ import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 import org.openengsb.drools.events.ScmBranchAlteredEvent;
 import org.openengsb.drools.events.ScmBranchCreatedEvent;
 import org.openengsb.drools.events.ScmBranchDeletedEvent;
-import org.openengsb.drools.events.ScmBranchEvent;
+import org.openengsb.drools.events.ScmDirectoryEvent;
 import org.openengsb.drools.events.ScmCheckInEvent;
+import org.openengsb.drools.events.ScmTagCreatedEvent;
 import org.openengsb.drools.model.MergeResult;
 
 public class RepositoryPoller {
@@ -39,6 +40,7 @@ public class RepositoryPoller {
 
     private MergeResult checkoutResult;
     private List<String> branches;
+    private List<String> tags;
 
     public void poll() {
         if (checkoutResult == null) {
@@ -46,6 +48,7 @@ public class RepositoryPoller {
         }
 
         inspectBranches();
+        inspectTags();
 
         if (checkoutResult.getAdds().size() > 0) {
             ScmCheckInEvent e = new ScmCheckInEvent();
@@ -55,7 +58,7 @@ public class RepositoryPoller {
 
     private void inspectBranches() {
         List<String> newBranches = svn.listBranches();
-        ScmBranchEvent e = null;
+        ScmDirectoryEvent e = null;
         Set<String> branchNames = null;
 
         if (branches == null) {
@@ -81,12 +84,32 @@ public class RepositoryPoller {
             }
 
             if (e != null) {
-                e.setBranches(new ArrayList<String>(branchNames));
+                e.setDirectories(new ArrayList<String>(branchNames));
                 eventHelper.sendEvent(e);
             }
         }
 
         branches = newBranches;
+    }
+
+    private void inspectTags() {
+        List<String> newTags = svn.listTags();
+
+        if (tags == null) {
+            tags = newTags;
+        } else {
+            if (tags.size() < newTags.size()) {
+                ScmTagCreatedEvent e = new ScmTagCreatedEvent();
+
+                Set<String> tagNames = new HashSet<String>(newTags);
+                tagNames.removeAll(tags);
+
+                e.setDirectories(new ArrayList<String>(tagNames));
+                eventHelper.sendEvent(e);
+            }
+        }
+
+        tags = newTags;
     }
 
     public void setConfiguration(SvnConfiguration configuration) {

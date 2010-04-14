@@ -17,23 +17,9 @@
  */
 package org.openengsb.drools.events;
 
-import java.util.List;
-
-import org.openengsb.core.model.Event;
-
-public abstract class ScmBranchEvent extends Event {
-
-    public ScmBranchEvent(String name) {
-        super("scm", name);
-    }
-
-    public void setBranches(List<String> branches) {
-        setValue("branches", branches);
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<String> getBranches() {
-        return (List<String>) getValue("branches");
+public class ScmTagCreatedEvent extends ScmDirectoryEvent {
+    public ScmTagCreatedEvent() {
+        super("scmTagCreatedEvent");
     }
 
 }
