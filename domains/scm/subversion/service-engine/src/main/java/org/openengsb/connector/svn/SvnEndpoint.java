@@ -25,15 +25,15 @@ import org.openengsb.core.endpoints.LinkingEndpoint;
  * @org.apache.xbean.XBean element="svnEndpoint" description="SVN SCM Endpoint"
  */
 public class SvnEndpoint extends LinkingEndpoint<SvnConnector> {
-    private SvnConfiguration configuration;
+    private SvnConnector connector;
 
     @Override
     protected SvnConnector getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-        return new SvnConnector(configuration);
+        return connector;
     }
 
-    public void setConfiguration(SvnConfiguration configuration) {
-        this.configuration = configuration;
+    public void setConnector(SvnConnector connector) {
+        this.connector = connector;
     }
 
 }

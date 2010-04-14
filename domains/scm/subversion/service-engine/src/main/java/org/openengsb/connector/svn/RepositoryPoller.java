@@ -31,17 +31,17 @@ import org.openengsb.drools.events.ScmTagDeletedEvent;
 public class RepositoryPoller {
     private Logger log = Logger.getLogger(getClass());
 
-    private SvnConnector svn;
+    private SvnConnector connector;
     private String context;
 
     private EventHelper eventHelper;
 
     public void init() {
-        svn.checkout();
+        connector.checkout();
     }
 
     public void poll() {
-        UpdateResult result = svn.update();
+        UpdateResult result = connector.update();
 
         if (result.getAddedBranches().size() > 0) {
             log.info("Added branches: " + result.getAddedBranches().size());
@@ -84,8 +84,8 @@ public class RepositoryPoller {
         eventHelper.sendEvent(e);
     }
 
-    public void setConfiguration(SvnConfiguration configuration) {
-        svn = new SvnConnector(configuration);
+    public void setConnector(SvnConnector connector) {
+        this.connector = connector;
     }
 
     public void setContext(String context) {

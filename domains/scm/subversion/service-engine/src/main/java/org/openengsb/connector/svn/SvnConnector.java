@@ -47,12 +47,7 @@ public class SvnConnector extends ScmConnector {
 
     private SVNClientManager clientManager;
 
-    public SvnConnector(SvnConfiguration configuration) {
-        setUsername(configuration.getUsername());
-        setPassword(configuration.getPassword());
-        setWorkingCopy(configuration.getWorkingCopy());
-        setDeveloperConnection(configuration.getDeveloperConnection());
-
+    public void init() {
         setupLibrary();
 
         if (getUsername() != null && getPassword() != null) {

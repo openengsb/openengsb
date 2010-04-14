@@ -21,7 +21,7 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
   <!-- Configuration bean for the SVN implementation. -->
-  <bean id="configuration" class="org.openengsb.connector.svn.SvnConfiguration">
+  <bean id="connector" class="org.openengsb.connector.svn.SvnConnector" init-method="init">
     <property name="workingCopy" value="test" />
     <property name="developerConnection" value="http://localhost/svn/test" />
     <property name="username" value="user" />
@@ -29,7 +29,7 @@
   </bean>
 
   <bean id="repositoryPoller" class="org.openengsb.connector.svn.RepositoryPoller" init-method="init">
-  	<property name="configuration" ref="configuration" />
+  	<property name="connector" ref="connector" />
     <property name="context" value="42" />
     <property name="endpoint" ref="svnEndpoint" />
   </bean>
@@ -54,6 +54,6 @@
     </property>
   </bean>
 
-  <svn:svnEndpoint service="subversion:svnService" endpoint="svnEndpoint" id="svnEndpoint" configuration="#configuration" />
+  <svn:svnEndpoint service="subversion:svnService" endpoint="svnEndpoint" id="svnEndpoint" connector="#connector" />
 
 </beans>

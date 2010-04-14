@@ -37,7 +37,7 @@ public abstract class ScmConnector {
         return developerConnectionUri;
     }
 
-    protected void setDeveloperConnection(String developerConnection) {
+    public void setDeveloperConnection(String developerConnection) {
         developerConnectionUri = URI.create(developerConnection);
     }
 
@@ -45,7 +45,7 @@ public abstract class ScmConnector {
         return username;
     }
 
-    protected void setUsername(String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
@@ -53,7 +53,7 @@ public abstract class ScmConnector {
         return password;
     }
 
-    protected void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
@@ -61,7 +61,7 @@ public abstract class ScmConnector {
         return workingCopyFile;
     }
 
-    protected void setWorkingCopy(String workingCopy) {
+    public void setWorkingCopy(String workingCopy) {
         if (workingCopy != null) {
             workingCopyFile = new File(workingCopy);
             if (!workingCopyFile.isAbsolute()) {
