@@ -559,65 +559,16 @@
 
                 <!-- OpenEngSB installers -->
 
-                <artifactItem>
+               <artifactItem>
                   <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-domains-notification-email-se</artifactId>
+                  <artifactId>openengsb-domains-report-implementation-se</artifactId>
                   <version>${project.version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-domains-issues-trac-se</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-domains-toolabstraction-maven</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-domains-scm-subversion-se</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-context-se</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-domains-notification-implementation-se</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-domains-scm-implementation-se</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-workflow-drools-se</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>installer</classifier>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-features-edb-core</artifactId>
+                  <artifactId>openengsb-domains-build-implementation-se</artifactId>
                   <version>${project.version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
@@ -631,6 +582,90 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-features-edb-core</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-notification-twitter-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-notification-email-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-build-maven-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-scm-subversion-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-deploy-implementation-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-test-maven-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-test-implementation-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-context-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-workflow-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-issues-trac-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-deploy-maven-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
                   <artifactId>openengsb-features-link-http-processor-se</artifactId>
                   <version>${project.version}</version>
                   <classifier>installer</classifier>
@@ -638,11 +673,39 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-scm-implementation-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-report-plaintext-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-notification-implementation-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
                   <artifactId>openengsb-package-essential</artifactId>
                   <version>${project.version}</version>
                   <type>zip</type>
                 </artifactItem>
-                
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-package-test</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                </artifactItem>
+
               </artifactItems>
             </configuration>
           </execution>
