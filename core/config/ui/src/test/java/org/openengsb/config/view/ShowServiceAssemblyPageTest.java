@@ -19,6 +19,7 @@ package org.openengsb.config.view;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.junit.Test;
@@ -73,5 +74,15 @@ public class ShowServiceAssemblyPageTest extends WicketBase {
         tester.startPage(new ShowServiceAssemblyPage(sa));
         extTester.assertInvisible("beanLabel");
         extTester.assertVisible("beans");
+    }
+
+    @Test
+    public void deployedAssembly_checkButtonsDeployUndeployNotDelete() {
+        ServiceAssembly sa = new ServiceAssembly();
+        when(assemblyService.isDeployed(sa)).thenReturn(true);
+        tester.startPage(new ShowServiceAssemblyPage(sa));
+        extTester.assertEnabled("actionForm:deployButton");
+        extTester.assertEnabled("actionForm:undeployButton");
+        extTester.assertDisabled("actionForm:deleteButton");
     }
 }

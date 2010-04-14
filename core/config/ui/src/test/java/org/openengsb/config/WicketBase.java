@@ -36,6 +36,7 @@ import com.google.common.collect.Lists;
 
 public class WicketBase {
     protected ComponentService mockComponentService;
+    protected AssemblyService assemblyService;
     protected WicketTester tester;
     protected ExtWicketTester extTester;
 
@@ -54,7 +55,8 @@ public class WicketBase {
         mockComponentService();
         AnnotApplicationContextMock ctx = new AnnotApplicationContextMock();
         ctx.putBean(mockComponentService);
-        ctx.putBean(Mockito.mock(AssemblyService.class));
+        assemblyService = Mockito.mock(AssemblyService.class);
+        ctx.putBean(assemblyService);
         ctx.putBean(Mockito.mock(ContextService.class));
         ctx.putBean(Mockito.mock(ServiceAssemblyDao.class));
         ctx.putBean(Mockito.mock(PersistedObjectDao.class));

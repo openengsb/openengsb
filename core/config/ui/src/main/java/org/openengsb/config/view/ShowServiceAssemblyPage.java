@@ -56,7 +56,7 @@ public class ShowServiceAssemblyPage extends BasePage {
     private PersistedObjectDao poDao;
 
     @SuppressWarnings("serial")
-    public ShowServiceAssemblyPage(final ServiceAssembly sa) {
+    public ShowServiceAssemblyPage(ServiceAssembly sa) {
         setDefaultModel(Models.compoundDomain(dao, sa));
         add(new Label("name"));
 
@@ -114,23 +114,49 @@ public class ShowServiceAssemblyPage extends BasePage {
 
         Form<?> actionForm = new Form<Object>("actionForm");
         add(actionForm);
-        actionForm.add(new Button("deployButton") {
+        Button deployButton = new Button("deployButton") {
             @Override
             public void onSubmit() {
                 try {
-                    assemblyService.deploy((ServiceAssembly) ShowServiceAssemblyPage.this.getDefaultModelObject());
+                    ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this.getDefaultModelObject();
+                    assemblyService.deploy(sa);
+                    setResponsePage(new ShowServiceAssemblyPage(sa));
                 } catch (IOException e) {
                     error(new StringResourceModel("deploy.failed", this, null).getString());
                 }
             }
-        });
-        actionForm.add(new Button("deleteButton") {
+        };
+        actionForm.add(deployButton);
+        Button undeployButton = new Button("undeployButton") {
+            @Override
+            public void onSubmit() {
+                try {
+                    ServiceAssembly sa = (ServiceAssembly) ShowServiceAssemblyPage.this.getDefaultModelObject();
+                    assemblyService.undeploy(sa);
+                    setResponsePage(new ShowServiceAssemblyPage(sa));
+                } catch (IOException e) {
+                    error(new StringResourceModel("undeploy.failed", this, null).getString());
+                }
+            }
+        };
+        actionForm.add(undeployButton);
+        Button deleteButton = new Button("deleteButton") {
             @Override
             public void onSubmit() {
                 dao.delete((ServiceAssembly) ShowServiceAssemblyPage.this.getDefaultModelObject());
-                getRequestCycle().setResponsePage(OverviewPage.class);
+                setResponsePage(OverviewPage.class);
             }
-        });
+        };
+        actionForm.add(deleteButton);
+
+        if (assemblyService.isDeployed(sa)) {
+            deleteButton.setEnabled(false);
+        } else {
+            undeployButton.setEnabled(false);
+        }
+
+        add(new Label("deployState", new StringResourceModel(assemblyService.isDeployed(sa) ? "deployed"
+                : "notDeployed", this, null).getString()));
 
         add(new FeedbackPanel("feedback"));
     }
