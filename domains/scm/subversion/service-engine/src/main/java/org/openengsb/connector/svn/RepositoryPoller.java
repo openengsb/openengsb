@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
@@ -34,6 +35,8 @@ import org.openengsb.drools.events.ScmTagCreatedEvent;
 import org.openengsb.drools.model.MergeResult;
 
 public class RepositoryPoller {
+    private Logger log = Logger.getLogger(getClass());
+    
     private SvnConnector svn;
     private String author;
     private EventHelper eventHelper;
@@ -69,11 +72,13 @@ public class RepositoryPoller {
 
                 branchNames = new HashSet<String>(newBranches);
                 branchNames.removeAll(branches);
+                log.info("Found " + branchNames.size() + " new branches.");
             } else if (branches.size() > newBranches.size()) {
                 e = new ScmBranchDeletedEvent();
 
                 branchNames = new HashSet<String>(branches);
                 branchNames.removeAll(newBranches);
+                log.info("Found " + branchNames.size() + " deleted branches.");
             } else if (!newBranches.equals(branches)) {
                 e = new ScmBranchAlteredEvent();
 
@@ -81,6 +86,7 @@ public class RepositoryPoller {
                 Set<String> tempNames = new HashSet<String>(branches);
                 tempNames.retainAll(newBranches);
                 branchNames.removeAll(tempNames);
+                log.info("Found " + branchNames.size() + " changed branches.");
             }
 
             if (e != null) {
@@ -103,6 +109,7 @@ public class RepositoryPoller {
 
                 Set<String> tagNames = new HashSet<String>(newTags);
                 tagNames.removeAll(tags);
+                log.info("Found " + tagNames.size() + " new tags.");
 
                 e.setDirectories(new ArrayList<String>(tagNames));
                 eventHelper.sendEvent(e);

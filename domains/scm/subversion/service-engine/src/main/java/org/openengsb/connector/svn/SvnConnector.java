@@ -18,10 +18,12 @@
 package org.openengsb.connector.svn;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.openengsb.drools.ScmDomain;
 import org.openengsb.drools.model.MergeResult;
 import org.openengsb.scm.common.ScmConnector;
@@ -33,6 +35,7 @@ import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNNodeKind;
 import org.tmatesoft.svn.core.SVNProperties;
+import org.tmatesoft.svn.core.SVNRevisionProperty;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.BasicAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
@@ -53,11 +56,12 @@ import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 import org.tmatesoft.svn.core.wc.SVNWCClient;
 
 public class SvnConnector extends ScmConnector implements ScmDomain {
-    private static final String HEAD_KEYWORD = "HEAD";
-    private static final String TRUNK_KEYWORD = "TRUNK";
+    private static final String HEAD = "HEAD";
     private static final String BRANCHES = "branches";
     private static final String TAGS = "tags";
     private static final String TRUNK = "trunk";
+
+    private Logger log = Logger.getLogger(getClass());
 
     private SVNClientManager clientManager;
 
@@ -68,6 +72,7 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
         setDeveloperConnection(configuration.getDeveloperConnection());
 
         setupLibrary();
+
         if (getUsername() != null && getPassword() != null) {
             clientManager = SVNClientManager.newInstance(null, getUsername(), getPassword());
         } else {
@@ -77,29 +82,20 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
 
     @Override
     public void add(String fileToAdd) {
-        SVNWCClient client = clientManager.getWCClient();
-
         File newFile = new File(getWorkingCopyFile(), fileToAdd);
-        boolean force = false;
-        boolean mkdir = newFile.isDirectory();
-        boolean climbUnversionedParents = true;
-        SVNDepth depth = SVNDepth.INFINITY;
-        boolean includeIgnored = false;
-        boolean makeParents = newFile.isDirectory();
-
-        // sanity checks
         if (!newFile.exists()) {
             throw new ScmException("File " + fileToAdd + " does not exist in working copy.");
         }
-
         if (!newFile.getAbsolutePath().startsWith(getWorkingCopyFile().getAbsolutePath())) {
             throw new ScmException("File " + fileToAdd
                     + " left the working copy. Are you trying to do something nasty?");
         }
 
-        // actual call to SVNKit
+        SVNWCClient client = clientManager.getWCClient();
+
         try {
-            client.doAdd(newFile, force, mkdir, climbUnversionedParents, depth, includeIgnored, makeParents);
+            client.doAdd(newFile, false, newFile.isDirectory(), true, SVNDepth.INFINITY, false, newFile.isDirectory());
+            log.info("File successfully added: " + fileToAdd);
         } catch (SVNException exception) {
             throw new ScmException(exception);
         }
@@ -108,35 +104,23 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
     @Override
     public void branch(String branchName, String commitMessage) {
         if (!canWriteToRepository()) {
-            throw new ScmException("Must not write to repository (set developerConnection to be able to do so)");
+            throw new ScmException("Cannot not write to repository (set developerConnection to be able to do so)");
+        }
+        if (TRUNK.equalsIgnoreCase(branchName)) {
+            throw new ScmException(TRUNK + " is not allowed as branch-name");
         }
 
-        // check for TRUNK-keyword
-        if (TRUNK_KEYWORD.equals(branchName)) {
-            throw new ScmException(TRUNK_KEYWORD + " is not allowed as branch-name");
-        }
+        SVNCopyClient client = clientManager.getCopyClient();
 
         try {
-            // compute trunk and branch-url
-            SVNURL repositoryUrl = getRepositoryUrl();
-            SVNURL branchesUrl = repositoryUrl.appendPath(BRANCHES, true);
-            SVNURL branchUrl = branchesUrl.appendPath(branchName, true);
-            SVNURL trunkUrl = repositoryUrl.appendPath(TRUNK, true);
+            SVNURL trunkUrl = getRepositoryUrl().appendPath(TRUNK, true);
+            SVNCopySource[] sources = new SVNCopySource[] { new SVNCopySource(SVNRevision.HEAD, SVNRevision.HEAD,
+                    trunkUrl) };
 
-            // set up client and parameters
-            SVNCopyClient client = clientManager.getCopyClient();
-            SVNRevision revision = SVNRevision.HEAD;
-            SVNCopySource[] sources = new SVNCopySource[] { new SVNCopySource(revision, revision, trunkUrl) };
-            boolean isMove = false;
-            boolean makeParents = true; // let's stay fault tolerant
-            boolean failWhenDestinationExists = true; // ... but still not
-            // overwrite anything
-            // silently
-            SVNProperties revisionProperties = null;
+            SVNURL branchUrl = getRepositoryUrl().appendPath(BRANCHES, true).appendPath(branchName, true);
 
-            // execute copy
-            client.doCopy(sources, branchUrl, isMove, makeParents, failWhenDestinationExists, commitMessage,
-                    revisionProperties);
+            client.doCopy(sources, branchUrl, false, true, true, commitMessage, null);
+            log.info("Branch successfully created: " + branchName);
         } catch (SVNException exception) {
             throw new ScmException(exception);
         }
@@ -144,34 +128,32 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
 
     @Override
     public MergeResult checkout(String author) {
-        try {
-            // set up parameters
-            SVNURL svnUrl = SVNURL.create(getDeveloperConnectionUri().getScheme(), getDeveloperConnectionUri()
-                    .getUserInfo(), getDeveloperConnectionUri().getHost(), getDeveloperConnectionUri().getPort(),
-                    getDeveloperConnectionUri().getPath(), true);
-            SVNRevision revision = SVNRevision.HEAD;
-            SVNDepth depth = SVNDepth.INFINITY;
+        final ArrayList<String> checkedOutFiles = new ArrayList<String>();
 
-            // set up client
-            SVNUpdateClient client = clientManager.getUpdateClient();
-            final ArrayList<String> checkedOutFiles = new ArrayList<String>();
-            client.setEventHandler(new EventHandler() {
-                @Override
-                public void handleEvent(SVNEvent paramSVNEvent, double paramDouble) throws SVNException {
-                    // check if event means, that a file was added (freshly
-                    // checked out)
-                    if (paramSVNEvent.getAction().getID() == SVNEventAction.UPDATE_ADD.getID()) {
-                        checkedOutFiles.add(paramSVNEvent.getFile().getPath());
-                    }
+        SVNUpdateClient client = clientManager.getUpdateClient();
+        client.setEventHandler(new EventHandler() {
+            @Override
+            public void handleEvent(SVNEvent paramSVNEvent, double paramDouble) throws SVNException {
+                if (paramSVNEvent.getAction().getID() == SVNEventAction.UPDATE_ADD.getID()) {
+                    checkedOutFiles.add(paramSVNEvent.getFile().getPath());
                 }
-            });
+            }
+        });
 
-            // call checkout
-            long longRevision = client.doCheckout(svnUrl, getWorkingCopyFile(), revision, revision, depth, true);
+        URI devCon = getDeveloperConnectionUri();
+
+        try {
+            SVNURL svnUrl = SVNURL.create(devCon.getScheme(), devCon.getUserInfo(), devCon.getHost(), devCon.getPort(),
+                    devCon.getPath(), true);
+
+            long longRevision = client.doCheckout(svnUrl, getWorkingCopyFile(), SVNRevision.HEAD, SVNRevision.HEAD,
+                    SVNDepth.INFINITY, true);
 
             MergeResult result = new MergeResult();
             result.setAdds(checkedOutFiles);
-            result.setRevision(String.valueOf(longRevision));
+            result.setRevision("" + longRevision);
+            
+            log.info("Successfully checked out revision " + longRevision);
             return result;
         } catch (SVNException exception) {
             throw new ScmException(exception);
@@ -181,33 +163,21 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
     @Override
     public MergeResult commit(String author, String commitMessage, String subPath) {
         if (!canWriteToRepository()) {
-            throw new ScmException("Must not write to repository (set developerConnection to be able to do so)");
+            throw new ScmException("Cannot not write to repository (set developerConnection to be able to do so)");
         }
 
-        // set up parameters
         File[] paths = new File[] { getWorkingCopyFile() };
         if (subPath != null && !subPath.isEmpty()) {
             paths[0] = new File(paths[0], subPath);
         }
 
-        boolean keepLocks = false; // we do not use locks anyway, but if
-        // something got locked, at least a commit
-        // will unlock it
-        String message = author + ":\n" + commitMessage;
         SVNProperties properties = new SVNProperties();
-        // properties.put (SVNRevisionProperty.AUTHOR, author); darn, cannot add
-        // author here :/
-        String[] changelists = new String[0]; // should be implemented? hmm
-        boolean keepChangelist = false;
-        boolean force = false;
-        SVNDepth depth = SVNDepth.INFINITY;
+        properties.put(SVNRevisionProperty.AUTHOR, author);
 
-        // set up intermediate lists for result
         final ArrayList<String> addedFiles = new ArrayList<String>();
         final ArrayList<String> mergedFiles = new ArrayList<String>();
         final ArrayList<String> deletedFiles = new ArrayList<String>();
 
-        // set up client
         SVNCommitClient client = clientManager.getCommitClient();
         client.setEventHandler(new EventHandler() {
             @Override
@@ -223,32 +193,30 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
                         mergedFiles.add(paramSVNEvent.getFile().getPath());
                     } else if (actionId == SVNEventAction.COMMIT_REPLACED.getID()) {
                         mergedFiles.add(paramSVNEvent.getFile().getPath());
-                        // else do nothing
                     }
                 }
             }
         });
 
         try {
-            // perform call
-            SVNCommitInfo info = client.doCommit(paths, keepLocks, message, properties, changelists, keepChangelist,
-                    force, depth);
+            SVNCommitInfo info = client.doCommit(paths, false, commitMessage, properties, new String[0], false, false,
+                    SVNDepth.INFINITY);
 
-            // set up and fill result
             MergeResult result = new MergeResult();
             result.setAdds(addedFiles);
             result.setDeletions(deletedFiles);
             result.setMerges(mergedFiles);
-            result.setRevision(String.valueOf(info.getNewRevision()));
-
+            result.setRevision("" + info.getNewRevision());
+            
             // TODO find out how to collect conflicting files...
             // conflicting files are reported in errormessages and therefore
             // should be treated as error in SVN
             if (info.getErrorMessage() != null) {
                 throw new ScmException(info.getErrorMessage().getFullMessage());
-            } else {
-                return result;
             }
+            
+            log.info("Successfully committed to revision " + info.getNewRevision());
+            return result;
         } catch (SVNException exception) {
             throw new ScmException(exception);
         }
@@ -256,27 +224,20 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
 
     @Override
     public void delete(String file) {
-        // set up client
-        SVNWCClient client = clientManager.getWCClient();
-
-        // set up parameters
         File fileToDelete = new File(getWorkingCopyFile(), file);
-        boolean force = false;
-        boolean dryRun = false;
-
-        // sanity checks
         if (!fileToDelete.exists()) {
             throw new ScmException("File " + fileToDelete + " does not exist in working copy.");
         }
-
         if (!fileToDelete.getAbsolutePath().startsWith(getWorkingCopyFile().getAbsolutePath())) {
             throw new ScmException("File " + fileToDelete
                     + " left the working copy. Are you trying to do something nasty?");
         }
 
-        // actual call to SVNKit
+        SVNWCClient client = clientManager.getWCClient();
+
         try {
-            client.doDelete(fileToDelete, force, dryRun);
+            client.doDelete(fileToDelete, false, false);
+            log.info("Successfully deleted file: " + file);
         } catch (SVNException exception) {
             throw new ScmException(exception);
         }
@@ -320,37 +281,27 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
                 }
             }
         }
-
+        
+        log.info("Successfully listed " + directoriesStringList.size() + " " + (branch ? BRANCHES : TAGS));
         return directoriesStringList;
     }
 
     @Override
     public void switchBranch(String branchName) {
-        // set up client
         SVNUpdateClient client = clientManager.getUpdateClient();
 
         try {
-            // set up parameters
-            SVNURL repositoryUrl = getRepositoryUrl();
-            SVNURL branchUrl = null;
-            // we want to switch back to trunk
-            if (TRUNK_KEYWORD.equals(branchName)) {
-                branchUrl = repositoryUrl.appendPath(TRUNK, true);
-            } else // we want to switch to branchName
-            {
-                SVNURL branchesUrl = repositoryUrl.appendPath(BRANCHES, true);
+            SVNURL branchUrl;
+            if (TRUNK.equalsIgnoreCase(branchName)) {
+                branchUrl = getRepositoryUrl().appendPath(TRUNK, true);
+            } else {
+                SVNURL branchesUrl = getRepositoryUrl().appendPath(BRANCHES, true);
                 branchUrl = branchesUrl.appendPath(branchName, true);
             }
 
-            SVNRevision pegRevision = SVNRevision.HEAD;
-            SVNRevision revision = SVNRevision.HEAD;
-            SVNDepth depth = SVNDepth.INFINITY;
-            boolean allowUnversionedObstructions = false;
-            boolean depthIsSticky = true;
-
-            // perform call
-            client.doSwitch(getWorkingCopyFile(), branchUrl, pegRevision, revision, depth,
-                    allowUnversionedObstructions, depthIsSticky);
+            client.doSwitch(getWorkingCopyFile(), branchUrl, SVNRevision.HEAD, SVNRevision.HEAD, SVNDepth.INFINITY,
+                    false, true);
+            log.info("Successfully switched to branch " + branchName);
         } catch (SVNException exception) {
             throw new ScmException(exception);
         }
@@ -358,12 +309,17 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
 
     @Override
     public MergeResult update(String updatePath) {
-        // set up intermediate lists for result
+        File path = null;
+        if (updatePath == null || HEAD.equalsIgnoreCase(updatePath)) {
+            path = getWorkingCopyFile();
+        } else {
+            path = new File(getWorkingCopyFile(), updatePath);
+        }
+        
         final ArrayList<String> addedFiles = new ArrayList<String>();
         final ArrayList<String> mergedFiles = new ArrayList<String>();
         final ArrayList<String> deletedFiles = new ArrayList<String>();
 
-        // set up client
         SVNUpdateClient client = clientManager.getUpdateClient();
         client.setEventHandler(new EventHandler() {
             @Override
@@ -379,40 +335,22 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
                         mergedFiles.add(paramSVNEvent.getFile().getPath());
                     } else if (actionId == SVNEventAction.UPDATE_REPLACE.getID()) {
                         mergedFiles.add(paramSVNEvent.getFile().getPath());
-                        // else do nothing
                     }
                 }
             }
         });
 
-        // set up parameters
-        File path = null;
-        if (updatePath == null || HEAD_KEYWORD.equals(updatePath)) {
-            path = getWorkingCopyFile();
-        } else {
-            path = new File(getWorkingCopyFile(), updatePath);
-        }
-
-        SVNRevision revision = SVNRevision.HEAD;
-        SVNDepth depth = SVNDepth.INFINITY;
-        boolean allowUnversionedObstructions = false; // fail when a file shall
-        // be added to the WC but
-        // an unversioned file
-        // already exists
-        boolean depthIsSticky = false; // not quite sure what that means; let's
-        // leave it off then
-
         try {
-            // perform call
-            client.doUpdate(path, revision, depth, allowUnversionedObstructions, depthIsSticky);
+            client.doUpdate(path, SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
 
-            // set up and fill result
             MergeResult result = new MergeResult();
             result.setAdds(addedFiles);
             result.setDeletions(deletedFiles);
             result.setMerges(mergedFiles);
 
             // TODO find out how to collect conflicts
+            
+            log.info("Successfully updated: " + updatePath);
             return result;
         } catch (SVNException exception) {
             throw new ScmException(exception);
@@ -426,23 +364,11 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
      * /doc/examples/src/org/tmatesoft/svn/examples/wc/WorkingCopy.java}
      */
     private static void setupLibrary() {
-        /*
-         * For using over http:// and https://
-         */
+        // For using over http:// and https://
         DAVRepositoryFactory.setup();
-        /**
-         * Returns a Command that annotates each line of a file's content with
-         * additional data (revision and author of last modification) and
-         * returns the content. This call equals <code>getBlameCommand (file,
-         * null);</code>
-         * 
-         * @param file The path to the file to be blamed. For using over svn://
-         *        and svn+xxx://
-         */
+        // For using over svn:// and svn+xxx://
         SVNRepositoryFactoryImpl.setup();
-        /*
-         * For using over file:///
-         */
+        // For using over file:///
         FSRepositoryFactory.setup();
     }
 

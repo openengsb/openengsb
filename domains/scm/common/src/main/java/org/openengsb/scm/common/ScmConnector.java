@@ -66,11 +66,9 @@ public abstract class ScmConnector {
         if (workingCopy != null) {
             workingCopyFile = new File(workingCopy);
             if (!workingCopyFile.isAbsolute()) {
-                // to the default engsb-direcotry
                 workingCopyFile = new File(DEFAULT_ENGSB_WORKING_COPY, workingCopy);
             }
-        } else // working-copy was not set -> fall back to default
-        {
+        } else {
             workingCopyFile = new File(DEFAULT_ENGSB_WORKING_COPY, DEFAULT_WORKING_COPY_NAME);
         }
     }
