@@ -58,7 +58,12 @@ HowTo - First steps with OpenEngSB (Issue tracker)
   when
     e : Event( name == name )
   then
-   issue.createIssue("my test issue");
+   Issue i = new Issue();
+   i.setSummary("Test Summary");
+   i.setDescription("Test Description");
+   i.setReporter("user");
+   i.setPriority(Issue.priorityURGENT);
+   issue.createIssue(i);
 +----
 
   Note: You have to press "save changes" in order to make sure that your changes to the rule take effect.

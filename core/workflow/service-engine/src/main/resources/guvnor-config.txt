@@ -32,7 +32,7 @@ import org.openengsb.drools.NotificationDomain
 global org.openengsb.contextcommon.ContextHelper ctx
 global org.openengsb.core.EventHelper eventHelper
 global org.openengsb.drools.NotificationDomain notification
-global org.openengsb.drools.DroolsIssuesDomain issue
+global org.openengsb.drools.IssuesDomain issue
 global org.openengsb.drools.BuildDomain build
 global org.openengsb.drools.ReportDomain report
 global org.openengsb.drools.DeployDomain deploy

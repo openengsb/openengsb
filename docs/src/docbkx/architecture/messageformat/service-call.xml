@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<list xmlns="http://org.openengsb/util/serialization" name="methodcall" format="" domainConcept="">
-  <text name="method" format="" domainConcept="">foo</text>
-  <list name="argument" format="" domainConcept="">
-    <text name="name" format="" domainConcept="">arg0</text>
-    <text name="type" format="" domainConcept="">java.lang.String</text>
-    <text name="value" format="" domainConcept="">some text</text>
-  </list>
-</list>

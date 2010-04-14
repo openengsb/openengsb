@@ -57,10 +57,10 @@
 
     <menu name="Documentation">
       <item href="reference/index.html" name="Userguide" />
+      <item href="faq.html" name="FAQ" />
       <item collapse="true" href="connector/issues/issues.html" name="Issue-Connectors">
-        <item href="connector/issues/issueDomain.html" name="Issue domain" />
+        <item href="proposals/issueDomain.html" name="Issue domain" />
         <item href="connector/issues/trac.html" name="Trac" />
-        <item href="connector/issues/mantis.html" name="Mantis" />
       </item>
       <item collapse="true" href="connector/build/build.html" name="Build-Connectors">
         <item href="connector/build/buildDomain.html" name="Build domain" />
@@ -85,7 +85,7 @@
     <menu name="Community">
       <item href="contribute/mailinglists.html" name="Mailing Lists" />
       <item href="roadmap.html" name="Roadmap" />
-      <item href="contribute/git.html" name="Github" />
+      <item href="contribute/git.html" name="Git Workflow" />
       <item href="contribute/codingstyle.html" name="Coding Guidelines" />
       <item href="contribute/format.html" name="APT Format" />
       <item href="contribute/eclipse.html" name="Eclipse Setup" />

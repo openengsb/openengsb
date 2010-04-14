@@ -68,7 +68,7 @@ public class SvnCheckoutCommand extends AbstractSvnCommand<MergeResult> implemen
             long longRevision = client.doCheckout(svnUrl, getWorkingCopy(), revision, revision, depth, true);
 
             MergeResult result = new MergeResult();
-            result.setAdds(checkedOutFiles.toArray(new String[checkedOutFiles.size()]));
+            result.setAdds(checkedOutFiles);
             result.setRevision(String.valueOf(longRevision));
             return result;
         } catch (SVNException exception) {

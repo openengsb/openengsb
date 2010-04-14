@@ -36,18 +36,18 @@ import org.tmatesoft.svn.core.wc.SVNRevision;
  * all given revisions. Implements the general contracts of
  * <code>{@link Command}</code> and <code>{@link LogCommand}</code>.
  */
-public class SvnLogCommand extends AbstractSvnCommand<ScmLogEntry[]> implements LogCommand {
-    private String[] files;
+public class SvnLogCommand extends AbstractSvnCommand<List<ScmLogEntry>> implements LogCommand {
+    private List<String> files;
     private String startRevision;
     private String endRevision;
 
     @Override
-    public ScmLogEntry[] execute() throws ScmException {
+    public List<ScmLogEntry> execute() throws ScmException {
         // set up client
         SVNLogClient logClient = getClientManager().getLogClient();
 
         // set up parameters
-        File[] paths = new File[this.files.length];
+        File[] paths = new File[this.files.size()];
         SVNRevision startSvnRevision = null;
         SVNRevision endSvnRevision = null;
         boolean stopOnCopy = false;
@@ -63,8 +63,8 @@ public class SvnLogCommand extends AbstractSvnCommand<ScmLogEntry[]> implements 
         };
 
         // additional set up
-        for (int i = 0; i < this.files.length; i++) {
-            paths[i] = new File(getWorkingCopy(), this.files[i]);
+        for (int i = 0; i < this.files.size(); i++) {
+            paths[i] = new File(getWorkingCopy(), this.files.get(i));
         }
 
         try {
@@ -86,14 +86,14 @@ public class SvnLogCommand extends AbstractSvnCommand<ScmLogEntry[]> implements 
         // perform call
         try {
             logClient.doLog(paths, startSvnRevision, endSvnRevision, stopOnCopy, discoverChangedPaths, limit, handler);
-            return result.toArray(new ScmLogEntry[result.size()]);
+            return result;
         } catch (SVNException exception) {
             throw new ScmException(exception);
         }
     }
 
     @Override
-    public void setFiles(String[] files) {
+    public void setFiles(List<String> files) {
         this.files = files;
     }
 

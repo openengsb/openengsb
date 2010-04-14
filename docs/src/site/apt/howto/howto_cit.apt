@@ -46,7 +46,7 @@ HowTo - Continuous Integration and Test Workflow
   
   In this example a workflow shall be used to model the behaviour, which is triggered by a rule. 
 
-  At {{{http://localhost:8081/drools-guvnor}http://localhost:8081/drools-guvnor}} choose "Create New" -> "New RuleFlow" call it 'ci' and upload the ci.rf from workflow/drools/service-engine/src/main/resources.
+  At {{{http://localhost:8081/drools-guvnor}http://localhost:8081/drools-guvnor}} choose "Create New" -> "New RuleFlow" call it 'ci' and upload the ci.rf from core/workflow/service-engine/src/main/resources.
 
 [../images/cit_workflow.png]
   

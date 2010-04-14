@@ -21,7 +21,6 @@ package org.openengsb.core;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.openengsb.core.model.InvocationFailedException;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 

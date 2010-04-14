@@ -19,6 +19,7 @@ package org.openengsb.connector.svn.commands;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.openengsb.scm.common.commands.Command;
 import org.openengsb.scm.common.commands.ListBranchesCommand;
@@ -31,16 +32,15 @@ import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 
-
 /**
  * A Command that lists all branches' names created so far. Implements the
  * general contracts of <code>{@link Command}</code> and
  * <code>{@link ListBranchesCommand}</code>.
  */
-public class SvnListBranchesCommand extends AbstractSvnCommand<String[]> implements ListBranchesCommand {
+public class SvnListBranchesCommand extends AbstractSvnCommand<List<String>> implements ListBranchesCommand {
 
     @Override
-    public String[] execute() throws ScmException {
+    public List<String> execute() throws ScmException {
         // compute branches-url
         SVNURL repositoryUrl = getRepositoryUrl();
 
@@ -65,7 +65,7 @@ public class SvnListBranchesCommand extends AbstractSvnCommand<String[]> impleme
              * since branch() would create the branches-directory upon it's
              * first call anyway...
              */
-            return new String[0];
+            return new ArrayList<String>();
         }
 
         // build string-array
@@ -83,9 +83,7 @@ public class SvnListBranchesCommand extends AbstractSvnCommand<String[]> impleme
             // else ignore
         }
 
-        String[] branchesArray = branchesStringList.toArray(new String[branchesStringList.size()]);
-        return branchesArray;
-
+        return branchesStringList;
     }
 
 }

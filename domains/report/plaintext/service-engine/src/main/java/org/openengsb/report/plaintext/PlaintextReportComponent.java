@@ -17,30 +17,13 @@
  */
 package org.openengsb.report.plaintext;
 
-import java.util.List;
-
-import org.apache.servicemix.common.DefaultComponent;
+import org.openengsb.core.OpenEngSBComponent;
 
 /**
  * @org.apache.xbean.XBean element="plaintextReportComponent"
  *                         description="Plaintext Report Component"
  */
-public class PlaintextReportComponent extends DefaultComponent {
-    private PlaintextReportEndpoint[] endpoints;
-
-    public PlaintextReportEndpoint[] getEndpoints() {
-        return this.endpoints;
-    }
-
-    public void setEndpoints(PlaintextReportEndpoint[] endpoints) {
-        this.endpoints = endpoints;
-    }
-
-    @Override
-    protected List<?> getConfiguredEndpoints() {
-        return asList(this.endpoints);
-    }
-
+public class PlaintextReportComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { PlaintextReportEndpoint.class };

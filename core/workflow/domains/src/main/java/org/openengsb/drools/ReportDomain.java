@@ -17,6 +17,8 @@
  */
 package org.openengsb.drools;
 
+import java.util.List;
+
 import org.openengsb.core.model.Event;
 import org.openengsb.drools.model.Report;
 
@@ -29,7 +31,7 @@ public interface ReportDomain extends Domain {
 
     Report generateReport(String reportId);
 
-    Report generateReport(Event[] events);
+    Report generateReport(List<Event> events);
 
     /**
      * Start collecting data for all arriving events with the given id of the

@@ -24,21 +24,20 @@ import java.util.HashSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.GitIndex;
+import org.eclipse.jgit.lib.IndexDiff;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectWriter;
+import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.lib.RefUpdate;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.Tree;
+import org.eclipse.jgit.lib.TreeEntry;
+import org.eclipse.jgit.lib.GitIndex.Entry;
 import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.edb.core.repository.Commit;
 import org.openengsb.edb.core.repository.RepositoryStateException;
-import org.spearce.jgit.lib.Constants;
-import org.spearce.jgit.lib.GitIndex;
-import org.spearce.jgit.lib.IndexDiff;
-import org.spearce.jgit.lib.ObjectId;
-import org.spearce.jgit.lib.ObjectWriter;
-import org.spearce.jgit.lib.PersonIdent;
-import org.spearce.jgit.lib.RefUpdate;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.lib.Tree;
-import org.spearce.jgit.lib.TreeEntry;
-import org.spearce.jgit.lib.GitIndex.Entry;
-
 
 /**
  * Implementation of the {@link Commit} interface for a git-repository.
@@ -212,7 +211,7 @@ public class GitCommit implements Commit {
             }
 
             this.log.trace("Creating commit object and prepare for commit...");
-            org.spearce.jgit.lib.Commit commit = new org.spearce.jgit.lib.Commit(this.repository, parentIds);
+            org.eclipse.jgit.lib.Commit commit = new org.eclipse.jgit.lib.Commit(this.repository, parentIds);
             commit.setTree(projectTree);
             commit.setMessage(this.commitMessage);
             commit.setAuthor(new PersonIdent(this.authorName, this.authorEmail));

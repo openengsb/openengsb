@@ -38,6 +38,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.model.Event;
+import org.openengsb.core.transformation.Transformer;
+import org.openengsb.util.serialization.SerializationException;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -47,15 +49,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class DroolsEndpointTest extends SpringTestSupport {
     private static ServiceMixClient client;
 
-    private static final String TEST_EVENT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-    "<list xmlns=\"http://org.openengsb/util/serialization\" domainConcept=\"\" format=\"\" name=\"event\">" +
-    "    <text domainConcept=\"\" format=\"\" name=\"event\">org.openengsb.core.model.Event</text>" +
-    "    <list domainConcept=\"\" format=\"\" name=\"superclasses\">" +
-    "        <text domainConcept=\"\" format=\"\" name=\"superclass\">java.lang.Object</text>" +
-    "    </list>" +
-    "    <text domainConcept=\"\" format=\"\" name=\"name\">testevent</text>" +
-    "    <text domainConcept=\"\" format=\"\" name=\"domain\">drools</text>" +
-    "</list>";
+    private final String TEST_EVENT = getTestEvent();
 
     @Override
     protected AbstractXmlApplicationContext createBeanFactory() {
@@ -111,4 +105,17 @@ public class DroolsEndpointTest extends SpringTestSupport {
         client.sendSync(me);
         assertNotSame("Exchange was not processed correctly", ExchangeStatus.ERROR, me.getStatus());
     }
+
+    private String getTestEvent() {
+        try {
+            Event event = new Event("domain", "name");
+            event.setValue("buz", "42");
+            event.setValue("foo", 42);
+            event.setValue("bar", "test");
+            return Transformer.toXml(event);
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

@@ -17,35 +17,17 @@
  */
 package org.openengsb.build;
 
-import java.util.List;
-
-import org.apache.servicemix.common.DefaultComponent;
+import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.core.endpoints.EventForwardEndpoint;
-import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="buildComponent"
  *                         description="Build domain Component"
  */
-public class BuildComponent extends DefaultComponent {
-    private OpenEngSBEndpoint[] endpoints;
-
-    public OpenEngSBEndpoint[] getEndpoints() {
-        return this.endpoints;
-    }
-
-    public void setEndpoints(OpenEngSBEndpoint[] endpoints) {
-        this.endpoints = endpoints;
-    }
-
-    @Override
-    protected List<?> getConfiguredEndpoints() {
-        return asList(this.endpoints);
-    }
-
+public class BuildComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { BuildEndpoint.class, EventForwardEndpoint.class };
     }
-
+    
 }

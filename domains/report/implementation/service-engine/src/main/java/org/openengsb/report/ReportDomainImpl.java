@@ -66,11 +66,11 @@ public class ReportDomainImpl implements ReportDomain {
         registry.stopStoringEventsFor(storageKey);
         List<Event> events = eventStore.getEvents(storageKey);
         eventStore.clearEvents(storageKey);
-        return generateReport(events.toArray(new Event[events.size()]));
+        return generateReport(events);
     }
 
     @Override
-    public Report generateReport(Event[] events) {
+    public Report generateReport(List<Event> events) {
         QName toolConnector = getToolConnectorQName();
         Method method;
         method = getGenerateReportMethod();
@@ -80,7 +80,7 @@ public class ReportDomainImpl implements ReportDomain {
 
     private Method getGenerateReportMethod() {
         try {
-            return getClass().getMethod("generateReport", Event[].class);
+            return getClass().getMethod("generateReport", List.class);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

@@ -16,15 +16,23 @@
 Usage
 
   First of all this chapter explains only the VERY basics of git and only that parts directly relevant for the
- development, but not the entire idea and possibilities with git. PLEASE read a lot of tutorials first to get
- how to work with git and see this chapter more as an summary!
+ development of the OpenEngSB project, but not the entire idea and possibilities with git. PLEASE read a lot of 
+ tutorials first to get how to work with git and see this chapter more as an summary! You may also take a look
+ at the {{{http://git-scm.com/documentation}Git Documentation Page}} and {{{http://progit.org/book/}Pro Git}}.
  
 Remarks
 
   For mac and for windows there are specific implementations of GIT. Don't use them! They do not work for what
- we like to do with them. If you're using linux no problems at all are expected. If you're using any other platform
- use cygwin or compile the original source with ssh support! 
+ we like to do with them. If you're using Linux no problems at all are expected. If you're using any other platform
+ use cygwin or compile the original source with ssh support! For cygwin you require the open-ssh package and the
+ git and gitk packages.
+
+Github
  
+  The OpenEngSB is developed at {{{http://github.com}github.com}}. So, please create an account and try to get
+ some feeling for the platform. Please also add your real name in the admin tab and add a picture. This makes
+ it easier to associate your commits with you.
+
 Starting up and configure
 
   Before starting to work with git some settings should be applied to git. Therefore simply execute the following
@@ -43,61 +51,204 @@ Starting up and configure
   [[5]] git config --global diff.renamelimit "0"
   
   [[6]] git config --global core.autocrlf "input"
-  
-Getting the repository
 
-  The git repositories could be checked out in two different permission levels. Read or write. The following two
- subsections explain how to get the code.
-
-Readonly
-
-  For a readonly access to the git repos simply clone the repository
-  
-+--------------+
-git clone git://host/REPO (e.g. git clone git://github.com/openengsb/openengsb.git)
-+--------------+
-
-Write
-
-  To get write access to the repositries an additional step is required. First of all you have to create an
- ssh-key (in cygwin on windows! Otherwise simply in the bash).
+[]
  
-+-------------+
-ssh-keygen
-+-------------+
+  Additionally execute the special settings for github as could be found on github in the "Account Settings"
+ tab is a point "Global git config information". Please use the two git commands described there
 
-  Simply answer all questions from the application with return without enter any values. Afterwards the id_rsa.pub
- file from your ~/.ssh/ folder should be submitted to github. ***Workflow with GIT
+  [[7]] git config --global github.user YOURUSER
 
-  To understand the workflow you have to have a basic understanding of git. Nevertheless the approach will also
- work with "pattern matching".
+  [[8]] git config --global github.token YOURTOKEN
  
-+-------------+
-[1. create working feature; if not exists; WORKING = name of the feature; e.g. info]
-git checkout -b WORKING master
-git push origin WORKING
-git checkout master
-git branch -D WORKING
-git checkout -b WORKING origin/WORKING
-git checkout -b devWORKING WORKING
-[2. producing context]
-git checkout -b devWORKING
-HACK HACK HACK
-git add FILES
-git rm FILES
-git commit -s
-[3. push changes or continue with 2.]
-git checkout WORKING
-git pull
-git rebase WORKING devWORKING
-git checkout WORKING
-git merge devWORKING
-// test if everything still works...
-git push
-[4. feature completed and merged by an admin to the master; or go back to 2.]
-git push origin :WORKING
-git checkout master
-git branch -D devWORKING
-git branch -D WORKING
-[5. go back to 1. and create new feature branch]
-+-------------+ 
+Creating and register your ssh key
+
+ Execute the following command in shell or in cygwin:
+
+ $ ssh-keygen
+
+  Simply answer all questions from the application with "enter" without enter any values. Afterwards the content of the id_rsa.pub
+ file from your ~/.ssh/ folder should be submitted to github ("Account Settings"/"SSH public keys"). 
+
+Contributor Workflow
+
+  Contributor are all developer who like to contribute to the OpenEngSB project, but not have commit rights to the 
+ master. Nevertheless the same workflow is also valid for commiter with the difference that they have additional 
+ responsibilities.
+  
+*Initial setup
+
+ * create a fork on github from the openengsb repository (http://github.com/openengsb/openengsb)
+
+ * clone the original repo:
+
+ $ git clone git://github.com/openengsb/openengsb (for commiter this will be git clone git@github.com:openengsb/openengsb)
+
+ * add your fork as remote branch:
+
+ $ git remote add <username> git@github.com/<username>/openengsb (e.g. git remote add ChristophGr git@github.com/ChristophGr/openengsb)
+
+*Start some new feature
+
+ * update remote branches
+
+ $ git remote update -p
+
+ * create a feature branch
+
+ $ git checkout -b <myfeature> origin/master
+
+ * push the new feature to your fork:
+
+ $ git push <username> <myfeature>
+
+ * go to the admin page of your fork and set the new branch to your default branch to <myfeature>
+
+ * then create a new devbranch
+ 
+ $ git checkout -b devbranch <myfeature>
+
+*Develop my feature
+
+ * and start committing to your devbranch
+
+*Publish your work
+
+ * update your local feature branch by changing from devbranch to <myfeature>
+
+ $ git checkout <myfeature>
+
+ * sync your feature with your remote repository
+
+ $ git pull <username> <myfeature>
+
+ * rebase your dev branch with your feature branch
+
+ $ git rebase <myfeature> devbranch
+
+ * go back to the feature branch
+
+ $ git checkout <myfeature>
+
+ * merge your dev branch into the feature
+
+ $ git merge devbranch
+
+ * push the changes again
+
+ $ git push <username> <myfeature>
+
+ * go back to your dev branch and do further development
+
+ $ git checkout devbranch
+
+*Long-Time Development Features
+
+  If the development in the branch takes some time, it may happen, that the master-branch changes in a way that affects your featurebranch.
+ To check how your branch behaves on the current master you can merge the changes into your devbranch.
+
+ $ git checkout <myfeature> 
+
+ $ git merge --no-commit --no-ff origin/master
+
+  If it does not affect your development in any way, do not commit the merge, but rather undo it.
+
+ $ git reset --hard
+
+  If it does affect your development, you need to commit the merge. If the merge breaks something in your dev-branch, fix all 
+ issues before commiting the merge.  When done fixing potential issues do
+ 
+ $ git commit
+
+*Finish Feature
+
+  If you think you are finished with your feature please post to the OpenEngSB developer list. A commiter will decide if he will merge your branch or give you feedback.
+
+Commiter Workflow
+
+  The only difference between a commiter and a contributor is that he has to watch and merge branches of 
+ contributors. If a commiter is happy with the work of a contributor. Comments and other discussions should be
+ done on the mailing list and/or via the github review system. Commitor should always watch the branches
+ and forks of contributors to review, comment and give feedback asap.
+
+  To merge a branch of a contributor the following steps has to be done. The following preconditions are relevant:
+ (1) you want to merge a feature <myfeature> (2) from a user <username>. (3) Additionally we expect that the openengsb/openengsb
+ repository is your origin repository.
+
+ * first of all you have to add the user as a remote repository
+
+ $ git remote add <username> git://github.com/<username>/openengsb
+
+ * now update the remote repository
+
+ $ git remote update -p
+
+ * checkout the origin master
+
+ $ git checkout -b master origin/master
+
+ * merge the feature branch 
+
+ $ git merge <username>/<myfeature> --no-ff
+
+ * push the changes to the master
+
+ $ git push origin master
+
+
+Additional Rules
+
+ [[1]] (Contributor/Commiter) All development is done in forks (also of the core developers)
+ 
+   [[a]] (Commiter) One exception to this rule exists: Small fixes and maintenance work which is NOT related to a new feature and does not exceed 2 commits should be rebased and merged (or cherry-picked) into the master directly.
+
+ [[2]] (Contributor/Commiter) Rebase is NOT dead (although we use merges). NEVER EVER commit local
+ merges. You still have to develop in local dev branches and rebasing them
+ with the upstream branches. Only if nobody else has access to your fork you
+ can be sure that nobody changed it on the way! (this workflow is explained
+ in this chapter)
+
+ [[3]] (Commiter) Merges to the master have to be done from the upstream branches not the
+ local ones! This means if you want to merge the branch test from the fork
+ eyeball into the master do NOT use
+
+ $ git checkout test eyeball/test
+
+ $ git checkout master
+
+ $ git merge test
+
+ BUT rather
+
+ $ git checkout master
+ 
+ $ git merge eyeball/test
+
+ This will create much better readable merge nodes.
+
+ [[4]] (Commiter) if merging branches from forked repositories ALWAYS use the --no-ff option
+ for merges; this will always create a merge node (even if a fast-forward
+ merge is possible). This is required to create a clear and consistent
+ history!
+
+ [[5]] Avoid backward merges from the master and keep feature branches small! 
+ This does not mean that backward merges from master are forbidden. But they should
+ not be done too often, since they create a history not easy to read. Please use
+ the method described on this page (with --no-ff --no-commit) to reduce the number
+ of merge nodes.
+
+ [[6]] use MEANINGFUL feature branch names. Using the merge history in the master
+ you can easily follow the development of features. But this requires (maybe
+ long) good names! Having 7 twitter or test branches merged helps absolutely
+ nothing and will only create a mess!
+
+ [[7]] Keep your forks clean; although git can handle thousands of branches in
+ thousands of forks we (as commiter) cant. Having all the forks as remote
+ repositories makes it really hard for us to handle all the branches in all
+ the forks. Therefore please remove ALL branches already merged or not
+ required. Also remove your forked master and the already existing branches.
+ You can remove your local master by changing in the admin page of your fork
+ the default branch to your current branch; if master is no longer the
+ default branch you can kick it. Additionally its nevertheless better to use
+ the remote master instead of your forked to kick off your dev branches...
+

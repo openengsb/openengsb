@@ -92,9 +92,9 @@ public class SvnUpdateCommand extends AbstractSvnCommand<MergeResult> implements
 
             // set up and fill result
             MergeResult result = new MergeResult();
-            result.setAdds(addedFiles.toArray(new String[addedFiles.size()]));
-            result.setDeletions(deletedFiles.toArray(new String[deletedFiles.size()]));
-            result.setMerges(mergedFiles.toArray(new String[mergedFiles.size()]));
+            result.setAdds(addedFiles);
+            result.setDeletions(deletedFiles);
+            result.setMerges(mergedFiles);
 
             // TODO find out how to collect conflicts
             return result;

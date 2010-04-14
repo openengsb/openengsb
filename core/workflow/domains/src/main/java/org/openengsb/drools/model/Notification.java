@@ -18,11 +18,14 @@
 
 package org.openengsb.drools.model;
 
+import java.util.Collections;
+import java.util.List;
+
 public class Notification {
     private String subject;
     private String message;
     private String recipient;
-    private Attachment[] attachments;
+    private List<Attachment> attachments;
 
     public String getSubject() {
         return subject;
@@ -48,14 +51,14 @@ public class Notification {
         this.recipient = recipient;
     }
 
-    public void setAttachments(Attachment[] attachments) {
+    public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
     }
 
-    public Attachment[] getAttachments() {
+    public List<Attachment> getAttachments() {
         if (attachments == null) {
-            return new Attachment[0];
+            return Collections.emptyList();
         }
-        return attachments;
+        return Collections.unmodifiableList(attachments);
     }
 }

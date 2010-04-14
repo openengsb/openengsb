@@ -17,63 +17,111 @@
  */
 package org.openengsb.core.transformation;
 
-import org.openengsb.core.messaging.Segment;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openengsb.core.model.Event;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
+import org.openengsb.core.xmlmapping.XMLEvent;
+import org.openengsb.core.xmlmapping.XMLMethodCall;
+import org.openengsb.core.xmlmapping.XMLReturnValue;
+import org.openengsb.core.xmlmapping.XMLTypedValue;
+import org.openengsb.util.serialization.JibxXmlSerializer;
 import org.openengsb.util.serialization.SerializationException;
 
 public class Transformer {
+
+    private final static JibxXmlSerializer serializer = new JibxXmlSerializer();
+
     private Transformer() {
         throw new AssertionError();
     }
 
-    public static Segment toSegment(MethodCall methodCall) {
-        return new ToSegmentTransformer().transform(methodCall);
-    }
-
-    public static Segment toSegment(ReturnValue returnValue) {
-        return new ToSegmentTransformer().transform(returnValue);
-    }
-
-    public static Segment toSegment(Event event) {
-        return new ToSegmentTransformer().transform(event);
-    }
-
     public static String toXml(MethodCall methodCall) throws SerializationException {
-        return toSegment(methodCall).toXML();
+        XMLMethodCall xmc = new XMLMethodCall();
+        xmc.setMethodName(methodCall.getMethodName());
+        ToXmlTypesTransformer transformer = new ToXmlTypesTransformer();
+
+        List<XMLTypedValue> arguments = new ArrayList<XMLTypedValue>();
+        for (int i = 0; i < methodCall.getArgs().length; i++) {
+            Object o = methodCall.getArgs()[i];
+            XMLTypedValue arg = new XMLTypedValue();
+            arg.setValue(transformer.toMappable(o));
+            arg.setType(methodCall.getTypes()[i].getName());
+            arguments.add(arg);
+        }
+
+        xmc.setArgs(arguments);
+
+        return xml(xmc);
     }
 
     public static String toXml(ReturnValue returnValue) throws SerializationException {
-        return toSegment(returnValue).toXML();
+        ToXmlTypesTransformer transformer = new ToXmlTypesTransformer();
+        XMLReturnValue xrv = new XMLReturnValue();
+
+        XMLTypedValue typedValue = new XMLTypedValue();
+        typedValue.setType(returnValue.getType().getName());
+
+        typedValue.setValue(transformer.toMappable(returnValue.getValue()));
+
+        xrv.setValue(typedValue);
+        return xml(xrv);
     }
 
     public static String toXml(Event event) throws SerializationException {
-        return toSegment(event).toXML();
+        ToXmlTypesTransformer transformer = new ToXmlTypesTransformer();
+        XMLEvent xe = transformer.toXmlEvent(event);
+        return xml(xe);
+    }
+
+    private static String xml(Object o) {
+        try {
+            StringWriter writer = new StringWriter();
+            serializer.serialize(o, writer);
+            return writer.toString();
+        } catch (SerializationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static MethodCall toMethodCall(String xml) throws SerializationException {
-        return toMethodCall(Segment.fromXML(xml));
+
+        FromXmlTypesTransformer transformer = new FromXmlTypesTransformer();
+        XMLMethodCall xmc = serializer.deserialize(XMLMethodCall.class, new StringReader(xml));
+
+        List<Object> args = new ArrayList<Object>();
+        List<Class<?>> types = new ArrayList<Class<?>>();
+
+        for (XMLTypedValue arg : xmc.getArgs()) {
+            Object o = transformer.toObject(arg.getValue());
+            args.add(o);
+            types.add(TransformerUtil.simpleGetClass(arg.getType()));
+        }
+
+        return new MethodCall(xmc.getMethodName(), args.toArray(), types.toArray(new Class<?>[types.size()]));
     }
 
     public static ReturnValue toReturnValue(String xml) throws SerializationException {
-        return toReturnValue(Segment.fromXML(xml));
+        FromXmlTypesTransformer transformer = new FromXmlTypesTransformer();
+        XMLReturnValue xrv = serializer.deserialize(XMLReturnValue.class, new StringReader(xml));
+        XMLTypedValue typedValue = xrv.getValue();
+        Object o = transformer.toObject(typedValue.getValue());
+        Class<?> simpleGetClass = null;
+        if (typedValue.getType().equals("void")) {
+            simpleGetClass = void.class;
+        } else {
+            simpleGetClass = TransformerUtil.simpleGetClass(typedValue.getType());
+        }
+        return new ReturnValue(o, simpleGetClass);
     }
 
     public static Event toEvent(String xml) throws SerializationException {
-        return toEvent(Segment.fromXML(xml));
+        XMLEvent xrv = serializer.deserialize(XMLEvent.class, new StringReader(xml));
+        FromXmlTypesTransformer transformer = new FromXmlTypesTransformer();
+        return transformer.toEvent(xrv, "-1");
     }
-
-    public static MethodCall toMethodCall(Segment segment) {
-        return new FromSegmentTransformer().transform(segment);
-    }
-
-    public static ReturnValue toReturnValue(Segment segment) {
-        return new FromSegmentTransformer().transformReturnValue(segment);
-    }
-
-    public static Event toEvent(Segment segment) {
-        return new FromSegmentTransformer().transformEvent(segment);
-    }
-
 }

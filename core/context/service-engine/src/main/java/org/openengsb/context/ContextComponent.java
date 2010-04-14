@@ -17,33 +17,16 @@
  */
 package org.openengsb.context;
 
-import java.util.List;
-
-import org.apache.servicemix.common.DefaultComponent;
+import org.openengsb.core.OpenEngSBComponent;
 
 /**
  * @org.apache.xbean.XBean element="contextComponent"
  *                         description="Context Component" The Context-component
  */
-public class ContextComponent extends DefaultComponent {
-    private ContextEndpoint[] endpoints;
-
-    public ContextEndpoint[] getEndpoints() {
-        return this.endpoints;
-    }
-
-    public void setEndpoints(ContextEndpoint[] endpoints) {
-        this.endpoints = endpoints;
-    }
-
-    @Override
-    protected List<?> getConfiguredEndpoints() {
-        return asList(this.endpoints);
-    }
-
+public class ContextComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { ContextEndpoint.class };
     }
-
+    
 }
