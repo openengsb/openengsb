@@ -41,29 +41,41 @@ fi
 
 cd $(dirname $0)/..
 
+smx_comp_version=`grep '<servicemix.subprojects.version>' pom.xml | sed 's! *<[^>]*> *!!g'`
+openengsb_version=`grep '<version>' pom.xml | head -1 | sed 's! *<[^>]*> *!!g'`
+
 files="
-$2/repository/org/apache/servicemix/servicemix-shared/2010.01/servicemix-shared-2010.01-installer.zip
-features/edb/core/target/openengsb-features-edb-core-*.zip
-core/context/service-engine/target/openengsb-context-se-*-installer.zip
-core/workflow/service-engine/target/openengsb-workflow-se-*-installer.zip
-domains/build/implementation/service-engine/target/openengsb-domains-build-implementation-se-*-installer.zip
-domains/build/maven/service-engine/target/openengsb-domains-build-maven-se-*-installer.zip
-domains/deploy/implementation/service-engine/target/openengsb-domains-deploy-implementation-se-*-installer.zip
-domains/deploy/maven/service-engine/target/openengsb-domains-deploy-maven-se-*-installer.zip
-domains/issues/implementation/service-engine/target/openengsb-domains-issues-implementation-se-*-installer.zip
-domains/issues/trac/service-engine/target/openengsb-domains-issues-trac-se-*-installer.zip
-domains/notification/email/service-engine/target/openengsb-domains-notification-email-se-*-installer.zip
-domains/notification/implementation/service-engine/target/openengsb-domains-notification-implementation-se-*-installer.zip
-domains/notification/twitter/service-engine/target/openengsb-domains-notification-twitter-se-*-installer.zip
-domains/report/implementation/service-engine/target/openengsb-domains-report-implementation-se-*-installer.zip
-domains/report/plaintext/service-engine/target/openengsb-domains-report-plaintext-se-*-installer.zip
-domains/scm/implementation/service-engine/target/openengsb-domains-scm-implementation-se-*-installer.zip
-domains/scm/subversion/service-engine/target/openengsb-domains-scm-subversion-se-*-installer.zip
-domains/test/implementation/service-engine/target/openengsb-domains-test-implementation-se-*-installer.zip
-domains/test/maven/service-engine/target/openengsb-domains-test-maven-se-*-installer.zip
-features/edb/service-engine/target/openengsb-features-edb-se-*-installer.zip
-features/link/http-processor/service-engine/target/openengsb-features-link-http-processor-se-*-installer.zip
-package/all/target/openengsb-package-all-*.zip"
+$2/repository/org/apache/servicemix/servicemix-shared/$smx_comp_version/servicemix-shared-${smx_comp_version}-installer.zip
+features/edb/core/target/openengsb-features-edb-core-${openengsb_version}.zip
+core/context/service-engine/target/openengsb-context-se-${openengsb_version}-installer.zip
+core/workflow/service-engine/target/openengsb-workflow-se-${openengsb_version}-installer.zip
+domains/build/implementation/service-engine/target/openengsb-domains-build-implementation-se-${openengsb_version}-installer.zip
+domains/build/maven/service-engine/target/openengsb-domains-build-maven-se-${openengsb_version}-installer.zip
+domains/deploy/implementation/service-engine/target/openengsb-domains-deploy-implementation-se-${openengsb_version}-installer.zip
+domains/deploy/maven/service-engine/target/openengsb-domains-deploy-maven-se-${openengsb_version}-installer.zip
+domains/issues/implementation/service-engine/target/openengsb-domains-issues-implementation-se-${openengsb_version}-installer.zip
+domains/issues/trac/service-engine/target/openengsb-domains-issues-trac-se-${openengsb_version}-installer.zip
+domains/notification/email/service-engine/target/openengsb-domains-notification-email-se-${openengsb_version}-installer.zip
+domains/notification/implementation/service-engine/target/openengsb-domains-notification-implementation-se-${openengsb_version}-installer.zip
+domains/notification/twitter/service-engine/target/openengsb-domains-notification-twitter-se-${openengsb_version}-installer.zip
+domains/report/implementation/service-engine/target/openengsb-domains-report-implementation-se-${openengsb_version}-installer.zip
+domains/report/plaintext/service-engine/target/openengsb-domains-report-plaintext-se-${openengsb_version}-installer.zip
+domains/scm/implementation/service-engine/target/openengsb-domains-scm-implementation-se-${openengsb_version}-installer.zip
+domains/scm/subversion/service-engine/target/openengsb-domains-scm-subversion-se-${openengsb_version}-installer.zip
+domains/test/implementation/service-engine/target/openengsb-domains-test-implementation-se-${openengsb_version}-installer.zip
+domains/test/maven/service-engine/target/openengsb-domains-test-maven-se-${openengsb_version}-installer.zip
+features/edb/service-engine/target/openengsb-features-edb-se-${openengsb_version}-installer.zip
+features/link/http-processor/service-engine/target/openengsb-features-link-http-processor-se-${openengsb_version}-installer.zip
+package/all/target/openengsb-package-all-${openengsb_version}.zip"
+
+for file in $files;
+do
+  if [ ! -f $file ];
+  then
+    echo Error: Could not find file $file
+    exit 1
+  fi
+done
 
 for file in $files;
 do
