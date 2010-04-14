@@ -70,10 +70,14 @@ public class ContextStringResourceLoader implements IStringResourceLoader {
 
     @Override
     public String loadStringResource(Class<?> clazz, String key, Locale locale, String style) {
-        String first = key.substring(0, key.indexOf('.'));
+        int idx = key.indexOf('.');
+        if (idx == -1) {
+            return null;
+        }
+        String first = key.substring(0, idx);
         if (!props.containsKey(first)) {
             return null;
         }
-        return props.get(first).getProperty(key.substring(key.indexOf('.')+1));
+        return props.get(first).getProperty(key.substring(idx + 1));
     }
 }
