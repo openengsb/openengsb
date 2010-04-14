@@ -26,7 +26,7 @@ formatter.xml
 #runtime productions
 #================
 *activemq-data
-core/config/ui/.configDB
+core/config/ui/data
 engsb-edb-core/dump
 package/embedded/*.log
 package/embedded/data/
