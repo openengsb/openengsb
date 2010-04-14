@@ -23,7 +23,7 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:configApplicationContext.xml</param-value>
+    <param-value>classpath:configApplicationContext.xml classpath:mockedJbiContext.xml</param-value>
   </context-param>
 
   <filter>

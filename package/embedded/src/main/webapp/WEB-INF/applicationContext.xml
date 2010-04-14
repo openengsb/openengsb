@@ -48,6 +48,8 @@
       <amq:transportConnector uri="tcp://localhost:61616" discoveryUri="multicast://default" />
     </amq:transportConnectors>
   </amq:broker>
+  
+  <bean id="deploymentServiceMBean" factory-bean="jbi" factory-method="getDeploymentService" />
 
   <!-- the JBI container -->
   <sm:container id="jbi" rootDir="#rootDir" useMBeanServer="true" createMBeanServer="true"
