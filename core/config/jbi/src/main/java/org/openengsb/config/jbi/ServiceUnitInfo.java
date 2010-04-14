@@ -39,6 +39,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.ComponentType;
 import org.openengsb.config.jbi.types.RefType;
+import org.openengsb.config.jbi.types.ServiceEndpointTargetType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -141,6 +142,24 @@ public class ServiceUnitInfo {
 
         Element services = doc.createElement("services");
         jbi.appendChild(services);
+
+        for (EndpointInfo e : endpoints) {
+            Element node = doc.createElement("provides");
+            services.appendChild(node);
+            node.setAttribute("service-name", e.getMap().get("service"));
+            node.setAttribute("endpoint-name", e.getMap().get("endpoint"));
+            for (AbstractType t : e.getEndpointType().getAttributes()) {
+                if (!t.getClass().equals(ServiceEndpointTargetType.class)) {
+                    continue;
+                }
+                ServiceEndpointTargetType tt = (ServiceEndpointTargetType) t;
+                Element consumes = doc.createElement("consumes");
+                services.appendChild(consumes);
+                String target = e.getMap().get(tt.getName());
+                consumes.setAttribute("service-name", target.substring(0, target.indexOf('.')));
+                consumes.setAttribute("endpoint-name", target.substring(target.indexOf('.') + 1));
+            }
+        }
 
         services.setAttribute("binding-component", Boolean.toString(component.isBindingComponent()));
 

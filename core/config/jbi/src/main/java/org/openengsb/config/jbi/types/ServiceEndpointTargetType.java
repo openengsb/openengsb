@@ -61,8 +61,9 @@ public class ServiceEndpointTargetType extends AbstractType {
 
     @Override
     public void toAttributeOnElement(Map<String, String> context, Element elem) {
-        elem.setAttribute(serviceName, context.get(serviceName));
-        elem.setAttribute(endpointName, context.get(endpointName));
+        String target = context.get(getName());
+        elem.setAttribute(serviceName, target.substring(0, target.indexOf('.')));
+        elem.setAttribute(endpointName, target.substring(target.indexOf('.') + 1));
     }
 
     @Override
