@@ -190,7 +190,6 @@
     <module>domains/deploy/maven/service-unit</module>
     <module>domains/test/maven/service-unit</module>
     <module>domains/scm/subversion/service-unit</module>
-    <module>domains/scm/subversion/jms/service-unit</module>
     <module>domains/notification/email/service-unit</module>
     <module>domains/notification/twitter/service-unit</module>
     <module>domains/report/plaintext/service-unit</module>
@@ -1010,11 +1009,6 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-scm-subversion-su</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-domains-scm-subversion-jms-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
 

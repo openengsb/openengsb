@@ -1,8 +1,0 @@
-../lib/lib/perl5/Net/Stomp.pm
-../lib/lib/perl5/Net/Stomp/Frame.pm
-../lib/man/man3/Net.Stomp.3pm
-../lib/man/man3/Net.Stomp.Frame.3pm
-/usr/lib/perl5/site_perl/5.10/Net/Stomp.pm
-/usr/lib/perl5/site_perl/5.10/Net/Stomp/Frame.pm
-/usr/share/man/man3/Net.Stomp.3pm
-/usr/share/man/man3/Net.Stomp.Frame.3pm

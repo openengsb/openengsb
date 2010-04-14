@@ -31,6 +31,7 @@
   <bean id="repositoryPoller" class="org.openengsb.connector.svn.RepositoryPoller">
   	<property name="configuration" ref="configuration" />
     <property name="author" value="openengsb" />
+    <property name="context" value="42" />
     <property name="endpoint" ref="svnEndpoint" />
   </bean>
   
@@ -43,7 +44,7 @@
     <!-- see the example of method invoking job above -->
     <property name="jobDetail" ref="jobDetail" />
     <property name="startDelay" value="1000" />
-    <property name="repeatInterval" value="20000" />
+    <property name="repeatInterval" value="10000" />
   </bean>
   
   <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

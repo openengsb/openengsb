@@ -38,6 +38,8 @@ public class RepositoryPoller {
 
     private SvnConnector svn;
     private String author;
+    private String context;
+
     private EventHelper eventHelper;
 
     private String revision;
@@ -61,18 +63,18 @@ public class RepositoryPoller {
 
                 branchNames = new HashSet<String>(newBranches);
                 branchNames.removeAll(branches);
+
                 log.info("Found " + branchNames.size() + " new branches");
             } else if (branches.size() > newBranches.size()) {
                 e = new ScmBranchDeletedEvent();
 
                 branchNames = new HashSet<String>(branches);
                 branchNames.removeAll(newBranches);
+
                 log.info("Found " + branchNames.size() + " deleted branches");
             } else {
                 branchNames = new HashSet<String>(branches);
-                Set<String> tempNames = new HashSet<String>(branches);
-                tempNames.retainAll(newBranches);
-                branchNames.removeAll(tempNames);
+                branchNames.removeAll(newBranches);
 
                 if (branchNames.size() > 0) {
                     e = new ScmBranchAlteredEvent();
@@ -93,12 +95,11 @@ public class RepositoryPoller {
         List<String> newTags = svn.listTags();
 
         if (tags != null && tags.size() < newTags.size()) {
-            ScmTagCreatedEvent e = new ScmTagCreatedEvent();
-
             Set<String> tagNames = new HashSet<String>(newTags);
             tagNames.removeAll(tags);
             log.info("Found " + tagNames.size() + " new tags");
 
+            ScmTagCreatedEvent e = new ScmTagCreatedEvent();
             e.setDirectories(new ArrayList<String>(tagNames));
             eventHelper.sendEvent(e);
         }
@@ -110,10 +111,10 @@ public class RepositoryPoller {
         String newRevision = svn.checkout(author).getRevision();
 
         if (revision != null && !newRevision.equals(revision)) {
-            ScmCheckInEvent e = new ScmCheckInEvent();
-            e.setRevision(newRevision);
             log.info("Detected checkin to revision " + newRevision);
 
+            ScmCheckInEvent e = new ScmCheckInEvent();
+            e.setRevision(newRevision);
             eventHelper.sendEvent(e);
         }
 
@@ -127,9 +128,13 @@ public class RepositoryPoller {
     public void setAuthor(String author) {
         this.author = author;
     }
+    
+    public void setContext(String context) {
+        this.context = context;
+    }
 
     public void setEndpoint(OpenEngSBEndpoint endpoint) {
-        MessageProperties msgProperties = new MessageProperties("42", null);
+        MessageProperties msgProperties = new MessageProperties(context, null);
         eventHelper = endpoint.createEventHelper(msgProperties);
     }
 
