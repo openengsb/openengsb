@@ -73,7 +73,7 @@ HowTo - First steps with OpenEngSB (Issue tracker)
 
   1. Start servicemix.
   
-  2. Run quickrun.sh.
+  2. Run mvn clean install and then scripts/deploy-smx41.sh
   
   3. Send the same message with the same configuration as shown in the {{{howto_notify.html}Hello World example}}.
   

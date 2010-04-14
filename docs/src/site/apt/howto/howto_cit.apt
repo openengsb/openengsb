@@ -83,7 +83,7 @@ HowTo - Continuous Integration and Test Workflow
 
   1. Start servicemix.
   
-  2. Run quickrun.sh.
+  2. Run mvn clean install and then scripts/deploy-smx41.sh
 
   3. Trigger an ScmCheckInEvent.
   
