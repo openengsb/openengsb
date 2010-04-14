@@ -20,7 +20,8 @@ package org.openengsb.trac;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpcException;
 import org.openengsb.drools.IssuesDomain;
 import org.openengsb.drools.model.Issue;
@@ -30,7 +31,7 @@ import org.openengsb.trac.constants.TracStatusConstants;
 import org.openengsb.trac.xmlrpc.Ticket;
 
 public class TracConnector implements IssuesDomain {
-    private Logger log = Logger.getLogger(getClass());
+    private Log log = LogFactory.getLog(getClass());
 
     private Ticket ticket;
 
