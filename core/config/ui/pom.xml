@@ -75,6 +75,12 @@
       <version>${project.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.servicemix.specs</groupId>
+      <artifactId>org.apache.servicemix.specs.jbi-api-1.0</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+
     <!-- Wicket -->
 
     <dependency>
@@ -99,7 +105,7 @@
       <scope>provided</scope>
     </dependency>
     
-    <!-- db stuff -->
+    <!-- DB -->
     
     <dependency>
       <groupId>com.h2database</groupId>
