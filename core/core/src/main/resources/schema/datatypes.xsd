@@ -20,15 +20,15 @@
 
   <xs:complexType name="XMLPrimitive">
     <xs:choice>
-      <xs:element name="string" type="xs:string" />
-      <xs:element name="float" type="xs:float" />
-      <xs:element name="double" type="xs:double" />
-      <xs:element name="boolean" type="xs:boolean" />
-      <xs:element name="int" type="xs:int" />
-      <xs:element name="long" type="xs:long" />
-      <xs:element name="short" type="xs:short" />
-      <xs:element name="byte" type="xs:byte" />
-      <xs:element name="base64Binary" type="xs:base64Binary" />
+      <xs:element name="string" type="xs:string" nillable="true" />
+      <xs:element name="float" type="xs:float" nillable="true" />
+      <xs:element name="double" type="xs:double" nillable="true" />
+      <xs:element name="boolean" type="xs:boolean" nillable="true" />
+      <xs:element name="int" type="xs:int" nillable="true" />
+      <xs:element name="long" type="xs:long" nillable="true" />
+      <xs:element name="short" type="xs:short" nillable="true" />
+      <xs:element name="byte" type="xs:byte" nillable="true" />
+      <xs:element name="base64Binary" type="xs:base64Binary" nillable="true" />
     </xs:choice>
   </xs:complexType>
 
