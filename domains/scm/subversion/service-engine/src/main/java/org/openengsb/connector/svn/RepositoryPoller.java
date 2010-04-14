@@ -29,34 +29,25 @@ import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 import org.openengsb.drools.events.ScmBranchAlteredEvent;
 import org.openengsb.drools.events.ScmBranchCreatedEvent;
 import org.openengsb.drools.events.ScmBranchDeletedEvent;
-import org.openengsb.drools.events.ScmDirectoryEvent;
 import org.openengsb.drools.events.ScmCheckInEvent;
+import org.openengsb.drools.events.ScmDirectoryEvent;
 import org.openengsb.drools.events.ScmTagCreatedEvent;
-import org.openengsb.drools.model.MergeResult;
 
 public class RepositoryPoller {
     private Logger log = Logger.getLogger(getClass());
-    
+
     private SvnConnector svn;
     private String author;
     private EventHelper eventHelper;
 
-    private MergeResult checkoutResult;
+    private String revision;
     private List<String> branches;
     private List<String> tags;
 
     public void poll() {
-        if (checkoutResult == null) {
-            checkoutResult = svn.checkout(author);
-        }
-
+        inspectCheckins();
         inspectBranches();
         inspectTags();
-
-        if (checkoutResult.getAdds().size() > 0) {
-            ScmCheckInEvent e = new ScmCheckInEvent();
-            eventHelper.sendEvent(e);
-        }
     }
 
     private void inspectBranches() {
@@ -64,29 +55,29 @@ public class RepositoryPoller {
         ScmDirectoryEvent e = null;
         Set<String> branchNames = null;
 
-        if (branches == null) {
-            branches = newBranches;
-        } else {
+        if (branches != null) {
             if (branches.size() < newBranches.size()) {
                 e = new ScmBranchCreatedEvent();
 
                 branchNames = new HashSet<String>(newBranches);
                 branchNames.removeAll(branches);
-                log.info("Found " + branchNames.size() + " new branches.");
+                log.info("Found " + branchNames.size() + " new branches");
             } else if (branches.size() > newBranches.size()) {
                 e = new ScmBranchDeletedEvent();
 
                 branchNames = new HashSet<String>(branches);
                 branchNames.removeAll(newBranches);
-                log.info("Found " + branchNames.size() + " deleted branches.");
-            } else if (!newBranches.equals(branches)) {
-                e = new ScmBranchAlteredEvent();
-
+                log.info("Found " + branchNames.size() + " deleted branches");
+            } else {
                 branchNames = new HashSet<String>(branches);
                 Set<String> tempNames = new HashSet<String>(branches);
                 tempNames.retainAll(newBranches);
                 branchNames.removeAll(tempNames);
-                log.info("Found " + branchNames.size() + " changed branches.");
+
+                if (branchNames.size() > 0) {
+                    e = new ScmBranchAlteredEvent();
+                    log.info("Found " + branchNames.size() + " changed branches");
+                }
             }
 
             if (e != null) {
@@ -101,22 +92,32 @@ public class RepositoryPoller {
     private void inspectTags() {
         List<String> newTags = svn.listTags();
 
-        if (tags == null) {
-            tags = newTags;
-        } else {
-            if (tags.size() < newTags.size()) {
-                ScmTagCreatedEvent e = new ScmTagCreatedEvent();
+        if (tags != null && tags.size() < newTags.size()) {
+            ScmTagCreatedEvent e = new ScmTagCreatedEvent();
 
-                Set<String> tagNames = new HashSet<String>(newTags);
-                tagNames.removeAll(tags);
-                log.info("Found " + tagNames.size() + " new tags.");
+            Set<String> tagNames = new HashSet<String>(newTags);
+            tagNames.removeAll(tags);
+            log.info("Found " + tagNames.size() + " new tags");
 
-                e.setDirectories(new ArrayList<String>(tagNames));
-                eventHelper.sendEvent(e);
-            }
+            e.setDirectories(new ArrayList<String>(tagNames));
+            eventHelper.sendEvent(e);
         }
 
         tags = newTags;
+    }
+
+    private void inspectCheckins() {
+        String newRevision = svn.checkout(author).getRevision();
+
+        if (revision != null && !newRevision.equals(revision)) {
+            ScmCheckInEvent e = new ScmCheckInEvent();
+            e.setRevision(newRevision);
+            log.info("Detected checkin to revision " + newRevision);
+
+            eventHelper.sendEvent(e);
+        }
+
+        revision = newRevision;
     }
 
     public void setConfiguration(SvnConfiguration configuration) {

@@ -363,7 +363,7 @@ public class SvnConnector extends ScmConnector implements ScmDomain {
      * ://svn.svnkit.com/repos/svnkit/tags/1.1.8
      * /doc/examples/src/org/tmatesoft/svn/examples/wc/WorkingCopy.java}
      */
-    private static void setupLibrary() {
+    private void setupLibrary() {
         // For using over http:// and https://
         DAVRepositoryFactory.setup();
         // For using over svn:// and svn+xxx://
