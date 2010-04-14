@@ -44,7 +44,9 @@
   </bean>
 
   <bean id="assemblyService" class="org.openengsb.config.service.impl.AssemblyServiceImpl">
-    <property name="deployPath" ref="installDir" />
+    <property name="deployPath" ref="deployDirEngSB" />
+    <property name="deploymentService" ref="deploymentServiceMBean" />
+    <property name="componentService" ref="componentService" />
   </bean>
   
   <bean id="editorService" class="org.openengsb.config.service.impl.EditorServiceImpl" />
@@ -63,6 +65,10 @@
   <bean id="deployDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
     <constructor-arg ref="servletContext" />
     <constructor-arg value="/deploy" />
+  </bean>
+  <bean id="deployDirEngSB" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
+    <constructor-arg ref="servletContext" />
+    <constructor-arg value="/deployEngSB" />
   </bean>
   <bean id="txDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
     <constructor-arg ref="servletContext" />
