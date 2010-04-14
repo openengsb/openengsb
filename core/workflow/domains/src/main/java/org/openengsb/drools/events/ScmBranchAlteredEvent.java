@@ -15,18 +15,11 @@
    limitations under the License.
    
  */
-package org.openengsb.connector.svn;
+package org.openengsb.drools.events;
 
-import org.openengsb.core.OpenEngSBComponent;
-
-/**
- * @org.apache.xbean.XBean element="svnComponent" description="SVN Component"
- *                         The SVN-component
- */
-public class SvnComponent extends OpenEngSBComponent {
-    @Override
-    protected Class<?>[] getEndpointClasses() {
-        return new Class[] { SvnEndpoint.class };
+public class ScmBranchAlteredEvent extends ScmBranchEvent {
+    public ScmBranchAlteredEvent() {
+        super("scmBranchAlteredEvent");
     }
 
 }

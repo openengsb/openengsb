@@ -22,14 +22,16 @@
 
   <!-- Configuration bean for the SVN implementation. -->
   <bean id="configuration" class="org.openengsb.connector.svn.SvnConfiguration">
-    <property name="workingCopy" value="testProject" />
-    <property name="developerConnection" value="svn://localhost/testProject" />
+    <property name="workingCopy" value="test" />
+    <property name="developerConnection" value="http://localhost/svn/test" />
     <property name="username" value="user" />
     <property name="password" value="password" />
   </bean>
 
   <bean id="repositoryPoller" class="org.openengsb.connector.svn.RepositoryPoller">
   	<property name="configuration" ref="configuration" />
+    <property name="author" value="openengsb" />
+    <property name="endpoint" ref="svnEndpoint" />
   </bean>
   
   <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -41,7 +43,7 @@
     <!-- see the example of method invoking job above -->
     <property name="jobDetail" ref="jobDetail" />
     <property name="startDelay" value="1000" />
-    <property name="repeatInterval" value="5000" />
+    <property name="repeatInterval" value="20000" />
   </bean>
   
   <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -52,6 +54,6 @@
     </property>
   </bean>
 
-  <svn:eventEndpoint service="subversion:eventService" endpoint="eventEndpoint" configuration="#configuration" />
+  <svn:svnEndpoint service="subversion:svnService" endpoint="svnEndpoint" id="svnEndpoint" configuration="#configuration" />
 
 </beans>

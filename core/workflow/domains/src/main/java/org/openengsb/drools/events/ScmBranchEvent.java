@@ -6,7 +6,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE\-2.0
+       http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,28 +15,25 @@
    limitations under the License.
    
  */
-package org.openengsb.drools.model;
+package org.openengsb.drools.events;
 
-public class ScmLogEntry {
+import java.util.List;
 
-    private String revision;
+import org.openengsb.core.model.Event;
 
-    private String message;
+public abstract class ScmBranchEvent extends Event {
 
-    public ScmLogEntry() {
+    public ScmBranchEvent(String name) {
+        super("scm", name);
     }
 
-    public ScmLogEntry(String revision, String message) {
-        this.revision = revision;
-        this.message = message;
+    public void setBranches(List<String> branches) {
+        setValue("branches", branches);
     }
 
-    public String getRevision() {
-        return revision;
-    }
-
-    public String getMessage() {
-        return message;
+    @SuppressWarnings("unchecked")
+    public List<String> getBranches() {
+        return (List<String>) getValue("branches");
     }
 
 }
