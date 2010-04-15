@@ -82,7 +82,7 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-workflow-domains</artifactId>
     </dependency>
-    
+
     <!-- internal scm-common Dependency -->
     <dependency>
       <groupId>org.openengsb</groupId>
@@ -131,16 +131,16 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
     </dependency>
-	<dependency>
-	   <groupId>org.springframework</groupId>
-	   <artifactId>spring</artifactId>
-	</dependency>
-    
-	<!-- Trigger Dependency -->
-	<dependency>
-	   <groupId>quartz</groupId>
-	   <artifactId>quartz</artifactId>
-	</dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring</artifactId>
+    </dependency>
+
+    <!-- Trigger Dependency -->
+    <dependency>
+      <groupId>quartz</groupId>
+      <artifactId>quartz</artifactId>
+    </dependency>
 
     <!-- Maven usage dependencies -->
     <dependency>
@@ -164,6 +164,16 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
+    </dependency>
+
+    <!-- Testing Dependencies -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
     </dependency>
 
   </dependencies>
