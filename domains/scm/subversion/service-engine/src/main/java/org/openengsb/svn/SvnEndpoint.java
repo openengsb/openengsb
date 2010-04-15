@@ -15,18 +15,25 @@
    limitations under the License.
    
  */
-package org.openengsb.connector.svn;
+package org.openengsb.svn;
 
-import org.openengsb.core.OpenEngSBComponent;
+import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
+import org.openengsb.core.endpoints.LinkingEndpoint;
 
 /**
- * @org.apache.xbean.XBean element="svnComponent" description="SVN Component"
- *                         The SVN-component
+ * @org.apache.xbean.XBean element="svnEndpoint" description="SVN SCM Endpoint"
  */
-public class SvnComponent extends OpenEngSBComponent {
+public class SvnEndpoint extends LinkingEndpoint<SvnConnector> {
+    private SvnConnector connector;
+
     @Override
-    protected Class<?>[] getEndpointClasses() {
-        return new Class[] { SvnEndpoint.class };
+    protected SvnConnector getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
+        return connector;
+    }
+
+    public void setConnector(SvnConnector connector) {
+        this.connector = connector;
     }
 
 }

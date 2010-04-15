@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.connector.svn;
+package org.openengsb.svn;
 
 import java.io.File;
 import java.net.URI;
@@ -39,15 +39,15 @@ import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNUpdateClient;
 
 public class SvnConnector extends ScmConnector {
-    private static final String BRANCHES = "branches";
-    private static final String TAGS = "tags";
-    private static final String TRUNK = "trunk";
+    protected static final String BRANCHES = "branches";
+    protected static final String TAGS = "tags";
+    protected static final String TRUNK = "trunk";
 
     private Logger log = Logger.getLogger(getClass());
 
-    private SVNClientManager clientManager;
+    protected SVNClientManager clientManager;
 
-    public void init() {
+    public final void init() {
         setupLibrary();
 
         if (getUsername() != null && getPassword() != null) {
@@ -57,7 +57,7 @@ public class SvnConnector extends ScmConnector {
         }
     }
 
-    public long checkout() {
+    public final long checkout() {
         URI devCon = getDeveloperConnectionUri();
 
         try {
@@ -74,7 +74,7 @@ public class SvnConnector extends ScmConnector {
         }
     }
 
-    public void switchBranch(String branchName) {
+    public final void switchBranch(String branchName) {
         SVNUpdateClient client = clientManager.getUpdateClient();
 
         try {
@@ -94,7 +94,7 @@ public class SvnConnector extends ScmConnector {
         }
     }
 
-    public UpdateResult update() {
+    public final UpdateResult update() {
         final UpdateResult result = new UpdateResult();
 
         SVNUpdateClient client = clientManager.getUpdateClient();
@@ -125,9 +125,9 @@ public class SvnConnector extends ScmConnector {
         });
 
         try {
-            client.doUpdate(getWorkingCopyFile(), SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
+            long revision = client.doUpdate(getWorkingCopyFile(), SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
 
-            log.info("Successfully updated working copy");
+            log.info("Successfully updated working copy to revision " + revision);
             return result;
         } catch (SVNException exception) {
             throw new ScmException(exception);
@@ -154,7 +154,7 @@ public class SvnConnector extends ScmConnector {
         FSRepositoryFactory.setup();
     }
 
-    private SVNURL getRepositoryUrl() throws ScmException {
+    protected final SVNURL getRepositoryUrl() throws ScmException {
         try {
             SVNRevision revision = null;
 

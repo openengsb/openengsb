@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.connector.svn;
+package org.openengsb.svn;
 
 import org.apache.log4j.Logger;
 import org.openengsb.core.EventHelper;

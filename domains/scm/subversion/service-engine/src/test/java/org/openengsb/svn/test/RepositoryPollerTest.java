@@ -15,16 +15,13 @@
    limitations under the License.
    
  */
-package org.openengsb.connector.svn.test;
+package org.openengsb.svn.test;
 
 import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.connector.svn.RepositoryPoller;
-import org.openengsb.connector.svn.SvnConnector;
-import org.openengsb.connector.svn.UpdateResult;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
@@ -35,6 +32,9 @@ import org.openengsb.drools.events.ScmCheckInEvent;
 import org.openengsb.drools.events.ScmDirectoryEvent;
 import org.openengsb.drools.events.ScmTagCreatedEvent;
 import org.openengsb.drools.events.ScmTagDeletedEvent;
+import org.openengsb.svn.RepositoryPoller;
+import org.openengsb.svn.SvnConnector;
+import org.openengsb.svn.UpdateResult;
 
 public class RepositoryPollerTest {
     private RepositoryPoller poller;

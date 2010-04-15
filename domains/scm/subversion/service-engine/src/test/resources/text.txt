@@ -1,0 +1,55 @@
+{| border="1" align="right" cellpadding="2" cellspacing="0" width=320
+|-----
+! colspan="3" bgcolor="#skyblue" |  SS ''America''
+|-----
+!colspan=2 bgcolor="skyblue" |'''Technische Daten'''
+|-
+|Schiffstyp:
+|Passagierdampfer
+|-
+|Einsatzzweck:
+|Transatlantik-Linienverkehr
+|-
+|Rauminhalt:
+|26.454 [[BRT]]
+|-
+|Länge:
+|220,4 m
+|-
+|Breite:
+|28,4 m
+|-
+|Tiefgang:
+|8,84 m
+|-
+|Antrieb:
+|2 Schrauben,<br>Zwei Satz Parsons-Getriebeturbinen
+|-
+|Leistung:
+|37.400 PS (registriert)
+|-
+|Geschwindigkeit:
+|22 Knoten Dienstgeschwindigkeit
+|-
+|Passagiere:
+|543 Kabinenklasse<br>418 Touristenklasse<br>241 Dritte Klasse
+|-
+|Mannschaft:
+|643
+|-
+|Kiellegung:
+|[[22. August]] [[1938]]
+|-
+|Stapellauf:
+|[[31. August]] [[1939]]
+|-
+|Fertigstellung:
+|[[2. Juni]] [[1940]]
+|-
+|Schicksal:
+|gestrandet auf [[Fuerteventura]] am [[17. Jänner]] [[1994]]
+|}
+
+Die ''[[SS]] America'' war ein für die [[United States Line]] erbautes Passagierschiff, das für den Verkehr auf der [[Nordatlantik|Nordatlantikroute]] vorgesehen war. [[1994]] riss sie sich von den Leinen ihres Schleppers bei einem Sturm vor den [[Kanarischen Inseln]] und strandete zwei Tage später in einer Bucht auf der Westküste [[Fuerteventura|Fuerteventuras]]. Das noch erhaltene Bugteil gilt heute als Touristenattraktion. Position: N28.34571° W014.17947°
+
+Spätere Namen für dieses Schiff waren: ''USS Westpoint, SS Australis, SS Italis, SS Noga, SS Alferdoss und SS American Star''

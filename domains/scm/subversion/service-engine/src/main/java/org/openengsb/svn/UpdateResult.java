@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.connector.svn;
+package org.openengsb.svn;
 
 import java.util.ArrayList;
 import java.util.List;
