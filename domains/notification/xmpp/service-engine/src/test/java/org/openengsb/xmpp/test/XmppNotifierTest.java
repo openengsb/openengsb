@@ -18,6 +18,8 @@
 package org.openengsb.xmpp.test;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.ChatManager;
@@ -54,9 +56,9 @@ public class XmppNotifierTest {
         notification.setRecipient("testReceipient");
         notification.setMessage("TestMessage");
         notification.setSubject("TestSubject");
-        Attachment[] attachments = new Attachment[2];
-        attachments[0] = new Attachment(new byte[3], "someType", "someName");
-        attachments[1] = new Attachment(new byte[7], "someOtherType", "someOtherName");
+        List<Attachment> attachments = new ArrayList<Attachment>();
+        attachments.add(new Attachment(new byte[3], "someType", "someName"));
+        attachments.add(new Attachment(new byte[7], "someOtherType", "someOtherName"));
         notification.setAttachments(attachments);
         return notification;
     }
@@ -87,6 +89,7 @@ public class XmppNotifierTest {
                 chat);
         Mockito.when(transferManager.createOutgoingFileTransfer(notification.getRecipient())).thenReturn(transfer);
         Mockito.when(conn.isConnected()).thenReturn(false);
+        Mockito.when(transfer.isDone()).thenReturn(true);
     }
 
     @After
@@ -137,14 +140,14 @@ public class XmppNotifierTest {
     @Test
     public void testNotifyCreateOutgoingFileTransfer() throws XMPPException {
         target.notify(notification);
-        Mockito.verify(transferManager, Mockito.times(notification.getAttachments().length))
+        Mockito.verify(transferManager, Mockito.times(notification.getAttachments().size()))
                 .createOutgoingFileTransfer(notification.getRecipient());
     }
 
     @Test
     public void testNotifySendStream() throws XMPPException {
         target.notify(notification);
-        Mockito.verify(transfer, Mockito.times(notification.getAttachments().length)).sendStream(
+        Mockito.verify(transfer, Mockito.times(notification.getAttachments().size())).sendStream(
                 (ByteArrayInputStream) Mockito.anyObject(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyString());
     }
 }

@@ -15,7 +15,7 @@
 
   <bean id="notifier" class="org.openengsb.xmpp.XmppNotifier"> 
     <property name="connection" ref="xmppConnection" />
-    <property name="transferManager" ref="xmppTransferManager" />
+    <!-- this has to be injected only for tests to allow mocking <property name="transferManager" ref="xmppTransferManager" /> -->
     <property name="user" value="openengsb" />
     <property name="password" value="openengsb" />
     <property name="resources" value="openengsb/xmppNotifier" />
@@ -26,11 +26,15 @@
   </bean>
 
   <bean id="xmppConfig" class="org.jivesoftware.smack.ConnectionConfiguration">
-    <constructor-arg value="localhost" />
+    <constructor-arg ref="localhost" />
     <constructor-arg ref="xmppServerPort" />
   </bean>
-  
-  <bean id="xmppServerPort" class="java.lang.Integer">
+
+  <bean id="localhost" class="java.lang.String" >
+    <constructor-arg value="localhost" />
+  </bean>
+    
+  <bean id="xmppServerPort" class="java.lang.Integer" >
     <constructor-arg value="5222" />
   </bean>
 

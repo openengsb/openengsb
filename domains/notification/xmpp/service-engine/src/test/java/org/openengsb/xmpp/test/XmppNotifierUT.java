@@ -17,7 +17,9 @@
 package org.openengsb.xmpp.test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -51,10 +53,10 @@ public class XmppNotifierUT {
         notification.setAttachments(null);
         this.notifier.notify(notification);
     }
-    
+
     @Test
     public void testSendFile() throws XMPPNotifierException, IOException {
-        Attachment[] attachments = prepareAttachments();
+        List<Attachment> attachments = prepareAttachments();
         String s = "FileTransferTest" + new Date();
         Notification notification = new Notification();
         notification.setMessage(s);
@@ -63,13 +65,13 @@ public class XmppNotifierUT {
         notification.setAttachments(attachments);
         this.notifier.notify(notification);
     }
-    
-    private Attachment[] prepareAttachments() {
-        Attachment[] as = new Attachment[3];
-        as[0] = new Attachment(new byte[] {'1', '2', '3', '0'}, "test", "test1");
-        as[1] = new Attachment(new byte[] {'2', '3', '4', '0'}, "test", "test2");
-        as[2] = new Attachment(new byte[] {'4', '5', '6', '0'}, "test", "test3");
-        
+
+    private List<Attachment> prepareAttachments() {
+        List<Attachment> as = new ArrayList<Attachment>();
+        as.add(new Attachment(new byte[] { '1', '2', '3', '0' }, "test", "test1"));
+        as.add(new Attachment(new byte[] { '2', '3', '4', '0' }, "test", "test2"));
+        as.add(new Attachment(new byte[] { '4', '5', '6', '0' }, "test", "test3"));
+
         return as;
     }
 }

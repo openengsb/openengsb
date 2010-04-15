@@ -18,6 +18,7 @@
 package org.openengsb.xmpp;
 
 import java.io.ByteArrayInputStream;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,12 +53,6 @@ public class XmppNotifier implements NotificationDomain {
 
         try {
             connection.connect();
-            // must set up a new ServiceDiscoveryManager and a new
-            // FileTransferManager at each connect,
-            // otherwise Filetransfer won't work
-            ServiceDiscoveryManager sm = new ServiceDiscoveryManager(connection);
-            transferManager = new FileTransferManager(connection);
-            FileTransferNegotiator.setServiceEnabled(connection, true);
         } catch (XMPPException e) {
             throw new XMPPNotifierException("Connecting to server failed.", e);
         }
@@ -102,9 +97,23 @@ public class XmppNotifier implements NotificationDomain {
         this.disconnect();
     }
 
-    private void sendAttachments(String target, Attachment[] attach) {
+    private void sendAttachments(String target, List<Attachment> attach) {
+        if (attach.size() < 1)
+            return;
+
         for (Attachment attachment : attach) {
-            OutgoingFileTransfer transfer = transferManager.createOutgoingFileTransfer(target);
+            OutgoingFileTransfer transfer;
+
+            // FIXME needed to mock the transferManager
+            // transferManager needs to be renewed at each transfer to enable
+            // FileTransfer for the connection
+            if (transferManager != null) {
+                transfer = transferManager.createOutgoingFileTransfer(target);
+            } else {
+                FileTransferNegotiator.setServiceEnabled(connection, true);
+                ServiceDiscoveryManager.getInstanceFor(connection);
+                transfer = new FileTransferManager(connection).createOutgoingFileTransfer(target);
+            }
             try {
                 transfer.sendStream(new ByteArrayInputStream(attachment.getData()), attachment.getName(), attachment
                         .getData().length, attachment.getType());
@@ -112,11 +121,6 @@ public class XmppNotifier implements NotificationDomain {
                 log.error("Sending File failed. Reason: " + e1.getMessage());
             }
             waitForTransfer(transfer);
-            if (!FileTransferNegotiator.isServiceEnabled(connection)) {
-                log.error("FileTransfer Service is not enabled!");
-            } else {
-                log.info("FileTransfer Service is enabled!");
-            }
             log.debug("Status :: " + transfer.getStatus() + " Error :: " + transfer.getError() + " Exception :: "
                     + transfer.getException());
             log.debug("Is it done? " + transfer.isDone());
@@ -175,4 +179,5 @@ public class XmppNotifier implements NotificationDomain {
     public void setUser(String user) {
         this.user = user;
     }
+
 }
