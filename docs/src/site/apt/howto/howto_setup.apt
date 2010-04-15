@@ -52,7 +52,7 @@ OPTIONS="-Dexist.home=$EXIST_HOME -Djetty.port=8093"
   
 * Servicemix 4.1
 
-  Now download Apache Servicemix 4.1 from. ({{{http://dev.openengsb.org/resources/servicemix4.1/}ServceMix download}})
+  Now download Apache Servicemix 4.1 from. ({{{http://dev.openengsb.org/resources/servicemix41/}ServceMix download}})
  
  Please increase the memory servicemix uses by setting DEFAULT_JAVA_OPTS in the servicemix startup script (bin/servicemix) to the following values:
 
@@ -86,7 +86,9 @@ git config --global core.autcrlf input
 +----
 git clone git://github.com/openengsb/openengsb
 +----
- 
+
+
+  Set the SMX_HOME and M2_HOME environment variables to point to the servicemix directory and the maven repository. 
   If ServiceMix is running you can build and deploy the OpenEngSB.
 
 +----
@@ -95,3 +97,4 @@ mvn clean install [-Dmaven.test.skip=true]
 cd scripts
 sh deploy-smx41.sh
 +----
+

@@ -19,29 +19,6 @@ HowTo - Continuous Integration and Test Workflow
 
   If you have not set up Guvnor yet, please take a look at the {{{howto_guvnor.html}Guvnor Setup}}.
 
-* Additional Servicemix Setup
-
-  The perm gen space of Servicemix has to be increased. This can be done by setting the JAVA_OPTS environment variable before starting Servicemix.
-  
-+---
-  JAVA_OPTS="$JAVA_OPTS -XX:PermSize=256m -XX:MaxPermSize=256m -Xmx1024M"
-+---
-
-  Further more to use the commit hook (see end of this section) the Stomp protocol has to be enabled for Activemq.
-  Add the line containing the Stomp transport connector to the activemq.xml in the conf directory of Servicemix.
-  
-+---
-  <amq:transportConnectors>
-     <!-- Activate a TCP connector with multicast discovery.
-          Note that multicast may be disabled if your computer
-          is not on a network, which may prevent the broker to start.
-          In such a case, just remove the discoveryUri attribute.
-       -->
-     <amq:transportConnector uri="tcp://localhost:61616" discoveryUri="multicast://default"/>
-     <amq:transportConnector uri="stomp://localhost:61613" />
-  </amq:transportConnectors>
-+---
-
 * Setting up the example
   
   In this example a workflow shall be used to model the behaviour, which is triggered by a rule. 
@@ -83,7 +60,7 @@ HowTo - Continuous Integration and Test Workflow
 
   1. Start servicemix.
   
-  2. Run mvn clean install and then scripts/deploy-smx41.sh
+  2. Run quickrun.sh or mvn clean install and then scripts/deploy-smx41.sh
 
   3. Trigger an ScmCheckInEvent.
   

@@ -45,7 +45,7 @@ HowTo - First steps with OpenEngSB (Hello World aka Notification)
 
   1. Start servicemix.
   
-  2. Run mvn clean install and then scripts/deploy-smx41.sh
+  2. Run quickrun.sh or mvn clean install and then scripts/deploy-smx41.sh
   
   3. Run the OpenEngSB testclient. (testclient.sh)
   
