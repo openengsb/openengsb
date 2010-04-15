@@ -57,7 +57,7 @@ public class SvnConnector extends ScmConnector {
         }
     }
 
-    public final long checkout() {
+    public long checkout() {
         URI devCon = getDeveloperConnectionUri();
 
         try {
@@ -74,7 +74,7 @@ public class SvnConnector extends ScmConnector {
         }
     }
 
-    public final void switchBranch(String branchName) {
+    public void switchBranch(String branchName) {
         SVNUpdateClient client = clientManager.getUpdateClient();
 
         try {
@@ -94,7 +94,7 @@ public class SvnConnector extends ScmConnector {
         }
     }
 
-    public final UpdateResult update() {
+    public UpdateResult update() {
         final UpdateResult result = new UpdateResult();
 
         SVNUpdateClient client = clientManager.getUpdateClient();
