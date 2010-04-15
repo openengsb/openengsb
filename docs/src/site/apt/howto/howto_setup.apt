@@ -52,7 +52,7 @@ OPTIONS="-Dexist.home=$EXIST_HOME -Djetty.port=8093"
   
 * Servicemix 4.1
 
-  Now download Apache Servicemix 4.1 from. ({{{http://dev.openengsb.org/resources/servicemix41/}ServceMix download}})
+  Now download Apache Servicemix 4.1 from ({{{http://dev.openengsb.org/resources/servicemix41/}ServceMix download}})
  
  Please increase the memory servicemix uses by setting DEFAULT_JAVA_OPTS in the servicemix startup script (bin/servicemix) to the following values:
 
