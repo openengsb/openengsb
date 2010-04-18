@@ -17,6 +17,9 @@
  */
 package org.openengsb.core.endpoints;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.jbi.messaging.InOnly;
@@ -29,6 +32,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 
+import org.apache.log4j.Logger;
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
@@ -36,15 +40,21 @@ import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.apache.servicemix.jbi.messaging.InOutImpl;
+import org.openengsb.contextcommon.ContextHelperImpl;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.EventHelperImpl;
 import org.openengsb.core.MessageProperties;
+import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
 
 public class OpenEngSBEndpoint extends ProviderEndpoint {
+    private Logger log = Logger.getLogger(getClass());
+
+    private HashMap<String, HashMap<String, String>> contextProperties;
+    private ContextHelperImpl contextHelper = new ContextHelperImpl(this, null);
 
     public OpenEngSBEndpoint() {
     }
@@ -135,5 +145,104 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
     public EventHelper createEventHelper(MessageProperties msgProperties) {
         return new EventHelperImpl(this, msgProperties);
+    }
+
+    @Override
+    public void activate() throws Exception {
+        super.activate();
+        register();
+    }
+
+    @Override
+    public void deactivate() throws Exception {
+        unregister();
+        super.deactivate();
+    }
+
+    private void register() {
+        OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
+
+        if (contextProperties != null && contextProperties.size() != 0) {
+            registerSU();
+        }
+
+        if (component.hasContextProperties()) {
+            if (component.hasNoEndpoints()) {
+                registerSE(component.getContextProperties());
+            } else {
+                log.info("Corresponding SE already registered");
+            }
+        }
+        component.addCustomEndpoint(this);
+    }
+
+    private void unregister() {
+        if (contextProperties != null && contextProperties.size() != 0) {
+            unregisterSU();
+        }
+
+        OpenEngSBComponent component = (OpenEngSBComponent) serviceUnit.getComponent();
+        component.removeCustomEndpoint(this);
+
+        if (component.hasNoEndpoints() && component.hasContextProperties()) {
+            unregisterSE(component.getContextProperties());
+        }
+    }
+
+    private void registerSU() {
+        registerService(contextProperties, true, true);
+    }
+
+    private void registerSE(HashMap<String, HashMap<String, String>> contextProperties) {
+        registerService(contextProperties, false, true);
+    }
+
+    private void unregisterSU() {
+        registerService(contextProperties, true, false);
+    }
+
+    private void unregisterSE(HashMap<String, HashMap<String, String>> contextProperties) {
+        registerService(contextProperties, false, false);
+    }
+
+    private void registerService(HashMap<String, HashMap<String, String>> contextProperties, boolean su,
+            boolean register) {
+        log.info((register ? "R" : "Unr") + "egistering " + (su ? "SU" : "corresponding SE"));
+        for (String key : contextProperties.keySet()) {
+            contextHelper.setContext(key);
+            if (register) {
+                contextHelper.store(addSource(contextProperties.get(key), su ? ("SU/" + endpoint) : "SE"));
+            } else {
+                contextHelper.remove(addSource(contextProperties.get(key).keySet(), su ? ("SU/" + endpoint) : "SE"));
+            }
+        }
+    }
+
+    private HashMap<String, String> addSource(HashMap<String, String> properties, String src) {
+        HashMap<String, String> newProperties = new HashMap<String, String>(properties.size());
+        for (String key : properties.keySet()) {
+            int pos = key.lastIndexOf("/");
+            String path = key.substring(0, pos);
+            String name = key.substring(pos);
+
+            newProperties.put(path + "/" + src + name, properties.get(key));
+        }
+        return newProperties;
+    }
+
+    private ArrayList<String> addSource(Set<String> keys, String src) {
+        ArrayList<String> newKeys = new ArrayList<String>(keys.size());
+        for (String key : keys) {
+            int pos = key.lastIndexOf("/");
+            String path = key.substring(0, pos);
+            String name = key.substring(pos);
+
+            newKeys.add(path + "/" + src + name);
+        }
+        return newKeys;
+    }
+
+    public void setContextProperties(HashMap<String, HashMap<String, String>> contextProperties) {
+        this.contextProperties = contextProperties;
     }
 }

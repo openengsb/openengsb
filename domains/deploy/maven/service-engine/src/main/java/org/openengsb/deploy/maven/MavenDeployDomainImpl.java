@@ -36,7 +36,7 @@ public class MavenDeployDomainImpl extends AbstractMavenDomainImpl implements De
     }
 
     @Override
-    public boolean deployProject() {
+    public Boolean deployProject() {
         DeployStartEvent startEvent = new DeployStartEvent();
         MavenParameters params = getMavenParametersForMavenCall("deploy/maven-deploy");
         startEvent.setToolConnector("maven-deploy");

@@ -17,30 +17,17 @@
  */
 package org.openengsb.email;
 
-import java.util.List;
-
-import org.apache.servicemix.common.DefaultComponent;
+import org.openengsb.core.OpenEngSBComponent;
 
 /**
  * @org.apache.xbean.XBean element="emailComponent"
  *                         description="Email Notification Component"
  */
-public class EmailComponent extends DefaultComponent {
-    private EmailEndpoint[] endpoints;
-
-    public EmailEndpoint[] getEndpoints() {
-        return this.endpoints;
+public class EmailComponent extends OpenEngSBComponent {
+    public EmailComponent() {
+        //contextProperties.put("notification/email/config/mail.smtp.user", "openengsb.notification.test@gmail.com");
+        //contextProperties.put("notification/email/config/mail.smtp.starttls.enable", "true");
     }
-
-    public void setEndpoints(EmailEndpoint[] endpoints) {
-        this.endpoints = endpoints;
-    }
-
-    @Override
-    protected List<?> getConfiguredEndpoints() {
-        return asList(this.endpoints);
-    }
-
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { EmailEndpoint.class };

@@ -61,7 +61,6 @@
             <exclude>src/docbkx/resources/xsl/highlight-fo.xsl</exclude>
             <exclude>src/docbkx/resources/xsl/highlight.xsl</exclude>
             <exclude>src/docbkx/resources/xsl/html.xsl</exclude>
-            <exclude>src/docbkx/architecture/messageformat/**</exclude>
           </excludes>
         </configuration>
         <executions>

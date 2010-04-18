@@ -84,18 +84,18 @@ public class PlainTextReportDomainImpl implements ReportDomain {
     }
 
     @Override
-    public Report generateReport(Event[] events) {
+    public Report generateReport(List<Event> events) {
         reportDirectory.mkdirs();
         File reportFile = new File(reportDirectory, getReportName());
         writeToFile(events, reportFile);
         List<Attachment> attachments = new ArrayList<Attachment>();
         byte[] data = getBytes(events, attachments);
         Report report = new Report(data, "text/plain", getReportName());
-        report.setAttachments(attachments.toArray(new Attachment[attachments.size()]));
+        report.setAttachments(attachments);
         return report;
     }
 
-    private byte[] getBytes(Event[] events, List<Attachment> attachments) {
+    private byte[] getBytes(List<Event> events, List<Attachment> attachments) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         OutputStreamWriter writer = new OutputStreamWriter(baos);
         try {
@@ -107,7 +107,7 @@ public class PlainTextReportDomainImpl implements ReportDomain {
         return baos.toByteArray();
     }
 
-    private void writeEvents(Writer writer, Event[] events, List<Attachment> attachments) throws IOException {
+    private void writeEvents(Writer writer, List<Event> events, List<Attachment> attachments) throws IOException {
         writer.append("\n\n-----------------------\n");
         writer.append(new Date().toString());
         writer.append("\n");
@@ -156,7 +156,7 @@ public class PlainTextReportDomainImpl implements ReportDomain {
         attachments.add(new Attachment(data, actualType, name));
     }
 
-    private void writeToFile(Event[] events, File reportFile) {
+    private void writeToFile(List<Event> events, File reportFile) {
         Writer writer = null;
         try {
             writer = new BufferedWriter(new FileWriter(reportFile, true));
@@ -172,8 +172,8 @@ public class PlainTextReportDomainImpl implements ReportDomain {
 
     private void writeAttachmentsToFile(File reportFile, List<Attachment> attachments) throws IOException {
         for (Attachment attachment : attachments) {
-            FileUtils.writeByteArrayToFile(new File(reportFile.getParent(), attachment.getName()), attachment
-                    .getData());
+            FileUtils
+                    .writeByteArrayToFile(new File(reportFile.getParent(), attachment.getName()), attachment.getData());
         }
     }
 

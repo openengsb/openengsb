@@ -19,6 +19,8 @@ package org.openengsb.twitter.test;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,13 +46,13 @@ public class TwitterNotifierUnitTest {
         fileUpload = Mockito.mock(FileUpload.class);
         zipUtil = Mockito.mock(ZipUtil.class);
         urlShortener = Mockito.mock(UrlShortenerUtil.class);
-        
+
         notifier = new TwitterNotifier();
         notifier.setTwitterCon(twitter);
         notifier.setFileUpload(fileUpload);
         notifier.setZipUtil(zipUtil);
         notifier.setUrlShortener(urlShortener);
-        
+
         setUpMocking();
     }
 
@@ -59,33 +61,33 @@ public class TwitterNotifierUnitTest {
         Notification n = new Notification();
         n.setMessage("testmessage");
         notifier.notify(n);
-        
+
         Mockito.verify(twitter, Mockito.times(1)).updateStatus(Mockito.eq("testmessage"));
         checkAttachment(false);
     }
-    
+
     @Test
     public void testSendMessageWithoutAttachments() throws IOException {
         Notification n = new Notification();
         n.setMessage("testmessage");
         n.setRecipient("test");
         notifier.notify(n);
-        
+
         Mockito.verify(twitter, Mockito.times(1)).sendMessage(Mockito.eq("test"), Mockito.eq("testmessage"));
         checkAttachment(false);
     }
-    
+
     @Test
     public void testUpdateStatusWithAttachments() throws IOException {
         Notification n = new Notification();
         n.setMessage("testmessage");
         n.setAttachments(prepareAttachments());
         notifier.notify(n);
-        
+
         Mockito.verify(twitter, Mockito.times(1)).updateStatus(Mockito.eq("Attachment: testShortURL\ntestmessage"));
         checkAttachment(true);
     }
-    
+
     @Test
     public void testSendMessageWithAttachments() throws IOException {
         Notification n = new Notification();
@@ -93,42 +95,45 @@ public class TwitterNotifierUnitTest {
         n.setRecipient("test");
         n.setAttachments(prepareAttachments());
         notifier.notify(n);
-        
-        Mockito.verify(twitter, Mockito.times(1)).sendMessage(Mockito.eq("test"), Mockito.eq("Attachment: testShortURL\ntestmessage"));
+
+        Mockito.verify(twitter, Mockito.times(1)).sendMessage(Mockito.eq("test"),
+                Mockito.eq("Attachment: testShortURL\ntestmessage"));
         checkAttachment(true);
     }
-    
+
     @Test
     public void testAttachmentErrorCatching() throws IOException {
         Mockito.when(urlShortener.getTinyUrl(Mockito.any(URL.class))).thenThrow(new IOException());
-        
+
         Notification n = new Notification();
         n.setMessage("testmessage");
         n.setAttachments(prepareAttachments());
         notifier.notify(n);
-        
+
         Mockito.verify(twitter, Mockito.times(1)).updateStatus(Mockito.eq("testmessage"));
         checkAttachment(true);
     }
-    
+
     private void setUpMocking() throws IOException {
-        Mockito.when(zipUtil.zipAttachments(Mockito.any(Attachment[].class))).thenReturn(new byte[] {1, 2, 3, 4, 5});
-        Mockito.when(fileUpload.uploadFile(Mockito.any(byte[].class), Mockito.anyString())).thenReturn(new URL("ftp://testURL"));
+        Mockito.when(zipUtil.zipAttachments(Mockito.any(Attachment[].class))).thenReturn(new byte[] { 1, 2, 3, 4, 5 });
+        Mockito.when(fileUpload.uploadFile(Mockito.any(byte[].class), Mockito.anyString())).thenReturn(
+                new URL("ftp://testURL"));
         Mockito.when(urlShortener.getTinyUrl(Mockito.any(URL.class))).thenReturn("testShortURL");
     }
-    
-    private Attachment[] prepareAttachments() {
-        Attachment[] as = new Attachment[3];
-        as[0] = new Attachment(new byte[] {1, 2, 3}, "test", "test1");
-        as[1] = new Attachment(new byte[] {2, 3, 4}, "test", "test2");
-        as[2] = new Attachment(new byte[] {4, 5, 6}, "test", "test3");
-        
+
+    private List<Attachment> prepareAttachments() {
+        List<Attachment> as = new ArrayList<Attachment>();
+        as.add(new Attachment(new byte[] { 1, 2, 3 }, "test", "test1"));
+        as.add(new Attachment(new byte[] { 2, 3, 4 }, "test", "test2"));
+        as.add(new Attachment(new byte[] { 4, 5, 6 }, "test", "test3"));
+
         return as;
     }
-    
+
     private void checkAttachment(boolean attachments) throws IOException {
         Mockito.verify(zipUtil, Mockito.times(attachments ? 1 : 0)).zipAttachments(Mockito.any(Attachment[].class));
-        Mockito.verify(fileUpload, Mockito.times(attachments ? 1 : 0)).uploadFile(Mockito.any(byte[].class), Mockito.anyString());
+        Mockito.verify(fileUpload, Mockito.times(attachments ? 1 : 0)).uploadFile(Mockito.any(byte[].class),
+                Mockito.anyString());
         Mockito.verify(urlShortener, Mockito.times(attachments ? 1 : 0)).getTinyUrl(Mockito.any(URL.class));
     }
 }

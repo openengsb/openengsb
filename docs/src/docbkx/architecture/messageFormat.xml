@@ -68,300 +68,138 @@
   <section id="messageFormat.payload">
     <title>Payload Structure</title>
     <para>
-      There are two types of elements out of which all messages are composed.
-      <orderedlist>
-        <listitem>TextSegment - contains simple textual content.</listitem>
-        <listitem>ListSegment - contains a list of segments.</listitem>
-      </orderedlist>
-      Both have three parameters, which have to be set (although empty String content is allowed).
-      <orderedlist>
-        <listitem>name - The name of the segment.</listitem>
-        <listitem>format - The format of the content.</listitem>
-        <listitem>domainConcept - used by the EKB component of the OpenEngSB.</listitem>
-      </orderedlist>
+      The payload of the messages is defined by the following XML schema.
     </para>
-    <para>
-      The following list contains the different types of elements that are supported in OpenEngSB messages.
-      <orderedlist>
-        <listitem>
-          Null Values - Null values are supported for all types of values but primitive types.
-          <programlisting language="xml">
-            <![CDATA[ 
-<!-- Null type as field of a bean -->
-<list name="field" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">fieldName</text>
-  <text name="type" format="" domainConcept="">java.lang.String</text>
-  <text name="null" format="" domainConcept=""></text>
-</list>
+    <programlisting language="xml">
+      <![CDATA[ 
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:oes="http://openengsb.org/serialization/1.0/">
 
-<!-- Null type as argument of a method call -->
-<list name="argument" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">arg0</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-  <text name="null" format="" domainConcept=""></text>
-</list>
+  <xs:complexType name="XMLPrimitive">
+    <xs:choice>
+      <xs:element name="string" type="xs:string" />
+      <xs:element name="float" type="xs:float" />
+      <xs:element name="double" type="xs:double" />
+      <xs:element name="boolean" type="xs:boolean" />
+      <xs:element name="int" type="xs:int" />
+      <xs:element name="long" type="xs:long" />
+      <xs:element name="short" type="xs:short" />
+      <xs:element name="byte" type="xs:byte" />
+      <xs:element name="base64Binary" type="xs:base64Binary" />
+    </xs:choice>
+  </xs:complexType>
 
-<!-- Null type as element of an event -->
-<list name="element" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">elementName</text>
-  <text name="type" format="" domainConcept="">java.lang.Integer</text>
-  <text name="null" format="" domainConcept=""></text>
-</list>
-            ]]>
-          </programlisting>
-        </listitem>
-        <listitem>
-          Primitive Types - All primitive types of Java are supported as well as their Object types. So "int" is supported as
-          well as "java.lang.Integer".
-          <programlisting language="xml">
-            <![CDATA[ 
-<!-- Primitive type as field of a bean -->
-<list name="field" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">fieldName</text>
-  <text name="type" format="" domainConcept="">java.lang.String</text>
-  <text name="value" format="" domainConcept="">42</text>
-</list>
+  <xs:complexType name="XMLMapable">
+    <xs:sequence>
+      <xs:choice>
+        <xs:element name="null" type="xs:string" />
+        <xs:element name="reference" type="XMLReference" />
+        <xs:element name="primitive" type="XMLPrimitive" />
+        <xs:element name="bean" type="XMLBean" />
+        <xs:element name="list" type="XMLMapableList" />
+        <xs:element name="event" type="XMLEvent" />
+        <xs:element name="map" type="XMLMapEntryList" />
+        <xs:element name="context" type="XMLContext" />
+      </xs:choice>
+      <xs:element name="id" type="xs:string" nillable="true" />    
+    </xs:sequence>
+    <xs:attribute name="domainConcept" type="xs:string" />
+  </xs:complexType>
 
-<!-- Primitive type as argument of a method call -->
-<list name="argument" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">arg0</text>
-  <text name="type" format="" domainConcept="">int</text>
-  <text name="value" format="" domainConcept="">42</text>
-</list>
+  <xs:complexType name="XMLMapableList">
+    <xs:sequence>
+      <xs:element name="mapable" type="XMLMapable" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
 
-<!-- Primitive type as element of an event -->
-<list name="element" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">elementName</text>
-  <text name="type" format="" domainConcept="">java.lang.Integer</text>
-  <text name="value" format="" domainConcept="">42</text>
-</list>
-            ]]>
-          </programlisting>
-        </listitem>
-        <listitem>
-          Beans - Java Beans can also be used. Beans have to have a no-arg constructor (which can be private). The fields have
-          to be writable to be set by the framework. Getters and setters are not necessary.
-          <programlisting language="xml">
-            <![CDATA[ 
-<!-- Bean type as field of a bean -->
-<list name="field" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">fieldName</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-  <list name="field" format="" domainConcept="">
-    <text name="name" format="" domainConcept="">fieldNameA</text>
-    <text name="type" format="" domainConcept="">java.lang.String</text>
-  <text name="value" format="" domainConcept="">42</text>
-  </list>
-  <list name="field" format="" domainConcept="">
-    <text name="name" format="" domainConcept="">fieldNameB</text>
-    <text name="type" format="" domainConcept="">int</text>
-    <text name="value" format="" domainConcept="">42</text>
-  </list>
-</list>
+  <xs:complexType name="XMLMapEntryList">
+    <xs:sequence>
+      <xs:element name="mapEntry" type="XMLMapEntry" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
 
-<!-- Bean type as argument of a method call -->
-<list name="argument" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">arg0</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-  <list name="field" format="" domainConcept="">
-    <text name="name" format="" domainConcept="">fieldNameA</text>
-    <text name="type" format="" domainConcept="">java.lang.String</text>
-  <text name="value" format="" domainConcept="">42</text>
-  </list>
-  <list name="field" format="" domainConcept="">
-    <text name="name" format="" domainConcept="">fieldNameB</text>
-    <text name="type" format="" domainConcept="">int</text>
-    <text name="value" format="" domainConcept="">42</text>
-  </list>
-</list>
+  <xs:complexType name="XMLEvent">
+    <xs:sequence>
+      <xs:element name="className" type="xs:string" />
+      <xs:element name="domain" type="xs:string" />
+      <xs:element name="name" type="xs:string" />
+      <xs:element name="toolConnector" type="xs:string" nillable="true" />
+      <xs:element name="elements" type="XMLMapEntry" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
 
-<!-- Bean type as element of an event -->
-<list name="element" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">elementName</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-  <list name="field" format="" domainConcept="">
-    <text name="name" format="" domainConcept="">fieldNameA</text>
-    <text name="type" format="" domainConcept="">java.lang.String</text>
-  <text name="value" format="" domainConcept="">42</text>
-  </list>
-  <list name="field" format="" domainConcept="">
-    <text name="name" format="" domainConcept="">fieldNameB</text>
-    <text name="type" format="" domainConcept="">int</text>
-    <text name="value" format="" domainConcept="">42</text>
-  </list>
-</list>
-            ]]>
-          </programlisting>
-        </listitem>
-        <listitem>
-          References - when an object is contained twice in one message it can be referenced, which will guarantee that after
-          de-serialization both references point to the same object.
-          <programlisting language="xml">
-            <![CDATA[ 
-<!-- Reference type as two fields of a bean - both fields refer to the same object -->
-<list name="field" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">foo</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-  <text name="id" format="" domainConcept="">0</text>
-  <list name="bean" format="" domainConcept="">
-  </list>
-</list>
-<list name="field" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">bar</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-  <text name="reference" format="" domainConcept="">0</text>
-</list>
+  <xs:element name="XMLEvent" type="XMLEvent" />
 
-<!-- Reference type as two arguments - both arguments refer to the same object -->
-<list name="argument" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">arg0</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-  <text name="id" format="" domainConcept="">0</text>
-  <list name="bean" format="" domainConcept="">
-  </list>
-</list>
-<list name="argument" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">arg1</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-  <text name="reference" format="" domainConcept="">0</text>
-</list>
+  <xs:complexType name="XMLBean">
+    <xs:sequence>
+      <xs:element name="className" type="xs:string" />
+      <xs:element name="fields" type="XMLField" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
 
-<!-- Reference type as two elements of an event - both elements refer to the same object -->
-<list name="element" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">foo</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-  <text name="id" format="" domainConcept="">0</text>
-  <list name="bean" format="" domainConcept="">
-  </list>
-</list>
-<list name="element" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">bar</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-  <text name="reference" format="" domainConcept="">0</text>
-</list>
-            ]]>
-          </programlisting>
-        </listitem>
-        <listitem>
-          Arrays - Arrays of all other types of elements are supported.
-          <programlisting language="xml">
-            <![CDATA[ 
-<!-- Array type as field of a bean -->
-<list name="field" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">fieldName</text>
-  <text name="type" format="" domainConcept="">[Ljava.lang.String;</text>
-  <text name="id" format="" domainConcept="">0</text>
-  <list name="array" format="" domainConcept="">
-    <list name="arrayElement" format="" domainConcept="">
-      <text name="name" format="" domainConcept="">arrayElement0</text>
-      <text name="type" format="" domainConcept="">java.lang.String</text>
-      <text name="value" format="" domainConcept="">42</text>
-    </list>
-    <list name="arrayElement" format="" domainConcept="">
-      <text name="name" format="" domainConcept="">arrayElement1</text>
-      <text name="type" format="" domainConcept="">java.lang.String</text>
-      <text name="value" format="" domainConcept="">43</text>
-    </list>
-  </list>
-</list>
+  <xs:complexType name="XMLField">
+    <xs:sequence>
+      <xs:element name="fieldName" type="xs:string" />
+      <xs:element name="value" type="XMLMapable"/>
+    </xs:sequence>
+  </xs:complexType>
 
-<!-- Primitive type as argument of a method call -->
-<list name="argument" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">arg0</text>
-  <text name="type" format="" domainConcept="">[I</text>
-  <text name="id" format="" domainConcept="">0</text>
-  <list name="array" format="" domainConcept="">
-    <list name="arrayElement" format="" domainConcept="">
-      <text name="name" format="" domainConcept="">arrayElement0</text>
-      <text name="type" format="" domainConcept="">int</text>
-      <text name="value" format="" domainConcept="">42</text>
-    </list>
-    <list name="arrayElement" format="" domainConcept="">
-      <text name="name" format="" domainConcept="">arrayElement1</text>
-      <text name="type" format="" domainConcept="">int</text>
-      <text name="value" format="" domainConcept="">43</text>
-    </list>
-  </list>
-</list>
+  <xs:complexType name="XMLMapEntry">
+    <xs:sequence>
+      <xs:element name="key" type="XMLMapable" />
+      <xs:element name="value" type="XMLMapable" />
+    </xs:sequence>
+  </xs:complexType>
 
-<!-- Primitive type as element of an event -->
-<list name="element" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">elementName</text>
-  <text name="type" format="" domainConcept="">[I</text>
-  <text name="id" format="" domainConcept="">0</text>
-  <list name="array" format="" domainConcept="">
-    <list name="arrayElement" format="" domainConcept="">
-      <text name="name" format="" domainConcept="">arrayElement0</text>
-      <text name="type" format="" domainConcept="">int</text>
-      <text name="value" format="" domainConcept="">42</text>
-    </list>
-  </list>
-</list>
-            ]]>
-          </programlisting>
-        </listitem>
-        <listitem>
-          Events - Events are also allowed as parameters, return values, bean fields, etc. 
-          Events have to define their superclasses, to give the receiver the possibility to instantiate the
-          most specialized type he has in his classpath. The list of superclasses must be ordered and has to start
-          with the direct superclass of the event.
-          <programlisting language="xml">
-            <![CDATA[ 
-<!-- Event type as field of a bean -->
-<list name="field" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">fieldName</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeEvent</text>
-  <text name="id" format="" domainConcept="">0</text>
-  <list name="event" format="" domainConcept="">
-    <text name="event" format="" domainConcept="">org.openengsb.SomeEvent</text>
-    <list name="superclasses" format="" domainConcept="">
-      <text name="superclass" format="" domainConcept="">org.openengsb.core.model.Event</text>
-      <text name="superclass" format="" domainConcept="">java.lang.Object</text>
-    </list>
-    <text name="name" format="" domainConcept="">someEvent</text>
-    <text name="domain" format="" domainConcept="">domain</text>
-    <text name="toolConnector" format="" domainConcept="">someTool</text>
-  </list>
-</list>
+  <xs:element name="XMLReturnValue">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="value" type="XMLTypedValue" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
 
-<!-- Event type as argument of a method call -->
-<list name="argument" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">arg0</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeEvent</text>
-  <text name="id" format="" domainConcept="">0</text>
-  <list name="event" format="" domainConcept="">
-    <text name="event" format="" domainConcept="">org.openengsb.SomeEvent</text>
-    <list name="superclasses" format="" domainConcept="">
-      <text name="superclass" format="" domainConcept="">org.openengsb.core.model.Event</text>
-      <text name="superclass" format="" domainConcept="">java.lang.Object</text>
-    </list>
-    <text name="name" format="" domainConcept="">someEvent</text>
-    <text name="domain" format="" domainConcept="">domain</text>
-    <text name="toolConnector" format="" domainConcept="">someTool</text>
-  </list>
-</list>
+  <xs:element name="XMLMethodCall">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="methodName" type="xs:string" />
+        <xs:element name="args" type="XMLTypedValue" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="domainConcept" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:complexType  name="XMLTypedValue">
+    <xs:sequence>
+      <xs:element name="type" type="xs:string" />
+      <xs:element name="value" type="XMLMapable" />
+    </xs:sequence>
+  </xs:complexType>
 
-<!-- Event type as element of another event -->
-<list name="element" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">elementName</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeEvent</text>
-  <text name="id" format="" domainConcept="">0</text>
-  <list name="event" format="" domainConcept="">
-    <text name="event" format="" domainConcept="">org.openengsb.SomeEvent</text>
-    <list name="superclasses" format="" domainConcept="">
-      <text name="superclass" format="" domainConcept="">org.openengsb.core.model.Event</text>
-      <text name="superclass" format="" domainConcept="">java.lang.Object</text>
-    </list>
-    <text name="name" format="" domainConcept="">someEvent</text>
-    <text name="domain" format="" domainConcept="">domain</text>
-    <text name="toolConnector" format="" domainConcept="">someTool</text>
-  </list>
-</list>
-            ]]>
-          </programlisting>
-        </listitem>
-      </orderedlist>
-    </para>
+  <xs:complexType  name="XMLContextEntry">
+    <xs:sequence>
+      <xs:element name="key" type="xs:string" />
+      <xs:element name="value" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="XMLContext">
+    <xs:sequence>
+      <xs:element name="entries" type="XMLContextEntry" maxOccurs="unbounded" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:element name="XMLContext" type="XMLContext" />
+
+  <xs:complexType name="XMLReference">
+    <xs:sequence>
+      <xs:element name="id" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+      ]]>
+    </programlisting>
   </section>
   
   <section id="messageFormat.service">
@@ -371,53 +209,59 @@
     </para>
       <programlisting language="xml">
         <![CDATA[ 
-<list xmlns="http://org.openengsb/util/serialization" name="methodcall" format="" domainConcept="">
-  <text name="method" format="" domainConcept="">foo</text>
-  <list name="argument" format="" domainConcept="">
-    <text name="name" format="" domainConcept="">arg0</text>
-    <text name="type" format="" domainConcept="">java.lang.String</text>
-    <text name="value" format="" domainConcept="">some text</text>
-  </list>
-  <list name="argument" format="" domainConcept="">
-    <text name="name" format="" domainConcept="">arg1</text>
-    <text name="type" format="" domainConcept="">int</text>
-    <text name="value" format="" domainConcept="">42</text>
-  </list>
-</list>
+<?xml version="1.0" encoding="UTF-8"?>
+<XMLMethodCall>
+  <methodName>myMethod</methodName>
+  <args>
+    <type>java.lang.String</type>
+    <value>
+      <primitive>
+        <string>foo</string>
+      </primitive>
+      <id>0</id>
+    </value>
+  </args>
+</XMLMethodCall>
         ]]>
       </programlisting>
       <programlisting language="xml">
         <![CDATA[ 
-<!--  primitive type as return value -->
-<list xmlns="http://org.openengsb/util/serialization" name="returnValue" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">value</text>
-  <text name="type" format="" domainConcept="">java.lang.String</text>
-  <text name="value" format="" domainConcept="">success</text>
-</list>
-
-<!-- Some bean as return value -->
-<list xmlns="http://org.openengsb/util/serialization" name="returnValue" format="" domainConcept="">
-  <text name="name" format="" domainConcept="">value</text>
-  <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-  <text name="id" format="" domainConcept="">0</text>
-  <list name="bean" format="" domainConcept="">
-    <list name="field" format="" domainConcept="">
-      <text name="name" format="" domainConcept="">fieldNameA</text>
-      <text name="type" format="" domainConcept="">java.lang.String</text>
-      <text name="value" format="" domainConcept="">foo</text>
-    </list>
-    <list name="field" format="" domainConcept="">
-      <text name="name" format="" domainConcept="">fieldNameB</text>
-      <text name="type" format="" domainConcept="">int</text>
-      <text name="value" format="" domainConcept="">42</text>
-    </list>
-    <list name="field" format="" domainConcept="">
-      <text name="name" format="" domainConcept="">fieldNameC</text>
-      <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-      <text name="null" format="" domainConcept=""></text>
-    </list>
-  </list>
-</list>
+<?xml version="1.0" encoding="UTF-8"?>
+<XMLReturnValue>
+  <value>
+    <type>org.openengsb.SomeBean</type>
+    <value>
+      <bean>
+        <className>org.openengsb.SomeBean</className>
+        <fields>
+          <fieldName>myFieldA</fieldName>
+          <value>
+            <primitive>
+              <string>foo</string>
+            </primitive>
+            <id>1</id>
+          </value>
+        </fields>
+        <fields>
+          <fieldName>myFieldB</fieldName>
+          <value>
+            <primitive>
+              <int>42</int>
+            </primitive>
+            <id>2</id>
+          </value>
+        </fields>
+        <fields>
+          <fieldName>myFieldC</fieldName>
+          <value>
+            <null>null</null>
+          </value>
+        </fields>
+      </bean>
+      <id>0</id>
+    </value>
+  </value>
+</XMLReturnValue>
         ]]>
       </programlisting>
   </section>
@@ -429,41 +273,52 @@
     </para>
       <programlisting language="xml">
         <![CDATA[ 
-<list xmlns="http://org.openengsb/util/serialization" name="event" format="" domainConcept="">
-  <text name="event" format="" domainConcept="">org.openengsb.core.model.Event</text>
-  <list name="superclasses" format="" domainConcept="">
-    <text name="superclass" format="" domainConcept="">java.lang.Object</text>
-  </list>
-  <text name="name" format="" domainConcept="">event</text>
-  <text name="domain" format="" domainConcept="">domain</text>
-  <list name="element" format="" domainConcept="">
-    <text name="name" format="" domainConcept="">foo</text>
-    <text name="type" format="" domainConcept="">java.lang.String</text>
-    <text name="value" format="" domainConcept="">42</text>
-  </list>
-  <list name="element" format="" domainConcept="">
-    <text name="name" format="" domainConcept="">bar</text>
-    <text name="type" format="" domainConcept="">int</text>
-    <text name="value" format="" domainConcept="">21</text>
-  </list>
-  <list name="element" format="" domainConcept="">
-    <text name="name" format="" domainConcept="">buz</text>
-    <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-    <text name="id" format="" domainConcept="">0</text>
-    <list name="bean" format="" domainConcept="">
-      <list name="field" format="" domainConcept="">
-        <text name="name" format="" domainConcept="">aStringField</text>
-        <text name="type" format="" domainConcept="">java.lang.String</text>
-        <text name="value" format="" domainConcept="">some text</text>
-      </list>
-      <list name="field" format="" domainConcept="">
-        <text name="name" format="" domainConcept="">b</text>
-        <text name="type" format="" domainConcept="">org.openengsb.SomeBean</text>
-        <text name="null" format="" domainConcept=""></text>
-      </list>
-    </list>
-  </list>
-</list>
+<?xml version="1.0" encoding="UTF-8"?>
+<XMLEvent>
+  <className>org.openengsb.core.model.Event</className>
+  <domain>myDomain</domain>
+  <name>myEventName</name>
+  <elements>
+    <key>
+      <primitive>
+        <string>buz</string>
+      </primitive>
+      <id>0</id>
+    </key>
+    <value>
+      <bean>
+        <className>org.openengsb.SomeBean</className>
+        <fields>
+          <fieldName>a</fieldName>
+          <value>
+            <null>null</null>
+          </value>
+        </fields>
+        <fields>
+          <fieldName>b</fieldName>
+          <value>
+            <null>null</null>
+          </value>
+        </fields>
+      </bean>
+      <id>1</id>
+    </value>
+  </elements>
+  <elements>
+    <key>
+      <primitive>
+        <string>foo</string>
+      </primitive>
+      <id>2</id>
+    </key>
+    <value>
+      <primitive>
+        <string>42</string>
+      </primitive>
+      <id>3</id>
+    </value>
+  </elements>
+</XMLEvent>
         ]]>
       </programlisting>
   </section>

@@ -65,6 +65,10 @@ HowTo - Guvnor Setup
   You can also do this by hand in the basic view, but you have to keep the naming of the globals.
   
 +-----
+  import java.util.List
+  import java.util.ArrayList
+  import java.util.Map
+  import java.util.HashMap
   import org.openengsb.drools.events.BuildEvent
   import org.openengsb.drools.events.DeployEvent
   import org.openengsb.drools.events.ScmCheckInEvent
@@ -73,16 +77,18 @@ HowTo - Guvnor Setup
   import org.openengsb.drools.model.MergeResult
   import org.openengsb.drools.model.Notification
   import org.openengsb.drools.model.Report
+  import org.openengsb.drools.model.Issue
   import org.openengsb.drools.model.ScmLogEntry
   import org.openengsb.core.model.Event
   import org.openengsb.drools.events.BuildStartEvent
   import org.openengsb.drools.events.DeployStartEvent
   import org.openengsb.drools.events.TestStartEvent
+  
   global org.openengsb.drools.BuildDomain build
   global org.openengsb.drools.DeployDomain deploy
   global org.openengsb.drools.DomainConfiguration config
   global org.openengsb.drools.DroolsHelper droolsHelper
-  global org.openengsb.drools.DroolsIssuesDomain issue
+  global org.openengsb.drools.IssuesDomain issue
   global org.openengsb.drools.NotificationDomain notification
   global org.openengsb.drools.ReportDomain report
   global org.openengsb.drools.ScmDomain scm

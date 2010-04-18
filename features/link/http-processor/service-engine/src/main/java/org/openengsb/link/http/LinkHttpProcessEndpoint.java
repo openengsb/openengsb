@@ -38,9 +38,9 @@ import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClientFacade;
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
-import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -48,8 +48,7 @@ import org.xml.sax.SAXException;
 /**
  * @org.apache.xbean.XBean element="link-processor"
  */
-public class LinkHttpProcessEndpoint extends ProviderEndpoint {
-
+public class LinkHttpProcessEndpoint extends OpenEngSBEndpoint {
     private static Log log = LogFactory.getLog(LinkHttpProcessEndpoint.class);
 
     private static final String LINK_REQUEST_MESSAGE = "  <LinkQueryRequestMessage>" + "<body>" + " <query>%s</query>"

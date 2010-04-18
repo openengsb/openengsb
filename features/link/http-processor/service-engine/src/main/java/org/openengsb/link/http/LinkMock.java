@@ -22,14 +22,14 @@ import javax.jbi.messaging.NormalizedMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 
 // TODO (re)move latere
 /**
  * @org.apache.xbean.XBean element="link-mock"
  */
-public class LinkMock extends ProviderEndpoint {
+public class LinkMock extends OpenEngSBEndpoint {
 
     private static final Log log = LogFactory.getLog(LinkMock.class);
 

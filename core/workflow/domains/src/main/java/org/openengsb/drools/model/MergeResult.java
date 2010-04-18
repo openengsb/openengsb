@@ -17,56 +17,60 @@
  */
 package org.openengsb.drools.model;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A standard POJO that holds references to files, that were changed in some
  * SCM-operation
  */
 public class MergeResult {
     private String revision;
-    private String[] conflicts; // All paths to the files in conflict. Relative
+    private List<String> conflicts; // All paths to the files in conflict.
+    // Relative
     // to the working copy's root.
-    private String[] merges; // All paths to the files that were merged.
-    private String[] adds; // All paths to the files that were added.
-    private String[] deletions; // All pats to the files that were deleted.
+    private List<String> merges; // All paths to the files that were merged.
+    private List<String> adds; // All paths to the files that were added.
+    private List<String> deletions; // All pats to the files that were deleted.
 
     public MergeResult() {
         // set default values to avoid NPEs
-        String[] emptyArray = new String[0];
-        setConflicts(emptyArray);
-        setMerges(emptyArray);
-        setAdds(emptyArray);
-        setDeletions(emptyArray);
+        List<String> emptyList = Collections.emptyList();
+        setConflicts(emptyList);
+        setMerges(emptyList);
+        setAdds(emptyList);
+        setDeletions(emptyList);
     }
 
-    public String[] getConflicts() {
+    public List<String> getConflicts() {
         return this.conflicts;
     }
 
-    public void setConflicts(String[] conflicts) {
+    public void setConflicts(List<String> conflicts) {
         this.conflicts = conflicts;
     }
 
-    public String[] getMerges() {
+    public List<String> getMerges() {
         return this.merges;
     }
 
-    public void setMerges(String[] merges) {
+    public void setMerges(List<String> merges) {
         this.merges = merges;
     }
 
-    public String[] getAdds() {
+    public List<String> getAdds() {
         return this.adds;
     }
 
-    public void setAdds(String[] adds) {
+    public void setAdds(List<String> adds) {
         this.adds = adds;
     }
 
-    public String[] getDeletions() {
+    public List<String> getDeletions() {
         return this.deletions;
     }
 
-    public void setDeletions(String[] deletions) {
+    public void setDeletions(List<String> deletions) {
         this.deletions = deletions;
     }
 
@@ -79,6 +83,6 @@ public class MergeResult {
     }
 
     public boolean hasConflicts() {
-        return this.conflicts != null && this.conflicts.length > 0;
+        return this.conflicts != null && this.conflicts.size() > 0;
     }
 }

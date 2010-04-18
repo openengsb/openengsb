@@ -49,6 +49,22 @@
       <groupId>org.jibx</groupId>
       <artifactId>jibx-run</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jibx</groupId>
+      <artifactId>jibx-extras</artifactId>
+      <version>${jibx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jibx</groupId>
+      <artifactId>jibx-bind</artifactId>
+      <version>${jibx.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jibx</groupId>
+      <artifactId>jibx-tools</artifactId>
+      <version>${jibx.version}</version>
+    </dependency>
+    
     
     <!-- Apache Dependencies -->
     <dependency>
@@ -67,6 +83,10 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+    </dependency>
 
      <!-- Servicemix dependencies -->
     <dependency>
@@ -84,52 +104,44 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
+        <groupId>org.jibx</groupId>
+        <artifactId>maven-jibx-plugin</artifactId>
+        <version>1.2.2</version>
         <executions>
           <execution>
-            <phase>process-test-classes</phase>
+            <id>generate-java-code-from-schema</id>
             <goals>
-              <goal>run</goal>
+              <goal>schema-codegen</goal>
             </goals>
             <configuration>
-              <tasks>
-                <echo>Running Jibx Ant task</echo>
-
-                <path id="jibx.classpath">
-                  <path refid="maven.test.classpath"/>
-                  <path refid="maven.plugin.classpath"/>
-                </path>
-
-                <property name="compile_classpath" refid="maven.compile.classpath"/>
-                <property name="runtime_classpath" refid="maven.runtime.classpath"/>
-                <property name="test_classpath" refid="maven.test.classpath"/>
-                <property name="plugin_classpath" refid="maven.plugin.classpath"/>
-                <property name="jibx_classpath" refid="jibx.classpath"/>
-
-                <taskdef classname="org.jibx.binding.ant.CompileTask" name="jibxbind">
-                  <classpath refid="maven.plugin.classpath"/>
-                </taskdef>
-                <jibxbind verbose="false" binding="${basedir}/src/main/resources/binding.xml">
-                  <classpath refid="jibx.classpath"/>
-                </jibxbind>
-              </tasks>
+              <directory>${basedir}/src/main/resources/schema</directory>
+              <defaultPackage>org.openengsb.core.xmlmapping</defaultPackage>
+              <targetDirectory>${basedir}/src/main/java/</targetDirectory>
+              <includes>
+                <include>
+                  *.xsd
+                </include>
+              </includes>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+          <execution>
+            <id>compile-binding</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>bind</goal>
+            </goals>
+            <configuration>
+              <directory>src/main/java/</directory>
+              <includes>
+                <include>
+                  binding.xml
+                </include>
+              </includes>
+              <verbose>true</verbose>
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.jibx</groupId>
-            <artifactId>jibx-bind</artifactId>
-            <version>${jibx.version}</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jibx</groupId>
-            <artifactId>jibx-run</artifactId>
-            <version>${jibx.version}</version>
-            <scope>test</scope>
-          </dependency>
-        </dependencies>
       </plugin>
     </plugins>
   </build>

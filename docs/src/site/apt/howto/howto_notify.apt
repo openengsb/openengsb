@@ -55,14 +55,11 @@ HowTo - First steps with OpenEngSB (Hello World aka Notification)
 
 +---
   <?xml version="1.0" encoding="UTF-8"?>
-  <list xmlns="http://org.openengsb/util/serialization" name="event" format="" domainConcept="">
-    <text name="event" format="" domainConcept="">org.openengsb.core.model.Event</text>
-    <list name="superclasses" format="" domainConcept="">
-      <text name="superclass" format="" domainConcept="">java.lang.Object</text>
-    </list>
-    <text name="name" format="" domainConcept="">someEvent</text>
-    <text name="domain" format="" domainConcept="">notification</text>
-  </list>
+  <XMLEvent>
+    <className>org.openengsb.core.model.Event</className>
+    <domain>notification</domain>
+    <name>someEvent</name>
+  </XMLEvent>
 +---
   
   When starting the testclient a warning tells you that the test infrastructure is already deployed in ServiceMix (which was done by quickrun.sh). You can safely ignore this warning.

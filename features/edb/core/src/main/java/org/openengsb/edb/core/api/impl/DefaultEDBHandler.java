@@ -139,9 +139,6 @@ public class DefaultEDBHandler implements EDBHandler {
                     found = true;
                     break;
                 }
-                // TODO: ask flo why this was here, it breaks any and all tests
-                // and does not seem to have any sense.
-                // return null;
             }
 
             if (!found)

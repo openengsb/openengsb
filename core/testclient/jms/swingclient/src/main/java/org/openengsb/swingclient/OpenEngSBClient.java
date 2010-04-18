@@ -68,9 +68,9 @@ public class OpenEngSBClient extends JFrame {
         return jmsService.doServiceCall(endpoint, operation, message, context, mep);
     }
 
-    public static String contextCall(String operation, String message) throws JMSException {
+    public static String contextCall(String message) throws JMSException {
         ClientEndpoint endpoint = new ClientEndpoint("org.openengsb.test.contextService", "ctx:contextService");
-        return serviceCall(endpoint, operation, message, "", "in-out");
+        return serviceCall(endpoint, "methodcall", message, "", "in-out");
     }
 
     public void setJmsService(JmsService jmsService) {

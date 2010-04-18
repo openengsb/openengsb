@@ -99,9 +99,9 @@ public class SvnImportCommand extends AbstractSvnCommand<MergeResult> implements
 
             // assemble and return MergeResult
             MergeResult result = new MergeResult();
-            result.setAdds(addedFiles.toArray(new String[addedFiles.size()]));
-            result.setDeletions(deletedFiles.toArray(new String[deletedFiles.size()]));
-            result.setMerges(mergedFiles.toArray(new String[mergedFiles.size()]));
+            result.setAdds(addedFiles);
+            result.setDeletions(deletedFiles);
+            result.setMerges(mergedFiles);
             result.setRevision(String.valueOf(info.getNewRevision()));
 
             // TODO find out how to collect conflicting files...

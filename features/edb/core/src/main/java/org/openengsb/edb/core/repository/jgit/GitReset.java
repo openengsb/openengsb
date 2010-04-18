@@ -23,22 +23,20 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jgit.lib.Commit;
+import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.GitIndex;
+import org.eclipse.jgit.lib.RefUpdate;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.Tree;
+import org.eclipse.jgit.lib.WorkDirCheckout;
 import org.openengsb.edb.core.api.EDBException;
 import org.openengsb.edb.core.repository.RepositoryStateException;
 import org.openengsb.edb.core.repository.Reset;
-import org.spearce.jgit.lib.Commit;
-import org.spearce.jgit.lib.Constants;
-import org.spearce.jgit.lib.GitIndex;
-import org.spearce.jgit.lib.RefLogWriter;
-import org.spearce.jgit.lib.RefUpdate;
-import org.spearce.jgit.lib.Repository;
-import org.spearce.jgit.lib.Tree;
-import org.spearce.jgit.lib.WorkDirCheckout;
-
 
 /**
- * Implementation of the {@link Reset} interface for a git-repository.
- * Currently only --hard and one step back are supported Copied from / based on
+ * Implementation of the {@link Reset} interface for a git-repository. Currently
+ * only --hard and one step back are supported Copied from / based on
  * org.eclipse.egit.core.op.ResetOperation
  */
 @SuppressWarnings("deprecation")
@@ -129,19 +127,19 @@ public class GitReset implements Reset {
     }
 
     private void writeReflog(String reflogRelPath) throws EDBException {
-        String name = this.commit.getCommitId().name();
-        if (name.startsWith("refs/heads/")) {
-            name = name.substring(11);
-        }
-        if (name.startsWith("refs/remotes/")) {
-            name = name.substring(13);
-        }
-
-        String message = "reset --" + this.mode + " " + name;
-
         try {
-            RefLogWriter.writeReflog(this.repository, this.repository.mapCommit(GitReset.HEAD).getCommitId(),
-                    this.commit.getCommitId(), message, reflogRelPath);
+            final RefUpdate ru = repository.updateRef(Constants.HEAD);
+            ru.setNewObjectId(commit.getCommitId());
+            String name = this.commit.getCommitId().name();
+            if (name.startsWith("refs/heads/")) //$NON-NLS-1$
+                name = name.substring(11);
+            if (name.startsWith("refs/remotes/")) //$NON-NLS-1$
+                name = name.substring(13);
+            String message = "reset --" + this.mode + " " + name;
+            ru.setRefLogMessage(message, false);
+            if (ru.forceUpdate() == RefUpdate.Result.LOCK_FAILURE) {
+                throw new EDBException("Ref update failed because of locking failure.");
+            }
         } catch (IOException e) {
             throw new EDBException(e.getMessage());
         }

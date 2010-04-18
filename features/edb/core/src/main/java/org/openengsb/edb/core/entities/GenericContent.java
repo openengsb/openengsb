@@ -25,9 +25,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
-import java.net.MalformedURLException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -36,7 +34,6 @@ import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.util.Prelude;
-
 
 /**
  * Thin wrapper around {@link java.util.Properties} offering a UUID and a path
@@ -63,61 +60,55 @@ public class GenericContent {
     }
 
     public GenericContent(String repositoryBase, String[] abstractPath, String[] realPath, UUID uuid) {
-        this.log.trace("Creating property object for generic content...");
-
         File folder = new File(repositoryBase + File.separator + Prelude.pathize(realPath));
+        prepareDirectoryStructure(folder);
+
+        this.fileLocation = new File(repositoryBase + File.separator + Prelude.pathize(realPath) + File.separator
+                + uuid.toString());
+
+        this.log.trace("Creating property object for generic content...");
+        this.content = new Properties();
+        addPathEntriesAsSingleProperties(abstractPath, realPath);
+
+        setProperty(GenericContent.PATH_NAME, Prelude.pathize(abstractPath));
+        setProperty(GenericContent.UUID_NAME, uuid.toString());
+    }
+
+    private void prepareDirectoryStructure(File folder) {
         if (!folder.exists()) {
             this.log.debug("Folders does not exist creating strucutre [" + folder.getAbsolutePath() + "]...");
             folder.mkdirs();
         }
-        this.fileLocation = new File(repositoryBase + File.separator + Prelude.pathize(realPath) + File.separator
-                + uuid.toString());
+    }
+
+    private void addPathEntriesAsSingleProperties(String[] abstractPath, String[] realPath) {
+        for (int j = 0; j < abstractPath.length; j++) {
+            if (realPath.length > j) {
+                setProperty(abstractPath[j], realPath[j]);
+            }
+        }
+    }
+
+    /**
+     * Calls {@link java.util.Properties#store(Writer, String)} with the UUID as
+     * comment.
+     * 
+     * @param out - Writer, destination to store into
+     * @throws IOException see Properties javadoc
+     */
+    public void store() {
+        this.log.debug("Writing property list with path [" + this.fileLocation.getAbsolutePath() + "]...");
         try {
-            this.log.debug("Reading file from [" + this.fileLocation.getAbsolutePath() + "]...");
-            this.fileLocation.createNewFile();
-            this.content = new Properties();
-            InputStream inputStr = this.fileLocation.toURI().toURL().openStream();
-            this.content.load(inputStr);
-            inputStr.close();
-        } catch (MalformedURLException e) {
+            FileOutputStream ouputStr = new FileOutputStream(this.fileLocation);
+            this.content.store(ouputStr, "GenericContent");
+            ouputStr.close();
+        } catch (FileNotFoundException e) {
             this.log.fatal("File location can not be accessed [" + this.fileLocation.getAbsolutePath() + "]...", e);
             throw new RuntimeException("File can not be accessed [" + this.fileLocation.getAbsolutePath() + "]...", e);
         } catch (IOException e) {
             this.log.fatal("File location can not be accessed [" + this.fileLocation.getAbsolutePath() + "]...", e);
             throw new RuntimeException("File can not be accessed [" + this.fileLocation.getAbsolutePath() + "]...", e);
         }
-        for (int j = 0; j < abstractPath.length; j++) {
-            if (realPath.length > j) {
-                setProperty(abstractPath[j], realPath[j]);
-            }
-        }
-        setProperty(GenericContent.PATH_NAME, Prelude.pathize(abstractPath));
-        setProperty(GenericContent.UUID_NAME, uuid.toString());
-    }
-
-    /**
-     * Returns the unique identifier of the {@link GenericContent} object as a
-     * string.
-     */
-    public String getUUID() {
-        return this.content.getProperty(GenericContent.UUID_NAME);
-    }
-
-    public void setUUID(String uuid) {
-        setProperty(GenericContent.UUID_NAME, uuid);
-    }
-
-    /**
-     * Returns the specific path of the object (this is not the full path
-     * starting with C: (in windows for example) but the path of the object
-     * which means it may start with project/user and so on.
-     */
-    public String getPath() {
-        return this.content.getProperty(GenericContent.PATH_NAME);
-    }
-
-    public void setPath(String path) {
-        setProperty(GenericContent.PATH_NAME, path);
     }
 
     /**
@@ -148,33 +139,29 @@ public class GenericContent {
         this.content.setProperty(key, value);
     }
 
-    /**
-     * Returns the entire content stored in the propery map at once.
-     */
-    public Set<Entry<Object, Object>> getEntireContent() {
-        return this.content.entrySet();
+    public void setUUID(String uuid) {
+        setProperty(GenericContent.UUID_NAME, uuid);
     }
 
     /**
-     * Calls {@link java.util.Properties#store(Writer, String)} with the UUID as
-     * comment.
-     * 
-     * @param out - Writer, destination to store into
-     * @throws IOException see Properties javadoc
+     * Returns the unique identifier of the {@link GenericContent} object as a
+     * string.
      */
-    public void store() {
-        this.log.debug("Writing property list with path [" + this.fileLocation.getAbsolutePath() + "]...");
-        try {
-            FileOutputStream ouputStr = new FileOutputStream(this.fileLocation);
-            this.content.store(ouputStr, "GenericContent");
-            ouputStr.close();
-        } catch (FileNotFoundException e) {
-            this.log.fatal("File location can not be accessed [" + this.fileLocation.getAbsolutePath() + "]...", e);
-            throw new RuntimeException("File can not be accessed [" + this.fileLocation.getAbsolutePath() + "]...", e);
-        } catch (IOException e) {
-            this.log.fatal("File location can not be accessed [" + this.fileLocation.getAbsolutePath() + "]...", e);
-            throw new RuntimeException("File can not be accessed [" + this.fileLocation.getAbsolutePath() + "]...", e);
-        }
+    public String getUUID() {
+        return this.content.getProperty(GenericContent.UUID_NAME);
+    }
+
+    public void setPath(String path) {
+        setProperty(GenericContent.PATH_NAME, path);
+    }
+
+    /**
+     * Returns the specific path of the object (this is not the full path
+     * starting with C: (in windows for example) but the path of the object
+     * which means it may start with project/user and so on.
+     */
+    public String getPath() {
+        return this.content.getProperty(GenericContent.PATH_NAME);
     }
 
     /**
@@ -182,6 +169,13 @@ public class GenericContent {
      */
     public File getFileLocation() {
         return this.fileLocation;
+    }
+
+    /**
+     * Returns the entire content stored in the propery map at once.
+     */
+    public Set<Entry<Object, Object>> getEntireContent() {
+        return this.content.entrySet();
     }
 
     @Override

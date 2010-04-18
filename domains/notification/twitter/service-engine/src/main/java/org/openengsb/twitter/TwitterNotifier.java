@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.util.FileUpload;
 import org.openengsb.drools.NotificationDomain;
+import org.openengsb.drools.model.Attachment;
 import org.openengsb.drools.model.Notification;
 import org.openengsb.twitter.common.TwitterConnector;
 import org.openengsb.twitter.common.util.UrlShortenerUtil;
@@ -31,21 +32,21 @@ import org.openengsb.twitter.common.util.ZipUtil;
 
 public class TwitterNotifier implements NotificationDomain {
     private Log log = LogFactory.getLog(getClass());
-    
+
     private TwitterConnector twitterCon;
     private FileUpload fileUpload;
     private ZipUtil zipUtil;
     private UrlShortenerUtil urlShortener;
-    
+
     private static int maxChars = 140;
 
     public void notify(Notification notification) {
-        if (notification.getAttachments().length > 0) {
+        if (notification.getAttachments().size() > 0) {
             try {
-                byte[] zip = zipUtil.zipAttachments(notification.getAttachments());
+                byte[] zip = zipUtil.zipAttachments(notification.getAttachments().toArray(new Attachment[0]));
                 URL url = fileUpload.uploadFile(zip, "zip");
                 String shortUrl = urlShortener.getTinyUrl(url);
-                
+
                 notification.setMessage("Attachment: " + shortUrl + "\n" + notification.getMessage());
                 log.info("Attachments successfully added.");
             } catch (IOException e) {
@@ -73,7 +74,7 @@ public class TwitterNotifier implements NotificationDomain {
     public void setFileUpload(FileUpload fileUpload) {
         this.fileUpload = fileUpload;
     }
-    
+
     public void setZipUtil(ZipUtil zipUtil) {
         this.zipUtil = zipUtil;
     }

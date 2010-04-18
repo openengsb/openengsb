@@ -19,13 +19,15 @@ package org.openengsb.swingclient;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Method;
 
 import javax.jms.JMSException;
 
 import org.openengsb.contextcommon.Context;
-import org.openengsb.contextcommon.ContextSegmentTransformer;
-import org.openengsb.core.messaging.Segment;
-import org.openengsb.core.messaging.TextSegment;
+import org.openengsb.contextcommon.ContextHelperExtended;
+import org.openengsb.core.model.MethodCall;
+import org.openengsb.core.model.ReturnValue;
+import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
 
 public class RefreshContextAction implements ActionListener {
@@ -41,12 +43,10 @@ public class RefreshContextAction implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
 
         try {
-            String result = OpenEngSBClient.contextCall("request", getMessage());
-            Segment segment = Segment.fromXML(result);
-            Context context = ContextSegmentTransformer.toContext(segment);
-
+            String result = OpenEngSBClient.contextCall(getMessage());
+            ReturnValue returnValue = Transformer.toReturnValue(result);
+            Context context = (Context) returnValue.getValue();
             panel.tree.updateTree(context);
-
         } catch (JMSException e) {
             throw new RuntimeException(e);
         } catch (SerializationException e) {
@@ -56,10 +56,11 @@ public class RefreshContextAction implements ActionListener {
 
     private String getMessage() {
         try {
-            TextSegment text = new TextSegment.Builder("path").text("/").build();
-            String xml = text.toXML();
+            Method method = ContextHelperExtended.class.getMethod("getContext", String.class);
+            MethodCall call = new MethodCall(method, new Object[] { "/" });
+            String xml = Transformer.toXml(call);
             return xml;
-        } catch (SerializationException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

@@ -17,9 +17,11 @@
  */
 package org.openengsb.connector.svn;
 
+import java.util.List;
+
 import org.openengsb.drools.ScmDomain;
-import org.openengsb.drools.model.ScmLogEntry;
 import org.openengsb.drools.model.MergeResult;
+import org.openengsb.drools.model.ScmLogEntry;
 import org.openengsb.scm.common.commands.CommandFactory;
 
 public class SvnScmImplementation implements ScmDomain {
@@ -76,12 +78,12 @@ public class SvnScmImplementation implements ScmDomain {
     }
 
     @Override
-    public String[] listBranches() {
+    public List<String> listBranches() {
         return factory.getListBranchesCommand().execute();
     }
 
     @Override
-    public ScmLogEntry[] log(String[] files, String startRevision, String endRevision) {
+    public List<ScmLogEntry> log(List<String> files, String startRevision, String endRevision) {
         return factory.getLogCommand(files, startRevision, endRevision).execute();
     }
 

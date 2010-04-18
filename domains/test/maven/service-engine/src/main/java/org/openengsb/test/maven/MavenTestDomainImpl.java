@@ -38,7 +38,7 @@ public class MavenTestDomainImpl extends AbstractMavenDomainImpl implements Test
     }
 
     @Override
-    public boolean runTests() {
+    public Boolean runTests() {
         TestStartEvent startEvent = new TestStartEvent();
         MavenParameters params = getMavenParametersForMavenCall("test/maven-test");
         startEvent.setToolConnector("maven-test");

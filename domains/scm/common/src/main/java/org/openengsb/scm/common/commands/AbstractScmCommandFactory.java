@@ -20,11 +20,12 @@ package org.openengsb.scm.common.commands;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 import javax.jbi.management.DeploymentException;
 
-import org.openengsb.drools.model.ScmLogEntry;
 import org.openengsb.drools.model.MergeResult;
+import org.openengsb.drools.model.ScmLogEntry;
 
 /**
  * A default implementation of the CommandFactory. It actually implements all
@@ -208,7 +209,7 @@ public abstract class AbstractScmCommandFactory implements CommandFactory {
     }
 
     @Override
-    public Command<String[]> getListBranchesCommand() {
+    public Command<List<String>> getListBranchesCommand() {
         // create command
         ListBranchesCommand command = createListBranchesCommand();
 
@@ -216,7 +217,7 @@ public abstract class AbstractScmCommandFactory implements CommandFactory {
     }
 
     @Override
-    public Command<ScmLogEntry[]> getLogCommand(String[] files, String startRevision, String endRevision) {
+    public Command<List<ScmLogEntry>> getLogCommand(List<String> files, String startRevision, String endRevision) {
         // create command
         LogCommand command = createLogCommand();
 

@@ -74,11 +74,15 @@
       <artifactId>servicemix-jms</artifactId>
     </dependency>
 
+    <!--  Internal dependencies -->
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>openengsb-core</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-features-link-http-su</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-util-common</artifactId>

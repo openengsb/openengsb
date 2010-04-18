@@ -17,43 +17,16 @@
  */
 package org.openengsb.drools;
 
-import java.util.List;
-
-import org.apache.servicemix.common.DefaultComponent;
+import org.openengsb.core.OpenEngSBComponent;
 
 /**
  * @org.apache.xbean.XBean element="droolsComponent"
  *                         description="Drools Component" The Drools-component
  */
-public class DroolsComponent extends DefaultComponent {
-
-    /**
-     * List of endpoints.
-     */
-    private DroolsEndpoint[] endpoints;
-
-    @Override
-    protected List<?> getConfiguredEndpoints() {
-        return asList(endpoints);
-    }
-
+public class DroolsComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class<?>[] { DroolsEndpoint.class };
+        return new Class[] { DroolsEndpoint.class };
     }
-
-    /**
-     * @return the endpoints
-     */
-    public DroolsEndpoint[] getEndpoints() {
-        return endpoints;
-    }
-
-    /**
-     * @param endpoints the endpoints to set
-     */
-    public void setEndpoints(DroolsEndpoint[] endpoints) {
-        this.endpoints = endpoints;
-    }
-
+    
 }

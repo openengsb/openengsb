@@ -17,6 +17,9 @@
  */
 package org.openengsb.drools.model;
 
+import java.util.Collections;
+import java.util.List;
+
 public class Report {
 
     private byte[] content;
@@ -25,7 +28,7 @@ public class Report {
 
     private String name;
 
-    private Attachment[] attachments;
+    private List<Attachment> attachments;
 
     @SuppressWarnings("unused")
     private Report() {
@@ -50,14 +53,14 @@ public class Report {
         return name;
     }
 
-    public void setAttachments(Attachment attachments[]) {
+    public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
     }
 
-    public Attachment[] getAttachments() {
+    public List<Attachment> getAttachments() {
         if (attachments == null) {
-            return new Attachment[0];
+            return Collections.emptyList();
         }
-        return attachments;
+        return Collections.unmodifiableList(attachments);
     }
 }

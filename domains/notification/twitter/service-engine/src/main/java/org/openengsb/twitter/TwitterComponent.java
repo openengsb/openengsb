@@ -17,31 +17,13 @@
  */
 package org.openengsb.twitter;
 
-import java.util.List;
-
-import org.apache.servicemix.common.DefaultComponent;
-import org.openengsb.twitter.TwitterEndpoint;
+import org.openengsb.core.OpenEngSBComponent;
 
 /**
  * @org.apache.xbean.XBean element="twitterComponent"
  *                         description="Twitter Notification Component"
  */
-public class TwitterComponent extends DefaultComponent {
-    private TwitterEndpoint[] endpoints;
-
-    public TwitterEndpoint[] getEndpoints() {
-        return this.endpoints;
-    }
-
-    public void setEndpoints(TwitterEndpoint[] endpoints) {
-        this.endpoints = endpoints;
-    }
-
-    @Override
-    protected List<?> getConfiguredEndpoints() {
-        return asList(this.endpoints);
-    }
-
+public class TwitterComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { TwitterEndpoint.class };

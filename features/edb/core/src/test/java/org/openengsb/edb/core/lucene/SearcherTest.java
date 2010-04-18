@@ -31,7 +31,6 @@ import junit.framework.Assert;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.edb.core.search.Indexer;
@@ -136,7 +135,6 @@ public class SearcherTest extends ATestStub {
     }
 
     @Test
-    @Ignore
     public void testSearchExactMatch() {
         this.term = SearcherTest.KEY1 + ":" + SearcherTest.PREFIX;
         this.result = this.searcher.search(this.term);
@@ -179,7 +177,6 @@ public class SearcherTest extends ATestStub {
     }
 
     @Test
-    @Ignore
     public void testSearchPathFilter() {
         this.term = SearcherTest.PATH_NAME + ":" + "/customer/*/*/*/*/*/*/*";
         this.result = this.searcher.search(this.term);
@@ -231,7 +228,6 @@ public class SearcherTest extends ATestStub {
     }
 
     @Test
-    @Ignore
     public void testSearchAll() {
         this.term = "*";
         this.result = this.searcher.search(this.term);

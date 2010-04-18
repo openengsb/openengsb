@@ -13,37 +13,105 @@
 ~~   See the License for the specific language governing permissions and
 ~~   limitations under the License.
 ~~
-  ~~ Add the place in the repository where the connector development takes place
-*-------------------+
-| <<Source:>>  git://85.126.79.3/engsb    |
-*-------------------+
 
-  ~~ Add the place where the issue management takes place
-*-------------------+
-| <<IssueManagement:>>  http://85.126.79.3/mantis    |
-*-------------------+
-
-  ~~ Add a comma seperated list of supported EngSB versions. This field should
-  ~~ be used to make sure that no connectors are used for EngSB versions
-  ~~ they do not fit.
-  [Supported in version(s):] engsb-1.0.0.M3
-
-
-  ~~ Add the full name of the plugin as root heading
 connector-issues-trac
 
-  TBW
-  
-  ~~ Add as many subsections as you like
-  
-  ~~ At least one section should be describing what to do to setup the 
-  ~~ connector correctly. This also includes how which properties have to
-  ~~ be set and so on. There could be subsections about the different versions
-  ~~ if they are differently to setup. 
-* Setup
+  This connector enables OpenEngSB to create issues on a trac instance. You will need to install the
+  {{{http://trac-hacks.org/wiki/XmlRpcPlugin}XmlRpc Plugin}} on your trac instance.
 
-  TBW
+  The connector implements following methods of the issue domain:
   
-  ~~ At least one section pointing to the download locations in the staging
-  ~~ repository should be given. This page should contain a table holding
-  ~~ the right download for the right EngSB version.
+  * createIssue
+  
+  * addComment
+  
+  * updateIssue
+  
+  * deleteIssue
+  
+  []
+  
+  Each project will need it's own endpoint and configuration.
+
+*Setup
+
+**DroolsSetup
+
+  To create rules for the issue domain you will need to add following imports to drools (knowledge bases > org.openengsb > advanced view)
+  
+---
+import java.util.HashMap
+import org.openengsb.drools.IssuesDomain
+import org.openengsb.drools.model.Issue
+
+global org.openengsb.drools.IssuesDomain issue
+---
+
+  Eventually you will have to reupload your model too ({{{howto/howto_guvnor.html}Drools Setup}})
+
+**Configuring a SU for your Project
+
+  The connector needs some parameters to connect to your project's trac instance which are configured in the SU's xbean.xml file.
+  Replace USERNAME, PASSWORD, URL, PORT, PROJECTNAME with your specific settings.
+  
+---
+  <bean id="config" class="org.apache.xmlrpc.client.XmlRpcClientConfigImpl">
+    <property name="serverURL" value="http://URL:PORT/PROJECTNAME/login/xmlrpc" />
+    <property name="basicUserName" value="USERNAME" />
+    <property name="basicPassword" value="PASSWORD" />
+  </bean>
+---
+
+  You will also need to set a unique servicename for your project to create drool rules later.
+  Replace SERVICENAME with an appropriate servicename for your Project. e.g: "tracOpenEngSBService".
+  
+---
+  <trac:tracEndpoint service="trc:SERVICENAME" endpoint="tracEndpoint" tracConnector="#tracConnector" />
+---
+
+**Adding your endpoint to the contextstore
+
+  Finally you will have to add your projects servicepoint to the contextstore.
+  Insert following lines to the loadIssueConfig() method in contextstore.java (openengsb-core) and replace
+  SERVICENAME(from the xbean.xml), CONTEXTSTORENAME.
+
+---
+  setValue("42/issue/CONTEXTSTORENAME/namespace", "urn:openengsb:trac");
+  setValue("42/issue/CONTEXTSTORENAME/servicename", "SERVICENAME");
+---
+
+*Multiple Projects
+
+  If you want to create Issues for multiple projects, you will have to create one Service-Unit per project.
+  Repeat the setup for each project and be carefull to choose unique SERVICE- and CONTEXTSTORENAME's
+  
+*Drools example rule
+
+  With config.setToConnector(issue, "CONTEXTSTORENAME") you can switch your projects tracConnector
+
+**Example for creating an issue
+
+---
+when
+   e : Event( name == "tracOpenEngSBcreate" )
+then
+   config.setToConnector(issue, "tracOpenEngSB");
+   Issue i = new Issue();
+   i.setSummary("Test Summary");
+   i.setDescription("Test Description");
+   i.setReporter("user");
+   i.setPriority(Issue.priorityURGENT);
+   issue.createIssue(i);
+--- 
+
+**Example for updating an issue
+
+---
+dialect 'java'
+when
+    e : Event( name == "tracOpenEngSBcreate" )
+then
+   HashMap<String, Object> changes = new HashMap<String, Object>();
+   changes.put(Issue.fieldPRIORITY, Issue.priorityNORMAL);
+   issue.updateIssue(2, "Update comment", changes);
+--- 

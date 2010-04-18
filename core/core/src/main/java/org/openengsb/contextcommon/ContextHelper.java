@@ -20,7 +20,8 @@ package org.openengsb.contextcommon;
 import java.util.Map;
 
 public interface ContextHelper {
-    String getValue(String key);
+    String getValue(String pathAndKey);
 
-    Map<String, String> getAllValues(String parentKey);
+    Map<String, String> getAllValues(String path);
+
 }
