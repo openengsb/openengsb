@@ -26,11 +26,11 @@
   </bean>
 
   <bean id="xmppConfig" class="org.jivesoftware.smack.ConnectionConfiguration">
-    <constructor-arg ref="localhost" />
+    <constructor-arg ref="xmppServerName" />
     <constructor-arg ref="xmppServerPort" />
   </bean>
 
-  <bean id="localhost" class="java.lang.String" >
+  <bean id="xmppServerName" class="java.lang.String" >
     <constructor-arg value="localhost" />
   </bean>
     

@@ -17,29 +17,13 @@
  */
 package org.openengsb.xmpp;
 
-import java.util.List;
-
-import org.apache.servicemix.common.DefaultComponent;
+import org.openengsb.core.OpenEngSBComponent;
 
 /**
  * @org.apache.xbean.XBean element="xmppComponent"
  *                         description="Xmpp Notification Component"
  */
-public class XmppComponent extends DefaultComponent {
-    private XmppEndpoint[] endpoints;
-
-    public XmppEndpoint[] getEndpoints() {
-        return this.endpoints;
-    }
-
-    public void setEndpoints(XmppEndpoint[] endpoints) {
-        this.endpoints = endpoints;
-    }
-
-    @Override
-    protected List<?> getConfiguredEndpoints() {
-        return asList(this.endpoints);
-    }
+public class XmppComponent extends OpenEngSBComponent {
 
     @Override
     protected Class<?>[] getEndpointClasses() {

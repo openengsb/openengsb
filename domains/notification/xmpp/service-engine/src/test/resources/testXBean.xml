@@ -33,7 +33,7 @@
     <property name="transferManager" ref="xmppTransferManager" />
     <property name="user" value="openengsb" />
     <property name="password" value="openengsb" />
-    <property name="resources" value="/openengsb/xmppNotifier" />
+    <property name="resources" value="openengsb/xmppNotifier" />
   </bean>
 
   <bean id="xmppConnection" class="org.jivesoftware.smack.XMPPConnection">
@@ -41,7 +41,15 @@
   </bean>
 
   <bean id="xmppConfig" class="org.jivesoftware.smack.ConnectionConfiguration">
+    <constructor-arg ref="xmppServerName" />
+    <constructor-arg ref="xmppServerPort" />
+  </bean>
+
+  <bean id="xmppServerName" class="java.lang.String" >
     <constructor-arg value="localhost" />
+  </bean>
+
+  <bean id="xmppServerPort" class="java.lang.Integer" >
     <constructor-arg value="5222" />
   </bean>
 

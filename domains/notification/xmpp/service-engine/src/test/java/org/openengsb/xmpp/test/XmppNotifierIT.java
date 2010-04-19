@@ -29,9 +29,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.core.model.Event;
-import org.openengsb.core.transformation.Transformer;
-import org.openengsb.util.serialization.SerializationException;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -73,11 +70,15 @@ public class XmppNotifierIT extends SpringTestSupport {
     }
 
     private String getTestEvent() {
-        try {
-            Event event = new Event("notification", "xmpp");
-            return Transformer.toXml(event);
-        } catch (SerializationException e) {
-            throw new RuntimeException(e);
-        }
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XMLMethodCall><methodName>notify</methodName><args>"
+                + "<type>org.openengsb.drools.model.Notification</type><value><bean>"
+                + "<className>org.openengsb.drools.model.Notification</className>"
+                + "<fields><fieldName>subject</fieldName><value><null>null</null></value></fields>"
+                + "<fields><fieldName>message</fieldName><value><primitive><string>Testmessage</string></primitive>"
+                + "<id>1</id></value></fields><fields>"
+                + "<fieldName>recipient</fieldName><value><primitive><string>test@satellite/Spark</string></primitive>"
+                + "<id>2</id></value></fields><fields>"
+                + "<fieldName>attachments</fieldName><value><null>null</null></value></fields>"
+                + "</bean><id>0</id></value></args></XMLMethodCall>";
     }
 }

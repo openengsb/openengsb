@@ -81,20 +81,21 @@ public class XmppNotifier implements NotificationDomain {
         try {
             connection.login(this.user, this.password, this.resources);
         } catch (XMPPException e) {
-            throw new XMPPNotifierException("Login to server failed", e);
+            throw new XMPPNotifierException("Login to server failed (" + 
+                    user + "/" + password + "/" + resources + ")", e);
         }
     }
 
     public void notify(Notification notification) {
         this.connect();
 
-        this.login();
-
-        this.sendMessage(notification.getRecipient(), notification.getSubject(), notification.getMessage());
-
-        this.sendAttachments(notification.getRecipient(), notification.getAttachments());
-
-        this.disconnect();
+        try {
+            this.login();
+            this.sendMessage(notification.getRecipient(), notification.getSubject(), notification.getMessage());
+            this.sendAttachments(notification.getRecipient(), notification.getAttachments());
+        } finally {
+            this.disconnect();
+        }
     }
 
     private void sendAttachments(String target, List<Attachment> attach) {
