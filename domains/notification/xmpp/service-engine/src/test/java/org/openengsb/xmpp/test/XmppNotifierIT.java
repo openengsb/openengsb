@@ -17,7 +17,8 @@
 package org.openengsb.xmpp.test;
 
 import javax.jbi.messaging.ExchangeStatus;
-import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.InOut;
+import javax.jbi.messaging.MessagingException;
 import javax.xml.namespace.QName;
 
 import org.apache.servicemix.client.DefaultServiceMixClient;
@@ -25,10 +26,20 @@ import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.jaxp.StringSource;
 import org.apache.servicemix.tck.SpringTestSupport;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
+import org.jivesoftware.smack.Chat;
+import org.jivesoftware.smack.ChatManager;
+import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.openengsb.xmpp.XmppNotifier;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -39,6 +50,22 @@ public class XmppNotifierIT extends SpringTestSupport {
     private static ServiceMixClient client;
 
     private final String TEST_EVENT = getTestEvent();
+    private XmppNotifier xmppNotifier;
+
+    private XMPPConnection conn;
+    private ChatManager chatManager;
+    private Chat chat;
+    private FileTransferManager transferManager;
+    private OutgoingFileTransfer transfer;
+
+    private final String namespace = "urn:test";
+    private final String name = "xmpp";
+    private final String testMsg = "Testmessage";
+    private final String testRecipient = "test@satellite";
+
+    private String user;
+    private String password;
+    private String resources;
 
     @Override
     protected AbstractXmlApplicationContext createBeanFactory() {
@@ -49,7 +76,20 @@ public class XmppNotifierIT extends SpringTestSupport {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+
+        xmppNotifier = (XmppNotifier) context.getBean("xmppNotifier");
+        user = (String) context.getBean("user");
+        password = (String) context.getBean("password");
+        resources = (String) context.getBean("resources");
+
         client = new DefaultServiceMixClient(this.jbi);
+
+        initializeMockedObjects();
+
+        xmppNotifier.setConnection(conn);
+        xmppNotifier.setTransferManager(transferManager);
+
+        setupMocking();
     }
 
     @After
@@ -59,13 +99,45 @@ public class XmppNotifierIT extends SpringTestSupport {
     }
 
     @Test
-    public void testSendSampleMessage() throws Exception {
-        InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("urn:test", "xmpp"));
+    public void testNotifyConnect() throws Exception {
+        sendMessage();
+        Mockito.verify(conn, Mockito.times(1)).connect();
+    }
+
+    @Test
+    public void testNotifyLogin() throws XMPPException, MessagingException {
+        sendMessage();
+        Mockito.verify(conn, Mockito.times(1)).login(Mockito.eq(user), Mockito.eq(password), Mockito.eq(resources));
+    }
+
+    @Test
+    public void testNotifyGetChatManager() throws XMPPException, MessagingException {
+        sendMessage();
+        Mockito.verify(conn, Mockito.times(1)).getChatManager();
+    }
+
+    @Test
+    public void testNotifyCreateChat() throws XMPPException, MessagingException {
+        sendMessage();
+        Mockito.verify(chatManager, Mockito.times(1)).createChat(Mockito.eq(testRecipient),
+                (MessageListener) Mockito.anyObject());
+    }
+
+    @Test
+    public void testNotifySendMessage() throws XMPPException, MessagingException {
+        sendMessage();
+        Message message = new Message();
+        message.setBody(testMsg);
+        Mockito.verify(chat, Mockito.times(1)).sendMessage(Mockito.eq(message));
+    }
+
+    private void sendMessage() throws MessagingException {
+        InOut me = client.createInOutExchange();
+        me.setService(new QName(namespace, name));
         me.getInMessage().setContent(new StringSource(TEST_EVENT));
-        me.setOperation(new QName("event"));
+        me.setOperation(new QName("methodcall"));
         me.getInMessage().setProperty("operation", Boolean.TRUE);
-        client.send(me);
+        client.sendSync(me);
         assertNotSame("Exchange was not processed correctly", ExchangeStatus.ERROR, me.getStatus());
     }
 
@@ -74,11 +146,28 @@ public class XmppNotifierIT extends SpringTestSupport {
                 + "<type>org.openengsb.drools.model.Notification</type><value><bean>"
                 + "<className>org.openengsb.drools.model.Notification</className>"
                 + "<fields><fieldName>subject</fieldName><value><null>null</null></value></fields>"
-                + "<fields><fieldName>message</fieldName><value><primitive><string>Testmessage</string></primitive>"
-                + "<id>1</id></value></fields><fields>"
-                + "<fieldName>recipient</fieldName><value><primitive><string>test@satellite/Spark</string></primitive>"
-                + "<id>2</id></value></fields><fields>"
+                + "<fields><fieldName>message</fieldName><value><primitive><string>" + testMsg
+                + "</string></primitive>" + "<id>1</id></value></fields><fields>"
+                + "<fieldName>recipient</fieldName><value><primitive><string>" + testRecipient
+                + "</string></primitive>" + "<id>2</id></value></fields><fields>"
                 + "<fieldName>attachments</fieldName><value><null>null</null></value></fields>"
                 + "</bean><id>0</id></value></args></XMLMethodCall>";
+    }
+
+    private void initializeMockedObjects() {
+        conn = Mockito.mock(XMPPConnection.class);
+        chatManager = Mockito.mock(ChatManager.class);
+        chat = Mockito.mock(Chat.class);
+        transferManager = Mockito.mock(FileTransferManager.class);
+        transfer = Mockito.mock(OutgoingFileTransfer.class);
+    }
+
+    private void setupMocking() {
+        Mockito.when(conn.getChatManager()).thenReturn(chatManager);
+        Mockito.when(chatManager.createChat(Mockito.anyString(), (MessageListener) Mockito.anyObject())).thenReturn(
+                chat);
+        Mockito.when(transferManager.createOutgoingFileTransfer("TODO")).thenReturn(transfer);
+        Mockito.when(conn.isConnected()).thenReturn(false);
+        Mockito.when(transfer.isDone()).thenReturn(true);
     }
 }

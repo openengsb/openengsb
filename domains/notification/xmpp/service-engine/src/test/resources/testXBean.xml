@@ -31,9 +31,21 @@
   <bean id="xmppNotifier" class="org.openengsb.xmpp.XmppNotifier"> 
     <property name="connection" ref="xmppConnection" />
     <property name="transferManager" ref="xmppTransferManager" />
-    <property name="user" value="openengsb" />
-    <property name="password" value="openengsb" />
-    <property name="resources" value="openengsb/xmppNotifier" />
+    <property name="user" ref="user" />
+    <property name="password" ref="password" />
+    <property name="resources" ref="resources" />
+  </bean>
+
+  <bean id="user" class="java.lang.String" >
+    <constructor-arg value="openengsb" />
+  </bean>
+
+  <bean id="password" class="java.lang.String" >
+    <constructor-arg value="openengsb" />
+  </bean>
+
+  <bean id="resources" class="java.lang.String" >
+    <constructor-arg value="openengsb/xmppNotifier" />
   </bean>
 
   <bean id="xmppConnection" class="org.jivesoftware.smack.XMPPConnection">
