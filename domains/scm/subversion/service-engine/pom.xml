@@ -52,7 +52,7 @@
         <extensions>true</extensions>
         <configuration>
           <type>service-engine</type>
-          <component>org.openengsb.connector.svn.SvnComponent</component>
+          <component>org.openengsb.svn.SvnComponent</component>
         </configuration>
       </plugin>
       <plugin>
