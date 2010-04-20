@@ -23,8 +23,4 @@ Presentation Material
   If you have created your own material and want to provide it to the community,
   please contact us by the developer mailing list.
  
-~~ * {{{http://www.openengsb.org/svn/engsb/engsb/documents/architecturalSlides/trunk/engsb-full.ppt}Long presentation about the EngSB}} - Stefan Biffl, et al. (Vienna University of Technology)
- 
-~~ * {{{http://www.openengsb.org/svn/engsb/engsb/documents/architecturalSlides/trunk/engsb-short.ppt}Short presentation about the EngSB}} - Stefan Biffl, et al. (Vienna University of Technology)
-
- ~~ * {{{http://www.openengsb.org/svn/engsb/engsb/additionalMaterial/eip.vss}VSS for EIP according to Hohpe}}
+ * {{{presentation/cit.pdf}Presentation about the CI&T Use Case}} - Michael Handler, et al. (Vienna University of Technology)
