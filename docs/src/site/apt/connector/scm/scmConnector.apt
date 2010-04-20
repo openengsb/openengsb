@@ -1,0 +1,181 @@
+~~
+~~	Copyright 2010 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+
+SCM Connector
+
+  This document describes a generic interface to the common functionality of SourceCode Management systems (SCM) to be used in EngSB.
+  While there are lots of different SCMs out there, Two centralized (SVN and CVS) and two distributed (Bazaar and Git) were examined and compared to each other.
+  A summary of the SCMs' detailed functionality is given in {{comparison}}.
+  
+  Because we won't need the full functionality of SCM systems (just polling the server for updates) only a subset of methods was selected.
+
+*Comparison
+
+  This comparison is based on SVN-commands and compares the other systems' abilities to support or mimic their semantics.\
+  '+' means the same command is already built in in the other system.\
+  'o' means the semantics exist in the other system but not in the exact same way as in SVN.\
+  '-' means the other system does not support the semantics and this can either not be done at all or only with some not practical workaround.\
+  
+  However, some things work inherently different in the systems and have an important impact on the implementation:
+  
+  * A commit in centralized systems means, transfer all changes to the remote repository, while, in distributed systems it means, log the changes locally. To reach the same semantics, all implementations of the interface for distributed systems every commit will have to be followed by a push!
+  
+  * While distributed SCMs allow to create a local repository, centralized systems require a remote repository to check out from before being able to edit anything. Thus, in this regard, distributed systems must be treated as centralized ones to establish a common semantic.
+  
+  * Branching and tagging works really different in all the systems. However the interface was designed to support a common subset of the branching/merging functionality. 
+
+[]
+
+*---+---+---+---*---*---*---*---+
+|Feature|Alias|Meaning|SVN|CVS|Git|Bzr|Comments |
+*---+---+---+---*---*---*---*---+
+|add| |add files to local repo|+|+|+|+|trivial; same for al SCMs |
+*---+---+---+---*---*---*---*---+
+|blame|praise, annotate, ann|annotates lines with last revision and author who changed it|+|+|+|+|trivial; same for all SCMs |
+*---+---+---+---*---*---*---*---+
+|checkout|co|checkout working copy from repository|+|+|+|+|trivial; same for all SCMs |
+*---+---+---+---*---*---*---*---+
+|delete|del, remove, rm|remove file from version control (path or URL)|+|+|+|+| |
+*---+---+---+---*---*---*---*---+
+|diff|di|display changes between revisions or paths|+|+|+|+| |
+*---+---+---+---*---*---*---*---+
+|log| |show log messages for a set of revisions|+|+|+|+| |
+*---+---+---+---*---*---*---*---+
+|status|stat, st|print status of working copy files|+|+|+|+|bzrs status and info have swapped semantics in comparison so SVN |
+*---+---+---+---*---*---*---*---+
+|commit|ci|send changes from working copy to repository|+|+|o|o|Git and Bzr will additionally have to push changes |
+*---+---+---+---*---*---*---*---+
+|branch|tag|Create new Branch/Tag|o|o|+|+|done with cp in SVN; done with tag in CVS |
+*---+---+---+---*---*---*---*---+
+|merge| |apply differences between two sources to a working copy|+|o|+|+|CVS uses update |
+*---+---+---+---*---*---*---*---+
+|export| |create an unversioned copy of a tree|+|+|o|+|done with checkokut-index in Git |
+*---+---+---+---*---*---*---*---+
+|import| |commit unversioned file/tree into repository|+|+|o|+|done with add| commit in Git |
+*---+---+---+---*---*---*---*---+
+|switch|sw|update working copy to a different URL|+|o|o|+|CVS uses update; git uses checkout; | 
+*---+---+---+---*---*---*---*---+
+|update|up|bring changes from repo to WC|+|+|o|+|bzr will have to use pull |
+*---+---+---+---*---*---*---*---+
+|mergeinfo| |display information relatied to (potential) merges|+|-|-|-| |
+*---+---+---+---*---*---*---*---+
+|list|ls|list directory entries from repository|+|+|-|+| |
+*---+---+---+---*---*---*---*---+
+|info| |print info about remote/local object|+|-|-|+|bzrs status and info have swapped semantics in comparison so SVN |
+*---+---+---+---*---*---*---*---+
+|changelist| |a-/dissociate changelist with file|+|-|-|-| |
+*---+---+---+---*---*---*---*---+
+|cleanup| |clean up working copy → remove locks, resume operations|+|-|-|-| |
+*---+---+---+---*---*---*---*---+
+|lock| |lock path|+|-|-|-| |
+*---+---+---+---*---*---*---*---+
+|move|mv, rename, ren|move and or rename something (WC or URL)|+|-|+|+|CVS could be supported by OS-mv| CSV rm and CSV add| destroying the history however |
+*---+---+---+---*---*---*---*---+
+|copy|cp|Copy files (with history) to/from WC/URL|+|-|-|-| |
+*---+---+---+---*---*---*---*---+
+|unlock| |unlock path|+|-|-|-| |
+*---+---+---+---*---*---*---*---+
+|pull| |different meanings in bzr and git|-|-|+|+| |
+*---+---+---+---*---*---*---*---+
+|mkdir| |create version controlled directory (locally or repo)|+|-|-|+|Could be bypassed with OS-mkdir and SCM-add |
+*---+---+---+---*---*---*---*---+
+|revert| |undoes most local edits|+|-|+|+|CVS needs to bypass this with update |
+*---+---+---+---*---*---*---*---+
+|cat|cl, cat-file|output content of files/URLs at revision|+|-|+|+|could be used only for local files (not URIs) and bypassed by directly reading the file from within java |
+*---+---+---+---*---*---*---*---+
+|resolve| |resolves conflicts|+|-|-|+| |
+*---+---+---+---*---*---*---*---+
+|resolved| |marks conflicts as resolved|+|-|-|-| |
+*---+---+---+---*---*---*---*---+
+| | | | | | | | |
+*---+---+---+---*---*---*---*---+
+|propdel|pdel, pd|property handling|+| | | |very SVN and OS specific |
+*---+---+---+---*---*---*---*---+
+|propedit|pedit, pe|property handling|+| | | |very SVN and OS specific |
+*---+---+---+---*---*---*---*---+
+|propget|pget, pg|property handling|+| | | |very SVN and OS specific |
+*---+---+---+---*---*---*---*---+
+|proplist|plist, pl|property handling|+| | | |very SVN and OS specific |
+*---+---+---+---*---*---*---*---+
+|propset|pset, ps|property handling|+| | | |very SVN and OS specific |
+*---+---+---+---*---*---*---*---+
+Comparison of SCMs
+
+
+*Used Methods
+
+  These method-stubs resemble the interface derived from the needed methods of {{comparison}}. Some explanations and demands on the implementation:
+  
+  * Every method may throw a generic ScmException for simple and unexpected errors such as missing permissions, missing network-connection but also to indicate requests that are not possible to fulfill in a certain implementation of an SCM. 
+  
+  * Revisions are modeled as Strings instead of ints, since their format can vary a lot, depending on the actual SCM.
+  
+  * "HEAD" should always be treated as the most recent revision, regardless whether the SCM supports it natively or not.
+  
+  * Authentication data needs to be supplied via the SU configuration.
+  
+  * The path to the working copy's root on the file-system needs to be supplied via the SU configuration.
+  
+  * Paths should be treated cautiously. They must not exit the working copy (via '..' or '/not/the/working/copy') and should always be treated as relative to the working copy's root.
+  
+  []
+  
+  Some methods, which are expected to take some time to finish are also modeled as asynchronous calls. This is obviously done to improve performance and to not force the caller to wait an arbitrary amount of time, doing nothing.
+  
+
+---
+  Checks out the remote repository's content into the folder supplied in the SU-configuration
+---
+  public String[] checkout (URI repository, String author) throws ScmException;
+
+---
+  Switches to another Branch. 
+---
+  public void switchBranch (String branchName) throws BranchNotFoundException, ScmException;
+
+---
+  Performs an update on the working-copy's root, i.e. fetches changes from the remote repository and applies them to the working copy.
+---
+  public MergeResult update() throws ScmException;
+
+
+* Events
+
+
+**ScmDirectoryEvent
+
+  Super-Event for all SCM events. Will create a SCM domain event and contains setter/getter for the directory property.
+  
+**ScmBranchCreatedEvent
+
+  Will be triggered whenever the poller finds a new branch on the SCM server.
+  Contains the full-path of the new branch.
+
+**ScmBranchDeletedEvent
+
+  Will be triggerd whenever the poller finds a deleted branch on the SCM server.
+  Contains the full-path of the deleted branch.
+  
+**ScmTagCreatedEvent
+
+  Will be triggerd whenever the poller finds a new tag on the SCM server.
+  Contains the full-path of the new tag.
+  
+**ScmTagDeletedEvent
+
+  Will be triggerd whenever the poller finds a deleted tag on the SCM server.
+  Contains the full-path of the deleted tag.
+

@@ -1,0 +1,95 @@
+~~
+~~	Copyright 2010 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+
+SVN Connector
+
+  This connector is an SVN specific implementation of the SCM connector and is used to poll SVN servers and send events to drools if any updates occur.
+  
+  The poller will use the update-method periodically to get a list with all created, deleted branches, tags and commits.
+  It will send an appropriate event to drools for each affected directory
+  
+*Configuration
+
+  All configurations can be set in the xbean.xml of the SU. Every project that you want to poll needs a seperate SU and configuration.
+
+**Connection
+
+---
+  <bean id="connector" class="org.openengsb.svn.SvnConnector" init-method="init">
+    <property name="workingCopy" value="NAME" />
+    <property name="developerConnection" value="CONNECTIONURL" />
+    <property name="username" value="USERNAME" />
+    <property name="password" value="PASSWORD" />
+  </bean>
+---
+  NAME ... unique name for your working copy (svn will checkout the project on Servicemixpath/data/openengsb/NAME)
+  CONNECTIONURL ... connection url to your SVN Server e.g.: "https://localhost/svn/test"
+  USERNAME ... username with access to your svn repository
+  PASSWORD ... password for user
+  
+**Poller
+
+---
+  <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+    <!-- see the example of method invoking job above -->
+    <property name="jobDetail" ref="jobDetail" />
+    <property name="startDelay" value="1000" />
+    <property name="repeatInterval" value="REPEATINTERVAL" />
+  </bean>
+---
+  REPEATINTERVAL ... polling intervall in miliseconds e.g.: 30000 = polling every 30 seconds
+  
+*Datatypes
+
+  The update-method will return an UpdateResult object which contains lists of all added, deleted Branches, Tags and Commits
+
+---
+public class UpdateResult {
+    private List<String> addedBranches = new ArrayList<String>();
+    private List<String> addedTags = new ArrayList<String>();
+    private List<String> deletedBranches = new ArrayList<String>();
+    private List<String> deletedTags = new ArrayList<String>();
+    private List<String> committed = new ArrayList<String>();
+}
+---
+
+
+* Events
+
+
+**ScmDirectoryEvent
+
+  Super-Event for all SCM events. Will create a SCM domain event and contains setter/getter for the directory property.
+  
+**ScmBranchCreatedEvent
+
+  Will be triggered whenever the poller finds a new branch on the SCM server.
+  Contains the full-path of the new branch.
+
+**ScmBranchDeletedEvent
+
+  Will be triggerd whenever the poller finds a deleted branch on the SCM server.
+  Contains the full-path of the deleted branch.
+  
+**ScmTagCreatedEvent
+
+  Will be triggerd whenever the poller finds a new tag on the SCM server.
+  Contains the full-path of the new tag.
+  
+**ScmTagDeletedEvent
+
+  Will be triggerd whenever the poller finds a deleted tag on the SCM server.
+  Contains the full-path of the deleted tag. 
