@@ -38,6 +38,7 @@ import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
+import org.openengsb.contextcommon.ContextHelperImpl;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.EventHelperImpl;
 import org.openengsb.core.MessageProperties;

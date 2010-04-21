@@ -101,6 +101,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-core</artifactId>  
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
