@@ -24,15 +24,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.edb.core.entities.GenericContent;
 
-
 public class ResourceWasteTest {
 
-    private static Logger log = Logger.getLogger(ResourceWasteTest.class);
+    private static Log log = LogFactory.getLog(ResourceWasteTest.class);
 
     @Test
     @Ignore

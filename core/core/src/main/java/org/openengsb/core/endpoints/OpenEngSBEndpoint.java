@@ -32,7 +32,8 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
 import org.apache.servicemix.common.endpoints.ProviderEndpoint;
@@ -49,7 +50,7 @@ import org.openengsb.core.transformation.Transformer;
 import org.openengsb.util.serialization.SerializationException;
 
 public class OpenEngSBEndpoint extends ProviderEndpoint {
-    private Logger log = Logger.getLogger(getClass());
+    private Log log = LogFactory.getLog(getClass());
 
     private HashMap<String, HashMap<String, String>> contextProperties;
     private ContextHelperImpl contextHelper = new ContextHelperImpl(this, null);

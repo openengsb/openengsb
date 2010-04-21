@@ -21,14 +21,15 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.ekb.resources.TMap;
 import org.openengsb.ekb.resources.exceptions.NoSuchTMapException;
 import org.openengsb.ekb.resources.exceptions.UnableToLoadTMapStorageException;
 
 public class TMapStorage {
 
-    private static Logger logger = Logger.getLogger(TMapStorage.class);
+    private static Log logger = LogFactory.getLog(TMapStorage.class);
 
     /**
      * Map<receiverName,Map<senderName,Map<senderMessageType,TMap>>

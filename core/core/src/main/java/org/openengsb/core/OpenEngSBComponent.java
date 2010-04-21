@@ -21,7 +21,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.common.DefaultComponent;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 import org.springframework.beans.BeansException;
@@ -29,7 +30,7 @@ import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.ClassPathResource;
 
 public class OpenEngSBComponent extends DefaultComponent {
-    private Logger log = Logger.getLogger(getClass());
+    private Log log = LogFactory.getLog(getClass());
 
     private HashMap<String, HashMap<String, String>> contextProperties;
     private List<OpenEngSBEndpoint> endpoints = new LinkedList<OpenEngSBEndpoint>();
@@ -79,7 +80,7 @@ public class OpenEngSBComponent extends DefaultComponent {
         loadConfiguration();
         super.doInit();
     }
-    
+
     @SuppressWarnings("unchecked")
     private void loadConfiguration() {
         try {

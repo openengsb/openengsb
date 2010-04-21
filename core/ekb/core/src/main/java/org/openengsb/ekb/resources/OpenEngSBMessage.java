@@ -27,7 +27,8 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -39,7 +40,7 @@ import org.xml.sax.SAXException;
 
 public class OpenEngSBMessage {
 
-    private static Logger logger = Logger.getLogger(OpenEngSBMessage.class);
+    private static Log logger = LogFactory.getLog(OpenEngSBMessage.class);
 
     private final static String ENGSBMESSAGESCHEMA = "engSBMessage.xsd";
 
@@ -60,8 +61,7 @@ public class OpenEngSBMessage {
         this.payload = payload;
     }
 
-    public OpenEngSBMessage(String messageID, String created, String sender,
-            String receiver, String messageType,
+    public OpenEngSBMessage(String messageID, String created, String sender, String receiver, String messageType,
             List<OpenEngSBMessageSegment> payload) {
         this.messageID = messageID;
         this.created = created;
@@ -102,7 +102,8 @@ public class OpenEngSBMessage {
             String segmentDomainConcept = segment.attributeValue("domainConcept");
             String segmentFormat = segment.attributeValue("format");
             String segmentContent = segment.getText();
-            this.payload.add(new OpenEngSBMessageSegment(segmentName, segmentDomainConcept, segmentFormat, segmentContent));
+            this.payload.add(new OpenEngSBMessageSegment(segmentName, segmentDomainConcept, segmentFormat,
+                    segmentContent));
         }
         logger.debug("Succesfully parsed EngSB Message.");
     }

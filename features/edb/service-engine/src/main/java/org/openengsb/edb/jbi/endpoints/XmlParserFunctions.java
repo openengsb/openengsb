@@ -34,7 +34,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -57,7 +58,7 @@ public class XmlParserFunctions {
 
     private static SourceTransformer sourceTransformer = new SourceTransformer();
 
-    private static Logger logger = Logger.getLogger(XmlParserFunctions.class);
+    private static Log logger = LogFactory.getLog(XmlParserFunctions.class);
 
     /**
      * Data-container for generic-content and operation

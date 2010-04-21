@@ -23,7 +23,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
@@ -38,7 +39,6 @@ import org.apache.lucene.store.FSDirectory;
 import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.edb.core.search.Searcher;
 
-
 /**
  * Class to allow simple search on a given Lucene search index.
  */
@@ -48,7 +48,7 @@ public class LuceneSearcher implements Searcher {
     private File base;
     private static final int MAX_NUMBER_OF_HITS = 1000000;
 
-    private Logger log = Logger.getLogger(LuceneSearcher.class);
+    private Log log = LogFactory.getLog(LuceneSearcher.class);
 
     /**
      * Create a Searcher on a given index (senseless otherwise)
@@ -86,7 +86,7 @@ public class LuceneSearcher implements Searcher {
                 result.add(documentToGenericContent(document));
             }
             searcher.close();
-			this.log.debug("found  " + result.size() + " entries");
+            this.log.debug("found  " + result.size() + " entries");
         } catch (ParseException e) {
             this.log.warn(e);
             result = new ArrayList<GenericContent>();

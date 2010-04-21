@@ -28,7 +28,8 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +56,7 @@ public class EDBHandlerUT {
 
     private String repoBase;
 
-    private static Logger log = Logger.getLogger(EDBHandlerUT.class);
+    private static Log log = LogFactory.getLog(EDBHandlerUT.class);
 
     @Before
     public void setUp() throws Exception {

@@ -26,7 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.edb.core.api.EDBException;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.entities.GenericContent;
@@ -67,7 +68,7 @@ public class DefaultEDBHandler implements EDBHandler {
     private Commit commitData;
     private Commit commitSearch;
 
-    private final Logger log = Logger.getLogger(DefaultEDBHandler.class);
+    private final Log log = LogFactory.getLog(DefaultEDBHandler.class);
 
     public DefaultEDBHandler(String repositoryId, boolean isAbsolute, RepositoryFactory factoryDataRepo,
             RepositoryFactory factoryIndexRepo, IndexFactory factoryIndex) {
