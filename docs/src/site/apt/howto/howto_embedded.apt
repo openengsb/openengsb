@@ -38,39 +38,35 @@ for the {{{http://servicemix.apache.org/servicemix-file.html}servicemix-file}} J
    The following <Hello World> style example creates a SA, which polls for new files in one directory and writes
 the polled file to another directory.
 
-   * Create a new SA by clicking <Create New Assembly>. A view for adding new Service Units appears.
+   * Create a new SA by clicking <Create New Assembly>. A view for adding a new SA appears.
 
-   * Create a new <servicemix-file:sender> SU.
+   * Give the new SA a name and create it. The view for creating new endpoints and beans appears.
 
-   * Configure at least the following parameters for the sender SU:
+   * Create a new <File Sender Endpoint> endpoint.
 
-     * Service: A unique name for the service, e.g. <<<fileSender>>>.
+   * Configure at least the following parameters for the sender:
+
+     * Service: A unique name for the service, e.g. <<<filesender>>>.
 
      * Endpoint: A name for the endpoint, e.g. <<<endpoint>>>.
 
      * Outbox: Directory where the file sender should put incoming files.
 
-   * Click <Save Me!> to save the SU configuration.
+   * Click <Save Me!> to save the endpoint configuration.
 
-   * Now, create a second SU of type <servicemix-file:poller>.
+   * Now, create a second endpoint of type <File Poller Endpoint>.
 
-   * Configure at least the following parameters for the poller SU:
+   * Configure at least the following parameters for the poller endpoint:
 
-     * Service: A unique name for the service, e.g. <<<filePoller>>>.
+     * Service: A unique name for the service, e.g. <<<filepoller>>>.
 
      * Endpoint: A name for the endpoint, e.g. <<<endpoint>>>.
 
-     * Target Service: Put the service name of the sender SU, e.g. <<<fileSender>>>.
-
-     * Target Endpoint: Put the endpoint name of the sender SU, e.g. <<<endpoint>>>.
-
-     * Period: Interval the SU should check for new files in the inbox, in milliseconds.
+     * Target Endpoint: Select the previously configured endpoint.
 
      * Inbox: Directory which the SU checks for incoming files.
 
-     * Delete File: Check this if the SU should remove the files from the inbox.
-
-   * Click <Save Me!> to save the SU.
+   * Click <Save Me!> to save the endpoint.
 
    * Click <Deploy> to deploy the configured SA into the embedded ServiceMix.
 
