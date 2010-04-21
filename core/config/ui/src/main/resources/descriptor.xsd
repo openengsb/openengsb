@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://openengsb.org/configuration/descriptor/1.0"
+  xmlns:tns="http://openengsb.org/configuration/descriptor/1.0" elementFormDefault="qualified">
+
+  <complexType name="abstracttype">
+    <attribute name="name" type="string" use="required" />
+    <attribute name="optional" type="boolean" default="false" />
+    <attribute name="maxLength" type="int" default="0" />
+    <attribute name="defaultValue" type="string" />
+  </complexType>
+
+  <element name="int">
+    <complexType>
+      <complexContent>
+        <extension base="tns:abstracttype">
+          <attribute name="min" type="int" />
+          <attribute name="max" type="int" />
+        </extension>
+      </complexContent>
+    </complexType>
+  </element>
+
+  <!-- TODO extended data types -->
+
+  <element name="component">
+    <complexType>
+      <all>
+        <element ref="tns:endpoints" />
+        <element ref="tns:beans" />
+      </all>
+      <attribute name="name" type="string" use="required" />
+      <attribute name="bindingComponent" type="boolean" default="false" use="optional" />
+      <attribute name="namespace" type="string" use="required" />
+      <attribute name="nsname" type="string" use="required" />
+    </complexType>
+  </element>
+
+  <element name="endpoints">
+    <complexType>
+      <sequence minOccurs="0" maxOccurs="unbounded">
+        <element ref="tns:endpoint" />
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="beans">
+    <complexType>
+      <sequence minOccurs="0" maxOccurs="unbounded">
+        <element ref="tns:bean" />
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="endpoint">
+    <complexType>
+      <all minOccurs="0">
+        <element ref="tns:attributes" />
+      </all>
+      <attribute name="name" type="string" use="required" />
+    </complexType>
+  </element>
+
+  <element name="bean">
+    <complexType>
+      <all minOccurs="0">
+        <element ref="tns:properties" />
+      </all>
+      <attribute name="clazz" type="string" use="required" />
+    </complexType>
+  </element>
+
+  <element name="properties">
+    <complexType>
+      <sequence minOccurs="0" maxOccurs="unbounded">
+        <group ref="tns:datatypes" />
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="attributes">
+    <complexType>
+      <sequence minOccurs="0" maxOccurs="unbounded">
+        <group ref="tns:datatypes" />
+      </sequence>
+    </complexType>
+  </element>
+
+  <group name="datatypes">
+    <sequence>
+      <!-- TODO ref data types -->
+    </sequence>
+  </group>
+
+</schema>

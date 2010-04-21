@@ -75,5 +75,26 @@ the polled file to another directory.
 
 * Adding support for new JBI components
 
-  TBW - descriptor, schema, language file
+   Adding support for a new jbi component is simply done by creating a descriptor file,
+containing the supported endpoint attributes and beans and a language file for displaying
+meaningful information in the webapp. This files are currently located in the config-ui project
+in the src/main/webapp/descriptors directory. In the future, each OpenEngSB JBI component will
+provide this file.
 
+** Descriptor File
+
+   The descriptor currently supports definitions of endpoints with attributes and beans with properties. 
+Take a look at the <<<descriptor.xsd>>> in <<<config-ui/src/main/resources>>>.
+
+** Language File
+
+   The language file is a properties file containing for each endpoint, bean and their attributes names for displaying
+in the webapp. E.g. for an endpoint 'filesender' with attributes service, endpoint and target the following language file
+may be created.
+
++---
+filesender._name=Sender Endpoint
+filesender.service=Service
+filesender.endpoint=Endpoint
+filesender.target=Target Endpoint
++---
