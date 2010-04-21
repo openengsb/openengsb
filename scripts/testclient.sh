@@ -16,9 +16,6 @@
 #
 
 cd $(dirname $0)
-SCRIPT_DIR=`pwd`
-cd $SCRIPT_DIR/../package/test
-mvn jbi:projectDeploy 
-cd $SCRIPT_DIR/../core/testclient/jms/swingclient 
+cd ../core/testclient/jms/swingclient 
 mvn -e exec:java -Dexec.mainClass=org.openengsb.swingclient.Start
 

@@ -15,18 +15,80 @@
 #   limitations under the License.
 #
 
-# Script used to build the entire servicebus and run it directly from maven. This 
-# script actually using the jbi:servicemix maven command therefore. In future
-# version, when the project is embedded in an webserver this script is for
-# change.
+# First parameter of this script is the servicemix path and second parameter the maven repository path.
 
-cd $(dirname $0)/../package/all
-if [ "x-online" = "x$1" ] ; then
-  mvn clean install
-  mvn jbi:projectDeploy
-else
-  echo "This script may fail because executing in offline mode. If you use it for the first time please use the -online option to start it in online mode"
-  mvn clean install -o
-  mvn jbi:projectDeploy -o
+function usage() {
+  echo Usage: $0 '[servicemix-home [maven-home]]'
+  echo '  'This script will use \$SERVICEMIX_HOME and \$M2_HOME to determine where
+  echo '  'servicemix and the maven repository are located if these variables are set.
+  echo '  'If they aren\'t set, you have to provide the arguments.
+  echo '  'If \~/.m2/repository exists the script assumes it\'s your maven-home.
+  exit 1
+}
+
+if [ $# -gt 0 ] ; then
+  SERVICEMIX_HOME=$1
 fi
+
+if [ ! -d ${SERVICEMIX_HOME:-X} ] ; then
+  echo Error: Can\'t find servicemix-home.
+  echo Set \$SERVICEMIX_HOME or provide argument 1
+  echo
+  usage
+fi
+
+
+if [ $# -gt 1 ] ; then
+  M2_HOME=$2
+else
+# if M2_HOME not set then guess it is ~/.m2/repository
+  if [ x$M2_HOME = x ] ; then
+    if [ -d ~/.m2/repository ] ; then
+      M2_HOME=~/.m2/repository
+    fi
+  fi
+fi
+
+if [ ! -d ${M2_HOME:-X} ] ; then
+  echo Error: Can\'t find maven-home.
+  echo Set \$M2_HOME or provide argument 2
+  echo
+  usage
+fi
+
+
+cd $(dirname $0)/..
+
+smx_comp_version=`grep '<servicemix.subprojects.version>' pom.xml | sed 's! *<[^>]*> *!!g'`
+openengsb_version=`grep '<version>' pom.xml | head -1 | sed 's! *<[^>]*> *!!g'`
+
+echo Settings:
+echo "  OpenEngSB Version: $openengsb_version"
+echo "  Servicemix Version: $smx_comp_version"
+echo "  Servicemix Home: $SERVICEMIX_HOME"
+echo "  Maven Home: $M2_HOME"
+echo
+
+cd package/all
+echo Running maven:
+mvn install
+cd ../../
+
+files=`find . -iname '*-installer.zip'`
+files="$M2_HOME/org/apache/servicemix/servicemix-shared/$smx_comp_version/servicemix-shared-${smx_comp_version}-installer.zip $files"
+
+for file in $files; do
+  if [ ! -f $file ] ; then
+    echo Error: Could not find file $file
+    exit 1
+  fi
+done
+
+echo
+echo Deploying:
+
+for file in $files; do
+  echo '  '`basename $file`
+  cp $file $SERVICEMIX_HOME/deploy/
+done
 

@@ -22,7 +22,6 @@ import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
-import javax.resource.spi.IllegalStateException;
 import javax.xml.namespace.QName;
 
 import org.apache.servicemix.common.DefaultComponent;

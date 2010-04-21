@@ -97,9 +97,14 @@
       <artifactId>servicemix-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-core</artifactId>
+      <groupId>org.apache.servicemix.specs</groupId>
+      <artifactId>org.apache.servicemix.specs.jbi-api-1.0</artifactId>
       <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>geronimo-spec</groupId>
+      <artifactId>geronimo-spec-j2ee</artifactId>
     </dependency>
 
     <!-- Springframework dependencies -->
@@ -131,7 +136,11 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-core</artifactId>  
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
 </project>

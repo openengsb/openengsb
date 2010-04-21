@@ -18,7 +18,6 @@
 package org.openengsb.core;
 
 import java.lang.reflect.Method;
-import java.util.UUID;
 
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;
@@ -27,7 +26,6 @@ import javax.xml.namespace.QName;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.InOutImpl;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
@@ -39,7 +37,7 @@ public class MethodCallHelper {
             MessageProperties msgProperties) {
         Object[] arguments = checkArgs(args);
         try {
-            InOut inout = new InOutImpl(UUID.randomUUID().toString());
+            InOut inout = endpoint.getExchangeFactory().createInOutExchange();
             inout.setService(service);
             inout.setOperation(new QName("methodcall"));
 

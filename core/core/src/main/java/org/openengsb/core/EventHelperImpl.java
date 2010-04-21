@@ -17,15 +17,12 @@
  */
 package org.openengsb.core;
 
-import java.util.UUID;
-
 import javax.jbi.messaging.InOnly;
 import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.xml.namespace.QName;
 
 import org.apache.servicemix.jbi.jaxp.StringSource;
-import org.apache.servicemix.jbi.messaging.InOnlyImpl;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.contextcommon.ContextHelperImpl;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
@@ -61,7 +58,7 @@ public class EventHelperImpl implements EventHelper {
     public void sendEvent(Event event, String targetNamespace, String targetService) {
         try {
             QName service = new QName(targetNamespace, targetService);
-            InOnly inOnly = new InOnlyImpl(UUID.randomUUID().toString());
+            InOnly inOnly = endpoint.getExchangeFactory().createInOnlyExchange();
             inOnly.setService(service);
             inOnly.setOperation(new QName("event"));
 

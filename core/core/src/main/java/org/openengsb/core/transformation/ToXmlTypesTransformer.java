@@ -182,7 +182,7 @@ public class ToXmlTypesTransformer {
         }
 
         if (o instanceof Boolean) {
-            p.setBoolean((Boolean) o);
+            p.setBoolean(((Boolean) o).booleanValue());
             return p;
         }
 

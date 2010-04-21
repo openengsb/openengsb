@@ -6,15 +6,15 @@ package org.openengsb.core.xmlmapping;
  * <pre>
  * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLPrimitive">
  *   &lt;xs:choice>
- *     &lt;xs:element type="xs:string" name="string"/>
- *     &lt;xs:element type="xs:float" name="float"/>
- *     &lt;xs:element type="xs:double" name="double"/>
- *     &lt;xs:element type="xs:boolean" name="boolean"/>
- *     &lt;xs:element type="xs:int" name="int"/>
- *     &lt;xs:element type="xs:long" name="long"/>
- *     &lt;xs:element type="xs:short" name="short"/>
- *     &lt;xs:element type="xs:byte" name="byte"/>
- *     &lt;xs:element type="xs:base64Binary" name="base64Binary"/>
+ *     &lt;xs:element type="xs:string" nillable="true" name="string"/>
+ *     &lt;xs:element type="xs:float" nillable="true" name="float"/>
+ *     &lt;xs:element type="xs:double" nillable="true" name="double"/>
+ *     &lt;xs:element type="xs:boolean" nillable="true" name="boolean"/>
+ *     &lt;xs:element type="xs:int" nillable="true" name="int"/>
+ *     &lt;xs:element type="xs:long" nillable="true" name="long"/>
+ *     &lt;xs:element type="xs:short" nillable="true" name="short"/>
+ *     &lt;xs:element type="xs:byte" nillable="true" name="byte"/>
+ *     &lt;xs:element type="xs:base64Binary" nillable="true" name="base64Binary"/>
  *   &lt;/xs:choice>
  * &lt;/xs:complexType>
  * </pre>
@@ -34,11 +34,11 @@ public class XMLPrimitive
     private String string;
     private Float _float;
     private Double _double;
-    private boolean _boolean;
-    private int _int;
-    private long _long;
-    private short _short;
-    private byte _byte;
+    private Boolean _boolean;
+    private Integer _int;
+    private Long _long;
+    private Short _short;
+    private Byte _byte;
     private byte[] base64Binary;
 
     private void setChoiceSelect(int choice) {
@@ -155,7 +155,7 @@ public class XMLPrimitive
      * 
      * @return value
      */
-    public boolean isBoolean() {
+    public Boolean getBoolean() {
         return _boolean;
     }
 
@@ -164,7 +164,7 @@ public class XMLPrimitive
      * 
      * @param _boolean
      */
-    public void setBoolean(boolean _boolean) {
+    public void setBoolean(Boolean _boolean) {
         setChoiceSelect(BOOLEAN_CHOICE);
         this._boolean = _boolean;
     }
@@ -183,7 +183,7 @@ public class XMLPrimitive
      * 
      * @return value
      */
-    public int getInt() {
+    public Integer getInt() {
         return _int;
     }
 
@@ -192,7 +192,7 @@ public class XMLPrimitive
      * 
      * @param _int
      */
-    public void setInt(int _int) {
+    public void setInt(Integer _int) {
         setChoiceSelect(INT_CHOICE);
         this._int = _int;
     }
@@ -211,7 +211,7 @@ public class XMLPrimitive
      * 
      * @return value
      */
-    public long getLong() {
+    public Long getLong() {
         return _long;
     }
 
@@ -220,7 +220,7 @@ public class XMLPrimitive
      * 
      * @param _long
      */
-    public void setLong(long _long) {
+    public void setLong(Long _long) {
         setChoiceSelect(LONG_CHOICE);
         this._long = _long;
     }
@@ -239,7 +239,7 @@ public class XMLPrimitive
      * 
      * @return value
      */
-    public short getShort() {
+    public Short getShort() {
         return _short;
     }
 
@@ -248,7 +248,7 @@ public class XMLPrimitive
      * 
      * @param _short
      */
-    public void setShort(short _short) {
+    public void setShort(Short _short) {
         setChoiceSelect(SHORT_CHOICE);
         this._short = _short;
     }
@@ -267,7 +267,7 @@ public class XMLPrimitive
      * 
      * @return value
      */
-    public byte getByte() {
+    public Byte getByte() {
         return _byte;
     }
 
@@ -276,7 +276,7 @@ public class XMLPrimitive
      * 
      * @param _byte
      */
-    public void setByte(byte _byte) {
+    public void setByte(Byte _byte) {
         setChoiceSelect(BYTE_CHOICE);
         this._byte = _byte;
     }

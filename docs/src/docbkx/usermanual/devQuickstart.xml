@@ -61,10 +61,9 @@ git config --global core.autcrlf input]]></programlisting>
     <para>
       Now startup servicemix with the scripts in servicemix/bin. Finally we build and deploy the OpenEngSB to servicemix.
     </para>
-    <programlisting format="linespecific" language="xml"><![CDATA[cd openengsb/
-mvn clean install [-Dmaven.test.skip=true]
-cd openengsb/package/essential
-mvn jbi:projectDeploy]]></programlisting>
+    <programlisting format="linespecific" language="xml"><![CDATA[cd openengsb/scripts
+./quickrun.sh
+]]></programlisting>
   </section>
   <section id="devQickstart.eclipse">
     <title>Import Source into Eclipse</title>

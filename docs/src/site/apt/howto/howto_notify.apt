@@ -45,7 +45,7 @@ HowTo - First steps with OpenEngSB (Hello World aka Notification)
 
   1. Start servicemix.
   
-  2. Run quickrun.sh.
+  2. Run quickrun.sh or mvn clean install and then scripts/deploy-smx41.sh
   
   3. Run the OpenEngSB testclient. (testclient.sh)
   
@@ -62,7 +62,6 @@ HowTo - First steps with OpenEngSB (Hello World aka Notification)
   </XMLEvent>
 +---
   
-  When starting the testclient a warning tells you that the test infrastructure is already deployed in ServiceMix (which was done by quickrun.sh). You can safely ignore this warning.
   Guvnor starts executing the specified rules and the notification domain becomes active. 
   The domain selects a suitable connector (Email in our case) and passes the notification to the given recipient.
 

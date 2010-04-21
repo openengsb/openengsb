@@ -1,10 +1,10 @@
 <binding name="binding" package="org.openengsb.core.xmlmapping" trim-whitespace="true">
   <mapping abstract="true" type-name="XMLPrimitive" class="org.openengsb.core.xmlmapping.XMLPrimitive">
-    <structure ordered="false" choice="true">
+    <structure usage="optional" ordered="false" choice="true">
       <value style="element" name="string" test-method="ifString" get-method="getString" set-method="setString" usage="optional"/>
       <value style="element" name="float" test-method="ifFloat" get-method="getFloat" set-method="setFloat" usage="optional"/>
       <value style="element" name="double" test-method="ifDouble" get-method="getDouble" set-method="setDouble" usage="optional"/>
-      <value style="element" name="boolean" test-method="ifBoolean" get-method="isBoolean" set-method="setBoolean" usage="optional"/>
+      <value style="element" name="boolean" test-method="ifBoolean" get-method="getBoolean" set-method="setBoolean" usage="optional"/>
       <value style="element" name="int" test-method="ifInt" get-method="getInt" set-method="setInt" usage="optional"/>
       <value style="element" name="long" test-method="ifLong" get-method="getLong" set-method="setLong" usage="optional"/>
       <value style="element" name="short" test-method="ifShort" get-method="getShort" set-method="setShort" usage="optional"/>

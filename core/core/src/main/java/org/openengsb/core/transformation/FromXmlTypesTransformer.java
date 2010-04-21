@@ -116,7 +116,7 @@ public class FromXmlTypesTransformer {
     private Object toObject(XMLPrimitive primitive, String string) {
         Object result = null;
         if (primitive.ifBoolean()) {
-            result = primitive.isBoolean();
+            result = primitive.getBoolean();
         } else if (primitive.ifByte()) {
             result = primitive.getByte();
         } else if (primitive.ifDouble()) {

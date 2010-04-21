@@ -51,6 +51,13 @@
   </build>
 
   <dependencies>
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-shared</artifactId>
+      <version>${servicemix.subprojects.version}</version>
+      <classifier>installer</classifier>
+      <type>zip</type>
+    </dependency>
 
     <!-- Engineering Data Base -->
     <dependency>
