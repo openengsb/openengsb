@@ -24,5 +24,5 @@ echo "Be careful in using this script. It does neighter run unit tests nor an up
 
 cd $(dirname $0)/..
 mvn install -o -Dmaven.test.skip=true
-cd package/all; mvn jbi:projectDeploy -e -o
+scripts/deploy.sh $1 $2
 
