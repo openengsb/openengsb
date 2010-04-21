@@ -576,14 +576,14 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-features-edb-se</artifactId>
+                  <artifactId>openengsb-features-edb-core</artifactId>
                   <version>${project.version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-features-edb-core</artifactId>
+                  <artifactId>openengsb-features-edb-se</artifactId>
                   <version>${project.version}</version>
                   <classifier>installer</classifier>
                   <type>zip</type>
@@ -653,6 +653,13 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-issues-implementation-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
                   <artifactId>openengsb-domains-issues-trac-se</artifactId>
                   <version>${project.version}</version>
                   <classifier>installer</classifier>
@@ -696,13 +703,7 @@
 
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-package-essential</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb</groupId>
-                  <artifactId>openengsb-package-test</artifactId>
+                  <artifactId>openengsb-package-all</artifactId>
                   <version>${project.version}</version>
                   <type>zip</type>
                 </artifactItem>
