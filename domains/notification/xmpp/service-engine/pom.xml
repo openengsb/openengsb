@@ -147,5 +147,12 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.apache.servicemix</groupId>
+      <artifactId>servicemix-core</artifactId>  
+      <scope>test</scope>
+    </dependency>
+    
   </dependencies>
 </project>
