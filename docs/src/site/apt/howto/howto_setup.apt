@@ -95,6 +95,6 @@ git clone git://github.com/openengsb/openengsb
 cd openengsb/
 mvn clean install [-Dmaven.test.skip=true]
 cd scripts
-sh deploy-smx41.sh
+sh deploy.sh
 +----
 
