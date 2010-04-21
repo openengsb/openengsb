@@ -57,7 +57,7 @@ public class Start {
             if (type == JbiType.SHARED_LIBRARY) {
                 jbiContainer.getInstallationService().installSharedLibrary(installerFile.getAbsolutePath());
             } else if (type == JbiType.SERVICE_ASSEMBLY) {
-                jbiContainer.getDeploymentService().deploy(installerFile.getAbsolutePath());
+                jbiContainer.getAdminCommandsService().installArchive(installerFile.getAbsolutePath());
             } else {
                 jbiContainer.installArchive(installerFile.getAbsolutePath());
             }
