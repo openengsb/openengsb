@@ -202,7 +202,6 @@
     <module>package/all</module>
     <module>package/essential</module>
     <module>package/assembly</module>
-    <module>package/test</module>
 
     <!-- Config -->
     <module>core/config/jbi</module>
@@ -1042,11 +1041,6 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-package-embedded</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-package-test</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
