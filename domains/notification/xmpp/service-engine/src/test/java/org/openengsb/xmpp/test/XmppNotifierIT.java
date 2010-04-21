@@ -16,6 +16,8 @@
  */
 package org.openengsb.xmpp.test;
 
+import java.io.ByteArrayInputStream;
+
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;
 import javax.jbi.messaging.MessagingException;
@@ -62,6 +64,7 @@ public class XmppNotifierIT extends SpringTestSupport {
     private final String name = "xmpp";
     private final String testMsg = "Testmessage";
     private final String testRecipient = "test@satellite";
+    private final Integer numAttachments = 1;
 
     private String user;
     private String password;
@@ -131,6 +134,19 @@ public class XmppNotifierIT extends SpringTestSupport {
         Mockito.verify(chat, Mockito.times(1)).sendMessage(Mockito.eq(message));
     }
 
+    @Test
+    public void testNotifyCreateOutgoingFileTransfer() throws XMPPException, MessagingException {
+        sendMessage();
+        Mockito.verify(transferManager, Mockito.times(numAttachments)).createOutgoingFileTransfer(testRecipient);
+    }
+
+    @Test
+    public void testNotifySendStream() throws XMPPException, MessagingException {
+        sendMessage();
+        Mockito.verify(transfer, Mockito.times(numAttachments)).sendStream((ByteArrayInputStream) Mockito.anyObject(),
+                Mockito.anyString(), Mockito.anyInt(), Mockito.anyString());
+    }
+
     private void sendMessage() throws MessagingException {
         InOut me = client.createInOutExchange();
         me.setService(new QName(namespace, name));
@@ -147,10 +163,16 @@ public class XmppNotifierIT extends SpringTestSupport {
                 + "<className>org.openengsb.drools.model.Notification</className>"
                 + "<fields><fieldName>subject</fieldName><value><null>null</null></value></fields>"
                 + "<fields><fieldName>message</fieldName><value><primitive><string>" + testMsg
-                + "</string></primitive>" + "<id>1</id></value></fields><fields>"
+                + "</string></primitive><id>1</id></value></fields><fields>"
                 + "<fieldName>recipient</fieldName><value><primitive><string>" + testRecipient
-                + "</string></primitive>" + "<id>2</id></value></fields><fields>"
-                + "<fieldName>attachments</fieldName><value><null>null</null></value></fields>"
+                + "</string></primitive><id>2</id></value></fields><fields>"
+                + "<fieldName>attachments</fieldName><value><list><mappable><bean>"
+                + "<className>org.openengsb.drools.model.Attachment</className><fields>"
+                + "<fieldName>data</fieldName><value><primitive><base64Binary>dGVzdGZpbGU=</base64Binary>"
+                + "</primitive><id>5</id></value></fields><fields><fieldName>type</fieldName>"
+                + "<value><primitive><string>txt</string></primitive><id>6</id></value></fields>"
+                + "<fields><fieldName>name</fieldName><value><primitive><string>file1.txt</string></primitive>"
+                + "<id>7</id></value></fields></bean><id>4</id></mappable></list><id>3</id></value></fields>"
                 + "</bean><id>0</id></value></args></XMLMethodCall>";
     }
 
@@ -166,7 +188,7 @@ public class XmppNotifierIT extends SpringTestSupport {
         Mockito.when(conn.getChatManager()).thenReturn(chatManager);
         Mockito.when(chatManager.createChat(Mockito.anyString(), (MessageListener) Mockito.anyObject())).thenReturn(
                 chat);
-        Mockito.when(transferManager.createOutgoingFileTransfer("TODO")).thenReturn(transfer);
+        Mockito.when(transferManager.createOutgoingFileTransfer(Mockito.anyString())).thenReturn(transfer);
         Mockito.when(conn.isConnected()).thenReturn(false);
         Mockito.when(transfer.isDone()).thenReturn(true);
     }
