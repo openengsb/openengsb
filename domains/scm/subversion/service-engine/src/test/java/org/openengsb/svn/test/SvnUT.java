@@ -48,6 +48,7 @@ public class SvnUT {
     public static void startUp() {
         name2 = "" + System.currentTimeMillis();
         name1 = "0" + name2;
+        System.out.println("xyz");
     }
 
     /**
@@ -76,12 +77,13 @@ public class SvnUT {
 
     @Test
     public void testCreateDirs() {
+        
         connector.createDir(name1, "test", true);
         connector.createDir(name1, "test", false);
         connector.createDir(name2, "test", true);
         connector.createDir(name2, "test", false);
-
         UpdateResult result = connector.update();
+        
         assertTrue(result.getCommitted().size() == 0);
         assertTrue(result.getDeletedBranches().size() == 0);
         assertTrue(result.getDeletedTags().size() == 0);
@@ -96,36 +98,6 @@ public class SvnUT {
                 new File("./data/openengsb/test/branches/" + name2).getAbsolutePath()));
         assertTrue(result.getAddedTags().get(1).equals(
                 new File("./data/openengsb/test/tags/" + name2).getAbsolutePath()));
-    }
-
-    @Test
-    public void testDeleteDirs() {
-        connector.delete("branches/" + name1);
-        connector.delete("branches/" + name2);
-        connector.delete("tags/" + name1);
-        connector.delete("tags/" + name2);
-
-        connector.commit("test", null);
-
-        /**
-         * WARNING! The way SVNKIT deletes directories (or files) is not
-         * applicable to our supervision method. doDelete() in the
-         * SvnConnectorExtension either deletes the directory in the working
-         * copy too (and so an update has no effect), or it kind of ignores the
-         * deletion for updates. (This is indicated by the third parameter.)
-         * 
-         * UpdateResult result = connector.update();
-         * assertTrue(result.getCommitted().size() == 0);
-         * assertTrue(result.getAddedBranches().size() == 0);
-         * assertTrue(result.getAddedTags().size() == 0);
-         * assertTrue(result.getDeletedBranches().size() == 2);
-         * assertTrue(result.getDeletedTags().size() == 2);
-         * 
-         * assertTrue(result.getDeletedBranches().get(0).endsWith(name1));
-         * assertTrue(result.getDeletedTags().get(0).endsWith(name1));
-         * assertTrue(result.getDeletedBranches().get(1).endsWith(name2));
-         * assertTrue(result.getDeletedTags().get(1).endsWith(name2));
-         */
     }
 
     @Test

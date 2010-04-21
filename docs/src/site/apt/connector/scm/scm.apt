@@ -15,7 +15,7 @@
 ~~
 SCM Connectors
 
-  TBW
+  The SCM Connector is used to poll a SCM system for updates. The connector will send events to drools if any updates are found.
   
   * {{{scmConnector.html}engsb-connector-scm}}
   
