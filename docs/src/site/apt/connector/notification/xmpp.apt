@@ -1,0 +1,139 @@
+~~
+~~	Copyright 2010 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+  ~~ Add the place in the repository where the connector development takes place
+*-------------------+
+| <<Source:>>  http://github.com/openengsb/openengsb    |
+*-------------------+
+
+  ~~ Add the place where the issue management takes place
+*-------------------+
+| <<IssueManagement:>>  http://issues.openengsb.org/    |
+*-------------------+
+
+  ~~ Add a comma seperated list of supported openEngSB versions. This field should
+  ~~ be used to make sure that no connectors are used for openEngSB versions
+  ~~ that do not fit.
+  [Supported in version(s):] openengsb-1.0.0
+
+
+  ~~ Add the full name of the plugin as root heading
+connector-notification-xmpp
+
+  The XMPP connector allows OpenEngSB to send notifications as chat messages over an XMPP server.
+  At the moment it is using the {{{http://igniterealtime.org/projects/smack}Smack API}} to send chat messages and attachments.
+
+  On notify, an openengsb user will change it's state to online, send the message to the specified user,
+  send attachments if there are any, and change back to offline.
+
+  It is required to have an XMPP server running in order to use this connector.
+
+  
+  ~~ Add as many subsections as you like
+  
+  ~~ At least one section should be describing what to do to setup the 
+  ~~ connector correctly. This also includes how which properties have to
+  ~~ be set and so on. There could be subsections about the different versions
+  ~~ if they are differently to setup. 
+
+* Setup
+
+  You will need to install and configure an XMPP server. If you already have an XMPP server running, 
+  you can skip XMPP Server step 1.
+
+  ** XMPP Server
+
+  [[1]] We recommand using the Openfire server from Ignite Realtime which you can get {{{http://igniterealtime.org/projects/openfire}here}}.
+  After you have extracted it, start it using <<<INSTALL_DIR/bin/openfire start>>> and navigate your
+  browser to {{{http://127.0.0.1:9090}http://127.0.0.1:9090}} for initial configuration. You can setup your server using the 
+  embedded database and default value for the other steps.
+  Restart Openfire with <<<INSTALL_DIR/bin/openfire stop>>> followed by <<<INSTALL_DIR/bin/openfire start>>> and log in to the
+  admin console on {{{http://127.0.0.1:9090}http://127.0.0.1:9090}} with <admin> as username and your password set in the configuration wizard.
+
+  [[2]] Now configure your XMPP server. You need to create an user for OpenEngSB and users as well as for all clients 
+  which are required to receive messages. With Openfire you can to this in the admin console by selecting <Create New User> in  <Users/Groups>.
+
+  []
+
+  ** Configure the XMPP connector XBean
+
+  [[1]] Adapt the username and password in the xmppNotifier bean to fit the one you created in XMPP Server step 2.
+  You also are able to change the XMPP resource property, which allows XMPP to distinguish between different chat clients.
+
++----
+  <bean id="xmppNotifier" class="org.openengsb.xmpp.XmppNotifier"> 
+    <property name="connection" ref="xmppConnection" />
+    <property name="transferManager" ref="xmppTransferManager" />
+    <property name="user" value="USERNAME" />
+    <property name="password" value="PASSWORD" />
+    <property name="resources" value="/openengsb/xmppNotifier" />
+  </bean>
++----
+
+  [[2]] Specify the name and the port of your XMPP server. The default port for Openfire is 5222.
+
++----
+  <bean id="xmppConfig" class="org.jivesoftware.smack.ConnectionConfiguration">
+    <constructor-arg value="SERVERNAME" />
+    <constructor-arg value="SERVERPORT" />
+  </bean>
++----
+
+  []
+
+* Tests
+
+  ** User test
+
+  To run the user test, configure the test bean like the xmpp connector bean (see Setup).
+  Additionally you have to set the recipient to an existing user ({{{http://de.wikipedia.org/wiki/Jabber_Identifier}Jabber Identifier}})
+  of your XMPP server. Log on to your server using this user with a XMPP client (like Pidgin). Note that the file send test has been tested 
+  with Pidgin only and may not work in other clients.
+  If you now start the test, you should receive the message specified in the test bean and the test files.
+  
+  
+  ** Drools example rule
+
++----
+  when
+    e : Event( name == "xmpp" )
+  then
+    config.setToConnector(notification, "xmpp");
+    
+    Notification n = new Notification();
+    n.setMessage("testmessage");
+    n.setRecipient("testrecipient");
+  
+    String s = "testfile";
+
+    Attachment a1 = new Attachment(s.getBytes(), "txt", "file1.txt");
+    Attachment a2 = new Attachment(s.getBytes(), "pdf", "file2.pdf");
+    Attachment a3 = new Attachment(s.getBytes(), "jpg", "file3.jpg");
+
+    List attachments = new ArrayList( );
+    attachments.add(a1);
+    attachments.add(a2);
+    attachments.add(a3);
+
+    n.setAttachments(attachments);
+
+    notification.notify(n);
+
+    config.setToDomain(notification);
++----
+  
+  ~~ At least one section pointing to the download locations in the staging
+  ~~ repository should be given. This page should contain a table holding
+  ~~ the right download for the right EngSB version.

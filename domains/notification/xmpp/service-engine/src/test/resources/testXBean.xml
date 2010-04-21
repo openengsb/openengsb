@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+  <!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology Licensed under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the
+    License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied. See the License for the specific language governing permissions and limitations
+    under the License.
+  -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:test="urn:test"
+  xmlns:xmpp="http://www.openengsb.org/connector/xmpp/1.0" 
+  xmlns:sm="http://servicemix.apache.org/config/1.0" xmlns:logging="urn:openengsb:logging" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+  <sm:container createMBeanServer="false" embedded="true" id="jbi">
+    <sm:activationSpecs>
+      <sm:activationSpec>
+        <sm:component>
+          <xmpp:xmppComponent>
+            <xmpp:endpoints>
+              <xmpp:xmppEndpoint endpoint="xmpp" service="test:xmpp" xmppNotifier="#xmppNotifier" />
+            </xmpp:endpoints>
+          </xmpp:xmppComponent>
+        </sm:component>
+      </sm:activationSpec>
+    </sm:activationSpecs>
+  </sm:container>
+  
+  <bean id="xmppNotifier" class="org.openengsb.xmpp.XmppNotifier"> 
+    <property name="connection" ref="xmppConnection" />
+    <property name="transferManager" ref="xmppTransferManager" />
+    <property name="user" ref="user" />
+    <property name="password" ref="password" />
+    <property name="resources" ref="resources" />
+  </bean>
+
+  <bean id="user" class="java.lang.String" >
+    <constructor-arg value="openengsb" />
+  </bean>
+
+  <bean id="password" class="java.lang.String" >
+    <constructor-arg value="openengsb" />
+  </bean>
+
+  <bean id="resources" class="java.lang.String" >
+    <constructor-arg value="openengsb/xmppNotifier" />
+  </bean>
+
+  <bean id="xmppConnection" class="org.jivesoftware.smack.XMPPConnection">
+    <constructor-arg ref="xmppConfig"/>
+  </bean>
+
+  <bean id="xmppConfig" class="org.jivesoftware.smack.ConnectionConfiguration">
+    <constructor-arg ref="xmppServerName" />
+    <constructor-arg ref="xmppServerPort" />
+  </bean>
+
+  <bean id="xmppServerName" class="java.lang.String" >
+    <constructor-arg value="localhost" />
+  </bean>
+
+  <bean id="xmppServerPort" class="java.lang.Integer" >
+    <constructor-arg value="5222" />
+  </bean>
+
+  <bean id="xmppTransferManager" class="org.jivesoftware.smackx.filetransfer.FileTransferManager">
+    <constructor-arg ref="xmppConnection" />
+  </bean>
+</beans>

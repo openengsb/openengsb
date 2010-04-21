@@ -179,7 +179,7 @@ public class ContextStore {
         setValue("42/workflows/edbcommit/notification/email/max.mustermann@openengsb.org", "true");
         setValue("42/workflows/edbcommit/notification/email/martina.musterfrau@openegnsb.org", "true");
 
-        // FIXME: What is this for? It seems that this path is not even created
+       // FIXME: What is this for? It seems that this path is not even created
         addContext("42/test/maven-test/config/executionRequestProperties");
     }
 

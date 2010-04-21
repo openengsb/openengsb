@@ -73,6 +73,7 @@
       <item collapse="true" href="connector/notification/notification.html" name="Notification-Connectors">
         <item href="connector/notification/email.html" name="E-Mail" />
         <item href="connector/notification/twitter.html" name="Twitter" />
+        <item href="connector/notification/xmpp.html" name="XMPP" />
       </item>
       <item collapse="true" href="connector/repository/repository.html" name="Repository-Connectors">
         <item href="connector/repository/deployDomain.html" name="Deployment domain" />
