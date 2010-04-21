@@ -58,35 +58,47 @@ public class AssemblyServiceImpl implements AssemblyService {
 
     @Override
     public void deploy(ServiceAssembly sa) throws IOException {
-        List<EndpointInfo> endpoints = new ArrayList<EndpointInfo>();
-        for (PersistedObject po : sa.getEndpoints()) {
-            ComponentType ctype = componentService.getComponent(po.getComponentType());
-            endpoints.add(new EndpointInfo(ctype.getEndpoint(po.getDeclaredType()), po.getDetachedValues()));
+        ServiceAssemblyInfo sai = new ServiceAssemblyInfo(sa.getName(), buildEndpointInfos(sa), buildBeanInfos(sa));
+        File tmp = File.createTempFile(sa.getName(), ".zip");
+        FileOutputStream fos = new FileOutputStream(tmp);
+        sai.toZip(fos);
+        File to = new File(deployPath, sa.getName() + ".zip");
+        moveFile(tmp, to);
+        try {
+            JbiTaskResult result = new JbiTaskResult();
+            log.info("deploying service assembly {}", sa.getName());
+            result.setAndCheckResult(deploymentService.deploy(to.toURI().toURL().toString()));
+            result.setAndCheckResult(deploymentService.start(sa.getName()));
+        } catch (Exception e) {
+            log.error("error deploying service assembly", e);
+            throw new IOException(e);
         }
+    }
+
+    private void moveFile(File from, File to) throws IOException {
+        if (!from.renameTo(to)) {
+            if (!copyFile(from, to)) {
+                throw new IOException();
+            }
+        }
+    }
+
+    private List<BeanInfo> buildBeanInfos(ServiceAssembly sa) {
         List<BeanInfo> beans = new ArrayList<BeanInfo>();
         for (PersistedObject po : sa.getBeans()) {
             ComponentType ctype = componentService.getComponent(po.getComponentType());
             beans.add(new BeanInfo(ctype.getBean(po.getDeclaredType()), po.getDetachedValues()));
         }
-        ServiceAssemblyInfo sai = new ServiceAssemblyInfo(sa.getName(), endpoints, beans);
-        File tmp = File.createTempFile(sa.getName(), ".zip");
-        FileOutputStream fos = new FileOutputStream(tmp);
-        sai.toZip(fos);
-        File to = new File(deployPath, sa.getName() + ".zip");
-        if (!tmp.renameTo(to)) {
-            if (!copyFile(tmp, to)) {
-                throw new IOException();
-            }
+        return beans;
+    }
+
+    private List<EndpointInfo> buildEndpointInfos(ServiceAssembly sa) {
+        List<EndpointInfo> endpoints = new ArrayList<EndpointInfo>();
+        for (PersistedObject po : sa.getEndpoints()) {
+            ComponentType ctype = componentService.getComponent(po.getComponentType());
+            endpoints.add(new EndpointInfo(ctype.getEndpoint(po.getDeclaredType()), po.getDetachedValues()));
         }
-        try {
-            JbiTaskResult result = new JbiTaskResult();
-            log.info("deploying service assembly {}", sa.getName());
-            result.setAndCheck(deploymentService.deploy(to.toURI().toURL().toString()));
-            result.setAndCheck(deploymentService.start(sa.getName()));
-        } catch (Exception e) {
-            log.error("error deploying service assembly", e);
-            throw new IOException(e);
-        }
+        return endpoints;
     }
 
     private boolean copyFile(File from, File to) {
@@ -145,12 +157,12 @@ public class AssemblyServiceImpl implements AssemblyService {
         log.info("undeploying service assembly {}", sa.getName());
         try {
             JbiTaskResult result = new JbiTaskResult();
-            result.setAndCheck(deploymentService.stop(sa.getName()));
-            result.setAndCheck(deploymentService.shutDown(sa.getName()));
+            result.setAndCheckResult(deploymentService.stop(sa.getName()));
+            result.setAndCheckResult(deploymentService.shutDown(sa.getName()));
             String undeploy = deploymentService.undeploy(sa.getName());
             // TODO Fixes a bug in ServiceMix: result must be non-null
             if (undeploy != null) {
-                result.setAndCheck(undeploy);
+                result.setAndCheckResult(undeploy);
             }
         } catch (Exception e) {
             log.error("undeploying of service assembly failed", e);

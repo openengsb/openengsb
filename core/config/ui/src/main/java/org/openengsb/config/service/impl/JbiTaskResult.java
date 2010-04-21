@@ -45,20 +45,20 @@ public class JbiTaskResult {
         this.xpath.setNamespaceContext(context);
     }
 
-	public void setAndCheck(String xml) throws Exception {
+    public void setAndCheckResult(String xml) throws Exception {
 		this.stringXml = xml;
 		this.xml = new InputSource(new StringReader(xml));
-		if (!isSuccess()) {
+        if (!wasSuccessful()) {
 			throw new Exception(stringXml);
 		}
 	}
 
-    public boolean isSuccess() {
-        String result = evaluateString("/j:jbi-task/j:jbi-task-result/j:frmwk-task-result/j:frmwk-task-result-details/j:task-result-details/j:task-result/text()");
+    public boolean wasSuccessful() {
+        String result = evaluateXPathOnResult("/j:jbi-task/j:jbi-task-result/j:frmwk-task-result/j:frmwk-task-result-details/j:task-result-details/j:task-result/text()");
         return result.trim().equalsIgnoreCase("SUCCESS");
     }
 
-    private String evaluateString(String expression) {
+    private String evaluateXPathOnResult(String expression) {
         try {
             String result = (String) xpath.evaluate(expression, xml, XPathConstants.STRING);
             return result == null ? "" : result;
