@@ -29,9 +29,13 @@ assemblies by providing an intuitive interface and immediate validation.
 
    The web application is startable by running <<<mvn jetty:run-war>>> inside the <openengsb-embedded> project.
 
-   Note: All openengsb projects should be installed in the local maven repository. This starts an integrated
-ServiceMix in the background and the web app at the url {{http://localhost:8080}}. Currently, there is only a descriptor
-for the {{{http://servicemix.apache.org/servicemix-file.html}servicemix-file}} JBI component.
+   Note: All openengsb projects should be installed in your local maven repository. This starts an integrated
+ServiceMix in the background and the web app at the url {{http://localhost:8080}}. Currently, we provide
+descriptors for the following JBI components:
+
+   * {{{http://servicemix.apache.org/servicemix-file.html}servicemix-file}}
+
+   * openengsb-domains-scm-subversion
 
 * Creating a Service Assembly
 
@@ -76,25 +80,45 @@ the polled file to another directory.
 * Adding support for new JBI components
 
    Adding support for a new jbi component is simply done by creating a descriptor file,
-containing the supported endpoint attributes and beans and a language file for displaying
-meaningful information in the webapp. This files are currently located in the config-ui project
-in the src/main/webapp/descriptors directory. In the future, each OpenEngSB JBI component will
-provide this file.
+containing the supported endpoints and beans and a language file for displaying
+meaningful information for endpoints/beans and their attributes/properties in the webapp. This
+files are currently located in the <core/config/ui> project in the <src/main/webapp/descriptors> directory.
 
 ** Descriptor File
 
-   The descriptor currently supports definitions of endpoints with attributes and beans with properties. 
-Take a look at the <<<descriptor.xsd>>> in <<<config-ui/src/main/resources>>>.
+   The descriptor currently supports definitions of endpoints with attributes and beans with properties
+(by setter injection). Take a look at the <descriptor.xsd> found in <core/config/ui/src/main/resources>. The
+following xml shows the description for the {{{http://servicemix.apache.org/servicemix-file.html}servicemix-file}}
+poller endpoint.
+
++---
+<endpoint name="poller">
+  <attributes>
+    <serviceName name="service" />
+    <endpointName name="endpoint" />
+    <endpointTarget name="target" serviceName="targetService" endpointName="targetEndpoint" />
+    <bool name="autoCreateDirectory" defaultValue="true" />
+    <int name="period" min="0" optional="true" defaultValue="5000" />
+    <string name="file" />
+    <bool name="deleteFile" defaultValue="true" />
+    <bool name="recursive" defaultValue="false" />
+  </attributes>
+</endpoint>
++---
 
 ** Language File
 
-   The language file is a properties file containing for each endpoint, bean and their attributes names for displaying
-in the webapp. E.g. for an endpoint 'filesender' with attributes service, endpoint and target the following language file
-may be created.
+   The language file is a properties file containing display names for each described endpoint, bean and their attributes.
+E.g. for the servicemix-file poller endpoint the following language file has been created.
 
 +---
-filesender._name=Sender Endpoint
-filesender.service=Service
-filesender.endpoint=Endpoint
-filesender.target=Target Endpoint
+poller._name=File Poller Endpoint
+poller.service=Service
+poller.endpoint=Endpoint
+poller.target=Target Endpoint
+poller.autoCreateDirectory=Auto Create Directory
+poller.period=Period (ms)
+poller.file=Inbox
+poller.deleteFile=Delete File
+poller.recursive=Recursive
 +---
