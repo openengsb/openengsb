@@ -18,28 +18,14 @@
 <component xmlns="http://openengsb.org/configuration/descriptor/1.0"
   name="openengsb-connector-svn" bindingComponent="false" namespace="http://openengsb.org/connector/svn/1.0" nsname="svn">
   <endpoints>
-    <endpoint name="checkout">
+    <endpoint name="svnEndpoint">
       <attributes>
         <serviceName name="service" />
         <endpointName name="endpoint" />
         <ref name="configuration" theClass="org.openengsb.connector.svn.SvnConfiguration" />
       </attributes>
     </endpoint>
-    <endpoint name="add">
-      <attributes>
-        <serviceName name="service" />
-        <endpointName name="endpoint" />
-        <ref name="configuration" theClass="org.openengsb.connector.svn.SvnConfiguration" />
-      </attributes>
-    </endpoint>
-    <endpoint name="delete">
-      <attributes>
-        <serviceName name="service" />
-        <endpointName name="endpoint" />
-        <ref name="configuration" theClass="org.openengsb.connector.svn.SvnConfiguration" />
-      </attributes>
-    </endpoint>
-    <endpoint name="commit">
+    <endpoint name="eventEndpoint">
       <attributes>
         <serviceName name="service" />
         <endpointName name="endpoint" />
@@ -52,8 +38,8 @@
       <properties>
         <string name="id" />
         <string name="workingCopy" />
-        <string name="connection" />
-        <string name="developerConnection" />
+        <string name="connection" optional="true" />
+        <string name="developerConnection" optional="true" />
       </properties>
     </bean>
   </beans>
