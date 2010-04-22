@@ -15,7 +15,8 @@
    limitations under the License.
 
 -->
-<component name="servicemix-file" bindingComponent="false" namespace="http://servicemix.apache.org/file/1.0" nsname="file">
+<component xmlns="http://openengsb.org/configuration/descriptor/1.0"
+  name="servicemix-file" bindingComponent="false" namespace="http://servicemix.apache.org/file/1.0" nsname="file">
   <endpoints>
     <endpoint name="sender">
       <attributes>

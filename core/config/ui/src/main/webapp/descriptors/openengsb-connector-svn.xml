@@ -15,7 +15,8 @@
    limitations under the License.
 
 -->
-<component name="openengsb-connector-svn" bindingComponent="false" namespace="http://openengsb.org/connector/svn/1.0" nsname="svn">
+<component xmlns="http://openengsb.org/configuration/descriptor/1.0"
+  name="openengsb-connector-svn" bindingComponent="false" namespace="http://openengsb.org/connector/svn/1.0" nsname="svn">
   <endpoints>
     <endpoint name="checkout">
       <attributes>
