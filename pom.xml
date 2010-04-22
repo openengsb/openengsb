@@ -206,7 +206,6 @@
     <module>package/essential</module>
     <module>package/assembly</module>
     <module>package/test</module>
-    <module>package/embedded</module>
 
     <!-- Config -->
     <module>core/config/jbi</module>
