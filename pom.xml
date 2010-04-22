@@ -395,6 +395,21 @@
       <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
+    <contributor>
+      <name>Johannes Binder</name>
+      <email>j.binder.x [at] gmail.com</email>
+      <organization>Vienna University of Technology</organization>
+      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Gernot Rumpold</name>
+      <email>gernot.rumpold [at] gmail.com</email>
+      <organization>Vienna University of Technology</organization>
+      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
+      <timezone>+1</timezone>
+    </contributor>
+
   </contributors>
 
   <build>
