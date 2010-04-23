@@ -17,14 +17,34 @@
  */
 package org.openengsb.config.jbi.types;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class EndpointType {
+@SuppressWarnings("serial")
+public class EndpointType implements Serializable {
     private String name;
     private List<AbstractType> attributes;
     private List<AbstractType> properties;
+    private ComponentType parent;
 
     public EndpointType() {
+        readResolve();
+    }
+
+    public EndpointType(String name) {
+        this();
+        this.name = name;
+    }
+
+    private Object readResolve() {
+        if (attributes == null) {
+            attributes = new ArrayList<AbstractType>();
+        }
+        if (properties == null) {
+            properties = new ArrayList<AbstractType>();
+        }
+        return this;
     }
 
     public String getName() {
@@ -39,8 +59,21 @@ public class EndpointType {
         return attributes;
     }
 
+    public AbstractType getAttribute(String name) {
+        for (AbstractType a : attributes) {
+            if (a.getName().equals(name)) {
+                return a;
+            }
+        }
+        return null;
+    }
+
     public void setAttributes(List<AbstractType> attributes) {
         this.attributes = attributes;
+    }
+
+    public void addAttribute(AbstractType attribute) {
+        attributes.add(attribute);
     }
 
     public List<AbstractType> getProperties() {
@@ -49,5 +82,13 @@ public class EndpointType {
 
     public void setProperties(List<AbstractType> properties) {
         this.properties = properties;
+    }
+
+    public ComponentType getParent() {
+        return parent;
+    }
+
+    public void setParent(ComponentType c) {
+        this.parent = c;
     }
 }

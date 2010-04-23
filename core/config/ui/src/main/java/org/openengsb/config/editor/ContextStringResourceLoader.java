@@ -56,18 +56,28 @@ public class ContextStringResourceLoader implements IStringResourceLoader {
         }
     }
 
+    public void reset() {
+        props.clear();
+    }
+
     @Override
     public String loadStringResource(Component component, String key) {
-        if (!Session.exists())
+        if (!Session.exists()) {
             return null;
+        }
         return loadStringResource(null, key, Session.get().getLocale(), Session.get().getStyle());
     }
 
     @Override
     public String loadStringResource(Class<?> clazz, String key, Locale locale, String style) {
-        String first = key.substring(0, key.indexOf('.'));
-        if (!props.containsKey(first))
+        int idx = key.indexOf('.');
+        if (idx == -1) {
             return null;
-        return props.get(first).getProperty(key.substring(key.indexOf('.')+1));
+        }
+        String first = key.substring(0, idx);
+        if (!props.containsKey(first)) {
+            return null;
+        }
+        return props.get(first).getProperty(key.substring(idx + 1));
     }
 }

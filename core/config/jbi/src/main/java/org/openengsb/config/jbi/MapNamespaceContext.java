@@ -53,8 +53,9 @@ public class MapNamespaceContext implements NamespaceContext {
     @Override
     public String getPrefix(String namespaceURI) {
         for (Map.Entry<String, String> e : namespaces.entrySet()) {
-            if (e.getValue().equals(namespaceURI))
+            if (e.getValue().equals(namespaceURI)) {
                 return e.getKey();
+            }
         }
         return null;
     }
@@ -63,5 +64,4 @@ public class MapNamespaceContext implements NamespaceContext {
     public Iterator<?> getPrefixes(String namespaceURI) {
         return null;
     }
-
 }

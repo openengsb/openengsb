@@ -115,7 +115,7 @@ a:hover {
 }
 
 #navigationBar {
-  width: 180px;
+  width: 220px;
   float: left;
   border-right: thin dotted #ccc;
   font-size: small;
@@ -158,4 +158,12 @@ a:hover {
 
 .editor .fieldeditor {
   text-align: left;
+}
+
+table.endpoints {
+	margin-left: 25px;
+}
+
+table.endpoints td {
+	padding-left: 8px;
 }

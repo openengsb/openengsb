@@ -26,7 +26,8 @@ import org.openengsb.config.jbi.types.EndpointNameType;
 import org.openengsb.config.jbi.types.EndpointType;
 import org.openengsb.config.jbi.types.IntType;
 import org.openengsb.config.jbi.types.RefType;
-import org.openengsb.config.jbi.types.ServiceType;
+import org.openengsb.config.jbi.types.ServiceEndpointTargetType;
+import org.openengsb.config.jbi.types.ServiceNameType;
 import org.openengsb.config.jbi.types.StringType;
 
 import com.thoughtworks.xstream.XStream;
@@ -50,14 +51,19 @@ public class XStreamFactory {
         x.useAttributeFor(IntType.class, "min");
         x.useAttributeFor(IntType.class, "max");
         x.alias("string", StringType.class);
-        x.alias("service", ServiceType.class);
+        x.alias("serviceName", ServiceNameType.class);
+        x.useAttributeFor(ServiceNameType.class, "target");
         x.alias("endpointName", EndpointNameType.class);
+        x.useAttributeFor(EndpointNameType.class, "target");
         x.alias("bool", BoolType.class);
         x.alias("choice", ChoiceType.class);
         x.useAttributeFor(ChoiceType.class, "values");
         x.alias("ref", RefType.class);
         x.useAttributeFor(RefType.class, "theClass");
         x.aliasAttribute(RefType.class, "theClass", "clazz");
+        x.alias("endpointTarget", ServiceEndpointTargetType.class);
+        x.useAttributeFor(ServiceEndpointTargetType.class, "serviceName");
+        x.useAttributeFor(ServiceEndpointTargetType.class, "endpointName");
     }
 
     private static void configureBeanType(XStream x) {

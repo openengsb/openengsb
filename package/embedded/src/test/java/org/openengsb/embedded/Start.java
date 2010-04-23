@@ -18,6 +18,7 @@
 package org.openengsb.embedded;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
@@ -31,12 +32,14 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.reactor.MavenExecutionException;
 import org.apache.servicemix.jbi.container.JBIContainer;
+import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.openengsb.embedded.JbiTypeChecker.JbiType;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 public class Start {
     public static void main(String[] args) throws Exception {
+        cleanup();
         FileSystemXmlApplicationContext ctx = new FileSystemXmlApplicationContext(new String[] {
                 "src/main/webapp/WEB-INF/applicationContext.xml", "src/test/resources/testContext.xml" });
         ctx.start();
@@ -54,7 +57,7 @@ public class Start {
             if (type == JbiType.SHARED_LIBRARY) {
                 jbiContainer.getInstallationService().installSharedLibrary(installerFile.getAbsolutePath());
             } else if (type == JbiType.SERVICE_ASSEMBLY) {
-                jbiContainer.getDeploymentService().deploy(installerFile.getAbsolutePath());
+                jbiContainer.getAdminCommandsService().installArchive(installerFile.getAbsolutePath());
             } else {
                 jbiContainer.installArchive(installerFile.getAbsolutePath());
             }
@@ -63,6 +66,12 @@ public class Start {
         System.in.read();
         jbiContainer.shutDown();
         ctx.stop();
+    }
+
+    private static void cleanup() throws IOException {
+        new File("derby.log").delete();
+        FileUtils.deleteDirectory("activemq-data");
+        FileUtils.deleteDirectory("data");
     }
 
     @SuppressWarnings("unchecked")

@@ -21,12 +21,15 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.config.service.AssemblyService;
 import org.openengsb.config.service.ComponentService;
+import org.openengsb.config.service.ContextService;
 
 public class BasePage extends WebPage {
     @SpringBean
     protected ComponentService componentService;
     @SpringBean
     protected AssemblyService assemblyService;
+    @SpringBean
+    protected ContextService contextService;
 
     public BasePage() {
         add(new NavigationPanel("navigationBar", componentService.getComponents()));

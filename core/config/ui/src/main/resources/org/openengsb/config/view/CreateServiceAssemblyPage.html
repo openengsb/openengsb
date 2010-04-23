@@ -16,20 +16,16 @@
 
 -->
 <html xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
-<head>
-</head>
+
 <body>
 <wicket:extend>
-  <h3><wicket:message key="createNewAssembly">[createNewAssembly]</wicket:message></h3>
-  <span wicket:id="serviceUnits">
-    <p>
-      <span wicket:id="suName">[suName]</span>
-    </p>
-  </span>
-  <form wicket:id="suForm"><input type="submit" value="Deploy" /></form>
-  <form wicket:id="form">
-    <p>New Service Unit: <select wicket:id="suSelect" /> <input type="submit" value="Create" /></p>
-  </form>
+  <h3><wicket:message key="title">[title]</wicket:message></h3>
+  <div>
+  	<form wicket:id="form">
+      <input wicket:id="name"></input>
+      <input type="submit" wicket:message="value:save" />
+  	</form>
+  </div>
 </wicket:extend>
 </body>
 </html>

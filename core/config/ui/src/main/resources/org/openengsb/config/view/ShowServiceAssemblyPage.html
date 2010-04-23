@@ -1,0 +1,92 @@
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<html xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
+<head>
+</head>
+<body>
+<wicket:extend>
+  <h3><span wicket:id="name">[name]</span></h3>
+  <p><em><wicket:message key="endpointList"></wicket:message></em></p>
+  <table class="endpoints">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody wicket:id="endpoints">
+    <tr>
+      <td>
+        <span wicket:id="name">[name]</span>
+      </td>
+      <td>
+        <a wicket:id="editLink" href="#">Edit</a>
+      </td>
+      <td>
+        <a wicket:id="deleteLink" href="#">Delete</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <span wicket:id="endpointLabel">[endpointLabel]</span>
+  <form wicket:id="newEndpointForm">
+    <p><wicket:message key="newEndpointLabel"></wicket:message> <select wicket:id="endpointSelect"></select> <input type="submit" value="Create"></input> </p>
+  </form>
+  <p><em><wicket:message key="beanList"></wicket:message></em></p>
+  <table class="endpoints">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody wicket:id="beans">
+    <tr>
+      <td>
+        <span wicket:id="name">[name]</span>
+      </td>
+      <td>
+        <a wicket:id="editLink" href="#">Edit</a>
+      </td>
+      <td>
+        <a wicket:id="deleteLink" href="#">Delete</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <span wicket:id="beanLabel">[beanLabel]</span>
+  <form wicket:id="newBeanForm">
+    <p><wicket:message key="newBeanLabel"></wicket:message> <select wicket:id="beanSelect"></select> <input type="submit" value="Create"></input> </p>
+  </form>
+  <div>
+    <h3>Actions</h3>
+    <p>
+      <wicket:message key="deployState">[deployState]</wicket:message> <span wicket:id="deployState"></span>
+    </p>
+    <form wicket:id="actionForm">
+      <input wicket:id="deployButton" type="submit" value="Deploy" />
+      <input wicket:id="undeployButton" type="submit" value="Undeploy" />
+      <input wicket:id="deleteButton" type="submit" value="Delete" />
+    </form>
+  </div>
+  <div wicket:id="feedback">[Feedback Panel]</div>
+</wicket:extend>
+</body>
+</html>

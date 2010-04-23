@@ -17,7 +17,7 @@
  */
 package org.openengsb.config.editor;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -28,6 +28,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
+import org.openengsb.config.domain.PersistedObject;
+import org.openengsb.config.domain.ServiceAssembly;
 import org.openengsb.config.editor.fields.AbstractField;
 import org.openengsb.config.editor.fields.CheckboxField;
 import org.openengsb.config.editor.fields.DropdownChoiceField;
@@ -35,24 +37,22 @@ import org.openengsb.config.editor.fields.InputField;
 import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.BoolType;
 import org.openengsb.config.jbi.types.ChoiceType;
-import org.openengsb.config.jbi.types.EndpointType;
+import org.openengsb.config.jbi.types.RefType;
+import org.openengsb.config.jbi.types.ServiceEndpointTargetType;
 
+import com.google.common.collect.Lists;
+
+@SuppressWarnings("serial")
 public abstract class EditorPanel extends Panel {
-    private static final long serialVersionUID = 1L;
-    private final EndpointType endpointType;
-    private final String componentId;
+    private final FieldInfos fieldInfos;
     private final Map<String, String> map;
+    private Form<?> form;
 
-    public EditorPanel(String id, String componentId, EndpointType endpointType) {
-        this(id, componentId, endpointType, null);
-    }
-
-    public EditorPanel(String id, String componentId, EndpointType endpointType, IModel<?> model) {
-        super(id, model);
-        this.componentId = componentId;
-        this.endpointType = endpointType;
-        map = new HashMap<String, String>();
-        createForm();
+    public EditorPanel(String id, ServiceAssembly sa, FieldInfos fieldInfos, Map<String, String> map) {
+        super(id);
+        this.fieldInfos = fieldInfos;
+        this.map = map;
+        createForm(sa);
     }
 
     public Map<String, String> getValues() {
@@ -62,8 +62,8 @@ public abstract class EditorPanel extends Panel {
     public abstract void onSubmit();
 
     @SuppressWarnings("unchecked")
-    private void createForm() {
-        Form<?> form = new Form("form") {
+    private void createForm(ServiceAssembly sa) {
+        form = new Form("form") {
             @Override
             protected void onSubmit() {
                 EditorPanel.this.onSubmit();
@@ -75,21 +75,38 @@ public abstract class EditorPanel extends Panel {
         form.add(fields);
         form.add(new FeedbackPanel("feedback"));
 
-        for (AbstractType f : endpointType.getAttributes()) {
+        for (AbstractType f : fieldInfos.getFieldTypes()) {
             WebMarkupContainer row = new WebMarkupContainer(fields.newChildId());
             fields.add(row);
-            ResourceModel labelModel = new ResourceModel(componentId + '.' + endpointType.getName() + '.' + f.getName());
+            ResourceModel labelModel = new ResourceModel(fieldInfos.getName() + '.' + f.getName());
             row.add(new Label("name", labelModel));
-            row.add(getEditor(f, new MapModel<String, String>(map, f.getName())).setLabel(labelModel));
+            row.add(getEditor(sa, f, new MapModel<String, String>(map, f.getName())).setLabel(labelModel));
         }
     }
 
-    private AbstractField getEditor(AbstractType type, IModel<String> model) {
-        if (type.getClass().equals(BoolType.class))
+    private AbstractField getEditor(ServiceAssembly sa, AbstractType type, IModel<String> model) {
+        if (type.getClass().equals(ServiceEndpointTargetType.class)) {
+            List<String> names = Lists.newArrayList();
+            for (PersistedObject e : sa.getEndpoints()) {
+                names.add(e.getName());
+            }
+            return new DropdownChoiceField("editor", model, type, names);
+        } else if (type.getClass().equals(RefType.class)) {
+            List<String> names = Lists.newArrayList();
+            for (PersistedObject e : sa.getBeans()) {
+                names.add(e.getName());
+            }
+            return new DropdownChoiceField("editor", model, type, names);
+        } else if (type.getClass().equals(BoolType.class)) {
             return new CheckboxField("editor", model, type);
-        else if (type.getClass().equals(ChoiceType.class))
+        } else if (type.getClass().equals(ChoiceType.class)) {
             return new DropdownChoiceField("editor", model, (ChoiceType) type);
-        else
+        } else {
             return new InputField("editor", model, type);
+        }
+    }
+
+    public void showError(String message) {
+        form.error(message);
     }
 }

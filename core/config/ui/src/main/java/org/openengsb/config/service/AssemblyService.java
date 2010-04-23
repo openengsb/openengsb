@@ -17,13 +17,14 @@
  */
 package org.openengsb.config.service;
 
-import java.io.File;
-import java.util.List;
+import java.io.IOException;
 
-import org.openengsb.config.jbi.ServiceUnitInfo;
+import org.openengsb.config.domain.ServiceAssembly;
 
 public interface AssemblyService {
-    public void createNewAssembly();
-    public List<ServiceUnitInfo> getServiceUnits();
-    public boolean deploy(File saFile, String filename);
+    public void deploy(ServiceAssembly sa) throws IOException;
+
+    public void undeploy(ServiceAssembly sa) throws IOException;
+
+    public boolean isDeployed(ServiceAssembly sa);
 }

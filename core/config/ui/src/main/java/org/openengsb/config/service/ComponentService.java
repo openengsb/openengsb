@@ -19,7 +19,9 @@ package org.openengsb.config.service;
 
 import java.util.List;
 
+import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.ComponentType;
+import org.openengsb.config.jbi.types.EndpointType;
 
 /**
  * Service for listing supported JBI components, creatings SU/SA zips.
@@ -30,8 +32,20 @@ public interface ComponentService {
      * Returns a list of supported jbi components.
      */
     public List<ComponentType> getComponents();
+
     /**
-     * Returns a specific jbi component or null if there is no component for the given {@code name};
+     * Returns a specific jbi component or null if there is no component for the
+     * given {@code name}.
      */
     public ComponentType getComponent(String name);
+
+    /**
+     * Returns a list of all supported endpoints.
+     */
+    public List<EndpointType> getEndpoints();
+
+    /**
+     * Returns a list of all supported beans;
+     */
+    public List<BeanType> getBeans();
 }

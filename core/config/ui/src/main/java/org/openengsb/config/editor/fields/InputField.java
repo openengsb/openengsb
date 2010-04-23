@@ -22,9 +22,8 @@ import org.apache.wicket.model.IModel;
 import org.openengsb.config.editor.validators.Validators;
 import org.openengsb.config.jbi.types.AbstractType;
 
+@SuppressWarnings("serial")
 public class InputField extends AbstractField {
-    private static final long serialVersionUID = 1L;
-
     public InputField(String id, IModel<String> model, AbstractType abstractType) {
         super(id, abstractType);
         TextField<String> tf = new TextField<String>("component", model);

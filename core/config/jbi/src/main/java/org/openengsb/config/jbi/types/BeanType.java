@@ -17,13 +17,30 @@
  */
 package org.openengsb.config.jbi.types;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class BeanType {
+@SuppressWarnings("serial")
+public class BeanType implements Serializable {
     private String clazz;
     private List<AbstractType> properties;
+    private ComponentType parent;
 
     public BeanType() {
+        readResolve();
+    }
+
+    public BeanType(String clazz) {
+        this.clazz = clazz;
+        readResolve();
+    }
+
+    private Object readResolve() {
+        if (properties == null) {
+            properties = new ArrayList<AbstractType>();
+        }
+        return this;
     }
 
     public String getClazz() {
@@ -40,5 +57,17 @@ public class BeanType {
 
     public void setProperties(List<AbstractType> properties) {
         this.properties = properties;
+    }
+
+    public void addProperty(AbstractType p) {
+        properties.add(p);
+    }
+
+    public ComponentType getParent() {
+        return parent;
+    }
+
+    public void setParent(ComponentType parent) {
+        this.parent = parent;
     }
 }

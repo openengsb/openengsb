@@ -17,7 +17,12 @@
  */
 package org.openengsb.config.jbi.types;
 
+@SuppressWarnings("serial")
 public class StringType extends AbstractType {
     public StringType() {
+    }
+
+    public StringType(String name, boolean optional, int maxLength, String defaultValue) {
+        super(name, optional, maxLength, defaultValue);
     }
 }

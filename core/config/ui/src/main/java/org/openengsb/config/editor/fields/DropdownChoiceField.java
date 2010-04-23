@@ -18,17 +18,22 @@
 package org.openengsb.config.editor.fields;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.model.IModel;
+import org.openengsb.config.jbi.types.AbstractType;
 import org.openengsb.config.jbi.types.ChoiceType;
 
+@SuppressWarnings("serial")
 public class DropdownChoiceField extends AbstractField {
-    private static final long serialVersionUID = 1L;
-
     public DropdownChoiceField(String id, IModel<String> model, ChoiceType choiceType) {
-        super(id, choiceType);
-        DropDownChoice<String> ch = new DropDownChoice<String>("component", model, Arrays.asList(choiceType.getValues()));
+        this(id, model, choiceType, Arrays.asList(choiceType.getValues()));
+    }
+    
+    public DropdownChoiceField(String id, IModel<String> model, AbstractType type, List<String> values) {
+        super(id, type);
+        DropDownChoice<String> ch = new DropDownChoice<String>("component", model, values);
         ch.setRequired(isRequired());
         add(ch);
         setFormComponent(ch);

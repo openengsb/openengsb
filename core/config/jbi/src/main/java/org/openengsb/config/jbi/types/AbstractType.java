@@ -17,14 +17,26 @@
  */
 package org.openengsb.config.jbi.types;
 
-public abstract class AbstractType {
+import java.io.Serializable;
+import java.util.Map;
+
+import org.w3c.dom.Element;
+
+@SuppressWarnings("serial")
+public abstract class AbstractType implements Serializable {
     private String name;
     private boolean optional;
     private int maxLength;
     private String defaultValue;
 
     public AbstractType() {
+    }
 
+    public AbstractType(String name, boolean optional, int maxLength, String defaultValue) {
+        this.name = name;
+        this.optional = optional;
+        this.maxLength = maxLength;
+        this.defaultValue = defaultValue;
     }
 
     public String getName() {
@@ -57,5 +69,36 @@ public abstract class AbstractType {
 
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    /**
+     * Appends this type with value from the context as attribute to the
+     * element.
+     */
+    public void toAttributeOnElement(Map<String, String> context, Element elem) {
+        String value = context.get(name);
+        if (value == defaultValue) {
+            return;
+        } else if (value == null) {
+            value = defaultValue;
+        }
+        elem.setAttribute(name, value);
+    }
+
+    /**
+     * Appends this type with value from the context as Spring property to the
+     * element.
+     */
+    public void toPropertyOnElement(Map<String, String> context, Element elem) {
+        String value = context.get(name);
+        if (value == defaultValue) {
+            return;
+        } else if (value == null) {
+            value = defaultValue;
+        }
+        Element p = elem.getOwnerDocument().createElement("property");
+        elem.appendChild(p);
+        p.setAttribute("name", name);
+        p.setAttribute("value", value);
     }
 }

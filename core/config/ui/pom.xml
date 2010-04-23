@@ -37,8 +37,6 @@
   	Graphical support for openengsb configuration.
 	</description>
 
-  <url>http://85.126.79.3/engsb/</url>
-
   <build>
     <resources>
       <resource>
@@ -56,6 +54,9 @@
     </resources>
     <testResources>
       <testResource>
+        <directory>src/test/resources</directory>
+      </testResource>
+      <testResource>
         <directory>src/test/java</directory>
         <includes>
           <include>**</include>
@@ -72,6 +73,12 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-config-jbi</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.servicemix.specs</groupId>
+      <artifactId>org.apache.servicemix.specs.jbi-api-1.0</artifactId>
+      <version>${servicemix.specs.version}</version>
     </dependency>
 
     <!-- Wicket -->
@@ -94,8 +101,26 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
+      <version>${javax.servlet.version}</version>
       <scope>provided</scope>
+    </dependency>
+    
+    <!-- DB -->
+    
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>${commons.dbcp.version}</version>
     </dependency>
 
     <!-- Spring -->
@@ -119,6 +144,21 @@
       <artifactId>spring-beans</artifactId>
       <version>${spring.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
 
     <!-- Logging -->
 
@@ -133,6 +173,13 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
+    </dependency>
+
+    <!-- Util -->
+
+    <dependency>
+      <groupId>com.google.collections</groupId>
+      <artifactId>google-collections</artifactId>
     </dependency>
 
     <!-- Test Dependencies -->

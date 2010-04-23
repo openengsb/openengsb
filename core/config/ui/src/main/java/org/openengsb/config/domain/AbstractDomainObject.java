@@ -15,9 +15,24 @@
    limitations under the License.
 
  */
-package org.openengsb.config.jbi.types;
+package org.openengsb.config.domain;
 
-public class ServiceType extends AbstractType {
-    public ServiceType() {
-    }
+import java.io.Serializable;
+
+import javax.persistence.MappedSuperclass;
+
+@MappedSuperclass
+@SuppressWarnings("serial")
+public abstract class AbstractDomainObject implements Serializable {
+    /**
+     * Gets the id
+     */
+    public abstract Long getId();
+
+    /**
+     * Sets the id
+     *
+     * @param id
+     */
+    public abstract void setId(Long id);
 }

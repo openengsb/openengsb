@@ -21,8 +21,8 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.openengsb.config.editor.ContextStringResourceLoader;
 import org.openengsb.config.view.OverviewPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Application object for your web application. If you want to run this
@@ -31,7 +31,12 @@ import org.slf4j.LoggerFactory;
  * @see org.openengsb.config.Start#main(String[])
  */
 public class ConfigApplication extends WebApplication {
-    private static final Logger log = LoggerFactory.getLogger(ConfigApplication.class);
+    @Autowired
+    private ApplicationContext applicationContext;
+
+    public void setApplicationContext(ApplicationContext context) {
+        this.applicationContext = context;
+    }
 
     public ConfigApplication() {
     }
@@ -39,10 +44,8 @@ public class ConfigApplication extends WebApplication {
     @Override
     protected void init() {
         super.init();
-        this.addComponentInstantiationListener(new SpringComponentInjector(this));
+        this.addComponentInstantiationListener(new SpringComponentInjector(this, applicationContext));
         this.getResourceSettings().addStringResourceLoader(ContextStringResourceLoader.instance);
-        String realPath = this.getServletContext().getRealPath("/");
-        log.info("RealPath is " + realPath);
     }
 
     @Override

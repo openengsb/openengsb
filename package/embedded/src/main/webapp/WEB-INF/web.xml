@@ -35,11 +35,21 @@
   </context-param>
 
   <filter>
+    <filter-name>openEntityManagerInViewFilter</filter-name>
+    <filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>openEntityManagerInViewFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
     <filter-name>wicket.openengsb-config-ui</filter-name>
     <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
     <init-param>
-      <param-name>applicationClassName</param-name>
-      <param-value>org.openengsb.config.ConfigApplication</param-value>
+      <param-name>applicationFactoryClassName</param-name>
+      <param-value>org.apache.wicket.spring.SpringWebApplicationFactory</param-value>
     </init-param>
   </filter>
 

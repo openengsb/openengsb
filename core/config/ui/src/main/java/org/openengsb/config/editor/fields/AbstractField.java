@@ -22,8 +22,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.openengsb.config.jbi.types.AbstractType;
 
+@SuppressWarnings("serial")
 public abstract class AbstractField extends Panel {
-    private static final long serialVersionUID = 1L;
     private final AbstractType abstractType;
     private FormComponent<?> formComponent;
 

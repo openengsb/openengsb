@@ -15,11 +15,12 @@
    limitations under the License.
 
 -->
-<component name="servicemix-file" bindingComponent="false" namespace="http://servicemix.apache.org/file/1.0" nsname="file">
+<component xmlns="http://openengsb.org/configuration/descriptor/1.0"
+  name="servicemix-file" bindingComponent="false" namespace="http://servicemix.apache.org/file/1.0" nsname="file">
   <endpoints>
     <endpoint name="sender">
       <attributes>
-        <service name="service" />
+        <serviceName name="service" />
         <endpointName name="endpoint" />
         <string name="directory" />
         <bool name="autoCreateDirectory" defaultValue="true" />
@@ -30,12 +31,11 @@
     </endpoint>
     <endpoint name="poller">
       <attributes>
-        <service name="service" />
+        <serviceName name="service" />
         <endpointName name="endpoint" />
-        <service name="targetService" />
-        <endpointName name="targetEndpoint" optional="true" />
+        <endpointTarget name="target" serviceName="targetService" endpointName="targetEndpoint" />
         <bool name="autoCreateDirectory" defaultValue="true" />
-        <int name="period" min="0" optional="true" />
+        <int name="period" min="0" optional="true" defaultValue="5000" />
         <string name="file" />
         <bool name="deleteFile" defaultValue="true" />
         <bool name="recursive" defaultValue="false" />

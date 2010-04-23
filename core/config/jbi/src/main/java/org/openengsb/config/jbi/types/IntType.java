@@ -17,6 +17,7 @@
  */
 package org.openengsb.config.jbi.types;
 
+@SuppressWarnings("serial")
 public class IntType extends AbstractType {
     private Integer min;
     private Integer max;

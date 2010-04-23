@@ -22,7 +22,14 @@
 <wicket:panel>
   <div id="navigationBar">
     <div class="navigationEntry">
+      <h3><wicket:message key="serviceAssemblies">[serviceAssemblies]</wicket:message></h3>
+      <ul wicket:id="serviceAssemblies">
+        <li>
+          <a href="#" wicket:id="serviceAssemblyLink"><span wicket:id="serviceAssemblyName">[serviceAssemblyName]</span></a>
+        </li>
+      </ul>
       <h3><a href="#" wicket:id="createAssemblyLink"><wicket:message key="createAssembly">[createAssembly]</wicket:message></a></h3>
+      <h3><a href="#" wicket:id="editContextLink"><wicket:message key="editContext">[editContext]</wicket:message></a></h3>
       <h3><wicket:message key="components">[components]</wicket:message></h3>
       <ul wicket:id="components">
         <li><a href="#" wicket:id="componentLink"><span wicket:id="name">[name]</span></a></li>

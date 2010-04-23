@@ -22,7 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.config.jbi.internal.XStreamFactory;
+import org.openengsb.config.jbi.types.BeanType;
 import org.openengsb.config.jbi.types.ComponentType;
+import org.openengsb.config.jbi.types.EndpointType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +38,27 @@ public class ComponentParser {
         ArrayList<ComponentType> components = new ArrayList<ComponentType>();
         for (InputStream s : descriptors) {
                 try {
-                    Object o = x.fromXML(s);
-                    components.add((ComponentType)o);
+                ComponentType c = (ComponentType) x.fromXML(s);
+                linkEndpointsToComponent(c);
+                linkBeansToComponent(c);
+                components.add(c);
                     s.close();
                 } catch (Exception e) {
                     log.error("Parsing of component xml file failed", e);
                 }
         }
         return components;
+    }
+
+    private static void linkEndpointsToComponent(ComponentType c) {
+        for (EndpointType e : c.getEndpoints()) {
+            e.setParent(c);
+        }
+    }
+
+    private static void linkBeansToComponent(ComponentType c) {
+        for (BeanType b : c.getBeans()) {
+            b.setParent(c);
+        }
     }
 }

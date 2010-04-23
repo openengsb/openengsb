@@ -17,9 +17,12 @@
  */
 package org.openengsb.config.jbi.types;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ComponentType {
+@SuppressWarnings("serial")
+public class ComponentType implements Serializable {
     private String name;
     private boolean bindingComponent;
     private String namespace;
@@ -28,6 +31,25 @@ public class ComponentType {
     private List<BeanType> beans;
 
     public ComponentType() {
+        readResolve();
+    }
+
+    public ComponentType(String name, String nsname, String namespace, boolean bindingComponent) {
+        this.name = name;
+        this.nsname = nsname;
+        this.namespace = namespace;
+        this.bindingComponent = bindingComponent;
+        readResolve();
+    }
+
+    private Object readResolve() {
+        if (endpoints == null) {
+            endpoints = new ArrayList<EndpointType>();
+        }
+        if (beans == null) {
+            beans = new ArrayList<BeanType>();
+        }
+        return this;
     }
 
     public String getName() {
@@ -66,6 +88,15 @@ public class ComponentType {
         return endpoints;
     }
 
+    public EndpointType getEndpoint(String name) {
+        for (EndpointType e : endpoints) {
+            if (e.getName().equals(name)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
     public void setEndpoints(List<EndpointType> endpoints) {
         this.endpoints = endpoints;
     }
@@ -74,7 +105,25 @@ public class ComponentType {
         return beans;
     }
 
+    public BeanType getBean(String clazz) {
+        for (BeanType b : beans) {
+            if (b.getClazz().equals(clazz)) {
+                return b;
+            }
+        }
+        return null;
+    }
+
     public void setBeans(List<BeanType> beans) {
+        System.out.println(beans);
         this.beans = beans;
+    }
+
+    public void addEndpoint(EndpointType e) {
+        endpoints.add(e);
+    }
+
+    public void addBean(BeanType b) {
+        beans.add(b);
     }
 }

@@ -18,19 +18,41 @@
 -->
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:context="http://www.springframework.org/schema/context"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans 
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+  <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="locations">
+      <list>
+        <value>
+          classpath:/configConstants.properties
+        </value>
+      </list>
+    </property>
+  </bean>
+  
+  <context:annotation-config />
+  
+  <import resource="classpath:/daoContext.xml" />
+
+  <bean id="configApplication" class="org.openengsb.config.ConfigApplication" />
 
   <bean id="componentService" class="org.openengsb.config.service.impl.ComponentServiceImpl" init-method="init">
     <property name="context" ref="servletContext" />
   </bean>
 
   <bean id="assemblyService" class="org.openengsb.config.service.impl.AssemblyServiceImpl">
-    <property name="deployPath" ref="installDir" />
+    <property name="deployPath" ref="deployDirEngSB" />
+    <property name="deploymentService" ref="deploymentServiceMBean" />
+    <property name="componentService" ref="componentService" />
   </bean>
   
+  <bean id="editorService" class="org.openengsb.config.service.impl.EditorServiceImpl" />
+  
+  <bean id="contextService" class="org.openengsb.config.service.impl.DummyContextService" />
+
   <bean id="servletContext" class="org.springframework.web.context.support.ServletContextFactoryBean" />
   <bean id="rootDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
     <constructor-arg ref="servletContext" />
@@ -43,6 +65,10 @@
   <bean id="deployDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
     <constructor-arg ref="servletContext" />
     <constructor-arg value="/deploy" />
+  </bean>
+  <bean id="deployDirEngSB" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
+    <constructor-arg ref="servletContext" />
+    <constructor-arg value="/deployEngSB" />
   </bean>
   <bean id="txDir" class="org.springframework.web.util.WebUtils" factory-method="getRealPath">
     <constructor-arg ref="servletContext" />

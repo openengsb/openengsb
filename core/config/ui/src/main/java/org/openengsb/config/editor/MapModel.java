@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.apache.wicket.model.IModel;
 
+@SuppressWarnings("serial")
 public class MapModel<K,V> implements IModel<V> {
-    private static final long serialVersionUID = 1L;
     private final Map<K, V> map;
     private final K key;
 
