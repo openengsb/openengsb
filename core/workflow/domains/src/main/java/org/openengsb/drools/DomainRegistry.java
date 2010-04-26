@@ -28,7 +28,6 @@ public class DomainRegistry {
     static {
         domains.put("issue", IssuesDomain.class);
         domains.put("notification", NotificationDomain.class);
-        domains.put("scm", ScmDomain.class);
         domains.put("test", TestDomain.class);
         domains.put("build", BuildDomain.class);
         domains.put("deploy", DeployDomain.class);

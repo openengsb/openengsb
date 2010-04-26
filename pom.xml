@@ -199,7 +199,6 @@
     <module>domains/deploy/maven/service-unit</module>
     <module>domains/test/maven/service-unit</module>
     <module>domains/scm/subversion/service-unit</module>
-    <module>domains/scm/subversion/jms/service-unit</module>
     <module>domains/notification/email/service-unit</module>
     <module>domains/notification/twitter/service-unit</module>
     <module>domains/notification/xmpp/service-unit</module>
@@ -910,7 +909,7 @@
         <version>${pom.version}</version>
       </dependency>
       
-      <!-- ??? -->
+      <!-- Maven things -->
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-test-maven-se</artifactId>
@@ -1047,11 +1046,6 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-scm-subversion-su</artifactId>
-        <version>${pom.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb</groupId>
-        <artifactId>openengsb-domains-scm-subversion-jms-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
 
@@ -1405,9 +1399,9 @@
         <version>${commons.pool.version}</version>
       </dependency>
       <dependency>
-              <groupId>commons-net</groupId>
-              <artifactId>commons-net</artifactId>
-              <version>${commons.net.version}</version>
+        <groupId>commons-net</groupId>
+        <artifactId>commons-net</artifactId>
+        <version>${commons.net.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-collections</groupId>
@@ -1488,6 +1482,13 @@
         <groupId>geronimo-spec</groupId>
         <artifactId>geronimo-spec-j2ee</artifactId>
         <version>${geronimo-spec-j2ee.version}</version>
+      </dependency>
+
+      <!-- Quartz -->
+      <dependency>
+        <groupId>quartz</groupId>
+        <artifactId>quartz</artifactId>
+        <version>${quartz.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

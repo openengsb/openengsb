@@ -17,13 +17,7 @@
  */
 package org.openengsb.scm.common.exceptions;
 
-/**
- * A standard implementations for a checked Exception to be used in
- * implementations of ScmDomain
- */
 public class ScmException extends RuntimeException {
-    private static final long serialVersionUID = -2578454632707077795L;
-
     public ScmException() {
     }
 

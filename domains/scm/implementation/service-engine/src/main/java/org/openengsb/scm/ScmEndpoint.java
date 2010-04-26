@@ -21,7 +21,6 @@ import javax.xml.namespace.QName;
 
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.endpoints.ForwardEndpoint;
-import org.openengsb.drools.ScmDomain;
 
 /**
  * @org.apache.xbean.XBean element="scmEndpoint" description="The only
@@ -29,7 +28,7 @@ import org.openengsb.drools.ScmDomain;
  *                         forwarding all requests to an actual connector, based
  *                         on the configuration in the context"
  */
-public class ScmEndpoint extends ForwardEndpoint<ScmDomain> {
+public class ScmEndpoint extends ForwardEndpoint<Object> {
 
     @Override
     protected QName getForwardTarget(ContextHelper contextHelper) {

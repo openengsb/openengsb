@@ -17,9 +17,9 @@
  */
 package org.openengsb.drools.events;
 
-public class ScmCheckInEvent extends ScmDirectoryEvent {
-    public ScmCheckInEvent() {
-        super("scmCheckInEvent");
+public class ScmTagDeletedEvent extends ScmDirectoryEvent {
+    public ScmTagDeletedEvent() {
+        super("scmTagDeletedEvent");
     }
 
 }

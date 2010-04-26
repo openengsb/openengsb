@@ -17,9 +17,9 @@
  */
 package org.openengsb.drools.events;
 
-public class ScmCheckInEvent extends ScmDirectoryEvent {
-    public ScmCheckInEvent() {
-        super("scmCheckInEvent");
+public class ScmBranchCreatedEvent extends ScmDirectoryEvent {
+    public ScmBranchCreatedEvent() {
+        super("scmBranchCreatedEvent");
     }
 
 }

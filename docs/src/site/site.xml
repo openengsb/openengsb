@@ -79,7 +79,11 @@
         <item href="connector/repository/deployDomain.html" name="Deployment domain" />
         <item href="connector/repository/mvn.html" name="Mvn" />
         <item href="connector/repository/staging.html" name="Staging" />
-      </item>   
+      </item>
+      <item collapse="true" href="connector/scm/scm.html" name="SCM-Connectors">
+        <item href="connector/scm/scmConnector.html" name="SCM Connector" />
+        <item href="connector/scm/svnConnector.html" name="Subversion Connector" />
+      </item>      
     </menu>
 
     <menu name="Community">

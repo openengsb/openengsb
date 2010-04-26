@@ -125,11 +125,7 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-scm-subversion-su</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-domains-scm-subversion-jms-su</artifactId>
-    </dependency>
-    
+
     <!-- Test -->
     <dependency>
       <groupId>org.openengsb</groupId>

@@ -19,6 +19,14 @@ HowTo - Continuous Integration and Test Workflow
 
   If you have not set up Guvnor yet, please take a look at the {{{howto_guvnor.html}Guvnor Setup}}.
 
+* Additional Servicemix Setup
+
+  The perm gen space of Servicemix has to be increased. This can be done by setting the JAVA_OPTS environment variable before starting Servicemix.
+  
++---
+  JAVA_OPTS="$JAVA_OPTS -XX:PermSize=256m -XX:MaxPermSize=256m -Xmx1024M"
++---
+
 * Setting up the example
   
   In this example a workflow shall be used to model the behaviour, which is triggered by a rule. 
@@ -56,6 +64,13 @@ HowTo - Continuous Integration and Test Workflow
 
   Build the package with "build package". Now after an ScmCheckInEvent is triggered the workflow will be started.
 
+* Setting up Subversion Repository
+
+  To generate ScmCheckIn events, you will need to set up a {{{http://subversion.apache.org/packages.html}subversion repository}}.
+  
+  When you are done, configure the svnConnector to poll your repository.
+  
+
 * Running the example
 
   1. Start servicemix.
@@ -64,9 +79,10 @@ HowTo - Continuous Integration and Test Workflow
 
   3. Trigger an ScmCheckInEvent.
   
-* The Subversion Stomp Commit Hook
+* The ScmCheckIn Event
 
-  The third step from the list in the section 'Running the example' can be accomplished by using a commit hook in the SCM tool.
-  A small Perl program was developed which sends a JMS message using the Stomp protocol into a queue. 
-  A specialized JMS consumer of the tool connector reads from this queue and informs the Subversion tool connector that a check in has happened. 
-  The tool connector creates the ScmCheckInEvent and sends it to the OpenEngSB. The Perl script can be found in domains/scm/subversion/hooks/stomp-client.
+  To create a ScmCheckIn event commit anything to your svn repository.
+  
+  The ci workflow will try to build any project found in the data/openengsb/testProject folder (servicemix), so drop a project there to test the workflow.
+
+  

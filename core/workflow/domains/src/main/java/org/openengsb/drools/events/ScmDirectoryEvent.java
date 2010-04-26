@@ -17,9 +17,20 @@
  */
 package org.openengsb.drools.events;
 
-public class ScmCheckInEvent extends ScmDirectoryEvent {
-    public ScmCheckInEvent() {
-        super("scmCheckInEvent");
+import org.openengsb.core.model.Event;
+
+public abstract class ScmDirectoryEvent extends Event {
+
+    public ScmDirectoryEvent(String name) {
+        super("scm", name);
+    }
+
+    public void setDirectory(String directory) {
+        setValue("directory", directory);
+    }
+
+    public String getDirectory() {
+        return (String) getValue("directory");
     }
 
 }

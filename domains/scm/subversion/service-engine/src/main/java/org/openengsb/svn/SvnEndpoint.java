@@ -15,11 +15,25 @@
    limitations under the License.
    
  */
-package org.openengsb.drools.events;
+package org.openengsb.svn;
 
-public class ScmCheckInEvent extends ScmDirectoryEvent {
-    public ScmCheckInEvent() {
-        super("scmCheckInEvent");
+import org.openengsb.contextcommon.ContextHelper;
+import org.openengsb.core.MessageProperties;
+import org.openengsb.core.endpoints.LinkingEndpoint;
+
+/**
+ * @org.apache.xbean.XBean element="svnEndpoint" description="SVN SCM Endpoint"
+ */
+public class SvnEndpoint extends LinkingEndpoint<SvnConnector> {
+    private SvnConnector connector;
+
+    @Override
+    protected SvnConnector getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
+        return connector;
+    }
+
+    public void setConnector(SvnConnector connector) {
+        this.connector = connector;
     }
 
 }

@@ -38,7 +38,6 @@ global org.openengsb.drools.ReportDomain report
 global org.openengsb.drools.DeployDomain deploy
 global org.openengsb.drools.DomainConfiguration config
 global org.openengsb.drools.DroolsHelper droolsHelper
-global org.openengsb.drools.ScmDomain scm
 global org.openengsb.drools.TestDomain test
 
 rule "hello1"

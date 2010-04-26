@@ -15,11 +15,18 @@
    limitations under the License.
    
  */
-package org.openengsb.drools.events;
+package org.openengsb.svn;
 
-public class ScmCheckInEvent extends ScmDirectoryEvent {
-    public ScmCheckInEvent() {
-        super("scmCheckInEvent");
+import org.openengsb.core.OpenEngSBComponent;
+
+/**
+ * @org.apache.xbean.XBean element="svnComponent" description="SVN Component"
+ *                         The SVN-component
+ */
+public class SvnComponent extends OpenEngSBComponent {
+    @Override
+    protected Class<?>[] getEndpointClasses() {
+        return new Class[] { SvnEndpoint.class };
     }
 
 }
