@@ -684,7 +684,8 @@
                 <exclude>nonjava/csharp/lib/**</exclude>
                 <exclude>**/**.csproj</exclude>
                 <exclude>**/**.sln</exclude>
-
+		<exclude>nonjava/perl/**</exclude>
+		
                 <!-- Scripts -->
                 <exclude>quickrun.sh</exclude>
                 <exclude>package/all/quickdeploy.sh</exclude>
