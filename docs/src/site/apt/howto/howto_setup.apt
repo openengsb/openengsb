@@ -88,7 +88,7 @@ git clone git://github.com/openengsb/openengsb
 +----
 
 
-  Set the SMX_HOME and M2_HOME environment variables to point to the servicemix directory and the maven repository. 
+  Set the SMX_HOME and M2_REPO environment variables to point to the servicemix directory and the maven repository. 
   If ServiceMix is running you can build and deploy the OpenEngSB.
 
 +----

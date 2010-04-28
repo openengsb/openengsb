@@ -19,10 +19,10 @@
 
 function usage() {
   echo Usage: $0 '[servicemix-home [maven-home]]'
-  echo '  'This script will use \$SERVICEMIX_HOME and \$M2_HOME to determine where
+  echo '  'This script will use \$SERVICEMIX_HOME and \$M2_REPO to determine where
   echo '  'servicemix and the maven repository are located if these variables are set.
   echo '  'If they aren\'t set, you have to provide the arguments.
-  echo '  'If \~/.m2/repository exists the script assumes it\'s your maven-home.
+  echo '  'If \~/.m2/repository exists the script assumes it\'s your maven-repo.
   exit 1
 }
 
@@ -39,19 +39,19 @@ fi
 
 
 if [ $# -gt 1 ] ; then
-  M2_HOME=$2
+  M2_REPO=$2
 else
-# if M2_HOME not set then guess it is ~/.m2/repository
-  if [ x$M2_HOME = x ] ; then
+# if M2_REPO not set then guess it is ~/.m2/repository
+  if [ x$M2_REPO = x ] ; then
     if [ -d ~/.m2/repository ] ; then
-      M2_HOME=~/.m2/repository
+      M2_REPO=~/.m2/repository
     fi
   fi
 fi
 
-if [ ! -d ${M2_HOME:-X} ] ; then
-  echo Error: Can\'t find maven-home.
-  echo Set \$M2_HOME or provide argument 2
+if [ ! -d ${M2_REPO:-X} ] ; then
+  echo Error: Can\'t find maven-repo.
+  echo Set \$M2_REPO or provide argument 2
   echo
   usage
 fi
@@ -66,7 +66,7 @@ echo Settings:
 echo "  OpenEngSB Version: $openengsb_version"
 echo "  Servicemix Version: $smx_comp_version"
 echo "  Servicemix Home: $SERVICEMIX_HOME"
-echo "  Maven Home: $M2_HOME"
+echo "  Maven Repo: $M2_REPO"
 echo
 
 cd package/all
@@ -77,7 +77,7 @@ cd ../../
 files=`find . -iname '*-installer.zip' | grep -v package/embedded/`
 files="$files package/all/target/openengsb-package-all-${openengsb_version}.zip"
 files="features/edb/core/target/openengsb-features-edb-core-${openengsb_version}.zip $files"
-files="$M2_HOME/org/apache/servicemix/servicemix-shared/$smx_comp_version/servicemix-shared-${smx_comp_version}-installer.zip $files"
+files="$M2_REPO/org/apache/servicemix/servicemix-shared/$smx_comp_version/servicemix-shared-${smx_comp_version}-installer.zip $files"
 
 for file in $files; do
   if [ ! -f $file ] ; then
