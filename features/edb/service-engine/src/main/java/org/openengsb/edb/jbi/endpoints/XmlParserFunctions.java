@@ -65,6 +65,8 @@ public class XmlParserFunctions {
      */
     public static class ContentWrapper {
         private GenericContent content;
+        private String user;
+        private String email;
         /** default operation type is UPDATE */
         private OperationType operation = OperationType.UPDATE;
 
@@ -82,6 +84,22 @@ public class XmlParserFunctions {
 
         public void setOperation(final OperationType operation) {
             this.operation = operation;
+        }
+
+        public String getUser() {
+            return user;
+        }
+
+        public void setUser(String user) {
+            this.user = user;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
         }
     }
 
@@ -157,9 +175,18 @@ public class XmlParserFunctions {
 
         XmlParserFunctions.logger.info("start searching");
         @SuppressWarnings("unchecked")
-        List<Element> objects = body.elements("acmMessageObjects");
-        for (Element e : objects) {
-            result.add(parseCommitMessageItem(e, repoBase));
+        List<Element> objects = body.elements("user");
+        if (objects != null) {
+            for (Element e : objects) {
+                result.add(parseCommitMessageUserItem(e));
+            }
+        }
+        // FIXME: suppress warning causes compiler error ... refactor
+        objects = body.elements("acmMessageObjects");
+        if (objects != null) {
+            for (Element e : objects) {
+                result.add(parseCommitMessageItem(e, repoBase));
+            }
         }
         XmlParserFunctions.logger.info("search finished");
 
@@ -531,6 +558,12 @@ public class XmlParserFunctions {
         }
         content.setContent(parsedMsgElement);
 
+        return content;
+    }
+
+    private static ContentWrapper parseCommitMessageUserItem(Element msgElement) {
+        ContentWrapper content = new ContentWrapper();
+        content.setUser(msgElement.getTextTrim());
         return content;
     }
 

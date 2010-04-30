@@ -43,6 +43,7 @@ public class EDBCommit implements EDBEndpointCommand {
 
     public CommandResult execute(NormalizedMessage in) throws Exception {
         String body = null;
+        String userName = "author";
         try {
             List<ContentWrapper> contentWrappers = XmlParserFunctions.parseCommitMessage(in, handler
                     .getRepositoryBase().toString());
@@ -51,6 +52,8 @@ public class EDBCommit implements EDBEndpointCommand {
             }
             final List<GenericContent> listAdd = new ArrayList<GenericContent>();
             final List<GenericContent> listRemove = new ArrayList<GenericContent>();
+
+            userName = extractUserInfo(contentWrappers);
 
             for (final ContentWrapper content : contentWrappers) {
                 // update search index
@@ -64,7 +67,7 @@ public class EDBCommit implements EDBEndpointCommand {
             handler.add(listAdd);
             handler.remove(listRemove);
 
-            String commitId = handler.commit(EdbEndpoint.DEFAULT_USER, EdbEndpoint.DEFAULT_EMAIL);
+            String commitId = handler.commit(userName, EdbEndpoint.DEFAULT_EMAIL);
             body = XmlParserFunctions.buildCommitResponseBody(contentWrappers, commitId);
         } catch (EDBException e) {
             body = XmlParserFunctions.buildCommitErrorResponseBody(e.getMessage(), makeStackTraceString(e));
@@ -72,8 +75,19 @@ public class EDBCommit implements EDBEndpointCommand {
         }
         CommandResult result = new CommandResult();
         result.responseString = body;
-        // TODO author-information is not yet available
-        result.eventAttributes.put("author", "max.mustermann@openengsb.org");
+        result.eventAttributes.put(userName, "max.mustermann@openengsb.org");
+        return result;
+    }
+
+    private static String extractUserInfo(List<ContentWrapper> contentWrappers) {
+        String result = EdbEndpoint.DEFAULT_USER;
+        ContentWrapper content = contentWrappers.get(0);
+        if (!(content.getUser() == null)) {
+            if (!content.getUser().equals("")) {
+                result = content.getUser();
+                contentWrappers.remove(0);
+            }
+        }
         return result;
     }
 
