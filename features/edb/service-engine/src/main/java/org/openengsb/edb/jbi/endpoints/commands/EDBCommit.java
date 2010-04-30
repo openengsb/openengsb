@@ -75,7 +75,7 @@ public class EDBCommit implements EDBEndpointCommand {
         }
         CommandResult result = new CommandResult();
         result.responseString = body;
-        result.eventAttributes.put(userName, "max.mustermann@openengsb.org");
+        result.eventAttributes.put("author", "max.mustermann@openengsb.org");
         return result;
     }
 
