@@ -63,6 +63,8 @@
 			]]></documentation>
 		</annotation>
 		<sequence>
+      <element name="user" type="string" minOccurs="0" maxOccurs="1"/>
+      <element name="email" type="string" minOccurs="0" maxOccurs="1"/>
 			<element name="acmMessageObjects" type="tns:acmMessageObjects"
 				minOccurs="1" maxOccurs="unbounded" />
 		</sequence>
