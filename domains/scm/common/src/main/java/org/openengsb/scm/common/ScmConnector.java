@@ -57,7 +57,7 @@ public abstract class ScmConnector {
         this.password = password;
     }
 
-    protected File getWorkingCopyFile() {
+    public File getWorkingCopyFile() {
         return this.workingCopyFile;
     }
 

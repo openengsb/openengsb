@@ -28,7 +28,7 @@
     <property name="password" value="password" />
   </bean>
 
-  <bean id="repositoryPoller" class="org.openengsb.svn.RepositoryPoller" init-method="init">
+  <bean id="repositoryPoller" class="org.openengsb.svn.RepositoryPoller">
   	<property name="connector" ref="connector" />
     <property name="context" value="42" />
     <property name="endpoint" ref="svnEndpoint" />

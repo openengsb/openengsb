@@ -17,7 +17,8 @@
  */
 package org.openengsb.svn;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.EventHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.OpenEngSBEndpoint;
@@ -29,52 +30,86 @@ import org.openengsb.drools.events.ScmTagCreatedEvent;
 import org.openengsb.drools.events.ScmTagDeletedEvent;
 
 public class RepositoryPoller {
-    private Logger log = Logger.getLogger(getClass());
+    private Log log = LogFactory.getLog(getClass());
 
     private SvnConnector connector;
     private String context;
 
     private EventHelper eventHelper;
 
-    public void init() {
-        this.connector.checkout();
+    public void poll() {
+        if (!isInitialCreationPossible()) {
+            return;
+        }
+
+        UpdateResult result = null;
+        try {
+            result = this.connector.update();
+        } catch (Exception e) {
+            this.log.error("Update of repository is not possible. Maybe the Repository is not setup correctly.", e);
+            return;
+        }
+
+        handleAddedBranches(result);
+        handleAddedTags(result);
+        handleDeletedBranches(result);
+        handleDeletedTags(result);
+        handleNewCommits(result);
     }
 
-    public void poll() {
-        UpdateResult result = this.connector.update();
-
-        if (result.getAddedBranches().size() > 0) {
-            this.log.info("Added branches: " + result.getAddedBranches().size());
-            for (String dir : result.getAddedBranches()) {
-                sendEvent(new ScmBranchCreatedEvent(), dir);
+    private boolean isInitialCreationPossible() {
+        if (!this.connector.getWorkingCopyFile().exists()) {
+            try {
+                this.connector.checkout();
+            } catch (Exception e) {
+                this.log.error("Repository not setup correctly. It's not possible to do a checkout.", e);
+                return false;
             }
         }
+        return true;
+    }
 
-        if (result.getAddedTags().size() > 0) {
-            this.log.info("Added tags: " + result.getAddedTags().size());
-            for (String dir : result.getAddedTags()) {
-                sendEvent(new ScmTagCreatedEvent(), dir);
+    private void handleNewCommits(UpdateResult result) {
+        if (result.getCommitted().size() > 0) {
+            this.log.info("Committed directories: " + result.getCommitted().size());
+            for (String dir : result.getCommitted()) {
+                sendEvent(new ScmCheckInEvent(), dir);
             }
         }
+    }
 
-        if (result.getDeletedBranches().size() > 0) {
-            this.log.info("Deleted branches: " + result.getDeletedBranches().size());
-            for (String dir : result.getDeletedBranches()) {
-                sendEvent(new ScmBranchDeletedEvent(), dir);
-            }
-        }
-
+    private void handleDeletedTags(UpdateResult result) {
         if (result.getDeletedTags().size() > 0) {
             this.log.info("Deleted tags: " + result.getDeletedTags().size());
             for (String dir : result.getDeletedTags()) {
                 sendEvent(new ScmTagDeletedEvent(), dir);
             }
         }
+    }
 
-        if (result.getCommitted().size() > 0) {
-            this.log.info("Committed directories: " + result.getCommitted().size());
-            for (String dir : result.getCommitted()) {
-                sendEvent(new ScmCheckInEvent(), dir);
+    private void handleDeletedBranches(UpdateResult result) {
+        if (result.getDeletedBranches().size() > 0) {
+            this.log.info("Deleted branches: " + result.getDeletedBranches().size());
+            for (String dir : result.getDeletedBranches()) {
+                sendEvent(new ScmBranchDeletedEvent(), dir);
+            }
+        }
+    }
+
+    private void handleAddedTags(UpdateResult result) {
+        if (result.getAddedTags().size() > 0) {
+            this.log.info("Added tags: " + result.getAddedTags().size());
+            for (String dir : result.getAddedTags()) {
+                sendEvent(new ScmTagCreatedEvent(), dir);
+            }
+        }
+    }
+
+    private void handleAddedBranches(UpdateResult result) {
+        if (result.getAddedBranches().size() > 0) {
+            this.log.info("Added branches: " + result.getAddedBranches().size());
+            for (String dir : result.getAddedBranches()) {
+                sendEvent(new ScmBranchCreatedEvent(), dir);
             }
         }
     }
