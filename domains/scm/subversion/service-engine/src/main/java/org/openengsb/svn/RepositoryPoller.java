@@ -37,51 +37,51 @@ public class RepositoryPoller {
     private EventHelper eventHelper;
 
     public void init() {
-        connector.checkout();
+        this.connector.checkout();
     }
 
     public void poll() {
-        UpdateResult result = connector.update();
+        UpdateResult result = this.connector.update();
 
         if (result.getAddedBranches().size() > 0) {
-            log.info("Added branches: " + result.getAddedBranches().size());
+            this.log.info("Added branches: " + result.getAddedBranches().size());
             for (String dir : result.getAddedBranches()) {
                 sendEvent(new ScmBranchCreatedEvent(), dir);
             }
         }
 
         if (result.getAddedTags().size() > 0) {
-            log.info("Added tags: " + result.getAddedTags().size());
+            this.log.info("Added tags: " + result.getAddedTags().size());
             for (String dir : result.getAddedTags()) {
                 sendEvent(new ScmTagCreatedEvent(), dir);
             }
         }
 
         if (result.getDeletedBranches().size() > 0) {
-            log.info("Deleted branches: " + result.getDeletedBranches().size());
+            this.log.info("Deleted branches: " + result.getDeletedBranches().size());
             for (String dir : result.getDeletedBranches()) {
                 sendEvent(new ScmBranchDeletedEvent(), dir);
             }
         }
 
         if (result.getDeletedTags().size() > 0) {
-            log.info("Deleted tags: " + result.getDeletedTags().size());
+            this.log.info("Deleted tags: " + result.getDeletedTags().size());
             for (String dir : result.getDeletedTags()) {
                 sendEvent(new ScmTagDeletedEvent(), dir);
             }
         }
 
         if (result.getCommitted().size() > 0) {
-            log.info("Committed directories: " + result.getCommitted().size());
+            this.log.info("Committed directories: " + result.getCommitted().size());
             for (String dir : result.getCommitted()) {
                 sendEvent(new ScmCheckInEvent(), dir);
             }
         }
     }
-    
+
     private void sendEvent(ScmDirectoryEvent e, String dir) {
         e.setDirectory(dir);
-        eventHelper.sendEvent(e);
+        this.eventHelper.sendEvent(e);
     }
 
     public void setConnector(SvnConnector connector) {
@@ -93,8 +93,8 @@ public class RepositoryPoller {
     }
 
     public void setEndpoint(OpenEngSBEndpoint endpoint) {
-        MessageProperties msgProperties = new MessageProperties(context, null);
-        eventHelper = endpoint.createEventHelper(msgProperties);
+        MessageProperties msgProperties = new MessageProperties(this.context, null);
+        this.eventHelper = endpoint.createEventHelper(msgProperties);
     }
 
 }

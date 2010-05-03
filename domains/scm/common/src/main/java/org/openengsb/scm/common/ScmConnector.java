@@ -30,19 +30,19 @@ public abstract class ScmConnector {
     private String password;
 
     protected boolean canWriteToRepository() {
-        return developerConnectionUri != null;
+        return this.developerConnectionUri != null;
     }
 
     protected URI getDeveloperConnectionUri() {
-        return developerConnectionUri;
+        return this.developerConnectionUri;
     }
 
     public void setDeveloperConnection(String developerConnection) {
-        developerConnectionUri = URI.create(developerConnection);
+        this.developerConnectionUri = URI.create(developerConnection);
     }
 
     protected String getUsername() {
-        return username;
+        return this.username;
     }
 
     public void setUsername(String username) {
@@ -50,7 +50,7 @@ public abstract class ScmConnector {
     }
 
     protected String getPassword() {
-        return password;
+        return this.password;
     }
 
     public void setPassword(String password) {
@@ -58,17 +58,17 @@ public abstract class ScmConnector {
     }
 
     protected File getWorkingCopyFile() {
-        return workingCopyFile;
+        return this.workingCopyFile;
     }
 
     public void setWorkingCopy(String workingCopy) {
         if (workingCopy != null) {
-            workingCopyFile = new File(workingCopy);
-            if (!workingCopyFile.isAbsolute()) {
-                workingCopyFile = new File(DEFAULT_ENGSB_WORKING_COPY, workingCopy);
+            this.workingCopyFile = new File(workingCopy);
+            if (!this.workingCopyFile.isAbsolute()) {
+                this.workingCopyFile = new File(DEFAULT_ENGSB_WORKING_COPY, workingCopy);
             }
         } else {
-            workingCopyFile = new File(DEFAULT_ENGSB_WORKING_COPY, DEFAULT_WORKING_COPY_NAME);
+            this.workingCopyFile = new File(DEFAULT_ENGSB_WORKING_COPY, DEFAULT_WORKING_COPY_NAME);
         }
     }
 }
