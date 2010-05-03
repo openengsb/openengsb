@@ -55,3 +55,9 @@ package/embedded/data/
 #Easy2Find
 #================
 easy2find
+
+#================
+#pver ignores
+#================
+pconf.pyc
+
