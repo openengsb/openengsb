@@ -18,6 +18,7 @@
 -->
 <faqs id="General FAQ">
   <part id="General">
+    <title>General</title>
     <faq id="What">
       <question>What is the OpenEngSB</question>
       <answer>
@@ -39,6 +40,32 @@
       <answer>
         <p>
           TBW
+        </p>
+      </answer>
+    </faq>
+  </part>
+  <part id="Development">
+    <title>Development</title>
+    <faq id="File Limit">
+      <question>Maven throws errors that it isn't able to open file [xyz], what's wrong?</question>
+      <answer>
+        <p>
+	  If you are using Linux, most likely you will have to increase the number of available file handles. Just add:
+	</p>
+	<p>
+	  * soft nofile 65536<br/>
+	  * hard nofile 65536
+	</p>
+	<p>
+	  to your /etc/security/limits.conf file and restart your device.
+	</p>
+      </answer>
+    </faq>
+    <faq id="Debug">
+      <question>Is it possible to debug OpenEngSB while running in servicemix?</question>
+      <answer>
+        <p>
+          Yes, to debug in Eclipse just stick with <a href="http://servicemix.apache.org/remote-debugging-servicemix-in-eclipse.html">http://servicemix.apache.org/remote-debugging-servicemix-in-eclipse.html</a>, but mind that SERVICEMIX_DEBUG has to be replaced with KARAF_DEBUG.
         </p>
       </answer>
     </faq>
