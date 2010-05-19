@@ -69,20 +69,37 @@ HowTo - Guvnor Setup
   import java.util.ArrayList
   import java.util.Map
   import java.util.HashMap
+  import org.openengsb.drools.BuildDomain
+  import org.openengsb.drools.DeployDomain
+  import org.openengsb.drools.Domain
+  import org.openengsb.drools.DomainConfiguration
+  import org.openengsb.drools.DomainRegistry
+  import org.openengsb.drools.DroolsHelper
   import org.openengsb.drools.events.BuildEvent
+  import org.openengsb.drools.events.BuildStartEvent
   import org.openengsb.drools.events.DeployEvent
+  import org.openengsb.drools.events.DeployStartEvent
+  import org.openengsb.drools.events.EdbCommitEvent
+  import org.openengsb.drools.events.ScmBranchCreatedEvent
+  import org.openengsb.drools.events.ScmBranchDeletedEvent
   import org.openengsb.drools.events.ScmCheckInEvent
+  import org.openengsb.drools.events.ScmDirectoryEvent
+  import org.openengsb.drools.events.ScmTagCreatedEvent
+  import org.openengsb.drools.events.ScmTagDeletedEvent
   import org.openengsb.drools.events.TestEvent
+  import org.openengsb.drools.events.TestStartEvent
+  import org.openengsb.drools.IssuesDomain
   import org.openengsb.drools.model.Attachment
-  import org.openengsb.drools.model.MergeResult
+  import org.openengsb.drools.model.Issue
   import org.openengsb.drools.model.Notification
   import org.openengsb.drools.model.Report
-  import org.openengsb.drools.model.Issue
-  import org.openengsb.drools.model.ScmLogEntry
+  import org.openengsb.drools.NotificationDomain
+  import org.openengsb.drools.ReportDomain
+  import org.openengsb.drools.TestDomain
+  import org.openengsb.contextcommon.ContextHelper
+  import org.openengsb.core.EventHelper
   import org.openengsb.core.model.Event
-  import org.openengsb.drools.events.BuildStartEvent
-  import org.openengsb.drools.events.DeployStartEvent
-  import org.openengsb.drools.events.TestStartEvent
+  import org.openengsb.drools.IssuesDomain
   
   global org.openengsb.drools.BuildDomain build
   global org.openengsb.drools.DeployDomain deploy
@@ -91,7 +108,6 @@ HowTo - Guvnor Setup
   global org.openengsb.drools.IssuesDomain issue
   global org.openengsb.drools.NotificationDomain notification
   global org.openengsb.drools.ReportDomain report
-  global org.openengsb.drools.ScmDomain scm
   global org.openengsb.drools.TestDomain test
   global org.openengsb.contextcommon.ContextHelper ctx
   global org.openengsb.core.EventHelper eventHelper
