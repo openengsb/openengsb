@@ -23,7 +23,7 @@
     </requiredProperty>
 
     <requiredProperty key="description" >
-      <defaultValue></defaultValue>
+      <defaultValue>This is a tool connector for OpenEngSB.</defaultValue>
     </requiredProperty>
 
     <requiredProperty key="namespace" >
