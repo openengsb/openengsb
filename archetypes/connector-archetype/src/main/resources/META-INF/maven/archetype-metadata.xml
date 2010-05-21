@@ -5,30 +5,51 @@
     <requiredProperty key="artifactId" >
       <defaultValue>openengsb-domains-domainName-connectorName</defaultValue>
     </requiredProperty>
+
+    <requiredProperty key="groupId" >
+      <defaultValue>org.openengsb</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="version" >
+      <defaultValue>1.0.0-SNAPSHOT</defaultValue>
+    </requiredProperty>
+
     <requiredProperty key="se-artifactId" >
       <defaultValue>openengsb-domains-domainName-connectorName-se</defaultValue>
     </requiredProperty>
-    <requiredProperty key="description" >
-      <defaultValue></defaultValue>
-    </requiredProperty>
-    <requiredProperty key="namespace" >
-      <defaultValue>http://www.openengsb.org/connector/connectorName/1.0</defaultValue>
-    </requiredProperty>
-    <requiredProperty key="package" >
-      <defaultValue>org.openengsb.connector</defaultValue>
-    </requiredProperty>
-    <requiredProperty key="connector-name" >
-      <defaultValue>Connector</defaultValue>
-    </requiredProperty>
-    <requiredProperty key="domain" >
-      <defaultValue>org.openengsb.domains.ToolDomain</defaultValue>
-    </requiredProperty>
-    <requiredProperty key="urn">
-      <defaultValue>urn:openengsb:connectorName</defaultValue>
-    </requiredProperty>
+
     <requiredProperty key="su-artifactId">
       <defaultValue>openengsb-domains-domainName-connectorName-su</defaultValue>
     </requiredProperty>
+
+    <requiredProperty key="description" >
+      <defaultValue></defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="namespace" >
+      <defaultValue>http://www.openengsb.org/connector/connectorName/1.0</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="package" >
+      <defaultValue>org.openengsb.connector</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="connector-name" >
+      <defaultValue>Connector</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="domain-package" >
+      <defaultValue>org.openengsb.domains</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="domain-name" >
+      <defaultValue>org.openengsb.domains</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="urn">
+      <defaultValue>urn:openengsb:connectorName</defaultValue>
+    </requiredProperty>
+
   </requiredProperties>
 
   <modules>

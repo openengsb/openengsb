@@ -20,16 +20,16 @@ package ${package};
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
-import ${domain};
+import ${domain-package}.${domain-name};
 
 /**
  * @org.apache.xbean.XBean element="${connector-name}Endpoint"
  *                         description="${description}"
  */
-public class ${connector-name}Endpoint extends LinkingEndpoint<${domain}> {
+public class ${connector-name}Endpoint extends LinkingEndpoint<${domain-name}> {
 
     @Override
-    protected ${domain} getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
+    protected ${domain-name} getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         return null;
     }
 
