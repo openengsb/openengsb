@@ -103,6 +103,7 @@
     <maven.plugin.surefire>2.4.3</maven.plugin.surefire>
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
     <servicemix.jbi.maven.version>4.4-SNAPSHOT</servicemix.jbi.maven.version>
+    <maven.rat.version>0.6</maven.rat.version>
   </properties>
 
   <groupId>org.openengsb</groupId>
@@ -637,6 +638,7 @@
           <plugin>
             <groupId>org.apache.rat</groupId>
             <artifactId>apache-rat-plugin</artifactId>
+            <version>${maven.rat.version}</version>
             <configuration>
               <excludeSubProjects>false</excludeSubProjects>
               <excludes>

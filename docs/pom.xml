@@ -48,6 +48,7 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
+        <version>${maven.rat.version}</version>
         <configuration>
           <excludes>
             <!-- raw data -->
