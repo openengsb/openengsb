@@ -43,7 +43,7 @@
     </requiredProperty>
 
     <requiredProperty key="domain-name" >
-      <defaultValue>org.openengsb.domains</defaultValue>
+      <defaultValue>ToolDomain</defaultValue>
     </requiredProperty>
 
     <requiredProperty key="urn">
