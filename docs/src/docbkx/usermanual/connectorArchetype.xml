@@ -18,33 +18,19 @@
 -->
 <chapter id="connectorArchetype">
   <title>How to use the Maven archetype to create an OpenEngSB tool connector</title>
-
-  <section>
-    <title>Preparing the Archetype for Usage</title>
-    <para>
-      To prepare the archetype for usage it is necessary to install it and to update the local archetype 
-      catalog. Make sure you are at the root directory of the archetype (where the archetype's pom resides) 
-      before you execute the following commands:
-      <programlisting>
-        <![CDATA[
-  mvn install
-  mvn archetype:update-local-catalog
-        ]]>
-      </programlisting>
-    </para>
-
-  </section>
-
+  <para>
+    This section describes how a new OpenEngSB tool connector can be created using a Maven archetype. For more information about tool connectors see section "Internal OpenEngSB Tool Connectors".
+  </para>
   <section>
     <title>Using the archetype</title>
     <para>
       The following command is used to start the project generation:
       <programlisting>
         <![CDATA[
-   mvn archetype:generate -DarchetypeCatalog=local
+   mvn archetype:generate -DarchetypeCatalog="http://dev.openengsb.org/"
         ]]>
       </programlisting>
-      The archetype named connector-archetype should show up in the local archetype list if the steps described in the section Preparing the Archetype for Usage have been executed.
+      The archetype named connector-archetype should show up in the archetype list.
       Select the archetype connector-archetype. Maven will ask if the default values for the properties shall be used. Type 'n' to overwrite the default values.
       The following properties are needed to generate a connector project:
       <itemizedlist>
