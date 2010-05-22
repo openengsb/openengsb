@@ -223,7 +223,10 @@
     <module>features/link/http-jms/service-unit</module>
     <module>features/link/http-processor/service-engine</module>
     <module>features/link/http-processor/service-unit</module>
-    
+   
+    <!-- Maven Archetypes -->
+    <module>archetypes/connector-archetype</module>
+ 
   </modules>
 
   <inceptionYear>2009</inceptionYear>
