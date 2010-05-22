@@ -12,4 +12,5 @@
   <artifactId>domain-archetype</artifactId>
   <name>Archetype - domain-archetype</name>
   <url>http://www.openengsb.org</url>
+  <description>Archetype for generation of an OpenEngSB tool domain. Both service engine and service unit are generated.</description>
 </project>

@@ -26,7 +26,7 @@ import org.openengsb.core.OpenEngSBComponent;
 public class ${domain-name}Component extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class[] { ${domain-name}Endpoint.class };
+        return new Class[] { ${domain-name}Endpoint.class, ${domain-name}EventEndpoint.class };
     }
 
 }

@@ -9,7 +9,7 @@
   <artifactId>${artifactId}</artifactId>
   <version>${version}</version>
 
-  <name>Archetype connector</name>
+  <name>Archetype domain</name>
   <packaging>pom</packaging>
 
   <modules>

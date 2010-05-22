@@ -47,7 +47,7 @@
     </requiredProperty>
 
     <requiredProperty key="urn">
-      <defaultValue>urn:openengsb:connectorName</defaultValue>
+      <defaultValue>urn:openengsb:domainName</defaultValue>
     </requiredProperty>
 
   </requiredProperties>
