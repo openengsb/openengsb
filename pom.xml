@@ -226,7 +226,8 @@
    
     <!-- Maven Archetypes -->
     <module>archetypes/connector-archetype</module>
- 
+    <module>archetypes/domain-archetype</module> 
+
   </modules>
 
   <inceptionYear>2009</inceptionYear>
