@@ -27,7 +27,7 @@
       The following command is used to start the project generation:
       <programlisting>
         <![CDATA[
-   mvn archetype:generate -DarchetypeCatalog="http://dev.openengsb.org/"
+   mvn archetype:generate -DarchetypeCatalog="http://maven.openengsb.org/archetypes/"
         ]]>
       </programlisting>
       The archetype named connector-archetype should show up in the archetype list.
