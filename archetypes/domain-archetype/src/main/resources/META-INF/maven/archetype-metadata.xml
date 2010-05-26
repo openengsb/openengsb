@@ -1,0 +1,87 @@
+<archetype-descriptor xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
+  name="OpenEngSB domain archetype" partial="false">
+  <requiredProperties>
+    <requiredProperty key="artifactId" >
+      <defaultValue>openengsb-domains-domainName</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="groupId" >
+      <defaultValue>org.openengsb</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="version" >
+      <defaultValue>1.0.0-SNAPSHOT</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="se-artifactId" >
+      <defaultValue>openengsb-domains-domainName-se</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="su-artifactId">
+      <defaultValue>openengsb-domains-domainName-su</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="description" >
+      <defaultValue>This is a tool domain for OpenEngSB.</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="namespace" >
+      <defaultValue>http://www.openengsb.org/domain/domainName/1.0</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="package" >
+      <defaultValue>org.openengsb.domain</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="domain-name" >
+      <defaultValue>ToolDomain</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="domain-package" >
+      <defaultValue>org.openengsb.domains</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="default-connector-name" >
+      <defaultValue>Connector</defaultValue>
+    </requiredProperty>
+
+    <requiredProperty key="urn">
+      <defaultValue>urn:openengsb:domainName</defaultValue>
+    </requiredProperty>
+
+  </requiredProperties>
+
+  <modules>
+    <module id="service-engine" dir="service-engine" name="service-engine">
+      <fileSets>
+        <fileSet filtered="true" packaged="true">
+          <directory>src/main/java/</directory>
+            <includes>
+              <include>**/*.java</include> 
+            </includes>
+        </fileSet>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/main/resources/</directory>
+          <includes>
+            <include>**/*</include>
+          </includes>
+        </fileSet>
+      </fileSets>
+    </module>
+
+    <module id="service-unit" dir="service-unit" name="service-unit">
+      <fileSets>
+        <fileSet filtered="true" packaged="false">
+          <directory>src/main/resources/</directory>
+          <includes>
+            <include>**/*</include>
+          </includes>
+        </fileSet>
+      </fileSets>
+    </module>
+
+  </modules>
+
+</archetype-descriptor>
+
