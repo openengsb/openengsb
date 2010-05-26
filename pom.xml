@@ -183,12 +183,14 @@
     <!-- Tool Abstraction -->
     <module>domains/toolabstraction/maven</module>
     <module>domains/toolabstraction/twitter</module>
+    <module>domains/toolabstraction/facebook</module>
 
     <!-- Connectors -->
     <module>domains/scm/subversion/service-engine</module>
     <module>domains/notification/email/service-engine</module>
     <module>domains/notification/twitter/service-engine</module>
     <module>domains/notification/xmpp/service-engine</module>
+    <module>domains/notification/facebook/service-engine</module>
     <module>domains/report/plaintext/service-engine</module>
     <module>domains/issues/trac/service-engine</module>
     <module>domains/test/maven/service-engine</module>
@@ -202,6 +204,7 @@
     <module>domains/scm/subversion/service-unit</module>
     <module>domains/notification/email/service-unit</module>
     <module>domains/notification/twitter/service-unit</module>
+    <module>domains/notification/facebook/service-unit</module> 
     <module>domains/notification/xmpp/service-unit</module>
     <module>domains/report/plaintext/service-unit</module>
     <module>domains/issues/trac/service-unit</module>
@@ -951,6 +954,11 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-toolabstraction-facebook</artifactId>
+        <version>${pom.version}</version>
+      </dependency>        
+      <dependency>
+        <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-issues-trac-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
@@ -979,6 +987,17 @@
         <artifactId>openengsb-domains-notification-twitter-se</artifactId>
         <version>${pom.version}</version>
       </dependency>
+	  <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-notification-facebook-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+	  <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-notification-facebook-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-domains-notification-xmpp-su</artifactId>
