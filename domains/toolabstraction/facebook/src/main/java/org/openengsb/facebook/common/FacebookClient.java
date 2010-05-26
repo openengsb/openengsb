@@ -16,14 +16,30 @@
 
 */
 package org.openengsb.facebook.common;
+import com.google.code.facebookapi.FacebookException;
+import com.google.code.facebookapi.schema.User;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
  * User: bonomat
- * Date: 26.05.2010
- * Time: 11:42:08
+ * Date: 12.05.2010
+ * Time: 13:59:23
  * To change this template use File | Settings | File Templates.
  */
-public interface FacebookConnector {
-    void updateStatus(String message);
+public interface FacebookClient {
+
+
+    boolean updateStatus(String message) throws FacebookException;
+
+    public Long getLoggedInUserID() throws FacebookException;
+
+    public List<User> getFriends() throws FacebookException;    
+
+    public String publishToWall(String message) throws FacebookException ;
+
+    public Map<String,String> getStream() throws FacebookException;
 }
