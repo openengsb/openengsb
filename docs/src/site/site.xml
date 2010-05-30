@@ -41,7 +41,7 @@
     <links>
       <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
       <item name="Source" href="http://github.com/openengsb/openengsb/" />
-      <item name="Issues" href="http://issues.openengsb.org/"/>
+      <item name="Issues / Roadmap" href="http://issues.openengsb.org/"/>
       <item name="Continuous Integration" href="http://build.openengsb.org/"/>
       <item name="Artifacts" href="http://maven.openengsb.org/" />
     </links>
@@ -51,7 +51,6 @@
       <item href="about.html" name="What is OpenEngSB?" />
       <item href="reference/index.html" name="Userguide" />
       <item href="faq.html" name="FAQ" />
-      <item href="roadmap.html" name="Roadmap" />
     </menu>
 
     <menu name="Documentation">
