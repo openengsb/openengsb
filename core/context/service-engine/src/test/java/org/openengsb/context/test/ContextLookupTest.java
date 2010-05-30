@@ -85,7 +85,13 @@ public class ContextLookupTest {
             NoSuchFieldException {
         Field field = EndpointContextHelperImpl.class.getDeclaredField("contextStore");
         field.setAccessible(true);
-        field.set(context, new ContextStore(new File("target/test-classes/contextdata.xml")));
+        ContextStore contextStore = new ContextStore(new File("target/test-classes/contextdata.xml"));
+
+        Field settings = ContextStore.class.getDeclaredField("settings");
+        settings.setAccessible(true);
+        settings.set(contextStore, null);
+
+        field.set(context, contextStore);
     }
 
     private List<String> getListOfKey(String key) {
