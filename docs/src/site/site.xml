@@ -47,18 +47,18 @@
       <item href="index.html" name="Welcome" />
       <item href="about.html" name="What is OpenEngSB?" />
       <item href="http://github.com/openengsb/openengsb/downloads" name="Download"/>
-	  <item collapse="true" href="howto/howto.html" name="HowTo - First steps">
-        <item href="howto/howto_notify.html" name="Hello World" />
-        <item href="howto/howto_issue.html" name="Issue tracker" />
-	<item href="howto/howto_embedded.html" name="Web configuration" />
-	<item href="howto/howto_cit.html" name="Continuous Integration" />
-        <item href="howto/howto_setup.html" name="Developer setup" />
-	  </item>
+      <item href="reference/index.html" name="Userguide" />
+      <item href="faq.html" name="FAQ" />
     </menu>
 
     <menu name="Documentation">
-      <item href="reference/index.html" name="Userguide" />
-      <item href="faq.html" name="FAQ" />
+      <item collapse="true" href="howto/howto.html" name="HowTo - First steps">
+        <item href="howto/howto_notify.html" name="Hello World" />
+        <item href="howto/howto_issue.html" name="Issue tracker" />
+        <item href="howto/howto_embedded.html" name="Web configuration" />
+        <item href="howto/howto_cit.html" name="Continuous Integration" />
+        <item href="howto/howto_setup.html" name="Developer setup" />
+      </item>
       <item collapse="true" href="connector/issues/issues.html" name="Issue-Connectors">
         <item href="proposals/issueDomain.html" name="Issue domain" />
         <item href="connector/issues/trac.html" name="Trac" />
