@@ -104,9 +104,6 @@
       <item href="presentation.html" name="Presentations" />
       <item href="team-list.html" name="Team" />
       <item href="license.txt" name="License" />
-      <item href="dependency-management.html" name="Dependencies" />
-      <item href="plugin-management.html" name="Modules" />
-      <item href="plugins.html" name="Plugins" />
     </menu>
 
   </body>
