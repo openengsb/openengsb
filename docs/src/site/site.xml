@@ -91,9 +91,7 @@
         <item href="connector/scm/scmConnector.html" name="SCM Connector" />
         <item href="connector/scm/svnConnector.html" name="Subversion Connector" />
       </item>
-      <item href="contribute/format.html" name="APT Format" />
-      <item href="contribute/eclipse.html" name="Eclipse Setup" />
-      <item collapse="true" name="Proposals" href="contribute/proposals.html">
+      <item collapse="true" name="Proposals" href="proposals.html">
         <item href="proposals/edbInterface.html" name="EDB" />
         <item href="proposals/scmDomain.html" name="SCM Domain" />
         <item href="proposals/pimDomain.html" name="PIM Domain" />
