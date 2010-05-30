@@ -65,8 +65,6 @@
     </menu>
 
     <menu name="Documentation">
-      <item collapse="true" href="howto/howto.html" name="HowTo - First steps">
-      </item>
       <item collapse="true" href="connector/issues/issues.html" name="Issue-Connectors">
         <item href="proposals/issueDomain.html" name="Issue domain" />
         <item href="connector/issues/trac.html" name="Trac" />
