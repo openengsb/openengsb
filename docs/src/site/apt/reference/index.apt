@@ -14,31 +14,15 @@
 ~~   limitations under the License.
 ~~
 
-User Documentation 
+User Documentation
 
   The usermanual contains descriptions about how to use the OpenEngSB and how to configure it. Further more information
  for starting with the development of connectors and domains are contained. It is thought as well for users who simply
- want to try the OpenEngSB as for developer like to integrate tool connectors. The introduction of the user manual 
+ want to try the OpenEngSB as for developer like to integrate tool connectors. The introduction of the user manual
  should be read by all and provide additional information which chapters are interesting for which target audience.
 
     * {{{html/usermanual.html} Multi-HTML page documentation}}
-    
+
     * {{{html-single/usermanual.html} Singe HTML page documentation}}
-    
+
     * {{{pdf/usermanual.pdf} PDF documentation}}
-
-Tool Domain Documentation
-
-  Since all tools... (TBW)
-  
-    * {{{pdf/domains.pdf} PDF documentation}}
-
-Architectural Documentation
-
-  These documents give an in-depth look on the OpenEngSB architecture. They are provided for developers and people are
- are interested in contributing to the OpenEngSB project or like to get a better understanding of it's inner working.
-
-	* {{{pdf/architecture.pdf} PDF documentation}}
-	
-	* {{{communication.html} Communication model}}
-    
