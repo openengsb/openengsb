@@ -41,7 +41,7 @@
     <links>
       <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
       <item name="Source" href="http://github.com/openengsb/openengsb/" />
-      <item name="Mailing Lists" href="contribute/mailinglists.html" />
+      <item name="Mailing Lists" href="mailinglists.html" />
       <item name="Presentation Material" href="presentation.html" />
       <item name="Issues / Roadmap" href="http://issues.openengsb.org/"/>
       <item name="Continuous Integration" href="http://build.openengsb.org/"/>
