@@ -17,6 +17,7 @@
  */
 package org.openengsb.svn.test;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.Before;
@@ -40,25 +41,29 @@ public class RepositoryPollerTest {
     private RepositoryPoller poller;
     private SvnConnector connector;
     private EventHelper eventHelper;
+    private File repositoryFileMock;
 
     @Before
     public void setUp() throws IOException {
         connector = Mockito.mock(SvnConnector.class);
         eventHelper = Mockito.mock(EventHelper.class);
-        
+        repositoryFileMock = Mockito.mock(File.class);
+
         OpenEngSBEndpoint endpoint = Mockito.mock(OpenEngSBEndpoint.class);
         Mockito.when(endpoint.createEventHelper(Mockito.any(MessageProperties.class))).thenReturn(eventHelper);
-        
+        Mockito.when(connector.getWorkingCopyFile()).thenReturn(repositoryFileMock);
+        Mockito.when(repositoryFileMock.exists()).thenReturn(true);
+
         poller = new RepositoryPoller();
         poller.setConnector(connector);
         poller.setEndpoint(endpoint);
     }
-    
+
     @Test
     public void testPollRepositoryEmpty() throws IOException {
         Mockito.when(connector.update()).thenReturn(new UpdateResult());
         poller.poll();
-        
+
         Mockito.verify(eventHelper, Mockito.never()).sendEvent(Mockito.any(Event.class));
     }
 
