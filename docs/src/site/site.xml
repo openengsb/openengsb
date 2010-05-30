@@ -51,6 +51,7 @@
       <item href="about.html" name="What is OpenEngSB?" />
       <item href="reference/index.html" name="Userguide" />
       <item href="faq.html" name="FAQ" />
+      <item href="roadmap.html" name="Roadmap" />
     </menu>
 
     <menu name="Documentation">
@@ -87,11 +88,6 @@
         <item href="connector/scm/scmConnector.html" name="SCM Connector" />
         <item href="connector/scm/svnConnector.html" name="Subversion Connector" />
       </item>
-    </menu>
-
-    <menu name="Community">
-      <item href="contribute/mailinglists.html" name="Mailing Lists" />
-      <item href="roadmap.html" name="Roadmap" />
       <item href="contribute/git.html" name="Git Workflow" />
       <item href="contribute/codingstyle.html" name="Coding Guidelines" />
       <item href="contribute/format.html" name="APT Format" />
@@ -105,12 +101,13 @@
     </menu>
 
     <menu name="Project Information">
+      <item href="contribute/mailinglists.html" name="Mailing Lists" />
       <item href="presentation.html" name="Presentations" />
+      <item href="team-list.html" name="Team" />
+      <item href="license.txt" name="License" />
       <item href="dependency-management.html" name="Dependencies" />
       <item href="plugin-management.html" name="Modules" />
       <item href="plugins.html" name="Plugins" />
-      <item href="team-list.html" name="Team" />
-      <item href="license.txt" name="License" />
     </menu>
 
   </body>
