@@ -34,6 +34,8 @@
   </bannerRight>
 
   <poweredBy />
+  <publishDate position="left" />
+  <version position="left"/>
 
   <body>
     <links>
