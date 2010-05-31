@@ -24,11 +24,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.openengsb.facebook.common.FacebookClientImpl;
 import org.openengsb.facebook.common.FacebookLogin;
 import org.openengsb.facebook.common.FacebookLoginImpl;
 import org.openengsb.facebook.common.exceptions.FacebookConnectorException;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -37,40 +41,37 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Philipp H
- * Date: 19.05.2010
- * Time: 16:15:04
- * Mail: e0725710@student.tuwien.ac.at
- */
-public class FacebookConnectorTest {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "classpath:../test-classes/test-bean.xml" })
+public class FacebookConnectorIT {
 
     
-    final String email = "azugem@gmail.com";
-    final String password = "password?";
-    final String API_KEY = "87e992543f887369febb9d056c14f145";
-    final String SECRET = "43438a4fed1b5fed6f7bf6f1c3e5f87f";
+
+    @Resource
+    private String email;
+    @Resource
+    private String password;
+    @Resource
+    private String API_KEY;
+    @Resource
+    private String SECRET;
+    @Resource
     private FacebookConnectorImpl facebookConnector;
 
 
     @Before
     public void setup() throws IOException, HttpException, URISyntaxException, FacebookException, FacebookConnectorException {
-        facebookConnector = new FacebookConnectorImpl(email, password, API_KEY, SECRET);
     }
 
     @After
     public void after() {
-
     }
 
-
     @Test
-    public void testSimpleUpdateStatus() throws FacebookException {
+    public void simpleUpdateUserStatus() throws FacebookException {
         facebookConnector.updateStatus("test");
-        
-       // assertTrue("100001136838040".equals(result.get("actor_id")));
-       // System.out.println(result.get("message"));
+        //TODO: Dont know how to test this yet, at the moment you have to check it on your own
+       
     }
 
 

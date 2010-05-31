@@ -33,13 +33,7 @@ import java.net.URISyntaxException;
 import static org.junit.Assert.assertTrue;
 
 
-/**
- * Created by IntelliJ IDEA.
- * User: Philipp H
- * Date: 19.05.2010
- * Time: 12:43:44
- * Mail: e0725710@student.tuwien.ac.at
- */
+
 public class FacebookClientImplTest {
     FacebookJaxbRestClient facebookJaxbClientMock;
     FacebookClient fbClient;
@@ -58,14 +52,14 @@ public class FacebookClientImplTest {
     }
 
     @Test
-    public void testPuplishToWall() throws FacebookException {
+    public void puplishToWallNoErrorShouldBeReturned() throws FacebookException {
         Mockito.when(facebookJaxbClientMock.users_setStatus(Mockito.anyString())).thenReturn(true);
         fbClient.updateStatus("test");
         Mockito.verify(facebookJaxbClientMock,Mockito.times(1)).users_setStatus(Mockito.eq("test"));
     }
 
     @Test
-    public void testGetLoggedInUserID() throws FacebookException {
+    public void getLoggedInUserID() throws FacebookException {
         Mockito.when(facebookJaxbClientMock.users_getLoggedInUser()).thenReturn(new Long(1234));
         fbClient.getLoggedInUserID();
         Mockito.verify(facebookJaxbClientMock,Mockito.times(1)).users_getLoggedInUser();

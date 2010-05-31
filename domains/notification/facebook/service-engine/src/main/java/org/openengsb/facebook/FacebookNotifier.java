@@ -27,16 +27,10 @@ import org.openengsb.facebook.common.FacebookConnector;
 import java.io.IOException;
 import java.net.URL;
 
-/**
- * Created by IntelliJ IDEA.
- * User: bonomat
- * Date: 26.05.2010
- * Time: 10:00:39
- * To change this template use File | Settings | File Templates.
- */
+
 public class FacebookNotifier implements NotificationDomain {
 
-    private Log log = LogFactory.getLog(getClass());
+    private Log log = LogFactory.getLog(FacebookNotifier.class);
     FacebookConnector facebookConenctor;
     private final int maxChars = 420;
 

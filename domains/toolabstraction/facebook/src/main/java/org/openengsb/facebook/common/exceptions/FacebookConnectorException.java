@@ -17,13 +17,7 @@
 */
 package org.openengsb.facebook.common.exceptions;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Philipp H
- * Date: 19.05.2010
- * Time: 15:10:06
- * Mail: e0725710@student.tuwien.ac.at
- */
+
 public class FacebookConnectorException extends Exception{
     private int statusCode;
 

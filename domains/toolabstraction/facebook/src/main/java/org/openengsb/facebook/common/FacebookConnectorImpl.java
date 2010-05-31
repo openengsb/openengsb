@@ -23,15 +23,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.facebook.common.exceptions.FacebookConnectorException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: bonomat
- * Date: 26.05.2010
- * Time: 10:52:13
- * To change this template use File | Settings | File Templates.
- */
+
+
 public class FacebookConnectorImpl implements FacebookConnector {
-    private static Log log = LogFactory.getLog(FacebookConnectorImpl.class);
+    private Log log = LogFactory.getLog(FacebookConnectorImpl.class);
     private FacebookLoginImpl login;
     private FacebookJaxbRestClient client;
     private FacebookClientImpl facebookClient;
@@ -40,7 +35,7 @@ public class FacebookConnectorImpl implements FacebookConnector {
 
         try {
             login = new FacebookLoginImpl();
-            login.initHttpClient();
+            
             login.loginUser(email, password, API_KEY);
             client = login.createLoggedInFacebookClient(API_KEY, SECRET);
         } catch (FacebookException e) {
@@ -60,9 +55,6 @@ public class FacebookConnectorImpl implements FacebookConnector {
         }
     }
 
-   // public FacebookClientImpl getFacebookClient() {
-   //     return facebookClient;
-   // }
 
     private void handleFacebookException(FacebookException e) {
         switch (e.getCode()) {

@@ -27,7 +27,7 @@
         </constructor-arg>
     </bean>
 
-    <bean id="facebookConn" class="org.openengsb.facebook.common.FacebookConnectorImpl">
+    <bean id="facebookConnector" class="org.openengsb.facebook.common.FacebookConnectorImpl">
         <constructor-arg index="0" value="azugem@gmail.com"/>
         <constructor-arg index="1" value="password?"/>
         <constructor-arg index="2" value="87e992543f887369febb9d056c14f145"/>
@@ -35,7 +35,7 @@
     </bean>
 
     <bean id="facebookNotifier" class="org.openengsb.facebook.FacebookNotifier">
-        <property name="facebookConenctor" ref="facebookConn"/>
+        <property name="facebookConenctor" ref="facebookConnector"/>
     </bean>
 
     <Facebook:FacebookEndpoint endpoint="FacebookEndpoint" service="connectorURN:FacebookService"

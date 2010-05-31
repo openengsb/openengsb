@@ -42,16 +42,17 @@ import org.openengsb.facebook.common.exceptions.FacebookConnectorException;
 
 public class FacebookLoginImpl implements FacebookLogin {
 
-    private static Log log = LogFactory.getLog(FacebookLoginImpl.class);
+    private Log log = LogFactory.getLog(FacebookLoginImpl.class);
 
 
     private DefaultHttpClient httpClient;
     private HttpResponse response;
     private HttpEntity entity;
     private FacebookJaxbRestClient facebookClient;
+    private static final String FACEBOOK_LOGIN = "http://www.facebook.com/login.php";
 
-    FacebookLoginImpl() {
-
+    FacebookLoginImpl() throws FacebookConnectorException {
+        initHttpClient();
     }
 
 
@@ -61,7 +62,7 @@ public class FacebookLoginImpl implements FacebookLogin {
             if (httpClient == null) {
                 initHttpClient();
             }
-            HttpPost httpost = new HttpPost("http://www.facebook.com/login.php");
+            HttpPost httpost = new HttpPost(FACEBOOK_LOGIN);
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(new BasicNameValuePair("email", email));
             nvps.add(new BasicNameValuePair("pass", password));
@@ -80,23 +81,18 @@ public class FacebookLoginImpl implements FacebookLogin {
 
             return checkCookies(cookies);
 
-        }
-        catch (HttpException ex) {
+        } catch (HttpException ex) {
             throw new FacebookConnectorException(-1);
         } catch (UnsupportedEncodingException e) {
             throw new FacebookConnectorException(-1);
         } catch (URISyntaxException e) {
             throw new FacebookConnectorException(-1);
-
         } catch (IOException e) {
             throw new FacebookConnectorException(-1);
         }
-
     }
 
-    /**
-     * close httpClient
-     */
+
     @Override
     public void closeHttpClient() {
         if (httpClient != null) {
@@ -104,23 +100,21 @@ public class FacebookLoginImpl implements FacebookLogin {
         }
     }
 
-    /**
-     * method to init httpClient
-     */
-    @Override
-    public void initHttpClient() throws FacebookConnectorException {
+
+
+    private void initHttpClient() throws FacebookConnectorException {
         try {
             httpClient = new DefaultHttpClient();
-            HttpGet httpget = new HttpGet("http://www.facebook.com/login.php");
+            HttpGet httpget = new HttpGet(FACEBOOK_LOGIN);
 
             response = httpClient.execute(httpget);
             entity = response.getEntity();
 
-//            log.info("Login form get: " + response.getStatusLine());
+
             if (entity != null) {
                 entity.consumeContent();
             }
-//            log.info("Initial set of cookies:");
+
             List<Cookie> cookies = httpClient.getCookieStore().getCookies();
             if (cookies.isEmpty()) {
                 log.info("None cookies found");
@@ -146,7 +140,7 @@ public class FacebookLoginImpl implements FacebookLogin {
         facebookClient = new FacebookJaxbRestClient(api_key, secret);
         String sessionKey = getSessionKey(api_key);
 
-        String tempSecret = facebookClient.getCacheSessionSecret();//getSessionSecret();
+        String tempSecret = facebookClient.getCacheSessionSecret();
         facebookClient = new FacebookJaxbRestClient(api_key, tempSecret, sessionKey);
 
         return facebookClient;
@@ -166,7 +160,6 @@ public class FacebookLoginImpl implements FacebookLogin {
                     return false;
                 } else if ("sct".equals(cookies.get(i).getName())) { // contains session cookies
                     return true;
-//                    return true;
                 }
             }
         }
@@ -179,7 +172,7 @@ public class FacebookLoginImpl implements FacebookLogin {
         try {
 
             String token = facebookClient.auth_createToken();
-            HttpPost httpost = new HttpPost("http://www.facebook.com/login.php");
+            HttpPost httpost = new HttpPost(FACEBOOK_LOGIN);
             List<NameValuePair> nvps = new ArrayList<NameValuePair>();
             nvps.add(new BasicNameValuePair("api_key", api_key));
             nvps.add(new BasicNameValuePair("v", "1.0"));

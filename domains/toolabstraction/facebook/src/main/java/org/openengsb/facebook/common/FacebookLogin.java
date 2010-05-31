@@ -21,19 +21,11 @@ import com.google.code.facebookapi.FacebookException;
 import com.google.code.facebookapi.FacebookJaxbRestClient;
 import org.openengsb.facebook.common.exceptions.FacebookConnectorException;
 
-/**
- * Created by IntelliJ IDEA.
- * User: Philipp H
- * Date: 19.05.2010
- * Time: 16:05:28
- * Mail: e0725710@student.tuwien.ac.at
- */
+
 public interface FacebookLogin {
     boolean loginUser(String email, String password, String api) throws FacebookConnectorException;
 
     void closeHttpClient();
-
-    void initHttpClient() throws FacebookConnectorException;
 
     FacebookJaxbRestClient createLoggedInFacebookClient(String api_key, String secret) throws FacebookException, FacebookConnectorException;
 }

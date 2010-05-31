@@ -47,12 +47,10 @@ import javax.servlet.http.HttpSession;
 
 import org.w3c.dom.Node;
 
-/**
- *
- */
+
 public class FacebookClientImpl implements FacebookClient {
 
-    private static Log log = LogFactory.getLog(FacebookClientImpl.class);
+    private Log log = LogFactory.getLog(FacebookClientImpl.class);
 
     private FacebookJaxbRestClient client;
 
@@ -65,14 +63,12 @@ public class FacebookClientImpl implements FacebookClient {
     @Override
     public boolean updateStatus(String message) throws FacebookException {
         boolean success = client.users_setStatus(message);
-        System.out.println(success);
         return success;
     }
 
     @Override
     public String publishToWall(String message) throws FacebookException {
         return client.stream_publish(message, null, new ArrayList<BundleActionLink>(), null, client.getCacheUserId());
-//        return client.stream_publish(message, null, null, null, null);
     }
 
     @Override
@@ -84,12 +80,12 @@ public class FacebookClientImpl implements FacebookClient {
 
     @Override
     public List<User> getFriends() throws FacebookException {
-        // Get friends list
+
         client.friends_get();
         FriendsGetResponse response = (FriendsGetResponse) client.getResponsePOJO();
         List<Long> friends = response.getUid();
 
-        // Go fetch the information for the user list of user ids
+
         client.users_getInfo(friends, EnumSet.of(ProfileField.NAME));
 
         UsersGetInfoResponse userResponse = (UsersGetInfoResponse) client.getResponsePOJO();//RepsonsePOJO();
@@ -102,7 +98,7 @@ public class FacebookClientImpl implements FacebookClient {
     @Override
     public Map<String, String> getStream() throws FacebookException {
         Map<String, String> result = new HashMap<String, String>();
-        long id = client.users_getLoggedInUser();  //1647086523
+        long id = client.users_getLoggedInUser();  
 
         String fql = "SELECT post_id, actor_id, message FROM stream WHERE source_id = " + id + " limit 50";
         Object obj = client.fql_query(fql);

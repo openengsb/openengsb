@@ -23,13 +23,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by IntelliJ IDEA.
- * User: bonomat
- * Date: 12.05.2010
- * Time: 13:59:23
- * To change this template use File | Settings | File Templates.
- */
+
 public interface FacebookClient {
 
 

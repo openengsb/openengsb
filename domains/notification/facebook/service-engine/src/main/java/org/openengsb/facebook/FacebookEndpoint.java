@@ -27,7 +27,8 @@ import org.openengsb.drools.NotificationDomain;
  * @org.apache.xbean.XBean element="FacebookEndpoint"
  * description="This is a tool connector for OpenEngSB."
  */
-public class FacebookEndpoint extends LinkingEndpoint<NotificationDomain> {
+public class
+        FacebookEndpoint extends LinkingEndpoint<NotificationDomain> {
 
     FacebookNotifier facebookNotifier;
 
