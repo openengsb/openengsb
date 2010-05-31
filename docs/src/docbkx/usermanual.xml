@@ -16,8 +16,12 @@
    limitations under the License.
 
 -->
-<book xmlns:xi="http://www.w3.org/2001/XInclude">
-  <bookinfo>
+<book
+    xmlns="http://docbook.org/ns/docbook"
+    xmlns:xi="http://www.w3.org/2001/XInclude"
+    version="5.0">
+    
+  <info>
     <title>Open Engineering Service Bus User Documentation</title>
 
     <releaseinfo>OpenEngSB</releaseinfo>
@@ -26,52 +30,69 @@
       <author>
         <firstname>Andreas</firstname>
         <surname>Pieber</surname>
-        <affiliation>andreas.pieber [at] ifs.tuwien.ac.at</affiliation>
+        <email>andreas.pieber [at] ifs.tuwien.ac.at</email>
       </author>
       <author>
         <firstname>Florian</firstname>
         <surname>Waltersdorfer</surname>
-        <affiliation>ignatiomobius [at] gmail.com</affiliation>
+        <email>ignatiomobius [at] gmail.com</email>
       </author>
       <author>
         <firstname>Michael</firstname>
         <surname>Handler</surname>
-        <affiliation>michael.handler [at] fullstop.at</affiliation>
+        <email>michael.handler [at] fullstop.at</email>
       </author>
       <author>
         <firstname>Christoph</firstname>
         <surname>Gritschenberger</surname>
-        <affiliation>e0525747 [at] student.tuwien.ac</affiliation>
+        <email>e0525747 [at] student.tuwien.ac</email>
       </author>
       <author>
         <firstname>Patrick</firstname>
         <surname>Peer</surname>
-        <affiliation>e0326352 [at] gmail.com</affiliation>
+        <email>e0326352 [at] gmail.com</email>
       </author>
       <author>
         <firstname>Christoph</firstname>
         <surname>Zehetner</surname>
-        <affiliation>christoph.zehetner [at] gmx.at</affiliation>
+        <email>christoph.zehetner [at] gmx.at</email>
       </author>
       <author>
         <firstname>Michael</firstname>
         <surname>Heil</surname>
-        <affiliation>michael.heil [at] chello.at</affiliation>
+        <email>michael.heil [at] chello.at</email>
       </author>
     </authorgroup>
-  </bookinfo>
+  </info>
+  
+  <part>
+    <title>Introduction</title>
+    <xi:include href="usermanual/introduction.xml" />
+  </part>
+  
+  <part>
+    <title>User Documentation</title>
+    <xi:include href="usermanual/userQuickstart.xml" />
+  </part>
 
-  <xi:include href="usermanual/introduction.xml" />
-  <xi:include href="usermanual/userQuickstart.xml" />
-  <xi:include href="usermanual/devQuickstart.xml" />
-  <xi:include href="usermanual/testclient.xml" />
-  <xi:include href="usermanual/connectorArchetype.xml"/>
-  <xi:include href="usermanual/architecture.xml" />
-  <xi:include href="usermanual/externalConnectors.xml" />
-  <xi:include href="usermanual/internalConnectors.xml" />
-  <xi:include href="usermanual/domains.xml"/>
-  <xi:include href="usermanual/features.xml"/>
-  <xi:include href="usermanual/workflow.xml"/>
-  <xi:include href="usermanual/context.xml"/>
-  <xi:include href="usermanual/guidelines.xml" />
+  <part>
+    <title>Developer Documentation</title>
+    <xi:include href="usermanual/devQuickstart.xml" />
+    <xi:include href="usermanual/testclient.xml" />
+    <xi:include href="usermanual/connectorArchetype.xml"/>
+    <xi:include href="usermanual/architecture.xml" />
+    <xi:include href="usermanual/externalConnectors.xml" />
+    <xi:include href="usermanual/internalConnectors.xml" />
+    <xi:include href="usermanual/domains.xml"/>
+    <xi:include href="usermanual/features.xml"/>
+    <xi:include href="usermanual/workflow.xml"/>
+    <xi:include href="usermanual/context.xml"/>
+    <xi:include href="usermanual/guidelines.xml" />
+  </part>
+
+  <part>
+    <title>Domains and Connectors</title>
+  </part>
+  
+
 </book>

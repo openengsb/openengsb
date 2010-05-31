@@ -16,7 +16,7 @@
    limitations under the License.
 
 -->
-<chapter id="internalConnectors">
+<chapter id="internalConnectors" xmlns="http://docbook.org/ns/docbook">
   <title>Internal OpenEngSB Tool Connectors</title>
   <section>
     <title>Introduction</title>

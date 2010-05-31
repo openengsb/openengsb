@@ -16,7 +16,7 @@
    limitations under the License.
 
 -->
-<chapter id="devQuickstart">
+<chapter id="devQuickstart" xmlns="http://docbook.org/ns/docbook">
   <title>OpenEngSB Developer</title>
   <para>
     This chapter gives an overview how to quickly start with the OpenEngSB.
