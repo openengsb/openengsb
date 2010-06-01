@@ -43,7 +43,8 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptors>
-            <descriptor>assemble.xml</descriptor>
+            <descriptor>assemble-windows.xml</descriptor>
+            <descriptor>assemble-unix.xml</descriptor>
           </descriptors>
         </configuration>
       </plugin>
@@ -53,30 +54,42 @@
         <configuration>
           <artifactItems>
             <artifactItem>
-              <groupId>org.mortbay.jetty</groupId>
-              <artifactId>jetty-zip</artifactId>
+              <groupId>org.openengsb</groupId>
+              <artifactId>servicemix-packaged</artifactId>
+              <version>4.2.0</version>
               <type>zip</type>
-              <outputDirectory>target/jetty</outputDirectory>
+               <classifier>windows</classifier>
+              <outputDirectory>target/servicemix-windows</outputDirectory>
+            </artifactItem>
+            <artifactItem>
+              <groupId>org.openengsb</groupId>
+              <artifactId>servicemix-packaged</artifactId>
+              <version>4.2.0</version>
+              <type>zip</type>
+               <classifier>unix</classifier>
+              <outputDirectory>target/servicemix-unix</outputDirectory>
             </artifactItem>
           </artifactItems>
         </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-          <configuration>
-            <tasks>
-              <move file="${project.build.directory}/openengsb-openengsb.zip" tofile="${project.build.directory}/openengsb-${pom.version}.zip" />
-            </tasks>
-          </configuration>
       </plugin>
     </plugins> 
   </build>
  
   <dependencies>
     <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jetty-zip</artifactId>
+      <groupId>org.openengsb</groupId>
+      <artifactId>servicemix-packaged</artifactId>
+      <version>4.2.0</version>
       <type>zip</type>
+      <classifier>unix</classifier>
+      <scope>packaging</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb</groupId>
+      <artifactId>servicemix-packaged</artifactId>
+      <version>4.2.0</version>
+      <type>zip</type>
+      <classifier>windows</classifier>
       <scope>packaging</scope>
     </dependency>
   </dependencies>

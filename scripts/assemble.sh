@@ -16,19 +16,27 @@
 #
 
 # get and save path of script dir in SCRIPT_DIR
-cd $(dirname $0)
-SCRIPT_DIR=`pwd`
+cd $(dirname $0)/../
+ASSEMBLY_ROOT_DIR=`pwd`
 
 # build entire project from root
-cd $SCRIPT_DIR/../
-mvn package -Pintegration-test,license-check,docs
+mvn clean install -Pintegration-test,license-check,docs
+
+# run deploy to copy installers into fake servicemix_home
+SERVICEMIX_HOME=$ASSEMBLY_ROOT_DIR/package/assembly/target/installers/
+
+# make sure directory exists
+mkdir -p $SERVICEMIX_HOME/deploy/
+
+sh $ASSEMBLY_ROOT_DIR/scripts/deploy.sh
 
 # assembly product
-cd package/assembly
+cd $ASSEMBLY_ROOT_DIR/package/assembly
 mvn dependency:unpack
 mvn assembly:assembly
-mvn antrun:run
 
 # copy assembly to root folder
-cp target/*.zip $SCRIPT_DIR/../
+mv target/*.zip $ASSEMBLY_ROOT_DIR/target
+
+echo -e "\n\nYou can find the assembled project in the target directory of the root project."
 
