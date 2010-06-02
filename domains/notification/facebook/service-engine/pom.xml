@@ -52,7 +52,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <type>service-engine</type>
-                    <component>org.openengsb.connector.FacebookComponent</component>
+                    <component>org.openengsb.facebook.FacebookComponent</component>
                 </configuration>
             </plugin>
             <plugin>

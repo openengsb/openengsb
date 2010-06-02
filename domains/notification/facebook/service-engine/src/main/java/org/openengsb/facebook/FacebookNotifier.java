@@ -36,16 +36,11 @@ public class FacebookNotifier implements NotificationDomain {
 
     @Override
     public void notify(Notification notification) {
-
-
         if (notification.getMessage().length() > maxChars) {
-            // TODO : truncate message
             log.warn("Your message is going to be truncated.");
         }
-
         if (notification.getRecipient() == null || notification.getRecipient().equals("")) {
             facebookConenctor.updateStatus(notification.getMessage());
-
         } else {
             // TODO: add recipient 
         }

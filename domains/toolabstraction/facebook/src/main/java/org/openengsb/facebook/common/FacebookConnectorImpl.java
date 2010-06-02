@@ -23,6 +23,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.facebook.common.exceptions.FacebookConnectorException;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class FacebookConnectorImpl implements FacebookConnector {
@@ -30,12 +32,13 @@ public class FacebookConnectorImpl implements FacebookConnector {
     private FacebookLoginImpl login;
     private FacebookJaxbRestClient client;
     private FacebookClientImpl facebookClient;
+    private final int maxChars = 419;
 
     FacebookConnectorImpl(String email, String password, String API_KEY, String SECRET) {
 
         try {
             login = new FacebookLoginImpl();
-            
+
             login.loginUser(email, password, API_KEY);
             client = login.createLoggedInFacebookClient(API_KEY, SECRET);
         } catch (FacebookException e) {
@@ -49,7 +52,21 @@ public class FacebookConnectorImpl implements FacebookConnector {
     @Override
     public void updateStatus(String message) {
         try {
-            facebookClient.updateStatus(message);
+            List<String> messages = new ArrayList<String>();
+
+            if (message.length() >= maxChars) {
+                int i = 0;
+                while (i + maxChars < message.length()) {
+                    messages.add(message.substring(i, i + maxChars));
+                    i = i + (maxChars);
+                }
+                messages.add(message.substring(i));
+                for (String s : messages) {
+                    facebookClient.updateStatus(s );
+                }
+            } else {
+                facebookClient.updateStatus(message);
+            }
         } catch (FacebookException e) {
             handleFacebookException(e);
         }
@@ -62,7 +79,7 @@ public class FacebookConnectorImpl implements FacebookConnector {
                 log.error("HTTP - error on login, wrong password or username");
                 break;
             default:
-                log.error("Action failed. Cause: " + e.getMessage() +" " +e.getCode() + " " );
+                log.error("Action failed. Cause: " + e.getMessage() + " " + e.getCode() + " ");
                 e.printStackTrace();
                 break;
         }

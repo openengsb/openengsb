@@ -62,8 +62,7 @@ public class FacebookClientImpl implements FacebookClient {
 
     @Override
     public boolean updateStatus(String message) throws FacebookException {
-        boolean success = client.users_setStatus(message);
-        return success;
+        return client.users_setStatus(message);
     }
 
     @Override
@@ -73,9 +72,7 @@ public class FacebookClientImpl implements FacebookClient {
 
     @Override
     public Long getLoggedInUserID() throws FacebookException {
-        Long userId = client.users_getLoggedInUser();
-        return userId;
-
+        return client.users_getLoggedInUser();
     }
 
     @Override
@@ -115,7 +112,6 @@ public class FacebookClientImpl implements FacebookClient {
                 node = node.getNextSibling();
             }
         }
-
 
         return result;
     }
