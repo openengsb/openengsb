@@ -166,17 +166,11 @@ openengsb/domains/scm]]></programlisting>
   <section id="devQickstart.assembly.howto">
     <title>Howto assemble the OpenEngSB</title>
     <para>
-      To create a distributable form of the OpenEngSB simply issue the following commands in the root directory of the project.
-      <programlisting>
-        > mvn package -Pintegration-test,license-check,docs
-        > cd package/assembly
-        > mvn dependency:unpack
-        > mvn assembly:assembly
-        > mvn antrun:run
-      </programlisting>
-      Then a zip file is created in the folder package/assembly/target. The structure of the zip is explained in the following section.
-      To ease this process a shell script is contained in the scripts directory (assemble.sh). This scripts build the
-      OpenEngSB, assemble it and finally copy the product into the root folder with the name <literal>openengsb-VERSION.zip.</literal>
+      To create a distributable form of the OpenEngSB simply run the assemble.sh script in the scripts directory of the project.
+      Two zip files are created in the target folder of the project root. The structure of the zips is explained in the following section.
+      The zip files are called <literal>openengsb-VERSION-windows.zip</literal> and <literal>openengsb-VERSION-unix.zip.</literal> After
+      unziping the assembly Servicemix can be started using the executable in the apache-servicemix-{version}/bin directory. The openengsb
+      components are already included in the hotdeploy directory of Servicemix and will be started automatically on Servicemix startup.
     </para>
   </section>
   <section id="devQickstart.assembly.structure">
@@ -190,16 +184,15 @@ openengsb/domains/scm]]></programlisting>
         |    |- html
         |    |- pdf
         |
-        |- bin
-        |   |
-        |   |- run.sh (start webserver with openengsb)
-        |   |- stop.sh (stop webserver with openengsb)
+        |- servicemix
+        |    |
+        |    |
+        |    |- deploy (openengsb components)
+        |    |- bin (executable to start servicemix - servicemix.bat or servicemix.sh)
         |
         |- README
         |- LICENSE
         |- NOTICE
-        |
-        |- webserver (jetty) with openengsb.war
       </programlisting>
     </para>
   </section>
