@@ -46,10 +46,3 @@ rule "hello1"
        then
                System.out.println("Hello World");
 end
-
-rule "hello2"
-       when
-               e : Event()
-       then
-               System.out.println(e.getName());
-end
