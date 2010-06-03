@@ -169,7 +169,7 @@ openengsb/domains/scm]]></programlisting>
       To create a distributable form of the OpenEngSB simply run the assemble.sh script in the scripts directory of the project.
       Two zip files are created in the target folder of the project root. The structure of the zips is explained in the following section.
       The zip files are called <literal>openengsb-VERSION-windows.zip</literal> and <literal>openengsb-VERSION-unix.zip.</literal> After
-      unziping the assembly Servicemix can be started using the executable in the apache-servicemix-{version}/bin directory. The openengsb
+      unziping the assembly Servicemix can be started using the openengsb executable in the apache-servicemix-{version}/bin directory. The openengsb
       components are already included in the hotdeploy directory of Servicemix and will be started automatically on Servicemix startup.
     </para>
   </section>
@@ -188,7 +188,7 @@ openengsb/domains/scm]]></programlisting>
         |    |
         |    |
         |    |- deploy (openengsb components)
-        |    |- bin (executable to start servicemix - servicemix.bat or servicemix.sh)
+        |    |- bin (executable to start servicemix - openengsb.bat or openengsb.sh)
         |
         |- README
         |- LICENSE
