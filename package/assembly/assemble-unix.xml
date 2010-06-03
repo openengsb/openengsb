@@ -54,6 +54,13 @@
         <include>*.pdf</include>
       </includes>
     </fileSet>
+    <fileSet> 
+      <directory>${project.basedir}</directory>
+      <outputDirectory>apache-servicemix-4.2.0/bin</outputDirectory>
+      <includes>
+        <include>openengsb.sh</include>
+      </includes>
+    </fileSet>
     <fileSet>
       <!-- 
         We have to put this strange path here, because the 
