@@ -29,6 +29,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+import org.openengsb.drools.dir.DirectoryImportHandler;
 import org.openengsb.drools.dir.DirectoryRuleHandler;
 import org.openengsb.drools.dir.ResourceHandler;
 
@@ -66,6 +67,8 @@ public class DirectoryRuleSource extends RuleBaseSource {
         switch (e) {
         case Rule:
             return new DirectoryRuleHandler(this);
+        case Import:
+            return new DirectoryImportHandler(this);
         default:
             throw new UnsupportedOperationException("operation not implemented for type " + e);
         }
@@ -134,9 +137,20 @@ public class DirectoryRuleSource extends RuleBaseSource {
         return "";
     }
 
-    private String readImports() {
-        // TODO Auto-generated method stub
-        return "import org.openengsb.core.model.Event\n";
+    private String readImports() throws IOException {
+        File importsfile = new File(this.path + File.separator + "imports");
+        StringBuffer result = new StringBuffer();
+        BufferedReader reader = new BufferedReader(new FileReader(importsfile));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            if (!line.trim().isEmpty()) {
+                result.append("import ");
+                result.append(line);
+                result.append("\n");
+            }
+        }
+        reader.close();
+        return result.toString();
     }
 
     private File[] findAll(final String extension) {

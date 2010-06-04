@@ -121,4 +121,27 @@ public class DirectorySourceTest {
         session.fireAllRules();
         assertEquals(2, listener.numFired);
     }
+
+    @Test
+    public void testAddImport() throws Exception {
+        Package p = getPackage();
+        assertNull(p.getImports().get("java.util.Currency"));
+        source.add(RuleBaseElement.Import, "java.util.Currency", "ignored");
+        p = getPackage();
+        assertNotNull(p.getImports().get("java.util.Currency"));
+    }
+
+    private Package getPackage() throws RuleBaseException {
+        Package p = source.getRulebase().getPackage("org.openengsb");
+        return p;
+    }
+
+    @Test
+    public void testRemoveImport() throws Exception {
+        Package p = getPackage();
+        source.add(RuleBaseElement.Import, "java.util.Currency", "ignored");
+        source.delete(RuleBaseElement.Import, "java.util.Currency");
+        p = getPackage();
+        assertNull(p.getImports().get("java.util.Currency"));
+    }
 }
