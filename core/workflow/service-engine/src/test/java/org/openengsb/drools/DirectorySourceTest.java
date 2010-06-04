@@ -140,4 +140,36 @@ public class DirectorySourceTest {
         p = getPackage();
         assertNull(p.getImports().get("java.util.Currency"));
     }
+
+    @Test
+    public void testAddFunction() throws Exception {
+        source.add(RuleBaseElement.Function, "notify", "function void notify(String message) {\n"
+                + "System.out.println(\"notify: \" + message);\n}");
+        Package p = getPackage();
+        assertFalse(p.getFunctions().isEmpty());
+        assertNotNull(p.getFunctions().get("notify"));
+    }
+
+    @Test
+    public void testRemoveFunction() throws Exception {
+        source.add(RuleBaseElement.Function, "notify", "function void notify(String message) {\n"
+                + "System.out.println(\"notify: \" + message);\n}");
+        source.delete(RuleBaseElement.Function, "notify");
+        Package p = getPackage();
+        assertNull(p.getFunctions().get("notify"));
+    }
+
+    @Test
+    public void testRuleCallingFunctionUsingImport() throws Exception {
+        source.add(RuleBaseElement.Function, "test", "function void test(Object message) {\n"
+                + "System.out.println(\"notify: \" + message);\n}");
+        source.add(RuleBaseElement.Import, "java.util.Random", "ignored");
+        source.add(RuleBaseElement.Rule, "test", "when\n" + "  e : Event( name == \"testevent\")\n" + "then\n"
+                + "  test(new Random());\n");
+        createSession();
+
+        session.insert(new Event("", "testevent"));
+        session.fireAllRules();
+        assertEquals(1, listener.numFired);
+    }
 }

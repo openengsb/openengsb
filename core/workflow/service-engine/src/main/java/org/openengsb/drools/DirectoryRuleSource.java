@@ -29,6 +29,7 @@ import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+import org.openengsb.drools.dir.DirectoryFunctionHandler;
 import org.openengsb.drools.dir.DirectoryImportHandler;
 import org.openengsb.drools.dir.DirectoryRuleHandler;
 import org.openengsb.drools.dir.ResourceHandler;
@@ -69,6 +70,8 @@ public class DirectoryRuleSource extends RuleBaseSource {
             return new DirectoryRuleHandler(this);
         case Import:
             return new DirectoryImportHandler(this);
+        case Function:
+            return new DirectoryFunctionHandler(this);
         default:
             throw new UnsupportedOperationException("operation not implemented for type " + e);
         }
@@ -83,7 +86,7 @@ public class DirectoryRuleSource extends RuleBaseSource {
         try {
             drl.append(readImports());
             drl.append(getGlobals());
-            drl.append(getFunctions());
+            drl.append(readFunctions());
             drl.append(readRules());
         } catch (IOException e) {
             throw new RuleBaseException(e);
@@ -127,9 +130,12 @@ public class DirectoryRuleSource extends RuleBaseSource {
         return result.toString();
     }
 
-    private String getFunctions() {
-        // TODO Auto-generated method stub
-        return "";
+    private String readFunctions() throws IOException {
+        StringBuffer result = new StringBuffer();
+        for (File f : findAll(".func")) {
+            result.append(readFileContent(f));
+        }
+        return result.toString();
     }
 
     private String getGlobals() {
