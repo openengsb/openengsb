@@ -13,6 +13,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
+package org.openengsb
 
 # first some java-utils
 import java.util.Map
@@ -40,9 +41,9 @@ global org.openengsb.drools.DomainConfiguration config
 global org.openengsb.drools.DroolsHelper droolsHelper
 global org.openengsb.drools.TestDomain test
 
-rule "hello2"
+rule "hello1"
        when
-               e : Event()
+               Event( name == "hello" )
        then
-               System.out.println(e.getName());
+               System.out.println("Hello World");
 end

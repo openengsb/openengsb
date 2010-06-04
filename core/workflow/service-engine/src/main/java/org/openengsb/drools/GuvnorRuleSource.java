@@ -22,7 +22,7 @@ import java.util.Properties;
 import org.drools.RuleBase;
 import org.drools.agent.RuleAgent;
 
-public class GuvnorRuleSource implements RuleBaseSource {
+public class GuvnorRuleSource extends RuleBaseSource {
 
     private String url;
 

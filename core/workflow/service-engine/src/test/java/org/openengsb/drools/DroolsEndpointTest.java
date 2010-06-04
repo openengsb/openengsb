@@ -72,7 +72,7 @@ public class DroolsEndpointTest extends SpringTestSupport {
     @Test
     public void testSampleDrlFile() throws Exception {
 
-        Resource rbaseResource = ResourceFactory.newClassPathResource("rulebase/test1.drl");
+        Resource rbaseResource = ResourceFactory.newClassPathResource("test1.drl");
 
         RuleBaseLoader loader = RuleBaseLoader.getInstance();
         InputStream is = rbaseResource.getInputStream();

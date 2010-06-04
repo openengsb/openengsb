@@ -17,24 +17,25 @@
  */
 package org.openengsb.drools;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.io.StringReader;
 
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.rule.Package;
+import org.openengsb.drools.dir.DirectoryRuleHandler;
+import org.openengsb.drools.dir.ResourceHandler;
 
-public class DirectoryRuleSource implements RuleBaseSource {
+public class DirectoryRuleSource extends RuleBaseSource {
 
     private String path;
+    private RuleBase ruleBase;
 
     public DirectoryRuleSource() {
     }
@@ -53,59 +54,115 @@ public class DirectoryRuleSource implements RuleBaseSource {
 
     @Override
     public RuleBase getRulebase() throws RuleBaseException {
+        if (this.ruleBase == null) {
+            ruleBase = RuleBaseFactory.newRuleBase();
+            readRuleBase();
+        }
+        return this.ruleBase;
+    }
+
+    @Override
+    protected ResourceHandler<?> getRessourceHandler(RuleBaseElement e) {
+        switch (e) {
+        case Rule:
+            return new DirectoryRuleHandler(this);
+        default:
+            return null;
+        }
+    }
+
+    public void readRuleBase() throws RuleBaseException {
         if (this.path == null) {
             throw new IllegalStateException("path must be set");
         }
+        StringBuffer drl = new StringBuffer();
+        drl.append("package org.openengsb\n");
+        try {
+            drl.append(readImports());
+            drl.append(getGlobals());
+            drl.append(getFunctions());
+            drl.append(readRules());
+        } catch (IOException e) {
+            throw new RuleBaseException(e);
+        }
+
+        System.out.println(drl.toString());
+
         final PackageBuilder builder = new PackageBuilder();
-        Collection<File> ruleFiles = findAllDrlFiles(new File(this.path));
-        for (File f : ruleFiles) {
-            try {
-                builder.addPackageFromDrl(new FileReader(f));
-            } catch (DroolsParserException e) {
-                throw new RuleBaseException(e);
-            } catch (FileNotFoundException e) {
-                throw new RuleBaseException(e);
-            } catch (IOException e) {
-                throw new RuleBaseException(e);
-            }
+        try {
+            builder.addPackageFromDrl(new StringReader(drl.toString()));
+        } catch (DroolsParserException e) {
+            throw new RuleBaseException(e);
+        } catch (IOException e) {
+            throw new RuleBaseException(e);
         }
 
-        final RuleBase ruleBase = RuleBaseFactory.newRuleBase();
-        ruleBase.addPackage(builder.getPackage());
+        if (builder.hasErrors()) {
+            System.err.println(drl.toString());
+            throw new RuleBaseException(builder.getErrors().toString());
+        }
 
-        return ruleBase;
+        Package p = builder.getPackage();
+
+        ruleBase.lock();
+        if (ruleBase.getPackages().length > 0) {
+            ruleBase.removePackage("org.openengsb");
+        }
+        ruleBase.addPackage(p);
+        ruleBase.unlock();
     }
 
-    private Collection<File> findAllDrlFiles(File dir) {
-        if (!dir.isDirectory()) {
-            return null;
+    private String readRules() throws IOException {
+        StringBuffer result = new StringBuffer();
+        for (File f : findAll(".rule")) {
+            result.append("rule \"");
+            result.append(getElementName(f.getName()));
+            result.append("\"\n");
+            result.append(readFileContent(f));
+            result.append("\nend\n");
         }
-        List<File> result = new LinkedList<File>();
-        for (File f : getDrlFiles(dir)) {
-            result.add(f);
-        }
-        for (File f : getSubDirs(dir)) {
-            result.addAll(findAllDrlFiles(f));
-        }
-        return result;
+        return result.toString();
     }
 
-    private File[] getSubDirs(File dir) {
-        return dir.listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File pathname) {
-                return pathname.isDirectory();
-            }
-        });
+    private String getFunctions() {
+        // TODO Auto-generated method stub
+        return "";
     }
 
-    private File[] getDrlFiles(File dir) {
-        return dir.listFiles(new FilenameFilter() {
+    private String getGlobals() {
+        // TODO Auto-generated method stub
+        return "";
+    }
+
+    private String readImports() {
+        // TODO Auto-generated method stub
+        return "import org.openengsb.core.model.Event\n";
+    }
+
+    private File[] findAll(final String extension) {
+        return new File(path).listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.endsWith(".drl");
+                return name.endsWith(extension);
             }
         });
+    }
+
+    private String readFileContent(File file) throws IOException {
+        StringBuffer result = new StringBuffer();
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            result.append(line);
+            result.append("\n");
+        }
+        reader.close();
+        return result.toString();
+    }
+
+    private String getElementName(String filename) {
+        int lastindex = filename.lastIndexOf(".");
+        return filename.substring(0, lastindex);
     }
 
 }

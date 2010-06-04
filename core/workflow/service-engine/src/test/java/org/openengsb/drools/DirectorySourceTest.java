@@ -16,16 +16,23 @@
  */
 package org.openengsb.drools;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.File;
+
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.DefaultAgendaEventListener;
+import org.drools.rule.Package;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.model.Event;
+import org.openengsb.drools.RuleBaseSource.RuleBaseElement;
 
 public class DirectorySourceTest {
 
@@ -46,7 +53,7 @@ public class DirectorySourceTest {
 
     @Before
     public void setUp() throws Exception {
-        source = new DirectoryRuleSource("./src/test/resources/");
+        source = new DirectoryRuleSource("./src/test/resources/rulebase");
         rb = source.getRulebase();
         session = rb.newStatefulSession();
         listener = new RuleListener2();
@@ -55,12 +62,19 @@ public class DirectorySourceTest {
 
     @After
     public void tearDown() throws Exception {
+        File newRuleFile = new File("src/test/resources/rulebase/test3.rule");
+        if (newRuleFile.exists()) {
+            newRuleFile.delete();
+        }
         session.dispose();
     }
 
     @Test
     public void testGetRuleBase() throws Exception {
         Assert.assertNotNull(rb);
+        Package p = rb.getPackage("org.openengsb");
+        assertNotNull(p);
+        System.err.println(p.getRules().length);
     }
 
     @Test
@@ -73,6 +87,21 @@ public class DirectorySourceTest {
     @Test
     public void testFireRules() throws Exception {
         testGetRules();
-        Assert.assertEquals(listener.numFired, 2);
+        Assert.assertEquals(listener.numFired, 1);
+    }
+
+    @Test
+    public void testAddRule() throws Exception {
+        session.dispose();
+        source.add(RuleBaseElement.Rule, "test3", "when\n" + "  e : Event( name == \"hello\")\n" + "then\n"
+                + "  System.out.println(\"this rule was added by the addrule-function\");\n");
+
+        session = rb.newStatefulSession();
+        listener = new RuleListener2();
+        session.addEventListener(listener);
+        Event event = new Event("", "hello");
+        session.insert(event);
+        session.fireAllRules();
+        assertEquals(2, listener.numFired);
     }
 }

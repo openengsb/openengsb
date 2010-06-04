@@ -14,7 +14,7 @@
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <bean class="org.openengsb.drools.FileRuleSource" id="config">
-    <property name="path" value="rulebase/test1.drl" />
+    <property name="path" value="test1.drl" />
   </bean>
 
   <sm:container createMBeanServer="false" embedded="true" id="jbi">

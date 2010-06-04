@@ -18,7 +18,34 @@
 package org.openengsb.drools;
 
 import org.drools.RuleBase;
+import org.openengsb.drools.dir.ResourceHandler;
 
-public interface RuleBaseSource {
-    public RuleBase getRulebase() throws RuleBaseException;
+public abstract class RuleBaseSource {
+
+    public enum RuleBaseElement {
+        Rule, Function, Process, Import,
+    }
+
+    protected ResourceHandler<?> getRessourceHandler(RuleBaseElement e) throws RuleBaseException {
+        throw new UnsupportedOperationException("not implemented for type " + getClass());
+    }
+
+    public abstract RuleBase getRulebase() throws RuleBaseException;
+
+    /* CRUD */
+    public void add(RuleBaseElement type, String name, String code) throws RuleBaseException {
+        this.getRessourceHandler(type).create(name, code);
+    }
+
+    public String get(RuleBaseElement type, String name) throws RuleBaseException {
+        return this.getRessourceHandler(type).get(name);
+    }
+
+    public void update(RuleBaseElement type, String name, String newCode) throws RuleBaseException {
+        this.getRessourceHandler(type).update(name, newCode);
+    }
+
+    public void delete(RuleBaseElement type, String name) throws RuleBaseException {
+        this.getRessourceHandler(type).delete(name);
+    }
 }
