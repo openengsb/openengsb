@@ -17,9 +17,12 @@
 package org.openengsb.drools;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -33,6 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.model.Event;
 import org.openengsb.drools.RuleBaseSource.RuleBaseElement;
+import org.openengsb.util.IO;
 
 public class DirectorySourceTest {
 
@@ -53,8 +57,21 @@ public class DirectorySourceTest {
 
     @Before
     public void setUp() throws Exception {
-        source = new DirectoryRuleSource("./src/test/resources/rulebase");
+        File rbDir = new File("data/rulebase");
+        rbDir.mkdirs();
+        copyAllFiles(new File("src/test/resources/rulebase"), "data/rulebase/");
+
+        source = new DirectoryRuleSource("data/rulebase");
         rb = source.getRulebase();
+    }
+
+    private void copyAllFiles(File srcDir, String dest) throws IOException {
+        for (File f : srcDir.listFiles()) {
+            IO.copyFile(f, new File(dest + "/" + f.getName()));
+        }
+    }
+
+    private void createSession() {
         session = rb.newStatefulSession();
         listener = new RuleListener2();
         session.addEventListener(listener);
@@ -62,11 +79,10 @@ public class DirectorySourceTest {
 
     @After
     public void tearDown() throws Exception {
-        File newRuleFile = new File("src/test/resources/rulebase/test3.rule");
-        if (newRuleFile.exists()) {
-            newRuleFile.delete();
+        IO.deleteStructure(new File("data"));
+        if (session != null) {
+            session.dispose();
         }
-        session.dispose();
     }
 
     @Test
@@ -79,6 +95,7 @@ public class DirectorySourceTest {
 
     @Test
     public void testGetRules() throws Exception {
+        createSession();
         Event testEvent = new Event("nomatter_domain", "hello");
         session.insert(testEvent);
         session.fireAllRules();
