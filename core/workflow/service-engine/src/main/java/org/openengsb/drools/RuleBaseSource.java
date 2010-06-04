@@ -26,7 +26,7 @@ public abstract class RuleBaseSource {
         Rule, Function, Process, Import,
     }
 
-    protected ResourceHandler<?> getRessourceHandler(RuleBaseElement e) throws RuleBaseException {
+    protected ResourceHandler<?> getRessourceHandler(RuleBaseElement e) {
         throw new UnsupportedOperationException("not implemented for type " + getClass());
     }
 

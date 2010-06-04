@@ -67,7 +67,7 @@ public class DirectoryRuleSource extends RuleBaseSource {
         case Rule:
             return new DirectoryRuleHandler(this);
         default:
-            return null;
+            throw new UnsupportedOperationException("operation not implemented for type " + e);
         }
     }
 
