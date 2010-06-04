@@ -109,13 +109,9 @@ public class DirectorySourceTest {
 
     @Test
     public void testAddRule() throws Exception {
-        session.dispose();
         source.add(RuleBaseElement.Rule, "test3", "when\n" + "  e : Event( name == \"hello\")\n" + "then\n"
                 + "  System.out.println(\"this rule was added by the addrule-function\");\n");
-
-        session = rb.newStatefulSession();
-        listener = new RuleListener2();
-        session.addEventListener(listener);
+        createSession();
         Event event = new Event("", "hello");
         session.insert(event);
         session.fireAllRules();
