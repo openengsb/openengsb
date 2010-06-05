@@ -66,6 +66,11 @@ public class DirectoryImportHandler extends ResourceHandler<DirectoryRuleSource>
         return null;
     }
 
+    @Override
+    public Collection<String> list() throws RuleBaseException {
+        return source.getPackage().getImports().keySet();
+    }
+
     private Set<String> readImports() throws RuleBaseException {
         try {
             return doReadImports();

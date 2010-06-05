@@ -20,6 +20,7 @@ package org.openengsb.drools.dir;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 
 import org.openengsb.drools.DirectoryRuleSource;
 import org.openengsb.drools.ResourceHandler;
@@ -67,6 +68,11 @@ public class DirectoryFunctionHandler extends ResourceHandler<DirectoryRuleSourc
     public String get(String name) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public Collection<String> list() throws RuleBaseException {
+        return source.getPackage().getFunctions().keySet();
     }
 
 }

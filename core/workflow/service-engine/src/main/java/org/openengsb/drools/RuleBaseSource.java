@@ -17,6 +17,8 @@
  */
 package org.openengsb.drools;
 
+import java.util.Collection;
+
 import org.drools.RuleBase;
 import org.drools.rule.Package;
 
@@ -49,6 +51,10 @@ public abstract class RuleBaseSource {
 
     public void delete(RuleBaseElement type, String name) throws RuleBaseException {
         this.getRessourceHandler(type).delete(name);
+    }
+
+    public Collection<String> list(RuleBaseElement type) throws RuleBaseException {
+        return this.getRessourceHandler(type).list();
     }
 
     public Package getPackage() throws RuleBaseException {

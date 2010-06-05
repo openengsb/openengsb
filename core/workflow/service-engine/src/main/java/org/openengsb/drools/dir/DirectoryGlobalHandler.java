@@ -88,4 +88,9 @@ public class DirectoryGlobalHandler extends ResourceHandler<DirectoryRuleSource>
         bw.close();
     }
 
+    @Override
+    public Collection<String> list() throws RuleBaseException {
+        return source.getPackage().getGlobals().keySet();
+    }
+
 }

@@ -17,6 +17,7 @@
  */
 package org.openengsb.drools;
 
+import java.util.Collection;
 
 public abstract class ResourceHandler<T extends RuleBaseSource> {
 
@@ -36,4 +37,6 @@ public abstract class ResourceHandler<T extends RuleBaseSource> {
     }
 
     public abstract void delete(String name) throws RuleBaseException;
+
+    public abstract Collection<String> list() throws RuleBaseException;
 }

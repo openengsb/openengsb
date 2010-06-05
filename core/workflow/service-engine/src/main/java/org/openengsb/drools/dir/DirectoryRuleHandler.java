@@ -20,7 +20,10 @@ package org.openengsb.drools.dir;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 
+import org.drools.rule.Rule;
 import org.openengsb.drools.DirectoryRuleSource;
 import org.openengsb.drools.ResourceHandler;
 import org.openengsb.drools.RuleBaseException;
@@ -71,4 +74,13 @@ public class DirectoryRuleHandler extends ResourceHandler<DirectoryRuleSource> {
         return null;
     }
 
+    @Override
+    public Collection<String> list() throws RuleBaseException {
+        Rule[] rules = source.getPackage().getRules();
+        Collection<String> result = new HashSet<String>();
+        for(Rule r : rules){
+            result.add(r.getName());
+        }
+        return result;
+    }
 }
