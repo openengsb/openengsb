@@ -29,7 +29,7 @@ public abstract class RuleBaseSource {
 
     public enum RuleBaseElement {
         Rule, Function, Process, Import, Global,
-    }
+    };
 
     protected ResourceHandler<?> getRessourceHandler(RuleBaseElement element) {
         throw new UnsupportedOperationException("not implemented for type " + getClass());
