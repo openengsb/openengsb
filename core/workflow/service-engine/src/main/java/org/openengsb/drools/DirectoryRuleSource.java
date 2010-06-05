@@ -91,7 +91,7 @@ public class DirectoryRuleSource extends RuleBaseSource {
             throw new RuleBaseException(e);
         }
 
-        System.out.println(drl.toString());
+        // System.out.println(drl.toString());
 
         final PackageBuilder builder = new PackageBuilder();
         try {

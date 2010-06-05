@@ -18,8 +18,11 @@
 package org.openengsb.drools;
 
 import org.drools.RuleBase;
+import org.drools.rule.Package;
 
 public abstract class RuleBaseSource {
+
+    public static final String DEFAULT_RULE_PACKAGE = "org.openengsb";
 
     public enum RuleBaseElement {
         Rule, Function, Process, Import, Global,
@@ -46,5 +49,9 @@ public abstract class RuleBaseSource {
 
     public void delete(RuleBaseElement type, String name) throws RuleBaseException {
         this.getRessourceHandler(type).delete(name);
+    }
+
+    public Package getPackage() throws RuleBaseException {
+        return getRulebase().getPackage(DEFAULT_RULE_PACKAGE);
     }
 }
