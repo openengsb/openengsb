@@ -20,9 +20,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -42,9 +46,11 @@ public class DirectorySourceTest {
 
     private static class RuleListener2 extends DefaultAgendaEventListener {
         protected int numFired = 0;
+        protected Set<String> rulesFired = new HashSet<String>();
 
         @Override
         public void afterActivationFired(AfterActivationFiredEvent event, WorkingMemory workingMemory) {
+            rulesFired.add(event.getActivation().getRule().getName());
             numFired++;
             super.afterActivationFired(event, workingMemory);
         }
@@ -72,6 +78,10 @@ public class DirectorySourceTest {
     }
 
     private void createSession() {
+        if (session != null) {
+            session.dispose();
+            session = null;
+        }
         session = rb.newStatefulSession();
         listener = new RuleListener2();
         session.addEventListener(listener);
