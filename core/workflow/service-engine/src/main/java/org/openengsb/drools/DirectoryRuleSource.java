@@ -30,6 +30,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.openengsb.drools.dir.DirectoryFunctionHandler;
+import org.openengsb.drools.dir.DirectoryGlobalHandler;
 import org.openengsb.drools.dir.DirectoryImportHandler;
 import org.openengsb.drools.dir.DirectoryRuleHandler;
 
@@ -71,6 +72,8 @@ public class DirectoryRuleSource extends RuleBaseSource {
             return new DirectoryImportHandler(this);
         case Function:
             return new DirectoryFunctionHandler(this);
+        case Global:
+            return new DirectoryGlobalHandler(this);
         default:
             throw new UnsupportedOperationException("operation not implemented for type " + e);
         }

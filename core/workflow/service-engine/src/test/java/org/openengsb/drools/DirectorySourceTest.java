@@ -184,9 +184,26 @@ public class DirectorySourceTest {
     }
 
     @Test
-    public void testGlobalLoaded() throws Exception{
+    public void testGlobalLoaded() throws Exception {
         String global = getPackage().getGlobals().get("test");
         assertNotNull(global);
     }
 
+    @Test
+    public void testGlobalPresent() throws Exception {
+        String global = source.get(RuleBaseElement.Global, "test");
+        assertNotNull(global);
+    }
+
+    @Test
+    public void testAddGlobal() throws Exception {
+        source.add(RuleBaseElement.Global, "bla", "java.util.Random");
+        source.add(RuleBaseElement.Rule, "bla", "when\n then System.out.println(bla.nextInt());");
+        createSession();
+        session.setGlobal("bla", new Random());
+        session.insert(new Event("", "asd"));
+        session.fireAllRules();
+
+        assertTrue(listener.rulesFired.contains("bla"));
+    }
 }
