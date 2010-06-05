@@ -15,16 +15,16 @@
    limitations under the License.
 
  */
-package org.openengsb.drools.dir;
+package org.openengsb.drools.source.dir;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.openengsb.drools.DirectoryRuleSource;
-import org.openengsb.drools.ResourceHandler;
 import org.openengsb.drools.RuleBaseException;
+import org.openengsb.drools.source.DirectoryRuleSource;
+import org.openengsb.drools.source.ResourceHandler;
 
 public class DirectoryFunctionHandler extends ResourceHandler<DirectoryRuleSource> {
 

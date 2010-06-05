@@ -15,12 +15,13 @@
    limitations under the License.
 
  */
-package org.openengsb.drools;
+package org.openengsb.drools.source;
 
 import java.util.Collection;
 
 import org.drools.RuleBase;
 import org.drools.rule.Package;
+import org.openengsb.drools.RuleBaseException;
 
 public abstract class RuleBaseSource {
 
@@ -30,7 +31,7 @@ public abstract class RuleBaseSource {
         Rule, Function, Process, Import, Global,
     }
 
-    protected ResourceHandler<?> getRessourceHandler(RuleBaseElement e) {
+    protected ResourceHandler<?> getRessourceHandler(RuleBaseElement element) {
         throw new UnsupportedOperationException("not implemented for type " + getClass());
     }
 

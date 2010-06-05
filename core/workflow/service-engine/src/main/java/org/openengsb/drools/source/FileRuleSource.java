@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.drools;
+package org.openengsb.drools.source;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +26,7 @@ import org.drools.RuleBase;
 import org.drools.compiler.RuleBaseLoader;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
+import org.openengsb.drools.RuleBaseException;
 
 public class FileRuleSource extends RuleBaseSource {
 

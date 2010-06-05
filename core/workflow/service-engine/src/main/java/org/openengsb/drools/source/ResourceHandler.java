@@ -15,9 +15,11 @@
    limitations under the License.
 
  */
-package org.openengsb.drools;
+package org.openengsb.drools.source;
 
 import java.util.Collection;
+
+import org.openengsb.drools.RuleBaseException;
 
 public abstract class ResourceHandler<T extends RuleBaseSource> {
 

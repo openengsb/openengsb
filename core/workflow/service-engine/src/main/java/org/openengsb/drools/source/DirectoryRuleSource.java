@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.drools;
+package org.openengsb.drools.source;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,10 +29,11 @@ import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
-import org.openengsb.drools.dir.DirectoryFunctionHandler;
-import org.openengsb.drools.dir.DirectoryGlobalHandler;
-import org.openengsb.drools.dir.DirectoryImportHandler;
-import org.openengsb.drools.dir.DirectoryRuleHandler;
+import org.openengsb.drools.RuleBaseException;
+import org.openengsb.drools.source.dir.DirectoryFunctionHandler;
+import org.openengsb.drools.source.dir.DirectoryGlobalHandler;
+import org.openengsb.drools.source.dir.DirectoryImportHandler;
+import org.openengsb.drools.source.dir.DirectoryRuleHandler;
 
 public class DirectoryRuleSource extends RuleBaseSource {
 

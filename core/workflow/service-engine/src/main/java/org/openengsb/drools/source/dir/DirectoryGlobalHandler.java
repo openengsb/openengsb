@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.drools.dir;
+package org.openengsb.drools.source.dir;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -24,64 +24,62 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.openengsb.drools.DirectoryRuleSource;
-import org.openengsb.drools.ResourceHandler;
 import org.openengsb.drools.RuleBaseException;
+import org.openengsb.drools.source.DirectoryRuleSource;
+import org.openengsb.drools.source.ResourceHandler;
 
-public class DirectoryImportHandler extends ResourceHandler<DirectoryRuleSource> {
+public class DirectoryGlobalHandler extends ResourceHandler<DirectoryRuleSource> {
 
-    public static final String IMPORTS_FILE = "imports";
+    private File globalsFile;
 
-    private File importsFile;
-
-    public DirectoryImportHandler(DirectoryRuleSource source) {
+    public DirectoryGlobalHandler(DirectoryRuleSource source) {
         super(source);
-        importsFile = new File(source.getPath() + File.separator + IMPORTS_FILE);
+        globalsFile = new File(source.getPath() + File.separator + "globals");
     }
 
     @Override
     public void create(String name, String code) throws RuleBaseException {
-        Collection<String> imports = readImports();
-        imports.add(name);
-        writeImports(imports);
-        System.err.println("reread rulebase");
+        Set<String> globalList = readGlobals();
+        String line = String.format("%s %s", code, name);
+        globalList.add(line);
+        writeGlobals(globalList);
         source.readRuleBase();
-
     }
 
     @Override
     public void delete(String name) throws RuleBaseException {
-        Collection<String> imports = readImports();
-        imports.remove(name);
-        writeImports(imports);
-        source.getRulebase().getPackage("org.openengsb").removeImport(name);
+        Set<String> globalList = readGlobals();
+        Iterator<String> it = globalList.iterator();
+        String line;
+        for (line = it.next(); it.hasNext(); line = it.next()) {
+            if (line.endsWith(" " + name)) {
+                it.remove();
+                break;
+            }
+        }
+        writeGlobals(globalList);
     }
 
     @Override
     public String get(String name) throws RuleBaseException {
-        // TODO Auto-generated method stub
-        return null;
+        return source.getPackage().getGlobals().get(name);
     }
 
-    @Override
-    public Collection<String> list() throws RuleBaseException {
-        return source.getPackage().getImports().keySet();
-    }
-
-    private Set<String> readImports() throws RuleBaseException {
+    private Set<String> readGlobals() throws RuleBaseException {
         try {
-            return doReadImports();
+            return doReadGlobals();
         } catch (IOException e) {
             throw new RuleBaseException("cannot read imports", e);
         }
     }
 
-    private Set<String> doReadImports() throws IOException {
+    private Set<String> doReadGlobals() throws IOException {
         Set<String> result = new TreeSet<String>();
-        BufferedReader reader = new BufferedReader(new FileReader(importsFile));
+        BufferedReader reader = new BufferedReader(new FileReader(globalsFile));
         String line;
         while ((line = reader.readLine()) != null) {
             result.add(line);
@@ -90,20 +88,26 @@ public class DirectoryImportHandler extends ResourceHandler<DirectoryRuleSource>
         return result;
     }
 
-    private void writeImports(Collection<String> list) throws RuleBaseException {
+    private void writeGlobals(Collection<String> list) throws RuleBaseException {
         try {
-            doWriteImports(list);
+            doWriteGlobals(list);
         } catch (IOException e) {
             throw new RuleBaseException("cannot write imports", e);
         }
     }
 
-    private void doWriteImports(Collection<String> list) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(importsFile));
+    private void doWriteGlobals(Collection<String> list) throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(globalsFile));
         for (String line : list) {
             bw.write(line);
             bw.newLine();
         }
         bw.close();
     }
+
+    @Override
+    public Collection<String> list() throws RuleBaseException {
+        return source.getPackage().getGlobals().keySet();
+    }
+
 }

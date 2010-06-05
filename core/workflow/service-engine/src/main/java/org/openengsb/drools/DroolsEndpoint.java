@@ -36,6 +36,7 @@ import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.SimpleEventEndpoint;
 import org.openengsb.core.model.Event;
+import org.openengsb.drools.source.RuleBaseSource;
 
 /**
  * @org.apache.xbean.XBean element="droolsEndpoint"
