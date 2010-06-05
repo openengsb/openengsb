@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -205,5 +206,22 @@ public class DirectorySourceTest {
         session.fireAllRules();
 
         assertTrue(listener.rulesFired.contains("bla"));
+    }
+
+    @Test
+    public void testInvalidAddRule() throws Exception {
+        try {
+            source.add(RuleBaseElement.Rule, "test", "this_makes_no_sense_at_all");
+            fail("add successful");
+        } catch (RuleBaseException e) {
+            // expected
+        }
+        String code = source.get(RuleBaseElement.Rule, "test");
+        assertNull(code);
+    }
+
+    @Test(expected = RuleBaseException.class)
+    public void testAddExistingRule() throws Exception {
+        source.add(RuleBaseElement.Rule, "hello1", "when\nthen\nSystem.out.println(\"bla\");");
     }
 }
