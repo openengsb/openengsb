@@ -28,12 +28,11 @@
     <src>images/openengsb_small.png</src>
   </bannerLeft>
 
-  <bannerRight>
+  <!--<bannerRight>
     <name>Vienna University of Technology</name>
     <src>images/tu.png</src>
-  </bannerRight>
+  </bannerRight>-->
 
-  <poweredBy />
   <publishDate position="left" />
   <version position="left"/>
 

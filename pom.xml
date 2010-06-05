@@ -303,8 +303,6 @@
     <developer>
       <id>api</id>
       <name>Andreas Pieber</name>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <email>andreas.pieber [at] ifs.tuwien.ac.at</email>
       <timezone>+1</timezone>
       <roles>
@@ -315,8 +313,6 @@
     <developer>
       <id>fwa</id>
       <name>Florian Waltersdorfer</name>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <email>ignatiomobius [at] gmail.com</email>
       <timezone>+1</timezone>
       <roles>
@@ -327,8 +323,6 @@
       <id>cle</id>
       <name>Christoph Leiter</name>
       <email>openengsb [at] christophleiter.com</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
       <roles>
         <role>Developer</role>
@@ -338,8 +332,6 @@
       <id>mha</id>
       <name>Michael Handler</name>
       <email>michael.handler [at] fullstop.at</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
       <roles>
         <role>Developer</role>
@@ -351,71 +343,51 @@
     <contributor>
       <name>Patrick Peer</name>
       <email>e0326352 [at] gmail.com</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
     <contributor>
       <name>Christoph Zehetner</name>
       <email>christoph.zehetner [at] gmx.at</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
     <contributor>
       <name>Alexander Pucher</name>
       <email>engsb [at] alexander-pucher.com</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
     <contributor>
       <name>Michael Zoech</name>
       <email>zoech [at] qse.ifs.tuwien.ac.at</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
     <contributor>
       <name>Christoph Gritschenberger</name>
       <email>e0525747 [at] student.tuwien.ac.at</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
     <contributor>
       <name>David Waldhans</name>
       <email>david [at] waldhans.at</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
     <contributor>
       <name>Michael Heil</name>
       <email>michael.heil [at] chello.at</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
     <contributor>
       <name>Lukas Puschmann</name>
       <email>lukas.puschmann [at] gmx.at</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
     <contributor>
       <name>Johannes Binder</name>
       <email>j.binder.x [at] gmail.com</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
     <contributor>
       <name>Gernot Rumpold</name>
       <email>gernot.rumpold [at] gmail.com</email>
-      <organization>Vienna University of Technology</organization>
-      <organizationUrl>http://cdl.ifs.tuwien.ac.at</organizationUrl>
       <timezone>+1</timezone>
     </contributor>
 
