@@ -84,7 +84,7 @@ public class DirectoryRuleSource extends RuleBaseSource {
         drl.append("package org.openengsb\n");
         try {
             drl.append(readImports());
-            drl.append(getGlobals());
+            drl.append(readGlobals());
             drl.append(readFunctions());
             drl.append(readRules());
         } catch (IOException e) {
@@ -137,9 +137,20 @@ public class DirectoryRuleSource extends RuleBaseSource {
         return result.toString();
     }
 
-    private String getGlobals() {
-        // TODO Auto-generated method stub
-        return "";
+    private String readGlobals() throws IOException {
+        File globalsFile = new File(this.path + File.separator + "globals");
+        StringBuffer result = new StringBuffer();
+        BufferedReader reader = new BufferedReader(new FileReader(globalsFile));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            if (!line.trim().isEmpty()) {
+                result.append("global ");
+                result.append(line);
+                result.append("\n");
+            }
+        }
+        reader.close();
+        return result.toString();
     }
 
     private String readImports() throws IOException {

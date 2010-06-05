@@ -172,4 +172,11 @@ public class DirectorySourceTest {
         session.fireAllRules();
         assertEquals(1, listener.numFired);
     }
+
+    @Test
+    public void testGlobalLoaded() throws Exception{
+        String global = getPackage().getGlobals().get("test");
+        assertNotNull(global);
+    }
+
 }

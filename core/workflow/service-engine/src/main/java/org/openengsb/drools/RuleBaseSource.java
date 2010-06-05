@@ -22,7 +22,7 @@ import org.drools.RuleBase;
 public abstract class RuleBaseSource {
 
     public enum RuleBaseElement {
-        Rule, Function, Process, Import,
+        Rule, Function, Process, Import, Global,
     }
 
     protected ResourceHandler<?> getRessourceHandler(RuleBaseElement e) {
