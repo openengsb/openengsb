@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.openengsb.drools.DirectoryRuleSource;
+import org.openengsb.drools.ResourceHandler;
 import org.openengsb.drools.RuleBaseException;
 
 public class DirectoryImportHandler extends ResourceHandler<DirectoryRuleSource> {

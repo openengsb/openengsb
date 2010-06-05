@@ -15,10 +15,8 @@
    limitations under the License.
 
  */
-package org.openengsb.drools.dir;
+package org.openengsb.drools;
 
-import org.openengsb.drools.RuleBaseException;
-import org.openengsb.drools.RuleBaseSource;
 
 public abstract class ResourceHandler<T extends RuleBaseSource> {
 

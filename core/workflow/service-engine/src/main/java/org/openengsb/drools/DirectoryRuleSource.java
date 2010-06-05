@@ -32,7 +32,6 @@ import org.drools.rule.Package;
 import org.openengsb.drools.dir.DirectoryFunctionHandler;
 import org.openengsb.drools.dir.DirectoryImportHandler;
 import org.openengsb.drools.dir.DirectoryRuleHandler;
-import org.openengsb.drools.dir.ResourceHandler;
 
 public class DirectoryRuleSource extends RuleBaseSource {
 

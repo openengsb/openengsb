@@ -22,6 +22,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.openengsb.drools.DirectoryRuleSource;
+import org.openengsb.drools.ResourceHandler;
 import org.openengsb.drools.RuleBaseException;
 
 public class DirectoryRuleHandler extends ResourceHandler<DirectoryRuleSource> {

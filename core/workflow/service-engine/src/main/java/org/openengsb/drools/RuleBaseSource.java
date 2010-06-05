@@ -18,7 +18,6 @@
 package org.openengsb.drools;
 
 import org.drools.RuleBase;
-import org.openengsb.drools.dir.ResourceHandler;
 
 public abstract class RuleBaseSource {
 
