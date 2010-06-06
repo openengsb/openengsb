@@ -27,7 +27,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
 
-import org.apache.camel.converter.jaxp.StringSource;
+import org.apache.servicemix.jbi.jaxp.StringSource;
 
 public class XmlHelper {
 
