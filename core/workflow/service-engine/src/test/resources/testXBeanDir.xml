@@ -9,12 +9,13 @@
     under the License.
   -->
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:drools="http://www.openengsb.org/domain/drools/1.0"
-  xmlns:sm="http://servicemix.apache.org/config/1.0" xmlns:logging="urn:openengsb:logging" xmlns:test="urn:test" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:sm="http://servicemix.apache.org/config/1.0" xmlns:logging="urn:openengsb:logging" xmlns:test="urn:test"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean class="org.openengsb.drools.DirectoryRuleSource" id="config">
-    <property name="path" value="src/test/resources/rulebase" />
+  <bean class="org.openengsb.drools.source.DirectoryRuleSource" id="config">
+    <property name="path" value="data/rulebase" />
   </bean>
 
   <sm:container createMBeanServer="false" embedded="true" id="jbi">

@@ -41,8 +41,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.model.Event;
 import org.openengsb.drools.source.DirectoryRuleSource;
+import org.openengsb.drools.source.RuleBaseElement;
 import org.openengsb.drools.source.RuleBaseSource;
-import org.openengsb.drools.source.RuleBaseSource.RuleBaseElement;
 import org.openengsb.util.IO;
 
 public class DirectorySourceTest {

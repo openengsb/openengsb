@@ -27,10 +27,6 @@ public abstract class RuleBaseSource {
 
     public static final String DEFAULT_RULE_PACKAGE = "org.openengsb";
 
-    public enum RuleBaseElement {
-        Rule, Function, Process, Import, Global,
-    };
-
     protected ResourceHandler<?> getRessourceHandler(RuleBaseElement element) {
         throw new UnsupportedOperationException("not implemented for type " + getClass());
     }

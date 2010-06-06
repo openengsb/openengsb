@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.model.Event;
 import org.openengsb.core.transformation.Transformer;
+import org.openengsb.drools.source.RuleBaseElement;
 import org.openengsb.util.serialization.SerializationException;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
