@@ -676,6 +676,9 @@
                 <exclude>**/src/main/java/binding.xml</exclude>
                 <exclude>**/src/main/java/org/openengsb/core/xmlmapping/*.java</exclude>
 
+                <!-- jaxb stuff -->
+                <exclude>**/jaxb.index</exclude>
+
                 <!-- docs are checked in docs project -->
                 <exclude>docs/</exclude>
 
