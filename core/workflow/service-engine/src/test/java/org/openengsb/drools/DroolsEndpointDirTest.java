@@ -16,9 +16,15 @@
  */
 package org.openengsb.drools;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
+
 import javax.jbi.messaging.ExchangeStatus;
-import javax.jbi.messaging.InOnly;
+import javax.jbi.messaging.InOut;
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
 
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
@@ -31,7 +37,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.model.Event;
 import org.openengsb.core.transformation.Transformer;
+import org.openengsb.drools.helper.XmlHelper;
+import org.openengsb.drools.message.ManageRequest;
 import org.openengsb.drools.source.RuleBaseElement;
+import org.openengsb.util.IO;
 import org.openengsb.util.serialization.SerializationException;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -52,25 +61,48 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
     @Override
     @Before
     public void setUp() throws Exception {
+        File rbDir = new File("data/rulebase");
+        rbDir.mkdirs();
+        copyAllFiles(new File("src/test/resources/rulebase"), "data/rulebase/");
         super.setUp();
         client = new DefaultServiceMixClient(this.jbi);
+
+        // source = new DirectoryRuleSource("data/rulebase");
+        // rb = source.getRulebase();
+    }
+
+    private void copyAllFiles(File srcDir, String dest) throws IOException {
+        for (File f : srcDir.listFiles()) {
+            IO.copyFile(f, new File(dest + "/" + f.getName()));
+        }
     }
 
     @After
     @Override
     public void tearDown() throws Exception {
+        IO.deleteStructure(new File("data"));
         super.tearDown();
     }
 
     @Test
-    public void testHelloEndpoint() throws Exception {
-        InOnly me = client.createInOnlyExchange();
-        me.setService(new QName("urn:test", "drools"));
-        me.getInMessage().setContent(new StringSource(TEST_EVENT));
-        me.setOperation(new QName("event"));
-        me.getInMessage().setProperty("operation", Boolean.TRUE);
-        client.sendSync(me);
-        assertEquals("Exchange was not processed correctly", ExchangeStatus.DONE, me.getStatus());
+    public void testCreateMessage() throws Exception {
+        InOut inout = client.createInOutExchange();
+        inout.setService(new QName("urn:test", "drools"));
+        inout.setOperation(new QName("create"));
+        inout.getInMessage().setContent(getContent());
+        client.sendSync(inout);
+        assertNotSame("Exchange was not processed correctly", ExchangeStatus.ERROR, inout.getStatus());
+    }
+
+    private Source getContent() throws JAXBException {
+        ManageRequest req = new ManageRequest();
+        req.setElementType(RuleBaseElement.Rule);
+        req.setName("test");
+        req.setCode("when\n then\n System.out.println(\"bla\");");
+
+        StringWriter sw = new StringWriter();
+        XmlHelper.marshal(req, sw);
+        return new StringSource(sw.toString());
     }
 
     private String getTestEvent() {
