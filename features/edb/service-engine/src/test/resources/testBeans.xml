@@ -39,7 +39,7 @@
     <property name="linkStorage" value="links" />
   </bean>
   
-  <bean class="org.openengsb.drools.FileRuleSource" id="ruleSource">
+  <bean class="org.openengsb.drools.source.FileRuleSource" id="ruleSource">
     <property name="path" value="rule1.drl" />
   </bean>
 
