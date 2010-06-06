@@ -28,6 +28,7 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
 
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
@@ -36,6 +37,8 @@ import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.SimpleEventEndpoint;
 import org.openengsb.core.model.Event;
+import org.openengsb.drools.helper.XmlHelper;
+import org.openengsb.drools.message.ManageRequest;
 import org.openengsb.drools.source.RuleBaseSource;
 
 /**
@@ -69,6 +72,24 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
     @Override
     public synchronized void start() throws Exception {
         super.start();
+        ruleBase = ruleSource.getRulebase();
+    }
+
+    @Override
+    protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
+        if (exchange.getOperation().getLocalPart().equals("event")) {
+            super.processInOut(exchange, in, out);
+            return;
+        }
+
+        Source msgSource = in.getContent();
+
+        ManageRequest request = XmlHelper.unmarshal(ManageRequest.class, msgSource);
+        System.out.println(request);
+        QName op = exchange.getOperation();
+        if ("create".equals(op.getLocalPart())) {
+            ruleSource.add(request.getElementType(), request.getName(), request.getCode());
+        }
     }
 
     @Override
@@ -106,11 +127,7 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
     }
 
     private void init() throws RuleBaseException {
-        if (ruleSource != null) {
-            setRuleBase(ruleSource.getRulebase());
-        } else {
-            throw new NullPointerException("Error initializing DroolsEndpoint - no ruleSource specified.");
-        }
+
     }
 
     public final boolean isNoRemoteLogging() {
