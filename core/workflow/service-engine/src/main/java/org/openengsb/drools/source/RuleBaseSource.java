@@ -22,6 +22,7 @@ import java.util.Collection;
 import org.drools.RuleBase;
 import org.drools.rule.Package;
 import org.openengsb.drools.RuleBaseException;
+import org.openengsb.drools.message.RuleBaseElement;
 
 public abstract class RuleBaseSource {
 

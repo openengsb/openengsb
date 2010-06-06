@@ -39,7 +39,7 @@ import org.openengsb.core.model.Event;
 import org.openengsb.core.transformation.Transformer;
 import org.openengsb.drools.helper.XmlHelper;
 import org.openengsb.drools.message.ManageRequest;
-import org.openengsb.drools.source.RuleBaseElement;
+import org.openengsb.drools.message.RuleBaseElement;
 import org.openengsb.util.IO;
 import org.openengsb.util.serialization.SerializationException;
 import org.springframework.context.support.AbstractXmlApplicationContext;

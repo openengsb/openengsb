@@ -30,6 +30,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.openengsb.drools.RuleBaseException;
+import org.openengsb.drools.message.RuleBaseElement;
 import org.openengsb.drools.source.dir.DirectoryFunctionHandler;
 import org.openengsb.drools.source.dir.DirectoryGlobalHandler;
 import org.openengsb.drools.source.dir.DirectoryImportHandler;

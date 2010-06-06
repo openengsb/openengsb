@@ -15,8 +15,11 @@
    limitations under the License.
 
  */
-package org.openengsb.drools.source;
+package org.openengsb.drools.message;
 
+import javax.xml.bind.annotation.XmlType;
+
+@XmlType
 public enum RuleBaseElement {
     Rule, Function, Process, Import, Global,
 }

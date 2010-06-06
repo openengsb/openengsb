@@ -20,7 +20,6 @@ package org.openengsb.drools.message;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.openengsb.drools.source.RuleBaseElement;
 
 @XmlRootElement
 @XmlType(propOrder = { "elementType", "name", "code" })
