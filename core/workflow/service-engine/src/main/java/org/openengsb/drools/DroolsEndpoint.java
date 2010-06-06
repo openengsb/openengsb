@@ -38,6 +38,8 @@ import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.SimpleEventEndpoint;
 import org.openengsb.core.model.Event;
 import org.openengsb.drools.helper.XmlHelper;
+import org.openengsb.drools.message.GetResponse;
+import org.openengsb.drools.message.ListResponse;
 import org.openengsb.drools.message.ManageRequest;
 import org.openengsb.drools.source.RuleBaseSource;
 
@@ -76,19 +78,42 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
     }
 
     @Override
+    protected void processInOnly(MessageExchange exchange, NormalizedMessage in) throws Exception {
+        if (exchange.getOperation().getLocalPart().equals("event")) {
+            super.processInOnly(exchange, in);
+            return;
+        }
+        Source msgSource = in.getContent();
+        ManageRequest request = XmlHelper.unmarshal(ManageRequest.class, msgSource);
+        QName op = exchange.getOperation();
+        if ("create".equals(op.getLocalPart())) {
+            ruleSource.add(request.getElementType(), request.getName(), request.getCode());
+        } else if ("delete".equals(op.getLocalPart())) {
+            ruleSource.delete(request.getElementType(), request.getName());
+        } else if ("update".equals(op.getLocalPart())) {
+            ruleSource.update(request.getElementType(), request.getName(), request.getCode());
+        }
+    }
+
+    @Override
     protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
         if (exchange.getOperation().getLocalPart().equals("event")) {
             super.processInOut(exchange, in, out);
             return;
         }
-
         Source msgSource = in.getContent();
-
         ManageRequest request = XmlHelper.unmarshal(ManageRequest.class, msgSource);
-        System.out.println(request);
         QName op = exchange.getOperation();
-        if ("create".equals(op.getLocalPart())) {
-            ruleSource.add(request.getElementType(), request.getName(), request.getCode());
+        if ("list".equals(op.getLocalPart())) {
+            Collection<String> list = ruleSource.list(request.getElementType());
+            ListResponse response = new ListResponse(list);
+            Source outContent = XmlHelper.marshal(response);
+            out.setContent(outContent);
+        } else if ("get".equals(op.getLocalPart())) {
+            String code = ruleSource.get(request.getElementType(), request.getName());
+            GetResponse response = new GetResponse(request.getName(), code);
+            Source outContent = XmlHelper.marshal(response);
+            out.setContent(outContent);
         }
     }
 
@@ -164,7 +189,7 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
 
     /**
      * handle the MessageExchange with drools.
-     * 
+     *
      * @param e2 exchange to handle
      */
     protected void drools(Event e, MessageProperties msgProperties) {

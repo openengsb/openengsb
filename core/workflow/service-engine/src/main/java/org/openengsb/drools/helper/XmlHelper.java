@@ -18,6 +18,7 @@
 package org.openengsb.drools.helper;
 
 import java.io.InputStream;
+import java.io.StringWriter;
 import java.io.Writer;
 
 import javax.xml.bind.JAXBContext;
@@ -25,6 +26,8 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
+
+import org.apache.camel.converter.jaxp.StringSource;
 
 public class XmlHelper {
 
@@ -46,6 +49,12 @@ public class XmlHelper {
         JAXBContext context1 = JAXBContext.newInstance(doc.getClass());
         Marshaller m = context1.createMarshaller();
         m.marshal(doc, writer);
+    }
+
+    public static Source marshal(Object doc) throws JAXBException {
+        StringWriter sw = new StringWriter();
+        marshal(doc, sw);
+        return new StringSource(sw.toString());
     }
 
 }

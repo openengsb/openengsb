@@ -134,6 +134,7 @@ public class CommitServiceTest extends SpringTestSupport {
         comp.addEndpoint(notificationEndpoint);
         jbi.activateComponent(comp, "notification");
 
+
         storeNotificationContext();
 
         makeParameters(this.config);
@@ -428,7 +429,7 @@ public class CommitServiceTest extends SpringTestSupport {
 
     /**
      * Creates a new ServiceMixClieant
-     * 
+     *
      * @return The new ServiceMixClient
      */
     private DefaultServiceMixClient createClient() throws JBIException {
@@ -515,11 +516,11 @@ public class CommitServiceTest extends SpringTestSupport {
         addGCToMessagePart(gc2, body, CommitServiceTest.USER);
         CommitServiceTest.persistMessage = DocumentHelper.createDocument(root);
     }
-    
+
     private void storeNotificationContext() {
         ContextHelperImpl contextHelper = new ContextHelperImpl(notificationEndpoint, null);
         contextHelper.setContext("42");
-        
+
         HashMap<String, String> newProperties = new HashMap<String, String>();
         newProperties.put("notification/namespace", "urn:openengsb:testnotification");
         newProperties.put("notification/servicename", "notificationTestService");
