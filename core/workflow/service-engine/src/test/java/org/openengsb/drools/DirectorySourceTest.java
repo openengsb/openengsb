@@ -74,6 +74,10 @@ public class DirectorySourceTest {
         rulebase = source.getRulebase();
     }
 
+    /**
+     * create new stateful session from the rulebase and attach a listener to
+     * validate testresults
+     */
     private void createSession() {
         if (session != null) {
             session.dispose();
