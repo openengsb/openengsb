@@ -20,11 +20,12 @@
     xmlns="http://docbook.org/ns/docbook"
     xmlns:xi="http://www.w3.org/2001/XInclude"
     version="5.0">
-    
+
   <info>
-    <title>Open Engineering Service Bus User Documentation</title>
+    <title>Open Engineering Service Bus Documentation</title>
 
     <releaseinfo>OpenEngSB</releaseinfo>
+    <legalnotice>Copyright &#xA9; 2010</legalnotice>
 
     <authorgroup>
       <author>
@@ -67,32 +68,32 @@
   
   <part>
     <title>Introduction</title>
-    <xi:include href="usermanual/introduction.xml" />
-  </part>
-  
-  <part>
-    <title>User Documentation</title>
-    <xi:include href="usermanual/userQuickstart.xml" />
+    <xi:include href="introduction/introduction.xml" />
   </part>
 
   <part>
-    <title>Developer Documentation</title>
-    <xi:include href="usermanual/devQuickstart.xml" />
-    <xi:include href="usermanual/testclient.xml" />
-    <xi:include href="usermanual/connectorArchetype.xml"/>
-    <xi:include href="usermanual/architecture.xml" />
-    <xi:include href="usermanual/externalConnectors.xml" />
-    <xi:include href="usermanual/internalConnectors.xml" />
-    <xi:include href="usermanual/domains.xml"/>
-    <xi:include href="usermanual/features.xml"/>
-    <xi:include href="usermanual/workflow.xml"/>
-    <xi:include href="usermanual/context.xml"/>
-    <xi:include href="usermanual/guidelines.xml" />
+    <title>Setup &amp; Administration</title>
+    <xi:include href="administration/userQuickstart.xml" />
+    <xi:include href="administration/testclient.xml" />
+  </part>
+
+  <part>
+    <title>Developer Manual</title>
+    <xi:include href="developer/architecture.xml" />
+    <xi:include href="developer/devQuickstart.xml" />
+    
+    <xi:include href="developer/connectorArchetype.xml"/>
+    <xi:include href="developer/externalConnectors.xml" />
+    <xi:include href="developer/internalConnectors.xml" />
+    <xi:include href="developer/features.xml"/>
+    <xi:include href="developer/workflow.xml"/>
+    <xi:include href="developer/context.xml"/>
+    <xi:include href="developer/guidelines.xml" />
   </part>
 
   <part>
     <title>Domains and Connectors</title>
+    <xi:include href="developer/domains.xml"/>
   </part>
-  
 
 </book>
