@@ -105,6 +105,7 @@
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
     <servicemix.jbi.maven.version>4.4-SNAPSHOT</servicemix.jbi.maven.version>
     <maven.rat.version>0.6</maven.rat.version>
+    <twdata.cli.version>1.0.4</twdata.cli.version>
   </properties>
 
   <groupId>org.openengsb</groupId>
@@ -499,6 +500,11 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.twdata.maven</groupId>
+        <artifactId>maven-cli-plugin</artifactId>
+        <version>${twdata.cli.version}</version>
       </plugin>
     </plugins>
     <pluginManagement>
@@ -1484,6 +1490,11 @@
       <releases>
          <enabled>false</enabled>
       </releases>
+    </pluginRepository>
+    <pluginRepository>
+      <id>twdata-m2-repository</id>
+      <name>twdata.org Maven 2 Repository</name>
+      <url>http://twdata-m2-repository.googlecode.com/svn/</url>
     </pluginRepository>
   </pluginRepositories>
 
