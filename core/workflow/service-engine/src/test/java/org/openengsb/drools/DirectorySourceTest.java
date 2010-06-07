@@ -24,11 +24,11 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
@@ -60,24 +60,18 @@ public class DirectorySourceTest {
     }
 
     private RuleBaseSource source;
-    private RuleBase rb;
+    private RuleBase rulebase;
     private StatefulSession session;
     private RuleListener2 listener;
 
     @Before
     public void setUp() throws Exception {
-        File rbDir = new File("data/rulebase");
-        rbDir.mkdirs();
-        copyAllFiles(new File("src/test/resources/rulebase"), "data/rulebase/");
+        File rulebaseReferenceDirectory = new File("src/test/resources/rulebase");
+        File rulebaseTestDirectory = new File("data/rulebase");
+        FileUtils.copyDirectory(rulebaseReferenceDirectory, rulebaseTestDirectory);
 
         source = new DirectoryRuleSource("data/rulebase");
-        rb = source.getRulebase();
-    }
-
-    private void copyAllFiles(File srcDir, String dest) throws IOException {
-        for (File f : srcDir.listFiles()) {
-            IO.copyFile(f, new File(dest + "/" + f.getName()));
-        }
+        rulebase = source.getRulebase();
     }
 
     private void createSession() {
@@ -85,7 +79,7 @@ public class DirectorySourceTest {
             session.dispose();
             session = null;
         }
-        session = rb.newStatefulSession();
+        session = rulebase.newStatefulSession();
         listener = new RuleListener2();
         session.addEventListener(listener);
     }
@@ -100,8 +94,8 @@ public class DirectorySourceTest {
 
     @Test
     public void testGetRuleBase() throws Exception {
-        Assert.assertNotNull(rb);
-        Package p = rb.getPackage("org.openengsb");
+        Assert.assertNotNull(rulebase);
+        Package p = rulebase.getPackage("org.openengsb");
         assertNotNull(p);
         System.err.println(p.getRules().length);
     }
