@@ -31,7 +31,7 @@ import org.openengsb.drools.source.ResourceHandler;
 public class DirectoryRuleHandler extends ResourceHandler<DirectoryRuleSource> {
 
     // do not use .drl because we don't create valid drls
-    public static final String EXTENSION = ".rule";
+    public static final String EXTENSION = DirectoryRuleSource.RULE_EXTENSION;
 
     public DirectoryRuleHandler(DirectoryRuleSource source) {
         super(source);
@@ -78,7 +78,7 @@ public class DirectoryRuleHandler extends ResourceHandler<DirectoryRuleSource> {
     public Collection<String> list() throws RuleBaseException {
         Rule[] rules = source.getPackage().getRules();
         Collection<String> result = new HashSet<String>();
-        for(Rule r : rules){
+        for (Rule r : rules) {
             result.add(r.getName());
         }
         return result;

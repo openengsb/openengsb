@@ -28,7 +28,7 @@ import org.openengsb.drools.source.ResourceHandler;
 
 public class DirectoryFunctionHandler extends ResourceHandler<DirectoryRuleSource> {
 
-    public static final String EXTENSION = ".func";
+    private static final String EXTENSION = DirectoryRuleSource.FUNC_EXTENSION;
 
     public DirectoryFunctionHandler(DirectoryRuleSource source) {
         super(source);

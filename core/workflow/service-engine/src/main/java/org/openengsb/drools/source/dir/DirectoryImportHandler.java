@@ -33,13 +33,11 @@ import org.openengsb.drools.source.ResourceHandler;
 
 public class DirectoryImportHandler extends ResourceHandler<DirectoryRuleSource> {
 
-    public static final String IMPORTS_FILE = "imports";
-
     private File importsFile;
 
     public DirectoryImportHandler(DirectoryRuleSource source) {
         super(source);
-        importsFile = new File(source.getPath() + File.separator + IMPORTS_FILE);
+        importsFile = new File(source.getPath() + File.separator + DirectoryRuleSource.IMPORTS_FILENAME);
     }
 
     @Override

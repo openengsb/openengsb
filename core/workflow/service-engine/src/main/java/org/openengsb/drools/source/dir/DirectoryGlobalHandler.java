@@ -38,7 +38,7 @@ public class DirectoryGlobalHandler extends ResourceHandler<DirectoryRuleSource>
 
     public DirectoryGlobalHandler(DirectoryRuleSource source) {
         super(source);
-        globalsFile = new File(source.getPath() + File.separator + "globals");
+        globalsFile = new File(source.getPath() + File.separator + DirectoryRuleSource.GLOBALS_FILENAME);
     }
 
     @Override

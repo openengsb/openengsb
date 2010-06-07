@@ -34,7 +34,6 @@ public abstract class RuleBaseSource {
 
     public abstract RuleBase getRulebase() throws RuleBaseException;
 
-    /* CRUD */
     public void add(RuleBaseElement type, String name, String code) throws RuleBaseException {
         this.getRessourceHandler(type).create(name, code);
     }
