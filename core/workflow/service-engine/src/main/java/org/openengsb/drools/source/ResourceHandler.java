@@ -21,11 +21,11 @@ import java.util.Collection;
 
 import org.openengsb.drools.RuleBaseException;
 
-public abstract class ResourceHandler<T extends RuleBaseSource> {
+public abstract class ResourceHandler<SourceType extends RuleBaseSource> {
 
-    protected T source;
+    protected SourceType source;
 
-    public ResourceHandler(T source) {
+    public ResourceHandler(SourceType source) {
         this.source = source;
     }
 
