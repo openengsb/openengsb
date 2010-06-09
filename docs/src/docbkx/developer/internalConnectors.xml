@@ -21,8 +21,8 @@
   <section>
     <title>Introduction</title>
     <para>
-      This chapter describes how to implement your own tool connector and
-      is targeted to developers who want to connect a tool to OpenEngSB.
+      This chapter describes how to implement a tool connector. 
+      Target audience are developers who want to connect a tool to OpenEngSB.
       A tool connector is an adapter between a tool and OpenEngSB.
       Every connector belongs to a tool domain which defines the common interface of
       all its tool connectors. This means that the tool connector has to translate all calls to the
@@ -35,10 +35,11 @@
   <section>
     <title>Prerequisites</title>
     <para>
-      If you don't know what a tool domain is and how it defines the interface for
-      the tool connector you should read the chapter "OpenEngsB Tool Domains" first.
-      If no matching domain exists already you have to create it. Read the chapter mentioned above
-      for more information about writing domains.
+      In case it isn't known what a tool domain is and how it defines the interface for
+      the tool connector the chapter "OpenEngSB Tool Domains" is a good starting point.
+      If there's already a matching domain for this tool it is strongly recommended to use it.
+      But if this tool requires a new domain it has to be created. This is also described in the chapter
+      "OpenEngSB Tool Domains".
     </para>
   </section>
 
@@ -50,7 +51,6 @@
     </para>
   </section>
 
-
   <section>
     <title>Description</title>
     <para>
@@ -59,7 +59,7 @@
     <section>
       <title>Project Setup</title>
       <para>
-        The first step is to create new projects (Service Engine and Service Unit) for your tool.
+        The first step is to create new maven projects (Service Engine and Service Unit) for your tool.
         These projects have to be located at
         domains/<emphasis>domain</emphasis>/<emphasis>toolname</emphasis>/{service-engine, service-unit}/.
         An easy way to get started is to copy an existing connector. The most simple connector is the email
