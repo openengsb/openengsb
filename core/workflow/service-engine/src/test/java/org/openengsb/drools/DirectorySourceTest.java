@@ -36,7 +36,6 @@ import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.rule.Package;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.model.Event;
@@ -98,7 +97,7 @@ public class DirectorySourceTest {
 
     @Test
     public void testGetRuleBase() throws Exception {
-        Assert.assertNotNull(rulebase);
+        assertNotNull(rulebase);
         Package p = rulebase.getPackage("org.openengsb");
         assertNotNull(p);
         System.err.println(p.getRules().length);
@@ -115,7 +114,7 @@ public class DirectorySourceTest {
     @Test
     public void testFireRules() throws Exception {
         testGetRules();
-        Assert.assertEquals(listener.numFired, 1);
+        assertEquals(listener.numFired, 1);
     }
 
     @Test
