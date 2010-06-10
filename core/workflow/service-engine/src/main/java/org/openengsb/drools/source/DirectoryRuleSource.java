@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -104,8 +105,12 @@ public class DirectoryRuleSource extends RuleBaseSource {
         if (this.path == null) {
             throw new IllegalStateException("path must be set");
         }
+        File pathFile = new File(path);
         Collection<Package> packages;
         try {
+            if (!pathFile.exists()) {
+                initRuleBase();
+            }
             String imports = readImportsFromRulebaseDirectory();
             String globals = readGlobalsFromRulebaseDirectory();
             prelude = imports + globals;
@@ -127,6 +132,13 @@ public class DirectoryRuleSource extends RuleBaseSource {
         }
         ruleBase.addPackages(packages.toArray(new Package[packages.size()]));
         ruleBase.unlock();
+    }
+
+    private void initRuleBase() throws IOException {
+        File pathFile = new File(path);
+        pathFile.mkdirs();
+        URL defaultRuleBase = ClassLoader.getSystemResource("rulebase");
+        FileUtils.copyDirectory(new File(defaultRuleBase.getFile()), pathFile);
     }
 
     public void readPackage(String packageName) throws IOException, RuleBaseException {
@@ -226,7 +238,7 @@ public class DirectoryRuleSource extends RuleBaseSource {
         case Global:
             return new File(this.path, GLOBALS_FILENAME);
         case Function:
-            return new File(this.path, getPathName(id) +  FUNC_EXTENSION);
+            return new File(this.path, getPathName(id) + FUNC_EXTENSION);
         case Rule:
             return new File(this.path, getPathName(id) + RULE_EXTENSION);
         }
