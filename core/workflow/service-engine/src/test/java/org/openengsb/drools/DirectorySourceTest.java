@@ -53,7 +53,10 @@ public class DirectorySourceTest {
 
         @Override
         public void afterActivationFired(AfterActivationFiredEvent event, WorkingMemory workingMemory) {
-            rulesFired.add(event.getActivation().getRule().getName());
+            Rule rule = event.getActivation().getRule();
+            rulesFired.add(rule.getName());
+            String fqName = rule.getPackageName() + "." + rule.getName();
+            rulesFired.add(fqName);
             numFired++;
             super.afterActivationFired(event, workingMemory);
         }
@@ -86,6 +89,19 @@ public class DirectorySourceTest {
         session = rulebase.newStatefulSession();
         listener = new RuleListener2();
         session.addEventListener(listener);
+    }
+
+    /**
+     * inserts an Event into the existing session and fires All rules
+     */
+    private void executeTestSession() {
+        Event event = new Event("", "hello");
+        session.insert(event);
+        session.fireAllRules();
+    }
+
+    private void assertRuleFired(String name) {
+        assertTrue(listener.rulesFired.contains(name));
     }
 
     @After
@@ -124,9 +140,7 @@ public class DirectorySourceTest {
         source.add(id, "when\n" + "  e : Event( name == \"hello\")\n" + "then\n"
                 + "  System.out.println(\"this rule was added by the addrule-function\");\n");
         createSession();
-        Event event = new Event("", "hello");
-        session.insert(event);
-        session.fireAllRules();
+        executeTestSession();
         assertTrue(listener.rulesFired.contains("test3"));
     }
 
