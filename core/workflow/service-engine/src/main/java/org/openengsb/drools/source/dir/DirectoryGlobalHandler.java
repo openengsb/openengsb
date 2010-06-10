@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.openengsb.drools.RuleBaseException;
+import org.openengsb.drools.message.RuleBaseElementId;
 import org.openengsb.drools.source.DirectoryRuleSource;
 
 public class DirectoryGlobalHandler extends SingleFileResourceHandler {
@@ -36,16 +37,16 @@ public class DirectoryGlobalHandler extends SingleFileResourceHandler {
     }
 
     @Override
-    public void create(String name, String code) throws RuleBaseException {
+    public void create(RuleBaseElementId name, String code) throws RuleBaseException {
         Set<String> globalList = readFile();
-        String line = String.format("%s %s", code, name);
+        String line = String.format("%s %s", code, name.getName());
         globalList.add(line);
         writeFile(globalList);
         source.readRuleBase();
     }
 
     @Override
-    public void delete(String name) throws RuleBaseException {
+    public void delete(RuleBaseElementId name) throws RuleBaseException {
         Set<String> globalList = readFile();
         Iterator<String> it = globalList.iterator();
         String line;
@@ -59,13 +60,19 @@ public class DirectoryGlobalHandler extends SingleFileResourceHandler {
     }
 
     @Override
-    public String get(String name) throws RuleBaseException {
-        return source.getPackage().getGlobals().get(name);
+    public String get(RuleBaseElementId name) throws RuleBaseException {
+        return source.getRulebase().getPackages()[0].getGlobals().get(name.getName());
     }
 
     @Override
-    public Collection<String> list() throws RuleBaseException {
-        return source.getPackage().getGlobals().keySet();
+    public Collection<RuleBaseElementId> list() throws RuleBaseException {
+        return null;
+    }
+
+    @Override
+    public Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

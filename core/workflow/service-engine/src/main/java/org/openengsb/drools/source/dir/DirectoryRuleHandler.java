@@ -25,6 +25,8 @@ import java.util.HashSet;
 
 import org.drools.rule.Rule;
 import org.openengsb.drools.RuleBaseException;
+import org.openengsb.drools.message.RuleBaseElementId;
+import org.openengsb.drools.message.RuleBaseElementType;
 import org.openengsb.drools.source.DirectoryRuleSource;
 import org.openengsb.drools.source.ResourceHandler;
 
@@ -38,9 +40,8 @@ public class DirectoryRuleHandler extends ResourceHandler<DirectoryRuleSource> {
     }
 
     @Override
-    public void create(String name, String code) throws RuleBaseException {
-        String filename = name + EXTENSION;
-        File ruleFile = new File(source.getPath() + File.separator + filename);
+    public void create(RuleBaseElementId name, String code) throws RuleBaseException {
+        File ruleFile =  source.getFilePath(name);
         if (ruleFile.exists()) {
             throw new RuleBaseException("File already exists");
         }
@@ -57,30 +58,34 @@ public class DirectoryRuleHandler extends ResourceHandler<DirectoryRuleSource> {
     }
 
     @Override
-    public void delete(String name) throws RuleBaseException {
-        String filename = name + EXTENSION;
-        File ruleFile = new File(source.getPath() + File.separator + filename);
+    public void delete(RuleBaseElementId name) throws RuleBaseException {
+        File ruleFile =  source.getFilePath(name);
         if (!ruleFile.exists()) {
             // fail silently if the rule does not exist
             return;
         }
         ruleFile.delete();
-        source.getRulebase().removeRule("org.openengsb", name);
+        source.getRulebase().removeRule(name.getPackageName(), name.getName());
     }
 
     @Override
-    public String get(String name) {
+    public String get(RuleBaseElementId name) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Collection<String> list() throws RuleBaseException {
-        Rule[] rules = source.getPackage().getRules();
-        Collection<String> result = new HashSet<String>();
-        for (Rule r : rules) {
-            result.add(r.getName());
+    public Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException {
+        Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
+        for (Rule rule : source.getRulebase().getPackage(packageName).getRules()) {
+            result.add(new RuleBaseElementId(RuleBaseElementType.Function, packageName, rule.getName()));
         }
         return result;
+    }
+
+    @Override
+    public Collection<RuleBaseElementId> list() throws RuleBaseException {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -20,6 +20,6 @@ package org.openengsb.drools.message;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType
-public enum RuleBaseElement {
+public enum RuleBaseElementType {
     Rule, Function, Process, Import, Global,
 }

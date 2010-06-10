@@ -20,41 +20,39 @@ package org.openengsb.drools.source;
 import java.util.Collection;
 
 import org.drools.RuleBase;
-import org.drools.rule.Package;
 import org.openengsb.drools.RuleBaseException;
-import org.openengsb.drools.message.RuleBaseElement;
+import org.openengsb.drools.message.RuleBaseElementId;
+import org.openengsb.drools.message.RuleBaseElementType;
 
 public abstract class RuleBaseSource {
 
-    public static final String DEFAULT_RULE_PACKAGE = "org.openengsb";
-
-    protected ResourceHandler<?> getRessourceHandler(RuleBaseElement element) {
+    protected ResourceHandler<?> getRessourceHandler(RuleBaseElementType element) {
         throw new UnsupportedOperationException("not implemented for type " + getClass());
     }
 
     public abstract RuleBase getRulebase() throws RuleBaseException;
 
-    public void add(RuleBaseElement type, String name, String code) throws RuleBaseException {
-        this.getRessourceHandler(type).create(name, code);
+    public void add(RuleBaseElementId name, String code) throws RuleBaseException {
+        this.getRessourceHandler(name.getType()).create(name, code);
     }
 
-    public String get(RuleBaseElement type, String name) throws RuleBaseException {
-        return this.getRessourceHandler(type).get(name);
+    public String get(RuleBaseElementId name) throws RuleBaseException {
+        return this.getRessourceHandler(name.getType()).get(name);
     }
 
-    public void update(RuleBaseElement type, String name, String newCode) throws RuleBaseException {
-        this.getRessourceHandler(type).update(name, newCode);
+    public void update(RuleBaseElementId name, String newCode) throws RuleBaseException {
+        this.getRessourceHandler(name.getType()).update(name, newCode);
     }
 
-    public void delete(RuleBaseElement type, String name) throws RuleBaseException {
-        this.getRessourceHandler(type).delete(name);
+    public void delete(RuleBaseElementId name) throws RuleBaseException {
+        this.getRessourceHandler(name.getType()).delete(name);
     }
 
-    public Collection<String> list(RuleBaseElement type) throws RuleBaseException {
+    public Collection<RuleBaseElementId> list(RuleBaseElementType type) throws RuleBaseException {
         return this.getRessourceHandler(type).list();
     }
 
-    public Package getPackage() throws RuleBaseException {
-        return getRulebase().getPackage(DEFAULT_RULE_PACKAGE);
+    public Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName) throws RuleBaseException {
+        return this.getRessourceHandler(type).list(packageName);
     }
 }

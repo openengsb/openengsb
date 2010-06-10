@@ -23,9 +23,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.commons.io.IOUtils;
 import org.openengsb.drools.RuleBaseException;
@@ -48,7 +48,7 @@ public abstract class SingleFileResourceHandler extends ResourceHandler<Director
             Reader reader = new FileReader(this.file);
             List<String> result = readLines(reader);
             reader.close();
-            return new TreeSet<String>(result);
+            return new HashSet<String>(result);
         } catch (IOException e) {
             throw new RuleBaseException("cannot read imports", e);
         }

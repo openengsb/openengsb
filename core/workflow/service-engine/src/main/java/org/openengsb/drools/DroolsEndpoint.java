@@ -41,6 +41,7 @@ import org.openengsb.drools.helper.XmlHelper;
 import org.openengsb.drools.message.GetResponse;
 import org.openengsb.drools.message.ListResponse;
 import org.openengsb.drools.message.ManageRequest;
+import org.openengsb.drools.message.RuleBaseElementId;
 import org.openengsb.drools.source.RuleBaseSource;
 
 /**
@@ -87,11 +88,11 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
         ManageRequest request = XmlHelper.unmarshal(ManageRequest.class, msgSource);
         QName op = exchange.getOperation();
         if ("create".equals(op.getLocalPart())) {
-            ruleSource.add(request.getElementType(), request.getName(), request.getCode());
+            ruleSource.add(request.getName(), request.getCode());
         } else if ("delete".equals(op.getLocalPart())) {
-            ruleSource.delete(request.getElementType(), request.getName());
+            ruleSource.delete(request.getName());
         } else if ("update".equals(op.getLocalPart())) {
-            ruleSource.update(request.getElementType(), request.getName(), request.getCode());
+            ruleSource.update(request.getName(), request.getCode());
         }
     }
 
@@ -105,12 +106,12 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
         ManageRequest request = XmlHelper.unmarshal(ManageRequest.class, msgSource);
         QName op = exchange.getOperation();
         if ("list".equals(op.getLocalPart())) {
-            Collection<String> list = ruleSource.list(request.getElementType());
+            Collection<RuleBaseElementId> list = ruleSource.list(request.getName().getType());
             ListResponse response = new ListResponse(list);
             Source outContent = XmlHelper.marshal(response);
             out.setContent(outContent);
         } else if ("get".equals(op.getLocalPart())) {
-            String code = ruleSource.get(request.getElementType(), request.getName());
+            String code = ruleSource.get(request.getName());
             GetResponse response = new GetResponse(request.getName(), code);
             Source outContent = XmlHelper.marshal(response);
             out.setContent(outContent);

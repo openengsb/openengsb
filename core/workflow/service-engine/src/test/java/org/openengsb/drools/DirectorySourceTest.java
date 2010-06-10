@@ -35,11 +35,13 @@ import org.drools.WorkingMemory;
 import org.drools.event.AfterActivationFiredEvent;
 import org.drools.event.DefaultAgendaEventListener;
 import org.drools.rule.Package;
+import org.drools.rule.Rule;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.model.Event;
-import org.openengsb.drools.message.RuleBaseElement;
+import org.openengsb.drools.message.RuleBaseElementId;
+import org.openengsb.drools.message.RuleBaseElementType;
 import org.openengsb.drools.source.DirectoryRuleSource;
 import org.openengsb.drools.source.RuleBaseSource;
 import org.openengsb.util.IO;
@@ -119,20 +121,22 @@ public class DirectorySourceTest {
 
     @Test
     public void testAddRule() throws Exception {
-        source.add(RuleBaseElement.Rule, "test3", "when\n" + "  e : Event( name == \"hello\")\n" + "then\n"
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test3");
+        source.add(id, "when\n" + "  e : Event( name == \"hello\")\n" + "then\n"
                 + "  System.out.println(\"this rule was added by the addrule-function\");\n");
         createSession();
         Event event = new Event("", "hello");
         session.insert(event);
         session.fireAllRules();
-        assertEquals(2, listener.numFired);
+        assertTrue(listener.rulesFired.contains("test3"));
     }
 
     @Test
     public void testAddImport() throws Exception {
         Package p = getPackage();
         assertNull(p.getImports().get("java.util.Currency"));
-        source.add(RuleBaseElement.Import, "java.util.Currency", "ignored");
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Import, "java.util.Currency");
+        source.add(id, "java.util.Currency");
         p = getPackage();
         assertNotNull(p.getImports().get("java.util.Currency"));
     }
@@ -145,16 +149,17 @@ public class DirectorySourceTest {
     @Test
     public void testRemoveImport() throws Exception {
         Package p = getPackage();
-        source.add(RuleBaseElement.Import, "java.util.Currency", "ignored");
-        source.delete(RuleBaseElement.Import, "java.util.Currency");
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Import, "java.util.Currency");
+        source.add(id, "ignored");
+        source.delete(id);
         p = getPackage();
         assertNull(p.getImports().get("java.util.Currency"));
     }
 
     @Test
     public void testAddFunction() throws Exception {
-        source.add(RuleBaseElement.Function, "notify", "function void notify(String message) {\n"
-                + "System.out.println(\"notify: \" + message);\n}");
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Function, "org.openengsb", "notify");
+        source.add(id, "function void notify(String message) {\n" + "System.out.println(\"notify: \" + message);\n}");
         Package p = getPackage();
         assertFalse(p.getFunctions().isEmpty());
         assertNotNull(p.getFunctions().get("notify"));
@@ -162,19 +167,23 @@ public class DirectorySourceTest {
 
     @Test
     public void testRemoveFunction() throws Exception {
-        source.add(RuleBaseElement.Function, "notify", "function void notify(String message) {\n"
-                + "System.out.println(\"notify: \" + message);\n}");
-        source.delete(RuleBaseElement.Function, "notify");
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Function, "org.openengsb", "notify");
+        source.add(id, "function void notify(String message) {\n" + "System.out.println(\"notify: \" + message);\n}");
+        source.delete(id);
         Package p = getPackage();
         assertNull(p.getFunctions().get("notify"));
     }
 
     @Test
     public void testRuleCallingFunctionUsingImport() throws Exception {
-        source.add(RuleBaseElement.Function, "test", "function void test(Object message) {\n"
+        RuleBaseElementId testFunctionId = new RuleBaseElementId(RuleBaseElementType.Function, "org.openengsb", "test");
+        source.add(testFunctionId, "function void test(Object message) {\n"
                 + "System.out.println(\"notify: \" + message);\n}");
-        source.add(RuleBaseElement.Import, "java.util.Random", "ignored");
-        source.add(RuleBaseElement.Rule, "test", "when\n" + "  e : Event( name == \"testevent\")\n" + "then\n"
+        RuleBaseElementId testImportId = new RuleBaseElementId(RuleBaseElementType.Import, "org.openengsb",
+                "java.util.Random");
+        source.add(testImportId, "ignored");
+        RuleBaseElementId testRuleId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
+        source.add(testRuleId, "when\n" + "  e : Event( name == \"testevent\")\n" + "then\n"
                 + "  test(new Random());\n");
         createSession();
 
@@ -191,14 +200,17 @@ public class DirectorySourceTest {
 
     @Test
     public void testGlobalPresent() throws Exception {
-        String global = source.get(RuleBaseElement.Global, "test");
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Global, "test");
+        String global = source.get(id);
         assertNotNull(global);
     }
 
     @Test
     public void testAddGlobal() throws Exception {
-        source.add(RuleBaseElement.Global, "bla", "java.util.Random");
-        source.add(RuleBaseElement.Rule, "bla", "when\n then System.out.println(bla.nextInt());");
+
+        source.add(new RuleBaseElementId(RuleBaseElementType.Global, "bla"), "java.util.Random");
+        source.add(new RuleBaseElementId(RuleBaseElementType.Rule, "bla"),
+                "when\n then System.out.println(bla.nextInt());");
         createSession();
         session.setGlobal("bla", new Random());
         session.insert(new Event("", "asd"));
@@ -209,18 +221,20 @@ public class DirectorySourceTest {
 
     @Test
     public void testInvalidAddRule() throws Exception {
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
         try {
-            source.add(RuleBaseElement.Rule, "test", "this_makes_no_sense_at_all");
+            source.add(id, "this_makes_no_sense_at_all");
             fail("add successful");
         } catch (RuleBaseException e) {
             // expected
         }
-        String code = source.get(RuleBaseElement.Rule, "test");
-        assertNull(code);
+        Rule rule = source.getRulebase().getPackage("org.openengsb").getRule("test");
+        assertNull(rule);
     }
 
     @Test(expected = RuleBaseException.class)
     public void testAddExistingRule() throws Exception {
-        source.add(RuleBaseElement.Rule, "hello1", "when\nthen\nSystem.out.println(\"bla\");");
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "hello1");
+        source.add(id, "when\nthen\nSystem.out.println(\"bla\");");
     }
 }

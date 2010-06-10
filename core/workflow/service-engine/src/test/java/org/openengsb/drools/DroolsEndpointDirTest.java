@@ -42,7 +42,8 @@ import org.openengsb.core.model.Event;
 import org.openengsb.core.transformation.Transformer;
 import org.openengsb.drools.helper.XmlHelper;
 import org.openengsb.drools.message.ManageRequest;
-import org.openengsb.drools.message.RuleBaseElement;
+import org.openengsb.drools.message.RuleBaseElementId;
+import org.openengsb.drools.message.RuleBaseElementType;
 import org.openengsb.util.IO;
 import org.openengsb.util.serialization.SerializationException;
 import org.springframework.context.support.AbstractXmlApplicationContext;
@@ -120,7 +121,9 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
     @Test
     public void testList() throws Exception {
         ManageRequest req = new ManageRequest();
-        req.setElementType(RuleBaseElement.Rule);
+        RuleBaseElementId id = new RuleBaseElementId();
+        id.setType(RuleBaseElementType.Rule);
+        req.setName(id);
         StringWriter sw = new StringWriter();
         XmlHelper.marshal(req, sw);
         Source content = new StringSource(sw.toString());
@@ -130,8 +133,8 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
 
     private Source getCreateContent() throws JAXBException {
         ManageRequest req = new ManageRequest();
-        req.setElementType(RuleBaseElement.Rule);
-        req.setName("test");
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "test");
+        req.setName(id);
         req.setCode("when\n then\n System.out.println(\"bla\");");
 
         StringWriter sw = new StringWriter();

@@ -20,6 +20,7 @@ package org.openengsb.drools.source.dir;
 import java.util.Collection;
 
 import org.openengsb.drools.RuleBaseException;
+import org.openengsb.drools.message.RuleBaseElementId;
 import org.openengsb.drools.source.DirectoryRuleSource;
 
 public class DirectoryImportHandler extends SingleFileResourceHandler {
@@ -34,33 +35,40 @@ public class DirectoryImportHandler extends SingleFileResourceHandler {
     }
 
     @Override
-    public void create(String name, String code) throws RuleBaseException {
+    public void create(RuleBaseElementId name, String code) throws RuleBaseException {
         Collection<String> imports = readFile();
-        imports.add(name);
+        imports.add(name.getName());
         writeFile(imports);
-        System.err.println("reread rulebase");
         source.readRuleBase();
 
     }
 
     @Override
-    public void delete(String name) throws RuleBaseException {
+    public void delete(RuleBaseElementId name) throws RuleBaseException {
         Collection<String> imports = readFile();
-        imports.remove(name);
+        imports.remove(name.getName());
         writeFile(imports);
-        source.getRulebase().getPackage("org.openengsb").removeImport(name);
+        source.readRuleBase();
     }
 
     @Override
-    public String get(String name) throws RuleBaseException {
-        if (source.getPackage().getImports().containsKey(name)) {
-            return name;
+    public String get(RuleBaseElementId name) throws RuleBaseException {
+        String iname = name.getName();
+        if (source.getRulebase().getPackages()[0].getImports().containsKey(iname)) {
+            return iname;
         }
         return null;
     }
 
     @Override
-    public Collection<String> list() throws RuleBaseException {
-        return source.getPackage().getImports().keySet();
+    public Collection<RuleBaseElementId> list() throws RuleBaseException {
+        // return source.getPackage().getImports().keySet();
+        return null;
     }
+
+    @Override
+    public Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException {
+        return list();
+    }
+
 }

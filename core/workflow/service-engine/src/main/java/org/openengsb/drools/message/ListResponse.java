@@ -23,21 +23,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class ListResponse {
-    private Collection<String> list;
+    private Collection<RuleBaseElementId> list;
 
     public ListResponse() {
     }
 
-    public ListResponse(Collection<String> list) {
+    public ListResponse(Collection<RuleBaseElementId> list) {
         super();
         this.list = list;
     }
 
-    public Collection<String> getList() {
+    public Collection<RuleBaseElementId> getList() {
         return this.list;
     }
 
-    public void setList(Collection<String> list) {
+    public void setList(Collection<RuleBaseElementId> list) {
         this.list = list;
     }
 }

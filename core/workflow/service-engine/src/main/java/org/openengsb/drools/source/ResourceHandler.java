@@ -20,6 +20,7 @@ package org.openengsb.drools.source;
 import java.util.Collection;
 
 import org.openengsb.drools.RuleBaseException;
+import org.openengsb.drools.message.RuleBaseElementId;
 
 public abstract class ResourceHandler<SourceType extends RuleBaseSource> {
 
@@ -29,16 +30,19 @@ public abstract class ResourceHandler<SourceType extends RuleBaseSource> {
         this.source = source;
     }
 
-    public abstract void create(String name, String code) throws RuleBaseException;
+    public abstract void create(RuleBaseElementId name, String code) throws RuleBaseException;
 
-    public abstract String get(String name) throws RuleBaseException;
+    public abstract String get(RuleBaseElementId name) throws RuleBaseException;
 
-    public void update(String name, String code) throws RuleBaseException {
+    public void update(RuleBaseElementId name, String code) throws RuleBaseException {
         delete(name);
         create(name, code);
     }
 
-    public abstract void delete(String name) throws RuleBaseException;
+    public abstract void delete(RuleBaseElementId name) throws RuleBaseException;
 
-    public abstract Collection<String> list() throws RuleBaseException;
+    public abstract Collection<RuleBaseElementId> list() throws RuleBaseException;
+
+    public abstract Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException;
+
 }

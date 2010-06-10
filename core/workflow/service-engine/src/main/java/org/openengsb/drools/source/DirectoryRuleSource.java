@@ -20,17 +20,24 @@ package org.openengsb.drools.source;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Collection;
+import java.util.LinkedList;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
 import org.openengsb.drools.RuleBaseException;
-import org.openengsb.drools.message.RuleBaseElement;
+import org.openengsb.drools.message.RuleBaseElementId;
+import org.openengsb.drools.message.RuleBaseElementType;
 import org.openengsb.drools.source.dir.DirectoryFunctionHandler;
 import org.openengsb.drools.source.dir.DirectoryGlobalHandler;
 import org.openengsb.drools.source.dir.DirectoryImportHandler;
@@ -38,16 +45,20 @@ import org.openengsb.drools.source.dir.DirectoryRuleHandler;
 
 public class DirectoryRuleSource extends RuleBaseSource {
 
+    private static final Log log = LogFactory.getLog(DirectoryRuleSource.class);
+
     public static final String IMPORTS_FILENAME = "imports";
 
     public static final String GLOBALS_FILENAME = "globals";
 
-    public static final String FUNC_EXTENSION = ".func";
+    public static final String FUNC_EXTENSION = "func";
 
-    public static final String RULE_EXTENSION = ".rule";
+    public static final String RULE_EXTENSION = "rule";
 
     private String path;
     private RuleBase ruleBase;
+
+    private String prelude;
 
     public DirectoryRuleSource() {
     }
@@ -74,7 +85,7 @@ public class DirectoryRuleSource extends RuleBaseSource {
     }
 
     @Override
-    protected ResourceHandler<?> getRessourceHandler(RuleBaseElement e) {
+    protected ResourceHandler<?> getRessourceHandler(RuleBaseElementType e) {
         switch (e) {
         case Rule:
             return new DirectoryRuleHandler(this);
@@ -93,58 +104,87 @@ public class DirectoryRuleSource extends RuleBaseSource {
         if (this.path == null) {
             throw new IllegalStateException("path must be set");
         }
-        StringBuffer drl = new StringBuffer();
-        drl.append(String.format("package %s \n", DEFAULT_RULE_PACKAGE));
+        Collection<Package> packages;
         try {
-            drl.append(readImportsFromRulebaseDirectory());
-            drl.append(readGlobalsFromRulebaseDirectory());
-            drl.append(readFunctionsFromRulebaseDirectory());
-            drl.append(readRulesFromRulebaseDirectory());
+            String imports = readImportsFromRulebaseDirectory();
+            String globals = readGlobalsFromRulebaseDirectory();
+            prelude = imports + globals;
+
+            Collection<File> dirs = listAllSubDirs(new File(this.path));
+
+            packages = new LinkedList<Package>();
+            for (File dir : dirs) {
+                Package p = doReadPackage(dir);
+                packages.add(p);
+            }
         } catch (IOException e) {
             throw new RuleBaseException(e);
         }
 
-        final PackageBuilder builder = new PackageBuilder();
-        try {
-            builder.addPackageFromDrl(new StringReader(drl.toString()));
-        } catch (DroolsParserException e) {
-            throw new RuleBaseException(e);
-        } catch (IOException e) {
-            throw new RuleBaseException(e);
-        }
-
-        if (builder.hasErrors()) {
-            System.err.println(drl.toString());
-            throw new RuleBaseException(builder.getErrors().toString());
-        }
-
-        Package p = builder.getPackage();
         ruleBase.lock();
-        if (ruleBase.getPackages().length > 0) {
-            ruleBase.removePackage(DEFAULT_RULE_PACKAGE);
+        for (Package ep : ruleBase.getPackages()) {
+            ruleBase.removePackage(ep.getName());
         }
+        ruleBase.addPackages(packages.toArray(new Package[packages.size()]));
+        ruleBase.unlock();
+    }
+
+    public void readPackage(String packageName) throws IOException, RuleBaseException {
+        File dir = new File(this.path, packageName.replace(".", File.separator));
+        Package p = doReadPackage(dir);
+        ruleBase.lock();
+        ruleBase.removePackage(packageName);
         ruleBase.addPackage(p);
         ruleBase.unlock();
     }
 
-    private String readRulesFromRulebaseDirectory() throws IOException {
-        StringBuffer result = new StringBuffer();
-        for (File fuleFile : findAll(RULE_EXTENSION)) {
-            result.append("rule \"");
-            result.append(getElementName(fuleFile.getName()));
-            result.append("\"\n");
-            result.append(readFileContent(fuleFile));
-            result.append("\nend\n");
+    private Package doReadPackage(File path) throws IOException, RuleBaseException {
+        StringBuffer content = new StringBuffer();
+        content.append(String.format("package %s;\n", getPackageName(path)));
+        content.append(prelude);
+        Collection<File> functions = FileUtils.listFiles(path, new String[] { FUNC_EXTENSION }, false);
+        for (File f : functions) {
+            String func = IOUtils.toString(new FileReader(f));
+            content.append(func);
         }
-        return result.toString();
+        Collection<File> rules = FileUtils.listFiles(path, new String[] { RULE_EXTENSION }, false);
+        for (File f : rules) {
+            String ruleName = FilenameUtils.getBaseName(f.getName());
+            content.append(String.format("rule \"%s\"\n", ruleName));
+            content.append(IOUtils.toString(new FileReader(f)));
+            content.append("end\n");
+        }
+        final PackageBuilder builder = new PackageBuilder();
+        try {
+            builder.addPackageFromDrl(new StringReader(content.toString()));
+        } catch (DroolsParserException e) {
+            throw new RuleBaseException(e);
+        }
+        if (builder.hasErrors()) {
+            log.error(content.toString());
+            throw new RuleBaseException(builder.getErrors().toString());
+        }
+
+        return builder.getPackage();
+
     }
 
-    private String readFunctionsFromRulebaseDirectory() throws IOException {
-        StringBuffer result = new StringBuffer();
-        for (File functionFile : findAll(FUNC_EXTENSION)) {
-            result.append(readFileContent(functionFile));
+    private String getPackageName(File file) {
+        String filePath = file.getAbsolutePath();
+        File path = new File(this.path);
+        String name = filePath.substring(path.getAbsolutePath().length() + 1);
+        return name.replace(File.separator, ".");
+    }
+
+    private static Collection<File> listAllSubDirs(File file) {
+        Collection<File> result = new LinkedList<File>();
+        for (File f : file.listFiles()) {
+            if (f.isDirectory()) {
+                result.add(f);
+                result.addAll(listAllSubDirs(f));
+            }
         }
-        return result.toString();
+        return result;
     }
 
     private String readGlobalsFromRulebaseDirectory() throws IOException {
@@ -179,30 +219,26 @@ public class DirectoryRuleSource extends RuleBaseSource {
         return result.toString();
     }
 
-    private File[] findAll(final String extension) {
-        return new File(path).listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return name.endsWith(extension);
-            }
-        });
+    public File getFilePath(RuleBaseElementId id) {
+        switch (id.getType()) {
+        case Import:
+            return new File(this.path, IMPORTS_FILENAME);
+        case Global:
+            return new File(this.path, GLOBALS_FILENAME);
+        case Function:
+            return new File(this.path, getPathName(id) +  FUNC_EXTENSION);
+        case Rule:
+            return new File(this.path, getPathName(id) + RULE_EXTENSION);
+        }
+        return null;
     }
 
-    private String readFileContent(File file) throws IOException {
+    private String getPathName(RuleBaseElementId id) {
         StringBuffer result = new StringBuffer();
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            result.append(line);
-            result.append("\n");
-        }
-        reader.close();
+        result.append(id.getPackageName().replace('.', File.separatorChar));
+        result.append(File.separator);
+        result.append(id.getName());
+        result.append(".");
         return result.toString();
     }
-
-    private String getElementName(String filename) {
-        int lastindex = filename.lastIndexOf(".");
-        return filename.substring(0, lastindex);
-    }
-
 }
