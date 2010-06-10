@@ -19,25 +19,27 @@ package org.openengsb.drools.message;
 
 import java.util.Collection;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class ListResponse {
-    private Collection<RuleBaseElementId> list;
+    @XmlElement(required = true, name = "list")
+    private Collection<RuleBaseElementId> theList;
 
     public ListResponse() {
     }
 
     public ListResponse(Collection<RuleBaseElementId> list) {
         super();
-        this.list = list;
+        this.theList = list;
     }
 
     public Collection<RuleBaseElementId> getList() {
-        return this.list;
+        return this.theList;
     }
 
     public void setList(Collection<RuleBaseElementId> list) {
-        this.list = list;
+        this.theList = list;
     }
 }

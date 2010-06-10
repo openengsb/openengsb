@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement
-@XmlType(propOrder = { "elementType", "name", "code" })
+@XmlType(propOrder = { "name", "code" })
 public class ManageRequest {
     private RuleBaseElementId name;
     private String code;

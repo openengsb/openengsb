@@ -42,6 +42,7 @@ import org.openengsb.drools.message.GetResponse;
 import org.openengsb.drools.message.ListResponse;
 import org.openengsb.drools.message.ManageRequest;
 import org.openengsb.drools.message.RuleBaseElementId;
+import org.openengsb.drools.message.RuleBaseElementType;
 import org.openengsb.drools.source.RuleBaseSource;
 
 /**
@@ -106,7 +107,14 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
         ManageRequest request = XmlHelper.unmarshal(ManageRequest.class, msgSource);
         QName op = exchange.getOperation();
         if ("list".equals(op.getLocalPart())) {
-            Collection<RuleBaseElementId> list = ruleSource.list(request.getName().getType());
+            Collection<RuleBaseElementId> list;
+            RuleBaseElementType type = request.getName().getType();
+            String packageName = request.getName().getPackageName();
+            if (packageName == null) {
+                list = ruleSource.list(type);
+            } else {
+                list = ruleSource.list(type, packageName);
+            }
             ListResponse response = new ListResponse(list);
             Source outContent = XmlHelper.marshal(response);
             out.setContent(outContent);

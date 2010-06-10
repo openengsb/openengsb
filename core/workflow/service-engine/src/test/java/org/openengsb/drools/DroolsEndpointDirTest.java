@@ -17,7 +17,6 @@
 package org.openengsb.drools;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.jbi.messaging.ExchangeStatus;
@@ -28,6 +27,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.client.ServiceMixClient;
 import org.apache.servicemix.jbi.jaxp.StringSource;
@@ -67,9 +67,9 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
     @Override
     @Before
     public void setUp() throws Exception {
-        File rbDir = new File("data/rulebase");
-        rbDir.mkdirs();
-        copyAllFiles(new File("src/test/resources/rulebase"), "data/rulebase/");
+        File rulebaseReferenceDirectory = new File("src/test/resources/rulebase");
+        File rulebaseTestDirectory = new File("data/rulebase");
+        FileUtils.copyDirectory(rulebaseReferenceDirectory, rulebaseTestDirectory);
         super.setUp();
 
         client = new DefaultServiceMixClient(this.jbi);
@@ -77,12 +77,6 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
         DroolsEndpoint ep = (DroolsEndpoint) comp.getServiceUnit().getEndpoints().iterator().next();
         ruleBase = ep.getRuleBase();
 
-    }
-
-    private void copyAllFiles(File srcDir, String dest) throws IOException {
-        for (File f : srcDir.listFiles()) {
-            IO.copyFile(f, new File(dest + "/" + f.getName()));
-        }
     }
 
     @After
@@ -96,7 +90,9 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
     public void testCreateMessage() throws Exception {
         assertNull(ruleBase.getPackage("org.openengsb").getRule("test"));
         InOnly inout = sendInOnlyMessage(new QName("create"), getCreateContent());
-        assertNotSame("Exchange was not processed correctly", ExchangeStatus.ERROR, inout.getStatus());
+        if (inout.getStatus().equals(ExchangeStatus.ERROR)) {
+            throw inout.getError();
+        }
         assertNotNull(ruleBase.getPackage("org.openengsb").getRule("test"));
     }
 
