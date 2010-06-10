@@ -100,8 +100,10 @@ public class DirectorySourceTest {
         session.fireAllRules();
     }
 
-    private void assertRuleFired(String name) {
-        assertTrue(listener.rulesFired.contains(name));
+    private void assertRulesFired(String... names) {
+        for (String name : names) {
+            assertTrue(listener.rulesFired.contains(name));
+        }
     }
 
     @After
@@ -257,6 +259,17 @@ public class DirectorySourceTest {
         source.add(id, "when\nthen\nSystem.out.println(\"bla\");");
         createSession();
         executeTestSession();
-        assertRuleFired("at.ac.tuwien.hello42");
+        assertRulesFired("at.ac.tuwien.hello42");
+    }
+
+    @Test
+    public void testRulesInDifferentPackages() throws Exception {
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "hello42");
+        source.add(id, "when\nthen\nSystem.out.println(\"bla\");");
+        id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "hello42");
+        source.add(id, "when\nthen\nSystem.out.println(\"bla\");");
+        createSession();
+        executeTestSession();
+        assertRulesFired("org.openengsb.hello42", "at.ac.tuwien.hello42");
     }
 }
