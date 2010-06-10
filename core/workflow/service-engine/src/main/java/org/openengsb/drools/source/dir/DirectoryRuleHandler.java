@@ -32,18 +32,18 @@ import org.openengsb.drools.source.ResourceHandler;
 
 public class DirectoryRuleHandler extends ResourceHandler<DirectoryRuleSource> {
 
-    // do not use .drl because we don't create valid drls
-    public static final String EXTENSION = DirectoryRuleSource.RULE_EXTENSION;
-
     public DirectoryRuleHandler(DirectoryRuleSource source) {
         super(source);
     }
 
     @Override
     public void create(RuleBaseElementId name, String code) throws RuleBaseException {
-        File ruleFile =  source.getFilePath(name);
+        File ruleFile = source.getFilePath(name);
         if (ruleFile.exists()) {
             throw new RuleBaseException("File already exists");
+        }
+        if (!ruleFile.getParentFile().exists()) {
+            ruleFile.getParentFile().mkdirs();
         }
         FileWriter fw;
         try {
@@ -59,7 +59,7 @@ public class DirectoryRuleHandler extends ResourceHandler<DirectoryRuleSource> {
 
     @Override
     public void delete(RuleBaseElementId name) throws RuleBaseException {
-        File ruleFile =  source.getFilePath(name);
+        File ruleFile = source.getFilePath(name);
         if (!ruleFile.exists()) {
             // fail silently if the rule does not exist
             return;

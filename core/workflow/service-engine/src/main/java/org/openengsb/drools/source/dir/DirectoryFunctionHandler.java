@@ -42,6 +42,9 @@ public class DirectoryFunctionHandler extends ResourceHandler<DirectoryRuleSourc
         if (funcFile.exists()) {
             throw new RuleBaseException("File already exists");
         }
+        if (!funcFile.getParentFile().exists()) {
+            funcFile.getParentFile().mkdirs();
+        }
         FileWriter fw;
         try {
             fw = new FileWriter(funcFile);

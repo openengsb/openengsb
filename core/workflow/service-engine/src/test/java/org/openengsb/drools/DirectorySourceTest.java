@@ -250,4 +250,13 @@ public class DirectorySourceTest {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "hello1");
         source.add(id, "when\nthen\nSystem.out.println(\"bla\");");
     }
+
+    @Test
+    public void testAddOtherPackages() throws Exception {
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "hello42");
+        source.add(id, "when\nthen\nSystem.out.println(\"bla\");");
+        createSession();
+        executeTestSession();
+        assertRuleFired("at.ac.tuwien.hello42");
+    }
 }
