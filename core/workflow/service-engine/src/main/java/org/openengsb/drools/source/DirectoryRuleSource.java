@@ -137,8 +137,15 @@ public class DirectoryRuleSource extends RuleBaseSource {
     private void initRuleBase() throws IOException {
         File pathFile = new File(path);
         pathFile.mkdirs();
-        URL defaultRuleBase = ClassLoader.getSystemResource("rulebase");
-        FileUtils.copyDirectory(new File(defaultRuleBase.getFile()), pathFile);
+        URL defaultImports = this.getClass().getClassLoader().getResource("rulebase/imports");
+        URL defaultglobals = this.getClass().getClassLoader().getResource("rulebase/globals");
+        URL helloWorldRule = this.getClass().getClassLoader().getResource("rulebase/org/openengsb/hello1.rule");
+
+        FileUtils.copyURLToFile(defaultImports, new File(path, IMPORTS_FILENAME));
+        FileUtils.copyURLToFile(defaultglobals, new File(path, GLOBALS_FILENAME));
+        File packagePath = new File(path, "org/openengsb/hello1.rule");
+        packagePath.getParentFile().mkdirs();
+        FileUtils.copyURLToFile(helloWorldRule, packagePath);
     }
 
     public void readPackage(String packageName) throws IOException, RuleBaseException {
