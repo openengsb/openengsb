@@ -19,13 +19,6 @@ import org.openengsb.drools.message.RuleBaseElementType;
 @RunWith(Parameterized.class)
 public abstract class RuleSourceCrudTest<SourceType extends RuleBaseSource> extends RuleSourceTest<SourceType> {
 
-    public static class TestData {
-        protected String code1;
-        protected String code2;
-        protected RuleBaseElementId id1;
-        protected RuleBaseElementId id2;
-    }
-
     @Parameters
     public static Collection<Object[]> data() {
         Collection<Object[]> data = new HashSet<Object[]>();

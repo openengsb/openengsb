@@ -59,6 +59,8 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
 
     private RuleBase ruleBase;
 
+    private RuleListener listener;
+
     @Override
     protected AbstractXmlApplicationContext createBeanFactory() {
         return new ClassPathXmlApplicationContext("testXBeanDir.xml");
@@ -76,7 +78,7 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
         DroolsComponent comp = (DroolsComponent) jbi.getActivationSpecs()[0].getComponent();
         DroolsEndpoint ep = (DroolsEndpoint) comp.getServiceUnit().getEndpoints().iterator().next();
         ruleBase = ep.getRuleBase();
-
+        listener = new RuleListener();
     }
 
     @After
@@ -84,16 +86,6 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
     public void tearDown() throws Exception {
         IO.deleteStructure(new File("data"));
         super.tearDown();
-    }
-
-    @Test
-    public void testCreateMessage() throws Exception {
-        assertNull(ruleBase.getPackage("org.openengsb").getRule("test"));
-        InOnly inout = sendInOnlyMessage(new QName("create"), getCreateContent());
-        if (inout.getStatus().equals(ExchangeStatus.ERROR)) {
-            throw inout.getError();
-        }
-        assertNotNull(ruleBase.getPackage("org.openengsb").getRule("test"));
     }
 
     private InOnly sendInOnlyMessage(QName operation, Source content) throws MessagingException, JAXBException {
@@ -115,6 +107,17 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
     }
 
     @Test
+    public void testCreateMessage() throws Exception {
+        assertNull(ruleBase.getPackage("org.openengsb").getRule("test"));
+        InOnly inout = sendInOnlyMessage(new QName("create"), getCreateContent());
+        if (inout.getStatus().equals(ExchangeStatus.ERROR)) {
+            throw inout.getError();
+        }
+        assertNotNull(ruleBase.getPackage("org.openengsb").getRule("test"));
+
+    }
+
+    @Test
     public void testList() throws Exception {
         ManageRequest req = new ManageRequest();
         RuleBaseElementId id = new RuleBaseElementId();
@@ -125,6 +128,15 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
         Source content = new StringSource(sw.toString());
         InOut inout = sendInOutMessage(new QName("list"), content);
         assertNotNull(inout.getOutMessage().getContent());
+    }
+
+    @Test
+    public void testRule() throws Exception {
+        testCreateMessage();
+        InOnly in = sendInOnlyMessage(new QName("event"), new StringSource(TEST_EVENT));
+        if (in.getStatus().equals(ExchangeStatus.ERROR)) {
+            throw in.getError();
+        }
     }
 
     private Source getCreateContent() throws JAXBException {

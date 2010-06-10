@@ -1,21 +1,15 @@
 package org.openengsb.drools.source;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
-import org.drools.WorkingMemory;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.DefaultAgendaEventListener;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.junit.After;
@@ -23,24 +17,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.model.Event;
 import org.openengsb.drools.RuleBaseException;
+import org.openengsb.drools.RuleListener;
 import org.openengsb.drools.message.RuleBaseElementId;
 import org.openengsb.drools.message.RuleBaseElementType;
 
 public abstract class RuleSourceTest<SourceType extends RuleBaseSource> {
-    private static class RuleListener extends DefaultAgendaEventListener {
-        protected int numFired = 0;
-        protected Set<String> rulesFired = new HashSet<String>();
-
-        @Override
-        public void afterActivationFired(AfterActivationFiredEvent event, WorkingMemory workingMemory) {
-            Rule rule = event.getActivation().getRule();
-            rulesFired.add(rule.getName());
-            String fqName = rule.getPackageName() + "." + rule.getName();
-            rulesFired.add(fqName);
-            numFired++;
-            super.afterActivationFired(event, workingMemory);
-        }
-    }
 
     protected RuleBaseSource source;
     protected RuleBase rulebase;
@@ -85,12 +66,6 @@ public abstract class RuleSourceTest<SourceType extends RuleBaseSource> {
         session.fireAllRules();
     }
 
-    protected void assertRulesFired(String... names) {
-        for (String name : names) {
-            assertTrue(listener.rulesFired.contains(name));
-        }
-    }
-
     @Test
     public void testGetRuleBase() throws Exception {
         assertNotNull(rulebase);
@@ -108,19 +83,13 @@ public abstract class RuleSourceTest<SourceType extends RuleBaseSource> {
     }
 
     @Test
-    public void testFireRules() throws Exception {
-        testGetRules();
-        assertEquals(listener.numFired, 1);
-    }
-
-    @Test
     public void testAddRule() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test3");
         source.add(id, "when\n" + "  e : Event( name == \"hello\")\n" + "then\n"
                 + "  System.out.println(\"this rule was added by the addrule-function\");\n");
         createSession();
         executeTestSession();
-        assertTrue(listener.rulesFired.contains("test3"));
+        assertTrue(listener.haveRulesFired("test3"));
     }
 
     @Test
@@ -181,7 +150,7 @@ public abstract class RuleSourceTest<SourceType extends RuleBaseSource> {
 
         session.insert(new Event("", "testevent"));
         session.fireAllRules();
-        assertEquals(1, listener.numFired);
+        assertTrue(listener.haveRulesFired("org.openengsb.test"));
     }
 
     @Test
@@ -199,7 +168,6 @@ public abstract class RuleSourceTest<SourceType extends RuleBaseSource> {
 
     @Test
     public void testAddGlobal() throws Exception {
-
         source.add(new RuleBaseElementId(RuleBaseElementType.Global, "bla"), "java.util.Random");
         source.add(new RuleBaseElementId(RuleBaseElementType.Rule, "bla"),
                 "when\n then System.out.println(bla.nextInt());");
@@ -207,8 +175,7 @@ public abstract class RuleSourceTest<SourceType extends RuleBaseSource> {
         session.setGlobal("bla", new Random());
         session.insert(new Event("", "asd"));
         session.fireAllRules();
-
-        assertTrue(listener.rulesFired.contains("bla"));
+        assertTrue(listener.haveRulesFired("bla"));
     }
 
     @Test
@@ -236,7 +203,7 @@ public abstract class RuleSourceTest<SourceType extends RuleBaseSource> {
         source.add(id, "when\nthen\nSystem.out.println(\"bla\");");
         createSession();
         executeTestSession();
-        assertRulesFired("at.ac.tuwien.hello42");
+        assertTrue(listener.haveRulesFired("at.ac.tuwien.hello42"));
     }
 
     @Test
@@ -247,7 +214,7 @@ public abstract class RuleSourceTest<SourceType extends RuleBaseSource> {
         source.add(id, "when\nthen\nSystem.out.println(\"bla\");");
         createSession();
         executeTestSession();
-        assertRulesFired("org.openengsb.hello42", "at.ac.tuwien.hello42");
+        assertTrue(listener.haveRulesFired("org.openengsb.hello42", "at.ac.tuwien.hello42"));
     }
 
 }
