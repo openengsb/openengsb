@@ -54,7 +54,7 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
         } catch (IOException e) {
             throw new RuleBaseException(String.format("could not write the %s to the filesystem", name.getType()), e);
         }
-        source.readRuleBase();
+        source.readPackage(name.getPackageName());
     }
 
     @Override
@@ -66,8 +66,6 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
         }
         resFile.delete();
         removeFromRuleBase(name);
-        // source.getRulebase().removeFunction(name.getPackageName(),
-        // name.getName());
     }
 
     protected abstract void removeFromRuleBase(RuleBaseElementId name) throws RuleBaseException;

@@ -148,11 +148,18 @@ public class DirectoryRuleSource extends RuleBaseSource {
         FileUtils.copyURLToFile(helloWorldRule, packagePath);
     }
 
-    public void readPackage(String packageName) throws IOException, RuleBaseException {
+    public void readPackage(String packageName) throws RuleBaseException {
         File dir = new File(this.path, packageName.replace(".", File.separator));
-        Package p = doReadPackage(dir);
+        Package p;
+        try {
+            p = doReadPackage(dir);
+        } catch (IOException e) {
+            throw new RuleBaseException(e);
+        }
         ruleBase.lock();
-        ruleBase.removePackage(packageName);
+        if (ruleBase.getPackage(packageName) != null) {
+            ruleBase.removePackage(packageName);
+        }
         ruleBase.addPackage(p);
         ruleBase.unlock();
     }
