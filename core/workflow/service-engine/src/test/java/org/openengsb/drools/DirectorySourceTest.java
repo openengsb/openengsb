@@ -44,7 +44,6 @@ import org.openengsb.drools.message.RuleBaseElementId;
 import org.openengsb.drools.message.RuleBaseElementType;
 import org.openengsb.drools.source.DirectoryRuleSource;
 import org.openengsb.drools.source.RuleBaseSource;
-import org.openengsb.util.IO;
 
 public class DirectorySourceTest {
 
@@ -91,7 +90,7 @@ public class DirectorySourceTest {
 
     @After
     public void tearDown() throws Exception {
-        IO.deleteStructure(new File("data"));
+        FileUtils.deleteDirectory(new File("data"));
         if (session != null) {
             session.dispose();
         }
