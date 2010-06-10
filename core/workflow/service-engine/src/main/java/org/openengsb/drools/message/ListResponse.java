@@ -21,10 +21,11 @@ import java.util.Collection;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement
+@XmlType
 public class ListResponse {
-    @XmlElement(required = true, name = "list")
     private Collection<RuleBaseElementId> theList;
 
     public ListResponse() {
@@ -35,6 +36,7 @@ public class ListResponse {
         this.theList = list;
     }
 
+    @XmlElement(required = true, name = "list")
     public Collection<RuleBaseElementId> getList() {
         return this.theList;
     }

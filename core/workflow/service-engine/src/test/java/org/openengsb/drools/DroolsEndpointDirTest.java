@@ -122,7 +122,7 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
         ManageRequest req = new ManageRequest();
         RuleBaseElementId id = new RuleBaseElementId();
         id.setType(RuleBaseElementType.Rule);
-        req.setName(id);
+        req.setId(id);
         StringWriter sw = new StringWriter();
         XmlHelper.marshal(req, sw);
         Source content = new StringSource(sw.toString());
@@ -142,7 +142,7 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
     private Source getCreateContent() throws JAXBException {
         ManageRequest req = new ManageRequest();
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "test");
-        req.setName(id);
+        req.setId(id);
         req.setCode("when\n then\n System.out.println(\"bla\");");
 
         StringWriter sw = new StringWriter();

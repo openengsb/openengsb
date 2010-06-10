@@ -1,8 +1,9 @@
 package org.openengsb.drools.message;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType
+@XmlType(propOrder = { "type", "packageName", "name" })
 public class RuleBaseElementId {
 
     public static final String DEFAULT_RULE_PACKAGE = "org.openengsb";
@@ -27,6 +28,7 @@ public class RuleBaseElementId {
         this.packageName = DEFAULT_RULE_PACKAGE;
     }
 
+    @XmlElement(required = true)
     public RuleBaseElementType getType() {
         return this.type;
     }

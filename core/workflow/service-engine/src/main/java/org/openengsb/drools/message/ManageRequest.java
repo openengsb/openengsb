@@ -17,21 +17,24 @@
  */
 package org.openengsb.drools.message;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement
-@XmlType(propOrder = { "name", "code" })
+@XmlType(propOrder = { "id", "code" })
 public class ManageRequest {
-    private RuleBaseElementId name;
-    private String code;
 
-    public RuleBaseElementId getName() {
-        return this.name;
+    protected RuleBaseElementId id;
+    protected String code;
+
+    @XmlElement(required = true, name = "id")
+    public RuleBaseElementId getId() {
+        return this.id;
     }
 
-    public void setName(RuleBaseElementId name) {
-        this.name = name;
+    public void setId(RuleBaseElementId id) {
+        this.id = id;
     }
 
     public String getCode() {

@@ -89,11 +89,11 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
         ManageRequest request = XmlHelper.unmarshal(ManageRequest.class, msgSource);
         QName op = exchange.getOperation();
         if ("create".equals(op.getLocalPart())) {
-            ruleSource.add(request.getName(), request.getCode());
+            ruleSource.add(request.getId(), request.getCode());
         } else if ("delete".equals(op.getLocalPart())) {
-            ruleSource.delete(request.getName());
+            ruleSource.delete(request.getId());
         } else if ("update".equals(op.getLocalPart())) {
-            ruleSource.update(request.getName(), request.getCode());
+            ruleSource.update(request.getId(), request.getCode());
         }
     }
 
@@ -108,8 +108,8 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
         QName op = exchange.getOperation();
         if ("list".equals(op.getLocalPart())) {
             Collection<RuleBaseElementId> list;
-            RuleBaseElementType type = request.getName().getType();
-            String packageName = request.getName().getPackageName();
+            RuleBaseElementType type = request.getId().getType();
+            String packageName = request.getId().getPackageName();
             if (packageName == null) {
                 list = ruleSource.list(type);
             } else {
@@ -119,8 +119,8 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
             Source outContent = XmlHelper.marshal(response);
             out.setContent(outContent);
         } else if ("get".equals(op.getLocalPart())) {
-            String code = ruleSource.get(request.getName());
-            GetResponse response = new GetResponse(request.getName(), code);
+            String code = ruleSource.get(request.getId());
+            GetResponse response = new GetResponse(request.getId(), code);
             Source outContent = XmlHelper.marshal(response);
             out.setContent(outContent);
         }

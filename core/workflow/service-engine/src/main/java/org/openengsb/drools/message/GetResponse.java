@@ -17,11 +17,15 @@
  */
 package org.openengsb.drools.message;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 @XmlRootElement
+@XmlType(propOrder = { "id", "code" })
 public class GetResponse {
-    private RuleBaseElementId name;
+    //
+    private RuleBaseElementId id;
     private String code;
 
     public GetResponse() {
@@ -29,16 +33,17 @@ public class GetResponse {
 
     public GetResponse(RuleBaseElementId name, String code) {
         super();
-        this.name = name;
+        this.id = name;
         this.code = code;
     }
 
-    public RuleBaseElementId getName() {
-        return this.name;
+    @XmlElement(required = true)
+    public RuleBaseElementId getId() {
+        return this.id;
     }
 
-    public void setName(RuleBaseElementId name) {
-        this.name = name;
+    public void setId(RuleBaseElementId name) {
+        this.id = name;
     }
 
     public String getCode() {
