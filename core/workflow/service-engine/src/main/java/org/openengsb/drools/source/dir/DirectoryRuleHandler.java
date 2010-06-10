@@ -37,7 +37,7 @@ public class DirectoryRuleHandler extends MultiFileResourceHandler {
     protected Collection<RuleBaseElementId> listElementsInPackage(Package p) {
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
         for (Rule rule : p.getRules()) {
-            result.add(new RuleBaseElementId(RuleBaseElementType.Function, p.getName(), rule.getName()));
+            result.add(new RuleBaseElementId(RuleBaseElementType.Rule, p.getName(), rule.getName()));
         }
         return result;
     }

@@ -1,20 +1,4 @@
-/**
-
-   Copyright 2009 OpenEngSB Division, Vienna University of Technology
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE\-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
- */
-package org.openengsb.drools;
+package org.openengsb.drools.source;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -23,12 +7,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.WorkingMemory;
@@ -40,14 +22,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.model.Event;
+import org.openengsb.drools.RuleBaseException;
 import org.openengsb.drools.message.RuleBaseElementId;
 import org.openengsb.drools.message.RuleBaseElementType;
-import org.openengsb.drools.source.DirectoryRuleSource;
-import org.openengsb.drools.source.RuleBaseSource;
 
-public class DirectorySourceTest {
-
-    private static class RuleListener2 extends DefaultAgendaEventListener {
+public abstract class RuleSourceTest<SourceType extends RuleBaseSource> {
+    private static class RuleListener extends DefaultAgendaEventListener {
         protected int numFired = 0;
         protected Set<String> rulesFired = new HashSet<String>();
 
@@ -62,55 +42,52 @@ public class DirectorySourceTest {
         }
     }
 
-    private RuleBaseSource source;
-    private RuleBase rulebase;
-    private StatefulSession session;
-    private RuleListener2 listener;
+    protected RuleBaseSource source;
+    protected RuleBase rulebase;
+    protected StatefulSession session;
+    protected RuleListener listener;
 
     @Before
     public void setUp() throws Exception {
-        File rulebaseReferenceDirectory = new File("src/test/resources/rulebase");
-        File rulebaseTestDirectory = new File("data/rulebase");
-        FileUtils.copyDirectory(rulebaseReferenceDirectory, rulebaseTestDirectory);
-
-        source = new DirectoryRuleSource("data/rulebase");
+        source = getRuleBaseSource();
         rulebase = source.getRulebase();
     }
+
+    @After
+    public void tearDown() throws Exception {
+        if (session != null) {
+            session.dispose();
+        }
+    }
+
+    protected abstract RuleBaseSource getRuleBaseSource();
 
     /**
      * create new stateful session from the rulebase and attach a listener to
      * validate testresults
      */
-    private void createSession() {
+    protected void createSession() {
         if (session != null) {
             session.dispose();
             session = null;
         }
         session = rulebase.newStatefulSession();
-        listener = new RuleListener2();
+        listener = new RuleListener();
         session.addEventListener(listener);
     }
 
     /**
      * inserts an Event into the existing session and fires All rules
      */
-    private void executeTestSession() {
+    protected void executeTestSession() {
         Event event = new Event("", "hello");
         session.insert(event);
         session.fireAllRules();
     }
 
-    private void assertRulesFired(String... names) {
+    protected void assertRulesFired(String... names) {
         for (String name : names) {
             assertTrue(listener.rulesFired.contains(name));
-        }
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        FileUtils.deleteDirectory(new File("data"));
-        if (session != null) {
-            session.dispose();
         }
     }
 
@@ -272,4 +249,5 @@ public class DirectorySourceTest {
         executeTestSession();
         assertRulesFired("org.openengsb.hello42", "at.ac.tuwien.hello42");
     }
+
 }

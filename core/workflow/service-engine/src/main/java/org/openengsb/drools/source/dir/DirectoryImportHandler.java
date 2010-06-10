@@ -18,9 +18,11 @@
 package org.openengsb.drools.source.dir;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.openengsb.drools.RuleBaseException;
 import org.openengsb.drools.message.RuleBaseElementId;
+import org.openengsb.drools.message.RuleBaseElementType;
 import org.openengsb.drools.source.DirectoryRuleSource;
 
 public class DirectoryImportHandler extends SingleFileResourceHandler {
@@ -62,8 +64,11 @@ public class DirectoryImportHandler extends SingleFileResourceHandler {
 
     @Override
     public Collection<RuleBaseElementId> list() throws RuleBaseException {
-        // return source.getPackage().getImports().keySet();
-        return null;
+        Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
+        for (String s : source.getRulebase().getPackages()[0].getImports().keySet()) {
+            result.add(new RuleBaseElementId(RuleBaseElementType.Import, s));
+        }
+        return result;
     }
 
     @Override
