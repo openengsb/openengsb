@@ -30,7 +30,7 @@
   <artifactId>openengsb-workflow-se</artifactId>
   <name>openengsb-workflow-se</name>
   <packaging>jbi-component</packaging>
-  
+
   <description>A Rules Service Engine based on Drools</description>
 
   <properties>
@@ -46,7 +46,7 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-workflow-domains</artifactId>
     </dependency>
-   
+
     <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-shared</artifactId>
@@ -61,7 +61,7 @@
       <groupId>geronimo-spec</groupId>
       <artifactId>geronimo-spec-j2ee</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.servicemix</groupId>
       <artifactId>servicemix-drools</artifactId>
@@ -100,7 +100,7 @@
         </exclusion>
       </exclusions>
     </dependency>
-    
+
     <!-- for unit/integration testing -->
     <dependency>
       <groupId>junit</groupId>
@@ -110,7 +110,7 @@
 
     <dependency>
       <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-core</artifactId>  
+      <artifactId>servicemix-core</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -160,8 +160,18 @@
             ${project}
           </project>
           <destdir>${project.build.directory}/schemas</destdir>
-          <srcdir>${project.build.sourceDirectory}/org/openengsb/drools/message/</srcdir>
+          <srcdir>${project.basedir}</srcdir>
+          <includes>
+            <include>src/main/java/org/openengsb/drools/message/*.java</include>
+            <include>src/main/resources/org/openengsb/drools/message/*.java</include>
+          </includes>
           <verbose>true</verbose>
+          <schemas>
+            <schema>
+              <namespace>http://www.openengsb.org/drools/message/1.0</namespace>
+              <file>drools_message.xsd</file>
+            </schema>
+          </schemas>
         </configuration>
         <dependencies>
           <dependency>
