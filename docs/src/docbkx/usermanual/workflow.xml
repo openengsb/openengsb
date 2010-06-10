@@ -24,13 +24,56 @@
     First of all a <link linkend="workflow.events">rule based event approach</link>. This way allows to define actions
     based on events which where thrown in or to the bus. Events are very practical for "short-time-handling" since they
     are also easy to replace and extend. For long running business processes the secondary workflow method could be used
-    which is <link linkend="workflow.processes">based on processes described in Drools-Flow.</link>. 
+    which is <link linkend="workflow.processes">based on processes described in Drools-Flow</link>.
   </para>
+  <para>
+    The openengsb-drools component takes "events" as input and handles them using a rulebased system (JBoss Drools 5.0).
+    The workflow-se provides multiple ways to manage rules.
+    The Directory-Source manages the rules in the filesystem, within servicemix.
+    Alternatively an external guvnor-server can be used to manage the rulebase.
+  </para>
+
+  <section id="workflow.directory">
+    <title>Directory</title>
+    <para>
+      A Directory-source is initialized with a default-set of imports, globals and a "Hello World" rule.
+      The workflow service-engine supports operations to modify the rulebase at runtime.
+      This is achieved by setting the operation-property of the exchange.
+    </para>
+    <para>
+      All Requests use the "ManageRequest"-model (see the xml-schema or the correesponding Javaclass for details).
+      It consists of a RuleBaseElementId and the optional code that should be used for writing operations.
+      The RuleBaseElementId identifies the Element exactly by Type (Rule, Function, Import, Global), name and packageName.
+      The operations "create", "update", and "delete" are only accepted for InOnly-exchanges, while "get" and "list" are only accepted for InOut-exchanges.
+      When creating a rule that already exists an exception is raised.
+      When trying to delete an element that is not there, nothing happens.
+    </para>
+    <para>
+      <unorderedList>
+        <listitem>
+          create: creates the element matching the ID and the supplied code
+        </listitem>
+        <listitem>
+          update: replaces the element matching the ID with the supplied code
+        </listitem>
+        <listitem>
+          delete: deletes the element matching the ID
+        </listitem>
+        <listitem>
+          read: returns the code of the element matching the ID (see GetResponse in the model)
+        </listitem>
+        <listitem>
+          list: returns a list of all elements of the supplied type contained in the supplied pacakge.
+          If the package is ommited, all Elements are returned. (see ListResponse in the model)
+        </listitem>
+      </unorderedList>
+    </para>
+  </section>
 
   <section id="workflow.events">
     <title>Events</title>
     <para>
-      The openengsb-drools component takes "events" as input and handles them using a rulebased system (JBoss Drools 5.0).
+      
       The rules are managed independent of servicemix in the Drools Guvnor. Guvnor is a webapplication running inside a 
       JBoss Application Server. The rulebase can be managed with the webinterface. For specifying conditions in rules 
       a model is needed. A model is described in simple Java objects. The default model is located in 
