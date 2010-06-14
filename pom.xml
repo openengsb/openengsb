@@ -109,7 +109,8 @@
     <maven.rat.version>0.6</maven.rat.version>
     <servicemix.jbi.maven.version>4.4-SNAPSHOT</servicemix.jbi.maven.version>
     <twdata.cli.version>1.0.4</twdata.cli.version>
-  </properties>
+    <clover.version>3.0.2</clover.version>
+   </properties>
 
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-parent</artifactId>
@@ -497,6 +498,11 @@
         <artifactId>maven-cli-plugin</artifactId>
         <version>${twdata.cli.version}</version>
       </plugin>
+      <plugin>
+        <groupId>com.atlassian.maven.plugins</groupId>
+        <artifactId>maven-clover2-plugin</artifactId>
+        <version>${clover.version}</version>
+      </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -523,6 +529,11 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-scm-plugin</artifactId>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>2.1.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
