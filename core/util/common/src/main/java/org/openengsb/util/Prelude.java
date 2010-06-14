@@ -17,47 +17,12 @@
  */
 package org.openengsb.util;
 
-import org.openengsb.util.tuple.Pair;
-import org.openengsb.util.tuple.Singleton;
-import org.openengsb.util.tuple.Triple;
-import org.openengsb.util.tuple.Unit;
-
 public class Prelude {
     /**
      * Returns a {@code Unit} object.
      * 
      * @see Unit
      */
-    public static Unit unit() {
-        return Unit.UNIT;
-    }
-
-    /**
-     * Creates a Singleton with the specified parameter.
-     * 
-     * @see Singleton
-     */
-    public static <A> Singleton<A> singleton(final A fst) {
-        return new Singleton<A>(fst);
-    }
-
-    /**
-     * Creates a Pair with the specified parameters.
-     * 
-     * @see Pair
-     */
-    public static <A, B> Pair<A, B> pair(final A fst, final B snd) {
-        return new Pair<A, B>(fst, snd);
-    }
-
-    /**
-     * Creates a Triple with the specified parameters.
-     * 
-     * @see Triple
-     */
-    public static <A, B, C> Triple<A, B, C> triple(final A fst, final B snd, final C trd) {
-        return new Triple<A, B, C>(fst, snd, trd);
-    }
 
     /**
      * Breaks the specified string into an array of strings at newline
