@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -36,7 +37,6 @@ import org.openengsb.edb.core.search.Indexer;
 import org.openengsb.edb.core.search.Searcher;
 import org.openengsb.edb.core.search.lucene.LuceneIndexer;
 import org.openengsb.edb.core.search.lucene.LuceneSearcher;
-import org.openengsb.util.IO;
 
 public class SearcherUT extends ATestStub {
 
@@ -84,23 +84,17 @@ public class SearcherUT extends ATestStub {
         SearcherUT.singlePart.setPath(SearcherUT.PATH1);
 
         SearcherUT.comboPart = new GenericContent();
-        SearcherUT.comboPart
-                .setProperty(SearcherUT.KEY1, SearcherUT.PREFIX + SearcherUT.MIDDLE);
-        SearcherUT.comboPart
-                .setProperty(SearcherUT.KEY2, SearcherUT.MIDDLE + SearcherUT.SUFFIX);
-        SearcherUT.comboPart
-                .setProperty(SearcherUT.KEY3, SearcherUT.PREFIX + SearcherUT.SUFFIX);
-        SearcherUT.comboPart.setProperty(SearcherUT.KEY4, SearcherUT.PREFIX + SearcherUT.MIDDLE
-                + SearcherUT.SUFFIX);
+        SearcherUT.comboPart.setProperty(SearcherUT.KEY1, SearcherUT.PREFIX + SearcherUT.MIDDLE);
+        SearcherUT.comboPart.setProperty(SearcherUT.KEY2, SearcherUT.MIDDLE + SearcherUT.SUFFIX);
+        SearcherUT.comboPart.setProperty(SearcherUT.KEY3, SearcherUT.PREFIX + SearcherUT.SUFFIX);
+        SearcherUT.comboPart.setProperty(SearcherUT.KEY4, SearcherUT.PREFIX + SearcherUT.MIDDLE + SearcherUT.SUFFIX);
         SearcherUT.comboPart.setProperty(SearcherUT.UUID_KEY, SearcherUT.UUID_VALUE_2);
         SearcherUT.comboPart.setPath(SearcherUT.PATH2);
 
         Indexer indexer = new LuceneIndexer(SearcherUT.PATH);
 
-        indexer.addDocuments(Arrays.asList(new GenericContent[] { SearcherUT.singlePart,
-                SearcherUT.comboPart, }));
-        SearcherUT.content = buildGC(SearcherUT.GC_COUNT, SearcherUT.FIELD_COUNT,
-                SearcherUT.PATH);
+        indexer.addDocuments(Arrays.asList(new GenericContent[] { SearcherUT.singlePart, SearcherUT.comboPart, }));
+        SearcherUT.content = buildGC(SearcherUT.GC_COUNT, SearcherUT.FIELD_COUNT, SearcherUT.PATH);
 
         try {
             for (int i = 0; i < SearcherUT.STUPID_ITERATIONS; i++) {
@@ -118,8 +112,8 @@ public class SearcherUT extends ATestStub {
     }
 
     @AfterClass
-    public static void tearDownAfterClass() {
-        IO.deleteStructure(new File(SearcherUT.PATH));
+    public static void tearDownAfterClass() throws Exception {
+        FileUtils.deleteDirectory(new File(SearcherUT.PATH));
     }
 
     @Test
@@ -130,8 +124,7 @@ public class SearcherUT extends ATestStub {
         assertEquals(1, result.size());
         compareGC(SearcherUT.singlePart, result.get(0));
 
-        term = SearcherUT.KEY4 + ":" + SearcherUT.PREFIX + SearcherUT.MIDDLE
-                + SearcherUT.SUFFIX;
+        term = SearcherUT.KEY4 + ":" + SearcherUT.PREFIX + SearcherUT.MIDDLE + SearcherUT.SUFFIX;
         result = searcher.search(term);
         assertNotNull(result);
         assertEquals(1, result.size());

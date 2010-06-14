@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 
 package org.openengsb.edb.core.api;
@@ -30,12 +30,12 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.edb.core.entities.GenericContent;
-import org.openengsb.util.IO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -76,7 +76,7 @@ public class EDBHandlerTest {
 
     @After
     public void tearDown() throws Exception {
-        IO.deleteStructure(new File(this.edbBaseDir));
+        FileUtils.deleteDirectory(new File(this.edbBaseDir));
     }
 
     @Test

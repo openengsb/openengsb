@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 
 package org.openengsb.edb.core.lucene;
@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.lucene.index.IndexWriter;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -32,7 +33,6 @@ import org.junit.Test;
 import org.openengsb.edb.core.entities.GenericContent;
 import org.openengsb.edb.core.search.Indexer;
 import org.openengsb.edb.core.search.lucene.LuceneIndexer;
-import org.openengsb.util.IO;
 
 public class IndexerTest extends ATestStub {
 
@@ -52,10 +52,10 @@ public class IndexerTest extends ATestStub {
     }
 
     @AfterClass
-    public static void tearDown() {
+    public static void tearDown() throws Exception {
         IndexerTest.content = null;
         IndexerTest.indexer.cleanup();
-        IO.deleteStructure(new File(IndexerTest.PATH));
+        FileUtils.deleteDirectory(new File(IndexerTest.PATH));
     }
 
     @Test

@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.util;
 
@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,59 +57,11 @@ public class IO {
     }
 
     /**
-     * Combines path strings.
-     */
-    public static String combine(final String... paths) {
-        if (paths.length == 0) {
-            return "";
-        }
-        File base = new File(paths[0]);
-        for (int i = 1; i < paths.length; ++i) {
-            base = new File(base, paths[i]);
-        }
-        return base.getPath();
-    }
-
-    /**
      * Constructs an relative path with an absolute base path and an absolute
      * path that is deeper inside the base path.
      */
     public static String relativize(final String base, final String path) {
         return new File(base).toURI().relativize(new File(path).toURI()).getPath();
-    }
-
-    /**
-     * Reads and returns the content of the specified input stream.
-     */
-    public static String read(final InputStream in) throws IOException {
-        final StringBuilder builder = new StringBuilder();
-        String line;
-        final BufferedReader reader = newBufferedReader(in);
-        while ((line = reader.readLine()) != null) {
-            builder.append(line);
-            builder.append('\n');
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Reads and returns the content of the specified file.
-     */
-    public static String read(final String filename) throws FileNotFoundException, IOException {
-        final FileInputStream in = new FileInputStream(filename);
-        final String res = read(in);
-        in.close();
-        return res;
-    }
-
-    /**
-     * Reads and returns the content of the specified file;
-     */
-    public static String read(final URL url) throws FileNotFoundException, IOException, URISyntaxException {
-        final FileInputStream in = new FileInputStream(new File(url.toURI()));
-        final String res = read(in);
-        in.close();
-        return res;
     }
 
     /**
@@ -211,26 +162,6 @@ public class IO {
             closeable.close();
         } catch (IOException e) {
         }
-    }
-
-    /**
-     * Recursive method deleting a file with the entire sub structure beyond the
-     * file.
-     */
-    public static boolean deleteStructure(final File path) {
-        if (path.exists() && path.isDirectory()) {
-            final File[] files = path.listFiles();
-            for (final File file : files) {
-                if (file.isDirectory()) {
-                    if (!deleteStructure(file)) {
-                        return false;
-                    }
-                } else {
-                    file.delete();
-                }
-            }
-        }
-        return path.delete();
     }
 
     /**
