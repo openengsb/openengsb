@@ -16,8 +16,10 @@
    limitations under the License.
 
 -->
-<beans xmlns:facebook="http://www.openengsb.org/connector/facebook/1.0" xmlns:connectorURN="urn:openengsb:facebook"
-       xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns:facebook="http://www.openengsb.org/connector/facebook/1.0"
+       xmlns:fbk="urn:openengsb:facebook"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
 
@@ -29,10 +31,10 @@
     </bean>
 
     <bean id="facebookNotifier" class="org.openengsb.facebook.FacebookNotifier">
-        <property name="facebookConenctor" ref="facebookConnector"/>
+        <property name="facebookConnector" ref="facebookConnector"/>
     </bean>
 
-    <facebook:facebookEndpoint endpoint="facebookEndpoint" service="connectorURN:facebookService"
-                               facebookConenctor="#facebookNotifier"/>
+    <facebook:facebookEndpoint endpoint="facebookEndpoint" service="fbk:facebookService"
+                               facebookNotifier="#facebookNotifier"/>
 
 </beans>

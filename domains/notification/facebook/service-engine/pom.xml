@@ -33,7 +33,7 @@
     <packaging>jbi-component</packaging>
 
     <description>
-        This is a tool connector for OpenEngSB.
+        This is a facebook connector for OpenEngSB.
     </description>
 
     <build>

@@ -609,6 +609,13 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.openengsb</groupId>
+                  <artifactId>openengsb-domains-notification-facebook-se</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>installer</classifier>
+                  <type>zip</type>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb</groupId>
                   <artifactId>openengsb-domains-notification-email-se</artifactId>
                   <version>${project.version}</version>
                   <classifier>installer</classifier>

@@ -35,10 +35,6 @@
   <name>openengsb-domains-notification-facebook-su</name>
   <packaging>jbi-service-unit</packaging>
 
-  <description>
-    This is a tool connector for OpenEngSB.
-  </description>
-
   <dependencies>
     <dependency>
       <groupId>org.openengsb</groupId>

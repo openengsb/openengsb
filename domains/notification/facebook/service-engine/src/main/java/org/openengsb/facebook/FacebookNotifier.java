@@ -31,7 +31,7 @@ import java.net.URL;
 public class FacebookNotifier implements NotificationDomain {
 
     private Log log = LogFactory.getLog(FacebookNotifier.class);
-    FacebookConnector facebookConenctor;
+    FacebookConnector facebookConnector;
     private final int maxChars = 420;
 
     @Override
@@ -40,13 +40,13 @@ public class FacebookNotifier implements NotificationDomain {
             log.warn("Your message is going to be truncated.");
         }
         if (notification.getRecipient() == null || notification.getRecipient().equals("")) {
-            facebookConenctor.updateStatus(notification.getMessage());
+            facebookConnector.updateStatus(notification.getMessage());
         } else {
             // TODO: add recipient 
         }
     }
 
-    public void setFacebookConenctor(FacebookConnector facebookConenctor) {
-        this.facebookConenctor = facebookConenctor;
+    public void setFacebookConnector(FacebookConnector facebookConnector) {
+        this.facebookConnector = facebookConnector;
     }
 }
