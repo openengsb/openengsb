@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 
 package org.openengsb.edb.core.repository.jgit;
@@ -22,13 +22,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.Constants;
 import org.openengsb.edb.core.repository.Commit;
 import org.openengsb.edb.core.repository.Repository;
 import org.openengsb.edb.core.repository.RepositoryManagementException;
 import org.openengsb.edb.core.repository.RepositoryStateException;
 import org.openengsb.edb.core.repository.Reset;
-import org.openengsb.util.IO;
 
 /**
  * Class to allow basic operations on given repositories: checkout, add
@@ -94,8 +94,10 @@ public class GitRepository implements Repository {
 
     @Override
     public void removeRepository() {
-        if (!IO.deleteStructure(this.repositoryPath)) {
-            throw new RuntimeException("delete failed");
+        try {
+            FileUtils.deleteDirectory(repositoryPath);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

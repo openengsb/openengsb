@@ -165,26 +165,6 @@ public class IO {
     }
 
     /**
-     * Recursive method deleting a file with the entire sub structure beyond the
-     * file.
-     */
-    public static boolean deleteStructure(final File path) {
-        if (path.exists() && path.isDirectory()) {
-            final File[] files = path.listFiles();
-            for (final File file : files) {
-                if (file.isDirectory()) {
-                    if (!deleteStructure(file)) {
-                        return false;
-                    }
-                } else {
-                    file.delete();
-                }
-            }
-        }
-        return path.delete();
-    }
-
-    /**
      * Scans a directory recursively for files and return all files found in an
      * {@link List}.
      */

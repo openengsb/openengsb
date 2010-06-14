@@ -38,6 +38,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
@@ -59,7 +60,6 @@ import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
-import org.openengsb.util.IO;
 import org.openengsb.util.Prelude;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -146,10 +146,10 @@ public class CommitServiceTest extends SpringTestSupport {
     @Override
     @After
     public void tearDown() throws Exception {
-        IO.deleteStructure(CommitServiceTest.handler.getRepositoryBase().getParentFile());
-        IO.deleteStructure(new File("links"));
+        FileUtils.deleteDirectory(CommitServiceTest.handler.getRepositoryBase().getParentFile());
+        FileUtils.deleteDirectory(new File("links"));
         super.tearDown();
-        IO.deleteStructure(new File("data"));
+        FileUtils.deleteDirectory(new File("data"));
     }
 
     @Test
@@ -428,7 +428,7 @@ public class CommitServiceTest extends SpringTestSupport {
 
     /**
      * Creates a new ServiceMixClieant
-     * 
+     *
      * @return The new ServiceMixClient
      */
     private DefaultServiceMixClient createClient() throws JBIException {
@@ -515,11 +515,11 @@ public class CommitServiceTest extends SpringTestSupport {
         addGCToMessagePart(gc2, body, CommitServiceTest.USER);
         CommitServiceTest.persistMessage = DocumentHelper.createDocument(root);
     }
-    
+
     private void storeNotificationContext() {
         ContextHelperImpl contextHelper = new ContextHelperImpl(notificationEndpoint, null);
         contextHelper.setContext("42");
-        
+
         HashMap<String, String> newProperties = new HashMap<String, String>();
         newProperties.put("notification/namespace", "urn:openengsb:testnotification");
         newProperties.put("notification/servicename", "notificationTestService");

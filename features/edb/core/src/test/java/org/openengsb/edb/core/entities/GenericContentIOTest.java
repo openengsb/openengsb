@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 
 package org.openengsb.edb.core.entities;
@@ -23,9 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import org.openengsb.util.IO;
-
 
 public class GenericContentIOTest {
 
@@ -35,7 +34,7 @@ public class GenericContentIOTest {
     private static final int fields = 100;
 
     @Test
-    public void testStoreASingleBlock() {
+    public void testStoreASingleBlock() throws Exception {
         Long before = System.nanoTime();
         List<GenericContent> contents = generateGC(GenericContentIOTest.number, GenericContentIOTest.fields);
         for (final GenericContent ct : contents) {
@@ -44,7 +43,7 @@ public class GenericContentIOTest {
         Long after = System.nanoTime();
         System.out.println((after - before) / 1000000000 + " seconds for " + GenericContentIOTest.number
                 + " entries with " + GenericContentIOTest.fields + " fields");
-        IO.deleteStructure(new File(GenericContentIOTest.TESTPATH));
+        FileUtils.deleteDirectory(new File(GenericContentIOTest.TESTPATH));
     }
 
     private static List<GenericContent> generateGC(int number, int fields) {
