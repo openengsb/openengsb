@@ -23,7 +23,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.facebook.common.exceptions.FacebookConnectorException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -48,7 +47,7 @@ public class FacebookLoginImplIT {
     private String SECRET;
 
     @Before
-    public void setup() throws IOException, HttpException, URISyntaxException, FacebookConnectorException {
+    public void setup() throws IOException, HttpException, URISyntaxException, FacebookException {
         login = new FacebookLoginImpl();
         
     }
@@ -59,24 +58,24 @@ public class FacebookLoginImplIT {
     }
 
     @Test
-    public void login_success() throws FacebookConnectorException {
+    public void login_success() throws FacebookException {
         assertTrue(login.loginUser(email, password, API_KEY));
     }
 
 
     @Test
-    public void login_wrongMail() throws FacebookConnectorException {
+    public void login_wrongMail() throws FacebookException {
         assertFalse(login.loginUser("wrongUsername@mail.com", password, API_KEY));
     }
 
 
     @Test
-    public void login_wrongPass() throws FacebookConnectorException {
+    public void login_wrongPass() throws FacebookException {
         assertEquals(false, login.loginUser(email, "wrong password", API_KEY));
     }
 
     @Test
-    public void generateSessionKey() throws FacebookConnectorException, FacebookException {
+    public void generateSessionKey() throws FacebookException {
         assertTrue(login.loginUser(email, password, API_KEY));
         assertNotNull(login.createLoggedInFacebookClient(API_KEY, SECRET));
     }

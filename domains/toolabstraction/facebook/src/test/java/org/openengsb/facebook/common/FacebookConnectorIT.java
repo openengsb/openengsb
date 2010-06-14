@@ -18,31 +18,15 @@
 package org.openengsb.facebook.common;
 
 import com.google.code.facebookapi.FacebookException;
-import com.google.code.facebookapi.FacebookJaxbRestClient;
-import org.apache.http.HttpException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.facebook.common.FacebookClientImpl;
-import org.openengsb.facebook.common.FacebookLogin;
-import org.openengsb.facebook.common.FacebookLoginImpl;
-import org.openengsb.facebook.common.exceptions.FacebookConnectorException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:../test-classes/test-bean.xml"})
@@ -62,7 +46,7 @@ public class FacebookConnectorIT {
 
 
     @Before
-    public void setup() throws IOException, HttpException, URISyntaxException, FacebookException, FacebookConnectorException {
+    public void setup() {
     }
 
     @After

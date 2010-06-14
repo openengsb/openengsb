@@ -24,13 +24,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.facebook.common.FacebookClient;
-import org.openengsb.facebook.common.FacebookClientImpl;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import static org.junit.Assert.assertTrue;
 
 
 

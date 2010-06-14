@@ -19,13 +19,12 @@ package org.openengsb.facebook.common;
 
 import com.google.code.facebookapi.FacebookException;
 import com.google.code.facebookapi.FacebookJaxbRestClient;
-import org.openengsb.facebook.common.exceptions.FacebookConnectorException;
 
 
 public interface FacebookLogin {
-    boolean loginUser(String email, String password, String api) throws FacebookConnectorException;
+    boolean loginUser(String email, String password, String api) throws FacebookException;
 
     void closeHttpClient();
 
-    FacebookJaxbRestClient createLoggedInFacebookClient(String api_key, String secret) throws FacebookException, FacebookConnectorException;
+    FacebookJaxbRestClient createLoggedInFacebookClient(String api_key, String secret) throws FacebookException;
 }

@@ -27,6 +27,8 @@
           <map key-type="java.lang.String" value-type="java.lang.String">
             <entry key="notification/Facebook/servicename" value="facebookService" />
             <entry key="notification/Facebook/namespace" value="urn:openengsb:facebook" />
+            <entry key="notification/twitter/user" value="azugem@gmail.com" />
+            <entry key="notification/twitter/password" value="password?" />
           </map>
         </entry>
       </map>

@@ -1,20 +1,20 @@
 /**
 
-   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE\-2.0
+ http://www.apache.org/licenses/LICENSE\-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 
-*/
+ */
 package org.openengsb.facebook.common;
 
 import java.io.IOException;
@@ -38,7 +38,6 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
-import org.openengsb.facebook.common.exceptions.FacebookConnectorException;
 
 public class FacebookLoginImpl implements FacebookLogin {
 
@@ -51,13 +50,13 @@ public class FacebookLoginImpl implements FacebookLogin {
     private FacebookJaxbRestClient facebookClient;
     private static final String FACEBOOK_LOGIN = "http://www.facebook.com/login.php";
 
-    FacebookLoginImpl() throws FacebookConnectorException {
+    FacebookLoginImpl() throws FacebookException {
         initHttpClient();
     }
 
 
     @Override
-    public boolean loginUser(String email, String password, String api) throws FacebookConnectorException {
+    public boolean loginUser(String email, String password, String api) throws FacebookException {
         try {
             if (httpClient == null) {
                 initHttpClient();
@@ -81,14 +80,8 @@ public class FacebookLoginImpl implements FacebookLogin {
 
             return checkCookies(cookies);
 
-        } catch (HttpException ex) {
-            throw new FacebookConnectorException(-1);
-        } catch (UnsupportedEncodingException e) {
-            throw new FacebookConnectorException(-1);
-        } catch (URISyntaxException e) {
-            throw new FacebookConnectorException(-1);
-        } catch (IOException e) {
-            throw new FacebookConnectorException(-1);
+        } catch (Exception e) {
+            throw new FacebookException(-1, "Error on login ");
         }
     }
 
@@ -101,8 +94,7 @@ public class FacebookLoginImpl implements FacebookLogin {
     }
 
 
-
-    private void initHttpClient() throws FacebookConnectorException {
+    private void initHttpClient() throws FacebookException {
         try {
             httpClient = new DefaultHttpClient();
             HttpGet httpget = new HttpGet(FACEBOOK_LOGIN);
@@ -122,20 +114,14 @@ public class FacebookLoginImpl implements FacebookLogin {
                 log.info("cookies found");
             }
         }
-        catch (HttpException ex) {
-            throw new FacebookConnectorException(-1);
-        } catch (UnsupportedEncodingException e) {
-            throw new FacebookConnectorException(-1);
-        } catch (URISyntaxException e) {
-            throw new FacebookConnectorException(-1);
-        } catch (IOException e) {
-            throw new FacebookConnectorException(-1);
+        catch (Exception e) {
+            throw new FacebookException(-1, "Error on login");
         }
     }
 
 
     @Override
-    public FacebookJaxbRestClient createLoggedInFacebookClient(String api_key, String secret) throws FacebookException, FacebookConnectorException {
+    public FacebookJaxbRestClient createLoggedInFacebookClient(String api_key, String secret) throws FacebookException {
 
         facebookClient = new FacebookJaxbRestClient(api_key, secret);
         String sessionKey = getSessionKey(api_key);
@@ -167,7 +153,7 @@ public class FacebookLoginImpl implements FacebookLogin {
     }
 
 
-    private String getSessionKey(String api_key) throws FacebookException, FacebookConnectorException {
+    private String getSessionKey(String api_key) throws FacebookException {
 
         try {
 
@@ -193,18 +179,11 @@ public class FacebookLoginImpl implements FacebookLogin {
                 return facebookClient.auth_getSession(token, true);
             }
 
-        }
-        catch (HttpException ex) {
-            throw new FacebookConnectorException(-1);
-        } catch (UnsupportedEncodingException e) {
-            throw new FacebookConnectorException(-1);
-        } catch (URISyntaxException e) {
-            throw new FacebookConnectorException(-1);
-        } catch (IOException e) {
-            throw new FacebookConnectorException(-1);
+        } catch (Exception ex) {
+            throw new FacebookException(-1, "Could not get Session key for user");
         }
 
-        throw new FacebookConnectorException(-2);
+        throw new FacebookException(-1, "Could not get Session key for user");
     }
 
 

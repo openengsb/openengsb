@@ -21,7 +21,6 @@ import com.google.code.facebookapi.FacebookException;
 import com.google.code.facebookapi.FacebookJaxbRestClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.facebook.common.exceptions.FacebookConnectorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +41,6 @@ public class FacebookConnectorImpl implements FacebookConnector {
             login.loginUser(email, password, API_KEY);
             client = login.createLoggedInFacebookClient(API_KEY, SECRET);
         } catch (FacebookException e) {
-            handleFacebookException(e);
-        } catch (FacebookConnectorException e) {
             handleFacebookException(e);
         }
         facebookClient = new FacebookClientImpl(client);
@@ -86,17 +83,5 @@ public class FacebookConnectorImpl implements FacebookConnector {
     }
 
 
-    private void handleFacebookException(FacebookConnectorException e) {
-        switch (e.getStatusCode()) {
-            case -1:
-                log.error("HTTP - error befor login");
-                break;
-            case -2:
-                log.error("Incorrect or missing username or password. Authentication failed.");
-                break;
-            default:
-                log.error("Action failed. Cause: " + e.getMessage());
-                break;
-        }
-    }
+
 }

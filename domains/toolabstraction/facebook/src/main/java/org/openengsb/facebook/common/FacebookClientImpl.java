@@ -18,7 +18,10 @@
 package org.openengsb.facebook.common;
 
 
-import com.google.code.facebookapi.*;
+import com.google.code.facebookapi.BundleActionLink;
+import com.google.code.facebookapi.FacebookException;
+import com.google.code.facebookapi.FacebookJaxbRestClient;
+import com.google.code.facebookapi.ProfileField;
 import com.google.code.facebookapi.schema.FqlQueryResponse;
 import com.google.code.facebookapi.schema.FriendsGetResponse;
 import com.google.code.facebookapi.schema.User;
@@ -26,26 +29,9 @@ import com.google.code.facebookapi.schema.UsersGetInfoResponse;
 import com.sun.org.apache.xerces.internal.dom.ElementNSImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import sun.font.AttributeMap;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URLEncoder;
-import java.util.*;
-
-import java.net.URL;
-import java.io.*;
-import javax.net.ssl.HttpsURLConnection;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.w3c.dom.Node;
+
+import java.util.*;
 
 
 public class FacebookClientImpl implements FacebookClient {
