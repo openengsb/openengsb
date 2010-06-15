@@ -21,11 +21,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,30 +56,6 @@ public class IO {
      */
     public static String relativize(final String base, final String path) {
         return new File(base).toURI().relativize(new File(path).toURI()).getPath();
-    }
-
-    /**
-     * Writes a String into a file on a specific file path.
-     */
-    public static void write(final String toWrite, final String filePath) throws IOException {
-        write(toWrite, new File(filePath));
-    }
-
-    /**
-     * Writes a String into a specific file uri.
-     */
-    public static void write(final String toWrite, final URI fileUri) throws IOException {
-        write(toWrite, new File(fileUri));
-    }
-
-    /**
-     * Writes a String into a specific file.
-     */
-    public static void write(final String toWrite, final File file) throws IOException {
-        final FileWriter fw = new FileWriter(file);
-        fw.write(toWrite);
-        fw.flush();
-        fw.close();
     }
 
     /**
