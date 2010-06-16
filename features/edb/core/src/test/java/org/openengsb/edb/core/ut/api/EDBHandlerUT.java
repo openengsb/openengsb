@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
@@ -37,7 +38,6 @@ import org.junit.runner.RunWith;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
-import org.openengsb.util.IO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -70,9 +70,7 @@ public class EDBHandlerUT {
 
     @After
     public void tearDown() throws Exception {
-        if (!IO.deleteStructure(new File(repoBase).getParentFile())) {
-            throw new Exception("cleanup failed");
-        }
+        FileUtils.deleteDirectory(new File(repoBase).getParentFile());
     }
 
     @Test

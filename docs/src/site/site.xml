@@ -28,36 +28,32 @@
     <src>images/openengsb_small.png</src>
   </bannerLeft>
 
-  <bannerRight>
+  <!--<bannerRight>
     <name>Vienna University of Technology</name>
     <src>images/tu.png</src>
-  </bannerRight>
+  </bannerRight>-->
 
-  <poweredBy />
+  <publishDate position="left" />
+  <version position="left"/>
 
   <body>
-    <links>
-      <item name="Source" href="http://github.com/openengsb/openengsb/" />
-      <item name="Issues" href="http://github.com/openengsb/openengsb/issues"/>
-      <item name="Build" href="http://build.openengsb.org/hudson"/>
-    </links>
-
     <menu name="OpenEngSB">
       <item href="index.html" name="Welcome" />
       <item href="about.html" name="What is OpenEngSB?" />
-      <item href="http://github.com/openengsb/openengsb/downloads" name="Download"/>
-	  <item collapse="true" href="howto/howto.html" name="HowTo - First steps">
-        <item href="howto/howto_notify.html" name="Hello World" />
-        <item href="howto/howto_issue.html" name="Issue tracker" />
-	<item href="howto/howto_embedded.html" name="Web configuration" />
-	<item href="howto/howto_cit.html" name="Continuous Integration" />
-        <item href="howto/howto_setup.html" name="Developer setup" />
-	  </item>
+      <item href="reference/index.html" name="Userguide" />
+      <item href="faq.html" name="FAQ" />
+      <item href="sponsors.html" name="Sponsors" />
+    </menu>
+
+    <menu name="OpenEngSB Usage" >
+      <item href="howto/howto_setup.html" name="Developer setup" />
+      <item href="howto/howto_notify.html" name="Hello World" />
+      <item href="howto/howto_issue.html" name="Issue tracker" />
+      <item href="howto/howto_embedded.html" name="Web configuration" />
+      <item href="howto/howto_cit.html" name="Continuous Integration" />
     </menu>
 
     <menu name="Documentation">
-      <item href="reference/index.html" name="Userguide" />
-      <item href="faq.html" name="FAQ" />
       <item collapse="true" href="connector/issues/issues.html" name="Issue-Connectors">
         <item href="proposals/issueDomain.html" name="Issue domain" />
         <item href="connector/issues/trac.html" name="Trac" />
@@ -83,31 +79,24 @@
       <item collapse="true" href="connector/scm/scm.html" name="SCM-Connectors">
         <item href="connector/scm/scmConnector.html" name="SCM Connector" />
         <item href="connector/scm/svnConnector.html" name="Subversion Connector" />
-      </item>      
-    </menu>
-
-    <menu name="Community">
-      <item href="contribute/mailinglists.html" name="Mailing Lists" />
-      <item href="roadmap.html" name="Roadmap" />
-      <item href="contribute/git.html" name="Git Workflow" />
-      <item href="contribute/codingstyle.html" name="Coding Guidelines" />
-      <item href="contribute/format.html" name="APT Format" />
-      <item href="contribute/eclipse.html" name="Eclipse Setup" />
-      <item collapse="true" name="Proposals" href="contribute/proposals.html">
+      </item>
+      <item collapse="true" name="Proposals" href="proposals.html">
         <item href="proposals/edbInterface.html" name="EDB" />
         <item href="proposals/scmDomain.html" name="SCM Domain" />
         <item href="proposals/pimDomain.html" name="PIM Domain" />
         <item href="proposals/cmsDomain.html" name="CMS Domain" />
       </item>
     </menu>
-
-    <menu name="Project Information">
-      <item href="presentation.html" name="Presentations" />
-      <item href="dependency-management.html" name="Dependencies" />
-      <item href="plugin-management.html" name="Modules" />
-      <item href="plugins.html" name="Plugins" />
-      <item href="team-list.html" name="Team" />
-      <item href="license.txt" name="License" />
+    
+    <menu name="Development">
+      <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
+      <item name="Source" href="http://github.com/openengsb/openengsb/" />
+      <item name="Mailing Lists" href="mailinglists.html" />
+      <item name="Presentation Material" href="presentation.html" />
+      <item name="Issues / Roadmap" href="http://issues.openengsb.org/"/>
+      <item name="Continuous Integration" href="http://build.openengsb.org/"/>
+      <item name="Artifacts" href="http://maven.openengsb.org/" />
+      <item name="Development Team" href="team-list.html" />
     </menu>
 
   </body>

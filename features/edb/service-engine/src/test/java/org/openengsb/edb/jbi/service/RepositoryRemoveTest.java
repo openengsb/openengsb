@@ -36,6 +36,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.servicemix.client.DefaultServiceMixClient;
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
@@ -56,7 +57,6 @@ import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.edb.core.api.EDBHandler;
 import org.openengsb.edb.core.api.EDBHandlerFactory;
 import org.openengsb.edb.core.entities.GenericContent;
-import org.openengsb.util.IO;
 import org.openengsb.util.Prelude;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -110,7 +110,7 @@ public class RepositoryRemoveTest extends SpringTestSupport {
     public void setUp() throws Exception {
         super.setUp();
         storeEDBContext();
-        
+
         makeParameters(this.config);
         RepositoryRemoveTest.handler = this.config.loadDefaultRepository();
         this.client = createClient();
@@ -120,8 +120,8 @@ public class RepositoryRemoveTest extends SpringTestSupport {
     @Override
     @After
     public void tearDown() throws Exception {
-        IO.deleteStructure(RepositoryRemoveTest.handler.getRepositoryBase().getParentFile());
-        IO.deleteStructure(new File("links"));
+        FileUtils.deleteDirectory(RepositoryRemoveTest.handler.getRepositoryBase().getParentFile());
+        FileUtils.deleteDirectory(new File("links"));
         super.tearDown();
     }
 
@@ -197,7 +197,7 @@ public class RepositoryRemoveTest extends SpringTestSupport {
         }
         return parseResponse(inout.getOutMessage());
     }
-    
+
     private void storeEDBContext() throws Exception {
         OpenEngSBComponent comp = new OpenEngSBComponent();
         NotificationMockEndpoint dummy = new NotificationMockEndpoint();
@@ -206,14 +206,14 @@ public class RepositoryRemoveTest extends SpringTestSupport {
         dummy.setEndpoint("dummyEndpoint");
         comp.addEndpoint(dummy);
         jbi.activateComponent(comp, "dummy");
-        
+
         ContextHelperImpl contextHelper = new ContextHelperImpl(dummy, null);
         contextHelper.setContext("42");
-        
+
         HashMap<String, String> newProperties = new HashMap<String, String>();
         newProperties.put("edb/namespace", "urn:openengsb:edb");
         newProperties.put("edb/servicename", "edb");
-        
+
         contextHelper.store(newProperties);
     }
 
@@ -240,7 +240,7 @@ public class RepositoryRemoveTest extends SpringTestSupport {
 
     /**
      * Creates a new ServiceMixClieant
-     * 
+     *
      * @return The new ServiceMixClient
      */
     private DefaultServiceMixClient createClient() throws JBIException {

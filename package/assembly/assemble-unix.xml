@@ -20,45 +20,45 @@
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
-  <id>openengsb</id>
+  <id>${project.version}-unix</id>
   <formats>
     <format>zip</format>
   </formats>
-  <baseDirectory>openengsb-${project.version}</baseDirectory>
+  <baseDirectory>openengsb-unix-${project.version}</baseDirectory>
   <fileSets>
     <fileSet>
-      <directory>${project.basedir}/target/jetty</directory>
-      <outputDirectory>jetty</outputDirectory>
+      <directory>${project.basedir}/target/servicemix-unix/apache-servicemix-4.2.0</directory>
+      <outputDirectory>apache-servicemix-4.2.0</outputDirectory>
       <includes>
         <include>**</include>
       </includes>
     </fileSet>
     <fileSet>
-      <directory>${project.basedir}/../embedded/target</directory>
-      <outputDirectory>jetty/webapps</outputDirectory>
+      <directory>${project.basedir}/target/installers/deploy</directory>
+      <outputDirectory>apache-servicemix-4.2.0/deploy</outputDirectory>
       <includes>
-        <include>openengsb.war</include>
+        <include>**</include>
       </includes>
     </fileSet>
     <fileSet> 
-      <outputDirectory>docs/html</outputDirectory>
       <directory>${project.basedir}/../../docs/target/docbkx/html</directory>
+      <outputDirectory>docs/html</outputDirectory>
       <includes>
         <include>*.html</include>
       </includes>
     </fileSet>
     <fileSet> 
-      <outputDirectory>docs/pdf</outputDirectory>
       <directory>${project.basedir}/../../docs/target/docbkx/pdf</directory>
+      <outputDirectory>docs/pdf</outputDirectory>
       <includes>
         <include>*.pdf</include>
       </includes>
     </fileSet>
     <fileSet> 
-      <outputDirectory>bin</outputDirectory>
       <directory>${project.basedir}</directory>
+      <outputDirectory>apache-servicemix-4.2.0/bin</outputDirectory>
       <includes>
-        <include>*.sh</include>
+        <include>openengsb.sh</include>
       </includes>
     </fileSet>
     <fileSet>

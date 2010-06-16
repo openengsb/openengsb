@@ -73,4 +73,5 @@
   <xi:include href="usermanual/features.xml"/>
   <xi:include href="usermanual/workflow.xml"/>
   <xi:include href="usermanual/context.xml"/>
+  <xi:include href="usermanual/guidelines.xml" />
 </book>

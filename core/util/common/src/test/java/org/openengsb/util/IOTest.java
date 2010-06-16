@@ -13,35 +13,17 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.util;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class IOTest {
-    @Test
-    public void combineWithNoArguments() {
-        assertThat(IO.combine(""), is(""));
-    }
-
-    @Test
-    public void combineWithOneRelativeFile() {
-        assertThat(IO.combine("relativeFile"), is("relativeFile"));
-    }
-
-    @Test
-    public void combineTwoPaths() {
-        final File file = new File(IO.combine("foo", "bar.txt"));
-        assertThat(file.getName(), is("bar.txt"));
-        assertThat(file.getParent(), is("foo"));
-    }
 
     @Test
     public void relativizeWithTwoAbsolutePaths() {
