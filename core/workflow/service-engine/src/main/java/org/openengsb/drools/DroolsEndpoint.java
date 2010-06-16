@@ -87,6 +87,11 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
         super.handleEvent(exchange, in, contextHelper, msgProperties);
     }
 
+    @Override
+    protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
+        super.processInOnly(exchange, in);
+    }
+
     private void forwardMessageToLogEndpoint(NormalizedMessage messageToLog) throws MessagingException {
         if (noRemoteLogging) {
             return;
@@ -146,7 +151,7 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
 
     /**
      * handle the MessageExchange with drools.
-     * 
+     *
      * @param e2 exchange to handle
      */
     protected void drools(Event e, MessageProperties msgProperties) {
