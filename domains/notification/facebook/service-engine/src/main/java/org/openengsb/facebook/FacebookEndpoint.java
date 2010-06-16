@@ -24,7 +24,7 @@ import org.openengsb.core.endpoints.LinkingEndpoint;
 import org.openengsb.drools.NotificationDomain;
 
 /**
- * @org.apache.xbean.XBean element="FacebookEndpoint"
+ * @org.apache.xbean.XBean element="facebookEndpoint"
  * description="This is a tool connector for OpenEngSB."
  */
 public class
