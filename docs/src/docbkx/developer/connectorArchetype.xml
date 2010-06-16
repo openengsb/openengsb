@@ -16,7 +16,7 @@
    limitations under the License.
 
 -->
-<chapter id="connectorArchetype">
+<chapter id="connectorArchetype" xmlns="http://docbook.org/ns/docbook">
   <title>How to use the Maven archetype to create an OpenEngSB tool connector</title>
   <para>
     This section describes how a new OpenEngSB tool connector can be created using a Maven archetype. For more information about tool connectors see section "Internal OpenEngSB Tool Connectors".

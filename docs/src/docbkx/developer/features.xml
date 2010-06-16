@@ -16,7 +16,7 @@
    limitations under the License.
 
 -->
-<chapter id="features">
+<chapter id="features" xmlns="http://docbook.org/ns/docbook">
   <title>OpenEngSB Features</title>
   <para>
     Beside of domains the OpenEngSB itself also specify features. These features could not be easily replaced because

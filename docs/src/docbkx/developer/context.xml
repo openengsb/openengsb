@@ -8,7 +8,7 @@
     KIND, either express or implied. See the License for the specific language governing permissions and limitations
     under the License.
   -->
-<chapter id="context">
+<chapter id="context" xmlns="http://docbook.org/ns/docbook">
   <title>Context management</title>
   <para>
     In OpenEngSB every component, be it a ServiceEngine or a ServiceUnit, can have its own configuration. This

@@ -16,7 +16,7 @@
    limitations under the License.
 
 -->
-<chapter id="guidelines">
+<chapter id="guidelines" xmlns="http://docbook.org/ns/docbook">
   <title>Development Guidelines</title>
   <para>
     This section contains the design, architecture and development guidelines for the OpenEngSB.

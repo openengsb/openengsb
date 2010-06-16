@@ -16,7 +16,7 @@
    limitations under the License.
 
 -->
-<chapter id="externalConnectors">
+<chapter id="externalConnectors" xmlns="http://docbook.org/ns/docbook">
   <title>External OpenEngSB Tool Connectors</title>
   <para>
     Introduction bla...
