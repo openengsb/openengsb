@@ -18,17 +18,11 @@
 package org.openengsb.util;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,30 +59,6 @@ public class IO {
     }
 
     /**
-     * Writes a String into a file on a specific file path.
-     */
-    public static void write(final String toWrite, final String filePath) throws IOException {
-        write(toWrite, new File(filePath));
-    }
-
-    /**
-     * Writes a String into a specific file uri.
-     */
-    public static void write(final String toWrite, final URI fileUri) throws IOException {
-        write(toWrite, new File(fileUri));
-    }
-
-    /**
-     * Writes a String into a specific file.
-     */
-    public static void write(final String toWrite, final File file) throws IOException {
-        final FileWriter fw = new FileWriter(file);
-        fw.write(toWrite);
-        fw.flush();
-        fw.close();
-    }
-
-    /**
      * @see ClassLoader#getResource(String)
      */
     public static URL getResource(final String resourceName) {
@@ -102,66 +72,6 @@ public class IO {
      */
     public static InputStream getResourceAsStream(final String resourceName) {
         return ClassLoader.getSystemClassLoader().getResourceAsStream(resourceName);
-    }
-
-    /**
-     * Wait for an {@code Enter} at the stdin.
-     */
-    public static void waitForKeyPress() {
-        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            reader.readLine();
-        } catch (final IOException e) {
-            // no op
-        }
-    }
-
-    /**
-     * Copies a file from an stream to an file.
-     */
-    public static void copyFile(final InputStream f1, final File f2) throws IOException {
-        IO.log.debug("Copy [" + f1.toString() + "] to [" + f2.getAbsolutePath() + "]...");
-        final InputStream in = f1;
-        final OutputStream out = new FileOutputStream(f2);
-
-        final byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
-        in.close();
-        out.close();
-    }
-
-    /**
-     * Copies one file into another one.
-     */
-    public static void copyFile(final File f1, final File f2) throws IOException {
-        IO.log.debug("Copy [" + f1.getAbsolutePath() + "] to [" + f2.getAbsolutePath() + "]...");
-        final InputStream in = new FileInputStream(f1);
-        final OutputStream out = new FileOutputStream(f2);
-
-        final byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
-        in.close();
-        out.close();
-    }
-
-    /**
-     * Close quietly
-     */
-    public static void closeQuietly(Closeable closeable) {
-        if (closeable == null) {
-            return;
-        }
-
-        try {
-            closeable.close();
-        } catch (IOException e) {
-        }
     }
 
     /**
