@@ -102,29 +102,17 @@ public class FacebookConnectorImpl implements FacebookConnector {
                 try {
                     String token = facebookClient.auth_createToken();
                     String session = facebookClient.auth_getSession(token);
-                    FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(api, secret, session);
-                    xmlClient.users_setStatus(message);
+                    // the following will never be reached, the exception is expected,
+                    // otherwise, everything is fine, and no new log in is needed
+                    postMessage(message);
                 } catch (FacebookException e) {
                     facebookClient = login();
-                    facebookClient.users_setStatus(message);
+                    postMessage(message);
                 }
                 return;
             }
-            List<String> messages = new ArrayList<String>();
+            postMessage(message);
 
-            if (message.length() >= MAXCHAR) {
-                int i = 0;
-                while (i + MAXCHAR < message.length()) {
-                    messages.add(message.substring(i, i + MAXCHAR));
-                    i = i + (MAXCHAR);
-                }
-                messages.add(message.substring(i));
-                for (String s : messages) {
-                    facebookClient.users_setStatus(s);
-                }
-            } else {
-                facebookClient.users_setStatus(message);
-            }
         } catch (FacebookException e) {
             handleFacebookException(e);
         } catch (IOException e) {
@@ -136,6 +124,24 @@ public class FacebookConnectorImpl implements FacebookConnector {
         } finally {
             logout();
 
+        }
+    }
+
+    private void postMessage(String message) throws FacebookException {
+        List<String> messages = new ArrayList<String>();
+
+        if (message.length() >= MAXCHAR) {
+            int i = 0;
+            while (i + MAXCHAR < message.length()) {
+                messages.add(message.substring(i, i + MAXCHAR));
+                i = i + (MAXCHAR);
+            }
+            messages.add(message.substring(i));
+            for (String s : messages) {
+                facebookClient.users_setStatus(s);
+            }
+        } else {
+            facebookClient.users_setStatus(message);
         }
     }
 

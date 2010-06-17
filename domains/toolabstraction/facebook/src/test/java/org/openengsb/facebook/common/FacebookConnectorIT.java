@@ -20,7 +20,6 @@ package org.openengsb.facebook.common;
 import com.google.code.facebookapi.FacebookException;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -54,7 +53,7 @@ public class FacebookConnectorIT {
     public void after() {
     }
 
-    @Ignore
+
     @Test
     public void simpleUpdateUserStatus() throws FacebookException {
         facebookConnector.updateStatus("TestMessage send on: " + new Date());
