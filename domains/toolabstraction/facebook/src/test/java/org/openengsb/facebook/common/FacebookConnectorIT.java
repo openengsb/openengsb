@@ -20,6 +20,7 @@ package org.openengsb.facebook.common;
 import com.google.code.facebookapi.FacebookException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -53,13 +54,19 @@ public class FacebookConnectorIT {
     public void after() {
     }
 
+    @Ignore
     @Test
     public void simpleUpdateUserStatus() throws FacebookException {
-        facebookConnector.updateStatus("TestMessage send on: " +new Date());
+        facebookConnector.updateStatus("TestMessage send on: " + new Date());
         //TODO: Dont know how to test this yet, at the moment you have to check it on your own
 
     }
 
-  
+    @Test
+    public void simpleUpdateUserStatus_retryToCheckIfItIsPossibleToPostASecondTime() throws FacebookException {
+        facebookConnector.updateStatus("TestMessage send on1: " + new Date());
+        facebookConnector.updateStatus("TestMessage send on2: " + new Date());
+    }
+
 
 }
