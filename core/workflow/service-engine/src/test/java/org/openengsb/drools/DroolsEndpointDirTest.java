@@ -44,7 +44,6 @@ import org.openengsb.drools.helper.XmlHelper;
 import org.openengsb.drools.message.ManageRequest;
 import org.openengsb.drools.message.RuleBaseElementId;
 import org.openengsb.drools.message.RuleBaseElementType;
-import org.openengsb.util.IO;
 import org.openengsb.util.serialization.SerializationException;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -84,7 +83,7 @@ public class DroolsEndpointDirTest extends SpringTestSupport {
     @After
     @Override
     public void tearDown() throws Exception {
-        IO.deleteStructure(new File("data"));
+        FileUtils.deleteDirectory(new File("data"));
         super.tearDown();
     }
 
