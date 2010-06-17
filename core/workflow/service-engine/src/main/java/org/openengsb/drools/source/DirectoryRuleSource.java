@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Timer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -43,6 +44,7 @@ import org.openengsb.drools.source.dir.DirectoryFunctionHandler;
 import org.openengsb.drools.source.dir.DirectoryGlobalHandler;
 import org.openengsb.drools.source.dir.DirectoryImportHandler;
 import org.openengsb.drools.source.dir.DirectoryRuleHandler;
+import org.openengsb.drools.source.dir.ReloadChecker;
 
 public class DirectoryRuleSource extends RuleBaseSource {
 
@@ -62,6 +64,8 @@ public class DirectoryRuleSource extends RuleBaseSource {
     private String prelude;
 
     public DirectoryRuleSource() {
+        Timer t = new Timer(true);
+        t.schedule(new ReloadChecker(new File(path, "reload"), this), 0, 5000);
     }
 
     public DirectoryRuleSource(String path) {
