@@ -70,67 +70,6 @@
     </para>
   </section>
 
-  <section id="workflow.events">
-    <title>Events</title>
-    <para>
-      
-      The rules are managed independent of servicemix in the Drools Guvnor. Guvnor is a webapplication running inside a 
-      JBoss Application Server. The rulebase can be managed with the webinterface. For specifying conditions in rules 
-      a model is needed. A model is described in simple Java objects. The default model is located in 
-      <literal>workflow/drools/domains</literal>. The following example shows how a rule can be specified.
-  </para>
-    <orderedlist>
-      <listitem>
-        Login guvnor
-        <para>
-          Take the browser to the guvnor webinterface (e.g. http://localhost:8080/drools-guvnor) and login with your
-          credentials. 
-		</para>
-      </listitem>
-      <listitem>
-        Setup package
-        <para>
-          select "Knowledge Bases" in the sidebar and Create a new package named "org.openengsb".
-			</para>
-      </listitem>
-      <listitem>
-        Build and upload the model
-        <para>
-          Execute the shell script "create-guvnor-model.sh" in the scripts folder. This compiles the
-          model and packs it to target/openengsb-guvnor-model.jar. Use the webinterface to upload the model by
-          selecting "Create New->Upload POJO Model jar". Enter a name (e.g. "openengsb") and confirm the dialog. Now
-          browse to the openengsb-guvnor-model.jar and upload it. When that is done click "save
-          changes" in the top-left corner of the frame. Enter a commit-message (e.g. "add openengsb-guvnor-model").
-		</para>
-      </listitem>
-      <listitem>
-        Create a new rule with the web interface
-        <para>
-          Select "Create New->New Rule" and enter a name for the new rule. Assign it to a category (does not influence
-          functionality of the rule). Then choose which type of rule you would like to create. The easiest to use type
-          is the "Business Rule (guided editor)". In the WHEN-area you may specify conditions (e.g. using the
-          Event-model). In the THEN-area you may specify the actions. In actions you can modify the knowledge
-          (e.g. the current event) or trigger actions in the OpenEngSB. To trigger actions select "call method on ...".
-          You can use information contained in the event by binding it to a variable. Click on the field in the
-          when-condition and provide a variable name.
-  		</para>
-      </listitem>
-      <listitem>
-        Compile the rulebase
-        <para>
-          For the changes to be applied for usage in the workflow the rules must be compiled. You only need to select the
-          package (org.openengsb) in the sidepane and then click "Build package" in the right frame.
-  		</para>
-      </listitem>
-      <listitem>
-        Eclipse-plugin
-        <para>
-          TODO
-  		</para>
-      </listitem>
-    </orderedlist>
-  </section>
-  
   <section id="workflow.processes">
     <title>Processes</title>
     <para>
