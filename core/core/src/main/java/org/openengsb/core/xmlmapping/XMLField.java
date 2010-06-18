@@ -1,54 +1,29 @@
 
 package org.openengsb.core.xmlmapping;
 
-/** 
- * Schema fragment(s) for this class:
- * <pre>
- * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLField">
- *   &lt;xs:sequence>
- *     &lt;xs:element type="xs:string" name="fieldName"/>
- *     &lt;xs:element type="XMLMappable" name="value"/>
- *   &lt;/xs:sequence>
- * &lt;/xs:complexType>
- * </pre>
- */
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlType(propOrder = { "fieldName", "value" })
 public class XMLField
 {
     private String fieldName;
     private XMLMappable value;
 
-    /** 
-     * Get the 'fieldName' element value.
-     * 
-     * @return value
-     */
+    @XmlElement(required = true)
     public String getFieldName() {
         return fieldName;
     }
 
-    /** 
-     * Set the 'fieldName' element value.
-     * 
-     * @param fieldName
-     */
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
-    /** 
-     * Get the 'value' element value.
-     * 
-     * @return value
-     */
+    @XmlElement(required = true)
     public XMLMappable getValue() {
         return value;
     }
 
-    /** 
-     * Set the 'value' element value.
-     * 
-     * @param value
-     */
     public void setValue(XMLMappable value) {
         this.value = value;
     }
