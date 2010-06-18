@@ -511,6 +511,11 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>com.sun.tools.jxc.maven2</groupId>
+        <artifactId>maven-jaxb-schemagen-plugin</artifactId>
+        <version>${jaxb.plugin.version}</version>
+      </plugin>
+      <plugin>
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>jbi-maven-plugin</artifactId>
 	<extensions>true</extensions>
