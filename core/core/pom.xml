@@ -112,6 +112,28 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>com.sun.tools.jxc.maven2</groupId>
+        <artifactId>maven-jaxb-schemagen-plugin</artifactId>
+        <configuration>
+          <project>
+            ${project}
+          </project>
+          <destdir>${project.build.directory}/schemas</destdir>
+          <srcdir>${project.basedir}</srcdir>
+          <includes>
+            <include>src/main/java/org/openengsb/core/xmlmapping/*.java</include>
+            <include>src/main/resources/org/openengsb/core/xmlmapping/*.java</include>
+          </includes>
+          <verbose>true</verbose>
+          <schemas>
+            <schema>
+              <namespace>http://www.openengsb.org/serialization/1.0</namespace>
+              <file>datatypes.xsd</file>
+            </schema>
+          </schemas>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.jibx</groupId>
         <artifactId>maven-jibx-plugin</artifactId>
         <version>1.2.2</version>
