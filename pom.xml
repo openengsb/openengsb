@@ -511,33 +511,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>com.sun.tools.jxc.maven2</groupId>
-        <artifactId>maven-jaxb-schemagen-plugin</artifactId>
-        <version>${jaxb.plugin.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${jaxb.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-xjc</artifactId>
-            <version>${jaxb.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-xjc</artifactId>
-            <version>${jaxb.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>jbi-maven-plugin</artifactId>
 	<extensions>true</extensions>
@@ -620,6 +593,33 @@
           <groupId>org.jibx</groupId>
           <artifactId>maven-jibx-plugin</artifactId>
           <version>${jibx.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.sun.tools.jxc.maven2</groupId>
+          <artifactId>maven-jaxb-schemagen-plugin</artifactId>
+          <version>${jaxb.plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>javax.xml.bind</groupId>
+              <artifactId>jaxb-api</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-xjc</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-impl</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-xjc</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
