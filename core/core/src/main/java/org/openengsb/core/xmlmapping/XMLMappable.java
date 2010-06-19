@@ -1,27 +1,25 @@
+/**
 
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
 package org.openengsb.core.xmlmapping;
 
-/** 
- * Schema fragment(s) for this class:
- * <pre>
- * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLMappable">
- *   &lt;xs:sequence>
- *     &lt;xs:choice>
- *       &lt;xs:element type="xs:string" name="null"/>
- *       &lt;xs:element type="XMLReference" name="reference"/>
- *       &lt;xs:element type="XMLPrimitive" name="primitive"/>
- *       &lt;xs:element type="XMLBean" name="bean"/>
- *       &lt;xs:element type="XMLMappableList" name="list"/>
- *       &lt;xs:element type="XMLEvent" name="event"/>
- *       &lt;xs:element type="XMLMapEntryList" name="map"/>
- *       &lt;xs:element type="XMLContext" name="context"/>
- *     &lt;/xs:choice>
- *     &lt;xs:element type="xs:string" nillable="true" name="id"/>
- *   &lt;/xs:sequence>
- *   &lt;xs:attribute type="xs:string" name="domainConcept"/>
- * &lt;/xs:complexType>
- * </pre>
- */
+import javax.xml.bind.annotation.XmlType;
+
+@XmlType
 public class XMLMappable
 {
     private int choiceSelect = -1;
@@ -53,34 +51,34 @@ public class XMLMappable
         }
     }
 
-    /** 
+    /**
      * Clear the choice selection.
      */
     public void clearChoiceSelect() {
         choiceSelect = -1;
     }
 
-    /** 
+    /**
      * Check if Null is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifNull() {
         return choiceSelect == NULL_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'null' element value.
-     * 
+     *
      * @return value
      */
     public String getNull() {
         return _null;
     }
 
-    /** 
+    /**
      * Set the 'null' element value.
-     * 
+     *
      * @param _null
      */
     public void setNull(String _null) {
@@ -88,27 +86,27 @@ public class XMLMappable
         this._null = _null;
     }
 
-    /** 
+    /**
      * Check if Reference is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifReference() {
         return choiceSelect == REFERENCE_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'reference' element value.
-     * 
+     *
      * @return value
      */
     public XMLReference getReference() {
         return reference;
     }
 
-    /** 
+    /**
      * Set the 'reference' element value.
-     * 
+     *
      * @param reference
      */
     public void setReference(XMLReference reference) {
@@ -116,27 +114,27 @@ public class XMLMappable
         this.reference = reference;
     }
 
-    /** 
+    /**
      * Check if Primitive is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifPrimitive() {
         return choiceSelect == PRIMITIVE_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'primitive' element value.
-     * 
+     *
      * @return value
      */
     public XMLPrimitive getPrimitive() {
         return primitive;
     }
 
-    /** 
+    /**
      * Set the 'primitive' element value.
-     * 
+     *
      * @param primitive
      */
     public void setPrimitive(XMLPrimitive primitive) {
@@ -144,27 +142,27 @@ public class XMLMappable
         this.primitive = primitive;
     }
 
-    /** 
+    /**
      * Check if Bean is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifBean() {
         return choiceSelect == BEAN_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'bean' element value.
-     * 
+     *
      * @return value
      */
     public XMLBean getBean() {
         return bean;
     }
 
-    /** 
+    /**
      * Set the 'bean' element value.
-     * 
+     *
      * @param bean
      */
     public void setBean(XMLBean bean) {
@@ -172,27 +170,27 @@ public class XMLMappable
         this.bean = bean;
     }
 
-    /** 
+    /**
      * Check if List is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifList() {
         return choiceSelect == LIST_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'list' element value.
-     * 
+     *
      * @return value
      */
     public XMLMappableList getList() {
         return list;
     }
 
-    /** 
+    /**
      * Set the 'list' element value.
-     * 
+     *
      * @param list
      */
     public void setList(XMLMappableList list) {
@@ -200,27 +198,27 @@ public class XMLMappable
         this.list = list;
     }
 
-    /** 
+    /**
      * Check if Event is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifEvent() {
         return choiceSelect == EVENT_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'event' element value.
-     * 
+     *
      * @return value
      */
     public XMLEvent getEvent() {
         return event;
     }
 
-    /** 
+    /**
      * Set the 'event' element value.
-     * 
+     *
      * @param event
      */
     public void setEvent(XMLEvent event) {
@@ -228,27 +226,27 @@ public class XMLMappable
         this.event = event;
     }
 
-    /** 
+    /**
      * Check if Map is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifMap() {
         return choiceSelect == MAP_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'map' element value.
-     * 
+     *
      * @return value
      */
     public XMLMapEntryList getMap() {
         return map;
     }
 
-    /** 
+    /**
      * Set the 'map' element value.
-     * 
+     *
      * @param map
      */
     public void setMap(XMLMapEntryList map) {
@@ -256,27 +254,27 @@ public class XMLMappable
         this.map = map;
     }
 
-    /** 
+    /**
      * Check if Context is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifContext() {
         return choiceSelect == CONTEXT_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'context' element value.
-     * 
+     *
      * @return value
      */
     public XMLContext getContext() {
         return context;
     }
 
-    /** 
+    /**
      * Set the 'context' element value.
-     * 
+     *
      * @param context
      */
     public void setContext(XMLContext context) {
@@ -284,36 +282,36 @@ public class XMLMappable
         this.context = context;
     }
 
-    /** 
+    /**
      * Get the 'id' element value.
-     * 
+     *
      * @return value
      */
     public String getId() {
         return id;
     }
 
-    /** 
+    /**
      * Set the 'id' element value.
-     * 
+     *
      * @param id
      */
     public void setId(String id) {
         this.id = id;
     }
 
-    /** 
+    /**
      * Get the 'domainConcept' attribute value.
-     * 
+     *
      * @return value
      */
     public String getDomainConcept() {
         return domainConcept;
     }
 
-    /** 
+    /**
      * Set the 'domainConcept' attribute value.
-     * 
+     *
      * @param domainConcept
      */
     public void setDomainConcept(String domainConcept) {
