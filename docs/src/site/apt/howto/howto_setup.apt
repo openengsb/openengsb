@@ -72,7 +72,7 @@ OPTIONS="-Dexist.home=$EXIST_HOME -Djetty.port=8093"
 +----
 git config --global user.name "Firstname Secondname"
 git config --global user.email "my@email.com"
-git config --global core.autcrlf input
+git config --global core.autocrlf input
 +----
 
 * Getting OpenEngSB

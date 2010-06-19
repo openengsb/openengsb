@@ -15,7 +15,14 @@
 #   limitations under the License.
 #
 
-cd $(dirname $0)/..
-export JETTY_HOME=`pwd`/jetty
-$JETTY_HOME/bin/jetty-cygwin.sh stop
+# get into bin directory
+cd $(dirname $0)/
+
+# set java max mem
+JAVA_MAX_MEM="1024M -XX:PermSize=256m -XX:MaxPermSize=256m"
+export JAVA_MAX_MEM
+
+# start servicemix
+./servicemix
+
 

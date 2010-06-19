@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 
 package org.openengsb.edb.core.lucene;
@@ -28,6 +28,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,7 +38,6 @@ import org.openengsb.edb.core.search.Indexer;
 import org.openengsb.edb.core.search.Searcher;
 import org.openengsb.edb.core.search.lucene.LuceneIndexer;
 import org.openengsb.edb.core.search.lucene.LuceneSearcher;
-import org.openengsb.util.IO;
 
 public class SearcherTest extends ATestStub {
 
@@ -130,8 +130,8 @@ public class SearcherTest extends ATestStub {
     }
 
     @AfterClass
-    public static void tearDownAfterClass() {
-        IO.deleteStructure(new File(SearcherTest.PATH));
+    public static void tearDownAfterClass() throws Exception {
+        FileUtils.deleteDirectory(new File(SearcherTest.PATH));
     }
 
     @Test

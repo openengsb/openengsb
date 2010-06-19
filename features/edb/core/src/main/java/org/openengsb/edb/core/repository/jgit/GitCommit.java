@@ -176,17 +176,14 @@ public class GitCommit implements Commit {
 
                 this.log.trace("Getting entry index...");
                 Entry idxEntry = this.index.getEntry(string);
-                if (diff.getMissing().contains(actualFile)) {
+                if (diff.getMissing().contains(string)) {
                     this.log.debug("For any reason file is missing and situation have to be handeld...");
                     File thisFile = new File(this.repositoryPath, string);
                     if (!thisFile.isFile()) {
                         this.index.remove(this.repositoryPath, thisFile);
-                        this.index.write();
                         continue;
                     } else {
-                        if (idxEntry.update(thisFile)) {
-                            this.index.write();
-                        }
+                        idxEntry.update(thisFile);
                     }
                 }
 
@@ -198,6 +195,7 @@ public class GitCommit implements Commit {
                     newMember.setId(idxEntry.getObjectId());
                 }
             }
+            this.index.write();
             this.log.debug("Writing tree with subtrees...");
             writeTreeWithSubTrees(projectTree);
 

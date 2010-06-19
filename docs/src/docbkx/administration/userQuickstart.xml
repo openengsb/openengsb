@@ -1,4 +1,5 @@
-/**
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
@@ -13,20 +14,12 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
- */
-package org.openengsb.util.tuple;
 
-public class Unit {
-    public static final Unit UNIT = new Unit();
-
-    @Override
-    public boolean equals(Object o) {
-        return o != null && o.getClass().equals(getClass());
-    }
-
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-}
+-->
+<chapter id="userQuickstart" xmlns="http://docbook.org/ns/docbook">
+  <title>Quickstart for OpenEngSB User</title>
+  <para>
+    This chapter gives an overview how to quickly start with the OpenEngSB.  
+  </para>
+  
+</chapter>

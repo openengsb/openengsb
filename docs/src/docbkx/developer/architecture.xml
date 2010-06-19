@@ -16,7 +16,7 @@
    limitations under the License.
 
 -->
-<chapter id="architecture">
+<chapter id="architecture" xmlns="http://docbook.org/ns/docbook">
   <title>Architecture of the EngSB</title>
   <para>
     Since this manual is the user manual only a very basic overview over the architecture should be given. For more
