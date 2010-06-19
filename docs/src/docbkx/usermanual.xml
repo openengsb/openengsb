@@ -65,23 +65,43 @@
       </author>
     </authorgroup>
   </info>
-  
+
   <part>
     <title>Introduction</title>
+    <partintro>
+      <para>
+        This part gives an introduction into the OpenEngSB project and explains it base usage environment
+        and the base concepts, such as Tool Domains, Tool Connectors, OpenEngSB workflows and similar
+        important ideas.
+      </para>
+    </partintro>
     <xi:include href="introduction/introduction.xml" />
   </part>
 
   <part>
     <title>Setup &amp; Administration</title>
+    <partintro>
+      <para>
+        This part explains the usage of the OpenEngSB in a real environment. It explains how to install,
+        setup and use the OpenEngSB administration interface to implement a tool environment according
+        to your needs.
+      </para>
+    </partintro>
     <xi:include href="administration/userQuickstart.xml" />
     <xi:include href="administration/testclient.xml" />
   </part>
 
   <part>
     <title>Developer Manual</title>
+    <partintro>
+      <para>
+        This part explains how to develop additional OpenEngSB connectors, tools and similar parts. In
+        addition it explains the rules and infrastructure according to which the OpenEngSB project is
+        developed.
+      </para>
+    </partintro>
     <xi:include href="developer/architecture.xml" />
     <xi:include href="developer/devQuickstart.xml" />
-    
     <xi:include href="developer/connectorArchetype.xml"/>
     <xi:include href="developer/externalConnectors.xml" />
     <xi:include href="developer/internalConnectors.xml" />
@@ -93,6 +113,11 @@
 
   <part>
     <title>Domains and Connectors</title>
+    <partintro>
+      <para>
+        This part summarizes and explains the usage of the available OpenEngSB domains and tool connectors.
+      </para>
+    </partintro>
     <xi:include href="developer/domains.xml"/>
   </part>
 
