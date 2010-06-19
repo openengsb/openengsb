@@ -64,8 +64,6 @@ public class DirectoryRuleSource extends RuleBaseSource {
     private String prelude;
 
     public DirectoryRuleSource() {
-        Timer t = new Timer(true);
-        t.schedule(new ReloadChecker(new File(path, "reload"), this), 0, 5000);
     }
 
     public DirectoryRuleSource(String path) {
@@ -84,9 +82,15 @@ public class DirectoryRuleSource extends RuleBaseSource {
     public RuleBase getRulebase() throws RuleBaseException {
         if (this.ruleBase == null) {
             ruleBase = RuleBaseFactory.newRuleBase();
+            initReloadListener();
             readRuleBase();
         }
         return this.ruleBase;
+    }
+
+    private void initReloadListener() {
+        Timer t = new Timer(true);
+        t.schedule(new ReloadChecker(new File(path, "reload"), this), 0, 5000);
     }
 
     @Override
