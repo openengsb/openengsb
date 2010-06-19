@@ -745,6 +745,8 @@
                
                 <!-- Svn stomp-client commit hook library -->
                 <exclude>domains/scm/subversion/hooks/stomp-client/lib/**</exclude>
+
+                <exclude>core/workflow/service-engine/src/main/resources/rulebase/**</exclude>
                  
               </excludes>
             </configuration>
