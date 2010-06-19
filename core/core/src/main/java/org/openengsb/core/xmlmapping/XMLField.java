@@ -20,7 +20,7 @@ package org.openengsb.core.xmlmapping;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = { "fieldName", "value" })
+@XmlType(name = "XMLField", propOrder = { "fieldName", "value" })
 public class XMLField
 {
     private String fieldName;

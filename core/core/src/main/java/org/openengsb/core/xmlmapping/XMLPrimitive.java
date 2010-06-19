@@ -19,7 +19,7 @@ package org.openengsb.core.xmlmapping;
 
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType
+@XmlType(name = "XMLPrimitive")
 public class XMLPrimitive
 {
     private int choiceSelect = -1;

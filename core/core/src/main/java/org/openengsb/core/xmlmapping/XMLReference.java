@@ -20,7 +20,7 @@ package org.openengsb.core.xmlmapping;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType
+@XmlType(name = "XMLReference")
 public class XMLReference
 {
     private String id;

@@ -24,8 +24,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement
-@XmlType
+@XmlRootElement(name = "XMLContext")
+@XmlType(name = "XMLContext")
 public class XMLContext
 {
     private List<XMLContextEntry> entryList = new ArrayList<XMLContextEntry>();

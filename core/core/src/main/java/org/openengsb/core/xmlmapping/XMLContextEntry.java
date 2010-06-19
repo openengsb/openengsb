@@ -20,7 +20,7 @@ package org.openengsb.core.xmlmapping;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = { "key", "value" })
+@XmlType(name = "XMLContextEntry", propOrder = { "key", "value" })
 public class XMLContextEntry
 {
     private String key;

@@ -24,8 +24,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement
-@XmlType(propOrder = { "className", "domain", "name", "toolConnector", "elements" })
+@XmlRootElement(name = "XMLEvent")
+@XmlType(name = "XMLEvent", propOrder = { "className", "domain", "name", "toolConnector", "elements" })
 public class XMLEvent
 {
     private String className;

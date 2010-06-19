@@ -23,7 +23,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType
+@XmlType(name = "XMLMappableList")
 public class XMLMappableList
 {
     private List<XMLMappable> mappableList = new ArrayList<XMLMappable>();

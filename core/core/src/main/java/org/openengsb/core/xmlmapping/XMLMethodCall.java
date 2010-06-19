@@ -25,8 +25,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement
-@XmlType(propOrder = { "methodName", "args" })
+@XmlRootElement(name = "XMLMethodCall")
+@XmlType(name = "XMLMethodCall", propOrder = { "methodName", "args" })
 public class XMLMethodCall
 {
     private String methodName;

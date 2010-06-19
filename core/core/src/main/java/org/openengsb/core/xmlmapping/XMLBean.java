@@ -23,7 +23,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = { "className", "fields" })
+@XmlType(name = "XMLBean", propOrder = { "className", "fields" })
 public class XMLBean
 {
     private String className;

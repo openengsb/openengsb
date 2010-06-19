@@ -21,8 +21,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement
-@XmlType
+@XmlRootElement(name = "XMLReturnValue")
+@XmlType(name = "XMLReturnValue")
 public class XMLReturnValue
 {
     private XMLTypedValue value;
