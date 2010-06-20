@@ -689,8 +689,8 @@
                 <exclude>nonjava/csharp/lib/**</exclude>
                 <exclude>**/**.csproj</exclude>
                 <exclude>**/**.sln</exclude>
-		<exclude>nonjava/perl/**</exclude>
-		
+                <exclude>nonjava/perl/**</exclude>
+
                 <!-- Scripts -->
                 <exclude>quickrun.sh</exclude>
                 <exclude>package/all/quickdeploy.sh</exclude>
@@ -707,12 +707,12 @@
 
                 <!-- Examples files -->
                 <exclude>features/edb/examples/**</exclude>
-               
+
                 <!-- Svn stomp-client commit hook library -->
                 <exclude>domains/scm/subversion/hooks/stomp-client/lib/**</exclude>
 
-                <exclude>core/workflow/service-engine/src/main/resources/rulebase/**</exclude>
-                 
+                <exclude>**/src/main/resources/rulebase/**</exclude>
+
               </excludes>
             </configuration>
             <executions>
