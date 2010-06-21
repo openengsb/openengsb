@@ -178,12 +178,12 @@ public class DirectoryRuleSource extends RuleBaseSource {
         StringBuffer content = new StringBuffer();
         content.append(String.format("package %s;\n", getPackageName(path)));
         content.append(prelude);
-        Collection<File> functions = FileUtils.listFiles(path, new String[] { FUNC_EXTENSION }, false);
+        Collection<File> functions = listFiles(path, FUNC_EXTENSION);
         for (File f : functions) {
             String func = IOUtils.toString(new FileReader(f));
             content.append(func);
         }
-        Collection<File> rules = FileUtils.listFiles(path, new String[] { RULE_EXTENSION }, false);
+        Collection<File> rules = listFiles(path, RULE_EXTENSION);
         for (File f : rules) {
             String ruleName = FilenameUtils.getBaseName(f.getName());
             content.append(String.format("rule \"%s\"\n", ruleName));
@@ -193,7 +193,7 @@ public class DirectoryRuleSource extends RuleBaseSource {
         final PackageBuilder builder = new PackageBuilder();
         try {
             builder.addPackageFromDrl(new StringReader(content.toString()));
-            Collection<File> flows = FileUtils.listFiles(path, new String[] { FLOW_EXTENSION }, false);
+            Collection<File> flows = listFiles(path, FLOW_EXTENSION);
             for (File f : flows) {
                 builder.addProcessFromXml(new FileReader(f));
             }
@@ -207,6 +207,12 @@ public class DirectoryRuleSource extends RuleBaseSource {
 
         return builder.getPackage();
 
+    }
+
+    @SuppressWarnings("unchecked")
+    private Collection<File> listFiles(File path, String extension) {
+        Collection<File> functions = FileUtils.listFiles(path, new String[] { extension }, false);
+        return functions;
     }
 
     private String getPackageName(File file) {
