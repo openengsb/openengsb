@@ -985,7 +985,7 @@ beans xmlns="http://www.springframework.org/schema/beans" xmlns:build="urn:opene
             If you use Eclipse please choose these settings for your OpenEngSB workspace:
 <mediaobject>
         <imageobject>
-          <imagedata id="form" fileref="../graphics/eclipse-xml-settings.png"
+          <imagedata id="form" fileref="graphics/eclipse-xml-settings.png"
             format="png" width="400" align="center" />
         </imageobject>
         <caption>Eclipse XML Settigns</caption>

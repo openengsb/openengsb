@@ -61,7 +61,8 @@
       <para>
         The first step is to create new maven projects (Service Engine and Service Unit) for your tool.
         These projects have to be located at
-        domains/<emphasis>domain</emphasis>/<emphasis>toolname</emphasis>/{service-engine, service-unit}/.
+        domains/<emphasis>domain</emphasis>/<emphasis>toolname</emphasis>/service-engine/ and
+        domains/<emphasis>domain</emphasis>/<emphasis>toolname</emphasis>/service-unit/.
         An easy way to get started is to copy an existing connector. The most simple connector is the email
         connector of the notification domain. You should use it.
       </para>

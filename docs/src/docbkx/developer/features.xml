@@ -111,7 +111,7 @@
     <para>
       <mediaobject>
         <imageobject>
-          <imagedata id="new" fileref="../graphics/link-http-overview.jpg" format="jpg" width="400" align="center" />
+          <imagedata id="new" fileref="graphics/link-http-overview.jpg" format="jpg" width="400" align="center" />
         </imageobject>
 		<caption>Linking via HTTP-Request</caption>
       </mediaobject>
