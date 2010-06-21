@@ -58,6 +58,8 @@ public class DirectoryRuleSource extends RuleBaseSource {
 
     public static final String RULE_EXTENSION = "rule";
 
+    public static final String FLOW_EXTENSION = "rf";
+
     private String path;
     private RuleBase ruleBase;
 
@@ -191,6 +193,10 @@ public class DirectoryRuleSource extends RuleBaseSource {
         final PackageBuilder builder = new PackageBuilder();
         try {
             builder.addPackageFromDrl(new StringReader(content.toString()));
+            Collection<File> flows = FileUtils.listFiles(path, new String[] { FLOW_EXTENSION }, false);
+            for (File f : flows) {
+                builder.addProcessFromXml(new FileReader(f));
+            }
         } catch (DroolsParserException e) {
             throw new RuleBaseException(e);
         }
