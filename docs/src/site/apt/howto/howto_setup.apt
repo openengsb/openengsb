@@ -42,9 +42,7 @@ OPTIONS="-Dexist.home=$EXIST_HOME"
 OPTIONS="-Dexist.home=$EXIST_HOME -Djetty.port=8093"
 +----
 
-  Finally startup eXist by using the $EXIST_HOME/bin/startup.[sh||bat] script file. Please keep in mind that this have
- be done BEFORE Guvnor starts! Guvnor tries to opens ports which are also required for eXist. But Guvnor works well without
- them, but eXist doesent.
+  Finally startup eXist by using the $EXIST_HOME/bin/startup.[sh||bat] script file.
   
 * Servicemix 4.1
 

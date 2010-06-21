@@ -62,7 +62,7 @@ then
 end
 --------------------------------------------------------------------------------
 
-  Since mvel-strict-mode (used by guvnor) does not allow if-statements in rule-consequences, the actual sending of the notification must be done in a separate function, that iterates over all emails previously retreived from the context.
+  Since mvel-strict-mode does not allow if-statements in rule-consequences, the actual sending of the notification must be done in a separate function, that iterates over all emails previously retreived from the context.
 
   The notification-helper in the rulebase's working memory wraps a method that sends the notification to the corresponding notification-endpoint which actually sends the email.
 
@@ -87,4 +87,4 @@ function void notifyAllExceptAuthor(NotificationDomain notification, Map emails,
 ** Test-setup
 
   An automated test added to the edb-se, supports the understanding of what is going on here. The testCommitNotification()-method in CommitServiceTest tests the sequence of actions described above.
-  The drools-endpoint used in this tests does not connect to a guvnor-server, but uses rule1.drl as rulebase. The nofification that is triggerd in the rule is handled by a mocked Notification-endpoint, that only records all notifications that it is supposed to send.
+  The drools-endpoint used in this tests uses the file rule1.drl as rulebase. The nofification that is triggerd in the rule is handled by a mocked Notification-endpoint, that only records all notifications that it is supposed to send.

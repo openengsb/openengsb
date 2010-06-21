@@ -30,7 +30,6 @@
     The openengsb-drools component takes "events" as input and handles them using a rulebased system (JBoss Drools 5.0).
     The workflow-se provides multiple ways to manage rules.
     The Directory-Source manages the rules in the filesystem, within servicemix.
-    Alternatively an external guvnor-server can be used to manage the rulebase.
   </para>
 
   <section id="workflow.directory">

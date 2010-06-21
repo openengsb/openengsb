@@ -37,17 +37,17 @@ connector-issues-trac
 
 **DroolsSetup
 
-  To create rules for the issue domain you will need to add following imports to drools (knowledge bases > org.openengsb > advanced view)
+  To create rules for the issue domain you will need to add following imports to drools (edit $SERVICEMIX_HOME/data/openengsb/rulebase/{imports,globals})
   
 ---
 import java.util.HashMap
 import org.openengsb.drools.IssuesDomain
 import org.openengsb.drools.model.Issue
-
-global org.openengsb.drools.IssuesDomain issue
 ---
 
-  Eventually you will have to reupload your model too ({{{howto/howto_guvnor.html}Drools Setup}})
+---
+global org.openengsb.drools.IssuesDomain issue
+---
 
 **Configuring a SU for your Project
 
