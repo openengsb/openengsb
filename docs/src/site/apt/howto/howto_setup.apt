@@ -44,9 +44,9 @@ OPTIONS="-Dexist.home=$EXIST_HOME -Djetty.port=8093"
 
   Finally startup eXist by using the $EXIST_HOME/bin/startup.[sh||bat] script file.
   
-* Servicemix 4.1
+* Servicemix 4.2
 
-  Now download Apache Servicemix 4.1 from ({{{http://dev.openengsb.org/resources/servicemix41/}ServceMix download}})
+  Now download Apache Servicemix 4.2 from ({{{http://servicemix.apache.org/servicemix-420.html}ServceMix download}})
  
  Please increase the memory servicemix uses by setting DEFAULT_JAVA_OPTS in the servicemix startup script (bin/servicemix) to the following values:
 
