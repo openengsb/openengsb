@@ -31,14 +31,16 @@ import org.apache.servicemix.jbi.jaxp.StringSource;
 
 public class XmlHelper {
 
-    public static <T> T unmarshal(Class<T> docClass, Source source) throws JAXBException {
+    @SuppressWarnings("unchecked")
+	public static <T> T unmarshal(Class<T> docClass, Source source) throws JAXBException {
         String packageName = docClass.getPackage().getName();
         JAXBContext jc = JAXBContext.newInstance(packageName);
         Unmarshaller u = jc.createUnmarshaller();
         return (T) u.unmarshal(source);
     }
 
-    public static <T> T unmarshal(Class<T> docClass, InputStream inputStream) throws JAXBException {
+    @SuppressWarnings("unchecked")
+	public static <T> T unmarshal(Class<T> docClass, InputStream inputStream) throws JAXBException {
         String packageName = docClass.getPackage().getName();
         JAXBContext jc = JAXBContext.newInstance(packageName);
         Unmarshaller u = jc.createUnmarshaller();
