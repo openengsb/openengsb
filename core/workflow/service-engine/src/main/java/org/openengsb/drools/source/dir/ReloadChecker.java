@@ -20,11 +20,14 @@ package org.openengsb.drools.source.dir;
 import java.io.File;
 import java.util.TimerTask;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.drools.RuleBaseException;
 import org.openengsb.drools.source.DirectoryRuleSource;
 
 public class ReloadChecker extends TimerTask {
 
+	private Log log = LogFactory.getLog(getClass());
     protected File file;
     protected DirectoryRuleSource ruleSource;
 
@@ -37,14 +40,18 @@ public class ReloadChecker extends TimerTask {
     @Override
     public void run() {
         if (file.exists()) {
+        	log.info("Find rulebase file. Forcing rulebase to reload");
             try {
                 ruleSource.readRuleBase();
+                log.info("Rulebase reloaded successfully.");
             } catch (RuleBaseException e) {
-                throw new RuntimeException(e);
+                log.error("Reload of rulebase is not possible. Please correct the error and recreate the reload file.",e);
+            }finally {
+            	log.info("Attempt to reload rulebase finished. Remvoing rulebase reload file.");
+            	file.delete();
             }
-            file.delete();
         }
-
+        log.trace("Rulebase reload file does not exist.");
     }
 
 }
