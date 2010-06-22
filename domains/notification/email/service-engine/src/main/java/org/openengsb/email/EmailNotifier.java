@@ -32,12 +32,16 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.util.jaf.ByteArrayDataSource;
 import org.openengsb.drools.NotificationDomain;
 import org.openengsb.drools.model.Attachment;
 import org.openengsb.drools.model.Notification;
 
 public class EmailNotifier implements NotificationDomain {
+
+    private Log log = LogFactory.getLog(getClass());
 
     private Properties props;
 
@@ -88,7 +92,7 @@ public class EmailNotifier implements NotificationDomain {
             msg.setContent(multipart);
             Transport.send(msg);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Exception on sending email notification.", e);
         }
     }
 
