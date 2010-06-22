@@ -40,6 +40,7 @@ touch $SERVICEMIX_HOME/data/openengsb/rulebase/reload
   Create two additional rules and save them to $SERVICEMIX_HOME/data/openengsb/rulebase/org/openengsb
 
   scmcheckin.rule
+
 +----
   when
     e : ScmCheckInEvent ()

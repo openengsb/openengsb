@@ -26,6 +26,7 @@ HowTo - First steps with OpenEngSB (Hello World aka Notification)
   3. navigate to $SERVICEMIX_HOME/data/openengsb/rulebase/
 
   create a new file called org/openengsb/notification1.rule and put this rule in it:
+
 +----
   when
     e : Event( name == name )
