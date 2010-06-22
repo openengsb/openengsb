@@ -23,14 +23,5 @@ mvn clean install -Pdocs
 Scripts which help you to create projects, run the workspace and so on are stored in a seperated script folder. Its not required to use them but they may help you with your afford.
 
 == Assembly ==
-To assemble the project and build a distributable form of it run 
-
-mvn package -Pintegration-test,license-check,docs
-
-in the root folder and then change to the folder 'package/assembly' and run 
-
-mvn dependency:unpack
-mvn assembly:assembly
-
-Now in the target directory of the package/assembly folder a zip file is created that contains a distributable form of the project. Furthermore you can use the shell script in the scripts folder called 'assemble.sh', which automates the steps explained above.
+To assemble the project and build a distSributable form of it run the shell script in the scripts folder called 'assemble.sh'. The assembled project can be found in the target directory of the project root folder.
 

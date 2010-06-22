@@ -28,32 +28,21 @@
     <src>images/openengsb_small.png</src>
   </bannerLeft>
 
-  <bannerRight>
+  <!--<bannerRight>
     <name>Vienna University of Technology</name>
     <src>images/tu.png</src>
-  </bannerRight>
+  </bannerRight>-->
 
-  <poweredBy />
   <publishDate position="left" />
   <version position="left"/>
 
   <body>
-    <links>
-      <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
-      <item name="Source" href="http://github.com/openengsb/openengsb/" />
-      <item name="Mailing Lists" href="mailinglists.html" />
-      <item name="Presentation Material" href="presentation.html" />
-      <item name="Issues / Roadmap" href="http://issues.openengsb.org/"/>
-      <item name="Continuous Integration" href="http://build.openengsb.org/"/>
-      <item name="Artifacts" href="http://maven.openengsb.org/" />
-      <item name="Development Team" href="team-list.html" />
-    </links>
-
     <menu name="OpenEngSB">
       <item href="index.html" name="Welcome" />
       <item href="about.html" name="What is OpenEngSB?" />
       <item href="reference/index.html" name="Userguide" />
       <item href="faq.html" name="FAQ" />
+      <item href="sponsors.html" name="Sponsors" />
     </menu>
 
     <menu name="OpenEngSB Usage" >
@@ -97,6 +86,17 @@
         <item href="proposals/pimDomain.html" name="PIM Domain" />
         <item href="proposals/cmsDomain.html" name="CMS Domain" />
       </item>
+    </menu>
+    
+    <menu name="Development">
+      <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
+      <item name="Source" href="http://github.com/openengsb/openengsb/" />
+      <item name="Mailing Lists" href="mailinglists.html" />
+      <item name="Presentation Material" href="presentation.html" />
+      <item name="Issues / Roadmap" href="http://issues.openengsb.org/"/>
+      <item name="Continuous Integration" href="http://build.openengsb.org/"/>
+      <item name="Artifacts" href="http://maven.openengsb.org/" />
+      <item name="Development Team" href="team-list.html" />
     </menu>
 
   </body>

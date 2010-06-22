@@ -1,37 +1,40 @@
+/**
 
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
 package org.openengsb.core.xmlmapping;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/** 
- * Schema fragment(s) for this class:
- * <pre>
- * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLContext">
- *   &lt;xs:sequence>
- *     &lt;xs:element type="XMLContextEntry" name="entries" maxOccurs="unbounded"/>
- *   &lt;/xs:sequence>
- * &lt;/xs:complexType>
- * </pre>
- */
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement(name = "XMLContext")
+@XmlType(name = "XMLContext")
 public class XMLContext
 {
     private List<XMLContextEntry> entryList = new ArrayList<XMLContextEntry>();
 
-    /** 
-     * Get the list of 'entries' element items.
-     * 
-     * @return list
-     */
+    @XmlElement(required = true)
     public List<XMLContextEntry> getEntries() {
         return entryList;
     }
 
-    /** 
-     * Set the list of 'entries' element items.
-     * 
-     * @param list
-     */
     public void setEntries(List<XMLContextEntry> list) {
         entryList = list;
     }

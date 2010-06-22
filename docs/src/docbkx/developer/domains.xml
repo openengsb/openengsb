@@ -1,0 +1,959 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<chapter xmlns="http://docbook.org/ns/docbook">
+  <title>OpenEngSB Tool Domains</title>
+  
+  <warning>
+    <para>
+      This chapter is out of date and has to be rewritten...
+    </para>
+  </warning>
+
+  <section>
+    <title>Abstract</title>
+
+    <para>This chapter describes the SCM-Domain for the ENGineeringServiceBus. Since it does not only show you what it
+      does and is capable of, but also covers its internals and will show you how to implement your own connector (i.e.
+      an implementation for a concrete SCM-tool like GIT, or Bazaar), you should have some understanding of JBI in
+      general and at least an idea how to write your own SE (service engine) to be able to follow this chapter. If you
+      have not done so already, I'd suggest to (at very least) read through the chapter "How To write a Tool Connector".
+    </para>
+
+    <para>However, if you just want to implement another SCM-system for the ENGSB, you can also just jump to the "How to
+      implement a new SCM-Connector", which is basically a detailed step by step guide and does not require all too much
+      knowledge of JBI at all. Still, if you contribute to a project like this you should at least know what JBI stands
+      for ;).
+    </para>
+  </section>
+
+  <section>
+    <title>engsb-scm</title>
+
+    <para>A.k.a. the actual domain. While engsb-scm is a SE by itself, it does not implement any SCM-functionality. It
+      rather serves as a message-router, that is capable of redirecting a message to an SE that actually implements
+      an
+      SCM-tool. It does this by fetching all necessary information, to connect to the SU, from a lookup-table using only
+      an ID. Thus the message it expects must not only contain the payload (the message to pass on), but also the ID
+      that correlates to the target-service.
+    </para>
+
+    <para>
+      The only Endpoint,
+      <classname>ScmEndpoint</classname>
+      , though it
+      handles all the logic, is rather simple. When it is validated it parses
+      the lookup table, provided as
+      properties-file, into two maps. The file is
+      made up of ID=namespace:servicename pairs, while the namespace is
+      optional.
+    </para>
+
+    <para>Even though it might look like the Endpoint does not distinguish
+      between InOnly and InOut, in fact it does. It
+      does forward InOnly-requests
+      to the inOut-code, but with a null-value for the out-message. It is then
+      later decided,
+      based on whether the out-message is null or not, which type
+      of message shall be passed on to the service.</para>
+
+    <para>Besides argument-parsing, error handling and the service-lookup it
+      also ensures, that errors, that the service
+      reported are propagated
+      correctly to the callee of engsb-scm.</para>
+
+    <para>Of course also some very basic tests were implemented to verify the
+      SE's functionality.</para>
+  </section>
+
+  <section>
+    <title>engsb-scm-common</title>
+
+    <para>Since all implementations for SCM-tools (should) behave the same,
+      from an SE interface point of view, all
+      servicemix/jbi functionality is
+      implemented here generically. Also a framework for the required Commands
+      and
+      CommandFactory can be found in engsb-scm-common, to make life easier,
+      when a new connector has to be implemented.
+      OK, this was also done for the
+      implementor strived for code-reuse, modularity and good design in general,
+      but that's
+      a whole nother story. Apart form all that, you might also find
+      some utilities and constants here.</para>
+
+    <section>
+      <title>The Endpoints</title>
+
+      <para>At first hard to believe, but true, every endpoint behaves the
+        same, no matter what SCM-tool is used. OK,
+        sooner or later there might
+        be tool-specific extensions, but it is true for the core-functionality.
+        It is not so
+        hard to believe anymore, when you consider, that the
+        messages, parameters and return-values are always the same
+        for each
+        endpoint. No matter if it is used to handle SVN or Git, the handling of
+        the endpoint or, maybe better,
+        service method stays the same. In fact,
+        it actually has to. The design was heavily influenced by this simple
+        observation and ultimately resulted in the command approach and default
+        endpoint implementations that need almost
+        no additional work from the
+        developer to use them in new implementations for an SCM-tool.</para>
+
+      <para>
+        As almost everywhere throughout the code an abstract class, namely
+        <classname>AbstractEndpoint</classname>
+        , exists to encapsulate common
+        functionality. It pimps up the standard
+        <methodname>processInOnly()</methodname>
+        and
+        <methodname>processInOut()</methodname>
+        methods with some error-handling
+        and logging. They pass on their call to
+        <methodname>processInOnlyRequest()</methodname>
+        and
+        <methodname>processInOutRequest()</methodname>
+        respectively. The latter
+        are the methods one would want to override to implement a new endpoint.
+        Their
+        default-implementation just calls the super-method of
+        <methodname>processInOnly()</methodname>
+        and
+        <methodname>processInOut()</methodname>
+        which result in an
+        <classname>UnsupportedOperationException</classname>
+        . Apart from all
+        that it also supplies some methods to extract nodes and parameters from
+        an XML-structure.
+        Probably those should go into a utility-class, since
+        this functionality might be interesting somewhere else too,
+        but I'll
+        leave that decision up to you ;). Just don't forget to update the
+        documentation here. This class is not
+        SCM-specific and can, ultimately
+        even should be used as super-class for every endpoint in the EngSB. You
+        might
+        want to move it to an engsb-common artifact, once it
+        exists.
+      </para>
+
+      <para>
+        The SCM-specific abstract class is
+        <classname>AbstractScmEndpoint</classname>
+        . It only handles the way the
+        <classname>CommandFactory</classname>
+        is set by, well, getters and
+        setters. Note the fake getter and setter
+        <methodname>getConfiguration()</methodname>
+        and
+        <methodname>setConfiguration()</methodname>
+        . They are used to hide the
+        fact, that there actually exists something like a command-factory from
+        the SU's
+        implementor. So instead of setting a parameter commandFactory
+        in the xbean.xml he might set configuration. If you
+        think a bit about
+        it, both terms are valid, it's just a matter of point of view.
+      </para>
+
+      <para>
+        Now for the real implementations. If you look a bit into the
+        endpoints they all look the same. They either
+        implement
+        <methodname>processInOnlyRequest()</methodname>
+        or
+        <methodname>processInOutRequest()</methodname>
+        and provide the behavior,
+        which is needed for (generic) logging. The implementations all look the
+        same too. The
+        in-message is parsed for required parameters, which are
+        validated and at last the correct command is retrieved
+        from the
+        <classname>CommandFactory</classname>
+        and executed.
+      </para>
+
+      <para>
+        You might have noticed, that one endpoint is different from the
+        others, however.
+        <classname>GeneralScmEndpoint</classname>
+        is an
+        endpoint, that is supposed to combine the functionality of all others.
+        It does that by utilizing the others
+        endpoints as worker-classes. It
+        determines which actual endpoint shall be used to do the work by looking
+        at the
+        root-element's name in the in-message. The advantage is, that
+        only one endpoint has to be configured in the SU,
+        but still the
+        specialized endpoints can be used (in the SU), should that be necessary.
+        Also the idea to write
+        <classname>GeneralScmEndpoint</classname>
+        came
+        pretty late and i wanted to reuse what I had instead of refactoring it
+        :).
+      </para>
+    </section>
+
+    <section>
+      <title>The Commands and their Factory</title>
+
+      <para>To make the JBI-implementation as generic and reusable as possible
+        the code that changes for each SCM-tool
+        has been packed in commands. If
+        you get lost when reading this section, I'd suggest to look up the
+        command- and
+        factory-pattern. However, a slight idea of what they do and
+        what they are used for should allow you to follow
+        this section.</para>
+
+      <section>
+        <title>The Commands</title>
+
+        <para>
+          All Commands need to implement the Interface Command. It
+          specifies only one method, namely
+          <methodname>execute()</methodname>
+          with a generic return-type and can throw an Exception namely
+          <classname>ScmException</classname>
+          , which is used to indicate any
+          error that occurred while, well executing the command. This is the
+          only
+          entry-point a Command has and all the work, that shall be done by
+          it will be implemented in this method.
+        </para>
+
+        <para>
+          To encapsulate some common functionality
+          <methodname>AbtractScmCommand</methodname>
+          was implemented. Some
+          common, for all Commands, getters and setter (and their corresponding
+          fields) are
+          implemented here. You will want to derive from this class
+          instead of implementing the Command-Interface itself.
+        </para>
+
+        <para>The other Interfaces you'll find in the command-package define
+          the parameters every Command needs by
+          defining their setters. They are
+          needed to handle Command-setup generically and conveniently. Also it
+          helps to
+          dodge ugly class-casts while setup. You'll see, when i
+          describe the factory.</para>
+      </section>
+
+      <section>
+        <title>The Factory</title>
+
+        <para>
+          All Factories need to implement the Interface
+          <classname>CommandFactory</classname>
+          . It defines getters for every
+          different
+          <classname>Command</classname>
+          the servicemix/jbi code for
+          the SCM-Domain needs. Those getters also require all the parameters a
+          command needs
+          to be set up correctly. Since the commands are not
+          cached but newly instantiated for every call you may want to
+          think of
+          and implement a caching strategy, should performance become an
+          issue.
+        </para>
+
+        <para>
+          Again, for convenience,
+          <classname>AbstractScmCommandfactory</classname>
+          already implements
+          this interface. It implements everything, that is possible on a
+          generic level. In fact, the
+          only things it delegates to an
+          implementing class is the actual instantiation of a command by the
+          createSomething-templatemethods and the setup of tool-specific
+          parameters. Well, this and the responsibility to
+          call
+          <methodname>setScmParameters()</methodname>
+          . To understand why this
+          needs to be done in implementing classes of
+          <classname>AbstractCommandFactory</classname>
+          I'll have to explain a
+          bit.
+        </para>
+
+        <para>
+          Every real, instantiateable Command as two lineages. For one,
+          there is common functionality/parameters/setters
+          for each domain. This
+          is covered by
+          <classname>AbstractScmCommand</classname>
+          and (because
+          most implementations will need to extend this)
+          <classname>Abstract&lt;Toolname&gt;Command</classname>
+          . The other
+          lineage are the common parameters/setters for each functionality. For
+          example all add-commands need
+          the file they are supposed to add and of
+          course according setters. Since Java does not support multiple
+          inheritance this is covered by the interfaces we shortly covered in
+          the previous section. Now, after specifying
+          what parameters can be set
+          to a certain command, all we need to do is, well, set them. Since the
+          template-methods (the createSomething-methods) all return a command
+          for a certain functionality (like
+          <classname>AddCommand</classname>
+          ,
+          <classname>CheckoutCommand</classname>
+          , etc.) it's no problem to set
+          the parameters therefore. However, we can not set SCM- or
+          SCM-tool-specific
+          parameters without an up-cast. I considered that
+          ugly and somewhat error-prone (what if the implementor does
+          not
+          inherit his commands from
+          <classname>AbstractScmCommand</classname>
+          ?).
+          To overcome this the protected method
+          <methodname>setScmParameters()</methodname>
+          was introduced which needs
+          to be called in every createSomething-templatemethod prior to passing
+          the command
+          back to
+          <classname>AbstractScmCommandFactory</classname>
+          .
+        </para>
+
+        <para>
+          However, this should not be too big a deal, since most likely
+          every real command will also need some
+          tool-specific parameters and
+          the call to
+          <methodname>setScmParameters()</methodname>
+          can be done,
+          where those are set. If you are still confused, read how this was
+          accomplished for SVN and/or have
+          a look in the code.
+        </para>
+      </section>
+    </section>
+
+    <section>
+      <title>The Serializers</title>
+
+      <para>
+        JBI-components are communicating over XML exclusively. Thus
+        parameters and return-values need to be encoded
+        (serialized) and decoded
+        (deserialized) in/from XML. To ease this job the serializers exist. Even
+        though all
+        derive from
+        <classname>AbstractSerializer</classname>
+        , this
+        class does not define any interface to serializers in general. Still all
+        Serializers have the same methods
+        for (de)serializing. Don't ask why! My
+        guess is, that it just was not needed. The obvious advantage of using
+        serializers is, that you don't have to bother how the XML-representation
+        is supposed to look like. The serializer
+        does it all for you.
+      </para>
+    </section>
+
+    <section>
+      <title>The Tests</title>
+
+      <para>The abstract implementations of the commands and their factory and
+        he endpoints have not been tested
+        separately. The reason behind that is,
+        that engsb-scm-common and engsb-svn started as one homogeneous project
+        and
+        were separated afterwards. Thus the mentioned parts of the code are
+        tested by engsb-svn's test cases and will be
+        tested even more with every
+        additional connector.</para>
+
+      <para>
+        However,
+        <classname>GeneralScmEndpoint</classname>
+        has it's own
+        test case. It was written mainly to make sure, that the forwarding works
+        correctly. The
+        <classname>CommandFactory</classname>
+        was mocked and
+        <classname>GeneralScmEndpoint</classname>
+        was tweaked a bit (by
+        overriding the corresponding methods) to make it not to try to send over
+        servicemix for
+        real. Then, for each functionality (you know, like add,
+        checkout, etc.) it is checked, that the corresponding
+        commands are
+        executed.
+      </para>
+    </section>
+  </section>
+
+  <section>
+    <title>engsb-svn</title>
+
+    <para>This is an implementation of and for the SCM-Domain. Everything you
+      have read in the chapters before,
+      eventually comes down to an
+      implementation like this one. Whether you want to understand what was
+      done, or needs to
+      be done to get everything working from a service-call to
+      the invocation of an SCM-tool, you should have a look
+      here, since all the
+      generic stuff and this implementation were written not only
+      simultaneously, but also by the same
+      person. This also means, that if you
+      want to write a new connector, you should also have a look into the code
+      in
+      engsb-svn, to see how to correctly utilize the code from
+      engsb-scm-common.</para>
+
+    <section>
+      <title>The Endpoints</title>
+
+      <para>
+        This is pretty straight forward. As mentioned in the section
+        before the endpoints require almost no work from
+        their developer. The
+        only reason they exist is to be able to annotate them with
+        <code>@org.apache.xbean.XBean element="&lt;endpointname&gt;"</code>
+        .
+        Probably there is a way to move even this to engsb-scm-common. Then
+        these empty classes would lose their right
+        of existence and could be
+        deleted. Remember to update this documentation if you do so ;).
+      </para>
+    </section>
+
+    <section>
+      <title>The Commands</title>
+
+      <para>
+        The abstract
+        <classname>Command</classname>
+        <classname>AbstractSvnCommand</classname>
+        exists to cover SVN specific
+        behaviour. It's not too spectacular. It holds an
+        <classname>SVNClientManager</classname>
+        which is needed to perform
+        SVN-operations, some constants and helper methods to conveniently handle
+        repository
+        URLs.
+      </para>
+
+      <para>
+        The other
+        <classname>Commands</classname>
+        should be straight
+        forward to understand too. They derive from
+        <classname>AbstractSvnCommand</classname>
+        and implement their
+        corresponding interface (like
+        <classname>AddCommand</classname>
+        ,
+        <classname>CheckoutCommand</classname>
+        , etc.) which forces them to have
+        the desired setters. When their execute-method is called all needed
+        parameters
+        are (or at least should be) set up already and they can start
+        to work immediately. They all follow the same
+        pattern in this regard.
+        The correct client is retrieved from the
+        <classname>SVNClientManager</classname>
+        , the parameters for the call on
+        the client are set up and the call is performed. Add a bit
+        error-handling and
+        we're done. However, noteworthy: Commands that have
+        no return-value still return an Object, since the return-type
+        is
+        determined by generics and the generic type-system of Java does not know
+        void-types. Therefore simply null is
+        returned i those cases.
+      </para>
+    </section>
+
+    <section>
+      <title>The Tests</title>
+
+      <para>The tests turned out to be a bit tricky. Well, at least the
+        integration-test. The unit-test of the commands
+        with their factory still
+        is straight forward (somewhat). </para>
+
+      <para>
+        All test cases use JUnit4 (you know, annotation based) and spring
+        to inject test-constants. To utilize spring we
+        need to either derive our
+        test-class from
+        <classname>AbstractJUnit4SpringContextTests</classname>
+        or annotate it with
+        <code>@RunWith(SpringJUnit4ClassRunner.class)</code>
+        . Also, to tell
+        spring where to inject the constants from we need the annotation
+        <code>@ContextConfiguration(locations = {"spring.xml"})</code>
+        . After
+        having set up the test-case like this it is possible to inject values
+        via the annotations
+        <code>@Resouce</code>
+        or
+        <code>@Autowired</code>
+        ,
+        depending on how you activated Spring before. If you have a look in the
+        code and the corresponding spring.xml
+        you'll understand ;).
+      </para>
+
+      <section>
+        <title>Unit Tests</title>
+
+        <para>
+          Didactics dictates to go from easy to hard, so let's start with
+          <classname>SvnScmDomainUnitTest</classname>
+          . We, obviously, will need
+          to operate on repositories. Even though they are located on the
+          file-system (in
+          src/test/resources) we need to provide them as URIs,
+          which are, by definition, absolute. However, we can not
+          set an
+          absolute path as a test-constant, for we can not know it beforehand
+          for every system the tests are run
+          on. To overcome this relative
+          (file-)paths are provided in the spring.xml and we calculate the URIs
+          beforehand.
+          This is done in
+          <methodname>calculateRepositoryUris()</methodname>
+          .
+          <methodname>setUpRepository()</methodname>
+          and
+          <methodname>deleteRepository()</methodname>
+          are responsible to copy
+          the reference-repositories to the target-folder before each test and
+          delete them
+          afterwards respectively. Of course we need to delete the
+          generated working copies after the tests too, which is
+          done by
+          <methodname>deleteWorkingCopies()</methodname>
+          and
+          <methodname>deleteExportDirectory()</methodname>
+          .
+        </para>
+
+        <para>Knowing about this setup, the tests themselves are pretty
+          straight forward then. They are somewhat
+          documented in code and via
+          java docs and they should hold no more surprises.</para>
+      </section>
+
+      <section>
+        <title>Integration Tests</title>
+
+        <para>
+          As mentioned already, the integration tests are a bit trickier.
+          They have basically the same setup as the unit
+          tests with some
+          additions. First of all, to be able to test an SE, we need to set up a
+          JBI environment and
+          provide an SU's configuration. While this does not
+          mean we'll have to start servicemix, we certainly have to
+          derive our
+          test class from
+          <classname>SpringTestSupport</classname>
+          . It is
+          responsible of setting up the required environment and requires us to
+          implement
+          <methodname>setUp()</methodname>
+          ,
+          <methodname>tearDown()</methodname>
+          and
+          <methodname>createBeanFactory()</methodname>
+          . The first two should be
+          familiar from JUnit 3. However, since we use JUnit 4 we need to
+          annotate them with
+          <code>@Before</code>
+          and
+          <code>@After</code>
+          respectively, and also must not forget to call the super-methods. The
+          last method helps us to define which
+          <filename>xben.xml</filename>
+          shall be used as the simulated SU's configuration.
+        </para>
+
+        <para>
+          Another thing that is special about testing the SE is, that we
+          need to send XML-messages instead of calling
+          methods. The actual
+          creation and sending of the messages has been encapsulated in the
+          <methodname>doSomething()</methodname>
+          methods. Those need a service's
+          name as described in the file
+          <filename>testXbean.xml</filename>
+          ,
+          which is our SU-configuration. Remember: The names that are used in
+          the code are injected form the
+          <filename>spring.xml</filename>
+          and
+          this is where things start to get tricky to keep track of.
+        </para>
+
+        <para>
+          I hope you are not intimidated yet, for we need to introduce
+          another layer of indirection. I'll first depict
+          problem: As in the
+          unit tests we need to provide URIs (remember: they are absolute) to
+          our repositories. Only
+          this time in the
+          <filename>xbean.xml</filename>
+          . The endpoints' configuration (actually
+          the
+          <classname>CommandFactory</classname>
+          , as you know) expects these
+          parameters as URIs and we can not tweak the code, where the parameters
+          are parsed
+          and validated just to able to test. So, what to do?
+        </para>
+
+        <para>
+          The solution is rather simple. XBean, like Spring, can read from
+          environment variables. When you look at
+          <filename>testXbean.xml</filename>
+          , you may notice the ${...} syntax.
+          All we have to do is set them. Of course not manually, but in code.
+          This way
+          we can set the paths to the repositories as relative
+          file-paths in the
+          <filename>spring.xml</filename>
+          , calculate an
+          absolute URI from it, set an environment-variable for it, which is
+          finally used for the
+          configuration/CommandFactory. Phew, you might
+          want to investigate in the files a bit, to fully embrace this
+          concept.
+          I know there is a lot of indirection here, but I could not come up
+          with an easier way of dealing with
+          this problem, which is also
+          clean.
+        </para>
+      </section>
+    </section>
+  </section>
+
+  <section>
+    <title>How to implement a new SCM-Connector</title>
+
+    <para>This section leads you through the process of creating a new
+      connector/implementation for an SCM-tool for the
+      ENGSB. Follow the
+      followings steps and, apart from the grunt-work, you should have your
+      connector created in no
+      time. If you want to look at code-samples, you can
+      always have a look at engsb-svn.</para>
+
+    <para>If you want to know what and why you are doing this, read the rest
+      of this chapter ;).</para>
+
+    <section>
+      <title>Create a new Maven-Project</title>
+
+      <para>While it would seem like a good idea to start with the
+        servicemix-SE archetype, I'd suggest to create a plain
+        maven project and
+        copy the pom from engsb-svn. While the difference is marginal, the
+        archetype will create more
+        useless (read: needs editing/deletion) stuff
+        and also this description here is based on the latter approach
+        ;).
+      </para>
+
+      <para>Do the following adaptations in your (copied) pom:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Adapt /project/name accordingly to your project's name (should
+            be engsb-&lt;tool name&gt;).</para>
+        </listitem>
+
+        <listitem>
+          <para>Edit /project/description.</para>
+        </listitem>
+
+        <listitem>
+          <para>Let /project/build/plugins/plugin[0]/configuration/component
+            point to your Component-Class.</para>
+
+          <para>While you may not yet know what this class is called by now,
+            you should keep this in mind, since it
+            actually is pretty important.
+            This step is listed here for the sake of completeness. I'll remind
+            you, when you
+            should know what the Class is called ;).</para>
+        </listitem>
+
+        <listitem>
+          <para>Adapt
+            /project/build/plugins/plugin[1]/executions/execution/configuration/namespace/
+            to your tool's name.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>Clean up dependencies: What you'll need is scm-common,
+            servicemix, spring and logging. The plexus-utils
+            are not mandatory,
+            but very handy. You may want to keep them as well</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Create A Component</title>
+
+      <para>
+        Create a class that derives from
+        org.apache.serviemix.common.DefaultComponent. For the implementation
+        details see
+        engsb-svn's SvnComponent. It's rather easy. An important
+        detail is the annotation
+        <code>@org.apache.xbean.XBean</code>
+        . The
+        element-attribute names your component. This name is later used in the
+        SU. Again, have a look at engsb-svn's
+        SvnComponent.
+      </para>
+
+      <para>When you are at it, you could move this implementation to
+        engsb-scm-common and derive from the class you
+        created there. By doing
+        this, you may make your life easier for further components (just
+        remember to update this
+        section here, please). Either way, you will need
+        a distinct component-class in your project, in order to make it
+        configurable.</para>
+    </section>
+
+    <section>
+      <title>Implement Endpoints</title>
+
+      <para>Now this is really straight forward, since everything concerning
+        the implementation of Endpoints has already
+        been taken care of. All you
+        will have to do is derive a class for each Endpoint in order to be able
+        to annotate it
+        accordingly.</para>
+
+      <para>engsb-scm-common already has a correct implementation for each
+        necessary Endpoint in the form of
+        &lt;name&gt;Endpoint, like
+        AddEndpoint, CheckoutEndpoint and so on. Derive a class for every of
+        engsb-scm-common's Endpoints and add the annotation
+        @org.apache.xbean.XBean element="&lt;name&gt;" to it I would
+        suggest to
+        use &lt;SCM-tool-name&gt;&lt;action-name&gt;Endpoint as
+        class-names.</para>
+
+      <para>Again, we want to make the Endpoints configurable and therefore
+        have to implement (well actually derive here)
+        a distinct class and
+        annotate it accordingly. Should your Endpoints need special logic, that
+        is different from the
+        standard implementation, feel free to override any
+        method here.</para>
+    </section>
+
+    <section>
+      <title>Implement the CommandFactory and it's Commands</title>
+
+      <para>To tell each Endpoint how to use an SCM-tool, we need to tell it
+        via Commands which in turn are supplied by a
+        CommandFactory. This is
+        where the grunt work is done (by you ;)).</para>
+
+      <para>
+        Start with the Commands themselves. You will need to extend
+        <classname>AbstractScmCommand</classname>
+        (which is only convenient) and
+        implement an Interface from engsb-scm-common, that corresponds to you
+        command. For
+        example your command to add files with Git, would be
+      </para>
+
+      <para>
+        <classname>GitAddCommand extends AbstractScmCommand&lt;Object&gt;
+          implements AddCommand</classname>
+      </para>
+
+      <para>
+        The generic type describes the command's return-type. Don't worry,
+        if you are not sure what type to return here,
+        it is predetermined by
+        <classname>AbstractScmCommandFactory</classname>
+        . Just have a look
+        there, should you need clarification. The Interface defines the setters
+        for the Add-Command. It
+        is needed, so all Add-Commands (for various
+        tool-implementations) can be set up generically. You will need to
+        implement the according Interface for each Command.
+      </para>
+
+      <para>Implements all required methods, which should be the setters from
+        the Interface and execute(). The latter is
+        where the action takes place.
+        Implement the required functionality so your Command actually does, what
+        it's name
+        suggests.</para>
+
+      <para>
+        Now for the CommandFactory. Again, to make your life easier, a
+        default implementation for the
+        CommandFactory-Interface is already
+        provided, namely
+        <classname>AbstractScmCommandFactory</classname>
+        . All
+        you have to implement are the
+        <methodname>createSomethingCommand()</methodname>
+        -methods. Their whole
+        purpose is to provide an actual instance of the corresponding Command.
+        However, you are also
+        responsible for setting SCM-specific parameters.
+        To do so, call the
+        <methodname>setScmParameters()</methodname>
+        -method.
+        This is necessary to avoid unnecessary class-casts, which I considered
+        ugly. You may, of course, feel
+        free to redesign this mechanism.
+      </para>
+    </section>
+
+    <section>
+      <title>Create a Configuration-Class</title>
+
+      <para>This is not really needed, but results in a more convenient, i.e.
+        Intuitive handling of your SE. You may have
+        wondered how we glue the
+        Commands and the Endpoints together. Well, we make sure, every Endpoint
+        gets a reference
+        to a CommandFactory. We won't be doing this ourselves,
+        but rather let the SU handle that.</para>
+
+      <para>However, we do not want to bother the end-user with the confusing
+        fact, that there is something like a
+        CommandFactory involved. What users
+        do understand is that there are configurations (which our CommandFactory
+        could actually also be viewed as). So we create a Class
+        &lt;tool-name&gt;Configuration which derives from
+        &lt;tool-name&gt;CommandFactory and the illusion is complete.</para>
+    </section>
+
+    <section>
+      <title>Test!</title>
+
+      <para>You may have started writing tests already, for we both know, TDD
+        is a good idea. If you haven't, now is the
+        time to think about testing
+        anyway.</para>
+
+      <section>
+        <title>Unit-Testing your Commands/CommandFactory</title>
+
+        <para>
+          For Unit-Tests, have a look at
+          <classname>SvnScmDomainUnitTest</classname>
+          . While it does not make
+          any claims, that it is complete (presumably there are always more
+          tests that could be
+          added) you may get some inspiration there, on how
+          to set up the test case and what to test. This should be
+          pretty
+          straight forward.
+        </para>
+      </section>
+
+      <section>
+        <title>Integration-Testing your Component and Endpoints</title>
+
+        <para>
+          This is a bit trickier than the simple Unit-Test mentioned above
+          if we want to use spring and set up a
+          servicemix environment
+          simultaneously (which we should). Again, have a look at the
+          integration test of SVN,
+          namely
+          <classname>SvnScmComponentIntegrationTest</classname>
+          . You'll have
+          extend
+          <classname>SpringTestSupport</classname>
+          and set up Spring with
+          annotations. Since
+          <classname>SpringTestSupport</classname>
+          is JUnit
+          3, but we are using JUnit4 we are required you to override
+          <methodname>setUp()</methodname>
+          and
+          <methodname>tearDown()</methodname>
+          and annotate them with
+          <code>@Before</code>
+          and
+          <code>@After</code>
+          respectively to get them
+          called. Of course we'll also need to call the super-implementations.
+          <classname>SpringTestSupport</classname>
+          also requires us to implement
+          <methodname>createBeanFactory()</methodname>
+          . This method determines
+          the xbean.xml (the configuration of the SU that shall be
+          simulated).
+        </para>
+
+        <para>After those prerequisites are met, you can start to implement
+          your tests. To do so, you'll need to send
+          XML-messages to your
+          Component/Endpoints. Have a look at the SVN-implementation of the
+          integration test for how
+          to get an instance of a Client-Object and how
+          to send messages over it.</para>
+
+        <para>You will also want to configure your Endpoints in the xbean.xml
+          to be able to test them. For every
+          Configuration that you need you
+          need to create a bean of the Configuration-class you earlier derived
+          from your
+          CommandFactory. You need then to configure your Endpoints by
+          giving them a reference to one of those beans. For
+          Tag-names and
+          namespaces, see the tesxtXbean.xml in the test/resources folder in
+          engsb-svn. However the name of
+          the Component and the Endpoints changes
+          to the values you chose in the Component's/Endpoints'
+          annotations.
+        </para>
+
+        <para>You do not necessarily need to configure each single Endpoint
+          separately, because since the test's
+          implementation a generic Endpoint
+          was implemented, that serves a message-forwarder to the correct
+          Endpoint-implementation. However, some tests may need special
+          configurations, so you may most likely have to
+          configure some
+          Endpoints separately still.</para>
+      </section>
+    </section>
+  </section>
+</chapter>

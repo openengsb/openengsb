@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   programlistingUnless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<chapter id="features" xmlns="http://docbook.org/ns/docbook">
+  <title>OpenEngSB Features</title>
+  <para>
+    Beside of domains the OpenEngSB itself also specify features. These features could not be easily replaced because
+    of an additional tool connector behind a tool domain, but are rather a part of the OpenEngSB itself. These features
+    provide many different advantages as a versioned storage called <link linkend="features.edb">Enterprise Database</link>
+    or the possibility to link different data entries and access them via daemons from client pcs (see
+    <link linkend="features.linking">Linking</link>).
+  </para>
+  <section id="features.edb" xmlns:xi="http://www.w3.org/2001/XInclude">
+    <title>How to communicate with the Engineering Data Base</title>
+    <section>
+      <title id="features.edb.general">General</title>
+      <para>To communicate with the EDB instances in the OpenEngSB, it is required to send
+        JMS messages to the queue "org.openengsb.edb", while the message type defines
+        the actual operation. Schemas and/or samples of the messages can be found in the
+        following sections. For the reply, a destination has to be defined and added to
+        the message as reply queue.
+      </para>
+    </section>
+    <section>
+      <title id="features.edb.contentStorage">Content Storage</title>
+      <para>The EDB endpoint can receive messages to store and query content
+        (as well as undoing the last changes). The "operation" element within the content
+        list(not shown in schema, default is "update") can be used to specify whether the
+        contentn should be added or removed (TODO: add operation element).
+        The schema for storing content goes as follows:
+      </para>
+      <programlisting language="xml">
+        <textobject>
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/acm-persist.xsd" />
+        </textobject>
+      </programlisting>
+      <para>NOTE: the field "path" defines the abstract path names of the hierachical structure of the content, where
+        the fieldnames with the elements from "path" describe the actual path, i.e. path = "/a/b/c" is abstract and the
+        actual path is a="any", b="real", c="pathName".
+      </para>
+      <para>Queries are structured as [keyname]:[valuename](AND [keyname]:[valuename])*, whereas [keyname] can be every
+        possible fieldname of the stored content. The entire schema goes as follows
+      </para>
+      <programlisting language="xml">
+        <textobject>
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/acm-query-request.xsd" />
+        </textobject>
+      </programlisting>
+      <para>The reply for both messages (successfully persisted or found) contains a list of object, much like as in the
+        persist-message:
+      </para>
+      <programlisting language="xml">
+        <textobject>
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/acm-response.xsd" />
+        </textobject>
+      </programlisting>
+      <para>
+        TODO: describe reset message
+      </para>
+      <programlisting>
+      <![CDATA[TODO:reset schema]]>
+      </programlisting>
+      <section>
+        <title id="features.edb.testing">Use with the testclient</title>
+        <para> Sample messages (i.e. for use with the testclient) can be found under 
+          <literal>openengsb/features/edb/examples</literal>. First start servicemix (clean data and activemq folder 
+          prefered). Second, deploy the essential package (run "quickdeploy" script under package/essential). Third, 
+          start the testclient (run scripts/runtestclient).
+        </para>
+      </section>
+    </section>
+    
+    <section>
+      <title id="features.linking">Linking</title>
+      <para>The messages described in this section are used to register and query for links.</para>
+      <para>The RegisterLinkMessage is used to create a new link which consists of a "source" element (usually the uuid
+        of another element stored in the EDB should be used here), a "type" referencing any tool this link should be
+        applied too and a "param", encapsulating the command that should be send to the targetted application. Below is
+        a sample of such a message
+      </para>
+      <programlisting language="xml">
+        <textobject>
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/LinkRegisterMessage.xml" />
+        </textobject>
+      </programlisting>
+      <para>
+        A reponse (upon succuessfull registration) will receive a list of registered links plus their UUIDs.
+      </para>
+      <programlisting language="xml">
+        <textobject>
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/LinkRegisteredMessage.xml" />
+        </textobject>
+      </programlisting>
+      <para>The LinkQuerMessage is used to retrieve all links matching the given search criteria. The usual single
+        criterion should be the "source" field, although it is possible to search for type and/or param as well.
+      </para>
+      <programlisting language="xml">
+        <textobject>
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/LinkQueryRequestMessage.xml" />
+        </textobject>
+      </programlisting>
+      <para>
+       A reponse (upon succuessfull query) will receive a list of registered links matching the search criteria.
+      </para>
+      <programlisting language="xml">
+        <textobject>
+          <textdata fileref="file:../src/docbkx/resources/text/usermanual/edb/LinkQueryRequestedMessage.xml" />
+        </textobject>
+      </programlisting>
+      <section id="features.linking.testing">
+        <title>Use with the testclient</title>
+        <para> Sample messages (i.e. for use with the testclient) can be found under
+          [your projectpath]/features/link/examples. First start servicemix (clean data and
+          activemq folder prefered). Second, deploy the essential package (run "quickdeploy"
+          script under package/essential).
+          Third, start the testclient (run scripts/runtestclient).
+      </para>
+      </section>
+    </section>
+  </section>
+
+  <section id="features.linking.linkhttp">
+    <title>HTTP-Requests for links</title>
+    <para>
+      <mediaobject>
+        <imageobject>
+          <imagedata id="new" fileref="graphics/link-http-overview.jpg" format="jpg" />
+        </imageobject>
+		<caption>Linking via HTTP-Request</caption>
+      </mediaobject>
+    </para>
+    <para>
+      A http-request may look like this: http://openengsb.you.com:8192/Link/?UUID:83467585-0475975-2348565-82936498
+    </para>
+    <para>
+      When such a request is sent to the server (e.g. with any webbrowser) a process on the server is triggered:
+      <orderedlist>
+        <listitem>Analyze the request</listitem>
+        <listitem>Retrieve the tool-link with the given UUID from the link-service (edb)</listitem>
+        <listitem>Send the result back to the IP that requested the Link via JMS.</listitem>
+      </orderedlist>
+    </para>
+    <para>
+      A local client-application must be present and running on the requestors machine to automatically open the program.
+      A sample implementation of the client is available in
+      features/link/http-processor/service-engine/src/test/java/org/openengsb/link/http/JmsListener.java
+    </para>
+    <section id="features.linking.client">
+      <title>Client Application</title>
+      <para>The client sends a "whoami"-HTTP-request to the server like this: http://openengsb.you.com:8192/Link/?whoami
+        The server response to the request is a HTML-page showing the remote IP-address of the client. This IP is used
+        by the server for sending responses via JMS. Then the client starts a JMS-message consumer listening to the
+        topic "org.openengsb.link.http". A message-filter must be set so that the client only receives responses
+        concerning it.
+    </para>
+    </section>
+  </section>
+</chapter>

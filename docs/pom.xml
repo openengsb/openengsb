@@ -195,10 +195,12 @@
             </executions>
             <dependencies>
               <dependency>
-                <groupId>org.docbook</groupId>
+                <groupId>net.sf.docbook</groupId>
                 <artifactId>docbook-xml</artifactId>
-                <version>4.4</version>
+                <version>5.0-all</version>
                 <scope>runtime</scope>
+                <classifier>resources</classifier>
+                <type>zip</type>
               </dependency>
               <dependency>
                 <groupId>com.sun</groupId>

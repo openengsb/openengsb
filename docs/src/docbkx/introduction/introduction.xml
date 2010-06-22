@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<chapter id="introduction" xmlns="http://docbook.org/ns/docbook">
+  <title>Introduction</title>
+
+  TBW (explain which sections are interesting for which target audience)
+
+  <section id="introduction.what">
+    <title>What is an Engineering Service Bus</title>
+    <para>
+      TBW
+    </para>
+    <para>
+      TBW 
+    </para>
+    <para>
+      TBW
+    </para>
+  </section>
+
+  <section id="introduction.glossary">
+    <title>Glossary</title>
+    <variablelist>
+      <varlistentry>
+        <term>OpenEngSB</term>
+        <listitem>
+          <para>TBW</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>EngSB</term>
+        <listitem>
+          <para>TBW</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>Domain</term>
+        <listitem>
+          <para>TBW</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>Tool Domain</term>
+        <listitem>
+          <para>TBW</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>Tool Connector</term>
+        <listitem>
+          <para>TBW</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>Value Added Components</term>
+        <listitem>
+          <para>TBW</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>OpenEngSB Platform</term>
+        <listitem>
+          <para>TBW</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>Context</term>
+        <listitem>
+          <para>TBW</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>Registry</term>
+        <listitem>
+          <para>TBW</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term>Workflow</term>
+        <listitem>
+          <para>TBW</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+</chapter>

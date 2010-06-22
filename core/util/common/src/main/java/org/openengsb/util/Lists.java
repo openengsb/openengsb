@@ -13,12 +13,11 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.util;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class Lists {
     /**
@@ -28,32 +27,11 @@ public class Lists {
     public static final int ARRAYLIST_INITIAL_CAPACITY = 10;
 
     /**
-     * @see ArrayList#ArrayList()
-     */
-    public static <E> ArrayList<E> newArrayList() {
-        return new ArrayList<E>();
-    }
-
-    /**
-     * @see ArrayList#ArrayList(int)
-     */
-    public static <E> ArrayList<E> newArrayList(int initialCapacity) {
-        return new ArrayList<E>(initialCapacity);
-    }
-
-    /**
-     * @see ArrayList#ArrayList(Collection)
-     */
-    public static <E> ArrayList<E> newArrayList(Collection<? extends E> collection) {
-        return new ArrayList<E>(collection);
-    }
-
-    /**
      * Constructs a list containing the specified elements in the given order.
      */
     public static <E> ArrayList<E> newArrayList(E... elems) {
-        ArrayList<E> list = newArrayList(elems.length <= Lists.ARRAYLIST_INITIAL_CAPACITY ? Lists.ARRAYLIST_INITIAL_CAPACITY
-                : elems.length);
+        ArrayList<E> list = new ArrayList<E>(
+                elems.length <= Lists.ARRAYLIST_INITIAL_CAPACITY ? Lists.ARRAYLIST_INITIAL_CAPACITY : elems.length);
         for (E e : elems) {
             list.add(e);
         }

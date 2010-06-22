@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 
 package org.openengsb.edb.core.repository.jgit;
@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.Commit;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.GitIndex;
@@ -37,7 +38,6 @@ import org.eclipse.jgit.lib.GitIndex.Entry;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.edb.core.entities.GenericContent;
-import org.openengsb.util.IO;
 import org.openengsb.util.Prelude;
 
 /**
@@ -102,7 +102,7 @@ public class JGitInternalTests {
         this.repo.getIndex().write();
         testCreateRepositoryAndCheckin();
 
-        IO.deleteStructure(new File(this.repoPath));
+        FileUtils.deleteDirectory(new File(this.repoPath));
     }
 
     public void testCreateRepositoryAndCheckin() throws Exception {

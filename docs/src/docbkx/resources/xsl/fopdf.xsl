@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 
 
-    This is the XSL FO (PDF) stylesheet for the Cocoon 3 reference
-    documentation.
-    
-    Thanks are due to Christian Bauer of the Hibernate project
-    team and the Spring team for writing the original stylesheet 
-    upon which this one is based.
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+
+  This stylesheet is based upon the Apache Cocoon 3 stylesheet.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
+                xmlns:d="http://docbook.org/ns/docbook"
+                exclude-result-prefixes="d"
                 version="1.0">
 
 
@@ -27,50 +39,38 @@
                 <fo:table-body>
                     <fo:table-row>
                         <fo:table-cell text-align="center">
-              <!-- Logo 
-                            <fo:block>
-                                <fo:external-graphic src="file:src/docbkx/resources/images/s2_box_logo.png"/>
-                            </fo:block>
-                            -->
-                            <fo:block font-family="Helvetica" font-size="22pt" padding-before="10mm">
-                                <xsl:value-of select="bookinfo/subtitle"/> 
+                            <fo:block font-family="Helvetica" font-size="46pt" padding-before="65mm">
+                                <xsl:value-of select="d:info/d:title"/> 
                             </fo:block>
                             <fo:block font-family="Helvetica" font-size="14pt" padding="10mm">
-                                <xsl:value-of select="bookinfo/title"/>
+                                <xsl:value-of select="d:info/d:subtitle"/>
                             </fo:block>
                             <fo:block font-family="Helvetica" font-size="12pt" padding="10mm">
-                                <xsl:value-of select="bookinfo/releaseinfo"/>
+                                <xsl:value-of select="d:info/d:releaseinfo"/>
                             </fo:block>
                         </fo:table-cell>
                     </fo:table-row>
                     <fo:table-row>
                         <fo:table-cell text-align="center">
                             <fo:block font-family="Helvetica" font-size="14pt" padding="10mm">
-                                <xsl:value-of select="bookinfo/pubdate"/>
+                                <xsl:value-of select="d:info/d:pubdate"/>
                             </fo:block>
                         </fo:table-cell>
                     </fo:table-row>
                     <fo:table-row>
                         <fo:table-cell text-align="center">
-                            <fo:block font-family="Helvetica" font-size="12pt" padding="10mm">
-                                <xsl:for-each select="bookinfo/authorgroup/author">
-                                    <xsl:if test="position() > 1">
-                                        <xsl:text>, </xsl:text>
-                                    </xsl:if>
-                                    <xsl:value-of select="firstname"/>
-                                    <xsl:text> </xsl:text>
-                                    <xsl:value-of select="surname"/>
-                                    <xsl:text> (</xsl:text>
-                                    <xsl:value-of select="affiliation"/>
-                                    <xsl:text>)</xsl:text>
-                                </xsl:for-each>
-                            </fo:block>
-                            <fo:block font-family="Helvetica" font-size="12pt" padding="10mm">
-                <xsl:text>Copyright &#xA9; 2010</xsl:text>
-              </fo:block>
-
-                            <fo:block font-family="Helvetica" font-size="10pt" padding="1mm">
-                                <xsl:value-of select="bookinfo/legalnotice"/>
+	                       <xsl:for-each select="d:info/d:authorgroup/d:author">
+                              <fo:block font-family="Helvetica" font-size="12pt">
+                                <xsl:value-of select="d:firstname"/>
+                                <xsl:text> </xsl:text>
+                                <xsl:value-of select="d:surname"/>
+                                <xsl:text> (</xsl:text>
+                                <xsl:value-of select="d:email"/>
+                                <xsl:text>)</xsl:text>
+                              </fo:block>
+                           </xsl:for-each>
+                            <fo:block font-family="Helvetica" font-size="10pt" padding="5mm">
+                                <xsl:value-of select="d:info/d:legalnotice"/>
                             </fo:block>
                         </fo:table-cell>
                     </fo:table-row>
@@ -109,8 +109,8 @@
         <xsl:param name="position" select="''"/>
         <xsl:param name="gentext-key" select="''"/>
     <xsl:variable name="Version">
-      <xsl:if test="//releaseinfo">
-        <xsl:text></xsl:text><xsl:value-of select="//releaseinfo" /><xsl:text></xsl:text>
+      <xsl:if test="//d:releaseinfo">
+        <xsl:text></xsl:text><xsl:value-of select="//d:releaseinfo" /><xsl:text></xsl:text>
       </xsl:if>
     </xsl:variable>
         <xsl:choose>
@@ -154,7 +154,7 @@
     <!-- These extensions are required for table printing and other stuff -->
     <xsl:param name="tablecolumns.extension">0</xsl:param>
     <!-- FOP provide only PDF Bookmarks at the moment -->
-    <xsl:param name="fop.extensions">1</xsl:param>
+    <xsl:param name="fop1.extensions">1</xsl:param>
     <xsl:param name="ignore.image.scaling">0</xsl:param>
 
     <!--###################################################
@@ -190,7 +190,7 @@
 
     <xsl:param name="body.margin.bottom">15mm</xsl:param>
     <xsl:param name="region.after.extent">10mm</xsl:param>
-    <xsl:param name="page.margin.bottom">0mm</xsl:param>
+    <xsl:param name="page.margin.bottom">10mm</xsl:param>
 
     <xsl:param name="page.margin.outer">18mm</xsl:param>
     <xsl:param name="page.margin.inner">18mm</xsl:param>
@@ -265,11 +265,11 @@
 
     <!-- Why is the font-size for chapters hardcoded in the XSL FO templates? 
         Let's remove it, so this sucker can use our attribute-set only... -->
-    <xsl:template match="title" mode="chapter.titlepage.recto.auto.mode">
+    <xsl:template match="d:title" mode="chapter.titlepage.recto.auto.mode">
         <fo:block xmlns:fo="http://www.w3.org/1999/XSL/Format"
                   xsl:use-attribute-sets="chapter.titlepage.recto.style">
             <xsl:call-template name="component.title">
-                <xsl:with-param name="node" select="ancestor-or-self::chapter[1]"/>
+                <xsl:with-param name="node" select="ancestor-or-self::d:chapter[1]"/>
             </xsl:call-template>
         </fo:block>
     </xsl:template>
@@ -406,7 +406,7 @@
     <!--###################################################
              colored and hyphenated links
    ################################################### -->
-    <xsl:template match="ulink">
+    <xsl:template match="d:ulink">
         <fo:basic-link external-destination="{@url}"
                        xsl:use-attribute-sets="xref.properties"
                        text-decoration="underline"
@@ -422,7 +422,7 @@
         </fo:basic-link>
     </xsl:template>
 
-    <xsl:template match="link">
+    <xsl:template match="d:link">
         <fo:basic-link internal-destination="{@linkend}"
                 xsl:use-attribute-sets="xref.properties"
                 text-decoration="underline"

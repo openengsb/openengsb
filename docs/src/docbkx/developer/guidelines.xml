@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<chapter id="guidelines" xmlns="http://docbook.org/ns/docbook">
+  <title>Development Guidelines</title>
+  <para>
+    This section contains the design, architecture and development guidelines for the OpenEngSB.
+  </para>
+  <section id="guidelines.storage">
+    <title>Storage Guidelines</title>
+    <para>
+      This section describes the guidelines where what have to be stored.
+      <itemizedlist>
+        <listitem>The role of the edb remains unchanged. It not used by endpoints to store their data.</listitem>
+        <listitem>For the context and the upcoming user and accesscontrol management, I'll investigate how LDAP can
+        assist. Though this pulls another big dependency into the project, it should pay off. The best solution would
+        be to deploy the required LDAP-component right into servicemix.</listitem>
+        <listitem>The h2-database that the config-ui is using will be replaced by a solution using eXist.</listitem>
+        <listitem>The exist-util in the core will be extended to provide utility-functions to resolve data-relations.
+        Requirements will be derived from porting the config-ui-database.</listitem>
+        <listitem>To be more flexible on the datamodel, a structured approach (like a relational database) is not a
+        good solution. The semistructered way eXist uses is more desirable considering the current requirements.</listitem>
+      </itemizedlist>
+    </para>
+  </section>
+</chapter>

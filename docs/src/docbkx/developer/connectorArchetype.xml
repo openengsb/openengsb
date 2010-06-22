@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<chapter id="connectorArchetype" xmlns="http://docbook.org/ns/docbook">
+  <title>How to use the Maven archetype to create an OpenEngSB tool connector</title>
+  <para>
+    This section describes how a new OpenEngSB tool connector can be created using a Maven archetype. For more information about tool connectors see section "Internal OpenEngSB Tool Connectors".
+  </para>
+  <section>
+    <title>Using the archetype</title>
+    <para>
+      The following command is used to start the project generation:
+      <programlisting>
+        <![CDATA[
+   mvn archetype:generate -DarchetypeCatalog="http://maven.openengsb.org/archetypes/"
+        ]]>
+      </programlisting>
+      The archetype named connector-archetype should show up in the archetype list.
+      Select the archetype connector-archetype. Maven will ask if the default values for the properties shall be used. Type 'n' to overwrite the default values.
+      The following properties are needed to generate a connector project:
+      <itemizedlist>
+        <listitem>artifactId: The artifactId of the generated wrapper project for the service-engine and the service-unit.</listitem>
+        <listitem>groupId: The groupId of the generated wrapper project. Should be org.openengsb.</listitem>
+        <listitem>version: The version of the generated wrapper project.</listitem>
+        <listitem>se-artifactId: The artifactId of the service-engine.</listitem>
+        <listitem>su-artifactId: The artifactId of the service-unit.</listitem>
+        <listitem>description: The description of the tool connector.</listitem>
+        <listitem>namespace: The namespace of the tool connector.</listitem>
+        <listitem>package: The package for the source code of the service-engine.</listitem>
+        <listitem>connector-name: The connector name. This is used as prefix for Java classes so it should start with a upper-case letter.</listitem>
+        <listitem>domain-package: The package where the domain interface can be found which is implemented by this tool connector.</listitem>
+        <listitem>domain-name: The interface name of the domain interface that is implemented by this tool connector.</listitem>
+        <listitem>urn: The URN that will be used to address this tool connector.</listitem>
+      </itemizedlist>
+    </para>
+    <para>
+      If all these properties have been set Maven will generate the service-engine and the service-unit for the tool connector.
+    </para>
+  </section>
+  
+  <section>
+    <title>Structure of the connector service-engine</title>
+    <para>
+      <programlisting>
+        <![CDATA[
+service-engine
+     |
+     ---------------
+     |             |
+  pom.xml         src
+                   |
+                  main
+                   |
+           -----------------
+           |               |
+          java          resources
+           |               |
+       <package>   contextProperties.xml
+           |
+          ---------------------------------------------
+          |                                           |
+<connector-name>Endpoint.java            <connector-name>Component.java
+        ]]>
+      </programlisting>
+    </para>
+    <para>
+      The service-engine contains a stub of the connector endpoint and a simple implementation of the connector component as well as an empty contextProperties descriptor.
+      The pom.xml file contains the necessary setup and all dependencies needed by an OpenEngSB tool connector service-engine. 
+    </para>
+  </section>
+  
+  <section>
+    <title>Structure of the connector service-unit</title>
+    <para>
+      <programlisting>
+        <![CDATA[
+service-unit
+     |
+     ---------------
+     |             |
+  pom.xml         src
+                   |
+                  main
+                   |
+               resources
+                   |
+               xbean.xml
+        ]]>
+      </programlisting>
+    </para>
+    <para>
+      The service-unit contains a fully configured xbean.xml file that provides the setup for an OpenEngSB tool connector service-unit.
+      The pom.xml file contains the necessary dependency to the service-engine. 
+    </para>
+  </section>
+  
+  <section>
+    <title>Additional steps to integrate the newly created tool connector into the OpenEngSB project</title>
+    <para>
+      To integrate the created tool connector the following steps have to be performed after the archetype was used to generate the service-engine and the service-unit.
+      <itemizedlist>
+        <listitem>Copy: The service-engine and the service-unit have to be copied to the right folder, which is starting from the OpenEngSB root folder /domains/domain-name/connector-name where domain-name and connector-name should be replaced by the respective names for the current tool connector.</listitem>
+        <listitem>Parent pom.xml: Add the service engine and the service unit in the modules section and add the dependencies to the service-engine and the service-unit to the dependencyManagement section.</listitem>
+        <listitem>Service-engine pom.xml: Correct the link to the parent pom.xml. (groupId, artifactId, version and relativePath).</listitem>
+        <listitem>Service-unit pom.xml: Correct the link to the parent pom.xml. (groupId, artifactId, version and relativePath).</listitem>
+        <listitem>Packaging: Add the dependency to the service-unit to the package-all service assembly's pom.xml to add the tool connector to this service assembly.</listitem>
+      </itemizedlist>
+    </para>
+  </section>
+</chapter>
+

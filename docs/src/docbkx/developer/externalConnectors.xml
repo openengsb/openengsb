@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<chapter id="externalConnectors" xmlns="http://docbook.org/ns/docbook">
+  <title>External OpenEngSB Tool Connectors</title>
+  <para>
+    Introduction bla...
+  </para>
+  <section id="externalConnectors.toolDomain">
+    <title>Tool Domain</title>
+    <para>
+      what is a tool domain again
+    </para>
+    <section id="externalConnectors.toolDomain.specification.">
+      <title>Tool Domain Specification</title>
+      <para>
+        Domain Interface (org.openengsb.drools); Domain Model (org.openengsb.drools.model); Domain Registry 
+        (org.openengsb.drools.DomainRegistry)
+      </para>
+    </section>
+    <section id="externalConnectors.toolDomain.configuration.">
+      <title>Tool Domain Configuration</title>
+      <para>
+        Create openengsb-domain-XXX-se; optional openengsb-domain-XXX-common; use e.g. 
+        org.openengsb.core.OpenEngSBForwardEndpoint.
+        differences between simple (forward) and more complex approach (custom)
+      </para>
+    </section>
+  </section>
+  <section id="externalConnectors.toolConnector">
+    <title>Tool Connector</title>
+    <para>
+      what is a tool connector again; differences between common and custom
+    </para>
+    <section id="externalConnectors.toolConnector.common">
+      <title>Common Approach</title>
+      <para>
+        Linking, interface impl
+      </para>
+    </section>
+    <section id="externalConnectors.toolConnector.custom">
+      <title>Custom Approach</title>
+      <para>
+        use in out from OpenEngSBEndpoint directly.
+      </para>
+    </section>
+  </section>  
+  <section id="externalConnectors.csharp">
+      <title>Connect with CSharp</title>
+      <para>
+        The CSharp connector is written on basis of the Apache ActiveMQ NMS connector and with help of the Spring 
+        NmsTemplate. The code is checked into the repository and could be found in <literal>openengsb/openengsb-nonjava/csharp</literal>. 
+        There an EngSB.sln file. This project file had been developed with SharpDevelop3, but is also tested with 
+        VisualStudio2008 CSharp Express Edition with the .net framework 3.5.
+      </para>
+  </section>
+</chapter>

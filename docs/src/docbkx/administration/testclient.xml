@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<chapter id="testclient" xmlns="http://docbook.org/ns/docbook">
+  <title>How to use the OpenEngSB Testclient</title>
+
+  <section>
+    <title>Starting the Testclient</title>
+    <para>
+      To start the testclient run the shell script run-testclient.sh in the scripts folder. 
+      This will deploy the test-jms service unit, which is used by the swing client to send messages into the OpenEngSB.
+      Futher more the test client will be started by this script.
+    </para>
+  </section>
+
+  <section>
+    <title>The Message-Sending Tab</title>
+    <para>
+      <mediaobject>
+        <imageobject>
+          <imagedata id="new" fileref="graphics/testclient_message.png"
+            format="png" />
+        </imageobject>
+		<caption>Messaging</caption>
+      </mediaobject>
+    </para>
+
+    <para>
+      There are five parameters of a message that can be set using the testclient.
+      <orderedlist>
+        <listitem>Context - the context id, which is used to distinguish between different project contexts</listitem>
+        <listitem>Endpoint - The target endpoint of the message.</listitem>     
+        <listitem>Operation - The operation field of the JBI message, which has to be set to "event" for event messages and to "methodcall" for service-calls</listitem>     
+        <listitem>MEP - The message exchange pattern, that shall be used. Service-calls have to use in-out, whereas event messages have to use in-only or robust-in-only</listitem>     
+        <listitem>Payload - The textarea can be used to define the content of the message</listitem>     
+      </orderedlist>
+      Note: The load button can be used to load text from a file into the content textarea.
+      The list of available endpoints is built from the list of consumers specified in the xbean.xml of the openengsb-test-jms-su, which can be found
+      in the directory test/jms/service-unit/src/main/resources.
+    </para>
+    
+    <para>
+    To add additional endpoints add jms:consumer elements to the xbean.xml in src/main/resources in the openengsb-test-jms-su.
+    </para> 
+  </section>
+  
+  <section>
+    <title>The Context Tab</title>
+    <para>
+      The context tab will only work if the context service-unit is deployed. 
+      This is currently not the case if only the essential parts of the OpenEngSB are deployed.
+    </para>
+    <para>
+      <mediaobject>
+        <imageobject>
+          <imagedata id="new" fileref="graphics/testclient_context.png"
+            format="png" />
+        </imageobject>
+		<caption>Context information</caption>
+      </mediaobject>
+    </para>
+    <para>
+      On the left the tree structure of the context is shown. Clicking one of the nodes displays its key-value pairs in the table
+      on the right side of the window. Changes can be made using the context menu, or the buttons. If the value of an entry shall be
+      changed just edit it directly in the table - it will be saved when the cell loses focus after editing.
+      The "Refresh" button can be used to load changes that have been made concurrently by someone else.
+    </para>
+  </section>
+</chapter>
+

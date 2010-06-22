@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<chapter id="workflow" xmlns="http://docbook.org/ns/docbook">
+  <title>Workflows in the OpenEngSB</title>
+
+  <para>
+    The OpenEngSB supports the modeling of workflows on the OpenEngSB. This could be done by two different approaches.
+    First of all a <link linkend="workflow.events">rule based event approach</link>. This way allows to define actions
+    based on events which where thrown in or to the bus. Events are very practical for "short-time-handling" since they
+    are also easy to replace and extend. For long running business processes the secondary workflow method could be used
+    which is <link linkend="workflow.processes">based on processes described in Drools-Flow</link>.
+  </para>
+  <para>
+    The openengsb-drools component takes "events" as input and handles them using a rulebased system (JBoss Drools 5.0).
+    The workflow-se provides multiple ways to manage rules.
+    The Directory-Source manages the rules in the filesystem, within servicemix.
+  </para>
+
+  <section id="workflow.directory">
+    <title>Directory</title>
+    <para>
+      A Directory-source is initialized with a default-set of imports, globals and a "Hello World" rule.
+      The workflow service-engine supports operations to modify the rulebase at runtime.
+      This is achieved by setting the operation-property of the exchange.
+    </para>
+    <para>
+      All Requests use the "ManageRequest"-model (see the xml-schema or the correesponding Javaclass for details).
+      It consists of a RuleBaseElementId and the optional code that should be used for writing operations.
+      The RuleBaseElementId identifies the Element exactly by Type (Rule, Function, Import, Global), name and packageName.
+      The operations "create", "update", and "delete" are only accepted for InOnly-exchanges, while "get" and "list" are only accepted for InOut-exchanges.
+      When creating a rule that already exists an exception is raised.
+      When trying to delete an element that is not there, nothing happens.
+    </para>
+    <para>
+      <unorderedList>
+        <listitem>
+          create: creates the element matching the ID and the supplied code
+        </listitem>
+        <listitem>
+          update: replaces the element matching the ID with the supplied code
+        </listitem>
+        <listitem>
+          delete: deletes the element matching the ID
+        </listitem>
+        <listitem>
+          read: returns the code of the element matching the ID (see GetResponse in the model)
+        </listitem>
+        <listitem>
+          list: returns a list of all elements of the supplied type contained in the supplied pacakge.
+          If the package is ommited, all Elements are returned. (see ListResponse in the model)
+        </listitem>
+      </unorderedList>
+    </para>
+  </section>
+
+  <section id="workflow.processes">
+    <title>Processes</title>
+    <para>
+      TBW(explain Drools-Flow processes on the OpenEngSB)
+    </para>
+  </section>
+</chapter>
