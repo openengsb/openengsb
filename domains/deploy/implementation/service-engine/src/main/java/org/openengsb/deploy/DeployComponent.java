@@ -18,7 +18,6 @@
 package org.openengsb.deploy;
 
 import org.openengsb.core.OpenEngSBComponent;
-import org.openengsb.core.endpoints.EventForwardEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="deployComponent"
@@ -27,7 +26,7 @@ import org.openengsb.core.endpoints.EventForwardEndpoint;
 public class DeployComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class[] { DeployEndpoint.class, EventForwardEndpoint.class };
+        return new Class[] { DeployEndpoint.class, DeployEventEndpoint.class };
     }
 
 }

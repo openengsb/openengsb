@@ -18,7 +18,6 @@
 package org.openengsb.issues;
 
 import org.openengsb.core.OpenEngSBComponent;
-import org.openengsb.core.endpoints.EventForwardEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="issuesComponent"
@@ -27,7 +26,7 @@ import org.openengsb.core.endpoints.EventForwardEndpoint;
 public class IssuesComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class[] { IssuesEndpoint.class, EventForwardEndpoint.class };
+        return new Class[] { IssuesEndpoint.class, IssuesEventEndpoint.class };
     }
 
 }
