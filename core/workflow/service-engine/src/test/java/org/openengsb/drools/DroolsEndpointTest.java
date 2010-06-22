@@ -92,7 +92,6 @@ public class DroolsEndpointTest extends SpringTestSupport {
         System.out.println("done");
 
         rsession.dispose();
-
     }
 
     @Test

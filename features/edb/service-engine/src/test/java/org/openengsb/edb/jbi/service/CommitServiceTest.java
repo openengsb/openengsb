@@ -134,6 +134,7 @@ public class CommitServiceTest extends SpringTestSupport {
         comp.addEndpoint(notificationEndpoint);
         jbi.activateComponent(comp, "notification");
 
+
         storeNotificationContext();
 
         makeParameters(this.config);

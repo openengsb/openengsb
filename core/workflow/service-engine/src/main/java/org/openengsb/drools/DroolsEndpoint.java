@@ -28,6 +28,7 @@ import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
+import javax.xml.transform.Source;
 
 import org.apache.servicemix.common.DefaultComponent;
 import org.apache.servicemix.common.ServiceUnit;
@@ -36,6 +37,13 @@ import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.SimpleEventEndpoint;
 import org.openengsb.core.model.Event;
+import org.openengsb.drools.helper.XmlHelper;
+import org.openengsb.drools.message.GetResponse;
+import org.openengsb.drools.message.ListResponse;
+import org.openengsb.drools.message.ManageRequest;
+import org.openengsb.drools.message.RuleBaseElementId;
+import org.openengsb.drools.message.RuleBaseElementType;
+import org.openengsb.drools.source.RuleBaseSource;
 
 /**
  * @org.apache.xbean.XBean element="droolsEndpoint"
@@ -68,6 +76,54 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
     @Override
     public synchronized void start() throws Exception {
         super.start();
+        ruleBase = ruleSource.getRulebase();
+    }
+
+    @Override
+    protected void processInOnly(MessageExchange exchange, NormalizedMessage in) throws Exception {
+        if (exchange.getOperation().getLocalPart().equals("event")) {
+            super.processInOnly(exchange, in);
+            return;
+        }
+        Source msgSource = in.getContent();
+        ManageRequest request = XmlHelper.unmarshal(ManageRequest.class, msgSource);
+        QName op = exchange.getOperation();
+        if ("create".equals(op.getLocalPart())) {
+            ruleSource.add(request.getId(), request.getCode());
+        } else if ("delete".equals(op.getLocalPart())) {
+            ruleSource.delete(request.getId());
+        } else if ("update".equals(op.getLocalPart())) {
+            ruleSource.update(request.getId(), request.getCode());
+        }
+    }
+
+    @Override
+    protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
+        if (exchange.getOperation().getLocalPart().equals("event")) {
+            super.processInOut(exchange, in, out);
+            return;
+        }
+        Source msgSource = in.getContent();
+        ManageRequest request = XmlHelper.unmarshal(ManageRequest.class, msgSource);
+        QName op = exchange.getOperation();
+        if ("list".equals(op.getLocalPart())) {
+            Collection<RuleBaseElementId> list;
+            RuleBaseElementType type = request.getId().getType();
+            String packageName = request.getId().getPackageName();
+            if (packageName == null) {
+                list = ruleSource.list(type);
+            } else {
+                list = ruleSource.list(type, packageName);
+            }
+            ListResponse response = new ListResponse(list);
+            Source outContent = XmlHelper.marshal(response);
+            out.setContent(outContent);
+        } else if ("get".equals(op.getLocalPart())) {
+            String code = ruleSource.get(request.getId());
+            GetResponse response = new GetResponse(request.getId(), code);
+            Source outContent = XmlHelper.marshal(response);
+            out.setContent(outContent);
+        }
     }
 
     @Override
@@ -85,11 +141,6 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
             MessageProperties msgProperties) throws MessagingException {
         forwardMessageToLogEndpoint(in);
         super.handleEvent(exchange, in, contextHelper, msgProperties);
-    }
-
-    @Override
-    protected void processInOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out) throws Exception {
-        super.processInOnly(exchange, in);
     }
 
     private void forwardMessageToLogEndpoint(NormalizedMessage messageToLog) throws MessagingException {
@@ -110,11 +161,7 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
     }
 
     private void init() throws RuleBaseException {
-        if (ruleSource != null) {
-            setRuleBase(ruleSource.getRulebase());
-        } else {
-            throw new NullPointerException("Error initializing DroolsEndpoint - no ruleSource specified.");
-        }
+
     }
 
     public final boolean isNoRemoteLogging() {

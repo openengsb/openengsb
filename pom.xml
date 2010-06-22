@@ -40,6 +40,7 @@
     <hamcrest.version>1.1</hamcrest.version>
     <hibernate.version>3.4.0.GA</hibernate.version>
     <h2.version>1.1.116</h2.version>
+    <jaxb.version>2.2</jaxb.version>
     <jaxen.version>1.1.1</jaxen.version>
     <jdk.version>1.6</jdk.version>
     <jetty.version>6.1.20</jetty.version>
@@ -97,14 +98,16 @@
     <rome.version>0.5</rome.version>
     <woden.version>1.0.0M6</woden.version>
     <xml.apis.version>1.3.04</xml.apis.version>
+    <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>
 
     <!-- Plugin Version -->
     <docbkx.version>2.0.10</docbkx.version>
+    <jaxb.plugin.version>1.2</jaxb.plugin.version>
     <maven.plugin.release.version>2.0-beta-9</maven.plugin.release.version>
     <maven.plugin.surefire>2.4.3</maven.plugin.surefire>
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
-    <servicemix.jbi.maven.version>4.4-SNAPSHOT</servicemix.jbi.maven.version>
     <maven.rat.version>0.6</maven.rat.version>
+    <servicemix.jbi.maven.version>4.4-SNAPSHOT</servicemix.jbi.maven.version>
     <twdata.cli.version>1.0.4</twdata.cli.version>
   </properties>
 
@@ -483,23 +486,11 @@
       <plugin>
         <groupId>org.apache.servicemix.tooling</groupId>
         <artifactId>jbi-maven-plugin</artifactId>
-	<extensions>true</extensions>
-	<version>${servicemix.jbi.maven.version}</version>
+        <extensions>true</extensions>
+        <version>${servicemix.jbi.maven.version}</version>
         <configuration>
           <jndiPath>/karaf-root</jndiPath>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.jibx</groupId>
-        <artifactId>maven-jibx-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>normal-execution</id>
-            <goals>
-              <goal>bind</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.twdata.maven</groupId>
@@ -565,9 +556,39 @@
           <version>${maven.plugin.surefire}</version>
         </plugin>
         <plugin>
-          <groupId>org.jibx</groupId>
-          <artifactId>maven-jibx-plugin</artifactId>
-          <version>${jibx.version}</version>
+          <groupId>com.sun.tools.jxc.maven2</groupId>
+          <artifactId>maven-jaxb-schemagen-plugin</artifactId>
+          <version>${jaxb.plugin.version}</version>
+          <executions>
+            <execution>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>javax.xml.bind</groupId>
+              <artifactId>jaxb-api</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-xjc</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-impl</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-xjc</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+          </dependencies>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -651,9 +672,8 @@
                 <exclude>**/testFiles/**</exclude>
                 <exclude>**/site/docbook/empty.txt</exclude>
 
-                <!-- Jibx generated stuff -->
-                <exclude>**/src/main/java/binding.xml</exclude>
-                <exclude>**/src/main/java/org/openengsb/core/xmlmapping/*.java</exclude>
+                <!-- -? jaxb stuff -? -->
+                <exclude>**/jaxb.index</exclude>
 
                 <!-- docs are checked in docs project -->
                 <exclude>docs/</exclude>
@@ -669,8 +689,8 @@
                 <exclude>nonjava/csharp/lib/**</exclude>
                 <exclude>**/**.csproj</exclude>
                 <exclude>**/**.sln</exclude>
-		<exclude>nonjava/perl/**</exclude>
-		
+                <exclude>nonjava/perl/**</exclude>
+
                 <!-- Scripts -->
                 <exclude>quickrun.sh</exclude>
                 <exclude>package/all/quickdeploy.sh</exclude>
@@ -687,10 +707,12 @@
 
                 <!-- Examples files -->
                 <exclude>features/edb/examples/**</exclude>
-               
+
                 <!-- Svn stomp-client commit hook library -->
                 <exclude>domains/scm/subversion/hooks/stomp-client/lib/**</exclude>
-                 
+
+                <exclude>**/src/main/resources/rulebase/**</exclude>
+
               </excludes>
             </configuration>
             <executions>
@@ -1395,11 +1417,6 @@
         <version>${commons.collections.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.jibx</groupId>
-        <artifactId>jibx-run</artifactId>
-        <version>${jibx.version}</version>
-      </dependency>
-      <dependency>
         <groupId>com.google.collections</groupId>
         <artifactId>google-collections</artifactId>
         <version>${google.collections.version}</version>
@@ -1492,12 +1509,16 @@
       </releases>
     </pluginRepository>
     <pluginRepository>
+      <id>maven-repository.dev.java.net</id>
+      <name>Java.net Maven 2 Repository</name>
+      <url>http://download.java.net/maven/2</url>
+    </pluginRepository>
+    <pluginRepository>
       <id>twdata-m2-repository</id>
       <name>twdata.org Maven 2 Repository</name>
       <url>http://twdata-m2-repository.googlecode.com/svn/</url>
     </pluginRepository>
   </pluginRepositories>
-
 
   <repositories>
     <repository>
@@ -1532,6 +1553,10 @@
       <releases>
         <enabled>false</enabled>
       </releases>
+    </repository>
+    <repository>
+      <id>jboss</id>
+      <url>http://repository.jboss.com/maven2</url>
     </repository>
   </repositories>
 

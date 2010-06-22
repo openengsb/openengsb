@@ -14,10 +14,6 @@
 ~~   limitations under the License.
 ~~
 HowTo - First steps with OpenEngSB (Issue tracker)
-
-* Drools setup
-
-  If you have not set up Guvnor yet, please take a look at the {{{howto_guvnor.html}Guvnor Setup}} and {{{howto_notify.html}Hello World example}}.
   
 * Trac setup
   
@@ -50,9 +46,7 @@ HowTo - First steps with OpenEngSB (Issue tracker)
   
 * Setting up the example
 
-  The Issue tracker domain can be used just like the notification domain. You simply add another rule to Guvnor that triggers the creation of an issue:
-  
-  At {{{http://localhost:8081/drools-guvnor}http://localhost:8081/drools-guvnor}} choose "Create New" -> "New Rule". Type is "DRL Rule (Technical rule, text editor)"
+  The Issue tracker domain can be used just like the notification domain. You simply add another rule to the rulebase, by creating a new .rule-file in $SERVICEMIX_HOME/data/openengsb/rulebase/org/openengsb
 
 +----  
   when
@@ -66,8 +60,7 @@ HowTo - First steps with OpenEngSB (Issue tracker)
    issue.createIssue(i);
 +----
 
-  Note: You have to press "save changes" in order to make sure that your changes to the rule take effect.
-  Build the package with "build package". Now issue tickets will be created too.
+  To reload the rulebase either restart servicemix or create a file names "reload" in the rulebase-directory
 
 * Running the example
 

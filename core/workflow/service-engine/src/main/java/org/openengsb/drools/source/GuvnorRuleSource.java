@@ -1,4 +1,4 @@
-<!--
+/**
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
@@ -14,7 +14,31 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
--->
-<binding>
-	<include path="binding-serializationtestclass.xml" />
-</binding>
+ */
+package org.openengsb.drools.source;
+
+import java.util.Properties;
+
+import org.drools.RuleBase;
+import org.drools.agent.RuleAgent;
+
+public class GuvnorRuleSource extends RuleBaseSource {
+
+    private String url;
+
+    public final String getUrl() {
+        return this.url;
+    }
+
+    public final void setUrl(String url) {
+        this.url = url;
+    }
+
+    @Override
+    public RuleBase getRulebase() {
+        Properties config = new Properties();
+        config.put("url", this.url);
+        RuleAgent agent = RuleAgent.newRuleAgent(config);
+        return agent.getRuleBase();
+    }
+}

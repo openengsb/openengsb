@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.drools;
+package org.openengsb.drools.source;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,8 +26,9 @@ import org.drools.RuleBase;
 import org.drools.compiler.RuleBaseLoader;
 import org.drools.io.Resource;
 import org.drools.io.ResourceFactory;
+import org.openengsb.drools.RuleBaseException;
 
-public class FileRuleSource implements RuleBaseSource {
+public class FileRuleSource extends RuleBaseSource {
 
     private String path;
 
@@ -40,7 +41,7 @@ public class FileRuleSource implements RuleBaseSource {
     }
 
     @Override
-    public RuleBase getRulebase() throws RuleBaseException{
+    public RuleBase getRulebase() throws RuleBaseException {
         if (this.path == null) {
             throw new IllegalStateException("path must be set");
         }
@@ -57,4 +58,5 @@ public class FileRuleSource implements RuleBaseSource {
             throw new RuleBaseException("Cannot initialize rulebase from path " + this.path, e);
         }
     }
+
 }

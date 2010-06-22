@@ -13,6 +13,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 #
+package org.openengsb
 
 # first some java-utils
 import java.util.Map
@@ -45,11 +46,4 @@ rule "hello1"
                Event( name == "hello" )
        then
                System.out.println("Hello World");
-end
-
-rule "hello2"
-       when
-               e : Event()
-       then
-               System.out.println(e.getName());
 end

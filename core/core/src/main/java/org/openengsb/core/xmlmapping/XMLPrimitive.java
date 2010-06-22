@@ -1,24 +1,25 @@
+/**
 
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
 package org.openengsb.core.xmlmapping;
 
-/** 
- * Schema fragment(s) for this class:
- * <pre>
- * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLPrimitive">
- *   &lt;xs:choice>
- *     &lt;xs:element type="xs:string" nillable="true" name="string"/>
- *     &lt;xs:element type="xs:float" nillable="true" name="float"/>
- *     &lt;xs:element type="xs:double" nillable="true" name="double"/>
- *     &lt;xs:element type="xs:boolean" nillable="true" name="boolean"/>
- *     &lt;xs:element type="xs:int" nillable="true" name="int"/>
- *     &lt;xs:element type="xs:long" nillable="true" name="long"/>
- *     &lt;xs:element type="xs:short" nillable="true" name="short"/>
- *     &lt;xs:element type="xs:byte" nillable="true" name="byte"/>
- *     &lt;xs:element type="xs:base64Binary" nillable="true" name="base64Binary"/>
- *   &lt;/xs:choice>
- * &lt;/xs:complexType>
- * </pre>
- */
+import javax.xml.bind.annotation.XmlType;
+
+@XmlType(name = "XMLPrimitive")
 public class XMLPrimitive
 {
     private int choiceSelect = -1;
@@ -50,34 +51,34 @@ public class XMLPrimitive
         }
     }
 
-    /** 
+    /**
      * Clear the choice selection.
      */
     public void clearChoiceSelect() {
         choiceSelect = -1;
     }
 
-    /** 
+    /**
      * Check if String is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifString() {
         return choiceSelect == STRING_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'string' element value.
-     * 
+     *
      * @return value
      */
     public String getString() {
         return string;
     }
 
-    /** 
+    /**
      * Set the 'string' element value.
-     * 
+     *
      * @param string
      */
     public void setString(String string) {
@@ -85,27 +86,27 @@ public class XMLPrimitive
         this.string = string;
     }
 
-    /** 
+    /**
      * Check if Float is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifFloat() {
         return choiceSelect == FLOAT_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'float' element value.
-     * 
+     *
      * @return value
      */
     public Float getFloat() {
         return _float;
     }
 
-    /** 
+    /**
      * Set the 'float' element value.
-     * 
+     *
      * @param _float
      */
     public void setFloat(Float _float) {
@@ -113,27 +114,27 @@ public class XMLPrimitive
         this._float = _float;
     }
 
-    /** 
+    /**
      * Check if Double is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifDouble() {
         return choiceSelect == DOUBLE_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'double' element value.
-     * 
+     *
      * @return value
      */
     public Double getDouble() {
         return _double;
     }
 
-    /** 
+    /**
      * Set the 'double' element value.
-     * 
+     *
      * @param _double
      */
     public void setDouble(Double _double) {
@@ -141,27 +142,27 @@ public class XMLPrimitive
         this._double = _double;
     }
 
-    /** 
+    /**
      * Check if Boolean is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifBoolean() {
         return choiceSelect == BOOLEAN_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'boolean' element value.
-     * 
+     *
      * @return value
      */
     public Boolean getBoolean() {
         return _boolean;
     }
 
-    /** 
+    /**
      * Set the 'boolean' element value.
-     * 
+     *
      * @param _boolean
      */
     public void setBoolean(Boolean _boolean) {
@@ -169,27 +170,27 @@ public class XMLPrimitive
         this._boolean = _boolean;
     }
 
-    /** 
+    /**
      * Check if Int is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifInt() {
         return choiceSelect == INT_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'int' element value.
-     * 
+     *
      * @return value
      */
     public Integer getInt() {
         return _int;
     }
 
-    /** 
+    /**
      * Set the 'int' element value.
-     * 
+     *
      * @param _int
      */
     public void setInt(Integer _int) {
@@ -197,27 +198,27 @@ public class XMLPrimitive
         this._int = _int;
     }
 
-    /** 
+    /**
      * Check if Long is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifLong() {
         return choiceSelect == LONG_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'long' element value.
-     * 
+     *
      * @return value
      */
     public Long getLong() {
         return _long;
     }
 
-    /** 
+    /**
      * Set the 'long' element value.
-     * 
+     *
      * @param _long
      */
     public void setLong(Long _long) {
@@ -225,27 +226,27 @@ public class XMLPrimitive
         this._long = _long;
     }
 
-    /** 
+    /**
      * Check if Short is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifShort() {
         return choiceSelect == SHORT_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'short' element value.
-     * 
+     *
      * @return value
      */
     public Short getShort() {
         return _short;
     }
 
-    /** 
+    /**
      * Set the 'short' element value.
-     * 
+     *
      * @param _short
      */
     public void setShort(Short _short) {
@@ -253,27 +254,27 @@ public class XMLPrimitive
         this._short = _short;
     }
 
-    /** 
+    /**
      * Check if Byte is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifByte() {
         return choiceSelect == BYTE_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'byte' element value.
-     * 
+     *
      * @return value
      */
     public Byte getByte() {
         return _byte;
     }
 
-    /** 
+    /**
      * Set the 'byte' element value.
-     * 
+     *
      * @param _byte
      */
     public void setByte(Byte _byte) {
@@ -281,27 +282,27 @@ public class XMLPrimitive
         this._byte = _byte;
     }
 
-    /** 
+    /**
      * Check if Base64Binary is current selection for choice.
-     * 
+     *
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifBase64Binary() {
         return choiceSelect == BASE64_BINARY_CHOICE;
     }
 
-    /** 
+    /**
      * Get the 'base64Binary' element value.
-     * 
+     *
      * @return value
      */
     public byte[] getBase64Binary() {
         return base64Binary;
     }
 
-    /** 
+    /**
      * Set the 'base64Binary' element value.
-     * 
+     *
      * @param base64Binary
      */
     public void setBase64Binary(byte[] base64Binary) {

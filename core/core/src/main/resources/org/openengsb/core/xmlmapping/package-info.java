@@ -1,4 +1,4 @@
-<!--
+/**
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
@@ -13,14 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
--->
-<binding xmlns:tns="http://org.openengsb/util/serialization" name="binding"
-	package="org.openengsb.util.serialization">
-	<namespace uri="http://org.openengsb/util/serialization" default="elements" />
-	<mapping class="org.openengsb.util.serialization.SerializationTestClass" name="serializationtestclass">
-		<value style="element" name="prop1" field="prop1" />
-		<value style="element" name="prop2" field="prop2" />
-		<value style="element" name="prop3" field="prop3" />
-	</mapping>
-</binding>
+   
+ */
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.openengsb.org/serialization/1.0")
+package org.openengsb.core.xmlmapping;
