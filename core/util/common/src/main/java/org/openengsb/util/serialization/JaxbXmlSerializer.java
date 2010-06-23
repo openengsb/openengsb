@@ -91,7 +91,7 @@ public class JaxbXmlSerializer implements Serializer {
     }
 
     @Override
-    public <T> void serialize(T object, Writer writer) throws SerializationException {
+    public void serialize(Object object, Writer writer) throws SerializationException {
         try {
             marshaller.marshal(object, writer);
         } catch (JAXBException e) {
