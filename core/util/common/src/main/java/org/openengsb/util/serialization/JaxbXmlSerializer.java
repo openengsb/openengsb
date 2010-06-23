@@ -24,6 +24,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMResult;
+
+import org.w3c.dom.Document;
 
 public class JaxbXmlSerializer implements Serializer {
 
@@ -77,6 +81,15 @@ public class JaxbXmlSerializer implements Serializer {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> T deserialize(Class<T> clazz, Source source) throws SerializationException {
+        try {
+            return (T) unmarshaller.unmarshal(source);
+        } catch (JAXBException e) {
+            throw new SerializationException("Jaxb failed at deserializing", e);
+        }
+    }
+
     @Override
     public <T> void serialize(T object, Writer writer) throws SerializationException {
         try {
@@ -86,4 +99,13 @@ public class JaxbXmlSerializer implements Serializer {
         }
     }
 
+    public Document serializeToDocument(Object o) throws SerializationException {
+        DOMResult result = new DOMResult();
+        try {
+            marshaller.marshal(o, result);
+        } catch (JAXBException e) {
+            throw new SerializationException("Jaxb failed at serializing", e);
+        }
+        return (Document) result.getNode();
+    }
 }
