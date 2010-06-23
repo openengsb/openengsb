@@ -25,6 +25,10 @@
 
     <root.basedir>${project.basedir}</root.basedir>
 
+    <!-- Environment Versions -->
+    <jdk.version>1.6</jdk.version>
+    <mvn.version>2.1</mvn.version>
+
     <!-- Library Versions -->
     <activemq.version>5.2.0</activemq.version>
     <cglib.version>2.2</cglib.version>
@@ -42,7 +46,6 @@
     <h2.version>1.1.116</h2.version>
     <jaxb.version>2.2</jaxb.version>
     <jaxen.version>1.1.1</jaxen.version>
-    <jdk.version>1.6</jdk.version>
     <jetty.version>6.1.20</jetty.version>
     <jgit.version>0.7.1</jgit.version>
     <jibx.version>1.2.2</jibx.version>
@@ -245,13 +248,13 @@
   </scm>
 
   <issueManagement>
-    <system>Mantis</system>
-    <url>http://issues.openengsb.org/mantis</url>
+    <system>JIRA</system>
+    <url>http://issues.openengsb.org/</url>
   </issueManagement>
 
   <ciManagement>
     <system>Hudson</system>
-    <url>http://build.openengsb.org/hudson</url>
+    <url>http://build.openengsb.org/</url>
     <notifiers>
       <notifier>
         <type>mail</type>
@@ -260,49 +263,11 @@
         <sendOnSuccess>true</sendOnSuccess>
         <sendOnWarning>true</sendOnWarning>
         <configuration>
-          <address>openengsb-ticket@googlegroups.com</address>
+          <address>openengsb-dev@googlegroups.com</address>
         </configuration>
       </notifier>
     </notifiers>
   </ciManagement>
-
-  <mailingLists>
-    <mailingList>
-      <name>Release announcements</name>
-      <subscribe>openengsb-announce-subscribe@googlegroups.com</subscribe>
-      <unsubscribe>openengsb-announce-unsubscribe@googlegroups.com</unsubscribe>
-      <post>openengsb-announce@googlegroups.com</post>
-      <archive>http://groups.google.com/group/openengsb-announce</archive>
-    </mailingList>
-    <mailingList>
-      <name>Developer Mailing List</name>
-      <subscribe>openengsb-dev-subscribe@googlegroups.com</subscribe>
-      <unsubscribe>openengsb-dev-unsubscribe@googlegroups.com</unsubscribe>
-      <post>openengsb-dev@googlegroups.com</post>
-      <archive>http://groups.google.com/group/openengsb-dev</archive>
-    </mailingList>
-    <mailingList>
-      <name>User Mailing List</name>
-      <subscribe>openengsb-user-subscribe@googlegroups.com</subscribe>
-      <unsubscribe>openengsb-user-unsubscribe@googlegroups.com</unsubscribe>
-      <post>openengsb-user@googlegroups.com</post>
-      <archive>http://groups.google.com/group/openengsb-user</archive>
-    </mailingList>
-    <mailingList>
-      <name>Issue tracker notifications</name>
-      <subscribe>openengsb-ticket-subscribe@googlegroups.com</subscribe>
-      <unsubscribe>openengsb-ticket-unsubscribe@googlegroups.com</unsubscribe>
-      <post>openengsb-ticket@googlegroups.com</post>
-      <archive>http://groups.google.com/group/openengsb-ticket</archive>
-    </mailingList>
-    <mailingList>
-      <name>Commit notifications</name>
-      <subscribe>openengsb-commit-subscribe@googlegroups.com</subscribe>
-      <unsubscribe>openengsb-commit-unsubscribe@googlegroups.com</unsubscribe>
-      <post>openengsb-commit@googlegroups.com</post>
-      <archive>http://groups.google.com/group/openengsb-commit</archive>
-    </mailingList>
-  </mailingLists>
 
   <developers>
     <developer>
@@ -342,6 +307,24 @@
         <role>Developer</role>
       </roles>
     </developer>
+    <developer>
+      <id>cgr</id>
+      <name>Christoph Gritschenberger</name>
+      <email>e0525747 [at] student.tuwien.ac.at</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mzo</id>
+      <name>Michael Zoech</name>
+      <email>zoech [at] qse.ifs.tuwien.ac.at</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
   </developers>
 
   <contributors>
@@ -358,16 +341,6 @@
     <contributor>
       <name>Alexander Pucher</name>
       <email>engsb [at] alexander-pucher.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Michael Zoech</name>
-      <email>zoech [at] qse.ifs.tuwien.ac.at</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Christoph Gritschenberger</name>
-      <email>e0525747 [at] student.tuwien.ac.at</email>
       <timezone>+1</timezone>
     </contributor>
     <contributor>
@@ -395,7 +368,6 @@
       <email>gernot.rumpold [at] gmail.com</email>
       <timezone>+1</timezone>
     </contributor>
-
   </contributors>
 
   <build>
