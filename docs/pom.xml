@@ -30,7 +30,7 @@
 
   <artifactId>openengsb-docs</artifactId>
   <name>openengsb-docs</name>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
   <description>
     Documentation project of Open Engineering Service Bus
