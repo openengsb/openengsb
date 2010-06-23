@@ -21,6 +21,10 @@ package org.openengsb.util.serialization;
 import java.io.Reader;
 import java.io.Writer;
 
+import javax.xml.transform.Source;
+
+import org.w3c.dom.Node;
+
 /**
  * Generic marshaller interface for all marshalling tasks in the openengsb
  *
@@ -39,6 +43,10 @@ public interface Serializer {
      */
     public <T> T deserialize(Class<T> clazz, Reader reader) throws SerializationException;
 
+    public <T> T deserialize(Class<T> clazz, Source source) throws SerializationException;
+
+    public <T> T deserialize(Class<T> clazz, Node node) throws SerializationException;
+
     /**
      * Serializes the given object and writes it to the given writer.
      *
@@ -47,4 +55,9 @@ public interface Serializer {
      * @throws MarshallingException
      */
     public void serialize(Object object, Writer writer) throws SerializationException;
+
+    public Source serializeToSource(Object o) throws SerializationException;
+
+    public Node serializeToDOM(Object o) throws SerializationException;
+
 }

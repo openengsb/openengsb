@@ -26,8 +26,9 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 
-import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 public class JaxbXmlSerializer implements Serializer {
 
@@ -81,10 +82,18 @@ public class JaxbXmlSerializer implements Serializer {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public <T> T deserialize(Class<T> clazz, Source source) throws SerializationException {
         try {
-            return (T) unmarshaller.unmarshal(source);
+            return unmarshaller.unmarshal(source, clazz).getValue();
+        } catch (JAXBException e) {
+            throw new SerializationException("Jaxb failed at deserializing", e);
+        }
+    }
+
+    @Override
+    public <T> T deserialize(Class<T> clazz, Node node) throws SerializationException {
+        try {
+            return unmarshaller.unmarshal(node, clazz).getValue();
         } catch (JAXBException e) {
             throw new SerializationException("Jaxb failed at deserializing", e);
         }
@@ -99,13 +108,19 @@ public class JaxbXmlSerializer implements Serializer {
         }
     }
 
-    public Document serializeToDocument(Object o) throws SerializationException {
+    @Override
+    public Node serializeToDOM(Object o) throws SerializationException {
         DOMResult result = new DOMResult();
         try {
             marshaller.marshal(o, result);
         } catch (JAXBException e) {
             throw new SerializationException("Jaxb failed at serializing", e);
         }
-        return (Document) result.getNode();
+        return result.getNode();
+    }
+
+    @Override
+    public Source serializeToSource(Object o) throws SerializationException {
+        return new DOMSource(serializeToDOM(o));
     }
 }
