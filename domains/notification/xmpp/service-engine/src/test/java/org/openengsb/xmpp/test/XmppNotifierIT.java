@@ -17,6 +17,7 @@
 package org.openengsb.xmpp.test;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 
 import javax.jbi.messaging.ExchangeStatus;
 import javax.jbi.messaging.InOut;
@@ -41,6 +42,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.openengsb.core.model.MethodCall;
+import org.openengsb.core.transformation.Transformer;
+import org.openengsb.drools.model.Attachment;
+import org.openengsb.drools.model.Notification;
+import org.openengsb.util.serialization.SerializationException;
 import org.openengsb.xmpp.XmppNotifier;
 import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -158,22 +164,19 @@ public class XmppNotifierIT extends SpringTestSupport {
     }
 
     private String getTestEvent() {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><XMLMethodCall><methodName>notify</methodName><args>"
-                + "<type>org.openengsb.drools.model.Notification</type><value><bean>"
-                + "<className>org.openengsb.drools.model.Notification</className>"
-                + "<fields><fieldName>subject</fieldName><value><null>null</null></value></fields>"
-                + "<fields><fieldName>message</fieldName><value><primitive><string>" + testMsg
-                + "</string></primitive><id>1</id></value></fields><fields>"
-                + "<fieldName>recipient</fieldName><value><primitive><string>" + testRecipient
-                + "</string></primitive><id>2</id></value></fields><fields>"
-                + "<fieldName>attachments</fieldName><value><list><mappable><bean>"
-                + "<className>org.openengsb.drools.model.Attachment</className><fields>"
-                + "<fieldName>data</fieldName><value><primitive><base64Binary>dGVzdGZpbGU=</base64Binary>"
-                + "</primitive><id>5</id></value></fields><fields><fieldName>type</fieldName>"
-                + "<value><primitive><string>txt</string></primitive><id>6</id></value></fields>"
-                + "<fields><fieldName>name</fieldName><value><primitive><string>file1.txt</string></primitive>"
-                + "<id>7</id></value></fields></bean><id>4</id></mappable></list><id>3</id></value></fields>"
-                + "</bean><id>0</id></value></args></XMLMethodCall>";
+        Notification n = new Notification();
+        n.setSubject("a");
+        n.setMessage(testMsg);
+        n.setRecipient(testRecipient);
+        ArrayList<Attachment> a = new ArrayList<Attachment>();
+        a.add(new Attachment(new byte[] { 0x01, 0x02 }, "txt", "a.txt"));
+        n.setAttachments(a);
+        MethodCall mc = new MethodCall("notify", new Object[] { n }, new Class[] { Notification.class });
+        try {
+            return Transformer.toXml(mc);
+        } catch (SerializationException e) {
+            throw new RuntimeException();
+        }
     }
 
     private void initializeMockedObjects() {
