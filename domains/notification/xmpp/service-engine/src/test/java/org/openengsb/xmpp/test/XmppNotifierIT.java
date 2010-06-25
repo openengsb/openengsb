@@ -68,6 +68,7 @@ public class XmppNotifierIT extends SpringTestSupport {
 
     private final String namespace = "urn:test";
     private final String name = "xmpp";
+    private final String testSubject = "Testsubject";
     private final String testMsg = "Testmessage";
     private final String testRecipient = "test@satellite";
     private final Integer numAttachments = 1;
@@ -136,6 +137,7 @@ public class XmppNotifierIT extends SpringTestSupport {
     public void testNotifySendMessage() throws XMPPException, MessagingException {
         sendMessage();
         Message message = new Message();
+        message.setSubject(testSubject);
         message.setBody(testMsg);
         Mockito.verify(chat, Mockito.times(1)).sendMessage(Mockito.eq(message));
     }
@@ -165,11 +167,11 @@ public class XmppNotifierIT extends SpringTestSupport {
 
     private String getTestEvent() {
         Notification n = new Notification();
-        n.setSubject("a");
+        n.setSubject(testSubject);
         n.setMessage(testMsg);
         n.setRecipient(testRecipient);
         ArrayList<Attachment> a = new ArrayList<Attachment>();
-        a.add(new Attachment(new byte[] { 0x01, 0x02 }, "txt", "a.txt"));
+        a.add(new Attachment(new byte[] { 0x01, 0x02 }, "a", "a.txt"));
         n.setAttachments(a);
         MethodCall mc = new MethodCall("notify", new Object[] { n }, new Class[] { Notification.class });
         try {
