@@ -27,7 +27,7 @@
     <!-- Other Settings -->
     <java.version>1.6</java.version>
     <!-- Plugin Version Settings  -->
-    <plugin.pax.version>1.4</plugin.pax.version>
+    <plugin.pax.version>1.5-SNAPSHOT</plugin.pax.version>
     <plugin.compiler.version>2.3.1</plugin.compiler.version>
     <plugin.bundle.version>2.1.0</plugin.bundle.version>
     <plugin.eclipse.version>2.8</plugin.eclipse.version>
@@ -115,6 +115,24 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  
+  <pluginRepositories>
+    <pluginRepository>
+      <id>ops4j.releases</id>
+      <url>http://repository.ops4j.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>openengsb-plugin-releases</id>
+      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-plugin-releases</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>openengsb-plugin-snapshots</id>
+      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-plugin-snapshots</url>
+    </pluginRepository>
+  </pluginRepositories>
 
 </project>
 
