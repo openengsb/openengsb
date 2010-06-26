@@ -1530,6 +1530,14 @@
       <id>jboss</id>
       <url>http://repository.jboss.com/maven2</url>
     </repository>
+    <repository>
+      <id>openengsb-osgi-releases</id>
+      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-releases</url>
+    </repository>
+    <repository>
+      <id>openengsb-osgi-snapshots</id>
+      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-snapshots</url>
+    </repository>
   </repositories>
 
   <distributionManagement>
