@@ -134,5 +134,16 @@
     </pluginRepository>
   </pluginRepositories>
 
+  <distributionManagement>
+    <repository>
+      <id>openengsb-osgi-releases</id>
+      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>openengsb-osgi-snapshots</id>
+      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
 </project>
 
