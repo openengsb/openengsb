@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.openengsb.wrapped</groupId>
+    <artifactId>openengsb-wrapped</artifactId>
+    <version>1</version>
+  </parent>
+
+  <properties>
+    <bundle.symbolicName>org.apache.wicket</bundle.symbolicName>
+    <wrapped.groupId>org.apache.wicket</wrapped.groupId>
+    <wrapped.artifactId>wicket</wrapped.artifactId>
+    <wrapped.version>1.4.9</wrapped.version>
+    <bundle.namespace>${wrapped.groupId}</bundle.namespace>
+  </properties>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>${wrapped.groupId}</groupId>
+  <artifactId>${parent.groupId}.${wrapped.groupId}</artifactId>
+  <version>${wrapped.version}</version>
+
+  <name>${bundle.symbolicName}</name>
+
+  <packaging>bundle</packaging>
+
+  <dependencies>
+    <dependency>
+      <groupId>${wrapped.groupId}</groupId>
+      <artifactId>${wrapped.artifactId}</artifactId>
+      <version>${wrapped.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${wrapped.groupId}</groupId>
+      <artifactId>wicket-datetime</artifactId>
+      <version>${wrapped.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${wrapped.groupId}</groupId>
+      <artifactId>wicket-devutils</artifactId>
+      <version>${wrapped.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${wrapped.groupId}</groupId>
+      <artifactId>wicket-extensions</artifactId>
+      <version>${wrapped.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${wrapped.groupId}</groupId>
+      <artifactId>wicket-ioc</artifactId>
+      <version>${wrapped.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${wrapped.groupId}</groupId>
+      <artifactId>wicket-spring</artifactId>
+      <version>${wrapped.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${wrapped.groupId}</groupId>
+      <artifactId>wicket-jmx</artifactId>
+      <version>${wrapped.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>${wrapped.groupId}</groupId>
+      <artifactId>wicket-velocity</artifactId>
+      <version>${wrapped.version}</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
+
+</project>
+
