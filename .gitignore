@@ -10,7 +10,6 @@ eclipse-workspace
 *.classpath
 *.settings
 *bin
-formatter.xml
 
 #=================
 #maven-files
