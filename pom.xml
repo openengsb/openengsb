@@ -1490,6 +1490,21 @@
       <name>twdata.org Maven 2 Repository</name>
       <url>http://twdata-m2-repository.googlecode.com/svn/</url>
     </pluginRepository>
+    <pluginRepository>
+      <id>ops4j.releases</id>
+      <url>http://repository.ops4j.org/maven2</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>openengsb-plugin-releases</id>
+      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-plugin-releases</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>openengsb-plugin-snapshots</id>
+      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-plugin-snapshots</url>
+    </pluginRepository>
   </pluginRepositories>
 
   <repositories>
@@ -1529,6 +1544,14 @@
     <repository>
       <id>jboss</id>
       <url>http://repository.jboss.com/maven2</url>
+    </repository>
+    <repository>
+      <id>openengsb-osgi-releases</id>
+      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-releases</url>
+    </repository>
+    <repository>
+      <id>openengsb-osgi-snapshots</id>
+      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-snapshots</url>
     </repository>
   </repositories>
 
