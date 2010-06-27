@@ -15,13 +15,6 @@
 #   limitations under the License.
 #
 
-# This script changes the copyright header version from one year to another. Simply provide
-# the actual year as first param and the next year as the second param. Finally the year have
-# to be set manually in the following files:
-# * NOTICE
-
-echo "This script requires perl to run. Please read the documentatation provided in this script."
-
-cd $(dirname $0)/..
-perl -e "s/Copyright $1 OpenEngSB/Copyright $2 OpenEngSB/g;" -pi $(find . -type f)
+cd $(dirname $0)/../../
+mvn clean install -Plicense-check,test-all
 

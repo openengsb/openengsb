@@ -16,7 +16,7 @@
 #
 
 # get and save path of script dir in SCRIPT_DIR
-cd $(dirname $0)/../
+cd $(dirname $0)/../../
 ASSEMBLY_ROOT_DIR=`pwd`
 
 # build entire project from root
@@ -28,7 +28,7 @@ SERVICEMIX_HOME=$ASSEMBLY_ROOT_DIR/package/assembly/target/installers/
 # make sure directory exists
 mkdir -p $SERVICEMIX_HOME/deploy/
 
-sh $ASSEMBLY_ROOT_DIR/scripts/deploy.sh
+sh $ASSEMBLY_ROOT_DIR/etc/scripts/deploy.sh
 
 # assembly product
 cd $ASSEMBLY_ROOT_DIR/package/assembly

@@ -15,6 +15,6 @@
 #   limitations under the License.
 #
 
-cd $(dirname $0)/.. 
-mvn clean install -Plicense-check,test-all
+cd $(dirname $0)/../../
+mvn validate -Plicense-check -DskipTests=true
 

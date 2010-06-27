@@ -10,12 +10,12 @@ Afterwards start eclipse again and import existing eclipse projects.
 TBW (using the archtypes)
 
 == Scripts ==
-Scripts which help you to create projects, run the workspace and so on are stored in a seperated script folder. Its not required to use them but they may help you with your afford.
+Scripts which help you to create projects, run the workspace and so on are stored in a seperated script folder (etc/scripts). Its not required to use them but they may help you with your afford.
 
 == Full Run ==
 Before a push, run the following command:
 
-scripts/pre-push.sh
+etc/scripts/pre-push.sh
 
 == Build Docs ==
 To build the documentation use the following command:

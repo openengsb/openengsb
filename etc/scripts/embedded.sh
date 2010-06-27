@@ -15,17 +15,14 @@
 #   limitations under the License.
 #
 
-cd $(dirname $0)/../core/core
-mvn install -DskipTests=true
+# Script used to build the entire servicebus and run it directly from maven. This 
+# script actually using the jbi:servicemix maven command therefore. In future
+# version, when the project is embedded in an webserver this script is for
+# change.
 
-cd ../workflow/domains
-mvn install -DskipTests=true
-mvn assembly:assembly
+echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
 
-mv target/*guvnorUpload.jar target/guvnorUpload.tmp
-rm target/*.jar
-mkdir -p ../../../target
-mv target/guvnorUpload.tmp ../../../target/openengsb-guvnor-model.jar
-
-echo -e "\n\nYou can find the model in the target directory of the root project."
+cd $(dirname $0)/../../
+mvn clean install -Dmaven.test.skip=true
+cd package/embedded; mvn jetty:run-war
 

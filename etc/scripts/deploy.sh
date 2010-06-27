@@ -57,7 +57,7 @@ if [ ! -d ${M2_REPO:-X} ] ; then
 fi
 
 
-cd $(dirname $0)/..
+cd $(dirname $0)/../../
 
 smx_comp_version=`grep '<servicemix.subprojects.version>' pom.xml | sed 's! *<[^>]*> *!!g'`
 openengsb_version=`grep '<version>' pom.xml | head -1 | sed 's! *<[^>]*> *!!g'`

@@ -15,6 +15,17 @@
 #   limitations under the License.
 #
 
-cd $(dirname $0)/.. 
-mvn clean install -Plicense-check
+cd $(dirname $0)/../../core/core
+mvn install -DskipTests=true
+
+cd ../workflow/domains
+mvn install -DskipTests=true
+mvn assembly:assembly
+
+mv target/*guvnorUpload.jar target/guvnorUpload.tmp
+rm target/*.jar
+mkdir -p ../../../target
+mv target/guvnorUpload.tmp ../../../target/openengsb-guvnor-model.jar
+
+echo -e "\n\nYou can find the model in the target directory of the root project."
 

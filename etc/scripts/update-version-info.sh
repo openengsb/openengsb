@@ -15,14 +15,13 @@
 #   limitations under the License.
 #
 
-# Script used to build the entire servicebus and run it directly from maven. This 
-# script actually using the jbi:servicemix maven command therefore. In future
-# version, when the project is embedded in an webserver this script is for
-# change.
+# This script changes the copyright header version from one year to another. Simply provide
+# the actual year as first param and the next year as the second param. Finally the year have
+# to be set manually in the following files:
+# * NOTICE
 
-echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
+echo "This script requires perl to run. Please read the documentatation provided in this script."
 
-cd $(dirname $0)/..
-mvn install -o -Dmaven.test.skip=true
-scripts/deploy.sh $1 $2
+cd $(dirname $0)/../../
+perl -e "s/Copyright $1 OpenEngSB/Copyright $2 OpenEngSB/g;" -pi $(find . -type f)
 

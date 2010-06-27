@@ -15,6 +15,7 @@
 #   limitations under the License.
 #
 
-cd $(dirname $0)/.. 
-mvn validate -Plicense-check -DskipTests=true
+cd $(dirname $0)
+cd ../../core/testclient/jms/swingclient 
+mvn -e exec:java -Dexec.mainClass=org.openengsb.swingclient.Start
 
