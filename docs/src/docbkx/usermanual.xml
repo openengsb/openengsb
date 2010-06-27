@@ -109,6 +109,7 @@
     <xi:include href="developer/workflow.xml"/>
     <xi:include href="developer/context.xml"/>
     <xi:include href="developer/guidelines.xml" />
+    <xi:include href="developer/wrapped.xml" />
   </part>
 
   <part>
