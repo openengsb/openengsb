@@ -7,7 +7,7 @@ Create an eclipse workspace in ./eclipse-workspace. Afterwards close the workspa
 Afterwards start eclipse again and import existing eclipse projects.
 
 == Create Project ==
-TBW (using the archtypes)
+Execute etc/scripts/create-project.sh with groupId and artifactId as params to create the base proejct structure.
 
 == Scripts ==
 Scripts which help you to create projects, run the workspace and so on are stored in a seperated script folder (etc/scripts). Its not required to use them but they may help you with your afford.
@@ -23,5 +23,5 @@ To build the documentation use the following command:
 mvn clean install -Pdocs
 
 == Further Information ==
-This readme gives only the most important information for developer. General information about this proejct is located at http://openengsb.org. The detailed developer documentation is located at http://openengsb.org/reference/index.html
+This readme gives only the most important information for developer. General information about this proejct is located at http://openengsb.org. The detailed developer documentation is located at http://openengsb.org/reference/index.html.
 
