@@ -120,5 +120,10 @@
     </partintro>
     <xi:include href="developer/domains.xml"/>
   </part>
+  
+  <part>
+    <title>Appendix</title>
+    <xi:include href="appendix/glossary.xml" />
+  </part>
 
 </book>
