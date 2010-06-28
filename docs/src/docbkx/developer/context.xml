@@ -9,7 +9,7 @@
     under the License.
   -->
 <chapter id="context" xmlns="http://docbook.org/ns/docbook">
-  <title>Context management</title>
+  <title>Context Management</title>
   <para>
     In OpenEngSB every component, be it a ServiceEngine or a ServiceUnit, can have its own configuration. This
     configuration consists of key value pairs, both strings. The keys of this "context store" are built up hierachically

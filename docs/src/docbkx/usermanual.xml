@@ -87,7 +87,7 @@
         to your needs.
       </para>
     </partintro>
-    <xi:include href="administration/userQuickstart.xml" />
+    <xi:include href="administration/gettingstarted.xml" />
     <xi:include href="administration/testclient.xml" />
   </part>
 
