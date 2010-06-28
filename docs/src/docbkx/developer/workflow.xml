@@ -24,70 +24,51 @@
     First of all a <link linkend="workflow.events">rule based event approach</link>. This way allows to define actions
     based on events which where thrown in or to the bus. Events are very practical for "short-time-handling" since they
     are also easy to replace and extend. For long running business processes the secondary workflow method could be used
-    which is <link linkend="workflow.processes">based on processes described in Drools-Flow.</link>. 
+    which is <link linkend="workflow.processes">based on processes described in Drools-Flow</link>.
+  </para>
+  <para>
+    The openengsb-drools component takes "events" as input and handles them using a rulebased system (JBoss Drools 5.0).
+    The workflow-se provides multiple ways to manage rules.
+    The Directory-Source manages the rules in the filesystem, within servicemix.
   </para>
 
-  <section id="workflow.events">
-    <title>Events</title>
+  <section id="workflow.directory">
+    <title>Directory</title>
     <para>
-      The openengsb-drools component takes "events" as input and handles them using a rulebased system (JBoss Drools 5.0).
-      The rules are managed independent of servicemix in the Drools Guvnor. Guvnor is a webapplication running inside a 
-      JBoss Application Server. The rulebase can be managed with the webinterface. For specifying conditions in rules 
-      a model is needed. A model is described in simple Java objects. The default model is located in 
-      <literal>workflow/drools/domains</literal>. The following example shows how a rule can be specified.
-  </para>
-    <orderedlist>
-      <listitem>
-        Login guvnor
-        <para>
-          Take the browser to the guvnor webinterface (e.g. http://localhost:8080/drools-guvnor) and login with your
-          credentials. 
-		</para>
-      </listitem>
-      <listitem>
-        Setup package
-        <para>
-          select "Knowledge Bases" in the sidebar and Create a new package named "org.openengsb".
-			</para>
-      </listitem>
-      <listitem>
-        Build and upload the model
-        <para>
-          Execute the shell script "create-guvnor-model.sh" in the scripts folder. This compiles the
-          model and packs it to target/openengsb-guvnor-model.jar. Use the webinterface to upload the model by
-          selecting "Create New->Upload POJO Model jar". Enter a name (e.g. "openengsb") and confirm the dialog. Now
-          browse to the openengsb-guvnor-model.jar and upload it. When that is done click "save
-          changes" in the top-left corner of the frame. Enter a commit-message (e.g. "add openengsb-guvnor-model").
-		</para>
-      </listitem>
-      <listitem>
-        Create a new rule with the web interface
-        <para>
-          Select "Create New->New Rule" and enter a name for the new rule. Assign it to a category (does not influence
-          functionality of the rule). Then choose which type of rule you would like to create. The easiest to use type
-          is the "Business Rule (guided editor)". In the WHEN-area you may specify conditions (e.g. using the
-          Event-model). In the THEN-area you may specify the actions. In actions you can modify the knowledge
-          (e.g. the current event) or trigger actions in the OpenEngSB. To trigger actions select "call method on ...".
-          You can use information contained in the event by binding it to a variable. Click on the field in the
-          when-condition and provide a variable name.
-  		</para>
-      </listitem>
-      <listitem>
-        Compile the rulebase
-        <para>
-          For the changes to be applied for usage in the workflow the rules must be compiled. You only need to select the
-          package (org.openengsb) in the sidepane and then click "Build package" in the right frame.
-  		</para>
-      </listitem>
-      <listitem>
-        Eclipse-plugin
-        <para>
-          TODO
-  		</para>
-      </listitem>
-    </orderedlist>
+      A Directory-source is initialized with a default-set of imports, globals and a "Hello World" rule.
+      The workflow service-engine supports operations to modify the rulebase at runtime.
+      This is achieved by setting the operation-property of the exchange.
+    </para>
+    <para>
+      All Requests use the "ManageRequest"-model (see the xml-schema or the correesponding Javaclass for details).
+      It consists of a RuleBaseElementId and the optional code that should be used for writing operations.
+      The RuleBaseElementId identifies the Element exactly by Type (Rule, Function, Import, Global), name and packageName.
+      The operations "create", "update", and "delete" are only accepted for InOnly-exchanges, while "get" and "list" are only accepted for InOut-exchanges.
+      When creating a rule that already exists an exception is raised.
+      When trying to delete an element that is not there, nothing happens.
+    </para>
+    <para>
+      <unorderedList>
+        <listitem>
+          create: creates the element matching the ID and the supplied code
+        </listitem>
+        <listitem>
+          update: replaces the element matching the ID with the supplied code
+        </listitem>
+        <listitem>
+          delete: deletes the element matching the ID
+        </listitem>
+        <listitem>
+          read: returns the code of the element matching the ID (see GetResponse in the model)
+        </listitem>
+        <listitem>
+          list: returns a list of all elements of the supplied type contained in the supplied pacakge.
+          If the package is ommited, all Elements are returned. (see ListResponse in the model)
+        </listitem>
+      </unorderedList>
+    </para>
   </section>
-  
+
   <section id="workflow.processes">
     <title>Processes</title>
     <para>

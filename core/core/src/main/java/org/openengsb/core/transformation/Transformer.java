@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.core.transformation;
 
@@ -29,12 +29,20 @@ import org.openengsb.core.xmlmapping.XMLEvent;
 import org.openengsb.core.xmlmapping.XMLMethodCall;
 import org.openengsb.core.xmlmapping.XMLReturnValue;
 import org.openengsb.core.xmlmapping.XMLTypedValue;
-import org.openengsb.util.serialization.JibxXmlSerializer;
+import org.openengsb.util.serialization.JaxbXmlSerializer;
 import org.openengsb.util.serialization.SerializationException;
+import org.openengsb.util.serialization.Serializer;
 
 public class Transformer {
 
-    private final static JibxXmlSerializer serializer = new JibxXmlSerializer();
+    private static Serializer serializer = null;
+
+    private static Serializer getSerializer() throws SerializationException {
+        if (serializer == null) {
+            serializer = new JaxbXmlSerializer(XMLEvent.class.getPackage().getName());
+        }
+        return serializer;
+    }
 
     private Transformer() {
         throw new AssertionError();
@@ -81,7 +89,7 @@ public class Transformer {
     private static String xml(Object o) {
         try {
             StringWriter writer = new StringWriter();
-            serializer.serialize(o, writer);
+            getSerializer().serialize(o, writer);
             return writer.toString();
         } catch (SerializationException e) {
             throw new RuntimeException(e);
@@ -91,7 +99,7 @@ public class Transformer {
     public static MethodCall toMethodCall(String xml) throws SerializationException {
 
         FromXmlTypesTransformer transformer = new FromXmlTypesTransformer();
-        XMLMethodCall xmc = serializer.deserialize(XMLMethodCall.class, new StringReader(xml));
+        XMLMethodCall xmc = getSerializer().deserialize(XMLMethodCall.class, new StringReader(xml));
 
         List<Object> args = new ArrayList<Object>();
         List<Class<?>> types = new ArrayList<Class<?>>();
@@ -107,7 +115,7 @@ public class Transformer {
 
     public static ReturnValue toReturnValue(String xml) throws SerializationException {
         FromXmlTypesTransformer transformer = new FromXmlTypesTransformer();
-        XMLReturnValue xrv = serializer.deserialize(XMLReturnValue.class, new StringReader(xml));
+        XMLReturnValue xrv = getSerializer().deserialize(XMLReturnValue.class, new StringReader(xml));
         XMLTypedValue typedValue = xrv.getValue();
         Object o = transformer.toObject(typedValue.getValue());
         Class<?> simpleGetClass = null;
@@ -120,7 +128,7 @@ public class Transformer {
     }
 
     public static Event toEvent(String xml) throws SerializationException {
-        XMLEvent xrv = serializer.deserialize(XMLEvent.class, new StringReader(xml));
+        XMLEvent xrv = getSerializer().deserialize(XMLEvent.class, new StringReader(xml));
         FromXmlTypesTransformer transformer = new FromXmlTypesTransformer();
         return transformer.toEvent(xrv, "-1");
     }

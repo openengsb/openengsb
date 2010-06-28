@@ -13,7 +13,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.contextcommon;
 
@@ -24,18 +24,26 @@ import java.util.List;
 
 import org.openengsb.core.xmlmapping.XMLContext;
 import org.openengsb.core.xmlmapping.XMLContextEntry;
-import org.openengsb.util.serialization.JibxXmlSerializer;
+import org.openengsb.util.serialization.JaxbXmlSerializer;
 import org.openengsb.util.serialization.SerializationException;
+import org.openengsb.util.serialization.Serializer;
 
 public class ContextTransformer {
 
-    private final static JibxXmlSerializer serializer = new JibxXmlSerializer();
+    private static Serializer serializer = null;
+
+    private static Serializer getSerializer() throws SerializationException {
+        if (serializer == null) {
+            serializer = new JaxbXmlSerializer(XMLContext.class.getPackage().getName());
+        }
+        return serializer;
+    }
 
     public static String toXml(Context ctx) {
         XMLContext xmlContext = toXmlContext(ctx);
         try {
             StringWriter writer = new StringWriter();
-            serializer.serialize(xmlContext, writer);
+            getSerializer().serialize(xmlContext, writer);
             return writer.toString();
         } catch (SerializationException e) {
             throw new RuntimeException(e);
@@ -45,7 +53,7 @@ public class ContextTransformer {
     public static Context fromXml(String xml) {
         try {
             StringReader reader = new StringReader(xml);
-            XMLContext xmlContext = serializer.deserialize(XMLContext.class, reader);
+            XMLContext xmlContext = getSerializer().deserialize(XMLContext.class, reader);
             return toContext(xmlContext);
         } catch (SerializationException e) {
             throw new RuntimeException(e);

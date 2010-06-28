@@ -7,21 +7,21 @@ Create an eclipse workspace in ./eclipse-workspace. Afterwards close the workspa
 Afterwards start eclipse again and import existing eclipse projects.
 
 == Create Project ==
-TBW
+Execute etc/scripts/create-project.sh with groupId and artifactId as params to create the base proejct structure.
+
+== Scripts ==
+Scripts which help you to create projects, run the workspace and so on are stored in a seperated script folder (etc/scripts). Its not required to use them but they may help you with your afford.
 
 == Full Run ==
 Before a push, run the following command:
 
-scripts/pre-push.sh
+etc/scripts/pre-push.sh
 
 == Build Docs ==
 To build the documentation use the following command:
 
 mvn clean install -Pdocs
 
-== Scripts ==
-Scripts which help you to create projects, run the workspace and so on are stored in a seperated script folder. Its not required to use them but they may help you with your afford.
-
-== Assembly ==
-To assemble the project and build a distSributable form of it run the shell script in the scripts folder called 'assemble.sh'. The assembled project can be found in the target directory of the project root folder.
+== Further Information ==
+This readme gives only the most important information for developer. General information about this proejct is located at http://openengsb.org. The detailed developer documentation is located at http://openengsb.org/reference/index.html.
 

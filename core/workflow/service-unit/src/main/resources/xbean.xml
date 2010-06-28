@@ -21,10 +21,10 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
 
-  <bean class="org.openengsb.drools.GuvnorRuleSource" id="ruleSource">
-    <property name="url" value="http://localhost:8081/drools-guvnor/org.drools.guvnor.Guvnor/package/org.openengsb/LATEST" />
+  <bean class="org.openengsb.drools.source.DirectoryRuleSource" id="ruleSource">
+    <property name="path" value="data/openengsb/rulebase" />
   </bean>
-  
-  <drools:droolsEndpoint endpoint="droolsEndpoint" service="drl:droolsService" ruleSource="#ruleSource"  />
+
+  <drools:droolsEndpoint endpoint="droolsEndpoint" service="drl:droolsService" ruleSource="#ruleSource" />
 
 </beans>

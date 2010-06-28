@@ -15,10 +15,6 @@
 ~~
 HowTo - Continuous Integration and Test Workflow
 
-* Drools setup
-
-  If you have not set up Guvnor yet, please take a look at the {{{howto_guvnor.html}Guvnor Setup}}.
-
 * Additional Servicemix Setup
 
   The perm gen space of Servicemix has to be increased. This can be done by setting the JAVA_OPTS environment variable before starting Servicemix.
@@ -30,25 +26,29 @@ HowTo - Continuous Integration and Test Workflow
 * Setting up the example
   
   In this example a workflow shall be used to model the behaviour, which is triggered by a rule. 
+  Copy the example flow  core/workflow/service-engine/src/main/resources/ci.rf to $SERVICEMIX_HOME/data/openengsb/rulebase/org/openengsb
 
-  At {{{http://localhost:8081/drools-guvnor}http://localhost:8081/drools-guvnor}} choose "Create New" -> "New RuleFlow" call it 'ci' and upload the ci.rf from core/workflow/service-engine/src/main/resources.
+  To reload the rulebase either restart servicemix or create a file names "reload" in the rulebase-directory
 
-[../images/cit_workflow.png]
++---
+cp core/workflow/service-engine/src/main/resources/ci.rf $SERVICEMIX_HOME/data/openengsb/rulebase/org/openengsb
+touch $SERVICEMIX_HOME/data/openengsb/rulebase/reload
++---
   
   To configure the email address to which the report will be sent, set the value '<contextId>/workflows/ci/notification/recipient' in the context. This can be done by the test client.
-  
-  At {{{http://localhost:8081/drools-guvnor}http://localhost:8081/drools-guvnor}} choose "Create New" -> "New Rule". Type is "DRL Rule (Technical rule, text editor)"
 
-+----  
+  Create two additional rules and save them to $SERVICEMIX_HOME/data/openengsb/rulebase/org/openengsb
+
+  scmcheckin.rule
+
++----
   when
     e : ScmCheckInEvent ()
   then
     droolsHelper.runFlow("ci");
 +----
 
-  Note: You have to press "save changes" in order to make sure that your changes to the rule take effect.
-
-  Then add another rule (same type):
+  and sendAllEvents.rule
   
 +----
   when
@@ -62,7 +62,7 @@ HowTo - Continuous Integration and Test Workflow
   The first rule states that whenever an event of type ScmCheckInEvent happens the workflow with the id 'ci' shall be started.
   The second rule forwards every event to the report domain.
 
-  Build the package with "build package". Now after an ScmCheckInEvent is triggered the workflow will be started.
+  To reload the rulebase either restart servicemix or create a file names "reload" in the rulebase-directory
 
 * Setting up Subversion Repository
 

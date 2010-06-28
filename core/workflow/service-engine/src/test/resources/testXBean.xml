@@ -13,7 +13,7 @@
   xsi:schemaLocation="
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean class="org.openengsb.drools.FileRuleSource" id="config">
+  <bean class="org.openengsb.drools.source.FileRuleSource" id="config">
     <property name="path" value="test1.drl" />
   </bean>
 

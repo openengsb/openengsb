@@ -30,7 +30,7 @@
 
   <artifactId>openengsb-docs</artifactId>
   <name>openengsb-docs</name>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
   <description>
     Documentation project of Open Engineering Service Bus
@@ -38,8 +38,8 @@
 
   <distributionManagement>
     <site>
-      <id>publicServer</id>
-      <url>file:///var/www/openengsb/</url>
+      <id>OpenengsbWebServer</id>
+      <url>scp://openengsb.org/var/www/openengsb/</url>
     </site>
   </distributionManagement>
 

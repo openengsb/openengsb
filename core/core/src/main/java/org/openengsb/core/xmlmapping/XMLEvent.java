@@ -1,23 +1,31 @@
+/**
 
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
 package org.openengsb.core.xmlmapping;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/** 
- * Schema fragment(s) for this class:
- * <pre>
- * &lt;xs:complexType xmlns:xs="http://www.w3.org/2001/XMLSchema" name="XMLEvent">
- *   &lt;xs:sequence>
- *     &lt;xs:element type="xs:string" name="className"/>
- *     &lt;xs:element type="xs:string" name="domain"/>
- *     &lt;xs:element type="xs:string" name="name"/>
- *     &lt;xs:element type="xs:string" nillable="true" name="toolConnector"/>
- *     &lt;xs:element type="XMLMapEntry" name="elements" maxOccurs="unbounded"/>
- *   &lt;/xs:sequence>
- * &lt;/xs:complexType>
- * </pre>
- */
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement(name = "XMLEvent")
+@XmlType(name = "XMLEvent", propOrder = { "className", "domain", "name", "toolConnector", "elements" })
 public class XMLEvent
 {
     private String className;
@@ -26,92 +34,47 @@ public class XMLEvent
     private String toolConnector;
     private List<XMLMapEntry> elementList = new ArrayList<XMLMapEntry>();
 
-    /** 
-     * Get the 'className' element value.
-     * 
-     * @return value
-     */
+    @XmlElement(required = true)
     public String getClassName() {
         return className;
     }
 
-    /** 
-     * Set the 'className' element value.
-     * 
-     * @param className
-     */
     public void setClassName(String className) {
         this.className = className;
     }
 
-    /** 
-     * Get the 'domain' element value.
-     * 
-     * @return value
-     */
+    @XmlElement(required = true)
     public String getDomain() {
         return domain;
     }
 
-    /** 
-     * Set the 'domain' element value.
-     * 
-     * @param domain
-     */
     public void setDomain(String domain) {
         this.domain = domain;
     }
 
-    /** 
-     * Get the 'name' element value.
-     * 
-     * @return value
-     */
+    @XmlElement(required = true)
     public String getName() {
         return name;
     }
 
-    /** 
-     * Set the 'name' element value.
-     * 
-     * @param name
-     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /** 
-     * Get the 'toolConnector' element value.
-     * 
-     * @return value
-     */
+    @XmlElement(required = true, nillable = true)
     public String getToolConnector() {
         return toolConnector;
     }
 
-    /** 
-     * Set the 'toolConnector' element value.
-     * 
-     * @param toolConnector
-     */
     public void setToolConnector(String toolConnector) {
         this.toolConnector = toolConnector;
     }
 
-    /** 
-     * Get the list of 'elements' element items.
-     * 
-     * @return list
-     */
+    @XmlElement(required = true)
     public List<XMLMapEntry> getElements() {
         return elementList;
     }
 
-    /** 
-     * Set the list of 'elements' element items.
-     * 
-     * @param list
-     */
     public void setElements(List<XMLMapEntry> list) {
         elementList = list;
     }
