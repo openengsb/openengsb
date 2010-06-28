@@ -174,6 +174,13 @@
 
 
     <!--###################################################
+                     Glossary
+   ################################################### -->
+    <xsl:param name="glossentry.show.acronym">yes</xsl:param>
+    <xsl:param name="glossary.as.blocks">0</xsl:param>
+    <xsl:param name="glossterm.width">5cm</xsl:param>
+
+    <!--###################################################
                   Paper & Page Size
    ################################################### -->
 

@@ -16,70 +16,99 @@
    limitations under the License.
 
 -->
-<chapter id="glossary" label="A" xmlns="http://docbook.org/ns/docbook">
+<glossary id="glossary" label="A" xmlns="http://docbook.org/ns/docbook">
   <title>Glossary</title>
 
-    <variablelist>
-      <varlistentry>
-        <term>OpenEngSB</term>
-        <listitem>
-          <para>TBW</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term>EngSB</term>
-        <listitem>
-          <para>TBW</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term>Domain</term>
-        <listitem>
-          <para>TBW</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term>Tool Domain</term>
-        <listitem>
-          <para>TBW</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term>Tool Connector</term>
-        <listitem>
-          <para>TBW</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term>Value Added Components</term>
-        <listitem>
-          <para>TBW</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term>OpenEngSB Platform</term>
-        <listitem>
-          <para>TBW</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term>Context</term>
-        <listitem>
-          <para>TBW</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term>Registry</term>
-        <listitem>
-          <para>TBW</para>
-        </listitem>
-      </varlistentry>
-      <varlistentry>
-        <term>Workflow</term>
-        <listitem>
-          <para>TBW</para>
-        </listitem>
-      </varlistentry>
-    </variablelist>
+  <glossentry id="glossary.xml">
+    <glossterm>Extensible Markup Language</glossterm>
+    <acronym>XML</acronym>
+    <glossdef>
+      <para>TBW</para>
+      <glossseealso otherterm="glossary.sgml">SGML</glossseealso>
+    </glossdef>
+  </glossentry>
+
+  <glossentry id="glossary.sgml">
+    <glossterm>Standard Generalized Markup Language</glossterm><acronym>SGML</acronym>
+    <abbrev>ISO 8879:1986</abbrev>
+    <glossdef>
+      <para>TBW</para>
+      <glossseealso otherterm="glossary.xml">XML</glossseealso>
+    </glossdef>
+  </glossentry>
+
+  <glossentry id="glossary.openengsb">
+    <glossterm>Open Engineering Service Bus</glossterm>
+    <abbrev>OpenEngSB</abbrev>
+    <glossdef>
+      <para>TBW</para>
+      <glossseealso otherterm="glossary.engsb" />
+      <glossseealso otherterm="glossary.esb" />
+    </glossdef>
+  </glossentry>
+
+  <glossentry id="glossary.engsb">
+    <glossterm>Engineering Service Bus</glossterm>
+    <abbrev>EngSB</abbrev>
+    <glossdef>
+      <para>TBW</para>
+      <glossseealso otherterm="glossary.esb" />
+    </glossdef>
+  </glossentry>
   
-</chapter>
+  <glossentry id="glossary.esb">
+    <glossterm>Enterprise Service Bus</glossterm>
+    <abbrev>ESB</abbrev>
+    <glossdef>
+      <para>TBW</para>
+    </glossdef>
+  </glossentry>
+
+  <glossentry id="glossary.domain">
+    <glossterm>Domain</glossterm>
+    <glossdef>
+      <para>TBW</para>
+    </glossdef>
+  </glossentry>
+  
+  <glossentry id="glossary.tooldomain">
+    <glossterm>Tool Domain</glossterm>
+    <glossdef>
+      <para>TBW</para>
+    </glossdef>
+  </glossentry>
+  
+  <glossentry id="glossary.toolconnector">
+    <glossterm>Tool Connector</glossterm>
+    <glossdef>
+      <para>TBW</para>
+    </glossdef>
+  </glossentry>
+  
+  <glossentry id="glossary.valueaddedcomponent">
+    <glossterm>Value Added Component</glossterm>
+    <glossdef>
+      <para>TBW</para>
+    </glossdef>
+  </glossentry>
+  
+  <glossentry id="glossary.context">
+    <glossterm>Context</glossterm>
+    <glossdef>
+      <para>TBW</para>
+    </glossdef>
+  </glossentry>
+  
+  <glossentry id="glossary.registry">
+    <glossterm>Registry</glossterm>
+    <glosssee otherterm="glossary.context" />
+  </glossentry>
+  
+  <glossentry id="glossary.workflow">
+    <glossterm>Workflow</glossterm>
+    <glossdef>
+      <para>TBW</para>
+    </glossdef>
+  </glossentry>
+  
+</glossary>
