@@ -198,9 +198,6 @@ div.navfooter table {
     border-style: dashed;
     border-color: gray;
     border-width: 1px 1px 1px 1px;
-    /* Cocoon specific change */
-    background-color: #eeeeee;
-    /* END */
 }
 
 pre {
@@ -315,25 +312,3 @@ div.calloutlist * td {
     width: 100%;
 }
 
-/* Cocoon specific changes */
-.logoImage {
-    margin: 30px 0pt 0pt 34px;
-}
-
-#header {
-    background: transparent url(../images/logo-background.jpg) no-repeat scroll 0%;
-    height: 129px;
-}
-         
-.mhSpacer {
-    padding: 129px 0 0 0;
-}
-
-div.calloutlist * td {
-	text-align: left;
-}
-
-body {
-   text-align: left;
-}
-/* END */
