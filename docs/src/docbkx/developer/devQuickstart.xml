@@ -24,7 +24,7 @@
   <section id="devQickstart.pre">
     <title>Prerequisites</title>
     <para>
-      First of all the JDK 6 has to be installed on the system and the <code>JAVA_HOME</code> variable has to be set accordingly.
+      First of all the JDK 6 has to be installed on the system and the <envar>JAVA_HOME</envar> variable has to be set accordingly.
       All further steps are described in the subsections of this chapter.
     </para>
     <section id="devQickstart.pre.git">
@@ -33,19 +33,19 @@
         Further more its assumed that Git had been installed. For Git we recommend the latest Cygwin with the Git
         packages. Please set at least the following variables:
       </para>
-      <programlisting>git config --global user.name "Firstname Lastname"
-git config --global user.email "myaddress@example.com"
-git config --global core.autcrlf input</programlisting>
+      <literallayout><command>git config</command> <option>--global</option> user.name "<replaceable>Firstname Lastname</replaceable>"
+<command>git config</command> <option>--global</option> user.email <replaceable>user@example.com</replaceable>
+<command>git config</command> <option>--global</option> core.autcrlf input</literallayout>
     </section>
     <section id="devQickstart.pre.maven">
       <title>Installing Maven</title>
       <para>
         Finally download Apache Maven and unpack it. Add the path of the maven binary to your PATH variable. Further more
-        you should set the MAVEN_OPTS environment variable to allow Maven to use more RAM. If you don't you'll get
+        you should set the <envar>MAVEN_OPTS</envar> environment variable to allow Maven to use more RAM. If you don't you'll get
         Out Of Memory errors.
-        <programlisting>export PATH=$PATH:/path/to/maven/bin
-export MAVEN_OPTS='-Xmx1024M -XX:MaxPermSize=512m'</programlisting>
-      Add these commands to <code>~/.bashrc</code> to make the settings permanent.
+        <literallayout><command>export</command> <envar>PATH</envar>=$<envar>PATH</envar>:<replaceable>/path/to/maven</replaceable>/bin
+<command>export</command> <envar>MAVEN_OPTS</envar>='-Xmx1024M -XX:MaxPermSize=512m'</literallayout>
+      Add these commands to <filename>~/.bashrc</filename> to make the settings permanent.
       </para>
     </section>
     <section id="devQickstart.pre.smx">
@@ -60,10 +60,10 @@ export MAVEN_OPTS='-Xmx1024M -XX:MaxPermSize=512m'</programlisting>
     <title>Starting OpenEngSB</title>
     <para>
       The next step is to get the OpenEngSB source by checking out the current master using git:
-      <programlisting>git clone git://github.com/openengsb/openengsb</programlisting>
-      Now start Servicemix with the scripts in <code>servicemix/bin/</code>.
+      <literallayout><command>git clone</command> git://github.com/openengsb/openengsb</literallayout>
+      Now start Servicemix with the scripts in <filename>servicemix/bin/</filename>.
       Finally build and deploy the OpenEngSB to Servicemix:
-      <programlisting>scripts/quickrun.sh</programlisting>
+      <literallayout><command>etc/scripts/quickrun.sh</command></literallayout>
     </para>
   </section>
   <section id="devQickstart.eclipse">
@@ -72,24 +72,26 @@ export MAVEN_OPTS='-Xmx1024M -XX:MaxPermSize=512m'</programlisting>
       Eclipse had been chosen by the OpenEngSB team as the main development environment. After checkout the code the
       following command creates the required Eclipse project files:
     </para>
-    <programlisting>mvn eclipse:configure-workspace
-mvn eclipse:eclipse</programlisting>
+    <literallayout><command>mvn</command> eclipse:configure-workspace
+<command>mvn</command> eclipse:eclipse</literallayout>
     <para>
-      Start Eclipse and select <emphasis>File, Select Workspace, Other...</emphasis> and choose the
-      <code>eclipse-workspace</code> directory. This is a subdirectory of the OpenEngSB source.
+      Start Eclipse and select <guimenu>File</guimenu>, <guimenu>Select Workspace</guimenu>,
+      <guimenu>Other...</guimenu> and choose the
+      <filename>eclipse-workspace</filename> directory. This is a subdirectory of the OpenEngSB source.
       After Eclipse restarted you can import the projects:
-      <emphasis>File, Import..., Existing Projects into Workspace</emphasis>. As the root directory select
+      <guimenu>File</guimenu>, <guimenu>Import...</guimenu>, <guilabel>Existing Projects into Workspace</guilabel>.
+      As the root directory select
       the root of the OpenEngSB source. Eclipse will list several projects and for now it's best to import
-      them all by clicking <emphasis>Finish</emphasis>.
+      them all by clicking <guibutton>Finish</guibutton>.
     </para>
   </section>
   <section id="devQickstart.structure">
-    <title>Folder Structure</title>
+    <title>Directory Structure</title>
     <para>
       This section describes the directory structure of OpenEngSB. Since this project contains a huge amount of
       projects they are divided into a hierarchy. Namely there are three parts in the directory structure
       which should be explained step by step. The name of the projects is always generated by the directory
-      hierarchy. For example a project nested in <code>features/edb/core</code> would 
+      hierarchy. For example a project nested in <filename>features/edb/core</filename> would 
       be named <code>openengsb-features-edb-core</code>.
     </para>
     <para>
@@ -98,27 +100,27 @@ mvn eclipse:eclipse</programlisting>
       Because of the JBI project structure it is required that more than one project is nested in each subnode (at least
       service-unit and service-engine).
     </para>
-    <programlisting>openengsb
-openengsb/ekb
-openengsb/config
-openengsb/context
-openengsb/package
-openengsb/core
-openengsb/workflow
-openengsb/workflow/drools
-openengsb/workflow/bpel
-openengsb/testing</programlisting>
+    <literallayout><filename>openengsb</filename>
+<filename>openengsb/ekb</filename>
+<filename>openengsb/config</filename>
+<filename>openengsb/context</filename>
+<filename>openengsb/package</filename>
+<filename>openengsb/core</filename>
+<filename>openengsb/workflow</filename>
+<filename>openengsb/workflow/drools</filename>
+<filename>openengsb/workflow/bpel</filename>
+<filename>openengsb/testing</filename></literallayout>
     <para>
       Beside of the core packages there are additional packages extending the OpenEngSB with additional features and
       therefore stored in a feature subdirectory. These projects could not exist without the OpenEngSB but the OpenEngSB
-      could exist withouh them. They are designed to fulfill a specific purpose to extend the functionality of the OpenEngSB,
+      could exist without them. They are designed to fulfill a specific purpose to extend the functionality of the OpenEngSB,
       but may not be interesting for most users. For this reason the folder is nested in a deeper structure.
       Features as the "edb" or "link" could be found here.
     </para>
-    <programlisting>openengsb
-openengsb/features
-openengsb/features/edb
-openengsb/features/link</programlisting>
+    <literallayout><filename>openengsb</filename>
+<filename>openengsb/features</filename>
+<filename>openengsb/features/edb</filename>
+<filename>openengsb/features/link</filename></literallayout>
     <para>
       The last part of the file structure contains the core packages for the OpenEngSB; its domains and connectors. As
       will be explained later in more detail the OpenEngSB integrates tools differently than a "regular" enterprise
@@ -151,14 +153,14 @@ openengsb/features/link</programlisting>
       to abstract the tool to the needs of the connectors. The toolAbstraction folder is the right place for additional
       abstractions required for use cases as described with the Maven project.
     </para>
-    <programlisting>openengsb
-openengsb/domains
-openengsb/domains/toolAbstraction
-openengsb/domains/notification
-openengsb/domains/notification/implementation
-openengsb/domains/notification/email
-openengsb/domains/notification/jabber
-openengsb/domains/scm</programlisting>
+    <literallayout><filename>openengsb</filename>
+<filename>openengsb/domains</filename>
+<filename>openengsb/domains/toolAbstraction</filename>
+<filename>openengsb/domains/notification</filename>
+<filename>openengsb/domains/notification/implementation</filename>
+<filename>openengsb/domains/notification/email</filename>
+<filename>openengsb/domains/notification/jabber</filename>
+<filename>openengsb/domains/scm</filename></literallayout>
     <para>
       Since the number of projects increases steadily it is required to fit all projects
       into this structure so it's maintainable.
@@ -187,7 +189,7 @@ openengsb/domains/scm</programlisting>
   <section id="devQickstart.assembly.structure">
     <title>Structure</title>
     <para>
-      <programlisting>        openengsb-{version}
+      <literallayout>        openengsb-{version}
         |
         |- docs
         |    |
@@ -202,7 +204,7 @@ openengsb/domains/scm</programlisting>
         |
         |- README
         |- LICENSE
-        |- NOTICE</programlisting>
+        |- NOTICE</literallayout>
     </para>
   </section>
   </section>
@@ -239,25 +241,24 @@ openengsb/domains/scm</programlisting>
       Before starting to work with Git some settings should be applied to Git. Therefore simply execute the following
  commands.
 
-  <programlisting>git config --global user.name "FirstName LastName"
-git config --global user.email "user@example.com"
-git config --global color.ui "auto"
-git config --global pack.threads "0"
-git config --global diff.renamelimit "0"
-git config --global core.autocrlf "input"</programlisting>
+  <literallayout><command>git config</command> <option>--global</option> user.name "<replaceable>Firstname Lastname</replaceable>"
+<command>git config</command> <option>--global</option> user.email <replaceable>user@example.com</replaceable>
+<command>git config</command> <option>--global</option> color.ui "auto"
+<command>git config</command> <option>--global</option> pack.threads "0"
+<command>git config</command> <option>--global</option> diff.renamelimit "0"
+<command>git config</command> <option>--global</option> core.autocrlf "input"</literallayout>
 
   Additionally execute the special settings for github as could be found on github in the "Account Settings"
  tab is a point "Global git config information". Please use the two git commands described there
 
-  <programlisting>git config --global github.user <emphasis>username</emphasis>
-git config --global github.token <emphasis>token</emphasis></programlisting>
+  <literallayout><command>git config</command> <option>--global</option> github.user <replaceable>username</replaceable>
+<command>git config</command> <option>--global</option> github.token <replaceable>token</replaceable></literallayout>
 
- If you don't already have an SSH key you can create one by executing
+ If you don't already have an SSH key you can create one by executing <userinput>ssh-keygen</userinput>
 
-<programlisting>ssh-keygen</programlisting>
-
-  Simply answer all questions from the application with "enter" without enter any values. Afterwards the content of the id_rsa.pub
- file from your ~/.ssh/ folder should be submitted to github ("Account Settings"/"SSH public keys").
+  Simply answer all questions from the application with "enter" without enter any values. Afterwards the content of the
+  <filename>id_rsa.pub</filename> file from your <filename>~/.ssh/</filename> directory
+  should be submitted to github (<guilabel>Account Settings</guilabel>/<guilabel>SSH public keys</guilabel>).
     </para>
     </section>
     
@@ -276,13 +277,13 @@ git config --global github.token <emphasis>token</emphasis></programlisting>
               Click on the button <emphasis>Fork</emphasis> and follow the instructions there.
               
               Now clone the original repo:
-              <programlisting>git clone git://github.com/openengsb/openengsb</programlisting>
+              <literallayout><command>git clone</command> git://github.com/openengsb/openengsb</literallayout>
               If you are a committer with write access this would be:
-              <programlisting>git clone git@github.com:openengsb/openengsb</programlisting>
+              <literallayout><command>git clone</command> git@github.com:openengsb/openengsb</literallayout>
               
               Add your fork as remote branch:
-              <programlisting>git remote add <emphasis>username</emphasis> git@github.com/<emphasis>username</emphasis>/openengsb</programlisting>
-              Example: <programlisting>git remote add ChristophGr git@github.com/ChristophGr/openengsb</programlisting>
+              <literallayout><command>git remote</command> add <replaceable>username</replaceable> git@github.com/<replaceable>username</replaceable>/openengsb</literallayout>
+              Example: <literallayout><command>git remote</command> add ChristophGr git@github.com/ChristophGr/openengsb</literallayout>
             </para>
         </section>
         <section>
@@ -290,20 +291,20 @@ git config --global github.token <emphasis>token</emphasis></programlisting>
             <para>
               It's always a good idea to synchronize your local Git repository with all the external repositories.
               This is done by executing:
-              <programlisting>git remote update -p</programlisting>
+              <literallayout><command>git remote</command> update -p</literallayout>
               
               Now create your branch:
-              <programlisting>git checkout -b <emphasis>branchname</emphasis> origin/master</programlisting>
+              <literallayout><command>git checkout</command> <option>-b</option> <emphasis>branchname</emphasis> origin/master</literallayout>
               
               Push the new branch to your fork:
 
-              <programlisting>git push <emphasis>username</emphasis> <emphasis>branchname</emphasis></programlisting>
+              <literallayout><command>git push</command> <replaceable>username</replaceable> <replaceable>branchname</replaceable></literallayout>
 
-              Go to the admin page of your fork and set the default branch to <emphasis>branchname</emphasis>
+              Go to the admin page of your fork and set the default branch to <replaceable>branchname</replaceable>
 
               Create a new development branch:
 
-              <programlisting>git checkout -b devbranch <emphasis>branchname</emphasis></programlisting>
+              <literallayout><command>git checkout</command> <option>-b</option> devbranch <replaceable>branchname</replaceable></literallayout>
             </para>
         </section>
         <section>
@@ -317,25 +318,25 @@ git config --global github.token <emphasis>token</emphasis></programlisting>
             <title>Publishing Your Work</title>
             <para>
               Update your local feature branch by changing from devbranch to MYFEATURE:
-              <programlisting>git checkout MYFEATURE</programlisting>
+              <literallayout><command>git checkout</command> MYFEATURE</literallayout>
 
               Synchronize your feature with your remote repository:
-              <programlisting>git pull <emphasis>username</emphasis> <emphasis>branchname</emphasis></programlisting>
+              <literallayout><command>git pull</command> <replaceable>username</replaceable> <replaceable>branchname</replaceable></literallayout>
 
               Rebase your devbranch with your feature branch:
-              <programlisting>git rebase <emphasis>branchname</emphasis> devbranch</programlisting>
+              <literallayout><command>git rebase</command> <replaceable>branchname</replaceable> devbranch</literallayout>
 
               Go back to the feature branch:
-              <programlisting>git checkout <emphasis>branchname</emphasis></programlisting>
+              <literallayout><command>git checkout</command> <replaceable>branchname</replaceable></literallayout>
 
               Merge your devbranch into the feature branch
-              <programlisting>git merge devbranch</programlisting>
+              <literallayout><command>git merge</command> devbranch</literallayout>
 
               Push the changes:
-              <programlisting>git push <emphasis>username</emphasis> <emphasis>branchname</emphasis></programlisting>
+              <literallayout><command>git push</command> <replaceable>username</replaceable> <replaceable>branchname</replaceable></literallayout>
 
               If you want to continue working on this branch then check it out:
-              <programlisting>git checkout devbranch</programlisting>
+              <literallayout><command>git checkout</command> devbranch</literallayout>
             </para>
         </section>
         <section>
@@ -344,17 +345,17 @@ git config --global github.token <emphasis>token</emphasis></programlisting>
             If the development in the branch takes some time, it may happen, that the master-branch changes in a way that
             affects your featurebranch. To check how your branch behaves on the current master you can merge the changes into your devbranch.
 
-            <programlisting>git checkout <emphasis>branchname</emphasis>
-git merge --no-commit --no-ff origin/master</programlisting>
+            <literallayout><command>git checkout</command> <replaceable>branchname</replaceable>
+<command>git merge</command> <option>--no-commit</option> <option>--no-ff</option> origin/master</literallayout>
   
             If it does not affect your development in any way, do not commit the merge, but rather undo it.
 
-            <programlisting>git reset --hard</programlisting>
+            <literallayout><command>git reset</command> <option>--hard</option></literallayout>
 
             If it does affect your development, you need to commit the merge. If the merge breaks something in your devbranch, fix all
             issues before commiting the merge.  When done fixing potential issues do
 
-            <programlisting>git commit</programlisting>
+            <literallayout><command>git commit</command></literallayout>
             </para>
         </section>
         <section>
@@ -384,19 +385,19 @@ git merge --no-commit --no-ff origin/master</programlisting>
 
 
           First of all you have to add the user's fork as a remote repository
-          <programlisting>git remote add USERNAME git://github.com/USERNAME/openengsb</programlisting>
+          <literallayout><command>git remote</command> add USERNAME git://github.com/USERNAME/openengsb</literallayout>
 
           Now update the remote repository
-          <programlisting>git remote update -p</programlisting>
+          <literallayout><command>git remote</command> update -p</literallayout>
 
           Checkout the origin master
-          <programlisting>git checkout -b master origin/master</programlisting>
+          <literallayout><command>git checkout</command> -b master origin/master</literallayout>
 
           Merge the feature branch
-          <programlisting>git merge USERNAME/MYFEATURE --no-ff</programlisting>
+          <literallayout><command>git merge</command> USERNAME/MYFEATURE --no-ff</literallayout>
 
           Push the changes to the master
-          <programlisting>git push origin master</programlisting>
+          <literallayout><command>git push</command> origin master</literallayout>
         </para>
     </section>
     <section>
@@ -411,7 +412,7 @@ git merge --no-commit --no-ff origin/master</programlisting>
             
             <listitem>
               (Contributor/Committer)
-              Rebase is NOT dead (although we use merges). NEVER EVER commit local
+              Rebase is <emphasis>not</emphasis> dead (although we use merges). <emphasis>Never ever</emphasis> commit local
               merges. You still have to develop in local dev branches and rebasing them
               with the upstream branches. Only if nobody else has access to your fork you
               can be sure that nobody changed it!
@@ -423,21 +424,21 @@ git merge --no-commit --no-ff origin/master</programlisting>
               local ones! This means if you want to merge the branch test from the fork
               eyeball into the master do NOT use
             
-              <programlisting>git checkout test eyeball/test
-git checkout master
-git merge test</programlisting>
+              <literallayout><command>git checkout</command> test eyeball/test
+<command>git checkout</command> master
+<command>git merge</command> test</literallayout>
 
               but rather
-              <programlisting>git checkout master
-git merge eyeball/test
-</programlisting>
+              <literallayout><command>git checkout</command> master
+<command>git merge</command> eyeball/test
+</literallayout>
 
               This will create much better readable merge nodes.
             </listitem>
 
             <listitem>
               (Committer)
-              If merging branches from forked repositories ALWAYS use the --no-ff option
+              If merging branches from forked repositories ALWAYS use the <option>--no-ff</option> option
               for merges; this will always create a merge node (even if a fast-forward
               merge is possible). This is required to create a clear and consistent
               history!
@@ -447,7 +448,7 @@ git merge eyeball/test
               Avoid backward merges from the master and keep feature branches small!
               This does not mean that backward merges from master are forbidden. But they should
               not be done too often, since they create a history not easy to read. Please use
-              the method described on this page (with --no-ff --no-commit) to reduce the number
+              the method described on this page (with <option>--no-ff</option> <option>--no-commit</option>) to reduce the number
               of merge nodes.
             </listitem>
 
@@ -461,7 +462,7 @@ git merge eyeball/test
               Keep your forks clean. Although git can handle thousands of branches in
               thousands of forks we (as committers) can't. Having all the forks as remote
               repositories makes it really hard for us to handle all the branches in all
-              the forks. Therefore please remove ALL branches already merged or not
+              the forks. Therefore please remove <emphasis>all</emphasis> branches already merged or not
               required. Also remove your forked master and the already existing branches.
               You can remove your local master by changing in the admin page of your fork
               the default branch to your current branch; if master is no longer the
