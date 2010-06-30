@@ -32,9 +32,10 @@
   <section>
     <title>Starting the Testclient</title>
     <para>
-      To start the testclient execute the script testclient.sh in the scripts folder:
+      To start the testclient execute the script <filename>testclient.sh</filename> in the
+      <filename>etc/scripts/</filename> directory:
       
-      <programlisting>scripts/testclient.sh</programlisting>
+      <literallayout><command>etc/scripts/testclient.sh</command></literallayout>
     </para>
   </section>
 
@@ -60,14 +61,14 @@
         <listitem>Payload - The textarea can be used to define the content of the message</listitem>     
       </orderedlist>
       Note: The load button can be used to load text from a file into the content textarea.
-      The list of available endpoints is built from the list of consumers specified in the <code>xbean.xml</code>
-      of the <code>openengsb-test-jms-su</code> project, which can be found
-      in the directory <code>core/testclient/jms/service-unit/src/main/resources/</code>.
+      The list of available endpoints is built from the list of consumers specified in the <filename>xbean.xml</filename>
+      of the <literal>openengsb-test-jms-su</literal> project, which can be found
+      in the directory <filename>core/testclient/jms/service-unit/src/main/resources/</filename>.
     </para>
     
     <para>
-      To add additional endpoints add <code>jms:consumer</code> elements to
-      <code>core/testclient/jms/service-unit/src/main/resources/xbean.xml</code>.
+      To add additional endpoints add <literal>jms:consumer</literal> elements to
+      <filename>core/testclient/jms/service-unit/src/main/resources/xbean.xml</filename>.
     </para> 
   </section>
   
