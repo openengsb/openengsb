@@ -16,22 +16,11 @@
    limitations under the License.
 
 -->
-<chapter id="introduction" xmlns="http://docbook.org/ns/docbook">
-  <title>Introduction</title>
+<chapter id="whatIsOpenEngSB" xmlns="http://docbook.org/ns/docbook">
+  <title>What is OpenEngSB</title>
 
-  TBW (explain which sections are interesting for which target audience)
-
-  <section id="introduction.what">
-    <title>What is an Engineering Service Bus</title>
-    <para>
-      TBW
-    </para>
-    <para>
-      TBW 
-    </para>
-    <para>
-      TBW
-    </para>
-  </section>
+  <para>
+    TBW
+  </para>
 
 </chapter>

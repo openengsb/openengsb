@@ -67,25 +67,13 @@
   </info>
 
   <part>
-    <title>Introduction</title>
+    <title>User Manual</title>
     <partintro>
       <para>
         This part gives an introduction into the OpenEngSB project and explains it base usage environment
         and the base concepts, such as Tool Domains, Tool Connectors, OpenEngSB workflows and similar
         important ideas.
-      </para>
-      <para>
-        The target audience of this part are users and developers of OpenEngSB.
-      </para>
-    </partintro>
-    <xi:include href="introduction/introduction.xml" />
-  </part>
-
-  <part>
-    <title>Setup &amp; Administration</title>
-    <partintro>
-      <para>
-        This part explains the usage of the OpenEngSB in a real environment. It explains how to install,
+        It explains how to install,
         setup and use the OpenEngSB administration interface to implement a tool environment according
         to your needs.
       </para>
@@ -93,8 +81,10 @@
         The target audience of this part are users and developers of OpenEngSB.
       </para>
     </partintro>
-    <xi:include href="administration/gettingstarted.xml" />
-    <xi:include href="administration/testclient.xml" />
+    <xi:include href="user/whatisopenengsb.xml" />
+    <xi:include href="user/whenuseopenengsb.xml" />
+    <xi:include href="user/gettingstarted.xml" />
+    <xi:include href="user/testclient.xml" />
   </part>
 
   <part>
@@ -138,6 +128,7 @@
     <title>Appendix</title>
     <xi:include href="appendix/javastyle.xml" />
     <xi:include href="appendix/glossary.xml" />
+    <xi:include href="appendix/license.xml" />
   </part>
 
 </book>
