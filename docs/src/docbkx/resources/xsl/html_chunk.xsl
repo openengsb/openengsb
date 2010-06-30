@@ -18,7 +18,7 @@
   under the License.
 -->
 <!-- 
-    This is the XSL HTML configuration file for the Spring Reference Documentation.
+  This stylesheet is based upon the Spring Framework stylesheet.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
@@ -113,7 +113,6 @@
     <!-- no other header navigation (prev, next, etc.) -->
     <xsl:template name="header.navigation"/>
     <xsl:param name="navig.showtitles">1</xsl:param>
-    <!-- let's have a 'Sponsored by SpringSource' strapline (or somesuch) across the bottom of each page -->
     <xsl:template name="footer.navigation">
         <xsl:param name="prev" select="/foo"/>
         <xsl:param name="next" select="/foo"/>
