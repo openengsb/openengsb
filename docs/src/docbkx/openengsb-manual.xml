@@ -66,7 +66,7 @@
     </authorgroup>
   </info>
 
-  <part>
+  <part id="usermanual">
     <title>User Manual</title>
     <partintro>
       <para>
@@ -87,7 +87,7 @@
     <xi:include href="user/testclient.xml" />
   </part>
 
-  <part>
+  <part id="developerManual">
     <title>Developer Manual</title>
     <partintro>
       <para>
@@ -111,7 +111,7 @@
     <xi:include href="developer/wrapped.xml" />
   </part>
 
-  <part>
+  <part id="domainsAndConnectors">
     <title>Domains and Connectors</title>
     <partintro>
       <para>
@@ -124,7 +124,7 @@
     <xi:include href="developer/domains.xml"/>
   </part>
   
-  <part>
+  <part id="appendix">
     <title>Appendix</title>
     <xi:include href="appendix/javastyle.xml" />
     <xi:include href="appendix/glossary.xml" />

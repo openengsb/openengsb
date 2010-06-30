@@ -16,7 +16,7 @@
    limitations under the License.
 
 -->
-<chapter xmlns="http://docbook.org/ns/docbook">
+<chapter id="toolDomains" xmlns="http://docbook.org/ns/docbook">
   <title>Tool Domains</title>
   
   <warning>
