@@ -63,8 +63,8 @@ public class FacebookConnectorIT {
 
     @Test
     public void simpleUpdateUserStatus_retryToCheckIfItIsPossibleToPostASecondTime() throws FacebookException {
-        facebookConnector.updateStatus("TestMessage send on1: " + new Date());
-        facebookConnector.updateStatus("TestMessage send on2: " + new Date());
+        facebookConnector.updateStatus("TestMessage 1 send on: " + new Date());
+        facebookConnector.updateStatus("TestMessage 2 send on: " + new Date());
     }
 
 
