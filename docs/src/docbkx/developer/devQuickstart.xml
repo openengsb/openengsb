@@ -187,8 +187,7 @@ openengsb/domains/scm</programlisting>
   <section id="devQickstart.assembly.structure">
     <title>Structure</title>
     <para>
-      <programlisting>
-        openengsb-{version}
+      <programlisting>        openengsb-{version}
         |
         |- docs
         |    |
@@ -203,8 +202,7 @@ openengsb/domains/scm</programlisting>
         |
         |- README
         |- LICENSE
-        |- NOTICE
-      </programlisting>
+        |- NOTICE</programlisting>
     </para>
   </section>
   </section>
