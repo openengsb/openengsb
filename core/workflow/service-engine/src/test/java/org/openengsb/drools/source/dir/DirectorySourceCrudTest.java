@@ -42,7 +42,10 @@ public class DirectorySourceCrudTest extends RuleSourceCrudTest<DirectoryRuleSou
     @Override
     public void tearDown() throws Exception {
         super.tearDown();
-        FileUtils.deleteDirectory(new File("data"));
+        File ruleDir = new File("data");
+        while (ruleDir.exists()) {
+            FileUtils.deleteQuietly(ruleDir);
+        }
     }
 
     @Override

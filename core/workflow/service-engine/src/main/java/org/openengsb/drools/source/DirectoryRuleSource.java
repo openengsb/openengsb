@@ -29,9 +29,6 @@ import java.util.Timer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
@@ -47,8 +44,6 @@ import org.openengsb.drools.source.dir.DirectoryRuleHandler;
 import org.openengsb.drools.source.dir.ReloadChecker;
 
 public class DirectoryRuleSource extends RuleBaseSource {
-
-    private static final Log log = LogFactory.getLog(DirectoryRuleSource.class);
 
     public static final String IMPORTS_FILENAME = "imports";
 
@@ -180,14 +175,14 @@ public class DirectoryRuleSource extends RuleBaseSource {
         content.append(prelude);
         Collection<File> functions = listFiles(path, FUNC_EXTENSION);
         for (File f : functions) {
-            String func = IOUtils.toString(new FileReader(f));
+            String func = FileUtils.readFileToString(f);
             content.append(func);
         }
         Collection<File> rules = listFiles(path, RULE_EXTENSION);
         for (File f : rules) {
             String ruleName = FilenameUtils.getBaseName(f.getName());
             content.append(String.format("rule \"%s\"\n", ruleName));
-            content.append(IOUtils.toString(new FileReader(f)));
+            content.append(FileUtils.readFileToString(f));
             content.append("end\n");
         }
         final PackageBuilder builder = new PackageBuilder();
@@ -201,7 +196,6 @@ public class DirectoryRuleSource extends RuleBaseSource {
             throw new RuleBaseException(e);
         }
         if (builder.hasErrors()) {
-            log.error(content.toString());
             throw new RuleBaseException(builder.getErrors().toString());
         }
 
