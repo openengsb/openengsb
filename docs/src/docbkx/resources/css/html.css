@@ -312,3 +312,8 @@ div.calloutlist * td {
     width: 100%;
 }
 
+div.literallayout {
+	background-color: #EBEBEB;
+	border: 1px solid #D6D6D6;
+	padding: 1px 0 1px 3px;
+}

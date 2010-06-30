@@ -105,7 +105,6 @@
         <div id="top">
             <div id="header">
                 <div class="projectlogo">
-                    <a href="./"><img class="logoImage" src="images/openengsb.png" alt="OpenEngSB" border="0" /></a>
                 </div>
             </div>
         </div>

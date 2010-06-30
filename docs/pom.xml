@@ -115,6 +115,9 @@
                   <xincludeSupported>true</xincludeSupported>
                   <chunkedOutput>false</chunkedOutput>
                   <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html.xsl</htmlCustomization>
+                  <preProcess>
+                    <delete dir="${basedir}/target/docbkx/html" />
+                  </preProcess>
                   <postProcess>
                     <copy todir="${basedir}/target/docbkx/html">
                       <fileset dir="${basedir}/src/docbkx/resources">
@@ -150,6 +153,9 @@
                   <xincludeSupported>true</xincludeSupported>
                   <chunkedOutput>true</chunkedOutput>
                   <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>
+                  <preProcess>
+                    <delete dir="${basedir}/target/docbkx/html" />
+                  </preProcess>
                   <postProcess>
                     <copy todir="${basedir}/target/docbkx/html">
                       <fileset dir="${basedir}/src/docbkx/resources">
