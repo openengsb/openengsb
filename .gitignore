@@ -12,6 +12,13 @@ eclipse-workspace
 *bin
 
 #=================
+#intellij-project
+#=================
+*.iml
+*.ipr
+*.iws
+
+#=================
 #maven-files
 #=================
 *target
