@@ -57,6 +57,7 @@ public class EmailNotifier implements NotificationDomain {
     }
 
     public void notify(Notification notification) {
+        log.info("Sending notification with email connector.");
         try {
             Session session = Session.getDefaultInstance(props, authenticator);
 

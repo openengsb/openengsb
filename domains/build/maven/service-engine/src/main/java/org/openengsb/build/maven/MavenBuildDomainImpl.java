@@ -17,6 +17,8 @@
  */
 package org.openengsb.build.maven;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.EventHelper;
 import org.openengsb.drools.BuildDomain;
@@ -28,6 +30,8 @@ import org.openengsb.maven.common.MavenResult;
 
 public class MavenBuildDomainImpl extends AbstractMavenDomainImpl implements BuildDomain {
 
+    private Log log = LogFactory.getLog(getClass());
+
     private EventHelper eventHelper;
 
     public MavenBuildDomainImpl(ContextHelper contextHelper, EventHelper eventHelper) {
@@ -37,6 +41,8 @@ public class MavenBuildDomainImpl extends AbstractMavenDomainImpl implements Bui
 
     @Override
     public Boolean buildProject() {
+        log.info("Building project using maven connector.");
+
         BuildStartEvent startEvent = new BuildStartEvent();
         MavenParameters params = getMavenParametersForMavenCall("build/maven-build");
         startEvent.setToolConnector("maven-build");
@@ -44,11 +50,13 @@ public class MavenBuildDomainImpl extends AbstractMavenDomainImpl implements Bui
         eventHelper.sendEvent(startEvent);
 
         MavenResult mavenResult = callMaven(params);
+
         BuildEvent event = new BuildEvent();
         event.setToolConnector("maven-build");
         event.setBuildSuccessful(mavenResult.isSuccess());
         event.setBuildOutput(mavenResult.getOutput());
         eventHelper.sendEvent(event);
+
         return mavenResult.isSuccess();
     }
 }
