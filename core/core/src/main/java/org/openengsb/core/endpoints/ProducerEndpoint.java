@@ -15,13 +15,25 @@
    limitations under the License.
    
  */
-package org.openengsb.scm;
+package org.openengsb.core.endpoints;
 
-import org.openengsb.core.endpoints.ProducerEndpoint;
+import javax.jbi.servicedesc.ServiceEndpoint;
+import javax.xml.namespace.QName;
 
-/**
- * @org.apache.xbean.XBean element="scmEndpoint" description="The SCM endpoint."
- */
-public class ScmEndpoint extends ProducerEndpoint {
+import org.apache.servicemix.common.DefaultComponent;
+import org.apache.servicemix.common.ServiceUnit;
+
+public abstract class ProducerEndpoint extends OpenEngSBEndpoint {
+
+    public ProducerEndpoint() {
+    }
+
+    public ProducerEndpoint(DefaultComponent component, ServiceEndpoint endpoint) {
+        super(component, endpoint);
+    }
+
+    public ProducerEndpoint(ServiceUnit serviceUnit, QName service, String endpoint) {
+        super(serviceUnit, service, endpoint);
+    }
 
 }

@@ -54,6 +54,6 @@
     </property>
   </bean>
 
-  <svn:svnEndpoint service="subversion:svnService" endpoint="svnEndpoint" id="svnEndpoint" connector="#connector" />
+  <svn:svnEndpoint service="subversion:svnService" endpoint="svnEndpoint" id="svnEndpoint"  />
 
 </beans>
