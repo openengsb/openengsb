@@ -23,7 +23,9 @@
 
   <properties>
 
+    <!-- General Settings -->
     <root.basedir>${project.basedir}</root.basedir>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
     <!-- Environment Versions -->
     <jdk.version>1.6</jdk.version>
