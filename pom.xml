@@ -1508,6 +1508,11 @@
 
   <pluginRepositories>
     <pluginRepository>
+      <id>central</id>
+      <name>Maven Central</name>
+      <url>http://repo1.maven.org/maven2/</url>
+    </pluginRepository>
+    <pluginRepository>
       <id>apache.snapshots</id>
       <name>apache snapshot repository</name>
       <url>http://repository.apache.org/snapshots</url>
@@ -1546,6 +1551,11 @@
   </pluginRepositories>
 
   <repositories>
+    <repository>
+      <id>central</id>
+      <name>Maven Central</name>
+      <url>http://repo1.maven.org/maven2/</url>
+    </repository>
     <repository>
       <id>thirdparty</id>
       <name>OpenEngSB 3rd Party Repository</name>
