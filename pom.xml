@@ -42,7 +42,7 @@
     <commons.dbcp.version>1.2.2</commons.dbcp.version>
     <dom4j.version>1.6.1</dom4j.version>
     <exist.version>1.4.0</exist.version>
-    <facebookAPI.version>3.0.1</facebookAPI.version>
+    <facebookAPI.version>3.0.2</facebookAPI.version>
     <google.collections.version>1.0</google.collections.version>
     <hamcrest.version>1.1</hamcrest.version>
     <hibernate.version>3.4.0.GA</hibernate.version>
