@@ -63,7 +63,6 @@ public class FacebookConnectorImpl implements FacebookConnector {
         http.setState(new HttpState());
 
         GetMethod get = new GetMethod(FACEBOOK_LOGIN + "?api_key=" + api + "&v=1.0&auth_token=" + token);
-
         http.executeMethod(get);
 
         PostMethod post = new PostMethod(FACEBOOK_LOGIN);
@@ -73,7 +72,6 @@ public class FacebookConnectorImpl implements FacebookConnector {
         post.addParameter(new org.apache.commons.httpclient.NameValuePair("email", email));
         post.addParameter(new org.apache.commons.httpclient.NameValuePair("pass", password));
         http.executeMethod(post);
-
 
         session = facebookClient.auth_getSession(token);
         FacebookXmlRestClient xmlClient = new FacebookXmlRestClient(api, secret, session);//just necessary don't know why
@@ -96,23 +94,7 @@ public class FacebookConnectorImpl implements FacebookConnector {
     @Override
     public void updateStatus(String message) {
         try {
-            if (facebookClient == null) {
-                facebookClient = login();
-            } else {
-                try {
-                    String token = facebookClient.auth_createToken();
-                    String session = facebookClient.auth_getSession(token);
-                    // the following will never be reached, the exception is expected,
-                    // otherwise, everything is fine, and no new log in is needed
-                    postMessage(message);
-                } catch (FacebookException e) {
-                    facebookClient = login();
-                    postMessage(message);
-                }
-                return;
-            }
-            postMessage(message);
-
+            updateMessageNoErrorHandling(message);
         } catch (FacebookException e) {
             handleFacebookException(e);
         } catch (IOException e) {
@@ -123,7 +105,28 @@ public class FacebookConnectorImpl implements FacebookConnector {
             }
         } finally {
             logout();
+        }
+    }
 
+    public void updateMessageNoErrorHandling(String message) throws IOException, FacebookException {
+        if (facebookClient == null) {
+            facebookClient = login();
+            postMessage(message);
+        } else {
+            reloginAndPost(message);
+        }
+    }
+
+    private void reloginAndPost(String message) throws FacebookException, IOException {
+        try {
+            String token = facebookClient.auth_createToken();
+            String session = facebookClient.auth_getSession(token);
+            // the following will never be reached, the exception is expected,
+            // otherwise, everything is fine, and no new log in is needed
+            postMessage(message);
+        } catch (FacebookException e) {
+            facebookClient = login();
+            postMessage(message);
         }
     }
 
@@ -143,7 +146,7 @@ public class FacebookConnectorImpl implements FacebookConnector {
         } else {
             facebookClient.users_setStatus(message);
         }
-    }
+    }    
 
     private void handleFacebookException(FacebookException e) {
         switch (e.getCode()) {
