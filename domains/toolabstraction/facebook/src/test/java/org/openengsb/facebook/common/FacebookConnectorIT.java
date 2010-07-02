@@ -20,6 +20,7 @@ package org.openengsb.facebook.common;
 import com.google.code.facebookapi.FacebookException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -29,7 +30,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:../test-classes/test-bean.xml"})
+@ContextConfiguration(locations = {"classpath:test-bean.xml"})
 public class FacebookConnectorIT {
 
 
@@ -60,7 +61,7 @@ public class FacebookConnectorIT {
         //TODO: Dont know how to test this yet, at the moment you have to check it on your own
 
     }
-
+    
     @Test
     public void simpleUpdateUserStatus_retryToCheckIfItIsPossibleToPostASecondTime() throws FacebookException {
         facebookConnector.updateStatus("TestMessage 1 send on: " + new Date());
