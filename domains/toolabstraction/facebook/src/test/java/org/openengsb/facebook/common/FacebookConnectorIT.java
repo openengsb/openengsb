@@ -27,6 +27,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.Date;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -54,18 +55,15 @@ public class FacebookConnectorIT {
     public void after() {
     }
 
-
     @Test
-    public void simpleUpdateUserStatus() throws FacebookException {
-        facebookConnector.updateStatus("TestMessage send on: " + new Date());
-        //TODO: Dont know how to test this yet, at the moment you have to check it on your own
-
+    public void simpleUpdateUserStatus() throws FacebookException, IOException {
+        facebookConnector.updateMessageNoErrorHandling("TestMessage send on: " + new Date());
     }
     
     @Test
-    public void simpleUpdateUserStatus_retryToCheckIfItIsPossibleToPostASecondTime() throws FacebookException {
-        facebookConnector.updateStatus("TestMessage 1 send on: " + new Date());
-        facebookConnector.updateStatus("TestMessage 2 send on: " + new Date());
+    public void simpleUpdateUserStatus_retryToCheckIfItIsPossibleToPostASecondTime() throws FacebookException, IOException {
+        facebookConnector.updateMessageNoErrorHandling("TestMessage 1 send on: " + new Date());
+        facebookConnector.updateMessageNoErrorHandling("TestMessage 2 send on: " + new Date());
     }
 
 
