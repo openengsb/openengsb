@@ -107,7 +107,7 @@
     <maven.plugin.surefire>2.4.3</maven.plugin.surefire>
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
     <maven.rat.version>0.6</maven.rat.version>
-    <servicemix.jbi.maven.version>4.4-SNAPSHOT</servicemix.jbi.maven.version>
+    <servicemix.jbi.maven.version>4.4.OPENENGSB.1</servicemix.jbi.maven.version>
     <twdata.cli.version>1.0.4</twdata.cli.version>
     <clover.version>3.0.2</clover.version>
    </properties>
