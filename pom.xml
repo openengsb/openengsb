@@ -376,6 +376,11 @@
       <email>gernot.rumpold [at] gmail.com</email>
       <timezone>+1</timezone>
     </contributor>
+    <contributor>
+      <name>Philipp Hoenisch</name>
+      <email>philipp.hoenisch [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
   </contributors>
 
   <build>
