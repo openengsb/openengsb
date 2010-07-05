@@ -23,6 +23,22 @@
     http://servicemix.apache.org/bean/1.0 http://servicemix.apache.org/schema/servicemix-bean-3.2.3.xsd
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <maven:mavenDeployEndpoint service="mvn:mavenDeployService" endpoint="mavenDeployEndpoint" />
+  <bean id="contextProperties" class="java.util.HashMap">
+    <constructor-arg type="java.util.Map">
+      <map key-type="java.lang.String" value-type="java.util.Map">
+        <entry key="42">
+          <map key-type="java.lang.String" value-type="java.lang.String">
+            <entry key="deploy/maven-deploy/servicename" value="mavenDeployService" />
+            <entry key="deploy/maven-deploy/namespace" value="urn:openengsb:maven-deploy" />
+            <entry key="deploy/maven-deploy/config/goals" value="deploy" />
+            <entry key="deploy/maven-deploy/config/baseDirectory" value="data/openengsb/testProject" />
+            <entry key="deploy/maven-deploy/config/executionRequestProperties/skipTests" value="true" />
+          </map>
+        </entry>
+      </map>
+    </constructor-arg>
+  </bean>
+
+  <maven:mavenDeployEndpoint service="mvn:mavenDeployService" endpoint="mavenDeployEndpoint" contextProperties="#contextProperties" />
 
 </beans>

@@ -23,12 +23,6 @@
   <bean id="contextProperties" class="java.util.HashMap">
     <constructor-arg type="java.util.Map">
       <map key-type="java.lang.String" value-type="java.util.Map">
-        <entry key="42">
-          <map key-type="java.lang.String" value-type="java.lang.String">
-            <entry key="scm/svn/namespace" value="urn:openengsb:svn" />
-            <entry key="scm/svn/servicename" value="svnService" />
-          </map>
-        </entry>
       </map>
     </constructor-arg>
   </bean>

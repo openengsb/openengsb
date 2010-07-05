@@ -23,14 +23,6 @@
   <bean id="contextProperties" class="java.util.HashMap">
     <constructor-arg type="java.util.Map">
       <map key-type="java.lang.String" value-type="java.util.Map">
-        <entry key="42">
-          <map key-type="java.lang.String" value-type="java.lang.String">
-            <entry key="test/servicename" value="testService" />
-            <entry key="test/namespace" value="urn:openengsb:test" />
-            <entry key="test/event/servicename" value="eventService" />
-            <entry key="test/default" value="maven-test" />
-          </map>
-        </entry>
       </map>
     </constructor-arg>
   </bean>

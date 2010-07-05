@@ -27,6 +27,14 @@
           <map key-type="java.lang.String" value-type="java.lang.String">
             <entry key="notification/email/user" value="openengsb.notification.test@gmail.com" />
             <entry key="notification/email/password" value="pwd-openengsb" />
+            <entry key="notification/email/servicename" value="emailService" />
+            <entry key="notification/email/namespace" value="urn:openengsb:email" />
+            <entry key="notification/email/config/mail.smtp.auth" value="true" />
+            <entry key="notification/email/config/mail.smtp.user" value="openengsb.notification.test@gmail.com" />
+            <entry key="notification/email/config/mail.smtp.starttls.enable" value="true" />
+            <entry key="notification/email/config/mail.smtp.host" value="smtp.gmail.com" />
+            <entry key="notification/email/user" value="openengsb.notification.test@gmail.com" />
+            <entry key="notification/email/password" value="pwd-openengsb" />
           </map>
         </entry>
       </map>
