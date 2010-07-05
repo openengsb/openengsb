@@ -35,7 +35,7 @@
 
 
     <bean id="facebookNotifier" class="org.openengsb.facebook.FacebookNotifier">
-        <property name="facebookConenctor" ref="FacebookConnectorImpl"/>
+        <property name="facebookConnector" ref="FacebookConnectorImpl"/>
     </bean>
 
 </beans>
