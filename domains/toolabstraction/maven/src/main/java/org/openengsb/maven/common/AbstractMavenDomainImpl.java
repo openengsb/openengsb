@@ -18,35 +18,28 @@
 package org.openengsb.maven.common;
 
 import java.io.File;
-import java.util.Map;
+import java.util.List;
 import java.util.Properties;
-import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.contextcommon.ContextHelper;
 
 public class AbstractMavenDomainImpl {
 
     private Log log = LogFactory.getLog(getClass());
 
-    private ContextHelper contextHelper;
+    private String baseDir;
 
-    public AbstractMavenDomainImpl(ContextHelper contextHelper) {
-        this.contextHelper = contextHelper;
-    }
+    private List<String> goals;
 
-    protected MavenParameters getMavenParametersForMavenCall(String pathPrefix) {
+    private Properties executionRequestProperties;
+
+    protected MavenParameters getMavenParametersForMavenCall() {
         MavenParameters params = new MavenParameters();
 
-        Properties executionRequestProperties = getPropertiesFromContext(pathPrefix
-                + "/config/executionRequestProperties");
         params.setExecutionRequestProperties(executionRequestProperties);
-
-        String baseDir = contextHelper.getValue(pathPrefix + "/config/baseDirectory");
         params.setBaseDir(new File(baseDir));
-
-        params.setGoals(getValuesFromContext(pathPrefix + "/config/goals"));
+        params.setGoals(goals.toArray(new String[goals.size()]));
 
         return params;
     }
@@ -58,19 +51,16 @@ public class AbstractMavenDomainImpl {
         return maven.execute();
     }
 
-    protected Properties getPropertiesFromContext(String path) {
-        Map<String, String> props = contextHelper.getAllValues(path);
-
-        Properties properties = new Properties();
-        for (Entry<String, String> entry : props.entrySet()) {
-            properties.setProperty(entry.getKey(), entry.getValue());
-        }
-        return properties;
+    public void setBaseDir(String baseDir) {
+        this.baseDir = baseDir;
     }
 
-    protected String[] getValuesFromContext(String path) {
-        String values = contextHelper.getValue(path);
-        return values.split(",");
+    public void setExecutionRequestProperties(Properties executionRequestProperties) {
+        this.executionRequestProperties = executionRequestProperties;
+    }
+
+    public void setGoals(List<String> goals) {
+        this.goals = goals;
     }
 
 }

@@ -19,7 +19,6 @@ package org.openengsb.deploy.maven;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.EventHelper;
 import org.openengsb.drools.DeployDomain;
 import org.openengsb.drools.events.DeployEvent;
@@ -34,17 +33,12 @@ public class MavenDeployDomainImpl extends AbstractMavenDomainImpl implements De
 
     private EventHelper eventHelper;
 
-    public MavenDeployDomainImpl(ContextHelper contextHelper, EventHelper eventHelper) {
-        super(contextHelper);
-        this.eventHelper = eventHelper;
-    }
-
     @Override
     public Boolean deployProject() {
         log.info("Deploying project using maven connector.");
 
         DeployStartEvent startEvent = new DeployStartEvent();
-        MavenParameters params = getMavenParametersForMavenCall("deploy/maven-deploy");
+        MavenParameters params = getMavenParametersForMavenCall();
         startEvent.setToolConnector("maven-deploy");
         startEvent.setParameters(params.toString());
         eventHelper.sendEvent(startEvent);
@@ -58,6 +52,10 @@ public class MavenDeployDomainImpl extends AbstractMavenDomainImpl implements De
         eventHelper.sendEvent(event);
 
         return mavenResult.isSuccess();
+    }
+
+    public void setEventHelper(EventHelper eventHelper) {
+        this.eventHelper = eventHelper;
     }
 
 }
