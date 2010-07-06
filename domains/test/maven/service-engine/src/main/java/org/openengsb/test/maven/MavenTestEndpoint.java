@@ -28,9 +28,16 @@ import org.openengsb.drools.TestDomain;
  */
 public class MavenTestEndpoint extends LinkingEndpoint<TestDomain> {
 
+    private MavenTestDomainImpl testDomain;
+
     @Override
     protected TestDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-        return new MavenTestDomainImpl(contextHelper, createEventHelper(msgProperties));
+        this.testDomain.setEventHelper(createEventHelper(msgProperties));
+        return this.testDomain;
+    }
+
+    public void setTestDomain(MavenTestDomainImpl testDomain) {
+        this.testDomain = testDomain;
     }
 
 }

@@ -35,6 +35,8 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.MethodCallHelper;
@@ -44,6 +46,8 @@ import org.openengsb.drools.model.Attachment;
 import org.openengsb.drools.model.Report;
 
 public class PlainTextReportDomainImpl implements ReportDomain {
+
+    private Log log = LogFactory.getLog(getClass());
 
     private ContextHelper contextHelper;
 
@@ -85,6 +89,7 @@ public class PlainTextReportDomainImpl implements ReportDomain {
 
     @Override
     public Report generateReport(List<Event> events) {
+        log.info("Generating report in plaintext format.");
         reportDirectory.mkdirs();
         File reportFile = new File(reportDirectory, getReportName());
         writeToFile(events, reportFile);
@@ -102,7 +107,7 @@ public class PlainTextReportDomainImpl implements ReportDomain {
             writeEvents(writer, events, attachments);
             writer.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("Error writing events to byte array.", e);
         }
         return baos.toByteArray();
     }
@@ -164,7 +169,7 @@ public class PlainTextReportDomainImpl implements ReportDomain {
             writeEvents(writer, events, attachments);
             writeAttachmentsToFile(reportFile, attachments);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            log.error("Error writing events to file.", e);
         } finally {
             IOUtils.closeQuietly(writer);
         }

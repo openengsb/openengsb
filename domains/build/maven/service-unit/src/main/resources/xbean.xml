@@ -23,22 +23,33 @@
     http://servicemix.apache.org/bean/1.0 http://servicemix.apache.org/schema/servicemix-bean-3.2.3.xsd
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <maven:mavenBuildEndpoint service="mvn:mavenBuildService" endpoint="mavenBuildEndpoint" />
-  
-  <!--
+  <bean id="contextProperties" class="java.util.HashMap">
+    <constructor-arg type="java.util.Map">
+      <map key-type="java.lang.String" value-type="java.util.Map">
+        <entry key="42">
+          <map key-type="java.lang.String" value-type="java.lang.String">
+            <entry key="build/maven-build/servicename" value="mavenBuildService" />
+            <entry key="build/maven-build/namespace" value="urn:openengsb:maven-build" />
+          </map>
+        </entry>
+      </map>
+    </constructor-arg>
+  </bean>
 
-  <bean id="projectBuildConfiguration" class="org.openengsb.maven.common.pojos.ProjectConfiguration">
+  <bean id="buildDomain" class="org.openengsb.build.maven.MavenBuildDomainImpl">
+    <property name="baseDir" value="data/openengsb/testProject"/>
     <property name="goals">
-      <list>
-        <value>clean</value>
-        <value>install</value>
+      <list value-type="java.lang.String">
+        <value>package</value>
       </list>
     </property>
-    <property name="baseDirectory">
-      <value>file:data/openengsb/projectOutput/</value>
+    <property name="executionRequestProperties">
+      <props>
+        <prop key="skipTests">true</prop>
+      </props>
     </property>
   </bean>
 
-  -->
+  <maven:mavenBuildEndpoint service="mvn:mavenBuildService" endpoint="mavenBuildEndpoint" buildDomain="#buildDomain" contextProperties="#contextProperties"/>
 
 </beans>

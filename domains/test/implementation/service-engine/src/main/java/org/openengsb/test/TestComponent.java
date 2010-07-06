@@ -18,7 +18,6 @@
 package org.openengsb.test;
 
 import org.openengsb.core.OpenEngSBComponent;
-import org.openengsb.core.endpoints.EventForwardEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="testComponent"
@@ -27,7 +26,7 @@ import org.openengsb.core.endpoints.EventForwardEndpoint;
 public class TestComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class[] { TestEndpoint.class, EventForwardEndpoint.class };
+        return new Class[] { TestEndpoint.class, TestEventEndpoint.class };
     }
 
 }

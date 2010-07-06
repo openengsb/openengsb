@@ -20,7 +20,22 @@
   xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-  <issues:issuesEndpoint endpoint="issuesEndpoint" service="isu:issuesService" />
+  <bean id="contextProperties" class="java.util.HashMap">
+    <constructor-arg type="java.util.Map">
+      <map key-type="java.lang.String" value-type="java.util.Map">
+        <entry key="42">
+          <map key-type="java.lang.String" value-type="java.lang.String">
+            <entry key="issue/servicename" value="issuesService" />
+            <entry key="issue/namespace" value="urn:openengsb:issues" />
+            <entry key="issue/event/servicename" value="eventService" />
+            <entry key="issue/default" value="trac" />
+          </map>
+        </entry>
+      </map>
+    </constructor-arg>
+  </bean>
+
+  <issues:issuesEndpoint endpoint="issuesEndpoint" service="isu:issuesService" contextProperties="#contextProperties" />
   <issues:eventEndpoint endpoint="eventEndpoint" service="isu:eventService" />
 
 </beans>

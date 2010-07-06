@@ -19,7 +19,8 @@ package org.openengsb.test.maven;
 
 import java.util.Map.Entry;
 
-import org.openengsb.contextcommon.ContextHelper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.EventHelper;
 import org.openengsb.drools.TestDomain;
 import org.openengsb.drools.events.TestEvent;
@@ -30,22 +31,22 @@ import org.openengsb.maven.common.MavenResult;
 
 public class MavenTestDomainImpl extends AbstractMavenDomainImpl implements TestDomain {
 
-    private EventHelper eventHelper;
+    private Log log = LogFactory.getLog(getClass());
 
-    public MavenTestDomainImpl(ContextHelper contextHelper, EventHelper eventHelper) {
-        super(contextHelper);
-        this.eventHelper = eventHelper;
-    }
+    private EventHelper eventHelper;
 
     @Override
     public Boolean runTests() {
+        log.info("Running tests using maven connector.");
+
         TestStartEvent startEvent = new TestStartEvent();
-        MavenParameters params = getMavenParametersForMavenCall("test/maven-test");
+        MavenParameters params = getMavenParametersForMavenCall();
         startEvent.setToolConnector("maven-test");
         startEvent.setParameters(params.toString());
         eventHelper.sendEvent(startEvent);
 
         MavenResult mavenResult = callMaven(params);
+
         TestEvent event = new TestEvent();
         event.setToolConnector("maven-test");
         event.setTestRunSuccessful(mavenResult.isSuccess());
@@ -55,6 +56,11 @@ public class MavenTestDomainImpl extends AbstractMavenDomainImpl implements Test
             event.setValue("testReport-" + report.getKey() + ".type", "text/xml");
         }
         eventHelper.sendEvent(event);
+
         return mavenResult.isSuccess();
+    }
+
+    public void setEventHelper(EventHelper eventHelper) {
+        this.eventHelper = eventHelper;
     }
 }

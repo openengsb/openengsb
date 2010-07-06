@@ -13,20 +13,41 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
  */
 package org.openengsb.email;
 
-import org.openengsb.core.OpenEngSBComponent;
+import java.util.Properties;
 
-/**
- * @org.apache.xbean.XBean element="emailComponent"
- *                         description="Email Notification Component"
- */
-public class EmailComponent extends OpenEngSBComponent {
-    @Override
-    protected Class<?>[] getEndpointClasses() {
-        return new Class[] { EmailEndpoint.class };
+public class EmailConfiguration {
+
+    private Properties emailProperties;
+
+    private String user;
+
+    private String password;
+
+    public void setUser(String user) {
+        this.user = user;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setEmailProperties(Properties emailProperties) {
+        this.emailProperties = emailProperties;
+    }
+
+    public Properties getEmailProperties() {
+        return emailProperties;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getUser() {
+        return user;
+    }
 }

@@ -23,15 +23,6 @@
   <bean id="contextProperties" class="java.util.HashMap">
     <constructor-arg type="java.util.Map">
       <map key-type="java.lang.String" value-type="java.util.Map">
-        <entry key="42">
-          <map key-type="java.lang.String" value-type="java.lang.String">
-            <entry key="build/maven-build/servicename" value="mavenBuildService" />
-            <entry key="build/maven-build/namespace" value="urn:openengsb:maven-build" />
-            <entry key="build/maven-build/config/goals" value="package" />
-            <entry key="build/maven-build/config/baseDirectory" value="data/openengsb/testProject" />
-            <entry key="build/maven-build/config/executionRequestProperties/skipTests" value="true" />
-          </map>
-        </entry>
       </map>
     </constructor-arg>
   </bean>

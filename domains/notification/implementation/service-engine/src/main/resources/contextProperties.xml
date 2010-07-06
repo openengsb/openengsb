@@ -23,14 +23,6 @@
   <bean id="contextProperties" class="java.util.HashMap">
     <constructor-arg type="java.util.Map">
       <map key-type="java.lang.String" value-type="java.util.Map">
-        <entry key="42">
-          <map key-type="java.lang.String" value-type="java.lang.String">
-            <entry key="notification/servicename" value="notificationService" />
-            <entry key="notification/namespace" value="urn:openengsb:notification" />
-            <entry key="notification/event/servicename" value="eventService" />
-            <entry key="notification/default" value="email" />
-          </map>
-        </entry>
       </map>
     </constructor-arg>
   </bean>

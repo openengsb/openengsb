@@ -28,9 +28,16 @@ import org.openengsb.drools.BuildDomain;
  */
 public class MavenBuildEndpoint extends LinkingEndpoint<BuildDomain> {
 
+    private MavenBuildDomainImpl buildDomain;
+
     @Override
     protected BuildDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-        return new MavenBuildDomainImpl(contextHelper, createEventHelper(msgProperties));
+        this.buildDomain.setEventHelper(createEventHelper(msgProperties));
+        return buildDomain;
+    }
+
+    public void setBuildDomain(MavenBuildDomainImpl buildDomain) {
+        this.buildDomain = buildDomain;
     }
 
 }

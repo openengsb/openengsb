@@ -49,8 +49,21 @@
     <property name="zipUtil" ref="zipUtil" />
     <property name="urlShortener" ref="urlShortener" />
   </bean>
+  
+  <bean id="contextProperties" class="java.util.HashMap">
+    <constructor-arg type="java.util.Map">
+      <map key-type="java.lang.String" value-type="java.util.Map">
+        <entry key="42">
+          <map key-type="java.lang.String" value-type="java.lang.String">
+            <entry key="notification/twitter/servicename" value="twitterService" />
+            <entry key="notification/twitter/namespace" value="urn:openengsb:twitter" />
+          </map>
+        </entry>
+      </map>
+    </constructor-arg>
+  </bean>
 
   <twitter:twitterEndpoint endpoint="twitterEndpoint" service="twtr:twitterService"
-    twitterNotifier="#ourNotifier" />
+    twitterNotifier="#ourNotifier" contextProperties="#contextProperties" />
 </beans>
 
