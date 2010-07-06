@@ -33,10 +33,6 @@ public class MavenBuildDomainImpl extends AbstractMavenDomainImpl implements Bui
 
     private EventHelper eventHelper;
 
-    public MavenBuildDomainImpl(EventHelper eventHelper) {
-        this.eventHelper = eventHelper;
-    }
-
     @Override
     public Boolean buildProject() {
         log.info("Building project using maven connector.");
