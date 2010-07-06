@@ -30,10 +30,15 @@ import org.openengsb.drools.ReportDomain;
  */
 public class PlaintextReportEndpoint extends LinkingEndpoint<ReportDomain> {
 
+    private String reportDirectory;
+
     @Override
     protected ReportDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-        String dirName = contextHelper.getValue("report/plaintext-report/config/reportDirectory");
-        return new PlainTextReportDomainImpl(contextHelper, this, msgProperties, new File(dirName));
+        return new PlainTextReportDomainImpl(contextHelper, this, msgProperties, new File(reportDirectory));
+    }
+
+    public void setReportDirectory(String reportDirectory) {
+        this.reportDirectory = reportDirectory;
     }
 
 }
