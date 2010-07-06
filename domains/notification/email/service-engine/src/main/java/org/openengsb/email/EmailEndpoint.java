@@ -17,10 +17,6 @@
  */
 package org.openengsb.email;
 
-import java.util.Map;
-import java.util.Properties;
-import java.util.Map.Entry;
-
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
@@ -32,25 +28,15 @@ import org.openengsb.drools.NotificationDomain;
  */
 public class EmailEndpoint extends LinkingEndpoint<NotificationDomain> {
 
+    private EmailConfiguration configuration;
+
     @Override
     protected NotificationDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-        Properties props = getPropertiesFromContext(contextHelper);
-
-        String user = contextHelper.getValue("notification/email/user");
-        String password = contextHelper.getValue("notification/email/password");
-
-        return new EmailNotifier(props, user, password);
+        return new EmailNotifier(configuration);
     }
 
-    private Properties getPropertiesFromContext(ContextHelper contextHelper) {
-
-        Map<String, String> props = contextHelper.getAllValues("notification/email/config");
-
-        Properties properties = new Properties();
-        for (Entry<String, String> entry : props.entrySet()) {
-            properties.setProperty(entry.getKey(), entry.getValue());
-        }
-        return properties;
+    public void setConfiguration(EmailConfiguration configuration) {
+        this.configuration = configuration;
     }
 
 }

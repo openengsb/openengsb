@@ -43,27 +43,24 @@ public class EmailNotifier implements NotificationDomain {
 
     private Log log = LogFactory.getLog(getClass());
 
-    private Properties props;
+    private EmailConfiguration configuration;
 
     private Authenticator authenticator;
 
-    public EmailNotifier(Properties props) {
-        this.props = props;
-    }
-
-    public EmailNotifier(Properties props, String user, String password) {
-        this.props = props;
-        authenticator = new SmtpAuthenticator(user, password);
+    public EmailNotifier(EmailConfiguration configuration) {
+        this.configuration = configuration;
+        authenticator = new SmtpAuthenticator(configuration.getUser(), configuration.getPassword());
     }
 
     public void notify(Notification notification) {
         log.info("Sending notification with email connector.");
         try {
-            Session session = Session.getDefaultInstance(props, authenticator);
+            Properties properties = configuration.getEmailProperties();
+            Session session = Session.getDefaultInstance(properties, authenticator);
 
             Message msg = new MimeMessage(session);
 
-            InternetAddress addressFrom = new InternetAddress(props.getProperty("mail.smtp.user"));
+            InternetAddress addressFrom = new InternetAddress(properties.getProperty("mail.smtp.user"));
             msg.setFrom(addressFrom);
 
             InternetAddress addressTo = new InternetAddress(notification.getRecipient());
