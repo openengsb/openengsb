@@ -111,7 +111,7 @@ public class FacebookConnectorImpl implements FacebookConnector {
     public void updateMessageNoErrorHandling(String message) throws IOException, FacebookException {
         if (facebookClient == null) {
             facebookClient = login();
-            postMessage(message);
+            truncateMessage(message);
         } else {
             reloginAndPost(message);
         }
@@ -123,30 +123,47 @@ public class FacebookConnectorImpl implements FacebookConnector {
             String session = facebookClient.auth_getSession(token);
             // the following will never be reached, the exception is expected,
             // otherwise, everything is fine, and no new log in is needed
-            postMessage(message);
+            truncateMessage(message);
         } catch (FacebookException e) {
             facebookClient = login();
+            truncateMessage(message);
+        }
+    }
+
+    private void truncateMessage(String message) throws FacebookException {
+        List<String> messages = new ArrayList<String>();
+        List<String> messagesToBePosted = new ArrayList<String>();
+        if (message.length() >= MAXCHAR) {
+            int currentLength = 0;
+            String[] messagesArray = message.split(" ");
+            for (String s : messagesArray) {
+                if (currentLength + 10 + s.length() < MAXCHAR) {
+                    messages.add(s + " ");
+                    currentLength += s.length() + 1;// pluss 1 because of space
+                } else {
+                    String m = "";
+                    for (String me : messages) {
+                        m += me;
+                    }
+                    messagesToBePosted.add(m);
+                    messages.clear();
+                    messages.add(s + " ");
+                    currentLength = s.length() + 1;
+                }
+            }
+            int current = 0, max = messagesToBePosted.size();
+            for (String s : messagesToBePosted) {
+                current++;
+                postMessage("[" + current + "/" + max + "] " + s);
+            }
+        } else {
             postMessage(message);
         }
     }
 
     private void postMessage(String message) throws FacebookException {
-        List<String> messages = new ArrayList<String>();
-
-        if (message.length() >= MAXCHAR) {
-            int i = 0;
-            while (i + MAXCHAR < message.length()) {
-                messages.add(message.substring(i, i + MAXCHAR));
-                i = i + (MAXCHAR);
-            }
-            messages.add(message.substring(i));
-            for (String s : messages) {
-                facebookClient.users_setStatus(s);
-            }
-        } else {
-            facebookClient.users_setStatus(message);
-        }
-    }    
+        facebookClient.users_setStatus(message);
+    }
 
     private void handleFacebookException(FacebookException e) {
         switch (e.getCode()) {
