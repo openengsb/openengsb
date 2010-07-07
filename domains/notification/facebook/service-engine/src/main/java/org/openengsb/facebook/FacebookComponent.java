@@ -21,7 +21,7 @@ package org.openengsb.facebook;
 import org.openengsb.core.OpenEngSBComponent;
 
 /**
- * @org.apache.xbean.XBean element="FacebookComponent"
+ * @org.apache.xbean.XBean element="facebookComponent"
  *                         description="This is a tool connector for OpenEngSB."
  */
 public class FacebookComponent extends OpenEngSBComponent {

@@ -30,7 +30,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "classpath:../test-classes/test-bean.xml" })
+@ContextConfiguration(locations = { "classpath:test-bean.xml" })
 public class FacebookNotifierIT {
 
 
