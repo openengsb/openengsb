@@ -17,22 +17,26 @@
  */
 package org.openengsb.persistence;
 
-public class PersistenceObject {
+public class KeyValueBean {
 
-    private String xml;
+    private String key;
 
-    private String className;
+    private String value;
 
-    public PersistenceObject(String xml, String className) {
-        this.xml = xml;
-        this.className = className;
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public String getClassName() {
-        return className;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public String getXml() {
-        return xml;
+    public String getKey() {
+        return key;
     }
+
+    public String getValue() {
+        return value;
+    }
+
 }
