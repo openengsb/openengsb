@@ -33,8 +33,21 @@
     <bean id="facebookNotifier" class="org.openengsb.facebook.FacebookNotifier">
         <property name="facebookConnector" ref="facebookConnector"/>
     </bean>
+    <bean id="contextProperties" class="java.util.HashMap">
+    <constructor-arg type="java.util.Map">
+      <map key-type="java.lang.String" value-type="java.util.Map">
+        <entry key="42">
+          <map key-type="java.lang.String" value-type="java.lang.String">
+            <entry key="notification/facebook/servicename" value="facebookService" />
+            <entry key="notification/facebook/namespace" value="urn:openengsb:facebook" />
+          </map>
+        </entry>
+      </map>
+    </constructor-arg>
+  </bean>
+    
 
     <facebook:facebookEndpoint endpoint="facebookEndpoint" service="fbk:facebookService"
-                               facebookNotifier="#facebookNotifier"/>
+                               facebookNotifier="#facebookNotifier" contextProperties="#contextProperties" />
 
 </beans>
