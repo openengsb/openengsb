@@ -41,8 +41,10 @@ public abstract class RPCEndpoint<T> extends OpenEngSBEndpoint {
 
     protected abstract QName getForwardTarget(ContextHelper contextHelper);
 
-    protected abstract void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
-            ContextHelper contextHelper, MessageProperties msgProperties) throws Exception;
+    protected abstract boolean handleCallAutomatically();
+
+    protected abstract void handleMethodCallManually(MessageExchange exchange, NormalizedMessage in,
+            NormalizedMessage out, ContextHelper contextHelper, MessageProperties msgProperties) throws Exception;
 
     public RPCEndpoint() {
     }
@@ -66,18 +68,23 @@ public abstract class RPCEndpoint<T> extends OpenEngSBEndpoint {
         ContextHelper contextHelper = new ContextHelperImpl(this, msgProperties);
 
         QName operation = exchange.getOperation();
-        if (operation != null && operation.getLocalPart().equals("methodcall")) {
-            handleMethodCall(exchange, in, out, contextHelper, msgProperties);
-            return;
+        if (operation == null || !operation.getLocalPart().equals("methodcall")) {
+            throw new javax.resource.spi.IllegalStateException(
+                    "'methodcall' expected in opertation field of exchange, but '" + operation + "' found.");
         }
 
-        inOut(exchange, in, out, contextHelper, msgProperties);
+        if (handleCallAutomatically()) {
+            handleMethodCall(exchange, in, out, contextHelper, msgProperties);
+        } else {
+            handleMethodCallManually(exchange, in, out, contextHelper, msgProperties);
+        }
     }
 
     private void handleMethodCall(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
             ContextHelper contextHelper, MessageProperties msgProperties) throws TransformerException,
             SerializationException, InvocationFailedException, MessagingException {
         MethodCall methodCall = toMethodCall(in.getContent());
+
         T implementation = getImplementation(contextHelper, msgProperties);
         if (implementation == null) {
             QName forwardTarget = getForwardTarget(contextHelper);
@@ -92,6 +99,7 @@ public abstract class RPCEndpoint<T> extends OpenEngSBEndpoint {
         ReturnValue returnValue = methodCall.invoke(implementation);
 
         out.setContent(toSource(returnValue));
+
     }
 
 }

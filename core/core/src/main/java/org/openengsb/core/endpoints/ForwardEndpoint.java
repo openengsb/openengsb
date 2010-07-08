@@ -18,6 +18,7 @@
 package org.openengsb.core.endpoints;
 
 import javax.jbi.messaging.MessageExchange;
+import javax.jbi.messaging.MessagingException;
 import javax.jbi.messaging.NormalizedMessage;
 import javax.jbi.servicedesc.ServiceEndpoint;
 import javax.xml.namespace.QName;
@@ -47,10 +48,15 @@ public abstract class ForwardEndpoint<T> extends RPCEndpoint<T> {
     }
 
     @Override
-    protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
-            ContextHelper contextHelper, MessageProperties msgProperties) throws Exception {
-        QName defaultConnector = getForwardTarget(contextHelper);
-        forwardInOutMessage(exchange, in, out, defaultConnector);
+    protected boolean handleCallAutomatically() {
+        return true;
+    }
+
+    @Override
+    protected void handleMethodCallManually(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
+            ContextHelper contextHelper, MessageProperties msgProperties) throws MessagingException {
+        QName forwardTarget = getForwardTarget(contextHelper);
+        forwardInOutMessage(exchange, in, out, forwardTarget);
     }
 
 }
