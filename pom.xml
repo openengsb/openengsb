@@ -236,6 +236,10 @@
     <module>core/context/service-engine</module>
     <module>core/context/service-unit</module>
 
+    <!-- Persistence -->
+    <module>core/persistence/service-engine</module>
+    <module>core/persistence/service-unit</module>
+
     <!-- tool-links -->
     <module>features/link/http/service-unit</module>
     <module>features/link/http-jms/service-unit</module>
@@ -1027,6 +1031,18 @@
       <dependency>
         <groupId>org.openengsb</groupId>
         <artifactId>openengsb-context-su</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+
+      <!-- Persistence -->
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-persistence-se</artifactId>
+        <version>${pom.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-persistence-su</artifactId>
         <version>${pom.version}</version>
       </dependency>
 

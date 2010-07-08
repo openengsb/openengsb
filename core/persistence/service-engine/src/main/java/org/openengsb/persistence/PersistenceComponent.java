@@ -13,30 +13,20 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
+   
  */
 package org.openengsb.persistence;
 
-public class KeyValueBean {
+import org.openengsb.core.OpenEngSBComponent;
 
-    private String key;
-
-    private String value;
-
-    public void setKey(String key) {
-        this.key = key;
+/**
+ * @org.apache.xbean.XBean element="persistenceComponent"
+ *                         description="Persistence Component" The OpenEngSB persistence-component
+ */
+public class PersistenceComponent extends OpenEngSBComponent {
+    @Override
+    protected Class<?>[] getEndpointClasses() {
+        return new Class[] { PersistenceEndpoint.class };
     }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
+    
 }
