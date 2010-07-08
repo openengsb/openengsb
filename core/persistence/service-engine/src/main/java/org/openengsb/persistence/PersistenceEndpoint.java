@@ -24,7 +24,6 @@ import java.util.List;
 
 import javax.jbi.messaging.MessageExchange;
 import javax.jbi.messaging.NormalizedMessage;
-import javax.xml.transform.TransformerException;
 
 import org.apache.servicemix.jbi.jaxp.SourceTransformer;
 import org.apache.servicemix.jbi.jaxp.StringSource;
@@ -64,7 +63,13 @@ public class PersistenceEndpoint extends DirectMessageHandlingEndpoint<Persisten
     @Override
     protected void handleMethodCallManually(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
             ContextHelper contextHelper, MessageProperties msgProperties) throws Exception {
-        XMLMethodCall xmlCall = getXmlMethodCall(in);
+        String inMessage = new SourceTransformer().toString(in.getContent());
+        String outMessage = handlePersistenceCall(inMessage);
+        out.setContent(new StringSource(outMessage));
+    }
+
+    protected String handlePersistenceCall(String inMessage) throws Exception {
+        XMLMethodCall xmlCall = getXmlMethodCall(inMessage);
 
         List<Object> args = new ArrayList<Object>();
         List<Class<?>> types = new ArrayList<Class<?>>();
@@ -87,9 +92,7 @@ public class PersistenceEndpoint extends DirectMessageHandlingEndpoint<Persisten
                 .toArray(new Class<?>[types.size()]));
         ReturnValue returnValue = methodCall.invoke(persistence);
 
-        String transformed = transformReturnValue(returnValue);
-
-        out.setContent(new StringSource(transformed));
+        return transformReturnValue(returnValue);
     }
 
     @SuppressWarnings("unchecked")
@@ -127,7 +130,7 @@ public class PersistenceEndpoint extends DirectMessageHandlingEndpoint<Persisten
         List<PersistenceObject> list = new ArrayList<PersistenceObject>();
         XMLMappableList mappableList = value.getList();
         for (XMLMappable mappable : mappableList.getMappables()) {
-            if (!value.ifBean()) {
+            if (!mappable.ifBean()) {
                 throw new IllegalStateException("Only beans are supported as part of the list.");
             }
             list.add(new PersistenceObject(toXml(mappable), mappable.getBean().getClassName()));
@@ -141,13 +144,12 @@ public class PersistenceEndpoint extends DirectMessageHandlingEndpoint<Persisten
         return writer.toString();
     }
 
-    private XMLMethodCall getXmlMethodCall(NormalizedMessage in) throws TransformerException, SerializationException {
-        String xml = new SourceTransformer().toString(in.getContent());
-        XMLMethodCall xmc = getSerializer().deserialize(XMLMethodCall.class, new StringReader(xml));
+    private XMLMethodCall getXmlMethodCall(String inMessage) throws SerializationException {
+        XMLMethodCall xmc = getSerializer().deserialize(XMLMethodCall.class, new StringReader(inMessage));
         return xmc;
     }
 
-    public void setPersistenceImpl(PersistenceInternal persistence) {
+    public void setPersistence(PersistenceInternal persistence) {
         this.persistence = persistence;
     }
 
