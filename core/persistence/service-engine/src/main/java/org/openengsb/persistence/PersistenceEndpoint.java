@@ -19,12 +19,13 @@ package org.openengsb.persistence;
 
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.endpoints.LinkingEndpoint;
+import org.openengsb.contextcommon.ContextHelper;
 
 /**
  * @org.apache.xbean.XBean element="persistenceEndpoint"
  *                         description="Persistence Component"
  */
-public class ContextEndpoint extends LinkingEndpoint<Object> {
+public class PersistenceEndpoint extends LinkingEndpoint<Object> {
 
 
     @Override
