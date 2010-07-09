@@ -67,6 +67,6 @@
     </constructor-arg>
   </bean>
 
-  <svn:svnEndpoint service="subversion:svnService" endpoint="svnEndpoint" id="svnEndpoint" connector="#connector" contextProperties="#contextProperties" />
+  <svn:svnEndpoint service="subversion:svnService" endpoint="svnEndpoint" id="svnEndpoint" contextProperties="#contextProperties" />
 
 </beans>
