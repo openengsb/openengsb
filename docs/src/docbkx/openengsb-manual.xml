@@ -126,7 +126,7 @@
         The target audience of this part are developers of OpenEngSB.
       </para>
     </partintro>
-    <xi:include href="developer/domains.xml"/>
+    <xi:include href="domains/domains.xml"/>
   </part>
 
   <part id="appendix">
