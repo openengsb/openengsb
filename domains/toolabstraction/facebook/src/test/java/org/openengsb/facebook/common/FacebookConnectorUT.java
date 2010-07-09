@@ -31,7 +31,7 @@ import java.util.Date;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:test-bean.xml"})
-public class FacebookConnectorIT {
+public class FacebookConnectorUT {
 
 
     @Resource
