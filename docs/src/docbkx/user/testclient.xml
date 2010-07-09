@@ -17,45 +17,58 @@
 
 -->
 <chapter id="testclient" xmlns="http://docbook.org/ns/docbook">
-  <title>How to use the OpenEngSB Testclient</title>
+  <title>Using the Testclient</title>
+  
+  <section>
+    <title>What is the Testclient</title>
+    The Testclient is a GUI application which can communicate with OpenEngSB.
+    This is done by sending messages into the bus and waiting for an answer.
+    As soon as an answer is received it is displayed in a message box.
+    You can choose the message, the recipient and the message type.
+    The Testclient is a handy tool if you want to test OpenEngSB services or
+    if you want to work with the Context directly.
+  </section>
 
   <section>
     <title>Starting the Testclient</title>
     <para>
-      To start the testclient run the shell script run-testclient.sh in the scripts folder. 
-      This will deploy the test-jms service unit, which is used by the swing client to send messages into the OpenEngSB.
-      Futher more the test client will be started by this script.
+      To start the testclient execute the script <filename>testclient.sh</filename> in the
+      <filename>etc/scripts/</filename> directory:
+      
+      <literallayout><command>etc/scripts/testclient.sh</command></literallayout>
     </para>
   </section>
 
   <section>
-    <title>The Message-Sending Tab</title>
+    <title>The Message Tab</title>
     <para>
       <mediaobject>
         <imageobject>
           <imagedata id="new" fileref="graphics/testclient_message.png"
-            format="png" />
+            format="png" width="400" align="center" />
         </imageobject>
 		<caption>Messaging</caption>
       </mediaobject>
     </para>
 
     <para>
-      There are five parameters of a message that can be set using the testclient.
+      There are five parameters of a message that can be set using the Testclient:
       <orderedlist>
-        <listitem>Context - the context id, which is used to distinguish between different project contexts</listitem>
-        <listitem>Endpoint - The target endpoint of the message.</listitem>     
+        <listitem>Context - The context id, which is used to distinguish between different project contexts</listitem>
+        <listitem>Endpoint - The target endpoint of the message</listitem>     
         <listitem>Operation - The operation field of the JBI message, which has to be set to "event" for event messages and to "methodcall" for service-calls</listitem>     
-        <listitem>MEP - The message exchange pattern, that shall be used. Service-calls have to use in-out, whereas event messages have to use in-only or robust-in-only</listitem>     
+        <listitem>MEP - The Message Exchange Pattern, that shall be used. Service-calls have to use in-out, whereas event messages have to use in-only or robust-in-only</listitem>     
         <listitem>Payload - The textarea can be used to define the content of the message</listitem>     
       </orderedlist>
       Note: The load button can be used to load text from a file into the content textarea.
-      The list of available endpoints is built from the list of consumers specified in the xbean.xml of the openengsb-test-jms-su, which can be found
-      in the directory test/jms/service-unit/src/main/resources.
+      The list of available endpoints is built from the list of consumers specified in the <filename>xbean.xml</filename>
+      of the <literal>openengsb-test-jms-su</literal> project, which can be found
+      in the directory <filename>core/testclient/jms/service-unit/src/main/resources/</filename>.
     </para>
     
     <para>
-    To add additional endpoints add jms:consumer elements to the xbean.xml in src/main/resources in the openengsb-test-jms-su.
+      To add additional endpoints add <literal>jms:consumer</literal> elements to
+      <filename>core/testclient/jms/service-unit/src/main/resources/xbean.xml</filename>.
     </para> 
   </section>
   
@@ -69,14 +82,14 @@
       <mediaobject>
         <imageobject>
           <imagedata id="new" fileref="graphics/testclient_context.png"
-            format="png" />
+            format="png" width="400" align="center" />
         </imageobject>
 		<caption>Context information</caption>
       </mediaobject>
     </para>
     <para>
       On the left the tree structure of the context is shown. Clicking one of the nodes displays its key-value pairs in the table
-      on the right side of the window. Changes can be made using the context menu, or the buttons. If the value of an entry shall be
+      on the right side of the window. Changes can be made using the context menu or the buttons. If the value of an entry shall be
       changed just edit it directly in the table - it will be saved when the cell loses focus after editing.
       The "Refresh" button can be used to load changes that have been made concurrently by someone else.
     </para>

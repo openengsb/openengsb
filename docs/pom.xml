@@ -112,8 +112,12 @@
                   <goal>generate-html</goal>
                 </goals>
                 <configuration>
+                  <xincludeSupported>true</xincludeSupported>
                   <chunkedOutput>false</chunkedOutput>
                   <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html.xsl</htmlCustomization>
+                  <preProcess>
+                    <delete dir="${basedir}/target/docbkx/html" />
+                  </preProcess>
                   <postProcess>
                     <copy todir="${basedir}/target/docbkx/html">
                       <fileset dir="${basedir}/src/docbkx/resources">
@@ -146,8 +150,12 @@
                   <goal>generate-html</goal>
                 </goals>
                 <configuration>
+                  <xincludeSupported>true</xincludeSupported>
                   <chunkedOutput>true</chunkedOutput>
                   <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>
+                  <preProcess>
+                    <delete dir="${basedir}/target/docbkx/html" />
+                  </preProcess>
                   <postProcess>
                     <copy todir="${basedir}/target/docbkx/html">
                       <fileset dir="${basedir}/src/docbkx/resources">
@@ -180,6 +188,7 @@
                   <goal>generate-pdf</goal>
                 </goals>
                 <configuration>
+                <xincludeSupported>true</xincludeSupported>
                   <foCustomization>${basedir}/src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
                   <imgSrcPath>file:///${basedir}/src/docbkx/</imgSrcPath>
 				  <postProcess>

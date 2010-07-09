@@ -17,10 +17,13 @@
 
 -->
 <chapter id="architecture" xmlns="http://docbook.org/ns/docbook">
-  <title>Architecture of the EngSB</title>
+  <title>Architecture</title>
+  
+  <caution>This chapter has to be rewritten</caution>
+  
   <para>
-    Since this manual is the user manual only a very basic overview over the architecture should be given. For more
-    detailed overview use the own architectural manual also provided at openengsb.org.
+    This chapter explains the architecture of OpenEngSB in detail. It is intended for
+    developers of OpenEngSB.
   </para>
     <section id="architecture.connectors">
         <title>Connectors</title>
@@ -41,7 +44,7 @@
     <section id="architecture.domain">
         <title>Domains</title>
         <para>
-          Explain domains and 
+          TBW
         </para>
     </section>
     <section id="architecture.messageFlow">
@@ -50,20 +53,28 @@
         TBW(Describe event and message flow for the OpenEngSB)
       </para>
       <para>
-      !!Service Call!! Control flow (domain - rule engine interaction): event to rule engine - rule action; uses rpc 
-      endpoints (domains - drools domain package); domain may manipulate event; domain may generate new events; domain
-       may return event to rule engine
+        !!Service Call!! Control flow (domain - rule engine interaction): event to rule engine - rule action; uses rpc 
+        endpoints (domains - drools domain package); domain may manipulate event; domain may generate new events; domain
+         may return event to rule engine
+      </para>
 
-      Domain structure: domain name, event type (uid, e.g. class name), tool name, data(tree structure, key-value pairs),
-      process id to identify the process afterwards and through different services and events
+      <para>
+        Domain structure: domain name, event type (uid, e.g. class name), tool name, data(tree structure, key-value pairs),
+        process id to identify the process afterwards and through different services and events
+      </para>
 
-      Tool connector structure: uses rpc endpoints (linking, ..)
+      <para>
+        Tool connector structure: uses rpc endpoints (linking, ..)
+      </para>
 
-      !!Event Flow!! Notification process (tool to rule engine): adapter, file, .. - event; event to domain; domain 
-      enriches event payload (- data); domain forwards event to rule engine; rule engine processes event properties
+      <para>
+        !!Event Flow!! Notification process (tool to rule engine): adapter, file, .. - event; event to domain; domain 
+        enriches event payload (- data); domain forwards event to rule engine; rule engine processes event properties
+      </para>
 
-      Event Structure: domain name, event type (uid, e.g. class name), tool name, data (tree structure, key-value 
-      pairs); metadata: contextID and processID
+      <para>
+        Event Structure: domain name, event type (uid, e.g. class name), tool name, data (tree structure, key-value 
+        pairs); metadata: contextID and processID
       </para>
     </section>
 </chapter>

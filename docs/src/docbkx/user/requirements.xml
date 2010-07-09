@@ -16,10 +16,11 @@
    limitations under the License.
 
 -->
-<chapter id="userQuickstart" xmlns="http://docbook.org/ns/docbook">
-  <title>Quickstart for OpenEngSB User</title>
+<chapter id="requirements" xmlns="http://docbook.org/ns/docbook">
+  <title>When to use OpenEngSB</title>
+
   <para>
-    This chapter gives an overview how to quickly start with the OpenEngSB.  
+    TBW: Provide some good use cases 
   </para>
-  
+
 </chapter>

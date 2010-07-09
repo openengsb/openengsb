@@ -17,7 +17,7 @@
 
 -->
 <chapter id="workflow" xmlns="http://docbook.org/ns/docbook">
-  <title>Workflows in the OpenEngSB</title>
+  <title>Workflows</title>
 
   <para>
     The OpenEngSB supports the modeling of workflows on the OpenEngSB. This could be done by two different approaches.
@@ -48,7 +48,7 @@
       When trying to delete an element that is not there, nothing happens.
     </para>
     <para>
-      <unorderedList>
+      <itemizedlist>
         <listitem>
           create: creates the element matching the ID and the supplied code
         </listitem>
@@ -65,7 +65,7 @@
           list: returns a list of all elements of the supplied type contained in the supplied pacakge.
           If the package is ommited, all Elements are returned. (see ListResponse in the model)
         </listitem>
-      </unorderedList>
+      </itemizedlist>
     </para>
   </section>
 

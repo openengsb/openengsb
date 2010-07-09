@@ -16,8 +16,8 @@
    limitations under the License.
 
 -->
-<chapter xmlns="http://docbook.org/ns/docbook">
-  <title>OpenEngSB Tool Domains</title>
+<chapter id="toolDomains" xmlns="http://docbook.org/ns/docbook">
+  <title>Tool Domains</title>
   
   <warning>
     <para>

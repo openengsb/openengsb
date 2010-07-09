@@ -163,15 +163,22 @@
 
     <!-- Generate the TOCs for named components only -->
     <xsl:param name="generate.toc">
-        book toc
+        book toc,title
     </xsl:param>
 
-    <!-- Show only Sections up to level 3 in the TOCs -->
-    <xsl:param name="toc.section.depth">2</xsl:param>
+    <!-- Show only Sections up to level 1 in the TOCs -->
+    <xsl:param name="toc.section.depth">1</xsl:param>
 
     <!-- Dot and Whitespace as separator in TOC between Label and Title-->
     <xsl:param name="autotoc.label.separator" select="'.  '"/>
 
+
+    <!--###################################################
+                     Glossary
+   ################################################### -->
+    <xsl:param name="glossentry.show.acronym">yes</xsl:param>
+    <xsl:param name="glossary.as.blocks">0</xsl:param>
+    <xsl:param name="glossterm.width">5cm</xsl:param>
 
     <!--###################################################
                   Paper & Page Size
