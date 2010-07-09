@@ -44,6 +44,11 @@
         <email>michael.handler [at] fullstop.at</email>
       </author>
       <author>
+	    <firstname>Christoph</firstname>
+	    <surname>Leiter</surname>
+        <email>openengsb [at] christophleiter.com</email>
+	  </author>
+      <author>
         <firstname>Christoph</firstname>
         <surname>Gritschenberger</surname>
         <email>e0525747 [at] student.tuwien.ac</email>
@@ -123,7 +128,7 @@
     </partintro>
     <xi:include href="developer/domains.xml"/>
   </part>
-  
+
   <part id="appendix">
     <title>Appendix</title>
     <xi:include href="appendix/javastyle.xml" />
