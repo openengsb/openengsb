@@ -258,7 +258,7 @@
 
   <issueManagement>
     <system>JIRA</system>
-    <url>http://issues.openengsb.org/</url>
+    <url>http://issues.openengsb.org/jira/browse/OPENENGSB</url>
   </issueManagement>
 
   <ciManagement>
