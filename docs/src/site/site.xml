@@ -33,31 +33,45 @@
 
   <body>
     <menu name="OpenEngSB">
-      <item href="index.html" name="Welcome" />
-      <item href="about.html" name="What is OpenEngSB?" />
-      <item href="reference/index.html" name="Userguide" />
-      <item href="faq.html" name="FAQ" />
-      <item href="sponsors.html" name="Sponsors" />
+      <item name="Welcome" href="index.html" />
+      <item name="What is OpenEngSB?" href="about.html" />
+	  <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
+	  <item name="Changelog" href="jira-report.html" />
+      <item name="Sponsors" href="sponsors.html" />
     </menu>
 
-    <menu name="OpenEngSB Usage" >
-      <item href="howto/howto_setup.html" name="Developer setup" />
-      <item href="howto/howto_notify.html" name="Hello World" />
-      <item href="howto/howto_issue.html" name="Issue tracker" />
-      <item href="howto/howto_embedded.html" name="Web configuration" />
-      <item href="howto/howto_cit.html" name="Continuous Integration" />
+	<menu name="Documentation" >
+	  <item name="Manual" href="reference/index.html"  />
+      <item name="FAQ" href="reference/faq.html" />
+	  <item name="Presentation Material" href="reference/presentation.html" />
+	  <item name="Youtube Channel" href="http://www.youtube.com/user/cdflexvideo" />
     </menu>
 
-    <menu name="Development">
-      <item name="Changelog" href="jira-report.html" />
-      <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
-      <item name="Source" href="http://github.com/openengsb/openengsb/" />
+    <menu name="Quickstart" >
+      <item name="Installation" href="howto/howto_setup.html" />
+      <item name="Hello World" href="howto/howto_notify.html" />
+      <item name="Issue tracker" href="howto/howto_issue.html" />
+      <item name="Web configuration" href="howto/howto_embedded.html" />
+      <item name="Continuous Integration" href="howto/howto_cit.html" />
+    </menu>
+
+    <menu name="Community" >
       <item name="Mailing Lists" href="mailinglists.html" />
-      <item name="Presentation Material" href="presentation.html" />
-      <item name="Issues / Roadmap" href="issue-tracking.html"/>
+	  <item name="Twitter" href="http://twitter.com/openEngSB" />
+	  <item name="Facebook" href="http://www.facebook.com/group.php?gid=208312030232" />
+    </menu>
+
+    <menu name="Development" >
+      <item name="Developer Setup" href="howto/howto_setup.html" />
+      <item name="Source Github" href="http://github.com/openengsb/openengsb/" />
+      <item name="Issues Tracking" href="issue-tracking.html"/>
       <item name="Continuous Integration" href="integration.html"/>
-      <item name="Artifacts" href="http://maven.openengsb.org/" />
+      <item name="Maven Repository" href="http://maven.openengsb.org/" />
       <item name="Development Team" href="team-list.html" />
+    </menu>
+
+	<menu name="Subprojects" >
+	  <item name="YASTE" href="http://yaste.openengsb.org/" />
     </menu>
 
   </body>
