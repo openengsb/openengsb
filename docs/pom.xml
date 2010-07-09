@@ -251,6 +251,25 @@
           </plugin>
         </plugins>
       </build>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-changes-plugin</artifactId>
+            <version>2.3</version>
+            <configuration>
+              <onlyCurrentVersion>true</onlyCurrentVersion>
+            </configuration>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>jira-report</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
       <repositories>
         <repository>
           <id>jai.repository</id>

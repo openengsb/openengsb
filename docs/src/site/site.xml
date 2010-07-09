@@ -89,6 +89,7 @@
     </menu>
 
     <menu name="Development">
+      <item name="Changelog" href="jira-report.html" />
       <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
       <item name="Source" href="http://github.com/openengsb/openengsb/" />
       <item name="Mailing Lists" href="mailinglists.html" />
