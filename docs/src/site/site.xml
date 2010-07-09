@@ -87,14 +87,14 @@
         <item href="proposals/cmsDomain.html" name="CMS Domain" />
       </item>
     </menu>
-    
+
     <menu name="Development">
       <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
       <item name="Source" href="http://github.com/openengsb/openengsb/" />
       <item name="Mailing Lists" href="mailinglists.html" />
       <item name="Presentation Material" href="presentation.html" />
-      <item name="Issues / Roadmap" href="http://issues.openengsb.org/"/>
-      <item name="Continuous Integration" href="http://build.openengsb.org/"/>
+      <item name="Issues / Roadmap" href="issue-tracking.html"/>
+      <item name="Continuous Integration" href="integration.html"/>
       <item name="Artifacts" href="http://maven.openengsb.org/" />
       <item name="Development Team" href="team-list.html" />
     </menu>
