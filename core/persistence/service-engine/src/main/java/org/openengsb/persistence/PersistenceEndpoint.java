@@ -75,17 +75,7 @@ public class PersistenceEndpoint extends DirectMessageHandlingEndpoint<Persisten
         List<Class<?>> types = new ArrayList<Class<?>>();
 
         for (XMLTypedValue arg : xmlCall.getArgs()) {
-            XMLMappable value = arg.getValue();
-            if (value.ifList()) {
-                List<PersistenceObject> list = transformList(value);
-                args.add(list);
-                types.add(List.class);
-            } else if (value.ifBean()) {
-                args.add(new PersistenceObject(toXml(value), arg.getType()));
-                types.add(PersistenceObject.class);
-            } else {
-                throw new IllegalStateException("Only java.util.List and beans are supported.");
-            }
+            transformArgument(args, types, arg);
         }
 
         MethodCall methodCall = new MethodCall(xmlCall.getMethodName(), args.toArray(), types
@@ -93,6 +83,21 @@ public class PersistenceEndpoint extends DirectMessageHandlingEndpoint<Persisten
         ReturnValue returnValue = methodCall.invoke(persistence);
 
         return transformReturnValue(returnValue);
+    }
+
+    private void transformArgument(List<Object> args, List<Class<?>> types, XMLTypedValue arg)
+            throws SerializationException {
+        XMLMappable value = arg.getValue();
+        if (value.ifList()) {
+            List<PersistenceObject> list = transformList(value);
+            args.add(list);
+            types.add(List.class);
+        } else if (value.ifBean()) {
+            args.add(new PersistenceObject(toXml(value), arg.getType()));
+            types.add(PersistenceObject.class);
+        } else {
+            throw new IllegalStateException("Only java.util.List and beans are supported.");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -127,15 +132,15 @@ public class PersistenceEndpoint extends DirectMessageHandlingEndpoint<Persisten
     }
 
     private List<PersistenceObject> transformList(XMLMappable value) throws SerializationException {
-        List<PersistenceObject> list = new ArrayList<PersistenceObject>();
+        List<PersistenceObject> resultList = new ArrayList<PersistenceObject>();
         XMLMappableList mappableList = value.getList();
         for (XMLMappable mappable : mappableList.getMappables()) {
             if (!mappable.ifBean()) {
                 throw new IllegalStateException("Only beans are supported as part of the list.");
             }
-            list.add(new PersistenceObject(toXml(mappable), mappable.getBean().getClassName()));
+            resultList.add(new PersistenceObject(toXml(mappable), mappable.getBean().getClassName()));
         }
-        return list;
+        return resultList;
     }
 
     private String toXml(Object value) throws SerializationException {
