@@ -194,6 +194,12 @@
         <appender-ref ref="exist.scheduler"/>
     </category>
 
+    <!-- for openengsb -->
+    <category name="org.openengsb" additivity="false">
+        <priority value="debug" />
+        <appender-ref ref="console" />
+    </category>
+
     <!-- Section: ROOT logger -->
     
     <root>
