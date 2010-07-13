@@ -14,15 +14,15 @@
 ~~   limitations under the License.
 ~~
 HowTo - First steps with OpenEngSB (Issue tracker)
-  
+
 * Trac setup
-  
+
   To setup the trac connector you need a running trac instance. For information on how to install trac see {{{http://trac.edgewall.org/}http://trac.edgewall.org/}}.
   You also have to install the xmlrpc plugin. For more information see {{{http://trac-hacks.org/wiki/XmlRpcPlugin}http://trac-hacks.org/wiki/XmlRpcPlugin}}.
-  
+
   Now you can initialize a project environment. You may do so by typing using the following commands.
   Note: For our example to fit it is necessary to name the project "trac". All other options can be left at defaults.
-  
+
 +----
   trac-admin trac initenv
   Project Name [My Project]> trac
@@ -34,21 +34,21 @@ HowTo - First steps with OpenEngSB (Issue tracker)
 +----
   htpasswd -c trac\.htpasswd user
   trac-admin trac permission add user TRAC_ADMIN
-+----  
-  
++----
+
   After the initialization you can start trac using the command. (The port should also be 8000, because the trac connector is configured that way).
-  
+
 +----
   tracd -p 8000 --basic-auth=environmentname,/fullpath/environmentname/.htpasswd,/fullpath/environmentname /fullpath/environmentname
 +----
 
   where environmentname in our case is "trac".
-  
+
 * Setting up the example
 
   The Issue tracker domain can be used just like the notification domain. You simply add another rule to the rulebase, by creating a new .rule-file in $SERVICEMIX_HOME/data/openengsb/rulebase/org/openengsb
 
-+----  
++----
   when
     e : Event( name == name )
   then
@@ -65,11 +65,11 @@ HowTo - First steps with OpenEngSB (Issue tracker)
 * Running the example
 
   1. Start servicemix.
-  
+
   2. Run quickrun.sh or mvn clean install and then scripts/deploy.sh
-  
-  3. Send the same message with the same configuration as shown in the {{{howto_notify.html}Hello World example}}.
-  
+
+  3. Send the same message with the same configuration as shown in the {{{./howto_notify.html}Hello World example}}.
+
   The issue domain selects a suitable connector (Trac in our case) and creates the specified issue tickets.
-  
+
   Note: If the notification rule still exists you will receive those messages too.

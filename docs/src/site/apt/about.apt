@@ -54,9 +54,9 @@ About OpenEngSB
  For example, software engineers like us love their tools and will fight
  desperately if you try to take them away.  We like the wheels as they are,
  but we do not like the way they are put together at the moment.
- 
+
 Further Information
 
- See the {{{reference/index.html}Userguide}}, participate in the 
- {{{mail-lists.html}Mailing lists}} or directly dive into the 
- {{{source-repository.html}Source Code}}.
+ See the {{{./reference/index.html}Userguide}}, participate in the
+ {{{./mail-lists.html}Mailing lists}} or directly dive into the
+ {{{./source-repository.html}Source Code}}.

@@ -15,7 +15,7 @@
 ~~
 HowTo - First steps with OpenEngSB (Hello World aka Notification)
 
-  Note: At the moment OpenEngSB is only available as development release. Please refer to the {{{howto_setup.html}Developer Setup HowTo}} for detailed instructions on building OpenEngSB.
+  Note: At the moment OpenEngSB is only available as development release. Please refer to the {{{./howto_setup.html}Developer Setup HowTo}} for detailed instructions on building OpenEngSB.
 
 * Setting up the example
 
@@ -47,9 +47,9 @@ HowTo - First steps with OpenEngSB (Hello World aka Notification)
   When the file is gone again, the rulebase has been reloaded.
 
   5. Run the OpenEngSB testclient. (testclient.sh)
-  
+
   Enter the following values in the testclient and send the message in the testclient
-  
+
 [../images/howto_notify.png]
 
 +---
@@ -60,7 +60,7 @@ HowTo - First steps with OpenEngSB (Hello World aka Notification)
     <name>someEvent</name>
   </XMLEvent>
 +---
-  
+
   The rules are fired and as a consequence the notification domain becomes active.
   The domain selects a suitable connector (Email in our case) and passes the notification to the given recipient.
 
@@ -80,8 +80,8 @@ HowTo - First steps with OpenEngSB (Hello World aka Notification)
 
   Select the droolsService as destination, and type "create" as operation.
   You could use this rule to create email notifications. The rule will be activated on any incoming event. (e.g. quickrun timer)
-  
+
 
 * Coming up next
 
-  The {{{howto_issue.html}Issue ticket}} example shows how to use a different domain. It is also a good starting point for customizing OpenEngSB.
+  The {{{./howto_issue.html}Issue ticket}} example shows how to use a different domain. It is also a good starting point for customizing OpenEngSB.
