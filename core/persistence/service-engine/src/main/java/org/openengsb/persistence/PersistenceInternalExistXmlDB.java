@@ -18,6 +18,9 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
 
     private static final String DB_URI = "xmldb:exist://";
 
+    private final Collection rootCollection;
+    private CollectionManagementService collectionMgtService;
+
     public PersistenceInternalExistXmlDB() {
         try {
             log.debug("starting embedded eXist-database");
@@ -25,6 +28,13 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
             Database database = (Database) cl.newInstance();
             database.setProperty("create-database", "true");
             DatabaseManager.registerDatabase(database);
+
+            log.debug("database registered. Now retrieving references to collections and services");
+
+            rootCollection = DatabaseManager.getCollection("xmldb:exist:///db", "admin", "");
+            collectionMgtService = (CollectionManagementService) rootCollection.getService(
+                    "CollectionManagementService", "1.0");
+
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("unable to start embedded eXist-db", e);
         } catch (InstantiationException e) {
@@ -36,20 +46,20 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
         }
     }
 
+    private XPathQueryService getXPathQueryService(Collection col) throws XMLDBException {
+        XPathQueryService result = (XPathQueryService) col.getService("XPathQueryService", "1.0");
+        result.setProperty("indent", "yes");
+        return result;
+    }
+
     private Collection getOrCreateCollection(String name) throws XMLDBException {
         if (!name.startsWith("/")) {
             name = "/" + name;
         }
         Collection col = DatabaseManager.getCollection(DB_URI + name, "admin", "");
         if (col == null) {
-            // collection does not exist: get root collection and create
-            // for simplicity, we assume that the new collection is a
-            // direct child of the root collection, e.g. /db/test.
-            // the example will fail otherwise.
-            Collection root = DatabaseManager.getCollection(DB_URI + "/db");
-            CollectionManagementService mgtService = (CollectionManagementService) root.getService(
-                    "CollectionManagementService", "1.0");
-            col = mgtService.createCollection(name);
+            log.info("collection for " + name + " not found, creating new");
+            col = collectionMgtService.createCollection(name);
         }
         return col;
     }
