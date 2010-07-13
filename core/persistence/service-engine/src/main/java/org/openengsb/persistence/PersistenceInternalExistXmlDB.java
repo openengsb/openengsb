@@ -140,9 +140,19 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
     }
 
     @Override
-    public void delete(List<PersistenceObject> examples) {
-        // TODO Auto-generated method stub
-
+    public void delete(List<PersistenceObject> examples) throws PersistenceException {
+        try {
+            for (PersistenceObject o : examples) {
+                Collection col = getOrCreateCollection(o.getClassName());
+                ResourceSet result = queryExistDB(col, o.getXml());
+                for (ResourceIterator it = result.getIterator(); it.hasMoreResources();) {
+                    Resource r = it.nextResource();
+                    col.removeResource(r);
+                }
+            }
+        } catch (XMLDBException e) {
+            throw new PersistenceException(e);
+        }
     }
 
     private String makeCondition(String varName, String value) {
@@ -161,7 +171,8 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
     private List<PersistenceObject> doQuery(List<PersistenceObject> example) throws XMLDBException {
         List<PersistenceObject> result = new ArrayList<PersistenceObject>();
         for (PersistenceObject o : example) {
-            ResourceSet queryResult = queryExistDB(o);
+            Collection coll = getOrCreateCollection(o.getClassName());
+            ResourceSet queryResult = queryExistDB(coll, o.getXml());
             for (ResourceIterator it = queryResult.getIterator(); it.hasMoreResources();) {
                 Resource r = it.nextResource();
                 PersistenceObject resultObject = new PersistenceObject((String) r.getContent(), o.getClassName());
@@ -171,10 +182,10 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
         return result;
     }
 
-    private ResourceSet queryExistDB(PersistenceObject o) throws XMLDBException {
-        Collection col = getOrCreateCollection(o.getClassName());
-        String queryString = makeQuery(o.getXml());
-        return getXPathQueryService(col).query(queryString);
+    private ResourceSet queryExistDB(Collection coll, String sampleXml) throws XMLDBException {
+        String queryString = makeQuery(sampleXml);
+        XPathQueryService service = getXPathQueryService(coll);
+        return service.query(queryString);
     }
 
     private String makeQuery(String xml) {
