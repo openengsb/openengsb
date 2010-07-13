@@ -36,7 +36,11 @@ public class PersistenceEndpointTest {
     @Before
     public void setUp() {
         this.endpoint = new PersistenceEndpoint();
-        this.endpoint.setPersistence(new PersistenceMock());
+        this.endpoint.setPersistence(getPersistenceImpl());
+    }
+
+    protected PersistenceInternal getPersistenceImpl(){
+        return new PersistenceMock();
     }
 
     @SuppressWarnings("unchecked")
