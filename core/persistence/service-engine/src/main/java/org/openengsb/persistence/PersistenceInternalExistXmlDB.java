@@ -1,16 +1,45 @@
 package org.openengsb.persistence;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.Database;
+import org.xmldb.api.base.Resource;
+import org.xmldb.api.base.ResourceIterator;
+import org.xmldb.api.base.ResourceSet;
 import org.xmldb.api.base.XMLDBException;
 import org.xmldb.api.modules.CollectionManagementService;
 import org.xmldb.api.modules.XMLResource;
+import org.xmldb.api.modules.XPathQueryService;
 
 public class PersistenceInternalExistXmlDB implements PersistenceInternal {
 
@@ -89,10 +118,85 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
 
     }
 
+    private String makeCondition(String varName, String value) {
+        return String.format("bean/fields[fieldName=\"%s\"]/value//*[.=\"%s\"] != ''", varName, value);
+    }
+
     @Override
     public List<PersistenceObject> query(List<PersistenceObject> example) {
-        // TODO Auto-generated method stub
-        return null;
+        List<PersistenceObject> result = new ArrayList<PersistenceObject>();
+        try {
+            for (PersistenceObject o : example) {
+                Collection col = getOrCreateCollection(o.getClassName());
+                Map<String, String> fields = getFields(o.getXml());
+                StringBuffer query = new StringBuffer();
+                query.append("/XMLMappable[");
+                boolean first = true;
+                for (Entry<String, String> e : fields.entrySet()) {
+                    if (!first) {
+                        query.append(" and ");
+                    }
+                    query.append(makeCondition(e.getKey(), e.getValue()));
+                    first = false;
+                }
+                query.append("]");
+                String queryString = query.toString();
+
+                ResourceSet queryResult = getXPathQueryService(col).query(queryString);
+                for (ResourceIterator it = queryResult.getIterator(); it.hasMoreResources();) {
+                    Resource r = it.nextResource();
+                    System.out.println(r.getContent());
+                    PersistenceObject resultObject = new PersistenceObject((String) r.getContent(), o.getClassName());
+                    result.add(resultObject);
+                }
+
+            }
+        } catch (XMLDBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private Map<String, String> getFields(String xml) {
+        Map<String, String> result = new HashMap<String, String>();
+        Document doc;
+        try {
+            doc = (Document) transformToDOM(xml);
+        } catch (TransformerException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            return result;
+        }
+        XPathFactory factory = XPathFactory.newInstance();
+        XPath xpath = factory.newXPath();
+        try {
+            XPathExpression fieldsExpr = xpath.compile("//fields"); // "//book[author='Neal Stephenson']/title/text()");
+            NodeList nodes = (NodeList) fieldsExpr.evaluate(doc, XPathConstants.NODESET);
+            for (int i = 0; i < nodes.getLength(); i++) {
+                Node field = nodes.item(i);
+                printNode(field);
+                xpath = factory.newXPath();
+                XPathExpression nameExpr = xpath.compile(".//fieldName/text()");
+                Node nameText = (Node) nameExpr.evaluate(field, XPathConstants.NODE);
+                String name = nameText.getNodeValue();
+                xpath = factory.newXPath();
+                XPathExpression valueExpr = xpath.compile(".//value/primitive/*/text()");
+                Node valueText = (Node) valueExpr.evaluate(field, XPathConstants.NODE);
+                if (valueText != null) {
+                    String value = valueText.getNodeValue();
+                    System.out.println(name + " = " + value);
+                    result.put(name, value);
+                }
+                // getTransformer().transform(new DOMSource(nodes.item(i)), new
+                // StreamResult(System.out));
+            }
+        } catch (XPathExpressionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return result;
+        }
+        return result;
     }
 
     @Override
@@ -102,6 +206,50 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
 
     public void update(Map<Object, Object> elements) {
 
+    }
+
+    public Node transformToDOM(String xml) throws TransformerException {
+        Transformer t = getTransformer();
+        Source source = new StreamSource(new StringReader(xml));
+        DOMResult result = new DOMResult();
+        t.transform(source, result);
+        return result.getNode();
+    }
+
+    private Transformer getTransformer() {
+        Transformer t = null;
+        try {
+            t = TransformerFactory.newInstance().newTransformer();
+        } catch (TransformerConfigurationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (TransformerFactoryConfigurationError e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return t;
+    }
+
+    private void reset() throws XMLDBException {
+        collectionMgtService.removeCollection("/db");
+        System.out.println("db reset");
+    }
+
+    public static void main(String[] args) throws XMLDBException {
+        PersistenceInternalExistXmlDB x = new PersistenceInternalExistXmlDB();
+        x.reset();
+    }
+
+    public void printNode(Node s) {
+        try {
+            Transformer t = getTransformer();
+            t.setOutputProperty(OutputKeys.INDENT, "yes");
+            t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            t.transform(new DOMSource(s), new StreamResult(System.out));
+        } catch (TransformerException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }
