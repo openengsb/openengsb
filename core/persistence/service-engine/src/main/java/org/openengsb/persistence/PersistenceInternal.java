@@ -21,12 +21,12 @@ import java.util.List;
 
 public interface PersistenceInternal {
 
-    List<PersistenceObject> query(List<PersistenceObject> example);
+    List<PersistenceObject> query(List<PersistenceObject> example) throws PersistenceException;
 
-    void create(List<PersistenceObject> elements);
+    void create(List<PersistenceObject> elements) throws PersistenceException;
 
-    void update(PersistenceObject oldElement, PersistenceObject newElement);
+    void update(PersistenceObject oldElement, PersistenceObject newElement) throws PersistenceException;
 
-    void delete(List<PersistenceObject> examples);
+    void delete(List<PersistenceObject> examples) throws PersistenceException;
 
 }
