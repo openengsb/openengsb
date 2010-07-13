@@ -3,6 +3,8 @@ package org.openengsb.persistence;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.Database;
@@ -12,10 +14,13 @@ import org.xmldb.api.modules.XMLResource;
 
 public class PersistenceInternalExistXmlDB implements PersistenceInternal {
 
+    private static final Log log = LogFactory.getLog(PersistenceInternalExistXmlDB.class);
+
     private static final String DB_URI = "xmldb:exist://";
 
     public PersistenceInternalExistXmlDB() {
         try {
+            log.debug("starting embedded eXist-database");
             Class<?> cl = Class.forName("org.exist.xmldb.DatabaseImpl");
             Database database = (Database) cl.newInstance();
             database.setProperty("create-database", "true");
