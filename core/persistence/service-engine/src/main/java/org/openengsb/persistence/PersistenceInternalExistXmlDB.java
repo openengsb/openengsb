@@ -214,8 +214,10 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
         // TODO Auto-generated method stub
     }
 
-    public void update(Map<Object, Object> elements) {
-
+    public void update(Map<PersistenceObject, PersistenceObject> elements) {
+        for (Entry<PersistenceObject, PersistenceObject> entry : elements.entrySet()) {
+            update(entry.getKey(), entry.getValue());
+        }
     }
 
     public Node transformToDOM(String xml) throws TransformerException {
