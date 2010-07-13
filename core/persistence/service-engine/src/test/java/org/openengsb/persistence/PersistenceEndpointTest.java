@@ -34,7 +34,7 @@ public class PersistenceEndpointTest {
     private PersistenceEndpoint endpoint;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         this.endpoint = new PersistenceEndpoint();
         this.endpoint.setPersistence(getPersistenceImpl());
     }

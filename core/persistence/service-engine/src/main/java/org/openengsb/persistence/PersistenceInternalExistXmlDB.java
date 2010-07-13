@@ -18,6 +18,7 @@
 package org.openengsb.persistence;
 
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -221,7 +222,6 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
             NodeList nodes = (NodeList) fieldsExpr.evaluate(doc, XPathConstants.NODESET);
             for (int i = 0; i < nodes.getLength(); i++) {
                 Node field = nodes.item(i);
-                printNode(field);
                 xpath = factory.newXPath();
                 XPathExpression nameExpr = xpath.compile(".//fieldName/text()");
                 Node nameText = (Node) nameExpr.evaluate(field, XPathConstants.NODE);
@@ -231,11 +231,9 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
                 Node valueText = (Node) valueExpr.evaluate(field, XPathConstants.NODE);
                 if (valueText != null) {
                     String value = valueText.getNodeValue();
-                    System.out.println(name + " = " + value);
+                    log.debug("found field: " + name + " = " + value);
                     result.put(name, value);
                 }
-                // getTransformer().transform(new DOMSource(nodes.item(i)), new
-                // StreamResult(System.out));
             }
         } catch (XPathExpressionException e) {
             // TODO Auto-generated catch block
@@ -278,26 +276,31 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
         return t;
     }
 
-    private void reset() throws XMLDBException {
+    protected void reset() throws XMLDBException {
         collectionMgtService.removeCollection("/db");
-        System.out.println("db reset");
+        log.info("db reset");
     }
 
-    public static void main(String[] args) throws XMLDBException {
-        PersistenceInternalExistXmlDB x = new PersistenceInternalExistXmlDB();
-        x.reset();
+    protected void printResourceList(String collname) throws XMLDBException {
+        Collection coll = getOrCreateCollection(collname);
+        String[] allResources = coll.listResources();
+        for (String s : allResources) {
+            log.debug("found Resource " + s);
+            log.debug("content: " + coll.getResource(s).getContent());
+        }
     }
 
-    public void printNode(Node s) {
+    private void printNode(Node s) {
         try {
             Transformer t = getTransformer();
             t.setOutputProperty(OutputKeys.INDENT, "yes");
             t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-            t.transform(new DOMSource(s), new StreamResult(System.out));
+            StringWriter sw = new StringWriter();
+            t.transform(new DOMSource(s), new StreamResult(sw));
+            log.debug(sw);
         } catch (TransformerException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
-
 }
