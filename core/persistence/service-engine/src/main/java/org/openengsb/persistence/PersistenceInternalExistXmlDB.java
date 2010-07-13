@@ -118,6 +118,7 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
 
             XMLResource resource = (XMLResource) col.createResource(id, XMLResource.RESOURCE_TYPE);
             resource.setContent(xml);
+            log.debug("store resource to collection");
             col.storeResource(resource);
         }
     }
@@ -133,39 +134,47 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
     }
 
     @Override
-    public List<PersistenceObject> query(List<PersistenceObject> example) {
-        List<PersistenceObject> result = new ArrayList<PersistenceObject>();
+    public List<PersistenceObject> query(List<PersistenceObject> example) throws PersistenceException {
         try {
-            for (PersistenceObject o : example) {
-                Collection col = getOrCreateCollection(o.getClassName());
-                Map<String, String> fields = getFields(o.getXml());
-                StringBuffer query = new StringBuffer();
-                query.append("/XMLMappable[");
-                boolean first = true;
-                for (Entry<String, String> e : fields.entrySet()) {
-                    if (!first) {
-                        query.append(" and ");
-                    }
-                    query.append(makeCondition(e.getKey(), e.getValue()));
-                    first = false;
-                }
-                query.append("]");
-                String queryString = query.toString();
-
-                ResourceSet queryResult = getXPathQueryService(col).query(queryString);
-                for (ResourceIterator it = queryResult.getIterator(); it.hasMoreResources();) {
-                    Resource r = it.nextResource();
-                    System.out.println(r.getContent());
-                    PersistenceObject resultObject = new PersistenceObject((String) r.getContent(), o.getClassName());
-                    result.add(resultObject);
-                }
-
-            }
+            return doQuery(example);
         } catch (XMLDBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new PersistenceException(e);
+        }
+    }
+
+    private List<PersistenceObject> doQuery(List<PersistenceObject> example) throws XMLDBException {
+        List<PersistenceObject> result = new ArrayList<PersistenceObject>();
+        for (PersistenceObject o : example) {
+            ResourceSet queryResult = queryExistDB(o);
+            for (ResourceIterator it = queryResult.getIterator(); it.hasMoreResources();) {
+                Resource r = it.nextResource();
+                PersistenceObject resultObject = new PersistenceObject((String) r.getContent(), o.getClassName());
+                result.add(resultObject);
+            }
         }
         return result;
+    }
+
+    private ResourceSet queryExistDB(PersistenceObject o) throws XMLDBException {
+        Collection col = getOrCreateCollection(o.getClassName());
+        String queryString = makeQuery(o.getXml());
+        return getXPathQueryService(col).query(queryString);
+    }
+
+    private String makeQuery(String xml) {
+        Map<String, String> fields = getFields(xml);
+        StringBuffer query = new StringBuffer();
+        query.append("/XMLMappable[");
+        boolean first = true;
+        for (Entry<String, String> e : fields.entrySet()) {
+            if (!first) {
+                query.append(" and ");
+            }
+            query.append(makeCondition(e.getKey(), e.getValue()));
+            first = false;
+        }
+        query.append("]");
+        return query.toString();
     }
 
     private Map<String, String> getFields(String xml) {
