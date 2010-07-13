@@ -45,22 +45,18 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
 
     private static final Log log = LogFactory.getLog(PersistenceInternalExistXmlDB.class);
 
-    private static final String DB_URI = "xmldb:exist://";
+    private static final String DB_URI = "xmldb:exist:///db";
 
     private final Collection rootCollection;
     private CollectionManagementService collectionMgtService;
 
     public PersistenceInternalExistXmlDB() {
         try {
-            log.debug("starting embedded eXist-database");
-            Class<?> cl = Class.forName("org.exist.xmldb.DatabaseImpl");
-            Database database = (Database) cl.newInstance();
-            database.setProperty("create-database", "true");
-            DatabaseManager.registerDatabase(database);
+            initEmbeddedExist();
 
             log.debug("database registered. Now retrieving references to collections and services");
 
-            rootCollection = DatabaseManager.getCollection("xmldb:exist:///db", "admin", "");
+            rootCollection = DatabaseManager.getCollection(DB_URI, "admin", "");
             collectionMgtService = (CollectionManagementService) rootCollection.getService(
                     "CollectionManagementService", "1.0");
 
@@ -73,6 +69,15 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
         } catch (XMLDBException e) {
             throw new RuntimeException("unable to start embedded eXist-db", e);
         }
+    }
+
+    private void initEmbeddedExist() throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+            XMLDBException {
+        log.debug("starting embedded eXist-database");
+        Class<?> cl = Class.forName("org.exist.xmldb.DatabaseImpl");
+        Database database = (Database) cl.newInstance();
+        database.setProperty("create-database", "true");
+        DatabaseManager.registerDatabase(database);
     }
 
     private XPathQueryService getXPathQueryService(Collection col) throws XMLDBException {
@@ -94,21 +99,26 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
     }
 
     @Override
-    public void create(List<PersistenceObject> elements) {
-        for (PersistenceObject o : elements) {
-            try {
-                Collection col = getOrCreateCollection(o.getClassName());
-                String xml = o.getXml();
-                String id = "" + xml.hashCode();
+    public void create(List<PersistenceObject> elements) throws PersistenceException {
+        try {
+            doCreate(elements);
+        } catch (XMLDBException e) {
+            throw new PersistenceException(e);
+        }
+    }
 
-                XMLResource resource = (XMLResource) col.createResource(id, XMLResource.RESOURCE_TYPE);
-                resource.setContent(xml);
-                // resource.setContentAsDOM(document);
-                col.storeResource(resource);
-            } catch (XMLDBException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
+    private void doCreate(List<PersistenceObject> elements) throws XMLDBException {
+        for (PersistenceObject o : elements) {
+            log.debug("retrieve collection for classname " + o.getClassName());
+            Collection col = getOrCreateCollection(o.getClassName());
+
+            String xml = o.getXml();
+            String id = "" + xml.hashCode();
+            log.debug("generated id from xml-string: " + id);
+
+            XMLResource resource = (XMLResource) col.createResource(id, XMLResource.RESOURCE_TYPE);
+            resource.setContent(xml);
+            col.storeResource(resource);
         }
     }
 
