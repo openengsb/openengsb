@@ -244,11 +244,22 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
     }
 
     @Override
-    public void update(PersistenceObject oldElement, PersistenceObject newElement) {
-        // TODO Auto-generated method stub
+    public void update(PersistenceObject oldElement, PersistenceObject newElement) throws PersistenceException {
+        try {
+            Collection coll = getOrCreateCollection(oldElement.getClassName());
+            ResourceSet result = queryExistDB(coll, oldElement.getXml());
+            for (ResourceIterator it = result.getIterator(); it.hasMoreResources();) {
+                Resource res = it.nextResource();
+                // assume they have the same classname
+                res.setContent(newElement.getXml());
+                coll.storeResource(res);
+            }
+        } catch (XMLDBException e) {
+            throw new PersistenceException(e);
+        }
     }
 
-    public void update(Map<PersistenceObject, PersistenceObject> elements) {
+    public void update(Map<PersistenceObject, PersistenceObject> elements) throws PersistenceException {
         for (Entry<PersistenceObject, PersistenceObject> entry : elements.entrySet()) {
             update(entry.getKey(), entry.getValue());
         }
