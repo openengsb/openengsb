@@ -57,8 +57,6 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
     private Collection rootCollection;
     private CollectionManagementService collectionMgtService;
 
-    private UniversalJaxbSerializer serializer;
-
     public PersistenceInternalExistXmlDB() {
         init();
     }
@@ -269,8 +267,6 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
             rootCollection = DatabaseManager.getCollection(DB_URI, "admin", "");
             collectionMgtService = (CollectionManagementService) rootCollection.getService(
                     "CollectionManagementService", "1.0");
-
-            serializer = new UniversalJaxbSerializer();
 
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("unable to start embedded eXist-db", e);
