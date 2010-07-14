@@ -35,18 +35,11 @@
     <menu name="OpenEngSB">
       <item name="Welcome" href="index.html" />
       <item name="What is OpenEngSB?" href="about.html" />
-	  <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
-	  <item name="Changelog" href="jira-report.html" />
+	    <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
+	    <item name="Changelog" href="jira-report.html" />
       <item name="Sponsors" href="sponsors.html" />
     </menu>
-
-	<menu name="Documentation" >
-	  <item name="Manual" href="reference/index.html"  />
-      <item name="FAQ" href="reference/faq.html" />
-	  <item name="Presentation Material" href="reference/presentation.html" />
-	  <item name="Youtube Channel" href="http://www.youtube.com/user/cdflexvideo" />
-    </menu>
-
+    
     <menu name="Quickstart" >
       <item name="Installation" href="howto/howto_setup.html" />
       <item name="Hello World" href="howto/howto_notify.html" />
@@ -55,10 +48,17 @@
       <item name="Continuous Integration" href="howto/howto_cit.html" />
     </menu>
 
+	  <menu name="Documentation" >
+	    <item name="Manual" href="reference/index.html"  />
+      <item name="FAQ" href="reference/faq.html" />
+	    <item name="Presentation Material" href="reference/presentation.html" />
+	    <item name="Youtube Channel" href="http://www.youtube.com/user/cdflexvideo" />
+    </menu>
+    
     <menu name="Community" >
       <item name="Mailing Lists" href="mailinglists.html" />
-	  <item name="Twitter" href="http://twitter.com/openEngSB" />
-	  <item name="Facebook" href="http://www.facebook.com/group.php?gid=208312030232" />
+	    <item name="Twitter" href="http://twitter.com/openEngSB" />
+	    <item name="Facebook" href="http://www.facebook.com/group.php?gid=208312030232" />
     </menu>
 
     <menu name="Development" >
@@ -70,10 +70,9 @@
       <item name="Development Team" href="team-list.html" />
     </menu>
 
-	<menu name="Subprojects" >
-	  <item name="YASTE" href="http://yaste.openengsb.org/" />
+	  <menu name="Subprojects" >
+	    <item name="YASTE" href="http://yaste.openengsb.org/" />
     </menu>
-
   </body>
 
 </project>
