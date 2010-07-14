@@ -18,14 +18,12 @@
 package org.openengsb.persistence;
 
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -33,20 +31,12 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
+import org.openengsb.persistence.NodeTraverser.Condition;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xmldb.api.DatabaseManager;
 import org.xmldb.api.base.Collection;
 import org.xmldb.api.base.Database;
@@ -64,104 +54,34 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
 
     private static final String DB_URI = "xmldb:exist:///db";
 
-    private final Collection rootCollection;
+    private Collection rootCollection;
     private CollectionManagementService collectionMgtService;
 
+    private UniversalJaxbSerializer serializer;
+
     public PersistenceInternalExistXmlDB() {
+        init();
+    }
+
+    @Override
+    public void create(PersistenceObject bean) throws PersistenceException {
         try {
-            initEmbeddedExist();
-
-            log.debug("database registered. Now retrieving references to collections and services");
-
-            rootCollection = DatabaseManager.getCollection(DB_URI, "admin", "");
-            collectionMgtService = (CollectionManagementService) rootCollection.getService(
-                    "CollectionManagementService", "1.0");
-
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("unable to start embedded eXist-db", e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException("unable to start embedded eXist-db", e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("unable to start embedded eXist-db", e);
+            doCreate(bean);
         } catch (XMLDBException e) {
-            throw new RuntimeException("unable to start embedded eXist-db", e);
+            throw new PersistenceException(e);
         }
-    }
-
-    private void initEmbeddedExist() throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-            XMLDBException {
-        log.debug("starting embedded eXist-database");
-        Class<?> cl = Class.forName("org.exist.xmldb.DatabaseImpl");
-        Database database = (Database) cl.newInstance();
-        database.setProperty("create-database", "true");
-        DatabaseManager.registerDatabase(database);
-    }
-
-    private XPathQueryService getXPathQueryService(Collection col) throws XMLDBException {
-        XPathQueryService result = (XPathQueryService) col.getService("XPathQueryService", "1.0");
-        result.setProperty("indent", "yes");
-        return result;
-    }
-
-    private Collection getOrCreateCollection(String name) throws XMLDBException {
-        if (!name.startsWith("/")) {
-            name = "/" + name;
-        }
-        Collection col = DatabaseManager.getCollection(DB_URI + name, "admin", "");
-        if (col == null) {
-            log.info("collection for " + name + " not found, creating new");
-            col = collectionMgtService.createCollection(name);
-        }
-        return col;
     }
 
     @Override
     public void create(List<PersistenceObject> elements) throws PersistenceException {
-        try {
-            doCreate(elements);
-        } catch (XMLDBException e) {
-            throw new PersistenceException(e);
-        }
-    }
-
-    private void doCreate(List<PersistenceObject> elements) throws XMLDBException {
-        for (PersistenceObject o : elements) {
-            log.debug("retrieve collection for classname " + o.getClassName());
-            Collection col = getOrCreateCollection(o.getClassName());
-
-            String xml = o.getXml();
-            String id = "" + xml.hashCode();
-            log.debug("generated id from xml-string: " + id);
-
-            XMLResource resource = (XMLResource) col.createResource(id, XMLResource.RESOURCE_TYPE);
-            resource.setContent(xml);
-            log.debug("store resource to collection");
-            col.storeResource(resource);
+        log.debug("creating " + elements.size() + " new elements");
+        for (PersistenceObject po : elements) {
+            create(po);
         }
     }
 
     @Override
-    public void delete(List<PersistenceObject> examples) throws PersistenceException {
-        try {
-            for (PersistenceObject o : examples) {
-                Collection col = getOrCreateCollection(o.getClassName());
-                ResourceSet result = queryExistDB(col, o.getXml());
-                for (ResourceIterator it = result.getIterator(); it.hasMoreResources();) {
-                    Resource r = it.nextResource();
-                    col.removeResource(r);
-                }
-            }
-        } catch (XMLDBException e) {
-            throw new PersistenceException(e);
-        }
-    }
-
-    private String makeCondition(String varName, String value) {
-        return String.format("bean/fields[fieldName=\"%s\"]/value//*[.=\"%s\"] != ''", varName, value);
-    }
-
-    @Override
-    public List<PersistenceObject> query(List<PersistenceObject> example) throws PersistenceException {
+    public List<PersistenceObject> query(PersistenceObject example) throws PersistenceException {
         try {
             return doQuery(example);
         } catch (XMLDBException e) {
@@ -169,76 +89,11 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
         }
     }
 
-    private List<PersistenceObject> doQuery(List<PersistenceObject> example) throws XMLDBException {
+    @Override
+    public List<PersistenceObject> query(List<PersistenceObject> example) throws PersistenceException {
         List<PersistenceObject> result = new ArrayList<PersistenceObject>();
-        for (PersistenceObject o : example) {
-            Collection coll = getOrCreateCollection(o.getClassName());
-            ResourceSet queryResult = queryExistDB(coll, o.getXml());
-            for (ResourceIterator it = queryResult.getIterator(); it.hasMoreResources();) {
-                Resource r = it.nextResource();
-                PersistenceObject resultObject = new PersistenceObject((String) r.getContent(), o.getClassName());
-                result.add(resultObject);
-            }
-        }
-        return result;
-    }
-
-    private ResourceSet queryExistDB(Collection coll, String sampleXml) throws XMLDBException {
-        String queryString = makeQuery(sampleXml);
-        XPathQueryService service = getXPathQueryService(coll);
-        return service.query(queryString);
-    }
-
-    private String makeQuery(String xml) {
-        Map<String, String> fields = getFields(xml);
-        StringBuffer query = new StringBuffer();
-        query.append("/XMLMappable[");
-        boolean first = true;
-        for (Entry<String, String> e : fields.entrySet()) {
-            if (!first) {
-                query.append(" and ");
-            }
-            query.append(makeCondition(e.getKey(), e.getValue()));
-            first = false;
-        }
-        query.append("]");
-        return query.toString();
-    }
-
-    private Map<String, String> getFields(String xml) {
-        Map<String, String> result = new HashMap<String, String>();
-        Document doc;
-        try {
-            doc = (Document) transformToDOM(xml);
-        } catch (TransformerException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-            return result;
-        }
-        XPathFactory factory = XPathFactory.newInstance();
-        XPath xpath = factory.newXPath();
-        try {
-            XPathExpression fieldsExpr = xpath.compile("//fields"); // "//book[author='Neal Stephenson']/title/text()");
-            NodeList nodes = (NodeList) fieldsExpr.evaluate(doc, XPathConstants.NODESET);
-            for (int i = 0; i < nodes.getLength(); i++) {
-                Node field = nodes.item(i);
-                xpath = factory.newXPath();
-                XPathExpression nameExpr = xpath.compile(".//fieldName/text()");
-                Node nameText = (Node) nameExpr.evaluate(field, XPathConstants.NODE);
-                String name = nameText.getNodeValue();
-                xpath = factory.newXPath();
-                XPathExpression valueExpr = xpath.compile(".//value/primitive/*/text()");
-                Node valueText = (Node) valueExpr.evaluate(field, XPathConstants.NODE);
-                if (valueText != null) {
-                    String value = valueText.getNodeValue();
-                    log.debug("found field: " + name + " = " + value);
-                    result.put(name, value);
-                }
-            }
-        } catch (XPathExpressionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return result;
+        for (PersistenceObject po : example) {
+            result.addAll(query(po));
         }
         return result;
     }
@@ -259,10 +114,123 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
         }
     }
 
+    @Override
     public void update(Map<PersistenceObject, PersistenceObject> elements) throws PersistenceException {
         for (Entry<PersistenceObject, PersistenceObject> entry : elements.entrySet()) {
             update(entry.getKey(), entry.getValue());
         }
+    }
+
+    @Override
+    public void delete(PersistenceObject example) throws PersistenceException {
+        try {
+            Collection col = getOrCreateCollection(example.getClassName());
+            ResourceSet result = queryExistDB(col, example.getXml());
+            for (ResourceIterator it = result.getIterator(); it.hasMoreResources();) {
+                Resource r = it.nextResource();
+                col.removeResource(r);
+            }
+        } catch (XMLDBException e) {
+            throw new PersistenceException(e);
+        }
+    }
+
+    @Override
+    public void delete(List<PersistenceObject> examples) throws PersistenceException {
+        for (PersistenceObject o : examples) {
+            delete(o);
+        }
+    }
+
+    private void doCreate(PersistenceObject o) throws XMLDBException {
+        log.debug("retrieve collection for classname " + o.getClassName());
+        Collection col = getOrCreateCollection(o.getClassName());
+
+        String xml = o.getXml();
+        String id = "" + xml.hashCode();
+        log.debug("generated id from xml-string: " + id);
+
+        XMLResource resource = (XMLResource) col.createResource(id, XMLResource.RESOURCE_TYPE);
+        resource.setContent(xml);
+        log.debug("store resource to collection");
+        col.storeResource(resource);
+    }
+
+    private Collection getOrCreateCollection(String name) throws XMLDBException {
+        if (!name.startsWith("/")) {
+            name = "/" + name;
+        }
+        Collection col = DatabaseManager.getCollection(DB_URI + name, "admin", "");
+        if (col == null) {
+            log.info("collection for " + name + " not found, creating new");
+            col = collectionMgtService.createCollection(name);
+        }
+        return col;
+    }
+
+    private XPathQueryService getXPathQueryService(Collection col) throws XMLDBException {
+        log.debug("retrieving XPathQueryService for " + col.getName());
+        XPathQueryService result = (XPathQueryService) col.getService("XPathQueryService", "1.0");
+        result.setProperty("indent", "yes");
+        log.debug("collections contains the following resources");
+        for (String s : col.listResources()) {
+            log.debug(s);
+        }
+        return result;
+    }
+
+    private List<PersistenceObject> doQuery(PersistenceObject example) throws XMLDBException, PersistenceException {
+        List<PersistenceObject> result = new ArrayList<PersistenceObject>();
+        Collection coll = getOrCreateCollection(example.getClassName());
+        ResourceSet queryResult = queryExistDB(coll, example.getXml());
+        for (ResourceIterator it = queryResult.getIterator(); it.hasMoreResources();) {
+            Resource r = it.nextResource();
+            PersistenceObject resultObject = new PersistenceObject((String) r.getContent(), example.getClassName());
+            result.add(resultObject);
+        }
+        return result;
+    }
+
+    private ResourceSet queryExistDB(Collection coll, String sampleXml) throws XMLDBException, PersistenceException {
+        String queryString;
+        try {
+            queryString = makeQuery(sampleXml);
+            // queryString = "/*";
+            log.debug("querying database with String: ");
+            log.debug(queryString);
+        } catch (TransformerException e) {
+            throw new PersistenceException(e);
+        }
+        XPathQueryService service = getXPathQueryService(coll);
+        return service.query(queryString);
+    }
+
+    private String makeQuery(String xml) throws TransformerException {
+        Node doc = transformToDOM(xml);
+        Iterable<Condition> conditions = NodeTraverser.getConditions(doc);
+        Iterator<Condition> it = conditions.iterator();
+        if (!it.hasNext()) {
+            return "/*";
+        }
+        StringBuffer query = new StringBuffer();
+        query.append("/*[");
+
+        Condition firstEntry = it.next();
+        query.append(makeCondition(firstEntry.key, firstEntry.value));
+        it.remove();
+        for (Condition entry : conditions) {
+            if (!entry.value.trim().isEmpty()) {
+                query.append(" and ");
+                query.append(makeCondition(entry.key, entry.value));
+            }
+        }
+        query.append("]");
+        System.out.println(query);
+        return query.toString();
+    }
+
+    private static String makeCondition(String key, String value) {
+        return key + "[.='" + value + "'] != ''";
     }
 
     public Node transformToDOM(String xml) throws TransformerException {
@@ -292,26 +260,36 @@ public class PersistenceInternalExistXmlDB implements PersistenceInternal {
         log.info("db reset");
     }
 
-    protected void printResourceList(String collname) throws XMLDBException {
-        Collection coll = getOrCreateCollection(collname);
-        String[] allResources = coll.listResources();
-        for (String s : allResources) {
-            log.debug("found Resource " + s);
-            log.debug("content: " + coll.getResource(s).getContent());
+    private void init() {
+        try {
+            initEmbeddedExist();
+
+            log.debug("database registered. Now retrieving references to collections and services");
+
+            rootCollection = DatabaseManager.getCollection(DB_URI, "admin", "");
+            collectionMgtService = (CollectionManagementService) rootCollection.getService(
+                    "CollectionManagementService", "1.0");
+
+            serializer = new UniversalJaxbSerializer();
+
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("unable to start embedded eXist-db", e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException("unable to start embedded eXist-db", e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("unable to start embedded eXist-db", e);
+        } catch (XMLDBException e) {
+            throw new RuntimeException("unable to start embedded eXist-db", e);
         }
     }
 
-    private void printNode(Node s) {
-        try {
-            Transformer t = getTransformer();
-            t.setOutputProperty(OutputKeys.INDENT, "yes");
-            t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-            StringWriter sw = new StringWriter();
-            t.transform(new DOMSource(s), new StreamResult(sw));
-            log.debug(sw);
-        } catch (TransformerException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+    private void initEmbeddedExist() throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+            XMLDBException {
+        log.debug("starting embedded eXist-database");
+        Class<?> cl = Class.forName("org.exist.xmldb.DatabaseImpl");
+        Database database = (Database) cl.newInstance();
+        database.setProperty("create-database", "true");
+        DatabaseManager.registerDatabase(database);
     }
+
 }

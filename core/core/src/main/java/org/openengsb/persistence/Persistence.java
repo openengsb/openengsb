@@ -18,14 +18,23 @@
 package org.openengsb.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 public interface Persistence {
 
+    List<Object> query(Object example);
+
     List<Object> query(List<Object> example);
+
+    void create(Object bean);
 
     void create(List<Object> beans);
 
     void update(Object oldBean, Object newBean);
+
+    void update(Map<Object, Object> beans);
+
+    void delete(Object example);
 
     void delete(List<Object> examples);
 

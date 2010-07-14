@@ -18,14 +18,23 @@
 package org.openengsb.persistence;
 
 import java.util.List;
+import java.util.Map;
 
 public interface PersistenceInternal {
 
+    List<PersistenceObject> query(PersistenceObject example) throws PersistenceException;
+
     List<PersistenceObject> query(List<PersistenceObject> example) throws PersistenceException;
+
+    void create(PersistenceObject bean) throws PersistenceException;
 
     void create(List<PersistenceObject> elements) throws PersistenceException;
 
     void update(PersistenceObject oldElement, PersistenceObject newElement) throws PersistenceException;
+
+    void update(Map<PersistenceObject, PersistenceObject> beans) throws PersistenceException;
+
+    void delete(PersistenceObject example) throws PersistenceException;
 
     void delete(List<PersistenceObject> examples) throws PersistenceException;
 

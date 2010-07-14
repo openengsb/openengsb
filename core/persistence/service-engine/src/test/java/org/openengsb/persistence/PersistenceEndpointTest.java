@@ -20,7 +20,7 @@ package org.openengsb.persistence;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PersistenceEndpointTest {
+public abstract class PersistenceEndpointTest {
 
     private PersistenceEndpoint endpoint;
 
@@ -30,31 +30,28 @@ public class PersistenceEndpointTest {
         this.endpoint.setPersistence(getPersistenceImpl());
     }
 
-    @SuppressWarnings("unchecked")
+    protected abstract PersistenceInternal getPersistenceImpl();
+
     @Test
     public void testCreateAndQuerySingle() throws Exception {
 
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testCreateAndQueryMultiple() throws Exception {
 
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testEmptyResultQuery() throws Exception {
 
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testDelete() throws Exception {
 
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testUpdate() throws Exception {
 
