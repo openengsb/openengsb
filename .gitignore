@@ -10,6 +10,7 @@ eclipse-workspace
 *.classpath
 *.settings
 *bin
+*.springBeans
 
 #=================
 #intellij-project
