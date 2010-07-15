@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <relativePath>../..</relativePath>
-    <groupId>org.openengsb</groupId>
-    <artifactId>openengsb-parent</artifactId>
+    <groupId>org.openengsb.ui</groupId>
+    <artifactId>openengsb-ui-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
@@ -18,9 +18,9 @@
   <artifactId>openengsb-ui-web</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>${bundle.symbolicName}</name>
+  <name>OpenEngSB :: User Interface :: Web Administration</name>
 
-  <description>OpenEngSB Web UI</description>
+  <description>Web Administration Interface for the OpenEngSB</description>
 
   <packaging>war</packaging>
 
@@ -34,6 +34,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <version>${plugin.bundle.version}</version>
         <executions>
           <execution>
             <id>bundle-manifest</id>
@@ -42,24 +43,12 @@
               <goal>manifest</goal>
             </goals>
           </execution>
-          </executions>
-        <configuration>
-          <supportedProjectTypes>
-            <supportedProjectType>jar</supportedProjectType>
-            <supportedProjectType>bundle</supportedProjectType>
-            <supportedProjectType>war</supportedProjectType>
-          </supportedProjectTypes>
-          <instructions>
-            <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
-            <Bundle-Version>${pom.version}</Bundle-Version>
-            <Export-Package>!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${pom.version}"</Export-Package>
-            <Private-Package>${bundle.namespace}.internal.*</Private-Package>
-            <_include>-osgi.bnd</_include>
-          </instructions>
-        </configuration>
+        </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
+        <version>${maven.war.plugin}</version>
         <configuration>
           <archive>
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
@@ -71,80 +60,52 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <version>4.2.0</version>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <version>4.2.0</version>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket</artifactId>
-      <version>1.4.9</version>
+      <version>${wicket.version}</version>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-datetime</artifactId>
-      <version>1.4.9</version>
+      <version>${wicket.version}</version>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-devutils</artifactId>
-      <version>1.4.9</version>
-      <optional>true</optional>
+      <version>${wicket.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-extensions</artifactId>
-      <version>1.4.9</version>
+      <version>${wicket.version}</version>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-ioc</artifactId>
-      <version>1.4.9</version>
+      <version>${wicket.version}</version>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-spring</artifactId>
-      <version>1.4.9</version>
+      <version>${wicket.version}</version>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-jmx</artifactId>
-      <version>1.4.9</version>
+      <version>${wicket.version}</version>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-velocity</artifactId>
-      <version>1.4.9</version>
+      <version>${wicket.version}</version>
       <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
-	<dependency>
-      <groupId>org.apache.servicemix.jbi</groupId>
-      <artifactId>org.apache.servicemix.jbi.deployer</artifactId>
-      <version>1.2.0</version>
-	  <scope>provided</scope>
-	  <optional>true</optional>
     </dependency>
   </dependencies>
 
