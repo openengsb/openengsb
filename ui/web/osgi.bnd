@@ -1,0 +1,10 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Web-ContextPath: openengsb
+
+Bundle-ClassPath: .,WEB-INF/classes,\
+WEB-INF/lib/*.jar
+
+DynamicImport-Package: *
