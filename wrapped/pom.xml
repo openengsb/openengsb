@@ -28,12 +28,12 @@
   </parent>
   
   <groupId>org.openengsb.wrapped</groupId>
-  <artifactId>openengsb-wrapped</artifactId>
-  <version>1</version>
+  <artifactId>openengsb-wrapped-parent</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
 
   <packaging>pom</packaging>
 
-  <name>Parent Wrapping Script</name>
+  <name>OpenEngSB :: OSGi Wrapped Bundles :: Parent</name>
 
   <description>Configuration Script for wrapping non OSGi artifacts</description>
 
@@ -67,14 +67,6 @@
           <provision>
             <param>--platform=felix</param>
           </provision>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>${plugin.deploy.version}</version>
-        <configuration>
-          <remoteOBR>true</remoteOBR>
         </configuration>
       </plugin>
       <plugin>
