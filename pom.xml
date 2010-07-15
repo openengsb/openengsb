@@ -431,6 +431,8 @@
                 <exclude>**/src/main/resources/rulebase/**</exclude>
                 <!-- pax-runner -->
                 <exclude>runner/**</exclude>
+                <!-- Web-Project -->
+                <exclude>ui/web/src/main/webapp/js/</exclude>
               </excludes>
             </configuration>
             <executions>
