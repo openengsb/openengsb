@@ -183,6 +183,7 @@
   </modules>
 
   <build>
+    <finalName>${artifactId}-${version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
