@@ -44,7 +44,7 @@
     <!-- Other Settings -->
     <java.version>1.6</java.version>
     <!-- Plugin Version Settings  -->
-    <plugin.pax.version>1.5.OPENENGSB.1</plugin.pax.version>
+    <plugin.pax.version>1.4</plugin.pax.version>
     <plugin.bundle.version>2.1.0</plugin.bundle.version>
     <plugin.deploy.version>2.5</plugin.deploy.version>
     <!-- Component Versions -->
