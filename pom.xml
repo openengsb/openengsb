@@ -59,6 +59,7 @@
   <modules>
     <module>poms</module>
     <module>provision</module>
+    <module>wrapped</module>
     <module>config</module>
     <module>ui</module>
   </modules>

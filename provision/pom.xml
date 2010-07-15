@@ -389,13 +389,6 @@
       <artifactId>org.apache.servicemix.bundles.cglib</artifactId>
       <version>${cglib.version}</version>
     </dependency>
-    
-    <!-- WebLibraries -->
-    <dependency>
-      <groupId>org.apache.wicket</groupId>
-      <artifactId>org.openengsb.wrapped.org.apache.wicket</artifactId>
-      <version>${wicket.version}</version>
-    </dependency>
   </dependencies>
 
 </project>
