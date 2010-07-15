@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.openengsb</groupId>
+    <artifactId>openengsb-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openengsb.build</groupId>
+  <artifactId>shared-plugin-settings</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <name>OpenEngSB :: Plugin Configuration :: Parent</name>
+
+  <packaging>pom</packaging>
+
+  <properties>
+    <!-- Plugin Versions -->
+    <plugin.bundle.version>2.1.0</plugin.bundle.version>
+    <plugin.eclipse.version>2.8</plugin.eclipse.version>
+    <plugin.site.version>2.1.1</plugin.site.version>
+    <plugin.openjpa.version>1.1</plugin.openjpa.version>
+    <plugin.surefire.version>2.5</plugin.surefire.version>
+    <docbkx.version>2.0.10</docbkx.version>
+    <jaxb.plugin.version>1.2</jaxb.plugin.version>
+    <maven.plugin.release.version>2.0-beta-9</maven.plugin.release.version>
+    <maven.plugin.surefire>2.4.3</maven.plugin.surefire>
+    <maven.plugin.surefire.report>2.5</maven.plugin.surefire.report>
+    <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
+    <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
+    <maven.eclipse.plugin.version>2.8</maven.eclipse.plugin.version>
+    <maven.rat.version>0.6</maven.rat.version>
+    <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
+    <servicemix.jbi.maven.version>4.4.OPENENGSB.1</servicemix.jbi.maven.version>
+    <twdata.cli.version>1.0.4</twdata.cli.version>
+    <clover.version>3.0.2</clover.version>
+    <!-- Component Versions -->
+    <osgi.version>4.2.0</osgi.version>
+    <!-- Library Versions -->
+    <jetty.version>6.1.24</jetty.version>
+    <servlet.version>2.5.0</servlet.version>
+    <portlet.version>1.0.0</portlet.version>
+    <jasper.version>6.0.24</jasper.version>
+    <jsp.version>6.1.14</jsp.version>
+    <spring.osgi.version>2.0.0.M1</spring.osgi.version>
+    <spring.version>3.0.3.RELEASE</spring.version>
+    <jetty.spring.version>1.0.0</jetty.spring.version>
+    <cglib.version>2.2.0</cglib.version>
+    <transaction.version>1.1.0</transaction.version>
+    <persistence.version>1.0.0</persistence.version>
+    <enterprise.loader.version>1.0.0</enterprise.loader.version>
+    <oracle.classloader.version>10.1.3.1</oracle.classloader.version>
+    <el.version>2.1.0</el.version>
+    <aopalliance.version>1.0.0</aopalliance.version>
+    <wicket.version>1.4.9</wicket.version>
+    <jackson.version>1.5.3</jackson.version>
+    <aopalliance.version>1.0_3</aopalliance.version>
+    <xml.bind.version>2.0.0</xml.bind.version>
+    <xml.stream.version>1.0.1</xml.stream.version>
+    <commons.collection.version>3.2.1</commons.collection.version>
+    <commons.lang.version>2.4</commons.lang.version>
+    <commons.pool.version>1.5.4_1</commons.pool.version>
+    <commons.dbcp.version>1.2.2_5</commons.dbcp.version>
+    <commons.logging.version>1.1.1</commons.logging.version>
+    <slf4j.log4j12.version>1.5.8</slf4j.log4j12.version>
+    <serp.version>1.13.1</serp.version>
+    <javassist.version>3.9.0.GA</javassist.version>
+    <antlr.version>2.7.6</antlr.version>
+    <cglib.version>2.1_3_4</cglib.version>
+    <asm.version>1.5.3</asm.version>
+    <util.concurrent.version>1.3.4</util.concurrent.version>
+    <javax.activation.version>1.1.0</javax.activation.version>
+    <javax.validation.version>1.0.0.GA</javax.validation.version>
+    <javax.persistence.version>2.0.0</javax.persistence.version>
+    <spec.jms11.version>1.1.1</spec.jms11.version>
+    <spec.jpa20.version>1.1</spec.jpa20.version>
+    <spec.jta11.version>1.1.1</spec.jta11.version>
+    <openjpa.version>2.0.0</openjpa.version>
+    <exam.version>1.2.0</exam.version>
+    <junit.version>4.8.1</junit.version>
+    <mockito.version>1.8.5</mockito.version>
+    <dbunit.version>2.4.7</dbunit.version>
+    <pax.url.version>1.1.2</pax.url.version>
+    <pax.logging.version>1.5.1</pax.logging.version>
+    <aries.version>0.1-incubating</aries.version>
+    <felix.configadmin.version>1.2.4</felix.configadmin.version>
+    <felix.fileinstall.version>3.0.0</felix.fileinstall.version>
+    <felix.prefs.version>1.0.4</felix.prefs.version>
+    <felix.gogo.version>0.4.0</felix.gogo.version>
+    <karaf.version>1.6.0</karaf.version>
+    <mina.version>2.0.0-RC1</mina.version>
+    <sshd.version>0.4.0</sshd.version>
+    <hsqldb.version>1.8.0.10</hsqldb.version>
+    <h2.version>1.2.139</h2.version>
+    <mysql.version>5.1.13</mysql.version>
+    <activemq.version>5.2.0</activemq.version>
+    <cglib.version>2.2</cglib.version>
+    <commons.io.version>1.4</commons.io.version>
+    <commons.net.version>20030805.205232</commons.net.version>
+    <dom4j.version>1.6.1</dom4j.version>
+    <exist.version>1.4.0</exist.version>
+    <facebookAPI.version>3.0.2</facebookAPI.version>
+    <google.collections.version>1.0</google.collections.version>
+    <hamcrest.version>1.1</hamcrest.version>
+    <hibernate.version>3.4.0.GA</hibernate.version>
+    <httpcomponent.version>4.0-alpha4</httpcomponent.version>
+    <h2.version>1.1.116</h2.version>
+    <jaxb.version>2.2</jaxb.version>
+    <jaxen.version>1.1.1</jaxen.version>
+    <jetty.version>6.1.20</jetty.version>
+    <jgit.version>0.7.1</jgit.version>
+    <jibx.version>1.2.2</jibx.version>
+    <joda.version>1.6</joda.version>
+    <junit.version>4.4</junit.version>
+    <log4j.version>1.2.14</log4j.version>
+    <lucene.version>2.4.1</lucene.version>
+    <maven.code.version>3.0-alpha-2</maven.code.version>
+    <maven.plexus.utils.version>1.5.6</maven.plexus.utils.version>
+    <mockito.version>1.7</mockito.version>
+    <mockns.version>0.1.0-SNAPSHOT</mockns.version>
+    <ode.version>1.3.4.preview1</ode.version>
+    <servicemix.specs.version>1.1.0</servicemix.specs.version>
+    <servicemix.tools.version>4.0</servicemix.tools.version>
+    <servicemix.version>3.3.1</servicemix.version>
+    <servicemix.subprojects.version>2010.01</servicemix.subprojects.version>
+    <servicemix-specs-version>1.3.0</servicemix-specs-version>
+    <slf4j.version>1.5.8</slf4j.version>
+    <smack.version>3.1.0</smack.version>
+    <spring.activemq.version>2.1</spring.activemq.version>
+    <svnkit.version>1.3.0</svnkit.version>
+    <twitter4j.version>2.1.0</twitter4j.version>
+    <xbean.version>3.5</xbean.version>
+    <xerces.version>2.8.1</xerces.version>
+    <xmlrpc.version>3.1.2</xmlrpc.version>
+    <xmlunit.version>1.3</xmlunit.version>
+    <axis.version>1.3</axis.version>
+    <backport.util.concurrent.version>2.2</backport.util.concurrent.version>
+    <classworlds.version>1.1</classworlds.version>
+    <commons.discovery.version>0.2</commons.discovery.version>
+    <commons.logging.version>1.1.1</commons.logging.version>
+    <commons.vfs.version>20050307052300</commons.vfs.version>
+    <derby.version>10.2.2.0</derby.version>
+    <geronimo.ejb.version>1.1</geronimo.ejb.version>
+    <geronimo.j2ee.version>2.0.0</geronimo.j2ee.version>
+    <geronimo.servlet.version>1.1</geronimo.servlet.version>
+    <geronimo.javamail.version>1.2</geronimo.javamail.version>
+    <geronimo.jaxws.version>1.0</geronimo.jaxws.version>
+    <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>
+    <geronimo.ws.metadata.version>1.1.2</geronimo.ws.metadata.version>
+    <howl.version>1.0.1-1</howl.version>
+    <hsqldb.version>1.7.3.3</hsqldb.version>
+    <javax.activation.version>1.1</javax.activation.version>
+    <javax.mail.version>1.4</javax.mail.version>
+    <javax.servlet.version>2.5</javax.servlet.version>
+    <quartz.version>1.5.2</quartz.version>
+    <rome.version>0.5</rome.version>
+    <woden.version>1.0.0M6</woden.version>
+    <xml.apis.version>1.3.04</xml.apis.version>
+    <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>
+  </properties>
+
+  <modules>
+    <module>compiled</module>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>${plugin.eclipse.version}</version>
+        <configuration>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>true</downloadJavadocs>
+          <workspace>eclipse-workspace</workspace>
+          <workspaceCodeStylesURL>http://dev.openengsb.org/resources/eclipse/formatter.xml</workspaceCodeStylesURL>
+        </configuration>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.ops4j</groupId>
+          <artifactId>maven-pax-plugin</artifactId>
+          <extensions>true</extensions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>${plugin.bundle.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${plugin.site.version}</version>
+          <extensions>true</extensions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven.plugin.surefire}</version>
+          <configuration>
+            <includes>
+              <include>**/*Test.java</include>
+            </includes>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-report-plugin</artifactId>
+          <version>${maven.plugin.surefire.report}</version>
+          <configuration>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>report-only</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>com.sun.tools.jxc.maven2</groupId>
+          <artifactId>maven-jaxb-schemagen-plugin</artifactId>
+          <version>${jaxb.plugin.version}</version>
+          <executions>
+            <execution>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>javax.xml.bind</groupId>
+              <artifactId>jaxb-api</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-xjc</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-impl</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.sun.xml.bind</groupId>
+              <artifactId>jaxb-xjc</artifactId>
+              <version>${jaxb.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>integration-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${plugin.surefire.version}</version>
+            <configuration>
+              <includes>
+                <include>**/*Test.java</include>
+                <include>**/*IT.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>all-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${plugin.surefire.version}</version>
+            <configuration>
+              <includes>
+                <include>**/*Test.java</include>
+                <include>**/*IT.java</include>
+                <include>**/*UT.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+</project>
+
