@@ -66,7 +66,6 @@
     <spring.osgi.version>2.0.0.M1</spring.osgi.version>
     <spring.version>3.0.3.RELEASE</spring.version>
     <jetty.spring.version>1.0.0</jetty.spring.version>
-    <cglib.version>2.2.0</cglib.version>
     <transaction.version>1.1.0</transaction.version>
     <persistence.version>1.0.0</persistence.version>
     <enterprise.loader.version>1.0.0</enterprise.loader.version>
@@ -115,7 +114,6 @@
     <h2.version>1.2.139</h2.version>
     <mysql.version>5.1.13</mysql.version>
     <activemq.version>5.2.0</activemq.version>
-    <cglib.version>2.2</cglib.version>
     <commons.io.version>1.4</commons.io.version>
     <commons.net.version>20030805.205232</commons.net.version>
     <dom4j.version>1.6.1</dom4j.version>
