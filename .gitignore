@@ -73,3 +73,8 @@ pconf.pyc
 #================
 runner
 
+#================
+#wicket generated files
+#================
+*.tmp_*
+
