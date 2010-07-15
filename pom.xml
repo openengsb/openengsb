@@ -59,6 +59,7 @@
     <module>poms</module>
     <module>provision</module>
     <module>config</module>
+    <module>ui</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
