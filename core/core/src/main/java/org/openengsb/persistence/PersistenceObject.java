@@ -23,6 +23,9 @@ public class PersistenceObject {
 
     private String className;
 
+    public PersistenceObject() {
+    }
+
     public PersistenceObject(String xml, String className) {
         this.xml = xml;
         this.className = className;

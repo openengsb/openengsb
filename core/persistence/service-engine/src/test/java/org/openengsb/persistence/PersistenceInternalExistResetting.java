@@ -17,22 +17,17 @@
  */
 package org.openengsb.persistence;
 
-import org.junit.Before;
+import org.xmldb.api.base.XMLDBException;
 
-public class PersistenceEndpointExistTest extends PersistenceEndpointTest {
+public class PersistenceInternalExistResetting extends PersistenceInternalExistXmlDB {
 
-    private PersistenceInternalExistXmlDB persistence;
-
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        persistence.reset();
-    };
-
-    @Override
-    protected PersistenceInternal getPersistenceImpl() {
-        persistence = new PersistenceInternalExistXmlDB();
-        return persistence;
+    public PersistenceInternalExistResetting() {
+        super();
+        try {
+            reset();
+        } catch (XMLDBException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 }
