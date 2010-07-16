@@ -52,6 +52,15 @@ public abstract class PersistenceInternalTest extends PersistenceTest {
         assertTrue(resultObjects.contains(o1));
     }
 
+    @Test(expected=PersistenceException.class)
+    public void testCreateAndQuery2() throws Exception {
+        PersistenceObject po = new PersistenceObject("", this.getClass().getName());
+        persistence.create(po);
+        Object example = sample1;
+        Collection<Object> resultObjects = doQuery(example);
+        assertTrue(resultObjects.contains(o1));
+    }
+
     @Test
     public void testUpdate() throws Exception {
         PersistenceObject s1 = makePersistenceObject(o1);
