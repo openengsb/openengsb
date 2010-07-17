@@ -22,20 +22,20 @@ import java.util.Map;
 
 public interface Persistence {
 
-    List<Object> query(Object example);
+    List<Object> query(Object example) throws PersistenceException;
 
-    List<Object> query(List<Object> example);
+    List<Object> query(List<Object> examples) throws PersistenceException;
 
-    void create(Object bean);
+    void create(Object bean) throws PersistenceException;
 
-    void create(List<Object> beans);
+    void create(List<Object> beans) throws PersistenceException;
 
-    void update(Object oldBean, Object newBean);
+    void update(Object oldBean, Object newBean) throws PersistenceException;
 
-    void update(Map<Object, Object> beans);
+    void update(Map<Object, Object> beans) throws PersistenceException;
 
-    void delete(Object example);
+    void delete(Object example) throws PersistenceException;
 
-    void delete(List<Object> examples);
+    void delete(List<Object> examples) throws PersistenceException;
 
 }

@@ -35,13 +35,16 @@ public class UniversalJaxbSerializer {
     public String serialize(Object o) throws JAXBException {
         Class<?> objectClass = o.getClass();
         JAXBContext context = JAXBContext.newInstance(objectClass);
+
         Marshaller m = context.createMarshaller();
         StringWriter resultWriter = new StringWriter();
         StreamResult result = new StreamResult(resultWriter);
+
+        @SuppressWarnings("unchecked")
         JAXBElement<?> jaxbElement = new JAXBElement(new QName(objectClass.getSimpleName()), objectClass, o);
+
         m.marshal(jaxbElement, result);
-        // m.marshal(jaxbElement, System.out);
-        // return (Document) result.getNode();
+
         return resultWriter.toString();
     }
 

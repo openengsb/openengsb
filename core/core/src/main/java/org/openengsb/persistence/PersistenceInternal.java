@@ -24,7 +24,7 @@ public interface PersistenceInternal {
 
     List<PersistenceObject> query(PersistenceObject example) throws PersistenceException;
 
-    List<PersistenceObject> query(List<PersistenceObject> example) throws PersistenceException;
+    List<PersistenceObject> query(List<PersistenceObject> examples) throws PersistenceException;
 
     void create(PersistenceObject bean) throws PersistenceException;
 
