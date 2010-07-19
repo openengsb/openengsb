@@ -126,6 +126,7 @@
   
   <part id="appendix">
     <title>Appendix</title>
+    <xi:include href="appendix/documentation.xml" />
     <xi:include href="appendix/javastyle.xml" />
     <xi:include href="appendix/glossary.xml" />
     <xi:include href="appendix/license.xml" />

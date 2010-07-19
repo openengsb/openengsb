@@ -393,7 +393,7 @@ If you use Eclipse please choose these settings for your OpenEngSB workspace:
 <imagedata id="form" fileref="graphics/eclipse-xml-settings.png"
   format="png" width="400" align="center" />
 </imageobject>
-<caption>Eclipse XML Settigns</caption>
+<caption>Eclipse XML Settings</caption>
 </mediaobject>
 </para>
 </section>
