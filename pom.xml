@@ -62,6 +62,7 @@
     <module>wrapped</module>
     <module>config</module>
     <module>ui</module>
+    <module>core</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
