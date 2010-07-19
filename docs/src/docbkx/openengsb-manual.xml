@@ -101,7 +101,6 @@
     </partintro>
     <xi:include href="developer/architecture.xml" />
     <xi:include href="developer/devQuickstart.xml" />
-    <xi:include href="developer/connectorArchetype.xml"/>
     <xi:include href="developer/externalConnectors.xml" />
     <xi:include href="developer/internalConnectors.xml" />
     <xi:include href="developer/features.xml"/>
