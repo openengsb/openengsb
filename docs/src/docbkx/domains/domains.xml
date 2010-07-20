@@ -17,7 +17,7 @@
 
 -->
 <chapter id="toolDomains" xmlns="http://docbook.org/ns/docbook">
-  <title>Tool Domains</title>
+  <title id="toolDomains.title">Tool Domains</title>
   
   <warning>
     <para>
