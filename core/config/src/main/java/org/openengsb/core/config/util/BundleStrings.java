@@ -32,13 +32,13 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
 /**
- * Helper class to handle the locale files provided by a {@code Bundle}.
+ * Localization helper to lookup string resources from the bundle's localization
+ * entries.
  */
 public class BundleStrings {
 
     private Bundle bundle;
-    private String directory;
-    private String basename;
+    private HashMap<String, URL> entries;
 
     public BundleStrings() {
     }
@@ -53,55 +53,47 @@ public class BundleStrings {
 
     public String getString(String key, Locale locale) {
         @SuppressWarnings("unchecked")
-        Enumeration<URL> entries = bundle.findEntries(directory, basename + "*.properties", false);
-        if (entries == null || !entries.hasMoreElements()) {
-            return null;
-        }
-        HashMap<String, URL> map = new HashMap<String, URL>();
-        while (entries.hasMoreElements()) {
-            URL url = entries.nextElement();
-            String name = new File(url.toString()).getName();
-            map.put(name, url);
-        }
-        for (Locale l : (List<Locale>) LocaleUtils.localeLookupList(locale, new Locale(""))) {
-            String name = basename;
-            if (!l.getLanguage().isEmpty()) {
-                name += '_' + l.getLanguage();
-                if (!l.getCountry().isEmpty()) {
-                    name += '_' + l.getCountry();
-                    if (!l.getVariant().isEmpty()) {
-                        name += '_' + l.getVariant();
-                    }
-                }
-            }
-            name += ".properties";
-            System.out.println(name);
-            URL url = map.get(name);
+        List<Locale> locales = LocaleUtils.localeLookupList(locale, new Locale(""));
+        for (Locale l : locales) {
+            URL url = entries.get(buildEntryFilename(l));
             if (url == null) {
                 continue;
-            } else {
-                InputStream in = null;
-                try {
-                    in = url.openStream();
-                    Properties p = new Properties();
-                    p.load(in);
-                    if (p.containsKey(key)) {
-                        return p.getProperty(key);
-                    }
-                } catch (IOException e) {
-                    // TODO
-                } finally {
-                    if (in != null) {
-                        try {
-                            in.close();
-                        } catch (IOException e) {
-                            // no op
-                        }
+            }
+            InputStream in = null;
+            try {
+                in = url.openStream();
+                Properties p = new Properties();
+                p.load(in);
+                if (p.containsKey(key)) {
+                    return p.getProperty(key);
+                }
+            } catch (IOException e) {
+                // nop
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        // nop
                     }
                 }
             }
         }
         return null;
+    }
+
+    private String buildEntryFilename(Locale locale) {
+        String name = "";
+        if (!locale.getLanguage().isEmpty()) {
+            name += '_' + locale.getLanguage();
+            if (!locale.getCountry().isEmpty()) {
+                name += '_' + locale.getCountry();
+                if (!locale.getVariant().isEmpty()) {
+                    name += '_' + locale.getVariant();
+                }
+            }
+        }
+        return name;
     }
 
     public void setBundle(Bundle bundle) {
@@ -113,14 +105,23 @@ public class BundleStrings {
         path = path.trim();
         int idx = path.lastIndexOf('/');
         if (idx == -1) {
-            directory = "/";
-            basename = path;
+            buildEntriesMap("/", path);
         } else if (idx == 0) {
-            directory = "/";
-            basename = path.substring(1);
+            buildEntriesMap("/", path.substring(1));
         } else {
-            directory = path.substring(0, idx);
-            basename = path.substring(idx + 1);
+            buildEntriesMap(path.substring(0, idx), path.substring(idx + 1));
+        }
+    }
+
+    private void buildEntriesMap(String directory, String basename) {
+        @SuppressWarnings("unchecked")
+        Enumeration<URL> resources = bundle.findEntries(directory, basename + "*.properties", false);
+        entries = new HashMap<String, URL>();
+        while (resources != null && resources.hasMoreElements()) {
+            URL url = resources.nextElement();
+            String name = new File(url.toString()).getName().substring(basename.length());
+            name = name.substring(0, name.length() - ".properties".length());
+            entries.put(name, url);
         }
     }
 }
