@@ -19,7 +19,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
   <body>
     <wicket:extend>
-      <div wicket:id="helloworld" />
+      <a href="#" wicket:id="lang.en">English</a> <a href="#" wicket:id="lang.de">Deutsch</a>
+      <ul wicket:id="domains">
+        <li>
+          <h3><span wicket:id="domain.name">[domain.name]</span></h3>
+          <p><span wicket:id="domain.description">[domain.description]</span></p>
+        </li>
+      </ul>
+      <ul wicket:id="services">
+        <li>
+          <h3><span wicket:id="service.name">[service.name]</span></h3><a href="#" wicket:id="create.new"><wicket:message key="create.new">[create.new]</wicket:message></a>
+          <p><span wicket:id="service.description">[service.description]</span></p>
+        </li>
+      </ul>
     </wicket:extend>
   </body>
 </html>

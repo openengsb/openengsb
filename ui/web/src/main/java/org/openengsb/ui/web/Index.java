@@ -17,12 +17,62 @@
  */
 package org.openengsb.ui.web;
 
+import java.util.Locale;
+
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.config.DomainProvider;
+import org.openengsb.core.config.ServiceManager;
+import org.openengsb.core.config.descriptor.ServiceDescriptor;
+import org.openengsb.ui.web.service.DomainService;
+import org.openengsb.ui.web.service.ManagedServices;
 
 public class Index extends BasePage {
 
+    @SpringBean
+    DomainService domainService;
+
+    @SpringBean
+    ManagedServices managedServices;
+
+    @SuppressWarnings("serial")
 	public Index() {
-		add(new Label("helloworld", "Hello World"));
+        add(new Link("lang.en") {
+            @Override
+            public void onClick() {
+                this.getSession().setLocale(Locale.ENGLISH);
+            }
+        });
+        add(new Link("lang.de") {
+            @Override
+            public void onClick() {
+                this.getSession().setLocale(Locale.GERMAN);
+            }
+        });
+        add(new ListView<DomainProvider>("domains", domainService.getDomains()) {
+            @Override
+            protected void populateItem(ListItem<DomainProvider> item) {
+                item.add(new Label("domain.name", item.getModelObject().getName(item.getLocale())));
+                item.add(new Label("domain.description", item.getModelObject().getDescription(item.getLocale())));
+            }
+        });
+        add(new ListView<ServiceManager>("services", managedServices.getManagedServices()) {
+            @Override
+            protected void populateItem(ListItem<ServiceManager> item) {
+                ServiceDescriptor desc = item.getModelObject().getDescriptor(item.getLocale());
+                item.add(new Link<ServiceManager>("create.new", item.getModel()) {
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new EditorPage(getModelObject()));
+                    }
+                });
+                item.add(new Label("service.name", desc.getName()));
+                item.add(new Label("service.description", desc.getDescription()));
+            }
+        });
 	}
 
 }
