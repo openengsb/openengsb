@@ -23,6 +23,8 @@ import java.util.List;
 public class ServiceDescriptor {
     private String id;
     private String serviceInterface;
+    private String name;
+    private String description;
     private final List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
 
     public ServiceDescriptor() {
@@ -40,6 +42,20 @@ public class ServiceDescriptor {
      */
     public String getServiceInterfaceId() {
         return serviceInterface;
+    }
+
+    /**
+     * Returns a localized name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns a localized description.
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**
@@ -67,6 +83,16 @@ public class ServiceDescriptor {
 
         public Builder implementsInterface(String serviceInterface) {
             desc.serviceInterface = serviceInterface;
+            return this;
+        }
+
+        public Builder name(String name) {
+            desc.name = name;
+            return this;
+        }
+
+        public Builder description(String description) {
+            desc.description = description;
             return this;
         }
 
