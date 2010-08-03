@@ -25,11 +25,11 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <util:list id="domains">
-    <bean class="org.openengsb.ui.web.fixtures.SampleDomainProvider" />
+    <bean class="org.openengsb.ui.web.fixtures.log.LogDomainProvider" />
   </util:list>
   
   <util:list id="services">
-    <bean class="org.openengsb.ui.web.fixtures.SampleServiceManager" />
+    <bean class="org.openengsb.ui.web.fixtures.log.StdoutLogServiceManager" />
   </util:list>
 
 </beans>
