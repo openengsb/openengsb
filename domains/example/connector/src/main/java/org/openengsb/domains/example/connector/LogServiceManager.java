@@ -76,6 +76,8 @@ public class LogServiceManager implements ServiceManager, BundleContextAware {
         if (isNew) {
             Hashtable<String, String> props = new Hashtable<String, String>();
             props.put("id", id);
+            props.put("domain", ExampleDomain.class.getName());
+            props.put("class", LogService.class.getName());
             bundleContext.registerService(new String[] { LogService.class.getName(), ExampleDomain.class.getName() },
                     s, props);
         }
