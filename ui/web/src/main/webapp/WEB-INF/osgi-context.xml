@@ -26,11 +26,4 @@
   <osgi:list id="domains" interface="org.openengsb.core.config.DomainProvider" />
   <osgi:list id="services" interface="org.openengsb.core.config.ServiceManager" />
 
-  <bean id="domainService" class="org.openengsb.ui.web.service.impl.OsgiDomainService">
-    <property name="domains" ref="domains" />
-  </bean>
-
-  <bean id="managedServices" class="org.openengsb.ui.web.service.impl.OsgiManagedServices">
-    <property name="managedServices" ref="services" />
-  </bean>
 </beans>

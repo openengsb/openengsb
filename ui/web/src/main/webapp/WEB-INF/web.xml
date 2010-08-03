@@ -23,6 +23,11 @@
   <display-name>openengsb</display-name>
 
   <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:/WEB-INF/application-context.xml classpath:/WEB-INF/osgi-context.xml</param-value>
+  </context-param>
+
+  <context-param>
     <param-name>contextClass</param-name>
     <param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
   </context-param>
