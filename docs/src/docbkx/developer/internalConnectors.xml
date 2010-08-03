@@ -56,30 +56,87 @@
       The following command is used to automatically create the files needed for a new connector. 
       <literallayout><command>mvn</command> archetype:generate -DarchetypeCatalog="http://maven.openengsb.org/archetypes/"</literallayout>
       
+      This command can be executed in any directory. It will create subdirectories with the new projects in
+      the current directory.
+      
       This command will show a list similar to this:
       
       <literallayout><computeroutput>Choose archetype:
 1: http://maven.openengsb.org/archetypes/ -> connector-archetype
 2: http://maven.openengsb.org/archetypes/ -> domain-archetype
 Choose a number:  (1/2):</computeroutput></literallayout>
-      
+
       Type the number for the <emphasis>connector-archetype</emphasis>. Maven will ask whether the default values for the
       properties shall be used. Type <userinput>n</userinput> to overwrite the default values.
       The following properties are needed to generate a connector:
-      <itemizedlist>
-        <listitem>artifactId: The artifactId of the generated wrapper project for the service-engine and the service-unit.</listitem>
-        <listitem>groupId: The groupId of the generated wrapper project. Should be org.openengsb.</listitem>
-        <listitem>version: The version of the generated wrapper project.</listitem>
-        <listitem>se-artifactId: The artifactId of the service-engine.</listitem>
-        <listitem>su-artifactId: The artifactId of the service-unit.</listitem>
-        <listitem>description: The description of the tool connector.</listitem>
-        <listitem>namespace: The namespace of the tool connector.</listitem>
-        <listitem>package: The package for the source code of the service-engine.</listitem>
-        <listitem>connector-name: The connector name. This is used as prefix for Java classes so it should start with an upper-case letter.</listitem>
-        <listitem>domain-package: The package where the domain interface can be found which is implemented by this tool connector.</listitem>
-        <listitem>domain-name: The interface name of the domain interface that is implemented by this tool connector.</listitem>
-        <listitem>urn: The URN that will be used to address this tool connector.</listitem>
-      </itemizedlist>
+
+      <table>
+        <caption>Properties for connector-archetype</caption>
+
+        <colgroup>
+          <col width="100" />
+          <col width="320" />
+        </colgroup>
+
+        <thead>
+          <tr>
+            <td>Property Name</td>
+            <td>Description</td>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>artifactId</td>
+            <td>The artifactId of the generated wrapper project for the service-engine and the service-unit.</td>
+          </tr>
+          <tr>
+            <td>groupId</td>
+            <td>The groupId of the generated wrapper project. Should be org.openengsb.</td>
+          </tr>
+          <tr>
+            <td>version</td>
+            <td>The version of the generated wrapper project.</td>
+          </tr>
+          <tr>
+            <td>se-artifactId</td>
+            <td>The artifactId of the service-engine.</td>
+          </tr>
+          <tr>
+            <td>su-artifactId</td>
+            <td>The artifactId of the service-unit.</td>
+          </tr>
+          <tr>
+            <td>description</td>
+            <td>The description of the tool connector.</td>
+          </tr>
+          <tr>
+            <td>namespace</td>
+            <td>The namespace of the tool connector.</td>
+          </tr>
+          <tr>
+            <td>package</td>
+            <td>The package for the source code of the service-engine.</td>
+          </tr>
+          <tr>
+            <td>connector-name</td>
+            <td>The connector name. This is used as prefix for Java classes so it should start with an upper-case letter.</td>
+          </tr>
+          <tr>
+            <td>domain-package</td>
+            <td>The package where the domain interface can be found which is implemented by this tool connector.</td>
+          </tr>
+          <tr>
+            <td>domain-name</td>
+            <td>The interface name of the domain interface that is implemented by this tool connector.</td>
+          </tr>
+          <tr>
+            <td>urn</td>
+            <td>The URN that will be used to address this tool connector.</td>
+          </tr>
+        </tbody>
+      </table>
+      
     </para>
     <para>
       If all these properties have been set Maven will generate the service-engine and the service-unit for the tool connector.
@@ -153,6 +210,19 @@ Choose a number:  (1/2):</computeroutput></literallayout>
         </itemizedlist>
       </para>
     </section>
+    
+    <section>
+      <title>Example: Produce one Simple Connector</title>
+       TBW (use new architecture)
+    </section>
+    
+    <section>
+      <title>Closing Remarks</title>
+      <para>
+        TBW:  what to read next, what to take care of additionally.
+      </para>
+    </section>
+      
 
   </section>
 

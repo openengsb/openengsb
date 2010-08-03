@@ -18,6 +18,8 @@
 -->
 <chapter id="features" xmlns="http://docbook.org/ns/docbook">
   <title>OpenEngSB Features</title>
+  <caution>We need a better title for this chapter.</caution>
+  
   <para>
     Beside of domains the OpenEngSB itself also specify features. These features could not be easily replaced because
     of an additional tool connector behind a tool domain, but are rather a part of the OpenEngSB itself. These features
