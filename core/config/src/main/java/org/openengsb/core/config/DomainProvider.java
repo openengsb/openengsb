@@ -52,4 +52,9 @@ public interface DomainProvider {
      * {@code Locale}.
      */
     String getDescription(Locale locale);
+
+    /**
+     * Returns the domain-specific interface.
+     */
+    Class<?> getDomainInterface();
 }

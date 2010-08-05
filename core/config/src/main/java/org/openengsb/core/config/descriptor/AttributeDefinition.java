@@ -53,34 +53,34 @@ public class AttributeDefinition {
     }
 
     public static class Builder {
-        private final AttributeDefinition a;
+        private final AttributeDefinition attribute;
 
         public Builder() {
-            a = new AttributeDefinition();
+            attribute = new AttributeDefinition();
         }
 
         public Builder id(String id) {
-            a.id = id;
+            attribute.id = id;
             return this;
         }
 
         public Builder name(String name) {
-            a.name = name;
+            attribute.name = name;
             return this;
         }
 
         public Builder description(String description) {
-            a.description = description;
+            attribute.description = description;
             return this;
         }
 
         public Builder required() {
-            a.required = true;
+            attribute.required = true;
             return this;
         }
 
         public AttributeDefinition build() {
-            return a;
+            return attribute;
         }
     }
 }

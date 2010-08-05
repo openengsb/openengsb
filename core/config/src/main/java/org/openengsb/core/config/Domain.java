@@ -15,16 +15,8 @@
    limitations under the License.
 
  */
-package org.openengsb.ui.web.service;
+package org.openengsb.core.config;
 
-import java.util.List;
+public interface Domain {
 
-import org.openengsb.core.config.ServiceManager;
-import org.osgi.framework.ServiceReference;
-
-public interface ManagedServices {
-
-    List<ServiceManager> getManagedServices();
-
-    List<ServiceReference> getManagedServiceInstances();
 }

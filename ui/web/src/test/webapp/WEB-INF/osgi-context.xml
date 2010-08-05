@@ -31,5 +31,8 @@
   <util:list id="services">
     <bean class="org.openengsb.ui.web.fixtures.log.StdoutLogServiceManager" />
   </util:list>
+  
+  <util:list id="managedServiceInstances">
+  </util:list>
 
 </beans>

@@ -22,6 +22,7 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 
+import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
@@ -78,7 +79,8 @@ public class LogServiceManager implements ServiceManager, BundleContextAware {
             props.put("id", id);
             props.put("domain", ExampleDomain.class.getName());
             props.put("class", LogService.class.getName());
-            bundleContext.registerService(new String[] { LogService.class.getName(), ExampleDomain.class.getName() },
+            bundleContext.registerService(new String[] { LogService.class.getName(), ExampleDomain.class.getName(),
+                    Domain.class.getName() },
                     s, props);
         }
     }

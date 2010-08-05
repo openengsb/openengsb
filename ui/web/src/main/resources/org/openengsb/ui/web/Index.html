@@ -23,6 +23,7 @@
       <ul wicket:id="domains">
         <li>
           <h3><span wicket:id="domain.name">[domain.name]</span></h3>
+          <p><span wicket:id="domain.class">[domain.class]</span></p>
           <p><span wicket:id="domain.description">[domain.description]</span></p>
         </li>
       </ul>
@@ -30,6 +31,16 @@
         <li>
           <h3><span wicket:id="service.name">[service.name]</span></h3><a href="#" wicket:id="create.new"><wicket:message key="create.new">[create.new]</wicket:message></a>
           <p><span wicket:id="service.description">[service.description]</span></p>
+        </li>
+      </ul>
+      <ul wicket:id="instances">
+        <li>
+          <p>instance</p>
+          <ul wicket:id="properties">
+            <li>
+              <span wicket:id="key">[key]</span>: <span wicket:id="value">[value]</span>
+            </li>
+          </ul>
         </li>
       </ul>
     </wicket:extend>
