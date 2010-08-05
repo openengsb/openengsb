@@ -43,6 +43,7 @@ public class StdoutLogServiceManager implements ServiceManager {
                 .id("flush")
                 .name(de ? "Ausgabe flushen" : "Flush Output")
                 .description(de ? "" : "")
+                .defaultValue("true")
                 .required()
                 .build())
         .build();
