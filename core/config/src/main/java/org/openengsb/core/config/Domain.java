@@ -15,10 +15,8 @@
    limitations under the License.
 
  */
-package org.openengsb.domains.example;
+package org.openengsb.core.config;
 
-import org.openengsb.core.config.Domain;
+public interface Domain {
 
-public interface ExampleDomain extends Domain {
-    void doSomething(String message);
 }
