@@ -65,4 +65,9 @@ public class ExampleDomainProvider implements DomainProvider, BundleContextAware
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }
+
+    @Override
+    public Class<?> getDomainInterface() {
+        return ExampleDomain.class;
+    }
 }
