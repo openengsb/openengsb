@@ -57,6 +57,7 @@ public class Index extends BasePage {
             protected void populateItem(ListItem<DomainProvider> item) {
                 item.add(new Label("domain.name", item.getModelObject().getName(item.getLocale())));
                 item.add(new Label("domain.description", item.getModelObject().getDescription(item.getLocale())));
+                item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
             }
         });
         add(new ListView<ServiceManager>("services", managedServices.getManagedServices()) {

@@ -49,4 +49,9 @@ public class LogDomainProvider implements DomainProvider {
                 : "Provides logging services";
     }
 
+    @Override
+    public Class<?> getDomainInterface() {
+        return LogDomain.class;
+    }
+
 }
