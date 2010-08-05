@@ -50,12 +50,10 @@ public class StdoutLogServiceManager implements ServiceManager {
 
     @Override
     public void update(String id, Map<String, String> attributes) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
     public void delete(String id) {
-        throw new UnsupportedOperationException();
     }
 
 }
