@@ -17,6 +17,8 @@
  */
 package org.openengsb.ui.web;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
 
 import org.apache.wicket.markup.html.basic.Label;
@@ -29,6 +31,7 @@ import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.service.DomainService;
 import org.openengsb.ui.web.service.ManagedServices;
+import org.osgi.framework.ServiceReference;
 
 public class Index extends BasePage {
 
@@ -72,6 +75,20 @@ public class Index extends BasePage {
                 });
                 item.add(new Label("service.name", desc.getName()));
                 item.add(new Label("service.description", desc.getDescription()));
+            }
+        });
+        managedServices.getManagedServices().get(0).update("test", new HashMap<String, String>());
+        add(new ListView<ServiceReference>("instances", managedServices.getManagedServiceInstances()) {
+            @Override
+            protected void populateItem(final ListItem<ServiceReference> item) {
+                item.add(new ListView<String>("properties", Arrays.asList(item.getModelObject().getPropertyKeys())) {
+                    @Override
+                    protected void populateItem(ListItem<String> keyItem) {
+                        keyItem.add(new Label("key", keyItem.getModelObject()));
+                        keyItem.add(new Label("value", item.getModelObject().getProperty(keyItem.getModelObject())
+                                .toString()));
+                    }
+                });
             }
         });
 	}

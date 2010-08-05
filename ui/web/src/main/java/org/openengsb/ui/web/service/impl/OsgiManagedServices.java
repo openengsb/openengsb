@@ -21,10 +21,12 @@ import java.util.List;
 
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.ui.web.service.ManagedServices;
+import org.osgi.framework.ServiceReference;
 
 public class OsgiManagedServices implements ManagedServices {
 
     private List<ServiceManager> managedServices;
+    private List<ServiceReference> managedServiceInstances;
 
     @Override
     public List<ServiceManager> getManagedServices() {
@@ -33,5 +35,13 @@ public class OsgiManagedServices implements ManagedServices {
 
     public void setManagedServices(List<ServiceManager> managedServices) {
         this.managedServices = managedServices;
+    }
+
+    public List<ServiceReference> getManagedServiceInstances() {
+        return managedServiceInstances;
+    }
+
+    public void setManagedServiceInstances(List<ServiceReference> managedServiceInstances) {
+        this.managedServiceInstances = managedServiceInstances;
     }
 }

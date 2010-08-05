@@ -20,7 +20,11 @@ package org.openengsb.ui.web.service;
 import java.util.List;
 
 import org.openengsb.core.config.ServiceManager;
+import org.osgi.framework.ServiceReference;
 
 public interface ManagedServices {
+
     List<ServiceManager> getManagedServices();
+
+    List<ServiceReference> getManagedServiceInstances();
 }
