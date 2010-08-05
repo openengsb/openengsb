@@ -17,11 +17,27 @@
  */
 package org.openengsb.ui.web;
 
+import java.util.HashMap;
+
 import org.openengsb.core.config.ServiceManager;
+import org.openengsb.core.config.descriptor.AttributeDefinition;
+import org.openengsb.core.config.descriptor.ServiceDescriptor;
+import org.openengsb.ui.web.editor.EditorPanel;
 
 public class EditorPage extends BasePage {
 
+    @SuppressWarnings("serial")
     public EditorPage(ServiceManager service) {
+        ServiceDescriptor descriptor = service.getDescriptor(getSession().getLocale());
+        HashMap<String, String> values = new HashMap<String, String>();
+        for (AttributeDefinition attribute : descriptor.getAttributes()) {
+            values.put(attribute.getId(), attribute.getDefaultValue());
+        }
+        add(new EditorPanel("editor", descriptor.getAttributes(), values) {
+            @Override
+            public void onSubmit() {
+            }
+        });
     }
 
 }
