@@ -51,4 +51,9 @@ public abstract class DirectMessageHandlingEndpoint<T> extends RPCEndpoint<T> {
         return null;
     }
 
+    @Override
+    protected boolean handleCallAutomatically() {
+        return false;
+    }
+
 }

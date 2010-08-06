@@ -41,15 +41,19 @@ public abstract class LinkingEndpoint<T> extends RPCEndpoint<T> {
     }
 
     @Override
-    protected void inOut(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
-            ContextHelper contextHelper, MessageProperties msgProperties) throws Exception {
-        // not required in this use case
-    }
-
-    @Override
     protected QName getForwardTarget(ContextHelper contextHelper) {
         // not required in this use case
         return null;
     }
 
+    @Override
+    protected boolean handleCallAutomatically() {
+        return true;
+    }
+
+    @Override
+    protected void handleMethodCallManually(MessageExchange exchange, NormalizedMessage in, NormalizedMessage out,
+            ContextHelper contextHelper, MessageProperties msgProperties) {
+        // not required in this use case
+    }
 }
