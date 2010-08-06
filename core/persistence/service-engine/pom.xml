@@ -184,6 +184,12 @@
       <groupId>jgroups</groupId>
       <artifactId>jgroups-all</artifactId>
       <version>2.4.1</version>
+      <exclusions>
+        <exclusion>
+          <groupId>bsh</groupId>
+          <artifactId>bsh</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Maven usage dependencies -->
