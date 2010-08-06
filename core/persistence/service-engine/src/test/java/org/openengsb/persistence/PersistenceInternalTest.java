@@ -53,7 +53,7 @@ public abstract class PersistenceInternalTest extends PersistenceTest {
     }
 
     @Test(expected=PersistenceException.class)
-    public void testCreateAndQuery2() throws Exception {
+    public void testCreateAndQueryInvalidObject() throws Exception {
         PersistenceObject po = new PersistenceObject("", this.getClass().getName());
         persistence.create(po);
         Object example = sample1;
