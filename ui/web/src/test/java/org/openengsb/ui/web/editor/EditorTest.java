@@ -74,8 +74,8 @@ public class EditorTest {
         MarkupContainer fields = (MarkupContainer) form.get(1);
         for (int i = 0; i < fields.size(); ++i) {
             MarkupContainer row = (MarkupContainer) fields.get(i);
-            FormComponent c = (FormComponent) row.get(1);
-            if (c.getInputName().equals("fields:" + attributeId + ":field")) {
+            FormComponent c = (FormComponent) ((Panel) row.get(0)).get(1);
+            if (c.getInputName().equals("fields:" + attributeId + ":row:field")) {
                 assertThat(c, is(componentType));
                 return (T) c;
             }

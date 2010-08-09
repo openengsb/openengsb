@@ -19,20 +19,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
 <body>
 <wicket:panel>
-  <form wicket:id="form">
-    <table>
-      <tr wicket:id="fields">
-        <wicket:container wicket:id="row" />
-      </tr>
-      <tr>
-        <th></th>
-        <td>
-          <div wicket:id="feedback"></div>
-          <input type="submit" wicket:message="value:save" />
-        </td>
-      </tr>
-    </table>
-  </form>
+  <th class="fieldname"><label wicket:id="name">[name]</label></th>
+  <td class="fieldeditor" ><input wicket:id="field" /></td>
 </wicket:panel>
 </body>
 </html>
