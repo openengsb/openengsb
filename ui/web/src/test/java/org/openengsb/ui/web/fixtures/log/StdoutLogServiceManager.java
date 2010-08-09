@@ -42,7 +42,7 @@ public class StdoutLogServiceManager implements ServiceManager {
                 .attribute(AttributeDefinition.builder()
                 .id("flush")
                 .name(de ? "Ausgabe flushen" : "Flush Output")
-                .description(de ? "" : "")
+                .description(de ? "die deutsche Beschreibung" : "die englische Beschreibung")
                 .defaultValue("true")
                 .required()
                 .build())

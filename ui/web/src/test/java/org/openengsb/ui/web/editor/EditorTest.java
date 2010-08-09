@@ -30,6 +30,7 @@ import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
@@ -43,33 +44,46 @@ public class EditorTest {
     private WicketTester tester;
     private EditorPanel editor;
     private AttributeDefinition stringAttrib;
+    private AttributeDefinition attribWithNoDescription;
     private Map<String, String> defaultValues;
 
     @Before
     public void setup() {
         stringAttrib = AttributeDefinition.builder().id("id_a").name("name_a").description("desc_a").build();
+        attribWithNoDescription = AttributeDefinition.builder().id("id_b").name("name_b").build();
         final Map<String, String> values = new HashMap<String, String>();
         values.put(stringAttrib.getId(), stringAttrib.getId() + "_default");
+        values.put(attribWithNoDescription.getId(), attribWithNoDescription.getId() + "_default");
         defaultValues = Collections.unmodifiableMap(values);
         tester = new WicketTester();
         editor = (EditorPanel) tester.startPanel(new TestPanelSource() {
             @Override
             public Panel getTestPanel(String panelId) {
-                return new EditorPanel(panelId, Arrays.asList(stringAttrib), values);
+                return new EditorPanel(panelId, Arrays.asList(stringAttrib, attribWithNoDescription), values);
             }
         });
     }
 
     @Test
     public void editingStringAttribute_shouldRenderTextFieldWithPresetValues() throws Exception {
-        TextField<?> tf = getEditorField(editor, stringAttrib.getId(), TextField.class);
+        TextField<?> tf = getEditorFieldFormComponent(editor, stringAttrib.getId(), TextField.class);
         assertThat(tf.getValue(), is(defaultValues.get(stringAttrib.getId())));
+    }
+
+    @Test
+    public void attributeWithDescription_shouldRenderTooltipImageWithTitle() throws Exception {
+        assertThat(((Image) getEditorField(editor, stringAttrib.getId()).get("tooltip")).isVisible(), is(true));
+    }
+
+    @Test
+    public void attributeWithoutDescription_shouldShowNoTooltipImage() throws Exception {
+        assertThat(getEditorField(editor, attribWithNoDescription.getId()).get("tooltip").isVisible(), is(false));
     }
 
     // because of the dynamics of the editor, we have to look up the fields
     // another way
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static <T> T getEditorField(EditorPanel editor, String attributeId, Class<T> componentType) {
+    private static <T> T getEditorFieldFormComponent(EditorPanel editor, String attributeId, Class<T> componentType) {
         Form<?> form = (Form<?>) editor.get("form");
         MarkupContainer fields = (MarkupContainer) form.get(1);
         for (int i = 0; i < fields.size(); ++i) {
@@ -82,5 +96,9 @@ public class EditorTest {
         }
         fail("no form component '" + attributeId + "' found");
         throw new UnsupportedOperationException();
+    }
+
+    private static EditorField getEditorField(EditorPanel editor, String attributeId) {
+        return (EditorField) getEditorFieldFormComponent(editor, attributeId, FormComponent.class).getParent();
     }
 }

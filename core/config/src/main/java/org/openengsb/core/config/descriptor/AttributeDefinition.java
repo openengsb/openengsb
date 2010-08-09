@@ -45,6 +45,10 @@ public class AttributeDefinition {
         return description;
     }
 
+    public boolean hasDescription() {
+        return description != null && !description.isEmpty();
+    }
+
     /**
      * Returns the default value.
      */

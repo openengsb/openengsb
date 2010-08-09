@@ -20,6 +20,7 @@ package org.openengsb.ui.web.editor;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -36,6 +37,13 @@ public class EditorField extends Panel {
         tf.setMarkupId(attribute.getId());
         add(new SimpleFormComponentLabel("name", tf).add(new SimpleAttributeModifier("for", attribute.getId())));
         add(tf);
+        Image tooltip = new Image("tooltip");
+        if (attribute.hasDescription()) {
+            tooltip.add(new SimpleAttributeModifier("title", attribute.getDescription()));
+        } else {
+            tooltip.setVisible(false);
+        }
+        add(tooltip);
     }
 
 }
