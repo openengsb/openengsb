@@ -17,8 +17,11 @@
  */
 package org.openengsb.ui.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
@@ -28,16 +31,29 @@ public class EditorPage extends BasePage {
 
     @SuppressWarnings("serial")
     public EditorPage(ServiceManager service) {
-        ServiceDescriptor descriptor = service.getDescriptor(getSession().getLocale());
+        List<AttributeDefinition> attributes = buildAttributeList(service);
         HashMap<String, String> values = new HashMap<String, String>();
-        for (AttributeDefinition attribute : descriptor.getAttributes()) {
+        for (AttributeDefinition attribute : attributes) {
             values.put(attribute.getId(), attribute.getDefaultValue());
         }
-        add(new EditorPanel("editor", descriptor.getAttributes(), values) {
+        add(new EditorPanel("editor", attributes, values) {
             @Override
             public void onSubmit() {
             }
         });
     }
 
+    private List<AttributeDefinition> buildAttributeList(ServiceManager service) {
+        AttributeDefinition id = AttributeDefinition.builder()
+                .id("id")
+                .name(new StringResourceModel("attribute.id.name", this, null).getString())
+                .description(new StringResourceModel("attribute.id.description", this, null).getString())
+                .required()
+                .build();
+        ServiceDescriptor descriptor = service.getDescriptor(getSession().getLocale());
+        List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
+        attributes.add(id);
+        attributes.addAll(descriptor.getAttributes());
+        return attributes;
+    }
 }
