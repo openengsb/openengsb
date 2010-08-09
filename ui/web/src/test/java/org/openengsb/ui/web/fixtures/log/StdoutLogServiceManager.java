@@ -34,19 +34,28 @@ public class StdoutLogServiceManager implements ServiceManager {
     @Override
     public ServiceDescriptor getDescriptor(Locale locale) {
         boolean de = "de".equals(locale.getLanguage());
-        return ServiceDescriptor.builder()
-                .id(StdoutLogService.class.getName())
-                .implementsInterface(LogDomain.class.getName())
-                .name(de ? "Stdout Log Service" : "Stdout Log Service")
-                .description(de ? "Loggt Nachrichten auf den Stdout." : "Logs messages to the stdout.")
-                .attribute(AttributeDefinition.builder()
+        AttributeDefinition flush = AttributeDefinition.builder()
                 .id("flush")
                 .name(de ? "Ausgabe flushen" : "Flush Output")
                 .description(de ? "die deutsche Beschreibung" : "die englische Beschreibung")
                 .defaultValue("true")
                 .required()
-                .build())
-        .build();
+                .build();
+        AttributeDefinition level = AttributeDefinition.builder()
+                .id("level")
+                .name("Log Level")
+                .defaultValue("INFO")
+                .description("")
+                .required()
+                .build();
+        return ServiceDescriptor.builder()
+                .id(StdoutLogService.class.getName())
+                .implementsInterface(LogDomain.class.getName())
+                .name(de ? "Stdout Log Service" : "Stdout Log Service")
+                .description(de ? "Loggt Nachrichten auf den Stdout." : "Logs messages to the stdout.")
+                .attribute(flush)
+                .attribute(level)
+                .build();
     }
 
     @Override
