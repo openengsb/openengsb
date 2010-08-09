@@ -20,13 +20,15 @@ package org.openengsb.ui.web.editor;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.Model;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.ui.web.model.MapModel;
 
@@ -53,10 +55,13 @@ public class EditorPanel extends Panel {
         form.add(fields);
 
         for (AttributeDefinition a : attributes) {
+            TextField<String> tf = new TextField<String>("field", new MapModel<String, String>(values, a.getId()));
+            tf.setLabel(new Model<String>(a.getName()));
+            tf.setOutputMarkupId(true);
+            tf.setMarkupId(a.getId());
             WebMarkupContainer row = new WebMarkupContainer(a.getId());
             fields.add(row);
-            row.add(new Label("name", a.getName()));
-            TextField<String> tf = new TextField<String>("field", new MapModel<String, String>(values, a.getId()));
+            row.add(new SimpleFormComponentLabel("name", tf).add(new SimpleAttributeModifier("for", a.getId())));
             row.add(tf);
         }
     }
