@@ -32,6 +32,7 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -46,12 +47,11 @@ public class EditorTest {
     private AttributeDefinition stringAttrib;
     private AttributeDefinition attribWithNoDescription;
     private Map<String, String> defaultValues;
-
     @Before
     public void setup() {
         stringAttrib = AttributeDefinition.builder().id("id_a").name("name_a").description("desc_a").build();
         attribWithNoDescription = AttributeDefinition.builder().id("id_b").name("name_b").build();
-        final Map<String, String> values = new HashMap<String, String>();
+        final HashMap<String, String> values = new HashMap<String, String>();
         values.put(stringAttrib.getId(), stringAttrib.getId() + "_default");
         values.put(attribWithNoDescription.getId(), attribWithNoDescription.getId() + "_default");
         defaultValues = Collections.unmodifiableMap(values);
@@ -66,24 +66,39 @@ public class EditorTest {
 
     @Test
     public void editingStringAttribute_shouldRenderTextFieldWithPresetValues() throws Exception {
-        TextField<?> tf = getEditorFieldFormComponent(editor, stringAttrib.getId(), TextField.class);
+        TextField<?> tf = getEditorFieldFormComponent(stringAttrib.getId(), TextField.class);
         assertThat(tf.getValue(), is(defaultValues.get(stringAttrib.getId())));
     }
 
     @Test
     public void attributeWithDescription_shouldRenderTooltipImageWithTitle() throws Exception {
-        assertThat(((Image) getEditorField(editor, stringAttrib.getId()).get("tooltip")).isVisible(), is(true));
+        assertThat(((Image) getEditorField(stringAttrib.getId()).get("tooltip")).isVisible(), is(true));
     }
 
     @Test
     public void attributeWithoutDescription_shouldShowNoTooltipImage() throws Exception {
-        assertThat(getEditorField(editor, attribWithNoDescription.getId()).get("tooltip").isVisible(), is(false));
+        assertThat(getEditorField(attribWithNoDescription.getId()).get("tooltip").isVisible(), is(false));
+    }
+
+    @Test
+    public void submittingFormWithoutChange_shouldReturnInitialValues() throws Exception {
+        FormTester formTester = tester.newFormTester(editor.getId() + ":form");
+        formTester.submit();
+        assertThat(editor.getValues(), is(defaultValues));
+    }
+
+    @Test
+    public void submittingFormWithChanges_shouldReflectChangesInValues() throws Exception {
+        FormTester formTester = tester.newFormTester(editor.getId() + ":form");
+        setFormValue(stringAttrib.getId(), "new_value_a");
+        formTester.submit();
+        assertThat(editor.getValues().get(stringAttrib.getId()), is("new_value_a"));
     }
 
     // because of the dynamics of the editor, we have to look up the fields
     // another way
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static <T> T getEditorFieldFormComponent(EditorPanel editor, String attributeId, Class<T> componentType) {
+    private <T> T getEditorFieldFormComponent(String attributeId, Class<T> componentType) {
         Form<?> form = (Form<?>) editor.get("form");
         MarkupContainer fields = (MarkupContainer) form.get(1);
         for (int i = 0; i < fields.size(); ++i) {
@@ -98,7 +113,12 @@ public class EditorTest {
         throw new UnsupportedOperationException();
     }
 
-    private static EditorField getEditorField(EditorPanel editor, String attributeId) {
-        return (EditorField) getEditorFieldFormComponent(editor, attributeId, FormComponent.class).getParent();
+    private EditorField getEditorField(String attributeId) {
+        return (EditorField) getEditorFieldFormComponent(attributeId, FormComponent.class).getParent();
+    }
+
+    private void setFormValue(String attributeId, String value) {
+        tester.getServletRequest().setParameter(
+                getEditorFieldFormComponent(attributeId, FormComponent.class).getInputName(), value);
     }
 }
