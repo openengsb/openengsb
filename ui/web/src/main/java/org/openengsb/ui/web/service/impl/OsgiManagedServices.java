@@ -17,16 +17,38 @@
  */
 package org.openengsb.ui.web.service.impl;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.ServiceManager;
+import org.openengsb.ui.web.service.DomainService;
 import org.openengsb.ui.web.service.ManagedServices;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public class OsgiManagedServices implements ManagedServices {
 
+    Log log = LogFactory.getLog(OsgiManagedServices.class);
+
     private List<ServiceManager> managedServices;
-    private List<ServiceReference> managedServiceInstances;
+
+    private BundleContext bundleContext;
+
+    private DomainService domainService;
+
+    public void setDomainService(DomainService domainService) {
+        this.domainService = domainService;
+    }
+
+    public OsgiManagedServices() {
+        // TODO Auto-generated constructor stub
+    }
 
     @Override
     public List<ServiceManager> getManagedServices() {
@@ -37,11 +59,24 @@ public class OsgiManagedServices implements ManagedServices {
         this.managedServices = managedServices;
     }
 
-    public List<ServiceReference> getManagedServiceInstances() {
-        return managedServiceInstances;
+    public Map<Class<?>, List<ServiceReference>> getManagedServiceInstances() {
+        Map<Class<?>, List<ServiceReference>> managedInstances = new HashMap<Class<?>, List<ServiceReference>>();
+        for (DomainProvider provider : domainService.getDomains()) {
+            log.debug("Provider: " + provider.getName());
+            String name = provider.getDomainInterface().getName();
+            ServiceReference[] allServiceReferences;
+            try {
+                allServiceReferences = bundleContext.getAllServiceReferences(name, null);
+                log.debug("ServiceReferences: " + allServiceReferences.length);
+                managedInstances.put(provider.getDomainInterface(), Arrays.asList(allServiceReferences));
+            } catch (InvalidSyntaxException e) {
+                log.error(e.getMessage());
+            }
+        }
+        return managedInstances;
     }
 
-    public void setManagedServiceInstances(List<ServiceReference> managedServiceInstances) {
-        this.managedServiceInstances = managedServiceInstances;
+    public void setBundleContext(BundleContext context) {
+        this.bundleContext = context;
     }
 }
