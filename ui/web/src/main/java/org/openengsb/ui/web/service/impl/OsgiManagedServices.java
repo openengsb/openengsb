@@ -67,6 +67,9 @@ public class OsgiManagedServices implements ManagedServices {
             ServiceReference[] allServiceReferences;
             try {
                 allServiceReferences = bundleContext.getAllServiceReferences(name, null);
+                if(allServiceReferences == null){
+                    allServiceReferences = new ServiceReference[0];
+                }
                 log.debug("ServiceReferences: " + allServiceReferences.length);
                 managedInstances.put(provider.getDomainInterface(), Arrays.asList(allServiceReferences));
             } catch (InvalidSyntaxException e) {
