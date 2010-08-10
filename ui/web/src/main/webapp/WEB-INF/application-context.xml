@@ -29,6 +29,7 @@
 
   <bean id="managedServices" class="org.openengsb.ui.web.service.impl.OsgiManagedServices">
     <property name="managedServices" ref="services" />
-    <property name="managedServiceInstances" ref="managedServiceInstances" />
+    <property name="bundleContext" ref="bundleContext"/>
+    <property name="domainService" ref="domainService"/>
   </bean>
 </beans>

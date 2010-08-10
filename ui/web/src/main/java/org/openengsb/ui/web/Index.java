@@ -17,9 +17,11 @@
  */
 package org.openengsb.ui.web;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -77,20 +79,29 @@ public class Index extends BasePage {
                 item.add(new Label("service.description", desc.getDescription()));
             }
         });
-        managedServices.getManagedServices().get(0).update("test", new HashMap<String, String>());
-        add(new ListView<ServiceReference>("instances", managedServices.getManagedServiceInstances()) {
+        Map<Class<?>, List<ServiceReference>> managedServiceInstances = managedServices.getManagedServiceInstances();
+        add(new ListView<Class<?>>("providers", new ArrayList<Class<?>>(managedServiceInstances.keySet())) {
             @Override
-            protected void populateItem(final ListItem<ServiceReference> item) {
-                item.add(new ListView<String>("properties", Arrays.asList(item.getModelObject().getPropertyKeys())) {
+            protected void populateItem(ListItem<Class<?>> item) {
+                item.add(new Label("providerName", item.getModelObject().getName()));
+                item.add(new ListView<ServiceReference>("instances", managedServices.getManagedServiceInstances().get(
+                        item.getModelObject())) {
                     @Override
-                    protected void populateItem(ListItem<String> keyItem) {
-                        keyItem.add(new Label("key", keyItem.getModelObject()));
-                        keyItem.add(new Label("value", item.getModelObject().getProperty(keyItem.getModelObject())
-                                .toString()));
+                    protected void populateItem(final ListItem<ServiceReference> item) {
+                        item.add(new Label("instanceName", item.getModelObject().getProperty("name").toString()));
+                        item.add(new ListView<String>("properties", Arrays.asList(item.getModelObject()
+                                .getPropertyKeys())) {
+                            @Override
+                            protected void populateItem(ListItem<String> keyItem) {
+                                keyItem.add(new Label("key", keyItem.getModelObject()));
+                                keyItem.add(new Label("value", item.getModelObject()
+                                        .getProperty(keyItem.getModelObject()).toString()));
+                            }
+                        });
                     }
                 });
             }
-        });
-	}
 
+        });
+    }
 }
