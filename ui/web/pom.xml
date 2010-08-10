@@ -151,6 +151,12 @@
       <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-mock</artifactId>
+      <version>${spring.osgi.version}</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
