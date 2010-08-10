@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
@@ -29,8 +30,14 @@ import org.openengsb.ui.web.editor.EditorPanel;
 
 public class EditorPage extends BasePage {
 
-    @SuppressWarnings("serial")
     public EditorPage(ServiceManager service) {
+        add(new Label("service.name", service.getDescriptor().getName()));
+        add(new Label("service.description", service.getDescriptor().getDescription()));
+        createEditor(service);
+    }
+
+    @SuppressWarnings("serial")
+    private void createEditor(ServiceManager service) {
         List<AttributeDefinition> attributes = buildAttributeList(service);
         HashMap<String, String> values = new HashMap<String, String>();
         for (AttributeDefinition attribute : attributes) {
