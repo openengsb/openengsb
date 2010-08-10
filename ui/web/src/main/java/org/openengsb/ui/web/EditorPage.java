@@ -30,15 +30,18 @@ import org.openengsb.ui.web.editor.EditorPanel;
 
 public class EditorPage extends BasePage {
 
-    public EditorPage(ServiceManager service) {
-        add(new Label("service.name", service.getDescriptor().getName()));
-        add(new Label("service.description", service.getDescriptor().getDescription()));
-        createEditor(service);
+    private final ServiceManager serviceManager;
+
+    public EditorPage(ServiceManager serviceManager) {
+        this.serviceManager = serviceManager;
+        add(new Label("service.name", serviceManager.getDescriptor().getName()));
+        add(new Label("service.description", serviceManager.getDescriptor().getDescription()));
+        createEditor();
     }
 
     @SuppressWarnings("serial")
-    private void createEditor(ServiceManager service) {
-        List<AttributeDefinition> attributes = buildAttributeList(service);
+    private void createEditor() {
+        List<AttributeDefinition> attributes = buildAttributeList(serviceManager);
         HashMap<String, String> values = new HashMap<String, String>();
         for (AttributeDefinition attribute : attributes) {
             values.put(attribute.getId(), attribute.getDefaultValue());
@@ -46,6 +49,8 @@ public class EditorPage extends BasePage {
         add(new EditorPanel("editor", attributes, values) {
             @Override
             public void onSubmit() {
+                serviceManager.update(getValues().get("id"), getValues());
+                setResponsePage(Index.class);
             }
         });
     }
