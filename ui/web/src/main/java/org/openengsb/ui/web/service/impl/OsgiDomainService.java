@@ -76,13 +76,23 @@ public class OsgiDomainService implements DomainService {
     public List<ServiceReference> serviceReferencesForConnector(Class<? extends Domain> connectorClass) {
         List<ServiceReference> serviceReferences = new ArrayList<ServiceReference>();
         try {
-            ServiceReference[] allServiceReferences = bundleContext.getAllServiceReferences(connectorClass.getName(), null);
-            if(allServiceReferences != null){
-            serviceReferences = Arrays.asList(allServiceReferences);
+            ServiceReference[] allServiceReferences = bundleContext.getAllServiceReferences(connectorClass.getName(),
+                    null);
+            if (allServiceReferences != null) {
+                serviceReferences = Arrays.asList(allServiceReferences);
             }
         } catch (InvalidSyntaxException e) {
             log.debug(e.getMessage());
         }
         return serviceReferences;
+    }
+
+    @Override
+    public List<? extends ServiceReference> getManagedServiceInstances() {
+        try {
+            return Arrays.asList(bundleContext.getAllServiceReferences(Domain.class.getName(), null));
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalStateException("this should never happen, since no filter is used, or is it?");
+        }
     }
 }

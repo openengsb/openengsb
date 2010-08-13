@@ -15,21 +15,20 @@
    limitations under the License.
 
  */
-package org.openengsb.ui.web.service;
+package org.openengsb.ui.web;
 
-import java.util.List;
-
-import org.openengsb.core.config.Domain;
-import org.openengsb.core.config.DomainProvider;
-import org.openengsb.core.config.ServiceManager;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
-public interface DomainService {
-    List<DomainProvider> domains();
+public class TestClient extends BasePage {
 
-    List<ServiceManager> serviceManagersForDomain(Class<? extends Domain> domain);
+    @SpringBean
+    private DomainService services;
 
-    List<ServiceReference> serviceReferencesForConnector(Class<? extends Domain> connectorClass);
+    public TestClient() {
+        add(new DropDownChoice<ServiceReference>("serviceList", services.getManagedServiceInstances()));
+    }
 
-    List<? extends ServiceReference> getManagedServiceInstances();
 }
