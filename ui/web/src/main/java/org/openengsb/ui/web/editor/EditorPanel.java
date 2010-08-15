@@ -32,9 +32,11 @@ import org.openengsb.ui.web.model.MapModel;
 public class EditorPanel extends Panel {
 
     private final Map<String, String> values;
+    private final List<AttributeDefinition> attributes;
 
     public EditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values) {
         super(id);
+        this.attributes = attributes;
         this.values = values;
         createForm(attributes, values);
     }
@@ -61,6 +63,10 @@ public class EditorPanel extends Panel {
     }
 
     public void onSubmit() {
+    }
+
+    public List<AttributeDefinition> getAttributes() {
+        return attributes;
     }
 
     public Map<String, String> getValues() {

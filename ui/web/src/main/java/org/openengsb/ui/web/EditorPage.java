@@ -31,11 +31,13 @@ import org.openengsb.ui.web.editor.EditorPanel;
 public class EditorPage extends BasePage {
 
     private final ServiceManager serviceManager;
+    private EditorPanel editorPanel;
 
     public EditorPage(ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
-        add(new Label("service.name", serviceManager.getDescriptor().getName()));
-        add(new Label("service.description", serviceManager.getDescriptor().getDescription()));
+        ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
+        add(new Label("service.name", descriptor.getName()));
+        add(new Label("service.description", descriptor.getDescription()));
         createEditor();
     }
 
@@ -46,13 +48,14 @@ public class EditorPage extends BasePage {
         for (AttributeDefinition attribute : attributes) {
             values.put(attribute.getId(), attribute.getDefaultValue());
         }
-        add(new EditorPanel("editor", attributes, values) {
+        editorPanel = new EditorPanel("editor", attributes, values) {
             @Override
             public void onSubmit() {
                 serviceManager.update(getValues().get("id"), getValues());
                 setResponsePage(Index.class);
             }
-        });
+        };
+        add(editorPanel);
     }
 
     private List<AttributeDefinition> buildAttributeList(ServiceManager service) {
@@ -67,5 +70,9 @@ public class EditorPage extends BasePage {
         attributes.add(id);
         attributes.addAll(descriptor.getAttributes());
         return attributes;
+    }
+
+    public EditorPanel getEditorPanel() {
+        return editorPanel;
     }
 }
