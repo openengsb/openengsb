@@ -40,11 +40,8 @@ public class Index extends BasePage {
     @SpringBean
     DomainService domainService;
 
-    @SpringBean
-    ManagedServices managedServices;
-
     @SuppressWarnings("serial")
-	public Index() {
+    public Index() {
         add(new Link("lang.en") {
             @Override
             public void onClick() {
@@ -57,51 +54,13 @@ public class Index extends BasePage {
                 this.getSession().setLocale(Locale.GERMAN);
             }
         });
-        add(new ListView<DomainProvider>("domains", domainService.getDomains()) {
+        add(new ListView<DomainProvider>("domains", domainService.domains()) {
             @Override
             protected void populateItem(ListItem<DomainProvider> item) {
                 item.add(new Label("domain.name", item.getModelObject().getName(item.getLocale())));
                 item.add(new Label("domain.description", item.getModelObject().getDescription(item.getLocale())));
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
             }
-        });
-        add(new ListView<ServiceManager>("services", managedServices.getManagedServices()) {
-            @Override
-            protected void populateItem(ListItem<ServiceManager> item) {
-                ServiceDescriptor desc = item.getModelObject().getDescriptor(item.getLocale());
-                item.add(new Link<ServiceManager>("create.new", item.getModel()) {
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new EditorPage(getModelObject()));
-                    }
-                });
-                item.add(new Label("service.name", desc.getName()));
-                item.add(new Label("service.description", desc.getDescription()));
-            }
-        });
-        Map<Class<?>, List<ServiceReference>> managedServiceInstances = managedServices.getManagedServiceInstances();
-        add(new ListView<Class<?>>("providers", new ArrayList<Class<?>>(managedServiceInstances.keySet())) {
-            @Override
-            protected void populateItem(ListItem<Class<?>> item) {
-                item.add(new Label("providerName", item.getModelObject().getName()));
-                item.add(new ListView<ServiceReference>("instances", managedServices.getManagedServiceInstances().get(
-                        item.getModelObject())) {
-                    @Override
-                    protected void populateItem(final ListItem<ServiceReference> item) {
-                        item.add(new Label("instanceName", item.getModelObject().getProperty("name").toString()));
-                        item.add(new ListView<String>("properties", Arrays.asList(item.getModelObject()
-                                .getPropertyKeys())) {
-                            @Override
-                            protected void populateItem(ListItem<String> keyItem) {
-                                keyItem.add(new Label("key", keyItem.getModelObject()));
-                                keyItem.add(new Label("value", item.getModelObject()
-                                        .getProperty(keyItem.getModelObject()).toString()));
-                            }
-                        });
-                    }
-                });
-            }
-
         });
     }
 }
