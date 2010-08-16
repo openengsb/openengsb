@@ -1,23 +1,17 @@
 package org.openengsb.ui.web;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.tree.BaseTree;
+import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.ServiceManager;
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
@@ -26,39 +20,55 @@ public class SendMessages extends BasePage {
     @SpringBean
     DomainService domainService;
 
+    Log log = LogFactory.getLog(SendMessages.class);
+
+    private BaseTree tree;
+
     public SendMessages() {
-        add(new ListView<DomainProvider>("domains", new ArrayList<DomainProvider>(domainService.domains())) {
-            @Override
-            protected void populateItem(ListItem<DomainProvider> item) {
-                Class<? extends Domain> domainInterface = item.getModelObject().getDomainInterface();
-                item.add(new Label("domainName", domainInterface.getName()));
-                item.add(new ListView<ServiceManager>("connectors", domainService
-                        .serviceManagersForDomain(domainInterface)) {
-                    @Override
-                    protected void populateItem(ListItem<ServiceManager> item) {
-                        ServiceDescriptor descriptor = item.getModelObject().getDescriptor();
-                        item.add(new Label("connectorName", descriptor.getName()));
-                        item.add(new ListView<ServiceReference>("instances", domainService
-                                .serviceReferencesForConnector(descriptor.getType())) {
+        tree = new ClickableLinkTree("tree", createModel());
+        tree.setRootLess(true);
+        add(tree);
+        tree.getTreeState().collapseAll();
+    }
 
-                            @Override
-                            protected void populateItem(final ListItem<ServiceReference> item) {
-                                item.add(new Label("instanceName", item.getModelObject().getProperty("name").toString()));
-                                item.add(new ListView<String>("properties", Arrays.asList(item.getModelObject()
-                                        .getPropertyKeys())) {
-                                    @Override
-                                    protected void populateItem(ListItem<String> keyItem) {
-                                        keyItem.add(new Label("key", keyItem.getModelObject()));
-                                        keyItem.add(new Label("value", item.getModelObject()
-                                                .getProperty(keyItem.getModelObject()).toString()));
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
+    private TreeModel createModel() {
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode("Select Instance");
+        TreeModel model = new DefaultTreeModel(node);
+        for (DomainProvider provider : domainService.domains()) {
+            this.addDomainProvider(provider, node);
+        }
+        return model;
+    }
+
+    private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
+        DefaultMutableTreeNode providerNode = new DefaultMutableTreeNode(provider.getName());
+        node.add(providerNode);
+        for (ServiceManager manager : domainService.serviceManagersForDomain(provider.getDomainInterface())) {
+            DefaultMutableTreeNode serviceManagerNode = new DefaultMutableTreeNode(manager.getDescriptor().getName());
+            providerNode.add(serviceManagerNode);
+            for (ServiceReference serviceReference : this.domainService.serviceReferencesForConnector(provider
+                    .getDomainInterface())) {
+                DefaultMutableTreeNode referenceNode = new DefaultMutableTreeNode(serviceReference, false);
+                serviceManagerNode.add(referenceNode);
             }
-        });
+        }
+    }
 
+    private static class ClickableLinkTree extends LinkTree {
+
+        public ClickableLinkTree(String name, TreeModel model) {
+            super(name, model);
+        }
+
+        @Override
+        protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
+            if (node instanceof DefaultMutableTreeNode) {
+                DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
+                if (treeNode.isLeaf()) {
+                    ServiceReference reference = (ServiceReference) treeNode.getUserObject();
+                    System.out.println(reference);
+                }
+            }
+        }
     }
 }

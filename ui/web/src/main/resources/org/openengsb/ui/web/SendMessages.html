@@ -19,27 +19,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
   <body>
     <wicket:extend>
-      <h2>Instances for Domain</h2>
-      <ul wicket:id="domains">
-      <li>
-        <span wicket:id="domainName">[domainName]</span>
-        <ul wicket:id="connectors">
-          <li>
-            <span wicket:id="connectorName">[connectorName]</span>
-            <ul wicket:id="instances">
-              <li>
-              <span wicket:id="instanceName">[instanceName]</span>
-                <ul wicket:id="properties">
-                  <li>
-                    <span wicket:id="key">[key]</span>: <span wicket:id="value">[value]</span>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-        </ul>
-        </li>
-      </ul>
+     <table style="border: 1px solid #eee"><tr><td>
+        <div wicket:id="tree" class="my-tree">  
+        </div>
+    </td></tr></table>
     </wicket:extend>
   </body>
 </html>
