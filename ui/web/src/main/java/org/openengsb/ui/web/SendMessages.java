@@ -72,6 +72,8 @@ public class SendMessages extends BasePage {
     }
 
     private static class ClickableLinkTree extends LinkTree {
+        
+        Log log = LogFactory.getLog(ClickableLinkTree.class);
 
         public ClickableLinkTree(String name, TreeModel model) {
             super(name, model);
@@ -83,7 +85,7 @@ public class SendMessages extends BasePage {
                 DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
                 if (treeNode.isLeaf()) {
                     ServiceReference reference = (ServiceReference) treeNode.getUserObject();
-                    System.out.println(reference);
+                    log.info(reference);
                 }
             }
         }
