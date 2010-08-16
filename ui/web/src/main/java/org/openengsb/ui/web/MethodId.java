@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("serial")
 public class MethodId implements Serializable {
     private String name;
     private List<String> argumentTypes = new ArrayList<String>();
@@ -100,8 +101,7 @@ public class MethodId implements Serializable {
             result.append(s);
         }
         result.append(")");
-        return result
-         .toString();
+        return result.toString();
     }
 
 }

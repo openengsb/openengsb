@@ -20,7 +20,6 @@ package org.openengsb.ui.web;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -40,6 +39,16 @@ import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
 public class TestClientTest {
+
+    public class TestService {
+        void update(String id, String name) {
+
+        }
+
+        String getName(String id) {
+            return "";
+        }
+    }
 
     private WicketTester tester;
     private ApplicationContextMock context;
@@ -137,16 +146,18 @@ public class TestClientTest {
         @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
         @SuppressWarnings("unchecked")
-        DropDownChoice<Method> methodList = (DropDownChoice<Method>) form.get("methodList");
+        DropDownChoice<MethodId> methodList = (DropDownChoice<MethodId>) form.get("methodList");
         FormTester formTester = tester.newFormTester("methodCallForm");
 
         formTester.select("serviceList", 0);
         tester.executeAjaxEvent(form.get("serviceList"), "onchange");
 
-        Thread.sleep(500);
-
-        List<? extends Method> choices = methodList.getChoices();
-        Assert.assertEquals(Arrays.asList(HashSet.class.getMethods()), choices);
+        List<? extends MethodId> choices = methodList.getChoices();
+        List<Method> choiceMethods = new ArrayList<Method>();
+        for (MethodId mid : choices) {
+            choiceMethods.add(TestService.class.getMethod(mid.getName(), mid.getArgumentTypesAsClasses()));
+        }
+        Assert.assertEquals(Arrays.asList(TestService.class.getMethods()), choiceMethods);
     }
 
     private List<ServiceReference> setupTestClientPage() {
@@ -160,10 +171,9 @@ public class TestClientTest {
                 return expected;
             }
         });
-        Mockito.when(managedServicesMock.getService(Mockito.any(ServiceReference.class))).thenReturn(
-                new HashSet<Object>());
+        Mockito.when(managedServicesMock.getService(Mockito.any(ServiceReference.class))).thenReturn(new TestService());
         Mockito.when(managedServicesMock.getService(Mockito.anyString(), Mockito.anyString())).thenReturn(
-                new HashSet<Object>());
+                new TestService());
         context.putBean(managedServicesMock);
         setupTesterWithSpringMockContext();
         return expected;

@@ -18,12 +18,11 @@
 package org.openengsb.ui.web;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 
 @SuppressWarnings("serial")
 public class MethodCall implements Serializable {
     private ServiceId service;
-    private Method method;
+    private MethodId method;
     private Object[] arguments;
 
     public ServiceId getService() {
@@ -34,11 +33,11 @@ public class MethodCall implements Serializable {
         this.service = service;
     }
 
-    public Method getMethod() {
+    public MethodId getMethod() {
         return this.method;
     }
 
-    public void setMethod(Method method) {
+    public void setMethod(MethodId method) {
         this.method = method;
     }
 

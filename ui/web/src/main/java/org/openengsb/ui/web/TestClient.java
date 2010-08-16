@@ -19,11 +19,13 @@ package org.openengsb.ui.web;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.PropertyModel;
@@ -33,10 +35,12 @@ import org.osgi.framework.ServiceReference;
 
 public class TestClient extends BasePage {
 
+    private static Log log = LogFactory.getLog(TestClient.class);
+
     @SpringBean
     private DomainService services;
 
-    private DropDownChoice<Method> methodList;
+    private DropDownChoice<MethodId> methodList;
 
     private MethodCall call = new MethodCall();
 
@@ -47,13 +51,17 @@ public class TestClient extends BasePage {
         serviceList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
+                log.info("onchange triggered");
                 call.setMethod(null);
                 populateMethodList();
+                target.addComponent(methodList);
             }
         });
         form.add(serviceList);
-        methodList = new DropDownChoice<Method>("methodList");
-        methodList.setModel(new PropertyModel<Method>(call, "method"));
+        methodList = new DropDownChoice<MethodId>("methodList");
+        methodList.setModel(new PropertyModel<MethodId>(call, "method"));
+        methodList.setChoiceRenderer(new ChoiceRenderer<MethodId>());
+        methodList.setOutputMarkupId(true);
         form.add(methodList);
 
         add(form);
@@ -74,7 +82,13 @@ public class TestClient extends BasePage {
     private void populateMethodList() {
         ServiceId service = call.getService();
         Object serviceObject = services.getService(service.getServiceClass(), service.getServiceId());
+        log.info("retrieved service Object of type " + serviceObject.getClass().getName());
         Method[] methods = serviceObject.getClass().getMethods();
-        methodList.setChoices(Arrays.asList(methods));
+        List<MethodId> methodChoices = new ArrayList<MethodId>();
+        for (Method m : methods) {
+            methodChoices.add(new MethodId(m));
+        }
+        methodList.setChoices(methodChoices);
+        log.info("populating list with: " + methodChoices);
     }
 }
