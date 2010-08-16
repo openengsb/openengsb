@@ -19,6 +19,7 @@ package org.openengsb.ui.web;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -36,7 +37,6 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.ui.web.service.DomainService;
-import org.openengsb.ui.web.service.ManagedServices;
 import org.osgi.framework.ServiceReference;
 
 public class TestClientTest {
@@ -86,10 +86,11 @@ public class TestClientTest {
         @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
         @SuppressWarnings("unchecked")
-        DropDownChoice<ServiceReference> result = (DropDownChoice<ServiceReference>) form.get("serviceList");
+        DropDownChoice<ServiceId> result = (DropDownChoice<ServiceId>) form.get("serviceList");
 
         Assert.assertNotNull(result);
-        Assert.assertSame(expected, result.getChoices());
+        // Assert.assertSame(expected, result.getChoices());
+        Assert.assertEquals(result.getChoices().size(), expected.size());
     }
 
     @Test
@@ -157,6 +158,8 @@ public class TestClientTest {
                 return expected;
             }
         });
+        Mockito.when(managedServicesMock.getService(Mockito.any(ServiceReference.class))).thenReturn(
+                new HashSet<Object>());
         context.putBean(managedServicesMock);
         setupTesterWithSpringMockContext();
         return expected;
@@ -165,8 +168,6 @@ public class TestClientTest {
     private void setupIndexPage() {
         DomainService domainServiceMock = Mockito.mock(DomainService.class);
         context.putBean(domainServiceMock);
-        ManagedServices managedServicesMock = Mockito.mock(ManagedServices.class);
-        context.putBean(managedServicesMock);
         setupTesterWithSpringMockContext();
     }
 

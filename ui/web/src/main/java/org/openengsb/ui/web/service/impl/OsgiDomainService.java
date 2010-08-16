@@ -95,4 +95,9 @@ public class OsgiDomainService implements DomainService {
             throw new IllegalStateException("this should never happen, since no filter is used, or is it?");
         }
     }
+
+    @Override
+    public Object getService(ServiceReference reference) {
+        return bundleContext.getService(reference);
+    }
 }

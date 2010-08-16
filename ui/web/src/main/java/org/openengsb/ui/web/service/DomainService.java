@@ -32,4 +32,6 @@ public interface DomainService {
     List<ServiceReference> serviceReferencesForConnector(Class<? extends Domain> connectorClass);
 
     List<? extends ServiceReference> getManagedServiceInstances();
+
+    Object getService(ServiceReference serviceReference);
 }
