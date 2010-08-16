@@ -28,17 +28,25 @@ public class BundleContextMock implements BundleContext {
     private final Log log = LogFactory.getLog(BundleContextMock.class);
 
     private final Map<String, List<ServiceReference>> references = new HashMap<String, List<ServiceReference>>();
+    
+    private final Map<String, Object> objects = new HashMap<String, Object>();
 
     public BundleContextMock(List<ServiceManager> services) {
         log.info("Services " + services.size());
         for (ServiceManager serviceManager : services) {
-            ServiceDescriptor descriptor = serviceManager.getDescriptor();
-            log.info(descriptor);
-            String serviceInterfaceId = descriptor.getServiceInterfaceId();
-            List<ServiceReference> list = getReferenceList(serviceInterfaceId);
-            log.debug(descriptor.getName() + " " + descriptor.getId());
-            list.add(new ServiceReferenceMock(descriptor.getName(), descriptor.getId()));
+            String name = serviceManager.getClass().getName();
+            objects.put(name, serviceManager);
+            
+            addReference(name, "org.openengsb.core.config.ServiceManager");
+            
+            String serviceInterfaceId = serviceManager.getDescriptor().getServiceInterfaceId();
+            addReference(serviceInterfaceId, serviceInterfaceId);
         }
+    }
+
+    private void addReference(String name, String id) {
+        List<ServiceReference> list = getReferenceList(id);
+        list.add(new ServiceReferenceMock(name, id));
     }
 
     private List<ServiceReference> getReferenceList(String serviceInterfaceId) {
@@ -51,11 +59,12 @@ public class BundleContextMock implements BundleContext {
 
     public ServiceReference[] getAllServiceReferences(String clazz, String filter) throws InvalidSyntaxException {
         log.info("Getting Service References for: " + clazz);
-        if (filter != null) {
-            throw new IllegalArgumentException();
-        }
         List<ServiceReference> list = references.get(clazz);
-        return list.toArray(new ServiceReference[list.size()]);
+        if (list != null) {
+            return list.toArray(new ServiceReference[list.size()]);
+        }else{
+            return new ServiceReference[0];
+        }
     }
 
     @Override
@@ -146,8 +155,7 @@ public class BundleContextMock implements BundleContext {
 
     @Override
     public Object getService(ServiceReference reference) {
-        throw new UnsupportedOperationException();
-
+        return this.objects.get(reference.getProperty("name"));
     }
 
     @Override
