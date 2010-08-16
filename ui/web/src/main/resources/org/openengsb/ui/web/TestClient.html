@@ -2,7 +2,12 @@
   <body>
     <wicket:extend>
       <wicket:message key="serviceList" />
-      <select wicket:id="serviceList" />
+
+      <form wicket:id="methodCallForm">
+        <select wicket:id="serviceList" />
+        <select wicket:id="methodList" />
+        <input type="submit" value="Call" />
+      </form>
     </wicket:extend>
   </body>
 </html>

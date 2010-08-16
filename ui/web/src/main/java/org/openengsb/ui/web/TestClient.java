@@ -17,7 +17,10 @@
  */
 package org.openengsb.ui.web;
 
+import java.lang.reflect.Method;
+
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
@@ -28,7 +31,12 @@ public class TestClient extends BasePage {
     private DomainService services;
 
     public TestClient() {
-        add(new DropDownChoice<ServiceReference>("serviceList", services.getManagedServiceInstances()));
+        Form<?> form = new Form("methodCallForm");
+        DropDownChoice<ServiceReference> serviceList = new DropDownChoice<ServiceReference>("serviceList",
+                services.getManagedServiceInstances());
+        form.add(serviceList);
+        form.add(new DropDownChoice<Method>("methodList"));
+        add(form);
     }
 
 }

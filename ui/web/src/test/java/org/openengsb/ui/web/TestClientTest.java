@@ -17,16 +17,20 @@
  */
 package org.openengsb.ui.web;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
 
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
+import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -66,15 +70,25 @@ public class TestClientTest {
     }
 
     @Test
+    public void testParameterFormIsCreated() throws Exception {
+        setupTestClientPage();
+        tester.startPage(TestClient.class);
+
+        tester.assertComponent("methodCallForm", Form.class);
+    }
+
+    @Test
     public void testShowServiceInstancesInDropdown() throws Exception {
         List<ServiceReference> expected = setupTestClientPage();
 
         tester.startPage(TestClient.class);
 
-        tester.assertComponent("serviceList", DropDownChoice.class);
+        @SuppressWarnings("rawtypes")
+        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
         @SuppressWarnings("unchecked")
-        DropDownChoice<ServiceReference> result = (DropDownChoice<ServiceReference>) tester
-                .getComponentFromLastRenderedPage("serviceList");
+        DropDownChoice<ServiceReference> result = (DropDownChoice<ServiceReference>) form.get("serviceList");
+
+        Assert.assertNotNull(result);
         Assert.assertSame(expected, result.getChoices());
     }
 
@@ -87,8 +101,55 @@ public class TestClientTest {
         tester.assertContains("Services: ");
     }
 
+    @Test
+    public void testCreateMethodListDropDown() throws Exception {
+        setupTestClientPage();
+
+        tester.startPage(TestClient.class);
+
+        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
+        Assert.assertNotNull(form.get("methodList"));
+    }
+
+    @Test
+    public void testServiceListSelect() throws Exception {
+        setupTestClientPage();
+
+        tester.startPage(TestClient.class);
+
+        @SuppressWarnings("rawtypes")
+        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
+        @SuppressWarnings("unchecked")
+        DropDownChoice<Method> serviceList = (DropDownChoice<Method>) form.get("serviceList");
+        FormTester formTester = tester.newFormTester("methodCallForm");
+        formTester.select("serviceList", 0);
+
+        serviceList.getValue();
+    }
+
+    @Ignore("in progress")
+    @Test
+    public void testShowMethodListInDropDown() throws Exception {
+        setupTestClientPage();
+
+        tester.startPage(TestClient.class);
+
+        @SuppressWarnings("rawtypes")
+        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
+        @SuppressWarnings("unchecked")
+        DropDownChoice<Method> methodList = (DropDownChoice<Method>) form.get("methodList");
+        FormTester formTester = tester.newFormTester("methodCallForm");
+
+        formTester.select("serviceList", 0);
+
+        List<? extends Method> choices = methodList.getChoices();
+        Assert.assertFalse(choices.isEmpty());
+    }
+
     private List<ServiceReference> setupTestClientPage() {
         final List<ServiceReference> expected = new ArrayList<ServiceReference>();
+        ServiceReference serviceReferenceMock = Mockito.mock(ServiceReference.class);
+        expected.add(serviceReferenceMock);
         DomainService managedServicesMock = Mockito.mock(DomainService.class);
         Mockito.when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>(){
             @Override
