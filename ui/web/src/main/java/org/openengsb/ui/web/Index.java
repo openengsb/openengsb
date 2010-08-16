@@ -19,6 +19,7 @@ package org.openengsb.ui.web;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -60,6 +61,25 @@ public class Index extends BasePage {
                 item.add(new Label("domain.name", item.getModelObject().getName(item.getLocale())));
                 item.add(new Label("domain.description", item.getModelObject().getDescription(item.getLocale())));
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
+            }
+        });
+        List<ServiceManager> managers = new ArrayList<ServiceManager>();
+        for (DomainProvider provider : domainService.domains()) {
+            managers.addAll(this.domainService.serviceManagersForDomain(provider.getDomainInterface()));
+        }
+        managers.get(0).update("test", new HashMap<String, String>());
+        add(new ListView<ServiceManager>("services", managers) {
+            @Override
+            protected void populateItem(ListItem<ServiceManager> item) {
+                ServiceDescriptor desc = item.getModelObject().getDescriptor(item.getLocale());
+                item.add(new Link<ServiceManager>("create.new", item.getModel()) {
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new EditorPage(getModelObject()));
+                    }
+                });
+                item.add(new Label("service.name", desc.getName()));
+                item.add(new Label("service.description", desc.getDescription()));
             }
         });
     }
