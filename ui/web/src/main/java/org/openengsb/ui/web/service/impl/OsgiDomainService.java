@@ -100,4 +100,9 @@ public class OsgiDomainService implements DomainService {
     public Object getService(ServiceReference reference) {
         return bundleContext.getService(reference);
     }
+
+    @Override
+    public Object getService(String serviceClass, String serviceId) {
+        return null;
+    }
 }

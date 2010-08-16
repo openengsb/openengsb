@@ -18,38 +18,36 @@
 package org.openengsb.ui.web;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 
 @SuppressWarnings("serial")
-public class ServiceId implements Serializable {
-    private String serviceClass;
-    private String serviceId;
+public class MethodCall implements Serializable {
+    private ServiceId service;
+    private Method method;
+    private Object[] arguments;
 
-    public ServiceId(String serviceClass, String serviceId) {
-        this.serviceClass = serviceClass;
-        this.serviceId = serviceId;
+    public ServiceId getService() {
+        return this.service;
     }
 
-    public ServiceId() {
+    public void setService(ServiceId service) {
+        this.service = service;
     }
 
-    public String getServiceClass() {
-        return this.serviceClass;
+    public Method getMethod() {
+        return this.method;
     }
 
-    public void setServiceClass(String serviceClass) {
-        this.serviceClass = serviceClass;
+    public void setMethod(Method method) {
+        this.method = method;
     }
 
-    public String getServiceId() {
-        return this.serviceId;
+    public Object[] getArguments() {
+        return this.arguments;
     }
 
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
+    public void setArguments(Object[] arguments) {
+        this.arguments = arguments;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s (%s)", serviceId, serviceClass);
-    }
 }

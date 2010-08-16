@@ -19,6 +19,7 @@ package org.openengsb.ui.web;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -31,7 +32,6 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -128,7 +128,6 @@ public class TestClientTest {
         serviceList.getValue();
     }
 
-    @Ignore("in progress")
     @Test
     public void testShowMethodListInDropDown() throws Exception {
         setupTestClientPage();
@@ -142,9 +141,12 @@ public class TestClientTest {
         FormTester formTester = tester.newFormTester("methodCallForm");
 
         formTester.select("serviceList", 0);
+        tester.executeAjaxEvent(form.get("serviceList"), "onchange");
+
+        Thread.sleep(500);
 
         List<? extends Method> choices = methodList.getChoices();
-        Assert.assertFalse(choices.isEmpty());
+        Assert.assertEquals(Arrays.asList(HashSet.class.getMethods()), choices);
     }
 
     private List<ServiceReference> setupTestClientPage() {
@@ -159,6 +161,8 @@ public class TestClientTest {
             }
         });
         Mockito.when(managedServicesMock.getService(Mockito.any(ServiceReference.class))).thenReturn(
+                new HashSet<Object>());
+        Mockito.when(managedServicesMock.getService(Mockito.anyString(), Mockito.anyString())).thenReturn(
                 new HashSet<Object>());
         context.putBean(managedServicesMock);
         setupTesterWithSpringMockContext();

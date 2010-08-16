@@ -34,4 +34,6 @@ public interface DomainService {
     List<? extends ServiceReference> getManagedServiceInstances();
 
     Object getService(ServiceReference serviceReference);
+
+    Object getService(String serviceClass, String serviceId);
 }
