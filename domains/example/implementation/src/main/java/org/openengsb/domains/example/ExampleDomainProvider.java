@@ -19,6 +19,7 @@ package org.openengsb.domains.example;
 
 import java.util.Locale;
 
+import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.util.BundleStrings;
 import org.osgi.framework.BundleContext;
@@ -67,7 +68,7 @@ public class ExampleDomainProvider implements DomainProvider, BundleContextAware
     }
 
     @Override
-    public Class<?> getDomainInterface() {
+    public Class<? extends Domain> getDomainInterface() {
         return ExampleDomain.class;
     }
 }

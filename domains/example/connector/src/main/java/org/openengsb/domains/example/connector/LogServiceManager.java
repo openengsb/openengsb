@@ -48,6 +48,7 @@ public class LogServiceManager implements ServiceManager, BundleContextAware {
         return ServiceDescriptor.builder()
                 .id(LogService.class.getName())
                 .implementsInterface(ExampleDomain.class.getName())
+                .type(LogService.class)
                 .name(strings.getString("log.name", locale))
                 .description(strings.getString("log.description", locale))
                 .attribute(AttributeDefinition.builder()
