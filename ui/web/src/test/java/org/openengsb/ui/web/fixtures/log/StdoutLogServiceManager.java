@@ -37,6 +37,7 @@ public class StdoutLogServiceManager implements ServiceManager {
         return ServiceDescriptor.builder()
                 .id(StdoutLogService.class.getName())
                 .implementsInterface(LogDomain.class.getName())
+                .type(StdoutLogService.class)
                 .name(de ? "Stdout Log Service" : "Stdout Log Service")
                 .description(de ? "Loggt Nachrichten auf den Stdout." : "Logs messages to the stdout.")
                 .attribute(AttributeDefinition.builder()

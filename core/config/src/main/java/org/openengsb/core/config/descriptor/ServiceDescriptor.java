@@ -20,11 +20,14 @@ package org.openengsb.core.config.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openengsb.core.config.Domain;
+
 public class ServiceDescriptor {
     private String id;
     private String serviceInterface;
     private String name;
     private String description;
+    private Class<? extends Domain> type;
     private final List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
 
     public ServiceDescriptor() {
@@ -42,6 +45,14 @@ public class ServiceDescriptor {
      */
     public String getServiceInterfaceId() {
         return serviceInterface;
+    }
+    
+    
+    /**
+     * Returns the Class that implements this service
+     */
+    public Class<? extends Domain> getType() {
+        return type;
     }
 
     /**
@@ -83,6 +94,11 @@ public class ServiceDescriptor {
 
         public Builder implementsInterface(String serviceInterface) {
             desc.serviceInterface = serviceInterface;
+            return this;
+        }
+        
+        public Builder type(Class<? extends Domain> type){
+            desc.type = type;
             return this;
         }
 

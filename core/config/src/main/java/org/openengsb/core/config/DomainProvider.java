@@ -56,5 +56,5 @@ public interface DomainProvider {
     /**
      * Returns the domain-specific interface.
      */
-    Class<?> getDomainInterface();
+    Class<? extends Domain> getDomainInterface();
 }

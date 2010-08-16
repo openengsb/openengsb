@@ -1,4 +1,5 @@
-/**
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
@@ -14,18 +15,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
- */
-package org.openengsb.ui.web.service;
-
-import java.util.List;
-import java.util.Map;
-
-import org.openengsb.core.config.ServiceManager;
-import org.osgi.framework.ServiceReference;
-
-public interface ManagedServices {
-
-    List<ServiceManager> getManagedServices();
-
-    Map<Class<?>, List<ServiceReference>> getManagedServiceInstances();
-}
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+  <body>
+    <wicket:extend>
+     <table style="border: 1px solid #eee"><tr><td>
+        <div wicket:id="tree" class="my-tree">  
+        </div>
+    </td></tr></table>
+    </wicket:extend>
+  </body>
+</html>
