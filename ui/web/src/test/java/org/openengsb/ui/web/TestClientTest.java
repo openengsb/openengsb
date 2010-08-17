@@ -59,6 +59,7 @@ public class TestClientTest {
 
     private WicketTester tester;
     private ApplicationContextMock context;
+    private TestService testService;
 
     @Before
     public void setup() {
@@ -182,16 +183,16 @@ public class TestClientTest {
     }
 
     @Test
-    public void test2StringArguments() throws Exception {
+    public void testCreateTextFieldsFor2StringArguments() throws Exception {
         setupTestClientPage();
 
         tester.startPage(TestClient.class);
 
         @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
-        @SuppressWarnings("unchecked")
         WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
 
+        @SuppressWarnings("unchecked")
         ListView<ArgumentModel> argList = (ListView<ArgumentModel>) argListContainer.get("argumentList");
 
         FormTester formTester = tester.newFormTester("methodCallForm");
@@ -215,9 +216,9 @@ public class TestClientTest {
                 return expected;
             }
         });
-        Mockito.when(managedServicesMock.getService(Mockito.any(ServiceReference.class))).thenReturn(new TestService());
-        Mockito.when(managedServicesMock.getService(Mockito.anyString(), Mockito.anyString())).thenReturn(
-                new TestService());
+        testService = new TestService();
+        Mockito.when(managedServicesMock.getService(Mockito.any(ServiceReference.class))).thenReturn(testService);
+        Mockito.when(managedServicesMock.getService(Mockito.anyString(), Mockito.anyString())).thenReturn(testService);
         context.putBean(managedServicesMock);
         setupTesterWithSpringMockContext();
         return expected;

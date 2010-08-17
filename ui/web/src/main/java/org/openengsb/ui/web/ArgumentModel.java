@@ -48,4 +48,9 @@ public class ArgumentModel implements Serializable {
         this.value = value;
     }
 
+    @Override
+    public String toString() {
+        return index + ": " + value;
+    }
+
 }

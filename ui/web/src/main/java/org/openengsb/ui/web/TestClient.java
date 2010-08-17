@@ -133,15 +133,20 @@ public class TestClient extends BasePage {
     }
 
     private List<Method> getServiceMethods(ServiceId service) {
-        Object serviceObject = services.getService(service.getServiceClass(), service.getServiceId());
+        Object serviceObject = getService(service);
         log.info("retrieved service Object of type " + serviceObject.getClass().getName());
         List<Method> methods = MethodUtil.getServiceMethods(serviceObject);
         return methods;
     }
 
+    private Object getService(ServiceId service) {
+        Object serviceObject = services.getService(service.getServiceClass(), service.getServiceId());
+        return serviceObject;
+    }
+
     private Method findMethod() {
         ServiceId service = call.getService();
-        Object serviceObject = services.getService(service.getServiceClass(), service.getServiceId());
+        Object serviceObject = getService(service);
         Class<?> serviceClass = serviceObject.getClass();
         MethodId methodId = call.getMethod();
         try {
