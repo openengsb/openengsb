@@ -37,14 +37,50 @@
     Documentation project of Open Engineering Service Bus
   </description>
 
-  <distributionManagement>
-    <site>
-      <id>OpenengsbWebServer</id>
-      <url>scp://openengsb.org/var/www/openengsb/</url>
-    </site>
-  </distributionManagement>
-
+  
   <profiles>
+    <profile>
+      <id>nightly</id>
+      <activation>
+        <property>
+          <name>nightly</name>
+        </property>
+      </activation>
+      <distributionManagement>
+        <site>
+          <id>OpenengsbWebServer</id>
+          <url>scp://openengsb.org/var/www/openengsb/nightly</url>
+        </site>
+      </distributionManagement>
+    </profile>
+    <profile>
+      <id>milestone</id>
+      <activation>
+        <property>
+          <name>milestone</name>
+        </property>
+      </activation>
+      <distributionManagement>
+        <site>
+          <id>OpenengsbWebServer</id>
+          <url>scp://openengsb.org/var/www/openengsb/</url>
+        </site>
+      </distributionManagement>
+    </profile>
+    <profile>
+      <id>final</id>
+      <activation>
+        <property>
+          <name>final</name>
+        </property>
+      </activation>
+      <distributionManagement>
+        <site>
+          <id>OpenengsbWebServer</id>
+          <url>scp://openengsb.org/var/www/openengsb/</url>
+        </site>
+      </distributionManagement>
+    </profile>
     <profile>
       <id>docs</id>
       <build>
@@ -221,6 +257,23 @@
       </build>
       <reporting>
         <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <version>2.2</version>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>project-team</report>
+                  <report>mailing-list</report>
+                  <report>cim</report>
+                  <report>issue-tracking</report>
+                  <report>license</report>
+                  <report>scm</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-changes-plugin</artifactId>
