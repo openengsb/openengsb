@@ -21,8 +21,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
@@ -37,9 +35,7 @@ public class SendMessages extends BasePage {
     @SpringBean
     DomainService domainService;
 
-    Log log = LogFactory.getLog(SendMessages.class);
-
-    private BaseTree tree;
+    private final BaseTree tree;
 
     public SendMessages() {
         tree = new ClickableLinkTree("tree", createModel());
@@ -72,8 +68,6 @@ public class SendMessages extends BasePage {
     }
 
     private static class ClickableLinkTree extends LinkTree {
-        
-        Log log = LogFactory.getLog(ClickableLinkTree.class);
 
         public ClickableLinkTree(String name, TreeModel model) {
             super(name, model);
@@ -85,7 +79,6 @@ public class SendMessages extends BasePage {
                 DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
                 if (treeNode.isLeaf()) {
                     ServiceReference reference = (ServiceReference) treeNode.getUserObject();
-                    log.info(reference);
                 }
             }
         }
