@@ -18,11 +18,8 @@
 package org.openengsb.ui.web;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -33,8 +30,6 @@ import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.service.DomainService;
-import org.openengsb.ui.web.service.ManagedServices;
-import org.osgi.framework.ServiceReference;
 
 public class Index extends BasePage {
 
@@ -67,7 +62,6 @@ public class Index extends BasePage {
         for (DomainProvider provider : domainService.domains()) {
             managers.addAll(this.domainService.serviceManagersForDomain(provider.getDomainInterface()));
         }
-        managers.get(0).update("test", new HashMap<String, String>());
         add(new ListView<ServiceManager>("services", managers) {
             @Override
             protected void populateItem(ListItem<ServiceManager> item) {
