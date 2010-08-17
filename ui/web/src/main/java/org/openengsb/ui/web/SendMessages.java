@@ -27,6 +27,7 @@ import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.ServiceManager;
+import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
@@ -79,6 +80,10 @@ public class SendMessages extends BasePage {
                 DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
                 if (treeNode.isLeaf()) {
                     ServiceReference reference = (ServiceReference) treeNode.getUserObject();
+                    Object service = reference.getBundle().getBundleContext().getService(reference);
+                    if (service instanceof ExampleDomain) {
+                        ((ExampleDomain) service).doSomething("Hello World");
+                    }
                 }
             }
         }
