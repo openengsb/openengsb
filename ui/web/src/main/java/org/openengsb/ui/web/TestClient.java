@@ -81,14 +81,19 @@ public class TestClient extends BasePage {
 
     private void populateMethodList() {
         ServiceId service = call.getService();
-        Object serviceObject = services.getService(service.getServiceClass(), service.getServiceId());
-        log.info("retrieved service Object of type " + serviceObject.getClass().getName());
-        Method[] methods = serviceObject.getClass().getMethods();
+        List<Method> methods = getServiceMethods(service);
         List<MethodId> methodChoices = new ArrayList<MethodId>();
         for (Method m : methods) {
             methodChoices.add(new MethodId(m));
         }
         methodList.setChoices(methodChoices);
         log.info("populating list with: " + methodChoices);
+    }
+
+    private List<Method> getServiceMethods(ServiceId service) {
+        Object serviceObject = services.getService(service.getServiceClass(), service.getServiceId());
+        log.info("retrieved service Object of type " + serviceObject.getClass().getName());
+        List<Method> methods = MethodUtil.getServiceMethods(serviceObject);
+        return methods;
     }
 }

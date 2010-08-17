@@ -40,12 +40,16 @@ import org.osgi.framework.ServiceReference;
 
 public class TestClientTest {
 
-    public class TestService {
-        void update(String id, String name) {
+    public interface TestInterface {
+        void update(String id, String name);
+    }
+
+    public class TestService implements TestInterface {
+        public void update(String id, String name) {
 
         }
 
-        String getName(String id) {
+        public String getName(String id) {
             return "";
         }
     }
@@ -155,9 +159,9 @@ public class TestClientTest {
         List<? extends MethodId> choices = methodList.getChoices();
         List<Method> choiceMethods = new ArrayList<Method>();
         for (MethodId mid : choices) {
-            choiceMethods.add(TestService.class.getMethod(mid.getName(), mid.getArgumentTypesAsClasses()));
+            choiceMethods.add(TestInterface.class.getMethod(mid.getName(), mid.getArgumentTypesAsClasses()));
         }
-        Assert.assertEquals(Arrays.asList(TestService.class.getMethods()), choiceMethods);
+        Assert.assertEquals(Arrays.asList(TestInterface.class.getMethods()), choiceMethods);
     }
 
     private List<ServiceReference> setupTestClientPage() {
