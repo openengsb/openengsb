@@ -25,9 +25,15 @@ public class LogService implements ExampleDomain {
 
     private final Log log = LogFactory.getLog(getClass());
     private String outputMode;
+    private final String id;
+
+    public LogService(String id) {
+        this.id = id;
+    }
 
     @Override
     public void doSomething(String message) {
+        message = id + ": " + message;
         if ("DEBUG".equals(outputMode)) {
             log.debug(message);
         } else if ("INFO".equals(outputMode)) {
