@@ -22,14 +22,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.openengsb</groupId>
-    <artifactId>openengsb-parent</artifactId>
+    <relativePath>../poms/compiled/</relativePath>
+    <groupId>org.openengsb.build</groupId>
+    <artifactId>compiled-bundle-settings</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
   </parent>
-
+  
+  <groupId>org.openengsb</groupId>
   <artifactId>openengsb-docs</artifactId>
-  <name>openengsb-docs</name>
+  <name>OpenEngSB :: Documentation &amp; Homepage</name>
   <packaging>pom</packaging>
 
   <description>

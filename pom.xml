@@ -56,6 +56,7 @@
   <url>http://openengsb.org</url>
 
   <modules>
+    <module>docs</module>
     <module>poms</module>
     <module>provision</module>
     <module>wrapped</module>
