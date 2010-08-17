@@ -28,6 +28,7 @@ eclipse-workspace
 #log files
 #================
 *engsb.log*
+*velocity.log*
 
 #================
 #runtime productions

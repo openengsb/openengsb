@@ -55,6 +55,7 @@ public class LogServiceManager implements ServiceManager, BundleContextAware {
                         .id("outputMode")
                         .name(strings.getString("log.outputMode.name", locale))
                         .description(strings.getString("log.outputMode.description", locale))
+                        .defaultValue("DEBUG")
                         .required()
                         .build())
                 .build();
@@ -67,7 +68,7 @@ public class LogServiceManager implements ServiceManager, BundleContextAware {
         synchronized (services) {
             s = services.get(id);
             if (s == null) {
-                s = new LogService();
+                s = new LogService(id);
                 services.put(id, s);
                 isNew = true;
             }

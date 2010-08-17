@@ -18,7 +18,6 @@
 package org.openengsb.ui.web;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -63,9 +62,6 @@ public class Index extends BasePage {
         List<ServiceManager> managers = new ArrayList<ServiceManager>();
         for (DomainProvider provider : domainService.domains()) {
             managers.addAll(this.domainService.serviceManagersForDomain(provider.getDomainInterface()));
-        }
-        if (!managers.isEmpty()) {
-            managers.get(0).update("test", new HashMap<String, String>());
         }
         add(new ListView<ServiceManager>("services", managers) {
             @Override

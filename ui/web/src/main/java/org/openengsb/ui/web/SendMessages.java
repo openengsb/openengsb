@@ -21,14 +21,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.ServiceManager;
+import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
@@ -37,9 +36,7 @@ public class SendMessages extends BasePage {
     @SpringBean
     DomainService domainService;
 
-    Log log = LogFactory.getLog(SendMessages.class);
-
-    private BaseTree tree;
+    private final BaseTree tree;
 
     public SendMessages() {
         tree = new ClickableLinkTree("tree", createModel());
@@ -72,8 +69,6 @@ public class SendMessages extends BasePage {
     }
 
     private static class ClickableLinkTree extends LinkTree {
-        
-        Log log = LogFactory.getLog(ClickableLinkTree.class);
 
         public ClickableLinkTree(String name, TreeModel model) {
             super(name, model);
@@ -85,7 +80,10 @@ public class SendMessages extends BasePage {
                 DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) node;
                 if (treeNode.isLeaf()) {
                     ServiceReference reference = (ServiceReference) treeNode.getUserObject();
-                    log.info(reference);
+                    Object service = reference.getBundle().getBundleContext().getService(reference);
+                    if (service instanceof ExampleDomain) {
+                        ((ExampleDomain) service).doSomething("Hello World");
+                    }
                 }
             }
         }
