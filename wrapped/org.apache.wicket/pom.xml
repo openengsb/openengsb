@@ -34,8 +34,7 @@
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>${wrapped.groupId}</groupId>
-  <artifactId>${parent.groupId}.${wrapped.groupId}</artifactId>
+  <artifactId>${wrapped.groupId}-all</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: OSGi Wrapped Bundles :: Apache Wicket</name>
