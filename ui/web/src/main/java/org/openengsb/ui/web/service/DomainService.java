@@ -30,4 +30,10 @@ public interface DomainService {
     List<ServiceManager> serviceManagersForDomain(Class<? extends Domain> domain);
 
     List<ServiceReference> serviceReferencesForConnector(Class<? extends Domain> connectorClass);
+
+    List<? extends ServiceReference> getManagedServiceInstances();
+
+    Object getService(ServiceReference serviceReference);
+
+    Object getService(String serviceClass, String serviceId);
 }

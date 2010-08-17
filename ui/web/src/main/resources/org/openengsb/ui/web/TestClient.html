@@ -1,0 +1,24 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+  <body>
+    <wicket:extend>
+      <wicket:message key="serviceList" />
+
+      <form wicket:id="methodCallForm">
+        <select wicket:id="serviceList" />
+        <select wicket:id="methodList" />
+        <div wicket:id="argumentListContainer">
+          <div wicket:id="argumentList">
+            <div class="argIndex">
+              <span wicket:id="index">item text</span>
+            </div>
+            <div class="argValue">
+              <input type="text" wicket:id="value" />
+            </div>
+          </div>
+        </div>
+        <input type="submit" value="Call" />
+      </form>
+    </wicket:extend>
+  </body>
+</html>
+   

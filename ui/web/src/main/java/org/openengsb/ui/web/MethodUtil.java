@@ -15,17 +15,19 @@
    limitations under the License.
 
  */
-package org.openengsb.ui.web.service;
+package org.openengsb.ui.web;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-import org.openengsb.core.config.ServiceManager;
-import org.osgi.framework.ServiceReference;
-
-public interface ManagedServices {
-
-    List<ServiceManager> getManagedServices();
-
-    Map<Class<?>, List<ServiceReference>> getManagedServiceInstances();
+public class MethodUtil {
+    public static List<Method> getServiceMethods(Object service) {
+        List<Method> result = new ArrayList<Method>();
+        for (Class<?> serviceInterface : service.getClass().getInterfaces()) {
+            result.addAll(Arrays.asList(serviceInterface.getMethods()));
+        }
+        return result;
+    }
 }

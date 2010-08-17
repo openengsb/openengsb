@@ -76,13 +76,51 @@ public class OsgiDomainService implements DomainService {
     public List<ServiceReference> serviceReferencesForConnector(Class<? extends Domain> connectorClass) {
         List<ServiceReference> serviceReferences = new ArrayList<ServiceReference>();
         try {
-            ServiceReference[] allServiceReferences = bundleContext.getAllServiceReferences(connectorClass.getName(), null);
-            if(allServiceReferences != null){
-            serviceReferences = Arrays.asList(allServiceReferences);
+            ServiceReference[] allServiceReferences = bundleContext.getAllServiceReferences(connectorClass.getName(),
+                    null);
+            if (allServiceReferences != null) {
+                serviceReferences = Arrays.asList(allServiceReferences);
             }
         } catch (InvalidSyntaxException e) {
             log.debug(e.getMessage());
         }
         return serviceReferences;
+    }
+
+    @Override
+    public List<? extends ServiceReference> getManagedServiceInstances() {
+        try {
+            return Arrays.asList(bundleContext.getAllServiceReferences(Domain.class.getName(), null));
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalStateException("this should never happen, since no filter is used, or is it?");
+        }
+    }
+
+    @Override
+    public Object getService(ServiceReference reference) {
+        return bundleContext.getService(reference);
+    }
+
+    @Override
+    public Object getService(String serviceClass, String serviceId) {
+        ServiceReference[] refs;
+        log.info(String.format("try to find service for class \"%s\", and id \"%s\"", serviceClass, serviceId));
+        try {
+            // TODO use filter
+            refs = bundleContext.getAllServiceReferences(serviceClass, null);
+
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalArgumentException("could not find service " + serviceId, e);
+        }
+        if (refs == null) {
+            throw new IllegalArgumentException("no services found for class, " + serviceClass);
+        }
+        for (ServiceReference ref : refs) {
+            // TODO replace this iterating by usage of filter above
+            if (ref.getProperty("id").equals(serviceId)) {
+                return bundleContext.getService(ref);
+            }
+        }
+        throw new IllegalArgumentException("no services found for id, " + serviceId);
     }
 }
