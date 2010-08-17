@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <relativePath>../poms/</relativePath>
+    <groupId>org.openengsb.build</groupId>
+    <artifactId>shared-plugin-settings</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openengsb.build</groupId>
+  <artifactId>provision</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  
+  <name>OpenEngSB :: Plugin Configuration :: Provision</name>
+
+  <packaging>pom</packaging>
+
+  <dependencies>
+    <!-- Pax URL -->
+    <dependency>
+      <groupId>org.ops4j.pax.url</groupId>
+      <artifactId>pax-url-mvn</artifactId>
+      <version>${pax.url.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.url</groupId>
+      <artifactId>pax-url-wrap</artifactId>
+      <version>${pax.url.version}</version>
+    </dependency>
+
+    <!-- Pax Logging -->
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-service</artifactId>
+      <version>${pax.logging.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-api</artifactId>
+      <version>${pax.logging.version}</version>
+    </dependency>
+
+    <!-- Apache Aries Dependencies -->
+    <dependency>
+      <groupId>org.apache.aries.blueprint</groupId>
+      <artifactId>org.apache.aries.blueprint</artifactId>
+      <version>${aries.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.aries.jmx</groupId>
+      <artifactId>org.apache.aries.jmx.blueprint</artifactId>
+      <version>${aries.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.aries.jmx</groupId>
+      <artifactId>org.apache.aries.jmx</artifactId>
+      <version>${aries.version}</version>
+    </dependency>
+
+    <!-- Apache Felix Environment -->
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.configadmin</artifactId>
+      <version>${felix.configadmin.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>org.osgi.core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>org.osgi.compendium</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.fileinstall</artifactId>
+      <version>${felix.fileinstall.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.prefs</artifactId>
+      <version>${felix.prefs.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>org.osgi.compendium</artifactId>
+        </exclusion>
+      </exclusions>
+
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.gogo</groupId>
+      <artifactId>org.apache.felix.gogo.runtime</artifactId>
+      <version>${felix.gogo.version}</version>
+    </dependency>
+
+    <!-- Apache Karaf Base -->
+    <dependency>
+      <groupId>org.apache.felix.karaf</groupId>
+      <artifactId>org.apache.felix.karaf.commons</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf</groupId>
+      <artifactId>org.apache.felix.karaf.management</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+
+    <!-- MINA Dependencies -->
+    <dependency>
+      <groupId>org.apache.mina</groupId>
+      <artifactId>mina-core</artifactId>
+      <version>${mina.version}</version>
+    </dependency>
+
+    <!-- SSH Dependencies -->
+    <dependency>
+      <groupId>org.apache.sshd</groupId>
+      <artifactId>sshd-core</artifactId>
+      <version>${sshd.version}</version>
+    </dependency>
+
+    <!-- Apache Karaf Shell -->
+    <dependency>
+      <groupId>org.apache.felix.karaf.shell</groupId>
+      <artifactId>org.apache.felix.karaf.shell.console</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.shell</groupId>
+      <artifactId>org.apache.felix.karaf.shell.commands</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.shell</groupId>
+      <artifactId>org.apache.felix.karaf.shell.config</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.shell</groupId>
+      <artifactId>org.apache.felix.karaf.shell.log</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.shell</groupId>
+      <artifactId>org.apache.felix.karaf.shell.osgi</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.shell</groupId>
+      <artifactId>org.apache.felix.karaf.shell.packages</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.shell</groupId>
+      <artifactId>org.apache.felix.karaf.shell.ssh</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.shell</groupId>
+      <artifactId>org.apache.felix.karaf.shell.dev</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+
+    <!-- Apache Karaf Admin -->
+    <dependency>
+      <groupId>org.apache.felix.karaf.admin</groupId>
+      <artifactId>org.apache.felix.karaf.admin.core</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.admin</groupId>
+      <artifactId>org.apache.felix.karaf.admin.management</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.admin</groupId>
+      <artifactId>org.apache.felix.karaf.admin.command</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+
+    <!-- Apache Karaf JAAS -->
+    <dependency>
+      <groupId>org.apache.felix.karaf.jaas</groupId>
+      <artifactId>org.apache.felix.karaf.jaas.boot</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.jaas</groupId>
+      <artifactId>org.apache.felix.karaf.jaas.config</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.jaas</groupId>
+      <artifactId>org.apache.felix.karaf.jaas.modules</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+
+    <!-- Apache Karaf Features -->
+    <dependency>
+      <groupId>org.apache.felix.karaf.features</groupId>
+      <artifactId>org.apache.felix.karaf.features.command</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.features</groupId>
+      <artifactId>org.apache.felix.karaf.features.core</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.features</groupId>
+      <artifactId>org.apache.felix.karaf.features.management</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+
+    <!-- Apache Karaf Deployer -->
+    <dependency>
+      <groupId>org.apache.felix.karaf.deployer</groupId>
+      <artifactId>org.apache.felix.karaf.deployer.blueprint</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.deployer</groupId>
+      <artifactId>org.apache.felix.karaf.deployer.spring</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.karaf.deployer</groupId>
+      <artifactId>org.apache.felix.karaf.deployer.features</artifactId>
+      <version>${karaf.version}</version>
+    </dependency>
+
+    <!-- Web Server -->
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jetty-util</artifactId>
+      <version>${jetty.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jsp-api-2.1</artifactId>
+      <version>${jsp.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>com.springsource.javax.servlet</artifactId>
+      <version>${servlet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.portlet</groupId>
+      <artifactId>com.springsource.javax.portlet</artifactId>
+      <version>${portlet.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.jasper</groupId>
+      <artifactId>com.springsource.org.apache.jasper.org.eclipse.jdt</artifactId>
+      <version>${jasper.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>jetty.start.osgi</artifactId>
+      <version>${jetty.spring.version}</version>
+    </dependency>
+
+    <!-- Spring DM Dependencies -->
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-web-extender</artifactId>
+      <version>${spring.osgi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-extender</artifactId>
+      <version>${spring.osgi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-core</artifactId>
+      <version>${spring.osgi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-io</artifactId>
+      <version>${spring.osgi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-web</artifactId>
+      <version>${spring.osgi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.osgi</groupId>
+      <artifactId>spring-osgi-annotation</artifactId>
+      <version>${spring.osgi.version}</version>
+    </dependency>
+
+    <!-- Spring Framework -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-asm</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-aop</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context-support</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-expression</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+    <!-- Spring Dependencies -->
+    <dependency>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.aopalliance</artifactId>
+      <version>${aopalliance.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.el</groupId>
+      <artifactId>com.springsource.javax.el</artifactId>
+      <version>${el.version}</version>
+    </dependency>
+        <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>${commons.collection.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>${commons.lang.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.cglib</artifactId>
+      <version>${cglib.version}</version>
+    </dependency>
+  </dependencies>
+
+</project>
+

@@ -21,24 +21,23 @@
 
   <parent>
     <groupId>org.openengsb.wrapped</groupId>
-    <artifactId>openengsb-wrapped</artifactId>
-    <version>1</version>
+    <artifactId>openengsb-wrapped-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <properties>
     <bundle.symbolicName>org.apache.wicket</bundle.symbolicName>
     <wrapped.groupId>org.apache.wicket</wrapped.groupId>
     <wrapped.artifactId>wicket</wrapped.artifactId>
-    <wrapped.version>1.4.9</wrapped.version>
+    <wrapped.version>${wicket.version}</wrapped.version>
     <bundle.namespace>${wrapped.groupId}</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>${wrapped.groupId}</groupId>
-  <artifactId>${parent.groupId}.${wrapped.groupId}</artifactId>
-  <version>${wrapped.version}</version>
+  <artifactId>${wrapped.groupId}-all</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
 
-  <name>${bundle.symbolicName}</name>
+  <name>OpenEngSB :: OSGi Wrapped Bundles :: Apache Wicket</name>
 
   <packaging>bundle</packaging>
 

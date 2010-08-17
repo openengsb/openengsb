@@ -60,10 +60,7 @@
     
     <menu name="Quickstart" >
       <item name="Installation" href="howto/howto_setup.html" />
-      <item name="Hello World" href="howto/howto_notify.html" />
-      <item name="Issue tracker" href="howto/howto_issue.html" />
-      <item name="Web configuration" href="howto/howto_embedded.html" />
-      <item name="Continuous Integration" href="howto/howto_cit.html" />
+      <item name="Hello World" href="howto/howto_logging.html" />
     </menu>
 
 	  <menu name="Documentation" >

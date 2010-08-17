@@ -10,6 +10,7 @@ eclipse-workspace
 *.classpath
 *.settings
 *bin
+*.springBeans
 
 #=================
 #intellij-project
@@ -27,6 +28,7 @@ eclipse-workspace
 #log files
 #================
 *engsb.log*
+*velocity.log*
 
 #================
 #runtime productions
@@ -67,3 +69,13 @@ easy2find
 #================
 pconf.pyc
 
+#================
+#pax-provision
+#================
+runner
+
+#================
+#wicket generated files
+#================
+*.tmp_*
+velocity.log*

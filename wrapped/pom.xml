@@ -21,41 +21,28 @@
   <modelVersion>4.0.0</modelVersion>
   
   <parent>
-    <artifactId>openengsb-parent</artifactId>
-    <groupId>org.openengsb</groupId>
+    <relativePath>../poms/</relativePath>
+    <groupId>org.openengsb.build</groupId>
+    <artifactId>shared-plugin-settings</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
   </parent>
   
   <groupId>org.openengsb.wrapped</groupId>
-  <artifactId>openengsb-wrapped</artifactId>
-  <version>1</version>
+  <artifactId>openengsb-wrapped-parent</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
 
   <packaging>pom</packaging>
 
-  <name>Parent Wrapping Script</name>
+  <name>OpenEngSB :: OSGi Wrapped Bundles :: Parent</name>
 
   <description>Configuration Script for wrapping non OSGi artifacts</description>
-
-  <properties>
-    <!-- OSGi Environment Settings -->
-    <org.osgi.service.http.port>8080</org.osgi.service.http.port>
-    <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
-    <!-- Other Settings -->
-    <java.version>1.6</java.version>
-    <!-- Plugin Version Settings  -->
-    <plugin.pax.version>1.5.OPENENGSB.1</plugin.pax.version>
-    <plugin.bundle.version>2.1.0</plugin.bundle.version>
-    <plugin.deploy.version>2.5</plugin.deploy.version>
-    <!-- Component Versions -->
-    <osgi.version>4.2.0</osgi.version>
-  </properties>
 
   <modules>
     <module>org.apache.wicket</module>
   </modules>
 
   <build>
+    <finalName>${artifactId}-${version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.ops4j</groupId>
@@ -69,14 +56,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>${plugin.deploy.version}</version>
-        <configuration>
-          <remoteOBR>true</remoteOBR>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <version>${plugin.bundle.version}</version>
@@ -85,7 +64,7 @@
             <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
             <Bundle-Version>${wrapped.version}</Bundle-Version>
             <_exportcontents>*</_exportcontents>
-            <Export-Package>${bundle.namespace}.*;version="${pom.version}"</Export-Package>
+            <Export-Package>${bundle.namespace}.*;version="${wrapped.version}"</Export-Package>
             <Private-Package>!*</Private-Package>
             <_include>-osgi.bnd</_include>
           </instructions>
@@ -113,34 +92,5 @@
     </dependencies>
   </dependencyManagement>
   
-  <pluginRepositories>
-    <pluginRepository>
-      <id>ops4j.releases</id>
-      <url>http://repository.ops4j.org/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>openengsb-plugin-releases</id>
-      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-plugin-releases</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>openengsb-plugin-snapshots</id>
-      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-plugin-snapshots</url>
-    </pluginRepository>
-  </pluginRepositories>
-
-  <distributionManagement>
-    <repository>
-      <id>openengsb-osgi-releases</id>
-      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-releases</url>
-    </repository>
-    <snapshotRepository>
-      <id>openengsb-osgi-snapshots</id>
-      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
-
 </project>
 
