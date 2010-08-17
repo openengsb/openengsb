@@ -77,4 +77,4 @@ runner
 #wicket generated files
 #================
 *.tmp_*
-
+velocity.log*
