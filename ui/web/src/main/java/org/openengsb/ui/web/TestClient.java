@@ -17,6 +17,7 @@
  */
 package org.openengsb.ui.web;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -56,6 +58,19 @@ public class TestClient extends BasePage {
     @SuppressWarnings("serial")
     public TestClient() {
         Form<?> form = new Form("methodCallForm");
+        form.add(new AjaxFormSubmitBehavior(form, "onsubmit") {
+            @Override
+            protected void onError(AjaxRequestTarget target) {
+                throw new RuntimeException("submit error");
+
+            }
+
+            @Override
+            protected void onSubmit(AjaxRequestTarget target) {
+                performCall();
+            }
+
+        });
         DropDownChoice<ServiceId> serviceList = new DropDownChoice<ServiceId>("serviceList",
                 new PropertyModel<ServiceId>(call, "service"), getServiceInstances());
         serviceList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -87,8 +102,8 @@ public class TestClient extends BasePage {
             @Override
             protected void populateItem(ListItem<ArgumentModel> item) {
                 item.add(new Label("index", new PropertyModel<ArgumentModel>(item.getModelObject(), "index")));
-                item.add(new TextField<ArgumentModel>("value",
-                        new PropertyModel<ArgumentModel>(item.getModelObject(), "value")));
+                item.add(new TextField<ArgumentModel>("value", new PropertyModel<ArgumentModel>(item.getModelObject(),
+                        "value")));
             }
         };
         argumentList.setOutputMarkupId(true);
@@ -98,9 +113,31 @@ public class TestClient extends BasePage {
         add(form);
     }
 
+    protected void performCall() {
+        Object service = getService(call.getService());
+        MethodId mid = call.getMethod();
+        Method m;
+        try {
+            m = service.getClass().getMethod(mid.getName(), mid.getArgumentTypesAsClasses());
+        } catch (SecurityException e) {
+            throw new IllegalStateException(e);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(e);
+        }
+        try {
+            Object result = m.invoke(service, call.getArgumentsAsArray());
+            log.info("result: " + result);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        } catch (InvocationTargetException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+    }
+
     protected void populateArgumentList() {
         Method m = findMethod();
-        List<ArgumentModel> arguments = new ArrayList<ArgumentModel>();
+        List<ArgumentModel> arguments = call.getArguments();
         int i = 0;
         for (Class<?> p : m.getParameterTypes()) {
             arguments.add(new ArgumentModel(i, ""));

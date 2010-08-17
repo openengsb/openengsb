@@ -48,8 +48,10 @@ public class TestClientTest {
     }
 
     public class TestService implements TestInterface {
-        public void update(String id, String name) {
+        public boolean called = false;
 
+        public void update(String id, String name) {
+            called = true;
         }
 
         public String getName(String id) {
@@ -203,6 +205,35 @@ public class TestClientTest {
         tester.executeAjaxEvent(form.get("methodList"), "onchange");
 
         Assert.assertEquals(2, argList.getList().size());
+    }
+
+    @Test
+    public void testPerformMethodCall() throws Exception {
+        setupTestClientPage();
+
+        tester.startPage(TestClient.class);
+
+        @SuppressWarnings("rawtypes")
+        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
+        WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
+
+        @SuppressWarnings("unchecked")
+        ListView<ArgumentModel> argList = (ListView<ArgumentModel>) argListContainer.get("argumentList");
+
+        FormTester formTester = tester.newFormTester("methodCallForm");
+
+        formTester.select("serviceList", 0);
+        tester.executeAjaxEvent(form.get("serviceList"), "onchange");
+        formTester.select("methodList", 0);
+        tester.executeAjaxEvent(form.get("methodList"), "onchange");
+
+        for(int i = 0; i < argList.size(); i++){
+            formTester.setValue("argumentListContainer:argumentList:" + i + ":value", "test");
+        }
+
+        formTester.submit();
+        tester.executeAjaxEvent(form, "onsubmit");
+        Assert.assertTrue(testService.called);
     }
 
     private List<ServiceReference> setupTestClientPage() {
