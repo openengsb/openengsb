@@ -55,6 +55,7 @@ public class LogServiceManager implements ServiceManager, BundleContextAware {
                         .id("outputMode")
                         .name(strings.getString("log.outputMode.name", locale))
                         .description(strings.getString("log.outputMode.description", locale))
+                        .defaultValue("DEBUG")
                         .required()
                         .build())
                 .build();

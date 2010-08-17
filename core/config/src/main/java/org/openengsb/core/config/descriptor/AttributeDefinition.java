@@ -21,6 +21,7 @@ public class AttributeDefinition {
     private String id;
     private String name;
     private String description;
+    private String defaultValue;
     private boolean required;
 
     /**
@@ -42,6 +43,17 @@ public class AttributeDefinition {
      */
     public String getDescription() {
         return description;
+    }
+
+    public boolean hasDescription() {
+        return description != null && !description.isEmpty();
+    }
+
+    /**
+     * Returns the default value.
+     */
+    public String getDefaultValue() {
+        return defaultValue;
     }
 
     public boolean isRequired() {
@@ -71,6 +83,11 @@ public class AttributeDefinition {
 
         public Builder description(String description) {
             attribute.description = description;
+            return this;
+        }
+
+        public Builder defaultValue(String defaultValue) {
+            attribute.defaultValue = defaultValue;
             return this;
         }
 

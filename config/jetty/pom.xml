@@ -35,7 +35,7 @@
   <artifactId>openengsb-config-jetty</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Environment Configuration :: Spring Webextender</name>
+  <name>OpenEngSB :: Environment Configuration :: Jetty Webserver</name>
 
   <packaging>bundle</packaging>
 

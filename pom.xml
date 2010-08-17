@@ -396,6 +396,7 @@
                 <exclude>features/edb/core/easy2find/**</exclude>
                 <exclude>**/*.dia</exclude>
                 <exclude>**/*.log</exclude>
+                <exclude>**/*.log.*</exclude>
                 <exclude>**/activemq-data/**</exclude>
                 <!-- raw data -->
                 <exclude>**/testRepository**/**</exclude>
