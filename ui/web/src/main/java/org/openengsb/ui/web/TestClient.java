@@ -25,9 +25,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
@@ -45,6 +48,10 @@ public class TestClient extends BasePage {
     private DropDownChoice<MethodId> methodList;
 
     private MethodCall call = new MethodCall();
+
+    private ListView<ArgumentModel> argumentList;
+
+    private WebMarkupContainer argumentListContainer;
 
     @SuppressWarnings("serial")
     public TestClient() {
@@ -65,18 +72,41 @@ public class TestClient extends BasePage {
         methodList.setModel(new PropertyModel<MethodId>(call, "method"));
         methodList.setChoiceRenderer(new ChoiceRenderer<MethodId>());
         methodList.setOutputMarkupId(true);
-        form.add(methodList);
-
-        ListView<String> argumentList = new ListView<String>("argumentList") {
+        methodList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
-            protected void populateItem(ListItem<String> item) {
+            protected void onUpdate(AjaxRequestTarget target) {
                 // TODO Auto-generated method stub
-
+                populateArgumentList();
+                target.addComponent(argumentListContainer);
+            }
+        });
+        form.add(methodList);
+        argumentListContainer = new WebMarkupContainer("argumentListContainer");
+        argumentListContainer.setOutputMarkupId(true);
+        argumentList = new ListView<ArgumentModel>("argumentList") {
+            @Override
+            protected void populateItem(ListItem<ArgumentModel> item) {
+                item.add(new Label("index", new PropertyModel<ArgumentModel>(item.getModelObject(), "index")));
+                item.add(new TextField<ArgumentModel>("value",
+                        new PropertyModel<ArgumentModel>(item.getModelObject(), "value")));
             }
         };
-        form.add(argumentList);
+        argumentList.setOutputMarkupId(true);
+        argumentListContainer.add(argumentList);
+        form.add(argumentListContainer);
 
         add(form);
+    }
+
+    protected void populateArgumentList() {
+        Method m = findMethod();
+        List<ArgumentModel> arguments = new ArrayList<ArgumentModel>();
+        int i = 0;
+        for (Class<?> p : m.getParameterTypes()) {
+            arguments.add(new ArgumentModel(i, ""));
+            i++;
+        }
+        argumentList.setList(arguments);
     }
 
     private List<ServiceId> getServiceInstances() {
@@ -107,5 +137,20 @@ public class TestClient extends BasePage {
         log.info("retrieved service Object of type " + serviceObject.getClass().getName());
         List<Method> methods = MethodUtil.getServiceMethods(serviceObject);
         return methods;
+    }
+
+    private Method findMethod() {
+        ServiceId service = call.getService();
+        Object serviceObject = services.getService(service.getServiceClass(), service.getServiceId());
+        Class<?> serviceClass = serviceObject.getClass();
+        MethodId methodId = call.getMethod();
+        try {
+            return serviceClass.getMethod(methodId.getName(), methodId.getArgumentTypesAsClasses());
+        } catch (SecurityException e) {
+            throw new IllegalStateException(e);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(e);
+        }
+
     }
 }

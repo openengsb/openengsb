@@ -25,8 +25,10 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
@@ -174,8 +176,32 @@ public class TestClientTest {
         @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
 
-        Component argList = form.get("argumentList");
+        WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
+        Component argList = argListContainer.get("argumentList");
         Assert.assertNotNull(argList);
+    }
+
+    @Test
+    public void test2StringArguments() throws Exception {
+        setupTestClientPage();
+
+        tester.startPage(TestClient.class);
+
+        @SuppressWarnings("rawtypes")
+        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
+        @SuppressWarnings("unchecked")
+        WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
+
+        ListView<ArgumentModel> argList = (ListView<ArgumentModel>) argListContainer.get("argumentList");
+
+        FormTester formTester = tester.newFormTester("methodCallForm");
+
+        formTester.select("serviceList", 0);
+        tester.executeAjaxEvent(form.get("serviceList"), "onchange");
+        formTester.select("methodList", 0);
+        tester.executeAjaxEvent(form.get("methodList"), "onchange");
+
+        Assert.assertEquals(2, argList.getList().size());
     }
 
     private List<ServiceReference> setupTestClientPage() {
