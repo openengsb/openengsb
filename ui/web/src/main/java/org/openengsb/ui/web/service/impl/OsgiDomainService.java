@@ -103,6 +103,24 @@ public class OsgiDomainService implements DomainService {
 
     @Override
     public Object getService(String serviceClass, String serviceId) {
-        return null;
+        ServiceReference[] refs;
+        log.info(String.format("try to find service for class \"%s\", and id \"%s\"", serviceClass, serviceId));
+        try {
+            // TODO use filter
+            refs = bundleContext.getAllServiceReferences(serviceClass, null);
+
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalArgumentException("could not find service " + serviceId, e);
+        }
+        if (refs == null) {
+            throw new IllegalArgumentException("no services found for class, " + serviceClass);
+        }
+        for (ServiceReference ref : refs) {
+            // TODO replace this iterating by usage of filter above
+            if (ref.getProperty("id").equals(serviceId)) {
+                return bundleContext.getService(ref);
+            }
+        }
+        throw new IllegalArgumentException("no services found for id, " + serviceId);
     }
 }
