@@ -28,6 +28,8 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.ui.web.service.DomainService;
@@ -44,6 +46,7 @@ public class TestClient extends BasePage {
 
     private MethodCall call = new MethodCall();
 
+    @SuppressWarnings("serial")
     public TestClient() {
         Form<?> form = new Form("methodCallForm");
         DropDownChoice<ServiceId> serviceList = new DropDownChoice<ServiceId>("serviceList",
@@ -63,6 +66,15 @@ public class TestClient extends BasePage {
         methodList.setChoiceRenderer(new ChoiceRenderer<MethodId>());
         methodList.setOutputMarkupId(true);
         form.add(methodList);
+
+        ListView<String> argumentList = new ListView<String>("argumentList") {
+            @Override
+            protected void populateItem(ListItem<String> item) {
+                // TODO Auto-generated method stub
+
+            }
+        };
+        form.add(argumentList);
 
         add(form);
     }

@@ -24,6 +24,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -162,6 +163,19 @@ public class TestClientTest {
             choiceMethods.add(TestInterface.class.getMethod(mid.getName(), mid.getArgumentTypesAsClasses()));
         }
         Assert.assertEquals(Arrays.asList(TestInterface.class.getMethods()), choiceMethods);
+    }
+
+    @Test
+    public void testCreateArgumentList() throws Exception {
+        setupTestClientPage();
+
+        tester.startPage(TestClient.class);
+
+        @SuppressWarnings("rawtypes")
+        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
+
+        Component argList = form.get("argumentList");
+        Assert.assertNotNull(argList);
     }
 
     private List<ServiceReference> setupTestClientPage() {
