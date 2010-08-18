@@ -57,6 +57,8 @@
     <!-- Component Versions -->
     <osgi.version>4.2.0</osgi.version>
     <!-- Library Versions -->
+    <exam.version>1.2.0</exam.version>
+    <tinybundle.version>1.2.0</tinybundle.version>
     <jetty.version>6.1.24</jetty.version>
     <servlet.version>2.5.0</servlet.version>
     <portlet.version>1.0.0</portlet.version>
