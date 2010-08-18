@@ -473,6 +473,12 @@
       <artifactId>com.springsource.org.antlr.runtime</artifactId>
       <version>${antlr.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons.io.version}</version>
+    </dependency>
   </dependencies>
 
 </project>
