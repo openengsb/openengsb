@@ -19,6 +19,7 @@ package org.openengsb.ui.web.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -90,7 +91,11 @@ public class OsgiDomainService implements DomainService {
     @Override
     public List<? extends ServiceReference> getManagedServiceInstances() {
         try {
-            return Arrays.asList(bundleContext.getAllServiceReferences(Domain.class.getName(), null));
+            ServiceReference[] refs = bundleContext.getAllServiceReferences(Domain.class.getName(), null);
+            if (refs == null) {
+                return Collections.emptyList();
+            }
+            return Arrays.asList(refs);
         } catch (InvalidSyntaxException e) {
             throw new IllegalStateException("this should never happen, since no filter is used, or is it?");
         }
