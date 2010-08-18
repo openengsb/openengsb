@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.openengsb.domains.example</groupId>
     <artifactId>openengsb-domains-example-parent</artifactId>
-    <version>1.0.0.M1</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -32,7 +32,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.domains.example</groupId>
   <artifactId>openengsb-domains-example-implementation</artifactId>
-  <version>1.0.0.M1</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Domains :: Example :: Implementation </name>
 
