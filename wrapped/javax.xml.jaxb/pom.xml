@@ -53,7 +53,7 @@
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-xjc</artifactId>
+      <artifactId>jaxb-xjc-openengsb</artifactId>
       <version>${jaxb.version}</version>
     </dependency>
   </dependencies>
