@@ -34,7 +34,6 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -42,7 +41,6 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
-@Ignore("java.lang.NoSuchMethodError: org.apache.log4j.Category.setAdditivity(Z)V, what the?")
 public class TestClientTest {
 
     public interface TestInterface {
