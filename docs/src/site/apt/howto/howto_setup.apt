@@ -20,19 +20,16 @@ HowTo - First steps with OpenEngSB (Setup)
 * Java Development Kit 6
 
    First of all the JDK6 should be installed on the system and the JAVA_HOME variable should be set.
-  ({{{http://java.sun.com/javase/downloads}Java download}}). 
+  ({{{http://java.sun.com/javase/downloads}Java download}}).
    Also, make sure that the java-command is available in the PATH-variable
 
 * Getting OpenEngSB
 
-  Download the latest OpenEngSB release from {{{http://openengsb.org/downloads/}here}} or
-  {{{http://github.com/openengsb/openengsb/downloads/}github}}.
+  Download the latest OpenEngSB release from {{{http://github.com/openengsb/openengsb/downloads/}here}}.
 
 * Install OpenEngSB
 
   Extract the archive, and run the start-script (run.bat on windows, run.sh otherwise).
-  Click the following link to open the webinterface in your browser {{{http://localhost:8080/openengsb}http://localhost:8080/openengsb}}.
+  Click the following link to open the web interface in your browser {{{http://localhost:8080/openengsb}http://localhost:8080/openengsb}}.
 
   To shutdown the OpenEngSB, go to the command-window and type "shutdown" or press "Ctrl+D"
-  
-
