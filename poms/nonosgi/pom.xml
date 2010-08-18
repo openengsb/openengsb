@@ -56,7 +56,7 @@
     <!-- All dependencies from provision pom -->
     <dependency>
       <type>pom</type>
-      <groupId>at.sup.resourcex.build</groupId>
+      <groupId>org.openengsb.build</groupId>
       <artifactId>provision</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
