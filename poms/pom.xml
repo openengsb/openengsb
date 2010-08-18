@@ -125,7 +125,7 @@
     <hibernate.version>3.4.0.GA</hibernate.version>
     <httpcomponent.version>4.0-alpha4</httpcomponent.version>
     <h2.version>1.1.116</h2.version>
-    <jaxb.version>2.2</jaxb.version>
+    <jaxb.version>2.2.1</jaxb.version>
     <jaxen.version>1.1.1</jaxen.version>
     <jetty.version>6.1.20</jetty.version>
     <jgit.version>0.7.1</jgit.version>
@@ -177,6 +177,7 @@
     <woden.version>1.0.0M6</woden.version>
     <xml.apis.version>1.3.04</xml.apis.version>
     <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>
+    <drools.version>5.1.0</drools.version>
   </properties>
 
   <modules>
