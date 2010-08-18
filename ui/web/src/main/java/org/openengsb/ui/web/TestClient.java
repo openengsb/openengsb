@@ -137,7 +137,8 @@ public class TestClient extends BasePage {
 
     protected void populateArgumentList() {
         Method m = findMethod();
-        List<ArgumentModel> arguments = call.getArguments();
+        List<ArgumentModel> arguments = new ArrayList<ArgumentModel>();
+        call.setArguments(arguments);
         int i = 0;
         for (Class<?> p : m.getParameterTypes()) {
             arguments.add(new ArgumentModel(i, ""));

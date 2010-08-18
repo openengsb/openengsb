@@ -236,9 +236,34 @@ public class TestClientTest {
         Assert.assertTrue(testService.called);
     }
 
+    @Test
+    public void testSelectMethodTwice() throws Exception {
+        setupTestClientPage();
+
+        tester.startPage(TestClient.class);
+
+        @SuppressWarnings("rawtypes")
+        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
+        WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
+
+        @SuppressWarnings("unchecked")
+        ListView<ArgumentModel> argList = (ListView<ArgumentModel>) argListContainer.get("argumentList");
+
+        FormTester formTester = tester.newFormTester("methodCallForm");
+
+        formTester.select("serviceList", 0);
+        tester.executeAjaxEvent(form.get("serviceList"), "onchange");
+        formTester.select("methodList", 0);
+        tester.executeAjaxEvent(form.get("methodList"), "onchange");
+        tester.executeAjaxEvent(form.get("methodList"), "onchange");
+
+        Assert.assertEquals(2, argList.getList().size());
+    }
+
     private List<ServiceReference> setupTestClientPage() {
         final List<ServiceReference> expected = new ArrayList<ServiceReference>();
         ServiceReference serviceReferenceMock = Mockito.mock(ServiceReference.class);
+        expected.add(serviceReferenceMock);
         expected.add(serviceReferenceMock);
         DomainService managedServicesMock = Mockito.mock(DomainService.class);
         Mockito.when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>(){
