@@ -19,9 +19,10 @@ package org.openengsb.core.workflow.source;
 
 import java.util.Collection;
 
+import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 
-public abstract class ResourceHandler<SourceType extends RuleBaseSource> {
+public abstract class ResourceHandler<SourceType extends RuleManager> {
 
     protected SourceType source;
 

@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-import org.openengsb.core.workflow.source.DirectoryRuleSource;
 import org.openengsb.core.workflow.source.RuleBaseException;
 
 public class DirectoryGlobalHandler extends SingleFileResourceHandler {

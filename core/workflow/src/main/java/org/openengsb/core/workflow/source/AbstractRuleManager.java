@@ -19,38 +19,42 @@ package org.openengsb.core.workflow.source;
 
 import java.util.Collection;
 
-import org.drools.RuleBase;
+import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
-public abstract class RuleBaseSource {
+public abstract class AbstractRuleManager implements RuleManager {
 
     protected ResourceHandler<?> getRessourceHandler(RuleBaseElementType element) {
         throw new UnsupportedOperationException("not implemented for type " + getClass());
     }
 
-    public abstract RuleBase getRulebase() throws RuleBaseException;
-
+    @Override
     public void add(RuleBaseElementId name, String code) throws RuleBaseException {
         this.getRessourceHandler(name.getType()).create(name, code);
     }
 
+    @Override
     public String get(RuleBaseElementId name) throws RuleBaseException {
         return this.getRessourceHandler(name.getType()).get(name);
     }
 
+    @Override
     public void update(RuleBaseElementId name, String newCode) throws RuleBaseException {
         this.getRessourceHandler(name.getType()).update(name, newCode);
     }
 
+    @Override
     public void delete(RuleBaseElementId name) throws RuleBaseException {
         this.getRessourceHandler(name.getType()).delete(name);
     }
 
+    @Override
     public Collection<RuleBaseElementId> list(RuleBaseElementType type) throws RuleBaseException {
         return this.getRessourceHandler(type).list();
     }
 
+    @Override
     public Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName) throws RuleBaseException {
         return this.getRessourceHandler(type).list(packageName);
     }

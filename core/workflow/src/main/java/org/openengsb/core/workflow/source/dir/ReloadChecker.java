@@ -22,7 +22,6 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.workflow.source.DirectoryRuleSource;
 import org.openengsb.core.workflow.source.RuleBaseException;
 
 public class ReloadChecker extends TimerTask {

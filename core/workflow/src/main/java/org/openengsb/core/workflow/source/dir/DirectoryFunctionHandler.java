@@ -23,7 +23,6 @@ import java.util.HashSet;
 import org.drools.rule.Package;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-import org.openengsb.core.workflow.source.DirectoryRuleSource;
 import org.openengsb.core.workflow.source.RuleBaseException;
 
 

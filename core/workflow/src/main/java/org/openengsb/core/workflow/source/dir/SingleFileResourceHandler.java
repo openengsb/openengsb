@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.openengsb.core.workflow.source.DirectoryRuleSource;
 import org.openengsb.core.workflow.source.ResourceHandler;
 import org.openengsb.core.workflow.source.RuleBaseException;
 
