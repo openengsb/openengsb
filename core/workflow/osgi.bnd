@@ -15,4 +15,4 @@
 #-----------------------------------------------------------------
 
 Import-Package:javax.xml.bind.annotation, org.apache.commons.logging, org.apache.commons.io,\
-org.drools, org.drools.rule, org.drools.compiler
+org.drools; bundle-symbolic-name="org.drools.core", org.drools.rule, org.drools.compiler, org.osgi.framework, org.springframework.osgi.context
