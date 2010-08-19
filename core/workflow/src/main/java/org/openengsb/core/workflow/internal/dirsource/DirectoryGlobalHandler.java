@@ -15,16 +15,16 @@
    limitations under the License.
 
  */
-package org.openengsb.core.workflow.source.dir;
+package org.openengsb.core.workflow.internal.dirsource;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-import org.openengsb.core.workflow.source.RuleBaseException;
 
 public class DirectoryGlobalHandler extends SingleFileResourceHandler {
 

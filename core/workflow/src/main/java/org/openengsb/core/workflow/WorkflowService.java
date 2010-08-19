@@ -17,7 +17,7 @@
  */
 package org.openengsb.core.workflow;
 
-import org.openengsb.core.model.Event;
+import org.openengsb.core.workflow.model.Event;
 
 public interface WorkflowService {
     void sendEvent(Event event);

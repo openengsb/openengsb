@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.core.workflow.source.dir;
+package org.openengsb.core.workflow.internal.dirsource;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -34,11 +34,11 @@ import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.rule.Package;
+import org.openengsb.core.workflow.internal.AbstractRuleManager;
+import org.openengsb.core.workflow.internal.ResourceHandler;
+import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-import org.openengsb.core.workflow.source.AbstractRuleManager;
-import org.openengsb.core.workflow.source.ResourceHandler;
-import org.openengsb.core.workflow.source.RuleBaseException;
 
 public class DirectoryRuleSource extends AbstractRuleManager {
 

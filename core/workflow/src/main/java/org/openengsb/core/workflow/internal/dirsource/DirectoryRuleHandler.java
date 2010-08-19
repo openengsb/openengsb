@@ -15,16 +15,16 @@
    limitations under the License.
 
  */
-package org.openengsb.core.workflow.source.dir;
+package org.openengsb.core.workflow.internal.dirsource;
 
 import java.util.Collection;
 import java.util.HashSet;
 
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
+import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-import org.openengsb.core.workflow.source.RuleBaseException;
 
 public class DirectoryRuleHandler extends MultiFileResourceHandler {
 

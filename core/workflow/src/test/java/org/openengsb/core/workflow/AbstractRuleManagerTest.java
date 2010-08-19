@@ -33,10 +33,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openengsb.core.model.Event;
+import org.openengsb.core.workflow.internal.RuleBaseException;
+import org.openengsb.core.workflow.model.Event;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-import org.openengsb.core.workflow.source.RuleBaseException;
 
 public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 

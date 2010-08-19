@@ -15,30 +15,28 @@
    limitations under the License.
 
  */
-package org.openengsb.core.model;
+package org.openengsb.core.workflow.internal;
 
-public class Event {
-    private String domain;
-    private String name;
+@SuppressWarnings("serial")
+public class RuleBaseException extends Exception {
 
-    public Event(String domain, String name) {
-        this.domain = domain;
-        this.name = name;
+    public RuleBaseException() {
+        // TODO Auto-generated constructor stub
     }
 
-    public String getDomain() {
-        return this.domain;
+    public RuleBaseException(String message) {
+        super(message);
+        // TODO Auto-generated constructor stub
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public RuleBaseException(Throwable cause) {
+        super(cause);
+        // TODO Auto-generated constructor stub
     }
 
-    public String getName() {
-        return this.name;
+    public RuleBaseException(String message, Throwable cause) {
+        super(message, cause);
+        // TODO Auto-generated constructor stub
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 }

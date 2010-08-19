@@ -15,14 +15,14 @@
    limitations under the License.
 
  */
-package org.openengsb.core.workflow.source.dir;
+package org.openengsb.core.workflow.internal.dirsource;
 
 import java.io.File;
 import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.workflow.source.RuleBaseException;
+import org.openengsb.core.workflow.internal.RuleBaseException;
 
 public class ReloadChecker extends TimerTask {
 

@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.core.workflow.source.dir;
+package org.openengsb.core.workflow.internal.dirsource;
 
 import java.io.File;
 import java.io.FileReader;
@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
-import org.openengsb.core.workflow.source.ResourceHandler;
-import org.openengsb.core.workflow.source.RuleBaseException;
+import org.openengsb.core.workflow.internal.ResourceHandler;
+import org.openengsb.core.workflow.internal.RuleBaseException;
 
 public abstract class SingleFileResourceHandler extends ResourceHandler<DirectoryRuleSource> {
 

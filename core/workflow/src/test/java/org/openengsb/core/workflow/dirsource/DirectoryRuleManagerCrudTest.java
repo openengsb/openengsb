@@ -22,8 +22,8 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.AbstractRuleManagerCrudTest;
+import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
-import org.openengsb.core.workflow.source.dir.DirectoryRuleSource;
 
 public class DirectoryRuleManagerCrudTest extends AbstractRuleManagerCrudTest<DirectoryRuleSource> {
 
