@@ -25,6 +25,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Properties;
 import java.util.Timer;
 
 import org.apache.commons.io.FileUtils;
@@ -33,6 +34,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.rule.Package;
 import org.openengsb.core.workflow.internal.AbstractRuleManager;
 import org.openengsb.core.workflow.internal.ResourceHandler;
@@ -182,7 +184,13 @@ public class DirectoryRuleSource extends AbstractRuleManager {
             content.append(FileUtils.readFileToString(f));
             content.append("end\n");
         }
-        final PackageBuilder builder = new PackageBuilder();
+
+        Properties properties = new Properties();
+        properties.setProperty( "drools.dialect.java.compiler",
+                                "JANINO" );
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration( properties );
+
+        final PackageBuilder builder = new PackageBuilder(conf);
         try {
             builder.addPackageFromDrl(new StringReader(content.toString()));
             Collection<File> flows = listFiles(path, FLOW_EXTENSION);
