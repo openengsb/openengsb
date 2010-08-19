@@ -100,11 +100,15 @@ public class EditorTest {
 
     @SuppressWarnings("unchecked")
     private <T> T getEditorFieldFormComponent(String attributeId, Class<T> componentType) {
-        String id = editor.getId() + ":form:fields:" + attributeId + ":row:field";
+        String id = editor.getId() + ':' + buildFormComponentId(attributeId);
         Component c = tester.getComponentFromLastRenderedPage(id);
         assertThat(c, notNullValue());
         assertThat(c, is(componentType));
         return (T) c;
+    }
+
+    public static String buildFormComponentId(String attributeId) {
+        return "form:fields:" + attributeId + ":row:field";
     }
 
     private EditorField getEditorField(String attributeId) {

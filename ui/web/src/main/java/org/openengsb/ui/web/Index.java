@@ -82,7 +82,7 @@ public class Index extends BasePage {
         add(new Link<SendEventPage>("sendEvent") {
             @Override
             public void onClick() {
-                List<Class<?>> events = new ArrayList<Class<?>>();
+                List<Class<? extends Event>> events = new ArrayList<Class<? extends Event>>();
                 events.add(Event.class);
                 for (DomainProvider domain : domainService.domains()) {
                     events.addAll(domain.getEvents());
