@@ -79,3 +79,9 @@ runner
 #================
 *.tmp_*
 velocity.log*
+
+#================
+#netbeans files
+#================
+nb-configuration.xml
+nbactions.xml

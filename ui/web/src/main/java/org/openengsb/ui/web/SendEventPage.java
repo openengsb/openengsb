@@ -18,8 +18,12 @@ limitations under the License.
 package org.openengsb.ui.web;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.openengsb.core.config.descriptor.AttributeDefinition;
+import org.openengsb.ui.web.editor.EditorPanel;
 
 public class SendEventPage extends BasePage {
 
@@ -29,5 +33,8 @@ public class SendEventPage extends BasePage {
             names.add(clazz.getSimpleName());
         }
         add(new DropDownChoice<String>("dropdown", names));
+        List<AttributeDefinition> attributes = null;
+        Map<String, String> defaults = new HashMap<String, String>();
+        add(new EditorPanel("editor", attributes, defaults));
     }
 }
