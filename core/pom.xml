@@ -36,6 +36,7 @@
 
   <modules>
     <module>config</module>
+    <module>workflow</module>
   </modules>
 
 </project>
