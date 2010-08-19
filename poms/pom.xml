@@ -51,7 +51,6 @@
     <maven.rat.version>0.6</maven.rat.version>
     <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
     <maven.war.plugin>2.1-beta-1</maven.war.plugin>
-    <servicemix.jbi.maven.version>4.4.OPENENGSB.1</servicemix.jbi.maven.version>
     <twdata.cli.version>1.0.4</twdata.cli.version>
     <clover.version>3.0.2</clover.version>
     <!-- Component Versions -->
