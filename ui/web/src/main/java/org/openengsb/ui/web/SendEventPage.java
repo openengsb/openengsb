@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.model.Model;
@@ -37,11 +38,7 @@ import org.openengsb.ui.web.editor.EditorPanel;
 
 public class SendEventPage extends BasePage {
 
-    private class Renderer extends ChoiceRenderer {
-
-    }
-
-    SendEventPage(List<Class> classes) {
+    SendEventPage(List<Class<?>> classes) {
         List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
         Map<String, String> defaults = new HashMap<String, String>();
         try {
@@ -62,9 +59,9 @@ public class SendEventPage extends BasePage {
         } catch (IntrospectionException ex) {
             Logger.getLogger(SendEventPage.class.getName()).log(Level.SEVERE, null, ex);
         }
-        ChoiceRenderer choiceRenderer = new ChoiceRenderer("canonicalName", "simpleName");
-        DropDownChoice<Class> dropDownChoice = new DropDownChoice<Class>("dropdown", classes, choiceRenderer);
-        dropDownChoice.setModel(new Model<Class>(classes.get(0)));
+        ChoiceRenderer<Class<?>> choiceRenderer = new ChoiceRenderer<Class<?>>("canonicalName", "simpleName");
+        DropDownChoice<Class<?>> dropDownChoice = new DropDownChoice<Class<?>>("dropdown", classes, choiceRenderer);
+        dropDownChoice.setModel(new Model<Class<?>>(classes.get(0)));
         add(dropDownChoice);
         add(new EditorPanel("editor", attributes, defaults));
     }
