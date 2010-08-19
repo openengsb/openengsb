@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.core.workflow.internal.test;
+package org.openengsb.core.workflow.test;
 
 import java.util.Collection;
 import java.util.Timer;
@@ -24,26 +24,36 @@ import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.workflow.RuleManager;
+import org.openengsb.core.workflow.WorkflowException;
+import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.core.workflow.internal.RuleBaseException;
+import org.openengsb.core.workflow.model.Event;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.springframework.osgi.context.BundleContextAware;
 
-public class TimedRuntimeTest implements BundleContextAware {
+public class RuntimeTest implements BundleActivator {
 
-    private static Log log = LogFactory.getLog(TimedRuntimeTest.class);
+    private static Log log = LogFactory.getLog(RuntimeTest.class);
 
     private BundleContext bundleContext;
 
-    public TimedRuntimeTest() {
+    private Timer timer = new Timer();
+
+    public RuntimeTest() {
+    }
+
+    @Override
+    public void start(BundleContext context) throws Exception {
+        this.bundleContext = context;
         initTimer();
     }
 
     @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
+    public void stop(BundleContext context) throws Exception {
+        timer.cancel();
     }
 
     private void initTimer() {
@@ -68,10 +78,22 @@ public class TimedRuntimeTest implements BundleContextAware {
                     e.printStackTrace();
                     return;
                 }
+                ServiceReference workflowRef = bundleContext.getServiceReference(WorkflowService.class.getName());
+
+                if (workflowRef == null) {
+                    log.error("workflow service not found");
+                    return;
+                }
+                WorkflowService workflowService = (WorkflowService) bundleContext.getService(workflowRef);
+                Event event = new Event("", "hello");
+                try {
+                    workflowService.processEvent(event);
+                } catch (WorkflowException e) {
+                    throw new RuntimeException(e);
+                }
             }
         };
-        Timer t = new Timer();
-        t.schedule(task, 1000, 1000);
+        timer.schedule(task, 1000, 1000);
     }
 
 }

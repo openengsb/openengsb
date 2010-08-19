@@ -20,8 +20,8 @@ package org.openengsb.core.workflow.dirsource;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.AbstractRuleManagerCrudTest;
+import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 
@@ -33,9 +33,6 @@ public class DirectoryRuleManagerCrudTest extends AbstractRuleManagerCrudTest<Di
 
     @Override
     public void setUp() throws Exception {
-        File rulebaseReferenceDirectory = new File("src/main/resources/rulebase");
-        File rulebaseTestDirectory = new File("data/rulebase");
-        FileUtils.copyDirectory(rulebaseReferenceDirectory, rulebaseTestDirectory);
         super.setUp();
     }
 

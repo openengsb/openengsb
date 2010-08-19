@@ -17,8 +17,22 @@
  */
 package org.openengsb.core.workflow;
 
-import org.openengsb.core.workflow.model.Event;
+@SuppressWarnings("serial")
+public class WorkflowException extends Exception {
 
-public interface WorkflowService {
-    void processEvent(Event event) throws WorkflowException;
+    public WorkflowException() {
+    }
+
+    public WorkflowException(String message) {
+        super(message);
+    }
+
+    public WorkflowException(Throwable cause) {
+        super(cause);
+    }
+
+    public WorkflowException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
