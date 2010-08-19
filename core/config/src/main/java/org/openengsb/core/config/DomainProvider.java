@@ -17,7 +17,10 @@
  */
 package org.openengsb.core.config;
 
+import java.util.List;
 import java.util.Locale;
+
+import org.openengsb.core.common.Event;
 
 /**
  * Provide necessary information about an OpenEngSB domain. Each domain in the
@@ -27,7 +30,9 @@ import java.util.Locale;
 public interface DomainProvider {
 
     /**
-     * Returns the global identifier for this domain.
+     * Returns the global identifier for this domain. This should be either the
+     * package name of this domain, or the full class name of the provided
+     * Domain interface.
      */
     String getId();
 
@@ -57,4 +62,9 @@ public interface DomainProvider {
      * Returns the domain-specific interface.
      */
     Class<? extends Domain> getDomainInterface();
+
+    /**
+     * Returns a list of domain-specific {@code Event}s.
+     */
+    List<Event> getEvents();
 }
