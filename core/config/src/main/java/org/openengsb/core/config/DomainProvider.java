@@ -66,5 +66,5 @@ public interface DomainProvider {
     /**
      * Returns a list of domain-specific {@code Event}s.
      */
-    List<Event> getEvents();
+    List<Class<? extends Event>> getEvents();
 }

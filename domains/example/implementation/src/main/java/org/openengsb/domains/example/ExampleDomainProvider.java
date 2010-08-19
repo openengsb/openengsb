@@ -17,11 +17,15 @@
  */
 package org.openengsb.domains.example;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import org.openengsb.core.common.Event;
 import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.util.BundleStrings;
+import org.openengsb.domains.example.event.LogEvent;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 
@@ -70,5 +74,12 @@ public class ExampleDomainProvider implements DomainProvider, BundleContextAware
     @Override
     public Class<? extends Domain> getDomainInterface() {
         return ExampleDomain.class;
+    }
+
+    @Override
+    public List<Class<? extends Event>> getEvents() {
+        List<Class<? extends Event>> events = new ArrayList<Class<? extends Event>>();
+        events.add(LogEvent.class);
+        return events;
     }
 }
