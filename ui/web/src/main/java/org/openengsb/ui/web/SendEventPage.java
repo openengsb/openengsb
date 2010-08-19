@@ -17,24 +17,55 @@ limitations under the License.
  */
 package org.openengsb.ui.web;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.model.Model;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
+import org.openengsb.core.config.descriptor.AttributeDefinition.Builder;
 import org.openengsb.ui.web.editor.EditorPanel;
 
 public class SendEventPage extends BasePage {
 
+    private class Renderer extends ChoiceRenderer {
+
+    }
+
     SendEventPage(List<Class> classes) {
-        List<String> names = new ArrayList<String>(classes.size());
-        for (Class clazz : classes) {
-            names.add(clazz.getSimpleName());
-        }
-        add(new DropDownChoice<String>("dropdown", names));
-        List<AttributeDefinition> attributes = null;
+        List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
         Map<String, String> defaults = new HashMap<String, String>();
+        try {
+
+            BeanInfo beanInfo = Introspector.getBeanInfo(classes.get(0));
+            beanInfo.getBeanDescriptor().getDisplayName();
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+                if(propertyDescriptor.getWriteMethod() == null || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
+                    continue;
+                }
+                Builder builder = AttributeDefinition.builder();
+                builder.name(propertyDescriptor.getDisplayName());
+                builder.description(propertyDescriptor.getShortDescription());
+                builder.id(propertyDescriptor.getName());
+                attributes.add(builder.build());
+            }
+        } catch (IntrospectionException ex) {
+            Logger.getLogger(SendEventPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ChoiceRenderer choiceRenderer = new ChoiceRenderer("canonicalName", "simpleName");
+        DropDownChoice<Class> dropDownChoice = new DropDownChoice<Class>("dropdown", classes, choiceRenderer);
+        dropDownChoice.setModel(new Model<Class>(classes.get(0)));
+        add(dropDownChoice);
         add(new EditorPanel("editor", attributes, defaults));
     }
 }

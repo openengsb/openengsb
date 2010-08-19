@@ -24,6 +24,8 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.config.descriptor.AttributeDefinition;
+import org.openengsb.ui.web.editor.EditorPanel;
 
 public class SendEventPageTest {
 
@@ -35,21 +37,38 @@ public class SendEventPageTest {
     }
 
     private class Dummy {
+
+        private String testProperty;
+
+        public String getTestProperty() {
+            return testProperty;
+        }
+
+        public void setTestProperty(String testProperty) {
+            this.testProperty = testProperty;
+        }
     }
 
     private class Dummy2 {
     }
 
     @Test
-    public void mytest() {
+    public void intialisationTest() {
         List<Class> classes = Arrays.<Class>asList(Dummy.class, Dummy2.class);
         tester.startPage(new SendEventPage(classes));
         tester.dumpPage();
-        DropDownChoice dropdown = (DropDownChoice) tester.getComponentFromLastRenderedPage("dropdown");
+        DropDownChoice<Class> dropdown = (DropDownChoice) tester.getComponentFromLastRenderedPage("dropdown");
         assertNotNull(dropdown);
-        tester.assertComponent("dropdown",DropDownChoice.class);
+        tester.assertComponent("dropdown", DropDownChoice.class);
         assertEquals(2, dropdown.getChoices().size());
-        assertEquals("Dummy", dropdown.getChoices().get(0));
-        assertEquals("Dummy2", dropdown.getChoices().get(1));
+        assertEquals(Dummy.class, dropdown.getChoices().get(0));
+        assertEquals("Dummy",dropdown.getValue());
+        assertEquals(Dummy2.class, dropdown.getChoices().get(1));
+        tester.assertComponent("editor", EditorPanel.class);
+        EditorPanel editorPanel = (EditorPanel) tester.getComponentFromLastRenderedPage("editor");
+        final List<AttributeDefinition> attributes = editorPanel.getAttributes();
+        assertNotNull(attributes);
+        assertEquals(attributes.size(),1);
+        assertEquals(attributes.get(0).getName(),"testProperty");
     }
 }
