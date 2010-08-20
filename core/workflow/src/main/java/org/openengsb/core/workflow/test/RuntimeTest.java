@@ -23,11 +23,11 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.Event;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.core.workflow.internal.RuleBaseException;
-import org.openengsb.core.workflow.model.Event;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.osgi.framework.BundleActivator;
@@ -85,7 +85,7 @@ public class RuntimeTest implements BundleActivator {
                     return;
                 }
                 WorkflowService workflowService = (WorkflowService) bundleContext.getService(workflowRef);
-                Event event = new Event("", "hello");
+                Event event = new Event();
                 try {
                     workflowService.processEvent(event);
                 } catch (WorkflowException e) {

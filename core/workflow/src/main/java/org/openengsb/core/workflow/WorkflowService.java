@@ -17,7 +17,7 @@
  */
 package org.openengsb.core.workflow;
 
-import org.openengsb.core.workflow.model.Event;
+import org.openengsb.core.common.Event;
 
 public interface WorkflowService {
     void processEvent(Event event) throws WorkflowException;

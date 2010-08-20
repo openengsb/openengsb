@@ -23,10 +23,10 @@ import java.util.Collection;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.event.AgendaEventListener;
+import org.openengsb.core.common.Event;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
-import org.openengsb.core.workflow.model.Event;
 
 public class WorkflowServiceImpl implements WorkflowService {
 
@@ -37,6 +37,8 @@ public class WorkflowServiceImpl implements WorkflowService {
     @Override
     public void processEvent(Event event) throws WorkflowException {
         try {
+
+            // get context
             StatefulSession session = createSession();
             // TODO globals
             session.insert(event);

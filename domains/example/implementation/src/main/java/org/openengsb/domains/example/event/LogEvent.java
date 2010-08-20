@@ -15,30 +15,35 @@
    limitations under the License.
 
  */
-package org.openengsb.core.workflow.model;
+package org.openengsb.domains.example.event;
 
-public class Event {
-    private String domain;
-    private String name;
+import org.openengsb.core.common.Event;
 
-    public Event(String domain, String name) {
-        this.domain = domain;
-        this.name = name;
+public class LogEvent extends Event {
+
+    private static enum Level {
+        INFO, WARN, ERROR
     }
 
-    public String getDomain() {
-        return this.domain;
+    private String message;
+    private Level level;
+
+    public LogEvent() {
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public String getMessage() {
+        return message;
     }
 
-    public String getName() {
-        return this.name;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Level getLevel() {
+        return level;
+    }
+
+    public void setLevel(Level level) {
+        this.level = level;
     }
 }

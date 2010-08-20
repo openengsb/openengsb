@@ -16,6 +16,6 @@
 
 Import-Package: javax.xml.bind.annotation, org.apache.commons.logging, org.apache.commons.io,\
 org.drools; bundle-symbolic-name="org.drools.core", org.drools.rule, org.drools.compiler, org.osgi.framework, org.springframework.osgi.context,\
-org.drools.event; bundle-symbolic-name="org.drools.core"
+org.drools.event; bundle-symbolic-name="org.drools.core", org.openengsb.core.common
 # TODO make proper integration test
 # Bundle-Activator: org.openengsb.core.workflow.test.RuntimeTest

@@ -17,22 +17,13 @@
 
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
-<body>
-<wicket:panel>
-  <form wicket:id="form">
-    <table>
-      <tr wicket:id="fields">
-        <wicket:container wicket:id="row" />
-      </tr>
-      <tr>
-        <th></th>
-        <td>
-          <div wicket:id="feedback"></div>
-          <input type="submit" wicket:message="value:editor.submit" />
-        </td>
-      </tr>
-    </table>
-  </form>
-</wicket:panel>
+    <head/>
+    <body>
+    <wicket:extend>
+        <form wicket:id="form">
+          <select wicket:id="dropdown"/>
+        </form>
+        <div wicket:id="editor" />
+    </wicket:extend>
 </body>
 </html>

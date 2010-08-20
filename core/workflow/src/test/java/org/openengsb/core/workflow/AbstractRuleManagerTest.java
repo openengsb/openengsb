@@ -33,8 +33,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openengsb.core.common.Event;
 import org.openengsb.core.workflow.internal.RuleBaseException;
-import org.openengsb.core.workflow.model.Event;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
@@ -78,7 +78,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
      * inserts an Event into the existing session and fires All rules
      */
     protected void executeTestSession() {
-        Event event = new Event("", "hello");
+        Event event = new Event();
         session.insert(event);
         session.fireAllRules();
     }
@@ -94,7 +94,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     @Test
     public void testGetRules() throws Exception {
         createSession();
-        Event testEvent = new Event("nomatter_domain", "hello");
+        Event testEvent = new Event();
         session.insert(testEvent);
         session.fireAllRules();
     }
@@ -102,7 +102,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     @Test
     public void testAddRule() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test3");
-        source.add(id, "when\n" + "  e : Event( name == \"hello\")\n" + "then\n"
+        source.add(id, "when\n" + "  e : Event()\n" + "then\n"
                 + "  System.out.println(\"this rule was added by the addrule-function\");\n");
         createSession();
         executeTestSession();
@@ -161,11 +161,11 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
                 "java.util.Random");
         source.add(testImportId, "ignored");
         RuleBaseElementId testRuleId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
-        source.add(testRuleId, "when\n" + "  e : Event( name == \"testevent\")\n" + "then\n"
+        source.add(testRuleId, "when\n" + "  e : Event()\n" + "then\n"
                 + "  test(new Random());\n");
         createSession();
 
-        session.insert(new Event("", "testevent"));
+        session.insert(new Event());
         session.fireAllRules();
         assertTrue(listener.haveRulesFired("org.openengsb.test"));
     }
@@ -192,7 +192,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
                 "when\n then System.out.println(bla.nextInt());");
         createSession();
         session.setGlobal("bla", new Random());
-        session.insert(new Event("", "asd"));
+        session.insert(new Event());
         session.fireAllRules();
         assertTrue(listener.haveRulesFired("bla"));
     }

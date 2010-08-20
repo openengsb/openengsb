@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/**
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
@@ -15,24 +14,25 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
--->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
-<body>
-<wicket:panel>
-  <form wicket:id="form">
-    <table>
-      <tr wicket:id="fields">
-        <wicket:container wicket:id="row" />
-      </tr>
-      <tr>
-        <th></th>
-        <td>
-          <div wicket:id="feedback"></div>
-          <input type="submit" wicket:message="value:editor.submit" />
-        </td>
-      </tr>
-    </table>
-  </form>
-</wicket:panel>
-</body>
-</html>
+ */
+package org.openengsb.core.common;
+
+public class Event {
+    private String contextId;
+
+    public Event() {
+    }
+
+    public Event(String contextId) {
+        super();
+        this.contextId = contextId;
+    }
+
+    public String getContextId() {
+        return this.contextId;
+    }
+
+    public void setContextId(String contextId) {
+        this.contextId = contextId;
+    }
+}

@@ -1,0 +1,150 @@
+/**
+
+Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+ */
+package org.openengsb.ui.web;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
+import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
+import org.apache.wicket.util.tester.FormTester;
+import org.apache.wicket.util.tester.WicketTester;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.openengsb.core.common.Event;
+import org.openengsb.core.config.descriptor.AttributeDefinition;
+import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.service.EventService;
+
+public class SendEventPageTest {
+
+    private WicketTester tester;
+    private EditorPanel editorPanel;
+    private DropDownChoice<Class<?>> dropdown;
+    private EventService eventService;
+
+    @Before
+    @SuppressWarnings("unchecked")
+    public void setup() {
+        tester = new WicketTester();
+        AnnotApplicationContextMock context = new AnnotApplicationContextMock();
+        tester.getApplication().addComponentInstantiationListener(
+                new SpringComponentInjector(tester.getApplication(), context, false));
+        eventService = mock(EventService.class);
+        context.putBean("eventService", eventService);
+        List<Class<? extends Event>> classes = Arrays.<Class<? extends Event>> asList(Dummy.class, Dummy2.class);
+        tester.startPage(new SendEventPage(classes));
+        editorPanel = (EditorPanel) tester.getComponentFromLastRenderedPage("editor");
+        dropdown = (DropDownChoice<Class<?>>) tester
+                .getComponentFromLastRenderedPage("form:dropdown");
+    }
+
+    static class Dummy extends Event {
+
+        private String testProperty;
+
+        @SuppressWarnings("unused")
+        public String getTestProperty() {
+            return testProperty;
+        }
+
+        @SuppressWarnings("unused")
+        public void setTestProperty(String testProperty) {
+            this.testProperty = testProperty;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    static class Dummy2 extends Event {
+
+        private String firstProperty;
+        private String secondProperty;
+
+        public String getFirstProperty() {
+            return firstProperty;
+        }
+
+        public void setFirstProperty(String firstProperty) {
+            this.firstProperty = firstProperty;
+        }
+
+        public String getSecondProperty() {
+            return secondProperty;
+        }
+
+        public void setSecondProperty(String secondProperty) {
+            this.secondProperty = secondProperty;
+        }
+    }
+
+    @Test
+    public void testStandardPageComponents() throws Exception {
+        tester.assertVisible("form:dropdown");
+        tester.assertVisible("editor");
+        assertThat(dropdown, notNullValue());
+        assertThat(editorPanel, notNullValue());
+    }
+
+    @Test
+    public void givenTwoClassesInCtor_shouldAddThemToTheDropDown() {
+        assertEquals(2, dropdown.getChoices().size());
+        assertEquals(Dummy.class, dropdown.getChoices().get(0));
+        assertEquals("Dummy", dropdown.getValue());
+        assertEquals(Dummy2.class, dropdown.getChoices().get(1));
+    }
+
+    @Test
+    public void firstClassIsDefault_shouldCreateEditorFieldsBasedOnDefault() {
+        final List<AttributeDefinition> attributes = editorPanel.getAttributes();
+        assertNotNull(attributes);
+        assertEquals(attributes.size(), 2);
+        assertEquals(attributes.get(1).getName(), "testProperty");
+    }
+
+    @Test
+    public void selectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
+        FormTester formTester = tester.newFormTester("form");
+        formTester.select("dropdown", 1);
+        tester.executeAjaxEvent(dropdown, "onchange");
+        List<AttributeDefinition> attributes = ((EditorPanel) tester.getComponentFromLastRenderedPage("editor")).getAttributes();
+        assertThat(attributes.size(), is(3));
+        assertThat(attributes.get(1).getName(), is("firstProperty"));
+    }
+
+    @Test
+    public void submittingForm_shouldCallDroolsServiceWithInstantiatedEvent() {
+        FormTester formTester = tester.newFormTester("editor:form");
+        formTester.setValue("fields:testProperty:row:field", "a");
+        formTester.submit();
+        ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
+        verify(eventService).sendEvent(captor.capture());
+        assertThat(captor.getValue(), notNullValue());
+        assertThat(captor.getValue(), is(Dummy.class));
+        assertThat(((Dummy) captor.getValue()).getTestProperty(), is("a"));
+    }
+}

@@ -25,9 +25,9 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.common.Event;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
-import org.openengsb.core.workflow.model.Event;
 
 public class WorkflowServiceTest {
 
@@ -48,7 +48,7 @@ public class WorkflowServiceTest {
         WorkflowServiceImpl service = new WorkflowServiceImpl();
         RuleManager manager = new DirectoryRuleSource("data/rulebase");
         service.setRulemanager(manager);
-        Event event = new Event("", "hello");
+        Event event = new Event();
         service.processEvent(event);
     }
 
@@ -59,11 +59,9 @@ public class WorkflowServiceTest {
         service.setRulemanager(manager);
         RuleListener listener = new RuleListener();
         service.registerRuleListener(listener);
-        Event event = new Event("", "hello");
+        Event event = new Event();
         service.processEvent(event);
         Assert.assertTrue(listener.haveRulesFired("hello1"));
     }
-
-    // TriggersHelloWorld
 
 }

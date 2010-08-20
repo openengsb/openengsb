@@ -2,4 +2,4 @@ java.util.List
 java.util.ArrayList
 java.util.Map
 java.util.HashMap
-org.openengsb.core.workflow.model.Event
+org.openengsb.core.common.Event

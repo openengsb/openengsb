@@ -1,4 +1,4 @@
 when
-	Event( name == "hello" )
+	Event()
 then
 	System.out.println("Hello World");
