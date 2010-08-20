@@ -19,6 +19,7 @@ package org.openengsb.ui.web;
 
 import org.apache.wicket.markup.html.WebPage;
 
+@SuppressWarnings("serial")
 public class BasePage extends WebPage {
 
 }

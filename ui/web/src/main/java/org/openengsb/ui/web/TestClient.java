@@ -40,6 +40,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
+@SuppressWarnings("serial")
 public class TestClient extends BasePage {
 
     private static Log log = LogFactory.getLog(TestClient.class);

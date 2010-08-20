@@ -33,6 +33,7 @@ import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.service.DomainService;
 
+@SuppressWarnings("serial")
 public class Index extends BasePage {
 
     @SpringBean

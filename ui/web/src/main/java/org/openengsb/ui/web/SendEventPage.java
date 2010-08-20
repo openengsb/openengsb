@@ -42,6 +42,7 @@ import org.openengsb.core.config.descriptor.AttributeDefinition.Builder;
 import org.openengsb.ui.web.editor.EditorPanel;
 import org.openengsb.ui.web.service.EventService;
 
+@SuppressWarnings("serial")
 public class SendEventPage extends BasePage {
 
     private static final Log log = LogFactory.getLog(SendEventPage.class);

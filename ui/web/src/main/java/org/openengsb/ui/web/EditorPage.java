@@ -28,6 +28,7 @@ import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.editor.EditorPanel;
 
+@SuppressWarnings("serial")
 public class EditorPage extends BasePage {
 
     private final ServiceManager serviceManager;

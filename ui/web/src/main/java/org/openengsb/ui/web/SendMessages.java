@@ -31,10 +31,11 @@ import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
+@SuppressWarnings("serial")
 public class SendMessages extends BasePage {
 
     @SpringBean
-    DomainService domainService;
+    private DomainService domainService;
 
     private final BaseTree tree;
 
