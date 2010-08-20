@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/**
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
@@ -15,11 +14,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
--->
-<beans xmlns:context="http://www.openengsb.org/domain/context/1.0" xmlns:ctx="urn:openengsb:context"
-  xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+ */
+package org.openengsb.core.common.context;
 
-  <context:contextEndpoint endpoint="contextEndpoint" service="ctx:contextService" />
-
-</beans>
+public interface ContextQueryService {
+    String getValue(String key);
+}

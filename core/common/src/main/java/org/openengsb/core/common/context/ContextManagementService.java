@@ -13,20 +13,10 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
- */
-package org.openengsb.context;
 
-import org.openengsb.core.OpenEngSBComponent;
-
-/**
- * @org.apache.xbean.XBean element="contextComponent"
- *                         description="Context Component" The Context-component
  */
-public class ContextComponent extends OpenEngSBComponent {
-    @Override
-    protected Class<?>[] getEndpointClasses() {
-        return new Class[] { ContextEndpoint.class };
-    }
-    
+package org.openengsb.core.common.context;
+
+public interface ContextManagementService extends ContextQueryService {
+    void setValue(String key, String value);
 }
