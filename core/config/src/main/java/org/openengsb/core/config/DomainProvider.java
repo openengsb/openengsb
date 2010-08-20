@@ -20,6 +20,7 @@ package org.openengsb.core.config;
 import java.util.List;
 import java.util.Locale;
 
+import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 
 /**

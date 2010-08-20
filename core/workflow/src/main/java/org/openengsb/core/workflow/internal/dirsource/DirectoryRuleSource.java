@@ -66,6 +66,10 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         this.path = path;
     }
 
+    public void init() throws RuleBaseException {
+        this.getRulebase();
+    }
+
     public final String getPath() {
         return this.path;
     }
@@ -186,9 +190,8 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         }
 
         Properties properties = new Properties();
-        properties.setProperty( "drools.dialect.java.compiler",
-                                "JANINO" );
-        PackageBuilderConfiguration conf = new PackageBuilderConfiguration( properties );
+        properties.setProperty("drools.dialect.java.compiler", "JANINO");
+        PackageBuilderConfiguration conf = new PackageBuilderConfiguration(properties);
 
         final PackageBuilder builder = new PackageBuilder(conf);
         try {

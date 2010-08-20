@@ -18,6 +18,8 @@
 package org.openengsb.core.workflow;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -25,14 +27,61 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
+import org.openengsb.core.workflow.model.RuleBaseElementId;
+import org.openengsb.core.workflow.model.RuleBaseElementType;
 
 public class WorkflowServiceTest {
 
+    public interface LogDomain extends Domain {
+        void log(String string);
+    }
+
+    public class LogDomainMock implements LogDomain {
+        public StringBuffer log = new StringBuffer();
+
+        @Override
+        public void log(String string) {
+            log.append(string);
+        }
+    }
+
+    private WorkflowServiceImpl service;
+    private RuleManager manager;
+    private RuleListener listener;
+    private LogDomainMock logService;
+
     @Before
     public void setUp() throws Exception {
+        service = new WorkflowServiceImpl();
+        setupRulemanager();
+        service.setRulemanager(manager);
+        service.setCurrentContextService(Mockito.mock(ContextCurrentService.class));
+        setupDomains();
+        listener = new RuleListener();
+        service.registerRuleListener(listener);
+    }
+
+    private void setupRulemanager() throws RuleBaseException {
+        manager = new DirectoryRuleSource("data/rulebase");
+        ((DirectoryRuleSource) manager).init();
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Import, LogDomain.class.getName()), "");
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Global, "log"), LogDomain.class.getName());
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
+                "when\n Event ( contextId == \"test-context\")\n then \n log.log(\"42\");");
+    }
+
+    private void setupDomains() {
+        Map<String, Domain> domains = new HashMap<String, Domain>();
+        logService = new LogDomainMock();
+        domains.put("log", logService);
+        service.setDomainServices(domains);
     }
 
     @After
@@ -45,23 +94,28 @@ public class WorkflowServiceTest {
 
     @Test
     public void testProcessEvent() throws Exception {
-        WorkflowServiceImpl service = new WorkflowServiceImpl();
-        RuleManager manager = new DirectoryRuleSource("data/rulebase");
-        service.setRulemanager(manager);
         Event event = new Event();
         service.processEvent(event);
     }
 
     @Test
     public void testProcessEventTriggersHelloWorld() throws Exception {
-        WorkflowServiceImpl service = new WorkflowServiceImpl();
-        RuleManager manager = new DirectoryRuleSource("data/rulebase");
-        service.setRulemanager(manager);
-        RuleListener listener = new RuleListener();
-        service.registerRuleListener(listener);
         Event event = new Event();
         service.processEvent(event);
         Assert.assertTrue(listener.haveRulesFired("hello1"));
     }
 
+    @Test
+    public void testUseLog() throws Exception {
+        Event event = new Event("test-context");
+        service.processEvent(event);
+        Assert.assertTrue(listener.haveRulesFired("logtest"));
+    }
+
+    @Test
+    public void testUseLogContent() throws Exception {
+        Event event = new Event("test-context");
+        service.processEvent(event);
+        Assert.assertEquals("42", logService.log.toString());
+    }
 }

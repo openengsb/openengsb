@@ -25,6 +25,6 @@
 
   <osgi:list id="domains" interface="org.openengsb.core.config.DomainProvider" />
   <osgi:list id="services" interface="org.openengsb.core.config.ServiceManager" />
-  <osgi:list id="managedServiceInstances" member-type="service-reference" interface="org.openengsb.core.config.Domain" />
+  <osgi:list id="managedServiceInstances" member-type="service-reference" interface="org.openengsb.core.common.Domain" />
 
 </beans>
