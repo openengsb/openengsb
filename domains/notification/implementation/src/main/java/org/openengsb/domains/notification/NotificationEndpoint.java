@@ -15,7 +15,7 @@
    limitations under the License.
    
  */
-package org.openengsb.notification;
+package org.openengsb.domains.notification;
 
 import javax.xml.namespace.QName;
 
