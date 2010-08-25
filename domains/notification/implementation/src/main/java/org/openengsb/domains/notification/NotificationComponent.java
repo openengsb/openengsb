@@ -17,14 +17,15 @@
  */
 package org.openengsb.domains.notification;
 
-import org.openengsb.core.OpenEngSBComponent;
+import org.openengsb.domains.notification.NotificationEndpoint;
+import org.openengsb.domains.notification.NotificationEventEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="notificationComponent"
  *                         description="Notification Component"
  */
-public class NotificationComponent extends OpenEngSBComponent {
-    @Override
+public class NotificationComponent {//extends OpenEngSBComponent {
+    //@Override
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { NotificationEndpoint.class, NotificationEventEndpoint.class };
     }

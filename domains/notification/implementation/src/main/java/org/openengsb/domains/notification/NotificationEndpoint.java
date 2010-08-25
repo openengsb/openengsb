@@ -18,10 +18,7 @@
 package org.openengsb.domains.notification;
 
 import javax.xml.namespace.QName;
-
-import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.endpoints.ForwardEndpoint;
-import org.openengsb.drools.NotificationDomain;
+import org.openengsb.core.workflow.domains.NotificationDomain;
 
 /**
  * @org.apache.xbean.XBean element="notificationEndpoint"
