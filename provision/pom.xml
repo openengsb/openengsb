@@ -117,13 +117,8 @@
 
     <!-- Apache Karaf Base -->
     <dependency>
-      <groupId>org.apache.felix.karaf</groupId>
-      <artifactId>org.apache.felix.karaf.commons</artifactId>
-      <version>${karaf.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix.karaf</groupId>
-      <artifactId>org.apache.felix.karaf.management</artifactId>
+      <groupId>org.apache.karaf</groupId>
+      <artifactId>org.apache.karaf.management</artifactId>
       <version>${karaf.version}</version>
     </dependency>
 
@@ -143,111 +138,111 @@
 
     <!-- Apache Karaf Shell -->
     <dependency>
-      <groupId>org.apache.felix.karaf.shell</groupId>
-      <artifactId>org.apache.felix.karaf.shell.console</artifactId>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.console</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.shell</groupId>
-      <artifactId>org.apache.felix.karaf.shell.commands</artifactId>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.commands</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.shell</groupId>
-      <artifactId>org.apache.felix.karaf.shell.config</artifactId>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.config</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.shell</groupId>
-      <artifactId>org.apache.felix.karaf.shell.log</artifactId>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.log</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.shell</groupId>
-      <artifactId>org.apache.felix.karaf.shell.osgi</artifactId>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.osgi</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.shell</groupId>
-      <artifactId>org.apache.felix.karaf.shell.packages</artifactId>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.packages</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.shell</groupId>
-      <artifactId>org.apache.felix.karaf.shell.ssh</artifactId>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.ssh</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.shell</groupId>
-      <artifactId>org.apache.felix.karaf.shell.dev</artifactId>
+      <groupId>org.apache.karaf.shell</groupId>
+      <artifactId>org.apache.karaf.shell.dev</artifactId>
       <version>${karaf.version}</version>
     </dependency>
 
     <!-- Apache Karaf Admin -->
     <dependency>
-      <groupId>org.apache.felix.karaf.admin</groupId>
-      <artifactId>org.apache.felix.karaf.admin.core</artifactId>
+      <groupId>org.apache.karaf.admin</groupId>
+      <artifactId>org.apache.karaf.admin.core</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.admin</groupId>
-      <artifactId>org.apache.felix.karaf.admin.management</artifactId>
+      <groupId>org.apache.karaf.admin</groupId>
+      <artifactId>org.apache.karaf.admin.management</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.admin</groupId>
-      <artifactId>org.apache.felix.karaf.admin.command</artifactId>
+      <groupId>org.apache.karaf.admin</groupId>
+      <artifactId>org.apache.karaf.admin.command</artifactId>
       <version>${karaf.version}</version>
     </dependency>
 
     <!-- Apache Karaf JAAS -->
     <dependency>
-      <groupId>org.apache.felix.karaf.jaas</groupId>
-      <artifactId>org.apache.felix.karaf.jaas.boot</artifactId>
+      <groupId>org.apache.karaf.jaas</groupId>
+      <artifactId>org.apache.karaf.jaas.boot</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.jaas</groupId>
-      <artifactId>org.apache.felix.karaf.jaas.config</artifactId>
+      <groupId>org.apache.karaf.jaas</groupId>
+      <artifactId>org.apache.karaf.jaas.config</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.jaas</groupId>
-      <artifactId>org.apache.felix.karaf.jaas.modules</artifactId>
+      <groupId>org.apache.karaf.jaas</groupId>
+      <artifactId>org.apache.karaf.jaas.modules</artifactId>
       <version>${karaf.version}</version>
     </dependency>
 
     <!-- Apache Karaf Features -->
     <dependency>
-      <groupId>org.apache.felix.karaf.features</groupId>
-      <artifactId>org.apache.felix.karaf.features.command</artifactId>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>org.apache.karaf.features.command</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.features</groupId>
-      <artifactId>org.apache.felix.karaf.features.core</artifactId>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>org.apache.karaf.features.core</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.features</groupId>
-      <artifactId>org.apache.felix.karaf.features.management</artifactId>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>org.apache.karaf.features.management</artifactId>
       <version>${karaf.version}</version>
     </dependency>
 
     <!-- Apache Karaf Deployer -->
     <dependency>
-      <groupId>org.apache.felix.karaf.deployer</groupId>
-      <artifactId>org.apache.felix.karaf.deployer.blueprint</artifactId>
+      <groupId>org.apache.karaf.deployer</groupId>
+      <artifactId>org.apache.karaf.deployer.blueprint</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.deployer</groupId>
-      <artifactId>org.apache.felix.karaf.deployer.spring</artifactId>
+      <groupId>org.apache.karaf.deployer</groupId>
+      <artifactId>org.apache.karaf.deployer.spring</artifactId>
       <version>${karaf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.felix.karaf.deployer</groupId>
-      <artifactId>org.apache.felix.karaf.deployer.features</artifactId>
+      <groupId>org.apache.karaf.deployer</groupId>
+      <artifactId>org.apache.karaf.deployer.features</artifactId>
       <version>${karaf.version}</version>
     </dependency>
 
