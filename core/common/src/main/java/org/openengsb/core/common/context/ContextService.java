@@ -24,4 +24,6 @@ public interface ContextService {
     String getValue(String pathAndKey);
 
     Context getContext(String path);
+
+    Context getContext();
 }

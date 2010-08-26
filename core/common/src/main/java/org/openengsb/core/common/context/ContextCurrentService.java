@@ -29,5 +29,12 @@ public interface ContextCurrentService extends ContextService {
      * @throws IllegalArgumentException if {@code contextId} specifies a
      *         non-existing context.
      */
-    void setCurrentContext(String contextId);
+    void setThreadLocalContext(String contextId);
+
+    /**
+     * Creates a new empty context with the given {@code contextId}.
+     * 
+     * @throws IllegalArgumentException if a context with the given id exists
+     */
+    void createContext(String contextId);
 }
