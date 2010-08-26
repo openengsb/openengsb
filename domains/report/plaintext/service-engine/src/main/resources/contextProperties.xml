@@ -23,13 +23,6 @@
   <bean id="contextProperties" class="java.util.HashMap">
     <constructor-arg type="java.util.Map">
       <map key-type="java.lang.String" value-type="java.util.Map">
-        <entry key="42">
-          <map key-type="java.lang.String" value-type="java.lang.String">
-            <entry key="report/plaintext-report/namespace" value="urn:openengsb:plaintext-report" />
-            <entry key="report/plaintext-report/servicename" value="plaintextReportService" />
-            <entry key="report/plaintext-report/config/reportDirectory" value="data/openengsb/reports" />
-          </map>
-        </entry>
       </map>
     </constructor-arg>
   </bean>

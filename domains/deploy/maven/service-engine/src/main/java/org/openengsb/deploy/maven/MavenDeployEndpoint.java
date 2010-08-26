@@ -28,9 +28,16 @@ import org.openengsb.drools.DeployDomain;
  */
 public class MavenDeployEndpoint extends LinkingEndpoint<DeployDomain> {
 
+    private MavenDeployDomainImpl deployDomain;
+
     @Override
     protected DeployDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-        return new MavenDeployDomainImpl(contextHelper, createEventHelper(msgProperties));
+        this.deployDomain.setEventHelper(createEventHelper(msgProperties));
+        return deployDomain;
+    }
+
+    public void setDeployDomain(MavenDeployDomainImpl deployDomain) {
+        this.deployDomain = deployDomain;
     }
 
 }

@@ -17,11 +17,12 @@
  */
 package org.openengsb.core.xmlmapping;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "XMLMappable")
-public class XMLMappable
-{
+@XmlRootElement(name = "XMLMappable")
+public class XMLMappable {
     private int choiceSelect = -1;
     private static final int NULL_CHOICE = 0;
     private static final int REFERENCE_CHOICE = 1;
@@ -46,8 +47,7 @@ public class XMLMappable
         if (choiceSelect == -1) {
             choiceSelect = choice;
         } else if (choiceSelect != choice) {
-            throw new IllegalStateException(
-                    "Need to call clearChoiceSelect() before changing existing choice");
+            throw new IllegalStateException("Need to call clearChoiceSelect() before changing existing choice");
         }
     }
 
@@ -60,7 +60,7 @@ public class XMLMappable
 
     /**
      * Check if Null is current selection for choice.
-     *
+     * 
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifNull() {
@@ -69,7 +69,7 @@ public class XMLMappable
 
     /**
      * Get the 'null' element value.
-     *
+     * 
      * @return value
      */
     public String getNull() {
@@ -78,7 +78,7 @@ public class XMLMappable
 
     /**
      * Set the 'null' element value.
-     *
+     * 
      * @param _null
      */
     public void setNull(String _null) {
@@ -88,7 +88,7 @@ public class XMLMappable
 
     /**
      * Check if Reference is current selection for choice.
-     *
+     * 
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifReference() {
@@ -97,7 +97,7 @@ public class XMLMappable
 
     /**
      * Get the 'reference' element value.
-     *
+     * 
      * @return value
      */
     public XMLReference getReference() {
@@ -106,7 +106,7 @@ public class XMLMappable
 
     /**
      * Set the 'reference' element value.
-     *
+     * 
      * @param reference
      */
     public void setReference(XMLReference reference) {
@@ -116,7 +116,7 @@ public class XMLMappable
 
     /**
      * Check if Primitive is current selection for choice.
-     *
+     * 
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifPrimitive() {
@@ -125,7 +125,7 @@ public class XMLMappable
 
     /**
      * Get the 'primitive' element value.
-     *
+     * 
      * @return value
      */
     public XMLPrimitive getPrimitive() {
@@ -134,7 +134,7 @@ public class XMLMappable
 
     /**
      * Set the 'primitive' element value.
-     *
+     * 
      * @param primitive
      */
     public void setPrimitive(XMLPrimitive primitive) {
@@ -144,7 +144,7 @@ public class XMLMappable
 
     /**
      * Check if Bean is current selection for choice.
-     *
+     * 
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifBean() {
@@ -153,7 +153,7 @@ public class XMLMappable
 
     /**
      * Get the 'bean' element value.
-     *
+     * 
      * @return value
      */
     public XMLBean getBean() {
@@ -162,7 +162,7 @@ public class XMLMappable
 
     /**
      * Set the 'bean' element value.
-     *
+     * 
      * @param bean
      */
     public void setBean(XMLBean bean) {
@@ -172,7 +172,7 @@ public class XMLMappable
 
     /**
      * Check if List is current selection for choice.
-     *
+     * 
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifList() {
@@ -181,7 +181,7 @@ public class XMLMappable
 
     /**
      * Get the 'list' element value.
-     *
+     * 
      * @return value
      */
     public XMLMappableList getList() {
@@ -190,7 +190,7 @@ public class XMLMappable
 
     /**
      * Set the 'list' element value.
-     *
+     * 
      * @param list
      */
     public void setList(XMLMappableList list) {
@@ -200,7 +200,7 @@ public class XMLMappable
 
     /**
      * Check if Event is current selection for choice.
-     *
+     * 
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifEvent() {
@@ -209,7 +209,7 @@ public class XMLMappable
 
     /**
      * Get the 'event' element value.
-     *
+     * 
      * @return value
      */
     public XMLEvent getEvent() {
@@ -218,7 +218,7 @@ public class XMLMappable
 
     /**
      * Set the 'event' element value.
-     *
+     * 
      * @param event
      */
     public void setEvent(XMLEvent event) {
@@ -228,7 +228,7 @@ public class XMLMappable
 
     /**
      * Check if Map is current selection for choice.
-     *
+     * 
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifMap() {
@@ -237,7 +237,7 @@ public class XMLMappable
 
     /**
      * Get the 'map' element value.
-     *
+     * 
      * @return value
      */
     public XMLMapEntryList getMap() {
@@ -246,7 +246,7 @@ public class XMLMappable
 
     /**
      * Set the 'map' element value.
-     *
+     * 
      * @param map
      */
     public void setMap(XMLMapEntryList map) {
@@ -256,7 +256,7 @@ public class XMLMappable
 
     /**
      * Check if Context is current selection for choice.
-     *
+     * 
      * @return <code>true</code> if selection, <code>false</code> if not
      */
     public boolean ifContext() {
@@ -265,7 +265,7 @@ public class XMLMappable
 
     /**
      * Get the 'context' element value.
-     *
+     * 
      * @return value
      */
     public XMLContext getContext() {
@@ -274,7 +274,7 @@ public class XMLMappable
 
     /**
      * Set the 'context' element value.
-     *
+     * 
      * @param context
      */
     public void setContext(XMLContext context) {
@@ -284,7 +284,7 @@ public class XMLMappable
 
     /**
      * Get the 'id' element value.
-     *
+     * 
      * @return value
      */
     public String getId() {
@@ -293,7 +293,7 @@ public class XMLMappable
 
     /**
      * Set the 'id' element value.
-     *
+     * 
      * @param id
      */
     public void setId(String id) {
@@ -302,7 +302,7 @@ public class XMLMappable
 
     /**
      * Get the 'domainConcept' attribute value.
-     *
+     * 
      * @return value
      */
     public String getDomainConcept() {
@@ -311,7 +311,7 @@ public class XMLMappable
 
     /**
      * Set the 'domainConcept' attribute value.
-     *
+     * 
      * @param domainConcept
      */
     public void setDomainConcept(String domainConcept) {

@@ -32,6 +32,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.servicemix.util.jaf.ByteArrayDataSource;
 import org.openengsb.drools.NotificationDomain;
 import org.openengsb.drools.model.Attachment;
@@ -39,26 +41,26 @@ import org.openengsb.drools.model.Notification;
 
 public class EmailNotifier implements NotificationDomain {
 
-    private Properties props;
+    private Log log = LogFactory.getLog(getClass());
+
+    private EmailConfiguration configuration;
 
     private Authenticator authenticator;
 
-    public EmailNotifier(Properties props) {
-        this.props = props;
-    }
-
-    public EmailNotifier(Properties props, String user, String password) {
-        this.props = props;
-        authenticator = new SmtpAuthenticator(user, password);
+    public EmailNotifier(EmailConfiguration configuration) {
+        this.configuration = configuration;
+        authenticator = new SmtpAuthenticator(configuration.getUser(), configuration.getPassword());
     }
 
     public void notify(Notification notification) {
+        log.info("Sending notification with email connector.");
         try {
-            Session session = Session.getDefaultInstance(props, authenticator);
+            Properties properties = configuration.getEmailProperties();
+            Session session = Session.getDefaultInstance(properties, authenticator);
 
             Message msg = new MimeMessage(session);
 
-            InternetAddress addressFrom = new InternetAddress(props.getProperty("mail.smtp.user"));
+            InternetAddress addressFrom = new InternetAddress(properties.getProperty("mail.smtp.user"));
             msg.setFrom(addressFrom);
 
             InternetAddress addressTo = new InternetAddress(notification.getRecipient());
@@ -88,7 +90,7 @@ public class EmailNotifier implements NotificationDomain {
             msg.setContent(multipart);
             Transport.send(msg);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.error("Exception on sending email notification.", e);
         }
     }
 

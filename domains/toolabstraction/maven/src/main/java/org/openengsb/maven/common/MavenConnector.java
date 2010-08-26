@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.embedder.Configuration;
 import org.apache.maven.embedder.DefaultConfiguration;
 import org.apache.maven.embedder.MavenEmbedder;
@@ -44,6 +46,8 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.reactor.MavenExecutionException;
 
 public class MavenConnector {
+
+    private Log log = LogFactory.getLog(getClass());
 
     public enum LogLevel {
         DEBUG(0), INFO(1), WARN(2), ERROR(3), FATAL(4), QUIET(5);
@@ -167,15 +171,15 @@ public class MavenConnector {
                 return name.endsWith("xml");
             }
         });
+        Map<String, byte[]> reports = new HashMap<String, byte[]>();
         for (File testReport : xmlTestReports) {
-            Map<String, byte[]> reports = new HashMap<String, byte[]>();
             try {
                 reports.put(testReport.getName(), FileUtils.readFileToByteArray(testReport));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                log.error("Error reading xml test report", e);
             }
-            mavenResult.setTestReports(reports);
         }
+        mavenResult.setTestReports(reports);
     }
 
     private void appendTextualTestReports(StringWriter writer, File surefireReportDir) {
@@ -191,7 +195,7 @@ public class MavenConnector {
                 writer.append("\n\n ------ test report ------\n");
                 writer.append(FileUtils.readFileToString(testReport));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                log.error("Error readeing test report", e);
             }
         }
     }
@@ -261,9 +265,9 @@ public class MavenConnector {
                 }
 
             } catch (ProjectBuildingException e) {
-                e.printStackTrace();
+                log.error("Error reading reactor result", e);
             } catch (MavenExecutionException e) {
-                e.printStackTrace();
+                log.error("Error reading reactor result", e);
             }
         }
     }

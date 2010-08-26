@@ -18,7 +18,6 @@
 package org.openengsb.build;
 
 import org.openengsb.core.OpenEngSBComponent;
-import org.openengsb.core.endpoints.EventForwardEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="buildComponent"
@@ -27,7 +26,7 @@ import org.openengsb.core.endpoints.EventForwardEndpoint;
 public class BuildComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class[] { BuildEndpoint.class, EventForwardEndpoint.class };
+        return new Class[] { BuildEndpoint.class, BuildEventEndpoint.class };
     }
-    
+
 }

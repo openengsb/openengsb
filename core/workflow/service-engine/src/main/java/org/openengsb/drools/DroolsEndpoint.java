@@ -207,13 +207,7 @@ public class DroolsEndpoint extends SimpleEventEndpoint {
         try {
             drools.start();
         } finally {
-            shutdown(drools);
+            drools.stop();
         }
     }
-
-    private void shutdown(DroolsExecutionContext drools) {
-        drools.stop();
-        this.ruleBase = null;
-    }
-
 }

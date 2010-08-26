@@ -16,67 +16,70 @@
    limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.openengsb</groupId>
-    <artifactId>openengsb-parent</artifactId>
+    <relativePath>../poms/compiled/</relativePath>
+    <groupId>org.openengsb.build</groupId>
+    <artifactId>compiled-bundle-settings</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
   </parent>
-
+  
+  <groupId>org.openengsb</groupId>
   <artifactId>openengsb-docs</artifactId>
-  <name>openengsb-docs</name>
+  <name>OpenEngSB :: Documentation &amp; Homepage</name>
   <packaging>pom</packaging>
 
   <description>
     Documentation project of Open Engineering Service Bus
   </description>
 
-  <distributionManagement>
-    <site>
-      <id>OpenengsbWebServer</id>
-      <url>scp://openengsb.org/var/www/openengsb/</url>
-    </site>
-  </distributionManagement>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <version>${maven.rat.version}</version>
-        <configuration>
-          <excludes>
-            <!-- raw data -->
-            <exclude>**/*.dia</exclude>
-            <exclude>**/*.vpp</exclude>
-            <exclude>src/site/docbook/empty.txt</exclude>
-            <!-- licensed externally -->
-            <exclude>src/docbkx/resources/css/highlight.css</exclude>
-            <exclude>src/docbkx/resources/css/html.css</exclude>
-            <exclude>src/docbkx/resources/xsl/fopdf.xsl</exclude>
-            <exclude>src/docbkx/resources/xsl/highlight-fo.xsl</exclude>
-            <exclude>src/docbkx/resources/xsl/highlight.xsl</exclude>
-            <exclude>src/docbkx/resources/xsl/html.xsl</exclude>
-          </excludes>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
+  
   <profiles>
+    <profile>
+      <id>nightly</id>
+      <activation>
+        <property>
+          <name>nightly</name>
+        </property>
+      </activation>
+      <distributionManagement>
+        <site>
+          <id>OpenengsbWebServer</id>
+          <url>scp://openengsb.org/var/www/openengsb/nightly</url>
+        </site>
+      </distributionManagement>
+    </profile>
+    <profile>
+      <id>milestone</id>
+      <activation>
+        <property>
+          <name>milestone</name>
+        </property>
+      </activation>
+      <distributionManagement>
+        <site>
+          <id>OpenengsbWebServer</id>
+          <url>scp://openengsb.org/var/www/openengsb/</url>
+        </site>
+      </distributionManagement>
+    </profile>
+    <profile>
+      <id>final</id>
+      <activation>
+        <property>
+          <name>final</name>
+        </property>
+      </activation>
+      <distributionManagement>
+        <site>
+          <id>OpenengsbWebServer</id>
+          <url>scp://openengsb.org/var/www/openengsb/</url>
+        </site>
+      </distributionManagement>
+    </profile>
     <profile>
       <id>docs</id>
       <build>
@@ -251,6 +254,42 @@
           </plugin>
         </plugins>
       </build>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-project-info-reports-plugin</artifactId>
+            <version>2.2</version>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>project-team</report>
+                  <report>mailing-list</report>
+                  <report>cim</report>
+                  <report>issue-tracking</report>
+                  <report>license</report>
+                  <report>scm</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-changes-plugin</artifactId>
+            <version>2.3</version>
+            <configuration>
+              <onlyCurrentVersion>true</onlyCurrentVersion>
+            </configuration>
+            <reportSets>
+              <reportSet>
+                <reports>
+                  <report>jira-report</report>
+                </reports>
+              </reportSet>
+            </reportSets>
+          </plugin>
+        </plugins>
+      </reporting>
       <repositories>
         <repository>
           <id>jai.repository</id>

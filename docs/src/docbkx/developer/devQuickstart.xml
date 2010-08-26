@@ -282,7 +282,7 @@
               <literallayout><command>git clone</command> git@github.com:openengsb/openengsb</literallayout>
               
               Add your fork as remote branch:
-              <literallayout><command>git remote</command> add <replaceable>username</replaceable> git@github.com/<replaceable>username</replaceable>/openengsb</literallayout>
+              <literallayout><command>git remote</command> add <replaceable>username</replaceable> git@github.com:<replaceable>username</replaceable>/openengsb</literallayout>
               Example: <literallayout><command>git remote</command> add ChristophGr git@github.com/ChristophGr/openengsb</literallayout>
             </para>
         </section>

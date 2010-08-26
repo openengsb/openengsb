@@ -17,25 +17,11 @@
  */
 package org.openengsb.scm;
 
-import javax.xml.namespace.QName;
-
-import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.endpoints.ForwardEndpoint;
+import org.openengsb.core.endpoints.ProducerEndpoint;
 
 /**
- * @org.apache.xbean.XBean element="scmEndpoint" description="The only
- *                         SCM-Domain-Endpoint. This Endpoint is responsible for
- *                         forwarding all requests to an actual connector, based
- *                         on the configuration in the context"
+ * @org.apache.xbean.XBean element="scmEndpoint" description="The SCM endpoint."
  */
-public class ScmEndpoint extends ForwardEndpoint<Object> {
-
-    @Override
-    protected QName getForwardTarget(ContextHelper contextHelper) {
-        String defaultName = contextHelper.getValue("scm/default");
-        String serviceName = contextHelper.getValue("scm/" + defaultName + "/servicename");
-        String namespace = contextHelper.getValue("scm/" + defaultName + "/namespace");
-        return new QName(namespace, serviceName);
-    }
+public class ScmEndpoint extends ProducerEndpoint {
 
 }

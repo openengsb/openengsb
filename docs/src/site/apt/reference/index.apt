@@ -21,8 +21,8 @@ User Documentation
  want to try the OpenEngSB as for developer like to integrate tool connectors. The introduction of the user manual
  should be read by all and provide additional information which chapters are interesting for which target audience.
 
-    * {{{html/openengsb-manual.html} Multi-HTML page documentation}}
+    * {{{./html/openengsb-manual.html} Multi-HTML page documentation}}
 
-    * {{{html-single/openengsb-manual.html} Singe HTML page documentation}}
+    * {{{./html-single/openengsb-manual.html} Singe HTML page documentation}}
 
-    * {{{pdf/openengsb-manual.pdf} PDF documentation}}
+    * {{{./pdf/openengsb-manual.pdf} PDF documentation}}

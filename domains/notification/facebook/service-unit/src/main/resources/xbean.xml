@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<beans xmlns:facebook="http://www.openengsb.org/connector/facebook/1.0"
+       xmlns:fbk="urn:openengsb:facebook"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+
+    <bean id="facebookConnector" class="org.openengsb.facebook.common.FacebookConnectorImpl">
+        <constructor-arg index="0" value="azugem@gmail.com"/>
+        <constructor-arg index="1" value="password?"/>
+        <constructor-arg index="2" value="87e992543f887369febb9d056c14f145"/>
+        <constructor-arg index="3" value="43438a4fed1b5fed6f7bf6f1c3e5f87f"/>
+    </bean>
+
+    <bean id="facebookNotifier" class="org.openengsb.facebook.FacebookNotifier">
+        <property name="facebookConnector" ref="facebookConnector"/>
+    </bean>
+    <bean id="contextProperties" class="java.util.HashMap">
+    <constructor-arg type="java.util.Map">
+      <map key-type="java.lang.String" value-type="java.util.Map">
+        <entry key="42">
+          <map key-type="java.lang.String" value-type="java.lang.String">
+            <entry key="notification/facebook/servicename" value="facebookService" />
+            <entry key="notification/facebook/namespace" value="urn:openengsb:facebook" />
+          </map>
+        </entry>
+      </map>
+    </constructor-arg>
+  </bean>
+    
+
+    <facebook:facebookEndpoint endpoint="facebookEndpoint" service="fbk:facebookService"
+                               facebookNotifier="#facebookNotifier" contextProperties="#contextProperties" />
+
+</beans>

@@ -1,0 +1,83 @@
+~~
+~~      Copyright 2010 OpenEngSB Division, Vienna University of Technology
+~~
+~~   Licensed under the Apache License, Version 2.0 (the "License");
+~~   you may not use this file except in compliance with the License.
+~~   You may obtain a copy of the License at
+~~
+~~       http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~   Unless required by applicable law or agreed to in writing, software
+~~   distributed under the License is distributed on an "AS IS" BASIS,
+~~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~   See the License for the specific language governing permissions and
+~~   limitations under the License.
+~~
+HowTo - First steps with the OpenEngSB (Hello World aka Logging)
+
+  Note: The OpenEngSB is currently only available as development release.
+Please refer to the {{{./howto_setup.html}Installation Howto}} for detailed
+instructions on building the OpenEngSB.
+
+
+  This HowTo assumes you have already a running instance of the OpenEngSB. Verify
+by accessing the OpenEngSB Web App site at
+{{{http://localhost:8080/openengsb/}http://localhost:8080/openengsb}}. If everything
+was successfull you'll be greeted with a view of the available domains and services.
+
+  The current release provides a simple example domain with one log service
+for logging text to the OSGi shell. In this HowTo we are going to create
+new Log Service instances and use the provided Test-Client to execute a log
+action at the services to log messages to the OSGi shell.
+
+* Creating a new Log Service
+
+  * Create a new Log Service by clicking the "New..." link for the Log Service. In the following view
+you have the possibility to configure the Log Service.
+
+  * Give the service a unique identifier by setting the "Service Id" Field to e.g. "LogTester".
+
+  * The second field configures the log level of the new service. Either
+    "INFO" or "ERROR" is allowed. For now, set the level to "INFO".
+
+  []
+
+[../images/howto/logging_new_instance.jpg]
+
+  * When you have finished setting all fields to appropriate values, create the
+    new instance by clicking the "Save" button.
+
+  * You should be back in the main view. If you want you could create more
+    services, but for this example one or two services are enough.
+
+  []
+
+* Executing a Service Action
+
+  * Next, we are going to execute actions on the previously instantiated services. By
+    clicking the "Test-Client" link a view for invoking actions on the services will be shown.
+
+  * The first drop-down list, provides you with all previously instantiated services. By
+    selecting an instance the second drop-down list will be filled with actions
+    you can invoke on that service. Select one of the services you have created before.
+
+  * Currently all services provide exactly one action named "doSomething". By selecting the
+    available action, a text field will be shown.
+
+  * The "doSomething" action logs the text you type into the text field to the OSGi console.
+    Fill the text field with text of your choice and hit the "Call" button.
+
+  []
+
+[../images/howto/logging_action_log.jpg]
+
+  * Switch to the OSGi shell of your running OpenEngSB instance and execute the "log:display"
+    command. There, you should see log output from the "LogService" in the form "service-id:log-message".
+
+  []
+
+[../images/howto/logging_output.jpg]
+
+
+  Congratulations, you have just finished the first HowTo of the Open Engineering Service Bus.
+

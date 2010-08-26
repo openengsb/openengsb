@@ -29,39 +29,9 @@
 
     <authorgroup>
       <author>
-        <firstname>Andreas</firstname>
-        <surname>Pieber</surname>
-        <email>andreas.pieber [at] ifs.tuwien.ac.at</email>
-      </author>
-      <author>
-        <firstname>Florian</firstname>
-        <surname>Waltersdorfer</surname>
-        <email>ignatiomobius [at] gmail.com</email>
-      </author>
-      <author>
-        <firstname>Michael</firstname>
-        <surname>Handler</surname>
-        <email>michael.handler [at] fullstop.at</email>
-      </author>
-      <author>
-        <firstname>Christoph</firstname>
-        <surname>Gritschenberger</surname>
-        <email>e0525747 [at] student.tuwien.ac</email>
-      </author>
-      <author>
-        <firstname>Patrick</firstname>
-        <surname>Peer</surname>
-        <email>e0326352 [at] gmail.com</email>
-      </author>
-      <author>
-        <firstname>Christoph</firstname>
-        <surname>Zehetner</surname>
-        <email>christoph.zehetner [at] gmx.at</email>
-      </author>
-      <author>
-        <firstname>Michael</firstname>
-        <surname>Heil</surname>
-        <email>michael.heil [at] chello.at</email>
+        <firstname>OpenEngSB</firstname>
+        <surname>Development Team and Contributors</surname>
+        <email>openengsb-dev [at] googlegroups.com</email>
       </author>
     </authorgroup>
   </info>
@@ -122,7 +92,7 @@
     </partintro>
     <xi:include href="domains/domains.xml"/>
   </part>
-  
+
   <part id="appendix">
     <title>Appendix</title>
     <xi:include href="appendix/documentation.xml" />

@@ -17,39 +17,39 @@ Welcome to OpenEngSB!
 
   The Open Engineering Service Bus (OpenEngSB) project provides an easy-to-use
   platform for engineering tool integration. It offers domain-based workflow
-  design for reoccurring integration tasks, freeing an engineer's time for 
+  design for reoccurring integration tasks, freeing an engineer's time for
   creative work.
-  
+
   Interested? Read on ... or directly join the community!
 
 OpenEngSB Community
 
 * About OpenEngSB
 
-  * {{{about.html}What is OpenEngSB?}}
-  
-  * {{{presentation.html}Presentations}}
-  
+  * {{{./about.html}What is OpenEngSB?}}
+
+  * {{{./presentation.html}Presentations}}
+
 * Getting Help
 
-  * {{{reference/index.html}Userguide}}
-  
+  * {{{./reference/index.html}Userguide}}
+
   * {{{http://groups.google.com/group/openengsb-announce}openengsb-announce}} (release announcements)
-  
+
   * {{{http://groups.google.com/group/openengsb-user}openengsb-user}} (user group and support)
-  
+
   * {{{http://groups.google.com/group/openengsb-dev}openengsb-dev}} (developer discussion)
 
 * Getting involved
-  
+
   * {{{http://git.openengsb.org/}Source repository}}
-  
+
   * {{{http://issues.openengsb.org}Issue tracker}}
-  
+
   * {{{http://build.openengsb.org}Build server}}
-  
+
   * {{{http://maven.openengsb.org}Maven repository}}
-  
+
   * {{{contribute/mailinglists.html}Mailing lists}}
-  
+
   * {{{http://www.facebook.com/group.php?gid=208312030232}OpenEngSB on facebook}}

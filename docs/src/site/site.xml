@@ -28,77 +28,71 @@
     <src>images/openengsb_small.png</src>
   </bannerLeft>
 
-  <!--<bannerRight>
-    <name>Vienna University of Technology</name>
-    <src>images/tu.png</src>
-  </bannerRight>-->
-
   <publishDate position="left" />
   <version position="left"/>
 
   <body>
+     <head>
+      <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-17453231-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+          var ga = document.createElement('script'); ga.type =
+          'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' :
+          'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0];
+          s.parentNode.insertBefore(ga, s);
+        })();
+      </script>
+    </head>
+
+    <links>
+      <item name="Final Release" href="http://openengsb.org/" />
+      <item name="Milestone Release" href="http://openengsb.org/" />
+      <item name="Nightly Release" href="http://openengsb.org/nightly" />
+    </links>
+
     <menu name="OpenEngSB">
-      <item href="index.html" name="Welcome" />
-      <item href="about.html" name="What is OpenEngSB?" />
-      <item href="reference/index.html" name="Userguide" />
-      <item href="faq.html" name="FAQ" />
-      <item href="sponsors.html" name="Sponsors" />
+      <item name="Welcome" href="index.html" />
+      <item name="What is OpenEngSB?" href="about.html" />
+	    <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
+	    <item name="Changelog" href="jira-report.html" />
+      <item name="Sponsors" href="sponsors.html" />
     </menu>
 
-    <menu name="OpenEngSB Usage" >
-      <item href="howto/howto_setup.html" name="Developer setup" />
-      <item href="howto/howto_notify.html" name="Hello World" />
-      <item href="howto/howto_issue.html" name="Issue tracker" />
-      <item href="howto/howto_embedded.html" name="Web configuration" />
-      <item href="howto/howto_cit.html" name="Continuous Integration" />
+    <menu name="Quickstart" >
+      <item name="Installation" href="howto/howto_setup.html" />
+      <item name="Hello World" href="howto/howto_logging.html" />
     </menu>
 
-    <menu name="Documentation">
-      <item collapse="true" href="connector/issues/issues.html" name="Issue-Connectors">
-        <item href="proposals/issueDomain.html" name="Issue domain" />
-        <item href="connector/issues/trac.html" name="Trac" />
-      </item>
-      <item collapse="true" href="connector/build/build.html" name="Build-Connectors">
-        <item href="connector/build/buildDomain.html" name="Build domain" />
-        <item href="connector/build/mvn.html" name="Mvn" />
-      </item>
-      <item collapse="true" href="connector/test/test.html" name="Test-Connectors">
-        <item href="connector/test/testDomain.html" name="Test domain" />
-        <item href="connector/test/mvn.html" name="Mvn" />
-      </item>
-      <item collapse="true" href="connector/notification/notification.html" name="Notification-Connectors">
-        <item href="connector/notification/email.html" name="E-Mail" />
-        <item href="connector/notification/twitter.html" name="Twitter" />
-        <item href="connector/notification/xmpp.html" name="XMPP" />
-      </item>
-      <item collapse="true" href="connector/repository/repository.html" name="Repository-Connectors">
-        <item href="connector/repository/deployDomain.html" name="Deployment domain" />
-        <item href="connector/repository/mvn.html" name="Mvn" />
-        <item href="connector/repository/staging.html" name="Staging" />
-      </item>
-      <item collapse="true" href="connector/scm/scm.html" name="SCM-Connectors">
-        <item href="connector/scm/scmConnector.html" name="SCM Connector" />
-        <item href="connector/scm/svnConnector.html" name="Subversion Connector" />
-      </item>
-      <item collapse="true" name="Proposals" href="proposals.html">
-        <item href="proposals/edbInterface.html" name="EDB" />
-        <item href="proposals/scmDomain.html" name="SCM Domain" />
-        <item href="proposals/pimDomain.html" name="PIM Domain" />
-        <item href="proposals/cmsDomain.html" name="CMS Domain" />
-      </item>
+	  <menu name="Documentation" >
+	    <item name="Manual" href="reference/index.html"  />
+      <item name="FAQ" href="reference/faq.html" />
+	    <item name="Presentation Material" href="reference/presentation.html" />
+	    <item name="Youtube Channel" href="http://www.youtube.com/user/cdflexvideo" />
     </menu>
-    
-    <menu name="Development">
-      <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
-      <item name="Source" href="http://github.com/openengsb/openengsb/" />
+
+    <menu name="Community" >
       <item name="Mailing Lists" href="mailinglists.html" />
-      <item name="Presentation Material" href="presentation.html" />
-      <item name="Issues / Roadmap" href="http://issues.openengsb.org/"/>
-      <item name="Continuous Integration" href="http://build.openengsb.org/"/>
-      <item name="Artifacts" href="http://maven.openengsb.org/" />
+	    <item name="Twitter" href="http://twitter.com/openEngSB" />
+	    <item name="Facebook" href="http://www.facebook.com/group.php?gid=208312030232" />
+    </menu>
+
+    <menu name="Development" >
+      <item name="Developer Setup" href="developer_setup.html" />
+      <item name="Source Github" href="http://github.com/openengsb/openengsb/" />
+      <item name="Issues Tracking" href="issue-tracking.html"/>
+      <item name="Continuous Integration" href="integration.html"/>
+      <item name="Maven Repository" href="http://maven.openengsb.org/" />
       <item name="Development Team" href="team-list.html" />
     </menu>
 
+	<menu name="Subprojects" >
+	  <item name="YASTE" href="http://yaste.openengsb.org/" />
+    </menu>
   </body>
 
 </project>

@@ -23,14 +23,6 @@
   <bean id="contextProperties" class="java.util.HashMap">
     <constructor-arg type="java.util.Map">
       <map key-type="java.lang.String" value-type="java.util.Map">
-        <entry key="42">
-          <map key-type="java.lang.String" value-type="java.lang.String">
-            <entry key="deploy/servicename" value="deployService" />
-            <entry key="deploy/namespace" value="urn:openengsb:deploy" />
-            <entry key="deploy/event/servicename" value="eventService" />
-            <entry key="deploy/default" value="maven-deploy" />
-          </map>
-        </entry>
       </map>
     </constructor-arg>
   </bean>

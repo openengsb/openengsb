@@ -17,23 +17,11 @@
  */
 package org.openengsb.svn;
 
-import org.openengsb.contextcommon.ContextHelper;
-import org.openengsb.core.MessageProperties;
-import org.openengsb.core.endpoints.LinkingEndpoint;
+import org.openengsb.core.endpoints.ProducerEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="svnEndpoint" description="SVN SCM Endpoint"
  */
-public class SvnEndpoint extends LinkingEndpoint<SvnConnector> {
-    private SvnConnector connector;
-
-    @Override
-    protected SvnConnector getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
-        return connector;
-    }
-
-    public void setConnector(SvnConnector connector) {
-        this.connector = connector;
-    }
+public class SvnEndpoint extends ProducerEndpoint {
 
 }

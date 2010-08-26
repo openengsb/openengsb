@@ -1,0 +1,200 @@
+/*
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+ */
+body {
+  background-color: white;
+  color: black;
+  font-family: 'Tahoma', 'Lucida Sans', 'Arial', 'Helvetica', 'Sans-serif', 'sans';
+  font-size: 9pt;
+}
+
+h1,h2,h3,h4,h5,h6,h7,h8 {
+  color: #000000;
+  font-weight: bold;
+}
+
+h1,h2 {
+  letter-spacing: -1px;
+  font-family: 'Trebuchet MS';
+}
+
+.feedbackPanelERROR {
+  color: red;
+  list-style: circle;
+  font-weight: bold;
+}
+
+.feedbackPanelINFO {
+  color: green;
+  list-style: circle;
+  font-weight: bold;
+}
+
+.block {
+  padding: 10px;
+}
+
+.blockWithBorder {
+  border-width: thin;
+  border-style: dotted;
+  border-color: #E9601A;
+}
+
+#hellomessage {
+  font-size: 30pt;
+}
+
+#titleblock {
+  color: white;
+  font-weight: bold;
+  border-width: thin;
+  padding: 17px 2px 2px 6px;
+}
+
+#titleblock a {
+  color: #000;
+}
+
+.red {
+  background-color: #ff0000;
+}
+
+.green {
+  background-color: #008000;
+}
+
+#loginBox {
+  width: 30%;
+}
+
+#navigation {
+  min-width: 10%;
+  text-wrap: suppress;
+}
+
+a {
+  color: #008E9C;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  border: none;
+}
+
+pre {
+  font-family: 'Lucida Sans', 'Helvetica', 'Sans serif', 'sans';
+}
+
+tr.none {
+  background: transparent;
+}
+
+a.none {
+  background: transparent;
+  padding-right: 0px;
+}
+
+.inputForm label {
+  display: block;
+  margin-top: 5px;
+}
+
+#numberRadioChoice label {
+  display: inline !important;
+}
+
+.inputForm label.non {
+  display: inline !important;
+}
+
+.inputFormTable td {
+  vertical-align: top;
+  padding: 10px;
+}
+
+#nestedExampleTree {
+  width: 300px;
+}
+
+#feedbackPanel {
+  width: 600px;
+}
+
+#siteSelection {
+  width: 200px;
+}
+
+div.tabRowContent {
+  border-color: #DDDDDD;
+  border-style: solid;
+  border-width: 1px;
+  margin: 4px;
+  padding: 4px;
+}
+
+/* TAB PANEL STYLES */
+.tabpanel div.tab-row ul {
+  height: 20px;
+  margin: 0;
+  padding-left: 10px;
+  background: url( tabs/tab_bottom.gif ) repeat-x bottom;
+}
+
+.tabpanel div.tab-row li {
+  margin: 0;
+  padding: 0;
+  display: inline;
+  list-style-type: none;
+}
+
+.tabpanel div.tab-row a:link,div.tabpanel4 div.tab-row a:visited {
+  float: left;
+  background: #f3f3f3;
+  font-size: 12px;
+  line-height: 14px;
+  font-weight: bold;
+  padding: 2px 10px 2px 10px;
+  margin-right: 4px;
+  border: 1px solid #ccc;
+  text-decoration: none;
+  color: #666;
+}
+
+.tabpanel div.tab-row li.selected a:link,div.tabpanel4 div.tab-row a:visited.active {
+  border-bottom: 1px solid #fff;
+  background: #fff;
+  color: #000;
+}
+
+.tabpanel div.tab-row a:hover {
+  background: #fff;
+}
+
+.tooltip {
+  display: none;
+  background: transparent url(/tools/img/tooltip/black_arrow.png);
+  font-size: 12px;
+  height: 70px;
+  width: 160px;
+  padding: 25px;
+  color: #fff;
+}

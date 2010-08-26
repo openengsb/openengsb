@@ -47,6 +47,8 @@ import org.openengsb.core.OpenEngSBComponent;
 import org.openengsb.core.model.MethodCall;
 import org.openengsb.core.model.ReturnValue;
 import org.openengsb.core.transformation.Transformer;
+import org.openengsb.persistence.Persistence;
+import org.openengsb.persistence.PersistenceImpl;
 import org.openengsb.util.serialization.SerializationException;
 
 public class OpenEngSBEndpoint extends ProviderEndpoint {
@@ -144,6 +146,10 @@ public class OpenEngSBEndpoint extends ProviderEndpoint {
 
     public EventHelper createEventHelper(MessageProperties msgProperties) {
         return new EventHelperImpl(this, msgProperties);
+    }
+
+    public Persistence createPersistenceHelper(MessageProperties msgProperties) {
+        return new PersistenceImpl(this, msgProperties);
     }
 
     @Override

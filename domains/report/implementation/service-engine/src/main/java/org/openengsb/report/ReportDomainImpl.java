@@ -25,6 +25,8 @@ import java.util.UUID;
 
 import javax.xml.namespace.QName;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.contextcommon.ContextHelper;
 import org.openengsb.core.MessageProperties;
 import org.openengsb.core.MethodCallHelper;
@@ -35,6 +37,8 @@ import org.openengsb.report.datastore.EventStore;
 import org.openengsb.report.datastore.StorageKey;
 
 public class ReportDomainImpl implements ReportDomain {
+
+    private Log log = LogFactory.getLog(getClass());
 
     private Map<String, StorageKey> toCollect = new HashMap<String, StorageKey>();
 
@@ -50,6 +54,7 @@ public class ReportDomainImpl implements ReportDomain {
 
     @Override
     public String collectData(String idType, String id) {
+        log.info("Start collection report data for idType: '" + idType + "' and id: '" + id + "'.");
         String reportId = UUID.randomUUID().toString();
         StorageKey storageKey = new StorageKey(reportId, idType, id);
         toCollect.put(reportId, storageKey);
@@ -59,6 +64,7 @@ public class ReportDomainImpl implements ReportDomain {
 
     @Override
     public Report generateReport(String reportId) {
+        log.info("Generate report for reportId: '" + reportId + "'.");
         StorageKey storageKey = toCollect.remove(reportId);
         if (storageKey == null) {
             throw new IllegalArgumentException("No report for the given report id.");

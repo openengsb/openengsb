@@ -18,31 +18,28 @@
 package org.openengsb.maven.common;
 
 import java.io.File;
-import java.util.Map;
+import java.util.List;
 import java.util.Properties;
-import java.util.Map.Entry;
 
-import org.openengsb.contextcommon.ContextHelper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class AbstractMavenDomainImpl {
 
-    private ContextHelper contextHelper;
+    private Log log = LogFactory.getLog(getClass());
 
-    public AbstractMavenDomainImpl(ContextHelper contextHelper) {
-        this.contextHelper = contextHelper;
-    }
+    private String baseDir;
 
-    protected MavenParameters getMavenParametersForMavenCall(String pathPrefix) {
+    private List<String> goals;
+
+    private Properties executionRequestProperties;
+
+    protected MavenParameters getMavenParametersForMavenCall() {
         MavenParameters params = new MavenParameters();
 
-        Properties executionRequestProperties = getPropertiesFromContext(pathPrefix
-                + "/config/executionRequestProperties");
         params.setExecutionRequestProperties(executionRequestProperties);
-
-        String baseDir = contextHelper.getValue(pathPrefix + "/config/baseDirectory");
         params.setBaseDir(new File(baseDir));
-
-        params.setGoals(getValuesFromContext(pathPrefix + "/config/goals"));
+        params.setGoals(goals.toArray(new String[goals.size()]));
 
         return params;
     }
@@ -50,22 +47,20 @@ public class AbstractMavenDomainImpl {
     protected MavenResult callMaven(MavenParameters params) {
         MavenConnector maven = new MavenConnector(params.getBaseDir(), params.getGoals(), params
                 .getExecutionRequestProperties());
+        log.info("Executing embedded maven with parameters: " + params);
         return maven.execute();
     }
 
-    protected Properties getPropertiesFromContext(String path) {
-        Map<String, String> props = contextHelper.getAllValues(path);
-
-        Properties properties = new Properties();
-        for (Entry<String, String> entry : props.entrySet()) {
-            properties.setProperty(entry.getKey(), entry.getValue());
-        }
-        return properties;
+    public void setBaseDir(String baseDir) {
+        this.baseDir = baseDir;
     }
 
-    protected String[] getValuesFromContext(String path) {
-        String values = contextHelper.getValue(path);
-        return values.split(",");
+    public void setExecutionRequestProperties(Properties executionRequestProperties) {
+        this.executionRequestProperties = executionRequestProperties;
+    }
+
+    public void setGoals(List<String> goals) {
+        this.goals = goals;
     }
 
 }

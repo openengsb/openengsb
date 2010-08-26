@@ -18,7 +18,6 @@
 package org.openengsb.notification;
 
 import org.openengsb.core.OpenEngSBComponent;
-import org.openengsb.core.endpoints.EventForwardEndpoint;
 
 /**
  * @org.apache.xbean.XBean element="notificationComponent"
@@ -27,7 +26,7 @@ import org.openengsb.core.endpoints.EventForwardEndpoint;
 public class NotificationComponent extends OpenEngSBComponent {
     @Override
     protected Class<?>[] getEndpointClasses() {
-        return new Class[] { NotificationEndpoint.class, EventForwardEndpoint.class };
+        return new Class[] { NotificationEndpoint.class, NotificationEventEndpoint.class };
     }
 
 }
