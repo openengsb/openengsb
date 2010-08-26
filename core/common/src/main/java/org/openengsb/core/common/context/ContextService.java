@@ -17,7 +17,6 @@
  */
 package org.openengsb.core.common.context;
 
-
 public interface ContextService {
 
     void putValue(String pathAndKey, String value);

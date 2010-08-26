@@ -17,22 +17,22 @@
  */
 package org.openengsb.core.common.context;
 
-import java.util.SortedMap;
-import java.util.SortedSet;
+import java.util.Map;
+import java.util.Set;
 
 public interface Context {
 
-    SortedSet<String> getKeys();
+    Set<String> getKeys();
 
     String get(String key);
 
-    String put(String key, String value);
+    void put(String key, String value);
 
-    SortedMap<String, Context> getChildren();
+    Map<String, Context> getChildren();
 
     Context getChild(String name);
 
     Context createChild(String name);
 
-    void remove(String pathOrKey);
+    void remove(String nameOrKey);
 }
