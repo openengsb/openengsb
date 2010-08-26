@@ -26,7 +26,7 @@
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.context.ContextService</value>
-      <value>org.openengsb.core.common.context.ContexCurrentService</value>
+      <value>org.openengsb.core.common.context.ContextCurrentService</value>
     </osgi:interfaces>
     <bean class="org.openengsb.core.common.internal.ContextServiceImpl" />
   </osgi:service>
