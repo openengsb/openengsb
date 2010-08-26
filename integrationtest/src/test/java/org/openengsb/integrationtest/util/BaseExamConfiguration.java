@@ -52,6 +52,7 @@ public class BaseExamConfiguration {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_WICKET));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONFIG_JETTY));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONFIG_WEBEXTENDER));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_COMMON));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_CONFIG));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_EXAMPLE_IMPLEMENTATION));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_EXAMPLE_CONNECTOR));
