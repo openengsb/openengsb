@@ -55,7 +55,7 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
     @Override
     public void setThreadLocalContext(String contextId) {
         Context context = rootContext.getChild(contextId);
-        Preconditions.checkNotNull(context, "no context exists for given context id");
+        Preconditions.checkArgument(context != null, "no context exists for given context id");
         currentContext.set(context);
     }
 
