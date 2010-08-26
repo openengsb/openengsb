@@ -15,7 +15,7 @@
  limitations under the License.
 
  */
-package org.openengsb.domains.notification;
+package org.openengsb.domains.notification.implementation;
 
 import org.openengsb.core.common.Event;
 import org.openengsb.core.config.Domain;

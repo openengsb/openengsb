@@ -13,12 +13,36 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
+   
  */
-package org.openengsb.domains.notification;
+package org.openengsb.domains.notification.implementation.model;
 
-import org.openengsb.core.config.Domain;
+public class Attachment {
+    private byte[] data;
+    private String type;
+    private String name;
 
-public interface NotificationDomain extends Domain {
-    void notify(String message);
+    @SuppressWarnings("unused")
+    private Attachment() {
+        // for the rpc framework
+    }
+
+    public Attachment(byte[] data, String type, String name) {
+        this.data = data;
+        this.type = type;
+        this.name = name;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 }
