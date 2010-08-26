@@ -17,6 +17,12 @@
  */
 package org.openengsb.core.common.context;
 
-public interface ContextQueryService {
-    String getValue(String key);
+
+public interface ContextService {
+
+    void putValue(String pathAndKey, String value);
+
+    String getValue(String pathAndKey);
+
+    Context getContext(String path);
 }

@@ -17,6 +17,22 @@
  */
 package org.openengsb.core.common.context;
 
-public interface ContextManagementService extends ContextQueryService {
-    void setValue(String key, String value);
+import java.util.SortedMap;
+import java.util.SortedSet;
+
+public interface Context {
+
+    SortedSet<String> getKeys();
+
+    String get(String key);
+
+    String put(String key, String value);
+
+    SortedMap<String, Context> getChildren();
+
+    Context getChild(String name);
+
+    Context createChild(String name);
+
+    void remove(String pathOrKey);
 }

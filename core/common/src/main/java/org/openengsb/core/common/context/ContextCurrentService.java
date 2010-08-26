@@ -17,6 +17,17 @@
  */
 package org.openengsb.core.common.context;
 
-public interface ContextCurrentService {
+/**
+ * Service for setting the thread-local context for further query- and
+ * management-requests.
+ */
+public interface ContextCurrentService extends ContextService {
+    /**
+     * Sets the the thread-local context identified by the given
+     * {@code contextId}.
+     *
+     * @throws IllegalArgumentException if {@code contextId} specifies a
+     *         non-existing context.
+     */
     void setCurrentContext(String contextId);
 }
