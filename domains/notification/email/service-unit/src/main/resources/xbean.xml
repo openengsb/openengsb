@@ -33,7 +33,7 @@
     </constructor-arg>
   </bean>
   
-  <bean id="emailConfig" class="org.openengsb.email.EmailConfiguration">
+  <bean id="emailConfig" class="org.openengsb.notification.EmailConfiguration">
     <property name="user" value="openengsb.notification.test@gmail.com"/>
     <property name="password" value="pwd-openengsb"/>
     <property name="emailProperties">

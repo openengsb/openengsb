@@ -39,7 +39,7 @@
   <build>
     <testResources>
       <testResource>
-        <directory>src/test/resources</directory>
+        <directory>../src/test/resources</directory>
         <includes>
           <include>**</include>
         </includes>
@@ -52,7 +52,7 @@
         <extensions>true</extensions>
         <configuration>
           <type>service-engine</type>
-          <component>org.openengsb.email.EmailComponent</component>
+          <component>org.openengsb.notification.EmailComponent</component>
         </configuration>
       </plugin>
       <plugin>
