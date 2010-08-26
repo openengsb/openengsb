@@ -46,12 +46,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core.workflow</groupId>
-      <artifactId>openengsb-core-workflow-domains</artifactId>
-      <version>${pom.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-config</artifactId>
       <version>${pom.version}</version>

@@ -35,6 +35,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>email</module>
     <module>implementation</module>
   </modules>
 
