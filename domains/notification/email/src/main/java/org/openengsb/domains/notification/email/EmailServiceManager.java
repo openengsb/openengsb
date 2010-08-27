@@ -54,7 +54,7 @@ public class EmailServiceManager implements ServiceManager, BundleContextAware {
                 .description(strings.getString("email.description", locale))
                 .attribute(AttributeDefinition.builder()
                         .id("user")
-                        .name(strings.getString("username.outputMode.username", locale))
+                        .name(strings.getString("username.outputMode", locale))
                         .description(strings.getString("username.outputMode.description", locale))
                         .defaultValue("")
                         .required()
