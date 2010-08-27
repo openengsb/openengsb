@@ -30,11 +30,13 @@
           </entry>
         </map>
       </property>
+      <property name="currentContextService" ref="contextService" />
     </bean>
   </osgi:service>
 
   <bean class="org.openengsb.core.workflow.test.ExampleDomainDummy" id="logService" />
-
+  <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextCurrentService"
+    availability="mandatory" />
   <!-- <osgi:reference id="logService" interface="org.openengsb.domains.example.ExampleDomain" availability="mandatory" /> -->
 </beans>
 

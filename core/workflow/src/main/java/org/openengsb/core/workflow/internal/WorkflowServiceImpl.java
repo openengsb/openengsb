@@ -44,7 +44,7 @@ public class WorkflowServiceImpl implements WorkflowService {
     @Override
     public void processEvent(Event event) throws WorkflowException {
         try {
-            // currentContextService.setCurrentContext(event.getContextId());
+            currentContextService.setThreadLocalContext(event.getContextId());
             StatefulSession session = createSession();
             for (Entry<String, Domain> entry : domainServices.entrySet()) {
                 session.setGlobal(entry.getKey(), entry.getValue());
