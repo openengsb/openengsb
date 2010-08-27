@@ -473,6 +473,15 @@
       <artifactId>commons-io</artifactId>
       <version>${commons.io.version}</version>
     </dependency>
+
+    <!--  java mail -->
+      <dependency>
+        <groupId>javax.mail</groupId>
+        <artifactId>com.springsource.javax.mail</artifactId>
+        <version>${javax.mail.version}</version>
+      </dependency>
+       
+
   </dependencies>
 
 </project>
