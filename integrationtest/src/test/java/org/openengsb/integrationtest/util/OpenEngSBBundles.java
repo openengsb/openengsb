@@ -35,6 +35,10 @@ public class OpenEngSBBundles {
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.config").artifactId(
                     "openengsb-config-webextender"));
 
+    public static final MavenArtifactProvisionOption OPENENGSB_CORE_COMMON = CoreOptions
+            .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId(
+                    "openengsb-core-common"));
+
     public static final MavenArtifactProvisionOption OPENENGSB_CORE_CONFIG = CoreOptions
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId(
                     "openengsb-core-config"));
