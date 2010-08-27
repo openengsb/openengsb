@@ -24,6 +24,7 @@ import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
@@ -59,8 +60,17 @@ public class RuntimeTest implements BundleActivator {
     private void initTimer() {
         TimerTask task = new TimerTask() {
 
+            private boolean init = false;
+
             @Override
             public void run() {
+                if (!init) {
+                    ServiceReference contextRef = bundleContext.getServiceReference(ContextCurrentService.class
+                            .getName());
+                    ContextCurrentService contextService = (ContextCurrentService) bundleContext.getService(contextRef);
+                    contextService.createContext("42");
+                    init = true;
+                }
                 log.info("getting service-ref");
                 ServiceReference ref = bundleContext.getServiceReference(RuleManager.class.getName());
                 if (ref == null) {
@@ -89,6 +99,7 @@ public class RuntimeTest implements BundleActivator {
                 log.info("getting workflow-service");
                 WorkflowService workflowService = (WorkflowService) bundleContext.getService(workflowRef);
                 Event event = new Event();
+                event.setContextId("42");
                 try {
                     log.info("processing event");
                     workflowService.processEvent(event);
@@ -99,5 +110,4 @@ public class RuntimeTest implements BundleActivator {
         };
         timer.schedule(task, 1000, 1000);
     }
-
 }
