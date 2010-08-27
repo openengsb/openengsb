@@ -17,7 +17,6 @@
  */
 package org.openengsb.domains.notification.email.internal;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.domains.notification.implementation.model.Attachment;
 import org.openengsb.domains.notification.implementation.model.Notification;
