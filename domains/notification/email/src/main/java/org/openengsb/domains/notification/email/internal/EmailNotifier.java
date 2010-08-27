@@ -49,26 +49,30 @@ public class EmailNotifier implements NotificationDomain {
         log.info("Sending notification with notification connector " + id + ".");
         try {
 
-            Properties props = createProperties();
+            notifyWithoutExceptionHandling(notification);
 
-            Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(user, password);
-                }
-            });
-
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(smtpUser));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(notification.getRecipient()));
-            message.setSubject(notification.getSubject());
-            message.setText(notification.getMessage());
-
-            Transport.send(message);
-
-        } catch (Exception e) {
+        } catch (MessagingException e) {
             log.error("Exception on sending notification notification.", e);
         }
+    }
+
+    public void notifyWithoutExceptionHandling(Notification notification) throws MessagingException {
+        Properties props = createProperties();
+
+        Session session = Session.getDefaultInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(user, password);
+            }
+        });
+
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(smtpUser));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(notification.getRecipient()));
+        message.setSubject(notification.getSubject());
+        message.setText(notification.getMessage());
+
+        Transport.send(message);
     }
 
     private Properties createProperties() {
