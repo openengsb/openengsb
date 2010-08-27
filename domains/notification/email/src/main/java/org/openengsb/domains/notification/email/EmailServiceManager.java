@@ -81,10 +81,10 @@ public class EmailServiceManager implements ServiceManager, BundleContextAware {
                         .required()
                         .build())
                 .attribute(AttributeDefinition.builder()
-                        .id("smtpStartls")
-                        .name(strings.getString("mail.smtp.starttls.enable.outputMode", locale))
-                        .description(strings.getString("mail.smtp.starttls.enable.outputMode.description", locale))
-                        .defaultValue("true")
+                        .id("smtpPort")
+                        .name(strings.getString("mail.smtp.port.outputMode", locale))
+                        .description(strings.getString("mail.smtp.port.outputMode.description", locale))
+                        .defaultValue("465")
                         .required()
                         .build())
                 .attribute(AttributeDefinition.builder()
@@ -120,11 +120,11 @@ public class EmailServiceManager implements ServiceManager, BundleContextAware {
             if (attributes.containsKey("smtpUser")) {
                 en.setSmtpUser(attributes.get("smtpUser"));
             }
-            if (attributes.containsKey("smtpStarttls")) {
-                en.setSmtpStarttls(attributes.get("smtpStarttls"));
-            }
             if (attributes.containsKey("smtpHost")) {
                 en.setSmtpHost(attributes.get("smtpHost"));
+            }
+            if (attributes.containsKey("smtpPort")) {
+                en.setSmtpPort(attributes.get("smtpPort"));
             }
         }
         if (isNew) {
