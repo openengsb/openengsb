@@ -30,6 +30,8 @@ import java.util.Timer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
 import org.drools.compiler.DroolsParserException;
@@ -43,6 +45,8 @@ import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
 public class DirectoryRuleSource extends AbstractRuleManager {
+
+    private static Log log = LogFactory.getLog(DirectoryRuleSource.class);
 
     public static final String IMPORTS_FILENAME = "imports";
 
@@ -59,6 +63,8 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     private String prelude;
 
+    private boolean initialized = false;
+
     public DirectoryRuleSource() {
     }
 
@@ -67,7 +73,12 @@ public class DirectoryRuleSource extends AbstractRuleManager {
     }
 
     public void init() throws RuleBaseException {
-        this.getRulebase();
+        if (this.ruleBase == null) {
+            ruleBase = RuleBaseFactory.newRuleBase();
+            readRuleBase();
+            initReloadListener();
+        }
+        initialized = true;
     }
 
     public final String getPath() {
@@ -80,12 +91,11 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     @Override
     public RuleBase getRulebase() throws RuleBaseException {
-        if (this.ruleBase == null) {
-            ruleBase = RuleBaseFactory.newRuleBase();
-            initReloadListener();
-            readRuleBase();
+        if (!initialized) {
+            log.warn("rulebase not initialized. initializing now...");
+            init();
         }
-        return this.ruleBase;
+        return ruleBase;
     }
 
     private void initReloadListener() {

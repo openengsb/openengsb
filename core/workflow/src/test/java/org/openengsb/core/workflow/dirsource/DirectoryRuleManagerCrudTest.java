@@ -22,6 +22,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.openengsb.core.workflow.AbstractRuleManagerCrudTest;
 import org.openengsb.core.workflow.RuleManager;
+import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 
@@ -46,7 +47,9 @@ public class DirectoryRuleManagerCrudTest extends AbstractRuleManagerCrudTest<Di
     }
 
     @Override
-    protected RuleManager getRuleBaseSource() {
-        return new DirectoryRuleSource("data/rulebase");
+    protected RuleManager getRuleBaseSource() throws RuleBaseException {
+        DirectoryRuleSource source = new DirectoryRuleSource("data/rulebase");
+        source.init();
+        return source;
     }
 }

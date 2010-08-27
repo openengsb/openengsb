@@ -58,7 +58,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         }
     }
 
-    protected abstract RuleManager getRuleBaseSource();
+    protected abstract RuleManager getRuleBaseSource() throws Exception;
 
     /**
      * create new stateful session from the rulebase and attach a listener to
@@ -161,8 +161,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
                 "java.util.Random");
         source.add(testImportId, "ignored");
         RuleBaseElementId testRuleId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
-        source.add(testRuleId, "when\n" + "  e : Event()\n" + "then\n"
-                + "  test(new Random());\n");
+        source.add(testRuleId, "when\n" + "  e : Event()\n" + "then\n" + "  test(new Random());\n");
         createSession();
 
         session.insert(new Event());

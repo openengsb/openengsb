@@ -67,6 +67,7 @@ public class RuntimeTest implements BundleActivator {
                     log.error("service not found");
                     return;
                 }
+                log.info("getting rulemanager-service");
                 RuleManager manager = (RuleManager) bundleContext.getService(ref);
                 try {
                     Collection<RuleBaseElementId> list = manager.list(RuleBaseElementType.Rule);
@@ -78,15 +79,18 @@ public class RuntimeTest implements BundleActivator {
                     e.printStackTrace();
                     return;
                 }
+                log.info("getting service-ref for workflow");
                 ServiceReference workflowRef = bundleContext.getServiceReference(WorkflowService.class.getName());
 
                 if (workflowRef == null) {
                     log.error("workflow service not found");
                     return;
                 }
+                log.info("getting workflow-service");
                 WorkflowService workflowService = (WorkflowService) bundleContext.getService(workflowRef);
                 Event event = new Event();
                 try {
+                    log.info("processing event");
                     workflowService.processEvent(event);
                 } catch (WorkflowException e) {
                     throw new RuntimeException(e);
