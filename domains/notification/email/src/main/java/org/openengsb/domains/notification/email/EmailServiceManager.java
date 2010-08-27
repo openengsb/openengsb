@@ -120,8 +120,8 @@ public class EmailServiceManager implements ServiceManager, BundleContextAware {
             if (attributes.containsKey("smtpUser")) {
                 en.setSmtpUser(attributes.get("smtpUser"));
             }
-            if (attributes.containsKey("smtpStartls")) {
-                en.setSmtpStarttls(attributes.get("smtpStartls"));
+            if (attributes.containsKey("smtpStarttls")) {
+                en.setSmtpStarttls(attributes.get("smtpStarttls"));
             }
             if (attributes.containsKey("smtpHost")) {
                 en.setSmtpHost(attributes.get("smtpHost"));
