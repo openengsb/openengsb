@@ -23,6 +23,18 @@
   <osgi:service interface="org.openengsb.core.workflow.WorkflowService">
     <bean class="org.openengsb.core.workflow.internal.WorkflowServiceImpl">
       <property name="rulemanager" ref="ruleManager" />
+      <property name="domainServices">
+        <map>
+          <entry key="log">
+            <ref local="logService" />
+          </entry>
+        </map>
+      </property>
     </bean>
   </osgi:service>
+
+  <bean class="org.openengsb.core.workflow.test.ExampleDomainDummy" id="logService" />
+
+  <!-- <osgi:reference id="logService" interface="org.openengsb.domains.example.ExampleDomain" availability="mandatory" /> -->
 </beans>
+

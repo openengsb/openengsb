@@ -20,6 +20,7 @@ package org.openengsb.core.workflow.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
@@ -43,11 +44,11 @@ public class WorkflowServiceImpl implements WorkflowService {
     @Override
     public void processEvent(Event event) throws WorkflowException {
         try {
-//            currentContextService.setCurrentContext(event.getContextId());
+            // currentContextService.setCurrentContext(event.getContextId());
             StatefulSession session = createSession();
-//            for (Entry<String, Domain> entry : domainServices.entrySet()) {
-//                session.setGlobal(entry.getKey(), entry.getValue());
-//            }
+            for (Entry<String, Domain> entry : domainServices.entrySet()) {
+                session.setGlobal(entry.getKey(), entry.getValue());
+            }
             session.insert(event);
             session.fireAllRules();
             session.dispose();

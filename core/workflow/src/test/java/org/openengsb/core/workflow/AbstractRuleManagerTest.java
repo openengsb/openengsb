@@ -33,10 +33,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
+import org.openengsb.domains.example.ExampleDomain;
 
 public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
@@ -72,6 +74,8 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         session = rulebase.newStatefulSession();
         listener = new RuleListener();
         session.addEventListener(listener);
+        ExampleDomain logService = Mockito.mock(ExampleDomain.class);
+        session.setGlobal("log", logService);
     }
 
     /**

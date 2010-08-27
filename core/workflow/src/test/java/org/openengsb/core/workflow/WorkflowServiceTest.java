@@ -36,6 +36,7 @@ import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
+import org.openengsb.domains.example.ExampleDomain;
 
 public class WorkflowServiceTest {
 
@@ -55,7 +56,7 @@ public class WorkflowServiceTest {
     private WorkflowServiceImpl service;
     private RuleManager manager;
     private RuleListener listener;
-    private LogDomainMock logService;
+    private ExampleDomain logService;
 
     @Before
     public void setUp() throws Exception {
@@ -71,15 +72,13 @@ public class WorkflowServiceTest {
     private void setupRulemanager() throws RuleBaseException {
         manager = new DirectoryRuleSource("data/rulebase");
         ((DirectoryRuleSource) manager).init();
-        manager.add(new RuleBaseElementId(RuleBaseElementType.Import, LogDomain.class.getName()), "");
-        manager.add(new RuleBaseElementId(RuleBaseElementType.Global, "log"), LogDomain.class.getName());
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
-                "when\n Event ( contextId == \"test-context\")\n then \n log.log(\"42\");");
+                "when\n Event ( contextId == \"test-context\")\n then \n log.doSomething(\"42\");");
     }
 
     private void setupDomains() {
         Map<String, Domain> domains = new HashMap<String, Domain>();
-        logService = new LogDomainMock();
+        logService = Mockito.mock(ExampleDomain.class);
         domains.put("log", logService);
         service.setDomainServices(domains);
     }
@@ -116,6 +115,6 @@ public class WorkflowServiceTest {
     public void testUseLogContent() throws Exception {
         Event event = new Event("test-context");
         service.processEvent(event);
-        Assert.assertEquals("42", logService.log.toString());
+        Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
     }
 }

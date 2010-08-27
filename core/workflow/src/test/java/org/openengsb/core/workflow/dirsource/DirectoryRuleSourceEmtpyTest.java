@@ -20,8 +20,8 @@ package org.openengsb.core.workflow.dirsource;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.openengsb.core.workflow.AbstractRuleManagerTest;
 import org.openengsb.core.workflow.RuleManager;
+import org.openengsb.core.workflow.AbstractRuleManagerTest;
 import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 
