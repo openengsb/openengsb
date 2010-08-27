@@ -36,7 +36,7 @@ public class EmailNotifierTest {
         try {
             EmailNotifier notifier = new EmailNotifier("notifier1");
             notifier.setSmtpAuth("true");
-            notifier.setSmtpUser("openengsb.notification.test@gmail.com");
+            notifier.setSmtpSender("openengsb.notification.test@gmail.com");
             notifier.setSmtpHost("smtp.gmail.com");
             notifier.setPassword("pwd-openengsb");
             notifier.setUser("openengsb.notification.test@gmail.com");
@@ -60,7 +60,7 @@ public class EmailNotifierTest {
 
             EmailNotifier notifier = new EmailNotifier("notifier2");
             notifier.setSmtpAuth("true");
-            notifier.setSmtpUser("doesnotexist");
+            notifier.setSmtpSender("doesnotexist");
             notifier.setSmtpHost("smtp.gmail.com");
             notifier.setPassword("totallyWrong");
             notifier.setUser("doesnotexist");

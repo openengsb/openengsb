@@ -36,7 +36,7 @@ public class EmailNotifier implements NotificationDomain {
     private String user;
     private String password;
     private String smtpAuth;
-    private String smtpUser;
+    private String smtpSender;
     private String smtpHost;
     private String smtpPort;
 
@@ -67,7 +67,7 @@ public class EmailNotifier implements NotificationDomain {
         });
 
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(smtpUser));
+        message.setFrom(new InternetAddress(smtpSender));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(notification.getRecipient()));
         message.setSubject(notification.getSubject());
         message.setText(notification.getMessage());
@@ -103,8 +103,8 @@ public class EmailNotifier implements NotificationDomain {
     }
 
 
-    public void setSmtpUser(String smtpUser) {
-        this.smtpUser = smtpUser;
+    public void setSmtpSender(String smtpSender) {
+        this.smtpSender = smtpSender;
     }
 
 

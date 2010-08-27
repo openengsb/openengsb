@@ -74,7 +74,7 @@ public class EmailServiceManager implements ServiceManager, BundleContextAware {
                         .required()
                         .build())
                 .attribute(AttributeDefinition.builder()
-                        .id("smtpUser")
+                        .id("smtpSender")
                         .name(strings.getString("mail.smtp.user.outputMode", locale))
                         .description(strings.getString("mail.smtp.user.outputMode.description", locale))
                         .defaultValue("")
@@ -117,8 +117,8 @@ public class EmailServiceManager implements ServiceManager, BundleContextAware {
             if (attributes.containsKey("smtpAuth")) {
                 en.setSmtpAuth(attributes.get("smtpAuth"));
             }
-            if (attributes.containsKey("smtpUser")) {
-                en.setSmtpUser(attributes.get("smtpUser"));
+            if (attributes.containsKey("smtpSender")) {
+                en.setSmtpSender(attributes.get("smtpSender"));
             }
             if (attributes.containsKey("smtpHost")) {
                 en.setSmtpHost(attributes.get("smtpHost"));
