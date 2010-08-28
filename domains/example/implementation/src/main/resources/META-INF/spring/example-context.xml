@@ -29,18 +29,25 @@
 
   <osgi:service>
     <osgi:interfaces>
-      <value>org.openengsb.core.common.Domain</value>
       <value>org.openengsb.domains.example.ExampleDomain</value>
-      <value>org.openengsb.domains.example.internal.ExampleForwardDomain</value>
+      <value>org.openengsb.core.common.Domain</value>
     </osgi:interfaces>
     <osgi:service-properties>
       <entry key="id" value="domains.example" />
       <entry key="openengsb.service.type" value="domain" />
     </osgi:service-properties>
-    <bean class="org.openengsb.domains.example.internal.ExampleForwardDomain">
-      <property name="contextService" ref="contextService" />
+    <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean" init-method="init">
+      <property name="domainInterface">
+        <value>org.openengsb.domains.example.ExampleDomain</value>
+      </property>
+      <property name="interceptor" ref="forwarder" />
     </bean>
   </osgi:service>
+
+  <bean id="forwarder" class="org.openengsb.core.common.ForwardInterceptor">
+    <property name="domainName" value="example" />
+    <property name="context" ref="contextService" />
+  </bean>
 
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
 
