@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -31,8 +30,6 @@ import org.openengsb.core.common.Event;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
-import org.openengsb.ui.web.header.HeaderTemplate;
-import org.openengsb.ui.web.header.HeadincludeTemplate;
 import org.openengsb.ui.web.service.DomainService;
 
 public class Index extends BasePage {

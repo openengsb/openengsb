@@ -18,9 +18,8 @@
 package org.openengsb.ui.web;
 
 import org.apache.wicket.markup.html.WebPage;
-import org.openengsb.ui.web.footer.FooterTemplate;
-import org.openengsb.ui.web.header.HeaderTemplate;
-import org.openengsb.ui.web.header.HeadincludeTemplate;
+import org.openengsb.ui.web.global.footer.FooterTemplate;
+import org.openengsb.ui.web.global.header.HeaderTemplate;
 
 public abstract class BasePage extends WebPage {
 
