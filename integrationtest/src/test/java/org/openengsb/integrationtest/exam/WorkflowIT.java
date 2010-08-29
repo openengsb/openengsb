@@ -19,10 +19,10 @@ package org.openengsb.integrationtest.exam;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.openengsb.integrationtest.util.BaseExamConfiguration;
 import org.ops4j.pax.exam.CoreOptions;
@@ -33,7 +33,7 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.BundleContext;
 
 @RunWith(JUnit4TestRunner.class)
-public class CoreBundleadminIT extends AbstractExamTestHelper {
+public class WorkflowIT extends AbstractExamTestHelper {
 
     @Inject
     private BundleContext bundleContext;
@@ -47,8 +47,10 @@ public class CoreBundleadminIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testServiceVersionMatchesBundleVersion() throws Exception {
-        Assert.assertNotNull(bundleContext);
+    public void testThrowWorkflowEvent() throws Exception {
+        WorkflowService service = (WorkflowService) bundleContext.getService(bundleContext.getAllServiceReferences(
+                WorkflowService.class.getName(), null)[0]);
+        Assert.assertNotNull(service);
     }
 
 }
