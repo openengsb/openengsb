@@ -5,37 +5,24 @@
   IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language 
   governing permissions and limitations under the License. -->
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.openengsb.core</groupId>
-    <artifactId>openengsb-core-parent</artifactId>
+         xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+
+    <groupId>org.openengsb.core.workflow</groupId>
+    <artifactId>openengsb-core-workflow-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-  </parent>
+    <name>OpenEngSB :: Core :: Workflow :: Parent</name>
 
-  <properties>
-    <bundle.symbolicName>org.openengsb.core.workflow</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.core.workflow</bundle.namespace>
-  </properties>
+    <packaging>pom</packaging>
 
-  <groupId>org.openengsb.core</groupId>
-  <artifactId>openengsb-core-workflow</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-  <name>OpenEngSB :: Core :: Workflow Engine</name>
 
-  <packaging>bundle</packaging>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-common</artifactId>
-      <version>${pom.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+    <modules>
+        <module>domains</module>
+    </modules>
 </project>
