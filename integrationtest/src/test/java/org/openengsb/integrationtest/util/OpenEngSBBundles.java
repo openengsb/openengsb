@@ -27,6 +27,10 @@ public class OpenEngSBBundles {
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped").artifactId(
                     "org.apache.wicket-all"));
 
+    public static final MavenArtifactProvisionOption OPENENGSB_WRAPPED_JAXB = CoreOptions
+            .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped").artifactId(
+                    "javax.xml.jaxb-all"));
+
     public static final MavenArtifactProvisionOption OPENENGSB_CONFIG_JETTY = CoreOptions
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.config").artifactId(
                     "openengsb-config-jetty"));
@@ -35,9 +39,17 @@ public class OpenEngSBBundles {
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.config").artifactId(
                     "openengsb-config-webextender"));
 
+    public static final MavenArtifactProvisionOption OPENENGSB_CORE_COMMON = CoreOptions
+            .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId(
+                    "openengsb-core-common"));
+
     public static final MavenArtifactProvisionOption OPENENGSB_CORE_CONFIG = CoreOptions
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId(
                     "openengsb-core-config"));
+
+    public static final MavenArtifactProvisionOption OPENENGSB_CORE_WORKFLOW = CoreOptions
+            .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId(
+                    "openengsb-core-workflow"));
 
     public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_EXAMPLE_IMPLEMENTATION = CoreOptions
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.example").artifactId(
@@ -46,6 +58,14 @@ public class OpenEngSBBundles {
     public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_EXAMPLE_CONNECTOR = CoreOptions
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.example").artifactId(
                     "openengsb-domains-example-connector"));
+
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_NOTIFICATION_IMPLEMENTATION = CoreOptions
+            .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.notification.implementation")
+                    .artifactId("openengsb-domains-notification-implementation"));
+
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_NOTIFICATION_EMAIL = CoreOptions
+            .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.notification.email")
+                    .artifactId("openengsb-domains-notification-email"));
 
     public static final MavenArtifactProvisionOption OPENENGSB_UI_WEB = CoreOptions
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.ui").artifactId("openengsb-ui-web")

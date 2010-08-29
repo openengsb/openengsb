@@ -50,11 +50,16 @@ public class BaseExamConfiguration {
 
     public static void addEntireOpenEngSBPlatform(List<Option> baseConfiguration) {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_WICKET));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_JAXB));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONFIG_JETTY));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONFIG_WEBEXTENDER));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_COMMON));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_CONFIG));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_WORKFLOW));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_EXAMPLE_IMPLEMENTATION));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_EXAMPLE_CONNECTOR));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_NOTIFICATION_IMPLEMENTATION));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_NOTIFICATION_EMAIL));
         baseConfiguration.add(OpenEngSBBundles.OPENENGSB_UI_WEB);
     }
 
