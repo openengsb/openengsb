@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
@@ -43,13 +41,12 @@ import org.openengsb.core.config.descriptor.AttributeDefinition;
 @SuppressWarnings("serial")
 public class EditorTest {
 
-    private final Log log = LogFactory.getLog(EditorTest.class);
-
     private WicketTester tester;
     private EditorPanel editor;
     private AttributeDefinition stringAttrib;
     private AttributeDefinition attribWithNoDescription;
     private Map<String, String> defaultValues;
+
     @Before
     public void setup() {
         stringAttrib = AttributeDefinition.builder().id("id_a").name("name_a").description("desc_a").build();
