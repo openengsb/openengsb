@@ -13,16 +13,50 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
+  <properties>
+        <bundle.symbolicName>org.openengsb.core.workflow</bundle.symbolicName>
+            <bundle.namespace>org.openengsb.core.workflow</bundle.namespace>
+              </properties>
 
-    <groupId>org.openengsb.core.workflow</groupId>
-    <artifactId>openengsb-core-workflow-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <name>OpenEngSB :: Core :: Workflow :: Parent</name>
+                <groupId>org.openengsb.core</groupId>
+                  <artifactId>openengsb-core-workflow</artifactId>
+                    <version>1.0.0-SNAPSHOT</version>
+                      <name>OpenEngSB :: Core :: Workflow Engine</name>
 
-    <packaging>pom</packaging>
+                        <packaging>bundle</packaging>
 
+                          <dependencies>
+                                <dependency>
+                                        <groupId>org.openengsb.core</groupId>
+                                              <artifactId>openengsb-core-common</artifactId>
+                                                    <version>${pom.version}</version>
+                                                          <scope>provided</scope>
+                                                              </dependency>
+                                                                  <dependency>
+                                                                          <groupId>org.openengsb.domains.example</groupId>
+                                                                                <artifactId>openengsb-domains-example-implementation</artifactId>
+                                                                                      <version>${pom.version}</version>
+                                                                                            <scope>provided</scope>
+                                                                                                </dependency>
+                                                                                                    <dependency>
+                                                                                                            <groupId>org.openengsb.core</groupId>
+                                                                                                                  <artifactId>openengsb-core-config</artifactId>
+                                                                                                                        <version>${pom.version}</version>
+                                                                                                                              <scope>provided</scope>
+                                                                                                                                  </dependency>
+                                                                                                                                      <dependency>
+                                                                                                                                              <groupId>junit</groupId>
+                                                                                                                                                    <artifactId>junit</artifactId>
+                                                                                                                                                          <version>${junit.version}</version>
+                                                                                                                                                                <scope>test</scope>
+                                                                                                                                                                    </dependency>
+                                                                                                                                                                        <dependency>
+                                                                                                                                                                                <groupId>org.mockito</groupId>
+                                                                                                                                                                                      <artifactId>mockito-all</artifactId>
+                                                                                                                                                                                            <version>${mockito.version}</version>
+                                                                                                                                                                                                  <scope>test</scope>
+                                                                                                                                                                                                      </dependency>
+                                                                                                                                                                                                        </dependencies>
 
-    <modules>
-        <module>domains</module>
-    </modules>
 </project>
+
