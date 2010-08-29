@@ -35,19 +35,21 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.config.descriptor.AttributeDefinition.Builder;
+import org.openengsb.core.workflow.WorkflowException;
+import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
-import org.openengsb.ui.web.service.EventService;
 
 public class SendEventPage extends BasePage {
 
     private static final Log log = LogFactory.getLog(SendEventPage.class);
 
     @SpringBean
-    private EventService eventService;
+    private WorkflowService eventService;
 
     private final DropDownChoice<Class<?>> dropDownChoice;
 
@@ -78,7 +80,17 @@ public class SendEventPage extends BasePage {
         EditorPanel editor = new EditorPanel("editor", attributes, defaults) {
             @Override
             public void onSubmit() {
-                eventService.sendEvent(buildEvent(dropDownChoice.getModelObject(), getValues()));
+                Event event = buildEvent(dropDownChoice.getModelObject(), getValues());
+                if (event != null) {
+                    try {
+                        eventService.processEvent(event);
+                        info(new StringResourceModel("send.event.success", SendEventPage.this, null).getString());
+                    } catch (WorkflowException e) {
+                        error(new StringResourceModel("send.event.error.process", SendEventPage.this, null).getString());
+                    }
+                } else {
+                    error(new StringResourceModel("send.event.error.build", SendEventPage.this, null).getString());
+                }
             }
         };
         editor.setOutputMarkupId(true);

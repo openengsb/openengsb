@@ -22,12 +22,14 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
@@ -36,17 +38,21 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
+import org.openengsb.core.workflow.WorkflowException;
+import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
-import org.openengsb.ui.web.service.EventService;
 
 public class SendEventPageTest {
 
     private WicketTester tester;
     private EditorPanel editorPanel;
     private DropDownChoice<Class<?>> dropdown;
-    private EventService eventService;
+    private WorkflowService eventService;
+    private List<Class<? extends Event>> eventClasses;
+    private FormTester formTester;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -55,31 +61,30 @@ public class SendEventPageTest {
         AnnotApplicationContextMock context = new AnnotApplicationContextMock();
         tester.getApplication().addComponentInstantiationListener(
                 new SpringComponentInjector(tester.getApplication(), context, false));
-        eventService = mock(EventService.class);
+        eventService = mock(WorkflowService.class);
         context.putBean("eventService", eventService);
-        List<Class<? extends Event>> classes = Arrays.<Class<? extends Event>> asList(Dummy.class, Dummy2.class);
-        tester.startPage(new SendEventPage(classes));
+        eventClasses = Arrays.<Class<? extends Event>> asList(Dummy.class, Dummy2.class,
+                BrokenEvent.class);
+        tester.startPage(new SendEventPage(eventClasses));
         editorPanel = (EditorPanel) tester.getComponentFromLastRenderedPage("editor");
         dropdown = (DropDownChoice<Class<?>>) tester
                 .getComponentFromLastRenderedPage("form:dropdown");
+        formTester = tester.newFormTester("editor:form");
     }
 
     static class Dummy extends Event {
 
         private String testProperty;
 
-        @SuppressWarnings("unused")
         public String getTestProperty() {
             return testProperty;
         }
 
-        @SuppressWarnings("unused")
         public void setTestProperty(String testProperty) {
             this.testProperty = testProperty;
         }
     }
 
-    @SuppressWarnings("unused")
     static class Dummy2 extends Event {
 
         private String firstProperty;
@@ -102,6 +107,12 @@ public class SendEventPageTest {
         }
     }
 
+    static class BrokenEvent extends Event {
+        private BrokenEvent() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
     @Test
     public void testStandardPageComponents() throws Exception {
         tester.assertVisible("form:dropdown");
@@ -111,8 +122,8 @@ public class SendEventPageTest {
     }
 
     @Test
-    public void givenTwoClassesInCtor_shouldAddThemToTheDropDown() {
-        assertEquals(2, dropdown.getChoices().size());
+    public void givenClassesInCtor_shouldAddThemToTheDropDown() {
+        assertEquals(eventClasses.size(), dropdown.getChoices().size());
         assertEquals(Dummy.class, dropdown.getChoices().get(0));
         assertEquals("Dummy", dropdown.getValue());
         assertEquals(Dummy2.class, dropdown.getChoices().get(1));
@@ -128,23 +139,50 @@ public class SendEventPageTest {
 
     @Test
     public void selectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
-        FormTester formTester = tester.newFormTester("form");
-        formTester.select("dropdown", 1);
-        tester.executeAjaxEvent(dropdown, "onchange");
+        selectEventType(1);
         List<AttributeDefinition> attributes = ((EditorPanel) tester.getComponentFromLastRenderedPage("editor")).getAttributes();
         assertThat(attributes.size(), is(3));
         assertThat(attributes.get(1).getName(), is("firstProperty"));
     }
 
     @Test
-    public void submittingForm_shouldCallDroolsServiceWithInstantiatedEvent() {
-        FormTester formTester = tester.newFormTester("editor:form");
+    public void submittingForm_shouldCallDroolsServiceWithInstantiatedEvent() throws WorkflowException {
         formTester.setValue("fields:testProperty:row:field", "a");
         formTester.submit();
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
-        verify(eventService).sendEvent(captor.capture());
+        verify(eventService).processEvent(captor.capture());
         assertThat(captor.getValue(), notNullValue());
         assertThat(captor.getValue(), is(Dummy.class));
         assertThat(((Dummy) captor.getValue()).getTestProperty(), is("a"));
+    }
+
+    @Test
+    public void sendingEvent_shouldShowSuccessFeedback() throws Exception {
+        formTester.submit();
+        tester.assertNoErrorMessage();
+        assertThat(tester.getMessages(FeedbackMessage.INFO).size(), is(1));
+    }
+
+    @Test
+    public void buildingEventFails_shouldShowErrorFeedback() throws Exception {
+        selectEventType(2);
+        formTester.submit();
+        tester.assertNoInfoMessage();
+        assertThat(tester.getMessages(FeedbackMessage.ERROR).size(), is(1));
+    }
+
+    @Test
+    public void processingEventthrowsException_shouldShowErrorFeedback() throws Exception {
+        doThrow(new WorkflowException()).when(eventService).processEvent(Mockito.<Event> any());
+        formTester.submit();
+        tester.assertNoInfoMessage();
+        assertThat(tester.getMessages(FeedbackMessage.ERROR).size(), is(1));
+    }
+
+    private void selectEventType(int idx) {
+        FormTester typeFormTester = tester.newFormTester("form");
+        typeFormTester.select("dropdown", idx);
+        tester.executeAjaxEvent(dropdown, "onchange");
+        formTester = tester.newFormTester("editor:form");
     }
 }
