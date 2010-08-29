@@ -199,7 +199,7 @@ public class TestClient extends BasePage {
 
     @Override
     public String getHeaderMenuItem() {
-        return "index";
+        return "testClient";
     }
 
 }

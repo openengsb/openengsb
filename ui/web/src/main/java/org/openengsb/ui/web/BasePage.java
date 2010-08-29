@@ -32,7 +32,7 @@ public abstract class BasePage extends WebPage {
     private void initWebPage() {
 
        /* this.add(new HeaderTemplate("header",this.getHeaderMenuItem()));*/
-     //   this.add(new HeadincludeTemplate("headinclude"));
+        this.add(new HeaderTemplate("header",this.getHeaderMenuItem()));
 		this.add(new FooterTemplate("footer"));
     }
 

@@ -17,8 +17,12 @@
 
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd" xml:lang="en" lang="en">
+
 <body>
     <wicket:extend>
+        
+      <div wicket:id="header">header</div>
+
       <a href="#" wicket:id="lang.en">English</a> <a href="#" wicket:id="lang.de">Deutsch</a>
       <h2>Domains</h2>
       <ul wicket:id="domains">
@@ -35,7 +39,6 @@
           <p><span wicket:id="service.description">[service.description]</span></p>
         </li>
       </ul>
-      <a wicket:id="testclientlink"><wicket:message key="testclient"/></a>
       <a wicket:id="sendEvent"><wicket:message key="send.event" /></a>
 
       <div wicket:id="footer">footer</div>

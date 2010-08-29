@@ -285,5 +285,69 @@ div.tabRowContent {
 	margin:20px 0 0 0;
 }
 
+#header, #main {
+	
+}
+
+#logo {
+    height:92px;
+    background:transparent url("../images/header.png") no-repeat scroll top left;
+}
+
+#logo h1.pageTitle {
+    display:block;
+    height:100%;
+    margin:0;
+    padding:0;
+    position:absolute;
+    width:100%;
+}
+
+#logo h1 {
+    left:-9000px;
+    position:absolute;
+    top:-9000px;
+}
+
+.pageLogo {
+	width:100%;
+}
+
+.pageLogo img {
+    position:absolute;
+    right:0px;
+}
+
+#mainMenu {
+    background-color:#f3f3f3;
+    border-bottom:3px #777777 solid;
+}
+
+#mainMenu .active {
+    background:transparent url("../images/activeMenuItem.png") no-repeat scroll bottom center;
+   	font-style:italic;
+}
+
+#mainMenu ul {
+    display:table-row;
+    list-style-image:none;
+    list-style-position:outside;
+    list-style-type:none;
+    margin:0;
+    padding:0;
+}
+
+#mainMenu li {
+    display:table-cell;
+    padding:8px 16px 8px 16px;
+    border-right:1px #cdcdcd solid;
+}
+
+#mainMenu a,#mainMenu a:visited, #mainMenu li a:hover {
+    color:#4b4a4a;
+    font-weight: bold;
+    font-size:110%;
+    text-decoration:none;
+}
 
 }

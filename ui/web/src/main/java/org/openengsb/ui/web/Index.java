@@ -31,6 +31,8 @@ import org.openengsb.core.common.Event;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
+import org.openengsb.ui.web.header.HeaderTemplate;
+import org.openengsb.ui.web.header.HeadincludeTemplate;
 import org.openengsb.ui.web.service.DomainService;
 
 public class Index extends BasePage {
@@ -40,6 +42,7 @@ public class Index extends BasePage {
 
     @SuppressWarnings("serial")
     public Index() {
+      
         add(new Link<Object>("lang.en") {
             @Override
             public void onClick() {
@@ -78,7 +81,7 @@ public class Index extends BasePage {
                 item.add(new Label("service.description", desc.getDescription()));
             }
         });
-        add(new BookmarkablePageLink<TestClient>("testclientlink", TestClient.class));
+
         add(new Link<SendEventPage>("sendEvent") {
             @Override
             public void onClick() {
