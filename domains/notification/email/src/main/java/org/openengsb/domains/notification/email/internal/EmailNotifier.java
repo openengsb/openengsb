@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
 import org.openengsb.domains.notification.implementation.NotificationDomain;
 import org.openengsb.domains.notification.implementation.model.Notification;
+import org.osgi.framework.ServiceRegistration;
 
 public class EmailNotifier implements NotificationDomain {
 
@@ -43,7 +44,9 @@ public class EmailNotifier implements NotificationDomain {
     private String smtpSender;
     private String smtpHost;
     private String smtpPort;
+
     private MailAbstraction mailAbstraction;
+    private ServiceRegistration serviceRegistration;
 
     public EmailNotifier(String id, MailAbstraction mailAbstraction) {
         this.id = id;
@@ -86,27 +89,64 @@ public class EmailNotifier implements NotificationDomain {
 
     }
 
+    public String getUser() {
+        return user;
+    }
+
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
+    public String getSmtpAuth() {
+        return smtpAuth;
+    }
+
     public void setSmtpAuth(String smtpAuth) {
         this.smtpAuth = smtpAuth;
+    }
+
+    public String getSmtpSender() {
+        return smtpSender;
     }
 
     public void setSmtpSender(String smtpSender) {
         this.smtpSender = smtpSender;
     }
 
+    public String getSmtpHost() {
+        return smtpHost;
+    }
+
     public void setSmtpHost(String smtpHost) {
         this.smtpHost = smtpHost;
+    }
+
+    public String getSmtpPort() {
+        return smtpPort;
     }
 
     public void setSmtpPort(String smtpPort) {
         this.smtpPort = smtpPort;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public ServiceRegistration getServiceRegistration() {
+        return serviceRegistration;
+    }
+
+    public void setServiceRegistration(ServiceRegistration serviceRegistration) {
+        this.serviceRegistration = serviceRegistration;
+    }
+
 }

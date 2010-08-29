@@ -29,7 +29,11 @@
     </osgi:service-properties>
     <bean class="org.openengsb.domains.notification.email.EmailServiceManager" init-method="init" >
         <constructor-arg>
-            <bean class="org.openengsb.domains.notification.email.internal.abstraction.JavaxMailAbstraction" />
+            <bean class="org.openengsb.domains.notification.email.internal.DefaultEmailNotifierBuilder" >
+                <constructor-arg>
+                    <bean class="org.openengsb.domains.notification.email.internal.abstraction.JavaxMailAbstraction" />
+                </constructor-arg>
+            </bean>
         </constructor-arg>
     </bean>
   </osgi:service>

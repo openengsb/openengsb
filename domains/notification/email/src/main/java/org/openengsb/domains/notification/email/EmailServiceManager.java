@@ -28,9 +28,10 @@ import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.core.config.util.BundleStrings;
 import org.openengsb.domains.notification.email.internal.EmailNotifier;
-import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
+import org.openengsb.domains.notification.email.internal.EmailNotifierBuilder;
 import org.openengsb.domains.notification.implementation.NotificationDomain;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.springframework.osgi.context.BundleContextAware;
 
 public class EmailServiceManager implements ServiceManager, BundleContextAware {
@@ -38,10 +39,10 @@ public class EmailServiceManager implements ServiceManager, BundleContextAware {
     private BundleContext bundleContext;
     private BundleStrings strings;
     private final Map<String, EmailNotifier> services = new HashMap<String, EmailNotifier>();
-    private MailAbstraction mailAbstraction;
+    private EmailNotifierBuilder emailNotifierBuilder;
 
-    public EmailServiceManager(MailAbstraction mailAbstraction) {
-        this.mailAbstraction = mailAbstraction;
+    public EmailServiceManager(EmailNotifierBuilder emailNotifierBuilder) {
+        this.emailNotifierBuilder = emailNotifierBuilder;
     }
 
     @Override
@@ -58,81 +59,59 @@ public class EmailServiceManager implements ServiceManager, BundleContextAware {
                 .type(EmailNotifier.class)
                 .name(strings.getString("email.name", locale))
                 .description(strings.getString("email.description", locale))
+                .attribute(buildAttribute(locale, "user", "username.outputMode", "username.outputMode.description"))
+                .attribute(buildAttribute(locale, "password", "password.outputMode", "password.outputMode.description"))
                 .attribute(
-                        AttributeDefinition.builder().id("user").name(strings.getString("username.outputMode", locale))
-                                .description(strings.getString("username.outputMode.description", locale))
-                                .defaultValue("").required().build())
+                        buildAttribute(locale, "smtpAuth", "mail.smtp.auth.outputMode",
+                                "mail.smtp.auth.outputMode.description"))
                 .attribute(
-                        AttributeDefinition.builder().id("password")
-                                .name(strings.getString("password.outputMode", locale))
-                                .description(strings.getString("password.outputMode.description", locale))
-                                .defaultValue("").required().build())
+                        buildAttribute(locale, "smtpSender", "mail.smtp.sender.outputMode",
+                                "mail.smtp.sender.outputMode.description"))
                 .attribute(
-                        AttributeDefinition.builder().id("smtpAuth")
-                                .name(strings.getString("mail.smtp.auth.outputMode", locale))
-                                .description(strings.getString("mail.smtp.auth.outputMode.description", locale))
-                                .defaultValue("").required().build())
+                        buildAttribute(locale, "smtpPort", "mail.smtp.port.outputMode",
+                                "mail.smtp.port.outputMode.description"))
                 .attribute(
-                        AttributeDefinition.builder().id("smtpSender")
-                                .name(strings.getString("mail.smtp.sender.outputMode", locale))
-                                .description(strings.getString("mail.smtp.sender.outputMode.description", locale))
-                                .defaultValue("").required().build())
-                .attribute(
-                        AttributeDefinition.builder().id("smtpPort")
-                                .name(strings.getString("mail.smtp.port.outputMode", locale))
-                                .description(strings.getString("mail.smtp.port.outputMode.description", locale))
-                                .defaultValue("").required().build())
-                .attribute(
-                        AttributeDefinition.builder().id("smtpHost")
-                                .name(strings.getString("mail.smtp.host.outputMode", locale))
-                                .description(strings.getString("mail.smtp.host.outputMode.description", locale))
-                                .defaultValue("").required().build()).build();
+                        buildAttribute(locale, "smtpHost", "mail.smtp.host.outputMode",
+                                "mail.smtp.host.outputMode.description")).build();
+    }
+
+    private AttributeDefinition buildAttribute(Locale locale, String id, String nameId, String descriptionId) {
+        return AttributeDefinition.builder().id(id).name(strings.getString(nameId, locale))
+                .description(strings.getString(descriptionId, locale)).defaultValue("").required().build();
     }
 
     @Override
     public void update(String id, Map<String, String> attributes) {
-        boolean isNew = false;
         EmailNotifier en = null;
         synchronized (services) {
             en = services.get(id);
             if (en == null) {
-                en = new EmailNotifier(id, mailAbstraction);
+                en = emailNotifierBuilder.createEmailNotifier(id, attributes);
                 services.put(id, en);
-                isNew = true;
-            }
-            if (attributes.containsKey("user")) {
-                en.setUser(attributes.get("user"));
-            }
-            if (attributes.containsKey("password")) {
-                en.setPassword(attributes.get("password"));
-            }
-            if (attributes.containsKey("smtpAuth")) {
-                en.setSmtpAuth(attributes.get("smtpAuth"));
-            }
-            if (attributes.containsKey("smtpSender")) {
-                en.setSmtpSender(attributes.get("smtpSender"));
-            }
-            if (attributes.containsKey("smtpHost")) {
-                en.setSmtpHost(attributes.get("smtpHost"));
-            }
-            if (attributes.containsKey("smtpPort")) {
-                en.setSmtpPort(attributes.get("smtpPort"));
+                Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
+                ServiceRegistration serviceRegistration = bundleContext.registerService(new String[] {
+                        EmailNotifier.class.getName(), NotificationDomain.class.getName(), Domain.class.getName() },
+                        en, serviceProperties);
+                en.setServiceRegistration(serviceRegistration);
+            } else {
+                emailNotifierBuilder.updateEmailNotifier(en, attributes);
             }
         }
-        if (isNew) {
-            Hashtable<String, String> props = new Hashtable<String, String>();
-            props.put("id", id);
-            props.put("domain", NotificationDomain.class.getName());
-            props.put("class", EmailNotifier.class.getName());
-            bundleContext.registerService(
-                    new String[] { EmailNotifier.class.getName(), NotificationDomain.class.getName(),
-                            Domain.class.getName() }, en, props);
-        }
+    }
+
+    private Hashtable<String, String> createNotificationServiceProperties(String id) {
+        Hashtable<String, String> serviceProperties = new Hashtable<String, String>();
+        serviceProperties.put("id", id);
+        serviceProperties.put("domain", NotificationDomain.class.getName());
+        serviceProperties.put("class", EmailNotifier.class.getName());
+        return serviceProperties;
     }
 
     @Override
     public void delete(String id) {
         synchronized (services) {
+            EmailNotifier notifier = services.get(id);
+            notifier.getServiceRegistration().unregister();
             services.remove(id);
         }
     }
