@@ -36,7 +36,7 @@ import org.openengsb.ui.web.service.DomainService;
 public class Index extends BasePage {
 
     @SpringBean
-    DomainService domainService;
+    private DomainService domainService;
 
     @SuppressWarnings("serial")
     public Index() {
