@@ -24,6 +24,7 @@ import javax.mail.MessagingException;
 
 import org.junit.Test;
 import org.openengsb.domains.notification.email.internal.EmailNotifier;
+import org.openengsb.domains.notification.email.internal.abstraction.JavaxMailAbstraction;
 import org.openengsb.domains.notification.implementation.model.Attachment;
 import org.openengsb.domains.notification.implementation.model.Notification;
 import org.springframework.test.annotation.ExpectedException;
@@ -47,9 +48,9 @@ public class EmailNotifierUT {
         notifier.notifyWithoutExceptionHandling(notification);
     }
 
-    private EmailNotifier createNotifier(String name, String smtpAuth, String smtpSender, String smtpHost,
+    private EmailNotifier createNotifier(String id, String smtpAuth, String smtpSender, String smtpHost,
             String smtpPassword, String smtpUser, String smtpPort) {
-        EmailNotifier notifier = new EmailNotifier(name);
+        EmailNotifier notifier = new EmailNotifier(id, new JavaxMailAbstraction());
         notifier.setSmtpAuth(smtpAuth);
         notifier.setSmtpSender(smtpSender);
         notifier.setSmtpHost(smtpHost);

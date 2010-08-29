@@ -17,27 +17,32 @@
  */
 package org.openengsb.domains.notification.email;
 
-import org.openengsb.core.config.Domain;
-import org.openengsb.core.config.ServiceManager;
-import org.openengsb.core.config.descriptor.AttributeDefinition;
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
-import org.openengsb.core.config.util.BundleStrings;
-import org.openengsb.domains.notification.implementation.NotificationDomain;
-import org.openengsb.domains.notification.email.internal.EmailNotifier;
-import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
-
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 
+import org.openengsb.core.config.Domain;
+import org.openengsb.core.config.ServiceManager;
+import org.openengsb.core.config.descriptor.AttributeDefinition;
+import org.openengsb.core.config.descriptor.ServiceDescriptor;
+import org.openengsb.core.config.util.BundleStrings;
+import org.openengsb.domains.notification.email.internal.EmailNotifier;
+import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
+import org.openengsb.domains.notification.implementation.NotificationDomain;
+import org.osgi.framework.BundleContext;
+import org.springframework.osgi.context.BundleContextAware;
 
 public class EmailServiceManager implements ServiceManager, BundleContextAware {
 
     private BundleContext bundleContext;
     private BundleStrings strings;
     private final Map<String, EmailNotifier> services = new HashMap<String, EmailNotifier>();
+    private MailAbstraction mailAbstraction;
+
+    public EmailServiceManager(MailAbstraction mailAbstraction) {
+        this.mailAbstraction = mailAbstraction;
+    }
 
     @Override
     public ServiceDescriptor getDescriptor() {
@@ -46,55 +51,42 @@ public class EmailServiceManager implements ServiceManager, BundleContextAware {
 
     @Override
     public ServiceDescriptor getDescriptor(Locale locale) {
-        return ServiceDescriptor.builder()
+        return ServiceDescriptor
+                .builder()
                 .id(EmailNotifier.class.getName())
                 .implementsInterface(NotificationDomain.class.getName())
                 .type(EmailNotifier.class)
                 .name(strings.getString("email.name", locale))
                 .description(strings.getString("email.description", locale))
-                .attribute(AttributeDefinition.builder()
-                        .id("user")
-                        .name(strings.getString("username.outputMode", locale))
-                        .description(strings.getString("username.outputMode.description", locale))
-                        .defaultValue("")
-                        .required()
-                        .build())
-                .attribute(AttributeDefinition.builder()
-                        .id("password")
-                        .name(strings.getString("password.outputMode", locale))
-                        .description(strings.getString("password.outputMode.description", locale))
-                        .defaultValue("")
-                        .required()
-                        .build())
-                .attribute(AttributeDefinition.builder()
-                        .id("smtpAuth")
-                        .name(strings.getString("mail.smtp.auth.outputMode", locale))
-                        .description(strings.getString("mail.smtp.auth.outputMode.description", locale))
-                        .defaultValue("")
-                        .required()
-                        .build())
-                .attribute(AttributeDefinition.builder()
-                        .id("smtpSender")
-                        .name(strings.getString("mail.smtp.sender.outputMode", locale))
-                        .description(strings.getString("mail.smtp.sender.outputMode.description", locale))
-                        .defaultValue("")
-                        .required()
-                        .build())
-                .attribute(AttributeDefinition.builder()
-                        .id("smtpPort")
-                        .name(strings.getString("mail.smtp.port.outputMode", locale))
-                        .description(strings.getString("mail.smtp.port.outputMode.description", locale))
-                        .defaultValue("")
-                        .required()
-                        .build())
-                .attribute(AttributeDefinition.builder()
-                        .id("smtpHost")
-                        .name(strings.getString("mail.smtp.host.outputMode", locale))
-                        .description(strings.getString("mail.smtp.host.outputMode.description", locale))
-                        .defaultValue("")
-                        .required()
-                        .build())
-                .build();
+                .attribute(
+                        AttributeDefinition.builder().id("user").name(strings.getString("username.outputMode", locale))
+                                .description(strings.getString("username.outputMode.description", locale))
+                                .defaultValue("").required().build())
+                .attribute(
+                        AttributeDefinition.builder().id("password")
+                                .name(strings.getString("password.outputMode", locale))
+                                .description(strings.getString("password.outputMode.description", locale))
+                                .defaultValue("").required().build())
+                .attribute(
+                        AttributeDefinition.builder().id("smtpAuth")
+                                .name(strings.getString("mail.smtp.auth.outputMode", locale))
+                                .description(strings.getString("mail.smtp.auth.outputMode.description", locale))
+                                .defaultValue("").required().build())
+                .attribute(
+                        AttributeDefinition.builder().id("smtpSender")
+                                .name(strings.getString("mail.smtp.sender.outputMode", locale))
+                                .description(strings.getString("mail.smtp.sender.outputMode.description", locale))
+                                .defaultValue("").required().build())
+                .attribute(
+                        AttributeDefinition.builder().id("smtpPort")
+                                .name(strings.getString("mail.smtp.port.outputMode", locale))
+                                .description(strings.getString("mail.smtp.port.outputMode.description", locale))
+                                .defaultValue("").required().build())
+                .attribute(
+                        AttributeDefinition.builder().id("smtpHost")
+                                .name(strings.getString("mail.smtp.host.outputMode", locale))
+                                .description(strings.getString("mail.smtp.host.outputMode.description", locale))
+                                .defaultValue("").required().build()).build();
     }
 
     @Override
@@ -104,7 +96,7 @@ public class EmailServiceManager implements ServiceManager, BundleContextAware {
         synchronized (services) {
             en = services.get(id);
             if (en == null) {
-                en = new EmailNotifier(id);
+                en = new EmailNotifier(id, mailAbstraction);
                 services.put(id, en);
                 isNew = true;
             }
@@ -132,9 +124,9 @@ public class EmailServiceManager implements ServiceManager, BundleContextAware {
             props.put("id", id);
             props.put("domain", NotificationDomain.class.getName());
             props.put("class", EmailNotifier.class.getName());
-            bundleContext.registerService(new String[]{EmailNotifier.class.getName(), NotificationDomain.class.getName(),
-                    Domain.class.getName()},
-                    en, props);
+            bundleContext.registerService(
+                    new String[] { EmailNotifier.class.getName(), NotificationDomain.class.getName(),
+                            Domain.class.getName() }, en, props);
         }
     }
 

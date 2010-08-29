@@ -24,12 +24,11 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
 import org.openengsb.domains.notification.implementation.NotificationDomain;
 import org.openengsb.domains.notification.implementation.model.Notification;
 
@@ -44,18 +43,18 @@ public class EmailNotifier implements NotificationDomain {
     private String smtpSender;
     private String smtpHost;
     private String smtpPort;
+    private MailAbstraction mailAbstraction;
 
-    public EmailNotifier(String id) {
+    public EmailNotifier(String id, MailAbstraction mailAbstraction) {
         this.id = id;
+        this.mailAbstraction = mailAbstraction;
     }
 
     @Override
     public void notify(Notification notification) {
         log.info("Sending notification with notification connector " + id + ".");
         try {
-
             notifyWithoutExceptionHandling(notification);
-
         } catch (MessagingException e) {
             log.error("Exception on sending notification notification.", e);
         }
@@ -63,21 +62,16 @@ public class EmailNotifier implements NotificationDomain {
 
     public void notifyWithoutExceptionHandling(Notification notification) throws MessagingException {
         Properties props = createProperties();
-
-        Session session = Session.getDefaultInstance(props, new Authenticator() {
+        Session session = mailAbstraction.createSession(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(user, password);
             }
         });
-
-        Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(smtpSender));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(notification.getRecipient()));
-        message.setSubject(notification.getSubject());
-        message.setText(notification.getMessage());
-
-        Transport.send(message);
+        Message message = mailAbstraction.createMessage(session, new InternetAddress(smtpSender),
+                Message.RecipientType.TO, InternetAddress.parse(notification.getRecipient()),
+                notification.getSubject(), notification.getMessage());
+        mailAbstraction.send(message);
     }
 
     private Properties createProperties() {
