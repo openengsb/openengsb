@@ -90,7 +90,6 @@ public class TestClient extends BasePage {
         methodList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                // TODO Auto-generated method stub
                 populateArgumentList();
                 target.addComponent(argumentListContainer);
             }

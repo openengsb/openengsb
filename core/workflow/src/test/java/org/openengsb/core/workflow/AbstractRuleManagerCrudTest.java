@@ -35,7 +35,8 @@ import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
 @RunWith(Parameterized.class)
-public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager> extends AbstractRuleManagerTest<SourceType> {
+public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager> extends
+        AbstractRuleManagerTest<SourceType> {
 
     @Parameters
     public static List<Object[]> data() {
@@ -52,7 +53,7 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
                 new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "test"),
                 "when\nthen\nSystem.out.println(\"\");", });
 
-        // imports:
+        // TODO: imports & globals
         // data.add(new Object[] { new
         // RuleBaseElementId(RuleBaseElementType.Import, "ignored",
         // "java.util.Currency"),
@@ -60,7 +61,6 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
         // RuleBaseElementId(RuleBaseElementType.Import, "ignored",
         // "java.util.Random"),
         // "java.util.Random", });
-        // TODO
         // globals:
 
         return data;
