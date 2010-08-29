@@ -17,21 +17,26 @@
  */
 package org.openengsb.domains.notification.email.internal;
 
+import java.util.Properties;
+
+import javax.mail.Authenticator;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.domains.notification.implementation.NotificationDomain;
 import org.openengsb.domains.notification.implementation.model.Notification;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.util.Properties;
-
 public class EmailNotifier implements NotificationDomain {
 
     private Log log = LogFactory.getLog(getClass());
     private final String id;
-    private Authenticator authenticator;
 
     private String user;
     private String password;
@@ -87,8 +92,6 @@ public class EmailNotifier implements NotificationDomain {
 
     }
 
-
-
     public void setUser(String user) {
         this.user = user;
     }
@@ -97,21 +100,17 @@ public class EmailNotifier implements NotificationDomain {
         this.password = password;
     }
 
-
     public void setSmtpAuth(String smtpAuth) {
         this.smtpAuth = smtpAuth;
     }
-
 
     public void setSmtpSender(String smtpSender) {
         this.smtpSender = smtpSender;
     }
 
-
     public void setSmtpHost(String smtpHost) {
         this.smtpHost = smtpHost;
     }
-
 
     public void setSmtpPort(String smtpPort) {
         this.smtpPort = smtpPort;
