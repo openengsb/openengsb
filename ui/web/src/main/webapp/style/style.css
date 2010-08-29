@@ -198,3 +198,92 @@ div.tabRowContent {
   padding: 25px;
   color: #fff;
 }
+
+
+.mainHeadline {
+	margin:3px 0 7px;
+	min-height:50px;
+	padding:0;
+	width:100%;
+}
+
+.mainHeadline img {
+	float:left;
+}
+
+.mainHeadline .headlineContainer {
+	margin:7px 0 7px 60px;
+	min-height:48px;
+}
+
+.mainHeadline .headlineContainer h2 {
+	margin:0;
+	overflow:hidden;
+	padding:0;
+}
+
+.mainHeadline .headlineContainer p {
+	margin:0;
+	padding:0;
+}
+
+
+#sidebarContainer {
+    background:transparent url("../images/sidebar.png");
+    background-repeat: repeat-y;
+    background-position:top right;
+}
+
+#sidebar {
+	float:right !important;
+	width:280px;
+	background-color:#e1e1e1;
+	border-left:1px #777777 solid;
+	padding:10px;
+}
+
+.smallFont {
+	font-size:85%;
+}
+
+.usedSidebar {
+	margin-right:300px;
+}
+
+.hiddenSidebar {
+	background:none !important;
+}
+
+.breadCrumbs {
+	font-size:0.95em;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	margin:0 0 5px 0;
+	padding:0;
+}
+
+.breadCrumbs li {
+	display:inline;
+	font-style:italic;
+	margin-right:1px;
+}
+
+.breadCrumbs li a {
+	text-decoration:none;
+}
+
+.breadCrumbs li a span{
+	text-decoration:underline;
+}
+
+.footerValidation {
+	text-align:right;
+}
+
+.footerValidation p {
+	margin:20px 0 0 0;
+}
+
+
+}
