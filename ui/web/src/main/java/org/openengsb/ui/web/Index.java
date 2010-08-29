@@ -40,13 +40,13 @@ public class Index extends BasePage {
 
     @SuppressWarnings("serial")
     public Index() {
-        add(new Link("lang.en") {
+        add(new Link<Object>("lang.en") {
             @Override
             public void onClick() {
                 this.getSession().setLocale(Locale.ENGLISH);
             }
         });
-        add(new Link("lang.de") {
+        add(new Link<Object>("lang.de") {
             @Override
             public void onClick() {
                 this.getSession().setLocale(Locale.GERMAN);
