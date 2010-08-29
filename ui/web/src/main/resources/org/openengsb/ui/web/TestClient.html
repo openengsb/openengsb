@@ -21,7 +21,12 @@
     <wicket:extend>
 
       <div wicket:id="header">header</div>
-        
+       <ul class="breadCrumbs">
+        <li><a href="" wicket:id="index"><span><wicket:message key="home.title"/></span></a> &raquo;</li>
+        <li><span><wicket:message key="testClient.title"/></span> &raquo;</li>
+        </ul>
+
+
       <wicket:message key="serviceList" />
 
       <form wicket:id="methodCallForm" action="">

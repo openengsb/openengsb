@@ -33,6 +33,7 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
@@ -110,6 +111,7 @@ public class TestClient extends BasePage {
         form.add(argumentListContainer);
 
         add(form);
+        this.add(new BookmarkablePageLink<Index>("index", Index.class));
     }
 
     protected void performCall() {

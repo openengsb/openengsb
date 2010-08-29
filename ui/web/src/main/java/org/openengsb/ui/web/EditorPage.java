@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
@@ -38,6 +39,7 @@ public class EditorPage extends BasePage {
         ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
         add(new Label("service.name", descriptor.getName()));
         add(new Label("service.description", descriptor.getDescription()));
+        this.add(new BookmarkablePageLink<Index>("index", Index.class));
         createEditor();
     }
 
