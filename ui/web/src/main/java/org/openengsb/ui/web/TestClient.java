@@ -57,7 +57,7 @@ public class TestClient extends BasePage {
 
     @SuppressWarnings("serial")
     public TestClient() {
-        Form<?> form = new Form("methodCallForm");
+        Form<?> form = new Form<Object>("methodCallForm");
         form.add(new AjaxFormSubmitBehavior(form, "onsubmit") {
             @Override
             protected void onError(AjaxRequestTarget target) {
@@ -138,7 +138,8 @@ public class TestClient extends BasePage {
         Method m = findMethod();
         List<ArgumentModel> arguments = call.getArguments();
         int i = 0;
-        for (Class<?> p : m.getParameterTypes()) {
+        for (@SuppressWarnings("unused")
+        Class<?> p : m.getParameterTypes()) {
             arguments.add(new ArgumentModel(i, ""));
             i++;
         }

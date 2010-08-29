@@ -55,7 +55,7 @@ public class SendEventPage extends BasePage {
 
     @SuppressWarnings("serial")
     public SendEventPage(List<Class<? extends Event>> classes) {
-        Form<?> form = new Form("form");
+        Form<?> form = new Form<Object>("form");
         add(form);
         ChoiceRenderer<Class<?>> choiceRenderer = new ChoiceRenderer<Class<?>>("canonicalName", "simpleName");
         dropDownChoice = new DropDownChoice<Class<?>>("dropdown", classes, choiceRenderer);
