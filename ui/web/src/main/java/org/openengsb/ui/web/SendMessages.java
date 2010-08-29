@@ -68,6 +68,7 @@ public class SendMessages extends BasePage {
         }
     }
 
+    @SuppressWarnings("serial")
     private static class ClickableLinkTree extends LinkTree {
 
         public ClickableLinkTree(String name, TreeModel model) {

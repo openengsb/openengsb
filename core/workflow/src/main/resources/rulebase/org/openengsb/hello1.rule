@@ -1,0 +1,4 @@
+when
+	Event()
+then
+	System.out.println("Hello World");

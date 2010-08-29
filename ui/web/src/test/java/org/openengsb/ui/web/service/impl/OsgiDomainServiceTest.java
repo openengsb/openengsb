@@ -17,49 +17,45 @@
  */
 package org.openengsb.ui.web.service.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.easymock.internal.MocksControl.MockType;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.ui.web.fixtures.log.LogDomain;
-import org.openengsb.ui.web.fixtures.log.LogDomainProvider;
 import org.openengsb.ui.web.fixtures.log.StdoutLogService;
 import org.openengsb.ui.web.fixtures.log.StdoutLogServiceManager;
-import org.openengsb.ui.web.mock.BundleContextMock;
-import org.openengsb.ui.web.mock.ServiceReferenceMock;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public class OsgiDomainServiceTest {
 
-    private final List<DomainProvider> providers = Arrays.asList(new DomainProvider[] { new LogDomainProvider() });
-
-    private final List<ServiceManager> serviceManagers = Arrays
-            .asList(new ServiceManager[] { new StdoutLogServiceManager() });
-
-    private final ServiceReference[] serviceReferences = new ServiceReference[] { new ServiceReferenceMock("name", "id") };
-
-    private final BundleContext bundleContext = new BundleContextMock(serviceManagers);
-
     @Test
     public void testGetDomains() throws InvalidSyntaxException {
-        BundleContext mock = Mockito.mock(BundleContext.class);
-        Mockito.when(mock.getAllServiceReferences(LogDomain.class.getName(), null)).thenReturn(serviceReferences);
-        OsgiDomainService service = new OsgiDomainService(bundleContext);
-        service.setDomains(providers);
+        BundleContext contextMock = Mockito.mock(BundleContext.class);
+        List<ServiceReference> references = new ArrayList<ServiceReference>();
+        ServiceReference[] serviceReferences = references.toArray(new ServiceReference[] {});
+        Mockito.when(contextMock.getAllServiceReferences(LogDomain.class.getName(), null))
+                .thenReturn(serviceReferences);
+        List<DomainProvider> domainProvider = new ArrayList<DomainProvider>();
+        DomainProvider provider = Mockito.mock(DomainProvider.class);
+        domainProvider.add(provider);
+
+        OsgiDomainService service = new OsgiDomainService(contextMock);
+        service.setDomains(domainProvider);
         List<DomainProvider> domains = service.domains();
-        assertNotSame(providers, domains);
+
+        assertNotSame(domainProvider, domains);
         assertEquals(1, domains.size());
         DomainProvider domainProviderFromService = domains.get(0);
-        DomainProvider domainProviderLocal = providers.get(0);
+        DomainProvider domainProviderLocal = domainProvider.get(0);
         assertEquals(domainProviderLocal.getName(), domainProviderFromService.getName());
         assertEquals(domainProviderLocal.getId(), domainProviderFromService.getId());
         assertEquals(domainProviderLocal.getDescription(), domainProviderFromService.getDescription());
@@ -68,29 +64,45 @@ public class OsgiDomainServiceTest {
 
     @Test
     public void serviceManagersForDomainClass() throws InvalidSyntaxException {
-        BundleContext mock = Mockito.mock(BundleContext.class);
-        ServiceReferenceMock serviceReferenceMock = new ServiceReferenceMock("Name", "Id");
-        ServiceReference[] serviceManagerReferences = new ServiceReference[] { serviceReferenceMock };
+        BundleContext contextMock = Mockito.mock(BundleContext.class);
+        List<ServiceReference> references = new ArrayList<ServiceReference>();
+        ServiceReference singleReference = Mockito.mock(ServiceReference.class);
+        references.add(singleReference);
+        ServiceReference[] serviceReferences = references.toArray(new ServiceReference[] {});
+        Mockito.when(contextMock.getAllServiceReferences(LogDomain.class.getName(), null))
+                .thenReturn(serviceReferences);
+        List<DomainProvider> domainProvider = new ArrayList<DomainProvider>();
+        DomainProvider provider = Mockito.mock(DomainProvider.class);
+        domainProvider.add(provider);
         Mockito.when(
-                mock.getAllServiceReferences(ServiceManager.class.getName(),
-                        "(domain=" + LogDomain.class.getName() + ")")).thenReturn(serviceManagerReferences);
-        Mockito.when(mock.getService(serviceReferenceMock)).thenReturn(new StdoutLogServiceManager());
+                contextMock.getAllServiceReferences(ServiceManager.class.getName(),
+                        "(domain=" + LogDomain.class.getName() + ")")).thenReturn(serviceReferences);
+        Mockito.when(contextMock.getService(singleReference)).thenReturn(new StdoutLogServiceManager());
 
-        OsgiDomainService service = new OsgiDomainService(mock);
+        OsgiDomainService service = new OsgiDomainService(contextMock);
         List<ServiceManager> serviceManagersForDomain = service.serviceManagersForDomain(LogDomain.class);
+
         assertEquals(1, serviceManagersForDomain.size());
         ServiceManager serviceManager = serviceManagersForDomain.get(0);
         assertEquals(LogDomain.class.getName(), serviceManager.getDescriptor().getServiceInterfaceId());
         assertEquals(StdoutLogService.class.getName(), serviceManager.getDescriptor().getId());
     }
-    
+
     @Test
-    public void serviceReferencesForConnector() throws InvalidSyntaxException{
-        BundleContext mock = Mockito.mock(BundleContext.class);
-        Mockito.when(mock.getAllServiceReferences(StdoutLogService.class.getName(), null)).thenReturn(serviceReferences);
-        OsgiDomainService service = new OsgiDomainService(mock);
-        List<ServiceReference> serviceReferencesForConnector = service.serviceReferencesForConnector(StdoutLogService.class);
+    public void serviceReferencesForConnector() throws InvalidSyntaxException {
+        BundleContext contextMock = Mockito.mock(BundleContext.class);
+        List<ServiceReference> references = new ArrayList<ServiceReference>();
+        ServiceReference singleReference = Mockito.mock(ServiceReference.class);
+        references.add(singleReference);
+        ServiceReference[] serviceReferences = references.toArray(new ServiceReference[] {});
+        Mockito.when(contextMock.getAllServiceReferences(StdoutLogService.class.getName(), null)).thenReturn(
+                serviceReferences);
+
+        OsgiDomainService service = new OsgiDomainService(contextMock);
+        List<ServiceReference> serviceReferencesForConnector = service
+                .serviceReferencesForConnector(StdoutLogService.class);
+
         assertEquals(1, serviceReferencesForConnector.size());
-        assertSame(this.serviceReferences[0], serviceReferencesForConnector.get(0));
+        assertSame(singleReference, serviceReferencesForConnector.get(0));
     }
 }

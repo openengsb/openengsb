@@ -42,10 +42,6 @@ public class MethodId implements Serializable {
         primitives.put("void", void.class);
     }
 
-    public MethodId() {
-        // TODO Auto-generated constructor stub
-    }
-
     public MethodId(Method method) {
         setName(method.getName());
         for (Class<?> type : method.getParameterTypes()) {

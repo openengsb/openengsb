@@ -27,6 +27,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.common.Event;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
@@ -35,17 +36,17 @@ import org.openengsb.ui.web.service.DomainService;
 public class Index extends BasePage {
 
     @SpringBean
-    DomainService domainService;
+    private DomainService domainService;
 
     @SuppressWarnings("serial")
     public Index() {
-        add(new Link("lang.en") {
+        add(new Link<Object>("lang.en") {
             @Override
             public void onClick() {
                 this.getSession().setLocale(Locale.ENGLISH);
             }
         });
-        add(new Link("lang.de") {
+        add(new Link<Object>("lang.de") {
             @Override
             public void onClick() {
                 this.getSession().setLocale(Locale.GERMAN);
@@ -78,5 +79,16 @@ public class Index extends BasePage {
             }
         });
         add(new BookmarkablePageLink<TestClient>("testclientlink", TestClient.class));
+        add(new Link<SendEventPage>("sendEvent") {
+            @Override
+            public void onClick() {
+                List<Class<? extends Event>> events = new ArrayList<Class<? extends Event>>();
+                events.add(Event.class);
+                for (DomainProvider domain : domainService.domains()) {
+                    events.addAll(domain.getEvents());
+                }
+                setResponsePage(new SendEventPage(events));
+            }
+        });
     }
 }

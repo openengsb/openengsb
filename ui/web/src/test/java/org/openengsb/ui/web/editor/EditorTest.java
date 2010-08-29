@@ -18,16 +18,15 @@
 package org.openengsb.ui.web.editor;
 
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.Image;
@@ -47,6 +46,7 @@ public class EditorTest {
     private AttributeDefinition stringAttrib;
     private AttributeDefinition attribWithNoDescription;
     private Map<String, String> defaultValues;
+
     @Before
     public void setup() {
         stringAttrib = AttributeDefinition.builder().id("id_a").name("name_a").description("desc_a").build();
@@ -95,22 +95,17 @@ public class EditorTest {
         assertThat(editor.getValues().get(stringAttrib.getId()), is("new_value_a"));
     }
 
-    // because of the dynamics of the editor, we have to look up the fields
-    // another way
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     private <T> T getEditorFieldFormComponent(String attributeId, Class<T> componentType) {
-        Form<?> form = (Form<?>) editor.get("form");
-        MarkupContainer fields = (MarkupContainer) form.get(1);
-        for (int i = 0; i < fields.size(); ++i) {
-            MarkupContainer row = (MarkupContainer) fields.get(i);
-            FormComponent c = (FormComponent) ((Panel) row.get(0)).get(1);
-            if (c.getInputName().equals("fields:" + attributeId + ":row:field")) {
-                assertThat(c, is(componentType));
-                return (T) c;
-            }
-        }
-        fail("no form component '" + attributeId + "' found");
-        throw new UnsupportedOperationException();
+        String id = editor.getId() + ':' + buildFormComponentId(attributeId);
+        Component c = tester.getComponentFromLastRenderedPage(id);
+        assertThat(c, notNullValue());
+        assertThat(c, is(componentType));
+        return (T) c;
+    }
+
+    public static String buildFormComponentId(String attributeId) {
+        return "form:fields:" + attributeId + ":row:field";
     }
 
     private EditorField getEditorField(String attributeId) {

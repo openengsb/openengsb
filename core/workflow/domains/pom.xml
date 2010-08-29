@@ -7,51 +7,49 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE\-2.0
+       http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
--->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <parent>
-    <groupId>org.openengsb</groupId>
-    <artifactId>openengsb-parent</artifactId>
+    <groupId>org.openengsb.core.workflow</groupId>
+    <artifactId>openengsb-core-workflow-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <relativePath>../../..</relativePath>
   </parent>
 
-  <groupId>org.openengsb</groupId>
-  <artifactId>openengsb-workflow-domains</artifactId>
-  <name>openengsb-workflow-domains</name>
-  
-  <description>Interfaces used in openengsb-drools</description>
-  
+  <properties>
+    <bundle.symbolicName>org.openengsb.core.workflow.domains</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.core.workflow.domains</bundle.namespace>
+  </properties>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openengsb.core.workflow</groupId>
+  <artifactId>openengsb-core-workflow-domains</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <name>OpenEngSB :: Core :: Workflow :: Domains </name>
+
+  <packaging>bundle</packaging>
+
   <dependencies>
     <dependency>
-      <groupId>org.openengsb</groupId>
-      <artifactId>openengsb-core</artifactId>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-common</artifactId>
+      <version>${pom.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-config</artifactId>
+      <version>${pom.version}</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
-  
-  <build>
-   <plugins>
-     <plugin>
-       <groupId>org.apache.maven.plugins</groupId>
-       <artifactId>maven-assembly-plugin</artifactId>
-       <configuration>
-         <descriptors>
-           <descriptor>guvnorUpload.xml</descriptor>
-         </descriptors>
-       </configuration>
-     </plugin>
-   </plugins>
-  </build>
-
 </project>

@@ -33,11 +33,9 @@ public class MethodUtilTest {
     public class TestClass implements Testinterface {
         @Override
         public void dosomething() {
-            // TODO Auto-generated method stub
         }
 
         public void dootherstuff() {
-
         }
     }
 
@@ -48,14 +46,10 @@ public class MethodUtilTest {
     public class SubTestClass extends AbstractTestClass implements Testinterface {
         @Override
         public void dootherstuff() {
-            // TODO Auto-generated method stub
-
         }
 
         @Override
         public void dosomething() {
-            // TODO Auto-generated method stub
-
         }
     }
 
@@ -66,14 +60,10 @@ public class MethodUtilTest {
     public class MultiClass implements Testinterface, TestInterface2 {
         @Override
         public void dootherstuff() {
-            // TODO Auto-generated method stub
-
         }
 
         @Override
         public void dosomething() {
-            // TODO Auto-generated method stub
-
         }
     }
 

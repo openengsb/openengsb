@@ -36,14 +36,12 @@ public class EditorPageTest {
 
     private AttributeDefinition attrib1;
     private ServiceManager manager;
-    private WicketTester tester;
 
     @Before
     public void setup() {
-        tester = new WicketTester();
+        new WicketTester();
         manager = mock(ServiceManager.class);
-        attrib1 = AttributeDefinition.builder().id("a").defaultValue("a_default").name("a_name")
-                .build();
+        attrib1 = AttributeDefinition.builder().id("a").defaultValue("a_default").name("a_name").build();
         ServiceDescriptor descriptor = ServiceDescriptor.builder().id("a").name("service name")
                 .description("service description").attribute(attrib1).build();
         when(manager.getDescriptor(Mockito.any(Locale.class))).thenReturn(descriptor);

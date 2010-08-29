@@ -50,6 +50,7 @@ public class TestClientTest {
     public class TestService implements TestInterface {
         public boolean called = false;
 
+        @Override
         public void update(String id, String name) {
             called = true;
         }
@@ -127,6 +128,7 @@ public class TestClientTest {
 
         tester.startPage(TestClient.class);
 
+        @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
         Assert.assertNotNull(form.get("methodList"));
     }
@@ -227,7 +229,7 @@ public class TestClientTest {
         formTester.select("methodList", 0);
         tester.executeAjaxEvent(form.get("methodList"), "onchange");
 
-        for(int i = 0; i < argList.size(); i++){
+        for (int i = 0; i < argList.size(); i++) {
             formTester.setValue("argumentListContainer:argumentList:" + i + ":value", "test");
         }
 
@@ -266,7 +268,7 @@ public class TestClientTest {
         expected.add(serviceReferenceMock);
         expected.add(serviceReferenceMock);
         DomainService managedServicesMock = Mockito.mock(DomainService.class);
-        Mockito.when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>(){
+        Mockito.when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
             @Override
             public List<ServiceReference> answer(InvocationOnMock invocation) throws Throwable {
                 return expected;

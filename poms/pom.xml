@@ -64,7 +64,7 @@
     <jasper.version>6.0.24</jasper.version>
     <jsp.version>6.1.14</jsp.version>
     <spring.osgi.version>2.0.0.M1</spring.osgi.version>
-    <spring.version>3.0.3.RELEASE</spring.version>
+    <spring.version>3.0.4.RELEASE</spring.version>
     <jetty.spring.version>1.0.0</jetty.spring.version>
     <transaction.version>1.1.0</transaction.version>
     <persistence.version>1.0.0</persistence.version>
@@ -72,7 +72,7 @@
     <oracle.classloader.version>10.1.3.1</oracle.classloader.version>
     <el.version>2.1.0</el.version>
     <aopalliance.version>1.0.0</aopalliance.version>
-    <wicket.version>1.4.9</wicket.version>
+    <wicket.version>1.4.10</wicket.version>
     <jackson.version>1.5.3</jackson.version>
     <aopalliance.version>1.0_3</aopalliance.version>
     <xml.bind.version>2.0.0</xml.bind.version>
@@ -100,14 +100,14 @@
     <junit.version>4.8.1</junit.version>
     <mockito.version>1.8.5</mockito.version>
     <dbunit.version>2.4.7</dbunit.version>
-    <pax.url.version>1.1.2</pax.url.version>
-    <pax.logging.version>1.5.1</pax.logging.version>
+    <pax.url.version>1.1.3</pax.url.version>
+    <pax.logging.version>1.5.2</pax.logging.version>
     <aries.version>0.1-incubating</aries.version>
     <felix.configadmin.version>1.2.4</felix.configadmin.version>
     <felix.fileinstall.version>3.0.0</felix.fileinstall.version>
     <felix.prefs.version>1.0.4</felix.prefs.version>
     <felix.gogo.version>0.4.0</felix.gogo.version>
-    <karaf.version>1.6.0</karaf.version>
+    <karaf.version>2.0.0</karaf.version>
     <mina.version>2.0.0-RC1</mina.version>
     <sshd.version>0.4.0</sshd.version>
     <hsqldb.version>1.8.0.10</hsqldb.version>
@@ -124,7 +124,7 @@
     <hibernate.version>3.4.0.GA</hibernate.version>
     <httpcomponent.version>4.0-alpha4</httpcomponent.version>
     <h2.version>1.1.116</h2.version>
-    <jaxb.version>2.2</jaxb.version>
+    <jaxb.version>2.2.1</jaxb.version>
     <jaxen.version>1.1.1</jaxen.version>
     <jetty.version>6.1.20</jetty.version>
     <jgit.version>0.7.1</jgit.version>
@@ -135,7 +135,6 @@
     <lucene.version>2.4.1</lucene.version>
     <maven.code.version>3.0-alpha-2</maven.code.version>
     <maven.plexus.utils.version>1.5.6</maven.plexus.utils.version>
-    <mockito.version>1.7</mockito.version>
     <mockns.version>0.1.0-SNAPSHOT</mockns.version>
     <ode.version>1.3.4.preview1</ode.version>
     <servicemix.specs.version>1.1.0</servicemix.specs.version>
@@ -169,13 +168,23 @@
     <howl.version>1.0.1-1</howl.version>
     <hsqldb.version>1.7.3.3</hsqldb.version>
     <javax.activation.version>1.1</javax.activation.version>
-    <javax.mail.version>1.4</javax.mail.version>
+    <javax.mail.version>1.4.1</javax.mail.version>
     <javax.servlet.version>2.5</javax.servlet.version>
     <quartz.version>1.5.2</quartz.version>
     <rome.version>0.5</rome.version>
     <woden.version>1.0.0M6</woden.version>
     <xml.apis.version>1.3.04</xml.apis.version>
     <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>
+    <drools.version>5.1.0</drools.version>
+    <fastinfoset.version>1.2.2</fastinfoset.version>
+    <xml.stream.version>1.0.1</xml.stream.version>
+    <javax.activation.version>1.1.1</javax.activation.version>
+    <staxex.version>1.0.0</staxex.version>
+    <xstream.version>1.3.1</xstream.version>
+    <xmlpull.version>1.1.4.c</xmlpull.version>
+    <mvel2.version>2.0.18</mvel2.version>
+    <antlr.version>3.1.3</antlr.version>
+    <commons.io.version>1.4</commons.io.version>
   </properties>
 
   <modules>

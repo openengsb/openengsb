@@ -17,7 +17,10 @@
  */
 package org.openengsb.core.config.descriptor;
 
-public class AttributeDefinition {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class AttributeDefinition implements Serializable {
     private String id;
     private String name;
     private String description;

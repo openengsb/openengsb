@@ -57,7 +57,7 @@ public class TestClient extends BasePage {
 
     @SuppressWarnings("serial")
     public TestClient() {
-        Form<?> form = new Form("methodCallForm");
+        Form<?> form = new Form<Object>("methodCallForm");
         form.add(new AjaxFormSubmitBehavior(form, "onsubmit") {
             @Override
             protected void onError(AjaxRequestTarget target) {
@@ -90,7 +90,6 @@ public class TestClient extends BasePage {
         methodList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                // TODO Auto-generated method stub
                 populateArgumentList();
                 target.addComponent(argumentListContainer);
             }
@@ -140,7 +139,8 @@ public class TestClient extends BasePage {
         List<ArgumentModel> arguments = new ArrayList<ArgumentModel>();
         call.setArguments(arguments);
         int i = 0;
-        for (Class<?> p : m.getParameterTypes()) {
+        for (@SuppressWarnings("unused")
+        Class<?> p : m.getParameterTypes()) {
             arguments.add(new ArgumentModel(i, ""));
             i++;
         }

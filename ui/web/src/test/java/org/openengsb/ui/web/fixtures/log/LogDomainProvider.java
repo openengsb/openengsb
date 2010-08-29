@@ -17,8 +17,11 @@
  */
 package org.openengsb.ui.web.fixtures.log;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import org.openengsb.core.common.Event;
 import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.DomainProvider;
 
@@ -53,6 +56,11 @@ public class LogDomainProvider implements DomainProvider {
     @Override
     public Class<? extends Domain> getDomainInterface() {
         return LogDomain.class;
+    }
+
+    @Override
+    public List<Class<? extends Event>> getEvents() {
+        return new ArrayList<Class<? extends Event>>();
     }
 
 }
