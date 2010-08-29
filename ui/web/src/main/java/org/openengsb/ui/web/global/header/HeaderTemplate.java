@@ -1,22 +1,17 @@
-package org.openengsb.ui.web.header;
+package org.openengsb.ui.web.global.header;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.config.DomainProvider;
 import org.openengsb.ui.web.Index;
-import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class HeaderTemplate extends Panel {
 

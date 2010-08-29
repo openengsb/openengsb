@@ -1,4 +1,4 @@
-package org.openengsb.ui.web.header;
+package org.openengsb.ui.web.global.header;
 
 import org.apache.wicket.markup.html.panel.Panel;
 
