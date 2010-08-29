@@ -91,4 +91,9 @@ public class Index extends BasePage {
             }
         });
     }
+
+    @Override
+    public String getHeaderMenuItem() {
+        return "index";
+    }
 }

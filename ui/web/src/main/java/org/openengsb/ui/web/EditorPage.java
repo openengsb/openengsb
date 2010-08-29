@@ -75,4 +75,9 @@ public class EditorPage extends BasePage {
     public EditorPanel getEditorPanel() {
         return editorPanel;
     }
+
+    @Override
+    public String getHeaderMenuItem() {
+        return "index";
+    }
 }
