@@ -318,6 +318,17 @@ div.tabRowContent {
     right:0px;
 }
 
+.languageIconsE img {
+    position:absolute;
+    top:10px;
+    right:10px;
+}
+.languageIconsG img {
+    position:absolute;
+    top:10px;
+    right:45px;
+}
+
 #mainMenu {
     background-color:#f3f3f3;
     border-bottom:3px #777777 solid;
