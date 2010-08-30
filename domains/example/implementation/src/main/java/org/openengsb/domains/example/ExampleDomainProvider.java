@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.util.BundleStrings;
 import org.openengsb.domains.example.event.LogEvent;

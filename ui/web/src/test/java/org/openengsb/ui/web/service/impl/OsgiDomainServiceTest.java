@@ -25,7 +25,7 @@ import java.util.List;
 import org.easymock.internal.MocksControl.MockType;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.ui.web.fixtures.log.LogDomain;

@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.core.common;
+package org.openengsb.core.config;
 
 public interface Domain {
 

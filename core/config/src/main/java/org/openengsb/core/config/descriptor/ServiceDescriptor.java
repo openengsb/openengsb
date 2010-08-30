@@ -20,7 +20,7 @@ package org.openengsb.core.config.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.config.Domain;
 
 public class ServiceDescriptor {
     private String id;

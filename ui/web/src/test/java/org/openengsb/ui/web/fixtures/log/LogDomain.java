@@ -17,7 +17,7 @@
  */
 package org.openengsb.ui.web.fixtures.log;
 
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.config.Domain;
 
 public interface LogDomain extends Domain {
     void log(String message);

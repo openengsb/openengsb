@@ -32,7 +32,7 @@
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.domains.example.ExampleDomain</value>
-      <value>org.openengsb.core.common.Domain</value>
+      <value>org.openengsb.core.config.Domain</value>
     </osgi:interfaces>
     <osgi:service-properties>
       <entry key="openengsb.service.type" value="domain" />

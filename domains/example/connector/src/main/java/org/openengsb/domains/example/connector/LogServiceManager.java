@@ -22,7 +22,7 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
