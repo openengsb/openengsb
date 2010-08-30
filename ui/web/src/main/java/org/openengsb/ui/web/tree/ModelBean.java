@@ -37,7 +37,7 @@ public class ModelBean {
 
     public String getNiceKey() {
         String[] path = key.split("/");
-        if(path.length - 1 >= 0) {
+        if (path.length - 1 >= 0) {
             return path[path.length - 1];
         } else {
             return "/";
@@ -50,7 +50,7 @@ public class ModelBean {
 
     public void setValue(String value) {
         if (isLeaf) {
-            contextService.putValue(key, value);
+            contextService.putValue(key, value == null ? "" : value);
         }
     }
 

@@ -86,6 +86,24 @@ public class ContextSetPageTest {
         verify(contextService).putValue("/a/b/c/d", "a");
     }
 
+    @Test
+    public void editAttributeToEmtyString_shouldResultEmptyStringInModel() {
+        String textFieldId = "treeTable:i:4:sideColumns:1:textfield";
+        String nodeLinkId = "form:treeTable:i:4:sideColumns:0:nodeLink";
+        AjaxLink<?> node = (AjaxLink<?>) tester
+                .getComponentFromLastRenderedPage(nodeLinkId);
+        tester.executeAjaxEvent(node, "onclick");
+        TextField<?> textField = (TextField<?>) tester.getComponentFromLastRenderedPage("form:" + textFieldId);
+        assertThat(textField, notNullValue());
+        assertThat((String) textField.getModel().getObject(), is("e"));
+        assertThat(textField.isEnabled(), is(true));
+        FormTester formTester = tester.newFormTester("form");
+        formTester.setValue(textFieldId, "");
+        node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage(nodeLinkId);
+        tester.executeAjaxEvent(textField, "onblur");
+        verify(contextService).putValue("/a/b/c/d", "");
+    }
+
     private void testLabel(String lableText, String path) {
         tester.assertComponent(path, Label.class);
         Label labelroot = (Label) tester.getComponentFromLastRenderedPage(path);
