@@ -15,11 +15,13 @@
    limitations under the License.
 
  */
-package org.openengsb.ui.web;
+package org.openengsb.ui.web.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.openengsb.ui.web.ArgumentModel;
 
 @SuppressWarnings("serial")
 public class MethodCall implements Serializable {

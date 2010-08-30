@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.ui.web;
+package org.openengsb.ui.web.model;
 
 import java.io.Serializable;
 
