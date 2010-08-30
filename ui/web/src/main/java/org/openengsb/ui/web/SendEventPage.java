@@ -18,7 +18,6 @@
 package org.openengsb.ui.web;
 
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Modifier;
@@ -41,7 +40,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
-import org.openengsb.core.config.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
@@ -50,7 +48,7 @@ import org.openengsb.ui.web.service.DomainService;
 @SuppressWarnings("serial")
 public class SendEventPage extends BasePage {
 
-    private static final Log log = LogFactory.getLog(SendEventPage.class);
+    static final Log log = LogFactory.getLog(SendEventPage.class);
 
     @SpringBean
     private WorkflowService eventService;
@@ -97,7 +95,7 @@ public class SendEventPage extends BasePage {
 
     private EditorPanel createEditorPanelForClass(Class<?> theClass) {
         Map<String, String> defaults = new HashMap<String, String>();
-        List<AttributeDefinition> attributes = buildAttributesList(theClass);
+        List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(theClass);
         @SuppressWarnings("serial")
         EditorPanel editor = new EditorPanel("editor", attributes, defaults) {
             @Override
@@ -137,27 +135,4 @@ public class SendEventPage extends BasePage {
             return null;
         }
     }
-
-    private List<AttributeDefinition> buildAttributesList(Class<?> theClass) {
-        List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(theClass);
-            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                if (propertyDescriptor.getWriteMethod() == null
-                        || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
-                    continue;
-                }
-                Builder builder = AttributeDefinition.builder();
-                builder.name(propertyDescriptor.getDisplayName());
-                builder.description(propertyDescriptor.getShortDescription());
-                builder.id(propertyDescriptor.getName());
-                attributes.add(builder.build());
-            }
-        } catch (IntrospectionException ex) {
-            log.error("building attribute list failed", ex);
-        }
-        return attributes;
-    }
-
 }

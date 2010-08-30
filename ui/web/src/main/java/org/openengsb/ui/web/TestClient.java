@@ -21,7 +21,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,16 +31,15 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.ui.web.editor.BeanArgumentPanel;
+import org.openengsb.ui.web.editor.SimpleArgumentPanel;
 import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
@@ -57,7 +58,7 @@ public class TestClient extends BasePage {
 
     private final MethodCall call = new MethodCall();
 
-    private final ListView<ArgumentModel> argumentList;
+    private final RepeatingView argumentList;
 
     private final WebMarkupContainer argumentListContainer;
 
@@ -112,14 +113,7 @@ public class TestClient extends BasePage {
         form.add(methodList);
         argumentListContainer = new WebMarkupContainer("argumentListContainer");
         argumentListContainer.setOutputMarkupId(true);
-        argumentList = new ListView<ArgumentModel>("argumentList") {
-            @Override
-            protected void populateItem(ListItem<ArgumentModel> item) {
-                item.add(new Label("index", new PropertyModel<ArgumentModel>(item.getModelObject(), "index")));
-                item.add(new TextField<ArgumentModel>("value", new PropertyModel<ArgumentModel>(item.getModelObject(),
-                        "value")));
-            }
-        };
+        argumentList = new RepeatingView("argumentList");
         argumentList.setOutputMarkupId(true);
         argumentListContainer.add(argumentList);
         form.add(argumentListContainer);
@@ -151,16 +145,27 @@ public class TestClient extends BasePage {
     }
 
     protected void populateArgumentList() {
+        argumentList.removeAll();
         Method m = findMethod();
         List<ArgumentModel> arguments = new ArrayList<ArgumentModel>();
         call.setArguments(arguments);
         int i = 0;
-        for (@SuppressWarnings("unused")
-        Class<?> p : m.getParameterTypes()) {
-            arguments.add(new ArgumentModel(i, ""));
+        for (Class<?> p : m.getParameterTypes()) {
+            ArgumentModel argModel = new ArgumentModel(i, p, null);
+            arguments.add(argModel);
+            if (p.isPrimitive() || p.equals(String.class)) {
+                SimpleArgumentPanel arg = new SimpleArgumentPanel("arg" + i, argModel);
+                argumentList.add(arg);
+            } else {
+                Map<String, String> beanAttrs = new HashMap<String, String>();
+                argModel.setValue(beanAttrs);
+                argModel.setBean(true);
+                BeanArgumentPanel arg = new BeanArgumentPanel("arg" + i, argModel, beanAttrs);
+                argumentList.add(arg);
+            }
             i++;
         }
-        argumentList.setList(arguments);
+        call.setArguments(arguments);
     }
 
     private List<ServiceId> getServiceInstances() {
