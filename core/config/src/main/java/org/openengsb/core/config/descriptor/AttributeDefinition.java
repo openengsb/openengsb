@@ -18,14 +18,38 @@
 package org.openengsb.core.config.descriptor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class AttributeDefinition implements Serializable {
+
+    public static class Option {
+        private final String label;
+        private final String value;
+
+        public Option(String label, String value) {
+            super();
+            this.label = label;
+            this.value = value;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
     private String id;
-    private String name;
-    private String description;
-    private String defaultValue;
+    private String name = "";
+    private String description = "";
+    private String defaultValue = "";
     private boolean required;
+    private final List<Option> options = new ArrayList<Option>();
 
     /**
      * Returns the attribute identifier.
@@ -63,6 +87,10 @@ public class AttributeDefinition implements Serializable {
         return required;
     }
 
+    public List<Option> getOptions() {
+        return Collections.unmodifiableList(options);
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -96,6 +124,11 @@ public class AttributeDefinition implements Serializable {
 
         public Builder required() {
             attribute.required = true;
+            return this;
+        }
+
+        public Builder option(String label, String value) {
+            attribute.options.add(new Option(label, value));
             return this;
         }
 
