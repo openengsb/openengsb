@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/**
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
@@ -15,23 +14,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
--->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
-      xml:lang="en" lang="en">
-<head></head>
-<body>
-<wicket:extend>
+ */
+package org.openengsb.ui.web.global.footer;
 
-  <ul class="breadCrumbs">
-    <li><a href="" wicket:id="index"><span><wicket:message key="home.title"/></span></a> &raquo;</li>
-    <li><span><wicket:message key="sendEventPage.title"/></span> &raquo;</li>
-  </ul>
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.Panel;
 
-  <form wicket:id="form">
-    <select wicket:id="dropdown"/>
-  </form>
-  <div wicket:id="editor"/>
 
-</wicket:extend>
-</body>
-</html>
+public class FooterTemplate extends Panel {
+
+	public FooterTemplate(String id) {
+		super(id);
+
+        add(new BookmarkablePageLink<ImprintPage>("imprint", ImprintPage.class));
+	}
+
+}

@@ -17,18 +17,6 @@ limitations under the License.
  */
 package org.openengsb.ui.web;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -44,6 +32,15 @@ import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.service.DomainService;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class SendEventPageTest {
 
@@ -63,6 +60,7 @@ public class SendEventPageTest {
                 new SpringComponentInjector(tester.getApplication(), context, false));
         eventService = mock(WorkflowService.class);
         context.putBean("eventService", eventService);
+        context.putBean("domainService", mock(DomainService.class));
         eventClasses = Arrays.<Class<? extends Event>> asList(Dummy.class, Dummy2.class,
                 BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));

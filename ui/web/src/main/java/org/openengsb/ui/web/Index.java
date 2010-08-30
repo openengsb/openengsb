@@ -17,21 +17,18 @@
  */
 package org.openengsb.ui.web;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.Event;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.service.DomainService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Index extends BasePage {
 
@@ -40,18 +37,8 @@ public class Index extends BasePage {
 
     @SuppressWarnings("serial")
     public Index() {
-        add(new Link<Object>("lang.en") {
-            @Override
-            public void onClick() {
-                this.getSession().setLocale(Locale.ENGLISH);
-            }
-        });
-        add(new Link<Object>("lang.de") {
-            @Override
-            public void onClick() {
-                this.getSession().setLocale(Locale.GERMAN);
-            }
-        });
+      
+        
         add(new ListView<DomainProvider>("domains", domainService.domains()) {
             @Override
             protected void populateItem(ListItem<DomainProvider> item) {
@@ -78,17 +65,6 @@ public class Index extends BasePage {
                 item.add(new Label("service.description", desc.getDescription()));
             }
         });
-        add(new BookmarkablePageLink<TestClient>("testclientlink", TestClient.class));
-        add(new Link<SendEventPage>("sendEvent") {
-            @Override
-            public void onClick() {
-                List<Class<? extends Event>> events = new ArrayList<Class<? extends Event>>();
-                events.add(Event.class);
-                for (DomainProvider domain : domainService.domains()) {
-                    events.addAll(domain.getEvents());
-                }
-                setResponsePage(new SendEventPage(events));
-            }
-        });
     }
+
 }
