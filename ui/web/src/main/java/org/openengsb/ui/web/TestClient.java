@@ -164,10 +164,12 @@ public class TestClient extends BasePage {
         List<ServiceId> result = new ArrayList<ServiceId>();
         for (ServiceReference s : services.getManagedServiceInstances()) {
             String id = (String) s.getProperty("id");
-            ServiceId serviceId = new ServiceId();
-            serviceId.setServiceId(id);
-            serviceId.setServiceClass(services.getService(s).getClass().getName());
-            result.add(serviceId);
+            if (id != null) {
+                ServiceId serviceId = new ServiceId();
+                serviceId.setServiceId(id);
+                serviceId.setServiceClass(services.getService(s).getClass().getName());
+                result.add(serviceId);
+            }
         }
         return result;
     }
