@@ -278,6 +278,8 @@ public class TestClientTest {
         Assert.assertEquals(1, argList.size());
         Assert.assertEquals(BeanArgumentPanel.class, argList.get("arg0").getClass());
 
+        RepeatingView panel = (RepeatingView) argList.get("arg0:fields");
+        Assert.assertEquals(2, panel.size());
     }
 
     @Test
