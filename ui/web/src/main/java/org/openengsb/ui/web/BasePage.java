@@ -21,6 +21,7 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.context.ContextCurrentService;
 
+@SuppressWarnings("serial")
 public class BasePage extends WebPage {
 
     @SpringBean
@@ -30,7 +31,7 @@ public class BasePage extends WebPage {
         initDummyContext();
     }
 
-    void initDummyContext() {
+    final void initDummyContext() {
         try {
             if (contextService != null) {
                 contextService.setThreadLocalContext("foo");
@@ -38,13 +39,9 @@ public class BasePage extends WebPage {
         } catch (IllegalArgumentException e) {
             contextService.createContext("foo");
             contextService.setThreadLocalContext("foo");
-            contextService.putValue("foo/bar/fix/fox", "fux");
-            contextService.putValue("foo/bar/fix/bar", "1");
-            contextService.putValue("foo/bar/fix/baz", "2");
-            contextService.putValue("foo/bar/fix/buz", "3");
-            contextService.putValue("xyz/bar/fix/bar", "1");
-            contextService.putValue("xyz/bar/fix/baz", "2");
-            contextService.putValue("xyz/bar/fix/buz", "3");
+            contextService.putValue("domains/notification/defaultConnector/id","notification");
+            contextService.putValue("domains/example/defaultConnector/id","example");
+
         }
     }
 }
