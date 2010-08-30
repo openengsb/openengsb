@@ -17,6 +17,8 @@
  */
 package org.openengsb.ui.web;
 
+import static org.mockito.Mockito.mock;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +40,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
@@ -70,6 +73,7 @@ public class TestClientTest {
     public void setup() {
         tester = new WicketTester();
         context = new ApplicationContextMock();
+        context.putBean(mock(ContextCurrentService.class));
     }
 
 

@@ -17,27 +17,29 @@
  */
 package org.openengsb.ui.web.global.header;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.openengsb.ui.web.ContextSetPage;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
+@SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
 
 	private final ArrayList<HeaderMenuItem> menuItems = new ArrayList<HeaderMenuItem>();
 	private final ArrayList<String> avialableItems = new ArrayList<String>();
 
 	private static String menuIndex;
-    
+
 
 	public HeaderTemplate(String id, String menuIndex) {
 		super(id);
@@ -49,6 +51,7 @@ public class HeaderTemplate extends Panel {
         this.addHeaderMenuItem("Index", Index.class, "index.title");
         this.addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
         this.addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
+        this.addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
 
 
 		if (HeaderTemplate.getActiveIndex() == null || !this.avialableItems.contains(HeaderTemplate.getActiveIndex())) {
@@ -60,7 +63,8 @@ public class HeaderTemplate extends Panel {
 		ListView<HeaderMenuItem> headerMenuItems = new ListView<HeaderMenuItem>("headerMenuItems", this.menuItems) {
 			private static final long serialVersionUID = -2458903054129857522L;
 
-			protected void populateItem(ListItem item) {
+			@Override
+            protected void populateItem(ListItem item) {
 				HeaderMenuItem menuItem = (HeaderMenuItem) item.getModelObject();
 				item.add(menuItem.getLink());
 

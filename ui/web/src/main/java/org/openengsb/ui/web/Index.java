@@ -1,21 +1,24 @@
 /**
 
-   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
  */
 package org.openengsb.ui.web;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -27,9 +30,7 @@ import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.service.DomainService;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@SuppressWarnings("serial")
 public class Index extends BasePage {
 
     @SpringBean
@@ -37,9 +38,8 @@ public class Index extends BasePage {
 
     @SuppressWarnings("serial")
     public Index() {
-      
-        
         add(new ListView<DomainProvider>("domains", domainService.domains()) {
+
             @Override
             protected void populateItem(ListItem<DomainProvider> item) {
                 item.add(new Label("domain.name", item.getModelObject().getName(item.getLocale())));
@@ -47,15 +47,17 @@ public class Index extends BasePage {
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
             }
         });
-        List<ServiceManager> managers = new ArrayList<ServiceManager>();
+        List<ServiceManager> managers = new ArrayList<ServiceManager>(domainService.domains().size());
         for (DomainProvider provider : domainService.domains()) {
             managers.addAll(this.domainService.serviceManagersForDomain(provider.getDomainInterface()));
         }
         add(new ListView<ServiceManager>("services", managers) {
+
             @Override
             protected void populateItem(ListItem<ServiceManager> item) {
                 ServiceDescriptor desc = item.getModelObject().getDescriptor(item.getLocale());
                 item.add(new Link<ServiceManager>("create.new", item.getModel()) {
+
                     @Override
                     public void onClick() {
                         setResponsePage(new EditorPage(getModelObject()));

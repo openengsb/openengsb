@@ -17,6 +17,12 @@
  */
 package org.openengsb.ui.web;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -39,12 +45,7 @@ import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+@SuppressWarnings("serial")
 public class TestClient extends BasePage {
 
     private static Log log = LogFactory.getLog(TestClient.class);
@@ -52,19 +53,19 @@ public class TestClient extends BasePage {
     @SpringBean
     private DomainService services;
 
-    private DropDownChoice<MethodId> methodList;
+    private final DropDownChoice<MethodId> methodList;
 
-    private MethodCall call = new MethodCall();
+    private final MethodCall call = new MethodCall();
 
-    private ListView<ArgumentModel> argumentList;
+    private final ListView<ArgumentModel> argumentList;
 
-    private WebMarkupContainer argumentListContainer;
+    private final WebMarkupContainer argumentListContainer;
 
-    private DropDownChoice<ServiceId> serviceList;
+    private final DropDownChoice<ServiceId> serviceList;
 
     @SuppressWarnings("serial")
     public TestClient() {
-        Form<?> form = new Form<Object>("methodCallForm");
+        Form<Object> form = new Form<Object>("methodCallForm");
         form.add(new AjaxFormSubmitBehavior(form, "onsubmit") {
             @Override
             protected void onError(AjaxRequestTarget target) {

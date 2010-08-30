@@ -17,6 +17,16 @@
  */
 package org.openengsb.ui.web;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -37,16 +47,7 @@ import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
 import org.openengsb.ui.web.service.DomainService;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+@SuppressWarnings("serial")
 public class SendEventPage extends BasePage {
 
     private static final Log log = LogFactory.getLog(SendEventPage.class);
@@ -75,7 +76,7 @@ public class SendEventPage extends BasePage {
     }
 
     private void init(List<? extends Class<?>> classes) {
-        Form<?> form = new Form<Object>("form");
+        Form<Object> form = new Form<Object>("form");
         add(form);
         ChoiceRenderer<Class<?>> choiceRenderer = new ChoiceRenderer<Class<?>>("canonicalName", "simpleName");
         dropDownChoice = new DropDownChoice<Class<?>>("dropdown", classes, choiceRenderer);

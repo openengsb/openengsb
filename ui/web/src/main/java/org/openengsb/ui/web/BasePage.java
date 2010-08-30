@@ -17,18 +17,24 @@
  */
 package org.openengsb.ui.web;
 
+import java.util.Locale;
+
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.ui.web.global.footer.FooterTemplate;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
 
-import java.util.Locale;
+@SuppressWarnings("serial")
+public class BasePage extends WebPage {
 
-public abstract class BasePage extends WebPage {
+    @SpringBean
+    private ContextCurrentService contextService;
 
     public BasePage() {
-        super();
-        this.initWebPage();
+        initDummyContext();
+        initWebPage();
     }
 
     private void initWebPage() {
@@ -47,6 +53,20 @@ public abstract class BasePage extends WebPage {
 
         this.add(new HeaderTemplate("header", this.getHeaderMenuItem()));
         this.add(new FooterTemplate("footer"));
+    }
+
+    final void initDummyContext() {
+        try {
+            if (contextService != null) {
+                contextService.setThreadLocalContext("foo");
+            }
+        } catch (IllegalArgumentException e) {
+            contextService.createContext("foo");
+            contextService.setThreadLocalContext("foo");
+            contextService.putValue("domains/notification/defaultConnector/id", "notification");
+            contextService.putValue("domains/example/defaultConnector/id", "example");
+
+        }
     }
 
     /**

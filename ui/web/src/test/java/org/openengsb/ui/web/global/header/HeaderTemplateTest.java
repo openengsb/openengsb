@@ -1,17 +1,19 @@
 package org.openengsb.ui.web.global.header;
 
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.global.footer.ImprintPage;
 import org.openengsb.ui.web.service.DomainService;
-
-import static junit.framework.Assert.assertTrue;
 
 
 public class HeaderTemplateTest {
@@ -42,6 +44,7 @@ public class HeaderTemplateTest {
     public void setup() {
         tester = new WicketTester();
         context = new ApplicationContextMock();
+        context.putBean(mock(ContextCurrentService.class));
     }
 
     @Test

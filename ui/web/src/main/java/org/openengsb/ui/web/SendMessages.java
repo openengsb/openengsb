@@ -17,6 +17,10 @@
  */
 package org.openengsb.ui.web;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
@@ -27,14 +31,11 @@ import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
-
+@SuppressWarnings("serial")
 public class SendMessages extends BasePage {
 
     @SpringBean
-    DomainService domainService;
+    private DomainService domainService;
 
     private final BaseTree tree;
 
