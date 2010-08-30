@@ -20,6 +20,7 @@ package org.openengsb.ui.web;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -58,6 +59,8 @@ public class TestClient extends BasePage {
 
     private WebMarkupContainer argumentListContainer;
 
+    private DropDownChoice<ServiceId> serviceList;
+
     @SuppressWarnings("serial")
     public TestClient() {
         Form<?> form = new Form<Object>("methodCallForm");
@@ -65,17 +68,24 @@ public class TestClient extends BasePage {
             @Override
             protected void onError(AjaxRequestTarget target) {
                 throw new RuntimeException("submit error");
-
             }
 
             @Override
             protected void onSubmit(AjaxRequestTarget target) {
                 performCall();
-            }
+                call.getArguments().clear();
+                call.setMethod(null);
+                call.setService(null);
 
+                populateMethodList();
+                target.addComponent(serviceList);
+                target.addComponent(methodList);
+                target.addComponent(argumentListContainer);
+            }
         });
-        DropDownChoice<ServiceId> serviceList = new DropDownChoice<ServiceId>("serviceList",
-                new PropertyModel<ServiceId>(call, "service"), getServiceInstances());
+        serviceList = new DropDownChoice<ServiceId>("serviceList", new PropertyModel<ServiceId>(call, "service"),
+                getServiceInstances());
+        serviceList.setOutputMarkupId(true);
         serviceList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -174,6 +184,9 @@ public class TestClient extends BasePage {
     }
 
     private List<Method> getServiceMethods(ServiceId service) {
+        if (service == null) {
+            return Collections.emptyList();
+        }
         Object serviceObject = getService(service);
         log.info("retrieved service Object of type " + serviceObject.getClass().getName());
         List<Method> methods = MethodUtil.getServiceMethods(serviceObject);
