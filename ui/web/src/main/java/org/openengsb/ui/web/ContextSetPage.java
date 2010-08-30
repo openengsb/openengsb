@@ -17,44 +17,34 @@ limitations under the License.
  */
 package org.openengsb.ui.web;
 
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation;
-import org.apache.wicket.extensions.markup.html.tree.table.IColumn;
-import org.apache.wicket.extensions.markup.html.tree.table.PropertyTreeColumn;
-import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
-import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Alignment;
-import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Unit;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-
-import org.openengsb.core.common.context.Context;
-import org.openengsb.ui.web.tree.ModelBean;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-
+import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation;
+import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Alignment;
+import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Unit;
+import org.apache.wicket.extensions.markup.html.tree.table.IColumn;
+import org.apache.wicket.extensions.markup.html.tree.table.PropertyTreeColumn;
+import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.tree.AbstractTree;
-import org.openengsb.core.common.context.ContextCurrentService;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.common.context.Context;
+import org.openengsb.core.common.context.ContextService;
+import org.openengsb.ui.web.tree.ModelBean;
 import org.openengsb.ui.web.tree.PropertyEditableColumn;
 
 @SuppressWarnings("serial")
 public class ContextSetPage extends BasePage {
 
     @SpringBean
-    private ContextCurrentService contextService;
+    private ContextService contextService;
     private final TreeTable tree;
 
     public ContextSetPage() {
-        if (contextService.getContext() == null) {
-            contextService.createContext("foobar");
-            contextService.setThreadLocalContext("foobar");
-            contextService.putValue("foo/bar/fix/fox", "fux");
-        } else {
-            contextService.setThreadLocalContext("foobar");
-        }
         add(new AjaxLink<String>("expandAll") {
 
             @Override

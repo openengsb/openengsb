@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.ui.web.editor.EditorPanel;
 import org.openengsb.ui.web.service.EventService;
@@ -57,6 +58,7 @@ public class SendEventPageTest {
                 new SpringComponentInjector(tester.getApplication(), context, false));
         eventService = mock(EventService.class);
         context.putBean("eventService", eventService);
+        context.putBean("contextCurrentService", mock(ContextCurrentService.class));
         List<Class<? extends Event>> classes = Arrays.<Class<? extends Event>> asList(Dummy.class, Dummy2.class);
         tester.startPage(new SendEventPage(classes));
         editorPanel = (EditorPanel) tester.getComponentFromLastRenderedPage("editor");

@@ -18,8 +18,34 @@
 package org.openengsb.ui.web;
 
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.common.context.ContextCurrentService;
 
 @SuppressWarnings("serial")
 public class BasePage extends WebPage {
 
+    @SpringBean
+    private ContextCurrentService contextService;
+
+    public BasePage() {
+        initDummyContext();
+    }
+
+    private void initDummyContext() {
+        try {
+            if (contextService != null) {
+                contextService.setThreadLocalContext("foo");
+            }
+        } catch (IllegalArgumentException e) {
+            contextService.createContext("foo");
+            contextService.setThreadLocalContext("foo");
+            contextService.putValue("foo/bar/fix/fox", "fux");
+            contextService.putValue("foo/bar/fix/bar", "1");
+            contextService.putValue("foo/bar/fix/baz", "2");
+            contextService.putValue("foo/bar/fix/buz", "3");
+            contextService.putValue("xyz/bar/fix/bar", "1");
+            contextService.putValue("xyz/bar/fix/baz", "2");
+            contextService.putValue("xyz/bar/fix/buz", "3");
+        }
+    }
 }
