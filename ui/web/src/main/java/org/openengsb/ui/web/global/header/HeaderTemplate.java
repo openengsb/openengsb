@@ -46,7 +46,7 @@ public class HeaderTemplate extends Panel {
         this.add(new BookmarkablePageLink<Index>("indexLogo2", Index.class));
 
         this.addHeaderMenuItem("index", Index.class, "index.title");
-        this.addHeaderMenuItem("testClient", TestClient.class, "testclient");
+        this.addHeaderMenuItem("testClient", TestClient.class, "testclient.title");
         this.addHeaderMenuItem("sendEvent", SendEventPage.class, "sendevent.title");
 
 
@@ -56,7 +56,7 @@ public class HeaderTemplate extends Panel {
 		}
 
 		// generate main navigation
-		ListView headerMenuItems = new ListView("headerMenuItems", this.menuItems) {
+		ListView<HeaderMenuItem> headerMenuItems = new ListView<HeaderMenuItem>("headerMenuItems", this.menuItems) {
 			private static final long serialVersionUID = -2458903054129857522L;
 
 			protected void populateItem(ListItem item) {
