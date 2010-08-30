@@ -28,6 +28,7 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.ui.web.editor.fields.AbstractField;
+import org.openengsb.ui.web.editor.fields.CheckboxField;
 import org.openengsb.ui.web.editor.fields.DropdownField;
 import org.openengsb.ui.web.editor.fields.InputField;
 import org.openengsb.ui.web.model.MapModel;
@@ -69,6 +70,8 @@ public class EditorPanel extends Panel {
     private AbstractField createEditor(String id, IModel<String> model, AttributeDefinition attribute) {
         if (!attribute.getOptions().isEmpty()) {
             return new DropdownField(id, model, attribute);
+        } else if (attribute.isBoolean()) {
+            return new CheckboxField(id, model, attribute);
         } else {
             return new InputField(id, model, attribute);
         }

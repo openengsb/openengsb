@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
@@ -47,6 +48,7 @@ public class EditorTest {
     private final AttributeDefinition attribNoDesc = newAttribute("attribNoDesc", "name", "").build();
     private final AttributeDefinition attribOption = newAttribute("attribOption", "option", "")
             .option("label_a", "1").option("label_b", "2").build();
+    private final AttributeDefinition attribBoolean = newAttribute("attribBool", "bool", "").asBoolean().build();
 
     private WicketTester tester;
     private EditorPanel editor;
@@ -114,6 +116,22 @@ public class EditorTest {
         formTester.select(buildFormComponentId(attribOption.getId()), 1);
         formTester.submit();
         assertThat(editor.getValues().get(attribOption.getId()), is(attribOption.getOptions().get(1).getValue()));
+    }
+
+    @Test
+    public void boolAttribute_shouldBeDisplayedAsCheckBox() {
+        startEditorPanel(attribBoolean);
+        CheckBox cb = getEditorFieldFormComponent(attribBoolean.getId(), CheckBox.class);
+        assertThat(cb, notNullValue());
+    }
+
+    @Test
+    public void checkCheckbox_shouldReturnTrueInModel() {
+        startEditorPanel(attribBoolean);
+        FormTester formTester = tester.newFormTester(editor.getId() + ":form");
+        formTester.setValue(buildFormComponentId(attribBoolean.getId()), true);
+        formTester.submit();
+        assertThat(editor.getValues().get(attribBoolean.getId()), is("true"));
     }
 
     private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {

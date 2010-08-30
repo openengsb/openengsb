@@ -31,7 +31,7 @@ public abstract class AbstractField extends Panel {
 
     public AbstractField(String id, IModel<String> model, AttributeDefinition attribute) {
         super(id);
-        FormComponent<String> component = createFormComponent(attribute, model);
+        FormComponent<?> component = createFormComponent(attribute, model);
         component.setLabel(new Model<String>(attribute.getName()));
         component.setOutputMarkupId(true);
         component.setMarkupId(attribute.getId());
@@ -51,5 +51,5 @@ public abstract class AbstractField extends Panel {
         add(tooltip);
     }
 
-    protected abstract FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model);
+    protected abstract FormComponent<?> createFormComponent(AttributeDefinition attribute, IModel<String> model);
 }
