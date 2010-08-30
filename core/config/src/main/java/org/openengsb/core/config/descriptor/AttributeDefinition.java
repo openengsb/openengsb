@@ -50,6 +50,7 @@ public class AttributeDefinition implements Serializable {
     private String defaultValue = "";
     private boolean required;
     private final List<Option> options = new ArrayList<Option>();
+    private boolean isBoolean;
 
     /**
      * Returns the attribute identifier.
@@ -91,6 +92,10 @@ public class AttributeDefinition implements Serializable {
         return Collections.unmodifiableList(options);
     }
 
+    public boolean isBoolean() {
+        return isBoolean;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -128,7 +133,18 @@ public class AttributeDefinition implements Serializable {
         }
 
         public Builder option(String label, String value) {
+            if (attribute.isBoolean) {
+                throw new IllegalStateException("a boolean type must not have any options");
+            }
             attribute.options.add(new Option(label, value));
+            return this;
+        }
+
+        public Builder asBoolean() {
+            if (!attribute.options.isEmpty()) {
+                throw new IllegalStateException("a option type can not be a boolean");
+            }
+            attribute.isBoolean = true;
             return this;
         }
 

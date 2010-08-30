@@ -68,6 +68,13 @@ public class LogServiceManager implements ServiceManager, BundleContextAware {
                         .option(strings.getString("log.outputMode.error"), "4")
                         .required()
                         .build())
+                .attribute(AttributeDefinition.builder()
+                        .id("flush")
+                        .name(strings.getString("log.flush.name", locale))
+                        .description(strings.getString("log.flush.description", locale))
+                        .defaultValue("false")
+                        .asBoolean()
+                        .build())
                 .build();
     }
 
