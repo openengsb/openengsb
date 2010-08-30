@@ -16,7 +16,7 @@
    
  */
 
-package org.openengsb.domains.notification.implementation.model;
+package org.openengsb.domains.notification.model;
 
 
 import java.util.Collections;

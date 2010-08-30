@@ -28,9 +28,9 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
-import org.openengsb.domains.notification.implementation.NotificationDomain;
-import org.openengsb.domains.notification.implementation.model.Notification;
+import org.openengsb.domains.notification.model.Notification;
 import org.osgi.framework.ServiceRegistration;
 
 public class EmailNotifier implements NotificationDomain {

@@ -15,10 +15,10 @@
  limitations under the License.
 
  */
-package org.openengsb.domains.notification.implementation;
+package org.openengsb.domains.notification;
 
 import org.openengsb.core.config.Domain;
-import org.openengsb.domains.notification.implementation.model.Notification;
+import org.openengsb.domains.notification.model.Notification;
 
 public interface NotificationDomain extends Domain {
 
