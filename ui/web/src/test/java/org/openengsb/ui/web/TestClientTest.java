@@ -35,11 +35,11 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
 import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
@@ -256,7 +256,6 @@ public class TestClientTest {
         }
     }
 
-    @Ignore("work in progress")
     @Test
     public void testCreateTextFieldsForBean() throws Exception {
         setupTestClientPage();
@@ -276,8 +275,9 @@ public class TestClientTest {
         formTester.select("methodList", 1);
         tester.executeAjaxEvent(form.get("methodList"), "onchange");
 
-        Assert.assertEquals(WebMarkupContainer.class, argList.get("0:value").getClass());
         Assert.assertEquals(1, argList.size());
+        Assert.assertEquals(BeanArgumentPanel.class, argList.get("arg0").getClass());
+
     }
 
     @Test

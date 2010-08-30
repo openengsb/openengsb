@@ -35,6 +35,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
 import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
@@ -145,10 +146,13 @@ public class TestClient extends BasePage {
         call.setArguments(arguments);
         int i = 0;
         for (Class<?> p : m.getParameterTypes()) {
+            ArgumentModel argModel = new ArgumentModel(i, p, null);
+            arguments.add(argModel);
             if (p.isPrimitive() || p.equals(String.class)) {
-                ArgumentModel argModel = new ArgumentModel(i, p, null);
-                arguments.add(argModel);
                 SimpleArgumentPanel arg = new SimpleArgumentPanel("arg" + i, argModel);
+                argumentList.add(arg);
+            } else {
+                BeanArgumentPanel arg = new BeanArgumentPanel("arg" + i, argModel);
                 argumentList.add(arg);
             }
             i++;
