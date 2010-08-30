@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<chapter id="mvnBuildConnector" xmlns="http://docbook.org/ns/docbook">
+  <title id="mvnBuildConnector.title">Maven Build Connector</title>
+  
+  
+  <!-- Add the place in the repository where the connector development takes place: -->  
+  <para>
+    <ulink url="http://github.com/openengsb/openengsb/" />
+  </para>
+
+
+  <!-- Add the place where the issue management takes place --> 
+  <para>
+    <ulink url="http://issues.openengsb.org/" />
+  </para>
+
+  <!--
+      Add a comma separated list of supported OpenEngSB versions. This field should
+    be used to make sure that no connectors are used for EngSB versions
+    they do not fit.
+  -->
+
+  <para>
+      [Supported in version(s):] engsb-1.0.0.M3
+  </para>
+
+
+  <!-- Add the full name of the plugin as root heading -->  
+  <section>
+    <title>connector-DOMAIN-TOOL</title>
+
+    <para>
+      <!--
+      Add as many subsections as you like
+  
+      At least one section should be describing what to do to setup the 
+      connector correctly. This also includes how which properties have to
+      be set and so on. There could be subsections about the different versions
+      if they are differently to setup.
+      -->
+    </para>
+  </section>
+   
+  <section>
+    <title>Setup</title>
+
+    <para>
+      <!--
+      At least one section pointing to the download locations in the staging
+      repository should be given. This page should contain a table holding
+      the right download for the right OpenEngSB version.
+      -->
+    </para>
+  </section>
+  
+</chapter>
