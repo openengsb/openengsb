@@ -51,9 +51,9 @@ public class ContextSetPageTest {
         tester.getApplication().addComponentInstantiationListener(
                 new SpringComponentInjector(tester.getApplication(), appContext, false));
         ContextImpl context = new ContextImpl();
-        context.createChild("foo").createChild("bar").createChild("fox").put("fix", "fux");
+        context.createChild("a").createChild("b").createChild("c").put("d", "e");
         when(contextService.getContext()).thenReturn(context);
-        when(contextService.getValue("/foo/bar/fox/fix")).thenReturn("fux");
+        when(contextService.getValue("/a/b/c/d")).thenReturn("e");
         tester.startPage(new ContextSetPage());
     }
 
@@ -62,27 +62,28 @@ public class ContextSetPageTest {
         tester.assertComponent("form:treeTable", TreeTable.class);
         tester.assertComponent("expandAll", AjaxLink.class);
         testLabel("/", "form:treeTable:i:0:sideColumns:0:nodeLink:label");
-        testLabel("/foo/", "form:treeTable:i:1:sideColumns:0:nodeLink:label");
-        testLabel("/foo/bar/", "form:treeTable:i:2:sideColumns:0:nodeLink:label");
-        testLabel("/foo/bar/fox/", "form:treeTable:i:3:sideColumns:0:nodeLink:label");
-        testLabel("/foo/bar/fox/fix", "form:treeTable:i:4:sideColumns:0:nodeLink:label");
+        testLabel("a", "form:treeTable:i:1:sideColumns:0:nodeLink:label");
+        testLabel("b", "form:treeTable:i:2:sideColumns:0:nodeLink:label");
+        testLabel("c", "form:treeTable:i:3:sideColumns:0:nodeLink:label");
+        testLabel("d", "form:treeTable:i:4:sideColumns:0:nodeLink:label");
     }
 
     @Test
     public void editAttribute_shouldReflectChangeInModel() {
         String textFieldId = "treeTable:i:4:sideColumns:1:textfield";
+        String nodeLinkId = "form:treeTable:i:4:sideColumns:0:nodeLink";
         AjaxLink<?> node = (AjaxLink<?>) tester
-                .getComponentFromLastRenderedPage("form:treeTable:i:4:sideColumns:0:nodeLink");
+                .getComponentFromLastRenderedPage(nodeLinkId);
         tester.executeAjaxEvent(node, "onclick");
         TextField<?> textField = (TextField<?>) tester.getComponentFromLastRenderedPage("form:" + textFieldId);
         assertThat(textField, notNullValue());
-        assertThat((String) textField.getModel().getObject(), is("fux"));
+        assertThat((String) textField.getModel().getObject(), is("e"));
         assertThat(textField.isEnabled(), is(true));
         FormTester formTester = tester.newFormTester("form");
         formTester.setValue(textFieldId, "a");
-        node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage("form:treeTable:i:4:sideColumns:0:nodeLink");
+        node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage(nodeLinkId);
         tester.executeAjaxEvent(textField, "onblur");
-        verify(contextService).putValue("/foo/bar/fox/fix", "a");
+        verify(contextService).putValue("/a/b/c/d", "a");
     }
 
     private void testLabel(String lableText, String path) {

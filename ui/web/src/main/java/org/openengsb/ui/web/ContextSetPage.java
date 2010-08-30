@@ -62,7 +62,7 @@ public class ContextSetPage extends BasePage {
         });
         IColumn columns[] = new IColumn[]{
             new PropertyTreeColumn(new ColumnLocation(Alignment.LEFT, 18, Unit.EM),
-            "Tree Column", "userObject.key"),
+            "Tree Column", "userObject.niceKey"),
             new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT, 12, Unit.EM), "value",
             "userObject.value"),};
         Form form = new Form("form");

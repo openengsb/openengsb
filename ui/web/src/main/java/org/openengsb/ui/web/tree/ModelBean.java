@@ -35,6 +35,15 @@ public class ModelBean {
         return key;
     }
 
+    public String getNiceKey() {
+        String[] path = key.split("/");
+        if(path.length - 1 >= 0) {
+            return path[path.length - 1];
+        } else {
+            return "/";
+        }
+    }
+
     public String getValue() {
         return contextService.getValue(key);
     }
