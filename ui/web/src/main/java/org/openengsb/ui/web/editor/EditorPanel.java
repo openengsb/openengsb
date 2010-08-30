@@ -25,7 +25,11 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.IModel;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
+import org.openengsb.ui.web.editor.fields.AbstractField;
+import org.openengsb.ui.web.editor.fields.DropdownField;
+import org.openengsb.ui.web.editor.fields.InputField;
 import org.openengsb.ui.web.model.MapModel;
 
 @SuppressWarnings("serial")
@@ -58,7 +62,15 @@ public class EditorPanel extends Panel {
         for (AttributeDefinition a : attributes) {
             WebMarkupContainer row = new WebMarkupContainer(a.getId());
             fields.add(row);
-            row.add(new EditorField("row", new MapModel<String, String>(values, a.getId()), a));
+            row.add(createEditor("row", new MapModel<String, String>(values, a.getId()), a));
+        }
+    }
+
+    private AbstractField createEditor(String id, IModel<String> model, AttributeDefinition attribute) {
+        if (!attribute.getOptions().isEmpty()) {
+            return new DropdownField(id, model, attribute);
+        } else {
+            return new InputField(id, model, attribute);
         }
     }
 
