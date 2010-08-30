@@ -29,11 +29,13 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.config.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.service.DomainService;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -51,11 +53,28 @@ public class SendEventPage extends BasePage {
 
     @SpringBean
     private WorkflowService eventService;
-    
-    private final DropDownChoice<Class<?>> dropDownChoice;
+
+    @SpringBean
+    private DomainService domainService;
+
+    private DropDownChoice<Class<?>> dropDownChoice;
+
+    public SendEventPage() {
+        List<Class<? extends Event>> classes = new ArrayList<Class<? extends Event>>();
+        classes.add(Event.class);
+        for (DomainProvider domain : domainService.domains()) {
+            classes.addAll(domain.getEvents());
+        }
+        init(classes);
+    }
+
 
     @SuppressWarnings("serial")
     public SendEventPage(List<Class<? extends Event>> classes) {
+        init(classes);
+    }
+
+    private void init(List<? extends Class<?>> classes) {
         Form<?> form = new Form<Object>("form");
         add(form);
         ChoiceRenderer<Class<?>> choiceRenderer = new ChoiceRenderer<Class<?>>("canonicalName", "simpleName");
@@ -74,7 +93,6 @@ public class SendEventPage extends BasePage {
         add(createEditorPanelForClass(classes.get(0)));
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
     }
-
 
     private EditorPanel createEditorPanelForClass(Class<?> theClass) {
         Map<String, String> defaults = new HashMap<String, String>();
