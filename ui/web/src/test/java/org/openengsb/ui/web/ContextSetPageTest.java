@@ -61,7 +61,7 @@ public class ContextSetPageTest {
     public void test_initialisation_with_simple_tree() {
         tester.assertComponent("form:treeTable", TreeTable.class);
         tester.assertComponent("expandAll", AjaxLink.class);
-        testLabel("/", "form:treeTable:i:0:sideColumns:0:nodeLink:label");
+        //testLabel("/", "form:treeTable:i:0:sideColumns:0:nodeLink:label");
         testLabel("a", "form:treeTable:i:1:sideColumns:0:nodeLink:label");
         testLabel("b", "form:treeTable:i:2:sideColumns:0:nodeLink:label");
         testLabel("c", "form:treeTable:i:3:sideColumns:0:nodeLink:label");
