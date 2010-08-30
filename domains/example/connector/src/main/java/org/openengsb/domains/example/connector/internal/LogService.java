@@ -38,6 +38,8 @@ public class LogService implements ExampleDomain {
             log.debug(message);
         } else if ("INFO".equals(outputMode)) {
             log.info(message);
+        } else if ("WARN".equals(outputMode)) {
+            log.warn(message);
         } else if ("ERROR".equals(outputMode)) {
             log.error(message);
         }
