@@ -14,12 +14,9 @@
 #   limitations under the License.
 #-----------------------------------------------------------------
 
-Import-Package: javax.xml.bind.annotation,\
-org.apache.commons.logging, org.apache.commons.io,\
-org.drools; bundle-symbolic-name="org.drools.core", org.drools.rule, org.drools.compiler,\
+Import-Package: org.drools; bundle-symbolic-name="org.drools.core",\
 org.drools.event; bundle-symbolic-name="org.drools.core",\
-org.osgi.framework, org.springframework.osgi.context,\
-org.openengsb.core.common, org.openengsb.core.common.context,\
-org.openengsb.domains.example, org.openengsb.core.config
+org.drools.rule, org.drools.compiler,\
+*
 # TODO make proper integration test
 # Bundle-Activator: org.openengsb.core.workflow.test.RuntimeTest
