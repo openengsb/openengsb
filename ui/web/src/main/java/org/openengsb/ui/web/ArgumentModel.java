@@ -18,12 +18,14 @@
 package org.openengsb.ui.web;
 
 import java.io.Serializable;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class ArgumentModel implements Serializable {
     private int index;
     private Class<?> type;
     private Object value;
+    private boolean isBean;
 
     public ArgumentModel() {
     }
@@ -63,4 +65,20 @@ public class ArgumentModel implements Serializable {
         return index + ": " + value;
     }
 
+    @SuppressWarnings("unchecked")
+    public Object toValue() {
+        if (!isBean) {
+            return getValue();
+        } else {
+            return MethodUtil.buildBean(type, (Map<String, String>) value);
+        }
+    }
+
+    public void setBean(boolean isBean) {
+        this.isBean = isBean;
+    }
+
+    public boolean isBean() {
+        return this.isBean;
+    }
 }

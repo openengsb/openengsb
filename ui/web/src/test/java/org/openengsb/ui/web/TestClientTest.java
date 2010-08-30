@@ -48,37 +48,6 @@ import org.osgi.framework.ServiceReference;
 
 public class TestClientTest {
 
-    public class TestBean {
-        private String id;
-        private String name;
-
-        public TestBean() {
-            // TODO Auto-generated constructor stub
-        }
-
-        public TestBean(String id, String name) {
-            super();
-            this.id = id;
-            this.name = name;
-        }
-
-        public String getId() {
-            return this.id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return this.name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-    }
-
     public interface TestInterface {
         void update(String id, String name);
 
@@ -308,6 +277,30 @@ public class TestClientTest {
         formTester.submit();
         tester.executeAjaxEvent(form, "onsubmit");
         Assert.assertTrue(testService.called);
+    }
+
+    @Test
+    public void testPerformMethodCallWithBeanArgument() throws Exception {
+        setupTestClientPage();
+
+        tester.startPage(TestClient.class);
+
+        @SuppressWarnings("rawtypes")
+        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
+
+        FormTester formTester = tester.newFormTester("methodCallForm");
+
+        formTester.select("serviceList", 0);
+        tester.executeAjaxEvent(form.get("serviceList"), "onchange");
+        formTester.select("methodList", 1);
+        tester.executeAjaxEvent(form.get("methodList"), "onchange");
+
+        formTester.setValue("argumentListContainer:argumentList:arg0:fields:id:row:field", "42");
+        formTester.setValue("argumentListContainer:argumentList:arg0:fields:name:row:field", "test");
+
+        formTester.submit();
+        tester.executeAjaxEvent(form, "onsubmit");
+        Assert.assertNotNull(testService.test);
     }
 
     @Test

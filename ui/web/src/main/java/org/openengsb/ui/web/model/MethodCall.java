@@ -55,9 +55,8 @@ public class MethodCall implements Serializable {
 
     public Object[] getArgumentsAsArray() {
         Object[] result = new Object[arguments.size()];
-
-        for(int i = 0; i < arguments.size(); i++){
-            result[i] = arguments.get(i).getValue();
+        for (int i = 0; i < arguments.size(); i++) {
+            result[i] = arguments.get(i).toValue();
         }
         return result;
     }

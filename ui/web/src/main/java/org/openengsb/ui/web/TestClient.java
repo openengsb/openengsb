@@ -21,7 +21,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -152,7 +154,10 @@ public class TestClient extends BasePage {
                 SimpleArgumentPanel arg = new SimpleArgumentPanel("arg" + i, argModel);
                 argumentList.add(arg);
             } else {
-                BeanArgumentPanel arg = new BeanArgumentPanel("arg" + i, argModel);
+                Map<String, String> beanAttrs = new HashMap<String, String>();
+                argModel.setValue(beanAttrs);
+                argModel.setBean(true);
+                BeanArgumentPanel arg = new BeanArgumentPanel("arg" + i, argModel, beanAttrs);
                 argumentList.add(arg);
             }
             i++;

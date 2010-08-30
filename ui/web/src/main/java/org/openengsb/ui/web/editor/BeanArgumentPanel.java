@@ -17,8 +17,8 @@
  */
 package org.openengsb.ui.web.editor;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -37,7 +37,7 @@ import org.openengsb.ui.web.model.MapModel;
 @SuppressWarnings("serial")
 public class BeanArgumentPanel extends Panel {
 
-    public BeanArgumentPanel(String id, ArgumentModel argModel) {
+    public BeanArgumentPanel(String id, ArgumentModel argModel, Map<String,String> values) {
         super(id);
         add(new Label("index", "" + argModel.getIndex()));
         RepeatingView fields = new RepeatingView("fields");
@@ -47,7 +47,7 @@ public class BeanArgumentPanel extends Panel {
         for (AttributeDefinition a : attributes) {
             WebMarkupContainer row = new WebMarkupContainer(a.getId());
             fields.add(row);
-            row.add(createEditor("row", new MapModel<String, String>(new HashMap<String, String>(), a.getId()), a));
+            row.add(createEditor("row", new MapModel<String, String>(values, a.getId()), a));
         }
     }
 
