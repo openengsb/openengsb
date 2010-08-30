@@ -21,7 +21,6 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.context.ContextCurrentService;
 
-@SuppressWarnings("serial")
 public class BasePage extends WebPage {
 
     @SpringBean
@@ -31,7 +30,7 @@ public class BasePage extends WebPage {
         initDummyContext();
     }
 
-    private void initDummyContext() {
+    void initDummyContext() {
         try {
             if (contextService != null) {
                 contextService.setThreadLocalContext("foo");

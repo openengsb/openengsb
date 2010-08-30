@@ -17,36 +17,32 @@ limitations under the License.
  */
 package org.openengsb.ui.web;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.Page;
-
-import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
-
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.*;
+import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
+import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
+import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertThat;
 import org.openengsb.core.common.context.ContextCurrentService;
-
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-
 import org.openengsb.core.common.internal.ContextImpl;
 
 public class ContextSetPageTest {
 
     private WicketTester tester;
     private ContextCurrentService contextService;
-    private Page page;
-    private TreeTable treeTable;
-    private AjaxLink<String> expandAllLink;
 
     @Before
-    @SuppressWarnings("unchecked")
     public void setup() {
         tester = new WicketTester();
         contextService = mock(ContextCurrentService.class);
@@ -54,29 +50,39 @@ public class ContextSetPageTest {
         appContext.putBean(contextService);
         tester.getApplication().addComponentInstantiationListener(
                 new SpringComponentInjector(tester.getApplication(), appContext, false));
+        ContextImpl context = new ContextImpl();
+        context.createChild("foo").createChild("bar").createChild("fox").put("fix", "fux");
+        when(contextService.getContext()).thenReturn(context);
+        when(contextService.getValue("/foo/bar/fox/fix")).thenReturn("fux");
+        tester.startPage(new ContextSetPage());
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void test_initialisation_with_simple_tree() {
-        ContextImpl context= new ContextImpl();
-        context.createChild("foo").createChild("bar").createChild("fox").put("fix", "fux");
-        when(contextService.getContext()).thenReturn(context);
-        page = tester.startPage(new ContextSetPage());
         tester.assertComponent("form:treeTable", TreeTable.class);
-        treeTable = (TreeTable) tester.getComponentFromLastRenderedPage("form:treeTable");
         tester.assertComponent("expandAll", AjaxLink.class);
-        expandAllLink = (AjaxLink<String>) tester.getComponentFromLastRenderedPage("expandAll");
-        tester.debugComponentTrees();
-        tester.executeAjaxEvent(expandAllLink, "onclick");
+        testLabel("/", "form:treeTable:i:0:sideColumns:0:nodeLink:label");
+        testLabel("/foo/", "form:treeTable:i:1:sideColumns:0:nodeLink:label");
+        testLabel("/foo/bar/", "form:treeTable:i:2:sideColumns:0:nodeLink:label");
+        testLabel("/foo/bar/fox/", "form:treeTable:i:3:sideColumns:0:nodeLink:label");
+        testLabel("/foo/bar/fox/fix", "form:treeTable:i:4:sideColumns:0:nodeLink:label");
+    }
 
-        testLabel("root",  "form:treeTable:i:0:sideColumns:0:nodeLink:label");
-        testLabel("foo",  "form:treeTable:i:1:sideColumns:0:nodeLink:label");
-        testLabel("bar",  "form:treeTable:i:2:sideColumns:0:nodeLink:label");
-        testLabel("fox",  "form:treeTable:i:3:sideColumns:0:nodeLink:label");
-        testLabel("fix",  "form:treeTable:i:4:sideColumns:0:nodeLink:label");
-        //testTextField("fux", "form:treeTable:i:4");
-
+    @Test
+    public void editAttribute_shouldReflectChangeInModel() {
+        String textFieldId = "treeTable:i:4:sideColumns:1:textfield";
+        AjaxLink<?> node = (AjaxLink<?>) tester
+                .getComponentFromLastRenderedPage("form:treeTable:i:4:sideColumns:0:nodeLink");
+        tester.executeAjaxEvent(node, "onclick");
+        TextField<?> textField = (TextField<?>) tester.getComponentFromLastRenderedPage("form:" + textFieldId);
+        assertThat(textField, notNullValue());
+        assertThat((String) textField.getModel().getObject(), is("fux"));
+        assertThat(textField.isEnabled(), is(true));
+        FormTester formTester = tester.newFormTester("form");
+        formTester.setValue(textFieldId, "a");
+        node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage("form:treeTable:i:4:sideColumns:0:nodeLink");
+        tester.executeAjaxEvent(textField, "onblur");
+        verify(contextService).putValue("/foo/bar/fox/fix", "a");
     }
 
     private void testLabel(String lableText, String path) {
@@ -84,13 +90,4 @@ public class ContextSetPageTest {
         Label labelroot = (Label) tester.getComponentFromLastRenderedPage(path);
         assertThat((String) labelroot.getDefaultModel().getObject(), is(lableText));
     }
-
-    private void testTextField(String text, String path) {
-        tester.assertComponent(path, TextField.class);
-        @SuppressWarnings("unchecked")
-        TextField<String> textfield = (TextField<String>) tester.getComponentFromLastRenderedPage(path);
-        assertThat((String) textfield.getDefaultModel().getObject(), is(text));
-    }
-
-
 }

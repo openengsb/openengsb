@@ -46,7 +46,6 @@ public class ContextSetPage extends BasePage {
 
     public ContextSetPage() {
         add(new AjaxLink<String>("expandAll") {
-
             @Override
             public void onClick(AjaxRequestTarget target) {
                 getTree().getTreeState().expandAll();
@@ -55,7 +54,6 @@ public class ContextSetPage extends BasePage {
         });
 
         add(new AjaxLink<String>("collapseAll") {
-
             @Override
             public void onClick(AjaxRequestTarget target) {
                 getTree().getTreeState().collapseAll();
@@ -81,18 +79,18 @@ public class ContextSetPage extends BasePage {
     }
 
     private TreeModel createTreeModel(Context context) {
-        return new DefaultTreeModel(createTreeNode(context, "root"));
+        return new DefaultTreeModel(createTreeNode(context, "/"));
     }
 
-    private DefaultMutableTreeNode createTreeNode(Context context, String name) {
-        DefaultMutableTreeNode node = new DefaultMutableTreeNode(new ModelBean(name));
+    private DefaultMutableTreeNode createTreeNode(Context context, String path) {
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode(new ModelBean(contextService, path, false));
         for (String key : context.getKeys()) {
             String value = context.get(key);
-            node.add(new DefaultMutableTreeNode(new ModelBean(key, value)));
+            node.add(new DefaultMutableTreeNode(new ModelBean(contextService, path + key, true)));
         }
         for (String childName : context.getChildren().keySet()) {
             Context child = context.getChild(childName);
-            node.add(createTreeNode(child, childName));
+            node.add(createTreeNode(child, path + childName + '/'));
         }
         return node;
     }

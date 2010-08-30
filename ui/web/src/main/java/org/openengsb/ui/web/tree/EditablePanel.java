@@ -17,6 +17,8 @@
  */
 package org.openengsb.ui.web.tree;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.TextField;
@@ -25,6 +27,8 @@ import org.apache.wicket.model.IModel;
 
 @SuppressWarnings("serial")
 public class EditablePanel extends Panel {
+
+    private final Log log = LogFactory.getLog(EditablePanel.class);
 
     public EditablePanel(String id, IModel<String> inputModel) {
         super(id);

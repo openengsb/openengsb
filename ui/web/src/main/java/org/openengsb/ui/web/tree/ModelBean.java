@@ -17,22 +17,18 @@ limitations under the License.
  */
 package org.openengsb.ui.web.tree;
 
+import org.openengsb.core.common.context.ContextService;
+
 public class ModelBean {
 
+    private final ContextService contextService;
     private final String key;
-    private String value;
-    private boolean leaf;
+    private final boolean isLeaf;
 
-    public ModelBean(String key) {
-        this(key, null);
-    }
-
-    public ModelBean(String key, String value) {
+    public ModelBean(ContextService contextService, String key, boolean isLeaf) {
+        this.contextService = contextService;
         this.key = key;
-        if (value != null) {
-            this.value = value;
-            this.leaf = true;
-        }
+        this.isLeaf = isLeaf;
     }
 
     public String getKey() {
@@ -40,18 +36,16 @@ public class ModelBean {
     }
 
     public String getValue() {
-        return value;
+        return contextService.getValue(key);
     }
 
     public void setValue(String value) {
-        this.value = value;
+        if (isLeaf) {
+            contextService.putValue(key, value);
+        }
     }
 
     public boolean isLeaf() {
-        return leaf;
-    }
-
-    public void setLeaf(boolean leaf) {
-        this.leaf = leaf;
+        return isLeaf;
     }
 }
