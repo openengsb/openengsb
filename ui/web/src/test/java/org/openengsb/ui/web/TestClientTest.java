@@ -112,7 +112,7 @@ public class TestClientTest {
 
         Assert.assertNotNull(result);
         // Assert.assertSame(expected, result.getChoices());
-        Assert.assertEquals(result.getChoices().size(), expected.size());
+        Assert.assertEquals(expected.size(), result.getChoices().size());
     }
 
     @Test
@@ -267,6 +267,7 @@ public class TestClientTest {
     private List<ServiceReference> setupTestClientPage() {
         final List<ServiceReference> expected = new ArrayList<ServiceReference>();
         ServiceReference serviceReferenceMock = Mockito.mock(ServiceReference.class);
+        Mockito.when(serviceReferenceMock.getProperty("id")).thenReturn("test");
         expected.add(serviceReferenceMock);
         expected.add(serviceReferenceMock);
         DomainService managedServicesMock = Mockito.mock(DomainService.class);
