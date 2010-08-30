@@ -17,6 +17,7 @@ limitations under the License.
  */
 package org.openengsb.ui.web;
 
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation;
 import org.apache.wicket.extensions.markup.html.tree.table.IColumn;
 import org.apache.wicket.extensions.markup.html.tree.table.PropertyTreeColumn;
@@ -25,7 +26,6 @@ import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Alignm
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Unit;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import java.util.Enumeration;
 import org.openengsb.core.common.context.Context;
 import org.openengsb.ui.web.tree.ModelBean;
 
@@ -37,17 +37,24 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 
 import org.apache.wicket.markup.html.tree.AbstractTree;
-import org.openengsb.core.common.context.ContextService;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.ui.web.tree.PropertyEditableColumn;
 
 @SuppressWarnings("serial")
 public class ContextSetPage extends BasePage {
 
     @SpringBean
-    ContextService contextService;
+    private ContextCurrentService contextService;
     private final TreeTable tree;
 
     public ContextSetPage() {
+        if (contextService.getContext() == null) {
+            contextService.createContext("foobar");
+            contextService.setThreadLocalContext("foobar");
+            contextService.putValue("foo/bar/fix/fox", "fux");
+        } else {
+            contextService.setThreadLocalContext("foobar");
+        }
         add(new AjaxLink<String>("expandAll") {
 
             @Override
@@ -70,13 +77,13 @@ public class ContextSetPage extends BasePage {
             "Tree Column", "userObject.key"),
             new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT, 12, Unit.EM), "value",
             "userObject.value"),};
-        //        Form form = new Form("form");
-        //        form.add(this.tree);
+        Form form = new Form("form");
         Context context = contextService.getContext();
         this.tree = new TreeTable("treeTable", createTreeModel(context), columns);
         this.tree.setRootLess(false);
         this.tree.getTreeState().expandAll();
-        add(this.tree);
+        form.add(this.tree);
+        add(form);
     }
 
     protected AbstractTree getTree() {

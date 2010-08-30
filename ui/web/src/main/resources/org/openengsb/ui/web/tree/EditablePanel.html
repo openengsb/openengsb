@@ -16,10 +16,21 @@
    limitations under the License.
 
 -->
-<wicket:extend xmlns:wicket="http://wicket.sourceforge.net/">
-  <a wicket:id="expandAll">Expand all nodes</a>
-  <a wicket:id="collapseAll">Collapse all nodes</a>
-  <form wicket:id="form">
-    <div wicket:id="treeTable"/>
-  </form>
-</wicket:extend>
+<wicket:head>
+    <style>
+        input.edit-cell {
+            width: 100%;
+            margin: 0px;
+            font-size: 100%;
+            background-color: white;
+            color:  black;
+            border: 1px solid black;
+
+            _position: relative; _top: -1px;
+        }
+
+    </style>
+</wicket:head>
+<wicket:panel>
+    <input type="text" wicket:id="textfield" class="edit-cell"/>
+</wicket:panel>
