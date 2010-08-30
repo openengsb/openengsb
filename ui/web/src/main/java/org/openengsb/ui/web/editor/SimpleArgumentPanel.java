@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+/**
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
@@ -15,21 +14,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
--->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
-  <body>
-    <wicket:extend>
-      <wicket:message key="serviceList" />
+ */
+package org.openengsb.ui.web.editor;
 
-      <form wicket:id="methodCallForm">
-        <select wicket:id="serviceList" />
-        <select wicket:id="methodList" />
-        <div wicket:id="argumentListContainer">
-          <div wicket:id="argumentList" />
-        </div>
-        <input type="submit" value="Call" />
-      </form>
-    </wicket:extend>
-  </body>
-</html>
-   
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.PropertyModel;
+import org.openengsb.ui.web.ArgumentModel;
+
+
+@SuppressWarnings("serial")
+public class SimpleArgumentPanel extends Panel {
+    public SimpleArgumentPanel(String id, ArgumentModel arg) {
+        super(id);
+        add(new Label("index", "" + arg.getIndex()));
+        add(new TextField<String>("value", new PropertyModel<String>(arg, "value")));
+    }
+}

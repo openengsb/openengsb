@@ -28,12 +28,13 @@ import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -45,16 +46,55 @@ import org.osgi.framework.ServiceReference;
 
 public class TestClientTest {
 
+    public class TestBean {
+        private String id;
+        private String name;
+
+        public TestBean() {
+            // TODO Auto-generated constructor stub
+        }
+
+        public TestBean(String id, String name) {
+            super();
+            this.id = id;
+            this.name = name;
+        }
+
+        public String getId() {
+            return this.id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
     public interface TestInterface {
         void update(String id, String name);
+
+        void update(TestBean test);
     }
 
     public class TestService implements TestInterface {
         public boolean called = false;
+        public TestBean test;
 
         @Override
         public void update(String id, String name) {
             called = true;
+        }
+
+        @Override
+        public void update(TestBean test) {
+            this.test = test;
         }
 
         public String getName(String id) {
@@ -198,8 +238,7 @@ public class TestClientTest {
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
         WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
 
-        @SuppressWarnings("unchecked")
-        ListView<ArgumentModel> argList = (ListView<ArgumentModel>) argListContainer.get("argumentList");
+        RepeatingView argList = (RepeatingView) argListContainer.get("argumentList");
 
         FormTester formTester = tester.newFormTester("methodCallForm");
 
@@ -208,7 +247,31 @@ public class TestClientTest {
         formTester.select("methodList", 0);
         tester.executeAjaxEvent(form.get("methodList"), "onchange");
 
-        Assert.assertEquals(2, argList.getList().size());
+        Assert.assertEquals(2, argList.size());
+    }
+
+    @Ignore("work in progress")
+    @Test
+    public void testCreateTextFieldsForBean() throws Exception {
+        setupTestClientPage();
+
+        tester.startPage(TestClient.class);
+
+        @SuppressWarnings("rawtypes")
+        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
+        WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
+
+        RepeatingView argList = (RepeatingView) argListContainer.get("argumentList");
+
+        FormTester formTester = tester.newFormTester("methodCallForm");
+
+        formTester.select("serviceList", 0);
+        tester.executeAjaxEvent(form.get("serviceList"), "onchange");
+        formTester.select("methodList", 1);
+        tester.executeAjaxEvent(form.get("methodList"), "onchange");
+
+        Assert.assertEquals(WebMarkupContainer.class, argList.get("0:value").getClass());
+        Assert.assertEquals(1, argList.size());
     }
 
     @Test
@@ -221,8 +284,7 @@ public class TestClientTest {
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
         WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
 
-        @SuppressWarnings("unchecked")
-        ListView<ArgumentModel> argList = (ListView<ArgumentModel>) argListContainer.get("argumentList");
+        RepeatingView argList = (RepeatingView) argListContainer.get("argumentList");
 
         FormTester formTester = tester.newFormTester("methodCallForm");
 
@@ -232,7 +294,7 @@ public class TestClientTest {
         tester.executeAjaxEvent(form.get("methodList"), "onchange");
 
         for (int i = 0; i < argList.size(); i++) {
-            formTester.setValue("argumentListContainer:argumentList:" + i + ":value", "test");
+            formTester.setValue("argumentListContainer:argumentList:arg" + i + ":value", "test");
         }
 
         formTester.submit();
@@ -250,8 +312,7 @@ public class TestClientTest {
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
         WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
 
-        @SuppressWarnings("unchecked")
-        ListView<ArgumentModel> argList = (ListView<ArgumentModel>) argListContainer.get("argumentList");
+        RepeatingView argList = (RepeatingView) argListContainer.get("argumentList");
 
         FormTester formTester = tester.newFormTester("methodCallForm");
 
@@ -261,7 +322,7 @@ public class TestClientTest {
         tester.executeAjaxEvent(form.get("methodList"), "onchange");
         tester.executeAjaxEvent(form.get("methodList"), "onchange");
 
-        Assert.assertEquals(2, argList.getList().size());
+        Assert.assertEquals(2, argList.size());
     }
 
     private List<ServiceReference> setupTestClientPage() {
