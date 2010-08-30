@@ -23,8 +23,6 @@ import org.openengsb.ui.web.Index;
 
 public class ImprintPage extends BasePage {
 
-	private static final long serialVersionUID = -6735963232227976804L;
-
     public ImprintPage() {
 
        this.add(new BookmarkablePageLink<Index>("index", Index.class));

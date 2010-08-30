@@ -24,6 +24,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.openengsb.ui.web.Index;
+import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 
@@ -31,8 +32,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class HeaderTemplate extends Panel {
-
-	private static final long serialVersionUID = 1262492232985739307L;
 
 	private final ArrayList<HeaderMenuItem> menuItems = new ArrayList<HeaderMenuItem>();
 	private final ArrayList<String> avialableItems = new ArrayList<String>();
@@ -43,12 +42,12 @@ public class HeaderTemplate extends Panel {
 		super(id);
 
 		HeaderTemplate.menuIndex = menuIndex;
-
-		this.addHeaderMenuItem("index", Index.class, "index.title");
-		this.addHeaderMenuItem("testClient", TestClient.class, "testclient");
         this.add(new BookmarkablePageLink<Index>("indexLogo1", Index.class));
-		this.add(new BookmarkablePageLink<Index>("indexLogo2", Index.class));
-//        this.addHeaderMenuItem("sendEvent", SendEventPage.class, "sendevent.title");
+        this.add(new BookmarkablePageLink<Index>("indexLogo2", Index.class));
+
+        this.addHeaderMenuItem("index", Index.class, "index.title");
+        this.addHeaderMenuItem("testClient", TestClient.class, "testclient");
+        this.addHeaderMenuItem("sendEvent", SendEventPage.class, "sendevent.title");
 
 
 		if (HeaderTemplate.getActiveIndex() == null || !this.avialableItems.contains(HeaderTemplate.getActiveIndex())) {
