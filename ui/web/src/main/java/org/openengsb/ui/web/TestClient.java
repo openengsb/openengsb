@@ -58,7 +58,7 @@ public class TestClient extends BasePage {
 
     @SuppressWarnings("serial")
     public TestClient() {
-        Form<?> form = new Form("methodCallForm");
+        Form<Object> form = new Form<Object>("methodCallForm");
         form.add(new AjaxFormSubmitBehavior(form, "onsubmit") {
             @Override
             protected void onError(AjaxRequestTarget target) {

@@ -150,11 +150,13 @@ public class BundleContextMock implements BundleContext {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public ServiceRegistration registerService(String[] clazzes, Object service, Dictionary properties) {
         throw new UnsupportedOperationException();
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public ServiceRegistration registerService(String clazz, Object service, Dictionary properties) {
         throw new UnsupportedOperationException();
     }

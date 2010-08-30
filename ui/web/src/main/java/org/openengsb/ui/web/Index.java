@@ -41,14 +41,14 @@ public class Index extends BasePage {
 
     @SuppressWarnings("serial")
     public Index() {
-        add(new Link("lang.en") {
+        add(new Link<Object>("lang.en") {
 
             @Override
             public void onClick() {
                 this.getSession().setLocale(Locale.ENGLISH);
             }
         });
-        add(new Link("lang.de") {
+        add(new Link<Object>("lang.de") {
 
             @Override
             public void onClick() {
@@ -64,7 +64,7 @@ public class Index extends BasePage {
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
             }
         });
-        List<ServiceManager> managers = new ArrayList<ServiceManager>();
+        List<ServiceManager> managers = new ArrayList<ServiceManager>(domainService.domains().size());
         for (DomainProvider provider : domainService.domains()) {
             managers.addAll(this.domainService.serviceManagersForDomain(provider.getDomainInterface()));
         }

@@ -129,7 +129,8 @@ public class TestClientTest {
 
         tester.startPage(TestClient.class);
 
-        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
+        @SuppressWarnings("rawtypes")
+        Form form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
         Assert.assertNotNull(form.get("methodList"));
     }
 

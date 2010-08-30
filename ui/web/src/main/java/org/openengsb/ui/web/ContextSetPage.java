@@ -65,7 +65,7 @@ public class ContextSetPage extends BasePage {
             "Tree Column", "userObject.niceKey"),
             new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT, 12, Unit.EM), "value",
             "userObject.value"),};
-        Form form = new Form("form");
+        Form<Object> form = new Form<Object>("form");
         Context context = contextService.getContext();
         this.tree = new TreeTable("treeTable", createTreeModel(context), columns);
         this.tree.setRootLess(true);
