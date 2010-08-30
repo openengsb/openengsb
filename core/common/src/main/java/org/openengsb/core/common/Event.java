@@ -21,10 +21,10 @@ public class Event {
     private String contextId;
 
     public Event() {
+        contextId = "";
     }
 
     public Event(String contextId) {
-        super();
         this.contextId = contextId;
     }
 

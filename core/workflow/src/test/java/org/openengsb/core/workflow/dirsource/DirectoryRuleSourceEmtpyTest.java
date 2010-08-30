@@ -22,6 +22,7 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.AbstractRuleManagerTest;
+import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 
 public class DirectoryRuleSourceEmtpyTest extends AbstractRuleManagerTest<DirectoryRuleSource> {
@@ -32,7 +33,9 @@ public class DirectoryRuleSourceEmtpyTest extends AbstractRuleManagerTest<Direct
     }
 
     @Override
-    protected RuleManager getRuleBaseSource() {
-        return new DirectoryRuleSource("data/rulebase");
+    protected RuleManager getRuleBaseSource() throws RuleBaseException {
+        DirectoryRuleSource source = new DirectoryRuleSource("data/rulebase");
+        source.init();
+        return source;
     }
 }
