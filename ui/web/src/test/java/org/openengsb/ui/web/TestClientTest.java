@@ -20,6 +20,7 @@ package org.openengsb.ui.web;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -39,6 +40,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.ui.web.editor.SimpleArgumentPanel;
 import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
@@ -248,6 +250,10 @@ public class TestClientTest {
         tester.executeAjaxEvent(form.get("methodList"), "onchange");
 
         Assert.assertEquals(2, argList.size());
+        Iterator<? extends Component> iterator = argList.iterator();
+        while (iterator.hasNext()) {
+            Assert.assertEquals(SimpleArgumentPanel.class, iterator.next().getClass());
+        }
     }
 
     @Ignore("work in progress")
