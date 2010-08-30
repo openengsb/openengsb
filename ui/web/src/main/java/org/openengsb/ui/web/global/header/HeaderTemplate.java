@@ -37,6 +37,7 @@ public class HeaderTemplate extends Panel {
 	private final ArrayList<String> avialableItems = new ArrayList<String>();
 
 	private static String menuIndex;
+    
 
 	public HeaderTemplate(String id, String menuIndex) {
 		super(id);

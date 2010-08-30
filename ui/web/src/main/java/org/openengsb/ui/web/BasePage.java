@@ -49,7 +49,10 @@ public abstract class BasePage extends WebPage {
         this.add(new FooterTemplate("footer"));
     }
 
-
+    /**
+     * @return the class name, which should be the index in navigation bar
+     *
+     */
     public final String getHeaderMenuItem() {
         return this.getClass().getSimpleName();
     }
