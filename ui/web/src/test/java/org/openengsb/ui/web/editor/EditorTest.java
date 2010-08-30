@@ -22,7 +22,6 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,54 +33,43 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 
 @SuppressWarnings("serial")
 public class EditorTest {
 
+    private final AttributeDefinition attrib = AttributeDefinition.builder().id("attrib").name("name")
+            .description("desc").build();
+    private final AttributeDefinition attribNoDesc = AttributeDefinition.builder().id("attribNoDesc").name("name")
+            .build();
     private WicketTester tester;
     private EditorPanel editor;
-    private AttributeDefinition stringAttrib;
-    private AttributeDefinition attribWithNoDescription;
     private Map<String, String> defaultValues;
-
-    @Before
-    public void setup() {
-        stringAttrib = AttributeDefinition.builder().id("id_a").name("name_a").description("desc_a").build();
-        attribWithNoDescription = AttributeDefinition.builder().id("id_b").name("name_b").build();
-        final HashMap<String, String> values = new HashMap<String, String>();
-        values.put(stringAttrib.getId(), stringAttrib.getId() + "_default");
-        values.put(attribWithNoDescription.getId(), attribWithNoDescription.getId() + "_default");
-        defaultValues = Collections.unmodifiableMap(values);
-        tester = new WicketTester();
-        editor = (EditorPanel) tester.startPanel(new TestPanelSource() {
-            @Override
-            public Panel getTestPanel(String panelId) {
-                return new EditorPanel(panelId, Arrays.asList(stringAttrib, attribWithNoDescription), values);
-            }
-        });
-    }
 
     @Test
     public void editingStringAttribute_shouldRenderTextFieldWithPresetValues() throws Exception {
-        TextField<?> tf = getEditorFieldFormComponent(stringAttrib.getId(), TextField.class);
-        assertThat(tf.getValue(), is(defaultValues.get(stringAttrib.getId())));
+        startEditorPanel(attrib);
+        TextField<?> tf = getEditorFieldFormComponent(attrib.getId(), TextField.class);
+        assertThat(tf.getValue(), is(defaultValues.get(attrib.getId())));
     }
 
     @Test
     public void attributeWithDescription_shouldRenderTooltipImageWithTitle() throws Exception {
-        assertThat(((Image) getEditorField(stringAttrib.getId()).get("tooltip")).isVisible(), is(true));
+        startEditorPanel(attrib);
+        assertThat(((Image) getEditorField(attrib.getId()).get("tooltip")).isVisible(), is(true));
     }
 
     @Test
     public void attributeWithoutDescription_shouldShowNoTooltipImage() throws Exception {
-        assertThat(getEditorField(attribWithNoDescription.getId()).get("tooltip").isVisible(), is(false));
+        startEditorPanel(attribNoDesc);
+        assertThat(getEditorField(attribNoDesc.getId()).get("tooltip").isVisible(), is(false));
     }
 
     @Test
     public void submittingFormWithoutChange_shouldReturnInitialValues() throws Exception {
+        startEditorPanel(attrib, attribNoDesc);
         FormTester formTester = tester.newFormTester(editor.getId() + ":form");
         formTester.submit();
         assertThat(editor.getValues(), is(defaultValues));
@@ -89,10 +77,32 @@ public class EditorTest {
 
     @Test
     public void submittingFormWithChanges_shouldReflectChangesInValues() throws Exception {
+        startEditorPanel(attrib);
         FormTester formTester = tester.newFormTester(editor.getId() + ":form");
-        setFormValue(stringAttrib.getId(), "new_value_a");
+        setFormValue(attrib.getId(), "new_value_a");
         formTester.submit();
-        assertThat(editor.getValues().get(stringAttrib.getId()), is("new_value_a"));
+        assertThat(editor.getValues().get(attrib.getId()), is("new_value_a"));
+    }
+
+    @Test
+    @Ignore
+    public void optionAttribute_shouldBeDisplayedAsOptionChoice() {
+
+    }
+
+    private void startEditorPanel(final AttributeDefinition... attributes) {
+        final HashMap<String, String> values = new HashMap<String, String>();
+        for (AttributeDefinition a : attributes) {
+            values.put(a.getId(), a.getId() + "_default");
+        }
+        defaultValues = new HashMap<String, String>(values);
+        tester = new WicketTester();
+        editor = (EditorPanel) tester.startPanel(new TestPanelSource() {
+            @Override
+            public Panel getTestPanel(String panelId) {
+                return new EditorPanel(panelId, Arrays.asList(attributes), values);
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
