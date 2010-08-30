@@ -159,8 +159,4 @@ public class SendEventPage extends BasePage {
         return attributes;
     }
 
-    @Override
-    public String getHeaderMenuItem() {
-        return "index";
-    }
 }

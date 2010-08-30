@@ -29,7 +29,6 @@ import org.openengsb.ui.web.service.DomainService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class Index extends BasePage {
 
@@ -39,18 +38,7 @@ public class Index extends BasePage {
     @SuppressWarnings("serial")
     public Index() {
       
-        add(new Link<Object>("lang.en") {
-            @Override
-            public void onClick() {
-                this.getSession().setLocale(Locale.ENGLISH);
-            }
-        });
-        add(new Link<Object>("lang.de") {
-            @Override
-            public void onClick() {
-                this.getSession().setLocale(Locale.GERMAN);
-            }
-        });
+        
         add(new ListView<DomainProvider>("domains", domainService.domains()) {
             @Override
             protected void populateItem(ListItem<DomainProvider> item) {
@@ -79,8 +67,4 @@ public class Index extends BasePage {
         });
     }
 
-    @Override
-    public String getHeaderMenuItem() {
-        return "index";
-    }
 }

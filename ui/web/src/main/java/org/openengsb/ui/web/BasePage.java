@@ -18,8 +18,11 @@
 package org.openengsb.ui.web;
 
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.link.Link;
 import org.openengsb.ui.web.global.footer.FooterTemplate;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
+
+import java.util.Locale;
 
 public abstract class BasePage extends WebPage {
 
@@ -29,10 +32,25 @@ public abstract class BasePage extends WebPage {
     }
 
     private void initWebPage() {
+        add(new Link<Object>("lang.en") {
+            @Override
+            public void onClick() {
+                this.getSession().setLocale(Locale.ENGLISH);
+            }
+        });
+        add(new Link<Object>("lang.de") {
+            @Override
+            public void onClick() {
+                this.getSession().setLocale(Locale.GERMAN);
+            }
+        });
+
         this.add(new HeaderTemplate("header", this.getHeaderMenuItem()));
         this.add(new FooterTemplate("footer"));
     }
 
 
-    public abstract String getHeaderMenuItem();
+    public final String getHeaderMenuItem() {
+        return this.getClass().getSimpleName();
+    }
 }

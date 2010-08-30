@@ -28,10 +28,4 @@ public class ImprintPage extends BasePage {
        this.add(new BookmarkablePageLink<Index>("index", Index.class));
     }
 
-     @Override
-	public String getHeaderMenuItem() {
-		return "index";
-	}
-
-
 }

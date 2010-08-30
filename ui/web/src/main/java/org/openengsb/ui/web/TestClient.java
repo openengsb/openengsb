@@ -17,11 +17,6 @@
  */
 package org.openengsb.ui.web;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -40,6 +35,11 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestClient extends BasePage {
 
@@ -197,11 +197,6 @@ public class TestClient extends BasePage {
             throw new IllegalArgumentException(e);
         }
 
-    }
-
-    @Override
-    public String getHeaderMenuItem() {
-        return "testClient";
     }
 
 }

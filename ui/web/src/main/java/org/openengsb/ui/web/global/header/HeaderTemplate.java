@@ -45,14 +45,14 @@ public class HeaderTemplate extends Panel {
         this.add(new BookmarkablePageLink<Index>("indexLogo1", Index.class));
         this.add(new BookmarkablePageLink<Index>("indexLogo2", Index.class));
 
-        this.addHeaderMenuItem("index", Index.class, "index.title");
-        this.addHeaderMenuItem("testClient", TestClient.class, "testclient.title");
-        this.addHeaderMenuItem("sendEvent", SendEventPage.class, "sendevent.title");
+        this.addHeaderMenuItem("Index", Index.class, "index.title");
+        this.addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
+        this.addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
 
 
 		if (HeaderTemplate.getActiveIndex() == null || !this.avialableItems.contains(HeaderTemplate.getActiveIndex())) {
 			// update menu item to index, because page index is not found!
-			HeaderTemplate.menuIndex = "index";
+			HeaderTemplate.menuIndex = "Index";
 		}
 
 		// generate main navigation
@@ -90,9 +90,9 @@ public class HeaderTemplate extends Panel {
 	/**
 	 * adds new item to main header navigation
 	 *
-	 * @param index
-	 * @param linkClass
-     * @param langKey
+	 * @param index - the name of the index  @see HeaderMenuItem.index
+	 * @param linkClass - class name to be linked to
+     * @param langKey - language key, the text which should be displayed
 	 */
 	@SuppressWarnings("unchecked")
 	public void addHeaderMenuItem(String index, Class linkClass, String langKey) {
@@ -106,7 +106,6 @@ public class HeaderTemplate extends Panel {
 	 *
 	 */
 	private class HeaderMenuItem implements Serializable {
-		private static final long serialVersionUID = -3893570203135664161L;
 
 		private final String index;
 		private final BookmarkablePageLabelLink link;

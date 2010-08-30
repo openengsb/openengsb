@@ -17,10 +17,6 @@
  */
 package org.openengsb.ui.web;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.StringResourceModel;
@@ -28,6 +24,10 @@ import org.openengsb.core.config.ServiceManager;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.editor.EditorPanel;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class EditorPage extends BasePage {
 
@@ -78,8 +78,4 @@ public class EditorPage extends BasePage {
         return editorPanel;
     }
 
-    @Override
-    public String getHeaderMenuItem() {
-        return "index";
-    }
 }

@@ -17,10 +17,6 @@
  */
 package org.openengsb.ui.web;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
@@ -30,6 +26,10 @@ import org.openengsb.core.config.ServiceManager;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
 
 public class SendMessages extends BasePage {
 
@@ -88,11 +88,6 @@ public class SendMessages extends BasePage {
                 }
             }
         }
-    }
-
-    @Override
-    public String getHeaderMenuItem() {
-        return "index";
     }
 
 }
