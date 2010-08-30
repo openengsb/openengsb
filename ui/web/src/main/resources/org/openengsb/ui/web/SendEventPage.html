@@ -16,25 +16,22 @@
    limitations under the License.
 
 -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd" xml:lang="en" lang="en">
-    <head/>
-    <body>
-    <wicket:extend>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
+      xml:lang="en" lang="en">
+<head/>
+<body>
+<wicket:extend>
 
-       <div wicket:id="header">header</div>
+  <ul class="breadCrumbs">
+    <li><a href="" wicket:id="index"><span><wicket:message key="home.title"/></span></a> &raquo;</li>
+    <li><span><wicket:message key="sendEventPage.title"/></span> &raquo;</li>
+  </ul>
 
-       <ul class="breadCrumbs">
-        <li><a href="" wicket:id="index"><span><wicket:message key="home.title"/></span></a> &raquo;</li>
-        <li><span><wicket:message key="sendEventPage.title"/></span> &raquo;</li>
-        </ul>
+  <form wicket:id="form">
+    <select wicket:id="dropdown"/>
+  </form>
+  <div wicket:id="editor"/>
 
-        <form wicket:id="form">
-          <select wicket:id="dropdown"/>
-        </form>
-        <div wicket:id="editor" />
-
-        <div wicket:id="footer">footer</div>
-
-    </wicket:extend>
+</wicket:extend>
 </body>
 </html>

@@ -29,10 +29,8 @@ public abstract class BasePage extends WebPage {
     }
 
     private void initWebPage() {
-
-       /* this.add(new HeaderTemplate("header",this.getHeaderMenuItem()));*/
-        this.add(new HeaderTemplate("header",this.getHeaderMenuItem()));
-		this.add(new FooterTemplate("footer"));
+        this.add(new HeaderTemplate("header", this.getHeaderMenuItem()));
+        this.add(new FooterTemplate("footer"));
     }
 
 
