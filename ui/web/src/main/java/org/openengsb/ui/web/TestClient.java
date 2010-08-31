@@ -98,6 +98,9 @@ public class TestClient extends BasePage {
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
+                if(!mnode.isLeaf()){
+                    return;
+                }
                 call.setService((ServiceId) mnode.getUserObject());
                 populateMethodList();
                 target.addComponent(methodList);
