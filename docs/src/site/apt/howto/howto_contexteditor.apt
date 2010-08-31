@@ -40,21 +40,27 @@ action at the services to log messages to the OSGi shell.
 
   * Next, we are going to set the default service for an notification domain. Therefor we
   click on the "Context" Button on the navigation bar.
+
   * Set the default service Id to one of the Ids we have chosen before. (E.g.: take "service1a")
   To do so click the name of node you want to change then the value becomes editable. To finish
   click the name again.
-  
-[]
+
+[../images/howto/contextEditor1.png]
+
+  Context editor: click the node to edit the value
 
 [../images/howto/contextEditor2.png]
 
+  Context editor: click the node again to finish
 
 * Sending an notification
 
   * Now switch to the Test Client and chose an notification domain ( the one where we have
   set the default service) and send a notification.
+
   * After this is done, go to the OSGI shell and check execute the "log:display" command.
   There you should see log output from the LogService with Id "service1a".
+
   * Now you can go back to the webinterface and change the default service to the other Service
   Id and send an new notification. After executing "log:display" in the OSGI shell you
   should see again an log output, but this time the Log Service Id should be "service1b".

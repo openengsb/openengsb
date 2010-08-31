@@ -65,7 +65,8 @@
 
     <menu name="Quickstart" >
       <item name="Installation" href="howto/howto_setup.html" />
-      <item name="Hello World" href="howto/howto_logging.html" />
+      <item name="Hello World part 1" href="howto/howto_logging.html" />
+      <item name="Hello World part 2" href="howto/howto_contexteditor.html" />
     </menu>
 
 	  <menu name="Documentation" >
