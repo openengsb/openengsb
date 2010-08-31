@@ -108,24 +108,6 @@
       </roles>
     </developer>
     <developer>
-      <id>fwa</id>
-      <name>Florian Waltersdorfer</name>
-      <email>ignatiomobius [at] gmail.com</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>cle</id>
-      <name>Christoph Leiter</name>
-      <email>openengsb [at] christophleiter.com</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
       <id>mha</id>
       <name>Michael Handler</name>
       <email>michael.handler [at] fullstop.at</email>
@@ -198,6 +180,31 @@
     <contributor>
       <name>Philipp Hoenisch</name>
       <email>philipp.hoenisch [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Florian Waltersdorfer</name>
+      <email>ignatiomobius [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Christoph Leiter</name>
+      <email>openengsb [at] christophleiter.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Kristof Meixner</name>
+      <email>kristof.meixner [at] fatlenny.net</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Tobias Hochwallner</name>
+      <email>tobster [at] gmx.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Florian Motlik</name>
+      <email>flomotlik [at] gmail.com</email>
       <timezone>+1</timezone>
     </contributor>
   </contributors>
