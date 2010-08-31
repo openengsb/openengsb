@@ -28,14 +28,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.config.descriptor.AttributeDefinition.Builder;
 
 public class MethodUtil {
-
-    private static Log log = LogFactory.getLog(MethodUtil.class);
 
     public static List<Method> getServiceMethods(Object service) {
         List<Method> result = new ArrayList<Method>();
