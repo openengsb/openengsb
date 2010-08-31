@@ -102,7 +102,7 @@ public class TestClient extends BasePage {
                 populateMethodList();
                 target.addComponent(methodList);
                 log.info(node);
-                log.info((node.getClass()));
+                log.info(node.getClass());
             };
         };
 
@@ -159,22 +159,24 @@ public class TestClient extends BasePage {
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
         DefaultMutableTreeNode providerNode = new DefaultMutableTreeNode(provider.getName());
         node.add(providerNode);
-//        for (ServiceManager manager : services.serviceManagersForDomain(provider.getDomainInterface())) {
-//            log.info("found servicemanager");
-//            DefaultMutableTreeNode serviceManagerNode = new DefaultMutableTreeNode(manager.getDescriptor().getName());
-//            providerNode.add(serviceManagerNode);
-            for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider
-                    .getDomainInterface())) {
-                String id = (String) serviceReference.getProperty("id");
-                if (id != null) {
-                    ServiceId serviceId = new ServiceId();
-                    serviceId.setServiceId(id);
-                    serviceId.setServiceClass(services.getService(serviceReference).getClass().getName());
-                    DefaultMutableTreeNode referenceNode = new DefaultMutableTreeNode(serviceId, false);
-                    providerNode.add(referenceNode);
-                }
+        // for (ServiceManager manager :
+        // services.serviceManagersForDomain(provider.getDomainInterface())) {
+        // log.info("found servicemanager");
+        // DefaultMutableTreeNode serviceManagerNode = new
+        // DefaultMutableTreeNode(manager.getDescriptor().getName());
+        // providerNode.add(serviceManagerNode);
+        for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider
+                .getDomainInterface())) {
+            String id = (String) serviceReference.getProperty("id");
+            if (id != null) {
+                ServiceId serviceId = new ServiceId();
+                serviceId.setServiceId(id);
+                serviceId.setServiceClass(services.getService(serviceReference).getClass().getName());
+                DefaultMutableTreeNode referenceNode = new DefaultMutableTreeNode(serviceId, false);
+                providerNode.add(referenceNode);
             }
-//        }
+        }
+        // }
     }
 
     protected void performCall() {
