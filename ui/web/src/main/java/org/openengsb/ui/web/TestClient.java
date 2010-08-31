@@ -223,20 +223,6 @@ public class TestClient extends BasePage {
         call.setArguments(arguments);
     }
 
-    private List<ServiceId> getServiceInstances() {
-        List<ServiceId> result = new ArrayList<ServiceId>();
-        for (ServiceReference s : services.getManagedServiceInstances()) {
-            String id = (String) s.getProperty("id");
-            if (id != null) {
-                ServiceId serviceId = new ServiceId();
-                serviceId.setServiceId(id);
-                serviceId.setServiceClass(services.getService(s).getClass().getName());
-                result.add(serviceId);
-            }
-        }
-        return result;
-    }
-
     private void populateMethodList() {
         ServiceId service = call.getService();
         List<Method> methods = getServiceMethods(service);
