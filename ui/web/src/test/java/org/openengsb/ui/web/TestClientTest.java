@@ -79,6 +79,7 @@ public class TestClientTest {
     private WicketTester tester;
     private ApplicationContextMock context;
     private TestService testService;
+    private FormTester formTester;
 
     @Before
     public void setup() {
@@ -86,7 +87,6 @@ public class TestClientTest {
         context = new ApplicationContextMock();
         context.putBean(mock(ContextCurrentService.class));
     }
-
 
     @Test
     public void testLinkAppearsWithCaptionTestClient() throws Exception {
@@ -99,17 +99,14 @@ public class TestClientTest {
 
     @Test
     public void testParameterFormIsCreated() throws Exception {
-        setupTestClientPage();
-        tester.startPage(TestClient.class);
+        setupAndStartTestClientPage();
 
         tester.assertComponent("methodCallForm", Form.class);
     }
 
     @Test
     public void testShowServiceInstancesInDropdown() throws Exception {
-        List<ServiceReference> expected = setupTestClientPage();
-
-        tester.startPage(TestClient.class);
+        List<ServiceReference> expected = setupAndStartTestClientPage();
 
         @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
@@ -122,19 +119,8 @@ public class TestClientTest {
     }
 
     @Test
-    public void testServiceInstancesDropDownIsLabeledWithSerivces() throws Exception {
-        setupTestClientPage();
-
-        tester.startPage(TestClient.class);
-
-      //  tester.assertContains("Services: ");
-    }
-
-    @Test
     public void testCreateMethodListDropDown() throws Exception {
-        setupTestClientPage();
-
-        tester.startPage(TestClient.class);
+        setupAndStartTestClientPage();
 
         @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
@@ -143,34 +129,28 @@ public class TestClientTest {
 
     @Test
     public void testServiceListSelect() throws Exception {
-        setupTestClientPage();
+        setupAndStartTestClientPage();
 
-        tester.startPage(TestClient.class);
-
-        @SuppressWarnings("rawtypes")
-        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
-        @SuppressWarnings("unchecked")
-        DropDownChoice<Method> serviceList = (DropDownChoice<Method>) form.get("serviceList");
-        FormTester formTester = tester.newFormTester("methodCallForm");
         formTester.select("serviceList", 0);
+        tester.executeAjaxEvent("methodCallForm:serviceList", "onchange");
 
-        serviceList.getValue();
+        @SuppressWarnings("unchecked")
+        DropDownChoice<ServiceId> serviceList = (DropDownChoice<ServiceId>) tester
+                .getComponentFromLastRenderedPage("methodCallForm:serviceList");
+        ServiceId modelObject = serviceList.getModelObject();
+        ServiceId reference = new ServiceId(TestService.class.getName(), "test");
+        Assert.assertEquals(reference.toString(), modelObject.toString());
     }
 
     @Test
     public void testShowMethodListInDropDown() throws Exception {
-        setupTestClientPage();
+        setupAndStartTestClientPage();
 
-        tester.startPage(TestClient.class);
-
-        @SuppressWarnings("rawtypes")
-        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
-        @SuppressWarnings("unchecked")
-        DropDownChoice<MethodId> methodList = (DropDownChoice<MethodId>) form.get("methodList");
-        FormTester formTester = tester.newFormTester("methodCallForm");
+        @SuppressWarnings({ "unchecked" })
+        DropDownChoice<MethodId> methodList = (DropDownChoice<MethodId>) tester.getComponentFromLastRenderedPage("methodCallForm:methodList");
 
         formTester.select("serviceList", 0);
-        tester.executeAjaxEvent(form.get("serviceList"), "onchange");
+        tester.executeAjaxEvent("methodCallForm:serviceList", "onchange");
 
         List<? extends MethodId> choices = methodList.getChoices();
         List<Method> choiceMethods = new ArrayList<Method>();
@@ -182,9 +162,7 @@ public class TestClientTest {
 
     @Test
     public void testCreateArgumentList() throws Exception {
-        setupTestClientPage();
-
-        tester.startPage(TestClient.class);
+        setupAndStartTestClientPage();
 
         @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
@@ -196,17 +174,13 @@ public class TestClientTest {
 
     @Test
     public void testCreateTextFieldsFor2StringArguments() throws Exception {
-        setupTestClientPage();
-
-        tester.startPage(TestClient.class);
+        setupAndStartTestClientPage();
 
         @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
         WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
 
         RepeatingView argList = (RepeatingView) argListContainer.get("argumentList");
-
-        FormTester formTester = tester.newFormTester("methodCallForm");
 
         formTester.select("serviceList", 0);
         tester.executeAjaxEvent(form.get("serviceList"), "onchange");
@@ -222,17 +196,13 @@ public class TestClientTest {
 
     @Test
     public void testCreateTextFieldsForBean() throws Exception {
-        setupTestClientPage();
-
-        tester.startPage(TestClient.class);
+        setupAndStartTestClientPage();
 
         @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
         WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
 
         RepeatingView argList = (RepeatingView) argListContainer.get("argumentList");
-
-        FormTester formTester = tester.newFormTester("methodCallForm");
 
         formTester.select("serviceList", 0);
         tester.executeAjaxEvent(form.get("serviceList"), "onchange");
@@ -248,17 +218,13 @@ public class TestClientTest {
 
     @Test
     public void testPerformMethodCall() throws Exception {
-        setupTestClientPage();
-
-        tester.startPage(TestClient.class);
+        setupAndStartTestClientPage();
 
         @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
         WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
 
         RepeatingView argList = (RepeatingView) argListContainer.get("argumentList");
-
-        FormTester formTester = tester.newFormTester("methodCallForm");
 
         formTester.select("serviceList", 0);
         tester.executeAjaxEvent(form.get("serviceList"), "onchange");
@@ -276,14 +242,10 @@ public class TestClientTest {
 
     @Test
     public void testPerformMethodCallWithBeanArgument() throws Exception {
-        setupTestClientPage();
-
-        tester.startPage(TestClient.class);
+        setupAndStartTestClientPage();
 
         @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
-
-        FormTester formTester = tester.newFormTester("methodCallForm");
 
         formTester.select("serviceList", 0);
         tester.executeAjaxEvent(form.get("serviceList"), "onchange");
@@ -300,17 +262,13 @@ public class TestClientTest {
 
     @Test
     public void testSelectMethodTwice() throws Exception {
-        setupTestClientPage();
-
-        tester.startPage(TestClient.class);
+        setupAndStartTestClientPage();
 
         @SuppressWarnings("rawtypes")
         Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
         WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
 
         RepeatingView argList = (RepeatingView) argListContainer.get("argumentList");
-
-        FormTester formTester = tester.newFormTester("methodCallForm");
 
         formTester.select("serviceList", 0);
         tester.executeAjaxEvent(form.get("serviceList"), "onchange");
@@ -321,7 +279,7 @@ public class TestClientTest {
         Assert.assertEquals(2, argList.size());
     }
 
-    private List<ServiceReference> setupTestClientPage() {
+    private List<ServiceReference> setupAndStartTestClientPage() {
         final List<ServiceReference> expected = new ArrayList<ServiceReference>();
         ServiceReference serviceReferenceMock = Mockito.mock(ServiceReference.class);
         Mockito.when(serviceReferenceMock.getProperty("id")).thenReturn("test");
@@ -339,6 +297,9 @@ public class TestClientTest {
         Mockito.when(managedServicesMock.getService(Mockito.anyString(), Mockito.anyString())).thenReturn(testService);
         context.putBean(managedServicesMock);
         setupTesterWithSpringMockContext();
+
+        tester.startPage(TestClient.class);
+        formTester = tester.newFormTester("methodCallForm");
         return expected;
     }
 
