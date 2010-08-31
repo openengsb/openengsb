@@ -15,7 +15,7 @@
  limitations under the License.
 
  */
-package org.openengsb.domains.notification.email;
+package org.openengsb.domains.notification.email.integration;
 
 import java.util.ArrayList;
 import java.util.Date;
