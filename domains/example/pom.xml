@@ -22,13 +22,13 @@
     <relativePath>..</relativePath>
     <groupId>org.openengsb.domains</groupId>
     <artifactId>openengsb-domains-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.M2</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.domains.example</groupId>
   <artifactId>openengsb-domains-example-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0.M2</version>
 
   <name>OpenEngSB :: Domains :: Example :: Parent</name>
 
