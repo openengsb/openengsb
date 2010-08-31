@@ -21,6 +21,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.management.Notification;
+
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
@@ -37,6 +39,7 @@ import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.domains.example.ExampleDomain;
+import org.openengsb.domains.notification.NotificationDomain;
 
 public class WorkflowServiceTest {
 
@@ -46,7 +49,6 @@ public class WorkflowServiceTest {
 
     public class LogDomainMock implements LogDomain {
         public StringBuffer log = new StringBuffer();
-
         @Override
         public void log(String string) {
             log.append(string);
@@ -67,6 +69,7 @@ public class WorkflowServiceTest {
         setupDomains();
         listener = new RuleListener();
         service.registerRuleListener(listener);
+        Notification n;
     }
 
     private void setupRulemanager() throws RuleBaseException {
@@ -77,10 +80,17 @@ public class WorkflowServiceTest {
     }
 
     private void setupDomains() {
+        Map<String, Domain> domains = createDomainMocks();
+        service.setDomainServices(domains);
+    }
+
+    private Map<String, Domain> createDomainMocks() {
         Map<String, Domain> domains = new HashMap<String, Domain>();
         logService = Mockito.mock(ExampleDomain.class);
         domains.put("log", logService);
-        service.setDomainServices(domains);
+        NotificationDomain notification = Mockito.mock(NotificationDomain.class);
+        domains.put("notification", notification);
+        return domains;
     }
 
     @After

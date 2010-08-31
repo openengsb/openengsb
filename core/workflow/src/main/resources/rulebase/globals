@@ -1,1 +1,2 @@
+org.openengsb.domains.notification.NotificationDomain notification
 org.openengsb.domains.example.ExampleDomain log

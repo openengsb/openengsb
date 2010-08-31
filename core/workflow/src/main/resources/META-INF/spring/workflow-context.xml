@@ -40,6 +40,9 @@
           <entry key="log">
             <ref local="logService" />
           </entry>
+          <entry key="notification">
+            <ref local="notificationService" />
+          </entry>
         </map>
       </property>
       <property name="currentContextService" ref="contextService" />
@@ -48,5 +51,6 @@
 
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextCurrentService" />
   <osgi:reference id="logService" interface="org.openengsb.domains.example.ExampleDomain" filter="(openengsb.service.type=domain)" />
+  <osgi:reference id="notificationService" interface="org.openengsb.domains.notification.NotificationDomain" filter="(openengsb.service.type=domain)" />
 </beans>
 
