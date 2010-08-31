@@ -25,8 +25,8 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.domains.notification.implementation</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.domains.notification.implementation</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.domains.notification</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.domains.notification</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>

@@ -1,4 +1,4 @@
 when
 	Event()
 then
-	System.out.println("Hello World");
+	log.doSomething("Hello World");

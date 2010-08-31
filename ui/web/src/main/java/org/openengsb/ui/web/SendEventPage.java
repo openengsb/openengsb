@@ -1,24 +1,23 @@
 /**
 
-Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 
  */
 package org.openengsb.ui.web;
 
 import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Modifier;
@@ -34,28 +33,48 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
-import org.openengsb.core.config.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.service.DomainService;
 
+@SuppressWarnings("serial")
 public class SendEventPage extends BasePage {
 
-    private static final Log log = LogFactory.getLog(SendEventPage.class);
+    static final Log log = LogFactory.getLog(SendEventPage.class);
 
     @SpringBean
     private WorkflowService eventService;
 
-    private final DropDownChoice<Class<?>> dropDownChoice;
+    @SpringBean
+    private DomainService domainService;
+
+    private DropDownChoice<Class<?>> dropDownChoice;
+
+    public SendEventPage() {
+        List<Class<? extends Event>> classes = new ArrayList<Class<? extends Event>>();
+        classes.add(Event.class);
+        for (DomainProvider domain : domainService.domains()) {
+            classes.addAll(domain.getEvents());
+        }
+        init(classes);
+    }
+
 
     @SuppressWarnings("serial")
     public SendEventPage(List<Class<? extends Event>> classes) {
-        Form<?> form = new Form<Object>("form");
+        init(classes);
+    }
+
+    private void init(List<? extends Class<?>> classes) {
+        Form<Object> form = new Form<Object>("form");
         add(form);
         ChoiceRenderer<Class<?>> choiceRenderer = new ChoiceRenderer<Class<?>>("canonicalName", "simpleName");
         dropDownChoice = new DropDownChoice<Class<?>>("dropdown", classes, choiceRenderer);
@@ -71,11 +90,12 @@ public class SendEventPage extends BasePage {
         });
         form.add(dropDownChoice);
         add(createEditorPanelForClass(classes.get(0)));
+        this.add(new BookmarkablePageLink<Index>("index", Index.class));
     }
 
     private EditorPanel createEditorPanelForClass(Class<?> theClass) {
         Map<String, String> defaults = new HashMap<String, String>();
-        List<AttributeDefinition> attributes = buildAttributesList(theClass);
+        List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(theClass);
         @SuppressWarnings("serial")
         EditorPanel editor = new EditorPanel("editor", attributes, defaults) {
             @Override
@@ -114,27 +134,5 @@ public class SendEventPage extends BasePage {
             log.error("building event istance failed", e);
             return null;
         }
-    }
-
-    private List<AttributeDefinition> buildAttributesList(Class<?> theClass) {
-        List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
-        try {
-            BeanInfo beanInfo = Introspector.getBeanInfo(theClass);
-            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
-            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                if (propertyDescriptor.getWriteMethod() == null
-                        || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
-                    continue;
-                }
-                Builder builder = AttributeDefinition.builder();
-                builder.name(propertyDescriptor.getDisplayName());
-                builder.description(propertyDescriptor.getShortDescription());
-                builder.id(propertyDescriptor.getName());
-                attributes.add(builder.build());
-            }
-        } catch (IntrospectionException ex) {
-            log.error("building attribute list failed", ex);
-        }
-        return attributes;
     }
 }

@@ -16,27 +16,27 @@
    limitations under the License.
 
 -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
-  <body>
-    <wicket:extend>
-      <wicket:message key="serviceList" />
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
+  xml:lang="en" lang="en">
+<body>
+<wicket:extend>
 
-      <form wicket:id="methodCallForm">
-        <select wicket:id="serviceList" />
-        <select wicket:id="methodList" />
-        <div wicket:id="argumentListContainer">
-          <div wicket:id="argumentList">
-            <div class="argIndex">
-              <span wicket:id="index">item text</span>
-            </div>
-            <div class="argValue">
-              <input type="text" wicket:id="value" />
-            </div>
-          </div>
-        </div>
-        <input type="submit" value="Call" />
-      </form>
-    </wicket:extend>
-  </body>
+  <ul class="breadCrumbs">
+    <li><a href="" wicket:id="index"><span><wicket:message key="home.title" /></span></a> &raquo;</li>
+    <li><span><wicket:message key="testClient.title" /></span> &raquo;</li>
+  </ul>
+
+  <wicket:message key="serviceList" />
+
+  <form wicket:id="methodCallForm">
+    <select wicket:id="serviceList"></select>
+    <select wicket:id="methodList"></select>
+    <div wicket:id="argumentListContainer">
+      <div wicket:id="argumentList" />
+    </div>
+    <input type="submit" value="Call" />
+  </form>
+
+</wicket:extend>
+</body>
 </html>
-   

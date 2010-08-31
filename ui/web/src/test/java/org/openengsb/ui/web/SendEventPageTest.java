@@ -40,10 +40,12 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.service.DomainService;
 
 public class SendEventPageTest {
 
@@ -63,8 +65,9 @@ public class SendEventPageTest {
                 new SpringComponentInjector(tester.getApplication(), context, false));
         eventService = mock(WorkflowService.class);
         context.putBean("eventService", eventService);
-        eventClasses = Arrays.<Class<? extends Event>> asList(Dummy.class, Dummy2.class,
-                BrokenEvent.class);
+        context.putBean("domainService", mock(DomainService.class));
+        context.putBean("contextCurrentService", mock(ContextCurrentService.class));
+        eventClasses = Arrays.<Class<? extends Event>> asList(Dummy.class, Dummy2.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         editorPanel = (EditorPanel) tester.getComponentFromLastRenderedPage("editor");
         dropdown = (DropDownChoice<Class<?>>) tester

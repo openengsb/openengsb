@@ -16,19 +16,32 @@
    limitations under the License.
 
 -->
-<beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-  xmlns:osgi="http://www.springframework.org/schema/osgi"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:osgi="http://www.springframework.org/schema/osgi"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:service interface="org.openengsb.core.config.ServiceManager">
     <osgi:service-properties>
-        <entry key="domain" value="org.openengsb.domains.example.ExampleDomain"/>
+      <entry key="domain" value="org.openengsb.domains.example.ExampleDomain" />
     </osgi:service-properties>
     <bean class="org.openengsb.domains.example.connector.LogServiceManager" init-method="init" />
   </osgi:service>
-  
+
+  <osgi:service>
+    <osgi:interfaces>
+      <value>org.openengsb.domains.example.ExampleDomain</value>
+      <value>org.openengsb.core.config.Domain</value>
+    </osgi:interfaces>
+    <osgi:service-properties>
+      <entry key="openengsb.service.type" value="domain" />
+    </osgi:service-properties>
+    <bean class="org.openengsb.domains.example.connector.internal.LogService">
+      <constructor-arg value="x42" />
+      <property name="outputMode" value="INFO" />
+    </bean>
+  </osgi:service>
+
 
 </beans>

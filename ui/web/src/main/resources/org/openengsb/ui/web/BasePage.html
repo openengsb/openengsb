@@ -16,15 +16,27 @@
    limitations under the License.
 
 -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
-  <head>
-    <link rel="stylesheet" type="text/css" href="style/style.css" />
-    <script type="text/javascript" src="js/jquery.js">
-    </script>
-    <script type="text/javascript" src="js/jquery.tools.js">
-    </script>
-  </head>
-  <body>
-    <wicket:child/>
-  </body>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
+      xml:lang="en" lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="style/style.css"/>
+  <script type="text/javascript" src="js/jquery.js" ></script>
+  <script type="text/javascript" src="js/jquery.tools.js" ></script>
+</head>
+<body>
+  <div wicket:id="header">header</div>
+  <a class="languageIconsE" href="#" wicket:id="lang.en">
+          <img wicket:message="title:headerPage.title" alt="English" title="" src="images/english_icon.png"/>
+  </a>
+  <a class="languageIconsG" href="#" wicket:id="lang.de">
+          <img wicket:message="title:headerPage.title" alt="Deutsch" title="" src="images/german_icon.png"/>
+  </a>
+
+<!--
+  <a href="#" wicket:id="lang.en">English</a> <a href="#" wicket:id="lang.de">Deutsch</a>
+-->
+  <wicket:child>[children]</wicket:child>
+  <div wicket:id="footer">footer</div>
+
+</body>
 </html>

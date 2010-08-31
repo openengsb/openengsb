@@ -24,7 +24,24 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:service interface="org.openengsb.core.config.DomainProvider">
-    <bean class="org.openengsb.domains.notification.implementation.NotifcationDomainProvider" init-method="init" />
+    <bean class="org.openengsb.domains.notification.NotifcationDomainProvider" init-method="init" />
   </osgi:service>
+
+  <osgi:service>
+    <osgi:interfaces>
+      <value>org.openengsb.core.config.Domain</value>
+      <value>org.openengsb.domains.notification.NotificationDomain</value>
+      <value>org.openengsb.domains.notification.internal.NotificationForwardDomain</value>
+    </osgi:interfaces>
+    <osgi:service-properties>
+      <entry key="id" value="domains.notification" />
+      <entry key="openengsb.service.type" value="domain" />
+    </osgi:service-properties>
+    <bean class="org.openengsb.domains.notification.internal.NotificationForwardDomain">
+      <property name="contextService" ref="contextService" />
+    </bean>
+  </osgi:service>
+
+  <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
 
 </beans>

@@ -25,8 +25,8 @@ import javax.mail.MessagingException;
 import org.junit.Test;
 import org.openengsb.domains.notification.email.internal.EmailNotifier;
 import org.openengsb.domains.notification.email.internal.abstraction.JavaxMailAbstraction;
-import org.openengsb.domains.notification.implementation.model.Attachment;
-import org.openengsb.domains.notification.implementation.model.Notification;
+import org.openengsb.domains.notification.model.Attachment;
+import org.openengsb.domains.notification.model.Notification;
 import org.springframework.test.annotation.ExpectedException;
 
 public class EmailNotifierUT {

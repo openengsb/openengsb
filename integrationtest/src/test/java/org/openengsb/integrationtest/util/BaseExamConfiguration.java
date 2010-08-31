@@ -51,6 +51,7 @@ public class BaseExamConfiguration {
     public static void addEntireOpenEngSBPlatform(List<Option> baseConfiguration) {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_WICKET));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_JAXB));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_GUAVA));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONFIG_JETTY));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONFIG_WEBEXTENDER));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_COMMON));

@@ -33,10 +33,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
+import org.openengsb.domains.example.ExampleDomain;
 
 public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
@@ -58,7 +60,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         }
     }
 
-    protected abstract RuleManager getRuleBaseSource();
+    protected abstract RuleManager getRuleBaseSource() throws Exception;
 
     /**
      * create new stateful session from the rulebase and attach a listener to
@@ -72,6 +74,8 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         session = rulebase.newStatefulSession();
         listener = new RuleListener();
         session.addEventListener(listener);
+        ExampleDomain logService = Mockito.mock(ExampleDomain.class);
+        session.setGlobal("log", logService);
     }
 
     /**
@@ -88,7 +92,6 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         assertNotNull(rulebase);
         Package p = rulebase.getPackage("org.openengsb");
         assertNotNull(p);
-        System.err.println(p.getRules().length);
     }
 
     @Test
@@ -103,7 +106,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     public void testAddRule() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test3");
         source.add(id, "when\n" + "  e : Event()\n" + "then\n"
-                + "  System.out.println(\"this rule was added by the addrule-function\");\n");
+                + "  log.doSomething(\"this rule was added by the addrule-function\");\n");
         createSession();
         executeTestSession();
         assertTrue(listener.haveRulesFired("test3"));
@@ -137,7 +140,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     @Test
     public void testAddFunction() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Function, "org.openengsb", "notify");
-        source.add(id, "function void notify(String message) {\n" + "System.out.println(\"notify: \" + message);\n}");
+        source.add(id, "function void notify(String message) {\n" + "System.out.println(\"notify: \" + message);\n}\n");
         Package p = getPackage();
         assertFalse(p.getFunctions().isEmpty());
         assertNotNull(p.getFunctions().get("notify"));
@@ -161,8 +164,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
                 "java.util.Random");
         source.add(testImportId, "ignored");
         RuleBaseElementId testRuleId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
-        source.add(testRuleId, "when\n" + "  e : Event()\n" + "then\n"
-                + "  test(new Random());\n");
+        source.add(testRuleId, "when\n" + "  e : Event()\n" + "then\n" + "  test(new Random());\n");
         createSession();
 
         session.insert(new Event());
@@ -189,7 +191,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     public void testAddGlobal() throws Exception {
         source.add(new RuleBaseElementId(RuleBaseElementType.Global, "bla"), "java.util.Random");
         source.add(new RuleBaseElementId(RuleBaseElementType.Rule, "bla"),
-                "when\n then System.out.println(bla.nextInt());");
+                "when\n then log.doSomething(\"\" + bla.nextInt());");
         createSession();
         session.setGlobal("bla", new Random());
         session.insert(new Event());
@@ -213,13 +215,13 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     @Test(expected = RuleBaseException.class)
     public void testAddExistingRule() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "hello1");
-        source.add(id, "when\nthen\nSystem.out.println(\"bla\");");
+        source.add(id, "when\nthen\nlog.doSomething(\"bla\");");
     }
 
     @Test
     public void testAddOtherPackages() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "hello42");
-        source.add(id, "when\nthen\nSystem.out.println(\"bla\");");
+        source.add(id, "when\nthen\nlog.doSomething(\"bla\");");
         createSession();
         executeTestSession();
         assertTrue(listener.haveRulesFired("at.ac.tuwien.hello42"));
@@ -228,9 +230,9 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     @Test
     public void testRulesInDifferentPackages() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "hello42");
-        source.add(id, "when\nthen\nSystem.out.println(\"bla\");");
+        source.add(id, "when\nthen\nlog.doSomething(\"bla\");");
         id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "hello42");
-        source.add(id, "when\nthen\nSystem.out.println(\"bla\");");
+        source.add(id, "when\nthen\nlog.doSomething(\"bla\");");
         createSession();
         executeTestSession();
         assertTrue(listener.haveRulesFired("org.openengsb.hello42", "at.ac.tuwien.hello42"));
