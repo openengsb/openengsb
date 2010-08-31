@@ -31,6 +31,10 @@ public class OpenEngSBBundles {
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped").artifactId(
                     "javax.xml.jaxb-all"));
 
+    public static final MavenArtifactProvisionOption OPENENGSB_WRAPPED_GUAVA = CoreOptions
+            .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped").artifactId(
+                    "com.google.guava-all"));
+
     public static final MavenArtifactProvisionOption OPENENGSB_CONFIG_JETTY = CoreOptions
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.config").artifactId(
                     "openengsb-config-jetty"));
