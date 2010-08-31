@@ -28,7 +28,6 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -128,8 +127,7 @@ public class TestClientTest {
     public void testServiceListSelect() throws Exception {
         setupAndStartTestClientPage();
 
-        formTester.select("serviceList", 0);
-        tester.executeAjaxEvent("methodCallForm:serviceList", "onchange");
+        setServiceInDropDown(0);
 
         @SuppressWarnings("unchecked")
         DropDownChoice<ServiceId> serviceList = (DropDownChoice<ServiceId>) tester
@@ -142,11 +140,11 @@ public class TestClientTest {
     @Test
     public void testShowMethodListInDropDown() throws Exception {
         setupAndStartTestClientPage();
+        @SuppressWarnings("unchecked")
         DropDownChoice<MethodId> methodList = (DropDownChoice<MethodId>) tester
                 .getComponentFromLastRenderedPage("methodCallForm:methodList");
 
-        formTester.select("serviceList", 0);
-        tester.executeAjaxEvent("methodCallForm:serviceList", "onchange");
+        setServiceInDropDown(0);
 
         List<? extends MethodId> choices = methodList.getChoices();
         List<Method> choiceMethods = new ArrayList<Method>();
@@ -172,10 +170,8 @@ public class TestClientTest {
         RepeatingView argList = (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        formTester.select("serviceList", 0);
-        tester.executeAjaxEvent("methodCallForm:serviceList", "onchange");
-        formTester.select("methodList", 0);
-        tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
+        setServiceInDropDown(0);
+        setMethodInDropDown(0);
 
         Assert.assertEquals(2, argList.size());
         Iterator<? extends Component> iterator = argList.iterator();
@@ -184,16 +180,19 @@ public class TestClientTest {
         }
     }
 
+    private void setMethodInDropDown(int index) {
+        formTester.select("methodList", index);
+        tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
+    }
+
     @Test
     public void testCreateTextFieldsForBean() throws Exception {
         setupAndStartTestClientPage();
         RepeatingView argList = (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        formTester.select("serviceList", 0);
-        tester.executeAjaxEvent("methodCallForm:serviceList", "onchange");
-        formTester.select("methodList", 1);
-        tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
+        setServiceInDropDown(0);
+        setMethodInDropDown(1);
 
         Assert.assertEquals(1, argList.size());
         Assert.assertEquals(BeanArgumentPanel.class, argList.get("arg0").getClass());
@@ -208,10 +207,8 @@ public class TestClientTest {
         RepeatingView argList = (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        formTester.select("serviceList", 0);
-        tester.executeAjaxEvent("methodCallForm:serviceList", "onchange");
-        formTester.select("methodList", 0);
-        tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
+        setServiceInDropDown(0);
+        setMethodInDropDown(0);
 
         for (int i = 0; i < argList.size(); i++) {
             formTester.setValue("argumentListContainer:argumentList:arg" + i + ":value", "test");
@@ -225,10 +222,8 @@ public class TestClientTest {
     public void testPerformMethodCallWithBeanArgument() throws Exception {
         setupAndStartTestClientPage();
 
-        formTester.select("serviceList", 0);
-        tester.executeAjaxEvent("methodCallForm:serviceList", "onchange");
-        formTester.select("methodList", 1);
-        tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
+        setServiceInDropDown(0);
+        setMethodInDropDown(1);
 
         formTester.setValue("argumentListContainer:argumentList:arg0:fields:id:row:field", "42");
         formTester.setValue("argumentListContainer:argumentList:arg0:fields:name:row:field", "test");
@@ -238,21 +233,20 @@ public class TestClientTest {
         Assert.assertNotNull(testService.test);
     }
 
+    private void setServiceInDropDown(int index) {
+        formTester.select("serviceList", index);
+        tester.executeAjaxEvent("methodCallForm:serviceList", "onchange");
+    }
+
     @Test
     public void testSelectMethodTwice() throws Exception {
         setupAndStartTestClientPage();
+        RepeatingView argList = (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
-        @SuppressWarnings("rawtypes")
-        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
-        WebMarkupContainer argListContainer = (WebMarkupContainer) form.get("argumentListContainer");
-
-        RepeatingView argList = (RepeatingView) argListContainer.get("argumentList");
-
-        formTester.select("serviceList", 0);
-        tester.executeAjaxEvent(form.get("serviceList"), "onchange");
-        formTester.select("methodList", 0);
-        tester.executeAjaxEvent(form.get("methodList"), "onchange");
-        tester.executeAjaxEvent(form.get("methodList"), "onchange");
+        setServiceInDropDown(0);
+        setMethodInDropDown(0);
+        tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
 
         Assert.assertEquals(2, argList.size());
     }
