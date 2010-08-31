@@ -33,7 +33,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -75,29 +75,32 @@ public class TestClient extends BasePage {
 
     public TestClient() {
         Form<Object> form = new Form<Object>("methodCallForm");
-        form.add(new AjaxFormSubmitBehavior(form, "onsubmit") {
-            @Override
-            protected void onError(AjaxRequestTarget target) {
-                throw new RuntimeException("submit error");
-            }
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target) {
-                performCall();
-                call.getArguments().clear();
-                call.setMethod(null);
-                call.setService(null);
-
-                populateMethodList();
-                target.addComponent(serviceList);
-                target.addComponent(methodList);
-                target.addComponent(argumentListContainer);
-            }
-        });
+        // form.add(new AjaxFormSubmitBehavior(form, "onsubmit") {
+        // @Override
+        // protected void onError(AjaxRequestTarget target) {
+        // throw new RuntimeException("submit error");
+        // }
+        //
+        // @Override
+        // protected void onSubmit(AjaxRequestTarget target) {
+        // performCall();
+        // call.getArguments().clear();
+        // call.setMethod(null);
+        // call.setService(null);
+        //
+        // populateMethodList();
+        // target.addComponent(serviceList);
+        // target.addComponent(methodList);
+        // target.addComponent(argumentListContainer);
+        // }
+        // });
         serviceList = new LinkTree("serviceList", createModel()) {
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
+                if(!mnode.isLeaf()){
+                    return;
+                }
                 call.setService((ServiceId) mnode.getUserObject());
                 populateMethodList();
                 target.addComponent(methodList);
@@ -140,6 +143,24 @@ public class TestClient extends BasePage {
         argumentListContainer.add(argumentList);
         form.add(argumentListContainer);
 
+        AjaxButton submitButton = new AjaxButton("submitButton") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                performCall();
+                call.getArguments().clear();
+                call.setMethod(null);
+                call.setService(null);
+
+                populateMethodList();
+                serviceList.updateTree();
+                form.renderComponent();
+                target.addComponent(serviceList);
+                target.addComponent(methodList);
+                target.addComponent(argumentListContainer);
+                target.addComponent(form);
+            }
+        };
+        form.add(submitButton);
         add(form);
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
     }
