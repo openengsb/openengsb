@@ -21,8 +21,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.management.Notification;
-
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
@@ -49,6 +47,7 @@ public class WorkflowServiceTest {
 
     public class LogDomainMock implements LogDomain {
         public StringBuffer log = new StringBuffer();
+
         @Override
         public void log(String string) {
             log.append(string);
@@ -69,7 +68,6 @@ public class WorkflowServiceTest {
         setupDomains();
         listener = new RuleListener();
         service.registerRuleListener(listener);
-        Notification n;
     }
 
     private void setupRulemanager() throws RuleBaseException {
