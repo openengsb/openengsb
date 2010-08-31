@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<chapter id="scmConnector" xmlns="http://docbook.org/ns/docbook">
+  <title id="scmConnector.title">SCM Connector</title>
+
+  <para>
+    This document describes a generic interface to the common functionality of SourceCode Management systems (SCM) to be used in EngSB.
+    While there are lots of different SCMs out there, Two centralized (SVN and CVS) and two distributed (Bazaar and Git) were examined and compared to each other.
+    A summary of the SCMs' detailed functionality is given in section comparison.
+  </para>
+  
+  <para>
+    Because we won't need the full functionality of SCM systems (just polling the server for updates) only a subset of methods was selected.
+  </para>
+  
+  <section>
+    <title>Comparison</title>
+    
+    <para>
+      This comparison is based on SVN-commands and compares the other systems' abilities to support or mimic their semantics.
+      '+' means the same command is already built in in the other system.
+      'o' means the semantics exist in the other system but not in the exact same way as in SVN.
+      '-' means the other system does not support the semantics and this can either not be done at all or only with some not practical workaround.
+    </para>
+    
+    <para>
+      However, some things work inherently different in the systems and have an important impact on the implementation:
+      
+      <itemizedlist>
+        <listitem>
+          A commit in centralized systems means, transfer all changes to the remote repository, while, in distributed systems it means, log the changes locally. To reach the same semantics, all implementations of the interface for distributed systems every commit will have to be followed by a push!
+        </listitem>
+        <listitem>
+          While distributed SCMs allow to create a local repository, centralized systems require a remote repository to check out from before being able to edit anything. Thus, in this regard, distributed systems must be treated as centralized ones to establish a common semantic.
+        </listitem>
+        <listitem>
+          Branching and tagging works really different in all the systems. However the interface was designed to support a common subset of the branching/merging functionality.
+        </listitem>
+      </itemizedlist>
+    </para>            
+  
+  
+    <informaltable>
+      <thead>
+        <tr>
+          <td>Feature</td>
+          <td>Alias</td>
+          <td>Meaning</td>
+          <td>SVN</td>
+          <td>CVS</td>
+          <td>Git</td>
+          <td>Bzr</td>
+          <td>Comments</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>add</td>
+          <td> </td>
+          <td>add files to local repo</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>trivial; same for al SCMs</td>
+        </tr>
+        <tr>
+          <td>blame</td>
+          <td>praise, annotate, ann</td>
+          <td>annotates lines with last revision and author who changed it</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>trivial; same for all SCMs</td>
+        </tr>
+        <tr>
+          <td>checkout</td>
+          <td>co</td>
+          <td>checkout working copy from repository</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>trivial; same for all SCMs</td>
+        </tr>
+        <tr>
+          <td>delete</td>
+          <td>del, remove, rm</td>
+          <td>remove file from version control (path or URL)</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>diff</td>
+          <td>di</td>
+          <td>display changes between revisions or paths</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>log</td>
+          <td> </td>
+          <td>show log messages for a set of revisions</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>status</td>
+          <td>stat, st</td>
+          <td>print status of working copy files</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>+</td>
+          <td>bzrs status and info have swapped semantics in comparison so SVN</td>
+        </tr>
+        <tr>
+          <td>commit</td>
+          <td>ci</td>
+          <td>send changes from working copy to repository</td>
+          <td>+</td>
+          <td>+</td>
+          <td>o</td>
+          <td>o</td>
+          <td>Git and Bzr will additionally have to push changes</td>
+        </tr>
+        <tr>
+          <td>branch</td>
+          <td>tag</td>
+          <td>Create new Branch/Tag</td>
+          <td>o</td>
+          <td>o</td>
+          <td>+</td>
+          <td>+</td>
+          <td>done with cp in SVN; done with tag in CVS</td>
+        </tr>
+        <tr>
+          <td>merge</td>
+          <td> </td>
+          <td>apply differences between two sources to a working copy</td>
+          <td>+</td>
+          <td>o</td>
+          <td>+</td>
+          <td>+</td>
+          <td>CVS uses update</td>
+        </tr>
+        <tr>
+          <td>export</td>
+          <td> </td>
+          <td>create an unversioned copy of a tree</td>
+          <td>+</td>
+          <td>+</td>
+          <td>o</td>
+          <td>+</td>
+          <td>done with checkokut-index in Git</td>
+        </tr>
+        <tr>
+          <td>import</td>
+          <td> </td>
+          <td>commit unversioned file/tree into repository</td>
+          <td>+</td>
+          <td>+</td>
+          <td>o</td>
+          <td>+</td>
+          <td>done with ad| commit in Git </td>
+        </tr>
+        <tr>
+          <td>switch</td>
+          <td>sw</td>
+          <td>update working copy to a different URL</td>
+          <td>+</td>
+          <td>o</td>
+          <td>o</td>
+          <td>+</td>
+          <td>CVS uses update; git uses checkout;| </td>
+        </tr>
+        <tr>
+          <td>update</td>
+          <td>up</td>
+          <td>bring changes from repo to WC</td>
+          <td>+</td>
+          <td>+</td>
+          <td>o</td>
+          <td>+</td>
+          <td>bzr will have to use pull</td>
+        </tr>
+        <tr>
+          <td>mergeinfo</td>
+          <td> </td>
+          <td>display information relatied to (potential) merges</td>
+          <td>+</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>list</td>
+          <td>ls</td>
+          <td>list directory entries from repository</td>
+          <td>+</td>
+          <td>+</td>
+          <td>-</td>
+          <td>+</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>info</td>
+          <td> </td>
+          <td>print info about remote/local object</td>
+          <td>+</td>
+          <td>-</td>
+          <td>-</td>
+          <td>+</td>
+          <td>bzrs status and info have swapped semantics in comparison so SVN</td>
+        </tr>
+        <tr>
+          <td>changelist</td>
+          <td> </td>
+          <td>a-/dissociate changelist with file</td>
+          <td>+</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>cleanup</td>
+          <td> </td>
+          <td>clean up working copy ? remove locks, resume operations</td>
+          <td>+</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>lock</td>
+          <td> </td>
+          <td>lock path</td>
+          <td>+</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>move</td>
+          <td>mv, rename, ren</td>
+          <td>move and or rename something (WC or URL)</td>
+          <td>+</td>
+          <td>-</td>
+          <td>+</td>
+          <td>+</td>
+          <td>CVS could be supported by OS-m| CSV rm and CSV add| destroying the history however </td>
+        </tr>
+        <tr>
+          <td>copy</td>
+          <td>cp</td>
+          <td>Copy files (with history) to/from WC/URL</td>
+          <td>+</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>unlock</td>
+          <td> </td>
+          <td>unlock path</td>
+          <td>+</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>pull</td>
+          <td> </td>
+          <td>different meanings in bzr and git</td>
+          <td>-</td>
+          <td>-</td>
+          <td>+</td>
+          <td>+</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>mkdir</td>
+          <td> </td>
+          <td>create version controlled directory (locally or repo)</td>
+          <td>+</td>
+          <td>-</td>
+          <td>-</td>
+          <td>+</td>
+          <td>Could be bypassed with OS-mkdir and SCM-add</td>
+        </tr>
+        <tr>
+          <td>revert</td>
+          <td> </td>
+          <td>undoes most local edits</td>
+          <td>+</td>
+          <td>-</td>
+          <td>+</td>
+          <td>+</td>
+          <td>CVS needs to bypass this with update</td>
+        </tr>
+        <tr>
+          <td>cat</td>
+          <td>cl, cat-file</td>
+          <td>output content of files/URLs at revision</td>
+          <td>+</td>
+          <td>-</td>
+          <td>+</td>
+          <td>+</td>
+          <td>could be used only for local files (not URIs) and bypassed by directly reading the file from within java</td>
+        </tr>
+        <tr>
+          <td>resolve</td>
+          <td> </td>
+          <td>resolves conflicts</td>
+          <td>+</td>
+          <td>-</td>
+          <td>-</td>
+          <td>+</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>resolved</td>
+          <td> </td>
+          <td>marks conflicts as resolved</td>
+          <td>+</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>propdel</td>
+          <td>pdel, pd</td>
+          <td>property handling</td>
+          <td>+</td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td>very SVN and OS specific</td>
+        </tr>
+        <tr>
+          <td>propedit</td>
+          <td>pedit, pe</td>
+          <td>property handling</td>
+          <td>+</td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td>very SVN and OS specific</td>
+        </tr>
+        <tr>
+          <td>propget</td>
+          <td>pget, pg</td>
+          <td>property handling</td>
+          <td>+</td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td>very SVN and OS specific</td>
+        </tr>
+        <tr>
+          <td>proplist</td>
+          <td>plist, pl</td>
+          <td>property handling</td>
+          <td>+</td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td>very SVN and OS specific</td>
+        </tr>
+        <tr>
+          <td>propset</td>
+          <td>pset, ps</td>
+          <td>property handling</td>
+          <td>+</td>
+          <td> </td>
+          <td> </td>
+          <td> </td>
+          <td>very SVN and OS specific</td>
+        </tr>
+      </tbody>
+    </informaltable>
+  </section>
+  
+  <section>
+    <title>Used Methods</title>
+    
+    <para>
+      These method-stubs resemble the interface derived from the needed methods of section comparison. Some explanations and demands on the implementation:
+      
+      <itemizedlist>
+        <listitem>
+          Every method may throw a generic ScmException for simple and unexpected errors such as missing permissions, missing network-connection but also to indicate requests that are not possible to fulfill in a certain implementation of an SCM.
+        </listitem>
+        <listitem>
+          Revisions are modeled as Strings instead of ints, since their format can vary a lot, depending on the actual SCM.
+        </listitem>
+        <listitem>
+          "HEAD" should always be treated as the most recent revision, regardless whether the SCM supports it natively or not.
+        </listitem>
+        <listitem>
+          Authentication data needs to be supplied via the SU configuration.
+        </listitem>
+        <listitem>
+          The path to the working copy's root on the file-system needs to be supplied via the SU configuration.
+        </listitem>
+        <listitem>
+          Paths should be treated cautiously. They must not exit the working copy (via '..' or '/not/the/working/copy') and should always be treated as relative to the working copy's root.
+        </listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>
+      Some methods, which are expected to take some time to finish are also modeled as asynchronous calls. This is obviously done to
+      improve performance and to not force the caller to wait an arbitrary amount of time, doing nothing.
+    </para>
+    
+    <programlisting><![CDATA[  
+  Checks out the remote repository's content into the folder supplied in the SU-configuration
+  public String[] checkout (URI repository, String author) throws ScmException;
+
+  Switches to another Branch. 
+  public void switchBranch (String branchName) throws BranchNotFoundException, ScmException;
+
+  Performs an update on the working-copy's root, i.e. fetches changes from the remote repository and applies them to the working copy.
+  public MergeResult update() throws ScmException;]]></programlisting>
+
+  <section>
+    <title>Events</title>
+    
+    <section>
+      <title>ScmDirectoryEvent</title>
+      
+      <para>
+        Super-Event for all SCM events. Will create a SCM domain event and contains setter/getter for the directory property.
+      </para>
+    </section>
+    
+    <section>
+      <title>ScmBranchCreatedEvent</title>
+      
+      <para>
+        Will be triggered whenever the poller finds a new branch on the SCM server.
+        Contains the full-path of the new branch.
+      </para>
+    </section>
+    
+    <section>
+      <title>ScmBranchDeletedEvent</title>
+      
+      <para>
+        Will be triggerd whenever the poller finds a deleted branch on the SCM server.
+        Contains the full-path of the deleted branch.
+      </para>
+    </section>
+    
+    <section>
+      <title>ScmTagCreatedEvent</title>
+      
+      <para>
+        Will be triggerd whenever the poller finds a new tag on the SCM server.
+        Contains the full-path of the new tag.
+      </para>
+    </section>
+    
+    <section>
+      <title>ScmTagDeletedEvent</title>
+      
+      <para>
+        Will be triggerd whenever the poller finds a deleted tag on the SCM server.
+        Contains the full-path of the deleted tag.
+      </para>
+    </section>
+  </section>
+</section>
+</chapter>
+
+

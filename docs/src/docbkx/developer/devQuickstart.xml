@@ -254,7 +254,7 @@
   <literallayout><command>git config</command> <option>--global</option> github.user <replaceable>username</replaceable>
 <command>git config</command> <option>--global</option> github.token <replaceable>token</replaceable></literallayout>
 
- If you don't already have an SSH key you can create one by executing <userinput>ssh-keygen</userinput>
+ If you don't already have an SSH key you can create one by executing <command>ssh-keygen</command>
 
   Simply answer all questions from the application with "enter" without enter any values. Afterwards the content of the
   <filename>id_rsa.pub</filename> file from your <filename>~/.ssh/</filename> directory

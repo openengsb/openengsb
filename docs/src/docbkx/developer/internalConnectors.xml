@@ -36,10 +36,9 @@
     <title>Prerequisites</title>
     <para>
       In case it isn't known what a tool domain is and how it defines the interface for
-      the tool connector the chapter "OpenEngSB Tool Domains" is a good starting point.
+      the tool connector then <xref linkend="toolDomains" /> is a good starting point.
       If there's already a matching domain for this tool it is strongly recommended to use it.
-      But if this tool requires a new domain it has to be created. This is also described in the chapter
-      "OpenEngSB Tool Domains".
+      But if this tool requires a new domain it has to be created. This is also described in <xref linkend="toolDomains" />.
     </para>
   </section>
 
@@ -52,121 +51,179 @@
   </section>
 
   <section>
-    <title>Description</title>
+    <title>Creating a New Connector</title>
     <para>
-      The following step by step description shows how to create a tool connector.
-    </para>
-    <section>
-      <title>Project Setup</title>
-      <para>
-        The first step is to create new maven projects (Service Engine and Service Unit) for your tool.
-        These projects have to be located at
-        domains/<emphasis>domain</emphasis>/<emphasis>toolname</emphasis>/service-engine/ and
-        domains/<emphasis>domain</emphasis>/<emphasis>toolname</emphasis>/service-unit/.
-        An easy way to get started is to copy an existing connector. The most simple connector is the email
-        connector of the notification domain. You should use it.
-      </para>
-    </section>
-
-    <section>
-      <title>Setting up the Service Engine</title>
-  
-      <para>
-        Follow these simple steps:
-  
-        <itemizedlist>
-          <listitem>
-            Replace EmailNotifier with your own tool connector implementation of the domain.
-            This is a POJO, so there's nothing special about it.
-          </listitem>
-          <listitem>
-            Rename EmailEndpoint to <emphasis>Tool</emphasis>Endpoint.
-            Change the xbean definitions to match your project.
-            Use your domain as the generic type instead of <emphasis>NotificationDomain</emphasis>.
-            In the getImplementation method you have to return an instance of the class which implements
-            the domain interface for your tool.
-          </listitem>
-          <listitem>
-            Rename EmailComponent to <emphasis>Tool</emphasis>Component.
-            Open this class and change the xbean definitions to match your project.
-            Change every occurence of EmailEndpoint to <emphasis>Tool</emphasis>Endpoint.
-          </listitem>
-          <listitem>Modify pom.xml: Change artifactId/name/description to match your project. In the maven-jbi-plugin
-            change the component name to your component class. Also change the namespace in the maven-xbean-plugin to your
-            desired namespace (you can make something up). Finally add or remove dependencies according to your needs.
-          </listitem>
-        </itemizedlist>
-      </para>
-    </section>
-  
-    <section>
-      <title>Setting up the Service Unit</title>
-  
-      <para>
-        Follow these simple steps:
+      The following command is used to automatically create the files needed for a new connector. 
+      <literallayout><command>mvn</command> archetype:generate -DarchetypeCatalog="http://maven.openengsb.org/archetypes/"</literallayout>
       
+      This command can be executed in any directory. It will create subdirectories with the new projects in
+      the current directory.
+      
+      This command will show a list similar to this:
+      
+      <literallayout><computeroutput>Choose archetype:
+1: http://maven.openengsb.org/archetypes/ -> connector-archetype
+2: http://maven.openengsb.org/archetypes/ -> domain-archetype
+Choose a number:  (1/2):</computeroutput></literallayout>
+
+      Type the number for the <emphasis>connector-archetype</emphasis>. Maven will ask whether the default values for the
+      properties shall be used. Type <userinput>n</userinput> to overwrite the default values.
+      The following properties are needed to generate a connector:
+
+      <table>
+        <caption>Properties for connector-archetype</caption>
+
+        <colgroup>
+          <col width="100" />
+          <col width="320" />
+        </colgroup>
+
+        <thead>
+          <tr>
+            <td>Property Name</td>
+            <td>Description</td>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>artifactId</td>
+            <td>The artifactId of the generated wrapper project for the service-engine and the service-unit.</td>
+          </tr>
+          <tr>
+            <td>groupId</td>
+            <td>The groupId of the generated wrapper project. Should be org.openengsb.</td>
+          </tr>
+          <tr>
+            <td>version</td>
+            <td>The version of the generated wrapper project.</td>
+          </tr>
+          <tr>
+            <td>se-artifactId</td>
+            <td>The artifactId of the service-engine.</td>
+          </tr>
+          <tr>
+            <td>su-artifactId</td>
+            <td>The artifactId of the service-unit.</td>
+          </tr>
+          <tr>
+            <td>description</td>
+            <td>The description of the tool connector.</td>
+          </tr>
+          <tr>
+            <td>namespace</td>
+            <td>The namespace of the tool connector.</td>
+          </tr>
+          <tr>
+            <td>package</td>
+            <td>The package for the source code of the service-engine.</td>
+          </tr>
+          <tr>
+            <td>connector-name</td>
+            <td>The connector name. This is used as prefix for Java classes so it should start with an upper-case letter.</td>
+          </tr>
+          <tr>
+            <td>domain-package</td>
+            <td>The package where the domain interface can be found which is implemented by this tool connector.</td>
+          </tr>
+          <tr>
+            <td>domain-name</td>
+            <td>The interface name of the domain interface that is implemented by this tool connector.</td>
+          </tr>
+          <tr>
+            <td>urn</td>
+            <td>The URN that will be used to address this tool connector.</td>
+          </tr>
+        </tbody>
+      </table>
+      
+    </para>
+    <para>
+      If all these properties have been set Maven will generate the service-engine and the service-unit for the tool connector.
+    </para>
+
+    <section>
+      <title>Structure of the Connector Service-Engine</title>
+      <para>
+        The service-engine contains a stub of the connector endpoint and a simple implementation of the connector component as well as an empty contextProperties descriptor.
+        The <filename>pom.xml</filename> file contains the necessary setup and all dependencies needed by an OpenEngSB tool connector service-engine. 
+      </para>
+      <para>
+        <programlisting><![CDATA[service-engine
+       |
+       ---------------
+       |             |
+    pom.xml         src
+                     |
+                    main
+                     |
+             -----------------
+             |               |
+            java          resources
+             |               |
+         <package>   contextProperties.xml
+             |
+            ---------------------------------------------
+            |                                           |
+  <connector-name>Endpoint.java            <connector-name>Component.java]]></programlisting>
+      </para>
+    </section>
+  
+    <section>
+      <title>Structure of the Connector Service-Unit</title>
+      <para>
+        The service-unit contains a fully configured xbean.xml file that provides the setup for an OpenEngSB tool connector service-unit.
+        The <filename>pom.xml</filename> file contains the necessary dependency to the service-engine. 
+      </para>
+      <para>
+        <programlisting>service-unit
+       |
+       ---------------
+       |             |
+    pom.xml         src
+                     |
+                    main
+                     |
+                 resources
+                     |
+                 xbean.xml</programlisting>
+      </para>
+    </section>
+    
+    <section>
+      <title>Integrating the Connector</title>
+      <para>
+        To integrate the newly created tool connector into the OpenEngSB the following steps have to be performed.
         <itemizedlist>
-          <listitem>Modify xbean.xml:
-          Change xmlns:email="http://www.openengsb.org/connector/email/1.0" to match the uri in the pom.xml of the
-          Service Engine, e.g.: xmlns:<emphasis>tool</emphasis>="http://www.openengsb.org/connector/<emphasis>tool</emphasis>/1.0".
-          Change xmlns:eml="urn:openengsb:email" to xmlns:<emphasis>t</emphasis>="urn:openengsb:<emphasis>tool</emphasis>".
-          The namespace of the urn should be descriptive but cannot be the same as for the uri.
-          Change
-          <programlisting language="xml"><![CDATA[<email:emailEndpoint endpoint="emailEndpoint" service="eml:emailService" />]]></programlisting>
-          to
-          <programlisting language="xml"><![CDATA[<tool:toolEndpoint endpoint="toolEndpoint" service="t:toolService" />]]></programlisting>
-          
-          The toolEndpoint has to match the xbean definition of your tool endpoint.
-          The toolService doesn't match anything, just append <emphasis>Service</emphasis> to
-          the name of your tool.
-          </listitem>
-          <listitem>Modify pom.xml: Change the componentName in the properties section to the artifactId of your
-          Service Engine. Change artifactId/name/description to match your project. Change the dependency to match your
-          Service Engine.
-          </listitem>
+          <listitem>The service-engine and the service-unit have to be copied to the correct folder, which is starting from the OpenEngSB
+           root folder <filename>/domains/domain-name/connector-name</filename> where domain-name and connector-name
+           should be replaced by the respective names for the current tool connector.</listitem>
+          <listitem>Parent <filename>pom.xml</filename>: Add the service engine and the service unit in
+            the modules section and add the dependencies to the service-engine and the service-unit
+            to the dependencyManagement section.</listitem>
+          <listitem>Service-engine <filename>pom.xml</filename>: Correct the link to the parent <filename>pom.xml</filename>.
+            (groupId, artifactId, version and relativePath).</listitem>
+          <listitem>Service-unit <filename>pom.xml</filename>: Correct the link to the parent <filename>pom.xml</filename>.
+            (groupId, artifactId, version and relativePath).</listitem>
+          <listitem>Packaging: Add the dependency to the service-unit to the package-all service assembly's
+            <filename>pom.xml</filename>. </listitem>
         </itemizedlist>
       </para>
     </section>
-
+    
     <section>
-      <title>Modifying the parent pom.xml</title>
+      <title>Example: Produce one Simple Connector</title>
+       TBW (use new architecture)
+    </section>
+    
+    <section>
+      <title>Closing Remarks</title>
       <para>
-        Open the pom.xml in the root directory of OpenEngSB. Add your Service Engine and your Service Unit
-        in the modules section. Also add dependencies to your SE and your SU.
+        TBW:  what to read next, what to take care of additionally.
       </para>
     </section>
+      
 
-    <section>
-      <title>Adding the service-unit to the service assembly</title>
-      <para>
-        Finally to get your new connector deployed in ServiceMix it is necessary to add a dependency to the newly
-        created service unit to the pom.xml of the packaging project it shall be added to. In most cases this will
-        be the openengsb-package-all project.
-      </para>
-    </section>
-  </section>
-
-  <section>
-    <title>Common Errors</title>
-    <para>
-      If you have problems these points could help:
-      <itemizedlist>
-        <listitem>Check whether you got the xbean annotations right.</listitem>
-        <listitem>Check whether you have the xbean.xml right and that all values match the values in the xbean annotations.</listitem>
-        <listitem>Check that the pom.xml of the SU the property componentName is not be missing.</listitem>
-        <listitem>Check that the new components are correctly added to the root pom.xml</listitem>
-        <listitem>Check that the service-unit is included in the service assembly.</listitem>
-      </itemizedlist>
-    </para>
-  </section>
-
-  <section>
-    <title>Testing</title>
-    <para>
-      Now it's time to see if your connector works. Execute scripts/quickrun.sh and use jconsole to check
-      whether your SE/SU are correctly deployed. If this worked you can use the testclient (scripts/testclient.sh)
-      to send messages to your tool connector.
-    </para>
   </section>
 
 </chapter>

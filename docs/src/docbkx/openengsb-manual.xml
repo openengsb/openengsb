@@ -71,7 +71,6 @@
     </partintro>
     <xi:include href="developer/architecture.xml" />
     <xi:include href="developer/devQuickstart.xml" />
-    <xi:include href="developer/connectorArchetype.xml"/>
     <xi:include href="developer/externalConnectors.xml" />
     <xi:include href="developer/internalConnectors.xml" />
     <xi:include href="developer/features.xml"/>
@@ -92,10 +91,44 @@
       </para>
     </partintro>
     <xi:include href="domains/domains.xml"/>
+    
+    <xi:include href="domains/connector/build/build.xml"/>
+    <xi:include href="domains/connector/build/buildDomain.xml"/>
+    <xi:include href="domains/connector/build/mvn.xml"/>
+        
+    <xi:include href="domains/connector/issues/issues.xml"/>
+    <xi:include href="domains/connector/issues/trac.xml"/>
+    
+    <xi:include href="domains/connector/notification/notification.xml"/>
+    <xi:include href="domains/connector/notification/email.xml"/>
+    <xi:include href="domains/connector/notification/facebook.xml"/>
+    <xi:include href="domains/connector/notification/twitter.xml"/>
+    <xi:include href="domains/connector/notification/xmpp.xml"/>
+
+    <xi:include href="domains/connector/repository/repository.xml"/>
+    <xi:include href="domains/connector/repository/deployDomain.xml"/>
+    <xi:include href="domains/connector/repository/mvn.xml"/>
+    <xi:include href="domains/connector/repository/staging.xml"/>
+
+    <xi:include href="domains/connector/scm/scm.xml"/>
+    <xi:include href="domains/connector/scm/scmConnector.xml"/>
+    <xi:include href="domains/connector/scm/svnConnector.xml"/>
+
+    <xi:include href="domains/connector/test/test.xml"/>
+    <xi:include href="domains/connector/test/testDomain.xml"/>
+    <xi:include href="domains/connector/test/mvn.xml"/>
+
+    <xi:include href="domains/proposals.xml"/>
+    <xi:include href="domains/proposals/cmsDomain.xml"/>
+    <xi:include href="domains/proposals/edbInterface.xml"/>
+    <xi:include href="domains/proposals/issueDomain.xml"/>
+    <xi:include href="domains/proposals/pimDomain.xml"/>
+    <xi:include href="domains/proposals/scmDomain.xml"/>
   </part>
 
   <part id="appendix">
     <title>Appendix</title>
+    <xi:include href="appendix/documentation.xml" />
     <xi:include href="appendix/javastyle.xml" />
     <xi:include href="appendix/glossary.xml" />
     <xi:include href="appendix/license.xml" />
