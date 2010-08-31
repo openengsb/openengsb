@@ -17,8 +17,6 @@
  */
 package org.openengsb.integrationtest.exam;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -52,12 +50,6 @@ public class WorkflowIT extends AbstractExamTestHelper {
         BaseExamConfiguration.addEntireOpenEngSBPlatform(baseConfiguration);
         Option[] options = BaseExamConfiguration.convertOptionListToArray(baseConfiguration);
         return CoreOptions.options(options);
-    }
-
-    @Test
-    public void testThrowWorkflowEvent() throws Exception {
-        assertNotNull(bundleContext);
-        assertNotNull(retrieveService(bundleContext, WorkflowService.class));
     }
 
     @Test
