@@ -17,9 +17,10 @@
  */
 package org.openengsb.integrationtest.exam;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.workflow.WorkflowService;
@@ -48,9 +49,7 @@ public class WorkflowIT extends AbstractExamTestHelper {
 
     @Test
     public void testThrowWorkflowEvent() throws Exception {
-        WorkflowService service = (WorkflowService) bundleContext.getService(bundleContext.getAllServiceReferences(
-                WorkflowService.class.getName(), null)[0]);
-        Assert.assertNotNull(service);
+        assertNotNull(bundleContext);
+        assertNotNull(retrieveService(bundleContext, WorkflowService.class));
     }
-
 }
