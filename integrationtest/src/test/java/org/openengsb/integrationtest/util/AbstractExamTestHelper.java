@@ -31,7 +31,7 @@ public abstract class AbstractExamTestHelper {
         ServiceTracker tracker = new ServiceTracker(bundleContext, serviceClass.getName(), null);
         tracker.open();
         @SuppressWarnings("unchecked")
-        ServiceClass service = (ServiceClass) tracker.waitForService(5000);
+        ServiceClass service = (ServiceClass) tracker.waitForService(10000);
         tracker.close();
         Assert.assertNotNull(service);
         return service;
