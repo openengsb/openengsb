@@ -67,8 +67,6 @@ public class SendEventPage extends BasePage {
         init(classes);
     }
 
-
-    @SuppressWarnings("serial")
     public SendEventPage(List<Class<? extends Event>> classes) {
         init(classes);
     }
@@ -96,7 +94,6 @@ public class SendEventPage extends BasePage {
     private EditorPanel createEditorPanelForClass(Class<?> theClass) {
         Map<String, String> defaults = new HashMap<String, String>();
         List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(theClass);
-        @SuppressWarnings("serial")
         EditorPanel editor = new EditorPanel("editor", attributes, defaults) {
             @Override
             public void onSubmit() {

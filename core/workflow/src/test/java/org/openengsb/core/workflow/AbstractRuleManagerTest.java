@@ -23,6 +23,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import org.drools.RuleBase;
@@ -35,10 +38,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.config.Domain;
 import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.domains.example.ExampleDomain;
+import org.openengsb.domains.notification.NotificationDomain;
 
 public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
@@ -62,6 +67,15 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
     protected abstract RuleManager getRuleBaseSource() throws Exception;
 
+    private Map<String, Domain> createDomainMocks() {
+        Map<String, Domain> domains = new HashMap<String, Domain>();
+        ExampleDomain logService = Mockito.mock(ExampleDomain.class);
+        domains.put("log", logService);
+        NotificationDomain notification = Mockito.mock(NotificationDomain.class);
+        domains.put("notification", notification);
+        return domains;
+    }
+
     /**
      * create new stateful session from the rulebase and attach a listener to
      * validate testresults
@@ -74,8 +88,9 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         session = rulebase.newStatefulSession();
         listener = new RuleListener();
         session.addEventListener(listener);
-        ExampleDomain logService = Mockito.mock(ExampleDomain.class);
-        session.setGlobal("log", logService);
+        for(Entry<String,Domain> entry : createDomainMocks().entrySet()){
+            session.setGlobal(entry.getKey(), entry.getValue());
+        }
     }
 
     /**

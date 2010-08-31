@@ -36,7 +36,6 @@ public class Index extends BasePage {
     @SpringBean
     private DomainService domainService;
 
-    @SuppressWarnings("serial")
     public Index() {
         add(new ListView<DomainProvider>("domains", domainService.domains()) {
 

@@ -3,6 +3,7 @@ package org.openengsb.ui.web.global.header;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
@@ -14,7 +15,6 @@ import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.global.footer.ImprintPage;
 import org.openengsb.ui.web.service.DomainService;
-
 
 public class HeaderTemplateTest {
     public interface TestInterface {
@@ -64,7 +64,7 @@ public class HeaderTemplateTest {
         assertTrue(testNavigation(ImprintPage.class, Index.class.getSimpleName()));
     }
 
-    private boolean testNavigation(Class page, String expectedIndexName) {
+    private boolean testNavigation(Class<? extends WebPage> page, String expectedIndexName) {
         tester.startPage(page);
         return HeaderTemplate.getActiveIndex().equals(expectedIndexName);
     }

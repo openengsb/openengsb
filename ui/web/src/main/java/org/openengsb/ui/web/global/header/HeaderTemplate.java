@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -35,16 +36,15 @@ import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
 
-	private final ArrayList<HeaderMenuItem> menuItems = new ArrayList<HeaderMenuItem>();
-	private final ArrayList<String> avialableItems = new ArrayList<String>();
+    private final ArrayList<HeaderMenuItem> menuItems = new ArrayList<HeaderMenuItem>();
+    private final ArrayList<String> avialableItems = new ArrayList<String>();
 
-	private static String menuIndex;
+    private static String menuIndex;
 
+    public HeaderTemplate(String id, String menuIndex) {
+        super(id);
 
-	public HeaderTemplate(String id, String menuIndex) {
-		super(id);
-
-		HeaderTemplate.menuIndex = menuIndex;
+        HeaderTemplate.menuIndex = menuIndex;
         this.add(new BookmarkablePageLink<Index>("indexLogo1", Index.class));
         this.add(new BookmarkablePageLink<Index>("indexLogo2", Index.class));
 
@@ -53,79 +53,78 @@ public class HeaderTemplate extends Panel {
         this.addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
         this.addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
 
+        if (HeaderTemplate.getActiveIndex() == null || !this.avialableItems.contains(HeaderTemplate.getActiveIndex())) {
+            // update menu item to index, because page index is not found!
+            HeaderTemplate.menuIndex = "Index";
+        }
 
-		if (HeaderTemplate.getActiveIndex() == null || !this.avialableItems.contains(HeaderTemplate.getActiveIndex())) {
-			// update menu item to index, because page index is not found!
-			HeaderTemplate.menuIndex = "Index";
-		}
+        // generate main navigation
+        ListView<HeaderMenuItem> headerMenuItems = new ListView<HeaderMenuItem>("headerMenuItems", this.menuItems) {
+            private static final long serialVersionUID = -2458903054129857522L;
 
-		// generate main navigation
-		ListView<HeaderMenuItem> headerMenuItems = new ListView<HeaderMenuItem>("headerMenuItems", this.menuItems) {
-			private static final long serialVersionUID = -2458903054129857522L;
+            @Override
+            protected void populateItem(ListItem<HeaderMenuItem> item) {
+                HeaderMenuItem menuItem = item.getModelObject();
+                item.add(menuItem.getLink());
 
-			@Override
-            protected void populateItem(ListItem item) {
-				HeaderMenuItem menuItem = (HeaderMenuItem) item.getModelObject();
-				item.add(menuItem.getLink());
+                // set menu item to active
+                if (menuItem.getItemName().equals(HeaderTemplate.getActiveIndex())) {
+                    item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel<String>() {
+                        private static final long serialVersionUID = 1L;
 
-				// set menu item to active
-				if (menuItem.getItemName().equals(HeaderTemplate.getActiveIndex())) {
-					item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
-						private static final long serialVersionUID = 1L;
+                        @Override
+                        public String getObject() {
+                            return "active";
+                        }
+                    }));
+                }
+            }
+        };
 
-						@Override
-						public String getObject() {
-							return "active";
-						}
-					}));
-				}
-			}
-		};
+        this.add(headerMenuItems);
+    }
 
-		this.add(headerMenuItems);
-	}
+    /**
+     * @returns the name of the current active menu item
+     */
+    public static String getActiveIndex() {
+        return HeaderTemplate.menuIndex;
+    }
 
-	/**
-	 * @returns the name of the current active menu item
-	 */
-	public static String getActiveIndex() {
-		return HeaderTemplate.menuIndex;
-	}
-
-	/**
-	 * adds new item to main header navigation
-	 *
-	 * @param index - the name of the index  @see HeaderMenuItem.index
-	 * @param linkClass - class name to be linked to
+    /**
+     * adds new item to main header navigation
+     * 
+     * @param index - the name of the index @see HeaderMenuItem.index
+     * @param linkClass - class name to be linked to
      * @param langKey - language key, the text which should be displayed
-	 */
-	@SuppressWarnings("unchecked")
-	public void addHeaderMenuItem(String index, Class linkClass, String langKey) {
-		this.menuItems.add(new HeaderMenuItem(index, new BookmarkablePageLabelLink("link", linkClass,  this
-				.getLocalizer().getString(langKey, this))));
-		this.avialableItems.add(index);
-	}
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey) {
+        this.menuItems.add(new HeaderMenuItem(index, new BookmarkablePageLabelLink("link", linkClass, this
+                .getLocalizer().getString(langKey, this))));
+        this.avialableItems.add(index);
+    }
 
-	/**
-	 * single header menu item
-	 *
-	 */
-	private class HeaderMenuItem implements Serializable {
+    /**
+     * single header menu item
+     * 
+     */
+    private class HeaderMenuItem implements Serializable {
 
-		private final String index;
-		private final BookmarkablePageLabelLink link;
+        private final String index;
+        private final BookmarkablePageLabelLink<? extends WebPage> link;
 
-		public HeaderMenuItem(String index, BookmarkablePageLabelLink link) {
-			this.index = index;
-			this.link = link;
-		}
+        public HeaderMenuItem(String index, BookmarkablePageLabelLink<? extends WebPage> link) {
+            this.index = index;
+            this.link = link;
+        }
 
-		public String getItemName() {
-			return this.index;
-		}
+        public String getItemName() {
+            return this.index;
+        }
 
-		public BookmarkablePageLabelLink getLink() {
-			return this.link;
-		}
-	}
+        public BookmarkablePageLabelLink<? extends WebPage> getLink() {
+            return this.link;
+        }
+    }
 }

@@ -25,19 +25,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.tree.BaseTree;
+import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.config.DomainProvider;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
 import org.openengsb.ui.web.model.MethodCall;
@@ -62,42 +69,60 @@ public class TestClient extends BasePage {
 
     private final WebMarkupContainer argumentListContainer;
 
-    private final DropDownChoice<ServiceId> serviceList;
+    // private final DropDownChoice<ServiceId> serviceList;
 
-    @SuppressWarnings("serial")
+    private final LinkTree serviceList;
+
     public TestClient() {
         Form<Object> form = new Form<Object>("methodCallForm");
-        form.add(new AjaxFormSubmitBehavior(form, "onsubmit") {
+        // form.add(new AjaxFormSubmitBehavior(form, "onsubmit") {
+        // @Override
+        // protected void onError(AjaxRequestTarget target) {
+        // throw new RuntimeException("submit error");
+        // }
+        //
+        // @Override
+        // protected void onSubmit(AjaxRequestTarget target) {
+        // performCall();
+        // call.getArguments().clear();
+        // call.setMethod(null);
+        // call.setService(null);
+        //
+        // populateMethodList();
+        // target.addComponent(serviceList);
+        // target.addComponent(methodList);
+        // target.addComponent(argumentListContainer);
+        // }
+        // });
+        serviceList = new LinkTree("serviceList", createModel()) {
             @Override
-            protected void onError(AjaxRequestTarget target) {
-                throw new RuntimeException("submit error");
-            }
-
-            @Override
-            protected void onSubmit(AjaxRequestTarget target) {
-                performCall();
-                call.getArguments().clear();
-                call.setMethod(null);
-                call.setService(null);
-
+            protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
+                DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
+                if(!mnode.isLeaf()){
+                    return;
+                }
+                call.setService((ServiceId) mnode.getUserObject());
                 populateMethodList();
-                target.addComponent(serviceList);
                 target.addComponent(methodList);
-                target.addComponent(argumentListContainer);
-            }
-        });
-        serviceList = new DropDownChoice<ServiceId>("serviceList", new PropertyModel<ServiceId>(call, "service"),
-                getServiceInstances());
+                log.info(node);
+                log.info(node.getClass());
+            };
+        };
+
+        // serviceList = new DropDownChoice<ServiceId>("serviceList", new
+        // PropertyModel<ServiceId>(call, "service"),
+        // getServiceInstances());
         serviceList.setOutputMarkupId(true);
-        serviceList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-            @Override
-            protected void onUpdate(AjaxRequestTarget target) {
-                log.info("onchange triggered");
-                call.setMethod(null);
-                populateMethodList();
-                target.addComponent(methodList);
-            }
-        });
+
+        // serviceList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        // @Override
+        // protected void onUpdate(AjaxRequestTarget target) {
+        // log.info("onchange triggered");
+        // call.setMethod(null);
+        // populateMethodList();
+        // target.addComponent(methodList);
+        // }
+        // });
         form.add(serviceList);
         methodList = new DropDownChoice<MethodId>("methodList");
         methodList.setModel(new PropertyModel<MethodId>(call, "method"));
@@ -118,8 +143,61 @@ public class TestClient extends BasePage {
         argumentListContainer.add(argumentList);
         form.add(argumentListContainer);
 
+        AjaxButton submitButton = new AjaxButton("submitButton") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                performCall();
+                call.getArguments().clear();
+                call.setMethod(null);
+                call.setService(null);
+
+                populateMethodList();
+                serviceList.updateTree();
+                form.renderComponent();
+                target.addComponent(serviceList);
+                target.addComponent(methodList);
+                target.addComponent(argumentListContainer);
+                target.addComponent(form);
+            }
+        };
+        form.add(submitButton);
         add(form);
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
+    }
+
+    private TreeModel createModel() {
+        DefaultMutableTreeNode node = new DefaultMutableTreeNode("Select Instance");
+        TreeModel model = new DefaultTreeModel(node);
+        log.info("adding domains");
+        for (DomainProvider provider : services.domains()) {
+            log.info("adding " + provider.getName());
+            addDomainProvider(provider, node);
+        }
+        log.info("done adding domains;");
+        return model;
+    }
+
+    private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
+        DefaultMutableTreeNode providerNode = new DefaultMutableTreeNode(provider.getName());
+        node.add(providerNode);
+        // for (ServiceManager manager :
+        // services.serviceManagersForDomain(provider.getDomainInterface())) {
+        // log.info("found servicemanager");
+        // DefaultMutableTreeNode serviceManagerNode = new
+        // DefaultMutableTreeNode(manager.getDescriptor().getName());
+        // providerNode.add(serviceManagerNode);
+        for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider
+                .getDomainInterface())) {
+            String id = (String) serviceReference.getProperty("id");
+            if (id != null) {
+                ServiceId serviceId = new ServiceId();
+                serviceId.setServiceId(id);
+                serviceId.setServiceClass(services.getService(serviceReference).getClass().getName());
+                DefaultMutableTreeNode referenceNode = new DefaultMutableTreeNode(serviceId, false);
+                providerNode.add(referenceNode);
+            }
+        }
+        // }
     }
 
     protected void performCall() {
@@ -166,20 +244,6 @@ public class TestClient extends BasePage {
             i++;
         }
         call.setArguments(arguments);
-    }
-
-    private List<ServiceId> getServiceInstances() {
-        List<ServiceId> result = new ArrayList<ServiceId>();
-        for (ServiceReference s : services.getManagedServiceInstances()) {
-            String id = (String) s.getProperty("id");
-            if (id != null) {
-                ServiceId serviceId = new ServiceId();
-                serviceId.setServiceId(id);
-                serviceId.setServiceClass(services.getService(s).getClass().getName());
-                result.add(serviceId);
-            }
-        }
-        return result;
     }
 
     private void populateMethodList() {

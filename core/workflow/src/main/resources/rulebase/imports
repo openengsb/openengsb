@@ -4,3 +4,6 @@ java.util.Map
 java.util.HashMap
 org.openengsb.core.common.Event
 org.openengsb.domains.example.ExampleDomain
+org.openengsb.domains.notification.NotificationDomain
+org.openengsb.domains.notification.model.Notification
+org.openengsb.domains.notification.model.Attachment

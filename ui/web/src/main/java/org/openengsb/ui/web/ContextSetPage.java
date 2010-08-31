@@ -60,11 +60,10 @@ public class ContextSetPage extends BasePage {
                 getTree().updateTree(target);
             }
         });
-        IColumn columns[] = new IColumn[]{
-            new PropertyTreeColumn(new ColumnLocation(Alignment.LEFT, 18, Unit.EM),
-            "Tree Column", "userObject.niceKey"),
-            new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT, 12, Unit.EM), "value",
-            "userObject.value"),};
+        IColumn columns[] = new IColumn[] {
+                new PropertyTreeColumn(new ColumnLocation(Alignment.LEFT, 18, Unit.EM), "Tree Column",
+                        "userObject.niceKey"),
+                new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT, 12, Unit.EM), "value", "userObject.value"), };
         Form<Object> form = new Form<Object>("form");
         Context context = contextService.getContext();
         this.tree = new TreeTable("treeTable", createTreeModel(context), columns);
@@ -85,7 +84,6 @@ public class ContextSetPage extends BasePage {
     private DefaultMutableTreeNode createTreeNode(Context context, String path) {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(new ModelBean(contextService, path, false));
         for (String key : context.getKeys()) {
-            String value = context.get(key);
             node.add(new DefaultMutableTreeNode(new ModelBean(contextService, path + key, true)));
         }
         for (String childName : context.getChildren().keySet()) {

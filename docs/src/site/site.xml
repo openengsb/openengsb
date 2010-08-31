@@ -65,7 +65,8 @@
 
     <menu name="Quickstart" >
       <item name="Installation" href="howto/howto_setup.html" />
-      <item name="Hello World" href="howto/howto_logging.html" />
+      <item name="Connectors and Domains " href="howto/howto_logging.html" />
+      <item name="Events" href="howto/howto_contexteditor.html" />
     </menu>
 
 	  <menu name="Documentation" >

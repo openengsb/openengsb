@@ -29,12 +29,12 @@
   <wicket:message key="serviceList" />
 
   <form wicket:id="methodCallForm">
-    <select wicket:id="serviceList"></select>
+    <span wicket:id="serviceList" />
     <select wicket:id="methodList"></select>
     <div wicket:id="argumentListContainer">
       <div wicket:id="argumentList" />
     </div>
-    <input type="submit" value="Call" />
+    <input type="button" wicket:id="submitButton" value="Call" />
   </form>
 
 </wicket:extend>

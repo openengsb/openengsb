@@ -37,6 +37,7 @@ import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.domains.example.ExampleDomain;
+import org.openengsb.domains.notification.NotificationDomain;
 
 public class WorkflowServiceTest {
 
@@ -77,10 +78,17 @@ public class WorkflowServiceTest {
     }
 
     private void setupDomains() {
+        Map<String, Domain> domains = createDomainMocks();
+        service.setDomainServices(domains);
+    }
+
+    private Map<String, Domain> createDomainMocks() {
         Map<String, Domain> domains = new HashMap<String, Domain>();
         logService = Mockito.mock(ExampleDomain.class);
         domains.put("log", logService);
-        service.setDomainServices(domains);
+        NotificationDomain notification = Mockito.mock(NotificationDomain.class);
+        domains.put("notification", notification);
+        return domains;
     }
 
     @After
