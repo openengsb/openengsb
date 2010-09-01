@@ -1,22 +1,22 @@
 package org.openengsb.domains.notification.email.internal;
 
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Locale;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.email.EmailServiceManager;
+import org.openengsb.domains.notification.email.internal.abstraction.JavaxMailAbstraction;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
+
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Locale;
 
 public class EmailServiceManagerTest {
 
@@ -76,7 +76,7 @@ public class EmailServiceManagerTest {
         BundleContext bundleContextMock = mockBundleContextForServiceManager();
         HashMap<String, String> attributes = new HashMap<String, String>();
         EmailNotifierBuilder builder = Mockito.mock(EmailNotifierBuilder.class);
-        EmailNotifier mock = new EmailNotifier("id", null);
+        EmailNotifier mock = new EmailNotifier("id", new JavaxMailAbstraction());
         Mockito.when(builder.createEmailNotifier("test", attributes)).thenReturn(mock);
         ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(
                 bundleContextMock, mock);

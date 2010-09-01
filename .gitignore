@@ -18,6 +18,7 @@ eclipse-workspace
 *.iml
 *.ipr
 *.iws
+*classes
 
 #=================
 #maven-files

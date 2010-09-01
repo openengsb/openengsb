@@ -17,46 +17,47 @@
  */
 package org.openengsb.domains.notification.email.integration;
 
-import java.util.ArrayList;
-import java.util.Date;
-
-import javax.mail.MessagingException;
-
 import org.junit.Test;
+import org.openengsb.core.config.DomainMethodExecutionException;
 import org.openengsb.domains.notification.email.internal.EmailNotifier;
 import org.openengsb.domains.notification.email.internal.abstraction.JavaxMailAbstraction;
 import org.openengsb.domains.notification.model.Attachment;
 import org.openengsb.domains.notification.model.Notification;
 import org.springframework.test.annotation.ExpectedException;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 public class EmailNotifierUT {
 
     @Test
     public void testToSendAnEmail() throws Exception {
+
         EmailNotifier notifier = createNotifier("notifier1", "true", "openengsb.notification.test@gmail.com",
                 "smtp.gmail.com", "pwd-openengsb", "openengsb.notification.test@gmail.com", "465");
         Notification notification = createNotification();
-        notifier.notifyWithoutExceptionHandling(notification);
+        notifier.notify(notification);
     }
 
-    @ExpectedException(MessagingException.class)
+    @ExpectedException(DomainMethodExecutionException.class)
     @Test
-    public void testToSendAnEmailWithWrongUserdata() throws MessagingException {
+    public void testToSendAnEmailWithWrongUserdata() throws Exception {
         EmailNotifier notifier = createNotifier("notifier2", "true", "doesnotexist", "smtp.gmail.com", "totallyWrong",
                 "doesnotexist", "465");
         Notification notification = createNotification();
-        notifier.notifyWithoutExceptionHandling(notification);
+        notifier.notify(notification);
     }
 
     private EmailNotifier createNotifier(String id, String smtpAuth, String smtpSender, String smtpHost,
             String smtpPassword, String smtpUser, String smtpPort) {
-        EmailNotifier notifier = new EmailNotifier(id, new JavaxMailAbstraction());
-        notifier.setSmtpAuth(smtpAuth);
-        notifier.setSmtpSender(smtpSender);
-        notifier.setSmtpHost(smtpHost);
-        notifier.setPassword(smtpPassword);
-        notifier.setUser(smtpUser);
-        notifier.setSmtpPort(smtpPort);
+        JavaxMailAbstraction mailAbstraction = new JavaxMailAbstraction();
+        EmailNotifier notifier = new EmailNotifier(id, mailAbstraction);
+        notifier.getProperties().setSmtpAuth(smtpAuth);
+        notifier.getProperties().setSender(smtpSender);
+        notifier.getProperties().setSmtpHost(smtpHost);
+        notifier.getProperties().setPassword(smtpPassword);
+        notifier.getProperties().setUser(smtpUser);
+        notifier.getProperties().setSmtpPort(smtpPort);
         return notifier;
     }
 

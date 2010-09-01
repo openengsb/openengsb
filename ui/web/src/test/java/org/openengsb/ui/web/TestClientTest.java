@@ -28,6 +28,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.tree.LinkTree;
@@ -37,7 +38,6 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -47,6 +47,7 @@ import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
+import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
@@ -83,6 +84,7 @@ public class TestClientTest {
     private ApplicationContextMock context;
     private TestService testService;
     private FormTester formTester;
+    private boolean serviceListExpanded;
 
     @Before
     public void setup() {
@@ -114,18 +116,15 @@ public class TestClientTest {
         tester.assertComponent("methodCallForm:serviceList", LinkTree.class);
     }
 
-    @Ignore
     @Test
     public void testShowServiceInstancesInDropdown() throws Exception {
         List<ServiceReference> expected = setupAndStartTestClientPage();
 
-        @SuppressWarnings("rawtypes")
-        Form<?> form = (Form) tester.getComponentFromLastRenderedPage("methodCallForm");
-        @SuppressWarnings("unchecked")
-        DropDownChoice<ServiceId> result = (DropDownChoice<ServiceId>) form.get("serviceList");
-
-        Assert.assertNotNull(result);
-        Assert.assertEquals(expected.size(), result.getChoices().size());
+        expandServiceListTree();
+        for (int index = 2; index < expected.size() + 2; index++) {
+            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
+                    AjaxLink.class);
+        }
     }
 
     @Test
@@ -135,22 +134,25 @@ public class TestClientTest {
         tester.assertComponent("methodCallForm:methodList", DropDownChoice.class);
     }
 
-    @Ignore("not adapted to tree yet")
     @Test
     public void testServiceListSelect() throws Exception {
         setupAndStartTestClientPage();
-
         setServiceInDropDown(0);
 
         @SuppressWarnings("unchecked")
-        DropDownChoice<ServiceId> serviceList = (DropDownChoice<ServiceId>) tester
-                .getComponentFromLastRenderedPage("methodCallForm:serviceList");
-        ServiceId modelObject = serviceList.getModelObject();
+        Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
+        MethodCall modelObject = form.getModelObject();
         ServiceId reference = new ServiceId(TestService.class.getName(), "test");
-        Assert.assertEquals(reference.toString(), modelObject.toString());
+
+        Assert.assertEquals(reference.toString(), modelObject.getService().toString());
     }
 
-    @Ignore("not adapted to tree yet")
+    private void expandServiceListTree() {
+        tester.clickLink("methodCallForm:serviceList:i:0:junctionLink", true);
+        tester.clickLink("methodCallForm:serviceList:i:1:junctionLink", true);
+        serviceListExpanded = true;
+    }
+
     @Test
     public void testShowMethodListInDropDown() throws Exception {
         setupAndStartTestClientPage();
@@ -178,7 +180,6 @@ public class TestClientTest {
         Assert.assertNotNull(argList);
     }
 
-    @Ignore("not adapted to tree yet")
     @Test
     public void testCreateTextFieldsFor2StringArguments() throws Exception {
         setupAndStartTestClientPage();
@@ -200,7 +201,6 @@ public class TestClientTest {
         tester.executeAjaxEvent("methodCallForm:methodList", "onchange");
     }
 
-    @Ignore("not adapted to tree yet")
     @Test
     public void testCreateTextFieldsForBean() throws Exception {
         setupAndStartTestClientPage();
@@ -217,7 +217,6 @@ public class TestClientTest {
         Assert.assertEquals(2, panel.size());
     }
 
-    @Ignore("not adapted to tree yet")
     @Test
     public void testPerformMethodCall() throws Exception {
         setupAndStartTestClientPage();
@@ -230,12 +229,12 @@ public class TestClientTest {
         for (int i = 0; i < argList.size(); i++) {
             formTester.setValue("argumentListContainer:argumentList:arg" + i + ":value", "test");
         }
-        tester.executeAjaxEvent("methodCallForm", "onsubmit");
+
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         Assert.assertTrue(testService.called);
     }
 
-    @Ignore("not adapted to tree yet")
     @Test
     public void testPerformMethodCallWithBeanArgument() throws Exception {
         setupAndStartTestClientPage();
@@ -246,17 +245,19 @@ public class TestClientTest {
         formTester.setValue("argumentListContainer:argumentList:arg0:fields:id:row:field", "42");
         formTester.setValue("argumentListContainer:argumentList:arg0:fields:name:row:field", "test");
 
-        tester.executeAjaxEvent("methodCallForm", "onsubmit");
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         Assert.assertNotNull(testService.test);
     }
 
     private void setServiceInDropDown(int index) {
-        formTester.select("serviceList", index);
-        tester.executeAjaxEvent("methodCallForm:serviceList", "onchange");
+        if (!serviceListExpanded) {
+            expandServiceListTree();
+        }
+        tester.clickLink("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink", true);
+        tester.executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink", "onclick");
     }
 
-    @Ignore("not adapted to tree yet")
     @Test
     public void testSelectMethodTwice() throws Exception {
         setupAndStartTestClientPage();
