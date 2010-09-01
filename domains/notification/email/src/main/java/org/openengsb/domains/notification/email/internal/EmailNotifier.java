@@ -61,7 +61,7 @@ public class EmailNotifier implements NotificationDomain {
     }
 
     public void notifyWithoutExceptionHandling(Notification notification) throws MessagingException {
-       mailAbstraction.createMessage(properties,
+       mailAbstraction.send(properties,
                 notification.getSubject(), notification.getMessage(), notification.getRecipient());
     }
 

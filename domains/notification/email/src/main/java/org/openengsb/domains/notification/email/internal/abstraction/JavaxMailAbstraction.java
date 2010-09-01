@@ -24,7 +24,7 @@ public class JavaxMailAbstraction implements MailAbstraction {
     }
 
     @Override
-    public void createMessage(MailProperties properties,
+    public void send(MailProperties properties,
                                  String subject, String textContet, String receiver) throws MessagingException {
         if (!(properties instanceof MailPropertiesImp)) {
             throw new RuntimeException("This implementation works only with internal mail properties");

@@ -4,7 +4,7 @@ import javax.mail.MessagingException;
 
 public interface MailAbstraction {
 
-    void createMessage( MailProperties properties, String subject, String textContet, String receiver) throws MessagingException;
+    void send( MailProperties properties, String subject, String textContet, String receiver) throws MessagingException;
 
     MailProperties createMailProperties();
 }

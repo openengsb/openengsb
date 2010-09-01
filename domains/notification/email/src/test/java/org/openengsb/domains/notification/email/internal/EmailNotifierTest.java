@@ -42,7 +42,7 @@ public class EmailNotifierTest {
         notification.setAttachments(new ArrayList<Attachment>());
 
         notifier.notifyWithoutExceptionHandling(notification);
-        Mockito.verify(mailMock).createMessage(propertiesMock, "Subject", "Content", "openengsb.notification.test@gmail.com");
+        Mockito.verify(mailMock).send(propertiesMock, "Subject", "Content", "openengsb.notification.test@gmail.com");
 
     }
 
