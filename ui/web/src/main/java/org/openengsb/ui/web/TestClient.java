@@ -42,6 +42,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.config.DomainProvider;
@@ -74,26 +75,11 @@ public class TestClient extends BasePage {
     private final LinkTree serviceList;
 
     public TestClient() {
-        Form<Object> form = new Form<Object>("methodCallForm");
-        // form.add(new AjaxFormSubmitBehavior(form, "onsubmit") {
-        // @Override
-        // protected void onError(AjaxRequestTarget target) {
-        // throw new RuntimeException("submit error");
-        // }
-        //
-        // @Override
-        // protected void onSubmit(AjaxRequestTarget target) {
-        // performCall();
-        // call.getArguments().clear();
-        // call.setMethod(null);
-        // call.setService(null);
-        //
-        // populateMethodList();
-        // target.addComponent(serviceList);
-        // target.addComponent(methodList);
-        // target.addComponent(argumentListContainer);
-        // }
-        // });
+        Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
+        form.setModel(new Model<MethodCall>(call));
+        form.setOutputMarkupId(true);
+        add(form);
+
         serviceList = new LinkTree("serviceList", createModel()) {
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
@@ -108,22 +94,9 @@ public class TestClient extends BasePage {
                 log.info(node.getClass());
             };
         };
-
-        // serviceList = new DropDownChoice<ServiceId>("serviceList", new
-        // PropertyModel<ServiceId>(call, "service"),
-        // getServiceInstances());
         serviceList.setOutputMarkupId(true);
-
-        // serviceList.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-        // @Override
-        // protected void onUpdate(AjaxRequestTarget target) {
-        // log.info("onchange triggered");
-        // call.setMethod(null);
-        // populateMethodList();
-        // target.addComponent(methodList);
-        // }
-        // });
         form.add(serviceList);
+
         methodList = new DropDownChoice<MethodId>("methodList");
         methodList.setModel(new PropertyModel<MethodId>(call, "method"));
         methodList.setChoiceRenderer(new ChoiceRenderer<MethodId>());
@@ -136,6 +109,7 @@ public class TestClient extends BasePage {
             }
         });
         form.add(methodList);
+
         argumentListContainer = new WebMarkupContainer("argumentListContainer");
         argumentListContainer.setOutputMarkupId(true);
         argumentList = new RepeatingView("argumentList");
@@ -161,7 +135,6 @@ public class TestClient extends BasePage {
             }
         };
         form.add(submitButton);
-        add(form);
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
     }
 
