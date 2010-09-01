@@ -1,5 +1,7 @@
 package org.openengsb.domains.notification.email.internal.abstraction;
 
+import org.openengsb.core.config.DomainMethodExecutionException;
+
 import javax.mail.*;
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
@@ -25,18 +27,22 @@ public class JavaxMailAbstraction implements MailAbstraction {
 
     @Override
     public void send(MailProperties properties,
-                                 String subject, String textContet, String receiver) throws MessagingException {
-        if (!(properties instanceof MailPropertiesImp)) {
-            throw new RuntimeException("This implementation works only with internal mail properties");
-        }
-        Session session = createSession(properties);
-        Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(((MailPropertiesImp)properties).getSender()));
-        message.setRecipients(RecipientType.TO, InternetAddress.parse(receiver));
-        message.setSubject(subject);
-        message.setText(textContet);
+                                 String subject, String textContet, String receiver) {
+        try {
+            if (!(properties instanceof MailPropertiesImp)) {
+                throw new RuntimeException("This implementation works only with internal mail properties");
+            }
+            Session session = createSession(properties);
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(((MailPropertiesImp) properties).getSender()));
+            message.setRecipients(RecipientType.TO, InternetAddress.parse(receiver));
+            message.setSubject(subject);
 
-        send(message);
+            message.setText(textContet);
+            send(message);
+        } catch (Exception e) {
+            throw new DomainMethodExecutionException(e);
+        }
     }
 
     private void send(Message message) throws MessagingException {

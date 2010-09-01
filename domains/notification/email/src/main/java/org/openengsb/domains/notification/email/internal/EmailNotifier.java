@@ -25,8 +25,6 @@ import org.openengsb.domains.notification.email.internal.abstraction.MailPropert
 import org.openengsb.domains.notification.model.Notification;
 import org.osgi.framework.ServiceRegistration;
 
-import javax.mail.MessagingException;
-
 public class EmailNotifier implements NotificationDomain {
 
     private Log log = LogFactory.getLog(getClass());
@@ -52,15 +50,6 @@ public class EmailNotifier implements NotificationDomain {
 
     @Override
     public void notify(Notification notification) {
-        log.info("Sending notification with notification connector " + id + ".");
-        try {
-            notifyWithoutExceptionHandling(notification);
-        } catch (MessagingException e) {
-            log.error("Exception on sending notification notification.", e);
-        }
-    }
-
-    public void notifyWithoutExceptionHandling(Notification notification) throws MessagingException {
        mailAbstraction.send(properties,
                 notification.getSubject(), notification.getMessage(), notification.getRecipient());
     }

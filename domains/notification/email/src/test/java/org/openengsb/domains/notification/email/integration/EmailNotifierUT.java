@@ -18,13 +18,13 @@
 package org.openengsb.domains.notification.email.integration;
 
 import org.junit.Test;
+import org.openengsb.core.config.DomainMethodExecutionException;
 import org.openengsb.domains.notification.email.internal.EmailNotifier;
 import org.openengsb.domains.notification.email.internal.abstraction.JavaxMailAbstraction;
 import org.openengsb.domains.notification.model.Attachment;
 import org.openengsb.domains.notification.model.Notification;
 import org.springframework.test.annotation.ExpectedException;
 
-import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -36,16 +36,16 @@ public class EmailNotifierUT {
         EmailNotifier notifier = createNotifier("notifier1", "true", "openengsb.notification.test@gmail.com",
                 "smtp.gmail.com", "pwd-openengsb", "openengsb.notification.test@gmail.com", "465");
         Notification notification = createNotification();
-        notifier.notifyWithoutExceptionHandling(notification);
+        notifier.notify(notification);
     }
 
-    @ExpectedException(MessagingException.class)
+    @ExpectedException(DomainMethodExecutionException.class)
     @Test
-    public void testToSendAnEmailWithWrongUserdata() throws MessagingException {
+    public void testToSendAnEmailWithWrongUserdata() throws Exception {
         EmailNotifier notifier = createNotifier("notifier2", "true", "doesnotexist", "smtp.gmail.com", "totallyWrong",
                 "doesnotexist", "465");
         Notification notification = createNotification();
-        notifier.notifyWithoutExceptionHandling(notification);
+        notifier.notify(notification);
     }
 
     private EmailNotifier createNotifier(String id, String smtpAuth, String smtpSender, String smtpHost,
