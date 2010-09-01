@@ -17,21 +17,15 @@
  */
 package org.openengsb.domains.notification.email.internal;
 
-import java.util.Properties;
-
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
+import org.openengsb.domains.notification.email.internal.abstraction.MailProperties;
 import org.openengsb.domains.notification.model.Notification;
 import org.osgi.framework.ServiceRegistration;
+
+import javax.mail.MessagingException;
 
 public class EmailNotifier implements NotificationDomain {
 
@@ -41,16 +35,19 @@ public class EmailNotifier implements NotificationDomain {
     private String user;
     private String password;
     private String smtpAuth;
-    private String smtpSender;
+    private String sender;
     private String smtpHost;
     private String smtpPort;
 
     private MailAbstraction mailAbstraction;
     private ServiceRegistration serviceRegistration;
+    private MailProperties properties;
 
     public EmailNotifier(String id, MailAbstraction mailAbstraction) {
         this.id = id;
         this.mailAbstraction = mailAbstraction;
+        properties = mailAbstraction.createMailProperties();
+
     }
 
     @Override
@@ -64,77 +61,8 @@ public class EmailNotifier implements NotificationDomain {
     }
 
     public void notifyWithoutExceptionHandling(Notification notification) throws MessagingException {
-        Properties props = createProperties();
-        Session session = mailAbstraction.createSession(props, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(user, password);
-            }
-        });
-        Message message = mailAbstraction.createMessage(session, new InternetAddress(smtpSender),
-                Message.RecipientType.TO, InternetAddress.parse(notification.getRecipient()),
-                notification.getSubject(), notification.getMessage());
-        mailAbstraction.send(message);
-    }
-
-    private Properties createProperties() {
-        Properties props = new Properties();
-        props.put("mail.smtp.host", smtpHost);
-        props.put("mail.smtp.socketFactory.port", smtpPort);
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.auth", smtpAuth);
-        props.put("mail.smtp.port", smtpPort);
-
-        return props;
-
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getSmtpAuth() {
-        return smtpAuth;
-    }
-
-    public void setSmtpAuth(String smtpAuth) {
-        this.smtpAuth = smtpAuth;
-    }
-
-    public String getSmtpSender() {
-        return smtpSender;
-    }
-
-    public void setSmtpSender(String smtpSender) {
-        this.smtpSender = smtpSender;
-    }
-
-    public String getSmtpHost() {
-        return smtpHost;
-    }
-
-    public void setSmtpHost(String smtpHost) {
-        this.smtpHost = smtpHost;
-    }
-
-    public String getSmtpPort() {
-        return smtpPort;
-    }
-
-    public void setSmtpPort(String smtpPort) {
-        this.smtpPort = smtpPort;
+       mailAbstraction.createMessage(properties,
+                notification.getSubject(), notification.getMessage(), notification.getRecipient());
     }
 
     public String getId() {
@@ -149,4 +77,7 @@ public class EmailNotifier implements NotificationDomain {
         this.serviceRegistration = serviceRegistration;
     }
 
+    public MailProperties getProperties() {
+        return properties;
+    }
 }

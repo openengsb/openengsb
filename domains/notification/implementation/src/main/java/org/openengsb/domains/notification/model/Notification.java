@@ -62,4 +62,5 @@ public class Notification {
         }
         return Collections.unmodifiableList(attachments);
     }
+
 }

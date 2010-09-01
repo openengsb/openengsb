@@ -1,8 +1,8 @@
 package org.openengsb.domains.notification.email.internal;
 
-import java.util.Map;
-
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
+
+import java.util.Map;
 
 public class DefaultEmailNotifierBuilder implements EmailNotifierBuilder {
 
@@ -25,23 +25,24 @@ public class DefaultEmailNotifierBuilder implements EmailNotifierBuilder {
     }
 
     private void setAttributesOnNotifier(Map<String, String> attributes, EmailNotifier notifier) {
+        
         if (attributes.containsKey("user")) {
-            notifier.setUser(attributes.get("user"));
+            notifier.getProperties().setUser(attributes.get("user"));
         }
         if (attributes.containsKey("password")) {
-            notifier.setPassword(attributes.get("password"));
+            notifier.getProperties().setPassword(attributes.get("password"));
         }
         if (attributes.containsKey("smtpAuth")) {
-            notifier.setSmtpAuth(attributes.get("smtpAuth"));
+            notifier.getProperties().setSmtpAuth(attributes.get("smtpAuth"));
         }
         if (attributes.containsKey("smtpSender")) {
-            notifier.setSmtpSender(attributes.get("smtpSender"));
+            notifier.getProperties().setSender(attributes.get("smtpSender"));
         }
         if (attributes.containsKey("smtpHost")) {
-            notifier.setSmtpHost(attributes.get("smtpHost"));
+            notifier.getProperties().setSmtpHost(attributes.get("smtpHost"));
         }
         if (attributes.containsKey("smtpPort")) {
-            notifier.setSmtpPort(attributes.get("smtpPort"));
+            notifier.getProperties().setSmtpPort(attributes.get("smtpPort"));
         }
     }
 
