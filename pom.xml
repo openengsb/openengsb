@@ -450,33 +450,15 @@
       <name>Maven Central</name>
       <url>http://repo1.maven.org/maven2/</url>
     </pluginRepository>
-    <pluginRepository>
-      <id>apache.snapshots</id>
-      <name>apache snapshot repository</name>
-      <url>http://repository.apache.org/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-    <pluginRepository>
+    <pluginRepository> <!-- maven jaxb-xjc-plugin -->
       <id>maven-repository.dev.java.net</id>
       <name>Java.net Maven 2 Repository</name>
       <url>http://download.java.net/maven/2</url>
     </pluginRepository>
-    <pluginRepository>
+    <pluginRepository> <!-- for mvn-cli-plugin -->
       <id>twdata-m2-repository</id>
       <name>twdata.org Maven 2 Repository</name>
       <url>http://twdata-m2-repository.googlecode.com/svn/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>ops4j.releases</id>
-      <url>http://repository.ops4j.org/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
     </pluginRepository>
   </pluginRepositories>
 
@@ -485,40 +467,39 @@
       <id>central</id>
       <name>Maven Central</name>
       <url>http://repo1.maven.org/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
-    <repository>
+    <repository> <!-- for jboss-drools and its dependencies -->
+      <id>jboss</id>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository> <!-- various prewrapped -->
       <id>com.springsource.repository.bundles.external</id>
       <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
       <url>http://repository.springsource.com/maven/bundles/external</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
-    <repository>
-      <id>com.springsource.repository.bundles.release</id>
-      <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
-      <url>http://repository.springsource.com/maven/bundles/release</url>
-    </repository>
-    <repository>
+    <repository> <!-- org.springframework.osgi:jetty.start.osgi -->
       <id>i21-s3-osgi-repo</id>
       <name>i21 osgi artifacts repo</name>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
       <url>http://maven.springframework.org/osgi</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
-    <repository>
-      <id>spring-osgi</id>
-      <url>http://s3.amazonaws.com/maven.springframework.org/osgi</url>
-    </repository>
-    <repository>
+    <repository> <!-- spring-osgi-m1 -->
       <id>spring-maven-milestone</id>
       <name>Springframework Maven Repository</name>
       <url>http://maven.springframework.org/milestone</url>
-    </repository>
-    <repository>
-      <id>spring-maven-snapshot</id>
-      <name>Springframework Maven SNAPSHOT Repository</name>
-      <url>http://maven.springframework.org/snapshot</url>
       <snapshots>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
       </snapshots>
     </repository>
     <repository>
@@ -533,38 +514,18 @@
       </snapshots>
     </repository>
     <repository>
-      <id>mockns-snapshot</id>
-      <name>MockNS Snapshot Repository</name>
-      <url>http://snapshot.btmatthews.com</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>apache.snapshots</id>
-      <name>apache snapshot repository</name>
-      <url>http://repository.apache.org/snapshots</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-    <repository>
-      <id>jboss</id>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-    </repository>
-    <repository>
       <id>openengsb-osgi-releases</id>
       <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-releases</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
     <repository>
       <id>openengsb-osgi-snapshots</id>
       <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-snapshots</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
   </repositories>
 
