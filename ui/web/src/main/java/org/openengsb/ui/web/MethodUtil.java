@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.config.descriptor.AttributeDefinition.Builder;
 
@@ -36,7 +37,9 @@ public class MethodUtil {
     public static List<Method> getServiceMethods(Object service) {
         List<Method> result = new ArrayList<Method>();
         for (Class<?> serviceInterface : service.getClass().getInterfaces()) {
-            result.addAll(Arrays.asList(serviceInterface.getMethods()));
+            if (Domain.class.isAssignableFrom(serviceInterface)) {
+                result.addAll(Arrays.asList(serviceInterface.getMethods()));
+            }
         }
         return result;
     }
