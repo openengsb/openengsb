@@ -19,6 +19,7 @@ package org.openengsb.ui.web;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -54,6 +55,7 @@ public class ContextSetPageTest {
         context.createChild("a").createChild("b").createChild("c").put("d", "e");
         when(contextService.getContext()).thenReturn(context);
         when(contextService.getValue("/a/b/c/d")).thenReturn("e");
+        when(contextService.getCurrentContextId()).thenReturn("foo");
         tester.startPage(new ContextSetPage());
     }
 
@@ -108,5 +110,12 @@ public class ContextSetPageTest {
         tester.assertComponent(path, Label.class);
         Label labelroot = (Label) tester.getComponentFromLastRenderedPage(path);
         assertThat((String) labelroot.getDefaultModel().getObject(), is(lableText));
+    }
+    
+    @Test
+    public void testShowContextId() throws Exception {
+        
+        testLabel(contextService.getCurrentContextId(), "currentContextId");
+        
     }
 }

@@ -20,6 +20,7 @@ package org.openengsb.core.common.internal;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.CountDownLatch;
@@ -106,5 +107,17 @@ public class ContextServiceTest {
     public void putValueWithNonExistingInnerPath_shouldCreatePathAndPutValue() {
         cs.putValue("/non-existing/path/and/key", "a");
         assertThat(cs.getValue("/non-existing/path/and/key"), is("a"));
+    }
+    
+    @Test
+    public void testGetCurrentContext() throws Exception {
+        assertEquals("a", cs.getCurrentContextId());
+    }
+    
+    @Test
+    public void testChangeCurrentContext() throws Exception {
+        cs.createContext("x");
+        cs.setThreadLocalContext("x");
+        assertEquals("x", cs.getCurrentContextId());
     }
 }

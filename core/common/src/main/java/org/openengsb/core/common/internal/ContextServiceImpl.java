@@ -27,6 +27,7 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
 
     ThreadLocal<Context> currentContext = new ThreadLocal<Context>();
     private final Context rootContext = new ContextImpl();
+    private ThreadLocal<String> currentContextId = new ThreadLocal<String>();
 
     @Override
     public void putValue(String pathAndKey, String value) {
@@ -54,6 +55,7 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
 
     @Override
     public void setThreadLocalContext(String contextId) {
+        this.currentContextId.set(contextId);
         Context context = rootContext.getChild(contextId);
         Preconditions.checkArgument(context != null, "no context exists for given context id");
         currentContext.set(context);
@@ -94,5 +96,10 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
         }
 
         return s;
+    }
+
+    @Override
+    public String getCurrentContextId() {
+      return currentContextId.get();
     }
 }

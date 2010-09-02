@@ -37,4 +37,10 @@ public interface ContextCurrentService extends ContextService {
      * @throws IllegalArgumentException if a context with the given id exists
      */
     void createContext(String contextId);
+
+    /**
+     * 
+     * @return the id of the current context
+     */
+    String getCurrentContextId();
 }
