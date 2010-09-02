@@ -37,6 +37,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.context.Context;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.context.ContextService;
+import org.openengsb.ui.web.service.DomainService;
 import org.openengsb.ui.web.tree.ModelBean;
 import org.openengsb.ui.web.tree.PropertyEditableColumn;
 
@@ -45,7 +46,10 @@ public class ContextSetPage extends BasePage {
 
     @SpringBean
     private ContextService contextService;
-
+    
+    @SpringBean
+    private DomainService domainService;
+    
     @SpringBean
     private ContextCurrentService contextCurrentService;
 
@@ -78,7 +82,7 @@ public class ContextSetPage extends BasePage {
         IColumn columns[] = new IColumn[]{
                 new PropertyTreeColumn(new ColumnLocation(Alignment.LEFT, 18, Unit.EM), "Tree Column",
                         "userObject.niceKey"),
-                new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT, 12, Unit.EM), "value", "userObject.value"),};
+                new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT, 12, Unit.EM), "value", "userObject.value", domainService),};
         Form<Object> form = new Form<Object>("form");
         Context context = contextService.getContext();
         this.tree = new TreeTable("treeTable", createTreeModel(context), columns);

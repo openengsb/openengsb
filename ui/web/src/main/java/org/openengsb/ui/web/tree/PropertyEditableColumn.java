@@ -17,6 +17,12 @@
  */
 package org.openengsb.ui.web.tree;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
+
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import org.apache.wicket.Component;
@@ -24,17 +30,38 @@ import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation;
 import org.apache.wicket.extensions.markup.html.tree.table.IRenderable;
 import org.apache.wicket.extensions.markup.html.tree.table.PropertyRenderableColumn;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.util.string.Strings;
+import org.openengsb.core.config.Domain;
+import org.openengsb.core.config.DomainProvider;
+import org.openengsb.ui.web.service.DomainService;
+import org.osgi.framework.ServiceReference;
 
 @SuppressWarnings("serial")
 public class PropertyEditableColumn extends PropertyRenderableColumn {
 
-    public PropertyEditableColumn(ColumnLocation location, String header, String propertyExpression) {
+    private DomainService domainService;
+
+    public PropertyEditableColumn(ColumnLocation location, String header, String propertyExpression,
+            DomainService domainService) {
         super(location, header, propertyExpression);
+        this.domainService = domainService;
     }
 
     @Override
     public Component newCell(MarkupContainer parent, String id, TreeNode node, int level) {
+        DefaultMutableTreeNode fieldNode = (DefaultMutableTreeNode) node;
+        final ModelBean userObject = (ModelBean) fieldNode.getUserObject();
+
+        if (Pattern.matches("/domains/.+/defaultConnector/id", userObject.getKey())) {
+            return new DropDownPanel(id, new PropertyModel<String>(node, getPropertyExpression()), new LoadableDetachableModel<List<String>>() {
+                @Override
+                protected List<String> load() {
+                   return getServices(userObject.getKey());
+                }
+            });
+        }
         return new EditablePanel(id, new PropertyModel<String>(node, getPropertyExpression()));
     }
 
@@ -46,4 +73,22 @@ public class PropertyEditableColumn extends PropertyRenderableColumn {
             return super.newCell(node, level);
         }
     }
+
+    private List<String> getServices(String keyPath) {
+        
+        List<String> services = new ArrayList<String>();
+        List<DomainProvider> domains = domainService.domains();
+        for (DomainProvider domainProvider : domains) {
+            String domainProvierName = domainProvider.getName(Locale.ENGLISH); // TODO change here to getId() after getId from domainProvider works right
+            if (("/domains/"+domainProvierName+"/defaultConnector/id").equals(keyPath)) {//TODO also support current locale
+                Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
+                List<ServiceReference> serviceReferencesForConnector = domainService
+                        .serviceReferencesForConnector(domainInterface);
+                for (ServiceReference serviceReferce : serviceReferencesForConnector) {
+                    services.add((String) (serviceReferce.getProperty("id")));
+                }
+            }
+        }
+        return services;
+    } //domains/name/..
 }

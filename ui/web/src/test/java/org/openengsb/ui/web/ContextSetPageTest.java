@@ -19,15 +19,22 @@ package org.openengsb.ui.web;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
@@ -35,26 +42,38 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.internal.ContextImpl;
+import org.openengsb.core.config.Domain;
+import org.openengsb.core.config.DomainProvider;
+import org.openengsb.ui.web.service.DomainService;
+import org.osgi.framework.ServiceReference;
 
 public class ContextSetPageTest {
 
     private WicketTester tester;
     private ContextCurrentService contextService;
+    private DomainService domainService;
 
     @Before
     public void setup() {
         tester = new WicketTester();
         contextService = mock(ContextCurrentService.class);
+        domainService = mock(DomainService.class);
         AnnotApplicationContextMock appContext = new AnnotApplicationContextMock();
         appContext.putBean(contextService);
+        appContext.putBean(domainService);
         tester.getApplication().addComponentInstantiationListener(
                 new SpringComponentInjector(tester.getApplication(), appContext, false));
         ContextImpl context = new ContextImpl();
         context.createChild("a").createChild("b").createChild("c").put("d", "e");
+        context.createChild("domains").createChild("example").createChild("defaultConnector").put("id", "blabla");
         when(contextService.getContext()).thenReturn(context);
         when(contextService.getValue("/a/b/c/d")).thenReturn("e");
+        when(contextService.getValue("/domains/example/defaultConnector/id")).thenReturn("blabla");
         when(contextService.getCurrentContextId()).thenReturn("foo");
         tester.startPage(new ContextSetPage());
     }
@@ -63,7 +82,7 @@ public class ContextSetPageTest {
     public void test_initialisation_with_simple_tree() {
         tester.assertComponent("form:treeTable", TreeTable.class);
         tester.assertComponent("expandAll", AjaxLink.class);
-        //testLabel("/", "form:treeTable:i:0:sideColumns:0:nodeLink:label");
+        // testLabel("/", "form:treeTable:i:0:sideColumns:0:nodeLink:label");
         testLabel("a", "form:treeTable:i:1:sideColumns:0:nodeLink:label");
         testLabel("b", "form:treeTable:i:2:sideColumns:0:nodeLink:label");
         testLabel("c", "form:treeTable:i:3:sideColumns:0:nodeLink:label");
@@ -74,8 +93,7 @@ public class ContextSetPageTest {
     public void editAttribute_shouldReflectChangeInModel() {
         String textFieldId = "treeTable:i:4:sideColumns:1:textfield";
         String nodeLinkId = "form:treeTable:i:4:sideColumns:0:nodeLink";
-        AjaxLink<?> node = (AjaxLink<?>) tester
-                .getComponentFromLastRenderedPage(nodeLinkId);
+        AjaxLink<?> node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage(nodeLinkId);
         tester.executeAjaxEvent(node, "onclick");
         TextField<?> textField = (TextField<?>) tester.getComponentFromLastRenderedPage("form:" + textFieldId);
         assertThat(textField, notNullValue());
@@ -92,8 +110,7 @@ public class ContextSetPageTest {
     public void editAttributeToEmtyString_shouldResultEmptyStringInModel() {
         String textFieldId = "treeTable:i:4:sideColumns:1:textfield";
         String nodeLinkId = "form:treeTable:i:4:sideColumns:0:nodeLink";
-        AjaxLink<?> node = (AjaxLink<?>) tester
-                .getComponentFromLastRenderedPage(nodeLinkId);
+        AjaxLink<?> node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage(nodeLinkId);
         tester.executeAjaxEvent(node, "onclick");
         TextField<?> textField = (TextField<?>) tester.getComponentFromLastRenderedPage("form:" + textFieldId);
         assertThat(textField, notNullValue());
@@ -111,11 +128,112 @@ public class ContextSetPageTest {
         Label labelroot = (Label) tester.getComponentFromLastRenderedPage(path);
         assertThat((String) labelroot.getDefaultModel().getObject(), is(lableText));
     }
-    
+
     @Test
     public void testShowContextId() throws Exception {
-        
         testLabel(contextService.getCurrentContextId(), "currentContextId");
-        
     }
+
+    @Test
+    public void idValueIsDropdown() {
+        testLabel("domains", "form:treeTable:i:5:sideColumns:0:nodeLink:label");
+        testLabel("example", "form:treeTable:i:6:sideColumns:0:nodeLink:label");
+        testLabel("defaultConnector", "form:treeTable:i:7:sideColumns:0:nodeLink:label");
+        testLabel("id", "form:treeTable:i:8:sideColumns:0:nodeLink:label");
+
+        String nodeLinkId = "form:treeTable:i:8:sideColumns:0:nodeLink";
+
+        String textFieldId = "form:treeTable:i:8:sideColumns:1:textfield";
+        AjaxLink<?> node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage(nodeLinkId);
+        tester.executeAjaxEvent(node, "onclick");
+
+        tester.assertComponent(textFieldId, DropDownChoice.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void showChoicesInDefaultDomainDropDown() throws Exception {
+        List<ServiceReference> serviceReferenceList = new ArrayList<ServiceReference>();
+        ServiceReference serviceReference = mock(ServiceReference.class);
+        serviceReferenceList.add(serviceReference);
+        
+        when(serviceReference.getProperty("id")).thenReturn("connectorService");
+        List<DomainProvider> domainProviderList = new ArrayList<DomainProvider>();
+        DomainProvider domainProvider = mock(DomainProvider.class);
+        domainProviderList.add(domainProvider);
+        
+        when(domainProvider.getName(any(Locale.class))).thenReturn("example");
+        when(domainProvider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
+            @Override
+            public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
+                return Domain.class;
+            }
+        });
+        when(domainService.domains()).thenReturn(domainProviderList);
+        when(domainService.serviceReferencesForConnector(any(Class.class))).thenReturn(serviceReferenceList);
+        
+        String nodeLinkId = "form:treeTable:i:8:sideColumns:0:nodeLink";
+
+        String textFieldId = "form:treeTable:i:8:sideColumns:1:textfield";
+        AjaxLink<?> node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage(nodeLinkId);
+        tester.executeAjaxEvent(node, "onclick");
+                
+        DropDownChoice<String> connectorChoices = (DropDownChoice<String>)tester.getComponentFromLastRenderedPage(textFieldId);
+        List<? extends String> choices = connectorChoices.getChoices();
+        assertTrue(choices.contains("connectorService"));
+    }
+    
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void showThatNotConnectorServicesAreNotInDefaultDomainDropDown() throws Exception {
+        List<ServiceReference> serviceReferenceList = new ArrayList<ServiceReference>();
+        ServiceReference serviceReference = mock(ServiceReference.class);
+        serviceReferenceList.add(serviceReference);
+        when(serviceReference.getProperty("id")).thenReturn("connectorService");
+        
+        List<ServiceReference> wrongServiceReferenceList = new ArrayList<ServiceReference>();
+        ServiceReference wrongServiceReference = mock(ServiceReference.class);
+        wrongServiceReferenceList.add(wrongServiceReference);
+        when(wrongServiceReference.getProperty("id")).thenReturn("noConnectorService");
+        
+        List<DomainProvider> domainProviderList = new ArrayList<DomainProvider>();
+        DomainProvider domainProvider = mock(DomainProvider.class);
+        DomainProvider wrongDomainProvider = mock(DomainProvider.class);
+        when(domainProvider.getName(any(Locale.class))).thenReturn("defaultConnector");
+        when(wrongDomainProvider.getName(any(Locale.class))).thenReturn("noConnector");
+        
+        domainProviderList.add(domainProvider);
+        when(domainProvider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
+            @Override
+            public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
+                return TestInterface.class;
+            }
+        });
+        domainProviderList.add(wrongDomainProvider);
+        when(wrongDomainProvider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
+            @Override
+            public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
+                return Domain.class;
+            }
+        });
+        when(domainService.domains()).thenReturn(domainProviderList);
+        when(domainService.serviceReferencesForConnector(TestInterface.class)).thenReturn(serviceReferenceList);
+        when(domainService.serviceReferencesForConnector(Domain.class)).thenReturn(wrongServiceReferenceList);
+        
+        
+        String nodeLinkId = "form:treeTable:i:8:sideColumns:0:nodeLink";
+        String textFieldId = "form:treeTable:i:8:sideColumns:1:textfield";
+        AjaxLink<?> node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage(nodeLinkId);
+        tester.executeAjaxEvent(node, "onclick");
+        DropDownChoice<String> connectorChoices = (DropDownChoice<String>)tester.getComponentFromLastRenderedPage(textFieldId);
+        List<? extends String> choices = connectorChoices.getChoices();
+       
+        assertFalse(choices.contains("noConnectorService"));
+    }
+
+    public interface TestInterface extends Domain {
+
+    }
+
 }
