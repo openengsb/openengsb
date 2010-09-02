@@ -70,8 +70,6 @@ public class TestClient extends BasePage {
 
     private final WebMarkupContainer argumentListContainer;
 
-    // private final DropDownChoice<ServiceId> serviceList;
-
     private final LinkTree serviceList;
 
     public TestClient() {
@@ -122,16 +120,13 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 performCall();
                 call.getArguments().clear();
-                call.setMethod(null);
-                call.setService(null);
+                argumentList.removeAll();
 
+                call.setMethod(null);
                 populateMethodList();
-                serviceList.updateTree();
-                form.renderComponent();
-                target.addComponent(serviceList);
+
                 target.addComponent(methodList);
                 target.addComponent(argumentListContainer);
-                target.addComponent(form);
             }
         };
         form.add(submitButton);
@@ -153,12 +148,6 @@ public class TestClient extends BasePage {
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
         DefaultMutableTreeNode providerNode = new DefaultMutableTreeNode(provider.getName());
         node.add(providerNode);
-        // for (ServiceManager manager :
-        // services.serviceManagersForDomain(provider.getDomainInterface())) {
-        // log.info("found servicemanager");
-        // DefaultMutableTreeNode serviceManagerNode = new
-        // DefaultMutableTreeNode(manager.getDescriptor().getName());
-        // providerNode.add(serviceManagerNode);
         for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider
                 .getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
@@ -170,7 +159,6 @@ public class TestClient extends BasePage {
                 providerNode.add(referenceNode);
             }
         }
-        // }
     }
 
     protected void performCall() {
@@ -259,5 +247,4 @@ public class TestClient extends BasePage {
         }
 
     }
-
 }

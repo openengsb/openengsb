@@ -271,6 +271,22 @@ public class TestClientTest {
         Assert.assertEquals(2, argList.size());
     }
 
+    @Test
+    public void testFormResetAfterCall() throws Exception {
+        setupAndStartTestClientPage();
+
+        setServiceInDropDown(0);
+        setMethodInDropDown(0);
+
+        formTester.setValue("argumentListContainer:argumentList:arg0:value", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg1:value", "test");
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+
+        RepeatingView argList = (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        Assert.assertEquals(0, argList.size());
+    }
+
     private List<ServiceReference> setupAndStartTestClientPage() {
         final List<ServiceReference> expected = new ArrayList<ServiceReference>();
         ServiceReference serviceReferenceMock = Mockito.mock(ServiceReference.class);
