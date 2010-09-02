@@ -467,25 +467,40 @@
       <id>central</id>
       <name>Maven Central</name>
       <url>http://repo1.maven.org/maven2/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
     <repository> <!-- for jboss-drools and its dependencies -->
       <id>jboss</id>
       <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
     <repository> <!-- various prewrapped -->
       <id>com.springsource.repository.bundles.external</id>
       <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
       <url>http://repository.springsource.com/maven/bundles/external</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
     <repository> <!-- org.springframework.osgi:jetty.start.osgi -->
       <id>i21-s3-osgi-repo</id>
       <name>i21 osgi artifacts repo</name>
       <url>http://maven.springframework.org/osgi</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
     <repository> <!-- spring-osgi-m1 -->
       <id>spring-maven-milestone</id>
       <name>Springframework Maven Repository</name>
       <url>http://maven.springframework.org/milestone</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
     <repository>
       <id>thirdparty</id>
@@ -501,10 +516,16 @@
     <repository>
       <id>openengsb-osgi-releases</id>
       <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-releases</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
     <repository>
       <id>openengsb-osgi-snapshots</id>
       <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-snapshots</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
   </repositories>
 
