@@ -17,11 +17,14 @@
  */
 package org.openengsb.core.workflow.model;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+@SuppressWarnings("serial")
 @XmlType(propOrder = { "type", "packageName", "name" })
-public class RuleBaseElementId {
+public class RuleBaseElementId implements Serializable {
 
     public static final String DEFAULT_RULE_PACKAGE = "org.openengsb";
 
@@ -106,5 +109,13 @@ public class RuleBaseElementId {
             return false;
         return true;
     }
-
+    
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder(packageName);
+        if(name!=null){
+            result.append(".").append(name).toString();
+        }
+        return result.toString();
+    }
 }
