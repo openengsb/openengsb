@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.core.config.descriptor.ServiceDescriptor.Builder;
-import org.openengsb.core.config.util.BundleStrings;
 import org.openengsb.core.config.util.BundleStringsTest;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -52,7 +51,7 @@ public class AbstractServiceManagerTest {
                 }
 
                 @Override
-                public ServiceDescriptor getDescriptor(Builder builder, Locale locale, BundleStrings strings) {
+                public ServiceDescriptor getDescriptor(Builder builder) {
                     builder.implementationType(DummyInstance.class);
                     builder.serviceType(DummyDomain.class);
                     builder.name("abstract.name");

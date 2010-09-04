@@ -17,49 +17,44 @@
  */
 package org.openengsb.domains.example.connector;
 
-import java.util.Locale;
 import java.util.Map;
 
 import org.openengsb.core.config.ServiceInstanceFactory;
-import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.core.config.descriptor.ServiceDescriptor.Builder;
-import org.openengsb.core.config.util.BundleStrings;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.example.connector.internal.LogService;
 
 public class LogServiceInstanceFactory implements ServiceInstanceFactory<ExampleDomain, LogService> {
 
     @Override
-    public ServiceDescriptor getDescriptor(Builder builder, Locale locale, BundleStrings strings) {
-        return builder
-            .name("log.name")
-            .description("log.description")
-            .attribute(AttributeDefinition.builder(locale, strings)
-                    .id("prefix")
-                    .name("log.prefix.name")
-                    .description("log.outputMode.description")
-                    .defaultValue("")
-                    .build())
-            .attribute(AttributeDefinition.builder(locale, strings)
-                    .id("outputMode")
-                    .name("log.outputMode.name")
-                    .description("log.outputMode.description")
-                    .defaultValue("log.outputMode.info")
-                    .option("log.outputMode.debug", "DEBUG")
-                    .option("log.outputMode.info", "INFO")
-                    .option("log.outputMode.warn", "WARN")
-                    .option("log.outputMode.error", "ERROR")
-                    .required()
-                    .build())
-            .attribute(AttributeDefinition.builder(locale, strings)
-                    .id("flush")
-                    .name("log.flush.name")
-                    .description("log.flush.description")
-                    .defaultValue("false")
-                    .asBoolean()
-                    .build())
-            .build();
+    public ServiceDescriptor getDescriptor(Builder builder) {
+        builder.name("log.name").description("log.description");
+        builder.attribute(builder.newAttribute()
+            .id("prefix")
+            .name("log.prefix.name")
+            .description("log.outputMode.description")
+            .defaultValue("")
+            .build());
+        builder.attribute(builder.newAttribute()
+            .id("outputMode")
+            .name("log.outputMode.name")
+            .description("log.outputMode.description")
+            .defaultValue("log.outputMode.info")
+            .option("log.outputMode.debug", "DEBUG")
+            .option("log.outputMode.info", "INFO")
+            .option("log.outputMode.warn", "WARN")
+            .option("log.outputMode.error", "ERROR")
+            .required()
+            .build());
+        builder.attribute(builder.newAttribute()
+            .id("flush")
+            .name("log.flush.name")
+            .description("log.flush.description")
+            .defaultValue("false")
+            .asBoolean()
+            .build());
+        return builder.build();
     }
 
     @Override

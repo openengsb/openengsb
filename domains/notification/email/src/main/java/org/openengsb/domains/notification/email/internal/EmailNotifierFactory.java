@@ -1,12 +1,10 @@
 package org.openengsb.domains.notification.email.internal;
 
-import java.util.Locale;
 import java.util.Map;
 
 import org.openengsb.core.config.ServiceInstanceFactory;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
-import org.openengsb.core.config.util.BundleStrings;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
 
@@ -41,34 +39,32 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
     }
 
     @Override
-    public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder, Locale locale, BundleStrings strings) {
-        return builder
-                .name("email.name")
-                .description("email.description")
+    public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
+        builder.name("email.name").description("email.description");
+
+        builder.attribute(buildAttribute(builder, "user", "username.outputMode", "username.outputMode.description"))
                 .attribute(
-                        buildAttribute(locale, strings, "user", "username.outputMode",
-                                "username.outputMode.description"))
+                        buildAttribute(builder, "password", "password.outputMode", "password.outputMode.description"))
                 .attribute(
-                        buildAttribute(locale, strings, "password", "password.outputMode",
-                                "password.outputMode.description"))
-                .attribute(
-                        buildAttribute(locale, strings, "smtpAuth", "mail.smtp.auth.outputMode",
+                        buildAttribute(builder, "smtpAuth", "mail.smtp.auth.outputMode",
                                 "mail.smtp.auth.outputMode.description"))
                 .attribute(
-                        buildAttribute(locale, strings, "smtpSender", "mail.smtp.sender.outputMode",
+                        buildAttribute(builder, "smtpSender", "mail.smtp.sender.outputMode",
                                 "mail.smtp.sender.outputMode.description"))
                 .attribute(
-                        buildAttribute(locale, strings, "smtpPort", "mail.smtp.port.outputMode",
+                        buildAttribute(builder, "smtpPort", "mail.smtp.port.outputMode",
                                 "mail.smtp.port.outputMode.description"))
                 .attribute(
-                        buildAttribute(locale, strings, "smtpHost", "mail.smtp.host.outputMode",
+                        buildAttribute(builder, "smtpHost", "mail.smtp.host.outputMode",
                                 "mail.smtp.host.outputMode.description")).build();
+
+        return builder.build();
     }
 
-    private AttributeDefinition buildAttribute(Locale locale, BundleStrings strings, String id, String nameId,
+    private AttributeDefinition buildAttribute(ServiceDescriptor.Builder builder, String id, String nameId,
             String descriptionId) {
-        return AttributeDefinition.builder(locale, strings).id(id).name(nameId).description(descriptionId)
-                .defaultValue("").required().build();
+        return builder.newAttribute().id(id).name(nameId).description(descriptionId).defaultValue("").required()
+                .build();
 
     }
 

@@ -86,7 +86,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     @Override
     public ServiceDescriptor getDescriptor(Locale locale) {
         return factory.getDescriptor(ServiceDescriptor.builder(locale, strings).id(getImplementationClass().getName())
-                .serviceType(getDomainInterface()).implementationType(getImplementationClass()), locale, strings);
+                .serviceType(getDomainInterface()).implementationType(getImplementationClass()));
     }
 
     @Override

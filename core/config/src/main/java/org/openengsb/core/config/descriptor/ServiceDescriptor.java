@@ -159,5 +159,9 @@ public class ServiceDescriptor {
                     "service description has not been set");
             return desc;
         }
+
+        public AttributeDefinition.Builder newAttribute() {
+            return AttributeDefinition.builder(locale, strings);
+        }
     }
 }
