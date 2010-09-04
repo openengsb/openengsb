@@ -80,7 +80,7 @@ public class BaseExamConfiguration {
                         PaxRunnerOptions.rawPaxRunnerOption("--console", "false"),
                         PaxRunnerOptions.rawPaxRunnerOption("--ee", "J2SE-1.6"),
                         PaxRunnerOptions.rawPaxRunnerOption("--definitionURL", "file:" + pathToRoot
-                                + "etc/platform/felix.xml"),
+                                + "assembly/target/classes/felix.xml"),
                         PaxRunnerOptions.scanComposite("file:" + pathToRoot + "etc/platform/karaf.composite"),
                         PaxRunnerOptions.scanComposite("file:" + pathToRoot + "etc/platform/settings.debug.composite"),
                         PaxRunnerOptions.scanPom("file:" + pathToRoot + "target/finalPom.xml"),

@@ -64,6 +64,7 @@
     <module>core</module>
     <module>domains</module>
     <module>integrationtest</module>
+    <module>assembly</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -329,7 +330,7 @@
                 <param>scan-composite:file:etc/platform/karaf.composite</param>
                 <param>scan-composite:file:etc/platform/settings.debug.composite</param>
                 <param>--ee=J2SE-1.6</param>
-                <param>--definitionURL=file:etc/platform/felix.xml</param>
+                <param>--definitionURL=file:${settings.localRepository}/org/openengsb/openengsb/${pom.version}/openengsb-${pom.version}-platform.xml</param>
               </provision>
             </configuration>
           </plugin>
@@ -436,7 +437,7 @@
                 <param>scan-composite:file:etc/platform/karaf.composite</param>
                 <param>scan-composite:file:etc/platform/settings.release.composite</param>
                 <param>--ee=J2SE-1.6</param>
-                <param>--definitionURL=file:etc/platform/felix.xml</param>
+                <param>--definitionURL=file:${settings.localRepository}/org/openengsb/openengsb/${pom.version}/openengsb-${pom.version}-platform.xml</param>
                 <param>--clean</param>
               </provision>
             </configuration>
