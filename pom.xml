@@ -134,6 +134,33 @@
         <role>Developer</role>
       </roles>
     </developer>
+    <developer>
+      <id>pho</id>
+      <name>Philipp Hoenisch</name>
+      <email>philipp.hoenisch [at] gmail.com</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>tho</id>
+      <name>Tobias Hochwallner</name>
+      <email>tobster [at] gmx.at</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>fmo</id>
+      <name>Florian Motlik</name>
+      <email>flomotlik [at] gmail.com</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
   </developers>
 
   <contributors>
@@ -178,11 +205,6 @@
       <timezone>+1</timezone>
     </contributor>
     <contributor>
-      <name>Philipp Hoenisch</name>
-      <email>philipp.hoenisch [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
       <name>Florian Waltersdorfer</name>
       <email>ignatiomobius [at] gmail.com</email>
       <timezone>+1</timezone>
@@ -195,16 +217,6 @@
     <contributor>
       <name>Kristof Meixner</name>
       <email>kristof.meixner [at] fatlenny.net</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Tobias Hochwallner</name>
-      <email>tobster [at] gmx.at</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Florian Motlik</name>
-      <email>flomotlik [at] gmail.com</email>
       <timezone>+1</timezone>
     </contributor>
   </contributors>
