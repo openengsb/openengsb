@@ -26,6 +26,9 @@ import org.openengsb.core.config.util.BundleStrings;
 public interface ServiceInstanceFactory<DomainType extends Domain, InstanceType extends DomainType> {
 
     // TODO refactor locale, strings
+    // TODO document that only attributes, name and desc have to be set,
+    // servicedescriptor has
+    // already been set
     ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder, Locale locale, BundleStrings strings);
 
     void updateServiceInstance(InstanceType instance, Map<String, String> attributes);

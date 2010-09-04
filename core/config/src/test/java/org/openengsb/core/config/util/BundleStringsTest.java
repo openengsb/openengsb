@@ -41,13 +41,13 @@ import org.osgi.framework.Constants;
 
 public class BundleStringsTest {
 
-    public void mockHeaders(Bundle bundle) {
+    public static void mockHeaders(Bundle bundle) {
         Dictionary<String, String> dict = new Hashtable<String, String>();
         dict.put(Constants.BUNDLE_LOCALIZATION, "bundle_locales/OSGI-INF/l10n/bundle");
         when(bundle.getHeaders()).thenReturn(dict);
     }
 
-    public void mockFindEntries(Bundle bundle) {
+    public static void mockFindEntries(Bundle bundle) {
         when(bundle.findEntries(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenAnswer(
                 new Answer<Enumeration<URL>>() {
                     @Override

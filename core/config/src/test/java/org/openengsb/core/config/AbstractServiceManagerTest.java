@@ -17,7 +17,6 @@
  */
 package org.openengsb.core.config;
 
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
@@ -30,9 +29,9 @@ import org.mockito.Mockito;
 import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.core.config.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.config.util.BundleStrings;
+import org.openengsb.core.config.util.BundleStringsTest;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
 public class AbstractServiceManagerTest {
@@ -54,6 +53,10 @@ public class AbstractServiceManagerTest {
 
                 @Override
                 public ServiceDescriptor getDescriptor(Builder builder, Locale locale, BundleStrings strings) {
+                    builder.implementationType(DummyInstance.class);
+                    builder.serviceType(DummyDomain.class);
+                    builder.name("abstract.name");
+                    builder.description("abstract.description");
                     return builder.build();
                 }
 
@@ -81,8 +84,8 @@ public class AbstractServiceManagerTest {
         ServiceDescriptor descriptor = manager.getDescriptor(Locale.ENGLISH);
 
         Assert.assertEquals(DummyInstance.class.getName(), descriptor.getId());
-        Assert.assertEquals(DummyDomain.class.getName(), descriptor.getServiceInterfaceId());
-        Assert.assertEquals(DummyInstance.class, descriptor.getType());
+        Assert.assertEquals(DummyDomain.class, descriptor.getServiceType());
+        Assert.assertEquals(DummyInstance.class, descriptor.getImplementationType());
     }
 
     @Test
@@ -158,11 +161,10 @@ public class AbstractServiceManagerTest {
     }
 
     private BundleContext mockBundleContextForServiceManager() {
-        Dictionary<String, String> dict = new Hashtable<String, String>();
-        dict.put(Constants.BUNDLE_LOCALIZATION, ".");
 
         Bundle bundleMock = Mockito.mock(Bundle.class);
-        Mockito.when(bundleMock.getHeaders()).thenReturn(dict);
+        BundleStringsTest.mockHeaders(bundleMock);
+        BundleStringsTest.mockFindEntries(bundleMock);
 
         BundleContext bundleContextMock = Mockito.mock(BundleContext.class);
         Mockito.when(bundleContextMock.getBundle()).thenReturn(bundleMock);

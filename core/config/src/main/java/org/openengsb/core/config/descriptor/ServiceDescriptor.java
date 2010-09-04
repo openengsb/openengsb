@@ -19,15 +19,19 @@ package org.openengsb.core.config.descriptor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.openengsb.core.config.Domain;
+import org.openengsb.core.config.util.BundleStrings;
+
+import com.google.common.base.Preconditions;
 
 public class ServiceDescriptor {
     private String id;
-    private String serviceInterface;
+    private Class<? extends Domain> serviceType;
     private String name;
     private String description;
-    private Class<? extends Domain> type;
+    private Class<? extends Domain> implementationType;
     private final List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
 
     public ServiceDescriptor() {
@@ -40,19 +44,30 @@ public class ServiceDescriptor {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     /**
      * Returns the service interface id this service implements.
      */
-    public String getServiceInterfaceId() {
-        return serviceInterface;
+    public Class<? extends Domain> getServiceType() {
+        return serviceType;
     }
-    
-    
+
+    public void setServiceType(Class<? extends Domain> serviceType) {
+        this.serviceType = serviceType;
+    }
+
     /**
      * Returns the Class that implements this service
      */
-    public Class<? extends Domain> getType() {
-        return type;
+    public Class<? extends Domain> getImplementationType() {
+        return implementationType;
+    }
+
+    public void setImplementationType(Class<? extends Domain> implementationType) {
+        this.implementationType = implementationType;
     }
 
     /**
@@ -62,11 +77,19 @@ public class ServiceDescriptor {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     /**
      * Returns a localized description.
      */
     public String getDescription() {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     /**
@@ -76,14 +99,22 @@ public class ServiceDescriptor {
         return attributes;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public void addAttribute(AttributeDefinition attribute) {
+        attributes.add(attribute);
+    }
+
+    public static Builder builder(Locale locale, BundleStrings strings) {
+        return new Builder(locale, strings);
     }
 
     public static class Builder {
         private final ServiceDescriptor desc;
+        private final BundleStrings strings;
+        private final Locale locale;
 
-        public Builder() {
+        public Builder(Locale locale, BundleStrings strings) {
+            this.locale = locale;
+            this.strings = strings;
             desc = new ServiceDescriptor();
         }
 
@@ -92,23 +123,23 @@ public class ServiceDescriptor {
             return this;
         }
 
-        public Builder implementsInterface(String serviceInterface) {
-            desc.serviceInterface = serviceInterface;
-            return this;
-        }
-        
-        public Builder type(Class<? extends Domain> type){
-            desc.type = type;
+        public Builder serviceType(Class<? extends Domain> serviceType) {
+            desc.serviceType = serviceType;
             return this;
         }
 
-        public Builder name(String name) {
-            desc.name = name;
+        public Builder implementationType(Class<? extends Domain> type) {
+            desc.implementationType = type;
             return this;
         }
 
-        public Builder description(String description) {
-            desc.description = description;
+        public Builder name(String key) {
+            desc.name = strings.getString(key, locale);
+            return this;
+        }
+
+        public Builder description(String key) {
+            desc.description = strings.getString(key, locale);
             return this;
         }
 
@@ -118,6 +149,14 @@ public class ServiceDescriptor {
         }
 
         public ServiceDescriptor build() {
+            Preconditions.checkState(desc.id != null, "id has not been set");
+            Preconditions.checkState(desc.serviceType != null, "service type has not been set");
+            Preconditions.checkState(desc.implementationType != null, "implementation type has not been set");
+            Preconditions.checkState(desc.serviceType.isAssignableFrom(desc.implementationType),
+                    "implementatio type is not compatible to service type");
+            Preconditions.checkState(desc.name != null && !desc.name.isEmpty(), "service name has not been set");
+            Preconditions.checkState(desc.description != null && !desc.description.isEmpty(),
+                    "service description has not been set");
             return desc;
         }
     }
