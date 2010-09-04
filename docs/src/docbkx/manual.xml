@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude"
+  xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+
+  <info>
+    <title>Open Engineering Service Bus Documentation</title>
+    <copyright>
+      <year>2009</year>
+      <year>2010</year>
+      <holder>OpenEngSB Division, Vienna University of Technology></holder>
+    </copyright>
+    <author>
+      <orgname>OpenEngSB Division, Vienna University of Technology</orgname>
+      <contrib>Development Team and Contributors</contrib>
+      <email>openengsb-dev at googlegroups.com</email>
+    </author>
+  </info>
+
+  <part xml:id="userManual">
+    <title>User Manual</title>
+    <subtitle>the subtitle</subtitle>
+    <partintro>
+      <para>introduction about this part</para>
+      <para>target audience</para>
+    </partintro>
+    <chapter>
+      <title>Chapter Title</title>
+      <subtitle>Subtitle of Chapter</subtitle>
+      <section>
+        <title>Section1 Title</title>
+        <subtitle>Subtitle of Section 1</subtitle>
+        <para>Text</para>
+      </section>
+      <section>
+        <title>test</title>
+        <para>this is another para.</para>
+      </section>
+    </chapter>
+  </part>
+  
+  <part xml:id="appendix">
+    <title>Appendix</title>
+    <xi:include href="appendix/codestyle.xml" />
+    <xi:include href="appendix/documentation.xml" />
+    <xi:include href="appendix/license.xml" />
+  </part>
+
+</book>
