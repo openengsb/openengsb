@@ -29,6 +29,27 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.springframework.osgi.context.BundleContextAware;
 
+/**
+ * Base class for {@link ServiceManager} implementations. Handles all OSGi
+ * related stuff and exporting the right service properties that are needed for
+ * service discovery.
+ *
+ * All service-specific action, like descriptor building, service instantiation
+ * and service updating are encapsulated in a {@link ServiceInstanceFactory}.
+ * Creating a new service manager should be as simple as implementing the
+ * {@link ServiceInstanceFactory} and creating a subclass of this class:
+ *
+ * <pre>
+ * public class ExampleServiceManager extends AbstractServiceManager&lt;ExampleDomain, TheInstanceType&gt; {
+ *     public ExampleServiceManager(ServiceInstanceFactory&lt;ExampleDomain, TheInstanceType&gt; factory) {
+ *         super(factory);
+ *     }
+ * }
+ * </pre>
+ *
+ * @param <DomainType> interface of the domain this service manages
+ * @param <InstanceType> actual service implementation this service manages
+ */
 public abstract class AbstractServiceManager<DomainType extends Domain, InstanceType extends DomainType> implements
         ServiceManager, BundleContextAware {
 
@@ -64,10 +85,8 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
 
     @Override
     public ServiceDescriptor getDescriptor(Locale locale) {
-        return factory.getDescriptor(
-                ServiceDescriptor.builder().id(getImplementationClass().getName())
-                        .implementsInterface(getDomainInterface().getName()).type(getImplementationClass()), locale,
-                strings);
+        return factory.getDescriptor(ServiceDescriptor.builder().id(getImplementationClass().getName())
+                .implementsInterface(getDomainInterface().getName()).type(getImplementationClass()), locale, strings);
     }
 
     @Override
@@ -78,8 +97,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
                 Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
                 ServiceRegistration registration = bundleContext.registerService(new String[] {
                         getImplementationClass().getName(), getDomainInterface().getName(), Domain.class.getName() },
-                        instance,
-                        serviceProperties);
+                        instance, serviceProperties);
                 services.put(id, new DomainRepresentation(instance, registration));
             } else {
                 factory.updateServiceInstance(services.get(id).service, attributes);

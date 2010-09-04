@@ -17,6 +17,10 @@
  */
 package org.openengsb.core.config;
 
+/**
+ * Base interface all domain interfaces have to implement to be discoverable in
+ * the OpenEngSB environment.
+ */
 public interface Domain {
 
 }
