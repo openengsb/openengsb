@@ -32,10 +32,7 @@ public class LogServiceInstanceFactory implements ServiceInstanceFactory<Example
 
     @Override
     public ServiceDescriptor getDescriptor(Builder builder, Locale locale, BundleStrings strings) {
-        return ServiceDescriptor.builder()
-            .id(LogService.class.getName())
-            .implementsInterface(ExampleDomain.class.getName())
-            .type(LogService.class)
+        return builder
             .name(strings.getString("log.name", locale))
             .description(strings.getString("log.description", locale))
             .attribute(AttributeDefinition.builder()
