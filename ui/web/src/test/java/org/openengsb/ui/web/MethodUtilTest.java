@@ -23,19 +23,30 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.openengsb.core.config.Domain;
 
 public class MethodUtilTest {
 
-    public interface Testinterface {
+    public interface HiddenInterface {
+        void hiddenMethod();
+    }
+
+    public interface Testinterface extends Domain {
         public void dosomething();
     }
 
-    public class TestClass implements Testinterface {
+    public class TestClass implements Testinterface, HiddenInterface {
         @Override
         public void dosomething() {
         }
 
         public void dootherstuff() {
+
+        }
+
+        @Override
+        public void hiddenMethod() {
+
         }
     }
 
@@ -53,7 +64,7 @@ public class MethodUtilTest {
         }
     }
 
-    public interface TestInterface2 {
+    public interface TestInterface2 extends Domain {
         public void dootherstuff();
     }
 
@@ -86,5 +97,12 @@ public class MethodUtilTest {
         List<Method> methods = MethodUtil.getServiceMethods(new MultiClass());
         Assert.assertTrue(methods.contains(Testinterface.class.getMethod("dosomething")));
         Assert.assertTrue(methods.contains(TestInterface2.class.getMethod("dootherstuff")));
+    }
+
+    @Test
+    public void onlyDomainMethodsAreReturned() throws Exception {
+        List<Method> methods = MethodUtil.getServiceMethods(new TestClass());
+        Method hidden = HiddenInterface.class.getMethod("hiddenMethod");
+        Assert.assertFalse(methods.contains(hidden));
     }
 }
