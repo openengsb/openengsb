@@ -41,7 +41,10 @@ public class EditorPageTest {
     public void setup() {
         new WicketTester();
         manager = mock(ServiceManager.class);
-        attrib1 = AttributeDefinition.builder().id("a").defaultValue("a_default").name("a_name").build();
+        attrib1 = new AttributeDefinition();
+        attrib1.setId("a");
+        attrib1.setDefaultValue("a_default");
+        attrib1.setName("a_name");
         ServiceDescriptor d = new ServiceDescriptor();
         d.setId("a");
         d.setName("sn");

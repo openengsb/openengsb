@@ -30,7 +30,6 @@ import java.util.Map;
 
 import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
-import org.openengsb.core.config.descriptor.AttributeDefinition.Builder;
 
 public class MethodUtil {
 
@@ -54,11 +53,11 @@ public class MethodUtil {
                         || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
                     continue;
                 }
-                Builder builder = AttributeDefinition.builder();
-                builder.name(propertyDescriptor.getDisplayName());
-                builder.description(propertyDescriptor.getShortDescription());
-                builder.id(propertyDescriptor.getName());
-                attributes.add(builder.build());
+                AttributeDefinition a = new AttributeDefinition();
+                a.setName(propertyDescriptor.getDisplayName());
+                a.setDescription(propertyDescriptor.getShortDescription());
+                a.setId(propertyDescriptor.getName());
+                attributes.add(a);
             }
         } catch (IntrospectionException ex) {
             SendEventPage.log.error("building attribute list failed", ex);

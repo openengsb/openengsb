@@ -43,8 +43,8 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
     @Override
     public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder, Locale locale, BundleStrings strings) {
         return builder
-                .name(strings.getString("email.name", locale))
-                .description(strings.getString("email.description", locale))
+                .name("email.name")
+                .description("email.description")
                 .attribute(
                         buildAttribute(locale, strings, "user", "username.outputMode",
                                 "username.outputMode.description"))
@@ -67,8 +67,8 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
 
     private AttributeDefinition buildAttribute(Locale locale, BundleStrings strings, String id, String nameId,
             String descriptionId) {
-        return AttributeDefinition.builder().id(id).name(strings.getString(nameId, locale))
-                .description(strings.getString(descriptionId, locale)).defaultValue("").required().build();
+        return AttributeDefinition.builder(locale, strings).id(id).name(nameId).description(descriptionId)
+                .defaultValue("").required().build();
 
     }
 

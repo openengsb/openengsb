@@ -61,12 +61,11 @@ public class EditorPage extends BasePage {
     }
 
     private List<AttributeDefinition> buildAttributeList(ServiceManager service) {
-        AttributeDefinition id = AttributeDefinition.builder()
-                .id("id")
-                .name(new StringResourceModel("attribute.id.name", this, null).getString())
-                .description(new StringResourceModel("attribute.id.description", this, null).getString())
-                .required()
-                .build();
+        AttributeDefinition id = new AttributeDefinition();
+        id.setId("id");
+        id.setName(new StringResourceModel("attribute.id.name", this, null).getString());
+        id.setDescription(new StringResourceModel("attribute.id.description", this, null).getString());
+        id.setRequired(true);
         ServiceDescriptor descriptor = service.getDescriptor(getSession().getLocale());
         List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
         attributes.add(id);

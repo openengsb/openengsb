@@ -149,13 +149,13 @@ public class ServiceDescriptor {
         }
 
         public ServiceDescriptor build() {
-            Preconditions.checkState(desc.id != null, "id has not been set");
+            Preconditions.checkState(desc.id != null && !desc.id.trim().isEmpty(), "id has not been set");
             Preconditions.checkState(desc.serviceType != null, "service type has not been set");
             Preconditions.checkState(desc.implementationType != null, "implementation type has not been set");
             Preconditions.checkState(desc.serviceType.isAssignableFrom(desc.implementationType),
                     "implementatio type is not compatible to service type");
-            Preconditions.checkState(desc.name != null && !desc.name.isEmpty(), "service name has not been set");
-            Preconditions.checkState(desc.description != null && !desc.description.isEmpty(),
+            Preconditions.checkState(desc.name != null && !desc.name.trim().isEmpty(), "service name has not been set");
+            Preconditions.checkState(desc.description != null && !desc.description.trim().isEmpty(),
                     "service description has not been set");
             return desc;
         }
