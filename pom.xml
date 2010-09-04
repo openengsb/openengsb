@@ -447,7 +447,7 @@
             <configuration>
               <appendAssemblyId>false</appendAssemblyId>
               <descriptors>
-                <descriptor>${project.basedir}/assemble/all.xml</descriptor>
+                <descriptor>${project.basedir}/assembly/all.xml</descriptor>
               </descriptors>
             </configuration>
           </plugin>
