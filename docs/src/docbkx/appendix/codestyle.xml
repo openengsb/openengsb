@@ -102,8 +102,7 @@ public void foo() {
             throw new MyException();
         }
     }
-}
-        </programlisting>
+}       </programlisting>
         Good:
         <programlisting>
 public void foo() {
@@ -120,32 +119,31 @@ public void foo() {
     }
 
     // do some work
-}
-        </programlisting>
+}       </programlisting>
       </para>
     </section>
     <section>
       <title>Keep methods short</title>
-      <para> Methods longer than 40 lines are candidates for refactoring. A method should only do
+      <para>Methods longer than 40 lines are candidates for refactoring. A method should only do
         one thing and has to be easily understandable. The number of arguments should be minimized.
-        A method should only be at a single level of abstraction. </para>
+        A method should only be at a single level of abstraction.</para>
     </section>
     <section>
       <title>Use enums</title>
-      <para> Prefer typesafe enumerations over integer constants. </para>
+      <para>Prefer typesafe enumerations over integer constants.</para>
     </section>
     <section>
       <title>Avoid use of static members</title>
-      <para> Static members are a sign of a design error because they are like global variables.
-        It's fine if you declare a constant as final abstract of course. </para>
+      <para>Static members are a sign of a design error because they are like global variables.
+        It's fine if you declare a constant as final abstract of course.</para>
     </section>
     <section>
       <title>Use fully qualified imports</title>
-      <para> Don't import org.example.package.*, instead import the needed classes. </para>
+      <para>Don't import org.example.package.*, instead import the needed classes.</para>
     </section>
     <section>
       <title>Never declare implementation types</title>
-      <para> Use interfaces or the abstract base class instead of concrete implementation classes
+      <para>Use interfaces or the abstract base class instead of concrete implementation classes
         where possible. Don't write:
         <programlisting><![CDATA[ArrayList<String> names = new ArrayList<String>();]]></programlisting>
         Instead use the interface name:
@@ -339,7 +337,7 @@ public void foo() {
 
           <listitem>
             <para>Located in the normal package structure, i.e.
-              \outer.project.package\.\inner.project.package\</para>
+              <code>outer.project.package.inner.project.package</code></para>
           </listitem>
 
           <listitem>
@@ -351,7 +349,7 @@ public void foo() {
             <para>Filenames end with IT.java</para>
           </listitem>
           <listitem>
-            <para>Located in \outer.project.package\.it.\inner.project.package\</para>
+            <para>Located in <code>outer.project.package.it.inner.project.package</code></para>
           </listitem>
 
           <listitem>
@@ -363,7 +361,7 @@ public void foo() {
             <para>Filenames end with UT.java</para>
           </listitem>
           <listitem>
-            <para>Located in \outer.project.package\.ut.\inner.project.package\</para>
+            <para>Located in <code>outer.project.package.ut.inner.project.package</code></para>
           </listitem>
         </itemizedlist>
       </para>

@@ -7,11 +7,13 @@
     <copyright>
       <year>2009</year>
       <year>2010</year>
-      <holder>OpenEngSB Division, Vienna University of Technology></holder>
+      <holder>OpenEngSB Division, Vienna University of Technology</holder>
     </copyright>
     <author>
-      <orgname>OpenEngSB Division, Vienna University of Technology</orgname>
-      <contrib>Development Team and Contributors</contrib>
+      <personname>
+        <firstname>Open Engineering Service Bus</firstname>
+        <surname>Development Team and Contributors</surname>
+      </personname>
       <email>openengsb-dev at googlegroups.com</email>
     </author>
   </info>
