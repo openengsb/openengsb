@@ -76,6 +76,21 @@
                   <type>xml</type>
                   <classifier>platform</classifier>
                 </artifact>
+                <artifact>
+                  <file>target/classes/karaf.composite</file>
+                  <type>composite</type>
+                  <classifier>karaf</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/classes/settings.debug.composite</file>
+                  <type>composite</type>
+                  <classifier>run</classifier>
+                </artifact> 
+                <artifact>
+                  <file>target/classes/settings.release.composite</file>
+                  <type>composite</type>
+                  <classifier>release</classifier>
+                </artifact>
               </artifacts>
             </configuration>
           </execution>
