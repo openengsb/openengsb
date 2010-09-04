@@ -42,9 +42,9 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         }
     }
 
-    protected BundleContext bundleContext;
-    protected BundleStrings strings;
-    protected final Map<String, DomainRepresentation> services = new HashMap<String, DomainRepresentation>();
+    private BundleContext bundleContext;
+    private BundleStrings strings;
+    private final Map<String, DomainRepresentation> services = new HashMap<String, DomainRepresentation>();
     private final ServiceInstanceFactory<DomainType, InstanceType> factory;
 
     public AbstractServiceManager(ServiceInstanceFactory<DomainType, InstanceType> factory) {
@@ -70,16 +70,6 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
                 strings);
     }
 
-    @SuppressWarnings("unchecked")
-    protected Class<DomainType> getDomainInterface() {
-        return (Class<DomainType>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-    }
-
-    @SuppressWarnings("unchecked")
-    protected Class<InstanceType> getImplementationClass() {
-        return (Class<InstanceType>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
-    }
-
     @Override
     public void update(String id, Map<String, String> attributes) {
         synchronized (services) {
@@ -97,19 +87,29 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         }
     }
 
-    private Hashtable<String, String> createNotificationServiceProperties(String id) {
-        Hashtable<String, String> serviceProperties = new Hashtable<String, String>();
-        serviceProperties.put("id", id);
-        serviceProperties.put("domain", getDomainInterface().getName());
-        serviceProperties.put("class", getImplementationClass().getName());
-        return serviceProperties;
-    }
-
     @Override
     public void delete(String id) {
         synchronized (services) {
             services.get(id).registration.unregister();
             services.remove(id);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Class<DomainType> getDomainInterface() {
+        return (Class<DomainType>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Class<InstanceType> getImplementationClass() {
+        return (Class<InstanceType>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
+    }
+
+    private Hashtable<String, String> createNotificationServiceProperties(String id) {
+        Hashtable<String, String> serviceProperties = new Hashtable<String, String>();
+        serviceProperties.put("id", id);
+        serviceProperties.put("domain", getDomainInterface().getName());
+        serviceProperties.put("class", getImplementationClass().getName());
+        return serviceProperties;
     }
 }

@@ -66,7 +66,15 @@ public class AbstractServiceManagerTest {
     }
 
     @Test
-    public void testGetDescriptor() throws Exception {
+    public void testInterfaceGetters() {
+        BundleContext bundleContextMock = mockBundleContextForServiceManager();
+        DummyServiceManager manager = createDummyManager(bundleContextMock, new DummyInstance());
+        Assert.assertEquals(DummyDomain.class, manager.getDomainInterface());
+        Assert.assertEquals(DummyInstance.class, manager.getImplementationClass());
+    }
+
+    @Test
+    public void testGetDescriptor() {
         BundleContext bundleContextMock = mockBundleContextForServiceManager();
         DummyServiceManager manager = createDummyManager(bundleContextMock, new DummyInstance());
 
@@ -78,7 +86,7 @@ public class AbstractServiceManagerTest {
     }
 
     @Test
-    public void testAddNewOne() throws Exception {
+    public void testAddNewOne() {
         BundleContext bundleContextMock = mockBundleContextForServiceManager();
         HashMap<String, String> attributes = new HashMap<String, String>();
         DummyInstance instance = new DummyInstance();
@@ -93,7 +101,7 @@ public class AbstractServiceManagerTest {
     }
 
     @Test
-    public void testUpdateExistingOne() throws Exception {
+    public void testUpdateExistingOne() {
         BundleContext bundleContextMock = mockBundleContextForServiceManager();
         HashMap<String, String> attributes = new HashMap<String, String>();
 
@@ -110,7 +118,7 @@ public class AbstractServiceManagerTest {
     }
 
     @Test
-    public void testDeleteService() throws Exception {
+    public void testDeleteService() {
         BundleContext bundleContextMock = mockBundleContextForServiceManager();
         HashMap<String, String> attributes = new HashMap<String, String>();
         DummyInstance instance = new DummyInstance();
