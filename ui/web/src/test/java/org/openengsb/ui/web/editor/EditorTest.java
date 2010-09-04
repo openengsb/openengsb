@@ -36,6 +36,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
@@ -44,15 +45,23 @@ import org.openengsb.ui.web.editor.fields.AbstractField;
 @SuppressWarnings("serial")
 public class EditorTest {
 
-    private final AttributeDefinition attrib = newAttribute("attrib", "name", "desc").build();
-    private final AttributeDefinition attribNoDesc = newAttribute("attribNoDesc", "name", "").build();
-    private final AttributeDefinition attribOption = newAttribute("attribOption", "option", "")
-            .option("label_a", "1").option("label_b", "2").build();
-    private final AttributeDefinition attribBoolean = newAttribute("attribBool", "bool", "").asBoolean().build();
 
     private WicketTester tester;
     private EditorPanel editor;
     private Map<String, String> defaultValues;
+    private AttributeDefinition attribOption;
+    private AttributeDefinition attribBoolean;
+    private final AttributeDefinition attrib = newAttribute("attrib", "name", "desc");
+    private final AttributeDefinition attribNoDesc = newAttribute("attribNoDesc", "name", "");
+
+    @Before
+    public void setup() {
+        attribOption = newAttribute("attribOption", "option", "");
+        attribOption.addOption("label_a", "1");
+        attribOption.addOption("label_b", "2");
+        attribBoolean = newAttribute("attribBool", "bool", "");
+        attribBoolean.setBoolean(true);
+    }
 
     @Test
     public void editingStringAttribute_shouldRenderTextFieldWithPresetValues() throws Exception {
@@ -134,8 +143,12 @@ public class EditorTest {
         assertThat(editor.getValues().get(attribBoolean.getId()), is("true"));
     }
 
-    private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {
-        return AttributeDefinition.builder().id(id).name(name).description(desc);
+    private AttributeDefinition newAttribute(String id, String name, String desc) {
+        AttributeDefinition a = new AttributeDefinition();
+        a.setId(id);
+        a.setName(name);
+        a.setDescription(desc);
+        return a;
     }
 
     private void startEditorPanel(final AttributeDefinition... attributes) {

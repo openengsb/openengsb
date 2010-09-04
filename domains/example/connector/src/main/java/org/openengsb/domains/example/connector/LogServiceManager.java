@@ -17,106 +17,13 @@
  */
 package org.openengsb.domains.example.connector;
 
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.Map;
-
-import org.openengsb.core.config.Domain;
-import org.openengsb.core.config.ServiceManager;
-import org.openengsb.core.config.descriptor.AttributeDefinition;
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
-import org.openengsb.core.config.util.BundleStrings;
+import org.openengsb.core.config.AbstractServiceManager;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.example.connector.internal.LogService;
-import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
-public class LogServiceManager implements ServiceManager, BundleContextAware {
+public class LogServiceManager extends AbstractServiceManager<ExampleDomain, LogService> {
 
-    private BundleContext bundleContext;
-    private BundleStrings strings;
-    private final Map<String, LogService> services = new HashMap<String, LogService>();
-
-    @Override
-    public ServiceDescriptor getDescriptor() {
-        return getDescriptor(Locale.getDefault());
-    }
-
-    @Override
-    public ServiceDescriptor getDescriptor(Locale locale) {
-        return ServiceDescriptor.builder()
-                .id(LogService.class.getName())
-                .implementsInterface(ExampleDomain.class.getName())
-                .type(LogService.class)
-                .name(strings.getString("log.name", locale))
-                .description(strings.getString("log.description", locale))
-                .attribute(AttributeDefinition.builder()
-                        .id("prefix")
-                        .name(strings.getString("log.prefix.name", locale))
-                        .description(strings.getString("log.outputMode.description", locale))
-                        .defaultValue("")
-                        .build())
-                .attribute(AttributeDefinition.builder()
-                        .id("outputMode")
-                        .name(strings.getString("log.outputMode.name", locale))
-                        .description(strings.getString("log.outputMode.description", locale))
-                        .defaultValue(strings.getString("log.outputMode.info"))
-                        .option(strings.getString("log.outputMode.debug"), "DEBUG")
-                        .option(strings.getString("log.outputMode.info"), "INFO")
-                        .option(strings.getString("log.outputMode.warn"), "WARN")
-                        .option(strings.getString("log.outputMode.error"), "ERROR")
-                        .required()
-                        .build())
-                .attribute(AttributeDefinition.builder()
-                        .id("flush")
-                        .name(strings.getString("log.flush.name", locale))
-                        .description(strings.getString("log.flush.description", locale))
-                        .defaultValue("false")
-                        .asBoolean()
-                        .build())
-                .build();
-    }
-
-    @Override
-    public void update(String id, Map<String, String> attributes) {
-        boolean isNew = false;
-        LogService s = null;
-        synchronized (services) {
-            s = services.get(id);
-            if (s == null) {
-                s = new LogService(id);
-                services.put(id, s);
-                isNew = true;
-            }
-            if (attributes.containsKey("outputMode")) {
-                s.setOutputMode(attributes.get("outputMode"));
-            }
-        }
-        if (isNew) {
-            Hashtable<String, String> props = new Hashtable<String, String>();
-            props.put("id", id);
-            props.put("domain", ExampleDomain.class.getName());
-            props.put("class", LogService.class.getName());
-            bundleContext.registerService(new String[] { LogService.class.getName(), ExampleDomain.class.getName(),
-                    Domain.class.getName() },
-                    s, props);
-        }
-    }
-
-    @Override
-    public void delete(String id) {
-        synchronized (services) {
-            services.remove(id);
-        }
-    }
-
-    public void init() {
-        strings = new BundleStrings(bundleContext.getBundle());
-    }
-
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
+    public LogServiceManager() {
+        super(new LogServiceInstanceFactory());
     }
 }

@@ -17,8 +17,6 @@
  */
 package org.openengsb.domains.notification.email.internal;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
 import org.openengsb.domains.notification.email.internal.abstraction.MailProperties;
@@ -27,19 +25,11 @@ import org.osgi.framework.ServiceRegistration;
 
 public class EmailNotifier implements NotificationDomain {
 
-    private Log log = LogFactory.getLog(getClass());
     private final String id;
 
-    private String user;
-    private String password;
-    private String smtpAuth;
-    private String sender;
-    private String smtpHost;
-    private String smtpPort;
-
-    private MailAbstraction mailAbstraction;
+    private final MailAbstraction mailAbstraction;
     private ServiceRegistration serviceRegistration;
-    private MailProperties properties;
+    private final MailProperties properties;
 
     public EmailNotifier(String id, MailAbstraction mailAbstraction) {
         this.id = id;

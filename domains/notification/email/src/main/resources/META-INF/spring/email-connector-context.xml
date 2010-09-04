@@ -27,9 +27,9 @@
     <osgi:service-properties>
         <entry key="domain" value="org.openengsb.domains.notification.NotificationDomain"/>
     </osgi:service-properties>
-    <bean class="org.openengsb.domains.notification.email.EmailServiceManager" init-method="init" >
+    <bean class="org.openengsb.domains.notification.email.EmailServiceManager">
         <constructor-arg>
-            <bean class="org.openengsb.domains.notification.email.internal.DefaultEmailNotifierBuilder" >
+            <bean class="org.openengsb.domains.notification.email.internal.EmailNotifierFactory" >
                 <constructor-arg>
                     <bean class="org.openengsb.domains.notification.email.internal.abstraction.JavaxMailAbstraction" />
                 </constructor-arg>
@@ -37,6 +37,5 @@
         </constructor-arg>
     </bean>
   </osgi:service>
-  
 
 </beans>

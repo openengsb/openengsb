@@ -26,23 +26,28 @@ import java.util.List;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openengsb.core.config.Domain;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.core.config.ServiceManager;
-import org.openengsb.ui.web.fixtures.log.LogDomain;
-import org.openengsb.ui.web.fixtures.log.StdoutLogService;
-import org.openengsb.ui.web.fixtures.log.StdoutLogServiceManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
+
 public class OsgiDomainServiceTest {
+
+    private static interface DummyDomain extends Domain {
+    }
+
+    private static class DummyInstance implements DummyDomain {
+    }
 
     @Test
     public void testGetDomains() throws InvalidSyntaxException {
         BundleContext contextMock = Mockito.mock(BundleContext.class);
         List<ServiceReference> references = new ArrayList<ServiceReference>();
         ServiceReference[] serviceReferences = references.toArray(new ServiceReference[] {});
-        Mockito.when(contextMock.getAllServiceReferences(LogDomain.class.getName(), null))
+        Mockito.when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), null))
                 .thenReturn(serviceReferences);
         List<DomainProvider> domainProvider = new ArrayList<DomainProvider>();
         DomainProvider provider = Mockito.mock(DomainProvider.class);
@@ -69,23 +74,22 @@ public class OsgiDomainServiceTest {
         ServiceReference singleReference = Mockito.mock(ServiceReference.class);
         references.add(singleReference);
         ServiceReference[] serviceReferences = references.toArray(new ServiceReference[] {});
-        Mockito.when(contextMock.getAllServiceReferences(LogDomain.class.getName(), null))
+        Mockito.when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), null))
                 .thenReturn(serviceReferences);
         List<DomainProvider> domainProvider = new ArrayList<DomainProvider>();
         DomainProvider provider = Mockito.mock(DomainProvider.class);
         domainProvider.add(provider);
         Mockito.when(
                 contextMock.getAllServiceReferences(ServiceManager.class.getName(),
-                        "(domain=" + LogDomain.class.getName() + ")")).thenReturn(serviceReferences);
-        Mockito.when(contextMock.getService(singleReference)).thenReturn(new StdoutLogServiceManager());
+                        "(domain=" + DummyDomain.class.getName() + ")")).thenReturn(serviceReferences);
+        ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
+        Mockito.when(contextMock.getService(singleReference)).thenReturn(serviceManagerMock);
 
         OsgiDomainService service = new OsgiDomainService(contextMock);
-        List<ServiceManager> serviceManagersForDomain = service.serviceManagersForDomain(LogDomain.class);
+        List<ServiceManager> serviceManagersForDomain = service.serviceManagersForDomain(DummyDomain.class);
 
         assertEquals(1, serviceManagersForDomain.size());
-        ServiceManager serviceManager = serviceManagersForDomain.get(0);
-        assertEquals(LogDomain.class.getName(), serviceManager.getDescriptor().getServiceInterfaceId());
-        assertEquals(StdoutLogService.class.getName(), serviceManager.getDescriptor().getId());
+        assertSame(serviceManagerMock, serviceManagersForDomain.get(0));
     }
 
     @Test
@@ -95,12 +99,12 @@ public class OsgiDomainServiceTest {
         ServiceReference singleReference = Mockito.mock(ServiceReference.class);
         references.add(singleReference);
         ServiceReference[] serviceReferences = references.toArray(new ServiceReference[] {});
-        Mockito.when(contextMock.getAllServiceReferences(StdoutLogService.class.getName(), null)).thenReturn(
+        Mockito.when(contextMock.getAllServiceReferences(DummyInstance.class.getName(), null)).thenReturn(
                 serviceReferences);
 
         OsgiDomainService service = new OsgiDomainService(contextMock);
         List<ServiceReference> serviceReferencesForConnector = service
-                .serviceReferencesForConnector(StdoutLogService.class);
+                .serviceReferencesForConnector(DummyInstance.class);
 
         assertEquals(1, serviceReferencesForConnector.size());
         assertSame(singleReference, serviceReferencesForConnector.get(0));
