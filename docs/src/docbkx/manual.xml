@@ -35,7 +35,7 @@
     </author>
   </info>
 
-  <part xml:id="userManual">
+  <part xml:id="user.manual">
     <title>User Manual</title>
     <partintro>
       <para>This part gives an introduction into the OpenEngSB project and explains its base usage
@@ -45,15 +45,16 @@
       <para>The target audience of this part are users and developers.</para>
     </partintro>
     <xi:include href="user/whatisopenengsb.xml" />
-    <!-- xi:include href="user/whentouseopenengsb.xml" /-->
-    <xi:include href="user/gettingstarted.xml" />
-    <xi:include href="user/testclient.xml" />
+    <!--xi:include href="user/gettingstarted.xml" /-->
+    <!--xi:include href="user/whentouseopenengsb.xml" /-->
+    <!--xi:include href="user/gettingstarted.xml" /-->
+    <!--xi:include href="user/testclient.xml" /-->
   </part>
 
   <part xml:id="appendix">
     <title>Appendix</title>
     <xi:include href="appendix/codestyle.xml"/>
-    <xi:include href="appendix/documentation.xml"/>
+    <xi:include href="appendix/writing.documentation.xml"/>
     <xi:include href="appendix/license.xml"/>
   </part>
 
