@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
 <book xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude"
   xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
 
@@ -20,31 +37,24 @@
 
   <part xml:id="userManual">
     <title>User Manual</title>
-    <subtitle>the subtitle</subtitle>
     <partintro>
-      <para>introduction about this part</para>
-      <para>target audience</para>
+      <para>This part gives an introduction into the OpenEngSB project and explains its base usage
+        environment and the concepts, such as Domains, Connectors, Workflows and similar important
+        ideas. Furthermore this part covers installation, configuration and usage of the
+        administration interface to implement a tool environment according to your needs.</para>
+      <para>The target audience of this part are users and developers.</para>
     </partintro>
-    <chapter>
-      <title>Chapter Title</title>
-      <subtitle>Subtitle of Chapter</subtitle>
-      <section>
-        <title>Section1 Title</title>
-        <subtitle>Subtitle of Section 1</subtitle>
-        <para>Text</para>
-      </section>
-      <section>
-        <title>test</title>
-        <para>this is another para.</para>
-      </section>
-    </chapter>
+    <xi:include href="user/whatisopenengsb.xml" />
+    <!-- xi:include href="user/whentouseopenengsb.xml" /-->
+    <xi:include href="user/gettingstarted.xml" />
+    <xi:include href="user/testclient.xml" />
   </part>
-  
+
   <part xml:id="appendix">
     <title>Appendix</title>
-    <xi:include href="appendix/codestyle.xml" />
-    <xi:include href="appendix/documentation.xml" />
-    <xi:include href="appendix/license.xml" />
+    <xi:include href="appendix/codestyle.xml"/>
+    <xi:include href="appendix/documentation.xml"/>
+    <xi:include href="appendix/license.xml"/>
   </part>
 
 </book>
