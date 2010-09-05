@@ -38,7 +38,7 @@ public class NotifcationDomainProvider implements DomainProvider, BundleContextA
 
     @Override
     public String getId() {
-        return NotificationDomain.class.getName();
+        return "domains.notification";//NotificationDomain.class.getName();
     }
 
     @Override

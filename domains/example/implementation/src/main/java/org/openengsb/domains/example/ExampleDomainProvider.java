@@ -39,7 +39,7 @@ public class ExampleDomainProvider implements DomainProvider, BundleContextAware
 
     @Override
     public String getId() {
-        return ExampleDomain.class.getName();
+        return "domains.example";//ExampleDomain.class.getName();
     }
 
     @Override
