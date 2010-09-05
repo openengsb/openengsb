@@ -39,7 +39,7 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openengsb.core.config.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.ui.web.editor.fields.AbstractField;
 
 @SuppressWarnings("serial")

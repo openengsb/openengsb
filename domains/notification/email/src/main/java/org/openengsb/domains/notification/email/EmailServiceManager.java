@@ -17,7 +17,7 @@
  */
 package org.openengsb.domains.notification.email;
 
-import org.openengsb.core.config.AbstractServiceManager;
+import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.email.internal.EmailNotifier;
 import org.openengsb.domains.notification.email.internal.EmailNotifierFactory;

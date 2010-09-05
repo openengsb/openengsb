@@ -18,7 +18,7 @@
 package org.openengsb.domains.notification.email.integration;
 
 import org.junit.Test;
-import org.openengsb.core.config.DomainMethodExecutionException;
+import org.openengsb.core.common.DomainMethodExecutionException;
 import org.openengsb.domains.notification.email.internal.EmailNotifier;
 import org.openengsb.domains.notification.email.internal.abstraction.JavaxMailAbstraction;
 import org.openengsb.domains.notification.model.Attachment;

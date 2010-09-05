@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.core.config.descriptor;
+package org.openengsb.core.common.descriptor;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -28,8 +28,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.openengsb.core.config.descriptor.AttributeDefinition.Builder;
-import org.openengsb.core.config.util.BundleStrings;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
+import org.openengsb.core.common.util.BundleStrings;
 
 public class AttributeDefinitionTest {
 

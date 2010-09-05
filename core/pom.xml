@@ -36,7 +36,6 @@
 
   <modules>
     <module>common</module>
-    <module>config</module>
     <module>workflow</module>
   </modules>
 

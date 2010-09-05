@@ -1,6 +1,6 @@
 package org.openengsb.domains.notification.email.internal.abstraction;
 
-import org.openengsb.core.config.DomainMethodExecutionException;
+import org.openengsb.core.common.DomainMethodExecutionException;
 
 import javax.mail.*;
 import javax.mail.Message.RecipientType;

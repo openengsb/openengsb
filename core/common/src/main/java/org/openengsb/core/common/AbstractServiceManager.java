@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.core.config;
+package org.openengsb.core.common;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
@@ -23,8 +23,8 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
-import org.openengsb.core.config.util.BundleStrings;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.util.BundleStrings;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.springframework.osgi.context.BundleContextAware;

@@ -15,12 +15,11 @@
    limitations under the License.
 
  */
-package org.openengsb.core.config;
+package org.openengsb.core.common;
 
 import java.util.List;
 import java.util.Locale;
 
-import org.openengsb.core.common.Event;
 
 /**
  * Provide necessary information about an OpenEngSB domain. Each domain in the

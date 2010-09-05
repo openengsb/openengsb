@@ -17,7 +17,7 @@
  */
 package org.openengsb.domains.example;
 
-import org.openengsb.core.config.Domain;
+import org.openengsb.core.common.Domain;
 
 public interface ExampleDomain extends Domain {
     void doSomething(String message);
