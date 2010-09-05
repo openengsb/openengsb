@@ -79,13 +79,17 @@ public class PropertyEditableColumn extends PropertyRenderableColumn {
         List<String> services = new ArrayList<String>();
         List<DomainProvider> domains = domainService.domains();
         for (DomainProvider domainProvider : domains) {
-            String domainProvierName = domainProvider.getName(Locale.ENGLISH); // TODO change here to getId() after getId from domainProvider works right
-            if (("/domains/"+domainProvierName+"/defaultConnector/id").equals(keyPath)) {//TODO also support current locale
+            String domainProvierName = domainProvider.getId(); 
+            if (("/domains/"+domainProvierName+"/defaultConnector/id").equals(keyPath)) {
                 Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
                 List<ServiceReference> serviceReferencesForConnector = domainService
                         .serviceReferencesForConnector(domainInterface);
                 for (ServiceReference serviceReferce : serviceReferencesForConnector) {
-                    services.add((String) (serviceReferce.getProperty("id")));
+                    String type = (String)serviceReferce.getProperty("openengsb.service.type");
+                    if (!"domain".equals(type)) { // it is an connector
+                        services.add((String) (serviceReferce.getProperty("id")));
+                    }
+
                 }
             }
         }
