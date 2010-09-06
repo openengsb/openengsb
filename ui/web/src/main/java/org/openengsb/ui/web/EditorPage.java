@@ -54,7 +54,7 @@ public class EditorPage extends BasePage {
             @Override
             public void onSubmit() {
                 serviceManager.update(getValues().get("id"), getValues());
-                setResponsePage(Index.class);
+                setResponsePage(TestClient.class);
             }
         };
         add(editorPanel);
