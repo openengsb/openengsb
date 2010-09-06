@@ -35,10 +35,14 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -46,6 +50,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.config.DomainProvider;
+import org.openengsb.core.config.ServiceManager;
+import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
 import org.openengsb.ui.web.model.MethodCall;
@@ -75,6 +81,28 @@ public class TestClient extends BasePage {
     private final LinkTree serviceList;
 
     public TestClient() {
+        
+        List<ServiceManager> managers = new ArrayList<ServiceManager>(services.domains().size());
+        for (DomainProvider provider : services.domains()) {
+            managers.addAll(this.services.serviceManagersForDomain(provider.getDomainInterface()));
+        }
+        add(new ListView<ServiceManager>("services", managers) {
+
+            @Override
+            protected void populateItem(ListItem<ServiceManager> item) {
+                ServiceDescriptor desc = item.getModelObject().getDescriptor(item.getLocale());
+                item.add(new Link<ServiceManager>("create.new", item.getModel()) {
+
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new EditorPage(getModelObject()));
+                    }
+                });
+                item.add(new Label("service.name", desc.getName()));
+                item.add(new Label("service.description", desc.getDescription()));
+            }
+        });
+        
         Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
         form.setModel(new Model<MethodCall>(call));
         form.setOutputMarkupId(true);

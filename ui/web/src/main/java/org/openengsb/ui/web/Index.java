@@ -17,17 +17,11 @@ limitations under the License.
  */
 package org.openengsb.ui.web;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.config.DomainProvider;
-import org.openengsb.core.config.ServiceManager;
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.service.DomainService;
 
 @SuppressWarnings("serial")
@@ -44,26 +38,6 @@ public class Index extends BasePage {
                 item.add(new Label("domain.name", item.getModelObject().getName(item.getLocale())));
                 item.add(new Label("domain.description", item.getModelObject().getDescription(item.getLocale())));
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
-            }
-        });
-        List<ServiceManager> managers = new ArrayList<ServiceManager>(domainService.domains().size());
-        for (DomainProvider provider : domainService.domains()) {
-            managers.addAll(this.domainService.serviceManagersForDomain(provider.getDomainInterface()));
-        }
-        add(new ListView<ServiceManager>("services", managers) {
-
-            @Override
-            protected void populateItem(ListItem<ServiceManager> item) {
-                ServiceDescriptor desc = item.getModelObject().getDescriptor(item.getLocale());
-                item.add(new Link<ServiceManager>("create.new", item.getModel()) {
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new EditorPage(getModelObject()));
-                    }
-                });
-                item.add(new Label("service.name", desc.getName()));
-                item.add(new Label("service.description", desc.getDescription()));
             }
         });
     }
