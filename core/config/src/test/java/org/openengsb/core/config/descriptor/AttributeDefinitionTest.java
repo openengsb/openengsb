@@ -121,4 +121,18 @@ public class AttributeDefinitionTest {
         builder.asBoolean();
         assertBuildException("boolean");
     }
+
+    @Test
+    public void buildWithOptionAndPasswordSettings_shouldThrowISE() {
+        builder.option("optionLabelKey", "value");
+        builder.asPassword();
+        assertBuildException("password");
+    }
+
+    @Test
+    public void buildWithBooleanAndPasswordSettings_shouldThrowISE() {
+        builder.asBoolean();
+        builder.asPassword();
+        assertBuildException("password");
+    }
 }

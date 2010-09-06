@@ -32,12 +32,13 @@ import org.openengsb.ui.web.editor.fields.AbstractField;
 import org.openengsb.ui.web.editor.fields.CheckboxField;
 import org.openengsb.ui.web.editor.fields.DropdownField;
 import org.openengsb.ui.web.editor.fields.InputField;
+import org.openengsb.ui.web.editor.fields.PasswordField;
 import org.openengsb.ui.web.model.MapModel;
 
 @SuppressWarnings("serial")
 public class BeanArgumentPanel extends Panel {
 
-    public BeanArgumentPanel(String id, ArgumentModel argModel, Map<String,String> values) {
+    public BeanArgumentPanel(String id, ArgumentModel argModel, Map<String, String> values) {
         super(id);
         add(new Label("index", "" + argModel.getIndex()));
         RepeatingView fields = new RepeatingView("fields");
@@ -56,6 +57,8 @@ public class BeanArgumentPanel extends Panel {
             return new DropdownField(id, model, attribute);
         } else if (attribute.isBoolean()) {
             return new CheckboxField(id, model, attribute);
+        } else if (attribute.isPassword()) {
+            return new PasswordField(id, model, attribute);
         } else {
             return new InputField(id, model, attribute);
         }

@@ -44,17 +44,15 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
 
         builder.attribute(buildAttribute(builder, "user", "username.outputMode", "username.outputMode.description"))
                 .attribute(
-                        buildAttribute(builder, "password", "password.outputMode", "password.outputMode.description"))
+                        builder.newAttribute().id("password").name("password.outputMode").description(
+                                "password.outputMode.description").defaultValue("").required().asPassword().build())
                 .attribute(
                         buildAttribute(builder, "smtpAuth", "mail.smtp.auth.outputMode",
-                                "mail.smtp.auth.outputMode.description"))
-                .attribute(
+                                "mail.smtp.auth.outputMode.description")).attribute(
                         buildAttribute(builder, "smtpSender", "mail.smtp.sender.outputMode",
-                                "mail.smtp.sender.outputMode.description"))
-                .attribute(
+                                "mail.smtp.sender.outputMode.description")).attribute(
                         buildAttribute(builder, "smtpPort", "mail.smtp.port.outputMode",
-                                "mail.smtp.port.outputMode.description"))
-                .attribute(
+                                "mail.smtp.port.outputMode.description")).attribute(
                         buildAttribute(builder, "smtpHost", "mail.smtp.host.outputMode",
                                 "mail.smtp.host.outputMode.description")).build();
 

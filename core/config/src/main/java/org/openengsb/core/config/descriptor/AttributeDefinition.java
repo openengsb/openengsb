@@ -56,7 +56,7 @@ public class AttributeDefinition implements Serializable {
     private boolean required;
     private final List<Option> options = new ArrayList<Option>();
     private boolean isBoolean;
-
+    private boolean isPassword;
 
     /**
      * Returns the attribute identifier.
@@ -126,6 +126,14 @@ public class AttributeDefinition implements Serializable {
         return isBoolean;
     }
 
+    public boolean isPassword() {
+        return isPassword;
+    }
+
+    public void setPassword(boolean isPassword) {
+        this.isPassword = isPassword;
+    }
+
     public void setBoolean(boolean isBoolean) {
         this.isBoolean = isBoolean;
     }
@@ -185,6 +193,11 @@ public class AttributeDefinition implements Serializable {
             return this;
         }
 
+        public Builder asPassword() {
+            attr.isPassword = true;
+            return this;
+        }
+
         private void checkNotEmpty(String value, String message) {
             Preconditions.checkState(value != null && !value.trim().isEmpty(), message + " for attribute " + attr.id);
         }
@@ -198,6 +211,9 @@ public class AttributeDefinition implements Serializable {
             }
             Preconditions.checkState(!(attr.isBoolean && !attr.options.isEmpty()),
                     "boolean and options are incompatible");
+            Preconditions.checkState(!(attr.isPassword && !attr.options.isEmpty()),
+                    "password and options are incompatible");
+            Preconditions.checkState(!(attr.isPassword && attr.isBoolean), "password and boolean are incompatible");
             return attr;
         }
     }
