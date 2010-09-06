@@ -17,8 +17,6 @@
  */
 package org.openengsb.ui.web;
 
-import static org.mockito.Mockito.mock;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,8 +27,11 @@ import junit.framework.Assert;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -53,6 +54,8 @@ import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
+import static org.mockito.Mockito.mock;
+
 public class TestClientTest {
 
     public interface TestInterface extends Domain {
@@ -67,6 +70,9 @@ public class TestClientTest {
 
         @Override
         public void update(String id, String name) {
+            if ("fail".equals(id)) {
+                throw new IllegalArgumentException();
+            }
             called = true;
         }
 
@@ -285,6 +291,41 @@ public class TestClientTest {
         RepeatingView argList = (RepeatingView) tester
                 .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
         Assert.assertEquals(0, argList.size());
+    }
+
+    @Test
+    public void testFeedbackPanelIsPresent() throws Exception {
+        setupAndStartTestClientPage();
+        tester.assertComponent("feedback", FeedbackPanel.class);
+    }
+
+    @Test
+    public void testFeedbackPanelContainsText() throws Exception {
+        setupAndStartTestClientPage();
+
+        setServiceInDropDown(0);
+        setMethodInDropDown(0);
+        formTester.setValue("argumentListContainer:argumentList:arg0:value", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg1:value", "test");
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+
+        FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
+        tester.assertInfoMessages(new String[] { "Methodcall called successfully", });
+        Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
+        Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
+    }
+
+    @Test
+    public void testExceptionInFeedback() throws Exception {
+        setupAndStartTestClientPage();
+
+        setServiceInDropDown(0);
+        setMethodInDropDown(0);
+        formTester.setValue("argumentListContainer:argumentList:arg0:value", "fail");
+        formTester.setValue("argumentListContainer:argumentList:arg1:value", "test");
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+        Exception resultException = (Exception) tester.getMessages(FeedbackMessage.ERROR).get(0);
+        Assert.assertEquals(IllegalArgumentException.class, resultException.getClass());
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() {

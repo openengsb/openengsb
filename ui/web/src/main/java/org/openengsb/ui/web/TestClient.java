@@ -39,6 +39,7 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -71,6 +72,8 @@ public class TestClient extends BasePage {
     private final WebMarkupContainer argumentListContainer;
 
     private final LinkTree serviceList;
+
+    private FeedbackPanel feedbackPanel;
 
     public TestClient() {
         Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
@@ -115,9 +118,10 @@ public class TestClient extends BasePage {
         argumentListContainer.add(argumentList);
         form.add(argumentListContainer);
 
-        AjaxButton submitButton = new AjaxButton("submitButton") {
+        AjaxButton submitButton = new AjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                target.addComponent(feedbackPanel);
                 performCall();
                 call.getArguments().clear();
                 argumentList.removeAll();
@@ -130,6 +134,9 @@ public class TestClient extends BasePage {
             }
         };
         form.add(submitButton);
+        feedbackPanel = new FeedbackPanel("feedback");
+        feedbackPanel.setOutputMarkupId(true);
+        add(feedbackPanel);
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
     }
 
@@ -174,13 +181,16 @@ public class TestClient extends BasePage {
         }
         try {
             Object result = m.invoke(service, call.getArgumentsAsArray());
-            log.info("result: " + result);
+            info("Methodcall called successfully");
+            if (!m.getReturnType().equals(void.class)) {
+                info("Result: " + result);
+                log.info("result: " + result);
+            }
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
+            error(e);
         } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException(e);
+            error(e.getCause());
         }
-
     }
 
     protected void populateArgumentList() {
