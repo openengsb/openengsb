@@ -45,6 +45,7 @@ import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
@@ -133,6 +134,8 @@ public class TestClient extends BasePage {
                 target.addComponent(argumentListContainer);
             }
         };
+        // the message-attribute doesn't work for some reason
+        submitButton.setModel(new ResourceModel("form.call"));
         form.add(submitButton);
         feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
@@ -200,7 +203,7 @@ public class TestClient extends BasePage {
         call.setArguments(arguments);
         int i = 0;
         for (Class<?> p : m.getParameterTypes()) {
-            ArgumentModel argModel = new ArgumentModel(i, p, null);
+            ArgumentModel argModel = new ArgumentModel(i + 1, p, null);
             arguments.add(argModel);
             if (p.isPrimitive() || p.equals(String.class)) {
                 SimpleArgumentPanel arg = new SimpleArgumentPanel("arg" + i, argModel);

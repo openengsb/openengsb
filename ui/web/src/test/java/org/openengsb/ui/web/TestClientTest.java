@@ -29,6 +29,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -329,6 +330,14 @@ public class TestClientTest {
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
         Exception resultException = (Exception) tester.getMessages(FeedbackMessage.ERROR).get(0);
         Assert.assertEquals(IllegalArgumentException.class, resultException.getClass());
+    }
+
+    @Test
+    public void testSubmitButtonIslocalized() throws Exception {
+        setupAndStartTestClientPage();
+
+        Button button = (Button) tester.getComponentFromLastRenderedPage("methodCallForm:submitButton");
+        Assert.assertEquals("Call", button.getValue());
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() {
