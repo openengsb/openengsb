@@ -40,7 +40,6 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -54,7 +53,11 @@ import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestClientTest {
 
@@ -330,20 +333,20 @@ public class TestClientTest {
 
     private List<ServiceReference> setupAndStartTestClientPage() {
         final List<ServiceReference> expected = new ArrayList<ServiceReference>();
-        ServiceReference serviceReferenceMock = Mockito.mock(ServiceReference.class);
-        Mockito.when(serviceReferenceMock.getProperty("id")).thenReturn("test");
+        ServiceReference serviceReferenceMock = mock(ServiceReference.class);
+        when(serviceReferenceMock.getProperty("id")).thenReturn("test");
         expected.add(serviceReferenceMock);
         expected.add(serviceReferenceMock);
-        DomainService managedServicesMock = Mockito.mock(DomainService.class);
-        Mockito.when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
+        DomainService managedServicesMock = mock(DomainService.class);
+        when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
             @Override
             public List<ServiceReference> answer(InvocationOnMock invocation) throws Throwable {
                 return expected;
             }
         });
-        DomainProvider domainProviderMock = Mockito.mock(DomainProvider.class);
-        Mockito.when(domainProviderMock.getName()).thenReturn("testDomain");
-        Mockito.when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
+        DomainProvider domainProviderMock = mock(DomainProvider.class);
+        when(domainProviderMock.getName()).thenReturn("testDomain");
+        when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
             public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
                 return TestInterface.class;
@@ -351,18 +354,18 @@ public class TestClientTest {
         });
         final List<DomainProvider> expectedProviders = new ArrayList<DomainProvider>();
         expectedProviders.add(domainProviderMock);
-        Mockito.when(managedServicesMock.domains()).thenAnswer(new Answer<List<DomainProvider>>() {
+        when(managedServicesMock.domains()).thenAnswer(new Answer<List<DomainProvider>>() {
             @Override
             public List<DomainProvider> answer(InvocationOnMock invocation) throws Throwable {
                 return expectedProviders;
             }
         });
 
-        Mockito.when(managedServicesMock.serviceReferencesForConnector(TestInterface.class)).thenReturn(expected);
+        when(managedServicesMock.serviceReferencesForConnector(TestInterface.class)).thenReturn(expected);
 
         testService = new TestService();
-        Mockito.when(managedServicesMock.getService(Mockito.any(ServiceReference.class))).thenReturn(testService);
-        Mockito.when(managedServicesMock.getService(Mockito.anyString(), Mockito.anyString())).thenReturn(testService);
+        when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
+        when(managedServicesMock.getService(anyString(), anyString())).thenReturn(testService);
         context.putBean(managedServicesMock);
         setupTesterWithSpringMockContext();
 
@@ -372,7 +375,7 @@ public class TestClientTest {
     }
 
     private void setupIndexPage() {
-        DomainService domainServiceMock = Mockito.mock(DomainService.class);
+        DomainService domainServiceMock = mock(DomainService.class);
         context.putBean(domainServiceMock);
         setupTesterWithSpringMockContext();
     }
