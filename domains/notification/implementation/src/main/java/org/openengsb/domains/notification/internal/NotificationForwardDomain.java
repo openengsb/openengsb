@@ -32,7 +32,7 @@ public class NotificationForwardDomain implements NotificationDomain, BundleCont
 
     @Override
     public void notify(Notification notification) {
-        String id = contextService.getValue("domains/notification/defaultConnector/id");
+        String id = contextService.getValue("domains/domains.notification/defaultConnector/id");
         if (id == null) {
             throw new IllegalStateException("no default connector known for example domain");
         }

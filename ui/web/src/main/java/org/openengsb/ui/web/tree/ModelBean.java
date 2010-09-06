@@ -19,7 +19,7 @@ package org.openengsb.ui.web.tree;
 
 import org.openengsb.core.common.context.ContextService;
 
-public class ModelBean {
+public class ModelBean  {
 
     private final ContextService contextService;
     private final String key;

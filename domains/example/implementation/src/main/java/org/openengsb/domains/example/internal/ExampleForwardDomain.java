@@ -31,7 +31,7 @@ public class ExampleForwardDomain implements ExampleDomain, BundleContextAware {
 
     @Override
     public void doSomething(String message) {
-        String id = contextService.getValue("domains/example/defaultConnector/id");
+        String id = contextService.getValue("domains/domains.example/defaultConnector/id");
         if (id == null) {
             throw new IllegalStateException("no default connector known for example domain");
         }
