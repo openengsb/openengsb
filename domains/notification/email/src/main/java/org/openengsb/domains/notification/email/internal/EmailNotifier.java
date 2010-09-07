@@ -40,8 +40,8 @@ public class EmailNotifier implements NotificationDomain {
 
     @Override
     public void notify(Notification notification) {
-       mailAbstraction.send(properties,
-                notification.getSubject(), notification.getMessage(), notification.getRecipient());
+        mailAbstraction.send(properties, notification.getSubject(), notification.getMessage(), notification
+                .getRecipient());
     }
 
     public String getId() {

@@ -24,8 +24,11 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
         if (attributes.containsKey("password")) {
             notifier.getProperties().setPassword(attributes.get("password"));
         }
+        if (attributes.containsKey("prefix")) {
+            notifier.getProperties().setPrefix(attributes.get("prefix"));
+        }
         if (attributes.containsKey("smtpAuth")) {
-            notifier.getProperties().setSmtpAuth(attributes.get("smtpAuth"));
+            notifier.getProperties().setSmtpAuth(Boolean.parseBoolean(attributes.get("smtpAuth")));
         }
         if (attributes.containsKey("smtpSender")) {
             notifier.getProperties().setSender(attributes.get("smtpSender"));
@@ -46,9 +49,11 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
                 .attribute(
                         builder.newAttribute().id("password").name("password.outputMode").description(
                                 "password.outputMode.description").defaultValue("").required().asPassword().build())
+                .attribute(buildAttribute(builder, "prefix", "prefix.outputMode", "prefix.outputMode.description"))
                 .attribute(
-                        buildAttribute(builder, "smtpAuth", "mail.smtp.auth.outputMode",
-                                "mail.smtp.auth.outputMode.description")).attribute(
+                        builder.newAttribute().id("smtpAuth").name("mail.smtp.auth.outputMode").description(
+                                "mail.smtp.auth.outputMode.description").defaultValue("false").asBoolean().build())
+                .attribute(
                         buildAttribute(builder, "smtpSender", "mail.smtp.sender.outputMode",
                                 "mail.smtp.sender.outputMode.description")).attribute(
                         buildAttribute(builder, "smtpPort", "mail.smtp.port.outputMode",
