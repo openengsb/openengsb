@@ -16,5 +16,5 @@
 #
 
 cd $(dirname $0)/../../
-mvn clean install -Plicense-check,test-all
+mvn release:prepare release:perform -Pmilestone
 

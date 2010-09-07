@@ -15,7 +15,6 @@
 #   limitations under the License.
 #
 
-cd $(dirname $0)
-cd ../../core/testclient/jms/swingclient 
-mvn -e exec:java -Dexec.mainClass=org.openengsb.swingclient.Start
+cd $(dirname $0)/../../
+mvn release:prepare release:perform -Pfinal
 

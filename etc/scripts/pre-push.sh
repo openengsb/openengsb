@@ -16,5 +16,5 @@
 #
 
 cd $(dirname $0)/../../
-mvn clean install -Plicense-check
+mvn clean install -Plicense-check,integration-test
 
