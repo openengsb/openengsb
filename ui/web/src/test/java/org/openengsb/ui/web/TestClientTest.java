@@ -17,6 +17,11 @@
  */
 package org.openengsb.ui.web;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,12 +58,6 @@ import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class TestClientTest {
 
@@ -265,7 +264,9 @@ public class TestClientTest {
             expandServiceListTree();
         }
         tester.clickLink("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink", true);
-        tester.executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink", "onclick");
+        tester
+                .executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink",
+                        "onclick");
     }
 
     @Test
@@ -337,7 +338,9 @@ public class TestClientTest {
         setupAndStartTestClientPage();
 
         Button button = (Button) tester.getComponentFromLastRenderedPage("methodCallForm:submitButton");
-        Assert.assertEquals("Call", button.getValue());
+        String buttonValue = tester.getApplication().getResourceSettings().getLocalizer()
+                .getString("form.call", button);
+        Assert.assertEquals(buttonValue, button.getValue());
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() {
