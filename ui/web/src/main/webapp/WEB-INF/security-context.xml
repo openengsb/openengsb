@@ -1,0 +1,23 @@
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://www.springframework.org/schema/security"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+  http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+
+  <http create-session="never" auto-config="true">
+    <remember-me />
+    <intercept-url pattern="/**" />
+  </http>
+
+  <authentication-manager alias="authenticationManager">
+    <authentication-provider>
+      <!-- TODO change this to reference our real user service -->
+      <user-service>
+        <user name="admin" password="admin" authorities="ROLE_ADMIN, ROLE_USER" />
+        <user name="user" password="user" authorities="ROLE_USER" />
+      </user-service>
+    </authentication-provider>
+  </authentication-manager>
+
+  <global-method-security secured-annotations="enabled" />
+</beans:beans>

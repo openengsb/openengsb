@@ -19,6 +19,7 @@ package org.openengsb.ui.web;
 
 import java.util.Locale;
 
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -27,6 +28,7 @@ import org.openengsb.ui.web.global.footer.FooterTemplate;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
 
 @SuppressWarnings("serial")
+@AuthorizeInstantiation("ROLE_USER")
 public class BasePage extends WebPage {
 
     @SpringBean
