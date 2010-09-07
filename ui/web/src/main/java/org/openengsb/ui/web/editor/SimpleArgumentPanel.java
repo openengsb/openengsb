@@ -20,15 +20,16 @@ package org.openengsb.ui.web.editor;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.ui.web.ArgumentModel;
-
 
 @SuppressWarnings("serial")
 public class SimpleArgumentPanel extends Panel {
     public SimpleArgumentPanel(String id, ArgumentModel arg) {
         super(id);
-        add(new Label("index", "" + arg.getIndex()));
+        add(new Label("index", new StringResourceModel("argument", this, new Model<ArgumentModel>(arg))));
         add(new TextField<String>("value", new PropertyModel<String>(arg, "value")));
     }
 }

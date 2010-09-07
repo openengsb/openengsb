@@ -17,8 +17,6 @@
  */
 package org.openengsb.ui.web;
 
-import static org.mockito.Mockito.mock;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,8 +27,12 @@ import junit.framework.Assert;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.feedback.FeedbackMessage;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -39,7 +41,6 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -52,6 +53,12 @@ import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestClientTest {
 
@@ -67,6 +74,9 @@ public class TestClientTest {
 
         @Override
         public void update(String id, String name) {
+            if ("fail".equals(id)) {
+                throw new IllegalArgumentException();
+            }
             called = true;
         }
 
@@ -271,22 +281,81 @@ public class TestClientTest {
         Assert.assertEquals(2, argList.size());
     }
 
+    @Test
+    public void testFormResetAfterCall() throws Exception {
+        setupAndStartTestClientPage();
+
+        setServiceInDropDown(0);
+        setMethodInDropDown(0);
+
+        formTester.setValue("argumentListContainer:argumentList:arg0:value", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg1:value", "test");
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+
+        RepeatingView argList = (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        Assert.assertEquals(0, argList.size());
+    }
+
+    @Test
+    public void testFeedbackPanelIsPresent() throws Exception {
+        setupAndStartTestClientPage();
+        tester.assertComponent("feedback", FeedbackPanel.class);
+    }
+
+    @Test
+    public void testFeedbackPanelContainsText() throws Exception {
+        setupAndStartTestClientPage();
+
+        setServiceInDropDown(0);
+        setMethodInDropDown(0);
+        formTester.setValue("argumentListContainer:argumentList:arg0:value", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg1:value", "test");
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+
+        FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
+        tester.assertInfoMessages(new String[] { "Methodcall called successfully", });
+        Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
+        Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
+    }
+
+    @Test
+    public void testExceptionInFeedback() throws Exception {
+        setupAndStartTestClientPage();
+
+        setServiceInDropDown(0);
+        setMethodInDropDown(0);
+        formTester.setValue("argumentListContainer:argumentList:arg0:value", "fail");
+        formTester.setValue("argumentListContainer:argumentList:arg1:value", "test");
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+        Exception resultException = (Exception) tester.getMessages(FeedbackMessage.ERROR).get(0);
+        Assert.assertEquals(IllegalArgumentException.class, resultException.getClass());
+    }
+
+    @Test
+    public void testSubmitButtonIslocalized() throws Exception {
+        setupAndStartTestClientPage();
+
+        Button button = (Button) tester.getComponentFromLastRenderedPage("methodCallForm:submitButton");
+        Assert.assertEquals("Call", button.getValue());
+    }
+
     private List<ServiceReference> setupAndStartTestClientPage() {
         final List<ServiceReference> expected = new ArrayList<ServiceReference>();
-        ServiceReference serviceReferenceMock = Mockito.mock(ServiceReference.class);
-        Mockito.when(serviceReferenceMock.getProperty("id")).thenReturn("test");
+        ServiceReference serviceReferenceMock = mock(ServiceReference.class);
+        when(serviceReferenceMock.getProperty("id")).thenReturn("test");
         expected.add(serviceReferenceMock);
         expected.add(serviceReferenceMock);
-        DomainService managedServicesMock = Mockito.mock(DomainService.class);
-        Mockito.when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
+        DomainService managedServicesMock = mock(DomainService.class);
+        when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
             @Override
             public List<ServiceReference> answer(InvocationOnMock invocation) throws Throwable {
                 return expected;
             }
         });
-        DomainProvider domainProviderMock = Mockito.mock(DomainProvider.class);
-        Mockito.when(domainProviderMock.getName()).thenReturn("testDomain");
-        Mockito.when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
+        DomainProvider domainProviderMock = mock(DomainProvider.class);
+        when(domainProviderMock.getName()).thenReturn("testDomain");
+        when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
             public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
                 return TestInterface.class;
@@ -294,18 +363,18 @@ public class TestClientTest {
         });
         final List<DomainProvider> expectedProviders = new ArrayList<DomainProvider>();
         expectedProviders.add(domainProviderMock);
-        Mockito.when(managedServicesMock.domains()).thenAnswer(new Answer<List<DomainProvider>>() {
+        when(managedServicesMock.domains()).thenAnswer(new Answer<List<DomainProvider>>() {
             @Override
             public List<DomainProvider> answer(InvocationOnMock invocation) throws Throwable {
                 return expectedProviders;
             }
         });
 
-        Mockito.when(managedServicesMock.serviceReferencesForConnector(TestInterface.class)).thenReturn(expected);
+        when(managedServicesMock.serviceReferencesForConnector(TestInterface.class)).thenReturn(expected);
 
         testService = new TestService();
-        Mockito.when(managedServicesMock.getService(Mockito.any(ServiceReference.class))).thenReturn(testService);
-        Mockito.when(managedServicesMock.getService(Mockito.anyString(), Mockito.anyString())).thenReturn(testService);
+        when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
+        when(managedServicesMock.getService(anyString(), anyString())).thenReturn(testService);
         context.putBean(managedServicesMock);
         setupTesterWithSpringMockContext();
 
@@ -315,7 +384,7 @@ public class TestClientTest {
     }
 
     private void setupIndexPage() {
-        DomainService domainServiceMock = Mockito.mock(DomainService.class);
+        DomainService domainServiceMock = mock(DomainService.class);
         context.putBean(domainServiceMock);
         setupTesterWithSpringMockContext();
     }

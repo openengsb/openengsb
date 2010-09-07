@@ -39,11 +39,13 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.config.DomainProvider;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
@@ -70,9 +72,9 @@ public class TestClient extends BasePage {
 
     private final WebMarkupContainer argumentListContainer;
 
-    // private final DropDownChoice<ServiceId> serviceList;
-
     private final LinkTree serviceList;
+
+    private FeedbackPanel feedbackPanel;
 
     public TestClient() {
         Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
@@ -84,7 +86,7 @@ public class TestClient extends BasePage {
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
-                if(!mnode.isLeaf()){
+                if (!mnode.isLeaf()) {
                     return;
                 }
                 call.setService((ServiceId) mnode.getUserObject());
@@ -117,24 +119,27 @@ public class TestClient extends BasePage {
         argumentListContainer.add(argumentList);
         form.add(argumentListContainer);
 
-        AjaxButton submitButton = new AjaxButton("submitButton") {
+        AjaxButton submitButton = new AjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                target.addComponent(feedbackPanel);
                 performCall();
                 call.getArguments().clear();
-                call.setMethod(null);
-                call.setService(null);
+                argumentList.removeAll();
 
+                call.setMethod(null);
                 populateMethodList();
-                serviceList.updateTree();
-                form.renderComponent();
-                target.addComponent(serviceList);
+
                 target.addComponent(methodList);
                 target.addComponent(argumentListContainer);
-                target.addComponent(form);
             }
         };
+        // the message-attribute doesn't work for some reason
+        submitButton.setModel(new ResourceModel("form.call"));
         form.add(submitButton);
+        feedbackPanel = new FeedbackPanel("feedback");
+        feedbackPanel.setOutputMarkupId(true);
+        add(feedbackPanel);
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
     }
 
@@ -153,12 +158,6 @@ public class TestClient extends BasePage {
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
         DefaultMutableTreeNode providerNode = new DefaultMutableTreeNode(provider.getName());
         node.add(providerNode);
-        // for (ServiceManager manager :
-        // services.serviceManagersForDomain(provider.getDomainInterface())) {
-        // log.info("found servicemanager");
-        // DefaultMutableTreeNode serviceManagerNode = new
-        // DefaultMutableTreeNode(manager.getDescriptor().getName());
-        // providerNode.add(serviceManagerNode);
         for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider
                 .getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
@@ -170,7 +169,6 @@ public class TestClient extends BasePage {
                 providerNode.add(referenceNode);
             }
         }
-        // }
     }
 
     protected void performCall() {
@@ -186,13 +184,16 @@ public class TestClient extends BasePage {
         }
         try {
             Object result = m.invoke(service, call.getArgumentsAsArray());
-            log.info("result: " + result);
+            info("Methodcall called successfully");
+            if (!m.getReturnType().equals(void.class)) {
+                info("Result: " + result);
+                log.info("result: " + result);
+            }
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
+            error(e);
         } catch (InvocationTargetException e) {
-            throw new IllegalArgumentException(e);
+            error(e.getCause());
         }
-
     }
 
     protected void populateArgumentList() {
@@ -202,7 +203,7 @@ public class TestClient extends BasePage {
         call.setArguments(arguments);
         int i = 0;
         for (Class<?> p : m.getParameterTypes()) {
-            ArgumentModel argModel = new ArgumentModel(i, p, null);
+            ArgumentModel argModel = new ArgumentModel(i + 1, p, null);
             arguments.add(argModel);
             if (p.isPrimitive() || p.equals(String.class)) {
                 SimpleArgumentPanel arg = new SimpleArgumentPanel("arg" + i, argModel);
@@ -259,5 +260,4 @@ public class TestClient extends BasePage {
         }
 
     }
-
 }
