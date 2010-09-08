@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.Assert;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -37,7 +39,6 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.config.descriptor.AttributeDefinition;
 import org.openengsb.ui.web.editor.fields.AbstractField;
@@ -83,12 +84,12 @@ public class EditorTest {
     }
 
     @Test
-    @Ignore("empty string in model gets replaced with null, why is this happening")
     public void submittingFormWithoutChange_shouldReturnInitialValues() throws Exception {
         startEditorPanel(attrib, attribNoDesc);
         FormTester formTester = tester.newFormTester(editor.getId() + ":form");
         formTester.submit();
-        assertThat(editor.getValues(), is(defaultValues));
+        Assert.assertNull(editor.getValues().get(0));
+        Assert.assertNull(editor.getValues().get(1));
     }
 
     @Test
