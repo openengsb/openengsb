@@ -22,7 +22,7 @@
     This configuration file was written by the eclipse-cs plugin configuration editor
 -->
 <!--
-    Checkstyle-Configuration: OpenEngSB
+    Checkstyle-Configuration: OpenEngSB-Checkstyle
     Description: none
 -->
 <module name="Checker">
@@ -55,17 +55,25 @@
     <module name="ModifierOrder"/>
     <module name="RedundantModifier"/>
     <module name="AvoidNestedBlocks"/>
-    <module name="EmptyBlock"/>
+    <module name="EmptyBlock">
+      <property name="tokens" value="LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_IF,LITERAL_FOR,LITERAL_TRY,LITERAL_WHILE,STATIC_INIT"/>
+    </module>
     <module name="LeftCurly"/>
     <module name="NeedBraces"/>
     <module name="RightCurly"/>
     <module name="AvoidInlineConditionals"/>
     <module name="DoubleCheckedLocking"/>
-    <module name="EmptyStatement"/>
+    <module name="EmptyStatement">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
     <module name="EqualsHashCode"/>
     <module name="IllegalInstantiation"/>
     <module name="InnerAssignment"/>
-    <module name="MagicNumber"/>
+    <module name="MagicNumber">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
     <module name="MissingSwitchDefault"/>
     <module name="RedundantThrows"/>
     <module name="SimplifyBooleanExpression"/>
@@ -75,19 +83,33 @@
     <module name="InterfaceIsType"/>
     <module name="VisibilityModifier"/>
     <module name="ArrayTypeStyle"/>
-    <module name="FinalParameters"/>
-    <module name="TodoComment"/>
+    <module name="FinalParameters">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="TodoComment">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
     <module name="UpperEll"/>
     <module name="ImportOrder">
+      <property name="severity" value="ignore"/>
       <property name="groups" value="java, javax, org, com, at"/>
       <property name="separated" value="true"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
     </module>
     <module name="WhitespaceAround">
       <property name="tokens" value="ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, BSR, BSR_ASSIGN, BXOR, BXOR_ASSIGN, COLON, DIV, DIV_ASSIGN, EQUAL, GE, GT, LAND, LCURLY, LE, LITERAL_ASSERT, LITERAL_CATCH, LITERAL_DO, LITERAL_ELSE, LITERAL_FINALLY, LITERAL_FOR, LITERAL_IF, LITERAL_RETURN, LITERAL_SYNCHRONIZED, LITERAL_TRY, LITERAL_WHILE, LOR, LT, MINUS, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION, RCURLY, SL, SLIST, SL_ASSIGN, SR, SR_ASSIGN, STAR, STAR_ASSIGN, LITERAL_ASSERT, TYPE_EXTENSION_AND, WILDCARD_TYPE"/>
     </module>
     <module name="ModifiedControlVariable"/>
-    <module name="MultipleStringLiterals"/>
-    <module name="RequireThis"/>
+    <module name="MultipleStringLiterals">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
+    <module name="RequireThis">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
     <module name="PackageDeclaration"/>
     <module name="FinalLocalVariable">
       <property name="severity" value="ignore"/>
@@ -97,7 +119,10 @@
     <module name="Indentation"/>
     <module name="UnnecessaryParentheses"/>
     <module name="DefaultComesLast"/>
-    <module name="IllegalCatch"/>
+    <module name="IllegalCatch">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
     <module name="IllegalThrows"/>
     <module name="MultipleVariableDeclarations"/>
     <module name="LineLength">
@@ -110,5 +135,8 @@
     <property name="severity" value="ignore"/>
     <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
   </module>
-  <module name="Translation"/>
+  <module name="Translation">
+    <property name="severity" value="ignore"/>
+    <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+  </module>
 </module>
