@@ -17,10 +17,10 @@
  */
 package org.openengsb.domains.notification;
 
+import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.Event;
-import org.openengsb.core.config.Domain;
-import org.openengsb.core.config.DomainProvider;
-import org.openengsb.core.config.util.BundleStrings;
+import org.openengsb.core.common.util.BundleStrings;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 

@@ -42,12 +42,6 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-config</artifactId>
-      <version>${pom.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
       <version>${pom.version}</version>
       <scope>test</scope>

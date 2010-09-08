@@ -15,14 +15,14 @@
    limitations under the License.
 
  */
-package org.openengsb.core.config.descriptor;
+package org.openengsb.core.common.descriptor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.openengsb.core.config.Domain;
-import org.openengsb.core.config.util.BundleStrings;
+import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.util.BundleStrings;
 
 import com.google.common.base.Preconditions;
 

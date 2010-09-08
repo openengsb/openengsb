@@ -19,9 +19,9 @@ package org.openengsb.domains.example.connector;
 
 import java.util.Map;
 
-import org.openengsb.core.config.ServiceInstanceFactory;
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
-import org.openengsb.core.config.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.ServiceInstanceFactory;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.example.connector.internal.LogService;
 

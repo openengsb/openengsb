@@ -27,9 +27,9 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.config.DomainProvider;
-import org.openengsb.core.config.ServiceManager;
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.service.DomainService;
 
 @SuppressWarnings("serial")

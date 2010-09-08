@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.core.config;
+package org.openengsb.core.common;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -26,9 +26,12 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
-import org.openengsb.core.config.descriptor.ServiceDescriptor.Builder;
-import org.openengsb.core.config.util.BundleStringsTest;
+import org.openengsb.core.common.AbstractServiceManager;
+import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.ServiceInstanceFactory;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.util.BundleStringsTest;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

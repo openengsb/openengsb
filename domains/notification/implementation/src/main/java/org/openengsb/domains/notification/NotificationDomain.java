@@ -17,7 +17,7 @@
  */
 package org.openengsb.domains.notification;
 
-import org.openengsb.core.config.Domain;
+import org.openengsb.core.common.Domain;
 import org.openengsb.domains.notification.model.Notification;
 
 public interface NotificationDomain extends Domain {

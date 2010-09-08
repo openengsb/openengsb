@@ -1,4 +1,4 @@
-package org.openengsb.core.config;
+package org.openengsb.core.common;
 
 @SuppressWarnings("serial")
 public class DomainMethodExecutionException extends RuntimeException {

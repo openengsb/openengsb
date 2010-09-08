@@ -26,9 +26,9 @@ import java.util.List;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.config.Domain;
-import org.openengsb.core.config.DomainProvider;
-import org.openengsb.core.config.ServiceManager;
+import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.ServiceManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;

@@ -23,7 +23,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.openengsb.core.config.Domain;
+import org.openengsb.core.common.Domain;
 
 public class MethodUtilTest {
 

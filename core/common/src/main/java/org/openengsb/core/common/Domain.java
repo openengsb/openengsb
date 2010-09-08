@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.core.config;
+package org.openengsb.core.common;
 
 /**
  * Base interface all domain interfaces have to implement to be discoverable in

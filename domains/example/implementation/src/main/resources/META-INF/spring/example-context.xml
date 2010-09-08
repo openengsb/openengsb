@@ -23,13 +23,13 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
-  <osgi:service interface="org.openengsb.core.config.DomainProvider">
+  <osgi:service interface="org.openengsb.core.common.DomainProvider">
     <bean class="org.openengsb.domains.example.ExampleDomainProvider" init-method="init" />
   </osgi:service>
 
   <osgi:service>
     <osgi:interfaces>
-      <value>org.openengsb.core.config.Domain</value>
+      <value>org.openengsb.core.common.Domain</value>
       <value>org.openengsb.domains.example.ExampleDomain</value>
       <value>org.openengsb.domains.example.internal.ExampleForwardDomain</value>
     </osgi:interfaces>

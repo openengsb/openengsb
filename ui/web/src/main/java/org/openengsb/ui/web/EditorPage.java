@@ -24,9 +24,9 @@ import java.util.List;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.StringResourceModel;
-import org.openengsb.core.config.ServiceManager;
-import org.openengsb.core.config.descriptor.AttributeDefinition;
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.editor.EditorPanel;
 
 public class EditorPage extends BasePage {

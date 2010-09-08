@@ -4,15 +4,15 @@ import java.util.Properties;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
+import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.openengsb.core.config.DomainMethodExecutionException;
+import org.openengsb.core.common.DomainMethodExecutionException;
 
 public class JavaxMailAbstraction implements MailAbstraction {
 
@@ -116,6 +116,7 @@ public class JavaxMailAbstraction implements MailAbstraction {
             return properties;
         }
 
+        @Override
         public void setSender(String sender) {
             this.sender = sender;
         }
