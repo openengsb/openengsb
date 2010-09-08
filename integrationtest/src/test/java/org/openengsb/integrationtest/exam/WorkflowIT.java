@@ -18,17 +18,22 @@
 package org.openengsb.integrationtest.exam;
 
 import java.util.Collection;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
+import org.openengsb.domains.notification.NotificationDomain;
+import org.openengsb.domains.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.openengsb.integrationtest.util.BaseExamConfiguration;
 import org.ops4j.pax.exam.CoreOptions;
@@ -40,6 +45,16 @@ import org.osgi.framework.BundleContext;
 
 @RunWith(JUnit4TestRunner.class)
 public class WorkflowIT extends AbstractExamTestHelper {
+
+    public static class DummyNotificationDomain implements NotificationDomain {
+
+        private Notification notification;
+
+        @Override
+        public void notify(Notification notification) {
+            this.notification = notification;
+        }
+    }
 
     @Inject
     private BundleContext bundleContext;
@@ -61,11 +76,22 @@ public class WorkflowIT extends AbstractExamTestHelper {
 
     @Test
     public void testSendEvent() throws Exception {
-        ContextCurrentService contextCurrentService = retrieveService(bundleContext, ContextCurrentService.class);
-        contextCurrentService.createContext("42");
+        ContextCurrentService contextService = retrieveService(bundleContext, ContextCurrentService.class);
+        contextService.createContext("42");
+        contextService.setThreadLocalContext("42");
+        contextService.putValue("/domains/notification/defaultConnector/id", "dummyConnector");
+
+        DummyNotificationDomain dummy = new DummyNotificationDomain();
+        String[] clazzes = new String[] { Domain.class.getName(), NotificationDomain.class.getName() };
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put("id", "dummyConnector");
+
+        bundleContext.registerService(clazzes, dummy, properties);
 
         WorkflowService workflowService = retrieveService(bundleContext, WorkflowService.class);
         Event e = new Event("42");
         workflowService.processEvent(e);
+
+        Assert.assertNotNull(dummy.notification);
     }
 }
