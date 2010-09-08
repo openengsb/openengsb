@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,6 +32,8 @@ import org.junit.rules.ExpectedException;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.util.BundleStrings;
+import org.openengsb.core.common.validation.FieldValidator;
+import org.openengsb.core.common.validation.ValidationResult;
 
 public class AttributeDefinitionTest {
 
@@ -135,5 +138,18 @@ public class AttributeDefinitionTest {
         builder.asBoolean();
         builder.asPassword();
         assertBuildException("password");
+    }
+
+    @Test
+    public void buildWithValidator_shouldReturnSameValidator() {
+        FieldValidator fieldValidator = new FieldValidator() {
+            @Override
+            public ValidationResult validate(String validate) {
+                return null;
+            }
+        };
+        builder.validator(fieldValidator);
+        AttributeDefinition build = builder.build();
+        Assert.assertSame(fieldValidator, build.getValidator());
     }
 }

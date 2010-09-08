@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.openengsb.core.common.util.BundleStrings;
+import org.openengsb.core.common.validation.FieldValidator;
 
 import com.google.common.base.Preconditions;
 
@@ -57,6 +58,7 @@ public class AttributeDefinition implements Serializable {
     private final List<Option> options = new ArrayList<Option>();
     private boolean isBoolean;
     private boolean isPassword;
+    private FieldValidator validator;
 
     /**
      * Returns the attribute identifier.
@@ -138,6 +140,10 @@ public class AttributeDefinition implements Serializable {
         this.isBoolean = isBoolean;
     }
 
+    public FieldValidator getValidator() {
+        return this.validator;
+    }
+
     public static Builder builder(Locale locale, BundleStrings strings) {
         return new Builder(locale, strings);
     }
@@ -198,6 +204,11 @@ public class AttributeDefinition implements Serializable {
             return this;
         }
 
+        public Builder validator(FieldValidator fieldValidator) {
+            attr.validator = fieldValidator;
+            return this;
+        }
+
         private void checkNotEmpty(String value, String message) {
             Preconditions.checkState(value != null && !value.trim().isEmpty(), message + " for attribute " + attr.id);
         }
@@ -216,5 +227,7 @@ public class AttributeDefinition implements Serializable {
             Preconditions.checkState(!(attr.isPassword && attr.isBoolean), "password and boolean are incompatible");
             return attr;
         }
+
     }
+
 }
