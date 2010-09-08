@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -55,8 +55,7 @@ public class RuleEditorPanel extends Panel {
     private void initPage() throws RuleBaseException {
         Form<Object> form = new Form<Object>("form");
         List<RuleBaseElementType> ruleTypes = Arrays.asList(RuleBaseElementType.values());
-        typeChoice = new DropDownChoice<RuleBaseElementType>("typeChoice",
-                ruleTypes);
+        typeChoice = new DropDownChoice<RuleBaseElementType>("typeChoice", ruleTypes);
         typeChoice.setModel(new Model<RuleBaseElementType>());
         typeChoice.getModel().setObject(RuleBaseElementType.Rule);
         typeChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -80,8 +79,32 @@ public class RuleEditorPanel extends Panel {
         });
         ruleChoice.setOutputMarkupId(true);
         form.add(ruleChoice);
-        form.add(new Button("save"));
-        form.add(new Button("cancel"));
+        form.add(new AjaxButton("save") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                RuleBaseElementId selection = ruleChoice.getModelObject();
+                String text = textArea.getModelObject();
+                if (selection != null && text != null) {
+                    try {
+                        ruleManager.update(selection, text);
+                    } catch (RuleBaseException e) {
+                        error("could not save rule");
+                    }
+                }
+            }
+        });
+        form.add(new AjaxButton("cancel") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                reloadTextArea();
+            }
+        });
+        form.add(new AjaxButton("new") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                throw new UnsupportedOperationException("nyi");
+            }
+        });
         Model<String> textAreaModel = new Model<String>();
         textArea = new TextArea<String>("text", textAreaModel);
         textArea.setEnabled(false);
@@ -94,7 +117,7 @@ public class RuleEditorPanel extends Panel {
         List<RuleBaseElementId> choices;
         try {
             RuleBaseElementType selectedType = typeChoice.getModelObject();
-            if(selectedType != null) {
+            if (selectedType != null) {
                 choices = new ArrayList<RuleBaseElementId>(ruleManager.list(selectedType));
             } else {
                 choices = new ArrayList<RuleBaseElementId>();
