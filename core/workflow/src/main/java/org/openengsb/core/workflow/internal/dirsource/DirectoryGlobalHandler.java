@@ -66,7 +66,7 @@ public class DirectoryGlobalHandler extends SingleFileResourceHandler {
     }
 
     @Override
-    public Collection<RuleBaseElementId> list() throws RuleBaseException {
+    public Collection<RuleBaseElementId> list() {
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
         for (String s : source.getRulebase().getPackages()[0].getGlobals().keySet()) {
             result.add(new RuleBaseElementId(RuleBaseElementType.Global, s));

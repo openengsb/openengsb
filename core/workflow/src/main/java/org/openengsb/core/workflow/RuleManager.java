@@ -26,7 +26,7 @@ import org.openengsb.core.workflow.model.RuleBaseElementType;
 
 public interface RuleManager {
 
-    RuleBase getRulebase() throws RuleBaseException;
+    RuleBase getRulebase();
 
     void add(RuleBaseElementId name, String code) throws RuleBaseException;
 
@@ -36,7 +36,7 @@ public interface RuleManager {
 
     void delete(RuleBaseElementId name) throws RuleBaseException;
 
-    Collection<RuleBaseElementId> list(RuleBaseElementType type) throws RuleBaseException;
+    Collection<RuleBaseElementId> list(RuleBaseElementType type);
 
     Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName) throws RuleBaseException;
 

@@ -80,7 +80,7 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
     }
 
     @Override
-    public Collection<RuleBaseElementId> list() throws RuleBaseException {
+    public Collection<RuleBaseElementId> list() {
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
         for (Package p : source.getRulebase().getPackages()) {
             result.addAll(listElementsInPackage(p));

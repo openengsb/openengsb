@@ -90,10 +90,14 @@ public class DirectoryRuleSource extends AbstractRuleManager {
     }
 
     @Override
-    public RuleBase getRulebase() throws RuleBaseException {
+    public RuleBase getRulebase() {
         if (!initialized) {
             log.warn("rulebase not initialized. initializing now...");
-            init();
+            try {
+                init();
+            } catch (RuleBaseException e) {
+                throw new IllegalStateException(e);
+            }
         }
         return ruleBase;
     }

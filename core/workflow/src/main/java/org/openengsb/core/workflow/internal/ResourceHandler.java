@@ -41,7 +41,7 @@ public abstract class ResourceHandler<SourceType extends RuleManager> {
 
     public abstract void delete(RuleBaseElementId name) throws RuleBaseException;
 
-    public abstract Collection<RuleBaseElementId> list() throws RuleBaseException;
+    public abstract Collection<RuleBaseElementId> list();
 
     public abstract Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException;
 
