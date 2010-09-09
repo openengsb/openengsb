@@ -23,11 +23,11 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.springframework.security.core.userdetails.User;
+import org.openengsb.ui.web.model.User;
 
 public class LoginPage extends WebPage {
 
-    private User user;
+    private User user = new User();
 
     public LoginPage() {
         @SuppressWarnings("serial")
