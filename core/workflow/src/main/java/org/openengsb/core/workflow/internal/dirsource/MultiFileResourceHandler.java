@@ -91,7 +91,7 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
     protected abstract Collection<RuleBaseElementId> listElementsInPackage(Package p);
 
     @Override
-    public Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException {
+    public Collection<RuleBaseElementId> list(String packageName) {
         return listElementsInPackage(source.getRulebase().getPackage(packageName));
     }
 }

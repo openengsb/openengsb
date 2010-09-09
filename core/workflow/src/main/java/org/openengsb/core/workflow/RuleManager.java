@@ -38,6 +38,6 @@ public interface RuleManager {
 
     Collection<RuleBaseElementId> list(RuleBaseElementType type);
 
-    Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName) throws RuleBaseException;
+    Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName);
 
 }

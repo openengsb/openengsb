@@ -43,6 +43,6 @@ public abstract class ResourceHandler<SourceType extends RuleManager> {
 
     public abstract Collection<RuleBaseElementId> list();
 
-    public abstract Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException;
+    public abstract Collection<RuleBaseElementId> list(String packageName);
 
 }

@@ -71,7 +71,7 @@ public class DirectoryImportHandler extends SingleFileResourceHandler {
     }
 
     @Override
-    public Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException {
+    public Collection<RuleBaseElementId> list(String packageName) {
         return list();
     }
 

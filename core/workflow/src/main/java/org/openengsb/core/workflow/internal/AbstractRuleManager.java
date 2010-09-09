@@ -55,7 +55,7 @@ public abstract class AbstractRuleManager implements RuleManager {
     }
 
     @Override
-    public Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName) throws RuleBaseException {
+    public Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName) {
         return this.getRessourceHandler(type).list(packageName);
     }
 }
