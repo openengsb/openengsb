@@ -19,6 +19,7 @@ package org.openengsb.ui.web;
 
 import java.util.Locale;
 
+import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.Link;
@@ -50,6 +51,13 @@ public class BasePage extends WebPage {
             @Override
             public void onClick() {
                 this.getSession().setLocale(Locale.GERMAN);
+            }
+        });
+        add(new Link<Object>("logout") {
+            @Override
+            public void onClick() {
+                ((AuthenticatedWebSession) this.getSession()).signOut();
+                setResponsePage(LoginPage.class);
             }
         });
 
