@@ -41,7 +41,6 @@ public class DirectoryImportHandler extends SingleFileResourceHandler {
         imports.add(name.getName());
         writeFile(imports);
         source.readRuleBase();
-
     }
 
     @Override
