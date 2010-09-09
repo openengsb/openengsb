@@ -26,14 +26,38 @@ import org.openengsb.core.workflow.model.RuleBaseElementType;
 
 public interface RuleManager {
 
+    /**
+     * provides a reference to the rulebase. This reference remains valid as
+     * long as the bundle is active. the rulebase is modified "on-the-fly".
+     *
+     * @return reference to the rulebase
+     */
     RuleBase getRulebase();
 
+    /**
+     *
+     * adds a new element to the rulebase
+     *
+     * @throws RuleBaseException if adding the new element would cause the
+     *         rulebase to be invalid (e.g. parse error).
+     */
     void add(RuleBaseElementId name, String code) throws RuleBaseException;
 
     String get(RuleBaseElementId name);
 
+    /**
+     * updates an existing element
+     *
+     * @throws RuleBaseException if the update would cause the rulebase to be
+     *         invalid (e.g. parse error).
+     */
     void update(RuleBaseElementId name, String newCode) throws RuleBaseException;
 
+    /**
+     *
+     * @throws RuleBaseException if the deleting the element would cause the
+     *         rulebase to be invalid (e.g. parse error).
+     */
     void delete(RuleBaseElementId name) throws RuleBaseException;
 
     Collection<RuleBaseElementId> list(RuleBaseElementType type);
