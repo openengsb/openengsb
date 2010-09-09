@@ -53,7 +53,7 @@ public class DirectoryImportHandler extends SingleFileResourceHandler {
     }
 
     @Override
-    public String get(RuleBaseElementId name) throws RuleBaseException {
+    public String get(RuleBaseElementId name) {
         String iname = name.getName();
         if (source.getRulebase().getPackages()[0].getImports().containsKey(iname)) {
             return iname;

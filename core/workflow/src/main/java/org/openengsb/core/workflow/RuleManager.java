@@ -30,7 +30,7 @@ public interface RuleManager {
 
     void add(RuleBaseElementId name, String code) throws RuleBaseException;
 
-    String get(RuleBaseElementId name) throws RuleBaseException;
+    String get(RuleBaseElementId name);
 
     void update(RuleBaseElementId name, String newCode) throws RuleBaseException;
 

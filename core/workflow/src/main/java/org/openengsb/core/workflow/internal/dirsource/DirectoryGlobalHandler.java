@@ -61,7 +61,7 @@ public class DirectoryGlobalHandler extends SingleFileResourceHandler {
     }
 
     @Override
-    public String get(RuleBaseElementId name) throws RuleBaseException {
+    public String get(RuleBaseElementId name) {
         return source.getRulebase().getPackages()[0].getGlobals().get(name.getName());
     }
 

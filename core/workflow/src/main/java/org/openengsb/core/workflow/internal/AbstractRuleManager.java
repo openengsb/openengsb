@@ -35,7 +35,7 @@ public abstract class AbstractRuleManager implements RuleManager {
     }
 
     @Override
-    public String get(RuleBaseElementId name) throws RuleBaseException {
+    public String get(RuleBaseElementId name) {
         return this.getRessourceHandler(name.getType()).get(name);
     }
 
