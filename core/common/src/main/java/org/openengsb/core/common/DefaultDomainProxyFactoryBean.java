@@ -24,15 +24,19 @@ public class DefaultDomainProxyFactoryBean extends ProxyFactoryBean {
 
     private ForwardInterceptor interceptor;
 
+    private String domainInterfaceName;
+
     public DefaultDomainProxyFactoryBean() {
         addInterface(Domain.class);
     }
 
     public void setDomainInterface(Class<?> domainInterface) {
+        domainInterfaceName = domainInterface.getName();
         addInterface(domainInterface);
     }
 
     public void init() {
+        interceptor.setDomainInterfaceName(domainInterfaceName);
         addAdvice(interceptor);
     }
 
