@@ -47,6 +47,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
@@ -164,11 +165,22 @@ public class TestClient extends BasePage {
             if (id != null) {
                 ServiceId serviceId = new ServiceId();
                 serviceId.setServiceId(id);
-                serviceId.setServiceClass(services.getService(serviceReference).getClass().getName());
+                Object serviceObject = services.getService(serviceReference);
+                Class<?> domainInterface = guessDomainInterface(serviceObject);
+                serviceId.setServiceClass(domainInterface.getName());
                 DefaultMutableTreeNode referenceNode = new DefaultMutableTreeNode(serviceId, false);
                 providerNode.add(referenceNode);
             }
         }
+    }
+
+    private Class<?> guessDomainInterface(Object serviceObject) {
+        for (Class<?> candidate : serviceObject.getClass().getInterfaces()) {
+            if (!candidate.getName().equals(Domain.class) && candidate.getName().startsWith("org.openengsb.domains")) {
+                return candidate;
+            }
+        }
+        return serviceObject.getClass();
     }
 
     protected void performCall() {
@@ -191,8 +203,10 @@ public class TestClient extends BasePage {
             }
         } catch (IllegalAccessException e) {
             error(e);
+            log.error(e);
         } catch (InvocationTargetException e) {
             error(e.getCause());
+            log.error(e);
         }
     }
 
