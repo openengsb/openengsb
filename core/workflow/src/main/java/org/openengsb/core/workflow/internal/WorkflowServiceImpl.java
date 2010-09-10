@@ -28,6 +28,7 @@ import org.drools.event.AgendaEventListener;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;

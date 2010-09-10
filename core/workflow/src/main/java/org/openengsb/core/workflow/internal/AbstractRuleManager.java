@@ -19,6 +19,7 @@ package org.openengsb.core.workflow.internal;
 
 import java.util.Collection;
 
+import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;

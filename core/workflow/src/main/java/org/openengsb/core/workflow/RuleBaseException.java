@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.core.workflow.internal;
+package org.openengsb.core.workflow;
 
 @SuppressWarnings("serial")
 public class RuleBaseException extends Exception {

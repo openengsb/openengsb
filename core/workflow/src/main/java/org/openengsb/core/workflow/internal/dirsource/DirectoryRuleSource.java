@@ -38,9 +38,9 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.rule.Package;
+import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.internal.AbstractRuleManager;
 import org.openengsb.core.workflow.internal.ResourceHandler;
-import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 

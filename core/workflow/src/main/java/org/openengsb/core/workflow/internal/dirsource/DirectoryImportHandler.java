@@ -20,7 +20,7 @@ package org.openengsb.core.workflow.internal.dirsource;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.openengsb.core.workflow.internal.RuleBaseException;
+import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 

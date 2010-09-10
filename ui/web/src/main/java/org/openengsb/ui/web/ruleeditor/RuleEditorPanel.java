@@ -29,8 +29,8 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.RuleManager;
-import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 

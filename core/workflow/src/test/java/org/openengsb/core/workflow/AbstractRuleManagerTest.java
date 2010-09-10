@@ -38,7 +38,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
-import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.domains.example.ExampleDomain;
