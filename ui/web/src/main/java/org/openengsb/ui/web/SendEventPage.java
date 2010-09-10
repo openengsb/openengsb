@@ -40,9 +40,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 import org.openengsb.ui.web.service.DomainService;
 
 @SuppressWarnings("serial")
@@ -57,6 +59,8 @@ public class SendEventPage extends BasePage {
     private DomainService domainService;
 
     private DropDownChoice<Class<?>> dropDownChoice;
+    @SpringBean
+    RuleManager ruleManager;
 
     public SendEventPage() {
         List<Class<? extends Event>> classes = new ArrayList<Class<? extends Event>>();
@@ -89,6 +93,7 @@ public class SendEventPage extends BasePage {
         form.add(dropDownChoice);
         add(createEditorPanelForClass(classes.get(0)));
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
+        add(new RuleEditorPanel("ruleEditor",ruleManager));
     }
 
     private EditorPanel createEditorPanelForClass(Class<?> theClass) {

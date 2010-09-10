@@ -42,6 +42,7 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
@@ -64,6 +65,8 @@ public class SendEventPageTest {
         tester.getApplication().addComponentInstantiationListener(
                 new SpringComponentInjector(tester.getApplication(), context, false));
         eventService = mock(WorkflowService.class);
+        RuleManager ruleManager = mock(RuleManager.class);
+        context.putBean(ruleManager);
         context.putBean("eventService", eventService);
         context.putBean("domainService", mock(DomainService.class));
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
