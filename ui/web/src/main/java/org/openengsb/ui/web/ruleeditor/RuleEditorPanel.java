@@ -115,32 +115,24 @@ public class RuleEditorPanel extends Panel {
 
     private void reloadRuleChoice() {
         List<RuleBaseElementId> choices;
-        try {
-            RuleBaseElementType selectedType = typeChoice.getModelObject();
-            if (selectedType != null) {
-                choices = new ArrayList<RuleBaseElementId>(ruleManager.list(selectedType));
-            } else {
-                choices = new ArrayList<RuleBaseElementId>();
-            }
-            ruleChoice.setChoices(choices);
-            ruleChoice.setModel(new Model<RuleBaseElementId>());
-        } catch (RuleBaseException e) {
-            new RuntimeException(e);
+        RuleBaseElementType selectedType = typeChoice.getModelObject();
+        if (selectedType != null) {
+            choices = new ArrayList<RuleBaseElementId>(ruleManager.list(selectedType));
+        } else {
+            choices = new ArrayList<RuleBaseElementId>();
         }
+        ruleChoice.setChoices(choices);
+        ruleChoice.setModel(new Model<RuleBaseElementId>());
     }
 
     private void reloadTextArea() {
-        try {
-            RuleBaseElementId selection = ruleChoice.getModelObject();
-            if (selection != null) {
-                textArea.setModel(new Model<String>(ruleManager.get(selection)));
-                textArea.setEnabled(true);
-            } else {
-                textArea.setModel(new Model<String>());
-                textArea.setEnabled(false);
-            }
-        } catch (RuleBaseException e) {
-            throw new RuntimeException(e);
+        RuleBaseElementId selection = ruleChoice.getModelObject();
+        if (selection != null) {
+            textArea.setModel(new Model<String>(ruleManager.get(selection)));
+            textArea.setEnabled(true);
+        } else {
+            textArea.setModel(new Model<String>());
+            textArea.setEnabled(false);
         }
     }
 }
