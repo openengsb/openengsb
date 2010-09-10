@@ -1,0 +1,30 @@
+<archetype-descriptor xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
+  name="OpenEngSB Connector" partial="false">
+
+  <requiredProperties>
+    <requiredProperty key="parentGroupId">
+      <defaultValue>org.openengsb.domains.domainname</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="parentArtifactId">
+      <defaultValue>openengsb-domains-domainname-parent</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="domainArtifactId">
+      <defaultValue>openengsb-domains-domainname-implementation</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="groupId">
+      <defaultValue>org.openengsb.domains.domainname.connectorname</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="artifactId">
+      <defaultValue>openengsb-domains-domainname-connectorname</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="version">
+      <defaultValue>1.0.0-SNAPSHOT</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="name">
+      <defaultValue>OpenEngSB :: Domains :: Domainname :: Connectorname</defaultValue>
+    </requiredProperty>
+  </requiredProperties>
+
+</archetype-descriptor>

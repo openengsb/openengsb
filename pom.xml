@@ -55,6 +55,7 @@
   <url>http://openengsb.org</url>
 
   <modules>
+    <module>archetypes</module>
     <module>docs</module>
     <module>poms</module>
     <module>provision</module>
