@@ -41,7 +41,6 @@ public class DirectoryImportHandler extends SingleFileResourceHandler {
         imports.add(name.getName());
         writeFile(imports);
         source.readRuleBase();
-
     }
 
     @Override
@@ -53,7 +52,7 @@ public class DirectoryImportHandler extends SingleFileResourceHandler {
     }
 
     @Override
-    public String get(RuleBaseElementId name) throws RuleBaseException {
+    public String get(RuleBaseElementId name) {
         String iname = name.getName();
         if (source.getRulebase().getPackages()[0].getImports().containsKey(iname)) {
             return iname;
@@ -62,7 +61,7 @@ public class DirectoryImportHandler extends SingleFileResourceHandler {
     }
 
     @Override
-    public Collection<RuleBaseElementId> list() throws RuleBaseException {
+    public Collection<RuleBaseElementId> list() {
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
         for (String s : source.getRulebase().getPackages()[0].getImports().keySet()) {
             result.add(new RuleBaseElementId(RuleBaseElementType.Import, s));
@@ -71,7 +70,7 @@ public class DirectoryImportHandler extends SingleFileResourceHandler {
     }
 
     @Override
-    public Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException {
+    public Collection<RuleBaseElementId> list(String packageName) {
         return list();
     }
 

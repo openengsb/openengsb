@@ -32,7 +32,7 @@ public abstract class ResourceHandler<SourceType extends RuleManager> {
 
     public abstract void create(RuleBaseElementId name, String code) throws RuleBaseException;
 
-    public abstract String get(RuleBaseElementId name) throws RuleBaseException;
+    public abstract String get(RuleBaseElementId name);
 
     public void update(RuleBaseElementId name, String code) throws RuleBaseException {
         delete(name);
@@ -41,8 +41,8 @@ public abstract class ResourceHandler<SourceType extends RuleManager> {
 
     public abstract void delete(RuleBaseElementId name) throws RuleBaseException;
 
-    public abstract Collection<RuleBaseElementId> list() throws RuleBaseException;
+    public abstract Collection<RuleBaseElementId> list();
 
-    public abstract Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException;
+    public abstract Collection<RuleBaseElementId> list(String packageName);
 
 }

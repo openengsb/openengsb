@@ -22,7 +22,6 @@ import java.util.HashSet;
 
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
@@ -42,7 +41,7 @@ public class DirectoryRuleHandler extends MultiFileResourceHandler {
     }
 
     @Override
-    protected void removeFromRuleBase(RuleBaseElementId name) throws RuleBaseException {
+    protected void removeFromRuleBase(RuleBaseElementId name) {
         source.getRulebase().removeRule(name.getPackageName(), name.getName());
     }
 }
