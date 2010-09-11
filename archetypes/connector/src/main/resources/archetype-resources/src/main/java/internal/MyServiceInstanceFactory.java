@@ -26,12 +26,14 @@ import ${parentGroupId}.${domainInterface};
 
 public class MyServiceInstanceFactory implements ServiceInstanceFactory<${domainInterface}, MyServiceImpl> {
 
-    public MyServiceFactory() {
+    public MyServiceInstanceFactory() {
     }
 
     @Override
     public void updateServiceInstance(MyServiceImpl instance, Map<String, String> attributes) {
-        // TODO update service instance with attributes
+        if (attributes.containsKey("attr")) {
+            instance.setAttr(attributes.get("attr"));
+        }
     }
 
     @Override
@@ -43,7 +45,8 @@ public class MyServiceInstanceFactory implements ServiceInstanceFactory<${domain
 
     @Override
     public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
-        //TODO build the service-specific descriptor
+        builder.name("service.name").description("service.description");
+        builder.newAttribute().id("attr").name("service.attr.name").description("service.attr.description").build();
         return builder.build();
     }
 }

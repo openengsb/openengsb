@@ -21,6 +21,14 @@ import ${parentGroupId}.${domainInterface};
 
 public class MyServiceImpl implements ${domainInterface} {
 
-    // TODO implement domain methods here
+    private String attr;
 
+    public MyServiceImpl() {
+    }
+
+    void setAttr(String attr) {
+        this.attr = attr;
+    }
+
+    // TODO implement domain methods here
 }

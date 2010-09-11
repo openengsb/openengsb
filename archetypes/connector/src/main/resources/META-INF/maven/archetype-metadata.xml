@@ -26,15 +26,21 @@
       <defaultValue>OpenEngSB :: Domains :: Domainname :: Connectorname</defaultValue>
     </requiredProperty>
     <requiredProperty key="domainInterface">
-      <defaultValue>TheSimpleDomainInterfaceName</defaultValue>
+      <defaultValue>DomainInterfaceName</defaultValue>
     </requiredProperty>
   </requiredProperties>
 
   <fileSets>
-    <fileSet filtered="true" packaged="true" >
+    <fileSet filtered="true" packaged="true">
       <directory>src/main/java</directory>
       <includes>
         <include>**/*.java</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory>src/main/resources</directory>
+      <includes>
+        <include>**/*</include>
       </includes>
     </fileSet>
   </fileSets>
