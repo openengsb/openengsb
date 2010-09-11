@@ -82,3 +82,4 @@ if [ -e "$artifactId" ]; then
 	fi
 fi
 
+echo "DON'T FORGET TO ADD THE CONNECTOR TO THE INTEGRATIONTEST PROJECT!"
