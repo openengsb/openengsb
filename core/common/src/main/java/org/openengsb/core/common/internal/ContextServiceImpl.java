@@ -17,6 +17,11 @@
  */
 package org.openengsb.core.common.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.openengsb.core.common.context.Context;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.context.ContextService;
@@ -25,7 +30,7 @@ import com.google.common.base.Preconditions;
 
 public class ContextServiceImpl implements ContextCurrentService, ContextService {
 
-    ThreadLocal<Context> currentContext = new ThreadLocal<Context>();
+    ThreadLocal<String> currentContext = new ThreadLocal<String>();
     private final Context rootContext = new ContextImpl();
 
     @Override
@@ -49,6 +54,14 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
 
     @Override
     public Context getContext() {
+        if (currentContext.get() == null) {
+            return null;
+        }
+        return rootContext.getChild(currentContext.get());
+    }
+
+    @Override
+    public String getThreadLocalContext() {
         return currentContext.get();
     }
 
@@ -56,7 +69,7 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
     public void setThreadLocalContext(String contextId) {
         Context context = rootContext.getChild(contextId);
         Preconditions.checkArgument(context != null, "no context exists for given context id");
-        currentContext.set(context);
+        currentContext.set(contextId);
     }
 
     @Override
@@ -64,8 +77,16 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
         rootContext.createChild(contextId);
     }
 
+    @Override
+    public List<String> getAvailableContexts() {
+        Map<String, Context> availableContexts = rootContext.getChildren();
+        List<String> result = new ArrayList<String>(availableContexts.keySet());
+        Collections.sort(result);
+        return result;
+    }
+
     private Context getContext(String path, boolean create) {
-        Context c = currentContext.get();
+        Context c = getContext();
         Context parent = null;
         for (String pathElem : new ContextPath(path).getElements()) {
             parent = c;
