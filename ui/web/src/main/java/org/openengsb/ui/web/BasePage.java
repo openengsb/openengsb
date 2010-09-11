@@ -25,11 +25,11 @@ import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.ui.web.global.footer.FooterTemplate;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
-import org.openengsb.ui.web.model.CurrentContextModel;
 
 @SuppressWarnings("serial")
 public class BasePage extends WebPage {
@@ -38,7 +38,7 @@ public class BasePage extends WebPage {
     private ContextCurrentService contextService;
 
     public BasePage() {
-        initDummyContext();
+        initContextForCurrentThread();
         initWebPage();
     }
 
@@ -63,8 +63,25 @@ public class BasePage extends WebPage {
     }
 
     private Component createProjectChoice() {
-        return new DropDownChoice<String>("projectChoice", new CurrentContextModel(contextService),
-                getAvailableContexts());
+        DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
+            public String getObject() {
+                return getSessionContextId();
+            }
+
+            public void setObject(String object) {
+                setThreadLocalContext(object);
+            }
+
+            public void detach() {
+            }
+        }, getAvailableContexts()) {
+            @Override
+            protected boolean wantOnSelectionChangedNotifications() {
+                return true;
+            }
+
+        };
+        return dropDownChoice;
     }
 
     private List<String> getAvailableContexts() {
@@ -74,18 +91,37 @@ public class BasePage extends WebPage {
         return contextService.getAvailableContexts();
     }
 
-    final void initDummyContext() {
+    final void initContextForCurrentThread() {
+        String sessionContextId = getSessionContextId();
         try {
             if (contextService != null) {
-                contextService.setThreadLocalContext("foo");
+                contextService.setThreadLocalContext(sessionContextId);
             }
         } catch (IllegalArgumentException e) {
-            contextService.createContext("foo");
-            contextService.createContext("bar");
-            contextService.setThreadLocalContext("foo");
+            contextService.createContext(sessionContextId);
+            contextService.createContext(sessionContextId + "2");
+            contextService.setThreadLocalContext(sessionContextId);
             contextService.putValue("domains/notification/defaultConnector/id", "notification");
             contextService.putValue("domains/example/defaultConnector/id", "example");
 
+        }
+    }
+
+    private String getSessionContextId() {
+        WicketSession session = WicketSession.get();
+        if (session == null) {
+            return "foo";
+        }
+        if (session.getThreadContextId() == null) {
+            setThreadLocalContext("foo");
+        }
+        return session.getThreadContextId();
+    }
+
+    private void setThreadLocalContext(String threadLocalContext) {
+        WicketSession session = WicketSession.get();
+        if (session != null) {
+            session.setThreadContextId(threadLocalContext);
         }
     }
 

@@ -18,6 +18,9 @@
 package org.openengsb.ui.web;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.Request;
+import org.apache.wicket.Response;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -39,8 +42,14 @@ public class WicketApplication extends WebApplication {
     @Override
     public AjaxRequestTarget newAjaxRequestTarget(Page page) {
         if (page instanceof BasePage) {
-            ((BasePage) page).initDummyContext();
+            ((BasePage) page).initContextForCurrentThread();
         }
         return super.newAjaxRequestTarget(page);
     }
+
+    @Override
+    public Session newSession(Request request, Response response) {
+        return new WicketSession(request);
+    }
+
 }
