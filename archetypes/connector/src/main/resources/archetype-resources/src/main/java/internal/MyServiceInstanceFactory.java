@@ -46,7 +46,7 @@ public class MyServiceInstanceFactory implements ServiceInstanceFactory<${domain
     @Override
     public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
         builder.name("service.name").description("service.description");
-        builder.newAttribute().id("attr").name("service.attr.name").description("service.attr.description").build();
+        builder.attribute(builder.newAttribute().id("attr").name("service.attr.name").description("service.attr.description").build());
         return builder.build();
     }
 }
