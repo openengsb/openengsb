@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 #   Copyright 2010 OpenEngSB Division, Vienna University of Technology
 #
@@ -77,9 +77,11 @@ mvn archetype:generate \
 if [ -e "$artifactId" ]; then
 	mv "$artifactId" "$CONNECTOR"
 	if [ -f "pom.xml" ]; then
-		sed "s/<module>$artifactId<\/module>/<module>$CONNECTOR<\/module>/" <pom.xml >pom.xml.new
+		sed "s/<module>$artifactId<\/module>/<module>$CONNECTOR<\/module>/" pom.xml >pom.xml.new
 		mv pom.xml.new pom.xml
 	fi
 fi
 
+echo ""
 echo "DON'T FORGET TO ADD THE CONNECTOR TO THE INTEGRATIONTEST PROJECT!"
+echo ""
