@@ -31,7 +31,7 @@
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb</artifactId>
   <packaging>pom</packaging>
-  <name>OPENENGSB :: Assembly</name>
+  <name>OpenEngSB :: Assembly</name>
 
   <build>
     <resources>
