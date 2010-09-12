@@ -21,22 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openengsb.core.common.AbstractDomainProvider;
-import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 
-public class NotifcationDomainProvider extends AbstractDomainProvider {
-
-    public NotifcationDomainProvider() {
-    }
+public class NotifcationDomainProvider extends AbstractDomainProvider<NotificationDomain> {
 
     @Override
     public String getId() {
         return NotificationDomain.class.getName();
-    }
-
-    @Override
-    public Class<? extends Domain> getDomainInterface() {
-        return NotificationDomain.class;
     }
 
     @Override

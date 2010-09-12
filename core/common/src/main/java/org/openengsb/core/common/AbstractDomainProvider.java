@@ -17,6 +17,7 @@
  */
 package org.openengsb.core.common;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.Locale;
 
 import org.openengsb.core.common.util.BundleStrings;
@@ -24,10 +25,17 @@ import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 
 
-public abstract class AbstractDomainProvider implements DomainProvider, BundleContextAware {
+public abstract class AbstractDomainProvider<DomainType extends Domain> implements DomainProvider, BundleContextAware {
 
     private BundleContext bundleContext;
     private BundleStrings strings;
+    private final Class<DomainType> domainInterface;
+
+    @SuppressWarnings("unchecked")
+    public AbstractDomainProvider() {
+        domainInterface = (Class<DomainType>) ((ParameterizedType) getClass().getGenericSuperclass())
+                .getActualTypeArguments()[0];
+    }
 
     @Override
     public String getName() {
@@ -47,6 +55,11 @@ public abstract class AbstractDomainProvider implements DomainProvider, BundleCo
     @Override
     public String getDescription(Locale locale) {
         return strings.getString("domain.description", locale);
+    }
+
+    @Override
+    public Class<DomainType> getDomainInterface() {
+        return domainInterface;
     }
 
     @Override

@@ -22,22 +22,23 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.util.BundleStringsTest;
 import org.osgi.framework.BundleContext;
 
 public class AbstractDomainProviderTest {
-    private static class DummyProvider extends AbstractDomainProvider {
+
+    private static interface DummyDomain extends Domain {
+
+    }
+
+    private static class DummyProvider extends AbstractDomainProvider<DummyDomain> {
 
         @Override
         public String getId() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Class<? extends Domain> getDomainInterface() {
             // TODO Auto-generated method stub
             throw new UnsupportedOperationException();
         }
@@ -50,7 +51,7 @@ public class AbstractDomainProviderTest {
 
     }
 
-    private AbstractDomainProvider provider;
+    private AbstractDomainProvider<DummyDomain> provider;
     private BundleContext bundleContext;
 
     @Before
@@ -68,5 +69,10 @@ public class AbstractDomainProviderTest {
     @Test
     public void getDescription_shouldLookupInDomainDescription() {
         assertThat(provider.getDescription(), is("desc"));
+    }
+
+    @Test
+    public void parameterizedDomain_shouldExtractDomainInterfaceFromGenerics() {
+        Assert.assertEquals(DummyDomain.class, provider.getDomainInterface());
     }
 }
