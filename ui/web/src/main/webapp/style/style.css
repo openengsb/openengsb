@@ -383,3 +383,12 @@ div.tabRowContent {
   text-decoration: underline;
 }
 
+container-1
+
+.smallFont {
+	font-size:0.85em;
+}
+
+.light {
+	color:#555555;
+}
