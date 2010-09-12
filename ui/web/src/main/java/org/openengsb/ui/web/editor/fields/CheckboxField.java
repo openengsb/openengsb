@@ -20,6 +20,7 @@ package org.openengsb.ui.web.editor.fields;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.ui.web.model.BoolToStringModel;
 
@@ -27,11 +28,11 @@ import org.openengsb.ui.web.model.BoolToStringModel;
 public class CheckboxField extends AbstractField {
 
     public CheckboxField(String id, IModel<String> model, AttributeDefinition attribute) {
-        super(id, model, attribute);
+        super(id, model, attribute, null);
     }
 
     @Override
-    protected FormComponent<?> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+    protected FormComponent<?> createFormComponent(AttributeDefinition attribute, IModel<String> model, IValidator<String> validator) {
         return new CheckBox("field", new BoolToStringModel(model));
     }
 }

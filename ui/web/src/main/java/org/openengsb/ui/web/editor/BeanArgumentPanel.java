@@ -60,7 +60,7 @@ public class BeanArgumentPanel extends Panel {
         } else if (attribute.isPassword()) {
             return new PasswordField(id, model, attribute);
         } else {
-            return new InputField(id, model, attribute);
+            return new InputField(id, model, attribute, null);
         }
     }
 

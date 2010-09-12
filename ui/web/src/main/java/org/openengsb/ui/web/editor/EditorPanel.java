@@ -20,13 +20,18 @@ package org.openengsb.ui.web.editor;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.validation.FieldValidator;
+import org.openengsb.core.common.validation.ValidationResult;
 import org.openengsb.ui.web.editor.fields.AbstractField;
 import org.openengsb.ui.web.editor.fields.CheckboxField;
 import org.openengsb.ui.web.editor.fields.DropdownField;
@@ -57,7 +62,7 @@ public class EditorPanel extends Panel {
         };
         add(form);
 
-        form.add(new FeedbackPanel("feedback"));
+        form.add(new FeedbackPanel("feedback").setOutputMarkupId(true));
         RepeatingView fields = new RepeatingView("fields");
         form.add(fields);
 
@@ -66,9 +71,10 @@ public class EditorPanel extends Panel {
             fields.add(row);
             row.add(createEditor("row", new MapModel<String, String>(values, a.getId()), a));
         }
+        AjaxFormValidatingBehavior.addToAllFormComponents(form, "onBlur");
     }
 
-    private AbstractField createEditor(String id, IModel<String> model, AttributeDefinition attribute) {
+    private AbstractField createEditor(String id, IModel<String> model, final AttributeDefinition attribute) {
         if (!attribute.getOptions().isEmpty()) {
             return new DropdownField(id, model, attribute);
         } else if (attribute.isBoolean()) {
@@ -76,7 +82,17 @@ public class EditorPanel extends Panel {
         } else if (attribute.isPassword()) {
             return new PasswordField(id, model, attribute);
         } else {
-            return new InputField(id, model, attribute);
+            InputField inputField = new InputField(id, model, attribute, new StringValidator() {
+                @Override
+                protected void onValidate(IValidatable<String> validatable) {
+                    FieldValidator validator = attribute.getValidator();
+                    ValidationResult validationResult = validator.validate(validatable.getValue());
+                    if (!validationResult.isValid()) {
+                        error(validatable, validationResult.getErrorMessageId());
+                    }
+                }
+            });
+            return inputField;
         }
     }
 

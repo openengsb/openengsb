@@ -26,6 +26,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
 
@@ -33,11 +34,11 @@ import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
 public class DropdownField extends AbstractField {
 
     public DropdownField(String id, IModel<String> model, AttributeDefinition attribute) {
-        super(id, model, attribute);
+        super(id, model, attribute, null);
     }
 
     @Override
-    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model, IValidator<String> validator) {
         final Map<String, String> labels = new HashMap<String, String>();
         final List<String> values = new ArrayList<String>();
         for (Option o : attribute.getOptions()) {

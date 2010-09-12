@@ -20,17 +20,18 @@ package org.openengsb.ui.web.editor.fields;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 
 @SuppressWarnings("serial")
 public class PasswordField extends AbstractField {
 
     public PasswordField(String id, IModel<String> model, AttributeDefinition attribute) {
-        super(id, model, attribute);
+        super(id, model, attribute, null);
     }
 
     @Override
-    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model, IValidator<String> validator) {
         PasswordTextField field = new PasswordTextField("field", model);
         return field;
     }
