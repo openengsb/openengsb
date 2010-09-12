@@ -31,7 +31,6 @@
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openengsb.domains.notification.email</groupId>
   <artifactId>openengsb-domains-notification-email</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 

@@ -30,7 +30,6 @@
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openengsb.domains.notification.implementation</groupId>
   <artifactId>openengsb-domains-notification-implementation</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
