@@ -41,12 +41,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.validation.FieldValidator;
+import org.openengsb.core.common.validation.ValidationResult;
+import org.openengsb.core.common.validation.ValidationResultImpl;
 import org.openengsb.ui.web.editor.fields.AbstractField;
 import org.openengsb.ui.web.validation.NumberValidator;
 
 @SuppressWarnings("serial")
 public class EditorPanelTest {
-
 
     private WicketTester tester;
     private EditorPanel editor;
@@ -55,6 +56,7 @@ public class EditorPanelTest {
     private AttributeDefinition attribBoolean;
     private final AttributeDefinition attrib = newAttribute("attrib", "name", "desc");
     private final AttributeDefinition attribNoDesc = newAttribute("attribNoDesc", "name", "");
+    private final AttributeDefinition attribPassword = newAttribute("attrib", "name", "desc");
 
     @Before
     public void setup() {
@@ -63,6 +65,7 @@ public class EditorPanelTest {
         attribOption.addOption("label_b", "2");
         attribBoolean = newAttribute("attribBool", "bool", "");
         attribBoolean.setBoolean(true);
+        attribPassword.setPassword(true);
     }
 
     @Test
@@ -113,9 +116,8 @@ public class EditorPanelTest {
     public void choicesInDropDownChoice_shouldBeInSameOrderAsOptionAttribute() {
         startEditorPanel(attribOption);
         @SuppressWarnings("unchecked")
-        List<String> choice = getEditorFieldFormComponent(attribOption.getId(), DropDownChoice.class)
-                .getChoices();
-        for (int i=0; i < attribOption.getOptions().size(); ++i) {
+        List<String> choice = getEditorFieldFormComponent(attribOption.getId(), DropDownChoice.class).getChoices();
+        for (int i = 0; i < attribOption.getOptions().size(); ++i) {
             assertThat(choice.get(i), is(attribOption.getOptions().get(i).getValue()));
         }
     }
@@ -144,7 +146,7 @@ public class EditorPanelTest {
         formTester.submit();
         assertThat(editor.getValues().get(attribBoolean.getId()), is("true"));
     }
-    
+
     @SuppressWarnings("deprecation")
     @Test
     public void putLetterIntoNumberField_shouldResultInError() throws Exception {
@@ -155,7 +157,32 @@ public class EditorPanelTest {
         String buildFormComponentId = buildFormComponentId(attrib.getId());
         formTester.setValue(buildFormComponentId, "A");
         tester.executeAjaxEvent(editor.getId() + ":form:" + buildFormComponentId, "onBlur");
-        tester.assertErrorMessages(new String[] {"Number formating Error"});
+        tester.assertErrorMessages(new String[] { "Number formating Error" });
+    }
+
+    @Test
+    public void addValidatorToDropDownField_shouldReturnError() {
+        testWithValidator(attribOption);
+    }
+
+    @Test
+    public void addValidatorToCheckboxField_shouldReturnError() {
+        testWithValidator(attribBoolean);
+    }
+
+    @Test
+    public void addValidatorToPasswordField_shouldReturnError() {
+        testWithValidator(attribPassword);
+    }
+
+    private void testWithValidator(AttributeDefinition attributeDefinition) {
+        attributeDefinition.setValidator(new FailValidator());
+        startEditorPanel(attributeDefinition);
+        FormTester formTester = tester.newFormTester(editor.getId() + ":form");
+        String buildFormComponentId = buildFormComponentId(attributeDefinition.getId());
+        formTester.setValue(buildFormComponentId, "1");
+        tester.executeAjaxEvent(editor.getId() + ":form:" + buildFormComponentId, "onBlur");
+        tester.assertErrorMessages(new String[] { "Validation Error" });
     }
 
     private AttributeDefinition newAttribute(String id, String name, String desc) {
@@ -201,5 +228,14 @@ public class EditorPanelTest {
     private void setFormValue(String attributeId, String value) {
         tester.getServletRequest().setParameter(
                 getEditorFieldFormComponent(attributeId, FormComponent.class).getInputName(), value);
+    }
+
+    private static final class FailValidator implements FieldValidator {
+
+        @Override
+        public ValidationResult validate(String validate) {
+            return new ValidationResultImpl(false, "validation.not");
+        }
+
     }
 }

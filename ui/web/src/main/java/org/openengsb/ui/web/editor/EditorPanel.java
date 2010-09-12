@@ -75,23 +75,16 @@ public class EditorPanel extends Panel {
     }
 
     private AbstractField createEditor(String id, IModel<String> model, final AttributeDefinition attribute) {
+        FieldValidationValidator validator = new FieldValidationValidator(attribute);
         if (!attribute.getOptions().isEmpty()) {
-            return new DropdownField(id, model, attribute);
+            DropdownField dropdownField = new DropdownField(id, model, attribute, validator);
+            return dropdownField;
         } else if (attribute.isBoolean()) {
-            return new CheckboxField(id, model, attribute);
+            return new CheckboxField(id, model, attribute, validator);
         } else if (attribute.isPassword()) {
-            return new PasswordField(id, model, attribute);
+            return new PasswordField(id, model, attribute, validator);
         } else {
-            InputField inputField = new InputField(id, model, attribute, new StringValidator() {
-                @Override
-                protected void onValidate(IValidatable<String> validatable) {
-                    FieldValidator validator = attribute.getValidator();
-                    ValidationResult validationResult = validator.validate(validatable.getValue());
-                    if (!validationResult.isValid()) {
-                        error(validatable, validationResult.getErrorMessageId());
-                    }
-                }
-            });
+            InputField inputField = new InputField(id, model, attribute, validator);
             return inputField;
         }
     }
@@ -105,5 +98,22 @@ public class EditorPanel extends Panel {
 
     public Map<String, String> getValues() {
         return values;
+    }
+    
+    private static final class FieldValidationValidator extends StringValidator {
+        private final AttributeDefinition attribute;
+        
+        private FieldValidationValidator(AttributeDefinition attribute) {
+            this.attribute = attribute;
+        }
+        
+        @Override
+        protected void onValidate(IValidatable validatable) {
+            FieldValidator validator = this.attribute.getValidator();
+            ValidationResult validationResult = validator.validate(validatable.getValue().toString());
+            if (!validationResult.isValid()) {
+                error(validatable, validationResult.getErrorMessageId());
+            }
+        }
     }
 }

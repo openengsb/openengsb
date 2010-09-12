@@ -1,5 +1,6 @@
 /**
 
+
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,12 +34,12 @@ import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
 @SuppressWarnings("serial")
 public class DropdownField extends AbstractField {
 
-    public DropdownField(String id, IModel<String> model, AttributeDefinition attribute) {
-        super(id, model, attribute, null);
+    public DropdownField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<String> validator) {
+        super(id, model, attribute, validator);
     }
 
     @Override
-    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model, IValidator<String> validator) {
+    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
         final Map<String, String> labels = new HashMap<String, String>();
         final List<String> values = new ArrayList<String>();
         for (Option o : attribute.getOptions()) {

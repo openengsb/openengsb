@@ -31,11 +31,8 @@ public class InputField extends AbstractField {
     }
 
     @Override
-    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model, IValidator<String> validator) {
+    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
         TextField<String> field = new TextField<String>("field", model);
-        if (validator != null) {
-            field.add(validator);
-        }
         return field;
     }
 }

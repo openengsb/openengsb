@@ -1,5 +1,6 @@
 /**
 
+
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,12 +28,12 @@ import org.openengsb.ui.web.model.BoolToStringModel;
 @SuppressWarnings("serial")
 public class CheckboxField extends AbstractField {
 
-    public CheckboxField(String id, IModel<String> model, AttributeDefinition attribute) {
-        super(id, model, attribute, null);
+    public CheckboxField(String id, IModel<String> model, AttributeDefinition attribute, IValidator fieldValidationValidator) {
+        super(id, model, attribute, fieldValidationValidator);
     }
 
     @Override
-    protected FormComponent<?> createFormComponent(AttributeDefinition attribute, IModel<String> model, IValidator<String> validator) {
+    protected FormComponent<?> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
         return new CheckBox("field", new BoolToStringModel(model));
     }
 }

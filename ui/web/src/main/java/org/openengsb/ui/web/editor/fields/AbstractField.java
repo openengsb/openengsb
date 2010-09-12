@@ -30,9 +30,12 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 @SuppressWarnings("serial")
 public abstract class AbstractField extends Panel {
 
-    public AbstractField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<String> validator) {
+    public AbstractField(String id, IModel<String> model, AttributeDefinition attribute, IValidator validator) {
         super(id);
-        FormComponent<?> component = createFormComponent(attribute, model, validator);
+        FormComponent<?> component = createFormComponent(attribute, model);
+        if (validator != null) {
+            component.add(validator);
+        }
         component.setLabel(new Model<String>(attribute.getName()));
         component.setOutputMarkupId(true);
         component.setMarkupId(attribute.getId());
@@ -52,5 +55,5 @@ public abstract class AbstractField extends Panel {
         add(tooltip);
     }
 
-    protected abstract FormComponent<?> createFormComponent(AttributeDefinition attribute, IModel<String> model, IValidator<String> validator);
+    protected abstract FormComponent<?> createFormComponent(AttributeDefinition attribute, IModel<String> model);
 }

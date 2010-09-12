@@ -26,12 +26,12 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 @SuppressWarnings("serial")
 public class PasswordField extends AbstractField {
 
-    public PasswordField(String id, IModel<String> model, AttributeDefinition attribute) {
-        super(id, model, attribute, null);
+    public PasswordField(String id, IModel<String> model, AttributeDefinition attribute, IValidator fieldValidationValidator) {
+        super(id, model, attribute, fieldValidationValidator);
     }
 
     @Override
-    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model, IValidator<String> validator) {
+    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
         PasswordTextField field = new PasswordTextField("field", model);
         return field;
     }
