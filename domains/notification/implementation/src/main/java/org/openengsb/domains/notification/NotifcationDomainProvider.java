@@ -17,21 +17,14 @@
  */
 package org.openengsb.domains.notification;
 
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.util.BundleStrings;
-import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-public class NotifcationDomainProvider implements DomainProvider, BundleContextAware {
+import org.openengsb.core.common.AbstractDomainProvider;
+import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.Event;
 
-    private BundleContext bundleContext;
-    private BundleStrings strings;
+public class NotifcationDomainProvider extends AbstractDomainProvider {
 
     public NotifcationDomainProvider() {
     }
@@ -39,35 +32,6 @@ public class NotifcationDomainProvider implements DomainProvider, BundleContextA
     @Override
     public String getId() {
         return NotificationDomain.class.getName();
-    }
-
-    @Override
-    public String getName() {
-        return getName(Locale.getDefault());
-    }
-
-    @Override
-    public String getName(Locale locale) {
-        return strings.getString("notification.domain.name", locale);
-    }
-
-    @Override
-    public String getDescription() {
-        return getDescription(Locale.getDefault());
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-        return strings.getString("notification.domain.description", locale);
-    }
-
-    public void init() {
-        strings = new BundleStrings(bundleContext.getBundle());
-    }
-
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
     }
 
     @Override
