@@ -26,13 +26,9 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.common.AbstractServiceManager;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.util.BundleStringsTest;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -72,7 +68,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testInterfaceGetters() {
-        BundleContext bundleContextMock = mockBundleContextForServiceManager();
+        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         DummyServiceManager manager = createDummyManager(bundleContextMock, new DummyInstance());
         Assert.assertEquals(DummyDomain.class, manager.getDomainInterface());
         Assert.assertEquals(DummyInstance.class, manager.getImplementationClass());
@@ -80,7 +76,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testGetDescriptor() {
-        BundleContext bundleContextMock = mockBundleContextForServiceManager();
+        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         DummyServiceManager manager = createDummyManager(bundleContextMock, new DummyInstance());
 
         ServiceDescriptor descriptor = manager.getDescriptor(Locale.ENGLISH);
@@ -92,7 +88,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testAddNewOne() {
-        BundleContext bundleContextMock = mockBundleContextForServiceManager();
+        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
         DummyInstance instance = new DummyInstance();
 
@@ -107,7 +103,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testUpdateExistingOne() {
-        BundleContext bundleContextMock = mockBundleContextForServiceManager();
+        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
 
         DummyInstance instance = new DummyInstance();
@@ -124,7 +120,7 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testDeleteService() {
-        BundleContext bundleContextMock = mockBundleContextForServiceManager();
+        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
         DummyInstance instance = new DummyInstance();
         ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(
@@ -160,16 +156,5 @@ public class AbstractServiceManagerTest {
         DummyServiceManager manager = new DummyServiceManager(instance);
         manager.setBundleContext(bundleContextMock);
         return manager;
-    }
-
-    private BundleContext mockBundleContextForServiceManager() {
-
-        Bundle bundleMock = Mockito.mock(Bundle.class);
-        BundleStringsTest.mockHeaders(bundleMock);
-        BundleStringsTest.mockFindEntries(bundleMock);
-
-        BundleContext bundleContextMock = Mockito.mock(BundleContext.class);
-        Mockito.when(bundleContextMock.getBundle()).thenReturn(bundleMock);
-        return bundleContextMock;
     }
 }

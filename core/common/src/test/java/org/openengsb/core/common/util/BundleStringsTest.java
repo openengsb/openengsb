@@ -36,8 +36,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.openengsb.core.common.util.BundleStrings;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
 public class BundleStringsTest {
@@ -65,11 +65,18 @@ public class BundleStringsTest {
                 });
     }
 
-    public Bundle createBundle() {
+    public static Bundle createBundle() {
         Bundle bundle = mock(Bundle.class);
         mockHeaders(bundle);
         mockFindEntries(bundle);
         return bundle;
+    }
+
+    public static BundleContext createBundleContextMockWithBundleStrings() {
+        Bundle bundle = createBundle();
+        BundleContext bundleContextMock = Mockito.mock(BundleContext.class);
+        Mockito.when(bundleContextMock.getBundle()).thenReturn(bundle);
+        return bundleContextMock;
     }
 
     @Test
