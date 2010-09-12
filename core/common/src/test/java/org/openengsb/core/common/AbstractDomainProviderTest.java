@@ -62,8 +62,8 @@ public class AbstractDomainProviderTest {
     }
 
     @Test
-    public void getId_shouldReturnFullClassNameOfDomain() {
-        assertThat(provider.getId(), is(DummyDomain.class.getName()));
+    public void getId_shouldReturnSimpleClassNameOfDomain() {
+        assertThat(provider.getId(), is(DummyDomain.class.getSimpleName()));
     }
 
     @Test

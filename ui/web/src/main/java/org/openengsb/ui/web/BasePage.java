@@ -63,8 +63,8 @@ public class BasePage extends WebPage {
         } catch (IllegalArgumentException e) {
             contextService.createContext("foo");
             contextService.setThreadLocalContext("foo");
-            contextService.putValue("domains/notification/defaultConnector/id", "notification");
-            contextService.putValue("domains/example/defaultConnector/id", "example");
+            contextService.putValue("domains/NotificationDomain/defaultConnector/id", "notification");
+            contextService.putValue("domains/ExampleDomain/defaultConnector/id", "example");
 
         }
     }

@@ -53,7 +53,7 @@ public abstract class AbstractDomainProvider<DomainType extends Domain> implemen
 
     @Override
     public String getId() {
-        return domainInterface.getName();
+        return domainInterface.getSimpleName();
     }
 
     @Override

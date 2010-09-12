@@ -23,6 +23,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.Domain;
@@ -73,13 +74,12 @@ public class WorkflowIT extends AbstractExamTestHelper {
         Collection<RuleBaseElementId> list = ruleManager.list(RuleBaseElementType.Rule);
         Assert.assertTrue(list.contains(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1")));
     }
-
     @Test
     public void testSendEvent() throws Exception {
         ContextCurrentService contextService = retrieveService(bundleContext, ContextCurrentService.class);
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
-        contextService.putValue("/domains/notification/defaultConnector/id", "dummyConnector");
+        contextService.putValue("domains/NotificationDomain/defaultConnector/id", "dummyConnector");
 
         DummyNotificationDomain dummy = new DummyNotificationDomain();
         String[] clazzes = new String[] { Domain.class.getName(), NotificationDomain.class.getName() };
