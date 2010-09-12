@@ -1,26 +1,21 @@
 package org.openengsb.core.common.validation;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class ValidationResultImpl implements ValidationResult {
 
-    private final List<String> errorMessages = new ArrayList<String>();
+    private final String errorMessage;
 
     private final boolean valid;
 
-    public ValidationResultImpl(boolean valid) {
+    public ValidationResultImpl(boolean valid, String message) {
         super();
         this.valid = valid;
-    }
-
-    public void addErrorMessage(String message) {
-        this.errorMessages.add(message);
+        this.errorMessage = message;
     }
 
     @Override
-    public List<String> getErrorMessages() {
-        return errorMessages;
+    public String getErrorMessageId() {
+        return errorMessage;
     }
 
     @Override
