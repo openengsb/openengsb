@@ -506,7 +506,7 @@
     <dependency>
       <groupId>org.codehaus.janino</groupId>
       <artifactId>com.springsource.org.codehaus.janino</artifactId>
-      <version>2.5.15</version>
+      <version>${janino.version}</version>
     </dependency>
 
     <dependency>
