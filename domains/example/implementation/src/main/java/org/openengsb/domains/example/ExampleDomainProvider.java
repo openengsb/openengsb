@@ -17,69 +17,18 @@
  */
 package org.openengsb.domains.example;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.AbstractDomainProvider;
 import org.openengsb.core.common.Event;
-import org.openengsb.core.common.util.BundleStrings;
 import org.openengsb.domains.example.event.LogEvent;
-import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
-public class ExampleDomainProvider implements DomainProvider, BundleContextAware {
-
-    private BundleContext bundleContext;
-    private BundleStrings strings;
-
-    public ExampleDomainProvider() {
-    }
+public class ExampleDomainProvider extends AbstractDomainProvider<ExampleDomain> {
 
     @Override
-    public String getId() {
-        return ExampleDomain.class.getName();
-    }
-
-    @Override
-    public String getName() {
-        return getName(Locale.getDefault());
-    }
-
-    @Override
-    public String getName(Locale locale) {
-        return strings.getString("domain.example.name", locale);
-    }
-
-    @Override
-    public String getDescription() {
-        return getDescription(Locale.getDefault());
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-        return strings.getString("domain.example.description", locale);
-    }
-
-    public void init() {
-        strings = new BundleStrings(bundleContext.getBundle());
-    }
-
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-    }
-
-    @Override
-    public Class<? extends Domain> getDomainInterface() {
-        return ExampleDomain.class;
-    }
-
-    @Override
+    @SuppressWarnings("unchecked")
     public List<Class<? extends Event>> getEvents() {
-        List<Class<? extends Event>> events = new ArrayList<Class<? extends Event>>();
-        events.add(LogEvent.class);
-        return events;
+        return Arrays.<Class<? extends Event>> asList(LogEvent.class);
     }
 }
