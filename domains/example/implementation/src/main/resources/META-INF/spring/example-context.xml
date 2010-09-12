@@ -24,7 +24,7 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:service interface="org.openengsb.core.common.DomainProvider">
-    <bean class="org.openengsb.domains.example.ExampleDomainProvider" init-method="init" />
+    <bean class="org.openengsb.domains.example.ExampleDomainProvider" />
   </osgi:service>
 
   <osgi:service>
