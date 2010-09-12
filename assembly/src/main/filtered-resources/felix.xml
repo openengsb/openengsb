@@ -17,8 +17,8 @@
 
 -->
 <platform>
-  <name>Felix 3.0.1</name>
-  <system>mvn:org.apache.felix/org.apache.felix.main/3.0.1</system>
+  <name>Felix ${felix.version}</name>
+  <system>mvn:org.apache.felix/org.apache.felix.main/${felix.version}</system>
 
   <packages>
     org.osgi.framework; version=1.5.0,

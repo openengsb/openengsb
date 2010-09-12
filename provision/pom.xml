@@ -36,6 +36,13 @@
   <packaging>pom</packaging>
 
   <dependencies>
+    <!-- Felix Base Reference -->
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.main</artifactId>
+      <version>${felix.version}</version>
+      <optional>true</optional>
+    </dependency>
     <!-- Pax URL -->
     <dependency>
       <groupId>org.ops4j.pax.url</groupId>
