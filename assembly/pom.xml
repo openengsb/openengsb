@@ -69,8 +69,6 @@
             </goals>
             <configuration>
               <artifacts>
-                <!--<artifact> <file>target/classes/features.xml</file> <type>xml</type> <classifier>features</classifier> 
-                  </artifact> -->
                 <artifact>
                   <file>target/classes/felix.xml</file>
                   <type>xml</type>
