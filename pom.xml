@@ -63,8 +63,8 @@
     <module>ui</module>
     <module>core</module>
     <module>domains</module>
-    <module>integrationtest</module>
     <module>assembly</module>
+    <module>integrationtest</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
