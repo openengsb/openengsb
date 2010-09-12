@@ -18,13 +18,27 @@
 package org.openengsb.core.common;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.openengsb.core.common.util.BundleStrings;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 
-
+/**
+ * Base class for {@code DomainProvider} implementations with the following
+ * unctionality:
+ * <ul>
+ * <li>extracts domain interface through parameterized type</li>
+ * <li>id is class name of domain interface</li>
+ * <li>name is looked up through localized
+ * {@code BundleStrings.getString("domain.name")}</li>
+ * <li>description is looked up through localized
+ * {@code BundleStrings.getString("domain.description")}</li>
+ * <li>returns an empty event list</li>
+ * </ul>
+ */
 public abstract class AbstractDomainProvider<DomainType extends Domain> implements DomainProvider, BundleContextAware {
 
     private BundleContext bundleContext;
@@ -35,6 +49,11 @@ public abstract class AbstractDomainProvider<DomainType extends Domain> implemen
     public AbstractDomainProvider() {
         domainInterface = (Class<DomainType>) ((ParameterizedType) getClass().getGenericSuperclass())
                 .getActualTypeArguments()[0];
+    }
+
+    @Override
+    public String getId() {
+        return domainInterface.getName();
     }
 
     @Override
@@ -63,8 +82,17 @@ public abstract class AbstractDomainProvider<DomainType extends Domain> implemen
     }
 
     @Override
+    public List<Class<? extends Event>> getEvents() {
+        return new ArrayList<Class<? extends Event>>();
+    }
+
+    @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
         this.strings = new BundleStrings(this.bundleContext.getBundle());
+    }
+
+    protected BundleContext getBundleContext() {
+        return bundleContext;
     }
 }

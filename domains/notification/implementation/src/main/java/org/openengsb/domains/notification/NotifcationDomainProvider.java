@@ -17,22 +17,8 @@
  */
 package org.openengsb.domains.notification;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openengsb.core.common.AbstractDomainProvider;
-import org.openengsb.core.common.Event;
 
 public class NotifcationDomainProvider extends AbstractDomainProvider<NotificationDomain> {
 
-    @Override
-    public String getId() {
-        return NotificationDomain.class.getName();
-    }
-
-    @Override
-    public List<Class<? extends Event>> getEvents() {
-        List<Class<? extends Event>> events = new ArrayList<Class<? extends Event>>();
-        return events;
-    }
 }

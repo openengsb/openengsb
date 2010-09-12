@@ -19,9 +19,6 @@ package org.openengsb.core.common;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-
-import java.util.List;
-
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -36,18 +33,6 @@ public class AbstractDomainProviderTest {
     }
 
     private static class DummyProvider extends AbstractDomainProvider<DummyDomain> {
-
-        @Override
-        public String getId() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public List<Class<? extends Event>> getEvents() {
-            // TODO Auto-generated method stub
-            throw new UnsupportedOperationException();
-        }
 
     }
 
@@ -74,5 +59,15 @@ public class AbstractDomainProviderTest {
     @Test
     public void parameterizedDomain_shouldExtractDomainInterfaceFromGenerics() {
         Assert.assertEquals(DummyDomain.class, provider.getDomainInterface());
+    }
+
+    @Test
+    public void getId_shouldReturnFullClassNameOfDomain() {
+        assertThat(provider.getId(), is(DummyDomain.class.getName()));
+    }
+
+    @Test
+    public void getEvents_shouldReturnEmptyList() {
+        assertThat(provider.getEvents().size(), is(0));
     }
 }
