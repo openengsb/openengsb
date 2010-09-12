@@ -47,10 +47,6 @@ public class OpenEngSBBundles {
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId(
                     "openengsb-core-common"));
 
-    public static final MavenArtifactProvisionOption OPENENGSB_CORE_CONFIG = CoreOptions
-            .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId(
-                    "openengsb-core-config"));
-
     public static final MavenArtifactProvisionOption OPENENGSB_CORE_WORKFLOW = CoreOptions
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId(
                     "openengsb-core-workflow"));

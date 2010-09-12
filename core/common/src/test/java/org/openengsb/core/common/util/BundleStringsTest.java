@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.core.config.util;
+package org.openengsb.core.common.util;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.openengsb.core.common.util.BundleStrings;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 

@@ -55,12 +55,6 @@
       <version>${pom.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-config</artifactId>
-      <version>${pom.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>

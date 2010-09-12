@@ -17,7 +17,7 @@
  */
 package org.openengsb.domains.example.connector;
 
-import org.openengsb.core.config.AbstractServiceManager;
+import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.example.connector.internal.LogService;
 

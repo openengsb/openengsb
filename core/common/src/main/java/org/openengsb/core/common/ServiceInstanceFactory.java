@@ -15,11 +15,11 @@
    limitations under the License.
 
  */
-package org.openengsb.core.config;
+package org.openengsb.core.common;
 
 import java.util.Map;
 
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
 
 public interface ServiceInstanceFactory<DomainType extends Domain, InstanceType extends DomainType> {
 

@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 #   Copyright 2010 OpenEngSB Division, Vienna University of Technology
 #
@@ -14,5 +15,6 @@
 #   limitations under the License.
 #
 
+cd $(dirname $0)/../../
+mvn release:prepare release:perform -Pfinal
 
-sendMessage.title = Send Message

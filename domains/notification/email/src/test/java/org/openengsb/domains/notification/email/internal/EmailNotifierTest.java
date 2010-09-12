@@ -19,7 +19,7 @@ package org.openengsb.domains.notification.email.internal;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.config.DomainMethodExecutionException;
+import org.openengsb.core.common.DomainMethodExecutionException;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
 import org.openengsb.domains.notification.email.internal.abstraction.MailProperties;
 import org.openengsb.domains.notification.model.Attachment;

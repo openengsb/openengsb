@@ -2,9 +2,9 @@ package org.openengsb.domains.notification.email.internal;
 
 import java.util.Map;
 
-import org.openengsb.core.config.ServiceInstanceFactory;
-import org.openengsb.core.config.descriptor.AttributeDefinition;
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.ServiceInstanceFactory;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
 
@@ -24,8 +24,11 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
         if (attributes.containsKey("password")) {
             notifier.getProperties().setPassword(attributes.get("password"));
         }
+        if (attributes.containsKey("prefix")) {
+            notifier.getProperties().setPrefix(attributes.get("prefix"));
+        }
         if (attributes.containsKey("smtpAuth")) {
-            notifier.getProperties().setSmtpAuth(attributes.get("smtpAuth"));
+            notifier.getProperties().setSmtpAuth(Boolean.parseBoolean(attributes.get("smtpAuth")));
         }
         if (attributes.containsKey("smtpSender")) {
             notifier.getProperties().setSender(attributes.get("smtpSender"));
@@ -44,17 +47,17 @@ public class EmailNotifierFactory implements ServiceInstanceFactory<Notification
 
         builder.attribute(buildAttribute(builder, "user", "username.outputMode", "username.outputMode.description"))
                 .attribute(
-                        buildAttribute(builder, "password", "password.outputMode", "password.outputMode.description"))
+                        builder.newAttribute().id("password").name("password.outputMode").description(
+                                "password.outputMode.description").defaultValue("").required().asPassword().build())
+                .attribute(buildAttribute(builder, "prefix", "prefix.outputMode", "prefix.outputMode.description"))
                 .attribute(
-                        buildAttribute(builder, "smtpAuth", "mail.smtp.auth.outputMode",
-                                "mail.smtp.auth.outputMode.description"))
+                        builder.newAttribute().id("smtpAuth").name("mail.smtp.auth.outputMode").description(
+                                "mail.smtp.auth.outputMode.description").defaultValue("false").asBoolean().build())
                 .attribute(
                         buildAttribute(builder, "smtpSender", "mail.smtp.sender.outputMode",
-                                "mail.smtp.sender.outputMode.description"))
-                .attribute(
+                                "mail.smtp.sender.outputMode.description")).attribute(
                         buildAttribute(builder, "smtpPort", "mail.smtp.port.outputMode",
-                                "mail.smtp.port.outputMode.description"))
-                .attribute(
+                                "mail.smtp.port.outputMode.description")).attribute(
                         buildAttribute(builder, "smtpHost", "mail.smtp.host.outputMode",
                                 "mail.smtp.host.outputMode.description")).build();
 

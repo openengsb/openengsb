@@ -34,11 +34,10 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
-import org.openengsb.core.config.Domain;
 import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
@@ -185,21 +184,6 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         session.insert(new Event());
         session.fireAllRules();
         assertTrue(listener.haveRulesFired("org.openengsb.test"));
-    }
-
-    @Ignore("no globals in current rulebase for now")
-    @Test
-    public void testGlobalLoaded() throws Exception {
-        String global = getPackage().getGlobals().get("test");
-        assertNotNull(global);
-    }
-
-    @Ignore("no globals in current rulebase for now")
-    @Test
-    public void testGlobalPresent() throws Exception {
-        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Global, "test");
-        String global = source.get(id);
-        assertNotNull(global);
     }
 
     @Test

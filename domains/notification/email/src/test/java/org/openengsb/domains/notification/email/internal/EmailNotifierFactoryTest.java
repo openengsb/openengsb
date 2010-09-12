@@ -24,7 +24,8 @@ public class EmailNotifierFactoryTest {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("user", "user");
         attributes.put("password", "password");
-        attributes.put("smtpAuth", "smtpAuth");
+        attributes.put("prefix", "pre: ");
+        attributes.put("smtpAuth", "true");
         attributes.put("smtpSender", "smtpSender");
         attributes.put("smtpHost", "smtpHost");
         attributes.put("smtpPort", "smtpPort");
@@ -35,7 +36,8 @@ public class EmailNotifierFactoryTest {
         Assert.assertEquals("id", notifier.getId());
 
         Mockito.verify(propertiesMock).setPassword("password");
-        Mockito.verify(propertiesMock).setSmtpAuth("smtpAuth");
+        Mockito.verify(propertiesMock).setPrefix("pre: ");
+        Mockito.verify(propertiesMock).setSmtpAuth(true);
         Mockito.verify(propertiesMock).setSender("smtpSender");
         Mockito.verify(propertiesMock).setSmtpHost("smtpHost");
         Mockito.verify(propertiesMock).setSmtpPort("smtpPort");
@@ -52,7 +54,8 @@ public class EmailNotifierFactoryTest {
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("user", "user");
         attributes.put("password", "password");
-        attributes.put("smtpAuth", "smtpAuth");
+        attributes.put("prefix", "pre: ");
+        attributes.put("smtpAuth", "true");
         attributes.put("smtpSender", "smtpSender");
         attributes.put("smtpHost", "smtpHost");
         attributes.put("smtpPort", "smtpPort");

@@ -24,9 +24,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.config.Domain;
-import org.openengsb.core.config.DomainProvider;
-import org.openengsb.core.config.ServiceManager;
+import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.ServiceManager;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;

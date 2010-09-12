@@ -1,7 +1,7 @@
 package org.openengsb.domains.notification.email.internal.abstraction;
 
 public interface MailProperties {
-    void setSmtpAuth(String smtpAuth);
+    void setSmtpAuth(Boolean smtpAuth);
 
     void setSmtpHost(String smtpHost);
 
@@ -13,4 +13,5 @@ public interface MailProperties {
 
     void setSender(String sender);
 
+    void setPrefix(String string);
 }

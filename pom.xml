@@ -527,6 +527,17 @@
       </snapshots>
     </repository>
     <repository>
+      <id>apache</id>
+      <name>Apache Public Repository</name>
+      <url>https://repository.apache.org/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
       <id>openengsb-osgi-releases</id>
       <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-releases</url>
       <snapshots>

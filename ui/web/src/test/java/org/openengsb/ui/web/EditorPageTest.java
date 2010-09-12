@@ -28,9 +28,9 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.config.ServiceManager;
-import org.openengsb.core.config.descriptor.AttributeDefinition;
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
 
 public class EditorPageTest {
 

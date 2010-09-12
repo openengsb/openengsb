@@ -20,7 +20,7 @@ package org.openengsb.ui.web.editor.fields;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.model.IModel;
-import org.openengsb.core.config.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.ui.web.model.BoolToStringModel;
 
 @SuppressWarnings("serial")

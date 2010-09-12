@@ -42,13 +42,13 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-config</artifactId>
+      <artifactId>openengsb-core-common</artifactId>
       <version>${pom.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-common</artifactId>
+      <groupId>org.openengsb.domains.notification.implementation</groupId>
+      <artifactId>openengsb-domains-notification-implementation</artifactId>
       <version>${pom.version}</version>
       <scope>test</scope>
     </dependency>

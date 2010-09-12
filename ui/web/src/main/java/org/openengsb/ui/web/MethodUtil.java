@@ -28,8 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.config.Domain;
-import org.openengsb.core.config.descriptor.AttributeDefinition;
+import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
 
 public class MethodUtil {
 

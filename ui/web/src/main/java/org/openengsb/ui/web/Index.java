@@ -24,10 +24,12 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.config.DomainProvider;
-import org.openengsb.core.config.ServiceManager;
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.service.DomainService;
 
 @SuppressWarnings("serial")
@@ -37,7 +39,13 @@ public class Index extends BasePage {
     private DomainService domainService;
 
     public Index() {
-        add(new ListView<DomainProvider>("domains", domainService.domains()) {
+        IModel<List<DomainProvider>> domainsModel = new LoadableDetachableModel<List<DomainProvider>>() {
+            @Override
+            protected List<DomainProvider> load() {
+                return domainService.domains();
+            }
+        };
+        add(new ListView<DomainProvider>("domains", domainsModel) {
 
             @Override
             protected void populateItem(ListItem<DomainProvider> item) {
@@ -46,17 +54,22 @@ public class Index extends BasePage {
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
             }
         });
-        List<ServiceManager> managers = new ArrayList<ServiceManager>(domainService.domains().size());
-        for (DomainProvider provider : domainService.domains()) {
-            managers.addAll(this.domainService.serviceManagersForDomain(provider.getDomainInterface()));
-        }
-        add(new ListView<ServiceManager>("services", managers) {
+        IModel<List<ServiceManager>> servicesModel = new LoadableDetachableModel<List<ServiceManager>>() {
+            @Override
+            protected List<ServiceManager> load() {
+                List<ServiceManager> managers = new ArrayList<ServiceManager>(domainService.domains().size());
+                for (DomainProvider provider : domainService.domains()) {
+                    managers.addAll(domainService.serviceManagersForDomain(provider.getDomainInterface()));
+                }
+                return managers;
+            }
+        };
 
+        add(new ListView<ServiceManager>("services", servicesModel) {
             @Override
             protected void populateItem(ListItem<ServiceManager> item) {
                 ServiceDescriptor desc = item.getModelObject().getDescriptor(item.getLocale());
                 item.add(new Link<ServiceManager>("create.new", item.getModel()) {
-
                     @Override
                     public void onClick() {
                         setResponsePage(new EditorPage(getModelObject()));

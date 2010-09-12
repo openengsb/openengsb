@@ -23,6 +23,5 @@
 echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
 
 cd $(dirname $0)/../..
-mvn install -o -Dmaven.test.skip=true
-etc/scripts/deploy.sh $1 $2
+mvn install pax:provision
 

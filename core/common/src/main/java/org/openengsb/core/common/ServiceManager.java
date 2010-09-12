@@ -15,12 +15,12 @@
    limitations under the License.
 
  */
-package org.openengsb.core.config;
+package org.openengsb.core.common;
 
 import java.util.Locale;
 import java.util.Map;
 
-import org.openengsb.core.config.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
 
 /**
  * Instance provider for a specific service interface.

@@ -15,7 +15,7 @@
    limitations under the License.
 
  */
-package org.openengsb.core.config.util;
+package org.openengsb.core.common.util;
 
 import java.io.File;
 import java.io.IOException;

@@ -15,17 +15,6 @@
 #   limitations under the License.
 #
 
-# Script for creating projects according to the archetype pattern for the engsb project.
-# This script takes two parameters where the first one specifies which archetype to
-# take where all archetypes could be found here: 
-# http://www.mavenreposearch.com/browsegroups/o/org.apache.servicemix.tooling
-# The second parameter takes the artifactId of the newly generated project. 
-
-if [ $# -ne 2 ] ; then
-  echo Usage: $0 ArchetypeArtifactId ArtifactId
-  exit 1
-fi
-
 cd $(dirname $0)/../../
-mvn archetype:create -DarchetypeGroupId=org.apache.servicemix.tooling -DarchetypeArtifactId=$1 -DgroupId=org.openengsb -DartifactId=$2
+mvn release:prepare release:perform -Pmilestone
 

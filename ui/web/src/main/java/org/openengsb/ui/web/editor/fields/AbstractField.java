@@ -24,7 +24,7 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.openengsb.core.config.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
 
 @SuppressWarnings("serial")
 public abstract class AbstractField extends Panel {
