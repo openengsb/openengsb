@@ -25,6 +25,8 @@ import java.util.Locale;
 
 import org.openengsb.core.common.util.BundleStrings;
 import org.openengsb.core.common.validation.FieldValidator;
+import org.openengsb.core.common.validation.ValidationResult;
+import org.openengsb.core.common.validation.ValidationResultImpl;
 
 import com.google.common.base.Preconditions;
 
@@ -58,7 +60,7 @@ public class AttributeDefinition implements Serializable {
     private final List<Option> options = new ArrayList<Option>();
     private boolean isBoolean;
     private boolean isPassword;
-    private FieldValidator validator;
+    private FieldValidator validator = new AllValidValidator();
 
     /**
      * Returns the attribute identifier.
@@ -66,7 +68,10 @@ public class AttributeDefinition implements Serializable {
     public String getId() {
         return id;
     }
-
+    
+    /**
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     */
     public void setId(String id) {
         this.id = id;
     }
@@ -77,7 +82,10 @@ public class AttributeDefinition implements Serializable {
     public String getName() {
         return name;
     }
-
+    
+    /**
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     */
     public void setName(String name) {
         this.name = name;
     }
@@ -92,7 +100,10 @@ public class AttributeDefinition implements Serializable {
     public boolean hasDescription() {
         return description != null && !description.isEmpty();
     }
-
+    
+    /**
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     */
     public void setDescription(String description) {
         this.description = description;
     }
@@ -103,7 +114,10 @@ public class AttributeDefinition implements Serializable {
     public String getDefaultValue() {
         return defaultValue;
     }
-
+    
+    /**
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     */
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
@@ -111,7 +125,10 @@ public class AttributeDefinition implements Serializable {
     public boolean isRequired() {
         return required;
     }
-
+    
+    /**
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     */
     public void setRequired(boolean required) {
         this.required = required;
     }
@@ -119,7 +136,10 @@ public class AttributeDefinition implements Serializable {
     public List<Option> getOptions() {
         return Collections.unmodifiableList(options);
     }
-
+    
+    /**
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     */
     public void addOption(String label, String value) {
         options.add(new Option(label, value));
     }
@@ -131,17 +151,30 @@ public class AttributeDefinition implements Serializable {
     public boolean isPassword() {
         return isPassword;
     }
-
+    
+    /**
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     */
     public void setPassword(boolean isPassword) {
         this.isPassword = isPassword;
     }
 
+    /**
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     */
     public void setBoolean(boolean isBoolean) {
         this.isBoolean = isBoolean;
     }
 
     public FieldValidator getValidator() {
         return this.validator;
+    }
+
+    /**
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     */
+    public void setValidator(FieldValidator validator) {
+        this.validator = validator;
     }
 
     public static Builder builder(Locale locale, BundleStrings strings) {
@@ -228,6 +261,15 @@ public class AttributeDefinition implements Serializable {
             return attr;
         }
 
+    }
+    
+    private static final class AllValidValidator implements FieldValidator{
+
+        @Override
+        public ValidationResult validate(String validate) {
+            return new ValidationResultImpl(true, "");
+        }
+        
     }
 
 }
