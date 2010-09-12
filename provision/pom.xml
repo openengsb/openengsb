@@ -41,13 +41,13 @@
       <groupId>org.ops4j.pax.url</groupId>
       <artifactId>pax-url-mvn</artifactId>
       <version>${pax.url.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.url</groupId>
       <artifactId>pax-url-wrap</artifactId>
       <version>${pax.url.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
 
     <!-- Pax Logging -->
@@ -55,13 +55,13 @@
       <groupId>org.ops4j.pax.logging</groupId>
       <artifactId>pax-logging-service</artifactId>
       <version>${pax.logging.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.logging</groupId>
       <artifactId>pax-logging-api</artifactId>
       <version>${pax.logging.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
 
     <!-- Apache Aries Dependencies -->
@@ -69,19 +69,19 @@
       <groupId>org.apache.aries.blueprint</groupId>
       <artifactId>org.apache.aries.blueprint</artifactId>
       <version>${aries.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.aries.jmx</groupId>
       <artifactId>org.apache.aries.jmx.blueprint</artifactId>
       <version>${aries.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.aries.jmx</groupId>
       <artifactId>org.apache.aries.jmx</artifactId>
       <version>${aries.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
 
     <!-- Apache Felix Environment -->
@@ -89,7 +89,7 @@
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.configadmin</artifactId>
       <version>${felix.configadmin.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
       <exclusions>
         <exclusion>
           <groupId>org.apache.felix</groupId>
@@ -105,13 +105,13 @@
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.fileinstall</artifactId>
       <version>${felix.fileinstall.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.prefs</artifactId>
       <version>${felix.prefs.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
       <exclusions>
         <exclusion>
           <groupId>org.apache.felix</groupId>
@@ -123,7 +123,7 @@
       <groupId>org.apache.felix.gogo</groupId>
       <artifactId>org.apache.felix.gogo.runtime</artifactId>
       <version>${felix.gogo.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
 
     <!-- Apache Karaf Base -->
@@ -131,7 +131,7 @@
       <groupId>org.apache.karaf</groupId>
       <artifactId>org.apache.karaf.management</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
 
     <!-- MINA Dependencies -->
@@ -139,7 +139,7 @@
       <groupId>org.apache.mina</groupId>
       <artifactId>mina-core</artifactId>
       <version>${mina.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
 
     <!-- SSH Dependencies -->
@@ -147,7 +147,7 @@
       <groupId>org.apache.sshd</groupId>
       <artifactId>sshd-core</artifactId>
       <version>${sshd.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
 
     <!-- Apache Karaf Shell -->
@@ -155,49 +155,49 @@
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.console</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.commands</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.config</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.log</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.osgi</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.packages</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.ssh</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.shell</groupId>
       <artifactId>org.apache.karaf.shell.dev</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
 
     <!-- Apache Karaf Admin -->
@@ -205,19 +205,19 @@
       <groupId>org.apache.karaf.admin</groupId>
       <artifactId>org.apache.karaf.admin.core</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.admin</groupId>
       <artifactId>org.apache.karaf.admin.management</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.admin</groupId>
       <artifactId>org.apache.karaf.admin.command</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
 
     <!-- Apache Karaf JAAS -->
@@ -225,19 +225,19 @@
       <groupId>org.apache.karaf.jaas</groupId>
       <artifactId>org.apache.karaf.jaas.boot</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.jaas</groupId>
       <artifactId>org.apache.karaf.jaas.config</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.jaas</groupId>
       <artifactId>org.apache.karaf.jaas.modules</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
 
     <!-- Apache Karaf Features -->
@@ -245,19 +245,19 @@
       <groupId>org.apache.karaf.features</groupId>
       <artifactId>org.apache.karaf.features.command</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.features</groupId>
       <artifactId>org.apache.karaf.features.core</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.features</groupId>
       <artifactId>org.apache.karaf.features.management</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
 
     <!-- Apache Karaf Deployer -->
@@ -265,19 +265,19 @@
       <groupId>org.apache.karaf.deployer</groupId>
       <artifactId>org.apache.karaf.deployer.blueprint</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.deployer</groupId>
       <artifactId>org.apache.karaf.deployer.spring</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
     <dependency>
       <groupId>org.apache.karaf.deployer</groupId>
       <artifactId>org.apache.karaf.deployer.features</artifactId>
       <version>${karaf.version}</version>
-      <optional>true</optional>
+      <!--<optional>true</optional>-->
     </dependency>
 
     <!-- Web Server -->
