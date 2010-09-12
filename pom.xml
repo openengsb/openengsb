@@ -65,6 +65,7 @@
     <module>domains</module>
     <module>assembly</module>
     <module>integrationtest</module>
+    <module>example</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
