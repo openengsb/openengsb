@@ -72,6 +72,8 @@ then
 
   foo represents the name of the project. For a detailed description about projects and the context see the user documentation.
   You've should received a email via the rule to the email address configured previously). In addition using the <<log:display>>
-  command in the OpenEngSB console should present (anywhere in the long log) a logging entry similar to the following:
+  command in the OpenEngSB console should present (anywhere in the long log) a logging entry similar to the following (you have 
+  to search for the output of the LogService. The other fields can change):
 
 [../images/howto/logging_output.jpg]
+
