@@ -22,12 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.ui.web.editor.EditorPanel;
 
 public class EditorPage extends BasePage {
@@ -67,8 +70,23 @@ public class EditorPage extends BasePage {
         editorPanel = new EditorPanel("editor", attributes, values, serviceManager.getDescriptor().getFormValidator()) {
             @Override
             public void onSubmit() {
-                serviceManager.update(getValues().get("id"), getValues());
-                setResponsePage(TestClient.class);
+                CheckBox component = (CheckBox) editorPanel.get("form:validate");
+                boolean checkBoxValue = component.getModelObject();
+                if (checkBoxValue) {
+                    MultipleAttributeValidationResult updateWithValidation = serviceManager.updateWithValidation(
+                            getValues().get("id"), getValues());
+                    if (!updateWithValidation.isValid()) {
+                        Map<String, String> attributeErrorMessages = updateWithValidation.getAttributeErrorMessages();
+                        for (String value : attributeErrorMessages.values()) {
+                            error(new StringResourceModel(value, this, null).getString());
+                        }
+                    }else {
+                        info(new StringResourceModel("service.add.succeed", this, null).getString());
+                    }
+                }else {
+                    serviceManager.update(getValues().get("id"), getValues());
+                    info(new StringResourceModel("service.add.succeed", this, null).getString());
+                }
             }
         };
         add(editorPanel);

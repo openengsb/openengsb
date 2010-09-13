@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
@@ -33,13 +34,14 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.validation.FieldValidator;
-import org.openengsb.core.common.validation.FormValidationResult;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.FormValidator;
-import org.openengsb.core.common.validation.FieldValidationResult;
+import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.ui.web.editor.fields.AbstractField;
 import org.openengsb.ui.web.editor.fields.CheckboxField;
 import org.openengsb.ui.web.editor.fields.DropdownField;
@@ -87,42 +89,48 @@ public class EditorPanel extends Panel {
             fields.add(row);
             row.add(createEditor("row", new MapModel<String, String>(values, a.getId()), a));
         }
+        CheckBox checkbox = new CheckBox("validate", new Model<Boolean>(true));
+        form.add(checkbox);
         AjaxFormValidatingBehavior.addToAllFormComponents(form, "onBlur");
-        form.add(new AbstractFormValidator() {
+        if (validator != null) {
+            form.add(new AbstractFormValidator() {
 
-            @Override
-            public void validate(Form<?> form) {
-                Map<String, FormComponent<?>> loadFormComponents = loadFormComponents(form);
-                Map<String, String> toValidate = new HashMap<String, String>();
-                for (String key : loadFormComponents.keySet()) {
-                    toValidate.put(key, loadFormComponents.get(key).getValue());
-                }
-                FormValidationResult validate = validator.validate(toValidate);
-                if(!validate.isValid()) {
-                    Map<String, String> attributeErrorMessages = validate.getAttributeErrorMessages();
-                    for(String key : attributeErrorMessages.keySet()) {
-                        error(loadFormComponents.get(key), attributeErrorMessages.get(key));
+                @Override
+                public void validate(Form<?> form) {
+                    Map<String, FormComponent<?>> loadFormComponents = loadFormComponents(form);
+                    Map<String, String> toValidate = new HashMap<String, String>();
+                    for (String key : loadFormComponents.keySet()) {
+                        toValidate.put(key, loadFormComponents.get(key).getValue());
+                    }
+                    MultipleAttributeValidationResult validate = validator.validate(toValidate);
+                    if (!validate.isValid()) {
+                        Map<String, String> attributeErrorMessages = validate.getAttributeErrorMessages();
+                        for (String key : attributeErrorMessages.keySet()) {
+                            error(loadFormComponents.get(key), attributeErrorMessages.get(key));
+                        }
                     }
                 }
-            }
 
-            @Override
-            public FormComponent<?>[] getDependentFormComponents() {
-                Collection<FormComponent<?>> formComponents = loadFormComponents(form).values();
-                return formComponents.toArray(new FormComponent<?>[formComponents.size()]);
-            }
-
-            private Map<String, FormComponent<?>> loadFormComponents(final Form<?> form) {
-                Map<String, FormComponent<?>> formComponents = new HashMap<String, FormComponent<?>>();
-                for (String attribute : validator.fieldsToValidate()) {
-                    Component component = form.get("fields:" + attribute + ":row:field");
-                    if (component instanceof FormComponent<?>) {
-                        formComponents.put(attribute, (FormComponent<?>) component);
-                    }
+                @Override
+                public FormComponent<?>[] getDependentFormComponents() {
+                    Collection<FormComponent<?>> formComponents = loadFormComponents(form).values();
+                    return formComponents.toArray(new FormComponent<?>[formComponents.size()]);
                 }
-                return formComponents;
-            }
-        });
+
+                private Map<String, FormComponent<?>> loadFormComponents(final Form<?> form) {
+                    Map<String, FormComponent<?>> formComponents = new HashMap<String, FormComponent<?>>();
+                    if (validator != null) {
+                        for (String attribute : validator.fieldsToValidate()) {
+                            Component component = form.get("fields:" + attribute + ":row:field");
+                            if (component instanceof FormComponent<?>) {
+                                formComponents.put(attribute, (FormComponent<?>) component);
+                            }
+                        }
+                    }
+                    return formComponents;
+                }
+            });
+        }
     }
 
     private AbstractField createEditor(String id, IModel<String> model, final AttributeDefinition attribute) {
@@ -161,7 +169,7 @@ public class EditorPanel extends Panel {
         @Override
         protected void onValidate(IValidatable validatable) {
             FieldValidator validator = this.attribute.getValidator();
-            FieldValidationResult validationResult = validator.validate(validatable.getValue().toString());
+            SingleAttributeValidationResult validationResult = validator.validate(validatable.getValue().toString());
             if (!validationResult.isValid()) {
                 error(validatable, validationResult.getErrorMessageId());
             }

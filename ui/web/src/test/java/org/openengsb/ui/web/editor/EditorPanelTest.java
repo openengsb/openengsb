@@ -44,10 +44,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.validation.FieldValidationResult;
+import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.core.common.validation.FieldValidator;
-import org.openengsb.core.common.validation.FormValidationResult;
-import org.openengsb.core.common.validation.FormValidationResultImpl;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.core.common.validation.FormValidator;
 import org.openengsb.core.common.validation.ValidationResultImpl;
 import org.openengsb.ui.web.editor.fields.AbstractField;
@@ -199,7 +199,7 @@ public class EditorPanelTest {
         AttributeDefinition attrib2 = newAttribute("attrib2", "name2", "desc2");
         FormValidator validator = new FormValidator() {
             @Override
-            public FormValidationResult validate(Map<String, String> attributes) {
+            public MultipleAttributeValidationResult validate(Map<String, String> attributes) {
                 ArrayList<String> arrayList = new ArrayList<String>(attributes.keySet());
                 Collections.sort(arrayList);
                 Assert.assertEquals("attrib1", arrayList.get(0));
@@ -211,7 +211,7 @@ public class EditorPanelTest {
                 for (String key : arrayList) {
                     errorMessages.put(key, "validation.not");
                 }
-                return new FormValidationResultImpl(false, errorMessages);
+                return new MultipleAttributeValidationResultImpl(false, errorMessages);
             }
 
             @Override
@@ -241,6 +241,12 @@ public class EditorPanelTest {
         formTester.setValue(component1Id, "a");
         tester.executeAjaxEvent(editor.getId() + ":form:" + component1Id, "onBlur");
         Mockito.verify(mock, Mockito.never()).validate(Mockito.anyMap());
+    }
+    
+    @Test
+    public void startEditorPanel_ShouldHaveCheckedValidateCheckbox() {
+        startEditorPanel(attrib);
+        tester.assertModelValue(editor.getId() + ":form:validate", true);
     }
 
     private AttributeDefinition newAttribute(String id, String name, String desc) {
@@ -295,7 +301,7 @@ public class EditorPanelTest {
     private static final class FailValidator implements FieldValidator {
 
         @Override
-        public FieldValidationResult validate(String validate) {
+        public SingleAttributeValidationResult validate(String validate) {
             return new ValidationResultImpl(false, "validation.not");
         }
 

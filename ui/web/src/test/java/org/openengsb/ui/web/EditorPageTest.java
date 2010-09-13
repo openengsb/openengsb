@@ -27,8 +27,11 @@ import java.util.Locale;
 import java.util.Map;
 
 import junit.framework.Assert;
-import org.apache.wicket.Component;
+
+import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.util.tester.FormTester;
+import org.apache.wicket.util.tester.ITestPageSource;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +39,7 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 
 public class EditorPageTest {
 
@@ -90,4 +94,45 @@ public class EditorPageTest {
         Assert.assertEquals("id1", idField.getDefaultModel().getObject());
     }
 
+    public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
+        Map<String, String> errorMessages = new HashMap<String, String>();
+        errorMessages.put("a", "validation.service.not");
+        when(manager.updateWithValidation(Mockito.anyString(), Mockito.anyMap())).thenReturn(
+                new MultipleAttributeValidationResultImpl(false, errorMessages));
+        WicketTester tester = new WicketTester();
+        EditorPage page = (EditorPage) tester.startPage(new ITestPageSource() {
+            @Override
+            public Page getTestPage() {
+                return new EditorPage(manager);
+            }
+        });
+        FormTester formTester = tester.newFormTester("editor:form");
+        formTester.setValue("fields:id:row:field", "someValue");
+        formTester.submit();
+        tester.assertErrorMessages(new String[] { "Service Validation Error" });
+        tester.assertRenderedPage(EditorPage.class);
+    }
+
+    @Test
+    public void uncheckValidationCheckbox_shouldBypassValidation() {
+        Map<String, String> errorMessages = new HashMap<String, String>();
+        errorMessages.put("a", "validation.service.not");
+        when(manager.updateWithValidation(Mockito.anyString(), Mockito.anyMap())).thenReturn(
+                new MultipleAttributeValidationResultImpl(false, errorMessages));
+        WicketTester tester = new WicketTester();
+        EditorPage page = (EditorPage) tester.startPage(new ITestPageSource() {
+            @Override
+            public Page getTestPage() {
+                return new EditorPage(manager);
+            }
+        });
+        FormTester formTester = tester.newFormTester("editor:form");
+        formTester.setValue("fields:id:row:field", "someValue");
+        formTester.setValue("validate", false);
+        formTester.submit();
+        tester.assertErrorMessages(new String[] {});
+        tester.assertInfoMessages(new String[] { "Service added successfully" });
+        Mockito.verify(manager).update(Mockito.anyString(), Mockito.anyMap());
+        Mockito.verify(manager, Mockito.never()).updateWithValidation(Mockito.anyString(), Mockito.anyMap());
+    }
 }
