@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface FormValidator {
-    FormValidationResult validate(Map<String, String> attributes);
+    MultipleAttributeValidationResult validate(Map<String, String> attributes);
     
     List<String> fieldsToValidate();
 }

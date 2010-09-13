@@ -2,7 +2,7 @@ package org.openengsb.core.common.validation;
 
 import java.util.Map;
 
-public interface FormValidationResult {
+public interface MultipleAttributeValidationResult {
     
     boolean isValid();
 
