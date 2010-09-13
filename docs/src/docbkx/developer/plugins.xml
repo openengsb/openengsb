@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  
+  Copyright 2010 OpenEngSB Division, Vienna University of Technology
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+<chapter xml:id="developer.plugins" xmlns="http://docbook.org/ns/docbook" version="5.0">
+  
+  <title>External Domains and Connectors</title>
+  
+  <para>TBW - Introduction</para>
+  
+  <para>TBW - What is the difference between internal and external domains and connectors.</para>
+  
+  <section xml:id="developer.plugins.csharp">
+    <title>Connect With CSharp</title>
+    <para>TBW - reevaluate for new plugin system.</para>
+    <para>The CSharp connector is written on basis of the Apache ActiveMQ NMS connector and with help of the Spring
+      NmsTemplate. The code is checked into the repository and could be found in <literal>nonjava/csharp</literal>.
+      There an EngSB.sln file. This project file has been developed with SharpDevelop 3, but is also tested with
+      VisualStudio 2008 CSharp Express Edition with the .Net Framework 3.5.</para>
+  </section>
+</chapter>
