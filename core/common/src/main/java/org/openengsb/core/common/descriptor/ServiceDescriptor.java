@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.util.BundleStrings;
+import org.openengsb.core.common.validation.FormValidator;
 
 import com.google.common.base.Preconditions;
 
@@ -33,6 +34,7 @@ public class ServiceDescriptor {
     private String description;
     private Class<? extends Domain> implementationType;
     private final List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
+    private FormValidator formValidator;
 
     public ServiceDescriptor() {
     }
@@ -103,6 +105,14 @@ public class ServiceDescriptor {
         attributes.add(attribute);
     }
 
+    public FormValidator getFormValidator() {
+        return formValidator;
+    }
+
+    public void setFormValidator(FormValidator validator) {
+        this.formValidator = validator;
+    }
+
     public static Builder builder(Locale locale, BundleStrings strings) {
         return new Builder(locale, strings);
     }
@@ -145,6 +155,11 @@ public class ServiceDescriptor {
 
         public Builder attribute(AttributeDefinition ad) {
             desc.attributes.add(ad);
+            return this;
+        }
+        
+        public Builder formValidator(FormValidator validator) {
+            desc.formValidator = validator;
             return this;
         }
 

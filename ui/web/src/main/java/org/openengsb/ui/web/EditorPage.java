@@ -64,7 +64,7 @@ public class EditorPage extends BasePage {
                 values.put(attribute.getId(), attribute.getDefaultValue());
             }
         }
-        editorPanel = new EditorPanel("editor", attributes, values) {
+        editorPanel = new EditorPanel("editor", attributes, values, serviceManager.getDescriptor().getFormValidator()) {
             @Override
             public void onSubmit() {
                 serviceManager.update(getValues().get("id"), getValues());

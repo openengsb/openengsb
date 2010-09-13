@@ -58,6 +58,7 @@ public class EditorPageTest {
         d.setDescription("sd");
         d.addAttribute(attrib1);
         when(manager.getDescriptor(Mockito.any(Locale.class))).thenReturn(d);
+        when(manager.getDescriptor()).thenReturn(d);
     }
 
     @Test

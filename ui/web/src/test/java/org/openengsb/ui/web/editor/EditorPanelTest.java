@@ -21,7 +21,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,14 +38,20 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
 import org.apache.wicket.util.tester.WicketTester;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.validation.FieldValidationResult;
 import org.openengsb.core.common.validation.FieldValidator;
-import org.openengsb.core.common.validation.ValidationResult;
+import org.openengsb.core.common.validation.FormValidationResult;
+import org.openengsb.core.common.validation.FormValidationResultImpl;
+import org.openengsb.core.common.validation.FormValidator;
 import org.openengsb.core.common.validation.ValidationResultImpl;
 import org.openengsb.ui.web.editor.fields.AbstractField;
+import org.openengsb.ui.web.validation.DefaultPassingFormValidator;
 import org.openengsb.ui.web.validation.NumberValidator;
 
 @SuppressWarnings("serial")
@@ -185,6 +193,56 @@ public class EditorPanelTest {
         tester.assertErrorMessages(new String[] { "Validation Error" });
     }
 
+    @Test
+    public void addFormValidator_ShouldExtractCorrectFormValues() {
+        AttributeDefinition attrib1 = newAttribute("attrib1", "name1", "desc1");
+        AttributeDefinition attrib2 = newAttribute("attrib2", "name2", "desc2");
+        FormValidator validator = new FormValidator() {
+            @Override
+            public FormValidationResult validate(Map<String, String> attributes) {
+                ArrayList<String> arrayList = new ArrayList<String>(attributes.keySet());
+                Collections.sort(arrayList);
+                Assert.assertEquals("attrib1", arrayList.get(0));
+                Assert.assertEquals("attrib2", arrayList.get(1));
+                Assert.assertEquals("a", attributes.get(arrayList.get(0)));
+                Assert.assertEquals("b", attributes.get(arrayList.get(1)));
+                
+                Map<String, String> errorMessages = new HashMap<String, String>();
+                for (String key : arrayList) {
+                    errorMessages.put(key, "validation.not");
+                }
+                return new FormValidationResultImpl(false, errorMessages);
+            }
+
+            @Override
+            public List<String> fieldsToValidate() {
+                return Arrays.asList(new String[] {"attrib1", "attrib2"});
+            }
+        };
+        startEditorPanel(validator, attrib1, attrib2);
+        FormTester formTester = tester.newFormTester(editor.getId() + ":form");
+        String component1Id = buildFormComponentId(attrib1.getId());
+        String component2Id = buildFormComponentId(attrib2.getId());
+        formTester.setValue(component1Id, "a");
+        formTester.setValue(component2Id, "b");
+        tester.executeAjaxEvent(editor.getId() + ":form:" + component1Id, "onBlur");
+        tester.assertErrorMessages(new String[] { "Validation Error", "Validation Error" });
+    } 
+    
+    @Test
+    public void addFailFieldValidator_ShouldNotCallFormValidator() {
+        AttributeDefinition attrib1 = newAttribute("attrib1", "name1", "desc1");
+        attrib1.setValidator(new FailValidator());
+        FormValidator mock = Mockito.mock(FormValidator.class);
+        Mockito.when(mock.fieldsToValidate()).thenReturn(Arrays.asList(new String[] {"attrib1"}));
+        startEditorPanel(mock, attrib1);
+        FormTester formTester = tester.newFormTester(editor.getId() + ":form");
+        String component1Id = buildFormComponentId(attrib1.getId());
+        formTester.setValue(component1Id, "a");
+        tester.executeAjaxEvent(editor.getId() + ":form:" + component1Id, "onBlur");
+        Mockito.verify(mock, Mockito.never()).validate(Mockito.anyMap());
+    }
+
     private AttributeDefinition newAttribute(String id, String name, String desc) {
         AttributeDefinition a = new AttributeDefinition();
         a.setId(id);
@@ -194,6 +252,10 @@ public class EditorPanelTest {
     }
 
     private void startEditorPanel(final AttributeDefinition... attributes) {
+        this.startEditorPanel(new DefaultPassingFormValidator(), attributes);
+    }
+
+    private void startEditorPanel(final FormValidator validator, final AttributeDefinition... attributes) {
         final HashMap<String, String> values = new HashMap<String, String>();
         for (AttributeDefinition a : attributes) {
             values.put(a.getId(), a.getDefaultValue());
@@ -203,7 +265,7 @@ public class EditorPanelTest {
         editor = (EditorPanel) tester.startPanel(new TestPanelSource() {
             @Override
             public Panel getTestPanel(String panelId) {
-                return new EditorPanel(panelId, Arrays.asList(attributes), values);
+                return new EditorPanel(panelId, Arrays.asList(attributes), values, validator);
             }
         });
     }
@@ -233,7 +295,7 @@ public class EditorPanelTest {
     private static final class FailValidator implements FieldValidator {
 
         @Override
-        public ValidationResult validate(String validate) {
+        public FieldValidationResult validate(String validate) {
             return new ValidationResultImpl(false, "validation.not");
         }
 
