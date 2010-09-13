@@ -32,7 +32,11 @@ HowTo - First steps with OpenEngSB (Setup)
   Extract the archive, and run the start-script (run.bat on windows, run.sh otherwise).
   Click the following link to open the web interface in your browser {{{http://localhost:8080/openengsb}http://localhost:8080/openengsb}}.
 
-  If everything works fine you should be welcomed by the following page presenting you the current domains and connectors. 
+  You should automatically be directed to a page asking for a login. The default login is "user" with "password" as password.
+
+[../images/howto/login.png]
+
+  If everything works fine you should be welcomed by the following page presenting you the current domains and connectors.
 
 [../images/howto/mainpage.png]
 
