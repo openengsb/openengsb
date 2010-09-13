@@ -55,7 +55,6 @@ public class BasePage extends WebPage {
                 this.getSession().setLocale(Locale.GERMAN);
             }
         });
-
         add(createProjectChoice());
 
         this.add(new HeaderTemplate("header", this.getHeaderMenuItem()));
