@@ -31,17 +31,19 @@
     <osgi:interfaces>
       <value>org.openengsb.core.common.Domain</value>
       <value>org.openengsb.domains.notification.NotificationDomain</value>
-      <value>org.openengsb.domains.notification.internal.NotificationForwardDomain</value>
     </osgi:interfaces>
     <osgi:service-properties>
       <entry key="id" value="domains.notification" />
       <entry key="openengsb.service.type" value="domain" />
     </osgi:service-properties>
-    <bean class="org.openengsb.domains.notification.internal.NotificationForwardDomain">
-      <property name="contextService" ref="contextService" />
+    <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
+      <property name="domainInterface">
+        <value>org.openengsb.domains.notification.NotificationDomain</value>
+      </property>
+      <property name="domainName" value="notification" />
+      <property name="context" ref="contextService" />
     </bean>
   </osgi:service>
 
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
-
 </beans>

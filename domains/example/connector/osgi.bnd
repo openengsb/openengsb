@@ -1,0 +1,4 @@
+Import-Package: !org.openengsb.domains.example.connector,\
+org.aopalliance.aop,\
+org.springframework.aop, org.springframework.aop.framework,\
+*

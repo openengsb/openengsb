@@ -19,6 +19,7 @@ package org.openengsb.core.common.internal;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -77,6 +78,29 @@ public class ContextImpl implements Context {
         Preconditions.checkNotNull(nameOrKey, "name or key for removal is null");
         values.remove(nameOrKey);
         children.remove(nameOrKey);
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer result = new StringBuffer();
+        for (Entry<String, Context> ch : children.entrySet()) {
+            String child = ch.getValue().toString();
+            String elem = ch.getKey() + ":\n" + indent(child) + "\n";
+            result.append(elem);
+        }
+        for (Entry<String, String> val : values.entrySet()) {
+            String elem = val.getKey() + " = " + val.getValue() + "\n";
+            result.append(elem);
+        }
+        return result.toString();
+    }
+
+    private static final String indention = "..";
+
+    private static String indent(String arg) {
+        String s1 = indention + arg.replaceAll("\n", "\n" + indention);
+        String s2 = s1.replaceAll("\n" + indention + "$", "");
+        return s2;
     }
 
 }
