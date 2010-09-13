@@ -54,9 +54,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.domains.notification.implementation</groupId>
+      <groupId>org.openengsb.domains.notification</groupId>
       <artifactId>openengsb-domains-notification-implementation</artifactId>
       <version>${pom.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

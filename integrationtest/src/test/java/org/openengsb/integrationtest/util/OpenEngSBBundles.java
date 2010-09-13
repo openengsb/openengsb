@@ -60,7 +60,7 @@ public class OpenEngSBBundles {
                     "openengsb-domains-example-connector"));
 
     public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_NOTIFICATION_IMPLEMENTATION = CoreOptions
-            .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.notification.implementation")
+            .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.notification")
                     .artifactId("openengsb-domains-notification-implementation"));
 
     public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_NOTIFICATION_EMAIL = CoreOptions

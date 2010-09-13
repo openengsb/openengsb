@@ -23,7 +23,6 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.Domain;
@@ -33,6 +32,7 @@ import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
+import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
@@ -57,6 +57,12 @@ public class WorkflowIT extends AbstractExamTestHelper {
         }
     }
 
+    public static class DummyLogDomain implements ExampleDomain {
+        @Override
+        public void doSomething(String message) {
+        }
+    }
+
     @Inject
     private BundleContext bundleContext;
 
@@ -74,12 +80,14 @@ public class WorkflowIT extends AbstractExamTestHelper {
         Collection<RuleBaseElementId> list = ruleManager.list(RuleBaseElementType.Rule);
         Assert.assertTrue(list.contains(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1")));
     }
+
     @Test
     public void testSendEvent() throws Exception {
         ContextCurrentService contextService = retrieveService(bundleContext, ContextCurrentService.class);
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
         contextService.putValue("domains/NotificationDomain/defaultConnector/id", "dummyConnector");
+        contextService.putValue("domains/ExampleDomain/defaultConnector/id", "dummyLog");
 
         DummyNotificationDomain dummy = new DummyNotificationDomain();
         String[] clazzes = new String[] { Domain.class.getName(), NotificationDomain.class.getName() };
@@ -87,6 +95,11 @@ public class WorkflowIT extends AbstractExamTestHelper {
         properties.put("id", "dummyConnector");
 
         bundleContext.registerService(clazzes, dummy, properties);
+
+        clazzes = new String[] { Domain.class.getName(), ExampleDomain.class.getName() };
+        properties.put("id", "dummyLog");
+
+        bundleContext.registerService(clazzes, new DummyLogDomain(), properties);
 
         WorkflowService workflowService = retrieveService(bundleContext, WorkflowService.class);
         Event e = new Event("42");
