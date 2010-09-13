@@ -59,6 +59,7 @@ import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 public class TestClientTest {
@@ -102,6 +103,8 @@ public class TestClientTest {
         tester = new WicketTester();
         context = new ApplicationContextMock();
         context.putBean(mock(ContextCurrentService.class));
+        BundleContext bundleContext = mock(BundleContext.class);
+        context.putBean(bundleContext);
     }
 
     @Test
@@ -431,5 +434,19 @@ public class TestClientTest {
         Assert.assertEquals(true, editButton.isEnabled());
     }
 
+    @Test
+    public void testTargetLocationOfEditButton() {
+        List<ServiceReference> expected = setupAndStartTestClientPage();
+        expandServiceListTree();
+        tester.debugComponentTrees();
+        for (int index = 2; index < expected.size() + 2; index++) {
+            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
+                    AjaxLink.class);
+        }
+        tester.clickLink("methodCallForm:serviceList:i:2:nodeComponent:contentLink", true);
+        AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
+        tester.executeAjaxEvent("methodCallForm:editButton", "onclick");
+        tester.assertRenderedPage(EditorPage.class);
 
+    }
 }

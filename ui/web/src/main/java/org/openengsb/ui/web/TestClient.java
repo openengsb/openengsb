@@ -57,6 +57,7 @@ import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 @SuppressWarnings("serial")
@@ -66,6 +67,9 @@ public class TestClient extends BasePage {
 
     @SpringBean
     private DomainService services;
+
+    @SpringBean
+    BundleContext bundleContext;
 
     private final DropDownChoice<MethodId> methodList;
 
@@ -166,7 +170,8 @@ public class TestClient extends BasePage {
     }
 
     private void updateEditButton(ServiceId serviceId) {
-    
+         Object serviceObject = getService(serviceId);
+
         this.editButton.setEnabled(true);
 
     }
