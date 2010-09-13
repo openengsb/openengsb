@@ -17,40 +17,63 @@
  */
 package org.openengsb.core.common;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
+
 import org.openengsb.core.common.context.ContextService;
 import org.osgi.framework.BundleContext;
-import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.osgi.context.BundleContextAware;
 
-@SuppressWarnings("serial")
-public class DefaultDomainProxyFactoryBean extends ProxyFactoryBean implements BundleContextAware {
+public class DefaultDomainProxyFactoryBean implements BundleContextAware, FactoryBean<Domain> {
 
-    private ForwardInterceptor interceptor;
+    private Class<? extends Domain> domainInterface;
+    private BundleContext bundleContext;
+    private String domainName;
+    private ContextService context;
 
-    private String domainInterfaceName;
-
-    public DefaultDomainProxyFactoryBean() {
-        addInterface(Domain.class);
-        interceptor = new ForwardInterceptor();
-        addAdvice(interceptor);
+    private ForwardHandler makeHandler() {
+        ForwardHandler handler = new ForwardHandler();
+        String domainInterfaceName = domainInterface.getName();
+        handler.setDomainInterfaceName(domainInterfaceName);
+        handler.setDomainName(domainName);
+        handler.setContext(context);
+        handler.setBundleContext(bundleContext);
+        return handler;
     }
 
-    public void setDomainInterface(Class<?> domainInterface) {
-        addInterface(domainInterface);
-        domainInterfaceName = domainInterface.getName();
-        interceptor.setDomainInterfaceName(domainInterfaceName);
+    public void setDomainInterface(Class<? extends Domain> domainInterface) {
+        this.domainInterface = domainInterface;
     }
 
     public void setDomainName(String domainName) {
-        interceptor.setDomainName(domainName);
+        this.domainName = domainName;
     }
 
     public void setContext(ContextService context) {
-        interceptor.setContext(context);
+        this.context = context;
     }
 
     @Override
     public void setBundleContext(BundleContext bundleContext) {
-        interceptor.setBundleContext(bundleContext);
+        this.bundleContext = bundleContext;
+    }
+
+    @Override
+    public Domain getObject() throws Exception {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        Class<?>[] classes = new Class<?>[] { Domain.class, domainInterface, };
+        InvocationHandler handler = makeHandler();
+        return (Domain) Proxy.newProxyInstance(classLoader, classes, handler);
+    }
+
+    @Override
+    public Class<? extends Domain> getObjectType() {
+        return domainInterface;
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return false;
     }
 }

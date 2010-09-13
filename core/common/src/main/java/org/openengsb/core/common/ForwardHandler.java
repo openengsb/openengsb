@@ -17,10 +17,9 @@
  */
 package org.openengsb.core.common;
 
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.context.ContextService;
@@ -30,9 +29,9 @@ import org.osgi.framework.ServiceReference;
 
 import static java.lang.String.format;
 
-public class ForwardInterceptor implements MethodInterceptor {
+public class ForwardHandler implements InvocationHandler {
 
-    private Log log = LogFactory.getLog(ForwardInterceptor.class);
+    private Log log = LogFactory.getLog(ForwardHandler.class);
 
     private BundleContext bundleContext;
 
@@ -43,15 +42,13 @@ public class ForwardInterceptor implements MethodInterceptor {
     private String domainName;
 
     @Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         log.info("Forwarding invocation to default connector");
         String connectorId = context.getValue("/domains/" + domainName + "/defaultConnector/id");
         log.debug(format("Default connector for %s is %s", domainName, connectorId));
         Object service = getService(connectorId);
-        Method methodToInvoke = invocation.getMethod();
-        Object[] arguments = invocation.getArguments();
         log.debug("invoking method on serviceObject " + service);
-        return methodToInvoke.invoke(service, arguments);
+        return method.invoke(service, args);
     }
 
     private Object getService(String id) {
