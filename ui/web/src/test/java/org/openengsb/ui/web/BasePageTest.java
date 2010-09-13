@@ -33,6 +33,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
+import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,26 +76,37 @@ public class BasePageTest {
 
     @Test
     public void test_default_context_initialization() {
-        tester.assertComponent("projectChoice", DropDownChoice.class);
+        tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
         assertThat("foo", is(WicketSession.get().getThreadContextId()));
     }
 
     @Test
     public void test_context_change() {
-        tester.assertComponent("projectChoice", DropDownChoice.class);
+        tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
         assertThat("foo", is(WicketSession.get().getThreadContextId()));
 
         verify(contextService).setThreadLocalContext("foo");
 
-        @SuppressWarnings("unchecked")
-        DropDownChoice<String> choice = (DropDownChoice<String>) tester
-                .getComponentFromLastRenderedPage("projectChoice");
+        FormTester formTester = tester.newFormTester("projectChoiceForm");
+        formTester.select("projectChoice", 1);
 
-        choice.setModelObject("bar");
         assertThat("bar", is(WicketSession.get().getThreadContextId()));
 
         // simulated page reload...
         tester.startPage(new BasePage());
         verify(contextService).setThreadLocalContext("bar");
+    }
+
+    @Test
+    public void test_correct_response_page() {
+        FormTester formTester = tester.newFormTester("projectChoiceForm");
+        formTester.select("projectChoice", 1);
+
+        @SuppressWarnings("unchecked")
+        DropDownChoice<String> choice = (DropDownChoice<String>) tester
+                .getComponentFromLastRenderedPage("projectChoiceForm:projectChoice");
+
+        Class<? extends Page> responsePage = choice.getRequestCycle().getResponsePageClass();
+        assertThat(choice.getPage(), is(responsePage));
     }
 }

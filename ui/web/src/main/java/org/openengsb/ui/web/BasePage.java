@@ -24,6 +24,7 @@ import java.util.Locale;
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -55,7 +56,9 @@ public class BasePage extends WebPage {
                 this.getSession().setLocale(Locale.GERMAN);
             }
         });
-        add(createProjectChoice());
+        Form<?> form = new Form<Object>("projectChoiceForm");
+        form.add(createProjectChoice());
+        add(form);
 
         this.add(new HeaderTemplate("header", this.getHeaderMenuItem()));
         this.add(new FooterTemplate("footer"));
