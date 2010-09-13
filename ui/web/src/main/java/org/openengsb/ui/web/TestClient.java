@@ -1,18 +1,18 @@
 /**
 
-   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 
  */
 package org.openengsb.ui.web;
@@ -51,6 +51,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
+import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
 import org.openengsb.ui.web.model.MethodCall;
@@ -58,6 +59,7 @@ import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 @SuppressWarnings("serial")
@@ -117,7 +119,9 @@ public class TestClient extends BasePage {
                 log.info(node.getClass());
 
                 updateEditButton((ServiceId) mnode.getUserObject());
-            };
+            }
+
+            ;
         };
         serviceList.setOutputMarkupId(true);
         form.add(serviceList);
@@ -170,7 +174,14 @@ public class TestClient extends BasePage {
     }
 
     private void updateEditButton(ServiceId serviceId) {
-         Object serviceObject = getService(serviceId);
+        Object serviceObject = getService(serviceId);
+
+         ServiceReference[] references = null;
+        try {
+            references = bundleContext.getServiceReferences(Domain.class.getName(), "(id=" + serviceId.getServiceId() + ")");
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalStateException(e);
+        }
 
         this.editButton.setEnabled(true);
 
@@ -191,8 +202,7 @@ public class TestClient extends BasePage {
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
         DefaultMutableTreeNode providerNode = new DefaultMutableTreeNode(provider.getName());
         node.add(providerNode);
-        for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider
-                .getDomainInterface())) {
+        for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider.getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
             if (id != null) {
                 ServiceId serviceId = new ServiceId();

@@ -65,15 +65,15 @@ import org.osgi.framework.ServiceReference;
 public class TestClientTest {
 
     public interface TestInterface extends Domain {
+
         void update(String id, String name);
-
         void update(TestBean test);
-    }
 
+    }
     public class TestService implements TestInterface {
+
         public boolean called = false;
         public TestBean test;
-
         @Override
         public void update(String id, String name) {
             if ("fail".equals(id)) {
@@ -90,20 +90,22 @@ public class TestClientTest {
         public String getName(String id) {
             return "";
         }
-    }
 
+    }
     private WicketTester tester;
+
     private ApplicationContextMock context;
     private TestService testService;
     private FormTester formTester;
     private boolean serviceListExpanded;
+    private BundleContext bundleContext;
 
     @Before
     public void setup() {
         tester = new WicketTester();
         context = new ApplicationContextMock();
         context.putBean(mock(ContextCurrentService.class));
-        BundleContext bundleContext = mock(BundleContext.class);
+        bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
     }
 
@@ -434,6 +436,7 @@ public class TestClientTest {
         Assert.assertEquals(true, editButton.isEnabled());
     }
 
+    
     @Test
     public void testTargetLocationOfEditButton() {
         List<ServiceReference> expected = setupAndStartTestClientPage();
