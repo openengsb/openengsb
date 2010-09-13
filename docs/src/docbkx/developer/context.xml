@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  
+  Copyright 2010 OpenEngSB Division, Vienna University of Technology
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+  http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+-->
+<chapter xml:id="developer.context" xmlns="http://docbook.org/ns/docbook" version="5.0">
+
+  <title>Context Management</title>
+
+  <para>Each project in the OpenEngSB has its own context to store meta information necessary for running inside of the
+    OpenEngSB. The context basically is represented as a tree structure with key-value pairs as leafs.</para>
+
+  <para>TBW - how to get initial values into the context when a service instance is created.</para>
+
+  <para>TBW - how to do context lookup inside of domain and connectors.</para>
+
+  <para>TBW - how to write into the context inside of domain and connectors.</para>
+
+</chapter>
