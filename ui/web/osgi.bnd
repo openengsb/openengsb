@@ -19,4 +19,9 @@ Web-ContextPath: openengsb
 Bundle-ClassPath: .,WEB-INF/classes,\
 WEB-INF/lib/*.jar
 
+Import-Package: org.drools; bundle-symbolic-name="org.drools.core",\
+org.drools.event; bundle-symbolic-name="org.drools.core",\
+org.drools.rule, org.drools.compiler,\
+*
+
 DynamicImport-Package: *
