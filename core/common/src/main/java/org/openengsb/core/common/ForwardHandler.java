@@ -46,12 +46,15 @@ public class ForwardHandler implements InvocationHandler {
         log.info("Forwarding invocation to default connector");
         String connectorId = context.getValue("/domains/" + domainName + "/defaultConnector/id");
         log.debug(format("Default connector for %s is %s", domainName, connectorId));
-        Object service = getService(connectorId);
+        ServiceReference serviceRef = getServiceRef(connectorId);
+        Object service = bundleContext.getService(serviceRef);
         log.debug("invoking method on serviceObject " + service);
-        return method.invoke(service, args);
+        Object result = method.invoke(service, args);
+        bundleContext.ungetService(serviceRef);
+        return result;
     }
 
-    private Object getService(String id) {
+    private ServiceReference getServiceRef(String id) {
         String filter = "(id=" + id + ")";
         try {
             ServiceReference[] serviceReferences = bundleContext.getServiceReferences(domainInterfaceName, filter);
@@ -60,7 +63,7 @@ public class ForwardHandler implements InvocationHandler {
             } else if (serviceReferences.length > 1) {
                 throw new IllegalStateException("multiple services found");
             }
-            return bundleContext.getService(serviceReferences[0]);
+            return serviceReferences[0];
         } catch (InvalidSyntaxException e) {
             throw new IllegalArgumentException("filter invalid " + filter, e);
         }
