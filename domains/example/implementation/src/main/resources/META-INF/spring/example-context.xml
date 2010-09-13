@@ -41,7 +41,7 @@
       <property name="domainInterface">
         <value>org.openengsb.domains.example.ExampleDomain</value>
       </property>
-      <property name="domainName" value="example" />
+      <property name="domainName" value="ExampleDomain" />
       <property name="context" ref="contextService" />
     </bean>
   </osgi:service>
