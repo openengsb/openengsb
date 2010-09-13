@@ -52,7 +52,7 @@ then
 
 * Create required connectors
 
-  Now one logging service and one email service should be created. Create a logging service as described in the
+  Now one logging service and one email service should be created. Create one notification service as described in the
  {{{./howto_logging.html}previous example}}. Please name it <<notification>> instead of test1 or test2. Now create
  a logging service:
   
