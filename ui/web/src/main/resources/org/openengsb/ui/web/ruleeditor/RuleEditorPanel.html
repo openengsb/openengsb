@@ -20,10 +20,12 @@
 	xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
 	<form wicket:id="form">
 		<select wicket:id="typeChoice" />
-		<select wicket:id="ruleChoice" />		
+		<select wicket:id="ruleChoice" />
+		<input wicket:id="ruleName" />	
 		<button wicket:id="new">new</button>
 		<button wicket:id="save">save</button>
-		<button wicket:id="cancel">cancel</button>
-		<textarea wicket:id="text" rows="60" cols="80"> </textarea>
+		<button wicket:id="cancel">cancel</button><br/>
+		<textarea wicket:id="text" rows="30" cols="80"> </textarea>
 	</form>
+	<span wicket:id="feedback"/>
 </wicket:panel>

@@ -45,10 +45,11 @@ import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
+import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 import org.openengsb.ui.web.service.DomainService;
 
 @SuppressWarnings("serial")
-public class SendEventPage extends BasePage {
+public class SendEventPage extends BasePage implements RuleManagerProvider {
 
     static final Log log = LogFactory.getLog(SendEventPage.class);
 
@@ -93,7 +94,7 @@ public class SendEventPage extends BasePage {
         form.add(dropDownChoice);
         add(createEditorPanelForClass(classes.get(0)));
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
-        add(new RuleEditorPanel("ruleEditor",ruleManager));
+        add(new RuleEditorPanel("ruleEditor",this));
     }
 
     private EditorPanel createEditorPanelForClass(Class<?> theClass) {
@@ -136,5 +137,10 @@ public class SendEventPage extends BasePage {
             log.error("building event istance failed", e);
             return null;
         }
+    }
+
+    @Override
+    public RuleManager getRuleManager() {
+        return ruleManager;
     }
 }

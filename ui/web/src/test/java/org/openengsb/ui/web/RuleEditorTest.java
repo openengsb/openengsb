@@ -19,6 +19,7 @@
 package org.openengsb.ui.web;
 
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -27,15 +28,19 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
@@ -70,6 +75,7 @@ public class RuleEditorTest {
         when(ruleManager.list(RuleBaseElementType.Rule)).thenReturn(rules);
         when(ruleManager.get(ruleBaseElementId)).thenReturn("testsource");
         tester.startPage(RuleEditorPage.class);
+        verify(ruleManager).list(RuleBaseElementType.Rule);
     }
 
     @Test
@@ -80,8 +86,13 @@ public class RuleEditorTest {
         tester.assertComponent("ruleEditor:form", Form.class);
         tester.assertComponent("ruleEditor:form:typeChoice", DropDownChoice.class);
         tester.assertComponent("ruleEditor:form:ruleChoice", DropDownChoice.class);
+        assertTrue(tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice").isVisible());
         tester.assertComponent("ruleEditor:form:save", AjaxButton.class);
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
+        // tester.assertComponent("ruleEditor:form:ruleName", TextField.class);
+        // assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleName").isVisible());
         tester.assertComponent("ruleEditor:form:cancel", AjaxButton.class);
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
         tester.assertComponent("ruleEditor:form:new", AjaxButton.class);
         tester.assertComponent("ruleEditor:form:text", TextArea.class);
 
@@ -145,6 +156,9 @@ public class RuleEditorTest {
         assertEquals("testsource", textArea.getModelObject());
 
         formTester.setValue("text", "modified source");
+        tester.executeAjaxEvent(textArea, "onchange");
+        assertTrue(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
+        assertTrue(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
     }
 
     @Test
@@ -157,6 +171,8 @@ public class RuleEditorTest {
         TextArea<String> textArea = (TextArea<String>) tester.getComponentFromLastRenderedPage("ruleEditor:form:text");
         assertTrue(textArea.isEnabled());
         assertEquals("modified source", textArea.getModelObject());
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
     }
 
     @Test
@@ -169,8 +185,77 @@ public class RuleEditorTest {
         TextArea<String> textArea = (TextArea<String>) tester.getComponentFromLastRenderedPage("ruleEditor:form:text");
         assertTrue(textArea.isEnabled());
         assertEquals("testsource", textArea.getModelObject());
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
     }
-    
-    
-    
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSubmitChanges_withErrors() throws Exception {
+        doThrow(new RuleBaseException()).when(ruleManager).update(ruleBaseElementId, "modified source");
+        enterText();
+        tester.executeAjaxEvent("ruleEditor:form:save", "onclick");
+
+        verify(ruleManager,times(1)).update(ruleBaseElementId, "modified source");
+        TextArea<String> textArea = (TextArea<String>) tester.getComponentFromLastRenderedPage("ruleEditor:form:text");
+        assertTrue(textArea.isEnabled());
+        assertEquals("modified source", textArea.getModelObject());
+        tester.assertErrorMessages(new String[] { "could not save rule" });
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
+
+        tester.assertComponent("ruleEditor:feedback", FeedbackPanel.class);
+        FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("ruleEditor:feedback");
+        assertTrue(feedbackPanel.isVisible());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testButtonStateOnSecondChange() throws Exception {
+        enterText();
+        FormTester formTester = tester.newFormTester("ruleEditor:form");
+        formTester.select("ruleChoice", 0);
+        tester.executeAjaxEvent("ruleEditor:form:ruleChoice", "onchange");
+        TextArea<String> textArea = (TextArea<String>) tester.getComponentFromLastRenderedPage("ruleEditor:form:text");
+        assertTrue(textArea.isEnabled());
+        assertEquals("testsource", textArea.getModelObject());
+
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testCreateNewRule() throws Exception {
+        tester.executeAjaxEvent("ruleEditor:form:new", "onclick");
+        TextField<String> rulename = ((TextField<String>) tester
+                .getComponentFromLastRenderedPage("ruleEditor:form:ruleName"));
+        assertEquals("rulename", rulename.getModelObject());
+        assertTrue(rulename.isVisible());
+
+        FormTester formTester = tester.newFormTester("ruleEditor:form");
+        TextArea<String> textArea = (TextArea<String>) tester.getComponentFromLastRenderedPage("ruleEditor:form:text");
+        assertTrue(textArea.isEnabled());
+        assertEquals("", textArea.getModelObject());
+        formTester.setValue("text", "new rule source");
+        tester.executeAjaxEvent(textArea, "onchange");
+        assertTrue(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
+        assertTrue(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:new").isEnabled());
+
+        tester.executeAjaxEvent("ruleEditor:form:save", "onclick");
+
+        assertTrue(tester.getComponentFromLastRenderedPage("ruleEditor:form:new").isEnabled());
+        assertTrue(tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice").isVisible());
+        tester.assertComponent("ruleEditor:form:ruleChoice", DropDownChoice.class);
+
+        assertEquals(RuleBaseElementType.Rule,
+                ((DropDownChoice<RuleBaseElementType>) tester
+                        .getComponentFromLastRenderedPage("ruleEditor:form:typeChoice")).getDefaultModelObject());
+        RuleBaseElementId ruleBaseElementId = new RuleBaseElementId(RuleBaseElementType.Rule, "rulename");
+        verify(ruleManager).add(ruleBaseElementId, "new rule source");
+        verify(ruleManager, times(2)).list(RuleBaseElementType.Rule);
+        assertEquals(ruleBaseElementId, tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice")
+                .getDefaultModelObject());
+    }
 }

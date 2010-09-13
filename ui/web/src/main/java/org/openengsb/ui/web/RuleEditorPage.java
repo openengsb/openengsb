@@ -21,14 +21,19 @@ package org.openengsb.ui.web;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
+import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 
-public class RuleEditorPage extends BasePage {
+public class RuleEditorPage extends BasePage implements RuleManagerProvider {
 
     @SpringBean
     RuleManager ruleManager;
     
 	public RuleEditorPage() {
-		add(new RuleEditorPanel("ruleEditor",ruleManager));
+        add(new RuleEditorPanel("ruleEditor",this));
 	}
 
+    @Override
+    public RuleManager getRuleManager() {
+        return ruleManager;
+    }
 }
