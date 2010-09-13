@@ -40,6 +40,7 @@ import org.openengsb.ui.web.editor.EditorPanel;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.web.global.footer.ImprintPage;
 import org.openengsb.ui.web.service.DomainService;
+import org.osgi.framework.BundleContext;
 
 import java.util.Arrays;
 import java.util.List;
@@ -100,6 +101,8 @@ public class HeaderTemplateTest {
     private void setupTestClientPage() {
         DomainService domainServiceMock = Mockito.mock(DomainService.class);
         context.putBean(domainServiceMock);
+        BundleContext bundleContext = mock(BundleContext.class);
+        context.putBean(bundleContext);
         setupTesterWithSpringMockContext();
     }
 
@@ -124,6 +127,8 @@ public class HeaderTemplateTest {
         context.putBean("eventService", eventService);
         context.putBean("domainService", mock(DomainService.class));
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
+        BundleContext bundleContext = mock(BundleContext.class);
+        context.putBean(bundleContext);
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>>asList(Dummy.class);
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);

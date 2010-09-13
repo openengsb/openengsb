@@ -1,33 +1,21 @@
 /**
 
-   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 
  */
 package org.openengsb.ui.web;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,7 +49,16 @@ import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class TestClient extends BasePage {
@@ -70,6 +67,9 @@ public class TestClient extends BasePage {
 
     @SpringBean
     private DomainService services;
+
+    @SpringBean
+    BundleContext bundleContext;
 
     private final DropDownChoice<MethodId> methodList;
 
@@ -82,6 +82,12 @@ public class TestClient extends BasePage {
     private final LinkTree serviceList;
 
     private FeedbackPanel feedbackPanel;
+
+    private AjaxButton editButton;
+
+    private ServiceManager lastManager;
+    
+    private String lastServiceId;
 
     public TestClient() {
         
@@ -111,7 +117,22 @@ public class TestClient extends BasePage {
         form.setOutputMarkupId(true);
         add(form);
 
+        editButton = new AjaxButton("editButton", form) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                log.info("edit button pressed");
+                if (lastManager != null && lastServiceId != null) {
+                      setResponsePage(new EditorPage(lastManager, lastServiceId));
+                }
+
+            }
+
+        };
+        editButton.setEnabled(false);
+        editButton.setOutputMarkupId(true);
+
         serviceList = new LinkTree("serviceList", createModel()) {
+
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
@@ -123,7 +144,10 @@ public class TestClient extends BasePage {
                 target.addComponent(methodList);
                 log.info(node);
                 log.info(node.getClass());
-            };
+
+                updateEditButton((ServiceId) mnode.getUserObject());
+                target.addComponent(editButton);
+            }
         };
         serviceList.setOutputMarkupId(true);
         form.add(serviceList);
@@ -163,13 +187,51 @@ public class TestClient extends BasePage {
                 target.addComponent(argumentListContainer);
             }
         };
+
+
         // the message-attribute doesn't work for some reason
         submitButton.setModel(new ResourceModel("form.call"));
         form.add(submitButton);
+        form.add(editButton);
         feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
+    }
+
+    private void updateEditButton(ServiceId serviceId) {
+        lastManager = null;
+        lastServiceId = null;
+        editButton.setEnabled(false);
+        ServiceReference[] references = null;
+        try {
+            references = bundleContext.getServiceReferences(Domain.class.getName(), "(id=" + serviceId.getServiceId() + ")");
+            String id = "";
+            String domain = null;
+            if (references != null && references.length > 0) {
+                id = (String) references[0].getProperty("managerId");
+                domain = (String) references[0].getProperty("domain");
+            }
+            List<ServiceManager> managerList = new ArrayList<ServiceManager>();
+
+            for (DomainProvider ref : services.domains()) {
+                Class<? extends Domain> domainInterface = ref.getDomainInterface();
+                if (domainInterface.getName().equals(domain)) {
+                    managerList.addAll(services.serviceManagersForDomain(domainInterface));
+                }
+            }
+
+            for (ServiceManager sm : managerList) {
+                if (sm.getDescriptor().getId().equals(id)) {
+                    lastManager = sm;
+                    lastServiceId = serviceId.getServiceId();
+                    editButton.setEnabled(true);
+                }
+            }
+
+        } catch (InvalidSyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     private TreeModel createModel() {
@@ -187,8 +249,7 @@ public class TestClient extends BasePage {
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
         DefaultMutableTreeNode providerNode = new DefaultMutableTreeNode(provider.getName());
         node.add(providerNode);
-        for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider
-                .getDomainInterface())) {
+        for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider.getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
             if (id != null) {
                 ServiceId serviceId = new ServiceId();

@@ -1,18 +1,18 @@
 /**
 
-   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 
  */
 package org.openengsb.core.common;
@@ -24,7 +24,9 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
@@ -33,6 +35,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 public class AbstractServiceManagerTest {
+
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
     private static interface DummyDomain extends Domain {
     }
@@ -55,6 +60,7 @@ public class AbstractServiceManagerTest {
                     builder.serviceType(DummyDomain.class);
                     builder.name("abstract.name");
                     builder.description("abstract.description");
+                    builder.id("DummyServiceManager");
                     return builder.build();
                 }
 
@@ -81,7 +87,7 @@ public class AbstractServiceManagerTest {
 
         ServiceDescriptor descriptor = manager.getDescriptor(Locale.ENGLISH);
 
-        Assert.assertEquals(DummyInstance.class.getName(), descriptor.getId());
+        Assert.assertEquals(DummyServiceManager.class.getSimpleName(), descriptor.getId());
         Assert.assertEquals(DummyDomain.class, descriptor.getServiceType());
         Assert.assertEquals(DummyInstance.class, descriptor.getImplementationType());
     }
@@ -96,9 +102,7 @@ public class AbstractServiceManagerTest {
         manager.update("test", attributes);
 
         Hashtable<String, String> props = createVerificationHashmap();
-        Mockito.verify(bundleContextMock).registerService(
-                new String[] { DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
-                instance, props);
+        Mockito.verify(bundleContextMock).registerService(new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance, props);
     }
 
     @Test
@@ -113,9 +117,7 @@ public class AbstractServiceManagerTest {
         manager.update("test", verificationAttributes);
 
         Hashtable<String, String> props = createVerificationHashmap();
-        Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
-                new String[] { DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
-                instance, props);
+        Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance, props);
     }
 
     @Test
@@ -123,8 +125,7 @@ public class AbstractServiceManagerTest {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
         DummyInstance instance = new DummyInstance();
-        ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(
-                bundleContextMock, instance);
+        ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(bundleContextMock, instance);
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
@@ -133,14 +134,10 @@ public class AbstractServiceManagerTest {
         Mockito.verify(serviceRegistrationMock).unregister();
     }
 
-    private ServiceRegistration appendServiceRegistrationMockToBundleContextMock(BundleContext bundleContextMock,
-            DummyInstance mock) {
+    private ServiceRegistration appendServiceRegistrationMockToBundleContextMock(BundleContext bundleContextMock, DummyInstance mock) {
         ServiceRegistration serviceRegistrationMock = Mockito.mock(ServiceRegistration.class);
         Hashtable<String, String> props = createVerificationHashmap();
-        Mockito.when(
-                bundleContextMock.registerService(
-                        new String[] { DummyInstance.class.getName(), DummyDomain.class.getName(),
-                                Domain.class.getName() }, mock, props)).thenReturn(serviceRegistrationMock);
+        Mockito.when(bundleContextMock.registerService(new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, mock, props)).thenReturn(serviceRegistrationMock);
         return serviceRegistrationMock;
     }
 
@@ -149,6 +146,7 @@ public class AbstractServiceManagerTest {
         props.put("id", "test");
         props.put("domain", DummyDomain.class.getName());
         props.put("class", DummyInstance.class.getName());
+        props.put("managerId", DummyServiceManager.class.getSimpleName());
         return props;
     }
 
@@ -157,4 +155,91 @@ public class AbstractServiceManagerTest {
         manager.setBundleContext(bundleContextMock);
         return manager;
     }
+
+    @Test
+    public void testGetAttributeValues() {
+        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("id", "test");
+        attributes.put("attribute2", "atr2");
+
+        DummyInstance instance = new DummyInstance();
+
+        DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
+        manager.update("test", attributes);
+        Map<String, String> attributeValues = manager.getAttributeValues("test");
+        Assert.assertEquals(attributeValues.size(), attributes.size());
+        Assert.assertEquals(attributeValues.get("id"), "test");
+        Assert.assertEquals(attributeValues.get("attribute2"), "atr2");
+    }
+
+    @Test
+    public void testGetAttributeValuesAfterUpdate() {
+        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("id", "test");
+        attributes.put("attribute2", "atr2");
+
+        DummyInstance instance = new DummyInstance();
+
+        DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
+        manager.update("test", attributes);
+
+        Map<String, String> attributesNew = new HashMap<String, String>();
+        attributesNew.put("id", "test");
+        attributesNew.put("attribute2", "newAtr2");
+        manager.update("test", attributesNew);
+
+        Map<String, String> attributeValues = manager.getAttributeValues("test");
+        Assert.assertEquals(attributes.size(), attributeValues.size());
+        Assert.assertEquals(attributeValues.get("id"), "test");
+        Assert.assertEquals(attributeValues.get("attribute2"), "newAtr2");
+    }
+
+    @Test
+    public void testCheckIfDeletedServiceDoesNotHaveAttributeValues() {
+        expected.expect(IllegalArgumentException.class);
+        expected.expectMessage("does not exist");
+        
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("id", "test");
+        attributes.put("attribute2", "atr2");
+
+        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        DummyInstance instance = new DummyInstance();
+        ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(bundleContextMock, instance);
+
+        DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
+        manager.update("test", attributes);
+        manager.delete("test");
+
+        Mockito.verify(serviceRegistrationMock).unregister();
+
+        Map<String, String> attributeValues = manager.getAttributeValues("test");
+        Assert.assertEquals(0, attributeValues.size());
+
+    }
+
+    @Test
+    public void testIfUpdateOfSingleAttributesIsPossible() {
+        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        Map<String, String> attributes = new HashMap<String, String>();
+        attributes.put("id", "test");
+        attributes.put("attribute2", "atr2");
+
+        DummyInstance instance = new DummyInstance();
+
+        DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
+        manager.update("test", attributes);
+
+        Map<String, String> attributesNew = new HashMap<String, String>();
+        attributesNew.put("attribute2", "newAtr2");
+        manager.update("test", attributesNew);
+
+        Map<String, String> attributeValues = manager.getAttributeValues("test");
+        Assert.assertEquals(attributes.size(), attributeValues.size());
+        Assert.assertEquals(attributeValues.get("id"), "test");
+        Assert.assertEquals(attributeValues.get("attribute2"), "newAtr2");
+    }
+
 }

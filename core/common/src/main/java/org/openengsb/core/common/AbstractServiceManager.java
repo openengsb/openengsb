@@ -67,6 +67,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     private BundleStrings strings;
     private final Map<String, DomainRepresentation> services = new HashMap<String, DomainRepresentation>();
     private final ServiceInstanceFactory<DomainType, InstanceType> factory;
+    private final Map<String, Map<String,String>> attributeValues = new HashMap<String, Map<String, String>>();
 
     public AbstractServiceManager(ServiceInstanceFactory<DomainType, InstanceType> factory) {
         this.factory = factory;
@@ -102,6 +103,12 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             } else {
                 factory.updateServiceInstance(services.get(id).service, attributes);
             }
+            if (attributeValues.containsKey(id)) {
+                attributeValues.get(id).putAll(attributes);
+            } else {
+                attributeValues.put(id, attributes);
+            }
+
         }
     }
 
@@ -110,6 +117,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         synchronized (services) {
             services.get(id).registration.unregister();
             services.remove(id);
+            attributeValues.remove(id);
         }
     }
 
@@ -128,6 +136,21 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         serviceProperties.put("id", id);
         serviceProperties.put("domain", getDomainInterface().getName());
         serviceProperties.put("class", getImplementationClass().getName());
+        serviceProperties.put("managerId", getDescriptor().getId());
         return serviceProperties;
+    }
+
+    @Override
+    public Map<String, String> getAttributeValues(String id) {
+        Map<String, String> returnValues = new HashMap<String, String>();
+        synchronized (attributeValues) {
+            if (attributeValues.containsKey(id)) {
+                Map<String, String> attributes = attributeValues.get(id);
+                returnValues.putAll(attributes);
+            } else {
+                throw new IllegalArgumentException("the specified service instance does not exist");
+            }
+        }
+        return returnValues;
     }
 }
