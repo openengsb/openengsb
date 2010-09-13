@@ -64,6 +64,7 @@
     <module>ui</module>
     <module>core</module>
     <module>domains</module>
+    <module>assembly</module>
     <module>integrationtest</module>
   </modules>
 
@@ -327,10 +328,10 @@
                 <param>--platform=felix</param>
                 <param>--console=false</param>
                 <param>--vmOptions=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</param>
-                <param>scan-composite:file:etc/platform/karaf.composite</param>
-                <param>scan-composite:file:etc/platform/settings.debug.composite</param>
+                <param>scan-composite:file:assembly/target/classes/karaf.composite</param>
+                <param>scan-composite:file:assembly/target/classes/settings.debug.composite</param>
                 <param>--ee=J2SE-1.6</param>
-                <param>--definitionURL=file:etc/platform/felix.xml</param>
+                <param>--definitionURL=file:assembly/target/classes/felix.xml</param>
               </provision>
             </configuration>
           </plugin>
@@ -434,10 +435,10 @@
                 <param>--executor=script</param>
                 <param>--workingDirectory=target/all/openengsb</param>
                 <param>--console=false</param>
-                <param>scan-composite:file:etc/platform/karaf.composite</param>
-                <param>scan-composite:file:etc/platform/settings.release.composite</param>
+                <param>scan-composite:file:assembly/target/classes/karaf.composite</param>
+                <param>scan-composite:file:assembly/target/classes/settings.release.composite</param>
                 <param>--ee=J2SE-1.6</param>
-                <param>--definitionURL=file:etc/platform/felix.xml</param>
+                <param>--definitionURL=file:assembly/target/classes/felix.xml</param>
                 <param>--clean</param>
               </provision>
             </configuration>
@@ -448,7 +449,7 @@
             <configuration>
               <appendAssemblyId>false</appendAssemblyId>
               <descriptors>
-                <descriptor>${project.basedir}/assemble/all.xml</descriptor>
+                <descriptor>${project.basedir}/assembly/all.xml</descriptor>
               </descriptors>
             </configuration>
           </plugin>
