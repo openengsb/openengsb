@@ -17,19 +17,7 @@
  */
 package org.openengsb.ui.web;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 import junit.framework.Assert;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.feedback.FeedbackMessage;
@@ -46,11 +34,14 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
 import org.openengsb.ui.web.model.MethodCall;
@@ -58,6 +49,14 @@ import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
+
+import java.lang.reflect.Method;
+import java.util.*;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestClientTest {
 
@@ -373,7 +372,18 @@ public class TestClientTest {
             }
         });
 
-        when(managedServicesMock.serviceReferencesForConnector(TestInterface.class)).thenReturn(expected);
+        Mockito.when(managedServicesMock.serviceReferencesForConnector(TestInterface.class)).thenReturn(expected);
+
+        ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
+        List<ServiceManager> serviceManagerList = new ArrayList<ServiceManager>();
+        serviceManagerList.add(serviceManagerMock);
+        Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(serviceManagerList);
+
+        ServiceDescriptor serviceDescriptorMock = Mockito.mock(ServiceDescriptor.class);
+        Mockito.when(serviceDescriptorMock.getName()).thenReturn("service.name");
+        Mockito.when(serviceDescriptorMock.getDescription()).thenReturn("service.description");
+        Mockito.when(serviceManagerMock.getDescriptor(Mockito.<Locale>any())).thenReturn(serviceDescriptorMock);
+        
 
         testService = new TestService();
         when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
@@ -396,4 +406,17 @@ public class TestClientTest {
         tester.getApplication().addComponentInstantiationListener(
                 new SpringComponentInjector(tester.getApplication(), context, true));
     }
+
+    @Test
+    public void testListToCreateNewServices() {
+        setupAndStartTestClientPage();
+        tester.debugComponentTrees();
+        tester.assertRenderedPage(TestClient.class);
+        Label name = (Label) tester.getComponentFromLastRenderedPage("services:0:service.name");
+        Label description = (Label) tester.getComponentFromLastRenderedPage("services:0:service.description");
+        Assert.assertEquals("service.name", name.getDefaultModel().getObject());
+        Assert.assertEquals("service.description", description.getDefaultModel().getObject());
+
+    }
+
 }

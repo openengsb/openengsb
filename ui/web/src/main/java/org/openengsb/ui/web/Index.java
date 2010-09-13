@@ -17,9 +17,6 @@ limitations under the License.
  */
 package org.openengsb.ui.web;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -31,6 +28,9 @@ import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.service.DomainService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class Index extends BasePage {
@@ -64,21 +64,7 @@ public class Index extends BasePage {
                 return managers;
             }
         };
-
-        add(new ListView<ServiceManager>("services", servicesModel) {
-            @Override
-            protected void populateItem(ListItem<ServiceManager> item) {
-                ServiceDescriptor desc = item.getModelObject().getDescriptor(item.getLocale());
-                item.add(new Link<ServiceManager>("create.new", item.getModel()) {
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new EditorPage(getModelObject()));
-                    }
-                });
-                item.add(new Label("service.name", desc.getName()));
-                item.add(new Label("service.description", desc.getDescription()));
-            }
-        });
+                     
     }
 
 }

@@ -25,16 +25,26 @@
     <li><a href="" wicket:id="index"><span><wicket:message key="home.title" /></span></a> &raquo;</li>
     <li><span><wicket:message key="testClient.title" /></span> &raquo;</li>
   </ul>
+  
+  <h2><wicket:message key="serviceList" /></h2>
+  <ul wicket:id="services">
+    <li>
+      <h3><span wicket:id="service.name">[service.name]</span>
+        <span class="smallFont light" wicket:id="service.description">[service.description]</span>
+        <a href="#" wicket:id="create.new"><wicket:message key="create.new">[create.new]</wicket:message></a>
+      </h3>
+    </li>
+  </ul>
 
   <wicket:message key="serviceList" />
 
   <form wicket:id="methodCallForm">
-    <span wicket:id="serviceList" />
+    <span wicket:id="serviceList" ></span>
     <select wicket:id="methodList"></select>
     <div wicket:id="argumentListContainer">
-      <div wicket:id="argumentList" />
+      <div wicket:id="argumentList" ></div>
     </div>
-    <input type="submit" wicket:id="submitButton" wicket:message="value:form.call />
+    <input type="submit" wicket:id="submitButton" wicket:message="value:form.call" />
   </form>
   <div wicket:id="feedback"></div>
 
