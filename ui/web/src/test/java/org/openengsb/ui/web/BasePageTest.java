@@ -85,8 +85,7 @@ public class BasePageTest {
         choice.setModelObject("bar");
         assertThat("bar", is(WicketSession.get().getThreadContextId()));
 
-        // this is a hack to simulate a reload and should be replaced when the
-        // page is automatically reloaded on current thread context changes
+        // simulated page reload...
         tester.startPage(new BasePage());
         verify(contextService).setThreadLocalContext("bar");
     }
