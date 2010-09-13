@@ -24,7 +24,9 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
@@ -33,6 +35,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 public class AbstractServiceManagerTest {
+
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
     private static interface DummyDomain extends Domain {
     }
@@ -193,6 +198,9 @@ public class AbstractServiceManagerTest {
 
     @Test
     public void testCheckIfDeletedServiceDoesNotHaveAttributeValues() {
+        expected.expect(IllegalArgumentException.class);
+        expected.expectMessage("does not exist");
+        
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("id", "test");
         attributes.put("attribute2", "atr2");

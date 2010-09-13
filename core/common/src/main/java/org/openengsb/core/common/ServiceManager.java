@@ -59,8 +59,8 @@ public interface ServiceManager {
     void delete(String id);
 
     /**
+     * Returns the attributes with values for the specified service instance.
      * @param id identifier for a already existing service instance
-     * @return the attributes with values by the specified service
      */
     Map<String, String> getAttributeValues(String id);
 

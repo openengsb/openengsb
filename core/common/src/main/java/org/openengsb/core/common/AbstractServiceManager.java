@@ -147,6 +147,8 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             if (attributeValues.containsKey(id)) {
                 Map<String, String> attributes = attributeValues.get(id);
                 returnValues.putAll(attributes);
+            } else {
+                throw new IllegalArgumentException("the specified service instance does not exist");
             }
         }
         return returnValues;
