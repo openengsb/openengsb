@@ -150,4 +150,9 @@ public class BaseExamConfiguration {
         }
     }
 
+    public static void debug(List<Option> baseConfiguration) {
+        baseConfiguration.add(PaxRunnerOptions
+                .vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"));
+    }
+
 }
