@@ -29,8 +29,12 @@ public class AuthenticatedApplication extends AuthenticatedWebApplication {
     @Override
     protected void init() {
         super.init();
-        addComponentInstantiationListener(new SpringComponentInjector(this));
+        addInjector();
         getResourceSettings().setAddLastModifiedTimeToResourceReferenceUrl(true);
+    }
+
+    protected void addInjector() {
+        addComponentInstantiationListener(new SpringComponentInjector(this));
     }
 
     @Override
