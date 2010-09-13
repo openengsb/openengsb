@@ -79,6 +79,11 @@ public class BasePage extends WebPage {
                 return true;
             }
 
+            @Override
+            protected void onModelChanged() {
+                setResponsePage(BasePage.this.getClass());
+            }
+
         };
         return dropDownChoice;
     }
