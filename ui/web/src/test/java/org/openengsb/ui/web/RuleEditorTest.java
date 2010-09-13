@@ -192,7 +192,8 @@ public class RuleEditorTest {
     @Test
     @SuppressWarnings("unchecked")
     public void testSubmitChanges_withErrors() throws Exception {
-        doThrow(new RuleBaseException()).when(ruleManager).update(ruleBaseElementId, "modified source");
+        doThrow(new RuleBaseException("error")).when(ruleManager).update((RuleBaseElementId) anyObject(), anyString());
+        
         enterText();
         tester.executeAjaxEvent("ruleEditor:form:save", "onclick");
 
@@ -200,7 +201,7 @@ public class RuleEditorTest {
         TextArea<String> textArea = (TextArea<String>) tester.getComponentFromLastRenderedPage("ruleEditor:form:text");
         assertTrue(textArea.isEnabled());
         assertEquals("modified source", textArea.getModelObject());
-        tester.assertErrorMessages(new String[] { "could not save rule" });
+        tester.assertErrorMessages(new String[] { "error" });
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
 
@@ -257,5 +258,39 @@ public class RuleEditorTest {
         verify(ruleManager, times(2)).list(RuleBaseElementType.Rule);
         assertEquals(ruleBaseElementId, tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice")
                 .getDefaultModelObject());
+    }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testSubmitNew_withErrors() throws Exception {
+        doThrow(new RuleBaseException("error")).when(ruleManager).add((RuleBaseElementId) anyObject(), anyString());
+        tester.executeAjaxEvent("ruleEditor:form:new", "onclick");
+        TextField<String> rulename = ((TextField<String>) tester
+                .getComponentFromLastRenderedPage("ruleEditor:form:ruleName"));
+        assertEquals("rulename", rulename.getModelObject());
+        assertTrue(rulename.isVisible());
+
+        FormTester formTester = tester.newFormTester("ruleEditor:form");
+        TextArea<String> textArea = (TextArea<String>) tester.getComponentFromLastRenderedPage("ruleEditor:form:text");
+        assertTrue(textArea.isEnabled());
+        assertEquals("", textArea.getModelObject());
+        formTester.setValue("text", "new rule source");
+        tester.executeAjaxEvent(textArea, "onchange");
+        assertTrue(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
+        assertTrue(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:new").isEnabled());
+        tester.executeAjaxEvent("ruleEditor:form:save", "onclick");
+
+        verify(ruleManager,times(1)).add(new RuleBaseElementId(RuleBaseElementType.Rule, "rulename"), "new rule source");
+        textArea = (TextArea<String>) tester.getComponentFromLastRenderedPage("ruleEditor:form:text");
+        assertTrue(textArea.isEnabled());
+        assertEquals("new rule source", textArea.getModelObject());
+        tester.assertErrorMessages(new String[] { "error" });
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
+        assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
+
+        tester.assertComponent("ruleEditor:feedback", FeedbackPanel.class);
+        FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("ruleEditor:feedback");
+        assertTrue(feedbackPanel.isVisible());
     }
 }

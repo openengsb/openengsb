@@ -69,6 +69,7 @@ public class RuleEditorPanel extends Panel {
         initTextArea(form);
         add(form);
         feedbackPanel = new FeedbackPanel("feedback");
+        feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
     }
 
@@ -208,7 +209,7 @@ public class RuleEditorPanel extends Panel {
             try {
                 ruleManagerProvider.getRuleManager().update(selection, text);
             } catch (RuleBaseException e) {
-                error("could not save rule");
+                error(e.getMessage());
             }
         }
         disableButtons(target);
