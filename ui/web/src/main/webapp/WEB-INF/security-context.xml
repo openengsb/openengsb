@@ -31,8 +31,7 @@
     <authentication-provider>
       <!-- TODO change this to reference our real user service -->
       <user-service>
-        <user name="admin" password="admin" authorities="ROLE_ADMIN, ROLE_USER" />
-        <user name="user" password="user" authorities="ROLE_USER" />
+        <user name="user" password="password" authorities="ROLE_USER" />
       </user-service>
     </authentication-provider>
   </authentication-manager>
