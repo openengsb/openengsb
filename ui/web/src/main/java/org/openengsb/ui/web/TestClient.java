@@ -19,6 +19,7 @@ package org.openengsb.ui.web;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +48,9 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.ServiceManager;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
 import org.openengsb.ui.web.model.MethodCall;
@@ -76,11 +79,25 @@ public class TestClient extends BasePage {
 
     private FeedbackPanel feedbackPanel;
 
+    private AjaxButton editButton;
+
+    private ServiceManager lastManager;
+
     public TestClient() {
         Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
         form.setModel(new Model<MethodCall>(call));
         form.setOutputMarkupId(true);
         add(form);
+
+        editButton = new AjaxButton("editButton", form) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                log.info("edit button pressed");
+                setResponsePage(new EditorPage(lastManager));
+            }
+
+        };
+        editButton.setEnabled(false);
 
         serviceList = new LinkTree("serviceList", createModel()) {
             @Override
@@ -94,6 +111,8 @@ public class TestClient extends BasePage {
                 target.addComponent(methodList);
                 log.info(node);
                 log.info(node.getClass());
+
+                updateEditButton((ServiceId) mnode.getUserObject());
             };
         };
         serviceList.setOutputMarkupId(true);
@@ -134,13 +153,22 @@ public class TestClient extends BasePage {
                 target.addComponent(argumentListContainer);
             }
         };
+
+
         // the message-attribute doesn't work for some reason
         submitButton.setModel(new ResourceModel("form.call"));
         form.add(submitButton);
+        form.add(editButton);
         feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
+    }
+
+    private void updateEditButton(ServiceId serviceId) {
+    
+        this.editButton.setEnabled(true);
+
     }
 
     private TreeModel createModel() {

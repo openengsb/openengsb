@@ -32,11 +32,13 @@ import junit.framework.Assert;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -396,4 +398,38 @@ public class TestClientTest {
         tester.getApplication().addComponentInstantiationListener(
                 new SpringComponentInjector(tester.getApplication(), context, true));
     }
+
+
+    @Test
+    public void showEditLink() {
+        List<ServiceReference> expected = setupAndStartTestClientPage();
+        expandServiceListTree();
+        tester.debugComponentTrees();
+        for (int index = 2; index < expected.size() + 2; index++) {
+            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
+                    AjaxLink.class);
+        }
+        tester.assertComponent("methodCallForm:editButton", AjaxButton.class);
+        AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
+        //should be dissabled when nothing is selected
+        Assert.assertEquals(false, editButton.isEnabled());
+    }
+
+    @Test
+    public void testIfEditButtonIsEnabledAfterSelectingAnService() {
+        List<ServiceReference> expected = setupAndStartTestClientPage();
+        expandServiceListTree();
+        tester.debugComponentTrees();
+        for (int index = 2; index < expected.size() + 2; index++) {
+            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
+                    AjaxLink.class);
+        }
+        tester.assertComponent("methodCallForm:editButton", AjaxButton.class);
+        tester.clickLink("methodCallForm:serviceList:i:2:nodeComponent:contentLink", true);                 
+        AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
+        //should now be enabled
+        Assert.assertEquals(true, editButton.isEnabled());
+    }
+
+
 }
