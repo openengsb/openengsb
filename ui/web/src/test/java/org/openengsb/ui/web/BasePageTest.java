@@ -42,6 +42,7 @@ public class BasePageTest {
 
     private WicketTester tester;
     private ContextCurrentService contextService;
+    private Page basePage;
 
     @Before
     public void setup() {
@@ -62,7 +63,14 @@ public class BasePageTest {
         tester.getApplication().addComponentInstantiationListener(
                 new SpringComponentInjector(tester.getApplication(), appContext, false));
         when(contextService.getAvailableContexts()).thenReturn(Arrays.asList(new String[] { "foo", "bar" }));
-        tester.startPage(new BasePage());
+        basePage = tester.startPage(new BasePage());
+    }
+
+    @Test
+    public void test_label_present() {
+        String labelString = tester.getApplication().getResourceSettings().getLocalizer().getString(
+                "project.choice.label", basePage);
+        tester.assertContains(labelString);
     }
 
     @Test
