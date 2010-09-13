@@ -24,7 +24,7 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:/WEB-INF/application-context.xml classpath:/WEB-INF/osgi-context.xml</param-value>
+    <param-value>classpath:/WEB-INF/application-context.xml classpath:/WEB-INF/osgi-context.xml classpath:/WEB-INF/security-context.xml</param-value>
   </context-param>
 
   <context-param>
@@ -40,6 +40,16 @@
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+
+  <filter>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>springSecurityFilterChain</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <filter>
     <filter-name>GZipFilter</filter-name>
@@ -60,7 +70,7 @@
     <filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
     <init-param>
       <param-name>applicationClassName</param-name>
-      <param-value>org.openengsb.ui.web.WicketApplication</param-value>
+      <param-value>org.openengsb.ui.web.AuthenticatedApplication</param-value>
     </init-param>
   </filter>
 

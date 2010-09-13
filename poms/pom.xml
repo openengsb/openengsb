@@ -66,6 +66,7 @@
     <jsp.version>6.1.14</jsp.version>
     <spring.osgi.version>2.0.0.M1</spring.osgi.version>
     <spring.version>3.0.4.RELEASE</spring.version>
+    <spring.security.version>3.0.3.RELEASE</spring.security.version>
     <jetty.spring.version>1.0.0</jetty.spring.version>
     <transaction.version>1.1.0</transaction.version>
     <persistence.version>1.0.0</persistence.version>

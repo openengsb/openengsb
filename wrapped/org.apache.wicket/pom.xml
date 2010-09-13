@@ -89,6 +89,12 @@
       <version>${wrapped.version}</version>
       <optional>true</optional>
     </dependency>
+    <dependency>
+      <groupId>org.apache.wicket</groupId>
+      <artifactId>wicket-auth-roles</artifactId>
+      <version>${wrapped.version}</version>
+      <optional>true</optional>
+    </dependency>
   </dependencies>
 
 </project>

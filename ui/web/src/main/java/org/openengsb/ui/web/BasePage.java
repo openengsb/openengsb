@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.authentication.AuthenticatedWebSession;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -33,6 +35,7 @@ import org.openengsb.ui.web.global.footer.FooterTemplate;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
 
 @SuppressWarnings("serial")
+@AuthorizeInstantiation("ROLE_USER")
 public class BasePage extends WebPage {
 
     @SpringBean
@@ -59,6 +62,13 @@ public class BasePage extends WebPage {
         Form<?> form = new Form<Object>("projectChoiceForm");
         form.add(createProjectChoice());
         add(form);
+        add(new Link<Object>("logout") {
+            @Override
+            public void onClick() {
+                ((AuthenticatedWebSession) this.getSession()).signOut();
+                setResponsePage(LoginPage.class);
+            }
+        });
 
         this.add(new HeaderTemplate("header", this.getHeaderMenuItem()));
         this.add(new FooterTemplate("footer"));
