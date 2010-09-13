@@ -55,6 +55,7 @@ public class AbstractServiceManagerTest {
                     builder.serviceType(DummyDomain.class);
                     builder.name("abstract.name");
                     builder.description("abstract.description");
+                    builder.id("DummyServiceManager");
                     return builder.build();
                 }
 
@@ -81,7 +82,7 @@ public class AbstractServiceManagerTest {
 
         ServiceDescriptor descriptor = manager.getDescriptor(Locale.ENGLISH);
 
-        Assert.assertEquals(DummyInstance.class.getName(), descriptor.getId());
+        Assert.assertEquals(DummyServiceManager.class.getSimpleName(), descriptor.getId());
         Assert.assertEquals(DummyDomain.class, descriptor.getServiceType());
         Assert.assertEquals(DummyInstance.class, descriptor.getImplementationType());
     }
@@ -140,6 +141,7 @@ public class AbstractServiceManagerTest {
         props.put("id", "test");
         props.put("domain", DummyDomain.class.getName());
         props.put("class", DummyInstance.class.getName());
+        props.put("managerId", DummyServiceManager.class.getSimpleName());
         return props;
     }
 

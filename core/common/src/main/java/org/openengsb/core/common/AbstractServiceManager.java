@@ -136,6 +136,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         serviceProperties.put("id", id);
         serviceProperties.put("domain", getDomainInterface().getName());
         serviceProperties.put("class", getImplementationClass().getName());
+        serviceProperties.put("managerId", getDescriptor().getId());
         return serviceProperties;
     }
 

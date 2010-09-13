@@ -88,6 +88,8 @@ public class TestClient extends BasePage {
     private AjaxButton editButton;
 
     private ServiceManager lastManager;
+    
+    private String lastServiceId;
 
     public TestClient() {
         Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
@@ -179,10 +181,20 @@ public class TestClient extends BasePage {
          ServiceReference[] references = null;
         try {
             references = bundleContext.getServiceReferences(Domain.class.getName(), "(id=" + serviceId.getServiceId() + ")");
+            String id = bundleContext.getProperty("managerId");
+            List<ServiceManager> managerList = services.serviceManagersForDomain(Domain.class);
+
+            for (ServiceManager sm : managerList) {
+                if (sm.getDescriptor().getId().equals(id)) {
+                    lastManager = sm;
+                }
+            }
+
         } catch (InvalidSyntaxException e) {
-            throw new IllegalStateException(e);
+            e.printStackTrace();
         }
 
+        lastServiceId = serviceId.getServiceId();
         this.editButton.setEnabled(true);
 
     }
