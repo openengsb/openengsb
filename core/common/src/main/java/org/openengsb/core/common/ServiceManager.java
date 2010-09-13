@@ -57,4 +57,11 @@ public interface ServiceManager {
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
     void delete(String id);
+
+    /**
+     * @param id identifier for a already existing service instance
+     * @return the attributes with values by the specified service
+     */
+    Map<String, String> getAttributeValues(String id);
+
 }

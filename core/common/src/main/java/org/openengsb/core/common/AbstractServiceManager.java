@@ -67,6 +67,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     private BundleStrings strings;
     private final Map<String, DomainRepresentation> services = new HashMap<String, DomainRepresentation>();
     private final ServiceInstanceFactory<DomainType, InstanceType> factory;
+    private final Map<String, Map<String,String>>  atributeValues = new HashMap<String, Map<String, String>>();
 
     public AbstractServiceManager(ServiceInstanceFactory<DomainType, InstanceType> factory) {
         this.factory = factory;
@@ -102,6 +103,12 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             } else {
                 factory.updateServiceInstance(services.get(id).service, attributes);
             }
+            if (atributeValues.containsKey(id)) {
+                atributeValues.get(id).putAll(attributes);
+            } else {
+                atributeValues.put(id, attributes);
+            }
+
         }
     }
 
@@ -110,6 +117,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         synchronized (services) {
             services.get(id).registration.unregister();
             services.remove(id);
+            atributeValues.remove(id);
         }
     }
 
@@ -129,5 +137,17 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         serviceProperties.put("domain", getDomainInterface().getName());
         serviceProperties.put("class", getImplementationClass().getName());
         return serviceProperties;
+    }
+
+    @Override
+    public Map<String, String> getAttributeValues(String id) {
+        Map<String, String> returnValues = new HashMap<String, String>();
+        synchronized (atributeValues) {
+            if (atributeValues.containsKey(id)) {
+                Map<String, String> attributes = atributeValues.get(id);
+                returnValues.putAll(attributes);
+            }
+        }
+        return returnValues;
     }
 }
