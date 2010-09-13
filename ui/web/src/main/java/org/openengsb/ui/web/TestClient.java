@@ -17,19 +17,6 @@
  */
 package org.openengsb.ui.web;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -51,7 +38,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
-import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
 import org.openengsb.ui.web.model.MethodCall;
@@ -61,6 +47,13 @@ import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class TestClient extends BasePage {
@@ -101,13 +94,18 @@ public class TestClient extends BasePage {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 log.info("edit button pressed");
-                setResponsePage(new EditorPage(lastManager));
+                if (lastManager != null && lastServiceId != null) {
+                      setResponsePage(new EditorPage(lastManager, lastServiceId));
+                }
+
             }
 
         };
         editButton.setEnabled(false);
+        editButton.setOutputMarkupId(true);
 
         serviceList = new LinkTree("serviceList", createModel()) {
+
             @Override
             protected void onNodeLinkClicked(Object node, BaseTree tree, AjaxRequestTarget target) {
                 DefaultMutableTreeNode mnode = (DefaultMutableTreeNode) node;
@@ -121,9 +119,8 @@ public class TestClient extends BasePage {
                 log.info(node.getClass());
 
                 updateEditButton((ServiceId) mnode.getUserObject());
+                target.addComponent(editButton);
             }
-
-            ;
         };
         serviceList.setOutputMarkupId(true);
         form.add(serviceList);
@@ -176,27 +173,38 @@ public class TestClient extends BasePage {
     }
 
     private void updateEditButton(ServiceId serviceId) {
-        Object serviceObject = getService(serviceId);
-
-         ServiceReference[] references = null;
+        lastManager = null;
+        lastServiceId = null;
+        editButton.setEnabled(false);
+        ServiceReference[] references = null;
         try {
             references = bundleContext.getServiceReferences(Domain.class.getName(), "(id=" + serviceId.getServiceId() + ")");
-            String id = bundleContext.getProperty("managerId");
-            List<ServiceManager> managerList = services.serviceManagersForDomain(Domain.class);
+            String id = "";
+            String domain = null;
+            if (references != null && references.length > 0) {
+                id = (String) references[0].getProperty("managerId");
+                domain = (String) references[0].getProperty("domain");
+            }
+            List<ServiceManager> managerList = new ArrayList<ServiceManager>();
+
+            for (DomainProvider ref : services.domains()) {
+                Class<? extends Domain> domainInterface = ref.getDomainInterface();
+                if (domainInterface.getName().equals(domain)) {
+                    managerList.addAll(services.serviceManagersForDomain(domainInterface));
+                }
+            }
 
             for (ServiceManager sm : managerList) {
                 if (sm.getDescriptor().getId().equals(id)) {
                     lastManager = sm;
+                    lastServiceId = serviceId.getServiceId();
+                    editButton.setEnabled(true);
                 }
             }
 
         } catch (InvalidSyntaxException e) {
             e.printStackTrace();
         }
-
-        lastServiceId = serviceId.getServiceId();
-        this.editButton.setEnabled(true);
-
     }
 
     private TreeModel createModel() {

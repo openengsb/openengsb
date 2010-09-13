@@ -1,35 +1,23 @@
 /**
 
-   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
 
  */
 package org.openengsb.ui.web;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
 import junit.framework.Assert;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -38,7 +26,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
@@ -48,11 +35,14 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
 import org.openengsb.ui.web.model.MethodCall;
@@ -60,20 +50,33 @@ import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
+import java.lang.reflect.Method;
+import java.util.*;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class TestClientTest {
+    private DomainService managedServicesMock;
 
     public interface TestInterface extends Domain {
 
         void update(String id, String name);
+
         void update(TestBean test);
 
     }
+
     public class TestService implements TestInterface {
 
         public boolean called = false;
         public TestBean test;
+
         @Override
         public void update(String id, String name) {
             if ("fail".equals(id)) {
@@ -92,6 +95,7 @@ public class TestClientTest {
         }
 
     }
+
     private WicketTester tester;
 
     private ApplicationContextMock context;
@@ -138,8 +142,7 @@ public class TestClientTest {
 
         expandServiceListTree();
         for (int index = 2; index < expected.size() + 2; index++) {
-            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
-                    AjaxLink.class);
+            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink", AjaxLink.class);
         }
     }
 
@@ -155,8 +158,7 @@ public class TestClientTest {
         setupAndStartTestClientPage();
         setServiceInDropDown(0);
 
-        @SuppressWarnings("unchecked")
-        Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
+        @SuppressWarnings("unchecked") Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
         MethodCall modelObject = form.getModelObject();
         ServiceId reference = new ServiceId(TestService.class.getName(), "test");
 
@@ -172,9 +174,7 @@ public class TestClientTest {
     @Test
     public void testShowMethodListInDropDown() throws Exception {
         setupAndStartTestClientPage();
-        @SuppressWarnings("unchecked")
-        DropDownChoice<MethodId> methodList = (DropDownChoice<MethodId>) tester
-                .getComponentFromLastRenderedPage("methodCallForm:methodList");
+        @SuppressWarnings("unchecked") DropDownChoice<MethodId> methodList = (DropDownChoice<MethodId>) tester.getComponentFromLastRenderedPage("methodCallForm:methodList");
 
         setServiceInDropDown(0);
 
@@ -190,8 +190,7 @@ public class TestClientTest {
     public void testCreateArgumentList() throws Exception {
         setupAndStartTestClientPage();
 
-        Component argList = tester
-                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        Component argList = tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         Assert.assertNotNull(argList);
     }
@@ -199,8 +198,7 @@ public class TestClientTest {
     @Test
     public void testCreateTextFieldsFor2StringArguments() throws Exception {
         setupAndStartTestClientPage();
-        RepeatingView argList = (RepeatingView) tester
-                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        RepeatingView argList = (RepeatingView) tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
@@ -220,8 +218,7 @@ public class TestClientTest {
     @Test
     public void testCreateTextFieldsForBean() throws Exception {
         setupAndStartTestClientPage();
-        RepeatingView argList = (RepeatingView) tester
-                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        RepeatingView argList = (RepeatingView) tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(0);
         setMethodInDropDown(1);
@@ -236,8 +233,7 @@ public class TestClientTest {
     @Test
     public void testPerformMethodCall() throws Exception {
         setupAndStartTestClientPage();
-        RepeatingView argList = (RepeatingView) tester
-                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        RepeatingView argList = (RepeatingView) tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
@@ -271,16 +267,13 @@ public class TestClientTest {
             expandServiceListTree();
         }
         tester.clickLink("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink", true);
-        tester
-                .executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink",
-                        "onclick");
+        tester.executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink", "onclick");
     }
 
     @Test
     public void testSelectMethodTwice() throws Exception {
         setupAndStartTestClientPage();
-        RepeatingView argList = (RepeatingView) tester
-                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        RepeatingView argList = (RepeatingView) tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
@@ -300,8 +293,7 @@ public class TestClientTest {
         formTester.setValue("argumentListContainer:argumentList:arg1:value", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
-        RepeatingView argList = (RepeatingView) tester
-                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        RepeatingView argList = (RepeatingView) tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
         Assert.assertEquals(0, argList.size());
     }
 
@@ -322,7 +314,7 @@ public class TestClientTest {
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
-        tester.assertInfoMessages(new String[] { "Methodcall called successfully", });
+        tester.assertInfoMessages(new String[]{"Methodcall called successfully",});
         Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
         Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
     }
@@ -345,8 +337,7 @@ public class TestClientTest {
         setupAndStartTestClientPage();
 
         Button button = (Button) tester.getComponentFromLastRenderedPage("methodCallForm:submitButton");
-        String buttonValue = tester.getApplication().getResourceSettings().getLocalizer()
-                .getString("form.call", button);
+        String buttonValue = tester.getApplication().getResourceSettings().getLocalizer().getString("form.call", button);
         Assert.assertEquals(buttonValue, button.getValue());
     }
 
@@ -356,7 +347,7 @@ public class TestClientTest {
         when(serviceReferenceMock.getProperty("id")).thenReturn("test");
         expected.add(serviceReferenceMock);
         expected.add(serviceReferenceMock);
-        DomainService managedServicesMock = mock(DomainService.class);
+        managedServicesMock = mock(DomainService.class);
         when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
             @Override
             public List<ServiceReference> answer(InvocationOnMock invocation) throws Throwable {
@@ -400,8 +391,7 @@ public class TestClientTest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(
-                new SpringComponentInjector(tester.getApplication(), context, true));
+        tester.getApplication().addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
     }
 
 
@@ -411,45 +401,51 @@ public class TestClientTest {
         expandServiceListTree();
         tester.debugComponentTrees();
         for (int index = 2; index < expected.size() + 2; index++) {
-            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
-                    AjaxLink.class);
+            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink", AjaxLink.class);
         }
         tester.assertComponent("methodCallForm:editButton", AjaxButton.class);
         AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
-        //should be dissabled when nothing is selected
+        //should be disabled when nothing is selected
         Assert.assertEquals(false, editButton.isEnabled());
     }
 
     @Test
-    public void testIfEditButtonIsEnabledAfterSelectingAnService() {
-        List<ServiceReference> expected = setupAndStartTestClientPage();
-        expandServiceListTree();
-        tester.debugComponentTrees();
-        for (int index = 2; index < expected.size() + 2; index++) {
-            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
-                    AjaxLink.class);
-        }
-        tester.assertComponent("methodCallForm:editButton", AjaxButton.class);
-        tester.clickLink("methodCallForm:serviceList:i:2:nodeComponent:contentLink", true);                 
-        AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
-        //should now be enabled
-        Assert.assertEquals(true, editButton.isEnabled());
-    }
-
-    
-    @Test
     public void testTargetLocationOfEditButton() {
-        List<ServiceReference> expected = setupAndStartTestClientPage();
+        setupAndStartTestClientPage();
+        try {
+            ServiceReference ref = Mockito.mock(ServiceReference.class);
+            Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
+            Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
+            ServiceReference[] refs = new ServiceReference[]{ref};
+            Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
+        } catch (InvalidSyntaxException e) {
+            Assert.fail("not expected");
+        }
+
+        List<ServiceManager> managerList = new ArrayList<ServiceManager>();
+        ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
+        ServiceDescriptor serviceDescriptor = Mockito.mock(ServiceDescriptor.class);
+        Mockito.when(serviceDescriptor.getId()).thenReturn("ManagerId");
+        Mockito.when(serviceDescriptor.getName()).thenReturn("ServiceName");
+        Mockito.when(serviceDescriptor.getDescription()).thenReturn("ServiceDescription");
+
+
+        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
+        Mockito.when(serviceManagerMock.getDescriptor(Mockito.<Locale>any())).thenReturn(serviceDescriptor);
+
+        managerList.add(serviceManagerMock);
+        Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(managerList);
+
+
         expandServiceListTree();
         tester.debugComponentTrees();
-        for (int index = 2; index < expected.size() + 2; index++) {
-            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
-                    AjaxLink.class);
-        }
         tester.clickLink("methodCallForm:serviceList:i:2:nodeComponent:contentLink", true);
         AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
-        tester.executeAjaxEvent("methodCallForm:editButton", "onclick");
-        tester.assertRenderedPage(EditorPage.class);
+        Assert.assertEquals(true, editButton.isEnabled());
+        tester.executeAjaxEvent(editButton, "onclick");
 
+        EditorPage editorPage = Mockito.mock(EditorPage.class);
+        tester.assertRenderedPage(editorPage.getPageClass());
     }
+
 }
