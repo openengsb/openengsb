@@ -25,7 +25,7 @@ import java.util.Locale;
 
 import org.openengsb.core.common.util.BundleStrings;
 import org.openengsb.core.common.validation.FieldValidator;
-import org.openengsb.core.common.validation.ValidationResult;
+import org.openengsb.core.common.validation.FieldValidationResult;
 import org.openengsb.core.common.validation.ValidationResultImpl;
 
 import com.google.common.base.Preconditions;
@@ -266,7 +266,7 @@ public class AttributeDefinition implements Serializable {
     private static final class AllValidValidator implements FieldValidator{
 
         @Override
-        public ValidationResult validate(String validate) {
+        public FieldValidationResult validate(String validate) {
             return new ValidationResultImpl(true, "");
         }
         

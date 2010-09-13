@@ -1,7 +1,7 @@
 package org.openengsb.core.common.validation;
 
 
-public class ValidationResultImpl implements ValidationResult {
+public class ValidationResultImpl implements FieldValidationResult {
 
     private final String errorMessage;
 

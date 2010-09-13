@@ -3,14 +3,14 @@ package org.openengsb.ui.web.validation;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.openengsb.core.common.validation.ValidationResult;
+import org.openengsb.core.common.validation.FieldValidationResult;
 
 public class NumberValidatorTest {
 
     @Test
     public void passLetterInsteadOfNumber_shouldNotValidateAndGiveErrorMessage() {
         NumberValidator numberValidator = new NumberValidator();
-        ValidationResult validate = numberValidator.validate("A");
+        FieldValidationResult validate = numberValidator.validate("A");
         assertFalse(validate.isValid());
         assertEquals("validation.number.formating", validate.getErrorMessageId());
     }
@@ -22,7 +22,7 @@ public class NumberValidatorTest {
     @Test
     public void validateNumber_shouldReturnValidAndNoErrorMessage() {
         NumberValidator validator = new NumberValidator();
-        ValidationResult validate = validator.validate("123");
+        FieldValidationResult validate = validator.validate("123");
         assertTrue(validate.isValid());
         assertEquals("", validate.getErrorMessageId());
     }

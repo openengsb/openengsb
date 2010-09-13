@@ -4,13 +4,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openengsb.core.common.validation.FieldValidator;
-import org.openengsb.core.common.validation.ValidationResult;
+import org.openengsb.core.common.validation.FieldValidationResult;
 import org.openengsb.core.common.validation.ValidationResultImpl;
 
 public class NumberValidator implements FieldValidator {
 
     @Override
-    public ValidationResult validate(String validate) {
+    public FieldValidationResult validate(String validate) {
         Pattern pattern = Pattern.compile("\\d+");
         Matcher matcher = pattern.matcher(validate);
         if (!matcher.matches()) {

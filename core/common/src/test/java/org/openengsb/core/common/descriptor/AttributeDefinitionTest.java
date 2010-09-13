@@ -33,7 +33,7 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.util.BundleStrings;
 import org.openengsb.core.common.validation.FieldValidator;
-import org.openengsb.core.common.validation.ValidationResult;
+import org.openengsb.core.common.validation.FieldValidationResult;
 
 public class AttributeDefinitionTest {
 
@@ -144,7 +144,7 @@ public class AttributeDefinitionTest {
     public void buildWithValidator_shouldReturnSameValidator() {
         FieldValidator fieldValidator = new FieldValidator() {
             @Override
-            public ValidationResult validate(String validate) {
+            public FieldValidationResult validate(String validate) {
                 return null;
             }
         };
