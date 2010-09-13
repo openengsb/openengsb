@@ -48,6 +48,34 @@ public class ContextServiceTest {
         child2.put("c", "c");
     }
 
+    @Test
+    public void getEmptyAvailableContexts() {
+        ContextServiceImpl contextService = new ContextServiceImpl();
+        assertThat(contextService.getAvailableContexts().size(), is(0));
+    }
+
+    @Test
+    public void getSingleAvailableContexts() {
+        assertThat(cs.getAvailableContexts().size(), is(1));
+        assertThat(cs.getAvailableContexts().get(0), is("a"));
+    }
+
+    @Test
+    public void getAvailableContextsWithCreate() {
+        cs.createContext("temp");
+        assertThat(cs.getAvailableContexts().contains("a"), is(true));
+        assertThat(cs.getAvailableContexts().contains("temp"), is(true));
+        assertThat(cs.getAvailableContexts().size(), is(2));
+    }
+
+    @Test
+    public void getCurrentThreadContext() {
+        assertThat(cs.getThreadLocalContext(), is("a"));
+        cs.createContext("threadLocal");
+        cs.setThreadLocalContext("threadLocal");
+        assertThat("threadLocal", is(cs.getThreadLocalContext()));
+    }
+
     @Test(timeout = 5000)
     public void contextIsLocalToCurrentThread() throws InterruptedException {
         cs.createContext("threadLocal");
