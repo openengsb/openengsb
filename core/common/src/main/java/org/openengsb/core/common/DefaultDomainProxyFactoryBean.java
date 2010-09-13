@@ -17,10 +17,13 @@
  */
 package org.openengsb.core.common;
 
+import org.openengsb.core.common.context.ContextService;
+import org.osgi.framework.BundleContext;
 import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.osgi.context.BundleContextAware;
 
 @SuppressWarnings("serial")
-public class DefaultDomainProxyFactoryBean extends ProxyFactoryBean {
+public class DefaultDomainProxyFactoryBean extends ProxyFactoryBean implements BundleContextAware {
 
     private ForwardInterceptor interceptor;
 
@@ -28,19 +31,26 @@ public class DefaultDomainProxyFactoryBean extends ProxyFactoryBean {
 
     public DefaultDomainProxyFactoryBean() {
         addInterface(Domain.class);
-    }
-
-    public void setDomainInterface(Class<?> domainInterface) {
-        domainInterfaceName = domainInterface.getName();
-        addInterface(domainInterface);
-    }
-
-    public void init() {
-        interceptor.setDomainInterfaceName(domainInterfaceName);
+        interceptor = new ForwardInterceptor();
         addAdvice(interceptor);
     }
 
-    public void setInterceptor(ForwardInterceptor interceptor) {
-        this.interceptor = interceptor;
+    public void setDomainInterface(Class<?> domainInterface) {
+        addInterface(domainInterface);
+        domainInterfaceName = domainInterface.getName();
+        interceptor.setDomainInterfaceName(domainInterfaceName);
+    }
+
+    public void setDomainName(String domainName) {
+        interceptor.setDomainName(domainName);
+    }
+
+    public void setContext(ContextService context) {
+        interceptor.setContext(context);
+    }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        interceptor.setBundleContext(bundleContext);
     }
 }

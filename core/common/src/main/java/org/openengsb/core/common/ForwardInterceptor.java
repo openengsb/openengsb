@@ -27,11 +27,10 @@ import org.openengsb.core.common.context.ContextService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.springframework.osgi.context.BundleContextAware;
 
 import static java.lang.String.format;
 
-public class ForwardInterceptor implements MethodInterceptor, BundleContextAware {
+public class ForwardInterceptor implements MethodInterceptor {
 
     private Log log = LogFactory.getLog(ForwardInterceptor.class);
 
@@ -82,7 +81,6 @@ public class ForwardInterceptor implements MethodInterceptor, BundleContextAware
         this.domainInterfaceName = domainInterfaceName;
     }
 
-    @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }

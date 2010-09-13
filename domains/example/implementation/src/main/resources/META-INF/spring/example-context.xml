@@ -37,19 +37,14 @@
     </osgi:service-properties>
 
     <!-- this bean replaces the ForwardService -->
-    <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean" init-method="init">
+    <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
       <property name="domainInterface">
         <value>org.openengsb.domains.example.ExampleDomain</value>
       </property>
-      <property name="interceptor" ref="forwarder" />
+      <property name="domainName" value="example" />
+      <property name="context" ref="contextService" />
     </bean>
   </osgi:service>
 
-  <bean id="forwarder" class="org.openengsb.core.common.ForwardInterceptor">
-    <property name="domainName" value="example" />
-    <property name="context" ref="contextService" />
-  </bean>
-
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
-
 </beans>
