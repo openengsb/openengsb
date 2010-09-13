@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+  Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<chapter xml:id="developer.howto.internal.connector" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+
+  <title>How To Create an Internal Connector</title>
+
+  <para>This chapter describes how to implement a tool connector for the OpenEngSB environment. A tool connector is an
+    adapter between an external tool and the OpenEngSB. Every connector belongs to a domain which defines the common
+    interface of all its connectors. This means that the connector is responsible to translate all calls to the common
+    interface to the externally provided tool.</para>
+
+  <section>
+    <title>Prerequisites</title>
+    <para>In case it isn't known what a tool domain is and how it defines the interface for the tool connector then
+        <link linkend="developer.architectur.domain"/> is a good starting point. If there's already a matching domain
+      for this tool it is strongly recommended to use it. But if this tool requires a new domain it has to be created.
+      This is also described in <link linkend="developer.howto.internal.domain"/>
+    </para>
+  </section>
+
+  <section>
+    <title>Creating a new connector project</title>
+    <para>TBW</para>
+  </section>
+
+</chapter>
