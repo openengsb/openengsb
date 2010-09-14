@@ -47,6 +47,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.ContextSetPage;
 import org.openengsb.ui.web.Index;
@@ -143,6 +144,7 @@ public class HeaderTemplateTest {
         context.putBean("eventService", eventService);
         context.putBean("domainService", mock(DomainService.class));
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
+        context.putBean("ruleManagerBean", mock(RuleManager.class));
         BundleContext bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>>asList(Dummy.class);

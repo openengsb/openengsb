@@ -166,10 +166,10 @@ public class RuleEditorPanel extends Panel {
         typeChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                if(!newRuleMode) {
+                if (!newRuleMode) {
                     reloadTextArea(target);
                     reloadRuleChoice(target);
-                    
+
                 }
             }
         });
@@ -183,8 +183,14 @@ public class RuleEditorPanel extends Panel {
 
     private void loadRuleChoice() {
         RuleBaseElementType selectedType = typeChoice.getModelObject();
-        List<RuleBaseElementId> choices = new ArrayList<RuleBaseElementId>(ruleManagerProvider.getRuleManager().list(selectedType));
-        ruleChoice.setChoices(choices);
+        if (selectedType.equals(RuleBaseElementType.Process)) {
+            // this branch is not implemented for the moment
+            ruleChoice.setChoices(new ArrayList<RuleBaseElementId>());
+        } else {
+            List<RuleBaseElementId> choices = new ArrayList<RuleBaseElementId>(ruleManagerProvider.getRuleManager()
+                    .list(selectedType));
+            ruleChoice.setChoices(choices);
+        }
         ruleChoice.setModel(new Model<RuleBaseElementId>());
     }
 

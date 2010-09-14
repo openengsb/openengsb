@@ -67,9 +67,10 @@ public class AttributeDefinition implements Serializable {
     public String getId() {
         return id;
     }
-    
+
     /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
+     *             AttributeDefinition.builder instead.
      */
     public void setId(String id) {
         this.id = id;
@@ -81,9 +82,10 @@ public class AttributeDefinition implements Serializable {
     public String getName() {
         return name;
     }
-    
+
     /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
+     *             AttributeDefinition.builder instead.
      */
     public void setName(String name) {
         this.name = name;
@@ -99,9 +101,10 @@ public class AttributeDefinition implements Serializable {
     public boolean hasDescription() {
         return description != null && !description.isEmpty();
     }
-    
+
     /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
+     *             AttributeDefinition.builder instead.
      */
     public void setDescription(String description) {
         this.description = description;
@@ -113,9 +116,10 @@ public class AttributeDefinition implements Serializable {
     public String getDefaultValue() {
         return defaultValue;
     }
-    
+
     /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
+     *             AttributeDefinition.builder instead.
      */
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
@@ -124,9 +128,10 @@ public class AttributeDefinition implements Serializable {
     public boolean isRequired() {
         return required;
     }
-    
+
     /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
+     *             AttributeDefinition.builder instead.
      */
     public void setRequired(boolean required) {
         this.required = required;
@@ -135,9 +140,10 @@ public class AttributeDefinition implements Serializable {
     public List<Option> getOptions() {
         return Collections.unmodifiableList(options);
     }
-    
+
     /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
+     *             AttributeDefinition.builder instead.
      */
     public void addOption(String label, String value) {
         options.add(new Option(label, value));
@@ -150,16 +156,18 @@ public class AttributeDefinition implements Serializable {
     public boolean isPassword() {
         return isPassword;
     }
-    
+
     /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
+     *             AttributeDefinition.builder instead.
      */
     public void setPassword(boolean isPassword) {
         this.isPassword = isPassword;
     }
 
     /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
+     *             AttributeDefinition.builder instead.
      */
     public void setBoolean(boolean isBoolean) {
         this.isBoolean = isBoolean;
@@ -170,7 +178,8 @@ public class AttributeDefinition implements Serializable {
     }
 
     /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use AttributeDefinition.builder instead.
+     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
+     *             AttributeDefinition.builder instead.
      */
     public void setValidator(FieldValidator validator) {
         this.validator = validator;
@@ -180,7 +189,7 @@ public class AttributeDefinition implements Serializable {
         return new Builder(locale, strings);
     }
 
-    public static class Builder {
+    public static class Builder implements Serializable {
         private final AttributeDefinition attr;
         private final BundleStrings strings;
         private final Locale locale;
@@ -261,14 +270,14 @@ public class AttributeDefinition implements Serializable {
         }
 
     }
-    
-    private static final class AllValidValidator implements FieldValidator{
+
+    private static final class AllValidValidator implements FieldValidator {
 
         @Override
         public SingleAttributeValidationResult validate(String validate) {
             return new ValidationResultImpl(true, "");
         }
-        
+
     }
 
 }

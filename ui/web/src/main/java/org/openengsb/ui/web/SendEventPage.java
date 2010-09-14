@@ -60,7 +60,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
 
     private DropDownChoice<Class<?>> dropDownChoice;
     @SpringBean
-    RuleManager ruleManager;
+    private RuleManager ruleManager;
 
     public SendEventPage() {
         List<Class<? extends Event>> classes = new ArrayList<Class<? extends Event>>();
