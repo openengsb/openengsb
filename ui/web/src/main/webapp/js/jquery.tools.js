@@ -1,22 +1,19 @@
 /*
- * jQuery Tools 1.2.2 - The missing UI library for the Web
+ * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
- * [tabs, tabs.slideshow, tooltip, tooltip.slide, tooltip.dynamic, scrollable, scrollable.autoscroll, scrollable.navigator, overlay, overlay.apple, dateinput, rangeinput, validator, toolbox.flashembed, toolbox.history, toolbox.expose, toolbox.mousewheel]
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * NO COPYRIGHTS OR LICENSES. DO WHAT YOU LIKE.
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * http://flowplayer.org/tools/
- *
- * jquery.event.wheel.js - rev 1
- * Copyright (c) 2008, Three Dub Media (http://threedubmedia.com)
- * Liscensed under the MIT License (MIT-LICENSE.txt)
- * http://www.opensource.org/licenses/mit-license.php
- * Created: 2008-07-01 | Updated: 2008-07-14
- *
- * -----
- *
- * File generated: Sun Jun 06 15:20:10 GMT 2010
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 (function(c){function p(d,a,b){var e=this,l=d.add(this),h=d.find(b.tabs),j=a.jquery?a:d.children(a),i;h.length||(h=d.children());j.length||(j=d.parent().find(a));j.length||(j=c(a));c.extend(this,{click:function(f,g){var k=h.eq(f);if(typeof f=="string"&&f.replace("#","")){k=h.filter("[href*="+f.replace("#","")+"]");f=Math.max(h.index(k),0)}if(b.rotate){var n=h.length-1;if(f<0)return e.click(n,g);if(f>n)return e.click(0,g)}if(!k.length){if(i>=0)return e;f=b.initialIndex;k=h.eq(f)}if(f===i)return e;
 g=g||c.Event();g.type="onBeforeClick";l.trigger(g,[f]);if(!g.isDefaultPrevented()){o[b.effect].call(e,f,function(){g.type="onClick";l.trigger(g,[f])});i=f;h.removeClass(b.current);k.addClass(b.current);return e}},getConf:function(){return b},getTabs:function(){return h},getPanes:function(){return j},getCurrentPane:function(){return j.eq(i)},getCurrentTab:function(){return h.eq(i)},getIndex:function(){return i},next:function(){return e.click(i+1)},prev:function(){return e.click(i-1)}});c.each("onBeforeClick,onClick".split(","),
 function(f,g){c.isFunction(b[g])&&c(e).bind(g,b[g]);e[g]=function(k){c(e).bind(g,k);return e}});if(b.history&&c.fn.history){c.tools.history.init(h);b.event="history"}h.each(function(f){c(this).bind(b.event,function(g){e.click(f,g);return g.preventDefault()})});j.find("a[href^=#]").click(function(f){e.click(c(this).attr("href"),f)});if(location.hash)e.click(location.hash);else if(b.initialIndex===0||b.initialIndex>0)e.click(b.initialIndex)}c.tools=c.tools||{version:"1.2.2"};c.tools.tabs={conf:{tabs:"a",

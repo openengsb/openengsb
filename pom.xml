@@ -471,7 +471,8 @@
               <aggregate>true</aggregate>
               <strictCheck>true</strictCheck>
               <excludes>
-                <exclude>LICENSE.txt</exclude>
+                <exclude>license.txt</exclude>
+                <exclude>**/license.txt</exclude>
                 <exclude>runner/**</exclude>
                 <exclude>features/**</exclude>
               </excludes>
