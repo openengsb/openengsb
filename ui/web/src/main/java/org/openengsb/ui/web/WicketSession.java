@@ -17,15 +17,36 @@
  */
 package org.openengsb.ui.web;
 
-import org.apache.wicket.Request;
-import org.apache.wicket.protocol.http.WebSession;
+import static java.lang.String.format;
 
-public class WicketSession extends WebSession {
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Request;
+import org.apache.wicket.Session;
+import org.apache.wicket.authentication.AuthenticatedWebSession;
+import org.apache.wicket.authorization.strategies.role.Roles;
+import org.apache.wicket.injection.web.InjectorHolder;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+public class WicketSession extends AuthenticatedWebSession {
 
     private String threadContextId;
 
+    private Log log = LogFactory.getLog(AuthenticatedWebSession.class);
+
+    @SpringBean(name = "authenticationManager")
+    private AuthenticationManager authenticationManager;
+
     public WicketSession(Request request) {
         super(request);
+        injectDependencies();
+        ensureDependenciesNotNull();
     }
 
     public void setThreadContextId(String threadContextId) {
@@ -38,12 +59,57 @@ public class WicketSession extends WebSession {
     }
 
     public static WicketSession get() {
-        if (WebSession.get() instanceof WicketSession) {
-            return (WicketSession) WebSession.get();
+        if (Session.get() instanceof WicketSession) {
+            return (WicketSession) Session.get();
         } else {
             return null;
         }
 
+    }
+
+    private void ensureDependenciesNotNull() {
+        if (authenticationManager == null) {
+            throw new IllegalStateException("AdminSession requires an authenticationManager.");
+        }
+    }
+
+    private void injectDependencies() {
+        InjectorHolder.getInjector().inject(this);
+    }
+
+    @Override
+    public boolean authenticate(String username, String password) {
+        boolean authenticated = false;
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    username, password));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            authenticated = authentication.isAuthenticated();
+        } catch (AuthenticationException e) {
+            log.warn(format("User '%s' failed to login. Reason: %s", username, e.getMessage()));
+            authenticated = false;
+        }
+        return authenticated;
+    }
+
+    @Override
+    public Roles getRoles() {
+        Roles roles = new Roles();
+        getRolesIfSignedIn(roles);
+        return roles;
+    }
+
+    private void getRolesIfSignedIn(Roles roles) {
+        if (isSignedIn()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            addRolesFromAuthentication(roles, authentication);
+        }
+    }
+
+    private void addRolesFromAuthentication(Roles roles, Authentication authentication) {
+        for (GrantedAuthority authority : authentication.getAuthorities()) {
+            roles.add(authority.getAuthority());
+        }
     }
 
 }

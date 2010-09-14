@@ -17,6 +17,11 @@
  */
 package org.openengsb.ui.web;
 
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,13 +48,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
-import static org.mockito.Matchers.any;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import static org.junit.Assert.assertFalse;
-
 public class LoginPageTest {
 
     private WicketTester tester;
@@ -61,7 +59,7 @@ public class LoginPageTest {
         mockAuthentication();
         mockIndex();
 
-        WebApplication app = new AuthenticatedApplication() {
+        WebApplication app = new WicketApplication() {
             @Override
             protected void addInjector() {
                 addComponentInstantiationListener(new SpringComponentInjector(this, contextMock, true));
