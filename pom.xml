@@ -538,20 +538,6 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <repository>
-      <id>openengsb-osgi-releases</id>
-      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-releases</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>openengsb-osgi-snapshots</id>
-      <url>http://maven.openengsb.org/nexus/content/repositories/openengsb-osgi-snapshots</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
   </repositories>
 
 </project>
