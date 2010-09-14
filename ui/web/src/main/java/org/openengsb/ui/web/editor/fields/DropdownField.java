@@ -25,14 +25,15 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
 
 @SuppressWarnings("serial")
 public class DropdownField extends AbstractField {
 
-    public DropdownField(String id, IModel<String> model, AttributeDefinition attribute) {
-        super(id, model, attribute);
+    public DropdownField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<String> validator) {
+        super(id, model, attribute, validator);
     }
 
     @Override
@@ -59,3 +60,4 @@ public class DropdownField extends AbstractField {
         return choice;
     }
 }
+

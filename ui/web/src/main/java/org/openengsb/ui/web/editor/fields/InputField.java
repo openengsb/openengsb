@@ -19,13 +19,14 @@ package org.openengsb.ui.web.editor.fields;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 
 @SuppressWarnings("serial")
 public class InputField extends AbstractField {
 
-    public InputField(String id, IModel<String> model, AttributeDefinition attribute) {
-        super(id, model, attribute);
+    public InputField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<String> validator) {
+        super(id, model, attribute, validator);
     }
 
     @Override

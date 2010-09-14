@@ -23,14 +23,18 @@ import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 
 @SuppressWarnings("serial")
 public abstract class AbstractField extends Panel {
 
-    public AbstractField(String id, IModel<String> model, AttributeDefinition attribute) {
+    public AbstractField(String id, IModel<String> model, AttributeDefinition attribute, IValidator validator) {
         super(id);
         FormComponent<?> component = createFormComponent(attribute, model);
+        if (validator != null) {
+            component.add(validator);
+        }
         component.setLabel(new Model<String>(attribute.getName()));
         component.setOutputMarkupId(true);
         component.setMarkupId(attribute.getId());

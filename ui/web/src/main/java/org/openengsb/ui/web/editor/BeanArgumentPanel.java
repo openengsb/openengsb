@@ -53,13 +53,13 @@ public class BeanArgumentPanel extends Panel {
 
     private AbstractField createEditor(String id, IModel<String> model, AttributeDefinition attribute) {
         if (!attribute.getOptions().isEmpty()) {
-            return new DropdownField(id, model, attribute);
+            return new DropdownField(id, model, attribute, null);
         } else if (attribute.isBoolean()) {
-            return new CheckboxField(id, model, attribute);
+            return new CheckboxField(id, model, attribute, null);
         } else if (attribute.isPassword()) {
-            return new PasswordField(id, model, attribute);
+            return new PasswordField(id, model, attribute, null);
         } else {
-            return new InputField(id, model, attribute);
+            return new InputField(id, model, attribute, null);
         }
     }
 

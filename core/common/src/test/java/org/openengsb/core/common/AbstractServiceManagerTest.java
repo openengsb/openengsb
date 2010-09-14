@@ -30,6 +30,8 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.util.BundleStringsTest;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -68,6 +70,12 @@ public class AbstractServiceManagerTest {
                     return instance;
                 }
             });
+        }
+
+        @Override
+        public MultipleAttributeValidationResult updateWithValidation(String anyString, Map<String, String> anyMap) {
+            this.update(anyString, anyMap);
+            return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
         }
     }
 

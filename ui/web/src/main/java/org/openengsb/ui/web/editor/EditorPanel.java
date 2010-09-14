@@ -16,39 +16,62 @@
 
 package org.openengsb.ui.web.editor;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.validation.FieldValidator;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.common.validation.FormValidator;
+import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.ui.web.editor.fields.AbstractField;
 import org.openengsb.ui.web.editor.fields.CheckboxField;
 import org.openengsb.ui.web.editor.fields.DropdownField;
 import org.openengsb.ui.web.editor.fields.InputField;
 import org.openengsb.ui.web.editor.fields.PasswordField;
 import org.openengsb.ui.web.model.MapModel;
+import org.openengsb.ui.web.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
 public class EditorPanel extends Panel {
 
     private final Map<String, String> values;
     private final List<AttributeDefinition> attributes;
+    private final FormValidator validator;
 
     public EditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values) {
+        this(id, attributes, values, new DefaultPassingFormValidator());
+    }
+
+    public EditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values,
+            FormValidator validator) {
         super(id);
         this.attributes = attributes;
         this.values = values;
+        this.validator = validator;
         createForm(attributes, values);
     }
 
     private void createForm(List<AttributeDefinition> attributes, Map<String, String> values) {
         @SuppressWarnings("rawtypes")
-        Form<?> form = new Form("form") {
+        final Form<?> form = new Form("form") {
             @Override
             protected void onSubmit() {
                 EditorPanel.this.onSubmit();
@@ -56,7 +79,7 @@ public class EditorPanel extends Panel {
         };
         add(form);
 
-        form.add(new FeedbackPanel("feedback"));
+        form.add(new FeedbackPanel("feedback").setOutputMarkupId(true));
         RepeatingView fields = new RepeatingView("fields");
         form.add(fields);
 
@@ -65,17 +88,62 @@ public class EditorPanel extends Panel {
             fields.add(row);
             row.add(createEditor("row", new MapModel<String, String>(values, a.getId()), a));
         }
+        CheckBox checkbox = new CheckBox("validate", new Model<Boolean>(true));
+        form.add(checkbox);
+        AjaxFormValidatingBehavior.addToAllFormComponents(form, "onBlur");
+        if (validator != null) {
+            form.add(new AbstractFormValidator() {
+
+                @Override
+                public void validate(Form<?> form) {
+                    Map<String, FormComponent<?>> loadFormComponents = loadFormComponents(form);
+                    Map<String, String> toValidate = new HashMap<String, String>();
+                    for (String key : loadFormComponents.keySet()) {
+                        toValidate.put(key, loadFormComponents.get(key).getValue());
+                    }
+                    MultipleAttributeValidationResult validate = validator.validate(toValidate);
+                    if (!validate.isValid()) {
+                        Map<String, String> attributeErrorMessages = validate.getAttributeErrorMessages();
+                        for (String key : attributeErrorMessages.keySet()) {
+                            error(loadFormComponents.get(key), attributeErrorMessages.get(key));
+                        }
+                    }
+                }
+
+                @Override
+                public FormComponent<?>[] getDependentFormComponents() {
+                    Collection<FormComponent<?>> formComponents = loadFormComponents(form).values();
+                    return formComponents.toArray(new FormComponent<?>[formComponents.size()]);
+                }
+
+                private Map<String, FormComponent<?>> loadFormComponents(final Form<?> form) {
+                    Map<String, FormComponent<?>> formComponents = new HashMap<String, FormComponent<?>>();
+                    if (validator != null) {
+                        for (String attribute : validator.fieldsToValidate()) {
+                            Component component = form.get("fields:" + attribute + ":row:field");
+                            if (component instanceof FormComponent<?>) {
+                                formComponents.put(attribute, (FormComponent<?>) component);
+                            }
+                        }
+                    }
+                    return formComponents;
+                }
+            });
+        }
     }
 
-    private AbstractField createEditor(String id, IModel<String> model, AttributeDefinition attribute) {
+    private AbstractField createEditor(String id, IModel<String> model, final AttributeDefinition attribute) {
+        FieldValidationValidator validator = new FieldValidationValidator(attribute);
         if (!attribute.getOptions().isEmpty()) {
-            return new DropdownField(id, model, attribute);
+            DropdownField dropdownField = new DropdownField(id, model, attribute, validator);
+            return dropdownField;
         } else if (attribute.isBoolean()) {
-            return new CheckboxField(id, model, attribute);
+            return new CheckboxField(id, model, attribute, validator);
         } else if (attribute.isPassword()) {
-            return new PasswordField(id, model, attribute);
+            return new PasswordField(id, model, attribute, validator);
         } else {
-            return new InputField(id, model, attribute);
+            InputField inputField = new InputField(id, model, attribute, validator);
+            return inputField;
         }
     }
 
@@ -88,5 +156,22 @@ public class EditorPanel extends Panel {
 
     public Map<String, String> getValues() {
         return values;
+    }
+
+    private static final class FieldValidationValidator extends StringValidator {
+        private final AttributeDefinition attribute;
+
+        private FieldValidationValidator(AttributeDefinition attribute) {
+            this.attribute = attribute;
+        }
+
+        @Override
+        protected void onValidate(IValidatable validatable) {
+            FieldValidator validator = this.attribute.getValidator();
+            SingleAttributeValidationResult validationResult = validator.validate(validatable.getValue().toString());
+            if (!validationResult.isValid()) {
+                error(validatable, validationResult.getErrorMessageId());
+            }
+        }
     }
 }

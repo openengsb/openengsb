@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 
 /**
  * Instance provider for a specific service interface.
@@ -48,6 +49,14 @@ public interface ServiceManager {
     void update(String id, Map<String, String> attributes);
 
     /**
+     * Creates or updates a service instance. If the given id does not exist,
+     * this creates a new service instance.
+     *
+     * @param id identifier for a new or already existing service instance.
+     * @param attributes updates to maybe already set attributes.
+     */
+    MultipleAttributeValidationResult updateWithValidation(String id, Map<String, String> attributes);
+    /**
      * Deletes the service instanced with the given {@code id}.
      * 
      * @param id identifier for a service instance provided by this
@@ -62,5 +71,4 @@ public interface ServiceManager {
      * @param id identifier for a already existing service instance
      */
     Map<String, String> getAttributeValues(String id);
-
 }
