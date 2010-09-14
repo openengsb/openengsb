@@ -20,6 +20,7 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:fo="http://www.w3.org/1999/XSL/Format"
                 xmlns:d="http://docbook.org/ns/docbook"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
                 exclude-result-prefixes="d"
                 version="1.0">
 
@@ -412,14 +413,14 @@
     <!--###################################################
              colored and hyphenated links
    ################################################### -->
-    <xsl:template match="d:ulink">
-        <fo:basic-link external-destination="{@url}"
-                       xsl:use-attribute-sets="xref.properties"
-                       text-decoration="underline"
-                       color="blue">
+    <xsl:template match="d:link[@xlink:href]">
+        <fo:basic-link external-destination="{@xlink:href}"
+                xsl:use-attribute-sets="xref.properties"
+                text-decoration="underline"
+                color="blue">
             <xsl:choose>
                 <xsl:when test="count(child::node())=0">
-                    <xsl:value-of select="@url"/>
+                    <xsl:value-of select="@xlink:href"/>
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:apply-templates/>
@@ -428,7 +429,7 @@
         </fo:basic-link>
     </xsl:template>
 
-    <xsl:template match="d:link">
+    <xsl:template match="d:link[@linkend]">
         <fo:basic-link internal-destination="{@linkend}"
                 xsl:use-attribute-sets="xref.properties"
                 text-decoration="underline"

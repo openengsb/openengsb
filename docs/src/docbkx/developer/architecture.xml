@@ -16,66 +16,21 @@
     limitations under the License.
 
 -->
+<chapter xml:id="developer.architecture" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
 
-<chapter id="architecture" xmlns="http://docbook.org/ns/docbook">
   <title>Architecture</title>
-  
-  <caution>This chapter has to be rewritten</caution>
-  
-  <para>
-    This chapter explains the architecture of OpenEngSB in detail. It is intended for
-    developers of OpenEngSB.
-  </para>
-    <section id="architecture.connectors">
-        <title>Connectors</title>
-        <para>
-          TBW(General parts about the connctors)
-        </para>
-        <para>
-          Actually there are two different kinds of connectors - internal and external ones. 
-          <link linkend="internalConnectors">Internal connectors</link> are directly implemented into the OpenEngSB
-          and could be used to access external tools or be able to embed tools completely into the OpenEngSB. Differently
-          <link linkend="externalConnectors">external connectors</link> are written outside of the OpenEngSB. This requires
-          them to be available from the bus and to communicate with the bus. Both ways of communication have to be established
-          via an external protocol, since the internal communication module could not be used. Since most connectors
-          not directly produced by the OpenEngSB team or contributors will be 
-          <link linkend="externalConnectors">external connectors</link> we will start with them. 
-        </para>
-    </section>
-    <section id="architecture.domain">
-        <title>Domains</title>
-        <para>
-          TBW
-        </para>
-    </section>
-    <section id="architecture.messageFlow">
-      <title>Message flow in the OpenEngSB</title>
-      <para>
-        TBW(Describe event and message flow for the OpenEngSB)
-      </para>
-      <para>
-        !!Service Call!! Control flow (domain - rule engine interaction): event to rule engine - rule action; uses rpc 
-        endpoints (domains - drools domain package); domain may manipulate event; domain may generate new events; domain
-         may return event to rule engine
-      </para>
 
-      <para>
-        Domain structure: domain name, event type (uid, e.g. class name), tool name, data(tree structure, key-value pairs),
-        process id to identify the process afterwards and through different services and events
-      </para>
+  <para>This chapter explains the architecture of the OpenEngSB in detail.</para>
 
-      <para>
-        Tool connector structure: uses rpc endpoints (linking, ..)
-      </para>
+  <section xml:id="developer.architecture.domain">
+    <title>Domain</title>
+    <para>TBW</para>
+  </section>
 
-      <para>
-        !!Event Flow!! Notification process (tool to rule engine): adapter, file, .. - event; event to domain; domain 
-        enriches event payload (- data); domain forwards event to rule engine; rule engine processes event properties
-      </para>
+  <section xml:id="developer.architecture.connector">
+    <title>Connector</title>
+    <para>TBW</para>
+  </section>
 
-      <para>
-        Event Structure: domain name, event type (uid, e.g. class name), tool name, data (tree structure, key-value 
-        pairs); metadata: contextID and processID
-      </para>
-    </section>
 </chapter>

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<appendix xml:id="writing.documentation" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+
+  <title>Writing Documentation</title>
+
+  <para> This chapter is intended for developers who write documentation. There are no special prerequisites. Part one
+    describes how a chapter should be structured. Part two describes how Docbook is used at OpenEngSB. </para>
+
+  <section>
+    <title>General Documentation Guidelines</title>
+    <para>A chapter should consist of these parts: <itemizedlist>
+        <listitem>
+          <bridgehead>Introduction</bridgehead>
+          <para>It should explained who the target audience for this chapter is and in what case this chapter should be
+            read. There should also be a basic summary of what this chapter is about. </para>
+        </listitem>
+        <listitem>
+          <bridgehead>Prerequisites</bridgehead>
+          <para>Any prerequisites should be listed. Link to the appropriate chapter or to a website to give the reader a
+            good starting point in case they need to learn something else first. </para>
+        </listitem>
+        <listitem>
+          <bridgehead>Context</bridgehead>
+          <para>In the context section the reader should learn in which context this chapter is applicable. If necessary
+            abbrevations and acronyms used in this chapter can be explained here. </para>
+        </listitem>
+        <listitem>
+          <bridgehead>Content</bridgehead>
+          <para>The actual content of this chapter. This should be structured in as many sections as appropriate.
+          </para>
+        </listitem>
+        <listitem>
+          <bridgehead>Example</bridgehead>
+          <para>If possible there should be an example to illustrate the points of the chapter. </para>
+        </listitem>
+        <listitem>
+          <bridgehead>Common Problems</bridgehead>
+          <para> If there are some known pitfalls or bugs they should be described in this section. </para>
+        </listitem>
+        <listitem>
+          <bridgehead>Closing Remarks</bridgehead>
+          <para> In this section the content of the chapter can be summarized once more. The reader should get
+            information on what to do next. </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    <para> It is not necessary that every part is a docbook section. Parts can be combined if it seems appropriate.
+    </para>
+  </section>
+
+  <section>
+    <title>Using Docbook</title>
+
+    <para> This is not a DocBook manual but rather an explanation what type of docbook tags are used in this
+      documentation. If you are new to DocBook you should read <link
+        xlink:href="http://www.docbook.org/tdg5/en/html/docbook.html">DocBook 5: The Definitive Guide</link>. </para>
+
+    <section>
+      <title>Tags</title>
+
+      <para> DocBook has many tags to choose from. This list describes which tags should be used in which cases. </para>
+
+      <informaltable>
+        <colgroup>
+          <col width="80"/>
+          <col width="180"/>
+          <col width="200"/>
+        </colgroup>
+        <thead>
+          <tr>
+            <td> Tag </td>
+            <td> Description </td>
+            <td> Example </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td> &lt;command> </td>
+            <td> Used for executables </td>
+            <td> Type &lt;command>ls&lt;/command> to get the contents of the directory. </td>
+          </tr>
+          <tr>
+            <td> &lt;envar> </td>
+            <td> Used for environment variables </td>
+            <td>
+              <envar>PATH</envar>
+            </td>
+          </tr>
+          <tr>
+            <td> &lt;emphasis> </td>
+            <td> Used to emphasize words in a sentence </td>
+            <td> This chapter explains only the <emphasis>very</emphasis> basics of Git. </td>
+          </tr>
+          <tr>
+            <td> &lt;filename> </td>
+            <td> Used for files and directories </td>
+            <td> You can set environment variables in &lt;filename>~/.profile&lt;/filename>. </td>
+          </tr>
+          <tr>
+            <td> &lt;guibutton> </td>
+            <td> Used to describe buttons in a GUI </td>
+            <td> Press &lt;guibutton>Next&lt;/guibutton> to continue with the process. </td>
+          </tr>
+          <tr>
+            <td> &lt;guilabel> </td>
+            <td> Used to describe labels in a GUI </td>
+            <td> Select &lt;guilabel>Copy projects into workspace&lt;/guilabel> </td>
+          </tr>
+          <tr>
+            <td> &lt;guimenu> </td>
+            <td> Used to describe menus in a GUI </td>
+            <td> Go to &lt;guimenu>File&lt;/guimenu>, &lt;guimenu>Import...&lt;/guimenu>. </td>
+          </tr>
+          <tr>
+            <td> &lt;itemizedlist> </td>
+            <td> Used for bullet type lists </td>
+            <td> &lt;itemizedlist>&lt;listitem>One&lt;/listitem>&lt;listitem>Two&lt;/listitem>&lt;/itemizedlist> </td>
+          </tr>
+          <tr>
+            <td> &lt;listitem> </td>
+            <td> Used for entries in a list </td>
+            <td> &lt;itemizedlist>&lt;listitem>One&lt;/listitem>&lt;listitem>Two&lt;/listitem>&lt;/itemizedlist> </td>
+          </tr>
+          <tr>
+            <td> &lt;option> </td>
+            <td> Used for options of commands </td>
+            <td> &lt;command>mvn&lt;/command> &lt;option>clean&lt;/option> is used to clean the project. </td>
+          </tr>
+          <tr>
+            <td> &lt;orderedlist> </td>
+            <td> Used for numbered lists </td>
+            <td> &lt;orderedlist>&lt;listitem>One&lt;/listitem>&lt;listitem>Two&lt;/listitem>&lt;/orderedlist> </td>
+          </tr>
+          <tr>
+            <td> &lt;para> </td>
+            <td> Used for paragraphs </td>
+            <td> &lt;para>This is a paragraph.&lt;/para> </td>
+          </tr>
+          <tr>
+            <td> &lt;programlisting> </td>
+            <td> Used to display code (e.g. XML or Java). Generally it is a good idea to wrap the contents of this tag
+              in a CDATA section. </td>
+            <td> &lt;programlisting>&lt;![CDATA[System.out.println("Hello, world!");]]&lt;&lt;/programlisting> </td>
+          </tr>
+          <tr>
+            <td> &lt;replaceable> </td>
+            <td> Used for placeholders in examples </td>
+            <td> Type &lt;command> &lt;replaceable>/path/to/maven&lt;/replaceable> </td>
+          </tr>
+          <tr>
+            <td> &lt;ulink> </td>
+            <td> Used for links to external resources </td>
+            <td> You should read &lt;ulink url="http://www.docbook.org/tdg5/en/html/docbook.html">DocBook 5: The
+              Definitive Guide&lt;/ulink>. </td>
+          </tr>
+          <tr>
+            <td> &lt;userinput> </td>
+            <td> Used for data which is entered by the user </td>
+            <td> Type &lt;userinput>n&lt;/userinput> to overwrite the default values. </td>
+          </tr>
+          <tr>
+            <td> &lt;warning> </td>
+            <td> Used for warnings about a chapter </td>
+            <td> &lt;warning>&lt;para>This chapter is out of date.&lt;/para>&lt;/warning> </td>
+          </tr>
+        </tbody>
+      </informaltable>
+
+      <section>
+        <title>Including an image</title>
+
+        <para>Images can be included in this way: <programlisting><![CDATA[<mediaobject>
+  <imageobject>
+    <imagedata id="new" fileref="graphics/testclient_message.png"
+      format="png" width="400" align="center" />
+    </imageobject>
+  <caption>Messaging</caption>
+</mediaobject>]]></programlisting>
+        </para>
+      </section>
+
+      <section>
+        <title>Using a table</title>
+
+        <para> There are two types of tables. Normal tables (&lt;table>) and informal tables (&lt;informaltable>)which
+          don't have a caption. Using informal tables should be fine most of the time. Example: <programlisting><![CDATA[<informaltable>
+  <colgroup>
+    <col width="50" />
+    <col width="100" />
+  </colgroup>
+  <thead>
+    <tr> 
+      <td>
+        Name
+      </td>
+      <td>
+        Description
+      </td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        table
+      </td>
+      <td>
+        A table with a caption
+      </td>
+    </tr>
+    <tr>
+      <td>
+        informaltable
+      </td>
+      <td>
+        A table without a caption
+      </td>
+    </tr>
+  </tbody>
+</informaltable>]]></programlisting>
+        </para>
+
+      </section>
+
+      <section>
+        <title>Generating the documentation</title>
+
+        <para> To build the documentation maven with some plugins is used. The full documentation can be generated in
+          one simple step:
+          <literallayout><command>cd docs</command>
+<command>mvn</command> <option>clean install -Pdocs</option>
+        </literallayout>
+          The documentation can be found in <filename>docs/target/docbkx</filename> in HTML and PDF format. </para>
+      </section>
+
+    </section>
+
+  </section>
+
+</appendix>
