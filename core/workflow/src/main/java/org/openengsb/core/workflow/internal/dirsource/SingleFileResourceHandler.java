@@ -28,7 +28,6 @@ import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.openengsb.core.workflow.internal.ResourceHandler;
-import org.openengsb.core.workflow.internal.RuleBaseException;
 
 public abstract class SingleFileResourceHandler extends ResourceHandler<DirectoryRuleSource> {
 
@@ -41,14 +40,14 @@ public abstract class SingleFileResourceHandler extends ResourceHandler<Director
 
     public abstract String getFileName();
 
-    protected Set<String> readFile() throws RuleBaseException {
+    protected Set<String> readFile() {
         try {
             Reader reader = new FileReader(this.file);
             List<String> result = readLines(reader);
             reader.close();
             return new HashSet<String>(result);
         } catch (IOException e) {
-            throw new RuleBaseException("cannot read imports", e);
+            throw new IllegalStateException("cannot read imports", e);
         }
     }
 
@@ -58,13 +57,13 @@ public abstract class SingleFileResourceHandler extends ResourceHandler<Director
         return result;
     }
 
-    protected void writeFile(Collection<String> list) throws RuleBaseException {
+    protected void writeFile(Collection<String> list) {
         try {
             FileWriter writer = new FileWriter(file);
             IOUtils.writeLines(list, "\n", writer);
             writer.close();
         } catch (IOException e) {
-            throw new RuleBaseException("cannot write imports", e);
+            throw new IllegalStateException("cannot write imports", e);
         }
     }
 }

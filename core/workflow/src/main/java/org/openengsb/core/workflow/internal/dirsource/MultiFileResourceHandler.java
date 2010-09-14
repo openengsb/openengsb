@@ -25,8 +25,8 @@ import java.util.HashSet;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.rule.Package;
+import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.internal.ResourceHandler;
-import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 
 public abstract class MultiFileResourceHandler extends ResourceHandler<DirectoryRuleSource> {
@@ -79,7 +79,7 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
     }
 
     @Override
-    public Collection<RuleBaseElementId> list() throws RuleBaseException {
+    public Collection<RuleBaseElementId> list() {
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
         for (Package p : source.getRulebase().getPackages()) {
             result.addAll(listElementsInPackage(p));
@@ -90,7 +90,7 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
     protected abstract Collection<RuleBaseElementId> listElementsInPackage(Package p);
 
     @Override
-    public Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException {
+    public Collection<RuleBaseElementId> list(String packageName) {
         return listElementsInPackage(source.getRulebase().getPackage(packageName));
     }
 }

@@ -29,5 +29,6 @@
   <osgi:list id="managedServiceInstances" member-type="service-reference" interface="org.openengsb.core.common.Domain" />
   <osgi:reference id="eventService" interface="org.openengsb.core.workflow.WorkflowService" />
   <osgi:reference id="contextCurrentService" interface="org.openengsb.core.common.context.ContextCurrentService" />
+  <osgi:reference id="ruleManager" interface="org.openengsb.core.workflow.RuleManager" />
 
 </beans>

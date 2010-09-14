@@ -18,6 +18,7 @@ package org.openengsb.core.workflow.internal;
 
 import java.util.Collection;
 
+import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
@@ -34,7 +35,7 @@ public abstract class AbstractRuleManager implements RuleManager {
     }
 
     @Override
-    public String get(RuleBaseElementId name) throws RuleBaseException {
+    public String get(RuleBaseElementId name) {
         return this.getRessourceHandler(name.getType()).get(name);
     }
 
@@ -49,12 +50,12 @@ public abstract class AbstractRuleManager implements RuleManager {
     }
 
     @Override
-    public Collection<RuleBaseElementId> list(RuleBaseElementType type) throws RuleBaseException {
+    public Collection<RuleBaseElementId> list(RuleBaseElementType type) {
         return this.getRessourceHandler(type).list();
     }
 
     @Override
-    public Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName) throws RuleBaseException {
+    public Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName) {
         return this.getRessourceHandler(type).list(packageName);
     }
 }

@@ -37,9 +37,9 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.rule.Package;
+import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.internal.AbstractRuleManager;
 import org.openengsb.core.workflow.internal.ResourceHandler;
-import org.openengsb.core.workflow.internal.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
@@ -89,10 +89,14 @@ public class DirectoryRuleSource extends AbstractRuleManager {
     }
 
     @Override
-    public RuleBase getRulebase() throws RuleBaseException {
+    public RuleBase getRulebase() {
         if (!initialized) {
             log.warn("rulebase not initialized. initializing now...");
-            init();
+            try {
+                init();
+            } catch (RuleBaseException e) {
+                throw new IllegalStateException(e);
+            }
         }
         return ruleBase;
     }

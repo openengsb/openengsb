@@ -18,6 +18,7 @@ package org.openengsb.core.workflow.internal;
 
 import java.util.Collection;
 
+import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 
@@ -31,7 +32,7 @@ public abstract class ResourceHandler<SourceType extends RuleManager> {
 
     public abstract void create(RuleBaseElementId name, String code) throws RuleBaseException;
 
-    public abstract String get(RuleBaseElementId name) throws RuleBaseException;
+    public abstract String get(RuleBaseElementId name);
 
     public void update(RuleBaseElementId name, String code) throws RuleBaseException {
         delete(name);
@@ -40,8 +41,8 @@ public abstract class ResourceHandler<SourceType extends RuleManager> {
 
     public abstract void delete(RuleBaseElementId name) throws RuleBaseException;
 
-    public abstract Collection<RuleBaseElementId> list() throws RuleBaseException;
+    public abstract Collection<RuleBaseElementId> list();
 
-    public abstract Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException;
+    public abstract Collection<RuleBaseElementId> list(String packageName);
 
 }

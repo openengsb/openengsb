@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.openengsb.core.workflow.internal.RuleBaseException;
+import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
@@ -60,12 +60,12 @@ public class DirectoryGlobalHandler extends SingleFileResourceHandler {
     }
 
     @Override
-    public String get(RuleBaseElementId name) throws RuleBaseException {
+    public String get(RuleBaseElementId name) {
         return source.getRulebase().getPackages()[0].getGlobals().get(name.getName());
     }
 
     @Override
-    public Collection<RuleBaseElementId> list() throws RuleBaseException {
+    public Collection<RuleBaseElementId> list() {
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
         for (String s : source.getRulebase().getPackages()[0].getGlobals().keySet()) {
             result.add(new RuleBaseElementId(RuleBaseElementType.Global, s));
@@ -74,7 +74,7 @@ public class DirectoryGlobalHandler extends SingleFileResourceHandler {
     }
 
     @Override
-    public Collection<RuleBaseElementId> list(String packageName) throws RuleBaseException {
+    public Collection<RuleBaseElementId> list(String packageName) {
         return list();
     }
 
