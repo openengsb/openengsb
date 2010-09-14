@@ -131,7 +131,7 @@ public class EditorPageTest {
         formTester.setValue("validate", false);
         formTester.submit();
         tester.assertErrorMessages(new String[] {});
-        tester.assertInfoMessages(new String[] { "Service added successfully" });
+        tester.assertInfoMessages(new String[] { "Service can be added" });
         Mockito.verify(manager).update(Mockito.anyString(), Mockito.anyMap());
         Mockito.verify(manager, Mockito.never()).updateWithValidation(Mockito.anyString(), Mockito.anyMap());
     }
