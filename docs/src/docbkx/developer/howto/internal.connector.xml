@@ -29,15 +29,104 @@
   <section>
     <title>Prerequisites</title>
     <para>In case it isn't known what a tool domain is and how it defines the interface for the tool connector then
-        <link linkend="developer.architectur.domain"/> is a good starting point. If there's already a matching domain
+        (TODO link to developer.architecture.domain) is a good starting point. If there's already a matching domain
       for this tool it is strongly recommended to use it. But if this tool requires a new domain it has to be created.
-      This is also described in <link linkend="developer.howto.internal.domain"/>
-    </para>
+      This is also described in (TODO link to developer.howto.internal.domain).</para>
   </section>
 
   <section>
     <title>Creating a new connector project</title>
-    <para>TBW</para>
+
+    <para>To take the burden of creating the initial boilerplate code to get a new connector project up and running, an
+      archetype is provided for developers. Furthermore, if the new connector is developed inside of the OpenEngSB
+      repository, a shell script can be found at <literal>etc/scripts/pre-connector.sh</literal> for further help in
+      creating a new connector project.</para>
+
+    <section>
+      <title>Using the Maven Archetype</title>
+      <para>TBW - explain all variables</para>
+    </section>
+
+    <section>
+      <title>Using the <literal>pre-connector.sh</literal> shellscript</title>
+
+      <para>Calling the script should be done from domain-specific directory. I.e. if your are developing a new
+        connector for the Notification-Domain you current directory should be <literal>domains/notification</literal>.
+        Inside your favourite shell call the script</para>
+
+      <literallayout><command>notification $</command> ../../etc/scripts/gen-connector.sh</literallayout>
+
+      <para>The script tries to guess as much as possible from your current location and previous input. Guessed values
+        are displayed in brackets. If the guess is what you want, simply acknowledge with <literal>Return</literal>. The
+        following output has been recorded by executing the script in the <literal>domains/notification</literal>
+        directory:</para>
+
+      <literallayout><command>Domain Name (is notification):</command>
+<command>Domain Interface (is NotificationDomain): </command>
+<command>Connector Name: </command>twitter
+<command>Version (is 1.0.0-SNAPSHOT): </command>
+<command>Project Name (is OpenEngSB :: Domains :: Notification :: Twitter): </command></literallayout>
+
+      <para>Only the connector name has been provided, everything else has been guessed correctly by the script. After
+        this inputs the Maven Archetype gets called and may ask you for further inputs. You can simply hit
+          <literal>Return</literal> each time, because the values have been already set by the script. If the script
+        finishes successfully the new connector project has been created and you may start the coding.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Project Structure</title>
+
+    <para>The newly created connector project should have the exact same structure and files as the following
+      listing:</para>
+
+    <programlisting>-- pom.xml
+-- src
+   -- main
+      -- java
+      |  -- org
+      |     -- openengsb
+      |        -- domains
+      |           -- notification
+      |              -- twitter
+      |                 -- internal
+      |                 |  -- MyServiceImpl.java
+      |                 |  -- MyServiceInstanceFactory.java
+      |                 -- MyServiceManager.java
+      -- resources
+         -- META-INF
+         |  -- spring
+         |     -- connector-context.xml
+         -- OSGI-INF
+            -- l10n
+               -- bundle_de.properties
+               -- bundle.properties</programlisting>
+
+    <para>The <literal>MyServiceImpl</literal> class implements the interface of the domain and thus is the
+      communication link between the OpenEngSB and the connected tool. To give the OpenEngSB (and in the long run the
+      end user) enough information on how to configure a connector, the <literal>MyServiceInstanceFactory</literal>
+      class provides the OpenEngSB with meta information for configuring and functionality for creating and updating a
+      connector instances. The <literal>MyServiceManager</literal> class connects connector instances with the
+      underlying OSGi engine and OpenEngSB infrastructure. It exports instances as OSGi services and adds necessary meta
+      information to each instance. Since the basic functionality is mostly similar for all service managers, the
+        <literal>MyServiceManager</literal> class extends a common base class
+      <literal>AbstractServiceManager</literal>.</para>
+
+    <para>TBW Spring Modules</para>
+
+    <para>TBW bundle*.properties</para>
+  </section>
+
+  <section>
+    <title>Costumizing</title>
+
+    <para>TBW add attributes, validation, ...</para>
+  </section>
+
+  <section>
+    <title>Integration the Connector into the OpenEngSB environment</title>
+
+    <para>TBW - add in integrationtest</para>
   </section>
 
 </chapter>
