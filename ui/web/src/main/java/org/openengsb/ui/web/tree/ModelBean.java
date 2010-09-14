@@ -16,9 +16,12 @@
 
 package org.openengsb.ui.web.tree;
 
+import java.io.Serializable;
+
 import org.openengsb.core.common.context.ContextService;
 
-public class ModelBean  {
+@SuppressWarnings("serial")
+public class ModelBean implements Serializable {
 
     private final ContextService contextService;
     private final String key;
