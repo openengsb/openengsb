@@ -53,8 +53,20 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.domains.example</groupId>
+      <artifactId>openengsb-domains-example-connector</artifactId>
+      <version>${pom.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.domains.notification</groupId>
       <artifactId>openengsb-domains-notification-implementation</artifactId>
+      <version>${pom.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domains.notification</groupId>
+      <artifactId>openengsb-domains-notification-email</artifactId>
       <version>${pom.version}</version>
       <scope>test</scope>
     </dependency>
