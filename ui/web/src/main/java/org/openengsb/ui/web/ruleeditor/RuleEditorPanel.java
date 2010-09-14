@@ -112,7 +112,7 @@ public class RuleEditorPanel extends Panel {
                         ruleManagerProvider.getRuleManager().add(ruleBaseElementId, textArea.getModelObject());
                     } catch (RuleBaseException e) {
                         target.addComponent(feedbackPanel);
-                        error(e.getMessage());
+                        error(e.getLocalizedMessage());
                     }
                     resetAfterNew(target);
                     ruleChoice.setModelObject(ruleBaseElementId);
@@ -209,7 +209,7 @@ public class RuleEditorPanel extends Panel {
             try {
                 ruleManagerProvider.getRuleManager().update(selection, text);
             } catch (RuleBaseException e) {
-                error(e.getMessage());
+                error(e.getLocalizedMessage());
             }
         }
         disableButtons(target);
