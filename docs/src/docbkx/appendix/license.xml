@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -16,6 +16,7 @@
     limitations under the License.
 
 -->
+
 <appendix xml:id="license" xmlns="http://docbook.org/ns/docbook" version="5.0">
 
   <title>License</title>
