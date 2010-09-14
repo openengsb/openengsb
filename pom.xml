@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+   dfCopyright 2010 OpenEngSB Division, Vienna University of Technology
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
+    <!-- Version Informtations -->
+    <openengsb.version.number>${pom.version}</openengsb.version.number>
+    <openengsb.version.name>"Cautious Catwoman"</openengsb.version.name>
     <!-- General Settings -->
     <root.basedir>${project.basedir}</root.basedir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

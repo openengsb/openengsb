@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -46,6 +47,8 @@ public class HeaderTemplate extends Panel {
         HeaderTemplate.menuIndex = menuIndex;
         this.add(new BookmarkablePageLink<Index>("indexLogo1", Index.class));
         this.add(new BookmarkablePageLink<Index>("indexLogo2", Index.class));
+        this.add(new Label("version", System.getProperty("openengsb.version.number") + " "
+                + System.getProperty("openengsb.version.name")));
 
         this.addHeaderMenuItem("Index", Index.class, "index.title");
         this.addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
