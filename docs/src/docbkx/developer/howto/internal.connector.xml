@@ -111,9 +111,14 @@
         <literal>MyServiceManager</literal> class extends a common base class
       <literal>AbstractServiceManager</literal>.</para>
 
-    <para>TBW Spring Modules</para>
+    <para>TBW - Spring DM</para>
 
-    <para>TBW bundle*.properties</para>
+    <para>The OpenEngSB has been build with localization in mind. The Maven Archetype already generates two
+        <literal>bundle*.properties</literal> files, one for English (bundle.properties) and one for the German
+      (bundle_de.properties) language. Each connector has to provide localization through the properties files for
+      service and attributes text values. This includes localization for names, descriptions, attribute validators,
+      option values and more. For convenience the <literal>BundleStrings</literal> class is provided on all method calls
+      where text is needed for user representation for a specific locale.</para>
   </section>
 
   <section>
@@ -123,7 +128,7 @@
   </section>
 
   <section>
-    <title>Integration the Connector into the OpenEngSB environment</title>
+    <title>Integrating the Connector into the OpenEngSB environment</title>
 
     <para>TBW - add in integrationtest</para>
   </section>
