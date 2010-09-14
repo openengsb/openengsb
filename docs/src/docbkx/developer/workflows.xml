@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="developer.workflows" xmlns="http://docbook.org/ns/docbook" version="5.0">
+
+  <title>Workflows</title>
+
+  <para>The OpenEngSB supports the modeling of workflows. This could be done by two different approaches. First of all a
+    rule-based event approach, by defining actions based on events (and their content) whiche where thrown in or to the
+    bus. Events are practical for "short-time handling" since they are also easy to replace and extend. For long running
+    business processes the secondary workflow method could be used which is <link linkend="workflows.processes">based on
+    processes described in Drools-Flow</link>.</para>
+
+  <para>The workflow service takes "events" as input and handles them using a rulebased system (JBoss Drools). It
+    provides methods to manage the rules. TBW</para>
+
+  <section xml:id="workflows.processes">
+    <title>Processes</title>
+    <para>TBW - explain Drools-Flow processes.</para>
+  </section>
+
+</chapter>

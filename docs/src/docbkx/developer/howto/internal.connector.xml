@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="developer.howto.internal.connector" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
+
+  <title>How To Create an Internal Connector</title>
+
+  <para>This chapter describes how to implement a connector for the OpenEngSB environment. A connector is an adapter
+    between an external tool and the OpenEngSB environment. Every connector belongs to a domain which defines the common
+    interface of all its connectors. This means that the connector is responsible to translate all calls to the common
+    interface to the externally provided tool.</para>
+
+  <section>
+    <title>Prerequisites</title>
+    <para>In case it isn't known what a tool domain is and how it defines the interface for the tool connector then
+      (TODO link to developer.architecture.domain) is a good starting point. If there's already a matching domain for
+      this tool it is strongly recommended to use it. But if this tool requires a new domain it has to be created. This
+      is also described in (TODO link to developer.howto.internal.domain).</para>
+  </section>
+
+  <section>
+    <title>Creating a new connector project</title>
+
+    <para>To take the burden of the developer creating the initial boilerplate code and configuration, a Maven archetype
+      is provided for creating the initial project structure. Furthermore, if the new connector is developed inside of
+      the OpenEngSB repository, a shell script can be found at <literal>etc/scripts/gen-connector.sh</literal> for
+      further help in creating a new connector project.</para>
+
+    <section>
+      <title>Using the Maven Archetype</title>
+      <para>TBW - explain all variables</para>
+    </section>
+
+    <section>
+      <title>Using the <literal>gen-connector.sh</literal> shell script</title>
+
+      <para>Calling the script should be done from the domain-specific directory. I.e. if your are developing a new
+        connector for the Notification-Domain your current directory should be <literal>domains/notification</literal>.
+        Inside your favourite shell execute the script.</para>
+
+      <literallayout><command>notification $</command> ../../etc/scripts/gen-connector.sh</literallayout>
+
+      <para>The script tries to guess as much as possible from your current location and previous input. Guessed values
+        are displayed in brackets. If the guess is what you want, simply acknowledge with <literal>Return</literal>. The
+        following output has been recorded by executing the script in the <literal>domains/notification</literal>
+        directory:</para>
+
+      <literallayout><command>Domain Name (is notification): </command> &lt;Enter>
+<command>Domain Interface (is NotificationDomain): </command>&lt;Enter>
+<command>Connector Name: </command>twitter &lt;Enter>
+<command>Version (is 1.0.0-SNAPSHOT): </command>&lt;Enter>
+<command>Project Name (is OpenEngSB :: Domains :: Notification :: Twitter): </command>&lt;Enter></literallayout>
+
+      <para>Only the connector name was set, everything else has been guessed correctly by the script. After this inputs
+        the Maven Archetype gets called and may ask you for further inputs. You can simply hit <literal>Return</literal>
+        each time, because the values have been already set by the script. If the script finishes successfully the new
+        connector project has been created and you may start implementing.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Project Structure</title>
+
+    <para>The newly created connector project should have the exact same structure as the following listing:</para>
+
+    <programlisting>-- pom.xml
+-- src
+   -- main
+      -- java
+      |  -- org
+      |     -- openengsb
+      |        -- domains
+      |           -- notification
+      |              -- twitter
+      |                 -- internal
+      |                 |  -- MyServiceImpl.java
+      |                 |  -- MyServiceInstanceFactory.java
+      |                 -- MyServiceManager.java
+      -- resources
+         -- META-INF
+         |  -- spring
+         |     -- connector-context.xml
+         -- OSGI-INF
+            -- l10n
+               -- bundle_de.properties
+               -- bundle.properties</programlisting>
+
+    <para>The <literal>MyServiceImpl</literal> class implements the interface of the domain and thus is the
+      communication link between the OpenEngSB and the connected tool. To give the OpenEngSB (and in the long run the
+      end user) enough information on how to configure a connector, the <literal>MyServiceInstanceFactory</literal>
+      class provides the OpenEngSB with meta information for configuring and functionality for creating and updating a
+      connector instances. The <literal>MyServiceManager</literal> class connects connector instances with the
+      underlying OSGi engine and OpenEngSB infrastructure. It exports instances as OSGi services and adds necessary meta
+      information to each instance. Since the basic functionality is mostly similar for all service managers, the
+        <literal>MyServiceManager</literal> class extends a common base class
+      <literal>AbstractServiceManager</literal>.</para>
+
+    <para>TBW - Spring DM</para>
+
+    <para>The OpenEngSB has been build with localization in mind. The Maven Archetype already generates two
+        <literal>bundle*.properties</literal> files, one for English (bundle.properties) and one for the German
+      (bundle_de.properties) language. Each connector has to provide localization through the properties files for
+      service and attributes text values. This includes localization for names, descriptions, attribute validators,
+      option values and more. For convenience the <literal>BundleStrings</literal> class is provided on all method calls
+      where text is needed for user representation for a specific locale.</para>
+  </section>
+
+  <section>
+    <title>Costumizing</title>
+
+    <para>TBW add attributes, validation, ...</para>
+  </section>
+
+  <section>
+    <title>Integrating the Connector into the OpenEngSB environment</title>
+
+    <para>TBW - add in integrationtest</para>
+  </section>
+
+</chapter>

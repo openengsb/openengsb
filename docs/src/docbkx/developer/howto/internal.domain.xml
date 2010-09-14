@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -17,9 +17,21 @@
 
 -->
 
-<chapter id="buildConnectors" xmlns="http://docbook.org/ns/docbook">
-  <title id="buildConnectors.title">Build Connectors</title>
+<chapter xml:id="developer.howto.internal.connector" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0">
 
-  TBW
-  
+  <title>How To Create an Internal Domain</title>
+
+  <para>TBW</para>
+
+  <section>
+    <title>Prerequisites</title>
+    <para></para>
+  </section>
+
+  <section>
+    <title>Create a new domain project</title>
+    <para>TBW</para>
+  </section>
+
 </chapter>
