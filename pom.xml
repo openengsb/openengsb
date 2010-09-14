@@ -456,6 +456,40 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>license-check</id>
+      <build>
+        <plugins>
+          <plugin>
+            <inherited>false</inherited>
+            <groupId>com.mycila.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+            <version>1.8.0</version>
+            <configuration>
+              <header>${basedir}/etc/license/header.txt</header>
+              <failIfMissing>true</failIfMissing>
+              <aggregate>true</aggregate>
+              <strictCheck>true</strictCheck>
+              <excludes>
+                <exclude>license.txt</exclude>
+                <exclude>**/license.txt</exclude>
+                <exclude>runner/**</exclude>
+                <exclude>features/**</exclude>
+              </excludes>
+            </configuration>
+            <executions>
+              <execution>
+                <id>check-headers</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <pluginRepositories>
