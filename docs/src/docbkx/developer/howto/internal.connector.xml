@@ -21,26 +21,26 @@
 
   <title>How To Create an Internal Connector</title>
 
-  <para>This chapter describes how to implement a tool connector for the OpenEngSB environment. A tool connector is an
-    adapter between an external tool and the OpenEngSB. Every connector belongs to a domain which defines the common
+  <para>This chapter describes how to implement a connector for the OpenEngSB environment. A connector is an adapter
+    between an external tool and the OpenEngSB environment. Every connector belongs to a domain which defines the common
     interface of all its connectors. This means that the connector is responsible to translate all calls to the common
     interface to the externally provided tool.</para>
 
   <section>
     <title>Prerequisites</title>
     <para>In case it isn't known what a tool domain is and how it defines the interface for the tool connector then
-        (TODO link to developer.architecture.domain) is a good starting point. If there's already a matching domain
-      for this tool it is strongly recommended to use it. But if this tool requires a new domain it has to be created.
-      This is also described in (TODO link to developer.howto.internal.domain).</para>
+      (TODO link to developer.architecture.domain) is a good starting point. If there's already a matching domain for
+      this tool it is strongly recommended to use it. But if this tool requires a new domain it has to be created. This
+      is also described in (TODO link to developer.howto.internal.domain).</para>
   </section>
 
   <section>
     <title>Creating a new connector project</title>
 
-    <para>To take the burden of creating the initial boilerplate code to get a new connector project up and running, an
-      archetype is provided for developers. Furthermore, if the new connector is developed inside of the OpenEngSB
-      repository, a shell script can be found at <literal>etc/scripts/pre-connector.sh</literal> for further help in
-      creating a new connector project.</para>
+    <para>To take the burden of the developer creating the initial boilerplate code and configuration, a Maven archetype
+      is provided for creating the initial project structure. Furthermore, if the new connector is developed inside of
+      the OpenEngSB repository, a shell script can be found at <literal>etc/scripts/gen-connector.sh</literal> for
+      further help in creating a new connector project.</para>
 
     <section>
       <title>Using the Maven Archetype</title>
@@ -48,11 +48,11 @@
     </section>
 
     <section>
-      <title>Using the <literal>pre-connector.sh</literal> shellscript</title>
+      <title>Using the <literal>gen-connector.sh</literal> shell script</title>
 
-      <para>Calling the script should be done from domain-specific directory. I.e. if your are developing a new
-        connector for the Notification-Domain you current directory should be <literal>domains/notification</literal>.
-        Inside your favourite shell call the script</para>
+      <para>Calling the script should be done from the domain-specific directory. I.e. if your are developing a new
+        connector for the Notification-Domain your current directory should be <literal>domains/notification</literal>.
+        Inside your favourite shell execute the script.</para>
 
       <literallayout><command>notification $</command> ../../etc/scripts/gen-connector.sh</literallayout>
 
@@ -61,24 +61,23 @@
         following output has been recorded by executing the script in the <literal>domains/notification</literal>
         directory:</para>
 
-      <literallayout><command>Domain Name (is notification):</command>
-<command>Domain Interface (is NotificationDomain): </command>
-<command>Connector Name: </command>twitter
-<command>Version (is 1.0.0-SNAPSHOT): </command>
-<command>Project Name (is OpenEngSB :: Domains :: Notification :: Twitter): </command></literallayout>
+      <literallayout><command>Domain Name (is notification): </command> &lt;Enter>
+<command>Domain Interface (is NotificationDomain): </command>&lt;Enter>
+<command>Connector Name: </command>twitter &lt;Enter>
+<command>Version (is 1.0.0-SNAPSHOT): </command>&lt;Enter>
+<command>Project Name (is OpenEngSB :: Domains :: Notification :: Twitter): </command>&lt;Enter></literallayout>
 
-      <para>Only the connector name has been provided, everything else has been guessed correctly by the script. After
-        this inputs the Maven Archetype gets called and may ask you for further inputs. You can simply hit
-          <literal>Return</literal> each time, because the values have been already set by the script. If the script
-        finishes successfully the new connector project has been created and you may start the coding.</para>
+      <para>Only the connector name was set, everything else has been guessed correctly by the script. After this inputs
+        the Maven Archetype gets called and may ask you for further inputs. You can simply hit <literal>Return</literal>
+        each time, because the values have been already set by the script. If the script finishes successfully the new
+        connector project has been created and you may start implementing.</para>
     </section>
   </section>
 
   <section>
     <title>Project Structure</title>
 
-    <para>The newly created connector project should have the exact same structure and files as the following
-      listing:</para>
+    <para>The newly created connector project should have the exact same structure as the following listing:</para>
 
     <programlisting>-- pom.xml
 -- src
