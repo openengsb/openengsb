@@ -16,9 +16,9 @@
 
 package org.openengsb.ui.web.tree;
 
-import java.io.Serializable;
-
 import org.openengsb.core.common.context.ContextService;
+
+import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class ModelBean implements Serializable {
@@ -52,7 +52,11 @@ public class ModelBean implements Serializable {
 
     public void setValue(String value) {
         if (isLeaf) {
-            contextService.putValue(key, value == null ? "" : value);
+            String pushValue = "";
+            if (value != null) {
+                pushValue = value;
+            }
+            contextService.putValue(key, pushValue);
         }
     }
 

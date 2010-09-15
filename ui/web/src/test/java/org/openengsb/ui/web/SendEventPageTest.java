@@ -16,18 +16,6 @@
 
 package org.openengsb.ui.web;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -46,6 +34,18 @@ import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
 import org.openengsb.ui.web.service.DomainService;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class SendEventPageTest {
 
@@ -69,7 +69,7 @@ public class SendEventPageTest {
         context.putBean("eventService", eventService);
         context.putBean("domainService", mock(DomainService.class));
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
-        eventClasses = Arrays.<Class<? extends Event>> asList(Dummy.class, Dummy2.class, BrokenEvent.class);
+        eventClasses = Arrays.<Class<? extends Event>>asList(Dummy.class, Dummy2.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         editorPanel = (EditorPanel) tester.getComponentFromLastRenderedPage("editor");
         dropdown = (DropDownChoice<Class<?>>) tester
@@ -112,7 +112,7 @@ public class SendEventPageTest {
         }
     }
 
-    static class BrokenEvent extends Event {
+    static final class BrokenEvent extends Event {
         private BrokenEvent() {
             throw new UnsupportedOperationException();
         }
@@ -145,7 +145,8 @@ public class SendEventPageTest {
     @Test
     public void selectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
         selectEventType(1);
-        List<AttributeDefinition> attributes = ((EditorPanel) tester.getComponentFromLastRenderedPage("editor")).getAttributes();
+        List<AttributeDefinition> attributes =
+                ((EditorPanel) tester.getComponentFromLastRenderedPage("editor")).getAttributes();
         assertThat(attributes.size(), is(3));
         assertThat(attributes.get(1).getName(), is("firstProperty"));
     }
@@ -178,7 +179,7 @@ public class SendEventPageTest {
 
     @Test
     public void processingEventthrowsException_shouldShowErrorFeedback() throws Exception {
-        doThrow(new WorkflowException()).when(eventService).processEvent(Mockito.<Event> any());
+        doThrow(new WorkflowException()).when(eventService).processEvent(Mockito.<Event>any());
         formTester.submit();
         tester.assertNoInfoMessage();
         assertThat(tester.getMessages(FeedbackMessage.ERROR).size(), is(1));
