@@ -16,6 +16,18 @@
 
 package org.openengsb.ui.web;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -52,13 +64,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
-
 @SuppressWarnings("serial")
 public class TestClient extends BasePage {
 
@@ -68,7 +73,7 @@ public class TestClient extends BasePage {
     private DomainService services;
 
     @SpringBean
-    BundleContext bundleContext;
+    private BundleContext bundleContext;
 
     private final DropDownChoice<MethodId> methodList;
 
@@ -85,11 +90,11 @@ public class TestClient extends BasePage {
     private AjaxButton editButton;
 
     private ServiceManager lastManager;
-    
+
     private String lastServiceId;
 
     public TestClient() {
-        
+
         List<ServiceManager> managers = new ArrayList<ServiceManager>(services.domains().size());
         for (DomainProvider provider : services.domains()) {
             managers.addAll(this.services.serviceManagersForDomain(provider.getDomainInterface()));
@@ -110,7 +115,7 @@ public class TestClient extends BasePage {
                 item.add(new Label("service.description", desc.getDescription()));
             }
         });
-        
+
         Form<MethodCall> form = new Form<MethodCall>("methodCallForm");
         form.setModel(new Model<MethodCall>(call));
         form.setOutputMarkupId(true);
@@ -121,7 +126,7 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 log.info("edit button pressed");
                 if (lastManager != null && lastServiceId != null) {
-                      setResponsePage(new EditorPage(lastManager, lastServiceId));
+                    setResponsePage(new EditorPage(lastManager, lastServiceId));
                 }
 
             }
@@ -187,7 +192,6 @@ public class TestClient extends BasePage {
             }
         };
 
-
         // the message-attribute doesn't work for some reason
         submitButton.setModel(new ResourceModel("form.call"));
         form.add(submitButton);
@@ -204,7 +208,8 @@ public class TestClient extends BasePage {
         editButton.setEnabled(false);
         ServiceReference[] references = null;
         try {
-            references = bundleContext.getServiceReferences(Domain.class.getName(), "(id=" + serviceId.getServiceId() + ")");
+            references = bundleContext.getServiceReferences(Domain.class.getName(),
+                    String.format("(id=%s)", serviceId.getServiceId()));
             String id = "";
             String domain = null;
             if (references != null && references.length > 0) {
@@ -248,7 +253,8 @@ public class TestClient extends BasePage {
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
         DefaultMutableTreeNode providerNode = new DefaultMutableTreeNode(provider.getName());
         node.add(providerNode);
-        for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider.getDomainInterface())) {
+        for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider
+                .getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
             if (id != null) {
                 ServiceId serviceId = new ServiceId();

@@ -27,10 +27,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 
-public class MethodUtil {
+public final class MethodUtil {
+    private static Log log = LogFactory.getLog(MethodUtil.class);
 
     public static List<Method> getServiceMethods(Object service) {
         List<Method> result = new ArrayList<Method>();
@@ -59,7 +62,7 @@ public class MethodUtil {
                 attributes.add(a);
             }
         } catch (IntrospectionException ex) {
-            SendEventPage.log.error("building attribute list failed", ex);
+            log.error("building attribute list failed", ex);
         }
         return attributes;
     }
@@ -80,5 +83,8 @@ public class MethodUtil {
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    private MethodUtil() {
     }
 }

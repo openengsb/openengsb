@@ -50,7 +50,7 @@ import org.openengsb.ui.web.service.DomainService;
 @SuppressWarnings("serial")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 
-    static final Log log = LogFactory.getLog(SendEventPage.class);
+    private Log log = LogFactory.getLog(SendEventPage.class);
 
     @SpringBean
     private WorkflowService eventService;
@@ -93,7 +93,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         form.add(dropDownChoice);
         add(createEditorPanelForClass(classes.get(0)));
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
-        add(new RuleEditorPanel("ruleEditor",this));
+        add(new RuleEditorPanel("ruleEditor", this));
     }
 
     private EditorPanel createEditorPanelForClass(Class<?> theClass) {

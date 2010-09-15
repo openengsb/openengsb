@@ -16,9 +16,9 @@
 
 package org.openengsb.core.workflow.model;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class RuleBaseElementIdTest {
 
@@ -26,13 +26,17 @@ public class RuleBaseElementIdTest {
     public void testToStringWithDefaultConstructor() throws Exception {
         assertEquals(RuleBaseElementId.DEFAULT_RULE_PACKAGE, new RuleBaseElementId().toString());
     }
+
     @Test
     public void testToStringWithNameOnly() throws Exception {
-        assertEquals(RuleBaseElementId.DEFAULT_RULE_PACKAGE+".name", new RuleBaseElementId(RuleBaseElementType.Rule,"name").toString());
+        assertEquals(RuleBaseElementId.DEFAULT_RULE_PACKAGE + ".name", new RuleBaseElementId(RuleBaseElementType.Rule,
+                "name").toString());
     }
+
     @Test
     public void testToStringWithNameAndPackage() throws Exception {
-        assertEquals("my.package.name", new RuleBaseElementId(RuleBaseElementType.Rule,"my.package","name").toString());
+        assertEquals("my.package.name",
+                new RuleBaseElementId(RuleBaseElementType.Rule, "my.package", "name").toString());
     }
-    
+
 }
