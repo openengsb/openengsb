@@ -227,8 +227,8 @@ public class RuleEditorTest {
     @SuppressWarnings("unchecked")
     public void testCreateNewRule() throws Exception {
         tester.executeAjaxEvent("ruleEditor:form:new", "onclick");
-        TextField<String> rulename = ((TextField<String>) tester
-            .getComponentFromLastRenderedPage("ruleEditor:form:ruleName"));
+        TextField<String> rulename = (TextField<String>) tester
+            .getComponentFromLastRenderedPage("ruleEditor:form:ruleName");
         assertEquals("rulename", rulename.getModelObject());
         assertTrue(rulename.isVisible());
 
@@ -262,8 +262,8 @@ public class RuleEditorTest {
     public void testSubmitNew_withErrors() throws Exception {
         doThrow(new RuleBaseException("error")).when(ruleManager).add((RuleBaseElementId) anyObject(), anyString());
         tester.executeAjaxEvent("ruleEditor:form:new", "onclick");
-        TextField<String> rulename = ((TextField<String>) tester
-            .getComponentFromLastRenderedPage("ruleEditor:form:ruleName"));
+        TextField<String> rulename = (TextField<String>) tester
+            .getComponentFromLastRenderedPage("ruleEditor:form:ruleName");
         assertEquals("rulename", rulename.getModelObject());
         assertTrue(rulename.isVisible());
 

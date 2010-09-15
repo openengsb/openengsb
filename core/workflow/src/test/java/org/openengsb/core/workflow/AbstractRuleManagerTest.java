@@ -74,8 +74,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     }
 
     /**
-     * create new stateful session from the rulebase and attach a listener to
-     * validate testresults
+     * create new stateful session from the rulebase and attach a listener to validate testresults
      */
     protected void createSession() {
         if (session != null) {
@@ -85,7 +84,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         session = rulebase.newStatefulSession();
         listener = new RuleListener();
         session.addEventListener(listener);
-        for(Entry<String,Domain> entry : createDomainMocks().entrySet()){
+        for (Entry<String, Domain> entry : createDomainMocks().entrySet()) {
             session.setGlobal(entry.getKey(), entry.getValue());
         }
     }

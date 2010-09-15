@@ -26,8 +26,8 @@ import org.drools.event.DefaultAgendaEventListener;
 import org.drools.rule.Rule;
 
 public class RuleListener extends DefaultAgendaEventListener {
-    protected int numFired = 0;
-    protected Set<String> rulesFired = new HashSet<String>();
+    private int numFired = 0;
+    private Set<String> rulesFired = new HashSet<String>();
 
     @Override
     public void afterActivationFired(AfterActivationFiredEvent event, WorkingMemory workingMemory) {

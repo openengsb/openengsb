@@ -51,7 +51,7 @@ public class BundleStringsTest {
         when(bundle.findEntries(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenAnswer(
                 new Answer<Enumeration<URL>>() {
                     @Override
-                    public Enumeration<URL> answer(InvocationOnMock invocation) throws Throwable {
+                    public Enumeration<URL> answer(InvocationOnMock invocation) {
                         List<URL> messages = new ArrayList<URL>();
                         messages.add(ClassLoader.getSystemResource("bundle_locales/OSGI-INF/l10n/bundle.properties"));
                         messages.add(ClassLoader.getSystemResource("bundle_locales/OSGI-INF/l10n/bundle_a.properties"));

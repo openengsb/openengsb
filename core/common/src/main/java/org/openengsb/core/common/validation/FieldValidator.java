@@ -19,5 +19,5 @@ package org.openengsb.core.common.validation;
 import java.io.Serializable;
 
 public interface FieldValidator extends Serializable {
-    public SingleAttributeValidationResult validate(String validate);
+    SingleAttributeValidationResult validate(String validate);
 }

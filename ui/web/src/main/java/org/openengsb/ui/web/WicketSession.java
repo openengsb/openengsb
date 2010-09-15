@@ -33,6 +33,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+@SuppressWarnings("serial")
 public class WicketSession extends AuthenticatedWebSession {
 
     private String threadContextId;

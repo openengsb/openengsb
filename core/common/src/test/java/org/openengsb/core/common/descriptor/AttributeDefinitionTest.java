@@ -28,7 +28,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.util.BundleStrings;
 import org.openengsb.core.common.validation.FieldValidator;
@@ -141,6 +140,7 @@ public class AttributeDefinitionTest {
 
     @Test
     public void buildWithValidator_shouldReturnSameValidator() {
+        @SuppressWarnings("serial")
         FieldValidator fieldValidator = new FieldValidator() {
             @Override
             public SingleAttributeValidationResult validate(String validate) {

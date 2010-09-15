@@ -65,6 +65,7 @@ public class EditorPanelTest {
     private final AttributeDefinition attribNoDesc = newAttribute("attribNoDesc", "name", "");
     private final AttributeDefinition attribPassword = newAttribute("attrib", "name", "desc");
 
+    @SuppressWarnings("deprecation")
     @Before
     public void setup() {
         attribOption = newAttribute("attribOption", "option", "");
@@ -182,6 +183,7 @@ public class EditorPanelTest {
         testWithValidator(attribPassword);
     }
 
+    @SuppressWarnings("deprecation")
     private void testWithValidator(AttributeDefinition attributeDefinition) {
         attributeDefinition.setValidator(new FailValidator());
         startEditorPanel(attributeDefinition);
@@ -228,6 +230,7 @@ public class EditorPanelTest {
         tester.assertErrorMessages(new String[]{"Validation Error", "Validation Error"});
     }
 
+    @SuppressWarnings({ "unchecked", "deprecation" })
     @Test
     public void addFailFieldValidator_ShouldNotCallFormValidator() {
         AttributeDefinition attrib1 = newAttribute("attrib1", "name1", "desc1");
@@ -248,6 +251,7 @@ public class EditorPanelTest {
         tester.assertModelValue(editor.getId() + ":form:validate", true);
     }
 
+    @SuppressWarnings("deprecation")
     private AttributeDefinition newAttribute(String id, String name, String desc) {
         AttributeDefinition a = new AttributeDefinition();
         a.setId(id);
@@ -290,11 +294,6 @@ public class EditorPanelTest {
 
     private AbstractField getEditorField(String attributeId) {
         return (AbstractField) getEditorFieldFormComponent(attributeId, FormComponent.class).getParent();
-    }
-
-    private void setFormValue(String attributeId, String value) {
-        tester.getServletRequest()
-                .setParameter(getEditorFieldFormComponent(attributeId, FormComponent.class).getInputName(), value);
     }
 
     private static final class FailValidator implements FieldValidator {

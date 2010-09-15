@@ -129,6 +129,7 @@ public class HeaderTemplateTest {
             .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
     }
 
+    @SuppressWarnings("unchecked")
     private void setUpSendEventPage() {
         tester = new WicketTester();
         AnnotApplicationContextMock context = new AnnotApplicationContextMock();

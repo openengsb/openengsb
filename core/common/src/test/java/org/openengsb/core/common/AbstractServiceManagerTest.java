@@ -49,27 +49,28 @@ public class AbstractServiceManagerTest {
     private static class DummyServiceManager extends AbstractServiceManager<DummyDomain, DummyInstance> {
 
         public DummyServiceManager(final DummyInstance instance) {
-            super(new ServiceInstanceFactory<AbstractServiceManagerTest.DummyDomain, AbstractServiceManagerTest.DummyInstance>() {
+            super(
+                    new ServiceInstanceFactory<AbstractServiceManagerTest.DummyDomain, AbstractServiceManagerTest.DummyInstance>() {
 
-                @Override
-                public void updateServiceInstance(DummyInstance instance, Map<String, String> attributes) {
-                }
+                        @Override
+                        public void updateServiceInstance(DummyInstance instance, Map<String, String> attributes) {
+                        }
 
-                @Override
-                public ServiceDescriptor getDescriptor(Builder builder) {
-                    builder.implementationType(DummyInstance.class);
-                    builder.serviceType(DummyDomain.class);
-                    builder.name("abstract.name");
-                    builder.description("abstract.description");
-                    builder.id("DummyServiceManager");
-                    return builder.build();
-                }
+                        @Override
+                        public ServiceDescriptor getDescriptor(Builder builder) {
+                            builder.implementationType(DummyInstance.class);
+                            builder.serviceType(DummyDomain.class);
+                            builder.name("abstract.name");
+                            builder.description("abstract.description");
+                            builder.id("DummyServiceManager");
+                            return builder.build();
+                        }
 
-                @Override
-                public DummyInstance createServiceInstance(String id, Map<String, String> attributes) {
-                    return instance;
-                }
-            });
+                        @Override
+                        public DummyInstance createServiceInstance(String id, Map<String, String> attributes) {
+                            return instance;
+                        }
+                    });
         }
 
         @Override
@@ -109,7 +110,9 @@ public class AbstractServiceManagerTest {
         manager.update("test", attributes);
 
         Hashtable<String, String> props = createVerificationHashmap();
-        Mockito.verify(bundleContextMock).registerService(new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance, props);
+        Mockito.verify(bundleContextMock).registerService(
+                new String[] { DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
+                instance, props);
     }
 
     @Test
@@ -124,7 +127,9 @@ public class AbstractServiceManagerTest {
         manager.update("test", verificationAttributes);
 
         Hashtable<String, String> props = createVerificationHashmap();
-        Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance, props);
+        Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
+                new String[] { DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
+                instance, props);
     }
 
     @Test
@@ -132,7 +137,8 @@ public class AbstractServiceManagerTest {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
         DummyInstance instance = new DummyInstance();
-        ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(bundleContextMock, instance);
+        ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(
+                bundleContextMock, instance);
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
@@ -141,10 +147,14 @@ public class AbstractServiceManagerTest {
         Mockito.verify(serviceRegistrationMock).unregister();
     }
 
-    private ServiceRegistration appendServiceRegistrationMockToBundleContextMock(BundleContext bundleContextMock, DummyInstance mock) {
+    private ServiceRegistration appendServiceRegistrationMockToBundleContextMock(BundleContext bundleContextMock,
+            DummyInstance mock) {
         ServiceRegistration serviceRegistrationMock = Mockito.mock(ServiceRegistration.class);
         Hashtable<String, String> props = createVerificationHashmap();
-        Mockito.when(bundleContextMock.registerService(new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, mock, props)).thenReturn(serviceRegistrationMock);
+        Mockito.when(
+                bundleContextMock.registerService(
+                        new String[] { DummyInstance.class.getName(), DummyDomain.class.getName(),
+                                Domain.class.getName() }, mock, props)).thenReturn(serviceRegistrationMock);
         return serviceRegistrationMock;
     }
 
@@ -207,14 +217,15 @@ public class AbstractServiceManagerTest {
     public void testCheckIfDeletedServiceDoesNotHaveAttributeValues() {
         expected.expect(IllegalArgumentException.class);
         expected.expectMessage("does not exist");
-        
+
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("id", "test");
         attributes.put("attribute2", "atr2");
 
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         DummyInstance instance = new DummyInstance();
-        ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(bundleContextMock, instance);
+        ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(
+                bundleContextMock, instance);
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);

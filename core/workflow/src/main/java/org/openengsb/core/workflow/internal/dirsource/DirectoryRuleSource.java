@@ -109,16 +109,16 @@ public class DirectoryRuleSource extends AbstractRuleManager {
     @Override
     protected ResourceHandler<?> getRessourceHandler(RuleBaseElementType e) {
         switch (e) {
-        case Rule:
-            return new DirectoryRuleHandler(this);
-        case Import:
-            return new DirectoryImportHandler(this);
-        case Function:
-            return new DirectoryFunctionHandler(this);
-        case Global:
-            return new DirectoryGlobalHandler(this);
-        default:
-            throw new UnsupportedOperationException("operation not implemented for type " + e);
+            case Rule:
+                return new DirectoryRuleHandler(this);
+            case Import:
+                return new DirectoryImportHandler(this);
+            case Function:
+                return new DirectoryFunctionHandler(this);
+            case Global:
+                return new DirectoryGlobalHandler(this);
+            default:
+                throw new UnsupportedOperationException("operation not implemented for type " + e);
         }
     }
 
@@ -282,16 +282,17 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     public File getFilePath(RuleBaseElementId id) {
         switch (id.getType()) {
-        case Import:
-            return new File(this.path, IMPORTS_FILENAME);
-        case Global:
-            return new File(this.path, GLOBALS_FILENAME);
-        case Function:
-            return new File(this.path, getPathName(id) + FUNC_EXTENSION);
-        case Rule:
-            return new File(this.path, getPathName(id) + RULE_EXTENSION);
+            case Import:
+                return new File(this.path, IMPORTS_FILENAME);
+            case Global:
+                return new File(this.path, GLOBALS_FILENAME);
+            case Function:
+                return new File(this.path, getPathName(id) + FUNC_EXTENSION);
+            case Rule:
+                return new File(this.path, getPathName(id) + RULE_EXTENSION);
+            default:
+                return null;
         }
-        return null;
     }
 
     private String getPathName(RuleBaseElementId id) {

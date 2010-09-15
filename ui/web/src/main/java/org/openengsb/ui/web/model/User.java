@@ -18,6 +18,7 @@ package org.openengsb.ui.web.model;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class User implements Serializable {
     private String username;
     private String password;

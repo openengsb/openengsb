@@ -48,6 +48,7 @@ public class EditorPageTest {
 
 
     @Before
+    @SuppressWarnings("deprecation")
     public void setup() {
         tester = new WicketTester();
         manager = mock(ServiceManager.class);
@@ -78,6 +79,7 @@ public class EditorPageTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testIfValuesOfAttributesAreShown() {
 
         Map<String, String> attributes = new HashMap<String, String>();
@@ -87,19 +89,21 @@ public class EditorPageTest {
         EditorPage page = new EditorPage(manager, "a");
         tester.startPage(page);
         tester.debugComponentTrees();
-        TextField idField = (TextField) tester.getComponentFromLastRenderedPage("editor:form:fields:id:row:field");
+        TextField<String> idField = (TextField<String>) tester
+                .getComponentFromLastRenderedPage("editor:form:fields:id:row:field");
         assertThat(page.getEditorPanel().getAttributes().size(), is(2));
         assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("id"));
         Assert.assertEquals("id1", idField.getDefaultModel().getObject());
     }
 
+    @SuppressWarnings({ "unchecked", "serial" })
     public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("a", "validation.service.not");
         when(manager.updateWithValidation(Mockito.anyString(), Mockito.anyMap())).thenReturn(
                 new MultipleAttributeValidationResultImpl(false, errorMessages));
         WicketTester tester = new WicketTester();
-        EditorPage page = (EditorPage) tester.startPage(new ITestPageSource() {
+        tester.startPage(new ITestPageSource() {
             @Override
             public Page getTestPage() {
                 return new EditorPage(manager);
@@ -113,13 +117,14 @@ public class EditorPageTest {
     }
 
     @Test
+    @SuppressWarnings({ "unchecked", "serial" })
     public void uncheckValidationCheckbox_shouldBypassValidation() {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("a", "validation.service.not");
         when(manager.updateWithValidation(Mockito.anyString(), Mockito.anyMap())).thenReturn(
                 new MultipleAttributeValidationResultImpl(false, errorMessages));
         WicketTester tester = new WicketTester();
-        EditorPage page = (EditorPage) tester.startPage(new ITestPageSource() {
+        tester.startPage(new ITestPageSource() {
             @Override
             public Page getTestPage() {
                 return new EditorPage(manager);

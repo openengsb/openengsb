@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("serial")
 public class DefaultPassingFormValidator implements FormValidator {
     @Override
     public MultipleAttributeValidationResult validate(Map<String, String> attributes) {

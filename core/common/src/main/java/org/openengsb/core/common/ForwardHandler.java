@@ -17,6 +17,7 @@
 package org.openengsb.core.common;
 
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.commons.logging.Log;
@@ -41,14 +42,16 @@ public class ForwardHandler implements InvocationHandler {
     private String domainName;
 
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args) throws IllegalAccessException,
+            InvocationTargetException {
         log.info("Forwarding invocation to default connector");
         String connectorId = context.getValue("/domains/" + domainName + "/defaultConnector/id");
         log.debug(format("Default connector for %s is %s", domainName, connectorId));
         ServiceReference serviceRef = getServiceRef(connectorId);
         Object service = bundleContext.getService(serviceRef);
         log.debug("invoking method on serviceObject " + service);
-        Object result = method.invoke(service, args);
+        Object result;
+        result = method.invoke(service, args);
         bundleContext.ungetService(serviceRef);
         return result;
     }

@@ -29,15 +29,13 @@ import org.osgi.framework.ServiceRegistration;
 import org.springframework.osgi.context.BundleContextAware;
 
 /**
- * Base class for {@link ServiceManager} implementations. Handles all OSGi
- * related stuff and exporting the right service properties that are needed for
- * service discovery.
- *
- * All service-specific action, like descriptor building, service instantiation
- * and service updating are encapsulated in a {@link ServiceInstanceFactory}.
- * Creating a new service manager should be as simple as implementing the
+ * Base class for {@link ServiceManager} implementations. Handles all OSGi related stuff and exporting the right service
+ * properties that are needed for service discovery.
+ * 
+ * All service-specific action, like descriptor building, service instantiation and service updating are encapsulated in
+ * a {@link ServiceInstanceFactory}. Creating a new service manager should be as simple as implementing the
  * {@link ServiceInstanceFactory} and creating a subclass of this class:
- *
+ * 
  * <pre>
  * public class ExampleServiceManager extends AbstractServiceManager&lt;ExampleDomain, TheInstanceType&gt; {
  *     public ExampleServiceManager(ServiceInstanceFactory&lt;ExampleDomain, TheInstanceType&gt; factory) {
@@ -45,18 +43,18 @@ import org.springframework.osgi.context.BundleContextAware;
  *     }
  * }
  * </pre>
- *
+ * 
  * @param <DomainType> interface of the domain this service manages
  * @param <InstanceType> actual service implementation this service manages
  */
 public abstract class AbstractServiceManager<DomainType extends Domain, InstanceType extends DomainType> implements
         ServiceManager, BundleContextAware {
 
-    private class DomainRepresentation {
+    private final class DomainRepresentation {
         private final InstanceType service;
         private final ServiceRegistration registration;
 
-        public DomainRepresentation(InstanceType service, ServiceRegistration registration) {
+        private DomainRepresentation(InstanceType service, ServiceRegistration registration) {
             this.service = service;
             this.registration = registration;
         }
@@ -66,7 +64,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     private BundleStrings strings;
     private final Map<String, DomainRepresentation> services = new HashMap<String, DomainRepresentation>();
     private final ServiceInstanceFactory<DomainType, InstanceType> factory;
-    private final Map<String, Map<String,String>> attributeValues = new HashMap<String, Map<String, String>>();
+    private final Map<String, Map<String, String>> attributeValues = new HashMap<String, Map<String, String>>();
 
     public AbstractServiceManager(ServiceInstanceFactory<DomainType, InstanceType> factory) {
         this.factory = factory;

@@ -29,7 +29,7 @@ import com.google.common.base.Preconditions;
 
 public class ContextServiceImpl implements ContextCurrentService, ContextService {
 
-    ThreadLocal<String> currentContext = new ThreadLocal<String>();
+    private ThreadLocal<String> currentContext = new ThreadLocal<String>();
     private final Context rootContext = new ContextImpl();
     private ThreadLocal<String> currentContextId = new ThreadLocal<String>();
 
@@ -44,7 +44,11 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
     public String getValue(String pathAndKey) {
         String[] split = splitPath(pathAndKey);
         Context context = getContext(split[0]);
-        return context != null ? context.get(split[1]) : null;
+        if (context != null) {
+            return context.get(split[1]);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -120,6 +124,6 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
 
     @Override
     public String getCurrentContextId() {
-      return currentContextId.get();
+        return currentContextId.get();
     }
 }

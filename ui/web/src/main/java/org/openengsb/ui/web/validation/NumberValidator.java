@@ -23,6 +23,7 @@ import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.core.common.validation.ValidationResultImpl;
 
+@SuppressWarnings("serial")
 public class NumberValidator implements FieldValidator {
 
     @Override

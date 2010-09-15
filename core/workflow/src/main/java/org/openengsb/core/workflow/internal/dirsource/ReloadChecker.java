@@ -25,9 +25,9 @@ import org.openengsb.core.workflow.RuleBaseException;
 
 public class ReloadChecker extends TimerTask {
 
-	private Log log = LogFactory.getLog(getClass());
-    protected File file;
-    protected DirectoryRuleSource ruleSource;
+    private Log log = LogFactory.getLog(getClass());
+    private File file;
+    private DirectoryRuleSource ruleSource;
 
     public ReloadChecker(File file, DirectoryRuleSource ruleSource) {
         super();
@@ -38,15 +38,16 @@ public class ReloadChecker extends TimerTask {
     @Override
     public void run() {
         if (file.exists()) {
-        	log.info("Find rulebase file. Forcing rulebase to reload");
+            log.info("Find rulebase file. Forcing rulebase to reload");
             try {
                 ruleSource.readRuleBase();
                 log.info("Rulebase reloaded successfully.");
             } catch (RuleBaseException e) {
-                log.error("Reload of rulebase is not possible. Please correct the error and recreate the reload file.",e);
-            }finally {
-            	log.info("Attempt to reload rulebase finished. Remvoing rulebase reload file.");
-            	file.delete();
+                log.error("Reload of rulebase is not possible. Please correct the error and recreate the reload file.",
+                        e);
+            } finally {
+                log.info("Attempt to reload rulebase finished. Remvoing rulebase reload file.");
+                file.delete();
             }
         }
         log.trace("Rulebase reload file does not exist.");
