@@ -24,7 +24,7 @@
     <relativePath>../poms/compiled/</relativePath>
     <groupId>org.openengsb.build</groupId>
     <artifactId>compiled-bundle-settings</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.M3</version>
   </parent>
   
   <groupId>org.openengsb</groupId>
