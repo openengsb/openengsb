@@ -11,6 +11,7 @@ eclipse-workspace
 *.settings
 *bin
 *.springBeans
+*.checkstyle
 
 #=================
 #intellij-project
