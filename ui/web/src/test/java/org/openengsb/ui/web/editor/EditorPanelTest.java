@@ -122,8 +122,8 @@ public class EditorPanelTest {
     @Test
     public void choicesInDropDownChoice_shouldBeInSameOrderAsOptionAttribute() {
         startEditorPanel(attribOption);
-        @SuppressWarnings("unchecked")
-        List<String> choice = getEditorFieldFormComponent(attribOption.getId(), DropDownChoice.class).getChoices();
+        @SuppressWarnings("unchecked") List<String> choice =
+                getEditorFieldFormComponent(attribOption.getId(), DropDownChoice.class).getChoices();
         for (int i = 0; i < attribOption.getOptions().size(); ++i) {
             assertThat(choice.get(i), is(attribOption.getOptions().get(i).getValue()));
         }
@@ -164,7 +164,7 @@ public class EditorPanelTest {
         String buildFormComponentId = buildFormComponentId(attrib.getId());
         formTester.setValue(buildFormComponentId, "A");
         tester.executeAjaxEvent(editor.getId() + ":form:" + buildFormComponentId, "onBlur");
-        tester.assertErrorMessages(new String[] { "Number formating Error" });
+        tester.assertErrorMessages(new String[]{"Number formating Error"});
     }
 
     @Test
@@ -189,7 +189,7 @@ public class EditorPanelTest {
         String buildFormComponentId = buildFormComponentId(attributeDefinition.getId());
         formTester.setValue(buildFormComponentId, "1");
         tester.executeAjaxEvent(editor.getId() + ":form:" + buildFormComponentId, "onBlur");
-        tester.assertErrorMessages(new String[] { "Validation Error" });
+        tester.assertErrorMessages(new String[]{"Validation Error"});
     }
 
     @Test
@@ -205,7 +205,7 @@ public class EditorPanelTest {
                 Assert.assertEquals("attrib2", arrayList.get(1));
                 Assert.assertEquals("a", attributes.get(arrayList.get(0)));
                 Assert.assertEquals("b", attributes.get(arrayList.get(1)));
-                
+
                 Map<String, String> errorMessages = new HashMap<String, String>();
                 for (String key : arrayList) {
                     errorMessages.put(key, "validation.not");
@@ -215,7 +215,7 @@ public class EditorPanelTest {
 
             @Override
             public List<String> fieldsToValidate() {
-                return Arrays.asList(new String[] {"attrib1", "attrib2"});
+                return Arrays.asList(new String[]{"attrib1", "attrib2"});
             }
         };
         startEditorPanel(validator, attrib1, attrib2);
@@ -225,15 +225,15 @@ public class EditorPanelTest {
         formTester.setValue(component1Id, "a");
         formTester.setValue(component2Id, "b");
         tester.executeAjaxEvent(editor.getId() + ":form:" + component1Id, "onBlur");
-        tester.assertErrorMessages(new String[] { "Validation Error", "Validation Error" });
-    } 
-    
+        tester.assertErrorMessages(new String[]{"Validation Error", "Validation Error"});
+    }
+
     @Test
     public void addFailFieldValidator_ShouldNotCallFormValidator() {
         AttributeDefinition attrib1 = newAttribute("attrib1", "name1", "desc1");
         attrib1.setValidator(new FailValidator());
         FormValidator mock = Mockito.mock(FormValidator.class);
-        Mockito.when(mock.fieldsToValidate()).thenReturn(Arrays.asList(new String[] {"attrib1"}));
+        Mockito.when(mock.fieldsToValidate()).thenReturn(Arrays.asList(new String[]{"attrib1"}));
         startEditorPanel(mock, attrib1);
         FormTester formTester = tester.newFormTester(editor.getId() + ":form");
         String component1Id = buildFormComponentId(attrib1.getId());
@@ -241,7 +241,7 @@ public class EditorPanelTest {
         tester.executeAjaxEvent(editor.getId() + ":form:" + component1Id, "onBlur");
         Mockito.verify(mock, Mockito.never()).validate(Mockito.anyMap());
     }
-    
+
     @Test
     public void startEditorPanel_ShouldHaveCheckedValidateCheckbox() {
         startEditorPanel(attrib);
@@ -293,8 +293,8 @@ public class EditorPanelTest {
     }
 
     private void setFormValue(String attributeId, String value) {
-        tester.getServletRequest().setParameter(
-                getEditorFieldFormComponent(attributeId, FormComponent.class).getInputName(), value);
+        tester.getServletRequest()
+                .setParameter(getEditorFieldFormComponent(attributeId, FormComponent.class).getInputName(), value);
     }
 
     private static final class FailValidator implements FieldValidator {

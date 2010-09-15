@@ -16,13 +16,12 @@
 
 package org.openengsb.ui.web;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
 import org.openengsb.core.common.Domain;
+
+import java.lang.reflect.Method;
+import java.util.List;
 
 public class MethodUtilTest {
 
@@ -31,7 +30,7 @@ public class MethodUtilTest {
     }
 
     public interface Testinterface extends Domain {
-        public void dosomething();
+        void dosomething();
     }
 
     public class TestClass implements Testinterface, HiddenInterface {
@@ -64,7 +63,7 @@ public class MethodUtilTest {
     }
 
     public interface TestInterface2 extends Domain {
-        public void dootherstuff();
+        void dootherstuff();
     }
 
     public class MultiClass implements Testinterface, TestInterface2 {

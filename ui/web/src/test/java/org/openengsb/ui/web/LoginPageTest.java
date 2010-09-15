@@ -16,17 +16,6 @@
 
 package org.openengsb.ui.web;
 
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -46,6 +35,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class LoginPageTest {
 
@@ -72,7 +72,7 @@ public class LoginPageTest {
         DomainService managedServicesMock = mock(DomainService.class);
         when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
             @Override
-            public List<ServiceReference> answer(InvocationOnMock invocation) throws Throwable {
+            public List<ServiceReference> answer(InvocationOnMock invocation) {
                 return Collections.emptyList();
             }
         });
@@ -86,11 +86,11 @@ public class LoginPageTest {
         authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
         when(authManager.authenticate(any(Authentication.class))).thenAnswer(new Answer<Authentication>() {
             @Override
-            public Authentication answer(InvocationOnMock invocation) throws Throwable {
+            public Authentication answer(InvocationOnMock invocation) {
                 Authentication auth = (Authentication) invocation.getArguments()[0];
                 if (auth.getCredentials().equals("password")) {
                     return new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(),
-                            authorities);
+                        authorities);
                 }
                 throw new BadCredentialsException("wrong password");
             }

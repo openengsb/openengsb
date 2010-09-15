@@ -108,7 +108,7 @@ public class EditorPageTest {
         FormTester formTester = tester.newFormTester("editor:form");
         formTester.setValue("fields:id:row:field", "someValue");
         formTester.submit();
-        tester.assertErrorMessages(new String[] { "Service Validation Error" });
+        tester.assertErrorMessages(new String[]{"Service Validation Error"});
         tester.assertRenderedPage(EditorPage.class);
     }
 
@@ -129,8 +129,8 @@ public class EditorPageTest {
         formTester.setValue("fields:id:row:field", "someValue");
         formTester.setValue("validate", false);
         formTester.submit();
-        tester.assertErrorMessages(new String[] {});
-        tester.assertInfoMessages(new String[] { "Service can be added" });
+        tester.assertErrorMessages(new String[]{});
+        tester.assertInfoMessages(new String[]{"Service can be added"});
         Mockito.verify(manager).update(Mockito.anyString(), Mockito.anyMap());
         Mockito.verify(manager, Mockito.never()).updateWithValidation(Mockito.anyString(), Mockito.anyMap());
     }

@@ -16,12 +16,6 @@
 
 package org.openengsb.ui.web.editor;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -38,8 +32,8 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.validation.FieldValidator;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.FormValidator;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.ui.web.editor.fields.AbstractField;
 import org.openengsb.ui.web.editor.fields.CheckboxField;
@@ -48,6 +42,11 @@ import org.openengsb.ui.web.editor.fields.InputField;
 import org.openengsb.ui.web.editor.fields.PasswordField;
 import org.openengsb.ui.web.model.MapModel;
 import org.openengsb.ui.web.validation.DefaultPassingFormValidator;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class EditorPanel extends Panel {
@@ -61,7 +60,7 @@ public class EditorPanel extends Panel {
     }
 
     public EditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values,
-            FormValidator validator) {
+                       FormValidator validator) {
         super(id);
         this.attributes = attributes;
         this.values = values;

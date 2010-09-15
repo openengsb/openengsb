@@ -34,10 +34,7 @@ package org.openengsb.ui.web.global.header;
  */
 
 import junit.framework.Assert;
-import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
 import org.apache.wicket.spring.test.ApplicationContextMock;
@@ -49,12 +46,9 @@ import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowService;
-import org.openengsb.ui.web.ContextSetPage;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.TestClient;
-import org.openengsb.ui.web.editor.EditorPanel;
-import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.web.global.footer.ImprintPage;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.BundleContext;
@@ -131,15 +125,15 @@ public class HeaderTemplateTest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(
-                new SpringComponentInjector(tester.getApplication(), context, true));
+        tester.getApplication()
+            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
     }
 
     private void setUpSendEventPage() {
         tester = new WicketTester();
         AnnotApplicationContextMock context = new AnnotApplicationContextMock();
-        tester.getApplication().addComponentInstantiationListener(
-                new SpringComponentInjector(tester.getApplication(), context, false));
+        tester.getApplication()
+            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, false));
         WorkflowService eventService = mock(WorkflowService.class);
         context.putBean("eventService", eventService);
         context.putBean("domainService", mock(DomainService.class));
@@ -152,17 +146,18 @@ public class HeaderTemplateTest {
         tester.startPage(Index.class);
 
     }
+
     static class Dummy extends Event {
 
-           private String testProperty;
+        private String testProperty;
 
-           public String getTestProperty() {
-               return testProperty;
-           }
+        public String getTestProperty() {
+            return testProperty;
+        }
 
-           public void setTestProperty(String testProperty) {
-               this.testProperty = testProperty;
-           }
-       }
-    
+        public void setTestProperty(String testProperty) {
+            this.testProperty = testProperty;
+        }
+    }
+
 }

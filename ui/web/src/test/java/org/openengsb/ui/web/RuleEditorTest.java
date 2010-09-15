@@ -16,24 +16,7 @@
 
 package org.openengsb.ui.web;
 
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.*;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -52,6 +35,23 @@ import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.anyObject;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class RuleEditorTest {
     private WicketTester tester;
     private RuleManager ruleManager;
@@ -65,11 +65,11 @@ public class RuleEditorTest {
         appContext.putBean(contextService);
         ruleManager = mock(RuleManager.class);
         appContext.putBean(ruleManager);
-        tester.getApplication().addComponentInstantiationListener(
-                new SpringComponentInjector(tester.getApplication(), appContext, false));
+        tester.getApplication()
+            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), appContext, false));
         ruleBaseElementId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test1");
-        Collection<RuleBaseElementId> rules = Arrays.asList(ruleBaseElementId, new RuleBaseElementId(
-                RuleBaseElementType.Rule, "org.opentest", "test2"));
+        Collection<RuleBaseElementId> rules = Arrays
+            .asList(ruleBaseElementId, new RuleBaseElementId(RuleBaseElementType.Rule, "org.opentest", "test2"));
         when(ruleManager.list(RuleBaseElementType.Rule)).thenReturn(rules);
         when(ruleManager.get(ruleBaseElementId)).thenReturn("testsource");
         tester.startPage(RuleEditorPage.class);
@@ -95,12 +95,12 @@ public class RuleEditorTest {
         tester.assertComponent("ruleEditor:form:text", TextArea.class);
 
         DropDownChoice<RuleBaseElementId> typeDropDown = (DropDownChoice<RuleBaseElementId>) tester
-                .getComponentFromLastRenderedPage("ruleEditor:form:typeChoice");
+            .getComponentFromLastRenderedPage("ruleEditor:form:typeChoice");
         assertEquals(RuleBaseElementType.Rule, typeDropDown.getModelObject());
         tester.assertComponent("ruleEditor:form:ruleChoice", DropDownChoice.class);
 
         DropDownChoice<RuleBaseElementId> ruleDropDown = (DropDownChoice<RuleBaseElementId>) tester
-                .getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice");
+            .getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice");
         assertNotNull(ruleDropDown.getModel());
         assertThat(ruleDropDown.getModelObject(), nullValue());
 
@@ -128,11 +128,11 @@ public class RuleEditorTest {
         tester.executeAjaxEvent("ruleEditor:form:typeChoice", "onchange");
 
         DropDownChoice<RuleBaseElementId> typeDropDown = (DropDownChoice<RuleBaseElementId>) tester
-                .getComponentFromLastRenderedPage("ruleEditor:form:typeChoice");
+            .getComponentFromLastRenderedPage("ruleEditor:form:typeChoice");
         assertEquals(RuleBaseElementType.Function, typeDropDown.getModelObject());
 
         DropDownChoice<RuleBaseElementId> ruleDropDown = (DropDownChoice<RuleBaseElementId>) tester
-                .getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice");
+            .getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice");
         assertNotNull(ruleDropDown.getModel());
         assertThat(ruleDropDown.getModelObject(), nullValue());
 
@@ -191,15 +191,15 @@ public class RuleEditorTest {
     @SuppressWarnings("unchecked")
     public void testSubmitChanges_withErrors() throws Exception {
         doThrow(new RuleBaseException("error")).when(ruleManager).update((RuleBaseElementId) anyObject(), anyString());
-        
+
         enterText();
         tester.executeAjaxEvent("ruleEditor:form:save", "onclick");
 
-        verify(ruleManager,times(1)).update(ruleBaseElementId, "modified source");
+        verify(ruleManager, times(1)).update(ruleBaseElementId, "modified source");
         TextArea<String> textArea = (TextArea<String>) tester.getComponentFromLastRenderedPage("ruleEditor:form:text");
         assertTrue(textArea.isEnabled());
         assertEquals("modified source", textArea.getModelObject());
-        tester.assertErrorMessages(new String[] { "error" });
+        tester.assertErrorMessages(new String[]{"error"});
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
 
@@ -228,7 +228,7 @@ public class RuleEditorTest {
     public void testCreateNewRule() throws Exception {
         tester.executeAjaxEvent("ruleEditor:form:new", "onclick");
         TextField<String> rulename = ((TextField<String>) tester
-                .getComponentFromLastRenderedPage("ruleEditor:form:ruleName"));
+            .getComponentFromLastRenderedPage("ruleEditor:form:ruleName"));
         assertEquals("rulename", rulename.getModelObject());
         assertTrue(rulename.isVisible());
 
@@ -248,23 +248,22 @@ public class RuleEditorTest {
         assertTrue(tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice").isVisible());
         tester.assertComponent("ruleEditor:form:ruleChoice", DropDownChoice.class);
 
-        assertEquals(RuleBaseElementType.Rule,
-                ((DropDownChoice<RuleBaseElementType>) tester
-                        .getComponentFromLastRenderedPage("ruleEditor:form:typeChoice")).getDefaultModelObject());
+        assertEquals(RuleBaseElementType.Rule, ((DropDownChoice<RuleBaseElementType>) tester
+            .getComponentFromLastRenderedPage("ruleEditor:form:typeChoice")).getDefaultModelObject());
         RuleBaseElementId ruleBaseElementId = new RuleBaseElementId(RuleBaseElementType.Rule, "rulename");
         verify(ruleManager).add(ruleBaseElementId, "new rule source");
         verify(ruleManager, times(2)).list(RuleBaseElementType.Rule);
-        assertEquals(ruleBaseElementId, tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice")
-                .getDefaultModelObject());
+        assertEquals(ruleBaseElementId,
+            tester.getComponentFromLastRenderedPage("ruleEditor:form:ruleChoice").getDefaultModelObject());
     }
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public void testSubmitNew_withErrors() throws Exception {
         doThrow(new RuleBaseException("error")).when(ruleManager).add((RuleBaseElementId) anyObject(), anyString());
         tester.executeAjaxEvent("ruleEditor:form:new", "onclick");
         TextField<String> rulename = ((TextField<String>) tester
-                .getComponentFromLastRenderedPage("ruleEditor:form:ruleName"));
+            .getComponentFromLastRenderedPage("ruleEditor:form:ruleName"));
         assertEquals("rulename", rulename.getModelObject());
         assertTrue(rulename.isVisible());
 
@@ -279,11 +278,12 @@ public class RuleEditorTest {
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:new").isEnabled());
         tester.executeAjaxEvent("ruleEditor:form:save", "onclick");
 
-        verify(ruleManager,times(1)).add(new RuleBaseElementId(RuleBaseElementType.Rule, "rulename"), "new rule source");
+        verify(ruleManager, times(1))
+            .add(new RuleBaseElementId(RuleBaseElementType.Rule, "rulename"), "new rule source");
         textArea = (TextArea<String>) tester.getComponentFromLastRenderedPage("ruleEditor:form:text");
         assertTrue(textArea.isEnabled());
         assertEquals("new rule source", textArea.getModelObject());
-        tester.assertErrorMessages(new String[] { "error" });
+        tester.assertErrorMessages(new String[]{"error"});
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
 

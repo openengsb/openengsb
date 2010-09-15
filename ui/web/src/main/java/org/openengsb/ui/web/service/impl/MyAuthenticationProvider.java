@@ -18,7 +18,6 @@ package org.openengsb.ui.web.service.impl;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,13 +28,12 @@ public class MyAuthenticationProvider extends AbstractUserDetailsAuthenticationP
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails,
-            UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+                                                  UsernamePasswordAuthenticationToken authentication) {
         return;
     }
 
     @Override
-    protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
-            throws AuthenticationException {
+    protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) {
         UserDetails result = service.loadUserByUsername(username);
         if (result == null) {
             throw new UsernameNotFoundException("user not found");

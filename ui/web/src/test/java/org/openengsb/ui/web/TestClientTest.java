@@ -53,7 +53,11 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -73,8 +77,8 @@ public class TestClientTest {
 
     public class TestService implements TestInterface {
 
-        public boolean called = false;
-        public TestBean test;
+        private boolean called = false;
+        private TestBean test;
 
         @Override
         public void update(String id, String name) {
@@ -141,7 +145,8 @@ public class TestClientTest {
 
         expandServiceListTree();
         for (int index = 2; index < expected.size() + 2; index++) {
-            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink", AjaxLink.class);
+            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
+                AjaxLink.class);
         }
     }
 
@@ -157,7 +162,8 @@ public class TestClientTest {
         setupAndStartTestClientPage();
         setServiceInDropDown(0);
 
-        @SuppressWarnings("unchecked") Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
+        @SuppressWarnings("unchecked") Form<MethodCall> form = (Form<MethodCall>) tester
+            .getComponentFromLastRenderedPage("methodCallForm");
         MethodCall modelObject = form.getModelObject();
         ServiceId reference = new ServiceId(TestService.class.getName(), "test");
 
@@ -173,7 +179,8 @@ public class TestClientTest {
     @Test
     public void testShowMethodListInDropDown() throws Exception {
         setupAndStartTestClientPage();
-        @SuppressWarnings("unchecked") DropDownChoice<MethodId> methodList = (DropDownChoice<MethodId>) tester.getComponentFromLastRenderedPage("methodCallForm:methodList");
+        @SuppressWarnings("unchecked") DropDownChoice<MethodId> methodList = (DropDownChoice<MethodId>) tester
+            .getComponentFromLastRenderedPage("methodCallForm:methodList");
 
         setServiceInDropDown(0);
 
@@ -189,7 +196,8 @@ public class TestClientTest {
     public void testCreateArgumentList() throws Exception {
         setupAndStartTestClientPage();
 
-        Component argList = tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        Component argList = tester
+            .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         Assert.assertNotNull(argList);
     }
@@ -197,7 +205,8 @@ public class TestClientTest {
     @Test
     public void testCreateTextFieldsFor2StringArguments() throws Exception {
         setupAndStartTestClientPage();
-        RepeatingView argList = (RepeatingView) tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        RepeatingView argList = (RepeatingView) tester
+            .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
@@ -217,7 +226,8 @@ public class TestClientTest {
     @Test
     public void testCreateTextFieldsForBean() throws Exception {
         setupAndStartTestClientPage();
-        RepeatingView argList = (RepeatingView) tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        RepeatingView argList = (RepeatingView) tester
+            .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(0);
         setMethodInDropDown(1);
@@ -232,7 +242,8 @@ public class TestClientTest {
     @Test
     public void testPerformMethodCall() throws Exception {
         setupAndStartTestClientPage();
-        RepeatingView argList = (RepeatingView) tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        RepeatingView argList = (RepeatingView) tester
+            .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
@@ -266,13 +277,15 @@ public class TestClientTest {
             expandServiceListTree();
         }
         tester.clickLink("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink", true);
-        tester.executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink", "onclick");
+        tester
+            .executeAjaxEvent("methodCallForm:serviceList:i:" + (index + 2) + ":nodeComponent:contentLink", "onclick");
     }
 
     @Test
     public void testSelectMethodTwice() throws Exception {
         setupAndStartTestClientPage();
-        RepeatingView argList = (RepeatingView) tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        RepeatingView argList = (RepeatingView) tester
+            .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
@@ -292,7 +305,8 @@ public class TestClientTest {
         formTester.setValue("argumentListContainer:argumentList:arg1:value", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
-        RepeatingView argList = (RepeatingView) tester.getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        RepeatingView argList = (RepeatingView) tester
+            .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
         Assert.assertEquals(0, argList.size());
     }
 
@@ -313,7 +327,7 @@ public class TestClientTest {
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
-        tester.assertInfoMessages(new String[]{"Methodcall called successfully",});
+        tester.assertInfoMessages(new String[]{"Methodcall called successfully"});
         Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
         Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
     }
@@ -336,7 +350,8 @@ public class TestClientTest {
         setupAndStartTestClientPage();
 
         Button button = (Button) tester.getComponentFromLastRenderedPage("methodCallForm:submitButton");
-        String buttonValue = tester.getApplication().getResourceSettings().getLocalizer().getString("form.call", button);
+        String buttonValue = tester.getApplication().getResourceSettings().getLocalizer()
+            .getString("form.call", button);
         Assert.assertEquals(buttonValue, button.getValue());
     }
 
@@ -349,7 +364,7 @@ public class TestClientTest {
         managedServicesMock = mock(DomainService.class);
         when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
             @Override
-            public List<ServiceReference> answer(InvocationOnMock invocation) throws Throwable {
+            public List<ServiceReference> answer(InvocationOnMock invocation) {
                 return expected;
             }
         });
@@ -357,7 +372,7 @@ public class TestClientTest {
         when(domainProviderMock.getName()).thenReturn("testDomain");
         when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
-            public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
+            public Class<? extends Domain> answer(InvocationOnMock invocation) {
                 return TestInterface.class;
             }
         });
@@ -365,7 +380,7 @@ public class TestClientTest {
         expectedProviders.add(domainProviderMock);
         when(managedServicesMock.domains()).thenAnswer(new Answer<List<DomainProvider>>() {
             @Override
-            public List<DomainProvider> answer(InvocationOnMock invocation) throws Throwable {
+            public List<DomainProvider> answer(InvocationOnMock invocation) {
                 return expectedProviders;
             }
         });
@@ -381,7 +396,7 @@ public class TestClientTest {
         Mockito.when(serviceDescriptorMock.getName()).thenReturn("service.name");
         Mockito.when(serviceDescriptorMock.getDescription()).thenReturn("service.description");
         Mockito.when(serviceManagerMock.getDescriptor(Mockito.<Locale>any())).thenReturn(serviceDescriptorMock);
-        
+
 
         testService = new TestService();
         when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
@@ -401,7 +416,8 @@ public class TestClientTest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
+        tester.getApplication()
+            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
     }
 
     @Test
@@ -421,7 +437,8 @@ public class TestClientTest {
         expandServiceListTree();
         tester.debugComponentTrees();
         for (int index = 2; index < expected.size() + 2; index++) {
-            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink", AjaxLink.class);
+            tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
+                AjaxLink.class);
         }
         tester.assertComponent("methodCallForm:editButton", AjaxButton.class);
         AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");

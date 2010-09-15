@@ -25,7 +25,8 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 @SuppressWarnings("serial")
 public class PasswordField extends AbstractField {
 
-    public PasswordField(String id, IModel<String> model, AttributeDefinition attribute, IValidator fieldValidationValidator) {
+    public PasswordField(String id, IModel<String> model, AttributeDefinition attribute,
+                         IValidator fieldValidationValidator) {
         super(id, model, attribute, fieldValidationValidator);
     }
 

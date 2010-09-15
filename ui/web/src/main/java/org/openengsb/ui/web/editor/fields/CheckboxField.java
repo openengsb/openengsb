@@ -26,7 +26,8 @@ import org.openengsb.ui.web.model.BoolToStringModel;
 @SuppressWarnings("serial")
 public class CheckboxField extends AbstractField {
 
-    public CheckboxField(String id, IModel<String> model, AttributeDefinition attribute, IValidator fieldValidationValidator) {
+    public CheckboxField(String id, IModel<String> model, AttributeDefinition attribute,
+                         IValidator fieldValidationValidator) {
         super(id, model, attribute, fieldValidationValidator);
     }
 

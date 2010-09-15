@@ -16,11 +16,6 @@
 
 package org.openengsb.ui.web.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.Domain;
@@ -31,12 +26,17 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public class OsgiDomainService implements DomainService {
 
     private List<DomainProvider> domains;
     private final BundleContext bundleContext;
 
-    Log log = LogFactory.getLog(OsgiDomainService.class);
+    private Log log = LogFactory.getLog(OsgiDomainService.class);
 
     public OsgiDomainService(BundleContext bundleContext) {
         this.bundleContext = bundleContext;

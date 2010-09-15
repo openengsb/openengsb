@@ -16,20 +16,6 @@
 
 package org.openengsb.ui.web;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
 import org.apache.wicket.markup.html.basic.Label;
@@ -41,7 +27,6 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.Domain;
@@ -50,6 +35,19 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.internal.ContextImpl;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class ContextSetPageTest {
 
@@ -65,11 +63,12 @@ public class ContextSetPageTest {
         AnnotApplicationContextMock appContext = new AnnotApplicationContextMock();
         appContext.putBean(contextService);
         appContext.putBean(domainService);
-        tester.getApplication().addComponentInstantiationListener(
-                new SpringComponentInjector(tester.getApplication(), appContext, false));
+        tester.getApplication()
+            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), appContext, false));
         ContextImpl context = new ContextImpl();
         context.createChild("a").createChild("b").createChild("c").put("d", "e");
-        context.createChild("domains").createChild("domains.example").createChild("defaultConnector").put("id", "blabla");
+        context.createChild("domains").createChild("domains.example").createChild("defaultConnector")
+            .put("id", "blabla");
         when(contextService.getContext()).thenReturn(context);
         when(contextService.getValue("/a/b/c/d")).thenReturn("e");
         when(contextService.getValue("/domains/domains.example/defaultConnector/id")).thenReturn("blabla");
@@ -166,7 +165,7 @@ public class ContextSetPageTest {
         when(domainProvider.getId()).thenReturn("domains.example");
         when(domainProvider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
-            public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
+            public Class<? extends Domain> answer(InvocationOnMock invocation) {
                 return Domain.class;
             }
         });
@@ -179,7 +178,8 @@ public class ContextSetPageTest {
         AjaxLink<?> node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage(nodeLinkId);
         tester.executeAjaxEvent(node, "onclick");
 
-        DropDownChoice<String> connectorChoices = (DropDownChoice<String>)tester.getComponentFromLastRenderedPage(textFieldId);
+        DropDownChoice<String> connectorChoices =
+            (DropDownChoice<String>) tester.getComponentFromLastRenderedPage(textFieldId);
         List<? extends String> choices = connectorChoices.getChoices();
         assertTrue(choices.contains("connectorService"));
     }
@@ -211,14 +211,14 @@ public class ContextSetPageTest {
         domainProviderList.add(domainProvider);
         when(domainProvider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
-            public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
+            public Class<? extends Domain> answer(InvocationOnMock invocation) {
                 return TestInterface.class;
             }
         });
         domainProviderList.add(wrongDomainProvider);
         when(wrongDomainProvider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
-            public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
+            public Class<? extends Domain> answer(InvocationOnMock invocation) {
                 return Domain.class;
             }
         });
@@ -231,14 +231,15 @@ public class ContextSetPageTest {
         String textFieldId = "form:treeTable:i:8:sideColumns:1:textfield";
         AjaxLink<?> node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage(nodeLinkId);
         tester.executeAjaxEvent(node, "onclick");
-        DropDownChoice<String> connectorChoices = (DropDownChoice<String>)tester.getComponentFromLastRenderedPage(textFieldId);
+        DropDownChoice<String> connectorChoices =
+            (DropDownChoice<String>) tester.getComponentFromLastRenderedPage(textFieldId);
         List<? extends String> choices = connectorChoices.getChoices();
 
         assertTrue(choices.contains("connectorService"));
         assertFalse(choices.contains("noConnectorService"));
     }
 
-     @SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     @Test
     public void servicesOfTypeDomainShouldNotBeInInDefaultDomainDropDown() throws Exception {
         List<ServiceReference> serviceReferenceList = new ArrayList<ServiceReference>();
@@ -255,7 +256,7 @@ public class ContextSetPageTest {
         when(domainProvider.getId()).thenReturn("domains.example");
         when(domainProvider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
-            public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
+            public Class<? extends Domain> answer(InvocationOnMock invocation) {
                 return Domain.class;
             }
         });
@@ -268,7 +269,8 @@ public class ContextSetPageTest {
         AjaxLink<?> node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage(nodeLinkId);
         tester.executeAjaxEvent(node, "onclick");
 
-        DropDownChoice<String> connectorChoices = (DropDownChoice<String>)tester.getComponentFromLastRenderedPage(textFieldId);
+        DropDownChoice<String> connectorChoices =
+            (DropDownChoice<String>) tester.getComponentFromLastRenderedPage(textFieldId);
         List<? extends String> choices = connectorChoices.getChoices();
         assertFalse(choices.contains("connectorService"));
     }

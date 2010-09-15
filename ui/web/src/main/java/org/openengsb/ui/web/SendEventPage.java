@@ -16,15 +16,6 @@
 
 package org.openengsb.ui.web;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -47,10 +38,19 @@ import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 import org.openengsb.ui.web.service.DomainService;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @SuppressWarnings("serial")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 
-    static final Log log = LogFactory.getLog(SendEventPage.class);
+    private Log log = LogFactory.getLog(SendEventPage.class);
 
     @SpringBean
     private WorkflowService eventService;
@@ -93,7 +93,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         form.add(dropDownChoice);
         add(createEditorPanelForClass(classes.get(0)));
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
-        add(new RuleEditorPanel("ruleEditor",this));
+        add(new RuleEditorPanel("ruleEditor", this));
     }
 
     private EditorPanel createEditorPanelForClass(Class<?> theClass) {
@@ -108,7 +108,8 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
                         eventService.processEvent(event);
                         info(new StringResourceModel("send.event.success", SendEventPage.this, null).getString());
                     } catch (WorkflowException e) {
-                        error(new StringResourceModel("send.event.error.process", SendEventPage.this, null).getString());
+                        error(
+                            new StringResourceModel("send.event.error.process", SendEventPage.this, null).getString());
                     }
                 } else {
                     error(new StringResourceModel("send.event.error.build", SendEventPage.this, null).getString());
@@ -125,8 +126,8 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
             BeanInfo beanInfo = Introspector.getBeanInfo(eventClass);
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                if (propertyDescriptor.getWriteMethod() == null
-                        || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
+                if (propertyDescriptor.getWriteMethod() == null || !Modifier
+                    .isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
                     continue;
                 }
                 propertyDescriptor.getWriteMethod().invoke(obj, values.get(propertyDescriptor.getName()));

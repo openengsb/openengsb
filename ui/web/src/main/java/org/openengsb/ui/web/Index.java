@@ -17,7 +17,6 @@
 package org.openengsb.ui.web;
 
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
@@ -25,7 +24,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.service.DomainService;
 
 import java.util.ArrayList;
@@ -63,7 +61,7 @@ public class Index extends BasePage {
                 return managers;
             }
         };
-                     
+
     }
 
 }

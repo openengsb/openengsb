@@ -16,17 +16,6 @@
 
 package org.openengsb.ui.web;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.apache.wicket.Page;
 import org.apache.wicket.Request;
 import org.apache.wicket.Response;
@@ -48,6 +37,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class BasePageTest {
 
@@ -80,7 +80,7 @@ public class BasePageTest {
                 return new WicketSession(request);
             }
         });
-        when(contextService.getAvailableContexts()).thenReturn(Arrays.asList(new String[] { "foo", "bar" }));
+        when(contextService.getAvailableContexts()).thenReturn(Arrays.asList(new String[]{"foo", "bar"}));
         basePage = tester.startPage(new BasePage());
     }
 
@@ -90,11 +90,11 @@ public class BasePageTest {
         authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
         when(authManager.authenticate(any(Authentication.class))).thenAnswer(new Answer<Authentication>() {
             @Override
-            public Authentication answer(InvocationOnMock invocation) throws Throwable {
+            public Authentication answer(InvocationOnMock invocation) {
                 Authentication auth = (Authentication) invocation.getArguments()[0];
                 if (auth.getCredentials().equals("password")) {
                     return new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(),
-                            authorities);
+                        authorities);
                 }
                 throw new BadCredentialsException("wrong password");
             }
@@ -104,8 +104,8 @@ public class BasePageTest {
 
     @Test
     public void test_label_present() {
-        String labelString = tester.getApplication().getResourceSettings().getLocalizer().getString(
-                "project.choice.label", basePage);
+        String labelString =
+            tester.getApplication().getResourceSettings().getLocalizer().getString("project.choice.label", basePage);
         tester.assertContains(labelString);
     }
 
@@ -137,9 +137,8 @@ public class BasePageTest {
         FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 
-        @SuppressWarnings("unchecked")
-        DropDownChoice<String> choice = (DropDownChoice<String>) tester
-                .getComponentFromLastRenderedPage("projectChoiceForm:projectChoice");
+        @SuppressWarnings("unchecked") DropDownChoice<String> choice =
+            (DropDownChoice<String>) tester.getComponentFromLastRenderedPage("projectChoiceForm:projectChoice");
 
         Class<? extends Page> responsePage = choice.getRequestCycle().getResponsePageClass();
         assertThat(choice.getPage(), is(responsePage));

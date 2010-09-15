@@ -24,7 +24,7 @@ public class ImprintPage extends BasePage {
 
     public ImprintPage() {
 
-       this.add(new BookmarkablePageLink<Index>("index", Index.class));
+        this.add(new BookmarkablePageLink<Index>("index", Index.class));
     }
 
 }

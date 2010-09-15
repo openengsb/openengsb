@@ -16,16 +16,16 @@
 
 package org.openengsb.ui.web.model;
 
-import java.util.Map;
-
 import org.apache.wicket.model.IModel;
 
+import java.util.Map;
+
 @SuppressWarnings("serial")
-public class MapModel<K,V> implements IModel<V> {
+public class MapModel<K, V> implements IModel<V> {
     private final Map<K, V> map;
     private final K key;
 
-    public MapModel(Map<K,V> map, K key) {
+    public MapModel(Map<K, V> map, K key) {
         this.map = map;
         this.key = key;
 

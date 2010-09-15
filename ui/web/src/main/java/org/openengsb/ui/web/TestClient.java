@@ -193,7 +193,6 @@ public class TestClient extends BasePage {
             }
         };
 
-
         // the message-attribute doesn't work for some reason
         submitButton.setModel(new ResourceModel("form.call"));
         form.add(submitButton);
@@ -210,8 +209,8 @@ public class TestClient extends BasePage {
         editButton.setEnabled(false);
         ServiceReference[] references = null;
         try {
-            references =
-                    bundleContext.getServiceReferences(Domain.class.getName(), "(id=" + serviceId.getServiceId() + ")");
+            references = bundleContext.getServiceReferences(Domain.class.getName(),
+                    String.format("(id=%s)", serviceId.getServiceId()));
             String id = "";
             String domain = null;
             if (references != null && references.length > 0) {

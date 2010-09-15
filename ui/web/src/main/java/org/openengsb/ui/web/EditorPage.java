@@ -16,12 +16,6 @@
 
 package org.openengsb.ui.web;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -31,6 +25,11 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.ui.web.editor.EditorPanel;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class EditorPage extends BasePage {
 
@@ -43,7 +42,7 @@ public class EditorPage extends BasePage {
         add(new Label("service.name", descriptor.getName()));
         add(new Label("service.description", descriptor.getDescription()));
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
-        createEditor( new HashMap<String, String>());
+        createEditor(new HashMap<String, String>());
     }
 
     public EditorPage(ServiceManager serviceManager, String serviceId) {
@@ -62,7 +61,7 @@ public class EditorPage extends BasePage {
     private void createEditor(Map<String, String> values) {
         List<AttributeDefinition> attributes = buildAttributeList(serviceManager);
         for (AttributeDefinition attribute : attributes) {
-            if(!values.containsKey(attribute.getId())) { // do not overwrite attributes with default value
+            if (!values.containsKey(attribute.getId())) { // do not overwrite attributes with default value
                 values.put(attribute.getId(), attribute.getDefaultValue());
             }
         }
@@ -72,17 +71,17 @@ public class EditorPage extends BasePage {
                 CheckBox component = (CheckBox) editorPanel.get("form:validate");
                 boolean checkBoxValue = component.getModelObject();
                 if (checkBoxValue) {
-                    MultipleAttributeValidationResult updateWithValidation = serviceManager.updateWithValidation(
-                            getValues().get("id"), getValues());
+                    MultipleAttributeValidationResult updateWithValidation =
+                        serviceManager.updateWithValidation(getValues().get("id"), getValues());
                     if (!updateWithValidation.isValid()) {
                         Map<String, String> attributeErrorMessages = updateWithValidation.getAttributeErrorMessages();
                         for (String value : attributeErrorMessages.values()) {
                             error(new StringResourceModel(value, this, null).getString());
                         }
-                    }else {
+                    } else {
                         info(new StringResourceModel("service.add.succeed", this, null).getString());
                     }
-                }else {
+                } else {
                     serviceManager.update(getValues().get("id"), getValues());
                     info(new StringResourceModel("service.add.succeed", this, null).getString());
                 }

@@ -20,6 +20,6 @@ import org.openengsb.core.workflow.RuleManager;
 
 public interface RuleManagerProvider {
 
-    public abstract RuleManager getRuleManager();
+    RuleManager getRuleManager();
 
 }

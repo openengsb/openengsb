@@ -24,11 +24,11 @@ import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 public class RuleEditorPage extends BasePage implements RuleManagerProvider {
 
     @SpringBean
-    RuleManager ruleManager;
-    
-	public RuleEditorPage() {
-        add(new RuleEditorPanel("ruleEditor",this));
-	}
+    private RuleManager ruleManager;
+
+    public RuleEditorPage() {
+        add(new RuleEditorPanel("ruleEditor", this));
+    }
 
     @Override
     public RuleManager getRuleManager() {
