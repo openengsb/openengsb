@@ -20,7 +20,6 @@ package org.openengsb.core.workflow;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.drools.runtime.rule.ConsequenceException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,17 +83,18 @@ public class WorkflowServiceDynamicTest {
         }
     }
 
-    @Test(expected = ConsequenceException.class)
-    public void processEventBeforeServiceStarted_shouldThrowException() throws Exception {
-        service.processEvent(new Event("42"));
-    }
-
     @Test
     public void processEventAfterServiceEvents_shouldExecuteServiceMethod() throws Exception {
         service.serviceChanged(exampleServiceEvent);
         service.serviceChanged(notificationServiceEvent);
         service.processEvent(new Event("42"));
         verify(example).doSomething(anyString());
+    }
+
+    @Test(expected = WorkflowException.class)
+    public void processEventBetweenServiceEvents_shouldThrowWorkflowException() throws Exception {
+        service.serviceChanged(exampleServiceEvent);
+        service.processEvent(new Event("42"));
     }
 
     private ServiceReference setupServiceReferenceMock(String id) {

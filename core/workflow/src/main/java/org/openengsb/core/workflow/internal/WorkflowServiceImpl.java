@@ -32,6 +32,8 @@ import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
+import org.openengsb.core.workflow.model.RuleBaseElementId;
+import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
@@ -54,14 +56,27 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         try {
             currentContextService.setThreadLocalContext(event.getContextId());
             StatefulSession session = createSession();
-            for (Entry<String, Domain> entry : domainServices.entrySet()) {
-                session.setGlobal(entry.getKey(), entry.getValue());
-            }
+            populateGlobals(session);
             session.insert(event);
             session.fireAllRules();
             session.dispose();
         } catch (RuleBaseException e) {
             throw new WorkflowException(e);
+        }
+    }
+
+    private void populateGlobals(StatefulSession session) throws WorkflowException {
+        Collection<String> globalsToProcess = new ArrayList<String>();
+        for (RuleBaseElementId id : rulemanager.list(RuleBaseElementType.Global)) {
+            globalsToProcess.add(id.getName());
+        }
+        for (Entry<String, Domain> entry : domainServices.entrySet()) {
+            session.setGlobal(entry.getKey(), entry.getValue());
+            globalsToProcess.remove(entry.getKey());
+        }
+        if (!globalsToProcess.isEmpty()) {
+            throw new WorkflowException("there are unassigned globals, maybe some service is missing. "
+                    + globalsToProcess);
         }
     }
 
