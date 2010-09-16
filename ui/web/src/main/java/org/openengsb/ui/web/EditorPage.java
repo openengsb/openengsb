@@ -18,7 +18,6 @@ package org.openengsb.ui.web;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
@@ -41,7 +40,6 @@ public class EditorPage extends BasePage {
         ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
         add(new Label("service.name", descriptor.getName()));
         add(new Label("service.description", descriptor.getDescription()));
-        this.add(new BookmarkablePageLink<Index>("index", Index.class));
         createEditor(new HashMap<String, String>());
     }
 
@@ -52,7 +50,6 @@ public class EditorPage extends BasePage {
         ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
         add(new Label("service.name", descriptor.getName()));
         add(new Label("service.description", descriptor.getDescription()));
-        this.add(new BookmarkablePageLink<Index>("index", Index.class));
         createEditor(attributeValues);
     }
 

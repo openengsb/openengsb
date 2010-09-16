@@ -23,7 +23,6 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -92,7 +91,6 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         });
         form.add(dropDownChoice);
         add(createEditorPanelForClass(classes.get(0)));
-        this.add(new BookmarkablePageLink<Index>("index", Index.class));
         add(new RuleEditorPanel("ruleEditor", this));
     }
 
