@@ -27,11 +27,11 @@ import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 
 @SuppressWarnings("serial")
-public abstract class AbstractField extends Panel {
+public abstract class AbstractField<T> extends Panel {
 
-    public AbstractField(String id, IModel<String> model, AttributeDefinition attribute, IValidator validator) {
+    public AbstractField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<T> validator) {
         super(id);
-        FormComponent<?> component = createFormComponent(attribute, model);
+        FormComponent<T> component = createFormComponent(attribute, model);
         if (validator != null) {
             component.add(validator);
         }
@@ -54,5 +54,5 @@ public abstract class AbstractField extends Panel {
         add(tooltip);
     }
 
-    protected abstract FormComponent<?> createFormComponent(AttributeDefinition attribute, IModel<String> model);
+    protected abstract FormComponent<T> createFormComponent(AttributeDefinition attribute, IModel<String> model);
 }

@@ -16,10 +16,6 @@
 
 package org.openengsb.ui.web.editor;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertThat;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,15 +39,20 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.core.common.validation.FieldValidator;
+import org.openengsb.core.common.validation.FormValidator;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
-import org.openengsb.core.common.validation.FormValidator;
+import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.core.common.validation.ValidationResultImpl;
 import org.openengsb.ui.web.editor.fields.AbstractField;
 import org.openengsb.ui.web.validation.DefaultPassingFormValidator;
 import org.openengsb.ui.web.validation.NumberValidator;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
+import static org.junit.Assert.assertThat;
 
 @SuppressWarnings("serial")
 public class EditorPanelTest {
@@ -292,8 +293,8 @@ public class EditorPanelTest {
         return "fields:" + attributeId + ":row:field";
     }
 
-    private AbstractField getEditorField(String attributeId) {
-        return (AbstractField) getEditorFieldFormComponent(attributeId, FormComponent.class).getParent();
+    private AbstractField<?> getEditorField(String attributeId) {
+        return (AbstractField<?>) getEditorFieldFormComponent(attributeId, FormComponent.class).getParent();
     }
 
     private static final class FailValidator implements FieldValidator {

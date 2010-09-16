@@ -23,10 +23,10 @@ import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 
 @SuppressWarnings("serial")
-public class PasswordField extends AbstractField {
+public class PasswordField extends AbstractField<String> {
 
     public PasswordField(String id, IModel<String> model, AttributeDefinition attribute,
-                         IValidator fieldValidationValidator) {
+            IValidator<String> fieldValidationValidator) {
         super(id, model, attribute, fieldValidationValidator);
     }
 

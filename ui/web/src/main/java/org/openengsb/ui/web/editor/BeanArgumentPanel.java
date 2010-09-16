@@ -51,7 +51,7 @@ public class BeanArgumentPanel extends Panel {
         }
     }
 
-    private AbstractField createEditor(String id, IModel<String> model, AttributeDefinition attribute) {
+    private AbstractField<?> createEditor(String id, IModel<String> model, AttributeDefinition attribute) {
         if (!attribute.getOptions().isEmpty()) {
             return new DropdownField(id, model, attribute, null);
         } else if (attribute.isBoolean()) {

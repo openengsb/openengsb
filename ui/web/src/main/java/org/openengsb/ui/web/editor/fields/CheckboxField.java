@@ -24,16 +24,15 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.ui.web.model.BoolToStringModel;
 
 @SuppressWarnings("serial")
-public class CheckboxField extends AbstractField {
+public class CheckboxField extends AbstractField<Boolean> {
 
     public CheckboxField(String id, IModel<String> model, AttributeDefinition attribute,
-                         IValidator fieldValidationValidator) {
+            IValidator<Boolean> fieldValidationValidator) {
         super(id, model, attribute, fieldValidationValidator);
     }
 
     @Override
-    protected FormComponent<?> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+    protected FormComponent<Boolean> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
         return new CheckBox("field", new BoolToStringModel(model));
     }
 }
-
