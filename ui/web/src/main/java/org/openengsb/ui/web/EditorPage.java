@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class EditorPage extends BasePage {
 
-    private final ServiceManager serviceManager;
+    private transient final ServiceManager serviceManager;
     private EditorPanel editorPanel;
 
     public EditorPage(ServiceManager serviceManager) {
