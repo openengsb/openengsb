@@ -149,7 +149,7 @@ public class WorkflowServiceDynamicTest {
 
     private void simulateServiceStart(ServiceReference reference) throws InvalidSyntaxException {
         String id = (String) reference.getProperty("id");
-        String filter = String.format("&(openengsb.service.type=domain)(id=%s)", id);
+        String filter = String.format("(&(openengsb.service.type=domain)(id=%s))", id);
         when(bundleContext.getAllServiceReferences(Domain.class.getName(), filter)).thenReturn(
                 new ServiceReference[] { reference });
         if (workflowService != null) {

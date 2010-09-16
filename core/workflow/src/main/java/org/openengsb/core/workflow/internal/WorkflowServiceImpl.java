@@ -59,7 +59,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         ServiceReference[] allServiceReferences;
         try {
             allServiceReferences = bundleContext.getAllServiceReferences(Domain.class.getName(),
-                    String.format("&(openengsb.service.type=domain)(id=domains.%s)", name));
+                    String.format("(&(openengsb.service.type=domain)(id=domains.%s))", name));
         } catch (InvalidSyntaxException e) {
             throw new IllegalStateException(e);
         }
