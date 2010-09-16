@@ -18,6 +18,7 @@ package org.openengsb.core.workflow.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -31,15 +32,22 @@ import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
+import org.springframework.osgi.context.BundleContextAware;
 
-public class WorkflowServiceImpl implements WorkflowService {
+public class WorkflowServiceImpl implements WorkflowService, BundleContextAware, ServiceListener {
 
     private RuleManager rulemanager;
 
     private Collection<AgendaEventListener> listeners = new ArrayList<AgendaEventListener>();
 
     private ContextCurrentService currentContextService;
-    private Map<String, Domain> domainServices;
+    private Map<String, Domain> domainServices = new HashMap<String, Domain>();
+
+    private BundleContext bundleContext;
 
     @Override
     public void processEvent(Event event) throws WorkflowException {
@@ -81,4 +89,24 @@ public class WorkflowServiceImpl implements WorkflowService {
     public void setDomainServices(Map<String, Domain> domainServices) {
         this.domainServices = domainServices;
     }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
+
+    @Override
+    public void serviceChanged(ServiceEvent event) {
+        if (event.getType() == ServiceEvent.REGISTERED) {
+            ServiceReference serviceReference = event.getServiceReference();
+            if (serviceReference.getProperty("openengsb.service.type").equals("domain")) {
+                String id = (String) serviceReference.getProperty("id");
+                String name = id.replaceFirst("domains.", "");
+                Domain service = (Domain) bundleContext.getService(serviceReference);
+                domainServices.put(name, service);
+            }
+        }
+
+    }
+
 }
