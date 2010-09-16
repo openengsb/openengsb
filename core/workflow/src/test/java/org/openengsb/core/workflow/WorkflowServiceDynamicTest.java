@@ -43,11 +43,24 @@ import static org.mockito.Mockito.when;
 
 public class WorkflowServiceDynamicTest {
 
+    private Event sampleEvent = new Event("42");
+
+    private class ProcessEventThread extends Thread {
+        private Exception resultException;
+
+        @Override
+        public void run() {
+            try {
+                workflowService.processEvent(sampleEvent);
+            } catch (WorkflowException e) {
+                resultException = e;
+            }
+        }
+    }
+
     private WorkflowServiceImpl workflowService;
     private RuleManager manager;
-    private ServiceEvent exampleServiceEvent;
     private ExampleDomain example;
-    private ServiceEvent notificationServiceEvent;
     private NotificationDomain notification;
     private BundleContext bundleContext;
     private ServiceReference exampleReference;
@@ -59,9 +72,6 @@ public class WorkflowServiceDynamicTest {
 
         exampleReference = setupServiceReferenceMock("log");
         notificationReference = setupServiceReferenceMock("notification");
-
-        exampleServiceEvent = setupServiceEventMock(exampleReference);
-        notificationServiceEvent = setupServiceEventMock(notificationReference);
 
         example = mock(ExampleDomain.class);
         when(bundleContext.getService(exampleReference)).thenReturn(example);
@@ -84,16 +94,33 @@ public class WorkflowServiceDynamicTest {
         simulateServiceStart(exampleReference);
         simulateServiceStart(notificationReference);
         workflowService.processEvent(new Event("42"));
+
         verify(example).doSomething(anyString());
     }
 
     @Test(expected = WorkflowException.class)
     public void processEventBetweenServiceEvents_shouldThrowWorkflowException() throws Exception {
         setupWorkflowService();
+        workflowService.setTimeout(100);
         simulateServiceStart(exampleReference);
-
         workflowService.processEvent(new Event("42"));
-        // simulateServiceStart(notificationReference);
+    }
+
+    @Test
+    public void processEventShortlyBeforeServiceEvent_shouldProcessEventDelayed() throws Exception {
+        setupWorkflowService();
+        simulateServiceStart(exampleReference);
+        ProcessEventThread processEventThread = new ProcessEventThread();
+        processEventThread.start();
+        processEventThread.setPriority(Thread.MIN_PRIORITY);
+        Thread.sleep(100);
+
+        simulateServiceStart(notificationReference);
+        processEventThread.join(5000);
+        if (processEventThread.resultException != null) {
+            throw processEventThread.resultException;
+        }
+        verify(example).doSomething(anyString());
     }
 
     @Test
@@ -102,6 +129,7 @@ public class WorkflowServiceDynamicTest {
         simulateServiceStart(notificationReference);
         setupWorkflowService();
         workflowService.processEvent(new Event("42"));
+
         verify(example).doSomething(anyString());
     }
 

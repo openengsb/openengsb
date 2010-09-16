@@ -53,6 +53,8 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     private BundleContext bundleContext;
 
+    private long timeout = 10000;
+
     private boolean findGlobal(String name) {
         ServiceReference[] allServiceReferences;
         try {
@@ -106,7 +108,22 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     private void populateGlobals(StatefulSession session) throws WorkflowException {
         Collection<String> missingGlobals = findMissingGlobals();
         if (!missingGlobals.isEmpty()) {
-            throw new WorkflowException("there are unassigned globals, maybe some service is missing " + missingGlobals);
+            try {
+                synchronized (domainServices) {
+                    domainServices.wait(timeout);
+                }
+            } catch (InterruptedException e) {
+                throw new WorkflowException(e);
+            }
+            for (Iterator<String> iterator = missingGlobals.iterator(); iterator.hasNext();) {
+                if (domainServices.get(iterator.next()) != null) {
+                    iterator.remove();
+                }
+            }
+            if (!missingGlobals.isEmpty()) {
+                throw new WorkflowException("there are unassigned globals, maybe some service is missing "
+                        + missingGlobals);
+            }
         }
         for (Entry<String, Domain> entry : domainServices.entrySet()) {
             session.setGlobal(entry.getKey(), entry.getValue());
@@ -151,10 +168,16 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
                 String id = (String) serviceReference.getProperty("id");
                 String name = id.replaceFirst("domains.", "");
                 Domain service = (Domain) bundleContext.getService(serviceReference);
-                domainServices.put(name, service);
+                synchronized (domainServices) {
+                    domainServices.put(name, service);
+                    domainServices.notify();
+                }
             }
         }
 
     }
 
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
+    }
 }
