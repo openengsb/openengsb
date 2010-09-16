@@ -23,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
@@ -30,6 +31,7 @@ import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceReference;
 
@@ -41,38 +43,31 @@ import static org.mockito.Mockito.when;
 
 public class WorkflowServiceDynamicTest {
 
-    private WorkflowServiceImpl service;
+    private WorkflowServiceImpl workflowService;
     private RuleManager manager;
     private ServiceEvent exampleServiceEvent;
     private ExampleDomain example;
     private ServiceEvent notificationServiceEvent;
     private NotificationDomain notification;
+    private BundleContext bundleContext;
+    private ServiceReference exampleReference;
+    private ServiceReference notificationReference;
 
     @Before
     public void setUp() throws Exception {
-        setupWorkflowService();
+        bundleContext = mock(BundleContext.class);
 
-        ServiceReference exampleReference = setupServiceReferenceMock("domains.log");
-        ServiceReference notificationReference = setupServiceReferenceMock("domains.notification");
+        exampleReference = setupServiceReferenceMock("log");
+        notificationReference = setupServiceReferenceMock("notification");
 
         exampleServiceEvent = setupServiceEventMock(exampleReference);
         notificationServiceEvent = setupServiceEventMock(notificationReference);
 
-        BundleContext context = mock(BundleContext.class);
         example = mock(ExampleDomain.class);
-        when(context.getService(exampleReference)).thenReturn(example);
+        when(bundleContext.getService(exampleReference)).thenReturn(example);
 
         notification = mock(NotificationDomain.class);
-        when(context.getService(notificationReference)).thenReturn(notification);
-
-        service.setBundleContext(context);
-    }
-
-    private ServiceEvent setupServiceEventMock(ServiceReference reference) {
-        ServiceEvent result = mock(ServiceEvent.class);
-        when(result.getType()).thenReturn(ServiceEvent.REGISTERED);
-        when(result.getServiceReference()).thenReturn(reference);
-        return result;
+        when(bundleContext.getService(notificationReference)).thenReturn(notification);
     }
 
     @After
@@ -85,30 +80,61 @@ public class WorkflowServiceDynamicTest {
 
     @Test
     public void processEventAfterServiceEvents_shouldExecuteServiceMethod() throws Exception {
-        service.serviceChanged(exampleServiceEvent);
-        service.serviceChanged(notificationServiceEvent);
-        service.processEvent(new Event("42"));
+        setupWorkflowService();
+        simulateServiceStart(exampleReference);
+        simulateServiceStart(notificationReference);
+        workflowService.processEvent(new Event("42"));
         verify(example).doSomething(anyString());
     }
 
     @Test(expected = WorkflowException.class)
     public void processEventBetweenServiceEvents_shouldThrowWorkflowException() throws Exception {
-        service.serviceChanged(exampleServiceEvent);
-        service.processEvent(new Event("42"));
+        setupWorkflowService();
+        simulateServiceStart(exampleReference);
+
+        workflowService.processEvent(new Event("42"));
+        // simulateServiceStart(notificationReference);
     }
 
-    private ServiceReference setupServiceReferenceMock(String id) {
+    @Test
+    public void lookupAtStartup_shouldPickupServicesStartedBeforeWorkflow() throws Exception {
+        simulateServiceStart(exampleReference);
+        simulateServiceStart(notificationReference);
+        setupWorkflowService();
+        workflowService.processEvent(new Event("42"));
+        verify(example).doSomething(anyString());
+    }
+
+    private ServiceEvent setupServiceEventMock(ServiceReference reference) {
+        ServiceEvent result = mock(ServiceEvent.class);
+        when(result.getType()).thenReturn(ServiceEvent.REGISTERED);
+        when(result.getServiceReference()).thenReturn(reference);
+        return result;
+    }
+
+    private ServiceReference setupServiceReferenceMock(String id) throws InvalidSyntaxException {
         ServiceReference reference = mock(ServiceReference.class);
         when(reference.getProperty("openengsb.service.type")).thenReturn("domain");
-        when(reference.getProperty("id")).thenReturn(id);
+        when(reference.getProperty("id")).thenReturn("domains." + id);
         return reference;
     }
 
+    private void simulateServiceStart(ServiceReference reference) throws InvalidSyntaxException {
+        String id = (String) reference.getProperty("id");
+        String filter = String.format("&(openengsb.service.type=domain)(id=%s)", id);
+        when(bundleContext.getAllServiceReferences(Domain.class.getName(), filter)).thenReturn(
+                new ServiceReference[] { reference });
+        if (workflowService != null) {
+            workflowService.serviceChanged(setupServiceEventMock(reference));
+        }
+    }
+
     private void setupWorkflowService() throws RuleBaseException {
-        service = new WorkflowServiceImpl();
+        workflowService = new WorkflowServiceImpl();
         setupRulemanager();
-        service.setRulemanager(manager);
-        service.setCurrentContextService(mock(ContextCurrentService.class));
+        workflowService.setRulemanager(manager);
+        workflowService.setCurrentContextService(mock(ContextCurrentService.class));
+        workflowService.setBundleContext(bundleContext);
     }
 
     private void setupRulemanager() throws RuleBaseException {

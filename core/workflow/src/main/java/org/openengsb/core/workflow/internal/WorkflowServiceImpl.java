@@ -19,6 +19,7 @@ package org.openengsb.core.workflow.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -35,6 +36,7 @@ import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
@@ -51,6 +53,26 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     private BundleContext bundleContext;
 
+    private boolean findGlobal(String name) {
+        ServiceReference[] allServiceReferences;
+        try {
+            allServiceReferences = bundleContext.getAllServiceReferences(Domain.class.getName(),
+                    String.format("&(openengsb.service.type=domain)(id=domains.%s)", name));
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalStateException(e);
+        }
+        if (allServiceReferences == null) {
+            return false;
+        }
+        if (allServiceReferences.length != 1) {
+            throw new IllegalStateException(String.format("found more than one match for \"%s\".", name));
+        }
+        ServiceReference ref = allServiceReferences[0];
+        Domain service = (Domain) bundleContext.getService(ref);
+        domainServices.put(name, service);
+        return true;
+    }
+
     @Override
     public void processEvent(Event event) throws WorkflowException {
         try {
@@ -65,18 +87,29 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         }
     }
 
-    private void populateGlobals(StatefulSession session) throws WorkflowException {
+    private Collection<String> findMissingGlobals() {
         Collection<String> globalsToProcess = new ArrayList<String>();
         for (RuleBaseElementId id : rulemanager.list(RuleBaseElementType.Global)) {
             globalsToProcess.add(id.getName());
         }
+        globalsToProcess.removeAll(domainServices.keySet());
+
+        for (Iterator<String> iterator = globalsToProcess.iterator(); iterator.hasNext();) {
+            String g = iterator.next();
+            if (findGlobal(g)) {
+                iterator.remove();
+            }
+        }
+        return globalsToProcess;
+    }
+
+    private void populateGlobals(StatefulSession session) throws WorkflowException {
+        Collection<String> missingGlobals = findMissingGlobals();
+        if (!missingGlobals.isEmpty()) {
+            throw new WorkflowException("there are unassigned globals, maybe some service is missing " + missingGlobals);
+        }
         for (Entry<String, Domain> entry : domainServices.entrySet()) {
             session.setGlobal(entry.getKey(), entry.getValue());
-            globalsToProcess.remove(entry.getKey());
-        }
-        if (!globalsToProcess.isEmpty()) {
-            throw new WorkflowException("there are unassigned globals, maybe some service is missing. "
-                    + globalsToProcess);
         }
     }
 
