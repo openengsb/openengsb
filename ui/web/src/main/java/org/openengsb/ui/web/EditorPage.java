@@ -107,4 +107,9 @@ public class EditorPage extends BasePage {
         return editorPanel;
     }
 
+    @Override
+    public String getHeaderMenuItem() {
+        return TestClient.class.getSimpleName();
+    }
+
 }

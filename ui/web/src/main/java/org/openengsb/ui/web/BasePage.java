@@ -142,9 +142,9 @@ public class BasePage extends WebPage {
 
     /**
      * @return the class name, which should be the index in navigation bar
-     * 
+     *
      */
-    public final String getHeaderMenuItem() {
+    public String getHeaderMenuItem() {
         return this.getClass().getSimpleName();
     }
 }
