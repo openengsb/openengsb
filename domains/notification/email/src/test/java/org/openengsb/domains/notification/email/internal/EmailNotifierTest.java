@@ -16,8 +16,9 @@
 
 package org.openengsb.domains.notification.email.internal;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openengsb.core.common.DomainMethodExecutionException;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
 import org.openengsb.domains.notification.email.internal.abstraction.MailProperties;
@@ -25,15 +26,21 @@ import org.openengsb.domains.notification.model.Attachment;
 import org.openengsb.domains.notification.model.Notification;
 import org.springframework.test.annotation.ExpectedException;
 
-import java.util.ArrayList;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class EmailNotifierTest {
 
     @Test
     public void testToSendAnEmail() throws Exception {
-        MailAbstraction mailMock = Mockito.mock(MailAbstraction.class);
-        MailProperties propertiesMock = Mockito.mock(MailProperties.class);
-        Mockito.when(mailMock.createMailProperties()).thenReturn(propertiesMock);
+        MailAbstraction mailMock = mock(MailAbstraction.class);
+        MailProperties propertiesMock = mock(MailProperties.class);
+        when(mailMock.createMailProperties()).thenReturn(propertiesMock);
         EmailNotifier notifier = new EmailNotifier("notifier1", mailMock);
 
         Notification notification = new Notification();
@@ -43,22 +50,22 @@ public class EmailNotifierTest {
         notification.setAttachments(new ArrayList<Attachment>());
 
         notifier.notify(notification);
-        Mockito.verify(mailMock).send(propertiesMock, "Subject", "Content", "openengsb.notification.test@gmail.com");
+        verify(mailMock).send(propertiesMock, "Subject", "Content", "openengsb.notification.test@gmail.com");
 
     }
 
     @Test
     @ExpectedException(DomainMethodExecutionException.class)
     public void testThatDomainMethodExecutionExceptionIsThrown() throws Exception {
-        MailAbstraction mailMock = Mockito.mock(MailAbstraction.class);
-        MailProperties propertiesMock = Mockito.mock(MailProperties.class);
-        Mockito.when(mailMock.createMailProperties()).thenReturn(propertiesMock);
-        EmailNotifier notifier = Mockito.mock(EmailNotifier.class);
+        MailAbstraction mailMock = mock(MailAbstraction.class);
+        MailProperties propertiesMock = mock(MailProperties.class);
+        when(mailMock.createMailProperties()).thenReturn(propertiesMock);
+        EmailNotifier notifier = mock(EmailNotifier.class);
 
-        Notification notificationMock = Mockito.mock(Notification.class);
+        Notification notificationMock = mock(Notification.class);
 
-        Mockito.doThrow(new DomainMethodExecutionException()).when(mailMock).
-                send(Mockito.<MailProperties>anyObject(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+        doThrow(new DomainMethodExecutionException()).when(mailMock).send(any(MailProperties.class), anyString(),
+                anyString(), anyString());
 
         notifier.notify(notificationMock);
     }

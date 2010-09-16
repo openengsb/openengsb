@@ -17,6 +17,7 @@
 package org.openengsb.core.common;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
@@ -125,7 +126,9 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
 
     @SuppressWarnings("unchecked")
     protected Class<InstanceType> getImplementationClass() {
-        return (Class<InstanceType>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
+        ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
+        Type instanceType = genericSuperclass.getActualTypeArguments()[1];
+        return (Class<InstanceType>) instanceType;
     }
 
     private Hashtable<String, String> createNotificationServiceProperties(String id) {
