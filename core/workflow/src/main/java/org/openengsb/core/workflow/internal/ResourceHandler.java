@@ -35,8 +35,14 @@ public abstract class ResourceHandler<SourceType extends RuleManager> {
     public abstract String get(RuleBaseElementId name);
 
     public void update(RuleBaseElementId name, String code) throws RuleBaseException {
+        String oldelement = get(name);
         delete(name);
-        create(name, code);
+        try {
+            create(name, code);
+        } catch (RuleBaseException e) {
+            create(name, oldelement);
+            throw new RuleBaseException(e);
+        }
     }
 
     public abstract void delete(RuleBaseElementId name) throws RuleBaseException;

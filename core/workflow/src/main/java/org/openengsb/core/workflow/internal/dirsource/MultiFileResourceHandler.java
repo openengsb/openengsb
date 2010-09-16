@@ -52,7 +52,12 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
         } catch (IOException e) {
             throw new RuleBaseException(String.format("could not write the %s to the filesystem", name.getType()), e);
         }
-        source.readPackage(name.getPackageName());
+        try {
+            source.readPackage(name.getPackageName());
+        } catch (RuleBaseException e) {
+            resFile.delete();
+            throw e;
+        }
     }
 
     @Override

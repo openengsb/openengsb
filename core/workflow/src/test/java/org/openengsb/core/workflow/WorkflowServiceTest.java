@@ -37,6 +37,8 @@ import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.notification.NotificationDomain;
 
+import static org.junit.Assert.fail;
+
 public class WorkflowServiceTest {
 
     public interface LogDomain extends Domain {
@@ -119,6 +121,32 @@ public class WorkflowServiceTest {
 
     @Test
     public void testUseLogContent() throws Exception {
+        Event event = new Event("test-context");
+        service.processEvent(event);
+        Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
+    }
+
+    @Test
+    public void addInvalidRule_shouldNotModifyRulebase() throws Exception {
+        try {
+            manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "hello"), "this*is_invalid");
+            fail("expected Exception");
+        } catch (RuleBaseException e) {
+            // expected
+        }
+        Event event = new Event("test-context");
+        service.processEvent(event);
+        Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
+    }
+
+    @Test
+    public void invalidMofidyRule_shouldNotModifyRulebase() throws Exception {
+        try {
+            manager.update(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1"), "this*is_invalid");
+            fail("expected Exception");
+        } catch (RuleBaseException e) {
+            // expected
+        }
         Event event = new Event("test-context");
         service.processEvent(event);
         Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
