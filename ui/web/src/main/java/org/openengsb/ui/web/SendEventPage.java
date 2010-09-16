@@ -50,7 +50,7 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 
-    private Log log = LogFactory.getLog(SendEventPage.class);
+    private transient Log log = LogFactory.getLog(SendEventPage.class);
 
     @SpringBean
     private WorkflowService eventService;
