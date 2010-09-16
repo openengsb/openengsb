@@ -49,28 +49,27 @@ public class AbstractServiceManagerTest {
     private static class DummyServiceManager extends AbstractServiceManager<DummyDomain, DummyInstance> {
 
         public DummyServiceManager(final DummyInstance instance) {
-            super(
-                    new ServiceInstanceFactory<AbstractServiceManagerTest.DummyDomain, AbstractServiceManagerTest.DummyInstance>() {
+            super(new ServiceInstanceFactory<DummyDomain, DummyInstance>() {
 
-                        @Override
-                        public void updateServiceInstance(DummyInstance instance, Map<String, String> attributes) {
-                        }
+                @Override
+                public void updateServiceInstance(DummyInstance instance, Map<String, String> attributes) {
+                }
 
-                        @Override
-                        public ServiceDescriptor getDescriptor(Builder builder) {
-                            builder.implementationType(DummyInstance.class);
-                            builder.serviceType(DummyDomain.class);
-                            builder.name("abstract.name");
-                            builder.description("abstract.description");
-                            builder.id("DummyServiceManager");
-                            return builder.build();
-                        }
+                @Override
+                public ServiceDescriptor getDescriptor(Builder builder) {
+                    builder.implementationType(DummyInstance.class);
+                    builder.serviceType(DummyDomain.class);
+                    builder.name("abstract.name");
+                    builder.description("abstract.description");
+                    builder.id("DummyServiceManager");
+                    return builder.build();
+                }
 
-                        @Override
-                        public DummyInstance createServiceInstance(String id, Map<String, String> attributes) {
-                            return instance;
-                        }
-                    });
+                @Override
+                public DummyInstance createServiceInstance(String id, Map<String, String> attributes) {
+                    return instance;
+                }
+            });
         }
 
         @Override
