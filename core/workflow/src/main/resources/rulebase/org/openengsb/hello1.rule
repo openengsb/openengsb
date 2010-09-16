@@ -17,7 +17,7 @@
 when
 	Event()
 then
-	log.doSomething("Hello World");
+	example.doSomething("Hello World");
 	Notification n = new Notification();
 	n.setSubject("testsubject");
 	n.setMessage("testMessage");
