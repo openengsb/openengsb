@@ -34,6 +34,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
@@ -83,7 +85,6 @@ public class TestClient extends BasePage {
 
     private final WebMarkupContainer argumentListContainer;
 
-
     private final LinkTree serviceList;
 
     private FeedbackPanel feedbackPanel;
@@ -96,11 +97,17 @@ public class TestClient extends BasePage {
 
     public TestClient() {
 
-        List<ServiceManager> managers = new ArrayList<ServiceManager>(services.domains().size());
-        for (DomainProvider provider : services.domains()) {
-            managers.addAll(this.services.serviceManagersForDomain(provider.getDomainInterface()));
-        }
-        add(new ListView<ServiceManager>("services", managers) {
+        IModel<List<ServiceManager>> managersModel = new LoadableDetachableModel<List<ServiceManager>>() {
+            @Override
+            protected List<ServiceManager> load() {
+                List<ServiceManager> managers = new ArrayList<ServiceManager>(services.domains().size());
+                for (DomainProvider provider : services.domains()) {
+                    managers.addAll(services.serviceManagersForDomain(provider.getDomainInterface()));
+                }
+                return managers;
+            }
+        };
+        add(new ListView<ServiceManager>("services", managersModel) {
 
             @Override
             protected void populateItem(ListItem<ServiceManager> item) {
@@ -254,8 +261,8 @@ public class TestClient extends BasePage {
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
         DefaultMutableTreeNode providerNode = new DefaultMutableTreeNode(provider.getName());
         node.add(providerNode);
-        for (ServiceReference serviceReference
-                : this.services.serviceReferencesForConnector(provider.getDomainInterface())) {
+        for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider
+                .getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
             if (id != null) {
                 ServiceId serviceId = new ServiceId();
