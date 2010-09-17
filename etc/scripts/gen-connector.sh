@@ -74,14 +74,24 @@ mvn archetype:generate \
 	-Dpackage="$groupId" \
 	-Dname="$NAME"
 
+if [ $? != 0 ]; then
+	exit $?
+fi
+
 if [ -e "$artifactId" ]; then
-	mv "$artifactId" "$CONNECTOR"
-	if [ -f "pom.xml" ]; then
-		sed "s/<module>$artifactId<\/module>/<module>$CONNECTOR<\/module>/" pom.xml >pom.xml.new
-		mv pom.xml.new pom.xml
+	if [ ! -e "$CONNECTOR" ]; then
+		echo "INFO: Renaming project from '$artifactId' to '$connector'"
+		mv "$artifactId" "$CONNECTOR"
+		if [ -f "pom.xml" ]; then
+			sed "s/<module>$artifactId<\/module>/<module>$CONNECTOR<\/module>/" pom.xml >pom.xml.new
+			mv pom.xml.new pom.xml
+		fi
+	else
+		echo "WARNING: Renaming of project to '$CONNECTOR' not possible, project already exists!"
 	fi
 fi
 
 echo ""
 echo "DON'T FORGET TO ADD THE CONNECTOR TO THE INTEGRATIONTEST PROJECT!"
+echo "SUCCESS"
 echo ""
