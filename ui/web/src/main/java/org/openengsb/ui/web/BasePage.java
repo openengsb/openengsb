@@ -122,7 +122,7 @@ public class BasePage extends WebPage {
         }
     }
 
-    private String getSessionContextId() {
+    public String getSessionContextId() {
         WicketSession session = WicketSession.get();
         if (session == null) {
             return "foo";

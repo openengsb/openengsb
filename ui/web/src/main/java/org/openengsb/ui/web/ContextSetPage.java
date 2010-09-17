@@ -86,7 +86,7 @@ public class ContextSetPage extends BasePage {
         Form<Object> form = new Form<Object>("form");
         Context context = contextService.getContext();
         this.tree = new TreeTable("treeTable", createTreeModel(context), columns);
-        this.tree.setRootLess(true);
+        this.tree.setRootLess(false);
         this.tree.getTreeState().expandAll();
         form.add(this.tree);
         add(form);
