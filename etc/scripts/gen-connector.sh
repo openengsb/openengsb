@@ -63,15 +63,14 @@ mvn archetype:generate \
 	-DarchetypeGroupId="org.openengsb.archetypes" \
 	-DarchetypeArtifactId="openengsb-archetypes-connector" \
 	-DarchetypeVersion="$VERSION" \
-	-DdomainGroupId=$domainGroupId \
-	-DdomainArtifactId="$domainArtifactIdPrefix-implementation" \
-	-DdomainInterface="$INTERFACE" \
-	-DparentGroupId="$domainGroupId" \
 	-DparentArtifactId="$domainArtifactIdPrefix-parent" \
-	-DgroupId="$domainGroupId.$CONNECTOR" \
+	-DdomainArtifactId="$domainArtifactIdPrefix-implementation" \
 	-DartifactId="$artifactId" \
+	-DgroupId="$domainGroupId" \
 	-Dversion="$VERSION" \
-	-Dpackage="$groupId" \
+	-DdomainInterface="$INTERFACE" \
+	-Dpackage="$domainGroupId.$CONNECTOR" \
+	-DparentPackage="$domainGroupId" \
 	-Dname="$NAME"
 
 if [ $? != 0 ]; then
@@ -80,7 +79,7 @@ fi
 
 if [ -e "$artifactId" ]; then
 	if [ ! -e "$CONNECTOR" ]; then
-		echo "INFO: Renaming project from '$artifactId' to '$connector'"
+		echo "INFO: Renaming project from '$artifactId' to '$CONNECTOR'"
 		mv "$artifactId" "$CONNECTOR"
 		if [ -f "pom.xml" ]; then
 			sed "s/<module>$artifactId<\/module>/<module>$CONNECTOR<\/module>/" pom.xml >pom.xml.new
