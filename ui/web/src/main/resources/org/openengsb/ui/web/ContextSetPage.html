@@ -22,8 +22,8 @@
   <body>
     <wicket:extend>
       <wicket:message key="currentContextId.title"/>: <span wicket:id="currentContextId"></span><br/>
-      <a wicket:id="expandAll">Expand all nodes</a>
-      <a wicket:id="collapseAll">Collapse all nodes</a>
+      <a wicket:id="expandAll"><wicket:message key="expand">[expand]</wicket:message></a>
+      <a wicket:id="collapseAll"><wicket:message key="collapse">[collapse]</wicket:message></a>
       <form wicket:id="form">
         <div wicket:id="treeTable"/>
       </form>
