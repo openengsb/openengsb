@@ -32,7 +32,7 @@ import org.openengsb.ui.web.editor.EditorPanel;
 
 public class EditorPage extends BasePage {
 
-    private transient final ServiceManager serviceManager;
+    private final transient ServiceManager serviceManager;
     private EditorPanel editorPanel;
 
     public EditorPage(ServiceManager serviceManager) {
