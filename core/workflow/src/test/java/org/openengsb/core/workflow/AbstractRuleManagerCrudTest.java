@@ -16,10 +16,6 @@
 
 package org.openengsb.core.workflow;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +27,10 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager> extends
@@ -50,6 +50,20 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
             "when\nthen\nSystem.out.println(\"sample-code\");",
             new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "test"),
             "when\nthen\nSystem.out.println(\"\");", });
+
+        String sampleFlow = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<process xmlns=\"http://drools.org/drools-5.0/process\""
+                + "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\""
+                + "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\""
+                + "         type=\"RuleFlow\" name=\"flowname\" id=\"flowId\" package-name=\"org.openengsb\" >" + ""
+                + "  <header>" + "  </header>" + "  <nodes>"
+                + "    <start id=\"1\" name=\"Start\" x=\"100\" y=\"100\" width=\"48\" height=\"48\" />"
+                + "    <end id=\"2\" name=\"End\" x=\"245\" y=\"105\" width=\"48\" height=\"48\" />" + "  </nodes>"
+                + "  <connections>" + "    <connection from=\"1\" to=\"2\" />" + "  </connections>" + "</process>";
+
+        data.add(new Object[] { new RuleBaseElementId(RuleBaseElementType.Process, "org.openengsb", "flowId"),
+                sampleFlow, new RuleBaseElementId(RuleBaseElementType.Process, "at.ac.tuwien", "flowId2"),
+                sampleFlow.replace("org.openengsb", "at.ac.tuwien"), });
 
         // TODO: imports & globals
         // data.add(new Object[] { new

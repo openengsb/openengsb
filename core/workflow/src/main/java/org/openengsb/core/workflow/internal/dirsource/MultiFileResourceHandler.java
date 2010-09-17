@@ -43,6 +43,7 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
             resFile.getParentFile().mkdirs();
         }
         try {
+            code = sanitize(name, code);
             FileUtils.writeStringToFile(resFile, code);
         } catch (IOException e) {
             throw new RuleBaseException(String.format("could not write the %s to the filesystem", name.getType()), e);
@@ -96,6 +97,10 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
     }
 
     protected abstract Collection<RuleBaseElementId> listElementsInPackage(Package p);
+
+    public String sanitize(RuleBaseElementId name, String code) {
+        return code;
+    }
 
     @Override
     public Collection<RuleBaseElementId> list(String packageName) {
