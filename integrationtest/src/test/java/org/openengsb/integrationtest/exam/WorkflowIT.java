@@ -16,12 +16,16 @@
 
 package org.openengsb.integrationtest.exam;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.Domain;
@@ -39,6 +43,7 @@ import org.openengsb.integrationtest.util.BaseExamConfiguration;
 import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.Inject;
 import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.container.def.options.WorkingDirectoryOption;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.BundleContext;
@@ -65,9 +70,23 @@ public class WorkflowIT extends AbstractExamTestHelper {
     @Inject
     private BundleContext bundleContext;
 
+    protected static String getWorkingDirectory() {
+        return System.getProperty("java.io.tmpdir") + "/paxexam_runner_" + System.getProperty("user.name");
+    }
+
+    @BeforeClass
+    public static void beforeClass() {
+        try {
+            FileUtils.deleteDirectory(new File(getWorkingDirectory()));
+        } catch (IOException e) {
+            // fail this silently
+        }
+    }
+
     @Configuration
     public static Option[] configuration() {
         List<Option> baseConfiguration = BaseExamConfiguration.getBaseExamOptions("../");
+        baseConfiguration.add(new WorkingDirectoryOption(getWorkingDirectory()));
         BaseExamConfiguration.addEntireOpenEngSBPlatform(baseConfiguration);
         Option[] options = BaseExamConfiguration.convertOptionListToArray(baseConfiguration);
         return CoreOptions.options(options);
