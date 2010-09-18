@@ -29,11 +29,42 @@
 
   <section>
     <title>Prerequisites</title>
-    <para></para>
+    <para>TBW</para>
   </section>
 
   <section>
-    <title>Create a new domain project</title>
+    <title>Creating a new domain project</title>
+
+    <para>TBW</para>
+
+    <section>
+      <title>Using the Maven Archetype</title>
+
+      <para>TBW - explain all variables</para>
+    </section>
+
+    <section>
+      <title>Using the <literal>gen-domain.sh</literal> shell script</title>
+
+      <para>TBW</para>
+    </section>
+
+    <section>
+      <title>Project structure</title>
+
+      <para>TBW</para>
+    </section>
+
+    <section>
+      <title>Customizing</title>
+
+      <para>TBW</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Integrating the Domain into the OpenEngSB environment</title>
+
     <para>TBW</para>
   </section>
 
