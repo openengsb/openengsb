@@ -69,6 +69,7 @@
     <module>domains</module>
     <module>assembly</module>
     <module>integrationtest</module>
+    <module>tooling</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -520,6 +521,41 @@
               </execution>
             </executions>
           </plugin>
+        </plugins>
+      </build>
+    </profile>
+        <profile>
+      <id>checkstyle</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <dependencies>
+            <dependency>
+              <groupId>org.openengsb</groupId>
+              <artifactId>tooling</artifactId>
+              <version>1.0.0-SNAPSHOT</version>
+            </dependency>
+            </dependencies>
+            <version>2.5</version>
+            <configuration>
+              <consoleOutput>true</consoleOutput>
+              <enableRulesSummary>true</enableRulesSummary>
+              <configLocation>checkstyle.xml</configLocation>
+              <failsOnError>true</failsOnError>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            </configuration>
+            <executions>
+              <execution>
+                <id>check</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>checkstyle</goal>
+                </goals>
+              </execution>
+            </executions>
+      </plugin>
         </plugins>
       </build>
     </profile>
