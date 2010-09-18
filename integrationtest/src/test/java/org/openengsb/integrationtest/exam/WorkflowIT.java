@@ -57,14 +57,14 @@ public class WorkflowIT extends AbstractExamTestHelper {
 
     @Test
     public void testHasHelloRule() throws Exception {
-        RuleManager ruleManager = retrieveService(bundleContext, RuleManager.class);
+        RuleManager ruleManager = retrieveService(getBundleContext(), RuleManager.class);
         Collection<RuleBaseElementId> list = ruleManager.list(RuleBaseElementType.Rule);
         Assert.assertTrue(list.contains(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1")));
     }
 
     @Test
     public void testSendEvent() throws Exception {
-        ContextCurrentService contextService = retrieveService(bundleContext, ContextCurrentService.class);
+        ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
         contextService.putValue("domains/NotificationDomain/defaultConnector/id", "dummyConnector");
@@ -75,14 +75,14 @@ public class WorkflowIT extends AbstractExamTestHelper {
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("id", "dummyConnector");
 
-        bundleContext.registerService(clazzes, dummy, properties);
+        getBundleContext().registerService(clazzes, dummy, properties);
 
         clazzes = new String[] { Domain.class.getName(), ExampleDomain.class.getName() };
         properties.put("id", "dummyLog");
 
-        bundleContext.registerService(clazzes, new DummyLogDomain(), properties);
+        getBundleContext().registerService(clazzes, new DummyLogDomain(), properties);
 
-        WorkflowService workflowService = retrieveService(bundleContext, WorkflowService.class);
+        WorkflowService workflowService = retrieveService(getBundleContext(), WorkflowService.class);
         Event e = new Event("42");
         workflowService.processEvent(e);
 

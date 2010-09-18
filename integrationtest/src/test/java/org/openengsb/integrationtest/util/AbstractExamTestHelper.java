@@ -37,7 +37,11 @@ import org.osgi.util.tracker.ServiceTracker;
 public abstract class AbstractExamTestHelper {
 
     @Inject
-    protected BundleContext bundleContext;
+    private BundleContext bundleContext;
+
+    protected BundleContext getBundleContext() {
+        return bundleContext;
+    }
 
     protected static String getWorkingDirectory() {
         return System.getProperty("java.io.tmpdir") + "/paxexam_runner_" + System.getProperty("user.name");
