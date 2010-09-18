@@ -22,9 +22,6 @@
     <requiredProperty key="implementationName">
       <defaultValue>OpenEngSB :: Domains :: Domainname :: Implementation</defaultValue>
     </requiredProperty>
-    <requiredProperty key="domainInterface">
-      <defaultValue>DomainInterfaceName</defaultValue>
-    </requiredProperty>
     <requiredProperty key="package">
       <defaultValue>org.openengsb.domains.domainname</defaultValue>
     </requiredProperty>
