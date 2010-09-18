@@ -16,16 +16,11 @@
 
 package org.openengsb.integrationtest.exam;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
-import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.Domain;
@@ -39,14 +34,7 @@ import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
-import org.openengsb.integrationtest.util.BaseExamConfiguration;
-import org.ops4j.pax.exam.CoreOptions;
-import org.ops4j.pax.exam.Inject;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.container.def.options.WorkingDirectoryOption;
-import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-import org.osgi.framework.BundleContext;
 
 @RunWith(JUnit4TestRunner.class)
 public class WorkflowIT extends AbstractExamTestHelper {
@@ -65,31 +53,6 @@ public class WorkflowIT extends AbstractExamTestHelper {
         @Override
         public void doSomething(String message) {
         }
-    }
-
-    @Inject
-    private BundleContext bundleContext;
-
-    protected static String getWorkingDirectory() {
-        return System.getProperty("java.io.tmpdir") + "/paxexam_runner_" + System.getProperty("user.name");
-    }
-
-    @BeforeClass
-    public static void beforeClass() {
-        try {
-            FileUtils.deleteDirectory(new File(getWorkingDirectory()));
-        } catch (IOException e) {
-            // fail this silently
-        }
-    }
-
-    @Configuration
-    public static Option[] configuration() {
-        List<Option> baseConfiguration = BaseExamConfiguration.getBaseExamOptions("../");
-        baseConfiguration.add(new WorkingDirectoryOption(getWorkingDirectory()));
-        BaseExamConfiguration.addEntireOpenEngSBPlatform(baseConfiguration);
-        Option[] options = BaseExamConfiguration.convertOptionListToArray(baseConfiguration);
-        return CoreOptions.options(options);
     }
 
     @Test
