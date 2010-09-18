@@ -44,7 +44,7 @@ fi
 DEFAULT_VERSION="1.0.0-SNAPSHOT"
 echo -n "Version (is $DEFAULT_VERSION): "
 read VERSION
-if [ "$VAL" = "" ]; then
+if [ "$VERSION" = "" ]; then
 	VERSION=$DEFAULT_VERSION
 fi
 
