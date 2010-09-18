@@ -48,12 +48,8 @@ public abstract class AbstractExamTestHelper {
     }
 
     @BeforeClass
-    public static void beforeClass() {
-        try {
-            FileUtils.deleteDirectory(new File(getWorkingDirectory()));
-        } catch (IOException e) {
-            // fail this silently
-        }
+    public static void beforeClass() throws IOException {
+        FileUtils.deleteDirectory(new File(getWorkingDirectory()));
     }
 
     @Configuration
