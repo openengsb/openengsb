@@ -25,11 +25,24 @@
     <requiredProperty key="domainInterface">
       <defaultValue>DomainInterfaceName</defaultValue>
     </requiredProperty>
+    <requiredProperty key="package">
+      <defaultValue>org.openengsb.domains.domainname</defaultValue>
+    </requiredProperty>
   </requiredProperties>
 
-  <modules>
-    <module id="implementation" dir="implementation" name="implementation" >
-    </module>
-  </modules>
+  <fileSets>
+    <fileSet filtered="true" packaged="true">
+      <directory>implementation/src/main/java</directory>
+      <includes>
+        <include>**/*.java</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory>implementation/src/main/resources</directory>
+      <includes>
+        <include>**/*</include>
+      </includes>
+    </fileSet>
+  </fileSets>
 
 </archetype-descriptor>
