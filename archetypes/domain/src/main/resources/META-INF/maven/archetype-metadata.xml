@@ -43,6 +43,12 @@
         <include>**/*</include>
       </includes>
     </fileSet>
+    <fileSet filtered="true" packaged="false">
+      <directory>implementation</directory>
+      <includes>
+        <include>*.xml</include>
+      </includes>
+    </fileSet>
   </fileSets>
 
 </archetype-descriptor>
