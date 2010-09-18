@@ -39,12 +39,14 @@ if [ "$NAME_PREFIX" = "" ]; then
 	NAME_PREFIX=$DEFAULT_NAME_PREFIX
 fi
 
+artifactId="openengsb-domains-$DOMAIN-parent"
+
 mvn archetype:generate \
 	-DarchetypeGroupId="org.openengsb.archetypes" \
 	-DarchetypeArtifactId="openengsb-archetypes-domain" \
 	-DarchetypeVersion="$VERSION" \
 	-DgroupId="org.openengsb.domains.$DOMAIN" \
-	-DartifactId="openengsb-domains-$DOMAIN-parent" \
+	-DartifactId="$artifactId" \
 	-Dversion="$VERSION" \
 	-DimplementationArtifactId="openengsb-domains-$DOMAIN-implementation" \
 	-Dpackage="org.openengsb.domains.$DOMAIN" \
@@ -53,6 +55,19 @@ mvn archetype:generate \
 
 if [ $? != 0 ]; then
 	exit $?
+fi
+
+if [ -e "$artifactId" ]; then
+	if [ ! -e "$DOMAIN" ]; then
+		echo "INFO: Renaming project from '$artifactId' to '$DOMAIN'"
+		mv "$artifactId" "$DOMAIN"
+		if [ -f "pom.xml" ]; then
+			sed "s/<module>$artifactId<\/module>/<module>$DOMAIN<\/module>/" pom.xml >pom.xml.new
+			mv pom.xml.new pom.xml
+		fi
+	else
+		echo "WARNING: Renaming of domain directory to '$DOMAIN' not possible, directory already exists!"
+	fi
 fi
 
 echo ""
