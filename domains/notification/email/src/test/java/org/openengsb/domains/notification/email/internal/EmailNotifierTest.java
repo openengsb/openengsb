@@ -19,6 +19,7 @@ package org.openengsb.domains.notification.email.internal;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.DomainMethodExecutionException;
+import org.openengsb.core.common.util.AliveEnum;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
 import org.openengsb.domains.notification.email.internal.abstraction.MailProperties;
 import org.openengsb.domains.notification.model.Attachment;
@@ -26,6 +27,9 @@ import org.openengsb.domains.notification.model.Notification;
 import org.springframework.test.annotation.ExpectedException;
 
 import java.util.ArrayList;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class EmailNotifierTest {
 
@@ -61,6 +65,16 @@ public class EmailNotifierTest {
                 send(Mockito.<MailProperties>anyObject(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
         notifier.notify(notificationMock);
+    }
+
+    @Test
+    public void testAliveStateAfterEmailNotifierCreation_ShouldReturnConnecting() {
+        MailAbstraction mailMock = Mockito.mock(MailAbstraction.class);
+        MailProperties propertiesMock = Mockito.mock(MailProperties.class);
+        Mockito.when(mailMock.createMailProperties()).thenReturn(propertiesMock);
+        EmailNotifier notifier = new EmailNotifier("notifier1", mailMock);
+
+        assertThat(notifier.getAliveState(), is(AliveEnum.CONNECTING));
     }
 
 }
