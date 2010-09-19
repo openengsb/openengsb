@@ -16,24 +16,24 @@
 
 package org.openengsb.core.common;
 
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.Map;
-
 import junit.framework.Assert;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.util.AliveEnum;
 import org.openengsb.core.common.util.BundleStringsTest;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Locale;
+import java.util.Map;
 
 public class AbstractServiceManagerTest {
 
@@ -44,6 +44,10 @@ public class AbstractServiceManagerTest {
     }
 
     private static class DummyInstance implements DummyDomain {
+        @Override
+        public AliveEnum getAliveState() {
+            return AliveEnum.OFFLINE;
+        }
     }
 
     private static class DummyServiceManager extends AbstractServiceManager<DummyDomain, DummyInstance> {

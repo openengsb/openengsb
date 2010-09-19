@@ -19,6 +19,7 @@ package org.openengsb.ui.web;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.util.AliveEnum;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -46,6 +47,11 @@ public class MethodUtilTest {
         public void hiddenMethod() {
 
         }
+
+        @Override
+        public AliveEnum getAliveState() {
+            return AliveEnum.OFFLINE;
+        }
     }
 
     public abstract class AbstractTestClass {
@@ -60,6 +66,11 @@ public class MethodUtilTest {
         @Override
         public void dosomething() {
         }
+
+        @Override
+        public AliveEnum getAliveState() {
+            return AliveEnum.OFFLINE;
+        }
     }
 
     public interface TestInterface2 extends Domain {
@@ -73,6 +84,11 @@ public class MethodUtilTest {
 
         @Override
         public void dosomething() {
+        }
+
+        @Override
+        public AliveEnum getAliveState() {
+            return AliveEnum.OFFLINE;
         }
     }
 

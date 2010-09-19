@@ -16,12 +16,7 @@
 
 package org.openengsb.core.workflow;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
 import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -30,12 +25,17 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.util.AliveEnum;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.notification.NotificationDomain;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WorkflowServiceTest {
 
@@ -49,6 +49,11 @@ public class WorkflowServiceTest {
         @Override
         public void log(String string) {
             log.append(string);
+        }
+
+        @Override
+        public AliveEnum getAliveState() {
+            return AliveEnum.OFFLINE;
         }
     }
 

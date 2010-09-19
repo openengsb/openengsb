@@ -16,17 +16,13 @@
 
 package org.openengsb.integrationtest.exam;
 
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.util.AliveEnum;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
@@ -43,6 +39,11 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.osgi.framework.BundleContext;
 
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.List;
+
 @RunWith(JUnit4TestRunner.class)
 public class WorkflowIT extends AbstractExamTestHelper {
 
@@ -54,11 +55,21 @@ public class WorkflowIT extends AbstractExamTestHelper {
         public void notify(Notification notification) {
             this.notification = notification;
         }
+
+        @Override
+        public AliveEnum getAliveState() {
+            return AliveEnum.OFFLINE;
+        }
     }
 
     public static class DummyLogDomain implements ExampleDomain {
         @Override
         public void doSomething(String message) {
+        }
+
+        @Override
+        public AliveEnum getAliveState() {
+            return AliveEnum.OFFLINE;
         }
     }
 

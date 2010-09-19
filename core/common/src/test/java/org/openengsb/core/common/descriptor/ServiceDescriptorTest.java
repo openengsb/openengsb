@@ -16,20 +16,21 @@
 
 package org.openengsb.core.common.descriptor;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Locale;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.util.AliveEnum;
 import org.openengsb.core.common.util.BundleStrings;
+
+import java.util.Locale;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ServiceDescriptorTest {
 
@@ -37,9 +38,17 @@ public class ServiceDescriptorTest {
     }
 
     private static class DummyInstance implements DummyDomain {
+        @Override
+        public AliveEnum getAliveState() {
+            return AliveEnum.OFFLINE;
+        }
     }
 
     private static class OtherInstance implements Domain {
+       @Override
+       public AliveEnum getAliveState() {
+           return AliveEnum.OFFLINE;
+       }
     }
 
     private Locale locale;
