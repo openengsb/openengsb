@@ -16,9 +16,19 @@
 
 package org.openengsb.domains.notification.email.internal.abstraction;
 
+import org.openengsb.core.common.util.AliveEnum;
+
 public interface MailAbstraction {
 
     void send( MailProperties properties, String subject, String textContet, String receiver);
 
+    /**
+     *
+     * @param properties have to contain at least: smtp host, username, and password
+     */
+    void connect(MailProperties properties);
+
     MailProperties createMailProperties();
+
+    AliveEnum getAliveState();
 }

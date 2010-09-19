@@ -68,13 +68,34 @@ public class EmailNotifierTest {
     }
 
     @Test
-    public void testAliveStateAfterEmailNotifierCreation_ShouldReturnConnecting() {
+    public void testAliveStateAfterEmailNotifierCreation_ShouldReturnOnline() {
         MailAbstraction mailMock = Mockito.mock(MailAbstraction.class);
         MailProperties propertiesMock = Mockito.mock(MailProperties.class);
         Mockito.when(mailMock.createMailProperties()).thenReturn(propertiesMock);
         EmailNotifier notifier = new EmailNotifier("notifier1", mailMock);
 
-        assertThat(notifier.getAliveState(), is(AliveEnum.CONNECTING));
+        Mockito.verify(mailMock).connect(propertiesMock);
+        Mockito.when(mailMock.getAliveState()).thenReturn(AliveEnum.ONLINE);
+
+        assertThat(notifier.getAliveState(), is(AliveEnum.ONLINE));
+    }
+
+    @Test
+    public void EmailNotifierShouldBeOnlineAfterFirstSend_ShouldReturnOnline() {
+        MailAbstraction mailMock = Mockito.mock(MailAbstraction.class);
+        MailProperties propertiesMock = Mockito.mock(MailProperties.class);
+        Mockito.when(mailMock.createMailProperties()).thenReturn(propertiesMock);
+        EmailNotifier notifier = new EmailNotifier("notifier1", mailMock);
+
+        Notification notification = new Notification();
+        notification.setRecipient("openengsb.notification.test@gmail.com");
+        notification.setSubject("Subject");
+        notification.setMessage("Content");
+        notification.setAttachments(new ArrayList<Attachment>());
+
+        Mockito.when(mailMock.getAliveState()).thenReturn(AliveEnum.ONLINE);
+        notifier.notify(notification);
+        assertThat(notifier.getAliveState(), is(AliveEnum.ONLINE));
     }
 
 }

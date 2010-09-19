@@ -30,19 +30,27 @@ public class EmailNotifier implements NotificationDomain {
     private final MailAbstraction mailAbstraction;
     private ServiceRegistration serviceRegistration;
     private final MailProperties properties;
-    private AliveEnum aliveState = AliveEnum.OFFLINE;
 
     public EmailNotifier(String id, MailAbstraction mailAbstraction) {
         this.id = id;
         this.mailAbstraction = mailAbstraction;
         properties = mailAbstraction.createMailProperties();
-        this.aliveState = AliveEnum.CONNECTING;
+        mailAbstraction.connect(properties);
     }
 
     @Override
     public void notify(Notification notification) {
         mailAbstraction.send(properties, notification.getSubject(), notification.getMessage(), notification
                 .getRecipient());
+    }
+
+    @Override
+    public AliveEnum getAliveState() {
+        AliveEnum aliveState = mailAbstraction.getAliveState();
+        if (aliveState == null) {
+            return AliveEnum.OFFLINE;
+        }
+        return aliveState;
     }
 
     public String getId() {
@@ -59,10 +67,5 @@ public class EmailNotifier implements NotificationDomain {
 
     public MailProperties getProperties() {
         return properties;
-    }
-
-    @Override
-    public AliveEnum getAliveState() {
-        return this.aliveState;
     }
 }
