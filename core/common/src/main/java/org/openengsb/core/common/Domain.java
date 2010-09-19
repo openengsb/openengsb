@@ -23,7 +23,11 @@ import org.openengsb.core.common.util.AliveEnum;
  * the OpenEngSB environment.
  */
 public interface Domain {
-    
-     public AliveEnum getAliveState();
+
+    /**
+     * return the current state of the service, 
+     * @see org.openengsb.core.common.util.AliveEnum
+     */
+    AliveEnum getAliveState();
 
 }

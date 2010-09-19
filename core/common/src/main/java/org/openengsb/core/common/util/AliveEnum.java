@@ -28,16 +28,15 @@ public enum AliveEnum {
      */
     ONLINE,
 
-
     /**
      * domain is offline, means an error occurred and it has to updated
      */
     OFFLINE,
 
-
     /**
-     * domain is disconnected means, from the view point of a domain everything is ok,
+     * domain is disconnected means, from the view point of a domain everything is ok, but there is no
+     * connection the the service( e.g. no internet connection,),
      */
-    DISCONNECTED;
+    DISCONNECTED
 
 }

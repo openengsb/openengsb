@@ -16,26 +16,26 @@
 
 package org.openengsb.core.common;
 
-import java.lang.reflect.ParameterizedType;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.Map;
-
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.util.BundleStrings;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.springframework.osgi.context.BundleContextAware;
 
+import java.lang.reflect.ParameterizedType;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Locale;
+import java.util.Map;
+
 /**
  * Base class for {@link ServiceManager} implementations. Handles all OSGi related stuff and exporting the right service
  * properties that are needed for service discovery.
- * 
+ * <p/>
  * All service-specific action, like descriptor building, service instantiation and service updating are encapsulated in
  * a {@link ServiceInstanceFactory}. Creating a new service manager should be as simple as implementing the
  * {@link ServiceInstanceFactory} and creating a subclass of this class:
- * 
+ * <p/>
  * <pre>
  * public class ExampleServiceManager extends AbstractServiceManager&lt;ExampleDomain, TheInstanceType&gt; {
  *     public ExampleServiceManager(ServiceInstanceFactory&lt;ExampleDomain, TheInstanceType&gt; factory) {
@@ -43,12 +43,12 @@ import org.springframework.osgi.context.BundleContextAware;
  *     }
  * }
  * </pre>
- * 
+ *
  * @param <DomainType> interface of the domain this service manages
  * @param <InstanceType> actual service implementation this service manages
  */
-public abstract class AbstractServiceManager<DomainType extends Domain, InstanceType extends DomainType> implements
-        ServiceManager, BundleContextAware {
+public abstract class AbstractServiceManager<DomainType extends Domain, InstanceType extends DomainType>
+    implements ServiceManager, BundleContextAware {
 
     private final class DomainRepresentation {
         private final InstanceType service;
@@ -84,7 +84,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     @Override
     public ServiceDescriptor getDescriptor(Locale locale) {
         return factory.getDescriptor(ServiceDescriptor.builder(locale, strings).id(getImplementationClass().getName())
-                .serviceType(getDomainInterface()).implementationType(getImplementationClass()));
+            .serviceType(getDomainInterface()).implementationType(getImplementationClass()));
     }
 
     @Override
@@ -93,9 +93,9 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             if (!services.containsKey(id)) {
                 InstanceType instance = factory.createServiceInstance(id, attributes);
                 Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
-                ServiceRegistration registration = bundleContext.registerService(new String[] {
-                        getImplementationClass().getName(), getDomainInterface().getName(), Domain.class.getName() },
-                        instance, serviceProperties);
+                ServiceRegistration registration = bundleContext.registerService(
+                    new String[]{getImplementationClass().getName(), getDomainInterface().getName(),
+                        Domain.class.getName()}, instance, serviceProperties);
                 services.put(id, new DomainRepresentation(instance, registration));
             } else {
                 factory.updateServiceInstance(services.get(id).service, attributes);
@@ -125,7 +125,8 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
 
     @SuppressWarnings("unchecked")
     protected Class<InstanceType> getImplementationClass() {
-        return (Class<InstanceType>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
+        return (Class<InstanceType>) ((ParameterizedType) getClass().getGenericSuperclass())
+            .getActualTypeArguments()[1];
     }
 
     private Hashtable<String, String> createNotificationServiceProperties(String id) {
