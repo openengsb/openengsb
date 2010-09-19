@@ -21,12 +21,16 @@
       xml:lang="en" lang="en">
   <body>
     <wicket:extend>
-      <wicket:message key="currentContextId.title"/>: <span wicket:id="currentContextId"></span><br/>
       <a wicket:id="expandAll"><wicket:message key="expand">[expand]</wicket:message></a>
       <a wicket:id="collapseAll"><wicket:message key="collapse">[collapse]</wicket:message></a>
       <form wicket:id="form">
         <div wicket:id="treeTable"/>
-      </form>
+        <label><wicket:message key="pathLabel">[pathLabel]</wicket:message></label>
+        <input wicket:id="path"/>
+        <label><wicket:message key="valueLabel">[valueLabel]</wicket:message></label>
+        <input wicket:id="value"/>
+        <button wicket:id="save"><wicket:message key="save">[save]</wicket:message></button>
+     </form>
     </wicket:extend>
   </body>
 </html>
