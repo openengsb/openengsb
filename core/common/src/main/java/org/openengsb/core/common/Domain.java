@@ -16,10 +16,14 @@
 
 package org.openengsb.core.common;
 
+import org.openengsb.core.common.util.AliveEnum;
+
 /**
  * Base interface all domain interfaces have to implement to be discoverable in
  * the OpenEngSB environment.
  */
 public interface Domain {
+    
+     public AliveEnum getAliveState();
 
 }
