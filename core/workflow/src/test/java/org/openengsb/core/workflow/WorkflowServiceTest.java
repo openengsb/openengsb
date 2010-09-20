@@ -25,7 +25,7 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
@@ -52,8 +52,8 @@ public class WorkflowServiceTest {
         }
 
         @Override
-        public AliveEnum getAliveState() {
-            return AliveEnum.OFFLINE;
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
         }
     }
 

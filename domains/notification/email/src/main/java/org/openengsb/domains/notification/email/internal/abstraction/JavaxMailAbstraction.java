@@ -17,7 +17,7 @@
 package org.openengsb.domains.notification.email.internal.abstraction;
 
 import org.openengsb.core.common.DomainMethodExecutionException;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 
 import javax.mail.*;
 import javax.mail.Message.RecipientType;
@@ -27,7 +27,7 @@ import java.util.Properties;
 
 public class JavaxMailAbstraction implements MailAbstraction {
 
-    private AliveEnum aliveState = AliveEnum.OFFLINE;
+    private AliveState aliveState = AliveState.OFFLINE;
 
     private Session createSession(final MailPropertiesImp properties) {
         Session session = Session.getDefaultInstance(properties.getProperties(), new Authenticator() {
@@ -46,7 +46,7 @@ public class JavaxMailAbstraction implements MailAbstraction {
                 throw new RuntimeException("This implementation works only with internal mail properties");
             }
             MailPropertiesImp props = (MailPropertiesImp) properties;
-            if (!(this.aliveState == AliveEnum.ONLINE)) {
+            if (!(this.aliveState == AliveState.ONLINE)) {
                 connect(props);
             }
             Session session = createSession(props);
@@ -78,12 +78,12 @@ public class JavaxMailAbstraction implements MailAbstraction {
             tr = session.getTransport("smtp");
             tr.connect(smtpHost, username, password);
             if (tr.isConnected()) {
-                this.aliveState = AliveEnum.ONLINE;
+                this.aliveState = AliveState.ONLINE;
             } else {
-                this.aliveState = AliveEnum.OFFLINE;
+                this.aliveState = AliveState.OFFLINE;
             }
         } catch (MessagingException e) {
-            this.aliveState = AliveEnum.OFFLINE;
+            this.aliveState = AliveState.OFFLINE;
             throw new DomainMethodExecutionException("Emailnotifier could not connect (wrong username/password or" +
                     " mail server unavailable) ");
         }
@@ -177,7 +177,7 @@ public class JavaxMailAbstraction implements MailAbstraction {
     }
 
     @Override
-    public AliveEnum getAliveState() {
+    public AliveState getAliveState() {
         return aliveState;
     }
 

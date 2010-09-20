@@ -19,7 +19,7 @@ package org.openengsb.ui.web;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -49,8 +49,8 @@ public class MethodUtilTest {
         }
 
         @Override
-        public AliveEnum getAliveState() {
-            return AliveEnum.OFFLINE;
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
         }
     }
 
@@ -68,8 +68,8 @@ public class MethodUtilTest {
         }
 
         @Override
-        public AliveEnum getAliveState() {
-            return AliveEnum.OFFLINE;
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
         }
     }
 
@@ -87,8 +87,8 @@ public class MethodUtilTest {
         }
 
         @Override
-        public AliveEnum getAliveState() {
-            return AliveEnum.OFFLINE;
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
         }
     }
 

@@ -17,7 +17,7 @@
 package org.openengsb.core.common;
 
 import org.junit.Test;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -28,7 +28,7 @@ public class DomainTest {
 
     public interface TestInterface extends Domain {
         @Override
-        public AliveEnum getAliveState();
+        public AliveState getAliveState();
 
         public void doSomething();
     }
@@ -54,7 +54,7 @@ public class DomainTest {
     }
 
     private class TestClass implements TestInterface {
-        private AliveEnum state;
+        private AliveState state;
         FactoryMethodsInterface fm;
 
         TestClass(FactoryMethodsInterface fm) {
@@ -64,14 +64,14 @@ public class DomainTest {
 
         private void init() {
             if (fm.connect()) {
-                state = AliveEnum.CONNECTING;
+                state = AliveState.CONNECTING;
             } else {
-                state = AliveEnum.DISCONNECTED;
+                state = AliveState.DISCONNECTED;
             }
         }
 
         @Override
-        public AliveEnum getAliveState() {
+        public AliveState getAliveState() {
             return this.state;
         }
 
@@ -79,9 +79,9 @@ public class DomainTest {
         public void doSomething() {
 
             if (fm.update()) {
-                state = AliveEnum.ONLINE;
+                state = AliveState.ONLINE;
             } else {
-                state = AliveEnum.OFFLINE;
+                state = AliveState.OFFLINE;
             }
         }
     }
@@ -92,7 +92,7 @@ public class DomainTest {
         FactoryMethodsInterface fmi = mock(FactoryMethods.class);
         when(fmi.connect()).thenReturn(true);
         TestClass test = new TestClass(fmi);
-        assertThat(test.getAliveState(), is(AliveEnum.CONNECTING));
+        assertThat(test.getAliveState(), is(AliveState.CONNECTING));
     }
 
     @Test
@@ -100,7 +100,7 @@ public class DomainTest {
         FactoryMethodsInterface fmi = mock(FactoryMethods.class);
         when(fmi.connect()).thenReturn(false);
         TestClass test = new TestClass(fmi);
-        assertThat(test.getAliveState(), is(AliveEnum.DISCONNECTED));
+        assertThat(test.getAliveState(), is(AliveState.DISCONNECTED));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class DomainTest {
         when(fmi.update()).thenReturn(true);
         TestClass test = new TestClass(fmi);
         test.doSomething();
-        assertThat(test.getAliveState(), is(AliveEnum.ONLINE));
+        assertThat(test.getAliveState(), is(AliveState.ONLINE));
     }
 
         @Test
@@ -120,6 +120,6 @@ public class DomainTest {
         when(fmi.update()).thenReturn(false);
         TestClass test = new TestClass(fmi);
         test.doSomething();
-        assertThat(test.getAliveState(), is(AliveEnum.OFFLINE));
+        assertThat(test.getAliveState(), is(AliveState.OFFLINE));
     }
 }

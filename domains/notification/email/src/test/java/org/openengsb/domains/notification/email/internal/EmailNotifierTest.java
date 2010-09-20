@@ -19,7 +19,7 @@ package org.openengsb.domains.notification.email.internal;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.DomainMethodExecutionException;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
 import org.openengsb.domains.notification.email.internal.abstraction.MailProperties;
 import org.openengsb.domains.notification.model.Attachment;
@@ -73,8 +73,8 @@ public class EmailNotifierTest {
         MailProperties propertiesMock = Mockito.mock(MailProperties.class);
         Mockito.when(mailMock.createMailProperties()).thenReturn(propertiesMock);
         EmailNotifier notifier = new EmailNotifier("notifier1", mailMock);
-        Mockito.when(mailMock.getAliveState()).thenReturn(AliveEnum.ONLINE);
-        assertThat(notifier.getAliveState(), is(AliveEnum.ONLINE));
+        Mockito.when(mailMock.getAliveState()).thenReturn(AliveState.ONLINE);
+        assertThat(notifier.getAliveState(), is(AliveState.ONLINE));
     }
 
     @Test
@@ -90,9 +90,9 @@ public class EmailNotifierTest {
         notification.setMessage("Content");
         notification.setAttachments(new ArrayList<Attachment>());
 
-        Mockito.when(mailMock.getAliveState()).thenReturn(AliveEnum.ONLINE);
+        Mockito.when(mailMock.getAliveState()).thenReturn(AliveState.ONLINE);
         notifier.notify(notification);
-        assertThat(notifier.getAliveState(), is(AliveEnum.ONLINE));
+        assertThat(notifier.getAliveState(), is(AliveState.ONLINE));
     }
 
 }

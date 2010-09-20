@@ -21,7 +21,7 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -39,8 +39,8 @@ public class OsgiDomainServiceTest {
 
     private static class DummyInstance implements DummyDomain {
         @Override
-        public AliveEnum getAliveState() {
-            return AliveEnum.OFFLINE;
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
         }
     }
 

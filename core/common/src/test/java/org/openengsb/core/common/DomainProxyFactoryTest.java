@@ -19,7 +19,7 @@ package org.openengsb.core.common;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.context.ContextService;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -44,8 +44,8 @@ public class DomainProxyFactoryTest {
         }
 
         @Override
-        public AliveEnum getAliveState() {
-            return AliveEnum.ONLINE;
+        public AliveState getAliveState() {
+            return AliveState.ONLINE;
         }
     }
 

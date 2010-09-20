@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.core.common.util.BundleStrings;
 
 import java.util.Locale;
@@ -39,15 +39,15 @@ public class ServiceDescriptorTest {
 
     private static class DummyInstance implements DummyDomain {
         @Override
-        public AliveEnum getAliveState() {
-            return AliveEnum.OFFLINE;
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
         }
     }
 
     private static class OtherInstance implements Domain {
        @Override
-       public AliveEnum getAliveState() {
-           return AliveEnum.OFFLINE;
+       public AliveState getAliveState() {
+           return AliveState.OFFLINE;
        }
     }
 

@@ -16,7 +16,7 @@
 
 package org.openengsb.core.common.util;
 
-public enum AliveEnum {
+public enum AliveState {
 
     /**
      * domain is connecting

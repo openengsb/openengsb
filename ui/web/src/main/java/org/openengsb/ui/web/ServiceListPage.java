@@ -31,7 +31,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
@@ -54,26 +54,26 @@ public class ServiceListPage extends BasePage {
     private List<ServiceManager> serviceManager;
 
 
-    private Map<AliveEnum, List<ServiceReference>> domainServiceMap;
+    private Map<AliveState, List<ServiceReference>> domainServiceMap;
 
 
     public ServiceListPage() {
-        domainServiceMap = new HashMap<AliveEnum, List<ServiceReference>>();
-        domainServiceMap.put(AliveEnum.CONNECTING, new ArrayList<ServiceReference>());
-        domainServiceMap.put(AliveEnum.DISCONNECTED, new ArrayList<ServiceReference>());
-        domainServiceMap.put(AliveEnum.ONLINE, new ArrayList<ServiceReference>());
-        domainServiceMap.put(AliveEnum.OFFLINE, new ArrayList<ServiceReference>());
+        domainServiceMap = new HashMap<AliveState, List<ServiceReference>>();
+        domainServiceMap.put(AliveState.CONNECTING, new ArrayList<ServiceReference>());
+        domainServiceMap.put(AliveState.DISCONNECTED, new ArrayList<ServiceReference>());
+        domainServiceMap.put(AliveState.ONLINE, new ArrayList<ServiceReference>());
+        domainServiceMap.put(AliveState.OFFLINE, new ArrayList<ServiceReference>());
 
         log.debug("service list initialized");
 
         IModel<List<ServiceReference>> connectingServicesLoadableModel = createLoadableServiceReferenceModel(
-            AliveEnum.CONNECTING);
+            AliveState.CONNECTING);
         IModel<List<ServiceReference>> onlineServicesLoadableModel = createLoadableServiceReferenceModel(
-            AliveEnum.ONLINE);
+            AliveState.ONLINE);
         IModel<List<ServiceReference>> offlineServicesLoadableModel = createLoadableServiceReferenceModel(
-            AliveEnum.OFFLINE);
+            AliveState.OFFLINE);
         IModel<List<ServiceReference>> disconnectedServicesLoadableModel = createLoadableServiceReferenceModel(
-            AliveEnum.DISCONNECTED);
+            AliveState.DISCONNECTED);
 
         WebMarkupContainer connectingServicePanel = new WebMarkupContainer("connectingServicePanel");
         connectingServicePanel.setOutputMarkupId(true);
@@ -195,7 +195,7 @@ public class ServiceListPage extends BasePage {
         return null;
     }
 
-    private LoadableDetachableModel<List<ServiceReference>> createLoadableServiceReferenceModel(final AliveEnum state) {
+    private LoadableDetachableModel<List<ServiceReference>> createLoadableServiceReferenceModel(final AliveState state) {
         return new LoadableDetachableModel<List<ServiceReference>>() {
             @Override
             protected List<ServiceReference> load() {

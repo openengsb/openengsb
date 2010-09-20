@@ -16,7 +16,7 @@
 
 package org.openengsb.core.common;
 
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 
 /**
  * Base interface all domain interfaces have to implement to be discoverable in
@@ -26,8 +26,8 @@ public interface Domain {
 
     /**
      * return the current state of the service, 
-     * @see org.openengsb.core.common.util.AliveEnum
+     * @see org.openengsb.core.common.util.AliveState
      */
-    AliveEnum getAliveState();
+    AliveState getAliveState();
 
 }

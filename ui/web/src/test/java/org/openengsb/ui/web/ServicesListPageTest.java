@@ -30,7 +30,7 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
@@ -58,16 +58,16 @@ public class ServicesListPageTest {
 
     public class TestService implements TestInterface {
 
-        AliveEnum aliveState = AliveEnum.CONNECTING;
+        AliveState aliveState = AliveState.CONNECTING;
 
         @Override
-        public AliveEnum getAliveState() {
+        public AliveState getAliveState() {
             return aliveState;
         }
 
         @Override
         public void doSomethingToChangeState() {
-            aliveState = AliveEnum.ONLINE;
+            aliveState = AliveState.ONLINE;
         }
     }
 

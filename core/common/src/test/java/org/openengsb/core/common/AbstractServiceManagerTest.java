@@ -22,7 +22,7 @@ import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.core.common.util.BundleStringsTest;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
@@ -48,15 +48,15 @@ public class AbstractServiceManagerTest {
     }
 
     private static class DummyInstance implements DummyDomain {
-        AliveEnum aliveState = AliveEnum.OFFLINE;
+        AliveState aliveState = AliveState.OFFLINE;
 
         @Override
-        public AliveEnum getAliveState() {
+        public AliveState getAliveState() {
             return aliveState;
         }
 
         public void doSomethingToChangeState() {
-            aliveState = AliveEnum.ONLINE;
+            aliveState = AliveState.ONLINE;
         }
     }
 

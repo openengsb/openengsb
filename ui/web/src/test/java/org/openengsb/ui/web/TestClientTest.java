@@ -42,7 +42,7 @@ import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
 import org.openengsb.ui.web.model.MethodCall;
@@ -99,8 +99,8 @@ public class TestClientTest {
         }
 
         @Override
-        public AliveEnum getAliveState() {
-            return AliveEnum.OFFLINE;
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
         }
 
     }

@@ -16,7 +16,7 @@
 
 package org.openengsb.domains.notification.email.internal.abstraction;
 
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 
 public interface MailAbstraction {
 
@@ -30,5 +30,5 @@ public interface MailAbstraction {
 
     MailProperties createMailProperties();
 
-    AliveEnum getAliveState();
+    AliveState getAliveState();
 }

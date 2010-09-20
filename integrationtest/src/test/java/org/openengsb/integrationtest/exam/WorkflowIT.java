@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
@@ -57,8 +57,8 @@ public class WorkflowIT extends AbstractExamTestHelper {
         }
 
         @Override
-        public AliveEnum getAliveState() {
-            return AliveEnum.OFFLINE;
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
         }
     }
 
@@ -68,8 +68,8 @@ public class WorkflowIT extends AbstractExamTestHelper {
         }
 
         @Override
-        public AliveEnum getAliveState() {
-            return AliveEnum.OFFLINE;
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
         }
     }
 

@@ -16,7 +16,7 @@
 
 package org.openengsb.domains.notification.email.internal;
 
-import org.openengsb.core.common.util.AliveEnum;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
 import org.openengsb.domains.notification.email.internal.abstraction.MailProperties;
@@ -44,10 +44,10 @@ public class EmailNotifier implements NotificationDomain {
     }
 
     @Override
-    public AliveEnum getAliveState() {
-        AliveEnum aliveState = mailAbstraction.getAliveState();
+    public AliveState getAliveState() {
+        AliveState aliveState = mailAbstraction.getAliveState();
         if (aliveState == null) {
-            return AliveEnum.OFFLINE;
+            return AliveState.OFFLINE;
         }
         return aliveState;
     }
