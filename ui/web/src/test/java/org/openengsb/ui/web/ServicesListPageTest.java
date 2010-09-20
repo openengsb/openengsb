@@ -17,6 +17,7 @@
 package org.openengsb.ui.web;
 
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.apache.wicket.request.target.component.PageRequestTarget;
@@ -119,7 +120,7 @@ public class ServicesListPageTest {
 
     @Test
     public void verifyListViews_ServiceShouldBeAfterStateChangeInOtherList() {
-           serviceManagerListMock.add(serviceManagerMock);
+        serviceManagerListMock.add(serviceManagerMock);
         ServiceReference serRef = mock(ServiceReference.class);
         when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
         when(serRef.getProperty("id")).thenReturn("testService");
@@ -155,7 +156,7 @@ public class ServicesListPageTest {
 
     @Test
     public void testIfCorrectServiceDataIsInList_ShouldReturnTheNameOfTheServiceManagerAndDescrption() {
-           serviceManagerListMock.add(serviceManagerMock);
+        serviceManagerListMock.add(serviceManagerMock);
         ServiceReference serRef = mock(ServiceReference.class);
         when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
         when(serRef.getProperty("id")).thenReturn("testService");
@@ -172,14 +173,57 @@ public class ServicesListPageTest {
         tester.startPage(ServiceListPage.class);
 
         tester.debugComponentTrees();
-        Label name = (Label)tester.getComponentFromLastRenderedPage("connectingServices:0:service.name");
-        Label description = (Label)tester.getComponentFromLastRenderedPage("connectingServices:0:service.description");
+        Label name = (Label) tester.getComponentFromLastRenderedPage("connectingServices:0:service.name");
+        Label description = (Label) tester.getComponentFromLastRenderedPage("connectingServices:0:service.description");
         assertThat(name.getDefaultModelObjectAsString(), is("testService"));
         assertThat(description.getDefaultModelObjectAsString(), is("testDescription"));
 
     }
 
-    
+    @Test
+    public void testVisibiltyOfInfoMessages() {
+        serviceManagerListMock.add(serviceManagerMock);
+        ServiceReference serRef = mock(ServiceReference.class);
+        when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
+        when(serRef.getProperty("id")).thenReturn("testService");
+        when(serRef.getProperty("managerId")).thenReturn("serviceManagerId");
+        managedServiceInstances.add(serRef);
+        TestInterface domainService = new TestService();
+        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
+
+        ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
+        when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
+        when(serviceDescriptorMock.getDescription()).thenReturn("testDescription");
+
+        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
+        tester.startPage(ServiceListPage.class);
+        tester.assertVisible("noOnServices");
+        tester.assertVisible("noOffServices");
+        tester.assertVisible("noDisServices");
+        tester.assertInvisible("noConServices");
+    }
+
+    @Test
+    public void verifyIfEditButton_OnClickShoutReturnEditorPage() {
+        serviceManagerListMock.add(serviceManagerMock);
+        ServiceReference serRef = mock(ServiceReference.class);
+        when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
+        when(serRef.getProperty("id")).thenReturn("testService");
+        when(serRef.getProperty("managerId")).thenReturn("serviceManagerId");
+        managedServiceInstances.add(serRef);
+        TestInterface domainService = new TestService();
+        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
+
+        ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
+        when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
+        when(serviceDescriptorMock.getDescription()).thenReturn("testDescription");
+
+        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
+        tester.startPage(ServiceListPage.class);
+        tester.debugComponentTrees();
+        tester.assertComponent("connectingServices:0:updateService", Link.class);
+    }
+
 
     private void setUpDomainServiceMap() {
         ServiceReference serRef = mock(ServiceReference.class);

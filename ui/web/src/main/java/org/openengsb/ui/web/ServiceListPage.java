@@ -19,6 +19,7 @@ package org.openengsb.ui.web;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
@@ -54,10 +55,10 @@ public class ServiceListPage extends BasePage {
 
     public ServiceListPage() {
         domainServiceMap = new HashMap<AliveEnum, List<ServiceReference>>();
-        domainServiceMap.put(AliveEnum.CONNECTING, new ArrayList<ServiceReference>()  );
-        domainServiceMap.put(AliveEnum.DISCONNECTED,new ArrayList<ServiceReference>()  );
-        domainServiceMap.put(AliveEnum.ONLINE, new ArrayList<ServiceReference>()  );
-        domainServiceMap.put(AliveEnum.OFFLINE,new ArrayList<ServiceReference>()  );
+        domainServiceMap.put(AliveEnum.CONNECTING, new ArrayList<ServiceReference>());
+        domainServiceMap.put(AliveEnum.DISCONNECTED, new ArrayList<ServiceReference>());
+        domainServiceMap.put(AliveEnum.ONLINE, new ArrayList<ServiceReference>());
+        domainServiceMap.put(AliveEnum.OFFLINE, new ArrayList<ServiceReference>());
 
         log.debug("service list initialized");
 
@@ -75,27 +76,65 @@ public class ServiceListPage extends BasePage {
         add(createServiceListView(onlineServicesLoadableModel, "onlineServices"));
         add(createServiceListView(offlineServicesLoadableModel, "offlineServices"));
         add(createServiceListView(disconnectedServicesLoadableModel, "disconnectedServices"));
+        Label noConServices = new Label("noConServices", this.getLocalizer().getString("noServicesAvailable", this));
+        Label noOnServices = new Label("noOnServices", this.getLocalizer().getString("noServicesAvailable", this));
+        Label noOffServices = new Label("noOffServices", this.getLocalizer().getString("noServicesAvailable", this));
+        Label noDiscServices = new Label("noDisServices", this.getLocalizer().getString("noServicesAvailable", this));
+        noConServices.setVisible(false);
+        noOnServices.setVisible(false);
+        noOffServices.setVisible(false);
+        noDiscServices.setVisible(false);
 
+        add(noConServices);
+        add(noOnServices);
+        add(noOffServices);
+        add(noDiscServices);
+
+        if (connectingServicesLoadableModel.getObject().isEmpty()) {
+            noConServices.setVisible(true);
+        }
+        if (onlineServicesLoadableModel.getObject().isEmpty()) {
+            noOnServices.setVisible(true);
+        }
+        if (offlineServicesLoadableModel.getObject().isEmpty()) {
+            noOffServices.setVisible(true);
+        }
+        if (disconnectedServicesLoadableModel.getObject().isEmpty()) {
+            noDiscServices.setVisible(true);
+        }
     }
 
     private ListView<ServiceReference> createServiceListView(
-        final IModel<List<ServiceReference>> connectingServicesLoadableModel, String id) {
+        final IModel<List<ServiceReference>> connectingServicesLoadableModel, final String id) {
         return new ListView<ServiceReference>(id, connectingServicesLoadableModel) {
 
             @Override
             protected void populateItem(ListItem<ServiceReference> item) {
-                ServiceReference serv = item.getModelObject();
-                ServiceManager sm = getServiceManager((String)serv.getProperty("managerId"));
-
+                final ServiceReference serv = item.getModelObject();
+                final ServiceManager sm = getServiceManager((String) serv.getProperty("managerId"));
+                final String id = (String) serv.getProperty("id");
                 String description = "";
+                item.add(new Link<ServiceManager>("updateService", new LoadableDetachableModel<ServiceManager>() {
+
+                    @Override
+                    protected ServiceManager load() {
+                        return sm;
+                    }
+                }) {
+                    @Override
+                    public void onClick() {
+                        setResponsePage(new EditorPage(getModelObject(), id));
+                    }
+                });
+
                 if (sm != null) {
                     ServiceDescriptor desc = sm.getDescriptor(getLocale());
                     description = desc.getDescription();
                 }
 
-                item.add(new Label("service.name", (String) serv.getProperty("id")));
-                item.add(new Label("service.description", description ));
-                
+                item.add(new Label("service.name", id));
+                item.add(new Label("service.description", description));
+
             }
         };
     }
