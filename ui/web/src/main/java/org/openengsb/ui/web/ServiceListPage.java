@@ -18,8 +18,10 @@ package org.openengsb.ui.web;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
@@ -39,7 +41,7 @@ import java.util.Map;
 
 public class ServiceListPage extends BasePage {
 
-    private static Log log = LogFactory.getLog(TestClient.class);
+    private static Log log = LogFactory.getLog(ServiceListPage.class);
 
     @SpringBean
     private DomainService services;
@@ -52,6 +54,7 @@ public class ServiceListPage extends BasePage {
 
 
     private Map<AliveEnum, List<ServiceReference>> domainServiceMap;
+
 
     public ServiceListPage() {
         domainServiceMap = new HashMap<AliveEnum, List<ServiceReference>>();
@@ -71,24 +74,52 @@ public class ServiceListPage extends BasePage {
         IModel<List<ServiceReference>> disconnectedServicesLoadableModel = createLoadableServiceReferenceModel(
             AliveEnum.DISCONNECTED);
 
+        WebMarkupContainer connectingServicePanel = new WebMarkupContainer("connectingServicePanel");
+        connectingServicePanel.setOutputMarkupId(true);
+        WebMarkupContainer onlineServicePanel = new WebMarkupContainer("onlineServicePanel");
+        onlineServicePanel.setOutputMarkupId(true);
+        WebMarkupContainer offlineServicePanel = new WebMarkupContainer("offlineServicePanel");
+        offlineServicePanel.setOutputMarkupId(true);
+        WebMarkupContainer disconnectedServicePanel = new WebMarkupContainer("disconnectedServicePanel");
+        disconnectedServicePanel.setOutputMarkupId(true);
 
-        add(createServiceListView(connectingServicesLoadableModel, "connectingServices"));
-        add(createServiceListView(onlineServicesLoadableModel, "onlineServices"));
-        add(createServiceListView(offlineServicesLoadableModel, "offlineServices"));
-        add(createServiceListView(disconnectedServicesLoadableModel, "disconnectedServices"));
-        Label noConServices = new Label("noConServices", this.getLocalizer().getString("noServicesAvailable", this));
-        Label noOnServices = new Label("noOnServices", this.getLocalizer().getString("noServicesAvailable", this));
-        Label noOffServices = new Label("noOffServices", this.getLocalizer().getString("noServicesAvailable", this));
-        Label noDiscServices = new Label("noDisServices", this.getLocalizer().getString("noServicesAvailable", this));
+        Label noConServices = new Label("noConServices");
+        Label noOnServices = new Label("noOnServices");
+        Label noOffServices = new Label("noOffServices");
+        Label noDiscServices = new Label("noDisServices");
+
+        connectingServicePanel.add(
+            createServiceListView(connectingServicesLoadableModel, "connectingServices", noConServices,
+                connectingServicePanel));
+        onlineServicePanel.add(
+            createServiceListView(onlineServicesLoadableModel, "onlineServices", noOnServices, onlineServicePanel));
+        offlineServicePanel.add(
+            createServiceListView(offlineServicesLoadableModel, "offlineServices", noOffServices, offlineServicePanel));
+        disconnectedServicePanel.add(
+            createServiceListView(disconnectedServicesLoadableModel, "disconnectedServices", noDiscServices,
+                disconnectedServicePanel));
+
+
         noConServices.setVisible(false);
         noOnServices.setVisible(false);
         noOffServices.setVisible(false);
         noDiscServices.setVisible(false);
 
-        add(noConServices);
-        add(noOnServices);
-        add(noOffServices);
-        add(noDiscServices);
+        noConServices.setOutputMarkupId(true);
+        noOnServices.setOutputMarkupId(true);
+        noOffServices.setOutputMarkupId(true);
+        noDiscServices.setOutputMarkupId(true);
+
+        connectingServicePanel.add(noConServices);
+        onlineServicePanel.add(noOnServices);
+        offlineServicePanel.add(noOffServices);
+        disconnectedServicePanel.add(noDiscServices);
+
+        add(connectingServicePanel);
+        add(onlineServicePanel);
+        add(offlineServicePanel);
+        add(disconnectedServicePanel);
+
 
         if (connectingServicesLoadableModel.getObject().isEmpty()) {
             noConServices.setVisible(true);
@@ -104,37 +135,52 @@ public class ServiceListPage extends BasePage {
         }
     }
 
-    private ListView<ServiceReference> createServiceListView(
-        final IModel<List<ServiceReference>> connectingServicesLoadableModel, final String id) {
-        return new ListView<ServiceReference>(id, connectingServicesLoadableModel) {
+    private ListView<ServiceReference> createServiceListView(final IModel<List<ServiceReference>> serviceLoadableModel,
+                                                             final String id, final Label noServicesLabel,
+                                                             final WebMarkupContainer serviceWebMarkupContainer) {
+        return new ListView<ServiceReference>(id, serviceLoadableModel) {
 
             @Override
-            protected void populateItem(ListItem<ServiceReference> item) {
+            protected void populateItem(final ListItem<ServiceReference> item) {
                 final ServiceReference serv = item.getModelObject();
                 final ServiceManager sm = getServiceManager((String) serv.getProperty("managerId"));
                 final String id = (String) serv.getProperty("id");
                 String description = "";
-                item.add(new Link<ServiceManager>("updateService", new LoadableDetachableModel<ServiceManager>() {
-
-                    @Override
-                    protected ServiceManager load() {
-                        return sm;
-                    }
-                }) {
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new EditorPage(getModelObject(), id));
-                    }
-                });
-
                 if (sm != null) {
                     ServiceDescriptor desc = sm.getDescriptor(getLocale());
                     description = desc.getDescription();
                 }
-
                 item.add(new Label("service.name", id));
                 item.add(new Label("service.description", description));
+                item.add(
+                    new AjaxLink<ServiceManager>("updateService", createLoadableDetachableServiceManagerModel(sm)) {
+                        @Override
+                        public void onClick(AjaxRequestTarget target) {
+                            setResponsePage(new EditorPage(getModelObject(), id));
+                        }
+                    });
+                item.add(
+                    new AjaxLink<ServiceManager>("deleteService", createLoadableDetachableServiceManagerModel(sm)) {
 
+                        @Override
+                        public void onClick(AjaxRequestTarget target) {
+                            getList().remove(item.getModelObject());
+                            sm.delete(id);
+                            noServicesLabel.setVisible(getList().size() <= 0);
+                            target.addComponent(noServicesLabel);
+                            target.addComponent(serviceWebMarkupContainer);
+                        }
+                    });
+            }
+        };
+    }
+
+    private LoadableDetachableModel<ServiceManager> createLoadableDetachableServiceManagerModel(
+        final ServiceManager sm) {
+        return new LoadableDetachableModel<ServiceManager>() {
+            @Override
+            protected ServiceManager load() {
+                return sm;
             }
         };
     }

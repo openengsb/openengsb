@@ -16,8 +16,8 @@
 
 package org.openengsb.ui.web;
 
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.apache.wicket.request.target.component.PageRequestTarget;
@@ -106,15 +106,17 @@ public class ServicesListPageTest {
     public void verifyListViews_ShouldBe_Connecting_Online_Disconnecting_And_Disconnected() {
         setUpDomainServiceMap();
         tester.startPage(ServiceListPage.class);
+
         tester.assertContains("Connecting");
         tester.assertContains("ONLINE");
         tester.assertContains("OFFLINE");
         tester.assertContains("Disconnected");
-        tester.assertComponent("connectingServices", ListView.class);
-        tester.assertComponent("onlineServices", ListView.class);
-        tester.assertComponent("offlineServices", ListView.class);
-        tester.assertComponent("disconnectedServices", ListView.class);
-        Label nameLabel = (Label) tester.getComponentFromLastRenderedPage("connectingServices:0:service.name");
+        tester.assertComponent("connectingServicePanel:connectingServices", ListView.class);
+        tester.assertComponent("onlineServicePanel:onlineServices", ListView.class);
+        tester.assertComponent("offlineServicePanel:offlineServices", ListView.class);
+        tester.assertComponent("disconnectedServicePanel:disconnectedServices", ListView.class);
+        Label nameLabel = (Label) tester
+            .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices:0:service.name");
         assertThat(nameLabel.getDefaultModelObjectAsString(), is("testService"));
     }
 
@@ -136,10 +138,12 @@ public class ServicesListPageTest {
 
         tester.startPage(ServiceListPage.class);
 
-        ListView connectingService = (ListView) tester.getComponentFromLastRenderedPage("connectingServices");
+        ListView connectingService = (ListView) tester
+            .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices");
         assertThat(connectingService.getModelObject().size(), is(1));
 
-        ListView onlineServices = (ListView) tester.getComponentFromLastRenderedPage("onlineServices");
+        ListView onlineServices = (ListView) tester
+            .getComponentFromLastRenderedPage("onlineServicePanel:onlineServices");
         assertThat(onlineServices.getModelObject().size(), is(0));
 
         domainService.doSomethingToChangeState();
@@ -150,7 +154,8 @@ public class ServicesListPageTest {
         } finally {
             cycle.getResponse().close();
         }
-        ListView onlineServicesNew = (ListView) tester.getComponentFromLastRenderedPage("onlineServices");
+        ListView onlineServicesNew = (ListView) tester
+            .getComponentFromLastRenderedPage("onlineServicePanel:onlineServices");
         assertThat(onlineServicesNew.getModelObject().size(), is(1));
     }
 
@@ -173,8 +178,10 @@ public class ServicesListPageTest {
         tester.startPage(ServiceListPage.class);
 
         tester.debugComponentTrees();
-        Label name = (Label) tester.getComponentFromLastRenderedPage("connectingServices:0:service.name");
-        Label description = (Label) tester.getComponentFromLastRenderedPage("connectingServices:0:service.description");
+        Label name = (Label) tester
+            .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices:0:service.name");
+        Label description = (Label) tester
+            .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices:0:service.description");
         assertThat(name.getDefaultModelObjectAsString(), is("testService"));
         assertThat(description.getDefaultModelObjectAsString(), is("testDescription"));
 
@@ -183,13 +190,6 @@ public class ServicesListPageTest {
     @Test
     public void testVisibiltyOfInfoMessages() {
         serviceManagerListMock.add(serviceManagerMock);
-        ServiceReference serRef = mock(ServiceReference.class);
-        when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
-        when(serRef.getProperty("id")).thenReturn("testService");
-        when(serRef.getProperty("managerId")).thenReturn("serviceManagerId");
-        managedServiceInstances.add(serRef);
-        TestInterface domainService = new TestService();
-        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
 
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
@@ -197,14 +197,15 @@ public class ServicesListPageTest {
 
         when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
         tester.startPage(ServiceListPage.class);
-        tester.assertVisible("noOnServices");
-        tester.assertVisible("noOffServices");
-        tester.assertVisible("noDisServices");
-        tester.assertInvisible("noConServices");
+        tester.assertVisible("connectingServicePanel:noConServices");
+        tester.assertVisible("connectingServicePanel:noConServices");
+        tester.assertVisible("onlineServicePanel:noOnServices");
+        tester.assertVisible("offlineServicePanel:noOffServices");
+        tester.assertVisible("disconnectedServicePanel:noDisServices");
     }
 
     @Test
-    public void verifyIfEditButton_OnClickShoutReturnEditorPage() {
+    public void verifyIfEditButtonAndDeleteButtonExist_ShouldReturnTrue() {
         serviceManagerListMock.add(serviceManagerMock);
         ServiceReference serRef = mock(ServiceReference.class);
         when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
@@ -220,8 +221,44 @@ public class ServicesListPageTest {
 
         when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
         tester.startPage(ServiceListPage.class);
+        tester.assertComponent("connectingServicePanel:connectingServices:0:updateService", AjaxLink.class);
+        tester.assertComponent("connectingServicePanel:connectingServices:0:deleteService", AjaxLink.class);
+    }
+
+    @Test
+    public void testDeleteLink_AllListsShouldBeEmptyAfterwards() {
+//        when(serviceManagerMock.delete("testService")).;
+        serviceManagerListMock.add(serviceManagerMock);
+        ServiceReference serRef = mock(ServiceReference.class);
+        when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
+        when(serRef.getProperty("id")).thenReturn("testService");
+        when(serRef.getProperty("managerId")).thenReturn("serviceManagerId");
+        managedServiceInstances.add(serRef);
+        TestInterface domainService = new TestService();
+        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
+
+        ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
+        when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
+        when(serviceDescriptorMock.getDescription()).thenReturn("testDescription");
+
+        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
+        tester.startPage(ServiceListPage.class);
+        ListView connectingServices = (ListView) tester
+            .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices");
+        assertThat(connectingServices.size(), is(1));
+
+        tester.assertComponent("connectingServicePanel:connectingServices:0:updateService", AjaxLink.class);
+        tester.assertComponent("connectingServicePanel:connectingServices:0:deleteService", AjaxLink.class);
+        tester.clickLink("connectingServicePanel:connectingServices:0:deleteService", true);
         tester.debugComponentTrees();
-        tester.assertComponent("connectingServices:0:updateService", Link.class);
+
+        ListView updateService = (ListView) tester
+            .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices");
+        assertThat(updateService.size(), is(0));
+        tester.assertVisible("connectingServicePanel:noConServices");
+        tester.assertVisible("onlineServicePanel:noOnServices");
+        tester.assertVisible("offlineServicePanel:noOffServices");
+        tester.assertVisible("disconnectedServicePanel:noDisServices");
     }
 
 
