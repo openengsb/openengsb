@@ -14,4 +14,3 @@
 # limitations under the License.
 #
 
-Import-Package: com.db4o; bundle-symbolic-name="db4o_osgi", *

@@ -55,6 +55,13 @@
       <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.db4o</groupId>
+      <artifactId>db4o-full-java1.2</artifactId>
+      <version>8.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
 </project>
