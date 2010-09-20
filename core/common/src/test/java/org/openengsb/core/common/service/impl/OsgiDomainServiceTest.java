@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.service.impl;
+package org.openengsb.core.common.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.service.impl.OsgiDomainService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;

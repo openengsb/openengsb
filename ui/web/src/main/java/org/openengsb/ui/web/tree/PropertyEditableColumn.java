@@ -32,7 +32,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
-import org.openengsb.ui.web.service.DomainService;
+import org.openengsb.core.common.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
 @SuppressWarnings("serial")

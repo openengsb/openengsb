@@ -19,26 +19,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <relativePath>../poms/compiled/</relativePath>
-    <groupId>org.openengsb.build</groupId>
-    <artifactId>compiled-bundle-settings</artifactId>
+    <relativePath>..</relativePath>
+    <groupId>org.openengsb.domains</groupId>
+    <artifactId>openengsb-domains-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openengsb.domains</groupId>
-  <artifactId>openengsb-domains-parent</artifactId>
+  <groupId>org.openengsb.domains.jms</groupId>
+  <artifactId>openengsb-domains-jms</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
+  <name>OpenEngSB :: Domains :: JMS</name>
 
-  <name>OpenEngSB :: Domains :: Parent</name>
-
-  <packaging>pom</packaging>
-
-  <modules>
-    <module>example</module>
-    <module>notification</module>
-    <module>jms</module>
-  </modules>
-
+  <packaging>jar</packaging>
+  <dependencies>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-common</artifactId>
+      <version>${pom.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  	<dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>

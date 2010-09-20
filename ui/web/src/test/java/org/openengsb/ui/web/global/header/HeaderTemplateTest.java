@@ -44,13 +44,13 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.global.footer.ImprintPage;
-import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.BundleContext;
 
 import java.util.Arrays;

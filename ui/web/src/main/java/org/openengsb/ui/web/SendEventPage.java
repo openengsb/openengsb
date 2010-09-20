@@ -38,13 +38,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
-import org.openengsb.ui.web.service.DomainService;
 
 @SuppressWarnings("serial")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
