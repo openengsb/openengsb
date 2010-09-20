@@ -35,7 +35,6 @@ public class EmailNotifier implements NotificationDomain {
         this.id = id;
         this.mailAbstraction = mailAbstraction;
         properties = mailAbstraction.createMailProperties();
-        mailAbstraction.connect(properties);
     }
 
     @Override

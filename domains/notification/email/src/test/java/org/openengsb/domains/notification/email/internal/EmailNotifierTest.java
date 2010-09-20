@@ -73,10 +73,7 @@ public class EmailNotifierTest {
         MailProperties propertiesMock = Mockito.mock(MailProperties.class);
         Mockito.when(mailMock.createMailProperties()).thenReturn(propertiesMock);
         EmailNotifier notifier = new EmailNotifier("notifier1", mailMock);
-
-        Mockito.verify(mailMock).connect(propertiesMock);
         Mockito.when(mailMock.getAliveState()).thenReturn(AliveEnum.ONLINE);
-
         assertThat(notifier.getAliveState(), is(AliveEnum.ONLINE));
     }
 
