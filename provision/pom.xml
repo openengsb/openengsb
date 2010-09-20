@@ -600,6 +600,13 @@
       <artifactId>spring-tx</artifactId>
       <version>${spring.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.db4o</groupId>
+      <artifactId>db4o-osgi</artifactId>
+      <version>8.0-SNAPSHOT</version>
+    </dependency>
+
   </dependencies>
 
 </project>
