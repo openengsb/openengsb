@@ -56,96 +56,46 @@ public class ServiceListPage extends BasePage {
 
         log.debug("service list initialized");
 
-        IModel<List<ServiceReference>> connectingServicesLoadableModel
-            = createLoadableServiceReferenceModel(AliveEnum.CONNECTING);
-        IModel<List<ServiceReference>> onlineServicesLoadableModel
-            = createLoadableServiceReferenceModel(AliveEnum.ONLINE);
-        IModel<List<ServiceReference>> offlineServicesLoadableModel
-            = createLoadableServiceReferenceModel(AliveEnum.OFFLINE);
-        IModel<List<ServiceReference>> disconnectedServicesLoadableModel
-            = createLoadableServiceReferenceModel(AliveEnum.DISCONNECTED);
+        IModel<List<ServiceReference>> connectingServicesLoadableModel = createLoadableServiceReferenceModel(
+            AliveEnum.CONNECTING);
+        IModel<List<ServiceReference>> onlineServicesLoadableModel = createLoadableServiceReferenceModel(
+            AliveEnum.ONLINE);
+        IModel<List<ServiceReference>> offlineServicesLoadableModel = createLoadableServiceReferenceModel(
+            AliveEnum.OFFLINE);
+        IModel<List<ServiceReference>> disconnectedServicesLoadableModel = createLoadableServiceReferenceModel(
+            AliveEnum.DISCONNECTED);
 
-        add(new ListView<ServiceReference>("connectingServices", connectingServicesLoadableModel) {
 
-            @Override
-            protected void populateItem(ListItem<ServiceReference> item) {
-                ServiceReference serv = item.getModelObject();
-                /*item.add(new Link<ServiceManager>("create.new", item.getModel()) {
+        add(createServiceListView(connectingServicesLoadableModel, "connectingServices"));
+        add(createServiceListView(connectingServicesLoadableModel, "onlineServices"));
+        add(createServiceListView(connectingServicesLoadableModel, "offlineServices"));
+        add(createServiceListView(connectingServicesLoadableModel, "disconnectedServices"));
 
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new EditorPage(getModelObject()));
-                    }
-                });*/
-                item.add(new Label("service.name", (String) serv.getProperty("id")));
-                item.add(new Label("service.description", "bla"));
-            }
-        });
-        add(new ListView<ServiceReference>("onlineServices", connectingServicesLoadableModel) {
+    }
+
+    private ListView<ServiceReference> createServiceListView(
+        final IModel<List<ServiceReference>> connectingServicesLoadableModel, String id) {
+        return new ListView<ServiceReference>(id, connectingServicesLoadableModel) {
 
             @Override
             protected void populateItem(ListItem<ServiceReference> item) {
                 ServiceReference serv = item.getModelObject();
-                /*item.add(new Link<ServiceManager>("create.new", item.getModel()) {
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new EditorPage(getModelObject()));
-                    }
-                });*/
                 item.add(new Label("service.name", (String) serv.getProperty("id")));
                 item.add(new Label("service.description", "bla"));
             }
-        });
-
-        add(new ListView<ServiceReference>("offlineServices", connectingServicesLoadableModel) {
-
-            @Override
-            protected void populateItem(ListItem<ServiceReference> item) {
-                ServiceReference serv = item.getModelObject();
-                /*item.add(new Link<ServiceManager>("create.new", item.getModel()) {
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new EditorPage(getModelObject()));
-                    }
-                });*/
-                item.add(new Label("service.name", (String) serv.getProperty("id")));
-                item.add(new Label("service.description", "bla"));
-            }
-        });
-
-        add(new ListView<ServiceReference>("disconnectedServices", connectingServicesLoadableModel) {
-
-            @Override
-            protected void populateItem(ListItem<ServiceReference> item) {
-                ServiceReference serv = item.getModelObject();
-                /*item.add(new Link<ServiceManager>("create.new", item.getModel()) {
-
-                    @Override
-                    public void onClick() {
-                        setResponsePage(new EditorPage(getModelObject()));
-                    }
-                });*/
-                item.add(new Label("service.name", (String) serv.getProperty("id")));
-                item.add(new Label("service.description", "bla"));
-            }
-        });
-
-
-
+        };
     }
 
     private LoadableDetachableModel<List<ServiceReference>> createLoadableServiceReferenceModel(final AliveEnum state) {
         return new LoadableDetachableModel<List<ServiceReference>>() {
-        @Override
-        protected List<ServiceReference> load() {
-            updateDomainServiceMap();
-            List<ServiceReference> managers = new ArrayList<ServiceReference>(services.domains().size());
-            managers.addAll(domainServiceMap.get(state));
-            return managers;
-        }
-    };
+            @Override
+            protected List<ServiceReference> load() {
+                updateDomainServiceMap();
+                List<ServiceReference> managers = new ArrayList<ServiceReference>(services.domains().size());
+                managers.addAll(domainServiceMap.get(state));
+                return managers;
+            }
+        };
     }
 
     private void updateDomainServiceMap() {

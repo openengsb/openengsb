@@ -36,6 +36,7 @@ import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 public class AbstractServiceManagerTest {
@@ -108,8 +109,8 @@ public class AbstractServiceManagerTest {
         ServiceDescriptor descriptor = manager.getDescriptor(Locale.ENGLISH);
 
         assertThat(descriptor.getId(), is(DummyServiceManager.class.getSimpleName()));
-        assertThat(descriptor.getServiceType(), is(DummyDomain.class));
-        assertThat(descriptor.getImplementationType(), is(DummyInstance.class));
+        assertEquals(descriptor.getServiceType(), DummyDomain.class);
+        assertEquals(descriptor.getImplementationType(), DummyInstance.class);
     }
 
     @Test
