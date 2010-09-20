@@ -41,7 +41,7 @@ public abstract class ResourceHandler<SourceType extends RuleManager> {
             create(name, code);
         } catch (RuleBaseException e) {
             create(name, oldelement);
-            throw new RuleBaseException(e);
+            throw e;
         }
     }
 

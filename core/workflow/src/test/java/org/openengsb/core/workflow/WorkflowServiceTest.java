@@ -16,6 +16,10 @@
 
 package org.openengsb.core.workflow;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,8 +40,6 @@ import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.notification.NotificationDomain;
-
-import static org.junit.Assert.fail;
 
 public class WorkflowServiceTest {
 
@@ -145,7 +147,7 @@ public class WorkflowServiceTest {
             manager.update(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1"), "this*is_invalid");
             fail("expected Exception");
         } catch (RuleBaseException e) {
-            // expected
+            assertThat(e.getCause(), nullValue());
         }
         Event event = new Event("test-context");
         service.processEvent(event);

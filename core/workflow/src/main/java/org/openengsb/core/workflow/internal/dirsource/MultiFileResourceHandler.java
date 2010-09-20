@@ -17,13 +17,11 @@
 package org.openengsb.core.workflow.internal.dirsource;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.drools.rule.Package;
 import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.internal.ResourceHandler;
@@ -44,18 +42,15 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
         if (!resFile.getParentFile().exists()) {
             resFile.getParentFile().mkdirs();
         }
-        FileWriter fw;
         try {
-            fw = new FileWriter(resFile);
-            fw.append(code);
-            fw.close();
+            FileUtils.writeStringToFile(resFile, code);
         } catch (IOException e) {
             throw new RuleBaseException(String.format("could not write the %s to the filesystem", name.getType()), e);
         }
         try {
             source.readPackage(name.getPackageName());
         } catch (RuleBaseException e) {
-            resFile.delete();
+            safeDelete(resFile);
             throw e;
         }
     }
@@ -67,8 +62,16 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
             // fail silently if the element does not exist
             return;
         }
-        resFile.delete();
+        safeDelete(resFile);
         removeFromRuleBase(name);
+    }
+
+    private void safeDelete(File resFile) throws RuleBaseException {
+        try {
+            FileUtils.forceDelete(resFile);
+        } catch (IOException e) {
+            throw new RuleBaseException(e);
+        }
     }
 
     protected abstract void removeFromRuleBase(RuleBaseElementId name) throws RuleBaseException;
@@ -77,7 +80,7 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
     public String get(RuleBaseElementId name) {
         File ruleFile = source.getFilePath(name);
         try {
-            return IOUtils.toString(new FileReader(ruleFile));
+            return FileUtils.readFileToString(ruleFile);
         } catch (IOException e) {
             return null;
         }
