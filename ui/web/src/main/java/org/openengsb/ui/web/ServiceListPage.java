@@ -25,8 +25,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.util.AliveEnum;
-import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
@@ -45,14 +46,18 @@ public class ServiceListPage extends BasePage {
     @SpringBean(name = "managedServiceInstances")
     private List<ServiceReference> managedServiceInstances;
 
+    @SpringBean(name = "services")
+    private List<ServiceManager> serviceManager;
+
+
     private Map<AliveEnum, List<ServiceReference>> domainServiceMap;
 
     public ServiceListPage() {
         domainServiceMap = new HashMap<AliveEnum, List<ServiceReference>>();
-        domainServiceMap.put(AliveEnum.CONNECTING, new ArrayList<ServiceReference>());
-        domainServiceMap.put(AliveEnum.DISCONNECTED, new ArrayList<ServiceReference>());
-        domainServiceMap.put(AliveEnum.ONLINE, new ArrayList<ServiceReference>());
-        domainServiceMap.put(AliveEnum.OFFLINE, new ArrayList<ServiceReference>());
+        domainServiceMap.put(AliveEnum.CONNECTING, new ArrayList<ServiceReference>()  );
+        domainServiceMap.put(AliveEnum.DISCONNECTED,new ArrayList<ServiceReference>()  );
+        domainServiceMap.put(AliveEnum.ONLINE, new ArrayList<ServiceReference>()  );
+        domainServiceMap.put(AliveEnum.OFFLINE,new ArrayList<ServiceReference>()  );
 
         log.debug("service list initialized");
 
@@ -67,9 +72,9 @@ public class ServiceListPage extends BasePage {
 
 
         add(createServiceListView(connectingServicesLoadableModel, "connectingServices"));
-        add(createServiceListView(connectingServicesLoadableModel, "onlineServices"));
-        add(createServiceListView(connectingServicesLoadableModel, "offlineServices"));
-        add(createServiceListView(connectingServicesLoadableModel, "disconnectedServices"));
+        add(createServiceListView(onlineServicesLoadableModel, "onlineServices"));
+        add(createServiceListView(offlineServicesLoadableModel, "offlineServices"));
+        add(createServiceListView(disconnectedServicesLoadableModel, "disconnectedServices"));
 
     }
 
@@ -80,10 +85,28 @@ public class ServiceListPage extends BasePage {
             @Override
             protected void populateItem(ListItem<ServiceReference> item) {
                 ServiceReference serv = item.getModelObject();
+                ServiceManager sm = getServiceManager((String)serv.getProperty("managerId"));
+
+                String description = "";
+                if (sm != null) {
+                    ServiceDescriptor desc = sm.getDescriptor(getLocale());
+                    description = desc.getDescription();
+                }
+
                 item.add(new Label("service.name", (String) serv.getProperty("id")));
-                item.add(new Label("service.description", "bla"));
+                item.add(new Label("service.description", description ));
+                
             }
         };
+    }
+
+    private ServiceManager getServiceManager(String managerId) {
+        for (ServiceManager sm : serviceManager) {
+            if (managerId.equals(sm.getDescriptor(getLocale()).getId())) {
+                return sm;
+            }
+        }
+        return null;
     }
 
     private LoadableDetachableModel<List<ServiceReference>> createLoadableServiceReferenceModel(final AliveEnum state) {
@@ -102,14 +125,13 @@ public class ServiceListPage extends BasePage {
         for (ServiceReference serviceReference : managedServiceInstances) {
             if (!"domain".equals(serviceReference.getProperty("openengsb.service.type"))) {
                 Domain domainService = (Domain) (services.getService(serviceReference));
-                domainServiceMap.get(domainService.getAliveState()).add(serviceReference);
+
+                List<ServiceReference> serviceReferenceList = domainServiceMap.get(domainService.getAliveState());
+                if (!serviceReferenceList.contains(serviceReference)) {
+                    serviceReferenceList.add(serviceReference);
+                }
             }
         }
     }
 
-
-    private Domain getDomainService(ServiceId service) {
-        Object serviceObject = services.getService(service.getServiceClass(), service.getServiceId());
-        return (Domain) serviceObject;
-    }
 }
