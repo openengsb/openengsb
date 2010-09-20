@@ -16,7 +16,6 @@
 
 package org.openengsb.core.common;
 
-import junit.framework.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -35,6 +34,10 @@ import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsSame.sameInstance;
+import static org.junit.Assert.assertThat;
+
 public class AbstractServiceManagerTest {
 
     @Rule
@@ -44,9 +47,15 @@ public class AbstractServiceManagerTest {
     }
 
     private static class DummyInstance implements DummyDomain {
+        AliveEnum aliveState = AliveEnum.OFFLINE;
+
         @Override
         public AliveEnum getAliveState() {
-            return AliveEnum.OFFLINE;
+            return aliveState;
+        }
+
+        public void doSomethingToChangeState() {
+            aliveState = AliveEnum.ONLINE;
         }
     }
 
@@ -87,8 +96,8 @@ public class AbstractServiceManagerTest {
     public void testInterfaceGetters() {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         DummyServiceManager manager = createDummyManager(bundleContextMock, new DummyInstance());
-        Assert.assertEquals(DummyDomain.class, manager.getDomainInterface());
-        Assert.assertEquals(DummyInstance.class, manager.getImplementationClass());
+        assertThat(manager.getDomainInterface(), sameInstance(DummyDomain.class));
+        assertThat(manager.getImplementationClass(), sameInstance(DummyInstance.class));
     }
 
     @Test
@@ -98,9 +107,9 @@ public class AbstractServiceManagerTest {
 
         ServiceDescriptor descriptor = manager.getDescriptor(Locale.ENGLISH);
 
-        Assert.assertEquals(DummyServiceManager.class.getSimpleName(), descriptor.getId());
-        Assert.assertEquals(DummyDomain.class, descriptor.getServiceType());
-        Assert.assertEquals(DummyInstance.class, descriptor.getImplementationType());
+        assertThat(descriptor.getId(), is(DummyServiceManager.class.getSimpleName()));
+        assertThat(descriptor.getServiceType(), is(DummyDomain.class));
+        assertThat(descriptor.getImplementationType(), is(DummyInstance.class));
     }
 
     @Test
@@ -114,8 +123,8 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock).registerService(
-                new String[] { DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
-                instance, props);
+            new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
+            props);
     }
 
     @Test
@@ -131,8 +140,8 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
-                new String[] { DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
-                instance, props);
+            new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
+            props);
     }
 
     @Test
@@ -141,7 +150,7 @@ public class AbstractServiceManagerTest {
         HashMap<String, String> attributes = new HashMap<String, String>();
         DummyInstance instance = new DummyInstance();
         ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(
-                bundleContextMock, instance);
+            bundleContextMock, instance);
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
@@ -151,13 +160,12 @@ public class AbstractServiceManagerTest {
     }
 
     private ServiceRegistration appendServiceRegistrationMockToBundleContextMock(BundleContext bundleContextMock,
-            DummyInstance mock) {
+                                                                                 DummyInstance mock) {
         ServiceRegistration serviceRegistrationMock = Mockito.mock(ServiceRegistration.class);
         Hashtable<String, String> props = createVerificationHashmap();
-        Mockito.when(
-                bundleContextMock.registerService(
-                        new String[] { DummyInstance.class.getName(), DummyDomain.class.getName(),
-                                Domain.class.getName() }, mock, props)).thenReturn(serviceRegistrationMock);
+        Mockito.when(bundleContextMock.registerService(
+            new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, mock,
+            props)).thenReturn(serviceRegistrationMock);
         return serviceRegistrationMock;
     }
 
@@ -188,9 +196,9 @@ public class AbstractServiceManagerTest {
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
         Map<String, String> attributeValues = manager.getAttributeValues("test");
-        Assert.assertEquals(attributeValues.size(), attributes.size());
-        Assert.assertEquals(attributeValues.get("id"), "test");
-        Assert.assertEquals(attributeValues.get("attribute2"), "atr2");
+        assertThat(attributes.size(), is(attributeValues.size()));
+        assertThat(attributeValues.get("id"), is("test"));
+        assertThat(attributeValues.get("attribute2"), is("atr2"));
     }
 
     @Test
@@ -211,9 +219,9 @@ public class AbstractServiceManagerTest {
         manager.update("test", attributesNew);
 
         Map<String, String> attributeValues = manager.getAttributeValues("test");
-        Assert.assertEquals(attributes.size(), attributeValues.size());
-        Assert.assertEquals(attributeValues.get("id"), "test");
-        Assert.assertEquals(attributeValues.get("attribute2"), "newAtr2");
+        assertThat(attributes.size(), is(attributeValues.size()));
+        assertThat(attributeValues.get("id"), is("test"));
+        assertThat(attributeValues.get("attribute2"), is("newAtr2"));
     }
 
     @Test
@@ -228,7 +236,7 @@ public class AbstractServiceManagerTest {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         DummyInstance instance = new DummyInstance();
         ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(
-                bundleContextMock, instance);
+            bundleContextMock, instance);
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
@@ -237,8 +245,7 @@ public class AbstractServiceManagerTest {
         Mockito.verify(serviceRegistrationMock).unregister();
 
         Map<String, String> attributeValues = manager.getAttributeValues("test");
-        Assert.assertEquals(0, attributeValues.size());
-
+        assertThat(attributeValues.size(), is(0));
     }
 
     @Test
@@ -258,9 +265,9 @@ public class AbstractServiceManagerTest {
         manager.update("test", attributesNew);
 
         Map<String, String> attributeValues = manager.getAttributeValues("test");
-        Assert.assertEquals(attributes.size(), attributeValues.size());
-        Assert.assertEquals(attributeValues.get("id"), "test");
-        Assert.assertEquals(attributeValues.get("attribute2"), "newAtr2");
+        assertThat(attributeValues.size(), is(attributes.size()));
+        assertThat(attributeValues.get("id"), is("test"));
+        assertThat(attributeValues.get("attribute2"), is("newAtr2"));
     }
 
 }

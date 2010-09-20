@@ -16,11 +16,11 @@
 
 package org.openengsb.core.common;
 
-import java.util.Locale;
-import java.util.Map;
-
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Instance provider for a specific service interface.
