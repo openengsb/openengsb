@@ -16,27 +16,27 @@
    limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <relativePath>..</relativePath>
-    <groupId>org.openengsb</groupId>
-    <artifactId>openengsb-parent</artifactId>
+    <groupId>org.openengsb.domains</groupId>
+    <artifactId>openengsb-domains-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openengsb.archetypes</groupId>
-  <artifactId>openengsb-archetypes-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <groupId>${groupId}</groupId>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
 
-  <name>OpenEngSB :: Archetypes :: Parent</name>
+  <name>${name}</name>
 
   <packaging>pom</packaging>
 
   <modules>
-    <module>connector</module>
-    <module>domain</module>
+    <module>implementation</module>
   </modules>
 
 </project>
