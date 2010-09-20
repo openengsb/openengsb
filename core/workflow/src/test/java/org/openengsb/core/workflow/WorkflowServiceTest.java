@@ -16,6 +16,10 @@
 
 package org.openengsb.core.workflow;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -119,6 +123,32 @@ public class WorkflowServiceTest {
 
     @Test
     public void testUseLogContent() throws Exception {
+        Event event = new Event("test-context");
+        service.processEvent(event);
+        Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
+    }
+
+    @Test
+    public void addInvalidRule_shouldNotModifyRulebase() throws Exception {
+        try {
+            manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "hello"), "this*is_invalid");
+            fail("expected Exception");
+        } catch (RuleBaseException e) {
+            // expected
+        }
+        Event event = new Event("test-context");
+        service.processEvent(event);
+        Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
+    }
+
+    @Test
+    public void invalidMofidyRule_shouldNotModifyRulebase() throws Exception {
+        try {
+            manager.update(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1"), "this*is_invalid");
+            fail("expected Exception");
+        } catch (RuleBaseException e) {
+            assertThat(e.getCause(), nullValue());
+        }
         Event event = new Event("test-context");
         service.processEvent(event);
         Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
