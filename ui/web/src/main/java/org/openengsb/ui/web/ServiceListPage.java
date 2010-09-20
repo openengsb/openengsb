@@ -26,6 +26,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.ServiceManager;
@@ -83,10 +84,10 @@ public class ServiceListPage extends BasePage {
         WebMarkupContainer disconnectedServicePanel = new WebMarkupContainer("disconnectedServicePanel");
         disconnectedServicePanel.setOutputMarkupId(true);
 
-        Label noConServices = new Label("noConServices");
-        Label noOnServices = new Label("noOnServices");
-        Label noOffServices = new Label("noOffServices");
-        Label noDiscServices = new Label("noDisServices");
+        Label noConServices = new Label("noConServices", new StringResourceModel("noServicesAvailable", this,null).getString());
+        Label noOnServices = new Label("noOnServices", new StringResourceModel("noServicesAvailable", this,null).getString());
+        Label noOffServices = new Label("noOffServices", new StringResourceModel("noServicesAvailable", this,null).getString());
+        Label noDiscServices = new Label("noDisServices", new StringResourceModel("noServicesAvailable", this,null).getString());
 
         connectingServicePanel.add(
             createServiceListView(connectingServicesLoadableModel, "connectingServices", noConServices,

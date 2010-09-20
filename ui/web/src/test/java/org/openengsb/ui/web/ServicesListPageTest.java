@@ -48,9 +48,7 @@ public class ServicesListPageTest {
 
     private ServiceManager serviceManagerMock;
     private WicketTester tester;
-    private ApplicationContextMock context;
     private DomainService domainServiceMock;
-    private ContextCurrentService contextCurrentServiceMock;
     private List<ServiceReference> managedServiceInstances;
     private List<ServiceManager> serviceManagerListMock;
 
@@ -67,34 +65,31 @@ public class ServicesListPageTest {
             return aliveState;
         }
 
-
         @Override
         public void doSomethingToChangeState() {
             aliveState = AliveEnum.ONLINE;
         }
     }
 
-
     @Before
     @SuppressWarnings("deprecation")
     public void setup() {
         tester = new WicketTester();
-        context = new ApplicationContextMock();
+        ApplicationContextMock context = new ApplicationContextMock();
         serviceManagerMock = mock(ServiceManager.class);
         domainServiceMock = mock(DomainService.class);
-        contextCurrentServiceMock = mock(ContextCurrentService.class);
+        ContextCurrentService contextCurrentServiceMock = mock(ContextCurrentService.class);
         managedServiceInstances = new ArrayList<ServiceReference>();
         serviceManagerListMock = new ArrayList<ServiceManager>();
-
 
         context.putBean(serviceManagerMock);
         context.putBean("services", serviceManagerListMock);
         context.putBean(domainServiceMock);
         context.putBean(contextCurrentServiceMock);
         context.putBean("managedServiceInstances", managedServiceInstances);
-        setupTesterWithSpringMockContext();
+        tester.getApplication()
+            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
     }
-
 
     @Test
     public void verifyRenderedPage_ShouldBeServiceListPage() {
@@ -104,9 +99,14 @@ public class ServicesListPageTest {
 
     @Test
     public void verifyListViews_ShouldBe_Connecting_Online_Disconnecting_And_Disconnected() {
-        setUpDomainServiceMap();
-        tester.startPage(ServiceListPage.class);
+        ServiceReference serRef = mock(ServiceReference.class);
+        when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
+        when(serRef.getProperty("id")).thenReturn("testService");
+        managedServiceInstances.add(serRef);
+        TestService domainService = new TestService();
+        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
 
+        tester.startPage(ServiceListPage.class);
         tester.assertContains("Connecting");
         tester.assertContains("ONLINE");
         tester.assertContains("OFFLINE");
@@ -122,20 +122,10 @@ public class ServicesListPageTest {
 
     @Test
     public void verifyListViews_ServiceShouldBeAfterStateChangeInOtherList() {
-        serviceManagerListMock.add(serviceManagerMock);
-        ServiceReference serRef = mock(ServiceReference.class);
-        when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
-        when(serRef.getProperty("id")).thenReturn("testService");
-        when(serRef.getProperty("managerId")).thenReturn("serviceManagerId");
-        managedServiceInstances.add(serRef);
-        TestInterface domainService = new TestService();
-        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
-
+        TestInterface domainService = setUpServicesMap();
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
-
         when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
-
         tester.startPage(ServiceListPage.class);
 
         ListView connectingService = (ListView) tester
@@ -161,20 +151,8 @@ public class ServicesListPageTest {
 
     @Test
     public void testIfCorrectServiceDataIsInList_ShouldReturnTheNameOfTheServiceManagerAndDescrption() {
-        serviceManagerListMock.add(serviceManagerMock);
-        ServiceReference serRef = mock(ServiceReference.class);
-        when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
-        when(serRef.getProperty("id")).thenReturn("testService");
-        when(serRef.getProperty("managerId")).thenReturn("serviceManagerId");
-        managedServiceInstances.add(serRef);
-        TestInterface domainService = new TestService();
-        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
+        setUpServicesMap();
 
-        ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
-        when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
-        when(serviceDescriptorMock.getDescription()).thenReturn("testDescription");
-
-        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
         tester.startPage(ServiceListPage.class);
 
         tester.debugComponentTrees();
@@ -194,8 +172,8 @@ public class ServicesListPageTest {
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
         when(serviceDescriptorMock.getDescription()).thenReturn("testDescription");
-
         when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
+
         tester.startPage(ServiceListPage.class);
         tester.assertVisible("connectingServicePanel:noConServices");
         tester.assertVisible("connectingServicePanel:noConServices");
@@ -206,20 +184,9 @@ public class ServicesListPageTest {
 
     @Test
     public void verifyIfEditButtonAndDeleteButtonExist_ShouldReturnTrue() {
-        serviceManagerListMock.add(serviceManagerMock);
-        ServiceReference serRef = mock(ServiceReference.class);
-        when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
-        when(serRef.getProperty("id")).thenReturn("testService");
-        when(serRef.getProperty("managerId")).thenReturn("serviceManagerId");
-        managedServiceInstances.add(serRef);
-        TestInterface domainService = new TestService();
-        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
+        setUpServicesMap();
 
-        ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
-        when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
-        when(serviceDescriptorMock.getDescription()).thenReturn("testDescription");
 
-        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
         tester.startPage(ServiceListPage.class);
         tester.assertComponent("connectingServicePanel:connectingServices:0:updateService", AjaxLink.class);
         tester.assertComponent("connectingServicePanel:connectingServices:0:deleteService", AjaxLink.class);
@@ -227,21 +194,7 @@ public class ServicesListPageTest {
 
     @Test
     public void testDeleteLink_AllListsShouldBeEmptyAfterwards() {
-//        when(serviceManagerMock.delete("testService")).;
-        serviceManagerListMock.add(serviceManagerMock);
-        ServiceReference serRef = mock(ServiceReference.class);
-        when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
-        when(serRef.getProperty("id")).thenReturn("testService");
-        when(serRef.getProperty("managerId")).thenReturn("serviceManagerId");
-        managedServiceInstances.add(serRef);
-        TestInterface domainService = new TestService();
-        when(domainServiceMock.getService(serRef)).thenReturn(domainService);
-
-        ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
-        when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
-        when(serviceDescriptorMock.getDescription()).thenReturn("testDescription");
-
-        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
+        setUpServicesMap();
         tester.startPage(ServiceListPage.class);
         ListView connectingServices = (ListView) tester
             .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices");
@@ -261,21 +214,19 @@ public class ServicesListPageTest {
         tester.assertVisible("disconnectedServicePanel:noDisServices");
     }
 
-
-    private void setUpDomainServiceMap() {
+    private TestInterface setUpServicesMap() {
+        serviceManagerListMock.add(serviceManagerMock);
         ServiceReference serRef = mock(ServiceReference.class);
         when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
         when(serRef.getProperty("id")).thenReturn("testService");
+        when(serRef.getProperty("managerId")).thenReturn("serviceManagerId");
         managedServiceInstances.add(serRef);
-        TestService domainService = new TestService();
+        TestInterface domainService = new TestService();
         when(domainServiceMock.getService(serRef)).thenReturn(domainService);
+        ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
+        when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
+        when(serviceDescriptorMock.getDescription()).thenReturn("testDescription");
+        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
+        return domainService;
     }
-
-
-    private void setupTesterWithSpringMockContext() {
-        tester.getApplication()
-            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
-    }
-
-
 }
