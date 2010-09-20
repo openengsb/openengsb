@@ -18,10 +18,12 @@ package org.openengsb.ui.web;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -82,7 +84,7 @@ public class ContextSetPageTest {
     public void test_initialisation_with_simple_tree() {
         tester.assertComponent("form:treeTable", TreeTable.class);
         tester.assertComponent("expandAll", AjaxLink.class);
-//        testLabel("foo", "form:treeTable:i:0:sideColumns:0:nodeLink:label");
+        // testLabel("foo", "form:treeTable:i:0:sideColumns:0:nodeLink:label");
         testLabel("a", "form:treeTable:i:1:sideColumns:0:nodeLink:label");
         testLabel("b", "form:treeTable:i:2:sideColumns:0:nodeLink:label");
         testLabel("c", "form:treeTable:i:3:sideColumns:0:nodeLink:label");
@@ -288,5 +290,22 @@ public class ContextSetPageTest {
         testLabel("x", "form:treeTable:i:18:sideColumns:0:nodeLink:label");
         testLabel("y", "form:treeTable:i:19:sideColumns:0:nodeLink:label");
         testLabel("z", "form:treeTable:i:20:sideColumns:0:nodeLink:label");
+    }
+
+    @Test
+    public void enterNonLeafNodePath_shouldShowMessage() throws Exception {
+        FormTester formTester = tester.newFormTester("form");
+        formTester.setValue("path", "x/y/z");
+        formTester.setValue("value", "testvalue");
+        doThrow(new IllegalArgumentException("key identifies a path, put operation not allowed")).when(contextService)
+                .putValue("x/y/z", "testvalue");
+        tester.executeAjaxEvent("form:save", "onclick");
+        verify(contextService).putValue("x/y/z", "testvalue");
+        tester.assertErrorMessages(new String[] {"key identifies a path, put operation not allowed"});
+    }
+
+    @Test
+    public void clickDelete_shouldRemoveEntryFromTreeAndContext() throws Exception {
+        fail();
     }
 }

@@ -31,6 +31,7 @@ import org.apache.wicket.extensions.markup.html.tree.table.PropertyTreeColumn;
 import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.AbstractTree;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -55,6 +56,8 @@ public class ContextSetPage extends BasePage {
 
     private TextField<String> valueTextField;
 
+    private FeedbackPanel feedbackPanel;
+
     public ContextSetPage() {
         add(new AjaxLink<String>("expandAll") {
             @Override
@@ -72,9 +75,9 @@ public class ContextSetPage extends BasePage {
             }
         });
         IColumn[] columns = new IColumn[] {
-                new PropertyTreeColumn(new ColumnLocation(Alignment.LEFT, 18, Unit.EM), "Tree Column",
+            new PropertyTreeColumn(new ColumnLocation(Alignment.LEFT, 18, Unit.EM), "Tree Column",
                         "userObject.niceKey"),
-                new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT, 12, Unit.EM), "value",
+            new PropertyEditableColumn(new ColumnLocation(Alignment.LEFT, 12, Unit.EM), "value",
                         "userObject.value", domainService) };
         Form<Object> form = new Form<Object>("form");
         tree = new TreeTable("treeTable", createTreeModel(contextService.getContext()), columns);
@@ -88,13 +91,17 @@ public class ContextSetPage extends BasePage {
         valueTextField = new TextField<String>("value");
         valueTextField.setModel(new Model<String>());
         form.add(valueTextField);
-        form.add(new AjaxButton("save") {        
+        form.add(new AjaxButton("save") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 String path = pathTextField.getModelObject();
                 String value = valueTextField.getModelObject();
-                if(path != null && value != null) {
-                    contextService.putValue(path, value);
+                if (path != null && value != null) {
+                    try {
+                        contextService.putValue(path, value);
+                    } catch (IllegalArgumentException e) {
+                        error(e.getLocalizedMessage());
+                    }
                     tree.setModelObject(createTreeModel(contextService.getContext()));
                     tree.updateTree(target);
                     target.addComponent(tree);
@@ -102,6 +109,9 @@ public class ContextSetPage extends BasePage {
                 }
             }
         });
+        feedbackPanel = new FeedbackPanel("feedback");
+        feedbackPanel.setOutputMarkupId(true);
+        form.add(feedbackPanel);
         add(form);
     }
 
