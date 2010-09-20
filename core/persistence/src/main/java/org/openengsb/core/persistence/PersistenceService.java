@@ -19,7 +19,7 @@ package org.openengsb.core.persistence;
 import java.util.List;
 import java.util.Map;
 
-public interface Persistence {
+public interface PersistenceService {
 
     List<Object> query(Object example) throws PersistenceException;
 
