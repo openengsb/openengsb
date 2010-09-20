@@ -16,14 +16,50 @@
 
 package org.openengsb.integrationtest.util;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import junit.framework.Assert;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.BeforeClass;
+import org.ops4j.pax.exam.CoreOptions;
+import org.ops4j.pax.exam.Inject;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.container.def.options.WorkingDirectoryOption;
+import org.ops4j.pax.exam.junit.Configuration;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 import org.osgi.util.tracker.ServiceTracker;
 
 public abstract class AbstractExamTestHelper {
+
+    @Inject
+    private BundleContext bundleContext;
+
+    protected BundleContext getBundleContext() {
+        return bundleContext;
+    }
+
+    protected static String getWorkingDirectory() {
+        return System.getProperty("java.io.tmpdir") + "/paxexam_runner_" + System.getProperty("user.name");
+    }
+
+    @BeforeClass
+    public static void beforeClass() throws IOException {
+        FileUtils.deleteDirectory(new File(getWorkingDirectory()));
+    }
+
+    @Configuration
+    public static Option[] configuration() {
+        List<Option> baseConfiguration = BaseExamConfiguration.getBaseExamOptions("../");
+        baseConfiguration.add(new WorkingDirectoryOption(getWorkingDirectory()));
+        BaseExamConfiguration.addEntireOpenEngSBPlatform(baseConfiguration);
+        Option[] options = BaseExamConfiguration.convertOptionListToArray(baseConfiguration);
+        return CoreOptions.options(options);
+    }
 
     protected <ServiceClass> ServiceClass retrieveService(BundleContext bundleContext,
             Class<? extends ServiceClass> serviceClass) throws InterruptedException {
