@@ -37,6 +37,7 @@
   <modules>
     <module>common</module>
     <module>workflow</module>
+    <module>persistence</module>
   </modules>
 
 </project>
