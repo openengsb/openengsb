@@ -23,6 +23,7 @@ import javax.swing.tree.TreeModel;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Alignment;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Unit;
@@ -31,9 +32,11 @@ import org.apache.wicket.extensions.markup.html.tree.table.PropertyTreeColumn;
 import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.AbstractTree;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.context.Context;
 import org.openengsb.core.common.context.ContextService;
@@ -109,6 +112,10 @@ public class ContextSetPage extends BasePage {
                 }
             }
         });
+        Image tooltip = new Image("pathTooltip");
+        tooltip.add(new SimpleAttributeModifier("title", new StringResourceModel("path.tooltip", ContextSetPage.this,
+                null).getObject()));
+        form.add(tooltip);
         feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         form.add(feedbackPanel);
