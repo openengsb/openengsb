@@ -21,7 +21,7 @@ import java.util.Map;
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import ${parentGroupId}.${domainInterface};
+import ${parentPackage}.${domainInterface};
 
 public class MyServiceInstanceFactory implements ServiceInstanceFactory<${domainInterface}, MyServiceImpl> {
 

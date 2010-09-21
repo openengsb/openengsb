@@ -94,11 +94,11 @@ public class ContextImpl implements Context {
         return result.toString();
     }
 
-    private static final String indention = "..";
+    private static final String INDENTION_STRING = "..";
 
     private static String indent(String arg) {
-        String s1 = indention + arg.replaceAll("\n", "\n" + indention);
-        String s2 = s1.replaceAll("\n" + indention + "$", "");
+        String s1 = INDENTION_STRING + arg.replaceAll("\n", "\n" + INDENTION_STRING);
+        String s2 = s1.replaceAll("\n" + INDENTION_STRING + "$", "");
         return s2;
     }
 

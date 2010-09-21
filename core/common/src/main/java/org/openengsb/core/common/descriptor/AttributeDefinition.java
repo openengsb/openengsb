@@ -32,7 +32,7 @@ import com.google.common.base.Preconditions;
 @SuppressWarnings("serial")
 public class AttributeDefinition implements Serializable {
 
-    public static class Option {
+    public static class Option implements Serializable {
         private final String label;
         private final String value;
 

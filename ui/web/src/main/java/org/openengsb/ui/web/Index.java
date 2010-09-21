@@ -16,6 +16,8 @@
 
 package org.openengsb.ui.web;
 
+import java.util.List;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -23,11 +25,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.ServiceManager;
 import org.openengsb.ui.web.service.DomainService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("serial")
 public class Index extends BasePage {
@@ -51,16 +49,6 @@ public class Index extends BasePage {
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
             }
         });
-        IModel<List<ServiceManager>> servicesModel = new LoadableDetachableModel<List<ServiceManager>>() {
-            @Override
-            protected List<ServiceManager> load() {
-                List<ServiceManager> managers = new ArrayList<ServiceManager>(domainService.domains().size());
-                for (DomainProvider provider : domainService.domains()) {
-                    managers.addAll(domainService.serviceManagersForDomain(provider.getDomainInterface()));
-                }
-                return managers;
-            }
-        };
 
     }
 

@@ -16,6 +16,15 @@
 
 package org.openengsb.ui.web;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -23,7 +32,6 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -38,19 +46,10 @@ import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 import org.openengsb.ui.web.service.DomainService;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 @SuppressWarnings("serial")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 
-    private Log log = LogFactory.getLog(SendEventPage.class);
+    private transient Log log = LogFactory.getLog(SendEventPage.class);
 
     @SpringBean
     private WorkflowService eventService;
@@ -92,7 +91,6 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         });
         form.add(dropDownChoice);
         add(createEditorPanelForClass(classes.get(0)));
-        this.add(new BookmarkablePageLink<Index>("index", Index.class));
         add(new RuleEditorPanel("ruleEditor", this));
     }
 

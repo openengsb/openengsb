@@ -28,17 +28,17 @@ public class MethodId implements Serializable {
     private String name;
     private List<String> argumentTypes = new ArrayList<String>();
 
-    private static final Map<String, Class<?>> primitives = new HashMap<String, Class<?>>();
+    private static final Map<String, Class<?>> PRIMITIVES = new HashMap<String, Class<?>>();
     {
-        primitives.put("int", int.class);
-        primitives.put("long", long.class);
-        primitives.put("boolean", boolean.class);
-        primitives.put("byte", byte.class);
-        primitives.put("short", short.class);
-        primitives.put("char", char.class);
-        primitives.put("float", float.class);
-        primitives.put("double", double.class);
-        primitives.put("void", void.class);
+        PRIMITIVES.put("int", int.class);
+        PRIMITIVES.put("long", long.class);
+        PRIMITIVES.put("boolean", boolean.class);
+        PRIMITIVES.put("byte", byte.class);
+        PRIMITIVES.put("short", short.class);
+        PRIMITIVES.put("char", char.class);
+        PRIMITIVES.put("float", float.class);
+        PRIMITIVES.put("double", double.class);
+        PRIMITIVES.put("void", void.class);
     }
 
     public MethodId(Method method) {
@@ -69,7 +69,7 @@ public class MethodId implements Serializable {
         int i = 0;
         for (String s : argumentTypes) {
             try {
-                result[i] = primitives.get(s);
+                result[i] = PRIMITIVES.get(s);
                 if (result[i] == null) {
                     result[i] = Class.forName(s);
                 }

@@ -36,6 +36,7 @@
 
   <modules>
     <module>connector</module>
+    <module>domain</module>
   </modules>
 
 </project>

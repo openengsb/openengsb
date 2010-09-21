@@ -44,7 +44,7 @@ fi
 DEFAULT_VERSION="1.0.0-SNAPSHOT"
 echo -n "Version (is $DEFAULT_VERSION): "
 read VERSION
-if [ "$VAL" = "" ]; then
+if [ "$VERSION" = "" ]; then
 	VERSION=$DEFAULT_VERSION
 fi
 
@@ -63,25 +63,34 @@ mvn archetype:generate \
 	-DarchetypeGroupId="org.openengsb.archetypes" \
 	-DarchetypeArtifactId="openengsb-archetypes-connector" \
 	-DarchetypeVersion="$VERSION" \
-	-DdomainGroupId=$domainGroupId \
-	-DdomainArtifactId="$domainArtifactIdPrefix-implementation" \
-	-DdomainInterface="$INTERFACE" \
-	-DparentGroupId="$domainGroupId" \
 	-DparentArtifactId="$domainArtifactIdPrefix-parent" \
-	-DgroupId="$domainGroupId.$CONNECTOR" \
+	-DdomainArtifactId="$domainArtifactIdPrefix-implementation" \
 	-DartifactId="$artifactId" \
+	-DgroupId="$domainGroupId" \
 	-Dversion="$VERSION" \
-	-Dpackage="$groupId" \
+	-DdomainInterface="$INTERFACE" \
+	-Dpackage="$domainGroupId.$CONNECTOR" \
+	-DparentPackage="$domainGroupId" \
 	-Dname="$NAME"
 
+if [ $? != 0 ]; then
+	exit $?
+fi
+
 if [ -e "$artifactId" ]; then
-	mv "$artifactId" "$CONNECTOR"
-	if [ -f "pom.xml" ]; then
-		sed "s/<module>$artifactId<\/module>/<module>$CONNECTOR<\/module>/" pom.xml >pom.xml.new
-		mv pom.xml.new pom.xml
+	if [ ! -e "$CONNECTOR" ]; then
+		echo "INFO: Renaming project from '$artifactId' to '$CONNECTOR'"
+		mv "$artifactId" "$CONNECTOR"
+		if [ -f "pom.xml" ]; then
+			sed "s/<module>$artifactId<\/module>/<module>$CONNECTOR<\/module>/" pom.xml >pom.xml.new
+			mv pom.xml.new pom.xml
+		fi
+	else
+		echo "WARNING: Renaming of project to '$CONNECTOR' not possible, project already exists!"
 	fi
 fi
 
 echo ""
 echo "DON'T FORGET TO ADD THE CONNECTOR TO THE INTEGRATIONTEST PROJECT!"
+echo "SUCCESS"
 echo ""

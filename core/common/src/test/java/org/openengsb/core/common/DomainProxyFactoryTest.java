@@ -58,7 +58,7 @@ public class DomainProxyFactoryTest {
         bundleContextMock = mock(BundleContext.class);
         ServiceReference serviceRefMock = mock(ServiceReference.class);
         when(bundleContextMock.getServiceReferences(anyString(), contains("testService"))).thenReturn(
-                new ServiceReference[] { serviceRefMock });
+                new ServiceReference[] {serviceRefMock });
         when(bundleContextMock.getService(serviceRefMock)).thenReturn(targetService);
     }
 

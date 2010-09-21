@@ -44,4 +44,10 @@ public interface ContextService {
      * Returns the root @{code Context} for the current executing thread.
      */
     Context getContext();
+
+    /**
+     * 
+     * @return the id of the current context
+     */
+    String getCurrentContextId();
 }

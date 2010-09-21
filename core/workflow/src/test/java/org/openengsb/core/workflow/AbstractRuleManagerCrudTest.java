@@ -40,16 +40,16 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
     public static List<Object[]> data() {
         List<Object[]> data = new ArrayList<Object[]>();
         // functions:
-        data.add(new Object[] { new RuleBaseElementId(RuleBaseElementType.Function, "org.openengsb", "test42"),
-                "function void test42(){ System.out.println(\"sample-code\");}",
-                new RuleBaseElementId(RuleBaseElementType.Function, "at.ac.tuwien", "test"),
-                "function void test(){ System.out.println(\"bla42\");}", });
+        data.add(new Object[] {new RuleBaseElementId(RuleBaseElementType.Function, "org.openengsb", "test42"),
+            "function void test42(){ System.out.println(\"sample-code\");}",
+            new RuleBaseElementId(RuleBaseElementType.Function, "at.ac.tuwien", "test"),
+            "function void test(){ System.out.println(\"bla42\");}", });
 
         // rules:
-        data.add(new Object[] { new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test42"),
-                "when\nthen\nSystem.out.println(\"sample-code\");",
-                new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "test"),
-                "when\nthen\nSystem.out.println(\"\");", });
+        data.add(new Object[] {new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test42"),
+            "when\nthen\nSystem.out.println(\"sample-code\");",
+            new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "test"),
+            "when\nthen\nSystem.out.println(\"\");", });
 
         // TODO: imports & globals
         // data.add(new Object[] { new

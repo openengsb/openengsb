@@ -40,7 +40,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class BaseExamConfiguration {
+public final class BaseExamConfiguration {
 
     private BaseExamConfiguration() {
         // should not be instanciable, but should be allowed to contain private

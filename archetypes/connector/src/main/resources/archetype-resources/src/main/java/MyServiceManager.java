@@ -18,7 +18,7 @@ package ${package};
 
 import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.core.common.ServiceInstanceFactory;
-import ${parentGroupId}.${domainInterface};
+import ${parentPackage}.${domainInterface};
 import ${package}.internal.MyServiceImpl;
 
 public class MyServiceManager extends AbstractServiceManager<${domainInterface}, MyServiceImpl> {

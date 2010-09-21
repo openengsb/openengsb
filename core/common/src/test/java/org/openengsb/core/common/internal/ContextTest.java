@@ -108,7 +108,7 @@ public class ContextTest {
     }
 
     @Test
-    public void KeysAndNames_shouldNotOverlap() {
+    public void keysAndNames_shouldNotOverlap() {
         context.createChild("a");
         try {
             context.put("a", "");
@@ -119,7 +119,7 @@ public class ContextTest {
     }
 
     @Test
-    public void NamesAndKeys_shouldNotOverlap() {
+    public void namesAndKeys_shouldNotOverlap() {
         context.put("a", "");
         try {
             context.createChild("a");

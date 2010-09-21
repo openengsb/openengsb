@@ -25,7 +25,7 @@
 
   <osgi:service interface="org.openengsb.core.common.ServiceManager">
     <osgi:service-properties>
-      <entry key="domain" value="${parentGroupId}.${domainInterface}" />
+      <entry key="domain" value="${parentPackage}.${domainInterface}" />
       <entry key="openengsb.service.type" value="connector" />
     </osgi:service-properties>
     <bean class="${package}.MyServiceManager">

@@ -16,9 +16,13 @@
 
 package org.openengsb.ui.web;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
@@ -26,14 +30,9 @@ import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.ui.web.editor.EditorPanel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class EditorPage extends BasePage {
 
-    private final ServiceManager serviceManager;
+    private final transient ServiceManager serviceManager;
     private EditorPanel editorPanel;
 
     public EditorPage(ServiceManager serviceManager) {
@@ -41,7 +40,6 @@ public class EditorPage extends BasePage {
         ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
         add(new Label("service.name", descriptor.getName()));
         add(new Label("service.description", descriptor.getDescription()));
-        this.add(new BookmarkablePageLink<Index>("index", Index.class));
         createEditor(new HashMap<String, String>());
     }
 
@@ -52,7 +50,6 @@ public class EditorPage extends BasePage {
         ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
         add(new Label("service.name", descriptor.getName()));
         add(new Label("service.description", descriptor.getDescription()));
-        this.add(new BookmarkablePageLink<Index>("index", Index.class));
         createEditor(attributeValues);
     }
 
@@ -105,6 +102,11 @@ public class EditorPage extends BasePage {
 
     public EditorPanel getEditorPanel() {
         return editorPanel;
+    }
+
+    @Override
+    public String getHeaderMenuItem() {
+        return TestClient.class.getSimpleName();
     }
 
 }

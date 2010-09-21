@@ -17,8 +17,11 @@
 
 -->
 
-<appendix xml:id="codestyle" xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink"
-  version="5.0">
+<appendix xml:id="codestyle" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
 
   <title>Java Coding Style</title>
 
@@ -63,7 +66,7 @@
       <title>Header</title>
       <para> Every source file has to start with this header:
         <programlisting>
-/**
+<![CDATA[/**
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
@@ -79,7 +82,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
- */</programlisting>
+ */]]></programlisting>
       </para>
     </section>
     <section>
@@ -90,7 +93,7 @@
       <title>Use guards</title>
       <para> Guards are a possibility to reduce the amount of nesting. Heavily nested code is much harder to read. Bad:
         <programlisting>
-public void foo() {
+<![CDATA[public void foo() {
     if (conditionA) {
         if (conditionB) {
             if (conditionC) {
@@ -100,10 +103,10 @@ public void foo() {
             throw new MyException();
         }
     }
-}       </programlisting>
+}]]></programlisting>
         Good:
         <programlisting>
-public void foo() {
+<![CDATA[public void foo() {
     if (!conditionA) {
         return;
     }
@@ -117,7 +120,7 @@ public void foo() {
     }
 
     // do some work
-}       </programlisting>
+}]]></programlisting>
       </para>
     </section>
     <section>

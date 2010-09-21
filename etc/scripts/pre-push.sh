@@ -15,6 +15,8 @@
 # limitations under the License.
 #
 
-cd $(dirname $0)/../../
+cd $(dirname $0)/../../tooling/
+mvn clean install
+cd ../
 mvn clean install -Plicense-check,integration-test
 

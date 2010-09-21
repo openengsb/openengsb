@@ -42,7 +42,7 @@ public class ModelBean implements Serializable {
         if (path.length - 1 >= 0) {
             return path[path.length - 1];
         } else {
-            return "/";
+            return contextService.getCurrentContextId();
         }
     }
 

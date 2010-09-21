@@ -16,7 +16,7 @@
 
 package ${package}.internal;
 
-import ${parentGroupId}.${domainInterface};
+import ${parentPackage}.${domainInterface};
 
 public class MyServiceImpl implements ${domainInterface} {
 

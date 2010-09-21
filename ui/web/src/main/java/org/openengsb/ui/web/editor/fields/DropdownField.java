@@ -30,7 +30,7 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
 
 @SuppressWarnings("serial")
-public class DropdownField extends AbstractField {
+public class DropdownField extends AbstractField<String> {
 
     public DropdownField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<String> validator) {
         super(id, model, attribute, validator);
@@ -60,4 +60,3 @@ public class DropdownField extends AbstractField {
         return choice;
     }
 }
-
