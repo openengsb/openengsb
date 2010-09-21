@@ -28,9 +28,13 @@ import org.junit.runners.Parameterized.Parameters;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
+
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
 @RunWith(Parameterized.class)
 public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager> extends
@@ -106,7 +110,7 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
     public void testUpdate() throws RuleBaseException {
         source.add(id1, code1);
         source.update(id1, code2);
-        assertEquals(code2, source.get(id1));
+        assertThat(source.get(id1), equalTo(code2));
     }
 
     @Test
@@ -114,8 +118,8 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
         source.add(id1, code1);
         source.add(id2, code2);
         Collection<RuleBaseElementId> result = source.list(id1.getType(), id1.getPackageName());
-        assertTrue(result.contains(id1));
-        assertFalse(result.contains(id2));
+        assertThat(result, hasItem(id1));
+        assertThat(result, not(hasItem(id2)));
     }
 
     @Test
@@ -123,8 +127,8 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
         source.add(id1, code1);
         source.add(id2, code2);
         Collection<RuleBaseElementId> result = source.list(id1.getType());
-        assertTrue(result.contains(id1));
-        assertTrue(result.contains(id2));
+        assertThat(result, hasItem(id1));
+        assertThat(result, hasItem(id2));
     }
 
     @Test
