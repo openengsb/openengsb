@@ -47,15 +47,6 @@ public class WorkflowServiceTest {
         void log(String string);
     }
 
-    public class LogDomainMock implements LogDomain {
-        private StringBuffer log = new StringBuffer();
-
-        @Override
-        public void log(String string) {
-            log.append(string);
-        }
-    }
-
     private WorkflowServiceImpl service;
     private RuleManager manager;
     private RuleListener listener;
@@ -76,7 +67,7 @@ public class WorkflowServiceTest {
         manager = new DirectoryRuleSource("data/rulebase");
         ((DirectoryRuleSource) manager).init();
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
-                "when\n Event ( contextId == \"test-context\")\n then \n log.doSomething(\"42\");");
+                "when\n Event ( contextId == \"test-context\")\n then \n example.doSomething(\"42\");");
     }
 
     private void setupDomains() {
@@ -87,7 +78,7 @@ public class WorkflowServiceTest {
     private Map<String, Domain> createDomainMocks() {
         Map<String, Domain> domains = new HashMap<String, Domain>();
         logService = Mockito.mock(ExampleDomain.class);
-        domains.put("log", logService);
+        domains.put("example", logService);
         NotificationDomain notification = Mockito.mock(NotificationDomain.class);
         domains.put("notification", notification);
         return domains;
