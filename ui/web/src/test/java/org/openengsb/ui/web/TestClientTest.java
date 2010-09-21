@@ -66,6 +66,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 
 import static org.junit.Assert.assertThat;
@@ -359,6 +360,17 @@ public class TestClientTest {
         String buttonValue = tester.getApplication().getResourceSettings().getLocalizer()
             .getString("form.call", button);
         Assert.assertEquals(buttonValue, button.getValue());
+    }
+
+    @Test
+    public void testSelectOtherService_shouldClearArgumentList() throws Exception {
+        setupAndStartTestClientPage();
+        setServiceInDropDown(0);
+        setMethodInDropDown(0);
+        setServiceInDropDown(0);
+        RepeatingView argList = (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+        assertThat(argList.size(), is(0));
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() {

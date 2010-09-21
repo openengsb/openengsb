@@ -155,6 +155,8 @@ public class TestClient extends BasePage {
                 call.setService((ServiceId) mnode.getUserObject());
                 populateMethodList();
                 target.addComponent(methodList);
+                argumentList.removeAll();
+                target.addComponent(argumentListContainer);
                 log.info(node);
                 log.info(node.getClass());
 
