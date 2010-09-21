@@ -70,7 +70,7 @@ public class WorkflowServiceDynamicTest {
     public void setUp() throws Exception {
         bundleContext = mock(BundleContext.class);
 
-        exampleReference = setupServiceReferenceMock("log");
+        exampleReference = setupServiceReferenceMock("example");
         notificationReference = setupServiceReferenceMock("notification");
 
         example = mock(ExampleDomain.class);
