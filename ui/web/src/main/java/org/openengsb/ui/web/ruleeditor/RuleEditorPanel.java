@@ -183,14 +183,9 @@ public class RuleEditorPanel extends Panel {
 
     private void loadRuleChoice() {
         RuleBaseElementType selectedType = typeChoice.getModelObject();
-        if (selectedType.equals(RuleBaseElementType.Process)) {
-            // this branch is not implemented for the moment
-            ruleChoice.setChoices(new ArrayList<RuleBaseElementId>());
-        } else {
-            List<RuleBaseElementId> choices = new ArrayList<RuleBaseElementId>(ruleManagerProvider.getRuleManager()
-                    .list(selectedType));
-            ruleChoice.setChoices(choices);
-        }
+        List<RuleBaseElementId> choices = new ArrayList<RuleBaseElementId>(ruleManagerProvider.getRuleManager().list(
+                selectedType));
+        ruleChoice.setChoices(choices);
         ruleChoice.setModel(new Model<RuleBaseElementId>());
     }
 
