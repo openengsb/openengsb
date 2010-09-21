@@ -16,6 +16,19 @@
 
 package org.openengsb.ui.web;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeModel;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -53,18 +66,6 @@ import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 
 @SuppressWarnings("serial")
 public class TestClient extends BasePage {
@@ -304,11 +305,13 @@ public class TestClient extends BasePage {
                 log.info("result: " + result);
             }
         } catch (IllegalAccessException e) {
-            error(e);
-            log.error(e);
+            String stackTrace = ExceptionUtils.getFullStackTrace(e);
+            error(stackTrace);
+            log.error(stackTrace);
         } catch (InvocationTargetException e) {
-            error(e.getCause());
-            log.error(e);
+            String stackTrace = ExceptionUtils.getFullStackTrace(e.getCause());
+            error(stackTrace);
+            log.error(stackTrace);
         }
     }
 

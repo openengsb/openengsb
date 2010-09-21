@@ -16,7 +16,15 @@
 
 package org.openengsb.ui.web;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+
 import junit.framework.Assert;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -52,17 +60,15 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import static org.hamcrest.Matchers.containsString;
+
+import static org.junit.Assert.assertThat;
 
 public class TestClientTest {
     private DomainService managedServicesMock;
@@ -341,8 +347,8 @@ public class TestClientTest {
         formTester.setValue("argumentListContainer:argumentList:arg0:value", "fail");
         formTester.setValue("argumentListContainer:argumentList:arg1:value", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
-        Exception resultException = (Exception) tester.getMessages(FeedbackMessage.ERROR).get(0);
-        Assert.assertEquals(IllegalArgumentException.class, resultException.getClass());
+        String resultException = (String) tester.getMessages(FeedbackMessage.ERROR).get(0);
+        assertThat(resultException, containsString(IllegalArgumentException.class.getName()));
     }
 
     @Test
