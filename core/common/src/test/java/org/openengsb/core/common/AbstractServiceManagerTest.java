@@ -110,7 +110,7 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock).registerService(
-                new String[] { DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
+                new String[] {DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
                 instance, props);
     }
 
@@ -127,7 +127,7 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
-                new String[] { DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
+                new String[] {DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
                 instance, props);
     }
 
@@ -152,7 +152,7 @@ public class AbstractServiceManagerTest {
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.when(
                 bundleContextMock.registerService(
-                        new String[] { DummyInstance.class.getName(), DummyDomain.class.getName(),
+                        new String[] {DummyInstance.class.getName(), DummyDomain.class.getName(),
                                 Domain.class.getName() }, mock, props)).thenReturn(serviceRegistrationMock);
         return serviceRegistrationMock;
     }

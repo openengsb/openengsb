@@ -226,7 +226,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     @SuppressWarnings("unchecked")
     private Collection<File> listFiles(File path, String extension) {
-        Collection<File> functions = FileUtils.listFiles(path, new String[] { extension }, false);
+        Collection<File> functions = FileUtils.listFiles(path, new String[] {extension }, false);
         return functions;
     }
 
