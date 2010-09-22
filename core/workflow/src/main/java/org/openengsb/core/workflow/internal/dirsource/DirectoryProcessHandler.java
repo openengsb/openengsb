@@ -41,14 +41,16 @@ public class DirectoryProcessHandler extends MultiFileResourceHandler {
 
     @Override
     protected void removeFromRuleBase(RuleBaseElementId name) throws RuleBaseException {
-        source.getRulebase().getPackage(name.getPackageName()).removeRuleFlow(name.getName());
+        source.getRulebase().getPackage(name.getPackageName())
+                .removeRuleFlow(String.format("%s.%s", name.getPackageName(), name.getName()));
     }
 
     @Override
     protected Collection<RuleBaseElementId> listElementsInPackage(Package p) {
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
         for (String name : p.getRuleFlows().keySet()) {
-            result.add(new RuleBaseElementId(RuleBaseElementType.Process, p.getName(), name));
+            result.add(new RuleBaseElementId(RuleBaseElementType.Process, p.getName(), name.replace(p.getName() + ".",
+                    "")));
         }
         return result;
     }

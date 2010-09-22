@@ -17,18 +17,20 @@
 package org.openengsb.core.workflow.dirsource;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.openengsb.core.workflow.AbstractRuleManagerCrudTest;
 import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
-import org.openengsb.core.workflow.model.RuleBaseElementId;
 
 public class DirectoryRuleManagerCrudTest extends AbstractRuleManagerCrudTest<DirectoryRuleSource> {
 
-    public DirectoryRuleManagerCrudTest(RuleBaseElementId id1, String code1, RuleBaseElementId id2, String code2) {
-        super(id1, code1, id2, code2);
+    public DirectoryRuleManagerCrudTest(
+            List<org.openengsb.core.workflow.AbstractRuleManagerCrudTest.TestElement> testelements) {
+        super(testelements);
+        // TODO Auto-generated constructor stub
     }
 
     @Override
