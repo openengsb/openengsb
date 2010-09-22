@@ -19,8 +19,13 @@ package org.openengsb.domains.notification.email.internal.abstraction;
 import org.openengsb.core.common.DomainMethodExecutionException;
 import org.openengsb.core.common.util.AliveState;
 
-import javax.mail.*;
+import javax.mail.Authenticator;
+import javax.mail.Message;
 import javax.mail.Message.RecipientType;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
@@ -84,11 +89,10 @@ public class JavaxMailAbstraction implements MailAbstraction {
             }
         } catch (MessagingException e) {
             this.aliveState = AliveState.OFFLINE;
-            throw new DomainMethodExecutionException("Emailnotifier could not connect (wrong username/password or" +
-                    " mail server unavailable) ");
+            throw new DomainMethodExecutionException("Emailnotifier could not connect (wrong username/password or"
+                    + " mail server unavailable) ");
         }
     }
-
 
     private String buildSubject(MailPropertiesImp properties, String subject) {
         if (properties.getPrefix() == null) {

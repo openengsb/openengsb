@@ -85,7 +85,7 @@ public class EmailNotifierTest {
     }
 
     @Test
-    public void EmailNotifierShouldBeOnlineAfterFirstSend_ShouldReturnOnline() {
+    public void testemailNotifierShouldBeOnlineAfterFirstSend_ShouldReturnOnline() {
         MailAbstraction mailMock = mock(MailAbstraction.class);
         MailProperties propertiesMock = mock(MailProperties.class);
         when(mailMock.createMailProperties()).thenReturn(propertiesMock);
