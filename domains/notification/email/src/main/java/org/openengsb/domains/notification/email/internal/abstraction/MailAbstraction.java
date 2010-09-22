@@ -20,7 +20,7 @@ import org.openengsb.core.common.util.AliveState;
 
 public interface MailAbstraction {
 
-    void send( MailProperties properties, String subject, String textContet, String receiver);
+    void send(MailProperties properties, String subject, String textContet, String receiver);
 
     /**
      *

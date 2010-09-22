@@ -39,7 +39,7 @@ public class AttributeDefinitionTest {
     private BundleStrings strings;
     private Builder builder;
     @Rule
-    public final ExpectedException expected = ExpectedException.none();
+    public ExpectedException expected = ExpectedException.none();
 
     @Before
     public void setup() {
