@@ -41,6 +41,10 @@ HowTo - First steps with OpenEngSB (Setup)
 
 [../images/howto/mainpage.png]
 
+* First Steps
+
+  Now that the OpenEngSB is up and running start with the first tutorial: {{{./howto_logging.html}Connectors and Domains}}
+
 * Shutdown OpenEngSB
 
   To shutdown the OpenEngSB, go to the command-window and type "shutdown" or press "Ctrl+D"

@@ -64,3 +64,9 @@ HowTo - Events with the OpenEngSB (Using the logging service)
 
 [../images/howto/logging_output.jpg]
 
+* Next Steps
+
+  Congratulation. You've gained some basic knowledge about the OpenEngSB and its functionality. Nevertheless, you've just 
+  touched the surface. As a next step it is highly recommended to directly jump into the {{{../reference/index.html}user manual}} 
+  and start exploring the world of the OpenEngSB.
+

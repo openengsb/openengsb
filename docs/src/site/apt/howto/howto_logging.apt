@@ -83,3 +83,7 @@ HowTo - First steps with the OpenEngSB (Send mails via the OpenEngSB)
 
   Congratulations, you have just finished the first HowTo with the Open Engineering Service Bus.
 
+* Next Steps
+
+  Now that you've finished the most easy OpenEngSB use case go on with a more complex one: {{{./howto_contexteditor.html}Events}}
+
