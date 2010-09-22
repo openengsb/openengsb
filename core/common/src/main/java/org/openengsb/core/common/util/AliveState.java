@@ -29,7 +29,7 @@ public enum AliveState {
     ONLINE,
 
     /**
-     * domain is offline, means an error occurred and it has to updated
+     * domain is offline, means an error occurred and it has to be updated
      */
     OFFLINE,
 
