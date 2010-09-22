@@ -48,6 +48,13 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>${project.basedir}/assembly/src/main/distribution/base/</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>${project.basedir}/target/all/openengsb/</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
