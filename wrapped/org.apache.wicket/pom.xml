@@ -84,12 +84,6 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>${wrapped.groupId}</groupId>
-      <artifactId>wicket-velocity</artifactId>
-      <version>${wrapped.version}</version>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-auth-roles</artifactId>
       <version>${wrapped.version}</version>
