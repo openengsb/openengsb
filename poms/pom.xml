@@ -74,7 +74,7 @@
     <oracle.classloader.version>10.1.3.1</oracle.classloader.version>
     <el.version>2.1.0</el.version>
     <aopalliance.version>1.0.0</aopalliance.version>
-    <wicket.version>1.4.10</wicket.version>
+    <wicket.version>1.4.12</wicket.version>
     <jackson.version>1.5.3</jackson.version>
     <aopalliance.version>1.0_3</aopalliance.version>
     <xml.bind.version>2.0.0</xml.bind.version>
