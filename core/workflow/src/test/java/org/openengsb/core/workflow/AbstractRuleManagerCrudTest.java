@@ -49,6 +49,13 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
             this.code = code;
         }
 
+        public RuleBaseElementId getId() {
+            return this.id;
+        }
+
+        public String getCode() {
+            return this.code;
+        }
     }
 
     @Parameters
