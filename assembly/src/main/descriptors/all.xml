@@ -33,10 +33,25 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>${project.basedir}</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>NOTICE</include>
+        <include>LICENSE</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>${project.basedir}/etc/</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>config/*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/assembly/src/main/distribution/base/</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>*</include>
       </includes>
     </fileSet>
     <fileSet>

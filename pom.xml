@@ -453,7 +453,7 @@
             <configuration>
               <appendAssemblyId>false</appendAssemblyId>
               <descriptors>
-                <descriptor>${project.basedir}/assembly/all.xml</descriptor>
+                <descriptor>${project.basedir}/assembly/src/main/descriptors/all.xml</descriptor>
               </descriptors>
             </configuration>
           </plugin>
