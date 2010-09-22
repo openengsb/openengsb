@@ -38,7 +38,7 @@
     <twdata.cli.version>1.0.4</twdata.cli.version>
     <clover.version>3.0.2</clover.version>
     <plugin.pax.version>1.4</plugin.pax.version>
-    <plugin.paxrunner.version>1.4.0</plugin.paxrunner.version>
+    <plugin.paxrunner.version>1.5.0</plugin.paxrunner.version>
     <plugin.release.version>2.0</plugin.release.version>
     <plugin.assembly.version>2.2-beta-5</plugin.assembly.version>
   </properties>
