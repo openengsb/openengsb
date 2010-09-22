@@ -92,18 +92,45 @@
       <version>${felix.version}</version>
       <optional>true</optional>
     </dependency>
-    <!-- Pax URL -->
+ 
+    <!-- Apache Felix Environment -->
     <dependency>
-      <groupId>org.ops4j.pax.url</groupId>
-      <artifactId>pax-url-mvn</artifactId>
-      <version>${pax.url.version}</version>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.fileinstall</artifactId>
+      <version>${felix.fileinstall.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.ops4j.pax.url</groupId>
-      <artifactId>pax-url-wrap</artifactId>
-      <version>${pax.url.version}</version>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.configadmin</artifactId>
+      <version>${felix.configadmin.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>org.osgi.core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>org.osgi.compendium</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.felix</groupId>
+      <artifactId>org.apache.felix.prefs</artifactId>
+      <version>${felix.prefs.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>org.osgi.compendium</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.felix.gogo</groupId>
+      <artifactId>org.apache.felix.gogo.runtime</artifactId>
+      <version>${felix.gogo.version}</version>
+    </dependency>
+   
     <!-- Pax Logging -->
     <dependency>
       <groupId>org.ops4j.pax.logging</groupId>
@@ -114,6 +141,18 @@
       <groupId>org.ops4j.pax.logging</groupId>
       <artifactId>pax-logging-api</artifactId>
       <version>${pax.logging.version}</version>
+    </dependency>
+    
+    <!-- Pax URL -->
+    <dependency>
+      <groupId>org.ops4j.pax.url</groupId>
+      <artifactId>pax-url-mvn</artifactId>
+      <version>${pax.url.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.url</groupId>
+      <artifactId>pax-url-wrap</artifactId>
+      <version>${pax.url.version}</version>
     </dependency>
 
     <!-- Spring Framework -->
@@ -226,44 +265,7 @@
       <version>${aries.version}</version>
     </dependency>
 
-    <!-- Apache Felix Environment -->
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.configadmin</artifactId>
-      <version>${felix.configadmin.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>org.osgi.core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>org.osgi.compendium</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.fileinstall</artifactId>
-      <version>${felix.fileinstall.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>org.apache.felix.prefs</artifactId>
-      <version>${felix.prefs.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.felix</groupId>
-          <artifactId>org.osgi.compendium</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.felix.gogo</groupId>
-      <artifactId>org.apache.felix.gogo.runtime</artifactId>
-      <version>${felix.gogo.version}</version>
-    </dependency>
-
+    
     <!-- Apache Karaf Base -->
     <dependency>
       <groupId>org.apache.karaf</groupId>
