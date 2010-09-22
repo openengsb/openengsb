@@ -20,7 +20,7 @@ import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.options.MavenArtifactProvisionOption;
 import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 
-public class OpenEngSBBundles {
+public final class OpenEngSBBundles {
 
     public static final MavenArtifactProvisionOption OPENENGSB_WRAPPED_WICKET = CoreOptions
             .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped").artifactId(
