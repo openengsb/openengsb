@@ -19,12 +19,16 @@ package org.openengsb.core.workflow.internal.dirsource;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.drools.rule.Package;
 import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
 public class DirectoryProcessHandler extends MultiFileResourceHandler {
+
+    private Log log = LogFactory.getLog(DirectoryProcessHandler.class);
 
     public DirectoryProcessHandler(DirectoryRuleSource source) {
         super(source);
@@ -51,9 +55,11 @@ public class DirectoryProcessHandler extends MultiFileResourceHandler {
 
     @Override
     public String sanitize(RuleBaseElementId name, String code) {
-        String replacedId = code.replaceFirst("id=\"\\w*\"", String.format("id=\"%s\"", name.getName()));
-        String replacedPackage = replacedId.replaceFirst("package-name=\"\\w*\"",
+        String replacedId = code.replaceFirst("id=\"[^\"]+\"",
+                String.format("id=\"%s.%s\"", name.getPackageName(), name.getName()));
+        String replacedPackage = replacedId.replaceFirst("package-name=\"[^\"]+\"",
                 String.format("package-name=\"%s\"", name.getPackageName()));
+        log.debug("sanitized code: " + replacedPackage);
         return replacedPackage;
     }
 }
