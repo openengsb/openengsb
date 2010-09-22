@@ -33,6 +33,14 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>${project.basedir}</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>NOTICE</include>
+        <include>LICENSE</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>${project.basedir}/etc/</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
