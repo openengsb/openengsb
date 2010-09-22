@@ -16,6 +16,7 @@
 
 package org.openengsb.core.workflow;
 
+<<<<<<< HEAD
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -24,8 +25,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+=======
+>>>>>>> 5b2a3f337b110ebf5ff8f4f695fdc80db16af453
 import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -42,14 +44,20 @@ import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.notification.NotificationDomain;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 public class WorkflowServiceTest {
 
     public interface LogDomain extends Domain {
         void log(String string);
     }
 
+<<<<<<< HEAD
+=======
     public class LogDomainMock implements LogDomain {
-        private StringBuffer log = new StringBuffer();
+        public StringBuffer log = new StringBuffer();
 
         @Override
         public void log(String string) {
@@ -62,6 +70,7 @@ public class WorkflowServiceTest {
         }
     }
 
+>>>>>>> 5b2a3f337b110ebf5ff8f4f695fdc80db16af453
     private WorkflowServiceImpl service;
     private RuleManager manager;
     private RuleListener listener;

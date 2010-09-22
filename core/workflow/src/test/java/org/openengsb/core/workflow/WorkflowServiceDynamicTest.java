@@ -150,7 +150,7 @@ public class WorkflowServiceDynamicTest {
         String id = (String) reference.getProperty("id");
         String filter = String.format("(&(openengsb.service.type=domain)(id=%s))", id);
         when(bundleContext.getAllServiceReferences(Domain.class.getName(), filter)).thenReturn(
-                new ServiceReference[] { reference });
+                new ServiceReference[] {reference });
         if (workflowService != null) {
             workflowService.serviceChanged(setupServiceEventMock(reference));
         }

@@ -16,21 +16,20 @@
 
 package org.openengsb.ui.web.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.util.AliveState;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 
 public class OsgiDomainServiceTest {
@@ -39,6 +38,10 @@ public class OsgiDomainServiceTest {
     }
 
     private static class DummyInstance implements DummyDomain {
+        @Override
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
+        }
     }
 
     @Test

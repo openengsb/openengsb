@@ -14,20 +14,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.core.common.util;
 
-import org.openengsb.core.common.util.AliveState;
-
-/**
- * Base interface all domain interfaces have to implement to be discoverable in
- * the OpenEngSB environment.
- */
-public interface Domain {
+public enum AliveState {
 
     /**
-     * return the current state of the service, 
-     * @see org.openengsb.core.common.util.AliveState
+     * domain is connecting
      */
-    AliveState getAliveState();
+    CONNECTING,
+
+    /**
+     * domain is online, means it is connected and working
+     */
+    ONLINE,
+
+    /**
+     * domain is offline, means an error occurred and it has to be updated
+     */
+    OFFLINE,
+
+    /**
+     * domain is disconnected means, from the view point of a domain everything is ok, but there is no
+     * connection the the service( e.g. no internet connection,),
+     */
+    DISCONNECTED
 
 }

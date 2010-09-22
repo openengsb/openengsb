@@ -16,14 +16,14 @@
 
 package org.openengsb.domains.example.connector;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.example.connector.internal.LogService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LogServiceManager extends AbstractServiceManager<ExampleDomain, LogService> {
 

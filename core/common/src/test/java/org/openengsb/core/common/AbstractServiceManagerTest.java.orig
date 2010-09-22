@@ -48,11 +48,15 @@ public class AbstractServiceManagerTest {
     }
 
     private static class DummyInstance implements DummyDomain {
-        private AliveState aliveState = AliveState.OFFLINE;
+        AliveState aliveState = AliveState.OFFLINE;
 
         @Override
         public AliveState getAliveState() {
             return aliveState;
+        }
+
+        public void doSomethingToChangeState() {
+            aliveState = AliveState.ONLINE;
         }
     }
 
@@ -120,8 +124,13 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock).registerService(
+<<<<<<< HEAD
                 new String[] {DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
                 instance, props);
+=======
+            new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
+            props);
+>>>>>>> 5b2a3f337b110ebf5ff8f4f695fdc80db16af453
     }
 
     @Test
@@ -137,8 +146,13 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
+<<<<<<< HEAD
                 new String[] {DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
                 instance, props);
+=======
+            new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
+            props);
+>>>>>>> 5b2a3f337b110ebf5ff8f4f695fdc80db16af453
     }
 
     @Test
@@ -157,13 +171,19 @@ public class AbstractServiceManagerTest {
     }
 
     private ServiceRegistration appendServiceRegistrationMockToBundleContextMock(BundleContext bundleContextMock,
-            DummyInstance mock) {
+                                                                                 DummyInstance mock) {
         ServiceRegistration serviceRegistrationMock = Mockito.mock(ServiceRegistration.class);
         Hashtable<String, String> props = createVerificationHashmap();
+<<<<<<< HEAD
         Mockito.when(
                 bundleContextMock.registerService(
                         new String[] {DummyInstance.class.getName(), DummyDomain.class.getName(),
                                 Domain.class.getName() }, mock, props)).thenReturn(serviceRegistrationMock);
+=======
+        Mockito.when(bundleContextMock.registerService(
+            new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, mock,
+            props)).thenReturn(serviceRegistrationMock);
+>>>>>>> 5b2a3f337b110ebf5ff8f4f695fdc80db16af453
         return serviceRegistrationMock;
     }
 

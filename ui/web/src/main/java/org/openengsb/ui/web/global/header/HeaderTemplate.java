@@ -16,9 +16,6 @@
 
 package org.openengsb.ui.web.global.header;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -30,8 +27,12 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.openengsb.ui.web.ContextSetPage;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
+import org.openengsb.ui.web.ServiceListPage;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
+
+import java.io.Serializable;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
@@ -54,6 +55,7 @@ public class HeaderTemplate extends Panel {
         this.addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
         this.addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
         this.addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
+        this.addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
 
         if (HeaderTemplate.getActiveIndex() == null || !this.avialableItems.contains(HeaderTemplate.getActiveIndex())) {
             // update menu item to index, because page index is not found!

@@ -16,6 +16,7 @@
 
 package org.openengsb.domains.notification.email.internal;
 
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
 import org.openengsb.domains.notification.email.internal.abstraction.MailProperties;
@@ -34,13 +35,21 @@ public class EmailNotifier implements NotificationDomain {
         this.id = id;
         this.mailAbstraction = mailAbstraction;
         properties = mailAbstraction.createMailProperties();
-
     }
 
     @Override
     public void notify(Notification notification) {
         mailAbstraction.send(properties, notification.getSubject(), notification.getMessage(), notification
                 .getRecipient());
+    }
+
+    @Override
+    public AliveState getAliveState() {
+        AliveState aliveState = mailAbstraction.getAliveState();
+        if (aliveState == null) {
+            return AliveState.OFFLINE;
+        }
+        return aliveState;
     }
 
     public String getId() {

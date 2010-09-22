@@ -16,15 +16,14 @@
 
 package org.openengsb.core.common.descriptor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
+import com.google.common.base.Preconditions;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.util.BundleStrings;
 import org.openengsb.core.common.validation.FormValidator;
 
-import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class ServiceDescriptor {
     private String id;

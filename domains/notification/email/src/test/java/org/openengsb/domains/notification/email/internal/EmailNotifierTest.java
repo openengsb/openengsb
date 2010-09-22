@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 import org.openengsb.core.common.DomainMethodExecutionException;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
 import org.openengsb.domains.notification.email.internal.abstraction.MailProperties;
 import org.openengsb.domains.notification.model.Attachment;
@@ -33,6 +34,9 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
 
 public class EmailNotifierTest {
 
@@ -68,6 +72,34 @@ public class EmailNotifierTest {
                 anyString(), anyString());
 
         notifier.notify(notificationMock);
+    }
+
+    @Test
+    public void testAliveStateAfterEmailNotifierCreation_ShouldReturnOnline() {
+        MailAbstraction mailMock = mock(MailAbstraction.class);
+        MailProperties propertiesMock = mock(MailProperties.class);
+        when(mailMock.createMailProperties()).thenReturn(propertiesMock);
+        EmailNotifier notifier = new EmailNotifier("notifier1", mailMock);
+        when(mailMock.getAliveState()).thenReturn(AliveState.ONLINE);
+        assertThat(notifier.getAliveState(), is(AliveState.ONLINE));
+    }
+
+    @Test
+    public void EmailNotifierShouldBeOnlineAfterFirstSend_ShouldReturnOnline() {
+        MailAbstraction mailMock = mock(MailAbstraction.class);
+        MailProperties propertiesMock = mock(MailProperties.class);
+        when(mailMock.createMailProperties()).thenReturn(propertiesMock);
+        EmailNotifier notifier = new EmailNotifier("notifier1", mailMock);
+
+        Notification notification = new Notification();
+        notification.setRecipient("openengsb.notification.test@gmail.com");
+        notification.setSubject("Subject");
+        notification.setMessage("Content");
+        notification.setAttachments(new ArrayList<Attachment>());
+
+        when(mailMock.getAliveState()).thenReturn(AliveState.ONLINE);
+        notifier.notify(notification);
+        assertThat(notifier.getAliveState(), is(AliveState.ONLINE));
     }
 
 }

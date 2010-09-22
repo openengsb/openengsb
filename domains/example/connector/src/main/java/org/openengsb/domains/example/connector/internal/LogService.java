@@ -18,6 +18,7 @@ package org.openengsb.domains.example.connector.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domains.example.ExampleDomain;
 
 public class LogService implements ExampleDomain {
@@ -25,9 +26,11 @@ public class LogService implements ExampleDomain {
     private final Log log = LogFactory.getLog(getClass());
     private String outputMode;
     private final String id;
+    private AliveState aliveState = AliveState.OFFLINE;
 
     public LogService(String id) {
         this.id = id;
+        aliveState = AliveState.CONNECTING;
     }
 
     @Override
@@ -46,5 +49,11 @@ public class LogService implements ExampleDomain {
 
     public void setOutputMode(String outputMode) {
         this.outputMode = outputMode;
+        this.aliveState = AliveState.ONLINE;
+    }
+
+    @Override
+    public AliveState getAliveState() {
+        return this.aliveState;
     }
 }

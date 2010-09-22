@@ -16,10 +16,13 @@
 
 package org.openengsb.integrationtest.exam;
 
+<<<<<<< HEAD
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+=======
+>>>>>>> 5b2a3f337b110ebf5ff8f4f695fdc80db16af453
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +39,11 @@ import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.List;
 
 @RunWith(JUnit4TestRunner.class)
 public class WorkflowIT extends AbstractExamTestHelper {
