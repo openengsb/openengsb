@@ -124,8 +124,8 @@ public class EditorPanelTest {
     @Test
     public void choicesInDropDownChoice_shouldBeInSameOrderAsOptionAttribute() {
         startEditorPanel(attribOption);
-        @SuppressWarnings("unchecked") List<String> choice =
-                getEditorFieldFormComponent(attribOption.getId(), DropDownChoice.class).getChoices();
+        @SuppressWarnings("unchecked")
+        List<String> choice = getEditorFieldFormComponent(attribOption.getId(), DropDownChoice.class).getChoices();
         for (int i = 0; i < attribOption.getOptions().size(); ++i) {
             assertThat(choice.get(i), is(attribOption.getOptions().get(i).getValue()));
         }
@@ -165,8 +165,21 @@ public class EditorPanelTest {
         FormTester formTester = tester.newFormTester(editor.getId() + ":form");
         String buildFormComponentId = buildFormComponentId(attrib.getId());
         formTester.setValue(buildFormComponentId, "A");
-        tester.executeAjaxEvent(editor.getId() + ":form:" + buildFormComponentId, "onBlur");
-        tester.assertErrorMessages(new String[]{"Number formating Error"});
+        tester.executeAjaxEvent(editor.getId() + ":form:submitButton", "onclick");
+        tester.assertErrorMessages(new String[] { "Number formating Error" });
+    }
+
+    @Test
+    public void testValidateOnlyAfterSubmit() throws Exception {
+        FieldValidator validator = new NumberValidator();
+        attrib.setValidator(validator);
+        startEditorPanel(attrib);
+        FormTester formTester = tester.newFormTester(editor.getId() + ":form");
+        String buildFormComponentId = buildFormComponentId(attrib.getId());
+        formTester.setValue(buildFormComponentId, "A");
+        tester.executeAjaxEvent(editor.getId() + ":form:submitButton", "onclick");
+        // tester.
+
     }
 
     @Test
@@ -191,8 +204,8 @@ public class EditorPanelTest {
         FormTester formTester = tester.newFormTester(editor.getId() + ":form");
         String buildFormComponentId = buildFormComponentId(attributeDefinition.getId());
         formTester.setValue(buildFormComponentId, "1");
-        tester.executeAjaxEvent(editor.getId() + ":form:" + buildFormComponentId, "onBlur");
-        tester.assertErrorMessages(new String[]{"Validation Error"});
+        tester.executeAjaxEvent(editor.getId() + ":form:submitButton", "onclick");
+        tester.assertErrorMessages(new String[] { "Validation Error" });
     }
 
     @Test
@@ -218,7 +231,7 @@ public class EditorPanelTest {
 
             @Override
             public List<String> fieldsToValidate() {
-                return Arrays.asList(new String[]{"attrib1", "attrib2"});
+                return Arrays.asList(new String[] { "attrib1", "attrib2" });
             }
         };
         startEditorPanel(validator, attrib1, attrib2);
@@ -227,8 +240,8 @@ public class EditorPanelTest {
         String component2Id = buildFormComponentId(attrib2.getId());
         formTester.setValue(component1Id, "a");
         formTester.setValue(component2Id, "b");
-        tester.executeAjaxEvent(editor.getId() + ":form:" + component1Id, "onBlur");
-        tester.assertErrorMessages(new String[]{"Validation Error", "Validation Error"});
+        tester.executeAjaxEvent(editor.getId() + ":form:submitButton", "onclick");
+        tester.assertErrorMessages(new String[] { "Validation Error", "Validation Error" });
     }
 
     @SuppressWarnings({ "unchecked", "deprecation" })
@@ -237,12 +250,12 @@ public class EditorPanelTest {
         AttributeDefinition attrib1 = newAttribute("attrib1", "name1", "desc1");
         attrib1.setValidator(new FailValidator());
         FormValidator mock = Mockito.mock(FormValidator.class);
-        Mockito.when(mock.fieldsToValidate()).thenReturn(Arrays.asList(new String[]{"attrib1"}));
+        Mockito.when(mock.fieldsToValidate()).thenReturn(Arrays.asList(new String[] { "attrib1" }));
         startEditorPanel(mock, attrib1);
         FormTester formTester = tester.newFormTester(editor.getId() + ":form");
         String component1Id = buildFormComponentId(attrib1.getId());
         formTester.setValue(component1Id, "a");
-        tester.executeAjaxEvent(editor.getId() + ":form:" + component1Id, "onBlur");
+        tester.executeAjaxEvent(editor.getId() + ":form:submitButton", "onclick");
         Mockito.verify(mock, Mockito.never()).validate(Mockito.anyMap());
     }
 
@@ -275,7 +288,11 @@ public class EditorPanelTest {
         editor = (EditorPanel) tester.startPanel(new TestPanelSource() {
             @Override
             public Panel getTestPanel(String panelId) {
-                return new EditorPanel(panelId, Arrays.asList(attributes), values, validator);
+                return new EditorPanel(panelId, Arrays.asList(attributes), values, validator) {
+                    @Override
+                    public void onSubmit() {
+                    }
+                };
             }
         });
     }
