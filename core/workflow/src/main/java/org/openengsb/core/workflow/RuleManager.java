@@ -22,6 +22,11 @@ import org.drools.RuleBase;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
+/**
+ * provides methods to manage the current content of the rulebase. Note: When
+ * adding a new rule or function to the rulebase, make sure that all imports are
+ * present before. Otherwise the adding of the elements will fail.
+ */
 public interface RuleManager {
 
     /**
