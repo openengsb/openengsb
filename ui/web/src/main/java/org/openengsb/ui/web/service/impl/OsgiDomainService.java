@@ -16,6 +16,11 @@
 
 package org.openengsb.ui.web.service.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.Domain;
@@ -25,11 +30,6 @@ import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 public class OsgiDomainService implements DomainService {
 
@@ -61,13 +61,11 @@ public class OsgiDomainService implements DomainService {
             if (allServiceReferences != null) {
                 for (ServiceReference serviceReference : allServiceReferences) {
                     Object service = bundleContext.getService(serviceReference);
-                    if (service instanceof ServiceManager) {
-                        serviceManagers.add((ServiceManager) service);
-                    }
+                    serviceManagers.add((ServiceManager) service);
                 }
             }
         } catch (InvalidSyntaxException e) {
-            log.debug(e.getMessage());
+            throw new IllegalStateException(e);
         }
         return serviceManagers;
     }
@@ -82,7 +80,7 @@ public class OsgiDomainService implements DomainService {
                 serviceReferences = Arrays.asList(allServiceReferences);
             }
         } catch (InvalidSyntaxException e) {
-            log.debug(e.getMessage());
+            throw new IllegalStateException(e);
         }
         return serviceReferences;
     }
@@ -111,7 +109,7 @@ public class OsgiDomainService implements DomainService {
         log.info(String.format("try to find service for class \"%s\", and id \"%s\"", serviceClass, serviceId));
         try {
             // TODO use filter
-            refs = bundleContext.getAllServiceReferences(serviceClass, null);
+            refs = bundleContext.getAllServiceReferences(serviceClass, String.format("(id=%s)", serviceId));
 
         } catch (InvalidSyntaxException e) {
             throw new IllegalArgumentException("could not find service " + serviceId, e);
@@ -119,12 +117,9 @@ public class OsgiDomainService implements DomainService {
         if (refs == null) {
             throw new IllegalArgumentException("no services found for class, " + serviceClass);
         }
-        for (ServiceReference ref : refs) {
-            // TODO replace this iterating by usage of filter above
-            if (ref.getProperty("id").equals(serviceId)) {
-                return bundleContext.getService(ref);
-            }
+        if (refs.length > 1) {
+            throw new IllegalStateException(String.format("more than one service with id %s found", serviceId));
         }
-        throw new IllegalArgumentException("no services found for id, " + serviceId);
+        return bundleContext.getService(refs[0]);
     }
 }
