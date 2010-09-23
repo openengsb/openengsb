@@ -25,7 +25,6 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <bean id="domainService" class="org.openengsb.ui.web.service.impl.OsgiDomainService">
-    <constructor-arg name="bundleContext" ref="bundleContext"/>
     <property name="domains" ref="domains" />
   </bean>
 </beans>

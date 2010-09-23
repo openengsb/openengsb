@@ -30,21 +30,14 @@ import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.springframework.osgi.context.BundleContextAware;
 
-public class OsgiDomainService implements DomainService {
-
-    private List<DomainProvider> domains;
-    private final BundleContext bundleContext;
+public class OsgiDomainService implements DomainService, BundleContextAware {
 
     private Log log = LogFactory.getLog(OsgiDomainService.class);
 
-    public OsgiDomainService(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-    }
-
-    public void setDomains(List<DomainProvider> domains) {
-        this.domains = new ArrayList<DomainProvider>(domains);
-    }
+    private List<DomainProvider> domains;
+    private BundleContext bundleContext;
 
     @Override
     public List<DomainProvider> domains() {
@@ -55,8 +48,9 @@ public class OsgiDomainService implements DomainService {
     public List<ServiceManager> serviceManagersForDomain(Class<? extends Domain> domain) {
         List<ServiceManager> serviceManagers = new ArrayList<ServiceManager>();
         try {
+            String filter = "(domain=" + domain.getName() + ")";
             ServiceReference[] allServiceReferences = bundleContext.getAllServiceReferences(
-                    ServiceManager.class.getName(), "(domain=" + domain.getName() + ")");
+                    ServiceManager.class.getName(), filter);
 
             if (allServiceReferences != null) {
                 for (ServiceReference serviceReference : allServiceReferences) {
@@ -71,10 +65,10 @@ public class OsgiDomainService implements DomainService {
     }
 
     @Override
-    public List<ServiceReference> serviceReferencesForConnector(Class<? extends Domain> connectorClass) {
+    public List<ServiceReference> serviceReferencesForDomain(Class<? extends Domain> domain) {
         List<ServiceReference> serviceReferences = new ArrayList<ServiceReference>();
         try {
-            ServiceReference[] allServiceReferences = bundleContext.getAllServiceReferences(connectorClass.getName(),
+            ServiceReference[] allServiceReferences = bundleContext.getAllServiceReferences(domain.getName(),
                     null);
             if (allServiceReferences != null) {
                 serviceReferences = Arrays.asList(allServiceReferences);
@@ -86,7 +80,7 @@ public class OsgiDomainService implements DomainService {
     }
 
     @Override
-    public List<? extends ServiceReference> getManagedServiceInstances() {
+    public List<? extends ServiceReference> getAllServiceInstances() {
         try {
             ServiceReference[] refs = bundleContext.getAllServiceReferences(Domain.class.getName(), null);
             if (refs == null) {
@@ -108,9 +102,7 @@ public class OsgiDomainService implements DomainService {
         ServiceReference[] refs;
         log.info(String.format("try to find service for class \"%s\", and id \"%s\"", serviceClass, serviceId));
         try {
-            // TODO use filter
             refs = bundleContext.getAllServiceReferences(serviceClass, String.format("(id=%s)", serviceId));
-
         } catch (InvalidSyntaxException e) {
             throw new IllegalArgumentException("could not find service " + serviceId, e);
         }
@@ -121,5 +113,15 @@ public class OsgiDomainService implements DomainService {
             throw new IllegalStateException(String.format("more than one service with id %s found", serviceId));
         }
         return bundleContext.getService(refs[0]);
+    }
+
+    public void setDomains(List<DomainProvider> domains) {
+        this.domains = new ArrayList<DomainProvider>(domains);
+    }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+
     }
 }

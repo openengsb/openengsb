@@ -28,9 +28,9 @@ public interface DomainService {
 
     List<ServiceManager> serviceManagersForDomain(Class<? extends Domain> domain);
 
-    List<ServiceReference> serviceReferencesForConnector(Class<? extends Domain> connectorClass);
+    List<ServiceReference> serviceReferencesForDomain(Class<? extends Domain> domain);
 
-    List<? extends ServiceReference> getManagedServiceInstances();
+    List<? extends ServiceReference> getAllServiceInstances();
 
     Object getService(ServiceReference serviceReference);
 

@@ -80,7 +80,7 @@ public class PropertyEditableColumn extends PropertyRenderableColumn {
             if (("/domains/" + domainProvierName + "/defaultConnector/id").equals(keyPath)) {
                 Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
                 List<ServiceReference> serviceReferencesForConnector = domainService
-                        .serviceReferencesForConnector(domainInterface);
+                        .serviceReferencesForDomain(domainInterface);
                 for (ServiceReference serviceReferce : serviceReferencesForConnector) {
                     String type = (String) serviceReferce.getProperty("openengsb.service.type");
                     if (!"domain".equals(type)) { // it is an connector
@@ -91,5 +91,5 @@ public class PropertyEditableColumn extends PropertyRenderableColumn {
             }
         }
         return services;
-    } 
+    }
 }

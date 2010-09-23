@@ -386,7 +386,7 @@ public class TestClientTest {
         expected.add(serviceReferenceMock);
         expected.add(serviceReferenceMock);
         managedServicesMock = mock(DomainService.class);
-        when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
+        when(managedServicesMock.getAllServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
             @Override
             public List<ServiceReference> answer(InvocationOnMock invocation) {
                 return expected;
@@ -409,7 +409,7 @@ public class TestClientTest {
             }
         });
 
-        Mockito.when(managedServicesMock.serviceReferencesForConnector(TestInterface.class)).thenReturn(expected);
+        Mockito.when(managedServicesMock.serviceReferencesForDomain(TestInterface.class)).thenReturn(expected);
 
         ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
         List<ServiceManager> serviceManagerList = new ArrayList<ServiceManager>();

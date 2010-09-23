@@ -264,8 +264,8 @@ public class TestClient extends BasePage {
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
         DefaultMutableTreeNode providerNode = new DefaultMutableTreeNode(provider.getName());
         node.add(providerNode);
-        for (ServiceReference serviceReference : this.services.serviceReferencesForConnector(provider
-                .getDomainInterface())) {
+        for (ServiceReference serviceReference : this.services
+                .serviceReferencesForDomain(provider.getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
             if (id != null) {
                 ServiceId serviceId = new ServiceId();
