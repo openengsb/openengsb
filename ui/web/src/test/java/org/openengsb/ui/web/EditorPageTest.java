@@ -67,13 +67,13 @@ public class EditorPageTest {
 
     @Test
     public void attributesWithDefaultValues_shouldInitializeModelWithDefaults() throws Exception {
-        EditorPage page = new EditorPage(manager);
+        ConnectorEditorPage page = new ConnectorEditorPage(manager);
         assertThat(page.getEditorPanel().getValues().get("a"), is("a_default"));
     }
 
     @Test
     public void shouldAddAnIdAttributeAtBeginning() throws Exception {
-        EditorPage page = new EditorPage(manager);
+        ConnectorEditorPage page = new ConnectorEditorPage(manager);
         assertThat(page.getEditorPanel().getAttributes().size(), is(2));
         assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("id"));
     }
@@ -86,7 +86,7 @@ public class EditorPageTest {
         attributes.put("id", "id1");
         when(manager.getAttributeValues("a")).thenReturn(attributes);
 
-        EditorPage page = new EditorPage(manager, "a");
+        ConnectorEditorPage page = new ConnectorEditorPage(manager, "a");
         tester.startPage(page);
         tester.debugComponentTrees();
         TextField<String> idField = (TextField<String>) tester
@@ -106,14 +106,14 @@ public class EditorPageTest {
         tester.startPage(new ITestPageSource() {
             @Override
             public Page getTestPage() {
-                return new EditorPage(manager);
+                return new ConnectorEditorPage(manager);
             }
         });
         FormTester formTester = tester.newFormTester("editor:form");
         formTester.setValue("fields:id:row:field", "someValue");
         formTester.submit();
         tester.assertErrorMessages(new String[]{"Service Validation Error"});
-        tester.assertRenderedPage(EditorPage.class);
+        tester.assertRenderedPage(ConnectorEditorPage.class);
     }
 
     @Test
@@ -127,7 +127,7 @@ public class EditorPageTest {
         tester.startPage(new ITestPageSource() {
             @Override
             public Page getTestPage() {
-                return new EditorPage(manager);
+                return new ConnectorEditorPage(manager);
             }
         });
         FormTester formTester = tester.newFormTester("editor:form");

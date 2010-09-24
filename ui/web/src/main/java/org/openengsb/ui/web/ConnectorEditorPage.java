@@ -30,12 +30,12 @@ import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.ui.web.editor.EditorPanel;
 
-public class EditorPage extends BasePage {
+public class ConnectorEditorPage extends BasePage {
 
     private final transient ServiceManager serviceManager;
     private EditorPanel editorPanel;
 
-    public EditorPage(ServiceManager serviceManager) {
+    public ConnectorEditorPage(ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
         ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
         add(new Label("service.name", descriptor.getName()));
@@ -43,7 +43,7 @@ public class EditorPage extends BasePage {
         createEditor(new HashMap<String, String>());
     }
 
-    public EditorPage(ServiceManager serviceManager, String serviceId) {
+    public ConnectorEditorPage(ServiceManager serviceManager, String serviceId) {
         this.serviceManager = serviceManager;
         Map<String, String> attributeValues = serviceManager.getAttributeValues(serviceId);
 

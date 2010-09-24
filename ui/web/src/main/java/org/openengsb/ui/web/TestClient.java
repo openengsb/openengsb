@@ -117,7 +117,7 @@ public class TestClient extends BasePage {
 
                     @Override
                     public void onClick() {
-                        setResponsePage(new EditorPage(getModelObject()));
+                        setResponsePage(new ConnectorEditorPage(getModelObject()));
                     }
                 });
                 item.add(new Label("service.name", desc.getName()));
@@ -135,7 +135,7 @@ public class TestClient extends BasePage {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 log.info("edit button pressed");
                 if (lastManager != null && lastServiceId != null) {
-                    setResponsePage(new EditorPage(lastManager, lastServiceId));
+                    setResponsePage(new ConnectorEditorPage(lastManager, lastServiceId));
                 }
 
             }

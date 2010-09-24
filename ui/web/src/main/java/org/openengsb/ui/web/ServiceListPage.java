@@ -155,7 +155,7 @@ public class ServiceListPage extends BasePage {
                         createLoadableDetachableServiceManagerModel(sm)) {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
-                        setResponsePage(new EditorPage(getModelObject(), id));
+                        setResponsePage(new ConnectorEditorPage(getModelObject(), id));
                     }
                 });
                 item.add(new AjaxLink<ServiceManager>("deleteService", 

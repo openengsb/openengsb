@@ -505,7 +505,7 @@ public class TestClientTest {
         Assert.assertEquals(true, editButton.isEnabled());
         tester.executeAjaxEvent(editButton, "onclick");
 
-        EditorPage editorPage = Mockito.mock(EditorPage.class);
+        ConnectorEditorPage editorPage = Mockito.mock(ConnectorEditorPage.class);
         tester.assertRenderedPage(editorPage.getPageClass());
     }
 
