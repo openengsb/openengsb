@@ -16,6 +16,7 @@
 
 package org.openengsb.core.workflow;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,8 +40,11 @@ import org.openengsb.domains.notification.NotificationDomain;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
 public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
@@ -74,7 +78,8 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     }
 
     /**
-     * create new stateful session from the rulebase and attach a listener to validate testresults
+     * create new stateful session from the rulebase and attach a listener to
+     * validate testresults
      */
     protected void createSession() {
         if (session != null) {
@@ -114,6 +119,12 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     }
 
     @Test
+    public void testListImports() throws Exception {
+        Collection<String> listImports = source.listImports();
+        assertThat(listImports, hasItem("java.util.Map"));
+    }
+
+    @Test
     public void testAddRule() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test3");
         source.add(id, "when\n" + "  e : Event()\n" + "then\n"
@@ -127,8 +138,10 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     public void testAddImport() throws Exception {
         Package p = getPackage();
         assertNull(p.getImports().get("java.util.Currency"));
-        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Import, "java.util.Currency");
-        source.add(id, "java.util.Currency");
+        // RuleBaseElementId id = new
+        // RuleBaseElementId(RuleBaseElementType.Import, "java.util.Currency");
+        // source.add(id, "java.util.Currency");
+        source.addImport("java.util.Currency");
         p = getPackage();
         assertNotNull(p.getImports().get("java.util.Currency"));
     }
@@ -141,9 +154,9 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     @Test
     public void testRemoveImport() throws Exception {
         Package p = getPackage();
-        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Import, "java.util.Currency");
-        source.add(id, "ignored");
-        source.delete(id);
+//        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Import, "java.util.Currency");
+//        source.add(id, "ignored");
+//        source.delete(id);
         p = getPackage();
         assertNull(p.getImports().get("java.util.Currency"));
     }
@@ -171,9 +184,10 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         RuleBaseElementId testFunctionId = new RuleBaseElementId(RuleBaseElementType.Function, "org.openengsb", "test");
         source.add(testFunctionId, "function void test(Object message) {\n"
                 + "System.out.println(\"notify: \" + message);\n}");
-        RuleBaseElementId testImportId = new RuleBaseElementId(RuleBaseElementType.Import, "org.openengsb",
-                "java.util.Random");
-        source.add(testImportId, "ignored");
+        source.addImport("java.util.Random");
+//        RuleBaseElementId testImportId = new RuleBaseElementId(RuleBaseElementType.Import, "org.openengsb",
+//                "java.util.Random");
+//        source.add(testImportId, "ignored");
         RuleBaseElementId testRuleId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
         source.add(testRuleId, "when\n" + "  e : Event()\n" + "then\n" + "  test(new Random());\n");
         createSession();

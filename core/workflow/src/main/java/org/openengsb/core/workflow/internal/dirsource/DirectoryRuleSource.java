@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
 
@@ -58,17 +59,18 @@ public class DirectoryRuleSource extends AbstractRuleManager {
     public static final String FLOW_EXTENSION = "rf";
 
     private String path;
+    private File importsFile;
+
     private RuleBase ruleBase;
+    private boolean initialized = false;
 
     private String prelude;
-
-    private boolean initialized = false;
 
     public DirectoryRuleSource() {
     }
 
     public DirectoryRuleSource(String path) {
-        this.path = path;
+        setPath(path);
     }
 
     public void init() throws RuleBaseException {
@@ -80,12 +82,18 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         initialized = true;
     }
 
+    private void initReloadListener() {
+        Timer t = new Timer(true);
+        t.schedule(new ReloadChecker(new File(path, "reload"), this), 0, 5000);
+    }
+
     public final String getPath() {
         return this.path;
     }
 
     public final void setPath(String path) {
         this.path = path;
+        importsFile = new File(path, IMPORTS_FILENAME);
     }
 
     @Override
@@ -101,18 +109,11 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         return ruleBase;
     }
 
-    private void initReloadListener() {
-        Timer t = new Timer(true);
-        t.schedule(new ReloadChecker(new File(path, "reload"), this), 0, 5000);
-    }
-
     @Override
     protected ResourceHandler<?> getRessourceHandler(RuleBaseElementType e) {
         switch (e) {
             case Rule:
                 return new DirectoryRuleHandler(this);
-            case Import:
-                return new DirectoryImportHandler(this);
             case Function:
                 return new DirectoryFunctionHandler(this);
             case Global:
@@ -120,6 +121,50 @@ public class DirectoryRuleSource extends AbstractRuleManager {
             default:
                 throw new UnsupportedOperationException("operation not implemented for type " + e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void addImport(String className) throws RuleBaseException {
+        List<String> lines;
+        try {
+            lines = FileUtils.readLines(importsFile);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        if (lines.contains(className)) {
+            return;
+        }
+        lines.add(className);
+        try {
+            FileUtils.writeLines(importsFile, lines);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        readRuleBase();
+    }
+
+    @Override
+    public Collection<String> listImports() {
+        return ruleBase.getPackages()[0].getImports().keySet();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void removeImport(String className) throws RuleBaseException {
+        List<String> lines;
+        try {
+            lines = FileUtils.readLines(importsFile);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        lines.remove(className);
+        try {
+            FileUtils.writeLines(importsFile, lines);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        readRuleBase();
     }
 
     public void readRuleBase() throws RuleBaseException {
@@ -226,7 +271,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     @SuppressWarnings("unchecked")
     private Collection<File> listFiles(File path, String extension) {
-        Collection<File> functions = FileUtils.listFiles(path, new String[] {extension }, false);
+        Collection<File> functions = FileUtils.listFiles(path, new String[] { extension }, false);
         return functions;
     }
 
@@ -282,8 +327,6 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     public File getFilePath(RuleBaseElementId id) {
         switch (id.getType()) {
-            case Import:
-                return new File(this.path, IMPORTS_FILENAME);
             case Global:
                 return new File(this.path, GLOBALS_FILENAME);
             case Function:

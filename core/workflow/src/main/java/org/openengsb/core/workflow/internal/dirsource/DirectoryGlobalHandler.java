@@ -16,38 +16,62 @@
 
 package org.openengsb.core.workflow.internal.dirsource;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.openengsb.core.workflow.RuleBaseException;
+import org.openengsb.core.workflow.internal.ResourceHandler;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
-public class DirectoryGlobalHandler extends SingleFileResourceHandler {
+public class DirectoryGlobalHandler extends ResourceHandler<DirectoryRuleSource> {
+
+    private File file;
 
     public DirectoryGlobalHandler(DirectoryRuleSource source) {
         super(source);
+        file = new File(source.getPath() + File.separator + DirectoryRuleSource.GLOBALS_FILENAME);
     }
 
-    @Override
-    public String getFileName() {
-        return DirectoryRuleSource.GLOBALS_FILENAME;
-    }
-
+    @SuppressWarnings("unchecked")
     @Override
     public void create(RuleBaseElementId name, String code) throws RuleBaseException {
-        Set<String> globalList = readFile();
+        Collection<String> globalList;
+        try {
+            globalList = FileUtils.readLines(file);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+
+        if (globalList.contains(name.getName())) {
+            throw new RuleBaseException(String.format("global with name %s already registered", name.getName()));
+        }
         String line = String.format("%s %s", code, name.getName());
         globalList.add(line);
-        writeFile(globalList);
+
+        try {
+            FileUtils.writeLines(file, globalList, IOUtils.LINE_SEPARATOR_UNIX);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
         source.readRuleBase();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void delete(RuleBaseElementId name) throws RuleBaseException {
-        Set<String> globalList = readFile();
+        Collection<String> globalList;
+        try {
+            globalList = FileUtils.readLines(file);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+
         Iterator<String> it = globalList.iterator();
         String line;
         for (line = it.next(); it.hasNext(); line = it.next()) {
@@ -56,7 +80,13 @@ public class DirectoryGlobalHandler extends SingleFileResourceHandler {
                 break;
             }
         }
-        writeFile(globalList);
+
+        try {
+            FileUtils.writeLines(file, globalList, IOUtils.LINE_SEPARATOR_UNIX);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        source.readRuleBase();
     }
 
     @Override

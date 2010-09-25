@@ -22,6 +22,11 @@ import org.drools.RuleBase;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
+/**
+ * provides methods to manage the current content of the rulebase. Note: When
+ * adding a new rule or function to the rulebase, make sure that all imports are
+ * present before. Otherwise the adding of the elements will fail.
+ */
 public interface RuleManager {
 
     /**
@@ -37,29 +42,60 @@ public interface RuleManager {
      * adds a new element to the rulebase
      *
      * @throws RuleBaseException if adding the new element would cause the
-     *         rulebase to be invalid (e.g. parse error).
+     * rulebase to be invalid (e.g. parse error).
      */
     void add(RuleBaseElementId name, String code) throws RuleBaseException;
 
+    /**
+     * retrieves the value for the given id
+     */
     String get(RuleBaseElementId name);
 
     /**
      * updates an existing element
      *
      * @throws RuleBaseException if the update would cause the rulebase to be
-     *         invalid (e.g. parse error).
+     * invalid (e.g. parse error).
      */
     void update(RuleBaseElementId name, String newCode) throws RuleBaseException;
 
     /**
      *
      * @throws RuleBaseException if the deleting the element would cause the
-     *         rulebase to be invalid (e.g. parse error).
+     * rulebase to be invalid (e.g. parse error).
      */
     void delete(RuleBaseElementId name) throws RuleBaseException;
 
+    /**
+     * returns a list of all elements of the given type, from all packages
+     */
     Collection<RuleBaseElementId> list(RuleBaseElementType type);
 
+    /**
+     * returns a list of all elements of the given type, for a specific package
+     */
     Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName);
+
+    /**
+     * adds an import-statement used in all packages
+     *
+     * @throws RuleBaseException when the import causes the rulebase to become
+     * invalid (e.g. when the class cannot be found)
+     */
+    void addImport(String className) throws RuleBaseException;
+
+    /**
+     * removes an import-statement
+     *
+     * @throws RuleBaseException when removing the import causes the rulebase to
+     * become invalid (e.g. when the import is still required at some point)
+     */
+    void removeImport(String className) throws RuleBaseException;
+
+    /**
+     * retrieves a list of all imports. Note that all packages share the same
+     * list of imports.
+     */
+    Collection<String> listImports();
 
 }
