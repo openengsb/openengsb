@@ -21,9 +21,9 @@ import java.util.Map;
 
 public interface PersistenceService {
 
-    List<Object> query(Object example);
+    <T> List<T> query(T example);
 
-    List<Object> query(List<Object> examples);
+    <T> List<T> query(List<T> examples);
 
     void create(Object bean) throws PersistenceException;
 

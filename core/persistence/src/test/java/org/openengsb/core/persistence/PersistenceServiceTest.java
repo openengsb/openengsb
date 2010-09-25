@@ -16,30 +16,62 @@
 
 package org.openengsb.core.persistence;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 
 public abstract class PersistenceServiceTest {
 
     private PersistenceService persistence;
+    private PersistenceTestBean beanA;
+    private PersistenceTestBean beanB;
+    private PersistenceTestBean beanC;
 
     protected abstract PersistenceService createPersitenceService();
 
     @Before
-    public void init() {
+    public void init() throws PersistenceException {
         this.persistence = createPersitenceService();
+
+        beanA = new PersistenceTestBean("A", 1, null);
+        beanB = new PersistenceTestBean("B", 1, null);
+        beanC = new PersistenceTestBean("C", 3, beanB);
+        beanB.setReference(beanC);
+
+        persistence.create(beanA);
+        persistence.create(beanB);
+        persistence.create(beanC);
     }
 
     @Test
     public void testExactMatchQuery_shouldReturnSingleResult() {
+        PersistenceTestBean example = new PersistenceTestBean("A", 1, null);
+        List<PersistenceTestBean> results = persistence.query(example);
+        assertThat(results.size(), is(1));
+        PersistenceTestBean result = results.get(0);
+        assertThat(result, is(beanA));
     }
 
     @Test
     public void testMatchQuery_shouldReturnSingleResult() {
+        PersistenceTestBean example = new PersistenceTestBean("A", null, null);
+        List<PersistenceTestBean> results = persistence.query(example);
+        assertThat(results.size(), is(1));
+        PersistenceTestBean result = results.get(0);
+        assertThat(result, is(beanA));
     }
 
     @Test
     public void testMatchQuery_shouldReturnTwoResults() {
+        PersistenceTestBean example = new PersistenceTestBean(null, 1, null);
+        List<PersistenceTestBean> results = persistence.query(example);
+        assertThat(results.size(), is(2));
+        assertThat(results.contains(beanA), is(true));
+        assertThat(results.contains(beanB), is(true));
     }
 
     @Test
@@ -105,5 +137,4 @@ public abstract class PersistenceServiceTest {
     public void testMultipleDelete_shouldBehaveLikeMultipleSimpleDeletes() {
 
     }
-
 }

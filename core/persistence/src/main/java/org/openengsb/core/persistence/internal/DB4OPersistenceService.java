@@ -16,17 +16,13 @@
 
 package org.openengsb.core.persistence.internal;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.openengsb.core.persistence.PersistenceException;
 import org.openengsb.core.persistence.PersistenceService;
 
 import com.db4o.ObjectContainer;
-import com.db4o.ObjectSet;
 import com.db4o.osgi.Db4oService;
 
 public class DB4OPersistenceService implements PersistenceService {
@@ -48,40 +44,24 @@ public class DB4OPersistenceService implements PersistenceService {
 
     @Override
     public void create(List<Object> beans) throws PersistenceException {
-        for (Object bean : beans) {
-            create(bean);
-        }
     }
 
     @Override
     public void delete(Object example) throws PersistenceException {
-        ObjectSet queryByExample = database.queryByExample(example);
-        for (Object bean : queryByExample) {
-            database.delete(bean);
-        }
     }
 
     @Override
     public void delete(List<Object> examples) throws PersistenceException {
-        for (Object example : examples) {
-            delete(example);
-        }
     }
 
     @Override
     public List<Object> query(Object example) {
-        ObjectSet queryResult = database.queryByExample(example);
-        return toList(queryResult);
+        return null;
     }
 
     @Override
-    public List<Object> query(List<Object> examples) {
-        Set<Object> result = new HashSet<Object>();
-        for (Object example : examples) {
-            ObjectSet queryResult = database.queryByExample(example);
-            result.addAll(toSet(queryResult));
-        }
-        return new ArrayList<Object>(result);
+    public <T> List<T> query(List<T> examples) {
+        return null;
     }
 
     @Override
@@ -93,22 +73,6 @@ public class DB4OPersistenceService implements PersistenceService {
     public void update(Map<Object, Object> beans) throws PersistenceException {
         // TODO not yet implemented
 
-    }
-
-    private List<Object> toList(ObjectSet set) {
-        List<Object> result = new ArrayList<Object>();
-        for (Object o : set) {
-            result.add(o);
-        }
-        return result;
-    }
-
-    private Set<Object> toSet(ObjectSet set) {
-        Set<Object> result = new HashSet<Object>();
-        for (Object o : set) {
-            result.add(o);
-        }
-        return result;
     }
 
     public Db4oService getDb4oService() {
