@@ -50,6 +50,16 @@ public abstract class PersistenceServiceTest {
     }
 
     @Test
+    public void testWildcardQuery_shouldReturnAllResults() {
+        PersistenceTestBean example = new PersistenceTestBean(null, null, null);
+        List<PersistenceTestBean> results = persistence.query(example);
+        assertThat(results.size(), is(3));
+        assertThat(results.contains(beanA), is(true));
+        assertThat(results.contains(beanB), is(true));
+        assertThat(results.contains(beanC), is(true));
+    }
+
+    @Test
     public void testExactMatchQuery_shouldReturnSingleResult() {
         PersistenceTestBean example = new PersistenceTestBean("A", 1, null);
         List<PersistenceTestBean> results = persistence.query(example);
@@ -166,6 +176,29 @@ public abstract class PersistenceServiceTest {
     }
 
     @Test
+    public void testMultiUpdate_shouldWork() throws PersistenceException {
+        PersistenceTestBean updated1 = new PersistenceTestBean("Test", 1, null);
+        PersistenceTestBean updated2 = new PersistenceTestBean("Foo", 2, null);
+        PersistenceTestBean updated3 = new PersistenceTestBean("Bar", 3, null);
+
+        Map<PersistenceTestBean, PersistenceTestBean> toUpdate =
+            new HashMap<PersistenceTestBean, PersistenceTestBean>();
+
+        toUpdate.put(beanA, updated1);
+        toUpdate.put(beanB, updated2);
+        toUpdate.put(beanC, updated3);
+
+        persistence.update(toUpdate);
+
+        PersistenceTestBean wildcard = new PersistenceTestBean(null, null, null);
+        List<PersistenceTestBean> results = persistence.query(wildcard);
+        assertThat(results.size(), is(3));
+        assertThat(results.contains(updated1), is(true));
+        assertThat(results.contains(updated2), is(true));
+        assertThat(results.contains(updated3), is(true));
+    }
+
+    @Test
     public void testMultipleUpdateFailure_noUpdateShouldHaveBeenDone() throws PersistenceException {
         Map<PersistenceTestBean, PersistenceTestBean> toUpdate =
             new HashMap<PersistenceTestBean, PersistenceTestBean>();
@@ -213,6 +246,21 @@ public abstract class PersistenceServiceTest {
 
         persistence.delete(example);
         results = persistence.query(example);
+        assertThat(results.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testMultiDelete_shouldWork() throws PersistenceException {
+        PersistenceTestBean wildcard = new PersistenceTestBean(null, null, null);
+        List<PersistenceTestBean> results = persistence.query(wildcard);
+        assertThat(results.size(), is(3));
+
+        PersistenceTestBean aAndB = new PersistenceTestBean(null, 1, null);
+        PersistenceTestBean c = new PersistenceTestBean("C", 3, null);
+        List<PersistenceTestBean> toDelete = Arrays.asList(new PersistenceTestBean[]{aAndB, c});
+        persistence.delete(toDelete);
+
+        results = persistence.query(wildcard);
         assertThat(results.isEmpty(), is(true));
     }
 
