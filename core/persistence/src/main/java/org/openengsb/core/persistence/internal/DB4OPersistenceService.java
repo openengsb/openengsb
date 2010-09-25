@@ -69,13 +69,13 @@ public class DB4OPersistenceService implements PersistenceService {
     }
 
     @Override
-    public List<Object> query(Object example) throws PersistenceException {
+    public List<Object> query(Object example) {
         ObjectSet queryResult = database.queryByExample(example);
         return toList(queryResult);
     }
 
     @Override
-    public List<Object> query(List<Object> examples) throws PersistenceException {
+    public List<Object> query(List<Object> examples) {
         Set<Object> result = new HashSet<Object>();
         for (Object example : examples) {
             ObjectSet queryResult = database.queryByExample(example);
