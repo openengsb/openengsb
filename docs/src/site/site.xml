@@ -20,8 +20,9 @@
 <project name="Open Engineering Service Bus">
 
   <skin>
-    <groupId>org.apache.maven.skins</groupId>
-    <artifactId>maven-stylus-skin</artifactId>
+    <groupId>org.openengsb</groupId>
+    <artifactId>openengsb-style</artifactId>
+    <version>${project.version}</version>
   </skin>
 
   <bannerLeft>
@@ -30,7 +31,7 @@
   </bannerLeft>
 
   <publishDate position="left" />
-  <version position="left"/>
+  <version position=${openengsb.version.name} />
 
   <body>
      <head>
