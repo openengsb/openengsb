@@ -84,7 +84,7 @@
     </menu>
 
     <menu name="Development" >
-      <item name="Developer Setup" href="developer_setup.html" />
+      <item name="Contribution" href="contribution.html" />
       <item name="Source Github" href="http://github.com/openengsb/openengsb/" />
       <item name="Issues Tracking" href="issue-tracking.html"/>
       <item name="Continuous Integration" href="integration.html"/>
