@@ -29,12 +29,12 @@ public interface PersistenceService {
 
     void create(List<? extends Object> beans) throws PersistenceException;
 
-    void update(Object oldBean, Object newBean) throws PersistenceException;
+    <T> void update(T oldBean, T newBean) throws PersistenceException;
 
-    void update(Map<? extends Object, ? extends Object> beans) throws PersistenceException;
+    <T> void update(Map<T, T> beans) throws PersistenceException;
 
-    void delete(Object example) throws PersistenceException;
+    <T> void delete(T example) throws PersistenceException;
 
-    void delete(List<? extends Object> examples) throws PersistenceException;
+    <T> void delete(List<? extends T> examples) throws PersistenceException;
 
 }

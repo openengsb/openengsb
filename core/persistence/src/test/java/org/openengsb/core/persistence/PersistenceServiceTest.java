@@ -20,8 +20,11 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -75,65 +78,142 @@ public abstract class PersistenceServiceTest {
 
     @Test
     public void testMultipleExampleQuery_shouldBehaveLikeMultipleSimpleExampleQueries() {
+        PersistenceTestBean example = new PersistenceTestBean("A", null, null);
+        PersistenceTestBean example2 = new PersistenceTestBean("B", null, null);
+        List<PersistenceTestBean> results = persistence.query(example);
+        results.addAll(persistence.query(example2));
+        List<PersistenceTestBean> results2 =
+            persistence.query(Arrays.asList(new PersistenceTestBean[]{example, example2}));
+        assertThat(results2, is(results));
     }
 
     @Test
-    public void testCreate_shouldStoreElement() {
+    public void testCreate_shouldStoreElement() throws PersistenceException {
+        PersistenceTestBean additional = new PersistenceTestBean("Test", 1, null);
+        persistence.create(additional);
 
+        List<PersistenceTestBean> results = persistence.query(new PersistenceTestBean("Test", null, null));
+        assertThat(results.contains(additional), is(true));
     }
 
     @Test
-    public void testCreateSameElementTwice_shouldStoreElementTwice() {
+    public void testCreateSameElementTwice_shouldStoreElementTwice() throws PersistenceException {
+        PersistenceTestBean additional = new PersistenceTestBean("Test", 1, null);
+        persistence.create(additional);
+        persistence.create(additional);
 
+        List<PersistenceTestBean> results = persistence.query(new PersistenceTestBean("Test", null, null));
+        assertThat(results.size(), is(2));
+        assertThat(results.get(0), is(additional));
+        assertThat(results.get(1), is(additional));
     }
 
     @Test
-    public void testMultipleCreate_shouldBehaveLikeMultipleSimpleCreates() {
+    public void testCreateAndChange_shouldNotAffectStoredElement() throws PersistenceException {
+        PersistenceTestBean additional = new PersistenceTestBean("Test", 1, null);
+        persistence.create(additional);
 
+        additional.setStringValue("Foo");
+
+        List<PersistenceTestBean> results = persistence.query(new PersistenceTestBean("Test", null, null));
+        assertThat(results.size(), is(1));
+        assertThat(results.get(0).getStringValue(), is("Test"));
     }
 
     @Test
-    public void testUpdate_shouldUpdateElement() {
+    public void testMultiCreate_shouldWork() throws PersistenceException {
+        PersistenceTestBean additional1 = new PersistenceTestBean("Test", 1, null);
+        PersistenceTestBean additional2 = new PersistenceTestBean("Test", 2, null);
+        persistence.create(Arrays.asList(new PersistenceTestBean[]{additional1, additional2}));
 
+        List<PersistenceTestBean> results = persistence.query(new PersistenceTestBean("Test", null, null));
+        assertThat(results.size(), is(2));
+        assertThat(results.contains(additional1), is(true));
+        assertThat(results.contains(additional2), is(true));
     }
 
     @Test
-    public void testUpdateSourceElementNotPresent_shouldFail() {
+    public void testUpdate_shouldUpdateElement() throws PersistenceException {
+        PersistenceTestBean newBeanA = new PersistenceTestBean("Foo", 1, null);
+        persistence.update(beanA, newBeanA);
 
+        PersistenceTestBean example = new PersistenceTestBean("A", null, null);
+        List<PersistenceTestBean> results = persistence.query(example);
+        assertThat(results.isEmpty(), is(true));
+
+        PersistenceTestBean example2 = new PersistenceTestBean("Foo", null, null);
+        List<PersistenceTestBean> results2 = persistence.query(example2);
+        assertThat(results2.size(), is(1));
+        PersistenceTestBean result = results2.get(0);
+        assertThat(result, is(newBeanA));
+    }
+
+    @Test(expected = PersistenceException.class)
+    public void testUpdateSourceElementNotPresent_shouldFail() throws PersistenceException {
+        PersistenceTestBean newBeanA = new PersistenceTestBean("Foo", 1, null);
+        persistence.update(newBeanA, beanB);
+    }
+
+    @Test(expected = PersistenceException.class)
+    public void testUpdateSourceElementNotUnique_shouldFail() throws PersistenceException {
+        PersistenceTestBean additional = new PersistenceTestBean("Test", 1, null);
+        persistence.create(additional);
+        persistence.create(additional);
+
+        PersistenceTestBean newBean = new PersistenceTestBean("Foo", 1, null);
+
+        persistence.update(additional, newBean);
     }
 
     @Test
-    public void testUpdateSourceElementNotUnique_shouldFail() {
+    public void testMultipleUpdateFailure_noUpdateShouldHaveBeenDone() throws PersistenceException {
+        Map<PersistenceTestBean, PersistenceTestBean> toUpdate =
+            new HashMap<PersistenceTestBean, PersistenceTestBean>();
 
+        PersistenceTestBean newBeanA = new PersistenceTestBean("Foo", 1, null);
+        PersistenceTestBean additional = new PersistenceTestBean("Test", 1, null);
+
+        persistence.create(additional);
+        persistence.create(additional);
+
+        toUpdate.put(beanA, newBeanA);
+        toUpdate.put(additional, newBeanA);
+
+        try {
+            persistence.update(toUpdate);
+            Assert.fail("Multi update should fail with a persistence exception because the source element"
+                    + " of one of the updates is not unique.");
+        } catch (PersistenceException pe) {
+            // do nothing
+        }
+        List<PersistenceTestBean> results = persistence.query(new PersistenceTestBean("A", 1, null));
+        assertThat(results.size(), is(1));
+        PersistenceTestBean result = results.get(0);
+        assertThat(result, is(beanA));
     }
 
     @Test
-    public void testMultipleUpdate_shouldBehaveLikeMultipleSimpleUpdates() {
+    public void testDelete_shouldDeleteElement() throws PersistenceException {
+        persistence.delete(beanA);
+        List<PersistenceTestBean> results = persistence.query(new PersistenceTestBean("A", 1, null));
+        assertThat(results.isEmpty(), is(true));
+    }
 
+    @Test(expected = PersistenceException.class)
+    public void testDeleteElementNotPresent_shouldFail() throws PersistenceException {
+        PersistenceTestBean test = new PersistenceTestBean("Test", 1, null);
+        persistence.delete(test);
     }
 
     @Test
-    public void testMultipleUpdateFailure_noUpdateShouldHaveBeenDone() {
+    public void testDeleteMultipleHits_shouldWork() throws PersistenceException {
+        PersistenceTestBean example = new PersistenceTestBean(null, 1, null);
+        List<PersistenceTestBean> results = persistence.query(example);
+        assertThat(results.size(), is(2));
 
+        persistence.delete(example);
+        results = persistence.query(example);
+        assertThat(results.isEmpty(), is(true));
     }
 
-    @Test
-    public void testDelete_shouldDeleteElement() {
-
-    }
-
-    @Test
-    public void testDeleteElementNotPresent_shouldFail() {
-
-    }
-
-    @Test
-    public void testDeleteMultipleHits_shouldWork() {
-
-    }
-
-    @Test
-    public void testMultipleDelete_shouldBehaveLikeMultipleSimpleDeletes() {
-
-    }
 }
