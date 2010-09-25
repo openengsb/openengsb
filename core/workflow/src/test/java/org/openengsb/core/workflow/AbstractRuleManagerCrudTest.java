@@ -16,10 +16,6 @@
 
 package org.openengsb.core.workflow;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,25 +28,87 @@ import org.junit.runners.Parameterized.Parameters;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import static org.junit.matchers.JUnitMatchers.hasItem;
+
 @RunWith(Parameterized.class)
 public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager> extends
         AbstractRuleManagerTest<SourceType> {
 
+    public static final class TestElement {
+        private RuleBaseElementId id;
+        private String code;
+
+        public TestElement(RuleBaseElementId id, String code) {
+            this.id = id;
+            this.code = code;
+        }
+
+        public RuleBaseElementId getId() {
+            return this.id;
+        }
+
+        public String getCode() {
+            return this.code;
+        }
+    }
+
     @Parameters
     public static List<Object[]> data() {
         List<Object[]> data = new ArrayList<Object[]>();
+
+        List<TestElement> testData = new ArrayList<TestElement>();
         // functions:
-        data.add(new Object[] {new RuleBaseElementId(RuleBaseElementType.Function, "org.openengsb", "test42"),
-            "function void test42(){ System.out.println(\"sample-code\");}",
-            new RuleBaseElementId(RuleBaseElementType.Function, "at.ac.tuwien", "test"),
-            "function void test(){ System.out.println(\"bla42\");}", });
+        RuleBaseElementId funcId1 = new RuleBaseElementId(RuleBaseElementType.Function, "org.openengsb", "test42");
+        RuleBaseElementId funcId2 = new RuleBaseElementId(RuleBaseElementType.Function, "at.ac.tuwien", "test");
+        String func1 = "function void test42(){ System.out.println(\"sample-code\");}";
+        String func2 = "function void test(){ System.out.println(\"bla42\");}";
 
-        // rules:
-        data.add(new Object[] {new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test42"),
-            "when\nthen\nSystem.out.println(\"sample-code\");",
-            new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "test"),
-            "when\nthen\nSystem.out.println(\"\");", });
+        testData.add(new TestElement(funcId1, func1));
+        testData.add(new TestElement(funcId1, func1));
+        testData.add(new TestElement(funcId2, func2));
+        testData.add(new TestElement(funcId2, func2));
+        data.add(new Object[] { testData });
 
+        testData = new ArrayList<TestElement>();
+
+        RuleBaseElementId ruleId1 = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test42");
+        RuleBaseElementId ruleId2 = new RuleBaseElementId(RuleBaseElementType.Rule, "at.ac.tuwien", "test");
+        String rule1 = "when\nthen\nSystem.out.println(\"sample-code\");";
+        String rule2 = "when\nthen\nSystem.out.println(\"\");";
+
+        testData.add(new TestElement(ruleId1, rule1));
+        testData.add(new TestElement(ruleId1, rule2));
+        testData.add(new TestElement(ruleId2, rule1));
+        testData.add(new TestElement(ruleId2, rule2));
+        data.add(new Object[] { testData });
+
+        testData = new ArrayList<TestElement>();
+        String sampleFlow = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<process xmlns=\"http://drools.org/drools-5.0/process\""
+                + "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\""
+                + "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\""
+                + "         type=\"RuleFlow\" name=\"flowname\" id=\"org.openengsb.flowId\" package-name=\"org.openengsb\" >"
+                + "" + "  <header>" + "  </header>" + "  <nodes>"
+                + "    <start id=\"1\" name=\"Start\" x=\"100\" y=\"100\" width=\"48\" height=\"48\" />"
+                + "    <end id=\"2\" name=\"End\" x=\"245\" y=\"105\" width=\"48\" height=\"48\" />" + "  </nodes>"
+                + "  <connections>" + "    <connection from=\"1\" to=\"2\" />" + "  </connections>" + "</process>";
+
+        RuleBaseElementId flowId1 = new RuleBaseElementId(RuleBaseElementType.Process, "org.openengsb", "flowId");
+        RuleBaseElementId flowId2 = new RuleBaseElementId(RuleBaseElementType.Process, "at.ac.tuwien", "flowId2");
+
+        testData.add(new TestElement(flowId1, sampleFlow));
+        testData.add(new TestElement(flowId1, sampleFlow));
+        sampleFlow = sampleFlow.replace("org.openengsb", "at.ac.tuwien").replace("flowId", "flowId2");
+        testData.add(new TestElement(flowId2, sampleFlow));
+        testData.add(new TestElement(flowId2, sampleFlow));
+
+        data.add(new Object[] { testData });
         // TODO: imports & globals
         // data.add(new Object[] { new
         // RuleBaseElementId(RuleBaseElementType.Import, "ignored",
@@ -64,16 +122,15 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
         return data;
     }
 
-    protected String code1;
-    protected String code2;
-    protected RuleBaseElementId id1;
-    protected RuleBaseElementId id2;
+    protected String[] code = new String[4];
+    protected RuleBaseElementId[] id = new RuleBaseElementId[4];
 
-    public AbstractRuleManagerCrudTest(RuleBaseElementId id1, String code1, RuleBaseElementId id2, String code2) {
-        this.code1 = code1;
-        this.code2 = code2;
-        this.id1 = id1;
-        this.id2 = id2;
+    public AbstractRuleManagerCrudTest(List<TestElement> testelements) {
+        for (int i = 0; i < 3; i++) {
+            TestElement el = testelements.get(i);
+            this.code[i] = el.code;
+            this.id[i] = el.id;
+        }
     }
 
     @Before
@@ -84,39 +141,39 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
 
     @Test
     public void testCreate() throws RuleBaseException {
-        source.add(id1, code1);
-        assertEquals(code1, source.get(id1));
+        source.add(id[0], code[0]);
+        assertEquals(code[0], source.get(id[0]));
     }
 
     @Test
     public void testUpdate() throws RuleBaseException {
-        source.add(id1, code1);
-        source.update(id1, code2);
-        assertEquals(code2, source.get(id1));
+        source.add(id[0], code[0]);
+        source.update(id[1], code[1]);
+        assertThat(source.get(id[0]), equalTo(code[1]));
     }
 
     @Test
     public void testList() throws RuleBaseException {
-        source.add(id1, code1);
-        source.add(id2, code2);
-        Collection<RuleBaseElementId> result = source.list(id1.getType(), id1.getPackageName());
-        assertTrue(result.contains(id1));
-        assertFalse(result.contains(id2));
+        source.add(id[0], code[0]);
+        source.add(id[2], code[2]);
+        Collection<RuleBaseElementId> result = source.list(id[0].getType(), id[0].getPackageName());
+        assertThat(result, hasItem(id[0]));
+        assertThat(result, not(hasItem(id[2])));
     }
 
     @Test
     public void testListAll() throws RuleBaseException {
-        source.add(id1, code1);
-        source.add(id2, code2);
-        Collection<RuleBaseElementId> result = source.list(id1.getType());
-        assertTrue(result.contains(id1));
-        assertTrue(result.contains(id2));
+        source.add(id[0], code[0]);
+        source.add(id[2], code[2]);
+        Collection<RuleBaseElementId> result = source.list(id[0].getType());
+        assertThat(result, hasItem(id[0]));
+        assertThat(result, hasItem(id[2]));
     }
 
     @Test
     public void testDelete() throws RuleBaseException {
-        source.add(id1, code1);
-        source.delete(id1);
+        source.add(id[0], code[0]);
+        source.delete(id[0]);
     }
 
 }

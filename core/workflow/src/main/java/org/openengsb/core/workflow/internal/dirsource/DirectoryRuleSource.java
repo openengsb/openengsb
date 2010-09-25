@@ -118,6 +118,8 @@ public class DirectoryRuleSource extends AbstractRuleManager {
                 return new DirectoryFunctionHandler(this);
             case Global:
                 return new DirectoryGlobalHandler(this);
+            case Process:
+                return new DirectoryProcessHandler(this);
             default:
                 throw new UnsupportedOperationException("operation not implemented for type " + e);
         }
@@ -256,7 +258,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
             builder.addPackageFromDrl(new StringReader(content.toString()));
             Collection<File> flows = listFiles(path, FLOW_EXTENSION);
             for (File f : flows) {
-                builder.addProcessFromXml(new FileReader(f));
+                builder.addRuleFlow(new FileReader(f));
             }
         } catch (DroolsParserException e) {
             throw new RuleBaseException(e);
@@ -333,6 +335,8 @@ public class DirectoryRuleSource extends AbstractRuleManager {
                 return new File(this.path, getPathName(id) + FUNC_EXTENSION);
             case Rule:
                 return new File(this.path, getPathName(id) + RULE_EXTENSION);
+            case Process:
+                return new File(this.path, getPathName(id) + FLOW_EXTENSION);
             default:
                 return null;
         }
