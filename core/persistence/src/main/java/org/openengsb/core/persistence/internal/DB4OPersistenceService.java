@@ -16,34 +16,45 @@
 
 package org.openengsb.core.persistence.internal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.persistence.PersistenceException;
 import org.openengsb.core.persistence.PersistenceService;
 
+import com.db4o.Db4o;
 import com.db4o.ObjectContainer;
-import com.db4o.osgi.Db4oService;
+import com.db4o.ObjectSet;
 
 public class DB4OPersistenceService implements PersistenceService {
-
-    private Db4oService db4oService;
 
     private String dbFile;
 
     private ObjectContainer database;
 
     public void init() {
-        database = db4oService.openFile(getDbFile());
+        database = Db4o.openFile(dbFile);
+    }
+
+    public void shutdown() {
+        database.close();
     }
 
     @Override
     public void create(Object bean) throws PersistenceException {
         database.store(bean);
+        database.ext().purge(bean);
     }
 
     @Override
-    public void create(List<Object> beans) throws PersistenceException {
+    public void create(List<? extends Object> beans) throws PersistenceException {
+        for (Object bean : beans) {
+            database.store(bean);
+        }
+        for (Object bean : beans) {
+            database.ext().purge(bean);
+        }
     }
 
     @Override
@@ -51,12 +62,18 @@ public class DB4OPersistenceService implements PersistenceService {
     }
 
     @Override
-    public void delete(List<Object> examples) throws PersistenceException {
+    public void delete(List<? extends Object> examples) throws PersistenceException {
     }
 
     @Override
-    public List<Object> query(Object example) {
-        return null;
+    public <T> List<T> query(T example) {
+        ObjectSet<T> queryByExample = database.queryByExample(example);
+        List<T> result = new ArrayList<T>();
+        for (T element : queryByExample) {
+            database.ext().purge(element);
+            result.add(element);
+        }
+        return result;
     }
 
     @Override
@@ -70,25 +87,13 @@ public class DB4OPersistenceService implements PersistenceService {
     }
 
     @Override
-    public void update(Map<Object, Object> beans) throws PersistenceException {
+    public void update(Map<? extends Object, ? extends Object> beans) throws PersistenceException {
         // TODO not yet implemented
 
     }
 
-    public Db4oService getDb4oService() {
-        return db4oService;
-    }
-
-    public void setDb4oService(Db4oService db4oService) {
-        this.db4oService = db4oService;
-    }
-
     public void setDbFile(String dbFile) {
         this.dbFile = dbFile;
-    }
-
-    public String getDbFile() {
-        return dbFile;
     }
 
 }

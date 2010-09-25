@@ -19,6 +19,7 @@ package org.openengsb.core.persistence;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -31,10 +32,10 @@ public abstract class PersistenceServiceTest {
     private PersistenceTestBean beanB;
     private PersistenceTestBean beanC;
 
-    protected abstract PersistenceService createPersitenceService();
+    protected abstract PersistenceService createPersitenceService() throws Exception;
 
     @Before
-    public void init() throws PersistenceException {
+    public void init() throws Exception {
         this.persistence = createPersitenceService();
 
         beanA = new PersistenceTestBean("A", 1, null);
@@ -42,9 +43,7 @@ public abstract class PersistenceServiceTest {
         beanC = new PersistenceTestBean("C", 3, beanB);
         beanB.setReference(beanC);
 
-        persistence.create(beanA);
-        persistence.create(beanB);
-        persistence.create(beanC);
+        persistence.create(Arrays.asList(new PersistenceTestBean[]{beanA, beanB, beanC}));
     }
 
     @Test

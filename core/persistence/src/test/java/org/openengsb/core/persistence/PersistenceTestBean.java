@@ -44,8 +44,7 @@ public class PersistenceTestBean {
             return false;
         }
         PersistenceTestBean other = (PersistenceTestBean) obj;
-        return safeEquals(this.intValue, other.intValue) && safeEquals(this.stringValue, other.stringValue)
-                && this.reference == other.reference;
+        return safeEquals(this.intValue, other.intValue) && safeEquals(this.stringValue, other.stringValue);
     }
 
     private boolean safeEquals(Object a, Object b) {
@@ -64,7 +63,6 @@ public class PersistenceTestBean {
         if (stringValue != null) {
             hash += 13 * stringValue.hashCode();
         }
-        hash += 13 * System.identityHashCode(reference);
         return hash;
     }
 
