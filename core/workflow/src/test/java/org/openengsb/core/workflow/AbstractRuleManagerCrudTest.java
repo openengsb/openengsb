@@ -93,8 +93,8 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
                 + "<process xmlns=\"http://drools.org/drools-5.0/process\""
                 + "         xmlns:xs=\"http://www.w3.org/2001/XMLSchema-instance\""
                 + "         xs:schemaLocation=\"http://drools.org/drools-5.0/process drools-processes-5.0.xsd\""
-                + "         type=\"RuleFlow\" name=\"flowname\" id=\"org.openengsb.flowId\" package-name=\"org.openengsb\" >"
-                + "" + "  <header>" + "  </header>" + "  <nodes>"
+                + "         type=\"RuleFlow\" name=\"flowname\" id=\"org.openengsb.flowId\" "
+                + "package-name=\"org.openengsb\" >" + "" + "  <header>" + "  </header>" + "  <nodes>"
                 + "    <start id=\"1\" name=\"Start\" x=\"100\" y=\"100\" width=\"48\" height=\"48\" />"
                 + "    <end id=\"2\" name=\"End\" x=\"245\" y=\"105\" width=\"48\" height=\"48\" />" + "  </nodes>"
                 + "  <connections>" + "    <connection from=\"1\" to=\"2\" />" + "  </connections>" + "</process>";
