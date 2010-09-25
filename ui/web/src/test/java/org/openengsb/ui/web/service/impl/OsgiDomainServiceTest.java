@@ -16,99 +16,138 @@
 
 package org.openengsb.ui.web.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.util.AliveState;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.sameInstance;
+
+import static org.junit.Assert.assertThat;
+
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
 public class OsgiDomainServiceTest {
+
+    private BundleContext contextMock;
+    private OsgiDomainService service;
+    private List<DomainProvider> providerList;
+    private ArrayList<ServiceReference> allServices;
+    private ServiceReference instanceServiceReferenceMock;
+    private ServiceReference serviceManagerReferenceMock;
+    private ServiceManager serviceManagerMock;
+    private DummyDomain serviceMock;
 
     private static interface DummyDomain extends Domain {
     }
 
-    private static class DummyInstance implements DummyDomain {
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
-        }
+    private ServiceReference[] getServiceReferenceArray() {
+        return allServices.toArray(new ServiceReference[allServices.size()]);
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        contextMock = mock(BundleContext.class);
+        allServices = new ArrayList<ServiceReference>();
+        when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), null)).thenReturn(
+                getServiceReferenceArray());
+
+        service = new OsgiDomainService();
+        service.setBundleContext(contextMock);
+
+        DomainProvider provider = mock(DomainProvider.class);
+        providerList = new ArrayList<DomainProvider>();
+        providerList.add(provider);
+        service.setDomains(providerList);
+
+        instanceServiceReferenceMock = mock(ServiceReference.class);
+        String filter = String.format("(domain=%s)", DummyDomain.class.getName());
+        when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), filter)).thenReturn(
+                new ServiceReference[] { instanceServiceReferenceMock });
+        when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), null)).thenReturn(
+                new ServiceReference[] { instanceServiceReferenceMock });
+        when(contextMock.getAllServiceReferences(Domain.class.getName(), null)).thenReturn(
+                new ServiceReference[] { instanceServiceReferenceMock });
+        String idFilter = String.format("(id=%s)", "42");
+        when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), idFilter)).thenReturn(
+                new ServiceReference[] { instanceServiceReferenceMock });
+        serviceMock = mock(DummyDomain.class);
+        when(contextMock.getService(instanceServiceReferenceMock)).thenReturn(serviceMock);
+
+        serviceManagerReferenceMock = mock(ServiceReference.class);
+        filter = String.format("(domain=%s)", DummyDomain.class.getName());
+        when(contextMock.getAllServiceReferences(ServiceManager.class.getName(), filter)).thenReturn(
+                new ServiceReference[] { serviceManagerReferenceMock });
+        serviceManagerMock = mock(ServiceManager.class);
+        when(contextMock.getService(serviceManagerReferenceMock)).thenReturn(serviceManagerMock);
     }
 
     @Test
-    public void testGetDomains() throws InvalidSyntaxException {
-        BundleContext contextMock = Mockito.mock(BundleContext.class);
-        List<ServiceReference> references = new ArrayList<ServiceReference>();
-        ServiceReference[] serviceReferences = references.toArray(new ServiceReference[] {});
-        Mockito.when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), null))
-                .thenReturn(serviceReferences);
-        List<DomainProvider> domainProvider = new ArrayList<DomainProvider>();
-        DomainProvider provider = Mockito.mock(DomainProvider.class);
-        domainProvider.add(provider);
-
-        OsgiDomainService service = new OsgiDomainService(contextMock);
-        service.setDomains(domainProvider);
+    public void testGetDomains() throws Exception {
         List<DomainProvider> domains = service.domains();
-
-        assertNotSame(domainProvider, domains);
-        assertEquals(1, domains.size());
-        DomainProvider domainProviderFromService = domains.get(0);
-        DomainProvider domainProviderLocal = domainProvider.get(0);
-        assertEquals(domainProviderLocal.getName(), domainProviderFromService.getName());
-        assertEquals(domainProviderLocal.getId(), domainProviderFromService.getId());
-        assertEquals(domainProviderLocal.getDescription(), domainProviderFromService.getDescription());
-        assertEquals(domainProviderLocal.getDomainInterface(), domainProviderFromService.getDomainInterface());
+        assertThat(domains, not(sameInstance(providerList)));
+        assertThat(domains.get(0).getId(), equalTo(providerList.get(0).getId()));
     }
 
     @Test
     public void serviceManagersForDomainClass() throws InvalidSyntaxException {
-        BundleContext contextMock = Mockito.mock(BundleContext.class);
-        List<ServiceReference> references = new ArrayList<ServiceReference>();
-        ServiceReference singleReference = Mockito.mock(ServiceReference.class);
-        references.add(singleReference);
-        ServiceReference[] serviceReferences = references.toArray(new ServiceReference[] {});
-        Mockito.when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), null))
-                .thenReturn(serviceReferences);
-        List<DomainProvider> domainProvider = new ArrayList<DomainProvider>();
-        DomainProvider provider = Mockito.mock(DomainProvider.class);
-        domainProvider.add(provider);
-        Mockito.when(
-                contextMock.getAllServiceReferences(ServiceManager.class.getName(),
-                        "(domain=" + DummyDomain.class.getName() + ")")).thenReturn(serviceReferences);
-        ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
-        Mockito.when(contextMock.getService(singleReference)).thenReturn(serviceManagerMock);
+        List<ServiceManager> serviceManagers = service.serviceManagersForDomain(DummyDomain.class);
 
-        OsgiDomainService service = new OsgiDomainService(contextMock);
-        List<ServiceManager> serviceManagersForDomain = service.serviceManagersForDomain(DummyDomain.class);
-
-        assertEquals(1, serviceManagersForDomain.size());
-        assertSame(serviceManagerMock, serviceManagersForDomain.get(0));
+        assertThat(serviceManagers, hasItem(serviceManagerMock));
     }
 
     @Test
-    public void serviceReferencesForConnector() throws InvalidSyntaxException {
-        BundleContext contextMock = Mockito.mock(BundleContext.class);
-        List<ServiceReference> references = new ArrayList<ServiceReference>();
-        ServiceReference singleReference = Mockito.mock(ServiceReference.class);
-        references.add(singleReference);
-        ServiceReference[] serviceReferences = references.toArray(new ServiceReference[] {});
-        Mockito.when(contextMock.getAllServiceReferences(DummyInstance.class.getName(), null)).thenReturn(
-                serviceReferences);
+    public void serviceReferencesForDomain() throws InvalidSyntaxException {
+        List<ServiceReference> serviceReferencesForConnector = service.serviceReferencesForDomain(DummyDomain.class);
 
-        OsgiDomainService service = new OsgiDomainService(contextMock);
-        List<ServiceReference> serviceReferencesForConnector = service
-                .serviceReferencesForConnector(DummyInstance.class);
+        assertThat(serviceReferencesForConnector, hasItem(instanceServiceReferenceMock));
+    }
 
-        assertEquals(1, serviceReferencesForConnector.size());
-        assertSame(singleReference, serviceReferencesForConnector.get(0));
+    @Test
+    public void testGetAllServiceInstances() throws Exception {
+        @SuppressWarnings("unchecked")
+        List<ServiceReference> allServiceInstances = (List<ServiceReference>) service.getAllServiceInstances();
+
+        assertThat(allServiceInstances, hasItem(instanceServiceReferenceMock));
+        assertThat(allServiceInstances, not(hasItem(serviceManagerReferenceMock)));
+    }
+
+    @Test
+    public void testGetAllServicveInstancesWhenThereAreNoServices() throws Exception {
+        when(contextMock.getAllServiceReferences(anyString(), eq((String) null))).thenReturn(null);
+        assertThat(service.getAllServiceInstances().isEmpty(), is(true));
+    }
+
+    @Test
+    public void testGetService() throws Exception {
+        ServiceManager result = (ServiceManager) service.getService(serviceManagerReferenceMock);
+        assertThat(result, sameInstance(serviceManagerMock));
+    }
+
+    @Test
+    public void testGetServiceById() throws Exception {
+        DummyDomain service2 = (DummyDomain) service.getService(DummyDomain.class.getName(), "42");
+        assertThat(service2, sameInstance(serviceMock));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetNonExistingService_shouldThrowIllegalArgumentException() throws Exception {
+        service.getService(DummyDomain.class.getName(), "21");
     }
 }

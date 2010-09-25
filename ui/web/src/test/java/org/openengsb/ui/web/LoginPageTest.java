@@ -70,7 +70,7 @@ public class LoginPageTest {
 
     private void mockIndex() {
         DomainService managedServicesMock = mock(DomainService.class);
-        when(managedServicesMock.getManagedServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
+        when(managedServicesMock.getAllServiceInstances()).thenAnswer(new Answer<List<ServiceReference>>() {
             @Override
             public List<ServiceReference> answer(InvocationOnMock invocation) {
                 return Collections.emptyList();

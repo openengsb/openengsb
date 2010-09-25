@@ -16,16 +16,6 @@
 
 package org.openengsb.ui.web;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +38,19 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.internal.ContextImpl;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
+
+import static org.mockito.Matchers.any;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class ContextSetPageTest {
 
@@ -170,7 +173,7 @@ public class ContextSetPageTest {
             }
         });
         when(domainService.domains()).thenReturn(domainProviderList);
-        when(domainService.serviceReferencesForConnector(any(Class.class))).thenReturn(serviceReferenceList);
+        when(domainService.serviceReferencesForDomain(any(Class.class))).thenReturn(serviceReferenceList);
 
         String nodeLinkId = "form:treeTable:i:8:sideColumns:0:nodeLink";
 
@@ -222,8 +225,8 @@ public class ContextSetPageTest {
             }
         });
         when(domainService.domains()).thenReturn(domainProviderList);
-        when(domainService.serviceReferencesForConnector(TestInterface.class)).thenReturn(serviceReferenceList);
-        when(domainService.serviceReferencesForConnector(Domain.class)).thenReturn(wrongServiceReferenceList);
+        when(domainService.serviceReferencesForDomain(TestInterface.class)).thenReturn(serviceReferenceList);
+        when(domainService.serviceReferencesForDomain(Domain.class)).thenReturn(wrongServiceReferenceList);
 
         String nodeLinkId = "form:treeTable:i:8:sideColumns:0:nodeLink";
         String textFieldId = "form:treeTable:i:8:sideColumns:1:textfield";
@@ -259,7 +262,7 @@ public class ContextSetPageTest {
             }
         });
         when(domainService.domains()).thenReturn(domainProviderList);
-        when(domainService.serviceReferencesForConnector(any(Class.class))).thenReturn(serviceReferenceList);
+        when(domainService.serviceReferencesForDomain(any(Class.class))).thenReturn(serviceReferenceList);
 
         String nodeLinkId = "form:treeTable:i:8:sideColumns:0:nodeLink";
 
