@@ -55,6 +55,7 @@ public final class BaseExamConfiguration {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONFIG_WEBEXTENDER));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_COMMON));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_WORKFLOW));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_PERSISTENCE));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_EXAMPLE_IMPLEMENTATION));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_EXAMPLE_CONNECTOR));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_NOTIFICATION_IMPLEMENTATION));
@@ -72,17 +73,16 @@ public final class BaseExamConfiguration {
             new File(pathToRoot + "target").mkdirs();
         }
         writeFileFromString(pathToRoot + "target/finalPom.xml", pomfile);
-        return new ArrayList<Option>(Arrays.asList(new Option[] {
-                PaxRunnerOptions.rawPaxRunnerOption("--platform", "felix"),
-                PaxRunnerOptions.rawPaxRunnerOption("--console", "false"),
-                PaxRunnerOptions.rawPaxRunnerOption("--ee", "J2SE-1.6"),
-                PaxRunnerOptions.rawPaxRunnerOption("--definitionURL", "file:" + pathToRoot
-                        + "assembly/target/classes/felix.xml"),
-                PaxRunnerOptions.scanComposite("file:" + pathToRoot + "assembly/target/classes/karaf.composite"),
-                PaxRunnerOptions.scanComposite("file:" + pathToRoot
-                        + "assembly/target/classes/settings.debug.composite"),
-                PaxRunnerOptions.scanPom("file:" + pathToRoot + "target/finalPom.xml"),
-                CoreOptions.frameworks(CoreOptions.felix()) }));
+        return new ArrayList<Option>(Arrays.asList(new Option[]{
+            PaxRunnerOptions.rawPaxRunnerOption("--platform", "felix"),
+            PaxRunnerOptions.rawPaxRunnerOption("--console", "false"),
+            PaxRunnerOptions.rawPaxRunnerOption("--ee", "J2SE-1.6"),
+            PaxRunnerOptions.rawPaxRunnerOption("--definitionURL", "file:" + pathToRoot
+                    + "assembly/target/classes/felix.xml"),
+            PaxRunnerOptions.scanComposite("file:" + pathToRoot + "assembly/target/classes/karaf.composite"),
+            PaxRunnerOptions.scanComposite("file:" + pathToRoot + "assembly/target/classes/settings.debug.composite"),
+            PaxRunnerOptions.scanPom("file:" + pathToRoot + "target/finalPom.xml"),
+            CoreOptions.frameworks(CoreOptions.felix())}));
     }
 
     private static void writeFileFromString(String filepath, String input) {
@@ -151,7 +151,7 @@ public final class BaseExamConfiguration {
 
     public static void debug(List<Option> baseConfiguration) {
         baseConfiguration.add(PaxRunnerOptions
-                .vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"));
+            .vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"));
     }
 
 }
