@@ -206,7 +206,7 @@
               <dependency>
                 <groupId>net.sf.docbook</groupId>
                 <artifactId>docbook-xml</artifactId>
-                <version>5.0-all</version>
+                <version>${docbkx.xml.version}</version>
                 <scope>runtime</scope>
                 <classifier>resources</classifier>
                 <type>zip</type>
@@ -214,13 +214,13 @@
               <dependency>
                 <groupId>com.sun</groupId>
                 <artifactId>jai_core</artifactId>
-                <version>1.1.3</version>
+                <version>${jai.version}</version>
                 <scope>runtime</scope>
               </dependency>
               <dependency>
                 <groupId>com.sun</groupId>
                 <artifactId>jai_codec</artifactId>
-                <version>1.1.3</version>
+                <version>${jai.version}</version>
                 <scope>runtime</scope>
               </dependency>
             </dependencies>
@@ -256,7 +256,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>2.2</version>
+            <version>${maven.plugin.project.info.reports.version}</version>
             <reportSets>
               <reportSet>
                 <reports>
@@ -273,7 +273,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-changes-plugin</artifactId>
-            <version>2.3</version>
+            <version>${maven.plugin.changes.version}</version>
             <configuration>
               <onlyCurrentVersion>true</onlyCurrentVersion>
             </configuration>

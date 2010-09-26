@@ -41,7 +41,11 @@
     <plugin.openjpa.version>1.1</plugin.openjpa.version>
     <plugin.surefire.version>2.5</plugin.surefire.version>
     <docbkx.version>2.0.10</docbkx.version>
+    <docbkx.xml.version>5.0-all</docbkx.xml.version>
+    <jai.version>1.1.3</jai.version>
     <jaxb.plugin.version>1.2</jaxb.plugin.version>
+    <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
+    <maven.plugin.changes.version>2.3</maven.plugin.changes.version>
     <maven.plugin.release.version>2.0-beta-9</maven.plugin.release.version>
     <maven.plugin.checkstyle.version>2.5</maven.plugin.checkstyle.version>
     <maven.plugin.surefire>2.4.3</maven.plugin.surefire>
