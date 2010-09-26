@@ -178,6 +178,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <version>${plugin.assembly.version}</version>
         <configuration>
+          <appendAssemblyId>true</appendAssemblyId>
           <descriptors>
             <descriptor>src/main/descriptors/html-multi.xml</descriptor>
             <descriptor>src/main/descriptors/html-single.xml</descriptor>

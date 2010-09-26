@@ -29,6 +29,11 @@
       <outputDirectory>manual/html-multi</outputDirectory>
       <includes>
         <include>*</include>
+        <include>css/*</include>
+        <include>graphics/*</include>
+        <include>images/*</include>
+        <include>images/admons/*</include>
+        <include>images/callouts/*</include>
       </includes>
     </fileSet>
   </fileSets>

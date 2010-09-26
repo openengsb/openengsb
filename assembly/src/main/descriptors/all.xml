@@ -33,6 +33,25 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>${project.basedir}/target/</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>manual/html-single/*</include>
+        <include>manual/html-single/css/*</include>
+        <include>manual/html-single/graphics/*</include>
+        <include>manual/html-single/images/*</include>
+        <include>manual/html-single/images/admons/*</include>
+        <include>manual/html-single/images/callouts/*</include>
+        <include>manual/html-multi/*</include>
+        <include>manual/html-multi/css/*</include>
+        <include>manual/html-multi/graphics/*</include>
+        <include>manual/html-multi/images/*</include>
+        <include>manual/html-multi/images/admons/*</include>
+        <include>manual/html-multi/images/callouts/*</include>
+        <include>manual/pdf/*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>${project.basedir}</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
