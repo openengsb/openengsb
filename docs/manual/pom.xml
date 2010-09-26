@@ -72,7 +72,7 @@
                     <include name="**/*.jpg" />
                   </fileset>
                 </copy>
-                <copy todir="${basedir}/target/site/reference/html-single">
+                <copy todir="${basedir}/target/manual/html-single">
                   <fileset dir="${basedir}/target/docbkx/html">
                     <include name="**/*" />
                   </fileset>
@@ -110,7 +110,7 @@
                     <include name="**/*.jpg" />
                   </fileset>
                 </copy>
-                <copy todir="${basedir}/target/site/reference/html">
+                <copy todir="${basedir}/target/manual/html">
                   <fileset dir="${basedir}/target/docbkx/html">
                     <include name="**/*" />
                   </fileset>
@@ -129,7 +129,7 @@
               <foCustomization>${basedir}/src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
               <imgSrcPath>file:///${basedir}/src/docbkx/</imgSrcPath>
               <postProcess>
-                <copy todir="${basedir}/target/site/reference/pdf">
+                <copy todir="${basedir}/target/manual/pdf">
                   <fileset dir="${basedir}/target/docbkx/pdf">
                     <include name="**/*.pdf" />
                   </fileset>
