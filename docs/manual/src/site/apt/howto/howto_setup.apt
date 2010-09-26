@@ -1,0 +1,50 @@
+~~
+~~ Copyright 2010 OpenEngSB Division, Vienna University of Technology
+~~
+~~ Licensed under the Apache License, Version 2.0 (the "License");
+~~ you may not use this file except in compliance with the License.
+~~ You may obtain a copy of the License at
+~~
+~~   http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing, software
+~~ distributed under the License is distributed on an "AS IS" BASIS,
+~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~ See the License for the specific language governing permissions and
+~~ limitations under the License.
+~~
+
+HowTo - First steps with OpenEngSB (Setup)
+
+  This section describes the setup process required for OpenEngSB development.
+
+* Java Development Kit 6
+
+   First of all the JDK6 should be installed on the system and the JAVA_HOME variable should be set.
+  ({{{http://java.sun.com/javase/downloads}Java download}}).
+   Also, make sure that the java-command is available in the PATH-variable
+
+* Getting OpenEngSB
+
+  Download the latest OpenEngSB release from {{{http://github.com/openengsb/openengsb/downloads/}here}}.
+
+* Install OpenEngSB
+
+  Extract the archive, and run the start-script (run.bat on windows, run.sh otherwise).
+  Click the following link to open the web interface in your browser {{{http://localhost:8080/openengsb}http://localhost:8080/openengsb}}.
+
+  You should automatically be directed to a page asking for a login. The default login is "user" with "password" as password.
+
+[../images/howto/login.png]
+
+  If everything works fine you should be welcomed by the following page presenting you the current domains and connectors.
+
+[../images/howto/mainpage.png]
+
+* First Steps
+
+  Now that the OpenEngSB is up and running start with the first tutorial: {{{./howto_logging.html}Connectors and Domains}}
+
+* Shutdown OpenEngSB
+
+  To shutdown the OpenEngSB, go to the command-window and type "shutdown" or press "Ctrl+D"

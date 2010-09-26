@@ -27,7 +27,7 @@
   </parent>
   
   <artifactId>openengsb-docs-homepage</artifactId>
-  <name>OpenEngSB :: Documentation :: Manual &amp; Homepage</name>
+  <name>OpenEngSB :: Documentation :: Homepage</name>
   <packaging>pom</packaging>
 
   <description>
@@ -77,225 +77,68 @@
         </site>
       </distributionManagement>
     </profile>
-    <profile>
-      <id>docs</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-site-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>mvnSite</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>site</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>mvnDeploy</id>
-                <phase>deploy</phase>
-                <goals>
-                  <goal>deploy</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>com.agilejava.docbkx</groupId>
-            <artifactId>docbkx-maven-plugin</artifactId>
-            <version>${docbkx.version}</version>
-            <executions>
-              <execution>
-                <id>html-single</id>
-                <goals>
-                  <goal>generate-html</goal>
-                </goals>
-                <configuration>
-                  <xincludeSupported>true</xincludeSupported>
-                  <chunkedOutput>false</chunkedOutput>
-                  <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html.xsl</htmlCustomization>
-                  <preProcess>
-                    <delete dir="${basedir}/target/docbkx/html" />
-                  </preProcess>
-                  <postProcess>
-                    <copy todir="${basedir}/target/docbkx/html">
-                      <fileset dir="${basedir}/src/docbkx/resources">
-                        <include name="**/*.css" />
-                        <include name="**/*.png" />
-                        <include name="**/*.gif" />
-                        <include name="**/*.jpg" />
-                      </fileset>
-                    </copy>
-                    <copy todir="${basedir}/target/docbkx/html/graphics" flatten="true">
-                      <fileset dir="${basedir}/src/docbkx/">
-					              <exclude name="resources/**" />
-                        <include name="**/*.png" />
-                        <include name="**/*.gif" />
-                        <include name="**/*.jpg" />
-                      </fileset>
-                    </copy>
-                    <copy todir="${basedir}/target/site/reference/html-single">
-                      <fileset dir="${basedir}/target/docbkx/html">
-                        <include name="**/*" />
-                      </fileset>
-                    </copy>
-                  </postProcess>
-                </configuration>
-                <phase>compile</phase>
-              </execution>
-              <execution>
-                <id>html-multi</id>
-                <goals>
-                  <goal>generate-html</goal>
-                </goals>
-                <configuration>
-                  <xincludeSupported>true</xincludeSupported>
-                  <chunkedOutput>true</chunkedOutput>
-                  <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>
-                  <preProcess>
-                    <delete dir="${basedir}/target/docbkx/html" />
-                  </preProcess>
-                  <postProcess>
-                    <copy todir="${basedir}/target/docbkx/html">
-                      <fileset dir="${basedir}/src/docbkx/resources">
-                        <include name="**/*.css" />
-                        <include name="**/*.png" />
-                        <include name="**/*.gif" />
-                        <include name="**/*.jpg" />
-                      </fileset>
-                    </copy>
-                    <copy todir="${basedir}/target/docbkx/html/graphics" flatten="true">
-                      <fileset dir="${basedir}/src/docbkx/">
-					              <exclude name="resources/**" />
-                        <include name="**/*.png" />
-                        <include name="**/*.gif" />
-                        <include name="**/*.jpg" />
-                      </fileset>
-                    </copy>
-                    <copy todir="${basedir}/target/site/reference/html">
-                      <fileset dir="${basedir}/target/docbkx/html">
-                        <include name="**/*" />
-                      </fileset>
-                    </copy>
-                  </postProcess>
-                </configuration>
-                <phase>compile</phase>
-              </execution>
-              <execution>
-                <id>pdf-single</id>
-                <goals>
-                  <goal>generate-pdf</goal>
-                </goals>
-                <configuration>
-                <xincludeSupported>true</xincludeSupported>
-                  <foCustomization>${basedir}/src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
-                  <imgSrcPath>file:///${basedir}/src/docbkx/</imgSrcPath>
-				          <postProcess>
-                    <copy todir="${basedir}/target/site/reference/pdf">
-                      <fileset dir="${basedir}/target/docbkx/pdf">
-                        <include name="**/*.pdf" />
-                      </fileset>
-                    </copy>
-                  </postProcess>
-                </configuration>
-                <phase>compile</phase>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>net.sf.docbook</groupId>
-                <artifactId>docbook-xml</artifactId>
-                <version>${docbkx.xml.version}</version>
-                <scope>runtime</scope>
-                <classifier>resources</classifier>
-                <type>zip</type>
-              </dependency>
-              <dependency>
-                <groupId>com.sun</groupId>
-                <artifactId>jai_core</artifactId>
-                <version>${jai.version}</version>
-                <scope>runtime</scope>
-              </dependency>
-              <dependency>
-                <groupId>com.sun</groupId>
-                <artifactId>jai_codec</artifactId>
-                <version>${jai.version}</version>
-                <scope>runtime</scope>
-              </dependency>
-            </dependencies>
-            <configuration>
-              <includes>*.xml</includes>
-              <htmlStylesheet>css/html.css</htmlStylesheet>
-              <xincludeSupported>true</xincludeSupported>
-              <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>
-              <!-- use extensions -->
-              <useExtensions>1</useExtensions>
-              <highlightSource>1</highlightSource>
-              <highlightDefaultLanguage />
-              <!-- callouts -->
-              <calloutsExtension>1</calloutsExtension>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-site-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <reporting>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-project-info-reports-plugin</artifactId>
-            <version>${maven.plugin.project.info.reports.version}</version>
-            <reportSets>
-              <reportSet>
-                <reports>
-                  <report>project-team</report>
-                  <report>mailing-list</report>
-                  <report>cim</report>
-                  <report>issue-tracking</report>
-                  <report>license</report>
-                  <report>scm</report>
-                </reports>
-              </reportSet>
-            </reportSets>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-changes-plugin</artifactId>
-            <version>${maven.plugin.changes.version}</version>
-            <configuration>
-              <onlyCurrentVersion>true</onlyCurrentVersion>
-            </configuration>
-            <reportSets>
-              <reportSet>
-                <reports>
-                  <report>jira-report</report>
-                </reports>
-              </reportSet>
-            </reportSets>
-          </plugin>
-        </plugins>
-      </reporting>
-      <repositories>
-        <repository>
-          <id>jai.repository</id>
-          <name>JAI Repository (indirectly used by Docbook plugin)</name>
-          <url>https://m2proxy.atlassian.com/repository/public</url>
-        </repository>
-      </repositories>
-    </profile>
   </profiles>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>mvnSite</id>
+            <phase>package</phase>
+            <goals>
+              <goal>site</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>mvnDeploy</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>deploy</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>${maven.plugin.project.info.reports.version}</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>project-team</report>
+              <report>mailing-list</report>
+              <report>cim</report>
+              <report>issue-tracking</report>
+              <report>license</report>
+              <report>scm</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>${maven.plugin.changes.version}</version>
+        <configuration>
+          <onlyCurrentVersion>true</onlyCurrentVersion>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>jira-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
 
 </project>
 

@@ -29,8 +29,11 @@ under the License.
   </parent>
 
   <artifactId>openengsb-docs-skin</artifactId>
+  <name>OpenEngSB :: Documentation :: Skin</name>
+  
+  <description>
+    Skin for the Open Engineering Service Bus Homepage
+  </description>
 
-  <name>OpenEngSB :: Documentation :: Homepage Skin</name>
- 
 </project>
 

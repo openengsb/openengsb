@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<faqs id="General FAQ">
+  <part id="General">
+    <title>General</title>
+    <faq id="What">
+      <question>What is the OpenEngSB</question>
+      <answer>
+        <p>
+	  TBW
+	</p>
+      </answer>
+    </faq>
+    <faq id="why">
+      <question>Why do we develop the OpenEngSB?</question>
+      <answer>
+        <p>
+          TBW
+        </p>
+      </answer>
+    </faq>
+    <faq id="why">
+      <question>Why is the OpenEngSB developed as a free project?</question>
+      <answer>
+        <p>
+          TBW
+        </p>
+      </answer>
+    </faq>
+  </part>
+  <part id="Development">
+    <title>Development</title>
+    <faq id="File Limit">
+      <question>Maven throws errors that it isn't able to open file [xyz], what's wrong?</question>
+      <answer>
+        <p>
+	  If you are using Linux, most likely you will have to increase the number of available file handles. Just add:
+	</p>
+	<p>
+	  * soft nofile 65536<br/>
+	  * hard nofile 65536
+	</p>
+	<p>
+	  to your /etc/security/limits.conf file and restart your device.
+	</p>
+      </answer>
+    </faq>
+    <faq id="Debug">
+      <question>Is it possible to debug OpenEngSB while running in servicemix?</question>
+      <answer>
+        <p>
+          Yes, to debug in Eclipse just stick with <a href="http://servicemix.apache.org/remote-debugging-servicemix-in-eclipse.html">http://servicemix.apache.org/remote-debugging-servicemix-in-eclipse.html</a>, but mind that SERVICEMIX_DEBUG has to be replaced with KARAF_DEBUG.
+        </p>
+      </answer>
+    </faq>
+  </part>
+</faqs>

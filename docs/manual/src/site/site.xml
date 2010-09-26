@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<project name="Open Engineering Service Bus">
+
+  <skin>
+    <groupId>org.openengsb.docs</groupId>
+    <artifactId>openengsb-docs-skin</artifactId>
+    <version>${project.version}</version>
+  </skin>
+
+  <bannerLeft>
+    <name>Open Engineering Service Bus (OpenEngSB)</name>
+    <src>images/openengsb_small.png</src>
+  </bannerLeft>
+
+  <publishDate position="left" />
+  <version position=${openengsb.version.name} />
+
+  <body>
+     <head>
+      <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-17453231-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+          var ga = document.createElement('script'); ga.type =
+          'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' :
+          'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0];
+          s.parentNode.insertBefore(ga, s);
+        })();
+      </script>
+    </head>
+
+    <links>
+      <item name="Final Release" href="http://openengsb.org/" />
+      <item name="Milestone Release" href="http://openengsb.org/" />
+      <item name="Nightly Release" href="http://openengsb.org/nightly" />
+    </links>
+
+    <menu name="OpenEngSB">
+      <item name="Welcome" href="index.html" />
+      <item name="What is OpenEngSB?" href="about.html" />
+	    <item name="Downloads" href="http://github.com/openengsb/openengsb/downloads" />
+	    <item name="Changelog" href="jira-report.html" />
+      <item name="Sponsors" href="sponsors.html" />
+    </menu>
+
+    <menu name="Quickstart" >
+      <item name="Installation" href="howto/howto_setup.html" />
+      <item name="Connectors and Domains " href="howto/howto_logging.html" />
+      <item name="Events" href="howto/howto_contexteditor.html" />
+    </menu>
+
+	  <menu name="Documentation" >
+	    <item name="Manual" href="reference/index.html"  />
+      <item name="FAQ" href="reference/faq.html" />
+	    <item name="Presentation Material" href="reference/presentation.html" />
+	    <item name="Youtube Channel" href="http://www.youtube.com/user/cdflexvideo" />
+    </menu>
+
+    <menu name="Community" >
+      <item name="Mailing Lists" href="mailinglists.html" />
+	    <item name="Twitter" href="http://twitter.com/openEngSB" />
+	    <item name="Facebook" href="http://www.facebook.com/group.php?gid=208312030232" />
+    </menu>
+
+    <menu name="Development" >
+      <item name="Contribution" href="contribution.html" />
+      <item name="Source Github" href="http://github.com/openengsb/openengsb/" />
+      <item name="Issues Tracking" href="issue-tracking.html"/>
+      <item name="Continuous Integration" href="integration.html"/>
+      <item name="Maven Repository" href="http://maven.openengsb.org/" />
+      <item name="Development Team" href="team-list.html" />
+    </menu>
+
+	<menu name="Subprojects" >
+	  <item name="OpenCIT" href="http://github.com/openengsb/opencit" />
+    <item name="YASTE" href="http://yaste.openengsb.org/" />
+  </menu>
+  </body>
+
+</project>
