@@ -20,8 +20,8 @@
 <project name="Open Engineering Service Bus">
 
   <skin>
-    <groupId>org.openengsb</groupId>
-    <artifactId>openengsb-style</artifactId>
+    <groupId>org.openengsb.docs</groupId>
+    <artifactId>openengsb-docs-skin</artifactId>
     <version>${project.version}</version>
   </skin>
 

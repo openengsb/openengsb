@@ -23,14 +23,14 @@ under the License.
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.openengsb</groupId>
-    <artifactId>openengsb-parent</artifactId>
+    <groupId>org.openengsb.docs</groupId>
+    <artifactId>openengsb-docs-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-style</artifactId>
+  <artifactId>openengsb-docs-skin</artifactId>
 
-  <name>OpenEngSB :: Style</name>
-  
+  <name>OpenEngSB :: Documentation :: Homepage Skin</name>
+ 
 </project>
 
