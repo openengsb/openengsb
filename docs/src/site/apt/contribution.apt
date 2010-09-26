@@ -23,7 +23,7 @@ Contributions
 
  [[b]] Test the OpenEngSB by running mvn clean install pax:provision
 
- [[c]] Use mvn eclipse:eclipse to create the required eclipse files and import them into eclispe
+ [[c]] Use mvn eclipse:eclipse to create the required Eclipse files and import them into Eclipse
 
  [[d]] Hack and commit
 
