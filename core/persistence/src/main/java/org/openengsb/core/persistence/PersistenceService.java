@@ -30,13 +30,13 @@ public interface PersistenceService {
      * Query for elements based on a given example element. Null field values are used as wildcards and will match with
      * any value.
      */
-    <T> List<T> query(T example);
+    <TYPE> List<TYPE> query(TYPE example);
 
     /**
      * Query for elements based on a list of example elements. This method returns the results of queries for the
      * examples contained in the example list accumulated in one result list.
      */
-    <T> List<T> query(List<T> examples);
+    <TYPE> List<TYPE> query(List<TYPE> examples);
 
     /**
      * Store the given element in the database. Multiple calls with the same element do not fail, but simply stores the
@@ -64,7 +64,7 @@ public interface PersistenceService {
      * @throws PersistenceException if a query using {@code oldBean} does not return exactly one element stored in the
      *         database.
      */
-    <T> void update(T oldBean, T newBean) throws PersistenceException;
+    <TYPE> void update(TYPE oldBean, TYPE newBean) throws PersistenceException;
 
     /**
      * Update the keys of the given map stored in the database with the values of the given map. Has transactional
@@ -73,7 +73,7 @@ public interface PersistenceService {
      * @throws PersistenceException if a query using the key element in the map does not return exactly one element
      *         stored in the database.
      */
-    <T> void update(Map<T, T> beans) throws PersistenceException;
+    <TYPE> void update(Map<TYPE, TYPE> beans) throws PersistenceException;
 
     /**
      * 
@@ -81,7 +81,7 @@ public interface PersistenceService {
      * 
      * @throws PersistenceException if no element can be found for the given query by example object
      */
-    <T> void delete(T example) throws PersistenceException;
+    <TYPE> void delete(TYPE example) throws PersistenceException;
 
     /**
      * 
@@ -89,6 +89,6 @@ public interface PersistenceService {
      * 
      * @throws PersistenceException if the underlying database system throws an exception
      */
-    <T> void delete(List<? extends T> examples) throws PersistenceException;
+    <TYPE> void delete(List<? extends TYPE> examples) throws PersistenceException;
 
 }

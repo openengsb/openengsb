@@ -1,4 +1,4 @@
-/**
+/**OEYYPE
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,37 +60,37 @@ public class DB4OPersistenceService implements PersistenceService {
     }
 
     @Override
-    public <T> void delete(T example) throws PersistenceException {
-        List<T> toDelete = database.queryByExample(example);
+    public <TYPE> void delete(TYPE example) throws PersistenceException {
+        List<TYPE> toDelete = database.queryByExample(example);
         if (toDelete.isEmpty()) {
             throw new PersistenceException("Element '" + example
                     + "' cannot be deleted because it was not found in database.");
         }
-        for (T element : toDelete) {
+        for (TYPE element : toDelete) {
             database.delete(element);
         }
         database.commit();
     }
 
     @Override
-    public <T> void delete(List<? extends T> examples) throws PersistenceException {
-        List<T> toDelete = new ArrayList<T>();
+    public <TYPE> void delete(List<? extends TYPE> examples) throws PersistenceException {
+        List<TYPE> toDelete = new ArrayList<TYPE>();
 
-        for (T example : examples) {
-            toDelete.addAll(database.<T> queryByExample(example));
+        for (TYPE example : examples) {
+            toDelete.addAll(database.<TYPE> queryByExample(example));
         }
 
-        for (T element : toDelete) {
+        for (TYPE element : toDelete) {
             database.delete(element);
         }
         database.commit();
     }
 
     @Override
-    public <T> List<T> query(T example) {
-        List<T> queryByExample = database.queryByExample(example);
-        List<T> result = new ArrayList<T>();
-        for (T element : queryByExample) {
+    public <TYPE> List<TYPE> query(TYPE example) {
+        List<TYPE> queryByExample = database.queryByExample(example);
+        List<TYPE> result = new ArrayList<TYPE>();
+        for (TYPE element : queryByExample) {
             database.ext().purge(element);
             result.add(element);
         }
@@ -98,23 +98,23 @@ public class DB4OPersistenceService implements PersistenceService {
     }
 
     @Override
-    public <T> List<T> query(List<T> examples) {
-        List<T> results = new ArrayList<T>();
-        for (T example : examples) {
+    public <TYPE> List<TYPE> query(List<TYPE> examples) {
+        List<TYPE> results = new ArrayList<TYPE>();
+        for (TYPE example : examples) {
             results.addAll(query(example));
         }
         return results;
     }
 
     @Override
-    public <T> void update(T oldBean, T newBean) throws PersistenceException {
+    public <TYPE> void update(TYPE oldBean, TYPE newBean) throws PersistenceException {
         doUpdate(oldBean, newBean);
         database.commit();
         database.ext().purge(newBean);
     }
 
-    private <T> void doUpdate(T oldBean, T newBean) throws PersistenceException {
-        List<T> queryResult = database.queryByExample(oldBean);
+    private <TYPE> void doUpdate(TYPE oldBean, TYPE newBean) throws PersistenceException {
+        List<TYPE> queryResult = database.queryByExample(oldBean);
         if (queryResult.isEmpty()) {
             throw new PersistenceException("Could not update element '" + oldBean
                     + "', because it was not found in the database.");
@@ -127,9 +127,9 @@ public class DB4OPersistenceService implements PersistenceService {
     }
 
     @Override
-    public <T> void update(Map<T, T> beans) throws PersistenceException {
+    public <TYPE> void update(Map<TYPE, TYPE> beans) throws PersistenceException {
         try {
-            for (Entry<T, T> entry : beans.entrySet()) {
+            for (Entry<TYPE, TYPE> entry : beans.entrySet()) {
                 doUpdate(entry.getKey(), entry.getValue());
                 database.ext().purge(entry.getValue());
             }
