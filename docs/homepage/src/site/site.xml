@@ -94,8 +94,9 @@
     </menu>
 
 	<menu name="Subprojects" >
-	  <item name="YASTE" href="http://yaste.openengsb.org/" />
-    </menu>
+	  <item name="OpenCIT" href="http://github.com/openengsb/opencit" />
+    <item name="YASTE" href="http://yaste.openengsb.org/" />
+  </menu>
   </body>
 
 </project>
