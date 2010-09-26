@@ -18,6 +18,7 @@ package org.openengsb.ui.web;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,8 +41,8 @@ import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
+import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.util.AliveState;
-import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
 public class ServicesListPageTest {
