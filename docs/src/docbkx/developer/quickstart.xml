@@ -28,7 +28,7 @@
 
   <section xml:id="developer.quickstart.infrastructure">
     <title>Getting comfortable with the infrastructure</title>
-    <para>As any FOSS project the OpenEngSB development depends on a wide range of different infrastructural and 
+    <para>As any open source project the OpenEngSB development depends on a wide range of different infrastructural and 
       communication methods to get things done. The following sub-chapters describe the different tools, their
       location and usage in the OpenEngSB development process.</para>
 
@@ -40,11 +40,11 @@
         <ulink url="http://groups.google.com/group/openengsb-dev">Google Groups OpenEngSB Developer Mailing List
         </ulink> and say hello world.</para>
       <para>While notifications from the Hudson Build Server, about code commits and Jira issues are vital for the
-        OpenEngSB core developer they may not be as interesting for you. If you get annoyed by the automatically 
+        OpenEngSB core developer, they may not be as interesting for you. If you get annoyed by the automatically 
         generated notification mails ignore all mails from openengsb@gmail.com and noreply@github.com to 
-        openengsb-dev@googlegroups.com. Please remember it is important to configure as well the from as the to in
-        your filter. Both addresses will also send notifications directly to you which are important and should not
-        be ignored unread!</para>
+        openengsb-dev@googlegroups.com. Please remember it is important to configure both, <literal>to</literal> and 
+        <literal>from</literal> in your filter. Both addresses will also send notifications directly to you which are 
+        important and should not be ignored!</para>
     </section>
 
     <section xml:id="developer.quickstart.infrastructure.jira">
@@ -57,7 +57,7 @@
 
     <section xml:id="developer.quickstart.infrastructure.github">
       <title>Code Repository</title>
-      <para>As for any FOSS project the source code is public available. We've chosen <ulink url="http://github.com">
+      <para>As for any open source project the source code is public available. We've chosen <ulink url="http://github.com">
         Github</ulink> for this task. The project is available at <ulink url="http://github.com/openengsb/openengsb">
         github.com/openengsb/openengsb</ulink>.</para>
       <para>As explained later within this document Github is not only used to store our code, but also for collaboration,
@@ -88,7 +88,7 @@
 
     <section xml:id="developer.quickstart.pre.git">
       <title>Installing Git</title>
-      <para> Further more its assumed that Git has been installed. For Linux your distribution provides already a 
+      <para> It is assumed that Git is installed. For Linux your distribution provides already a 
         package for git. Please use the package manager of your distribution (apt, yum, pacman, ...) to install it. For MAC
         binaries are available at <ulink url="git-scm.com">git-scm.com</ulink>. For MS users <ulink url="www.cygwin.com">cygwin
         </ulink> or <ulink url="code.google.com/p/msysgit">msysgit</ulink>. After installing, set at least the following 
@@ -204,9 +204,9 @@
         you don't have to bother with updates of these branches in the OpenEngSB.</para>
       <para>Now hack, commit and push as you like. If you think you're finished execute the 
         <filename>etc/scripts/pre-push.sh</filename> script validating your code, tests, licenses and so on. If 
-        everything works without errors create a Github push request on Github, between the master or integration
+        everything works without errors create a Github pull request on Github, between the master or integration
         branch (depending on where you've created your branch on) and your branch. In addition it will help if you
-        add the link to the push request to the issue you're working on. A commiter will tend as fast as possible to
+        add the link to the pull request to the issue you're working on. A commiter will tend as fast as possible to
         your request and give feedback or directly merge your commit into the integration/master branch.</para>
     </section>
     <section>
