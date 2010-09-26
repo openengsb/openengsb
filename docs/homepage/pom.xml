@@ -129,7 +129,7 @@
                     </copy>
                     <copy todir="${basedir}/target/docbkx/html/graphics" flatten="true">
                       <fileset dir="${basedir}/src/docbkx/">
-					    <exclude name="resources/**" />
+					              <exclude name="resources/**" />
                         <include name="**/*.png" />
                         <include name="**/*.gif" />
                         <include name="**/*.jpg" />
@@ -167,7 +167,7 @@
                     </copy>
                     <copy todir="${basedir}/target/docbkx/html/graphics" flatten="true">
                       <fileset dir="${basedir}/src/docbkx/">
-					    <exclude name="resources/**" />
+					              <exclude name="resources/**" />
                         <include name="**/*.png" />
                         <include name="**/*.gif" />
                         <include name="**/*.jpg" />
@@ -191,7 +191,7 @@
                 <xincludeSupported>true</xincludeSupported>
                   <foCustomization>${basedir}/src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
                   <imgSrcPath>file:///${basedir}/src/docbkx/</imgSrcPath>
-				  <postProcess>
+				          <postProcess>
                     <copy todir="${basedir}/target/site/reference/pdf">
                       <fileset dir="${basedir}/target/docbkx/pdf">
                         <include name="**/*.pdf" />
@@ -298,3 +298,4 @@
   </profiles>
 
 </project>
+
