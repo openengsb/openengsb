@@ -72,7 +72,7 @@
     </menu>
 
 	  <menu name="Documentation" >
-	    <item name="Manual" href="reference/index.html"  />
+	    <item name="Manual" href="manual/index.html"  />
       <item name="FAQ" href="reference/faq.html" />
 	    <item name="Presentation Material" href="reference/presentation.html" />
 	    <item name="Youtube Channel" href="http://www.youtube.com/user/cdflexvideo" />

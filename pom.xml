@@ -60,8 +60,7 @@
   <modules>
     <module>tooling</module>
     <module>archetypes</module>
-    <module>docs/skin</module>
-    <module>docs/homepage</module>
+    <module>docs</module>
     <module>poms</module>
     <module>provision</module>
     <module>wrapped</module>
@@ -477,6 +476,7 @@
               <strictCheck>true</strictCheck>
               <excludes>
                 <exclude>license.txt</exclude>
+                <exclude>**/*.vm</exclude>
                 <exclude>**/license.txt</exclude>
                 <exclude>runner/**</exclude>
                 <exclude>features/**</exclude>

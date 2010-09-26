@@ -110,7 +110,7 @@
                     <include name="**/*.jpg" />
                   </fileset>
                 </copy>
-                <copy todir="${basedir}/target/manual/html">
+                <copy todir="${basedir}/target/manual/html-multi">
                   <fileset dir="${basedir}/target/docbkx/html">
                     <include name="**/*" />
                   </fileset>
@@ -173,6 +173,58 @@
           <!-- callouts -->
           <calloutsExtension>1</calloutsExtension>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${plugin.assembly.version}</version>
+        <configuration>
+          <descriptors>
+            <descriptor>src/main/descriptors/html-multi.xml</descriptor>
+            <descriptor>src/main/descriptors/html-single.xml</descriptor>
+            <descriptor>src/main/descriptors/pdf.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id> 
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal> 
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>target/openengsb-docs-manual-${project.version}-html-multi.zip</file>
+                  <type>zip</type>
+                  <classifier>html-multi</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/openengsb-docs-manual-${project.version}-html-single.zip</file>
+                  <type>zip</type>
+                  <classifier>html-single</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/openengsb-docs-manual-${project.version}-pdf.zip</file>
+                  <type>zip</type>
+                  <classifier>pdf</classifier>
+                </artifact> 
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
