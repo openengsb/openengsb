@@ -108,7 +108,10 @@ public class TestClient extends BasePage {
                 return managers;
             }
         };
-        add(new ListView<ServiceManager>("services", managersModel) {
+        WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
+        serviceManagementContainer.setOutputMarkupId(true);
+        add(serviceManagementContainer);
+        serviceManagementContainer.add(new ListView<ServiceManager>("services", managersModel) {
 
             @Override
             protected void populateItem(ListItem<ServiceManager> item) {

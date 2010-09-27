@@ -449,8 +449,10 @@ public class TestClientTest {
         setupAndStartTestClientPage();
         tester.debugComponentTrees();
         tester.assertRenderedPage(TestClient.class);
-        Label name = (Label) tester.getComponentFromLastRenderedPage("services:0:service.name");
-        Label description = (Label) tester.getComponentFromLastRenderedPage("services:0:service.description");
+        Label name = (Label) tester
+                .getComponentFromLastRenderedPage("serviceManagementContainer:services:0:service.name");
+        Label description = (Label) tester
+                .getComponentFromLastRenderedPage("serviceManagementContainer:services:0:service.description");
         Assert.assertEquals("service.name", name.getDefaultModel().getObject());
         Assert.assertEquals("service.description", description.getDefaultModel().getObject());
     }
