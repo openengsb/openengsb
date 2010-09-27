@@ -1,4 +1,4 @@
-/**OEYYPE
+/**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,6 +35,14 @@ public class DB4OPersistenceService implements PersistenceService {
 
     public void init() {
         database = Db4o.openFile(dbFile);
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (database != null) {
+                    database.close();
+                }
+            }
+        }));
     }
 
     public void shutdown() {
