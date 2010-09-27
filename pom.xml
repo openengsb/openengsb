@@ -358,6 +358,21 @@
           <url>dav:http://maven.openengsb.org/nexus/content/repositories/openengsb-snapshots/</url>
         </snapshotRepository>
       </distributionManagement>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>${plugin.release.version}</version>
+            <configuration>
+              <autoVersionSubmodules>true</autoVersionSubmodules>
+              <preparationGoals>clean install</preparationGoals>
+              <goals>clean install pax:provision assembly:assembly deploy</goals>
+              <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,milestone</releaseProfiles>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>milestone</id>
@@ -383,7 +398,7 @@
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <preparationGoals>clean install</preparationGoals>
               <goals>clean install pax:provision assembly:assembly deploy</goals>
-              <releaseProfiles>!run,integration-test,docs,release,license-check,milestone</releaseProfiles>
+              <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,milestone</releaseProfiles>
             </configuration>
           </plugin>
         </plugins>
@@ -413,7 +428,7 @@
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <preparationGoals>clean install</preparationGoals>
               <goals>clean install pax:provision assembly:assembly deploy</goals>
-              <releaseProfiles>!run,integration-test,docs,release,license-check,final</releaseProfiles>
+              <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,final</releaseProfiles>
             </configuration>
           </plugin>
         </plugins>
