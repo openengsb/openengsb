@@ -1,26 +1,17 @@
-== Setup Workspace ==
-Create an eclipse workspace in ./eclipse-workspace. Afterwards close the workspace again and run the following commands.
-
-[pieber@coprime trunk]$ eclipse:configure-workspace 
-[pieber@coprime trunk]$ mvn clean install eclipse:clean eclipse:eclipse 
-
-Afterwards start eclipse again and import existing eclipse projects.
+== Setup Project and Kick Off ==
+Execute ./etc/scripts/build.sh
+Now run mvn eclipse:eclipse and import the projects into eclipse. If you simply want to run the openengsb execute ./etc/scripts/run.sh
 
 == Create Project ==
 Execute etc/scripts/create-project.sh with groupId and artifactId as params to create the base proejct structure.
 
 == Scripts ==
-Scripts which help you to create projects, run the workspace and so on are stored in a seperated script folder (etc/scripts). Its not required to use them but they may help you with your afford.
+Scripts which help you to create projects, run the workspace and so on are stored in a seperated script folder (etc/scripts). Its not required to use them but they may help you with your effort.
 
 == Full Run ==
 Before a push, run the following command:
 
 etc/scripts/pre-push.sh
-
-== Build Docs ==
-To build the documentation use the following command:
-
-mvn clean install -Pdocs
 
 == Further Information ==
 This readme gives only the most important information for developer. General information about this proejct is located at http://openengsb.org. The detailed developer documentation is located at http://openengsb.org/reference/index.html.
