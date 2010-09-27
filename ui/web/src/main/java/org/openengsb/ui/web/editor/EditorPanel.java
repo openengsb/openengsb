@@ -72,8 +72,7 @@ public abstract class EditorPanel extends Panel {
 
     private void createForm(List<AttributeDefinition> attributes, Map<String, String> values) {
         @SuppressWarnings("rawtypes")
-        final Form<?> form = new Form("form") {
-        };
+        final Form<?> form = new Form("form");
         add(form);
 
         form.add(new FeedbackPanel("feedback").setOutputMarkupId(true));
