@@ -45,6 +45,25 @@
       <property name="context" ref="contextService" />
     </bean>
   </osgi:service>
+  
+  <osgi:service>
+    <osgi:interfaces>
+      <value>org.openengsb.domains.notification.NotificationDomainEvents</value>
+      <value>org.openengsb.core.common.DomainEvents</value>
+    </osgi:interfaces>
+    <osgi:service-properties>
+      <entry key="id" value="domains.notification.events" />
+      <entry key="openengsb.service.type" value="domain-events" />
+    </osgi:service-properties>
 
+    <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
+      <property name="domainEventsInterface">
+        <value>org.openengsb.domains.notification.NotificationDomainEvents</value>
+      </property>
+      <property name="workflowService" ref="workflowService" />
+    </bean>
+  </osgi:service>
+
+  <osgi:reference id="workflowService" interface="org.openengsb.core.workflow.WorkflowService" />
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
 </beans>
