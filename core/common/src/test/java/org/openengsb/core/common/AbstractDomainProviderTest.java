@@ -18,6 +18,9 @@ package org.openengsb.core.common;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
+
+import java.util.List;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -31,11 +34,26 @@ public class AbstractDomainProviderTest {
 
     }
 
-    private static class DummyProvider extends AbstractDomainProvider<DummyDomain> {
+    private static interface DummyDomainEvents extends DomainEvents {
+
+        void raiseEvent(DummyEvent event);
+
+        void raiseEvent();
+
+        void raiseEvent(String string);
+
+        void someMethod();
+    }
+
+    private static class DummyEvent extends Event {
 
     }
 
-    private AbstractDomainProvider<DummyDomain> provider;
+    private static class DummyProvider extends AbstractDomainProvider<DummyDomain, DummyDomainEvents> {
+
+    }
+
+    private AbstractDomainProvider<DummyDomain, DummyDomainEvents> provider;
     private BundleContext bundleContext;
 
     @Before
@@ -66,7 +84,14 @@ public class AbstractDomainProviderTest {
     }
 
     @Test
-    public void getEvents_shouldReturnEmptyList() {
-        assertThat(provider.getEvents().size(), is(0));
+    public void parameterizedDomainEvents_shouldExtractDomainEventsInterfaceFromGenerics() {
+        Assert.assertEquals(DummyDomainEvents.class, provider.getDomainEventInterface());
+    }
+
+    @Test
+    public void getEvents_shouldReturnDummyEvent() {
+        List<Class<? extends Event>> events = provider.getEvents();
+        assertThat(events.contains(DummyEvent.class), is(true));
+        assertThat(events.size(), is(1));
     }
 }

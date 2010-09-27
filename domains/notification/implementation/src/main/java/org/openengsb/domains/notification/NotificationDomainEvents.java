@@ -16,8 +16,8 @@
 
 package org.openengsb.domains.notification;
 
-import org.openengsb.core.common.AbstractDomainProvider;
+import org.openengsb.core.common.DomainEvents;
 
-public class NotifcationDomainProvider extends AbstractDomainProvider<NotificationDomain, NotificationDomainEvents> {
+public interface NotificationDomainEvents extends DomainEvents {
 
 }
