@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +44,14 @@ public class PersistenceIT extends AbstractExamTestHelper {
         persistence.create(element);
 
         wildcard = new PersistenceTestObject(null, null);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        if (persistence.query(wildcard).isEmpty()) {
+            return;
+        }
+        persistence.delete(wildcard);
     }
 
     @Test
