@@ -44,6 +44,9 @@ public final class OpenEngSBBundles {
     public static final MavenArtifactProvisionOption OPENENGSB_CORE_COMMON = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId("openengsb-core-common"));
 
+    public static final MavenArtifactProvisionOption OPENENGSB_CORE_EVENTS = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId("openengsb-core-events"));
+
     public static final MavenArtifactProvisionOption OPENENGSB_CORE_PERSISTENCE = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId(
             "openengsb-core-persistence"));
