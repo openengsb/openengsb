@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.example.connector;
+package org.openengsb.domains.jms;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.type.TypeFactory;
 
 public class JSONSerialisationInvocationHandler implements InvocationHandler {
 
@@ -32,11 +37,26 @@ public class JSONSerialisationInvocationHandler implements InvocationHandler {
     }
 
     @Override
-    public Object invoke(Object arg0, Method arg1, Object[] arg2) throws Throwable {
+    public Object invoke(Object arg0, Method arg1, Object[] arg2) {
         ObjectMapper mapper = new ObjectMapper();
         StringWriter writer = new StringWriter();
-        mapper.writeValue(writer, arg2);
-        return sender.send(arg1.getName(), writer.toString());
+        try {
+            mapper.writeValue(writer, arg2);
+            String send = sender.send(arg1.getName(), writer.toString());
+            if (arg1.getReturnType().getName() != "void") {
+                return mapper.readValue(send, TypeFactory.type(arg1.getGenericReturnType()));
+            } else {
+                return null;
+            }
+        } catch (JsonGenerationException e) {
+            throw new JMSConnectorException(e.getMessage());
+        } catch (JsonMappingException e) {
+            throw new JMSConnectorException(e.getMessage());
+        } catch (JsonParseException e) {
+            throw new JMSConnectorException(e.getMessage());
+        } catch (IOException e) {
+            throw new JMSConnectorException(e.getMessage());
+        }
     }
 
 }

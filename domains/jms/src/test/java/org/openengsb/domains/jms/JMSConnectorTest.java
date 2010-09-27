@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-
 package org.openengsb.domains.jms;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.same;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -45,33 +44,39 @@ import org.osgi.framework.BundleContext;
 public class JMSConnectorTest {
 
     @Test
-    public void returnMockDomainInterface_shouldAddProxyToBundleContext() throws Throwable {
+    public void returnMockDomainInterface_shouldAddProxyToBundleContext() {
         BundleContext mockContext = mock(BundleContext.class);
         DomainService domainService = mock(DomainService.class);
         DomainProvider provider = Mockito.mock(DomainProvider.class);
         when(provider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
-            public Class<? extends Domain> answer(InvocationOnMock invocation) throws Throwable {
+            public Class<? extends Domain> answer(InvocationOnMock invocation) {
                 return TestInterface.class;
             }
         });
-        when(domainService.domains()).thenReturn(Arrays.asList((new DomainProvider[]{provider})));
+        when(domainService.domains()).thenReturn(Arrays.asList(new DomainProvider[]{provider}));
         InvocationHandler invocationHandlerMock = mock(InvocationHandler.class);
-        new JMSConnector(mockContext, domainService, invocationHandlerMock);
+        InvocationHandlerFactory mock = mock(InvocationHandlerFactory.class);
+        when(mock.createInstance(Mockito.any(DomainProvider.class))).thenReturn(invocationHandlerMock);
+        new JMSConnector(mockContext, domainService, mock);
         ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
         verify(mockContext).registerService(eq(TestInterface.class.getName()), captor.capture(), any(Dictionary.class));
         assertTrue(captor.getValue() instanceof Proxy);
         assertTrue(captor.getValue() instanceof TestInterface);
         ((TestInterface) captor.getValue()).log(5);
         ArgumentCaptor<Method> methodCaptor = ArgumentCaptor.forClass(Method.class);
-        verify(invocationHandlerMock).invoke(same(captor.getValue()), methodCaptor.capture(),
-            eq(new Object[]{new Integer(5)}));
+        try {
+            verify(invocationHandlerMock).invoke(same(captor.getValue()), methodCaptor.capture(),
+                eq(new Object[]{new Integer(5)}));
+        } catch (Throwable e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
         Method value = methodCaptor.getValue();
         assertEquals("log", value.getName());
         assertEquals(TestInterface.class, value.getDeclaringClass());
     }
 
     private static interface TestInterface extends Domain {
-        public void log(int i);
+        void log(int i);
     }
 }

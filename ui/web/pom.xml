@@ -93,6 +93,12 @@
       <version>${pom.version}</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb.domains.jms</groupId>
+      <artifactId>openengsb-domains-jms</artifactId>
+      <version>${pom.version}</version>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>

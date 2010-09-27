@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.example.connector;
+package org.openengsb.domains.jms;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -22,8 +22,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -38,7 +40,6 @@ public class JSONSerialisationInvocationHandlerTest {
     @Before
     public void setUp() {
         sender = mock(Sender.class);
-        when(sender.send(Mockito.anyString(), Mockito.anyObject())).thenReturn("worked");
         JSONSerialisationInvocationHandler handler = new JSONSerialisationInvocationHandler(sender);
         newProxyInstance =
             (TestInterface) Proxy.newProxyInstance(TestInterface.class.getClassLoader(),
@@ -46,7 +47,8 @@ public class JSONSerialisationInvocationHandlerTest {
     }
 
     @Test
-    public void invokeWithSimpleIntAndString_shouldSerializeToJSONAndCallSender() throws Throwable {
+    public void invokeWithSimpleIntAndString_shouldSerializeToJSONAndCallSender() {
+        when(sender.send(Mockito.anyString(), Mockito.anyObject())).thenReturn("\"worked\"");
         String log = newProxyInstance.test(1, "zwei");
         assertThat(log, equalTo("worked"));
         verify(sender).send("test", "[1,\"zwei\"]");
@@ -61,15 +63,35 @@ public class JSONSerialisationInvocationHandlerTest {
         verify(sender).send("test", "[{\"b\":{\"string\":\"zwei\",\"i\":1},\"a\":{\"string\":\"vier\",\"i\":3}}]");
     }
 
-    private static interface TestInterface {
-        public void test(Map<String, TestObject> testObject);
-
-        public String test(int i, String s);
+    @Test
+    public void senderReturnsMappableReturnValue_shouldDeserializeAndReturnObject() throws IOException {
+        when(sender.send(Mockito.anyString(), Mockito.anyObject())).thenReturn(
+            "[{\"a\":{\"string\":\"a\",\"i\":1}}, {\"b\":{\"string\":\"b\",\"i\":2}}]");
+        List<Map<String, TestObject>> returnValueTestMethod = newProxyInstance.returnValueTestMethod();
+        assertThat(2, equalTo(returnValueTestMethod.size()));
+        Map<String, TestObject> map1 = returnValueTestMethod.get(0);
+        assertThat("a", equalTo(map1.get("a").getString()));
+        assertThat(1, equalTo(map1.get("a").getI()));
+        Map<String, TestObject> map2 = returnValueTestMethod.get(1);
+        assertThat("b", equalTo(map2.get("b").getString()));
+        assertThat(2, equalTo(map2.get("b").getI()));
     }
 
-    private static class TestObject {
-        private final String string;
-        private final int i;
+    private static interface TestInterface {
+        void test(Map<String, TestObject> testObject);
+
+        String test(int i, String s);
+
+        List<Map<String, TestObject>> returnValueTestMethod();
+    }
+
+    public static class TestObject {
+        private String string;
+        private int i;
+
+        public TestObject() {
+            // TODO Auto-generated constructor stub
+        }
 
         public TestObject(String string, int i) {
             super();
@@ -84,5 +106,14 @@ public class JSONSerialisationInvocationHandlerTest {
         public int getI() {
             return i;
         }
+
+        public void setString(String string) {
+            this.string = string;
+        }
+
+        public void setI(int i) {
+            this.i = i;
+        }
+
     }
 }

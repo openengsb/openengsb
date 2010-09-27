@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.openengsb.domains.jms;
 
 import java.lang.reflect.InvocationHandler;
@@ -27,9 +26,10 @@ import org.osgi.framework.BundleContext;
 
 public class JMSConnector {
 
-    public JMSConnector(BundleContext context, DomainService domainService, InvocationHandler handler) {
+    public JMSConnector(BundleContext context, DomainService domainService, InvocationHandlerFactory factory) {
         for (DomainProvider domain : domainService.domains()) {
             Class<? extends Domain> domainInterface = domain.getDomainInterface();
+            InvocationHandler handler = factory.createInstance(domain);
             Object newProxyInstance =
                 Proxy.newProxyInstance(domainInterface.getClassLoader(), new Class[]{domainInterface}, handler);
             context.registerService(domainInterface.getName(), newProxyInstance, null);

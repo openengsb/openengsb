@@ -19,13 +19,40 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-  xmlns:osgi="http://www.springframework.org/schema/osgi"
+  xmlns:osgi="http://www.springframework.org/schema/osgi" xmlns:amq="http://activemq.apache.org/schema/core"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
+        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd
+        http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+  <amq:broker useJmx="false" persistent="true">
+    <amq:transportConnectors>
+      <amq:transportConnector uri="tcp://localhost:0" />
+    </amq:transportConnectors>
+  </amq:broker>
+  
+  <amq:connectionFactory id="jmsFactory" brokerURL="vm://localhost"/>
+  
+  <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+    <property name="connectionFactory">
+      <!-- lets wrap in a pool to avoid creating a connection per send -->
+      <bean class="org.springframework.jms.connection.SingleConnectionFactory">
+        <property name="targetConnectionFactory">
+          <ref local="jmsFactory" />
+        </property>
+      </bean>
+    </property>
+  </bean>
 
   <bean id="domainService" class="org.openengsb.core.common.service.impl.OsgiDomainService">
     <constructor-arg name="bundleContext" ref="bundleContext"/>
     <property name="domains" ref="domains" />
   </bean>
+  
+  <bean id="jmsConnector" class="org.openengsb.domains.jms.JMSConnector">
+    <constructor-arg name="bundleContext" ref="bundleContext"/>
+    <constructor-arg name="domainService" ref="domainService"/>
+    <constructor-arg name="invocationHandlerFactory" ref="invocationHandlerFactory"/>
+  </bean>
+
 </beans>
