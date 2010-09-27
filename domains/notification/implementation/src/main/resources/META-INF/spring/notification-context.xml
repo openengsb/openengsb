@@ -57,13 +57,13 @@
     </osgi:service-properties>
 
     <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
-      <property name="domainEventsInterface">
+      <property name="domainEventInterface">
         <value>org.openengsb.domains.notification.NotificationDomainEvents</value>
       </property>
       <property name="workflowService" ref="workflowService" />
     </bean>
   </osgi:service>
-
+  
   <osgi:reference id="workflowService" interface="org.openengsb.core.workflow.WorkflowService" />
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
 </beans>

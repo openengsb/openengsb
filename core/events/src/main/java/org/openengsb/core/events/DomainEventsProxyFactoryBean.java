@@ -36,12 +36,12 @@ public class DomainEventsProxyFactoryBean implements FactoryBean<DomainEvents> {
         return handler;
     }
 
-    public void setDomainEventInterface(Class<? extends DomainEvents> domainEventInterface) {
-        this.domainEventInterface = domainEventInterface;
-    }
-
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
+    }
+
+    public void setDomainEventInterface(Class<? extends DomainEvents> domainEventInterface) {
+        this.domainEventInterface = domainEventInterface;
     }
 
     @Override

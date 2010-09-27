@@ -58,7 +58,7 @@
     </osgi:service-properties>
 
     <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
-      <property name="domainEventsInterface">
+      <property name="domainEventInterface">
         <value>org.openengsb.domains.example.ExampleDomainEvents</value>
       </property>
       <property name="workflowService" ref="workflowService" />
