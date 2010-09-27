@@ -32,13 +32,11 @@ public class DB4OPersistenceServiceTest extends PersistenceServiceTest {
     protected PersistenceService createPersitenceService() throws Exception {
         persistence = new DB4OPersistenceService();
         persistence.setDbFile("db.data");
-        persistence.init();
         return persistence;
     }
 
     @After
     public void tearDown() throws IOException {
-        persistence.shutdown();
         FileUtils.forceDelete(new File("db.data"));
     }
 
