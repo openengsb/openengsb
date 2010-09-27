@@ -62,6 +62,7 @@
     <xi:include href="developer/quickstart.xml" />
     <xi:include href="developer/architecture.xml" />
     <xi:include href="developer/context.xml"/>
+    <xi:include href="developer/persistence.xml"/>
     <xi:include href="developer/workflows.xml"/>
     <xi:include href="developer/howto/internal.connector.xml" />
     <xi:include href="developer/plugins.xml" />
