@@ -29,6 +29,7 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.model.ServiceId;
 
 public class ConnectorEditorPage extends BasePage {
 
@@ -46,7 +47,6 @@ public class ConnectorEditorPage extends BasePage {
     public ConnectorEditorPage(ServiceManager serviceManager, String serviceId) {
         this.serviceManager = serviceManager;
         Map<String, String> attributeValues = serviceManager.getAttributeValues(serviceId);
-
         ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
         add(new Label("service.name", descriptor.getName()));
         add(new Label("service.description", descriptor.getDescription()));
@@ -76,7 +76,11 @@ public class ConnectorEditorPage extends BasePage {
                             error(new StringResourceModel(value, this, null).getString());
                         }
                     } else {
-                        info(new StringResourceModel("service.add.succeed", this, null).getString());
+                        String serviceClass = serviceManager.getDescriptor().getServiceType().getName();
+                        String id = getValues().get("id");
+                        ServiceId reference = new ServiceId(serviceClass, id);
+                        setResponsePage(new TestClient(reference));
+//                        info(new StringResourceModel("service.add.succeed", this, null).getString());
                     }
                 } else {
                     serviceManager.update(getValues().get("id"), getValues());

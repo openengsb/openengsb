@@ -16,6 +16,9 @@
 
 package org.openengsb.ui.web;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -35,17 +38,16 @@ import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
 import org.openengsb.ui.web.service.DomainService;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 public class SendEventPageTest {
 
@@ -154,7 +156,8 @@ public class SendEventPageTest {
     @Test
     public void submittingForm_shouldCallDroolsServiceWithInstantiatedEvent() throws WorkflowException {
         formTester.setValue("fields:testProperty:row:field", "a");
-        formTester.submit();
+        tester.debugComponentTrees();
+        submitForm();
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
         verify(eventService).processEvent(captor.capture());
         assertThat(captor.getValue(), notNullValue());
@@ -162,9 +165,13 @@ public class SendEventPageTest {
         assertThat(((Dummy) captor.getValue()).getTestProperty(), is("a"));
     }
 
+    private void submitForm() {
+        tester.executeAjaxEvent("editor:form:submitButton", "onclick");
+    }
+
     @Test
     public void sendingEvent_shouldShowSuccessFeedback() throws Exception {
-        formTester.submit();
+        submitForm();
         tester.assertNoErrorMessage();
         assertThat(tester.getMessages(FeedbackMessage.INFO).size(), is(1));
     }
@@ -172,7 +179,7 @@ public class SendEventPageTest {
     @Test
     public void buildingEventFails_shouldShowErrorFeedback() throws Exception {
         selectEventType(2);
-        formTester.submit();
+        submitForm();
         tester.assertNoInfoMessage();
         assertThat(tester.getMessages(FeedbackMessage.ERROR).size(), is(1));
     }
@@ -180,7 +187,7 @@ public class SendEventPageTest {
     @Test
     public void processingEventthrowsException_shouldShowErrorFeedback() throws Exception {
         doThrow(new WorkflowException()).when(eventService).processEvent(Mockito.<Event>any());
-        formTester.submit();
+        submitForm();
         tester.assertNoInfoMessage();
         assertThat(tester.getMessages(FeedbackMessage.ERROR).size(), is(1));
     }

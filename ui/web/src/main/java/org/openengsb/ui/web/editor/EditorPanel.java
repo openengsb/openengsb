@@ -22,7 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -49,7 +51,7 @@ import org.openengsb.ui.web.model.MapModel;
 import org.openengsb.ui.web.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
-public class EditorPanel extends Panel {
+public abstract class EditorPanel extends Panel {
 
     private final Map<String, String> values;
     private final List<AttributeDefinition> attributes;
@@ -70,12 +72,7 @@ public class EditorPanel extends Panel {
 
     private void createForm(List<AttributeDefinition> attributes, Map<String, String> values) {
         @SuppressWarnings("rawtypes")
-        final Form<?> form = new Form("form") {
-            @Override
-            protected void onSubmit() {
-                EditorPanel.this.onSubmit();
-            }
-        };
+        final Form<?> form = new Form("form");
         add(form);
 
         form.add(new FeedbackPanel("feedback").setOutputMarkupId(true));
@@ -89,7 +86,6 @@ public class EditorPanel extends Panel {
         }
         CheckBox checkbox = new CheckBox("validate", new Model<Boolean>(true));
         form.add(checkbox);
-        AjaxFormValidatingBehavior.addToAllFormComponents(form, "onBlur");
         if (validator != null) {
             form.add(new AbstractFormValidator() {
 
@@ -129,6 +125,30 @@ public class EditorPanel extends Panel {
                 }
             });
         }
+        // form.add(new Button("submitButton"));
+        AjaxButton submitButton = new AjaxButton("submitButton", form) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                EditorPanel.this.onSubmit();
+                if (hasErrorMessage()) {
+                    addAjaxValidationToForm(form);
+                    target.addComponent(form);
+                }
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                addAjaxValidationToForm(form);
+                target.addComponent(form);
+            }
+        };
+        form.setOutputMarkupId(true);
+        form.add(submitButton);
+    }
+
+    private void addAjaxValidationToForm(Form<?> form) {
+        AjaxFormValidatingBehavior.addToAllFormComponents(form, "onBlur");
+        AjaxFormValidatingBehavior.addToAllFormComponents(form, "onChange");
     }
 
     private AbstractField<?> createEditor(String id, IModel<String> model, final AttributeDefinition attribute) {
@@ -145,8 +165,7 @@ public class EditorPanel extends Panel {
         }
     }
 
-    public void onSubmit() {
-    }
+    public abstract void onSubmit();
 
     public List<AttributeDefinition> getAttributes() {
         return attributes;

@@ -28,14 +28,16 @@
   </ul>
   
   <h2><wicket:message key="serviceList" /></h2>
-  <ul wicket:id="services">
-    <li>
-      <h3><span wicket:id="service.name">[service.name]</span>
-        <span class="smallFont light" wicket:id="service.description">[service.description]</span>
-        <a href="#" wicket:id="create.new"><wicket:message key="create.new">[create.new]</wicket:message></a>
-      </h3>
-    </li>
-  </ul>
+  <div wicket:id="serviceManagementContainer">
+    <ul wicket:id="services">
+      <li>
+        <h3><span wicket:id="service.name">[service.name]</span>
+          <span class="smallFont light" wicket:id="service.description">[service.description]</span>
+          <a href="#" wicket:id="create.new"><wicket:message key="create.new">[create.new]</wicket:message></a>
+        </h3>
+      </li>
+    </ul>
+  </div>
 
   <wicket:message key="serviceList" />
 

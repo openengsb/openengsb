@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
@@ -97,7 +98,6 @@ public class TestClient extends BasePage {
     private String lastServiceId;
 
     public TestClient() {
-
         IModel<List<ServiceManager>> managersModel = new LoadableDetachableModel<List<ServiceManager>>() {
             @Override
             protected List<ServiceManager> load() {
@@ -108,7 +108,10 @@ public class TestClient extends BasePage {
                 return managers;
             }
         };
-        add(new ListView<ServiceManager>("services", managersModel) {
+        WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
+        serviceManagementContainer.setOutputMarkupId(true);
+        add(serviceManagementContainer);
+        serviceManagementContainer.add(new ListView<ServiceManager>("services", managersModel) {
 
             @Override
             protected void populateItem(ListItem<ServiceManager> item) {
@@ -211,6 +214,38 @@ public class TestClient extends BasePage {
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
         this.add(new BookmarkablePageLink<Index>("index", Index.class));
+    }
+
+    public TestClient(ServiceId jumpToService) {
+        this();
+        TreeModel treeModel = serviceList.getModelObject();
+        DefaultMutableTreeNode serviceNode = findService((DefaultMutableTreeNode) treeModel.getRoot(), jumpToService);
+        expandAllUntilChild(serviceNode);
+        serviceList.getTreeState().selectNode(serviceNode, true);
+
+    }
+
+    private void expandAllUntilChild(DefaultMutableTreeNode child) {
+        for (TreeNode n : child.getPath()) {
+            serviceList.getTreeState().expandNode(n);
+        }
+    }
+
+    private DefaultMutableTreeNode findService(DefaultMutableTreeNode node, ServiceId jumpToService) {
+        if (node.isLeaf()) {
+            Object userObject = node.getUserObject();
+            if (jumpToService.equals(userObject)) {
+                return node;
+            }
+        } else {
+            for (int i = 0; i < node.getChildCount(); i++) {
+                DefaultMutableTreeNode result = findService((DefaultMutableTreeNode) node.getChildAt(i), jumpToService);
+                if (result != null) {
+                    return result;
+                }
+            }
+        }
+        return null;
     }
 
     private void updateEditButton(ServiceId serviceId) {
