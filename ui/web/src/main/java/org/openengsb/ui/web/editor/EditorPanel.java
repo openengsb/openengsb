@@ -73,10 +73,6 @@ public abstract class EditorPanel extends Panel {
     private void createForm(List<AttributeDefinition> attributes, Map<String, String> values) {
         @SuppressWarnings("rawtypes")
         final Form<?> form = new Form("form") {
-            @Override
-            protected void onSubmit() {
-                EditorPanel.this.onSubmit();
-            }
         };
         add(form);
 
@@ -139,6 +135,12 @@ public abstract class EditorPanel extends Panel {
                     addAjaxValidationToForm(form);
                     target.addComponent(form);
                 }
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                addAjaxValidationToForm(form);
+                target.addComponent(form);
             }
         };
         form.setOutputMarkupId(true);
