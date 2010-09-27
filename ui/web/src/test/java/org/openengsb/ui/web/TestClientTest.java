@@ -183,6 +183,14 @@ public class TestClientTest {
         Assert.assertEquals(reference.toString(), modelObject.getService().toString());
     }
 
+    @Test
+    public void testJumpToService() throws Exception {
+        setupTestClientPage();
+        ServiceId reference = new ServiceId(TestService.class.getName(), "test");
+        tester.startPage(new TestClient(reference));
+        tester.assertComponent("methodCallForm:serviceList:i:3:nodeComponent:contentLink:content", Label.class);
+    }
+
     private void expandServiceListTree() {
         tester.clickLink("methodCallForm:serviceList:i:0:junctionLink", true);
         tester.clickLink("methodCallForm:serviceList:i:1:junctionLink", true);
@@ -380,6 +388,13 @@ public class TestClientTest {
     }
 
     private List<ServiceReference> setupAndStartTestClientPage() {
+        final List<ServiceReference> expected = setupTestClientPage();
+        tester.startPage(TestClient.class);
+        formTester = tester.newFormTester("methodCallForm");
+        return expected;
+    }
+
+    private List<ServiceReference> setupTestClientPage() {
         final List<ServiceReference> expected = new ArrayList<ServiceReference>();
         ServiceReference serviceReferenceMock = mock(ServiceReference.class);
         when(serviceReferenceMock.getProperty("id")).thenReturn("test");
@@ -427,9 +442,6 @@ public class TestClientTest {
         when(managedServicesMock.getService(anyString(), anyString())).thenReturn(testService);
         context.putBean(managedServicesMock);
         setupTesterWithSpringMockContext();
-
-        tester.startPage(TestClient.class);
-        formTester = tester.newFormTester("methodCallForm");
         return expected;
     }
 

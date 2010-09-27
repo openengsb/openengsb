@@ -51,4 +51,23 @@ public class ServiceId implements Serializable {
     public String toString() {
         return String.format("%s (%s)", serviceId, serviceClass);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.serviceClass == null) ? 0 : this.serviceClass.hashCode());
+        result = prime * result + ((this.serviceId == null) ? 0 : this.serviceId.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ServiceId)) {
+            return false;
+        }
+        ServiceId other = (ServiceId) obj;
+        return other.serviceClass.equals(serviceClass) && other.serviceId.equals(serviceId);
+    }
+
 }
