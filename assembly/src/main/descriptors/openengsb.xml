@@ -52,7 +52,6 @@
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>*</include>
-        <include>bin/*</include>
       </includes>
     </fileSet>
     <fileSet>
@@ -60,6 +59,14 @@
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>bin/*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/assembly/target/classes/</directory>
+      <outputDirectory>/bin/</outputDirectory>
+      <includes>
+        <include>karaf.sh</include>
+        <include>karaf.bat</include>
       </includes>
       <fileMode>0740</fileMode>
     </fileSet>
