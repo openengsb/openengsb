@@ -25,17 +25,22 @@
 
   <title>How To Create an Internal Domain</title>
 
-  <para>TBW</para>
+  <para>This chapter describes how to implement a domain for the OpenEngSB environment. A domain provides a common
+    interface and common events on how to interact with connectors for this domain. For a better description of what a
+    domain exactly consists of, take a look at the architecture guide for developers (TODO link to architecture).</para>
 
   <section>
     <title>Prerequisites</title>
-    <para>TBW</para>
+    <para>In case it isn't known what a domain is and how it defines the interface and events for connectors, then (TODO
+      link to architecture) is a good starting point.</para>
   </section>
 
   <section>
     <title>Creating a new domain project</title>
 
-    <para>TBW</para>
+    <para>To get developers started creating a new domain a Maven archetype is provided for creating the initial project
+      structure. Furthermore, if the new domain is developed in the OpenEngSB repository, a shell script can be found at
+        <literal>etc/scripts/gen-domain.sh</literal> as further convenience.</para>
 
     <section>
       <title>Using the Maven Archetype</title>
@@ -46,13 +51,64 @@
     <section>
       <title>Using the <literal>gen-domain.sh</literal> shell script</title>
 
-      <para>TBW</para>
+      <para>The script should be executed from the domains directory in your OpenEngSB repository.</para>
+
+      <literallayout><command>domains $</command> ../etc/scripts/gen-domain.sh</literallayout>
+
+      <para>You'll be asked to fill i a few variables the script needs to create the initial project structure. Based on
+        your input, the script tries to gues further values. Guessed values are displayed in brackets. If the guess is
+        correct, simply acknowledge with <literal>Return</literal>. As example, the following output has been recorded
+        while creating the Test domain:</para>
+
+      <literallayout><command>Domain Name (is mydomain):</command> test &lt;Enter>
+<command>Version (is 1.0.0-SNAPSHOT):</command> &lt;Enter> 
+<command>Prefix for project names (is OpenEngSB :: Domains :: Test):</command> &lt;Enter></literallayout>
+
+      <para>Only the domain name has been filled in, while the rest has been correctly guessed by the script. After
+        giving the inputs, the Maven archetype gets executed and may ask for further inputs. You can simply hit
+          <literal>Return</literal>, as the values have been already correctly set by the script. If the script finishes
+        successfully two new Maven projects, the domain parent and domain implementation project, have been created and
+        setup with a sample implementation for a domain.</para>
     </section>
 
     <section>
       <title>Project structure</title>
 
-      <para>TBW</para>
+      <para>The newly created domain should have the exact same structure as the following listing:</para>
+
+      <programlisting>-- implementation
+|  -- pom.xml
+|  -- src
+|     -- main
+|     |  -- java
+|     |  -- org
+|     |     -- openengsb
+|     |        -- domains
+|     |           -- test
+|     |              -- MyDomain.java
+|     |              -- MyDomainProvider.java
+|     -- resources
+|        -- META-INF
+|        |   -- spring
+|        |      -- notification-context.xml
+|        -- OSGI-INF
+|           -- l10n
+|              -- bundle_de.properties
+|              -- bundle.properties
+-- pom.xml</programlisting>
+
+      <para>TBW - explain structure</para>
+
+      <para>Although the generated domain does in effect nothing, you can already start the OpenEngSB for testing with
+          <literal>mvn clean install pax:provision</literal> and the domain will be automatically be picked up and started.</para>
+
+      <para>TBW - Spring DM</para>
+
+      <para>Each OpenEngSB bundle (core, domain, connector) has been designed with localization in mind. E.g. the Maven
+        Archetype already creates to <literal>bundle*.properties</literal> files, one for English (bundle.properties)
+        and one for the German (bundle_de.properties) language. Each connector has to provide localization through the
+        properties files. For domains, this only means localization for a name and description of the domain
+        itself.</para>
     </section>
 
     <section>
@@ -71,22 +127,22 @@
   <section>
     <title>Components</title>
     <orderedlist>
-      <listitem>Domain interface
-        <para>This is the interface that connectors of that domain must implement. Operations that connectors should
-        provide, are specified here.</para>
+      <listitem>
+        <para>Domain interface - This is the interface that connectors of that domain must implement. Operations that
+          connectors should provide, are specified here.</para>
       </listitem>
-      <listitem>Domain Provider
-        <para>The domain provider is a service that provides information about the domain itself. It is used to
-        determine which domains are currently registered in the environment. There is an abstract class, that takes
-        over most of the setup.</para>
+      <listitem>
+        <para>Domain Provider - The domain provider is a service that provides information about the domain itself. It
+          is used to determine which domains are currently registered in the environment. There is an abstract class,
+          that takes over most of the setup.</para>
       </listitem>
-      <listitem>Spring context
-        <para>There are two services, that must be registered with the osgi service-environment. First there is the
-        domainprovider of course. Moreover the domain must provide a kind of connector itself, since it must be able to
-        handle service calls and redirect it to the default-connector specified in the current context. There is a
-        beanfactory that creates a Java-Proxy that can be used as ForwardService. This ForwardService looks up the
-        default-connector for the specified domain in the current context and forwards the method-call right to it.
-        </para>
+      <listitem>
+        <para>Spring context - There are two services, that must be registered with the OSGi service-environment. First
+          there is the domainprovider of course. Moreover the domain must provide a kind of connector itself, since it
+          must be able to handle service calls and redirect it to the default-connector specified in the current
+          context. There is a beanfactory that creates a Java-Proxy that can be used as ForwardService. This
+          ForwardService looks up the default-connector for the specified domain in the current context and forwards the
+          method-call right to it. </para>
         <programlisting><![CDATA[<osgi:service>
   <osgi:interfaces>
     <!-- Every Connector must be registered with the Domain-interface -->
