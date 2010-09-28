@@ -16,6 +16,7 @@
 
 package org.openengsb.core.persistence.internal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -168,7 +169,16 @@ public class DB4OPersistenceService implements PersistenceService {
     private ObjectContainer openDataBase(Object object) {
         Configuration config = Db4o.newConfiguration();
         config.reflectWith(new JdkReflector(object.getClass().getClassLoader()));
+        createFolder();
         return Db4o.openFile(config, dbFile);
+    }
+
+    private void createFolder() {
+        File file = new File(dbFile);
+        File parentFile = file.getParentFile();
+        if (parentFile != null) {
+            parentFile.mkdirs();
+        }
     }
 
 }
