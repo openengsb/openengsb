@@ -27,7 +27,7 @@
 
   <para>This chapter describes how to implement a domain for the OpenEngSB environment. A domain provides a common
     interface and common events on how to interact with connectors for this domain. For a better description of what a
-    domain exactly consists of, take a look at the architecture guide for developers (TODO link to architecture).</para>
+    domain exactly consists of, take a look at the architecture guide <xref linkend="developer.chapter" />.</para>
 
   <section>
     <title>Prerequisites</title>
