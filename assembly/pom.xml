@@ -32,6 +32,33 @@
   <packaging>pom</packaging>
   <name>OpenEngSB :: Assembly</name>
 
+  <properties>
+    <!-- platform/felix.xml -->
+    <!-- The platform does not required any additional configuration (only felix.version) --> 
+    
+    <!-- platform/karaf.composite -->
+    <felix.log.level>1</felix.log.level>
+    <settings.karaf.home>.</settings.karaf.home>
+    <settings.karaf.base>.</settings.karaf.base>
+    <org.osgi.service.http.port>8080</org.osgi.service.http.port>
+    <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
+
+    <!-- platform/settings.debug.composite -->
+    <debug.felix.fileinstall.dir>../target/openengsb-${project.version}/config</debug.felix.fileinstall.dir>
+    <debug.felix.fileinstall.filter>.*\.cfg</debug.felix.fileinstall.filter>
+    <debug.felix.fileinstall.poll>1000</debug.felix.fileinstall.poll>
+    <debug.felix.fileinstall.noInitialDelay>true</debug.felix.fileinstall.noInitialDelay>
+
+    <!-- platform/settings.release.composite -->
+    <release.felix.fileinstall.dir>config</release.felix.fileinstall.dir>
+    <release.felix.fileinstall.filter>.*\\.cfg</release.felix.fileinstall.filter>
+    <release.felix.fileinstall.poll>1000</release.felix.fileinstall.poll>
+    <release.felix.fileinstall.noInitialDelay>true</release.felix.fileinstall.noInitialDelay>
+
+    <!-- config/* -->   
+    <!-- To be extended, currently no properties required here -->
+  </properties>
+
   <build>
     <resources>
       <resource>

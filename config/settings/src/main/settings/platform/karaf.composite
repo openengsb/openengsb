@@ -17,7 +17,7 @@
 ##############################
 ## Apche Felix Base Settings
 ##############################
--Dfelix.log.level=1
+-Dfelix.log.level=${felix.log.level}
 
 ##############################
 ## Apche Karaf Base Settings
@@ -26,12 +26,12 @@
 -Dorg.ops4j.pax.runner.platform.console=false
 -Dkaraf.systemBundlesStartLevel=0
 -Dkaraf.startRemoteShell=true
--Dkaraf.home=.
--Dkaraf.base=.
+-Dkaraf.home=${settings.karaf.home}
+-Dkaraf.base=${settings.karaf.base}
 
 ##############################
 ## Web Port Settings
 ##############################
--Dorg.osgi.service.http.port=8080
--Dorg.osgi.service.http.port.secure=8443
+-Dorg.osgi.service.http.port=${org.osgi.service.http.port}
+-Dorg.osgi.service.http.port.secure=${org.osgi.service.http.port.secure}
 
