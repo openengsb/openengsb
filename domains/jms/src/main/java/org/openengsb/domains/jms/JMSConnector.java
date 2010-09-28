@@ -23,16 +23,31 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.service.DomainService;
 import org.osgi.framework.BundleContext;
+import org.springframework.osgi.context.BundleContextAware;
 
-public class JMSConnector {
+public class JMSConnector implements BundleContextAware {
 
-    public JMSConnector(BundleContext context, DomainService domainService, InvocationHandlerFactory factory) {
+    private BundleContext bundleContext;
+    private final InvocationHandlerFactory handlerFactory;
+    private final DomainService domainService;
+
+    public JMSConnector(DomainService domainService, InvocationHandlerFactory factory) {
+        this.domainService = domainService;
+        this.handlerFactory = factory;
+    }
+
+    public void addProxiesToContext() {
         for (DomainProvider domain : domainService.domains()) {
             Class<? extends Domain> domainInterface = domain.getDomainInterface();
-            InvocationHandler handler = factory.createInstance(domain);
+            InvocationHandler handler = handlerFactory.createInstance(domain);
             Object newProxyInstance =
                 Proxy.newProxyInstance(domainInterface.getClassLoader(), new Class[]{domainInterface}, handler);
-            context.registerService(domainInterface.getName(), newProxyInstance, null);
+            bundleContext.registerService(domainInterface.getName(), newProxyInstance, null);
         }
+    }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 }

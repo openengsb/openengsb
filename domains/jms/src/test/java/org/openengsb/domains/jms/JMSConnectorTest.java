@@ -58,7 +58,9 @@ public class JMSConnectorTest {
         InvocationHandler invocationHandlerMock = mock(InvocationHandler.class);
         InvocationHandlerFactory mock = mock(InvocationHandlerFactory.class);
         when(mock.createInstance(Mockito.any(DomainProvider.class))).thenReturn(invocationHandlerMock);
-        new JMSConnector(mockContext, domainService, mock);
+        JMSConnector jmsConnector = new JMSConnector(domainService, mock);
+        jmsConnector.setBundleContext(mockContext);
+        jmsConnector.addProxiesToContext();
         ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
         verify(mockContext).registerService(eq(TestInterface.class.getName()), captor.capture(), any(Dictionary.class));
         assertTrue(captor.getValue() instanceof Proxy);
