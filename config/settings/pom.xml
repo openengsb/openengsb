@@ -46,6 +46,12 @@
           <include>**/*</include>
         </includes>
       </resource>
+      <resource>
+        <directory>${project.basedir}/src/main/settings/run</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
     </resources>
     <plugins>
       <plugin>
@@ -69,6 +75,7 @@
           <descriptors>
             <descriptor>src/main/descriptors/platform.xml</descriptor>
             <descriptor>src/main/descriptors/config.xml</descriptor>
+            <descriptor>src/main/descriptors/run.xml</descriptor>
           </descriptors>
         </configuration>
         <executions>
@@ -102,6 +109,11 @@
                   <file>target/openengsb-config-settings-${project.version}-platform.zip</file>
                   <type>zip</type>
                   <classifier>platform</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/openengsb-config-settings-${project.version}-run.zip</file>
+                  <type>zip</type>
+                  <classifier>run</classifier>
                 </artifact>
               </artifacts>
             </configuration>
