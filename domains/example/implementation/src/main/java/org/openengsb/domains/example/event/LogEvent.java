@@ -20,7 +20,7 @@ import org.openengsb.core.common.Event;
 
 public class LogEvent extends Event {
 
-    private static enum Level {
+    public static enum Level {
         INFO, WARN, ERROR
     }
 
