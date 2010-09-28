@@ -17,7 +17,7 @@
 ##############################
 ## Fileinstall Settings
 ##############################
--Dfelix.fileinstall.dir=../etc/config
+-Dfelix.fileinstall.dir=../target/openengsb-${project.version}/config
 -Dfelix.fileinstall.filter=.*\.cfg
 -Dfelix.fileinstall.poll=1000
 -Dfelix.fileinstall.noInitialDelay=true
@@ -25,5 +25,5 @@
 ##############################
 ## Logging Settings
 ##############################
--Djava.util.logging.config.file=../etc/config/java.util.logging.properties
+-Djava.util.logging.config.file=../target/openengsb-${project.version}/config/java.util.logging.properties
 

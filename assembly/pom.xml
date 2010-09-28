@@ -99,6 +99,25 @@
         </executions>
       </plugin>
       <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${plugin.assembly.version}</version>
+        <configuration>
+          <appendAssemblyId>true</appendAssemblyId>
+          <descriptors>
+            <descriptor>src/main/descriptors/config.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id> 
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal> 
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
         <executions>
@@ -129,6 +148,11 @@
                   <file>target/classes/settings.release.composite</file>
                   <type>composite</type>
                   <classifier>release</classifier>
+                </artifact>
+                <artifact>
+                  <file>target/openengsb-${project.version}-config.zip</file>
+                  <type>zip</type>
+                  <classifier>config</classifier>
                 </artifact>
               </artifacts>
             </configuration>
