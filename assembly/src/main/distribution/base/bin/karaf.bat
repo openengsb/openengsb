@@ -184,19 +184,7 @@ if "%KARAF_PROFILER%" == "" goto :KARAF_PROFILER_END
     goto END
 :KARAF_PROFILER_END
 
-rem Setup the classpath
-pushd "%KARAF_HOME%\lib"
-for %%G in (*.*) do call:APPEND_TO_CLASSPATH %%G
-popd
-goto CLASSPATH_END
-
-: APPEND_TO_CLASSPATH
-set filename=%~1
-set suffix=%filename:~-4%
-if %suffix% equ .jar set CLASSPATH=%CLASSPATH%;%KARAF_HOME%\lib\%filename%
-goto :EOF
-
-:CLASSPATH_END
+set CLASSPATH=%CLASSPATH%;%KARAF_HOME%\bundles\org.apache.felix.main_3.0.2.jar
 
 rem Execute the JVM or the load the profiler
 if "%KARAF_PROFILER%" == "" goto :RUN
@@ -206,7 +194,7 @@ if "%KARAF_PROFILER%" == "" goto :RUN
 
 :RUN
     SET OPTS=-Dkaraf.startLocalConsole=true -Dkaraf.startRemoteShell=true
-    SET MAIN=org.apache.karaf.main.Main
+    SET MAIN=org.apache.felix.main.Main
     SET SHIFT=false
     if "%1" == "stop" goto :EXECUTE_STOP
     if "%1" == "console" goto :EXECUTE_CONSOLE
@@ -215,7 +203,7 @@ if "%KARAF_PROFILER%" == "" goto :RUN
     goto :EXECUTE
 
 :EXECUTE_STOP
-    SET MAIN=org.apache.karaf.main.Stop
+    SET MAIN=org.apache.felix.main.Stop
     SET SHIFT=true
     goto :EXECUTE
 
@@ -238,7 +226,7 @@ if "%KARAF_PROFILER%" == "" goto :RUN
     if not "%SHIFT%" == "true" SET ARGS=%1 %2 %3 %4 %5 %6 %7 %8
     rem Execute the Java Virtual Machine
     cd %KARAF_BASE%
-    "%JAVA%" %JAVA_OPTS% %OPTS% -classpath "%CLASSPATH%" -Djava.endorsed.dirs="%JAVA_HOME%\jre\lib\endorsed;%JAVA_HOME%\lib\endorsed;%KARAF_HOME%\lib\endorsed" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%JAVA_HOME%\lib\ext;%KARAF_HOME%\lib\ext" -Dkaraf.instances="%KARAF_HOME%\instances" -Dkaraf.home="%KARAF_HOME%" -Dkaraf.base="%KARAF_BASE%" -Dkaraf.data="%KARAF_DATA%" -Djava.util.logging.config.file="%KARAF_BASE%\etc\java.util.logging.properties" %MAIN% %ARGS%
+    "%JAVA%" %JAVA_OPTS% %OPTS% -classpath "%CLASSPATH%" -Djava.endorsed.dirs="%JAVA_HOME%\jre\lib\endorsed;%JAVA_HOME%\lib\endorsed;%KARAF_HOME%\lib\endorsed" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%JAVA_HOME%\lib\ext;%KARAF_HOME%\lib\ext" -Dkaraf.instances="%KARAF_HOME%\instances" -Dkaraf.home="%KARAF_HOME%" -Dkaraf.base="%KARAF_BASE%" -Dkaraf.data="%KARAF_DATA%" -Dfelix.config.properties="file:%KARAF_BASE%/felix/config.ini" -Dkaraf.startRemoteShell=true -Dorg.ops4j.pax.runner.platform.console=false -Dkaraf.systemBundlesStartLevel=0 -Dorg.osgi.service.http.port=8080 -Dfelix.fileinstall.filter=".*\\.cfg" -Dkaraf.startLocalConsole=true -Dorg.osgi.service.http.port.secure=8443 -Dopenengsb.version.number=1.0.0-SNAPSHOT -Dopenengsb.version.name="Dashing Donald" -Dfelix.fileinstall.dir="%KARAF_BASE%/config" -Dfelix.log.level=1 -Dfelix.fileinstall.poll=1000 -Dfelix.fileinstall.noInitialDelay=true -Djava.util.logging.config.file="%KARAF_BASE%/config/java.util.logging.properties" %MAIN% %ARGS%
 
 rem # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
