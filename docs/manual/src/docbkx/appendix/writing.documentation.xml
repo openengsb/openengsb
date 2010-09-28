@@ -26,7 +26,8 @@
   <title>Writing Documentation</title>
 
   <para> This chapter is intended for developers who write documentation. There are no special prerequisites. Part one
-    describes how a chapter should be structured. Part two describes how Docbook is used at OpenEngSB. </para>
+    describes how a chapter should be structured. Part two discusses how domains and connectors should be document. Part
+    three describes how Docbook is used at OpenEngSB. </para>
 
   <section>
     <title>General Documentation Guidelines</title>
@@ -68,6 +69,63 @@
     </para>
     <para> It is not necessary that every part is a docbook section. Parts can be combined if it seems appropriate.
     </para>
+  </section>
+
+  <section>
+    <title>Document a domain or connector</title>
+
+    <section>
+      <title>Domain</title>
+
+      <para>Each domain gets their own directory in the user guide at <literal>domains/&lt;the-domain-name></literal>.
+        The domain-specific documentation should be put in a file named <literal>domain.xml</literal>. The directory
+        will be used to document connectors for the domain.</para>
+
+      <para>The documentation of a domain should at least consist of the following parts:</para>
+
+      <itemizedlist>
+        <listitem>
+          <bridgehead>Description</bridgehead>
+          <para>TBW</para>
+        </listitem>
+        <listitem>
+          <bridgehead>Functional interface</bridgehead>
+          <para>The link to the actual java interface (and any domain models used in the interface) at Github. The
+            domain interface and models should have enough Javadoc to explain the usage.</para>
+        </listitem>
+        <listitem>
+          <bridgehead>Events</bridgehead>
+          <para>If the domain adds new events to the OpenEngSB, the link to the events package at Github should be
+            provided. The meaning of each events should be documented through the Javadoc at the actual class.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>Connector</title>
+
+      <para>A connector for a specific domain should be documented in the domain-specific directory. Add a new file with
+        the unique name of the connector.</para>
+
+      <para>The documentation of a connector should at least conisst of the following parts:</para>
+
+      <itemizedlist>
+        <listitem>
+          <bridgehead>Description</bridgehead>
+          <para>TBW</para>
+        </listitem>
+        <listitem>
+          <bridgehead>External tool configuration</bridgehead>
+          <para>A section on how to configure the actual external tool for usage with the OpenEngSB has to be provided.</para>
+        </listitem>
+        <listitem>
+          <bridgehead>Support for domain interface</bridgehead>
+          <para>Any deviation to the provided functionality of the domain should be documented. E.g a connector may only
+            implement parts of the domain interface.</para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
   </section>
 
   <section>
