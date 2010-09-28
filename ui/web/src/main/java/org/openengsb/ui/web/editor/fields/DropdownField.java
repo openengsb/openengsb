@@ -57,6 +57,7 @@ public class DropdownField extends AbstractField<String> {
                     }
 
                 });
+        choice.setNullValid(!attribute.isRequired());
         return choice;
     }
 }
