@@ -16,5 +16,5 @@
 #
 
 cd $(dirname $0)/../../
-mvn install pax:provision assembly:assembly -Prelease,!run
+mvn install pax:provision assembly:assembly -Prelease,!run,docs -Dmaven.test.skip=true
 

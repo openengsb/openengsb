@@ -117,6 +117,27 @@
                   <type>zip</type>
                   <classifier>run</classifier>
                 </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb.docs</groupId>
+                  <artifactId>openengsb-docs-manual</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                  <classifier>html-multi</classifier>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb.docs</groupId>
+                  <artifactId>openengsb-docs-manual</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                  <classifier>html-single</classifier>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb.docs</groupId>
+                  <artifactId>openengsb-docs-manual</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                  <classifier>pdf</classifier>
+                </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.directory}</outputDirectory>
               <overWriteReleases>true</overWriteReleases>
@@ -126,6 +147,27 @@
           </execution>
         </executions>
       </plugin> 
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.5</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <configuration>
+            <target>
+              <copy todir="${basedir}/target/">
+                <fileset dir="${basedir}/target/openengsb-docs-manual-1.0.0-SNAPSHOT/">
+                  <include name="**/*" />
+                </fileset>
+              </copy>
+            </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
