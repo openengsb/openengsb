@@ -485,7 +485,7 @@
                 <exclude>**/*.pdb</exclude>
                 <exclude>**/*.pdf</exclude>
                 <exclude>**/LICENSE</exclude>
-                <exclude>**/*.checkstyle</exclude>
+                <exclude>**/*checkstyle.xml</exclude>
                 <exclude>**/*.log.*</exclude>
                 <exclude>**/*.log</exclude>
                 <exclude>**/*.packlist</exclude>
