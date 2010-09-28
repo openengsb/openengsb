@@ -44,7 +44,7 @@
     <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
 
     <!-- platform/settings.debug.composite -->
-    <debug.felix.fileinstall.dir>../target/openengsb-${project.version}/config</debug.felix.fileinstall.dir>
+    <debug.felix.fileinstall.dir>../assembly/target/openengsb-${project.version}-config/openengsb-${project.version}/config</debug.felix.fileinstall.dir>
     <debug.felix.fileinstall.filter>.*\.cfg</debug.felix.fileinstall.filter>
     <debug.felix.fileinstall.poll>1000</debug.felix.fileinstall.poll>
     <debug.felix.fileinstall.noInitialDelay>true</debug.felix.fileinstall.noInitialDelay>
@@ -189,11 +189,6 @@
                   <file>target/classes/settings.release.composite</file>
                   <type>composite</type>
                   <classifier>release</classifier>
-                </artifact>
-                <artifact>
-                  <file>target/openengsb-${project.version}-config.zip</file>
-                  <type>zip</type>
-                  <classifier>config</classifier>
                 </artifact>
               </artifacts>
             </configuration>

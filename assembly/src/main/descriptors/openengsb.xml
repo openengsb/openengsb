@@ -41,7 +41,7 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>${project.basedir}/target/openengsb-${project.version}/</directory>
+      <directory>${project.basedir}/assembly/target/openengsb-${project.version}-config/openengsb-${project.version}/</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>config/*</include>
