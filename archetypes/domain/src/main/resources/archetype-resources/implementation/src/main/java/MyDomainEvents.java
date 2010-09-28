@@ -16,9 +16,10 @@
 
 package ${package};
 
-import org.openengsb.core.common.AbstractDomainProvider;
+import org.openengsb.core.common.DomainEvents;
 
-// TODO rename to an appropriate name
-public class MyDomainProvider extends AbstractDomainProvider<MyDomain, MyDomainEvents> {
+// TODO rename interface to appropriate name
+public interface MyDomain extends DomainEvents {
 
+    // TODO add your domain-specific methods here
 }
