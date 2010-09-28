@@ -68,7 +68,7 @@
         <include>karaf.sh</include>
         <include>karaf.bat</include>
       </includes>
-      <fileMode>0740</fileMode>
+      <fileMode>0755</fileMode>
     </fileSet>
   </fileSets>
 </assembly>
