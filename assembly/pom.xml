@@ -32,10 +32,44 @@
   <packaging>pom</packaging>
   <name>OpenEngSB :: Assembly</name>
 
+  <properties>
+    <!-- platform/felix.xml -->
+    <!-- The platform does not required any additional configuration (only felix.version) --> 
+    
+    <!-- platform/karaf.composite -->
+    <felix.log.level>1</felix.log.level>
+    <settings.karaf.home>.</settings.karaf.home>
+    <settings.karaf.base>.</settings.karaf.base>
+    <org.osgi.service.http.port>8080</org.osgi.service.http.port>
+    <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
+
+    <!-- platform/settings.debug.composite -->
+    <debug.felix.fileinstall.dir>../assembly/target/openengsb-${project.version}-config/openengsb-${project.version}/config</debug.felix.fileinstall.dir>
+    <debug.felix.fileinstall.filter>.*\.cfg</debug.felix.fileinstall.filter>
+    <debug.felix.fileinstall.poll>1000</debug.felix.fileinstall.poll>
+    <debug.felix.fileinstall.noInitialDelay>true</debug.felix.fileinstall.noInitialDelay>
+
+    <!-- platform/settings.release.composite -->
+    <release.felix.fileinstall.dir>config</release.felix.fileinstall.dir>
+    <release.felix.fileinstall.filter>.*\\.cfg</release.felix.fileinstall.filter>
+    <release.felix.fileinstall.poll>1000</release.felix.fileinstall.poll>
+    <release.felix.fileinstall.noInitialDelay>true</release.felix.fileinstall.noInitialDelay>
+
+    <!-- config/* -->   
+    <!-- To be extended, currently no properties required here -->
+  </properties>
+
   <build>
     <resources>
       <resource>
-        <directory>${project.basedir}/src/main/filtered-resources</directory>
+        <directory>${project.basedir}/target/openengsb-config-settings-${project.version}/platform</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>${project.basedir}/target/openengsb-config-settings-${project.version}/config</directory>
         <filtering>true</filtering>
         <includes>
           <include>**/*</include>
@@ -45,6 +79,41 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.openengsb.config</groupId>
+                  <artifactId>openengsb-config-settings</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                  <classifier>platform</classifier>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb.config</groupId>
+                  <artifactId>openengsb-config-settings</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                  <classifier>config</classifier>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <stripVersion>true</stripVersion>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin> 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
           <execution>
@@ -52,6 +121,25 @@
             <phase>generate-resources</phase>
             <goals>
               <goal>resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>${plugin.assembly.version}</version>
+        <configuration>
+          <appendAssemblyId>true</appendAssemblyId>
+          <descriptors>
+            <descriptor>src/main/descriptors/config.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id> 
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal> 
             </goals>
           </execution>
         </executions>

@@ -15,15 +15,23 @@
 #
 
 ##############################
-## Fileinstall Settings
+## Apche Felix Base Settings
 ##############################
--Dfelix.fileinstall.dir=config
--Dfelix.fileinstall.filter=.*\\.cfg
--Dfelix.fileinstall.poll=1000
--Dfelix.fileinstall.noInitialDelay=true
+-Dfelix.log.level=${felix.log.level}
 
 ##############################
-## Logging Settings
+## Apche Karaf Base Settings
 ##############################
--Djava.util.logging.config.file=config/java.util.logging.properties
+-Dkaraf.startLocalConsole=true
+-Dorg.ops4j.pax.runner.platform.console=false
+-Dkaraf.systemBundlesStartLevel=0
+-Dkaraf.startRemoteShell=true
+-Dkaraf.home=${settings.karaf.home}
+-Dkaraf.base=${settings.karaf.base}
+
+##############################
+## Web Port Settings
+##############################
+-Dorg.osgi.service.http.port=${org.osgi.service.http.port}
+-Dorg.osgi.service.http.port.secure=${org.osgi.service.http.port.secure}
 

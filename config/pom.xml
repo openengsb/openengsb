@@ -35,6 +35,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>settings</module>
     <module>jetty</module>
     <module>webextender</module>
   </modules>

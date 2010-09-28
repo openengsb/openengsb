@@ -17,13 +17,13 @@
 ##############################
 ## Fileinstall Settings
 ##############################
--Dfelix.fileinstall.dir=../etc/config
--Dfelix.fileinstall.filter=.*\.cfg
--Dfelix.fileinstall.poll=1000
--Dfelix.fileinstall.noInitialDelay=true
+-Dfelix.fileinstall.dir=${release.felix.fileinstall.dir}
+-Dfelix.fileinstall.filter=${release.felix.fileinstall.filter}
+-Dfelix.fileinstall.poll=${release.felix.fileinstall.poll}
+-Dfelix.fileinstall.noInitialDelay=${release.felix.fileinstall.noInitialDelay}
 
 ##############################
 ## Logging Settings
 ##############################
--Djava.util.logging.config.file=../etc/config/java.util.logging.properties
+-Djava.util.logging.config.file=${release.felix.fileinstall.dir}/java.util.logging.properties
 
