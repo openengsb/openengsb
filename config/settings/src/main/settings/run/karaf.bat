@@ -179,7 +179,7 @@ if "%KARAF_PROFILER%" == "" goto :KARAF_PROFILER_END
     goto END
 :KARAF_PROFILER_END
 
-set CLASSPATH=%CLASSPATH%;%KARAF_HOME%\bundles\org.apache.felix.main_3.0.2.jar
+set CLASSPATH=%CLASSPATH%;%KARAF_HOME%\bundles\org.apache.felix.main_${felix.version}.jar
 
 @REM Execute the JVM or the load the profiler
 if "%KARAF_PROFILER%" == "" goto :RUN
@@ -221,7 +221,7 @@ if "%KARAF_PROFILER%" == "" goto :RUN
     if not "%SHIFT%" == "true" SET ARGS=%1 %2 %3 %4 %5 %6 %7 %8
     @REM Execute the Java Virtual Machine
     cd %KARAF_BASE%
-    "%JAVA%" %JAVA_OPTS% %OPTS% -classpath "%CLASSPATH%" -Djava.endorsed.dirs="%JAVA_HOME%\jre\lib\endorsed;%JAVA_HOME%\lib\endorsed;%KARAF_HOME%\lib\endorsed" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%JAVA_HOME%\lib\ext;%KARAF_HOME%\lib\ext" -Dkaraf.instances="%KARAF_HOME%\instances" -Dkaraf.home="%KARAF_HOME%" -Dkaraf.base="%KARAF_BASE%" -Dkaraf.data="%KARAF_DATA%" -Dfelix.config.properties="file:%KARAF_BASE%/felix/config.ini" -Dkaraf.startRemoteShell=true -Dorg.ops4j.pax.runner.platform.console=false -Dkaraf.systemBundlesStartLevel=0 -Dorg.osgi.service.http.port=8080 -Dfelix.fileinstall.filter=".*\\.cfg" -Dkaraf.startLocalConsole=true -Dorg.osgi.service.http.port.secure=8443 -Dopenengsb.version.number=1.0.0-SNAPSHOT -Dopenengsb.version.name="Dashing Donald" -Dfelix.fileinstall.dir="%KARAF_BASE%/config" -Dfelix.log.level=1 -Dfelix.fileinstall.poll=1000 -Dfelix.fileinstall.noInitialDelay=true -Djava.util.logging.config.file="%KARAF_BASE%/config/java.util.logging.properties" %MAIN% %ARGS%
+    "%JAVA%" %JAVA_OPTS% %OPTS% -classpath "%CLASSPATH%" -Djava.endorsed.dirs="%JAVA_HOME%\jre\lib\endorsed;%JAVA_HOME%\lib\endorsed;%KARAF_HOME%\lib\endorsed" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%JAVA_HOME%\lib\ext;%KARAF_HOME%\lib\ext" -Dkaraf.instances="%KARAF_HOME%\instances" -Dkaraf.home="%KARAF_HOME%" -Dkaraf.base="%KARAF_BASE%" -Dkaraf.data="%KARAF_DATA%" -Dfelix.config.properties="file:%KARAF_BASE%/felix/config.ini" -Dkaraf.startRemoteShell=true -Dorg.ops4j.pax.runner.platform.console=false -Dkaraf.systemBundlesStartLevel=0 -Dorg.osgi.service.http.port="${org.osgi.service.http.port}" -Dfelix.fileinstall.filter="${release.felix.fileinstall.filter}" -Dkaraf.startLocalConsole=true -Dorg.osgi.service.http.port.secure=${org.osgi.service.http.port.secure} -Dopenengsb.version.number=${openengsb.version.number} -Dopenengsb.version.name=${openengsb.version.name} -Dfelix.fileinstall.dir="%KARAF_BASE%/${release.felix.fileinstall.dir}" -Dfelix.log.level=${felix.log.level} -Dfelix.fileinstall.poll=${release.felix.fileinstall.poll} -Dfelix.fileinstall.noInitialDelay=${release.felix.fileinstall.noInitialDelay} -Djava.util.logging.config.file="%KARAF_BASE%/config/java.util.logging.properties" %MAIN% %ARGS%
 
 @REM # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
