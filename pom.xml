@@ -16,7 +16,9 @@
    limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -60,8 +62,7 @@
   <modules>
     <module>tooling</module>
     <module>archetypes</module>
-    <module>docs/skin</module>
-    <module>docs/homepage</module>
+    <module>docs</module>
     <module>poms</module>
     <module>provision</module>
     <module>wrapped</module>
@@ -357,6 +358,21 @@
           <url>dav:http://maven.openengsb.org/nexus/content/repositories/openengsb-snapshots/</url>
         </snapshotRepository>
       </distributionManagement>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>${plugin.release.version}</version>
+            <configuration>
+              <autoVersionSubmodules>true</autoVersionSubmodules>
+              <preparationGoals>clean install</preparationGoals>
+              <goals>clean install pax:provision assembly:assembly deploy</goals>
+              <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,milestone</releaseProfiles>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>milestone</id>
@@ -382,7 +398,7 @@
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <preparationGoals>clean install</preparationGoals>
               <goals>clean install pax:provision assembly:assembly deploy</goals>
-              <releaseProfiles>!run,integration-test,docs,release,license-check,milestone</releaseProfiles>
+              <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,milestone</releaseProfiles>
             </configuration>
           </plugin>
         </plugins>
@@ -412,7 +428,7 @@
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <preparationGoals>clean install</preparationGoals>
               <goals>clean install pax:provision assembly:assembly deploy</goals>
-              <releaseProfiles>!run,integration-test,docs,release,license-check,final</releaseProfiles>
+              <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,final</releaseProfiles>
             </configuration>
           </plugin>
         </plugins>
@@ -449,6 +465,69 @@
             </configuration>
           </plugin>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.openengsb.docs</groupId>
+                      <artifactId>openengsb-docs-manual</artifactId>
+                      <version>${project.version}</version>
+                      <type>zip</type>
+                      <classifier>html-multi</classifier>
+                    </artifactItem>
+                    <artifactItem>
+                      <groupId>org.openengsb.docs</groupId>
+                      <artifactId>openengsb-docs-manual</artifactId>
+                      <version>${project.version}</version>
+                      <type>zip</type>
+                      <classifier>html-single</classifier>
+                    </artifactItem>
+                    <artifactItem>
+                      <groupId>org.openengsb.docs</groupId>
+                      <artifactId>openengsb-docs-manual</artifactId>
+                      <version>${project.version}</version>
+                      <type>zip</type>
+                      <classifier>pdf</classifier>
+                    </artifactItem>
+                  </artifactItems>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                  <overWriteReleases>true</overWriteReleases>
+                  <overWriteSnapshots>true</overWriteSnapshots>
+                  <stripVersion>true</stripVersion>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <configuration>
+                  <target>
+                    <copy todir="${basedir}/target/">
+                      <fileset dir="${basedir}/target/openengsb-docs-manual-1.0.0-SNAPSHOT/">
+                        <include name="**/*" />
+                      </fileset>
+                    </copy>
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
             <version>${plugin.assembly.version}</version>
             <configuration>
@@ -477,6 +556,7 @@
               <strictCheck>true</strictCheck>
               <excludes>
                 <exclude>license.txt</exclude>
+                <exclude>**/*.vm</exclude>
                 <exclude>**/license.txt</exclude>
                 <exclude>runner/**</exclude>
                 <exclude>features/**</exclude>

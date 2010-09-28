@@ -32,10 +32,16 @@
   <packaging>pom</packaging>
   <name>OpenEngSB :: Documentation :: Parent</name>
 
-  <modules>
-    <module>skin</module>
-    <module>homepage</module>
-  </modules>
+  <profiles>
+    <profile>
+      <id>docs</id>
+      <modules>
+        <module>skin</module>
+        <module>manual</module>
+        <module>homepage</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>
 
