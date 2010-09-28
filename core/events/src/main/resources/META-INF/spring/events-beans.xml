@@ -23,6 +23,7 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
-  <bean id="domainEventsProxy" class="org.openengsb.core.events.DomainEventsProxyFactoryBean" abstract="true" />
+  <bean id="domainEventsProxy" class="org.openengsb.core.events.DomainEventsProxyFactoryBean" abstract="true"
+    init-method="init" />
 
 </beans>
