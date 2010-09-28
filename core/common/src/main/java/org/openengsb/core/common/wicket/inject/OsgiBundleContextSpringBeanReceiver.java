@@ -34,14 +34,14 @@ public class OsgiBundleContextSpringBeanReceiver implements OsgiSpringBeanReceiv
 
     private ServiceReference[] getServiceRefsMatchingApplicationContext(String bundleSymbolicName) {
         ServiceReference[] references = null;
+        log.debug("Trying to retrieve ApplicationContext from bundle " + bundleSymbolicName);
         try {
-            log.debug("Trying to retrieve ApplicationContext from bundle " + bundleSymbolicName);
             references = bundleContext.getAllServiceReferences(SPRING_APPLICATION_CONTEXT, null);
-            if (references == null) {
-                throw new RuntimeException("No service found");
-            }
         } catch (InvalidSyntaxException e) {
             throw new RuntimeException("Parsing error", e);
+        }
+        if (references == null) {
+            throw new RuntimeException("No service found");
         }
         return references;
     }

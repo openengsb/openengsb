@@ -16,14 +16,13 @@ public class OsgiAnnotationProxyFieldValueFactory implements IFieldValueFactory 
 
     @Override
     public Object getFieldValue(Field field, Object fieldOwner) {
-        if (field.isAnnotationPresent(OsgiSpringBean.class)) {
-            String springBeanName = field.getAnnotation(OsgiSpringBean.class).springBeanName();
-            String bundleSymbolicName = field.getAnnotation(OsgiSpringBean.class).bundleSymbolicName();
-            return LazyInitProxyFactory.createProxy(field.getType(), new ProxyTargetLocator(springBeanName,
-                    bundleSymbolicName, springBeanReceiverLocator));
-
+        if (!field.isAnnotationPresent(OsgiSpringBean.class)) {
+            return null;
         }
-        return null;
+        String springBeanName = field.getAnnotation(OsgiSpringBean.class).springBeanName();
+        String bundleSymbolicName = field.getAnnotation(OsgiSpringBean.class).bundleSymbolicName();
+        return LazyInitProxyFactory.createProxy(field.getType(), new ProxyTargetLocator(springBeanName,
+                    bundleSymbolicName, springBeanReceiverLocator));
     }
 
     @Override
@@ -50,3 +49,4 @@ public class OsgiAnnotationProxyFieldValueFactory implements IFieldValueFactory 
         }
     }
 }
+
