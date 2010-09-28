@@ -61,7 +61,7 @@
         while creating the Test domain:</para>
 
       <literallayout><command>Domain Name (is mydomain):</command> test &lt;Enter>
-<command>Version (is 1.0.0-SNAPSHOT):</command> &lt;Enter> 
+<command>Version (is 1.0.0-SNAPSHOT):</command> &lt;Enter>
 <command>Prefix for project names (is OpenEngSB :: Domains :: Test):</command> &lt;Enter></literallayout>
 
       <para>Only the domain name has been filled in, while the rest has been correctly guessed by the script. After
