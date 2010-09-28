@@ -37,4 +37,56 @@
     <para>TBW</para>
   </section>
 
+  <section>
+    <title>Components</title>
+    <orderedlist>
+      <listitem>Domain interface
+        <para>This is the interface that connectors of that domain must implement. Operations that connectors should
+        provide, are specified here.</para>
+      </listitem>
+      <listitem>Domain Provider
+        <para>The domain provider is a service that provides information about the domain itself. It is used to
+        determine which domains are currently registered in the environment. There is an abstract class, that takes
+        over most of the setup.</para>
+      </listitem>
+      <listitem>Spring context
+        <para>There are two services, that must be registered with the osgi service-environment. First there is the
+        domainprovider of course. Moreover the domain must provide a kind of connector itself, since it must be able to
+        handle service calls and redirect it to the default-connector specified in the current context. There is a
+        beanfactory that creates a Java-Proxy that can be used as ForwardService. This ForwardService looks up the
+        default-connector for the specified domain in the current context and forwards the method-call right to it.
+        </para>
+        <programlisting><![CDATA[<osgi:service>
+  <osgi:interfaces>
+    <!-- Every Connector must be registered with the Domain-interface -->
+    <value>org.openengsb.core.common.Domain</value>
+    <!-- The domain-interface goes here-->
+    <value>org.openengsb.domains.notification.NotificationDomain</value>
+  </osgi:interfaces>
+  <osgi:service-properties>
+    <!-- The convention for the service-id is "domains.<domain-name>" -->
+    <entry key="id" value="domains.notification" />
+    <!-- To allow other services (e.g. workflow) to distinguish the forward-service from other connector-instances,
+      this attribute must be set to "domain" -->
+    <entry key="openengsb.service.type" value="domain" />
+  </osgi:service-properties>
+  <!-- use the bean-factory to generate the forward-service -->
+  <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
+    <!-- Need to specify the domain-interface again -->
+    <property name="domainInterface">
+      <value>org.openengsb.domains.notification.NotificationDomain</value>
+    </property>
+    <!-- this is used as a lookup-key in the context -->
+    <property name="domainName" value="NotificationDomain" />
+    <!-- reference to the context-service (obtained below) -->
+    <property name="context" ref="contextService" />
+  </bean>
+</osgi:service>
+
+<osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />]]>
+        </programlisting>
+      </listitem>
+    </orderedlist>
+  </section>
+
 </chapter>
