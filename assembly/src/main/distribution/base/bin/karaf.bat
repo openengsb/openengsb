@@ -1,19 +1,19 @@
 @echo off
-rem 
-rem Copyright 2010 OpenEngSB Division, Vienna University of Technology
-rem
-rem Licensed under the Apache License, Version 2.0 (the "License");
-rem you may not use this file except in compliance with the License.
-rem You may obtain a copy of the License at
-rem
-rem   http://www.apache.org/licenses/LICENSE-2.0
-rem
-rem Unless required by applicable law or agreed to in writing, software
-rem distributed under the License is distributed on an "AS IS" BASIS,
-rem WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-rem See the License for the specific language governing permissions and
-rem limitations under the License.
-rem
+@REM 
+@REM Copyright 2010 OpenEngSB Division, Vienna University of Technology
+@REM
+@REM Licensed under the Apache License, Version 2.0 (the "License");
+@REM you may not use this file except in compliance with the License.
+@REM You may obtain a copy of the License at
+@REM
+@REM   http://www.apache.org/licenses/LICENSE-2.0
+@REM
+@REM Unless required by applicable law or agreed to in writing, software
+@REM distributed under the License is distributed on an "AS IS" BASIS,
+@REM WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+@REM See the License for the specific language governing permissions and
+@REM limitations under the License.
+@REM
 
 if not "%ECHO%" == "" echo %ECHO%
 
@@ -32,7 +32,7 @@ goto :EOF
 
 :BEGIN
 
-rem # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+@REM # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 if not "%KARAF_HOME%" == "" (
     call :warn Ignoring predefined value for KARAF_HOME
@@ -64,7 +64,7 @@ if "%KARAF_DATA%" == "" (
 )        
 
 set LOCAL_CLASSPATH=%CLASSPATH%
-set DEFAULT_JAVA_OPTS=-server -Xmx512M -Dderby.system.home="%KARAF_DATA%\derby" -Dderby.storage.fileSyncTransactionLog=true -Dcom.sun.management.jmxremote
+set DEFAULT_JAVA_OPTS=-server -Xmx512M -Dderby.system.home="%KARAF_DATA%\derby" -Dderby.storage.fileSyncTransactionLog=true -Dcom.sun.management.jmx@REMote
 set CLASSPATH=%LOCAL_CLASSPATH%;%KARAF_BASE%\conf
 set DEFAULT_JAVA_DEBUG_OPTS=-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
 
@@ -75,14 +75,14 @@ if "%LOCAL_CLASSPATH%" == "" goto :KARAF_CLASSPATH_EMPTY
     set CLASSPATH=%KARAF_BASE%\conf
 :KARAF_CLASSPATH_END
 
-rem Setup Karaf Home
+@REM Setup Karaf Home
 if exist "%KARAF_HOME%\conf\karaf-rc.cmd" call %KARAF_HOME%\conf\karaf-rc.cmd
 if exist "%HOME%\karaf-rc.cmd" call %HOME%\karaf-rc.cmd
 
-rem Support for loading native libraries
+@REM Support for loading native libraries
 set PATH=%PATH%;%KARAF_BASE%\lib;%KARAF_HOME%\lib
 
-rem Setup the Java Virtual Machine
+@REM Setup the Java Virtual Machine
 if not "%JAVA%" == "" goto :Check_JAVA_END
     if not "%JAVA_HOME%" == "" goto :TryJDKEnd
         call :warn JAVA_HOME not set; results may vary
@@ -164,7 +164,7 @@ if not "%JAVA%" == "" goto :Check_JAVA_END
 if "%JAVA_OPTS%" == "" set JAVA_OPTS=%DEFAULT_JAVA_OPTS%
 
 if "%KARAF_DEBUG%" == "" goto :KARAF_DEBUG_END
-    rem Use the defaults if JAVA_DEBUG_OPTS was not set
+    @REM Use the defaults if JAVA_DEBUG_OPTS was not set
     if "%JAVA_DEBUG_OPTS%" == "" set JAVA_DEBUG_OPTS=%DEFAULT_JAVA_DEBUG_OPTS%
 
     set "JAVA_OPTS=%JAVA_DEBUG_OPTS% %JAVA_OPTS%"
@@ -181,9 +181,9 @@ if "%KARAF_PROFILER%" == "" goto :KARAF_PROFILER_END
 
 set CLASSPATH=%CLASSPATH%;%KARAF_HOME%\bundles\org.apache.felix.main_3.0.2.jar
 
-rem Execute the JVM or the load the profiler
+@REM Execute the JVM or the load the profiler
 if "%KARAF_PROFILER%" == "" goto :RUN
-    rem Execute the profiler if it has been configured
+    @REM Execute the profiler if it has been configured
     call :warn Loading profiler script: %KARAF_PROFILER_SCRIPT%
     call %KARAF_PROFILER_SCRIPT%
 
@@ -219,11 +219,11 @@ if "%KARAF_PROFILER%" == "" goto :RUN
 :EXECUTE
     if "%SHIFT%" == "true" SET ARGS=%2 %3 %4 %5 %6 %7 %8
     if not "%SHIFT%" == "true" SET ARGS=%1 %2 %3 %4 %5 %6 %7 %8
-    rem Execute the Java Virtual Machine
+    @REM Execute the Java Virtual Machine
     cd %KARAF_BASE%
     "%JAVA%" %JAVA_OPTS% %OPTS% -classpath "%CLASSPATH%" -Djava.endorsed.dirs="%JAVA_HOME%\jre\lib\endorsed;%JAVA_HOME%\lib\endorsed;%KARAF_HOME%\lib\endorsed" -Djava.ext.dirs="%JAVA_HOME%\jre\lib\ext;%JAVA_HOME%\lib\ext;%KARAF_HOME%\lib\ext" -Dkaraf.instances="%KARAF_HOME%\instances" -Dkaraf.home="%KARAF_HOME%" -Dkaraf.base="%KARAF_BASE%" -Dkaraf.data="%KARAF_DATA%" -Dfelix.config.properties="file:%KARAF_BASE%/felix/config.ini" -Dkaraf.startRemoteShell=true -Dorg.ops4j.pax.runner.platform.console=false -Dkaraf.systemBundlesStartLevel=0 -Dorg.osgi.service.http.port=8080 -Dfelix.fileinstall.filter=".*\\.cfg" -Dkaraf.startLocalConsole=true -Dorg.osgi.service.http.port.secure=8443 -Dopenengsb.version.number=1.0.0-SNAPSHOT -Dopenengsb.version.name="Dashing Donald" -Dfelix.fileinstall.dir="%KARAF_BASE%/config" -Dfelix.log.level=1 -Dfelix.fileinstall.poll=1000 -Dfelix.fileinstall.noInitialDelay=true -Djava.util.logging.config.file="%KARAF_BASE%/config/java.util.logging.properties" %MAIN% %ARGS%
 
-rem # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+@REM # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 :END
 
