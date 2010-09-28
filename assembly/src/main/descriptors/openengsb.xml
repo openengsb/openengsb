@@ -59,7 +59,7 @@
       <directory>${project.basedir}/assembly/src/main/distribution/base/</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>bin/karaf</include>
+        <include>bin/karaf.sh</include>
         <include>bin/karaf.bat</include>
       </includes>
       <fileMode>0740</fileMode>
