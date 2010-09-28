@@ -64,6 +64,37 @@
       </includes>
       <fileMode>0755</fileMode>
     </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/assembly/target/manual/html-multi</directory>
+      <outputDirectory>manual/html-multi</outputDirectory>
+      <includes>
+        <include>*</include>
+        <include>css/*</include>
+        <include>graphics/*</include>
+        <include>images/*</include>
+        <include>images/admons/*</include>
+        <include>images/callouts/*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/assembly/target/manual/html-single</directory>
+      <outputDirectory>manual/html-single</outputDirectory>
+      <includes>
+        <include>*</include>
+        <include>css/*</include>
+        <include>graphics/*</include>
+        <include>images/*</include>
+        <include>images/admons/*</include>
+        <include>images/callouts/*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/assembly/target/manual/pdf</directory>
+      <outputDirectory>manual/pdf</outputDirectory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
   </fileSets>
 </assembly>
 
