@@ -75,6 +75,13 @@
           <include>**/*</include>
         </includes>
       </resource>
+      <resource>
+        <directory>${project.basedir}/target/openengsb-config-settings-${project.version}/run</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
     </resources>
     <plugins>
       <plugin>
@@ -102,6 +109,13 @@
                   <version>${project.version}</version>
                   <type>zip</type>
                   <classifier>config</classifier>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb.config</groupId>
+                  <artifactId>openengsb-config-settings</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                  <classifier>run</classifier>
                 </artifactItem>
               </artifactItems>
               <outputDirectory>${project.build.directory}</outputDirectory>

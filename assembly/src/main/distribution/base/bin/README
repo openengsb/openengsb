@@ -1,5 +1,3 @@
-#!/bin/bash
-#
 # Copyright 2010 OpenEngSB Division, Vienna University of Technology
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +13,5 @@
 # limitations under the License.
 #
 
-cd $(dirname $0)/../../
-mvn validate -Plicense-check -DskipTests=true
+Scripts starting up the OpenEngSB
 

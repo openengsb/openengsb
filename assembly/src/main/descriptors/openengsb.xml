@@ -55,12 +55,20 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>${project.basedir}/target/all/openengsb/</directory>
+      <directory>${project.basedir}/assembly/src/main/distribution/base/</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>run.*</include>
+        <include>bin/*</include>
       </includes>
-      <fileMode>0740</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/assembly/target/classes/</directory>
+      <outputDirectory>/bin/</outputDirectory>
+      <includes>
+        <include>karaf.sh</include>
+        <include>karaf.bat</include>
+      </includes>
+      <fileMode>0755</fileMode>
     </fileSet>
   </fileSets>
 </assembly>
