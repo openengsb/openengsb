@@ -55,11 +55,11 @@ public class ContextSetPage extends BasePage {
 
     private final TreeTable tree;
 
-    private TextField<String> pathTextField;
+    private final TextField<String> pathTextField;
 
-    private TextField<String> valueTextField;
+    private final TextField<String> valueTextField;
 
-    private FeedbackPanel feedbackPanel;
+    private final FeedbackPanel feedbackPanel;
 
     public ContextSetPage() {
         add(new AjaxLink<String>("expandAll") {
@@ -90,9 +90,11 @@ public class ContextSetPage extends BasePage {
         form.add(tree);
         pathTextField = new TextField<String>("path");
         pathTextField.setModel(new Model<String>());
+        pathTextField.setOutputMarkupId(true);
         form.add(pathTextField);
         valueTextField = new TextField<String>("value");
         valueTextField.setModel(new Model<String>());
+        valueTextField.setOutputMarkupId(true);
         form.add(valueTextField);
         form.add(new AjaxButton("save") {
             @Override
@@ -105,8 +107,12 @@ public class ContextSetPage extends BasePage {
                     } catch (IllegalArgumentException e) {
                         error(e.getLocalizedMessage());
                     }
+                    pathTextField.setModelObject(null);
+                    valueTextField.setModelObject(null);
                     tree.setModelObject(createTreeModel(contextService.getContext()));
                     tree.updateTree(target);
+                    target.addComponent(pathTextField);
+                    target.addComponent(valueTextField);
                     target.addComponent(tree);
                     target.addComponent(form);
                 }

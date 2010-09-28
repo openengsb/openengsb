@@ -18,6 +18,7 @@ package org.openengsb.ui.web;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -289,6 +290,10 @@ public class ContextSetPageTest {
         testLabel("x", "form:treeTable:i:18:sideColumns:0:nodeLink:label");
         testLabel("y", "form:treeTable:i:19:sideColumns:0:nodeLink:label");
         testLabel("z", "form:treeTable:i:20:sideColumns:0:nodeLink:label");
+        TextField<?> pathField = (TextField<?>) tester.getComponentFromLastRenderedPage("form:path");
+        TextField<?> valueField = (TextField<?>) tester.getComponentFromLastRenderedPage("form:value");
+        assertThat(pathField.getModelObject(), nullValue());
+        assertThat(valueField.getModelObject(), nullValue());
     }
 
     @Test
@@ -301,10 +306,5 @@ public class ContextSetPageTest {
         tester.executeAjaxEvent("form:save", "onclick");
         verify(contextService).putValue("x/y/z", "testvalue");
         tester.assertErrorMessages(new String[] {"key identifies a path, put operation not allowed"});
-    }
-
-    @Test
-    public void clickDelete_shouldRemoveEntryFromTreeAndContext() throws Exception {
-        fail();
     }
 }
