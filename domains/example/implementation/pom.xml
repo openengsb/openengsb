@@ -45,5 +45,11 @@
       <version>${pom.version}</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-events</artifactId>
+      <version>${pom.version}</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 </project>

@@ -16,6 +16,14 @@
 
 package org.openengsb.core.workflow;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,17 +42,6 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-import org.openengsb.domains.example.ExampleDomain;
-import org.openengsb.domains.notification.NotificationDomain;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import static org.junit.matchers.JUnitMatchers.hasItem;
 
 public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
@@ -70,16 +67,15 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
     private Map<String, Domain> createDomainMocks() {
         Map<String, Domain> domains = new HashMap<String, Domain>();
-        ExampleDomain logService = Mockito.mock(ExampleDomain.class);
+        DummyExampleDomain logService = Mockito.mock(DummyExampleDomain.class);
         domains.put("example", logService);
-        NotificationDomain notification = Mockito.mock(NotificationDomain.class);
+        DummyNotificationDomain notification = Mockito.mock(DummyNotificationDomain.class);
         domains.put("notification", notification);
         return domains;
     }
 
     /**
-     * create new stateful session from the rulebase and attach a listener to
-     * validate testresults
+     * create new stateful session from the rulebase and attach a listener to validate testresults
      */
     protected void createSession() {
         if (session != null) {
@@ -154,9 +150,9 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     @Test
     public void testRemoveImport() throws Exception {
         Package p = getPackage();
-//        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Import, "java.util.Currency");
-//        source.add(id, "ignored");
-//        source.delete(id);
+        // RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Import, "java.util.Currency");
+        // source.add(id, "ignored");
+        // source.delete(id);
         p = getPackage();
         assertNull(p.getImports().get("java.util.Currency"));
     }
@@ -185,9 +181,9 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         source.add(testFunctionId, "function void test(Object message) {\n"
                 + "System.out.println(\"notify: \" + message);\n}");
         source.addImport("java.util.Random");
-//        RuleBaseElementId testImportId = new RuleBaseElementId(RuleBaseElementType.Import, "org.openengsb",
-//                "java.util.Random");
-//        source.add(testImportId, "ignored");
+        // RuleBaseElementId testImportId = new RuleBaseElementId(RuleBaseElementType.Import, "org.openengsb",
+        // "java.util.Random");
+        // source.add(testImportId, "ignored");
         RuleBaseElementId testRuleId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
         source.add(testRuleId, "when\n" + "  e : Event()\n" + "then\n" + "  test(new Random());\n");
         createSession();
@@ -201,7 +197,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     public void testAddGlobal() throws Exception {
         source.add(new RuleBaseElementId(RuleBaseElementType.Global, "bla"), "java.util.Random");
         source.add(new RuleBaseElementId(RuleBaseElementType.Rule, "bla"),
-                "when\n then example.doSomething(\"\" + bla.nextInt());");
+            "when\n then example.doSomething(\"\" + bla.nextInt());");
         createSession();
         session.setGlobal("bla", new Random());
         session.insert(new Event());

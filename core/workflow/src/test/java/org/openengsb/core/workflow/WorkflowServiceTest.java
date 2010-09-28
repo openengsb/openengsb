@@ -39,8 +39,6 @@ import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-import org.openengsb.domains.example.ExampleDomain;
-import org.openengsb.domains.notification.NotificationDomain;
 
 public class WorkflowServiceTest {
 
@@ -65,7 +63,7 @@ public class WorkflowServiceTest {
     private WorkflowServiceImpl service;
     private RuleManager manager;
     private RuleListener listener;
-    private ExampleDomain logService;
+    private DummyExampleDomain logService;
 
     @Before
     public void setUp() throws Exception {
@@ -82,7 +80,7 @@ public class WorkflowServiceTest {
         manager = new DirectoryRuleSource("data/rulebase");
         ((DirectoryRuleSource) manager).init();
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
-                "when\n Event ( contextId == \"test-context\")\n then \n example.doSomething(\"42\");");
+            "when\n Event ( contextId == \"test-context\")\n then \n example.doSomething(\"42\");");
     }
 
     private void setupDomains() {
@@ -92,9 +90,9 @@ public class WorkflowServiceTest {
 
     private Map<String, Domain> createDomainMocks() {
         Map<String, Domain> domains = new HashMap<String, Domain>();
-        logService = Mockito.mock(ExampleDomain.class);
+        logService = Mockito.mock(DummyExampleDomain.class);
         domains.put("example", logService);
-        NotificationDomain notification = Mockito.mock(NotificationDomain.class);
+        DummyNotificationDomain notification = Mockito.mock(DummyNotificationDomain.class);
         domains.put("notification", notification);
         return domains;
     }
