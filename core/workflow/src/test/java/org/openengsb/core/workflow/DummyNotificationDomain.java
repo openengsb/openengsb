@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.notification;
+package org.openengsb.core.workflow;
 
-import org.openengsb.core.common.AbstractDomainProvider;
+import org.openengsb.core.common.Domain;
 
-public class NotifcationDomainProvider extends AbstractDomainProvider<NotificationDomain, NotificationDomainEvents> {
+public interface DummyNotificationDomain extends Domain {
+
+    void notify(String notification);
 
 }

@@ -492,6 +492,7 @@
               <aggregate>true</aggregate>
               <strictCheck>true</strictCheck>
               <excludes>
+                <exclude>etc/eclipse/checkstyle.xml</exclude>
                 <exclude>license.txt</exclude>
                 <exclude>**/*.vm</exclude>
                 <exclude>**/license.txt</exclude>

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.notification;
+package org.openengsb.domains.example;
 
-import org.openengsb.core.common.AbstractDomainProvider;
+import org.openengsb.core.common.DomainEvents;
+import org.openengsb.domains.example.event.LogEvent;
 
-public class NotifcationDomainProvider extends AbstractDomainProvider<NotificationDomain, NotificationDomainEvents> {
-
+public interface ExampleDomainEvents extends DomainEvents {
+    void raiseEvent(LogEvent e);
 }

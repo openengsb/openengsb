@@ -14,10 +14,25 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.notification;
+package org.openengsb.core.events;
 
-import org.openengsb.core.common.AbstractDomainProvider;
+@SuppressWarnings("serial")
+public class EventProxyException extends RuntimeException {
 
-public class NotifcationDomainProvider extends AbstractDomainProvider<NotificationDomain, NotificationDomainEvents> {
+    public EventProxyException() {
+        super();
+    }
+
+    public EventProxyException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public EventProxyException(String message) {
+        super(message);
+    }
+
+    public EventProxyException(Throwable cause) {
+        super(cause);
+    }
 
 }

@@ -19,18 +19,15 @@ package org.openengsb.core.common;
 import java.util.List;
 import java.util.Locale;
 
-
 /**
- * Provide necessary information about an OpenEngSB domain. Each domain in the
- * OpenEngSB has to create an implementation of this interface and publish it to
- * provide necessary information to the configuration service.
+ * Provide necessary information about an OpenEngSB domain. Each domain in the OpenEngSB has to create an implementation
+ * of this interface and publish it to provide necessary information to the configuration service.
  */
 public interface DomainProvider {
 
     /**
-     * Returns the global identifier for this domain. This should be either the
-     * package name of this domain, or the full class name of the provided
-     * Domain interface.
+     * Returns the global identifier for this domain. This should be either the package name of this domain, or the full
+     * class name of the provided Domain interface.
      */
     String getId();
 
@@ -45,14 +42,12 @@ public interface DomainProvider {
     String getName(Locale locale);
 
     /**
-     * Returns a localized description. The {@code Locale} of the system is
-     * used.
+     * Returns a localized description. The {@code Locale} of the system is used.
      */
     String getDescription();
 
     /**
-     * Returns the localized description best matching the specified
-     * {@code Locale}.
+     * Returns the localized description best matching the specified {@code Locale}.
      */
     String getDescription(Locale locale);
 
@@ -62,7 +57,12 @@ public interface DomainProvider {
     Class<? extends Domain> getDomainInterface();
 
     /**
-     * Returns a list of domain-specific {@code Event}s.
+     * Returns the domain-specific event related interface.
+     */
+    Class<? extends DomainEvents> getDomainEventInterface();
+
+    /**
+     * Returns a list of domain-specific events, as they are defined in the event interface
      */
     List<Class<? extends Event>> getEvents();
 }

@@ -16,18 +16,8 @@
 
 package org.openengsb.domains.example;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.openengsb.core.common.AbstractDomainProvider;
-import org.openengsb.core.common.Event;
-import org.openengsb.domains.example.event.LogEvent;
 
-public class ExampleDomainProvider extends AbstractDomainProvider<ExampleDomain> {
+public class ExampleDomainProvider extends AbstractDomainProvider<ExampleDomain, ExampleDomainEvents> {
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public List<Class<? extends Event>> getEvents() {
-        return Arrays.<Class<? extends Event>> asList(LogEvent.class);
-    }
 }

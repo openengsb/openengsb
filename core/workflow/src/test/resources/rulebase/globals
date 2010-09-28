@@ -1,0 +1,2 @@
+org.openengsb.core.workflow.DummyNotificationDomain notification
+org.openengsb.core.workflow.DummyExampleDomain example

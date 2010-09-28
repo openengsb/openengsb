@@ -19,6 +19,6 @@ package ${package};
 import org.openengsb.core.common.AbstractDomainProvider;
 
 // TODO rename to an appropriate name
-public class MyDomainProvider extends AbstractDomainProvider<MyDomain> {
+public class MyDomainProvider extends AbstractDomainProvider<MyDomain, MyDomainEvents> {
 
 }

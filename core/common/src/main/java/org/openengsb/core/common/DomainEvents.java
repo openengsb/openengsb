@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.notification;
+package org.openengsb.core.common;
 
-import org.openengsb.core.common.AbstractDomainProvider;
-
-public class NotifcationDomainProvider extends AbstractDomainProvider<NotificationDomain, NotificationDomainEvents> {
+/**
+ * Base interface all domain event interfaces have to implement to be available in the OpenEngSB environment. This is a
+ * marker interface, which should be extended by interfaces of the respective domains. The methods of these domain event
+ * interfaces should be of the form {@code raiseEvent(MyDomainSpecificEvent e)}. The methods can have additional
+ * parameters, but the first parameter has to be a subclass of the {@link Event} class.
+ */
+public interface DomainEvents {
 
 }

@@ -47,5 +47,24 @@
     </bean>
   </osgi:service>
 
+  <osgi:service>
+    <osgi:interfaces>
+      <value>org.openengsb.domains.example.ExampleDomainEvents</value>
+      <value>org.openengsb.core.common.DomainEvents</value>
+    </osgi:interfaces>
+    <osgi:service-properties>
+      <entry key="id" value="domains.example.events" />
+      <entry key="openengsb.service.type" value="domain-events" />
+    </osgi:service-properties>
+
+    <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
+      <property name="domainEventInterface">
+        <value>org.openengsb.domains.example.ExampleDomainEvents</value>
+      </property>
+      <property name="workflowService" ref="workflowService" />
+    </bean>
+  </osgi:service>
+
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
+  <osgi:reference id="workflowService" interface="org.openengsb.core.workflow.WorkflowService" />
 </beans>

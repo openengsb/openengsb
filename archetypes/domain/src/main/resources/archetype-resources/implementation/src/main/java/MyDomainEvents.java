@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.notification;
+package ${package};
 
-import org.openengsb.core.common.AbstractDomainProvider;
+import org.openengsb.core.common.DomainEvents;
 
-public class NotifcationDomainProvider extends AbstractDomainProvider<NotificationDomain, NotificationDomainEvents> {
+// TODO rename interface to appropriate name
+public interface MyDomain extends DomainEvents {
 
+    // TODO add your domain-specific methods here
 }

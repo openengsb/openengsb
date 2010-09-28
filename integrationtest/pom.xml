@@ -48,6 +48,12 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-events</artifactId>
+      <version>${pom.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-persistence</artifactId>
       <version>${pom.version}</version>
       <scope>test</scope>

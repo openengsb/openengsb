@@ -38,6 +38,7 @@
     <module>common</module>
     <module>workflow</module>
     <module>persistence</module>
+    <module>events</module>
   </modules>
 
 </project>

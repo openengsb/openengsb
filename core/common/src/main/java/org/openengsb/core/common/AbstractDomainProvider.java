@@ -16,6 +16,7 @@
 
 package org.openengsb.core.common;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,28 +27,28 @@ import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 
 /**
- * Base class for {@code DomainProvider} implementations with the following
- * unctionality:
+ * Base class for {@code DomainProvider} implementations with the following unctionality:
  * <ul>
  * <li>extracts domain interface through parameterized type</li>
  * <li>id is class name of domain interface</li>
- * <li>name is looked up through localized
- * {@code BundleStrings.getString("domain.name")}</li>
- * <li>description is looked up through localized
- * {@code BundleStrings.getString("domain.description")}</li>
+ * <li>name is looked up through localized {@code BundleStrings.getString("domain.name")}</li>
+ * <li>description is looked up through localized {@code BundleStrings.getString("domain.description")}</li>
  * <li>returns an empty event list</li>
  * </ul>
  */
-public abstract class AbstractDomainProvider<DomainType extends Domain> implements DomainProvider, BundleContextAware {
+public abstract class AbstractDomainProvider<DomainType extends Domain, DomainEventType extends DomainEvents>
+        implements DomainProvider, BundleContextAware {
 
     private BundleContext bundleContext;
     private BundleStrings strings;
     private final Class<DomainType> domainInterface;
+    private final Class<DomainEventType> domainEventInterface;
 
     @SuppressWarnings("unchecked")
     public AbstractDomainProvider() {
-        domainInterface = (Class<DomainType>) ((ParameterizedType) getClass().getGenericSuperclass())
-                .getActualTypeArguments()[0];
+        ParameterizedType superclass = (ParameterizedType) getClass().getGenericSuperclass();
+        domainInterface = (Class<DomainType>) superclass.getActualTypeArguments()[0];
+        domainEventInterface = (Class<DomainEventType>) superclass.getActualTypeArguments()[1];
     }
 
     @Override
@@ -76,13 +77,41 @@ public abstract class AbstractDomainProvider<DomainType extends Domain> implemen
     }
 
     @Override
-    public Class<DomainType> getDomainInterface() {
-        return domainInterface;
+    public Class<? extends DomainEvents> getDomainEventInterface() {
+        return domainEventInterface;
     }
 
     @Override
     public List<Class<? extends Event>> getEvents() {
-        return new ArrayList<Class<? extends Event>>();
+        List<Class<? extends Event>> events = new ArrayList<Class<? extends Event>>();
+        for (Method m : domainEventInterface.getDeclaredMethods()) {
+            if (!isEventMethod(m)) {
+                continue;
+            }
+            events.add(getEventParameter(m));
+        }
+        return events;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<? extends Event> getEventParameter(Method m) {
+        Class<?> firstParam = m.getParameterTypes()[0];
+        return (Class<? extends Event>) firstParam;
+    }
+
+    private boolean isEventMethod(Method m) {
+        if (!m.getName().equals("raiseEvent")) {
+            return false;
+        }
+        if (m.getParameterTypes().length == 0) {
+            return false;
+        }
+        return Event.class.isAssignableFrom(m.getParameterTypes()[0]);
+    }
+
+    @Override
+    public Class<DomainType> getDomainInterface() {
+        return domainInterface;
     }
 
     @Override

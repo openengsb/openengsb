@@ -16,6 +16,11 @@
 
 package org.openengsb.core.workflow;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
@@ -27,18 +32,10 @@ import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
-import org.openengsb.domains.example.ExampleDomain;
-import org.openengsb.domains.notification.NotificationDomain;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceReference;
-
-import static org.mockito.Matchers.anyString;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class WorkflowServiceDynamicTest {
 
@@ -59,8 +56,8 @@ public class WorkflowServiceDynamicTest {
 
     private WorkflowServiceImpl workflowService;
     private RuleManager manager;
-    private ExampleDomain example;
-    private NotificationDomain notification;
+    private DummyExampleDomain example;
+    private DummyNotificationDomain notification;
     private BundleContext bundleContext;
     private ServiceReference exampleReference;
     private ServiceReference notificationReference;
@@ -72,10 +69,10 @@ public class WorkflowServiceDynamicTest {
         exampleReference = setupServiceReferenceMock("example");
         notificationReference = setupServiceReferenceMock("notification");
 
-        example = mock(ExampleDomain.class);
+        example = mock(DummyExampleDomain.class);
         when(bundleContext.getService(exampleReference)).thenReturn(example);
 
-        notification = mock(NotificationDomain.class);
+        notification = mock(DummyNotificationDomain.class);
         when(bundleContext.getService(notificationReference)).thenReturn(notification);
     }
 
@@ -150,7 +147,7 @@ public class WorkflowServiceDynamicTest {
         String id = (String) reference.getProperty("id");
         String filter = String.format("(&(openengsb.service.type=domain)(id=%s))", id);
         when(bundleContext.getAllServiceReferences(Domain.class.getName(), filter)).thenReturn(
-                new ServiceReference[] {reference });
+            new ServiceReference[]{reference});
         if (workflowService != null) {
             workflowService.serviceChanged(setupServiceEventMock(reference));
         }
