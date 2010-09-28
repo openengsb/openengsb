@@ -19,7 +19,6 @@ package org.openengsb.core.events;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
-import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainEvents;
 import org.openengsb.core.workflow.WorkflowService;
 import org.springframework.beans.factory.FactoryBean;
@@ -47,7 +46,7 @@ public class DomainEventsProxyFactoryBean implements FactoryBean<DomainEvents> {
     @Override
     public DomainEvents getObject() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Class<?>[] classes = new Class<?>[]{Domain.class, domainEventInterface};
+        Class<?>[] classes = new Class<?>[]{DomainEvents.class, domainEventInterface};
         InvocationHandler handler = makeHandler();
         return (DomainEvents) Proxy.newProxyInstance(classLoader, classes, handler);
     }
