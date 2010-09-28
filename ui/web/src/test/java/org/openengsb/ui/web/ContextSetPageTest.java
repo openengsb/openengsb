@@ -16,10 +16,23 @@
 
 package org.openengsb.ui.web;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.tree.table.TreeTable;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -39,24 +52,12 @@ import org.openengsb.core.common.internal.ContextImpl;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
-import static org.mockito.Matchers.any;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 public class ContextSetPageTest {
 
     private WicketTester tester;
     private ContextCurrentService contextService;
     private DomainService domainService;
+    private ContextImpl context;
 
     @Before
     public void setup() {
@@ -68,7 +69,7 @@ public class ContextSetPageTest {
         appContext.putBean(domainService);
         tester.getApplication().addComponentInstantiationListener(
                 new SpringComponentInjector(tester.getApplication(), appContext, false));
-        ContextImpl context = new ContextImpl();
+        context = new ContextImpl();
         context.createChild("a").createChild("b").createChild("c").put("d", "e");
         context.createChild("domains").createChild("domains.example").createChild("defaultConnector")
                 .put("id", "blabla");
@@ -83,11 +84,14 @@ public class ContextSetPageTest {
     public void test_initialisation_with_simple_tree() {
         tester.assertComponent("form:treeTable", TreeTable.class);
         tester.assertComponent("expandAll", AjaxLink.class);
-        testLabel("foo", "form:treeTable:i:0:sideColumns:0:nodeLink:label");
+        // testLabel("foo", "form:treeTable:i:0:sideColumns:0:nodeLink:label");
         testLabel("a", "form:treeTable:i:1:sideColumns:0:nodeLink:label");
         testLabel("b", "form:treeTable:i:2:sideColumns:0:nodeLink:label");
         testLabel("c", "form:treeTable:i:3:sideColumns:0:nodeLink:label");
         testLabel("d", "form:treeTable:i:4:sideColumns:0:nodeLink:label");
+        tester.assertComponent("form:path", TextField.class);
+        tester.assertComponent("form:value", TextField.class);
+        tester.assertComponent("form:save", AjaxButton.class);
     }
 
     @Test
@@ -128,11 +132,6 @@ public class ContextSetPageTest {
         tester.assertComponent(path, Label.class);
         Label labelroot = (Label) tester.getComponentFromLastRenderedPage(path);
         assertThat((String) labelroot.getDefaultModel().getObject(), is(lableText));
-    }
-
-    @Test
-    public void testShowContextId() throws Exception {
-        testLabel(contextService.getCurrentContextId(), "currentContextId");
     }
 
     @Test
@@ -280,4 +279,32 @@ public class ContextSetPageTest {
 
     }
 
+    @Test
+    public void enterCorrectNonExsistingPathAndValue_shouldCreateLeavNodeInContext() throws Exception {
+        FormTester formTester = tester.newFormTester("form");
+        formTester.setValue("path", "x/y/z");
+        formTester.setValue("value", "testvalue");
+        context.createChild("x").createChild("y").put("z", "test-value");
+        tester.executeAjaxEvent("form:save", "onclick");
+        verify(contextService).putValue("x/y/z", "testvalue");
+        testLabel("x", "form:treeTable:i:18:sideColumns:0:nodeLink:label");
+        testLabel("y", "form:treeTable:i:19:sideColumns:0:nodeLink:label");
+        testLabel("z", "form:treeTable:i:20:sideColumns:0:nodeLink:label");
+        TextField<?> pathField = (TextField<?>) tester.getComponentFromLastRenderedPage("form:path");
+        TextField<?> valueField = (TextField<?>) tester.getComponentFromLastRenderedPage("form:value");
+        assertThat(pathField.getModelObject(), nullValue());
+        assertThat(valueField.getModelObject(), nullValue());
+    }
+
+    @Test
+    public void enterNonLeafNodePath_shouldShowMessage() throws Exception {
+        FormTester formTester = tester.newFormTester("form");
+        formTester.setValue("path", "x/y/z");
+        formTester.setValue("value", "testvalue");
+        doThrow(new IllegalArgumentException("key identifies a path, put operation not allowed")).when(contextService)
+                .putValue("x/y/z", "testvalue");
+        tester.executeAjaxEvent("form:save", "onclick");
+        verify(contextService).putValue("x/y/z", "testvalue");
+        tester.assertErrorMessages(new String[] {"key identifies a path, put operation not allowed"});
+    }
 }
