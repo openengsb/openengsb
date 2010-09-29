@@ -366,7 +366,7 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install</preparationGoals>
+              <preparationGoals>clean install -Pintegration-test,docs,license-check,checkstyle</preparationGoals>
               <goals>clean install pax:provision assembly:assembly deploy</goals>
               <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,nightly</releaseProfiles>
             </configuration>
@@ -396,7 +396,7 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install</preparationGoals>
+              <preparationGoals>clean install -Pintegration-test,docs,license-check,checkstyle</preparationGoals>
               <goals>clean install pax:provision assembly:assembly deploy</goals>
               <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,milestone</releaseProfiles>
             </configuration>
@@ -426,7 +426,7 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install</preparationGoals>
+              <preparationGoals>clean install -Pintegration-test,docs,license-check,checkstyle</preparationGoals>
               <goals>clean install pax:provision assembly:assembly deploy</goals>
               <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,final</releaseProfiles>
             </configuration>
