@@ -16,5 +16,5 @@
 #
 
 cd $(dirname $0)/../../
-mvn release:prepare release:perform -Pmilestone
+mvn release:prepare release:perform -Pintegration-test,docs,license-check,checkstyle,milestone
 
