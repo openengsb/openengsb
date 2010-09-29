@@ -70,15 +70,6 @@ public class AttributeDefinition implements Serializable {
     }
 
     /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
-     *             AttributeDefinition.builder instead.
-     */
-    @Deprecated
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    /**
      * Returns a localizable name.
      */
     public LocalizableString getName() {
