@@ -41,8 +41,8 @@ public class ConnectorEditorPage extends BasePage {
     public ConnectorEditorPage(ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
         ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
-        add(new Label("service.name", descriptor.getName()));
-        add(new Label("service.description", descriptor.getDescription()));
+        add(new Label("service.name", descriptor.getName().getString(getSession().getLocale())));
+        add(new Label("service.description", descriptor.getDescription().getString(getSession().getLocale())));
         createEditor(new HashMap<String, String>());
     }
 
@@ -50,8 +50,8 @@ public class ConnectorEditorPage extends BasePage {
         this.serviceManager = serviceManager;
         Map<String, String> attributeValues = serviceManager.getAttributeValues(serviceId);
         ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
-        add(new Label("service.name", descriptor.getName()));
-        add(new Label("service.description", descriptor.getDescription()));
+        add(new Label("service.name", descriptor.getName().getString(getSession().getLocale())));
+        add(new Label("service.description", descriptor.getDescription().getString(getSession().getLocale())));
         createEditor(attributeValues);
     }
 

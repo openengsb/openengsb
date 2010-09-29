@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.model.StringResourceModel;
+import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.StringLocalizer;
 
 /**
@@ -38,5 +39,20 @@ public class WicketStringLocalizer implements StringLocalizer {
     @Override
     public String getString(String key, Locale locale) {
         return new StringResourceModel(key, component, null).getString();
+    }
+
+    @Override
+    public LocalizableString getString(final String key) {
+        return new LocalizableString() {
+            @Override
+            public String getKey() {
+                return key;
+            }
+
+            @Override
+            public String getString(Locale locale) {
+                return new StringResourceModel(key, component, null).getString();
+            }
+        };
     }
 }

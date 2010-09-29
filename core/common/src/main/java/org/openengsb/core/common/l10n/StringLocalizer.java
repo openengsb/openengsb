@@ -25,4 +25,10 @@ public interface StringLocalizer {
      * Localize string with the specified {@code key} and {@code locale}.
      */
     String getString(String key, Locale locale);
+
+    /**
+     * Returs a {@code LocalizableString} where the actual localization is done
+     * in a later step.
+     */
+    LocalizableString getString(String key);
 }

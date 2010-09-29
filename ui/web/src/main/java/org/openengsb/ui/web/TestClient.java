@@ -123,8 +123,8 @@ public class TestClient extends BasePage {
                         setResponsePage(new ConnectorEditorPage(getModelObject()));
                     }
                 });
-                item.add(new Label("service.name", desc.getName()));
-                item.add(new Label("service.description", desc.getDescription()));
+                item.add(new Label("service.name", desc.getName().getString(getSession().getLocale())));
+                item.add(new Label("service.description", desc.getDescription().getString(getSession().getLocale())));
             }
         });
 

@@ -16,6 +16,11 @@
 
 package org.openengsb.ui.web;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -35,11 +40,6 @@ import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class ServiceListPage extends BasePage {
 
     private static Log log = LogFactory.getLog(ServiceListPage.class);
@@ -53,7 +53,7 @@ public class ServiceListPage extends BasePage {
     @SpringBean(name = "services")
     private List<ServiceManager> serviceManager;
 
-    private Map<AliveState, List<ServiceReference>> domainServiceMap;
+    private final Map<AliveState, List<ServiceReference>> domainServiceMap;
 
     public ServiceListPage() {
         domainServiceMap = new HashMap<AliveState, List<ServiceReference>>();
@@ -147,18 +147,18 @@ public class ServiceListPage extends BasePage {
                 String description = "";
                 if (sm != null) {
                     ServiceDescriptor desc = sm.getDescriptor(getLocale());
-                    description = desc.getDescription();
+                    description = desc.getDescription().getString(getSession().getLocale());
                 }
                 item.add(new Label("service.name", id));
                 item.add(new Label("service.description", description));
-                item.add(new AjaxLink<ServiceManager>("updateService", 
+                item.add(new AjaxLink<ServiceManager>("updateService",
                         createLoadableDetachableServiceManagerModel(sm)) {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
                         setResponsePage(new ConnectorEditorPage(getModelObject(), id));
                     }
                 });
-                item.add(new AjaxLink<ServiceManager>("deleteService", 
+                item.add(new AjaxLink<ServiceManager>("deleteService",
                         createLoadableDetachableServiceManagerModel(sm)) {
 
                     @Override
@@ -211,7 +211,7 @@ public class ServiceListPage extends BasePage {
     private void updateDomainServiceMap() {
         for (ServiceReference serviceReference : managedServiceInstances) {
             if (!"domain".equals(serviceReference.getProperty("openengsb.service.type"))) {
-                Domain domainService = (Domain) (services.getService(serviceReference));
+                Domain domainService = (Domain) services.getService(serviceReference);
 
                 List<ServiceReference> serviceReferenceList = domainServiceMap.get(domainService.getAliveState());
                 if (!serviceReferenceList.contains(serviceReference)) {

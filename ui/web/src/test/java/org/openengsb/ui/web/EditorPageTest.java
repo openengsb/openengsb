@@ -48,7 +48,6 @@ public class EditorPageTest {
     private ServiceManager manager;
     private WicketTester tester;
 
-
     @Before
     public void setup() {
         tester = new WicketTester();

@@ -21,5 +21,7 @@ import java.util.Locale;
 
 public interface LocalizableString {
 
+    String getKey();
+
     String getString(Locale locale);
 }

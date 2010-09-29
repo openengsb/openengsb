@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.l10n.StringLocalizer;
 import org.openengsb.core.common.util.AliveState;
 
@@ -65,6 +66,8 @@ public class ServiceDescriptorTest {
 
         when(strings.getString("nameKey", locale)).thenReturn("name");
         when(strings.getString("descKey", locale)).thenReturn("desc");
+        when(strings.getString("nameKey")).thenReturn(new PassThroughLocalizableString("name"));
+        when(strings.getString("descKey")).thenReturn(new PassThroughLocalizableString("desc"));
         builder.id("a");
         builder.serviceType(DummyDomain.class);
         builder.implementationType(DummyInstance.class);
@@ -79,8 +82,8 @@ public class ServiceDescriptorTest {
 
     @Test
     public void builderShouldLocalizeNameAndDescription() {
-        assertThat(builder.build().getName(), is("name"));
-        assertThat(builder.build().getDescription(), is("desc"));
+        assertThat(builder.build().getName().getString(Locale.getDefault()), is("name"));
+        assertThat(builder.build().getDescription().getString(Locale.getDefault()), is("desc"));
     }
 
     @Test

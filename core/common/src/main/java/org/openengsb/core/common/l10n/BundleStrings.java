@@ -46,17 +46,19 @@ public class BundleStrings implements StringLocalizer {
         setBundle(bundle);
     }
 
-    public LocalizableString getLocalizableString(final String key) {
+    @Override
+    public LocalizableString getString(final String key) {
         return new LocalizableString() {
             @Override
             public String getString(Locale locale) {
                 return BundleStrings.this.getString(key, locale);
             }
-        };
-    }
 
-    public String getString(String key) {
-        return getString(key, Locale.getDefault());
+            @Override
+            public String getKey() {
+                return key;
+            }
+        };
     }
 
     @Override

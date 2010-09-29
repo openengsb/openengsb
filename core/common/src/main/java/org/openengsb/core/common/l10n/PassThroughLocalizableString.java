@@ -19,18 +19,21 @@ package org.openengsb.core.common.l10n;
 
 import java.util.Locale;
 
-/**
- * A localizer that simple returns the key as localized string.
- */
-public class PassThroughStringLocalizer implements StringLocalizer {
+public class PassThroughLocalizableString implements LocalizableString {
 
-    @Override
-    public String getString(String key, Locale locale) {
-        return key;
+    private final String value;
+
+    public PassThroughLocalizableString(String value) {
+        this.value = value;
     }
 
     @Override
-    public LocalizableString getString(String key) {
-        return new PassThroughLocalizableString(key);
+    public String getString(Locale locale) {
+        return value;
+    }
+
+    @Override
+    public String getKey() {
+        return value;
     }
 }

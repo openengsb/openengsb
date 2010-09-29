@@ -59,6 +59,7 @@ import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.LocalizableString;
+import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
@@ -432,8 +433,9 @@ public class TestClientTest {
         Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(serviceManagerList);
 
         ServiceDescriptor serviceDescriptorMock = Mockito.mock(ServiceDescriptor.class);
-        Mockito.when(serviceDescriptorMock.getName()).thenReturn("service.name");
-        Mockito.when(serviceDescriptorMock.getDescription()).thenReturn("service.description");
+        Mockito.when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("service.name"));
+        Mockito.when(serviceDescriptorMock.getDescription()).thenReturn(
+                new PassThroughLocalizableString("service.description"));
         Mockito.when(serviceManagerMock.getDescriptor(Mockito.<Locale>any())).thenReturn(serviceDescriptorMock);
 
 
@@ -501,8 +503,9 @@ public class TestClientTest {
         ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
         ServiceDescriptor serviceDescriptor = Mockito.mock(ServiceDescriptor.class);
         Mockito.when(serviceDescriptor.getId()).thenReturn("ManagerId");
-        Mockito.when(serviceDescriptor.getName()).thenReturn("ServiceName");
-        Mockito.when(serviceDescriptor.getDescription()).thenReturn("ServiceDescription");
+        Mockito.when(serviceDescriptor.getName()).thenReturn(new PassThroughLocalizableString("ServiceName"));
+        Mockito.when(serviceDescriptor.getDescription()).thenReturn(
+                new PassThroughLocalizableString("ServiceDescription"));
 
 
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);

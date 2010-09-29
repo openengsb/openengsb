@@ -58,12 +58,12 @@ public abstract class AbstractDomainProvider<DomainType extends Domain, DomainEv
 
     @Override
     public LocalizableString getName() {
-        return strings.getLocalizableString("domain.name");
+        return strings.getString("domain.name");
     }
 
     @Override
     public LocalizableString getDescription() {
-        return strings.getLocalizableString("domain.description");
+        return strings.getString("domain.description");
     }
 
     @Override
