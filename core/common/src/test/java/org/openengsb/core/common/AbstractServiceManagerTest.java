@@ -16,6 +16,15 @@
 
 package org.openengsb.core.common;
 
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsSame.sameInstance;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -29,16 +38,6 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResultImp
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Locale;
-import java.util.Map;
-
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsSame.sameInstance;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 public class AbstractServiceManagerTest {
 
     @Rule
@@ -48,7 +47,7 @@ public class AbstractServiceManagerTest {
     }
 
     private static class DummyInstance implements DummyDomain {
-        private AliveState aliveState = AliveState.OFFLINE;
+        private final AliveState aliveState = AliveState.OFFLINE;
 
         @Override
         public AliveState getAliveState() {
@@ -102,7 +101,7 @@ public class AbstractServiceManagerTest {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         DummyServiceManager manager = createDummyManager(bundleContextMock, new DummyInstance());
 
-        ServiceDescriptor descriptor = manager.getDescriptor(Locale.ENGLISH);
+        ServiceDescriptor descriptor = manager.getDescriptor();
 
         assertThat(descriptor.getId(), is(DummyServiceManager.class.getSimpleName()));
         assertEquals(descriptor.getServiceType(), DummyDomain.class);

@@ -20,7 +20,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Locale;
 import java.util.Map;
 
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
@@ -79,11 +78,6 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
 
     @Override
     public ServiceDescriptor getDescriptor() {
-        return getDescriptor(Locale.getDefault());
-    }
-
-    @Override
-    public ServiceDescriptor getDescriptor(Locale locale) {
         return factory.getDescriptor(ServiceDescriptor.builder(strings).id(getImplementationClass().getName())
                 .serviceType(getDomainInterface()).implementationType(getImplementationClass()));
     }

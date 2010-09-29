@@ -18,7 +18,6 @@ package org.openengsb.ui.web;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -130,7 +129,7 @@ public class ServicesListPageTest {
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
         when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("name"));
         when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("desc"));
-        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
+        when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
         tester.startPage(ServiceListPage.class);
 
         ListView<ServiceReference> connectingService = (ListView<ServiceReference>) tester
@@ -177,7 +176,7 @@ public class ServicesListPageTest {
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
         when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("testDescription"));
-        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
+        when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
         tester.startPage(ServiceListPage.class);
         tester.assertVisible("connectingServicePanel:noConServices");
@@ -232,7 +231,7 @@ public class ServicesListPageTest {
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
         when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("testDescription"));
-        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
+        when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
         return domainService;
     }
 }

@@ -22,7 +22,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -59,7 +58,6 @@ public class EditorPageTest {
         d.setName("sn");
         d.setDescription("sd");
         d.addAttribute(attrib1);
-        when(manager.getDescriptor(Mockito.any(Locale.class))).thenReturn(d);
         when(manager.getDescriptor()).thenReturn(d);
     }
 

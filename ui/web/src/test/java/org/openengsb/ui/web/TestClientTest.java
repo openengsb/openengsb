@@ -436,7 +436,7 @@ public class TestClientTest {
         Mockito.when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("service.name"));
         Mockito.when(serviceDescriptorMock.getDescription()).thenReturn(
                 new PassThroughLocalizableString("service.description"));
-        Mockito.when(serviceManagerMock.getDescriptor(Mockito.<Locale>any())).thenReturn(serviceDescriptorMock);
+        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
 
         testService = new TestService();
@@ -509,7 +509,7 @@ public class TestClientTest {
 
 
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
-        Mockito.when(serviceManagerMock.getDescriptor(Mockito.<Locale>any())).thenReturn(serviceDescriptor);
+        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
 
         managerList.add(serviceManagerMock);
         Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(managerList);

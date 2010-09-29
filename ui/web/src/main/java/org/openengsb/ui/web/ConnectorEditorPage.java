@@ -41,7 +41,7 @@ public class ConnectorEditorPage extends BasePage {
 
     public ConnectorEditorPage(ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
-        ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
+        ServiceDescriptor descriptor = serviceManager.getDescriptor();
         add(new Label("service.name", new LocalizableStringModel(this, descriptor.getName())));
         add(new Label("service.description", new LocalizableStringModel(this, descriptor.getDescription())));
         createEditor(new HashMap<String, String>());
@@ -50,7 +50,7 @@ public class ConnectorEditorPage extends BasePage {
     public ConnectorEditorPage(ServiceManager serviceManager, String serviceId) {
         this.serviceManager = serviceManager;
         Map<String, String> attributeValues = serviceManager.getAttributeValues(serviceId);
-        ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
+        ServiceDescriptor descriptor = serviceManager.getDescriptor();
         add(new Label("service.name", new LocalizableStringModel(this, descriptor.getName())));
         add(new Label("service.description", new LocalizableStringModel(this, descriptor.getDescription())));
         createEditor(attributeValues);
@@ -98,7 +98,7 @@ public class ConnectorEditorPage extends BasePage {
         Builder builder = AttributeDefinition.builder(new WicketStringLocalizer(this));
         AttributeDefinition id = builder.id("id").name("attribute.id.name").description("attribute.id.description")
                 .required().build();
-        ServiceDescriptor descriptor = service.getDescriptor(getSession().getLocale());
+        ServiceDescriptor descriptor = service.getDescriptor();
         List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
         attributes.add(id);
         attributes.addAll(descriptor.getAttributes());

@@ -116,7 +116,7 @@ public class TestClient extends BasePage {
 
             @Override
             protected void populateItem(ListItem<ServiceManager> item) {
-                ServiceDescriptor desc = item.getModelObject().getDescriptor(item.getLocale());
+                ServiceDescriptor desc = item.getModelObject().getDescriptor();
                 item.add(new Link<ServiceManager>("create.new", item.getModel()) {
 
                     @Override

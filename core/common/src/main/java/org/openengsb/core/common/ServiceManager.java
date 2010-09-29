@@ -16,7 +16,6 @@
 
 package org.openengsb.core.common;
 
-import java.util.Locale;
 import java.util.Map;
 
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
@@ -29,18 +28,8 @@ public interface ServiceManager {
 
     /**
      * Returns the {@code ServiceDescriptor} describing the managed service.
-     * Localizable text is localized using the system locale.
      */
     ServiceDescriptor getDescriptor();
-
-    /**
-     * Return the {@code ServiceDescriptor} describing the managed service.
-     * Localizable text is localized using the given {@code locale}.
-     * 
-     * @deprecated TODO
-     */
-    @Deprecated
-    ServiceDescriptor getDescriptor(Locale locale);
 
     /**
      * Creates or updates a service instance. If the given id does not exist,

@@ -149,7 +149,7 @@ public class ServiceListPage extends BasePage {
                 final String id = (String) serv.getProperty("id");
                 LocalizableString description = new PassThroughLocalizableString("");
                 if (sm != null) {
-                    ServiceDescriptor desc = sm.getDescriptor(getLocale());
+                    ServiceDescriptor desc = sm.getDescriptor();
                     description = desc.getDescription();
                 }
                 item.add(new Label("service.name", id));
@@ -190,7 +190,7 @@ public class ServiceListPage extends BasePage {
 
     private ServiceManager getServiceManager(String managerId) {
         for (ServiceManager sm : serviceManager) {
-            if (managerId.equals(sm.getDescriptor(getLocale()).getId())) {
+            if (managerId.equals(sm.getDescriptor().getId())) {
                 return sm;
             }
         }
