@@ -34,7 +34,7 @@ import org.osgi.framework.Constants;
  * Localization helper to lookup string resources from the bundle's localization
  * entries.
  */
-public class BundleStrings {
+public class BundleStrings implements StringLocalizer {
 
     private Bundle bundle;
     private HashMap<String, URL> entries;
@@ -50,6 +50,7 @@ public class BundleStrings {
         return getString(key, Locale.getDefault());
     }
 
+    @Override
     public String getString(String key, Locale locale) {
         @SuppressWarnings("unchecked")
         List<Locale> locales = LocaleUtils.localeLookupList(locale, new Locale(""));
