@@ -39,7 +39,7 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.util.PassThroughStringLocalizer;
+import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 
 public class EditorPageTest {

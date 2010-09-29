@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.common.l10n;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +27,6 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.lang.LocaleUtils;
-import org.openengsb.core.common.l10n.LocalizableString;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 

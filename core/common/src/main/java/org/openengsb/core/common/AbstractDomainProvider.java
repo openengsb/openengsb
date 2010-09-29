@@ -21,8 +21,8 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openengsb.core.common.l10n.BundleStrings;
 import org.openengsb.core.common.l10n.LocalizableString;
-import org.openengsb.core.common.util.BundleStrings;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 

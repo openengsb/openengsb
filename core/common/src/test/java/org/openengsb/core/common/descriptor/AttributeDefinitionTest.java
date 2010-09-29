@@ -29,7 +29,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
-import org.openengsb.core.common.util.StringLocalizer;
+import org.openengsb.core.common.l10n.StringLocalizer;
 import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 

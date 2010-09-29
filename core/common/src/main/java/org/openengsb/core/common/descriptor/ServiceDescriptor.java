@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.util.StringLocalizer;
+import org.openengsb.core.common.l10n.StringLocalizer;
 import org.openengsb.core.common.validation.FormValidator;
 
 import com.google.common.base.Preconditions;

@@ -29,8 +29,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.l10n.StringLocalizer;
 import org.openengsb.core.common.util.AliveState;
-import org.openengsb.core.common.util.StringLocalizer;
 
 public class ServiceDescriptorTest {
 

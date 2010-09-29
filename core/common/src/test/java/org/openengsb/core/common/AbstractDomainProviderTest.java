@@ -26,7 +26,7 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.util.BundleStringsTest;
+import org.openengsb.core.common.l10n.BundleStringsTest;
 import org.osgi.framework.BundleContext;
 
 public class AbstractDomainProviderTest {

@@ -24,7 +24,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.util.BundleStrings;
+import org.openengsb.core.common.l10n.BundleStrings;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.springframework.osgi.context.BundleContextAware;

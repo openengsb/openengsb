@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.openengsb.core.common.util.StringLocalizer;
+import org.openengsb.core.common.l10n.StringLocalizer;
 import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.core.common.validation.ValidationResultImpl;

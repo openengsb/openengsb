@@ -15,17 +15,14 @@
    limitations under the License.
 
  */
-package org.openengsb.core.common.util;
+package org.openengsb.core.common.l10n;
 
 import java.util.Locale;
 
-/**
- * A localizer that simple returns the key as localized string.
- */
-public class PassThroughStringLocalizer implements StringLocalizer {
+public interface StringLocalizer {
 
-    @Override
-    public String getString(String key, Locale locale) {
-        return key;
-    }
+    /**
+     * Localize string with the specified {@code key} and {@code locale}.
+     */
+    String getString(String key, Locale locale);
 }

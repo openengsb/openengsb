@@ -43,7 +43,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.util.PassThroughStringLocalizer;
+import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
 import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.FormValidator;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
