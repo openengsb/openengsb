@@ -27,6 +27,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.lang.LocaleUtils;
+import org.openengsb.core.common.l10n.LocalizableString;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
@@ -44,6 +45,15 @@ public class BundleStrings implements StringLocalizer {
 
     public BundleStrings(Bundle bundle) {
         setBundle(bundle);
+    }
+
+    public LocalizableString getLocalizableString(final String key) {
+        return new LocalizableString() {
+            @Override
+            public String getString(Locale locale) {
+                return BundleStrings.this.getString(key, locale);
+            }
+        };
     }
 
     public String getString(String key) {

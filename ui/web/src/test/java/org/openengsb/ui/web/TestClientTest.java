@@ -16,6 +16,14 @@
 
 package org.openengsb.ui.web;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +58,7 @@ import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
@@ -60,17 +69,6 @@ import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.containsString;
-
-import static org.junit.Assert.assertThat;
 
 public class TestClientTest {
     private DomainService managedServicesMock;
@@ -408,7 +406,9 @@ public class TestClientTest {
             }
         });
         DomainProvider domainProviderMock = mock(DomainProvider.class);
-        when(domainProviderMock.getName()).thenReturn("testDomain");
+        LocalizableString nameMock = mock(LocalizableString.class);
+        when(nameMock.getString(Mockito.<Locale> any())).thenReturn("testDomain");
+        when(domainProviderMock.getName()).thenReturn(nameMock);
         when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
             public Class<? extends Domain> answer(InvocationOnMock invocation) {

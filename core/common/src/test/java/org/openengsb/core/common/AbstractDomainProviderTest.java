@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
+import java.util.Locale;
 
 import junit.framework.Assert;
 
@@ -65,12 +66,12 @@ public class AbstractDomainProviderTest {
 
     @Test
     public void getName_shouldLookupInDomainName() {
-        assertThat(provider.getName(), is("name"));
+        assertThat(provider.getName().getString(Locale.getDefault()), is("name"));
     }
 
     @Test
     public void getDescription_shouldLookupInDomainDescription() {
-        assertThat(provider.getDescription(), is("desc"));
+        assertThat(provider.getDescription().getString(Locale.getDefault()), is("desc"));
     }
 
     @Test

@@ -44,8 +44,9 @@ public class Index extends BasePage {
 
             @Override
             protected void populateItem(ListItem<DomainProvider> item) {
-                item.add(new Label("domain.name", item.getModelObject().getName(item.getLocale())));
-                item.add(new Label("domain.description", item.getModelObject().getDescription(item.getLocale())));
+                item.add(new Label("domain.name", item.getModelObject().getName().getString(item.getLocale())));
+                item.add(new Label("domain.description", item.getModelObject().getDescription()
+                        .getString(item.getLocale())));
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
             }
         });
