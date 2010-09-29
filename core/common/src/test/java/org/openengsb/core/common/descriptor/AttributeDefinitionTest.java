@@ -21,8 +21,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Locale;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -36,7 +34,6 @@ import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 
 public class AttributeDefinitionTest {
 
-    private Locale locale;
     private StringLocalizer strings;
     private Builder builder;
     @Rule
@@ -44,9 +41,8 @@ public class AttributeDefinitionTest {
 
     @Before
     public void setup() {
-        locale = new Locale("en");
         strings = mock(StringLocalizer.class);
-        builder = AttributeDefinition.builder(locale, strings);
+        builder = AttributeDefinition.builder(strings);
 
         when(strings.getString("nameKey")).thenReturn(new PassThroughLocalizableString("name"));
         when(strings.getString("descKey")).thenReturn(new PassThroughLocalizableString("desc"));

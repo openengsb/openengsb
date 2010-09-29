@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
@@ -124,17 +123,15 @@ public class AttributeDefinition implements Serializable {
         return this.validator;
     }
 
-    public static Builder builder(Locale locale, StringLocalizer strings) {
-        return new Builder(locale, strings);
+    public static Builder builder(StringLocalizer strings) {
+        return new Builder(strings);
     }
 
     public static class Builder implements Serializable {
         private final AttributeDefinition attr;
         private final StringLocalizer strings;
-        private final Locale locale;
 
-        public Builder(Locale locale, StringLocalizer strings) {
-            this.locale = locale;
+        public Builder(StringLocalizer strings) {
             this.strings = strings;
             attr = new AttributeDefinition();
         }

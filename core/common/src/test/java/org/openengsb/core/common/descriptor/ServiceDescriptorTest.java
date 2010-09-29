@@ -52,7 +52,6 @@ public class ServiceDescriptorTest {
         }
     }
 
-    private Locale locale;
     private StringLocalizer strings;
     private Builder builder;
     @Rule
@@ -60,12 +59,9 @@ public class ServiceDescriptorTest {
 
     @Before
     public void setup() {
-        locale = new Locale("en");
         strings = mock(StringLocalizer.class);
-        builder = ServiceDescriptor.builder(locale, strings);
+        builder = ServiceDescriptor.builder(strings);
 
-        when(strings.getString("nameKey", locale)).thenReturn("name");
-        when(strings.getString("descKey", locale)).thenReturn("desc");
         when(strings.getString("nameKey")).thenReturn(new PassThroughLocalizableString("name"));
         when(strings.getString("descKey")).thenReturn(new PassThroughLocalizableString("desc"));
         builder.id("a");

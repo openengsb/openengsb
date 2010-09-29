@@ -52,7 +52,7 @@ public class EditorPageTest {
     public void setup() {
         tester = new WicketTester();
         manager = mock(ServiceManager.class);
-        attrib1 = AttributeDefinition.builder(null, new PassThroughStringLocalizer()).id("a").defaultValue("a_default")
+        attrib1 = AttributeDefinition.builder(new PassThroughStringLocalizer()).id("a").defaultValue("a_default")
                 .name("a_name").build();
         ServiceDescriptor d = new ServiceDescriptor();
         d.setId("a");

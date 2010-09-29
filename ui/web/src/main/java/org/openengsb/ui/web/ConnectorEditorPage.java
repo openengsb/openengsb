@@ -95,7 +95,7 @@ public class ConnectorEditorPage extends BasePage {
     }
 
     private List<AttributeDefinition> buildAttributeList(ServiceManager service) {
-        Builder builder = AttributeDefinition.builder(getLocale(), new WicketStringLocalizer(this));
+        Builder builder = AttributeDefinition.builder(new WicketStringLocalizer(this));
         AttributeDefinition id = builder.id("id").name("attribute.id.name").description("attribute.id.description")
                 .required().build();
         ServiceDescriptor descriptor = service.getDescriptor(getSession().getLocale());

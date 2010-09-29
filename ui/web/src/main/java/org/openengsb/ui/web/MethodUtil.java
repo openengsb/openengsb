@@ -56,7 +56,7 @@ public final class MethodUtil {
                         || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
                     continue;
                 }
-                AttributeDefinition a = AttributeDefinition.builder(null, new PassThroughStringLocalizer())
+                AttributeDefinition a = AttributeDefinition.builder(new PassThroughStringLocalizer())
                         .id(propertyDescriptor.getName())
                         .name(propertyDescriptor.getDisplayName())
                         .description(propertyDescriptor.getShortDescription()).build();

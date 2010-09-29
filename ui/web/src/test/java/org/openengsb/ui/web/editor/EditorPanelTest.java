@@ -255,7 +255,7 @@ public class EditorPanelTest {
     }
 
     private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {
-        return AttributeDefinition.builder(null, new PassThroughStringLocalizer()).id(id).name(name).description(desc);
+        return AttributeDefinition.builder(new PassThroughStringLocalizer()).id(id).name(name).description(desc);
     }
 
     private void startEditorPanel(final AttributeDefinition... attributes) {
