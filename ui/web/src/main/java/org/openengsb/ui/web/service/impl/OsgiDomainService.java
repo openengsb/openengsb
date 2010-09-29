@@ -116,7 +116,7 @@ public class OsgiDomainService implements DomainService, BundleContextAware {
     }
 
     public void setDomains(List<DomainProvider> domains) {
-        this.domains = new ArrayList<DomainProvider>(domains);
+        this.domains = domains;
     }
 
     @Override
