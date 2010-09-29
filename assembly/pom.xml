@@ -156,7 +156,7 @@
             <configuration>
             <target>
               <copy todir="${basedir}/target/">
-                <fileset dir="${basedir}/target/openengsb-docs-manual-1.0.0-SNAPSHOT/">
+                <fileset dir="${basedir}/target/openengsb-docs-manual-${project.version}/">
                   <include name="**/*" />
                 </fileset>
               </copy>
