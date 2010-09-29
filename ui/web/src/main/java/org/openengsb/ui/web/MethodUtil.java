@@ -31,6 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.util.PassThroughStringLocalizer;
 
 public final class MethodUtil {
     private static Log log = LogFactory.getLog(MethodUtil.class);
@@ -55,10 +56,10 @@ public final class MethodUtil {
                         || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
                     continue;
                 }
-                AttributeDefinition a = new AttributeDefinition();
-                a.setName(propertyDescriptor.getDisplayName());
-                a.setDescription(propertyDescriptor.getShortDescription());
-                a.setId(propertyDescriptor.getName());
+                AttributeDefinition a = AttributeDefinition.builder(null, new PassThroughStringLocalizer())
+                        .id(propertyDescriptor.getName())
+                        .name(propertyDescriptor.getDisplayName())
+                        .description(propertyDescriptor.getShortDescription()).build();
                 attributes.add(a);
             }
         } catch (IntrospectionException ex) {

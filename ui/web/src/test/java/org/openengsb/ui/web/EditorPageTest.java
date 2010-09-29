@@ -16,6 +16,11 @@
 
 package org.openengsb.ui.web;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -34,14 +39,8 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.util.PassThroughStringLocalizer;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import static org.hamcrest.Matchers.is;
-
-import static org.junit.Assert.assertThat;
 
 public class EditorPageTest {
 
@@ -51,14 +50,11 @@ public class EditorPageTest {
 
 
     @Before
-    @SuppressWarnings("deprecation")
     public void setup() {
         tester = new WicketTester();
         manager = mock(ServiceManager.class);
-        attrib1 = new AttributeDefinition();
-        attrib1.setId("a");
-        attrib1.setDefaultValue("a_default");
-        attrib1.setName("a_name");
+        attrib1 = AttributeDefinition.builder(null, new PassThroughStringLocalizer()).id("a").defaultValue("a_default")
+                .name("a_name").build();
         ServiceDescriptor d = new ServiceDescriptor();
         d.setId("a");
         d.setName("sn");

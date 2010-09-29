@@ -85,15 +85,6 @@ public class AttributeDefinition implements Serializable {
     }
 
     /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
-     *             AttributeDefinition.builder instead.
-     */
-    @Deprecated
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
      * Returns a localizabled description.
      */
     public String getDescription() {
@@ -105,54 +96,18 @@ public class AttributeDefinition implements Serializable {
     }
 
     /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
-     *             AttributeDefinition.builder instead.
-     */
-    @Deprecated
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
      * Returns the default value.
      */
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
-     *             AttributeDefinition.builder instead.
-     */
-    @Deprecated
-    public void setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
-    }
-
     public boolean isRequired() {
         return required;
     }
 
-    /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
-     *             AttributeDefinition.builder instead.
-     */
-    @Deprecated
-    public void setRequired(boolean required) {
-        this.required = required;
-    }
-
     public List<Option> getOptions() {
         return Collections.unmodifiableList(options);
-    }
-
-    /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
-     *             AttributeDefinition.builder instead.
-     */
-    @Deprecated
-    public void addOption(String label, String value) {
-        options.add(new Option(label, value));
     }
 
     public boolean isBoolean() {
@@ -163,35 +118,8 @@ public class AttributeDefinition implements Serializable {
         return isPassword;
     }
 
-    /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
-     *             AttributeDefinition.builder instead.
-     */
-    @Deprecated
-    public void setPassword(boolean isPassword) {
-        this.isPassword = isPassword;
-    }
-
-    /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
-     *             AttributeDefinition.builder instead.
-     */
-    @Deprecated
-    public void setBoolean(boolean isBoolean) {
-        this.isBoolean = isBoolean;
-    }
-
     public FieldValidator getValidator() {
         return this.validator;
-    }
-
-    /**
-     * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
-     *             AttributeDefinition.builder instead.
-     */
-    @Deprecated
-    public void setValidator(FieldValidator validator) {
-        this.validator = validator;
     }
 
     public static Builder builder(Locale locale, StringLocalizer strings) {

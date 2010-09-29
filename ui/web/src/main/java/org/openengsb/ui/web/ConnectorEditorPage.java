@@ -26,10 +26,12 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.ui.web.editor.EditorPanel;
 import org.openengsb.ui.web.model.ServiceId;
+import org.openengsb.ui.web.model.WicketStringLocalizer;
 
 public class ConnectorEditorPage extends BasePage {
 
@@ -92,11 +94,9 @@ public class ConnectorEditorPage extends BasePage {
     }
 
     private List<AttributeDefinition> buildAttributeList(ServiceManager service) {
-        AttributeDefinition id = new AttributeDefinition();
-        id.setId("id");
-        id.setName(new StringResourceModel("attribute.id.name", this, null).getString());
-        id.setDescription(new StringResourceModel("attribute.id.description", this, null).getString());
-        id.setRequired(true);
+        Builder builder = AttributeDefinition.builder(getLocale(), new WicketStringLocalizer(this));
+        AttributeDefinition id = builder.id("id").name("attribute.id.name").description("attribute.id.description")
+                .required().build();
         ServiceDescriptor descriptor = service.getDescriptor(getSession().getLocale());
         List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
         attributes.add(id);

@@ -17,6 +17,7 @@
 package org.openengsb.core.common.util;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -105,5 +106,10 @@ public class BundleStringsTest {
         assertThat(bl.getString("ab", new Locale("a", "b", "c")), is("b"));
         assertThat(bl.getString("a", new Locale("a", "b", "c")), is("a"));
         assertThat(bl.getString("a", new Locale("a", "b")), is("a"));
+    }
+
+    @Test
+    public void passThroughLocalizer_shouldReturnKey() {
+        assertThat(new PassThroughStringLocalizer().getString("a", null), is("a"));
     }
 }

@@ -16,6 +16,10 @@
 
 package org.openengsb.ui.web.editor;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,6 +43,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.util.PassThroughStringLocalizer;
 import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.FormValidator;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
@@ -49,11 +54,6 @@ import org.openengsb.ui.web.editor.fields.AbstractField;
 import org.openengsb.ui.web.validation.DefaultPassingFormValidator;
 import org.openengsb.ui.web.validation.NumberValidator;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-
-import static org.junit.Assert.assertThat;
-
 @SuppressWarnings("serial")
 public class EditorPanelTest {
 
@@ -62,19 +62,15 @@ public class EditorPanelTest {
     private Map<String, String> defaultValues;
     private AttributeDefinition attribOption;
     private AttributeDefinition attribBoolean;
-    private final AttributeDefinition attrib = newAttribute("attrib", "name", "desc");
-    private final AttributeDefinition attribNoDesc = newAttribute("attribNoDesc", "name", "");
-    private final AttributeDefinition attribPassword = newAttribute("attrib", "name", "desc");
+    private final AttributeDefinition attrib = newAttribute("attrib", "name", "desc").build();
+    private final AttributeDefinition numberAttrib = newAttribute("attrib", "name", "desc").validator(
+            new NumberValidator()).build();
+    private final AttributeDefinition attribNoDesc = newAttribute("attribNoDesc", "name", "").build();
 
-    @SuppressWarnings("deprecation")
     @Before
     public void setup() {
-        attribOption = newAttribute("attribOption", "option", "");
-        attribOption.addOption("label_a", "1");
-        attribOption.addOption("label_b", "2");
-        attribBoolean = newAttribute("attribBool", "bool", "");
-        attribBoolean.setBoolean(true);
-        attribPassword.setPassword(true);
+        attribOption = newAttribute("attribOption", "option", "").option("label_a", "1").option("label_b", "2").build();
+        attribBoolean = newAttribute("attribBool", "bool", "").asBoolean().build();
     }
 
     @Test
@@ -156,14 +152,11 @@ public class EditorPanelTest {
         assertThat(editor.getValues().get(attribBoolean.getId()), is("true"));
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void putLetterIntoNumberField_shouldResultInError() throws Exception {
-        FieldValidator validator = new NumberValidator();
-        attrib.setValidator(validator);
-        startEditorPanel(attrib);
+        startEditorPanel(numberAttrib);
         FormTester formTester = tester.newFormTester(editor.getId() + ":form");
-        String buildFormComponentId = buildFormComponentId(attrib.getId());
+        String buildFormComponentId = buildFormComponentId(numberAttrib.getId());
         formTester.setValue(buildFormComponentId, "A");
         tester.executeAjaxEvent(editor.getId() + ":form:submitButton", "onclick");
         tester.assertErrorMessages(new String[] { "Number formating Error" });
@@ -171,11 +164,9 @@ public class EditorPanelTest {
 
     @Test
     public void testValidateOnlyAfterSubmit() throws Exception {
-        FieldValidator validator = new NumberValidator();
-        attrib.setValidator(validator);
-        startEditorPanel(attrib);
+        startEditorPanel(numberAttrib);
         FormTester formTester = tester.newFormTester(editor.getId() + ":form");
-        String buildFormComponentId = buildFormComponentId(attrib.getId());
+        String buildFormComponentId = buildFormComponentId(numberAttrib.getId());
         formTester.setValue(buildFormComponentId, "A");
         tester.executeAjaxEvent(editor.getId() + ":form:submitButton", "onclick");
         // tester.
@@ -184,25 +175,24 @@ public class EditorPanelTest {
 
     @Test
     public void addValidatorToDropDownField_shouldReturnError() {
-        testWithValidator(attribOption);
+        testWithValidator(newAttribute("a", "name", "").option("a", "b").option("c", "d"));
     }
 
     @Test
     public void addValidatorToCheckboxField_shouldReturnError() {
-        testWithValidator(attribBoolean);
+        testWithValidator(newAttribute("a", "name", "").asBoolean());
     }
 
     @Test
     public void addValidatorToPasswordField_shouldReturnError() {
-        testWithValidator(attribPassword);
+        testWithValidator(newAttribute("a", "name", "").asPassword());
     }
 
-    @SuppressWarnings("deprecation")
-    private void testWithValidator(AttributeDefinition attributeDefinition) {
-        attributeDefinition.setValidator(new FailValidator());
-        startEditorPanel(attributeDefinition);
+    private void testWithValidator(AttributeDefinition.Builder attributeDefinition) {
+        AttributeDefinition a = attributeDefinition.validator(new FailValidator()).build();
+        startEditorPanel(a);
         FormTester formTester = tester.newFormTester(editor.getId() + ":form");
-        String buildFormComponentId = buildFormComponentId(attributeDefinition.getId());
+        String buildFormComponentId = buildFormComponentId(a.getId());
         formTester.setValue(buildFormComponentId, "1");
         tester.executeAjaxEvent(editor.getId() + ":form:submitButton", "onclick");
         tester.assertErrorMessages(new String[] { "Validation Error" });
@@ -210,8 +200,8 @@ public class EditorPanelTest {
 
     @Test
     public void addFormValidator_ShouldExtractCorrectFormValues() {
-        AttributeDefinition attrib1 = newAttribute("attrib1", "name1", "desc1");
-        AttributeDefinition attrib2 = newAttribute("attrib2", "name2", "desc2");
+        AttributeDefinition attrib1 = newAttribute("attrib1", "name1", "desc1").build();
+        AttributeDefinition attrib2 = newAttribute("attrib2", "name2", "desc2").build();
         FormValidator validator = new FormValidator() {
             @Override
             public MultipleAttributeValidationResult validate(Map<String, String> attributes) {
@@ -244,11 +234,10 @@ public class EditorPanelTest {
         tester.assertErrorMessages(new String[] { "Validation Error", "Validation Error" });
     }
 
-    @SuppressWarnings({ "unchecked", "deprecation" })
+    @SuppressWarnings({ "unchecked"})
     @Test
     public void addFailFieldValidator_ShouldNotCallFormValidator() {
-        AttributeDefinition attrib1 = newAttribute("attrib1", "name1", "desc1");
-        attrib1.setValidator(new FailValidator());
+        AttributeDefinition attrib1 = newAttribute("attrib1", "name1", "desc1").validator(new FailValidator()).build();
         FormValidator mock = Mockito.mock(FormValidator.class);
         Mockito.when(mock.fieldsToValidate()).thenReturn(Arrays.asList(new String[] { "attrib1" }));
         startEditorPanel(mock, attrib1);
@@ -265,13 +254,8 @@ public class EditorPanelTest {
         tester.assertModelValue(editor.getId() + ":form:validate", true);
     }
 
-    @SuppressWarnings("deprecation")
-    private AttributeDefinition newAttribute(String id, String name, String desc) {
-        AttributeDefinition a = new AttributeDefinition();
-        a.setId(id);
-        a.setName(name);
-        a.setDescription(desc);
-        return a;
+    private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {
+        return AttributeDefinition.builder(null, new PassThroughStringLocalizer()).id(id).name(name).description(desc);
     }
 
     private void startEditorPanel(final AttributeDefinition... attributes) {
