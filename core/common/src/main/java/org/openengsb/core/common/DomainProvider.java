@@ -33,12 +33,12 @@ public interface DomainProvider {
     String getId();
 
     /**
-     * Returns the localized name. The {@code Locale} of the system is used.
+     * Returns the localizable name.
      */
     LocalizableString getName();
 
     /**
-     * Returns a localized description. The {@code Locale} of the system is used.
+     * Returns the localizable description.
      */
     LocalizableString getDescription();
 
