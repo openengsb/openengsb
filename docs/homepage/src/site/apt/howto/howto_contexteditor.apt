@@ -45,7 +45,7 @@ HowTo - Events with the OpenEngSB (Using the logging service)
 
   On the <<Send Event Page>> you can edit Rules. Therefore they have to be edited directly with a text editor. The initial system already contains a rule with the name "org.openengsb.hello1". To edit the rule choose "org.openengsb.hello1" from the drop down. As soon as you edit the content of the rule the you can save you changes by clicking save or revert the changes by clicking cancel. To create a new rule click new and enter a name where which will automatically be prefixed with org.openengsb.
 
-[../images/howto/event.jpg]
+[../images/howto/event.png]
 
   Basically this rule reacts on all events (when clause). "log" is a helper class using the default log connector of
   the log domain to write information to a log file. Notification uses the default notification connector to inform
@@ -62,7 +62,7 @@ HowTo - Events with the OpenEngSB (Using the logging service)
   command in the OpenEngSB console should present (anywhere in the long log) a logging entry similar to the following (you have 
   to search for the output of the LogService. The other fields can change):
 
-[../images/howto/logging_output.jpg]
+[../images/howto/logging_output.png]
 
 * Next Steps
 
