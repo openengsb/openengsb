@@ -15,6 +15,7 @@
    limitations under the License.
 
  */
+
 package org.openengsb.core.common.l10n;
 
 import java.util.Locale;
