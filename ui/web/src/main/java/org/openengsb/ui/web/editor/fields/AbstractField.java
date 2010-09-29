@@ -35,7 +35,7 @@ public abstract class AbstractField<T> extends Panel {
         if (validator != null) {
             component.add(validator);
         }
-        component.setLabel(new Model<String>(attribute.getName()));
+        component.setLabel(new Model<String>(attribute.getName().getString(getSession().getLocale())));
         component.setOutputMarkupId(true);
         component.setMarkupId(attribute.getId());
         component.setRequired(attribute.isRequired());
@@ -47,7 +47,8 @@ public abstract class AbstractField<T> extends Panel {
     private void addTooltip(AttributeDefinition attribute) {
         Image tooltip = new Image("tooltip");
         if (attribute.hasDescription()) {
-            tooltip.add(new SimpleAttributeModifier("title", attribute.getDescription()));
+            tooltip.add(new SimpleAttributeModifier("title", attribute.getDescription().getString(
+                    getSession().getLocale())));
         } else {
             tooltip.setVisible(false);
         }

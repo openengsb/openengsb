@@ -29,6 +29,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
+import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.l10n.StringLocalizer;
 import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
@@ -47,10 +48,10 @@ public class AttributeDefinitionTest {
         strings = mock(StringLocalizer.class);
         builder = AttributeDefinition.builder(locale, strings);
 
-        when(strings.getString("nameKey", locale)).thenReturn("name");
-        when(strings.getString("descKey", locale)).thenReturn("desc");
-        when(strings.getString("defaultValue", locale)).thenReturn("localized");
-        when(strings.getString("optionLabelKey", locale)).thenReturn("option");
+        when(strings.getString("nameKey")).thenReturn(new PassThroughLocalizableString("name"));
+        when(strings.getString("descKey")).thenReturn(new PassThroughLocalizableString("desc"));
+        when(strings.getString("defaultValue")).thenReturn(new PassThroughLocalizableString("localized"));
+        when(strings.getString("optionLabelKey")).thenReturn(new PassThroughLocalizableString("option"));
         builder.id("a");
         builder.name("nameKey");
         builder.description("descKey");
@@ -64,20 +65,8 @@ public class AttributeDefinitionTest {
 
     @Test
     public void builderShouldLocalizeNameAndDescription() {
-        assertThat(builder.build().getName(), is("name"));
-        assertThat(builder.build().getDescription(), is("desc"));
-    }
-
-    @Test
-    public void builderShouldNotLocalizeDefaultValue() {
-        builder.defaultValue("defaultValue");
-        assertThat(builder.build().getDefaultValue(), is("defaultValue"));
-    }
-
-    @Test
-    public void builderShouldLocalizeForcedDefaultValueLocalization() {
-        builder.defaultValueLocalized("defaultValue");
-        assertThat(builder.build().getDefaultValue(), is("localized"));
+        assertThat(builder.build().getName().getString(null), is("name"));
+        assertThat(builder.build().getDescription().getString(null), is("desc"));
     }
 
     @Test
@@ -102,7 +91,7 @@ public class AttributeDefinitionTest {
     public void builderShouldLocalizeOptionLabel() {
         builder.option("optionLabelKey", "value");
         assertThat(builder.build().getOptions().get(0).getValue(), is("value"));
-        assertThat(builder.build().getOptions().get(0).getLabel(), is("option"));
+        assertThat(builder.build().getOptions().get(0).getLabel().getString(null), is("option"));
     }
 
     @Test

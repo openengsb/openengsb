@@ -61,7 +61,7 @@ public class ConnectorEditorPage extends BasePage {
         List<AttributeDefinition> attributes = buildAttributeList(serviceManager);
         for (AttributeDefinition attribute : attributes) {
             if (!values.containsKey(attribute.getId())) { // do not overwrite attributes with default value
-                values.put(attribute.getId(), attribute.getDefaultValue());
+                values.put(attribute.getId(), attribute.getDefaultValue().getString(getSession().getLocale()));
             }
         }
         editorPanel = new EditorPanel("editor", attributes, values, serviceManager.getDescriptor().getFormValidator()) {

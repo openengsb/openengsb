@@ -265,7 +265,7 @@ public class EditorPanelTest {
     private void startEditorPanel(final FormValidator validator, final AttributeDefinition... attributes) {
         final HashMap<String, String> values = new HashMap<String, String>();
         for (AttributeDefinition a : attributes) {
-            values.put(a.getId(), a.getDefaultValue());
+            values.put(a.getId(), a.getDefaultValue().getString(null));
         }
         defaultValues = new HashMap<String, String>(values);
         tester = new WicketTester();

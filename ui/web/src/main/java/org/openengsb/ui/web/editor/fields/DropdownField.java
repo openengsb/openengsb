@@ -41,7 +41,7 @@ public class DropdownField extends AbstractField<String> {
         final Map<String, String> labels = new HashMap<String, String>();
         final List<String> values = new ArrayList<String>();
         for (Option o : attribute.getOptions()) {
-            labels.put(o.getValue(), o.getLabel());
+            labels.put(o.getValue(), o.getLabel().getString(getSession().getLocale()));
             values.add(o.getValue());
         }
         DropDownChoice<String> choice = new DropDownChoice<String>("field", model, values,

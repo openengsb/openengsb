@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.openengsb.core.common.l10n.LocalizableString;
+import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.l10n.StringLocalizer;
 import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
@@ -33,16 +35,16 @@ import com.google.common.base.Preconditions;
 public class AttributeDefinition implements Serializable {
 
     public static class Option implements Serializable {
-        private final String label;
+        private final LocalizableString label;
         private final String value;
 
-        public Option(String label, String value) {
+        public Option(LocalizableString label, String value) {
             super();
             this.label = label;
             this.value = value;
         }
 
-        public String getLabel() {
+        public LocalizableString getLabel() {
             return label;
         }
 
@@ -52,9 +54,9 @@ public class AttributeDefinition implements Serializable {
     }
 
     private String id;
-    private String name = "";
-    private String description = "";
-    private String defaultValue = "";
+    private LocalizableString name;
+    private LocalizableString description;
+    private LocalizableString defaultValue = new PassThroughLocalizableString("");
     private boolean required;
     private final List<Option> options = new ArrayList<Option>();
     private boolean isBoolean;
@@ -80,25 +82,25 @@ public class AttributeDefinition implements Serializable {
     /**
      * Returns a localizabled name.
      */
-    public String getName() {
+    public LocalizableString getName() {
         return name;
     }
 
     /**
      * Returns a localizabled description.
      */
-    public String getDescription() {
+    public LocalizableString getDescription() {
         return description;
     }
 
     public boolean hasDescription() {
-        return description != null && !description.isEmpty();
+        return description != null && description.getKey() != null && !description.getKey().trim().equals("");
     }
 
     /**
      * Returns the default value.
      */
-    public String getDefaultValue() {
+    public LocalizableString getDefaultValue() {
         return defaultValue;
     }
 
@@ -143,22 +145,17 @@ public class AttributeDefinition implements Serializable {
         }
 
         public Builder name(String key) {
-            attr.name = strings.getString(key, locale);
+            attr.name = strings.getString(key);
             return this;
         }
 
         public Builder description(String key) {
-            attr.description = strings.getString(key, locale);
+            attr.description = strings.getString(key);
             return this;
         }
 
-        public Builder defaultValue(String defaultValue) {
-            attr.defaultValue = defaultValue;
-            return this;
-        }
-
-        public Builder defaultValueLocalized(String key) {
-            attr.defaultValue = strings.getString(key, locale);
+        public Builder defaultValue(String key) {
+            attr.defaultValue = strings.getString(key);
             return this;
         }
 
@@ -168,7 +165,7 @@ public class AttributeDefinition implements Serializable {
         }
 
         public Builder option(String labelKey, String value) {
-            attr.options.add(new Option(strings.getString(labelKey, locale), value));
+            attr.options.add(new Option(strings.getString(labelKey), value));
             return this;
         }
 
@@ -193,9 +190,11 @@ public class AttributeDefinition implements Serializable {
 
         public AttributeDefinition build() {
             Preconditions.checkState(attr.id != null && !attr.id.trim().isEmpty(), "attribute id not set");
-            checkNotEmpty(attr.name, "name not set");
+            Preconditions.checkState(attr.name != null, "name not set");
+            checkNotEmpty(attr.name.getKey(), "name is empty");
             for (Option o : attr.options) {
-                checkNotEmpty(o.getLabel(), "option has empty label");
+                Preconditions.checkState(o.getLabel() != null, "option label not set");
+                checkNotEmpty(o.getLabel().getKey(), "option has empty label");
                 checkNotEmpty(o.getValue(), "option has empty value");
             }
             Preconditions.checkState(!(attr.isBoolean && !attr.options.isEmpty()),
