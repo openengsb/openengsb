@@ -36,7 +36,10 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.l10n.LocalizableString;
+import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.util.AliveState;
+import org.openengsb.ui.web.model.LocalizableStringModel;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
@@ -144,13 +147,13 @@ public class ServiceListPage extends BasePage {
                 final ServiceReference serv = item.getModelObject();
                 final ServiceManager sm = getServiceManager((String) serv.getProperty("managerId"));
                 final String id = (String) serv.getProperty("id");
-                String description = "";
+                LocalizableString description = new PassThroughLocalizableString("");
                 if (sm != null) {
                     ServiceDescriptor desc = sm.getDescriptor(getLocale());
-                    description = desc.getDescription().getString(getSession().getLocale());
+                    description = desc.getDescription();
                 }
                 item.add(new Label("service.name", id));
-                item.add(new Label("service.description", description));
+                item.add(new Label("service.description", new LocalizableStringModel(this, description)));
                 item.add(new AjaxLink<ServiceManager>("updateService",
                         createLoadableDetachableServiceManagerModel(sm)) {
                     @Override

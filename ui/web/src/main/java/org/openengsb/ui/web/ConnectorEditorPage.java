@@ -30,6 +30,7 @@ import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.model.LocalizableStringModel;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.model.WicketStringLocalizer;
 
@@ -41,8 +42,8 @@ public class ConnectorEditorPage extends BasePage {
     public ConnectorEditorPage(ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
         ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
-        add(new Label("service.name", descriptor.getName().getString(getSession().getLocale())));
-        add(new Label("service.description", descriptor.getDescription().getString(getSession().getLocale())));
+        add(new Label("service.name", new LocalizableStringModel(this, descriptor.getName())));
+        add(new Label("service.description", new LocalizableStringModel(this, descriptor.getDescription())));
         createEditor(new HashMap<String, String>());
     }
 
@@ -50,8 +51,8 @@ public class ConnectorEditorPage extends BasePage {
         this.serviceManager = serviceManager;
         Map<String, String> attributeValues = serviceManager.getAttributeValues(serviceId);
         ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
-        add(new Label("service.name", descriptor.getName().getString(getSession().getLocale())));
-        add(new Label("service.description", descriptor.getDescription().getString(getSession().getLocale())));
+        add(new Label("service.name", new LocalizableStringModel(this, descriptor.getName())));
+        add(new Label("service.description", new LocalizableStringModel(this, descriptor.getDescription())));
         createEditor(attributeValues);
     }
 

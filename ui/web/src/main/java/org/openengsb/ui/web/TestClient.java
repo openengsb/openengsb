@@ -60,6 +60,7 @@ import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
+import org.openengsb.ui.web.model.LocalizableStringModel;
 import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
@@ -123,8 +124,8 @@ public class TestClient extends BasePage {
                         setResponsePage(new ConnectorEditorPage(getModelObject()));
                     }
                 });
-                item.add(new Label("service.name", desc.getName().getString(getSession().getLocale())));
-                item.add(new Label("service.description", desc.getDescription().getString(getSession().getLocale())));
+                item.add(new Label("service.name", new LocalizableStringModel(this, desc.getName())));
+                item.add(new Label("service.description", new LocalizableStringModel(this, desc.getDescription())));
             }
         });
 

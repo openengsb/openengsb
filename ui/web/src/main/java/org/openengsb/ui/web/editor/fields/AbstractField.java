@@ -22,9 +22,9 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.ui.web.model.LocalizableStringModel;
 
 @SuppressWarnings("serial")
 public abstract class AbstractField<T> extends Panel {
@@ -35,7 +35,7 @@ public abstract class AbstractField<T> extends Panel {
         if (validator != null) {
             component.add(validator);
         }
-        component.setLabel(new Model<String>(attribute.getName().getString(getSession().getLocale())));
+        component.setLabel(new LocalizableStringModel(this, attribute.getName()));
         component.setOutputMarkupId(true);
         component.setMarkupId(attribute.getId());
         component.setRequired(attribute.isRequired());

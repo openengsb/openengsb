@@ -16,11 +16,11 @@
 
 package org.openengsb.core.common;
 
-import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-
 import java.util.Locale;
 import java.util.Map;
+
+import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 
 /**
  * Instance provider for a specific service interface.
@@ -36,7 +36,10 @@ public interface ServiceManager {
     /**
      * Return the {@code ServiceDescriptor} describing the managed service.
      * Localizable text is localized using the given {@code locale}.
+     * 
+     * @deprecated TODO
      */
+    @Deprecated
     ServiceDescriptor getDescriptor(Locale locale);
 
     /**
@@ -58,10 +61,10 @@ public interface ServiceManager {
     MultipleAttributeValidationResult updateWithValidation(String id, Map<String, String> attributes);
     /**
      * Deletes the service instanced with the given {@code id}.
-     * 
+     *
      * @param id identifier for a service instance provided by this
      *        {@code ServiceManager}.
-     * 
+     *
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
     void delete(String id);

@@ -28,6 +28,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
+import org.openengsb.ui.web.model.LocalizableStringModel;
 
 @SuppressWarnings("serial")
 public class DropdownField extends AbstractField<String> {
@@ -38,17 +39,17 @@ public class DropdownField extends AbstractField<String> {
 
     @Override
     protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
-        final Map<String, String> labels = new HashMap<String, String>();
+        final Map<String, LocalizableStringModel> labels = new HashMap<String, LocalizableStringModel>();
         final List<String> values = new ArrayList<String>();
         for (Option o : attribute.getOptions()) {
-            labels.put(o.getValue(), o.getLabel().getString(getSession().getLocale()));
+            labels.put(o.getValue(), new LocalizableStringModel(this, o.getLabel()));
             values.add(o.getValue());
         }
         DropDownChoice<String> choice = new DropDownChoice<String>("field", model, values,
                 new IChoiceRenderer<String>() {
                     @Override
                     public String getDisplayValue(String object) {
-                        return labels.get(object);
+                        return labels.get(object).getObject();
                     }
 
                     @Override
