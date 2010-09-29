@@ -16,6 +16,13 @@
 
 package org.openengsb.core.common.descriptor;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.Locale;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,14 +30,7 @@ import org.junit.rules.ExpectedException;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.util.AliveState;
-import org.openengsb.core.common.util.BundleStrings;
-
-import java.util.Locale;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.openengsb.core.common.util.StringLocalizer;
 
 public class ServiceDescriptorTest {
 
@@ -52,7 +52,7 @@ public class ServiceDescriptorTest {
     }
 
     private Locale locale;
-    private BundleStrings strings;
+    private StringLocalizer strings;
     private Builder builder;
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -60,7 +60,7 @@ public class ServiceDescriptorTest {
     @Before
     public void setup() {
         locale = new Locale("en");
-        strings = mock(BundleStrings.class);
+        strings = mock(StringLocalizer.class);
         builder = ServiceDescriptor.builder(locale, strings);
 
         when(strings.getString("nameKey", locale)).thenReturn("name");

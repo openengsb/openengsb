@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.openengsb.core.common.util.BundleStrings;
+import org.openengsb.core.common.util.StringLocalizer;
 import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.core.common.validation.ValidationResultImpl;
@@ -72,6 +72,7 @@ public class AttributeDefinition implements Serializable {
      * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
      *             AttributeDefinition.builder instead.
      */
+    @Deprecated
     public void setId(String id) {
         this.id = id;
     }
@@ -87,6 +88,7 @@ public class AttributeDefinition implements Serializable {
      * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
      *             AttributeDefinition.builder instead.
      */
+    @Deprecated
     public void setName(String name) {
         this.name = name;
     }
@@ -106,6 +108,7 @@ public class AttributeDefinition implements Serializable {
      * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
      *             AttributeDefinition.builder instead.
      */
+    @Deprecated
     public void setDescription(String description) {
         this.description = description;
     }
@@ -121,6 +124,7 @@ public class AttributeDefinition implements Serializable {
      * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
      *             AttributeDefinition.builder instead.
      */
+    @Deprecated
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
@@ -133,6 +137,7 @@ public class AttributeDefinition implements Serializable {
      * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
      *             AttributeDefinition.builder instead.
      */
+    @Deprecated
     public void setRequired(boolean required) {
         this.required = required;
     }
@@ -145,6 +150,7 @@ public class AttributeDefinition implements Serializable {
      * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
      *             AttributeDefinition.builder instead.
      */
+    @Deprecated
     public void addOption(String label, String value) {
         options.add(new Option(label, value));
     }
@@ -161,6 +167,7 @@ public class AttributeDefinition implements Serializable {
      * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
      *             AttributeDefinition.builder instead.
      */
+    @Deprecated
     public void setPassword(boolean isPassword) {
         this.isPassword = isPassword;
     }
@@ -169,6 +176,7 @@ public class AttributeDefinition implements Serializable {
      * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
      *             AttributeDefinition.builder instead.
      */
+    @Deprecated
     public void setBoolean(boolean isBoolean) {
         this.isBoolean = isBoolean;
     }
@@ -181,20 +189,21 @@ public class AttributeDefinition implements Serializable {
      * @deprecated This method does not use validation to check your input. Only for testing purposes. Please use
      *             AttributeDefinition.builder instead.
      */
+    @Deprecated
     public void setValidator(FieldValidator validator) {
         this.validator = validator;
     }
 
-    public static Builder builder(Locale locale, BundleStrings strings) {
+    public static Builder builder(Locale locale, StringLocalizer strings) {
         return new Builder(locale, strings);
     }
 
     public static class Builder implements Serializable {
         private final AttributeDefinition attr;
-        private final BundleStrings strings;
+        private final StringLocalizer strings;
         private final Locale locale;
 
-        public Builder(Locale locale, BundleStrings strings) {
+        public Builder(Locale locale, StringLocalizer strings) {
             this.locale = locale;
             this.strings = strings;
             attr = new AttributeDefinition();

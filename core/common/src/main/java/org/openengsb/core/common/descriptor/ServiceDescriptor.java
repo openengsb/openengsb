@@ -16,14 +16,15 @@
 
 package org.openengsb.core.common.descriptor;
 
-import com.google.common.base.Preconditions;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.util.BundleStrings;
-import org.openengsb.core.common.validation.FormValidator;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.util.StringLocalizer;
+import org.openengsb.core.common.validation.FormValidator;
+
+import com.google.common.base.Preconditions;
 
 public class ServiceDescriptor {
     private String id;
@@ -111,16 +112,16 @@ public class ServiceDescriptor {
         this.formValidator = validator;
     }
 
-    public static Builder builder(Locale locale, BundleStrings strings) {
+    public static Builder builder(Locale locale, StringLocalizer strings) {
         return new Builder(locale, strings);
     }
 
     public static class Builder {
         private final ServiceDescriptor desc;
-        private final BundleStrings strings;
+        private final StringLocalizer strings;
         private final Locale locale;
 
-        public Builder(Locale locale, BundleStrings strings) {
+        public Builder(Locale locale, StringLocalizer strings) {
             this.locale = locale;
             this.strings = strings;
             desc = new ServiceDescriptor();
@@ -155,7 +156,7 @@ public class ServiceDescriptor {
             desc.attributes.add(ad);
             return this;
         }
-        
+
         public Builder formValidator(FormValidator validator) {
             desc.formValidator = validator;
             return this;

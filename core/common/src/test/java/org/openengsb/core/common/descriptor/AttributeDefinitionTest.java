@@ -29,14 +29,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
-import org.openengsb.core.common.util.BundleStrings;
+import org.openengsb.core.common.util.StringLocalizer;
 import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 
 public class AttributeDefinitionTest {
 
     private Locale locale;
-    private BundleStrings strings;
+    private StringLocalizer strings;
     private Builder builder;
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -44,7 +44,7 @@ public class AttributeDefinitionTest {
     @Before
     public void setup() {
         locale = new Locale("en");
-        strings = mock(BundleStrings.class);
+        strings = mock(StringLocalizer.class);
         builder = AttributeDefinition.builder(locale, strings);
 
         when(strings.getString("nameKey", locale)).thenReturn("name");
