@@ -79,14 +79,14 @@ public class AttributeDefinition implements Serializable {
     }
 
     /**
-     * Returns a localizabled name.
+     * Returns a localizable name.
      */
     public LocalizableString getName() {
         return name;
     }
 
     /**
-     * Returns a localizabled description.
+     * Returns a localizable description.
      */
     public LocalizableString getDescription() {
         return description;

@@ -25,8 +25,8 @@ import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.StringLocalizer;
 
 /**
- * String localizer that implements the OpenEngSB's {@code StringLocalizer} but
- * uses Wicket to localize the actual string.
+ * String localizer that implements the OpenEngSB's {@link StringLocalizer} interface and uses Wicket to localize the
+ * actual string.
  */
 public class WicketStringLocalizer implements StringLocalizer {
 

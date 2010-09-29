@@ -20,9 +20,15 @@ package org.openengsb.core.common.l10n;
 
 import java.util.Locale;
 
+/**
+ * Represents a string that knows how to localize itself.
+ */
 public interface LocalizableString {
 
-    String getKey();
-
+    /**
+     * Localize the string represented by this {@code LocalizableString} to the given @{code locale}.
+     */
     String getString(Locale locale);
+
+    String getKey();
 }

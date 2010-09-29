@@ -21,6 +21,15 @@ import org.apache.wicket.Component;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.openengsb.core.common.l10n.LocalizableString;
 
+/**
+ * Wicket Model for {@link LocalizableString} objects, used to localize strings coming from other OpenEngSB bundles.
+ *
+ * Example:
+ *
+ * <pre>
+ * add(new Label(&quot;label&quot;, new LocalizableStringModel(this, aLocalizableString)));
+ * </pre>
+ */
 @SuppressWarnings("serial")
 public class LocalizableStringModel extends LoadableDetachableModel<String> {
 
