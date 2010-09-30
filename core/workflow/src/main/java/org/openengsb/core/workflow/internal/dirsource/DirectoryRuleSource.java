@@ -228,6 +228,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         if (ruleBase.getPackage(packageName) != null) {
             ruleBase.removePackage(packageName);
         }
+        log.info("locked rulebase for modifying: " + ruleBase);
         ruleBase.addPackage(p);
         ruleBase.unlock();
     }
@@ -273,7 +274,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     @SuppressWarnings("unchecked")
     private Collection<File> listFiles(File path, String extension) {
-        Collection<File> functions = FileUtils.listFiles(path, new String[] { extension }, false);
+        Collection<File> functions = FileUtils.listFiles(path, new String[]{ extension }, false);
         return functions;
     }
 
