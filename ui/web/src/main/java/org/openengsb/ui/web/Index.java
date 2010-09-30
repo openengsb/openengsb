@@ -25,6 +25,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.DomainProvider;
+import org.openengsb.ui.web.model.LocalizableStringModel;
 import org.openengsb.ui.web.service.DomainService;
 
 @SuppressWarnings("serial")
@@ -44,8 +45,9 @@ public class Index extends BasePage {
 
             @Override
             protected void populateItem(ListItem<DomainProvider> item) {
-                item.add(new Label("domain.name", item.getModelObject().getName(item.getLocale())));
-                item.add(new Label("domain.description", item.getModelObject().getDescription(item.getLocale())));
+                item.add(new Label("domain.name", new LocalizableStringModel(this, item.getModelObject().getName())));
+                item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
+                        .getDescription())));
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
             }
         });

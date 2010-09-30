@@ -26,10 +26,13 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.model.LocalizableStringModel;
 import org.openengsb.ui.web.model.ServiceId;
+import org.openengsb.ui.web.model.WicketStringLocalizer;
 
 public class ConnectorEditorPage extends BasePage {
 
@@ -38,18 +41,18 @@ public class ConnectorEditorPage extends BasePage {
 
     public ConnectorEditorPage(ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
-        ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
-        add(new Label("service.name", descriptor.getName()));
-        add(new Label("service.description", descriptor.getDescription()));
+        ServiceDescriptor descriptor = serviceManager.getDescriptor();
+        add(new Label("service.name", new LocalizableStringModel(this, descriptor.getName())));
+        add(new Label("service.description", new LocalizableStringModel(this, descriptor.getDescription())));
         createEditor(new HashMap<String, String>());
     }
 
     public ConnectorEditorPage(ServiceManager serviceManager, String serviceId) {
         this.serviceManager = serviceManager;
         Map<String, String> attributeValues = serviceManager.getAttributeValues(serviceId);
-        ServiceDescriptor descriptor = serviceManager.getDescriptor(getSession().getLocale());
-        add(new Label("service.name", descriptor.getName()));
-        add(new Label("service.description", descriptor.getDescription()));
+        ServiceDescriptor descriptor = serviceManager.getDescriptor();
+        add(new Label("service.name", new LocalizableStringModel(this, descriptor.getName())));
+        add(new Label("service.description", new LocalizableStringModel(this, descriptor.getDescription())));
         createEditor(attributeValues);
     }
 
@@ -59,7 +62,7 @@ public class ConnectorEditorPage extends BasePage {
         List<AttributeDefinition> attributes = buildAttributeList(serviceManager);
         for (AttributeDefinition attribute : attributes) {
             if (!values.containsKey(attribute.getId())) { // do not overwrite attributes with default value
-                values.put(attribute.getId(), attribute.getDefaultValue());
+                values.put(attribute.getId(), attribute.getDefaultValue().getString(getSession().getLocale()));
             }
         }
         editorPanel = new EditorPanel("editor", attributes, values, serviceManager.getDescriptor().getFormValidator()) {
@@ -92,12 +95,10 @@ public class ConnectorEditorPage extends BasePage {
     }
 
     private List<AttributeDefinition> buildAttributeList(ServiceManager service) {
-        AttributeDefinition id = new AttributeDefinition();
-        id.setId("id");
-        id.setName(new StringResourceModel("attribute.id.name", this, null).getString());
-        id.setDescription(new StringResourceModel("attribute.id.description", this, null).getString());
-        id.setRequired(true);
-        ServiceDescriptor descriptor = service.getDescriptor(getSession().getLocale());
+        Builder builder = AttributeDefinition.builder(new WicketStringLocalizer(this));
+        AttributeDefinition id = builder.id("id").name("attribute.id.name").description("attribute.id.description")
+                .required().build();
+        ServiceDescriptor descriptor = service.getDescriptor();
         List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
         attributes.add(id);
         attributes.addAll(descriptor.getAttributes());

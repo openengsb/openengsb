@@ -20,9 +20,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
-import org.openengsb.core.common.util.BundleStrings;
+import org.openengsb.core.common.l10n.BundleStrings;
+import org.openengsb.core.common.l10n.LocalizableString;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 
@@ -57,23 +57,13 @@ public abstract class AbstractDomainProvider<DomainType extends Domain, DomainEv
     }
 
     @Override
-    public String getName() {
-        return getName(Locale.getDefault());
+    public LocalizableString getName() {
+        return strings.getString("domain.name");
     }
 
     @Override
-    public String getName(Locale locale) {
-        return strings.getString("domain.name", locale);
-    }
-
-    @Override
-    public String getDescription() {
-        return getDescription(Locale.getDefault());
-    }
-
-    @Override
-    public String getDescription(Locale locale) {
-        return strings.getString("domain.description", locale);
+    public LocalizableString getDescription() {
+        return strings.getString("domain.description");
     }
 
     @Override

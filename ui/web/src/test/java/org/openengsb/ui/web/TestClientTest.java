@@ -16,6 +16,14 @@
 
 package org.openengsb.ui.web;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +58,8 @@ import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.l10n.LocalizableString;
+import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
 import org.openengsb.ui.web.editor.SimpleArgumentPanel;
@@ -60,17 +70,6 @@ import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.containsString;
-
-import static org.junit.Assert.assertThat;
 
 public class TestClientTest {
     private DomainService managedServicesMock;
@@ -408,7 +407,9 @@ public class TestClientTest {
             }
         });
         DomainProvider domainProviderMock = mock(DomainProvider.class);
-        when(domainProviderMock.getName()).thenReturn("testDomain");
+        LocalizableString nameMock = mock(LocalizableString.class);
+        when(nameMock.getString(Mockito.<Locale> any())).thenReturn("testDomain");
+        when(domainProviderMock.getName()).thenReturn(nameMock);
         when(domainProviderMock.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
             public Class<? extends Domain> answer(InvocationOnMock invocation) {
@@ -432,9 +433,10 @@ public class TestClientTest {
         Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(serviceManagerList);
 
         ServiceDescriptor serviceDescriptorMock = Mockito.mock(ServiceDescriptor.class);
-        Mockito.when(serviceDescriptorMock.getName()).thenReturn("service.name");
-        Mockito.when(serviceDescriptorMock.getDescription()).thenReturn("service.description");
-        Mockito.when(serviceManagerMock.getDescriptor(Mockito.<Locale>any())).thenReturn(serviceDescriptorMock);
+        Mockito.when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("service.name"));
+        Mockito.when(serviceDescriptorMock.getDescription()).thenReturn(
+                new PassThroughLocalizableString("service.description"));
+        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
 
         testService = new TestService();
@@ -501,12 +503,13 @@ public class TestClientTest {
         ServiceManager serviceManagerMock = Mockito.mock(ServiceManager.class);
         ServiceDescriptor serviceDescriptor = Mockito.mock(ServiceDescriptor.class);
         Mockito.when(serviceDescriptor.getId()).thenReturn("ManagerId");
-        Mockito.when(serviceDescriptor.getName()).thenReturn("ServiceName");
-        Mockito.when(serviceDescriptor.getDescription()).thenReturn("ServiceDescription");
+        Mockito.when(serviceDescriptor.getName()).thenReturn(new PassThroughLocalizableString("ServiceName"));
+        Mockito.when(serviceDescriptor.getDescription()).thenReturn(
+                new PassThroughLocalizableString("ServiceDescription"));
 
 
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
-        Mockito.when(serviceManagerMock.getDescriptor(Mockito.<Locale>any())).thenReturn(serviceDescriptor);
+        Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
 
         managerList.add(serviceManagerMock);
         Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(managerList);

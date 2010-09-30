@@ -16,6 +16,11 @@
 
 package org.openengsb.ui.web;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -31,14 +36,12 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.l10n.LocalizableString;
+import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.util.AliveState;
+import org.openengsb.ui.web.model.LocalizableStringModel;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ServiceListPage extends BasePage {
 
@@ -53,7 +56,7 @@ public class ServiceListPage extends BasePage {
     @SpringBean(name = "services")
     private List<ServiceManager> serviceManager;
 
-    private Map<AliveState, List<ServiceReference>> domainServiceMap;
+    private final Map<AliveState, List<ServiceReference>> domainServiceMap;
 
     public ServiceListPage() {
         domainServiceMap = new HashMap<AliveState, List<ServiceReference>>();
@@ -144,21 +147,21 @@ public class ServiceListPage extends BasePage {
                 final ServiceReference serv = item.getModelObject();
                 final ServiceManager sm = getServiceManager((String) serv.getProperty("managerId"));
                 final String id = (String) serv.getProperty("id");
-                String description = "";
+                LocalizableString description = new PassThroughLocalizableString("");
                 if (sm != null) {
-                    ServiceDescriptor desc = sm.getDescriptor(getLocale());
+                    ServiceDescriptor desc = sm.getDescriptor();
                     description = desc.getDescription();
                 }
                 item.add(new Label("service.name", id));
-                item.add(new Label("service.description", description));
-                item.add(new AjaxLink<ServiceManager>("updateService", 
+                item.add(new Label("service.description", new LocalizableStringModel(this, description)));
+                item.add(new AjaxLink<ServiceManager>("updateService",
                         createLoadableDetachableServiceManagerModel(sm)) {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
                         setResponsePage(new ConnectorEditorPage(getModelObject(), id));
                     }
                 });
-                item.add(new AjaxLink<ServiceManager>("deleteService", 
+                item.add(new AjaxLink<ServiceManager>("deleteService",
                         createLoadableDetachableServiceManagerModel(sm)) {
 
                     @Override
@@ -187,7 +190,7 @@ public class ServiceListPage extends BasePage {
 
     private ServiceManager getServiceManager(String managerId) {
         for (ServiceManager sm : serviceManager) {
-            if (managerId.equals(sm.getDescriptor(getLocale()).getId())) {
+            if (managerId.equals(sm.getDescriptor().getId())) {
                 return sm;
             }
         }
@@ -211,7 +214,7 @@ public class ServiceListPage extends BasePage {
     private void updateDomainServiceMap() {
         for (ServiceReference serviceReference : managedServiceInstances) {
             if (!"domain".equals(serviceReference.getProperty("openengsb.service.type"))) {
-                Domain domainService = (Domain) (services.getService(serviceReference));
+                Domain domainService = (Domain) services.getService(serviceReference);
 
                 List<ServiceReference> serviceReferenceList = domainServiceMap.get(domainService.getAliveState());
                 if (!serviceReferenceList.contains(serviceReference)) {

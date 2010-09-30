@@ -16,20 +16,21 @@
 
 package org.openengsb.core.common.descriptor;
 
-import com.google.common.base.Preconditions;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.util.BundleStrings;
-import org.openengsb.core.common.validation.FormValidator;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+
+import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.l10n.LocalizableString;
+import org.openengsb.core.common.l10n.StringLocalizer;
+import org.openengsb.core.common.validation.FormValidator;
+
+import com.google.common.base.Preconditions;
 
 public class ServiceDescriptor {
     private String id;
     private Class<? extends Domain> serviceType;
-    private String name;
-    private String description;
+    private LocalizableString name;
+    private LocalizableString description;
     private Class<? extends Domain> implementationType;
     private final List<AttributeDefinition> attributes = new ArrayList<AttributeDefinition>();
     private FormValidator formValidator;
@@ -71,25 +72,17 @@ public class ServiceDescriptor {
     }
 
     /**
-     * Returns a localized name.
+     * Returns a localizable name.
      */
-    public String getName() {
+    public LocalizableString getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     /**
      * Returns a localized description.
      */
-    public String getDescription() {
+    public LocalizableString getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     /**
@@ -111,17 +104,15 @@ public class ServiceDescriptor {
         this.formValidator = validator;
     }
 
-    public static Builder builder(Locale locale, BundleStrings strings) {
-        return new Builder(locale, strings);
+    public static Builder builder(StringLocalizer strings) {
+        return new Builder(strings);
     }
 
     public static class Builder {
         private final ServiceDescriptor desc;
-        private final BundleStrings strings;
-        private final Locale locale;
+        private final StringLocalizer strings;
 
-        public Builder(Locale locale, BundleStrings strings) {
-            this.locale = locale;
+        public Builder(StringLocalizer strings) {
             this.strings = strings;
             desc = new ServiceDescriptor();
         }
@@ -142,12 +133,12 @@ public class ServiceDescriptor {
         }
 
         public Builder name(String key) {
-            desc.name = strings.getString(key, locale);
+            desc.name = strings.getString(key);
             return this;
         }
 
         public Builder description(String key) {
-            desc.description = strings.getString(key, locale);
+            desc.description = strings.getString(key);
             return this;
         }
 
@@ -155,7 +146,7 @@ public class ServiceDescriptor {
             desc.attributes.add(ad);
             return this;
         }
-        
+
         public Builder formValidator(FormValidator validator) {
             desc.formValidator = validator;
             return this;
@@ -167,14 +158,15 @@ public class ServiceDescriptor {
             Preconditions.checkState(desc.implementationType != null, "implementation type has not been set");
             Preconditions.checkState(desc.serviceType.isAssignableFrom(desc.implementationType),
                     "implementatio type is not compatible to service type");
-            Preconditions.checkState(desc.name != null && !desc.name.trim().isEmpty(), "service name has not been set");
-            Preconditions.checkState(desc.description != null && !desc.description.trim().isEmpty(),
+            Preconditions.checkState(desc.name != null && !desc.name.getKey().trim().isEmpty(),
+                    "service name has not been set");
+            Preconditions.checkState(desc.description != null && !desc.description.getKey().trim().isEmpty(),
                     "service description has not been set");
             return desc;
         }
 
         public AttributeDefinition.Builder newAttribute() {
-            return AttributeDefinition.builder(locale, strings);
+            return AttributeDefinition.builder(strings);
         }
     }
 }

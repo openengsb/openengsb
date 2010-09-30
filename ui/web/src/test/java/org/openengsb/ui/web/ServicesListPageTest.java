@@ -16,6 +16,15 @@
 
 package org.openengsb.ui.web;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListView;
@@ -30,19 +39,10 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.ServiceReference;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ServicesListPageTest {
 
@@ -127,7 +127,9 @@ public class ServicesListPageTest {
         TestInterface domainService = setUpServicesMap();
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
-        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
+        when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("name"));
+        when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("desc"));
+        when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
         tester.startPage(ServiceListPage.class);
 
         ListView<ServiceReference> connectingService = (ListView<ServiceReference>) tester
@@ -173,8 +175,8 @@ public class ServicesListPageTest {
 
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
-        when(serviceDescriptorMock.getDescription()).thenReturn("testDescription");
-        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
+        when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("testDescription"));
+        when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
         tester.startPage(ServiceListPage.class);
         tester.assertVisible("connectingServicePanel:noConServices");
@@ -228,8 +230,8 @@ public class ServicesListPageTest {
         when(domainServiceMock.getService(serRef)).thenReturn(domainService);
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
-        when(serviceDescriptorMock.getDescription()).thenReturn("testDescription");
-        when(serviceManagerMock.getDescriptor((Locale) anyObject())).thenReturn(serviceDescriptorMock);
+        when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("testDescription"));
+        when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
         return domainService;
     }
 }

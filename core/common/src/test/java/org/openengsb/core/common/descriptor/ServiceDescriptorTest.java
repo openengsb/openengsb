@@ -16,21 +16,22 @@
 
 package org.openengsb.core.common.descriptor;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.Locale;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.l10n.PassThroughLocalizableString;
+import org.openengsb.core.common.l10n.StringLocalizer;
 import org.openengsb.core.common.util.AliveState;
-import org.openengsb.core.common.util.BundleStrings;
-
-import java.util.Locale;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ServiceDescriptorTest {
 
@@ -51,20 +52,18 @@ public class ServiceDescriptorTest {
         }
     }
 
-    private Locale locale;
-    private BundleStrings strings;
+    private StringLocalizer strings;
     private Builder builder;
     @Rule
     public ExpectedException expected = ExpectedException.none();
 
     @Before
     public void setup() {
-        locale = new Locale("en");
-        strings = mock(BundleStrings.class);
-        builder = ServiceDescriptor.builder(locale, strings);
+        strings = mock(StringLocalizer.class);
+        builder = ServiceDescriptor.builder(strings);
 
-        when(strings.getString("nameKey", locale)).thenReturn("name");
-        when(strings.getString("descKey", locale)).thenReturn("desc");
+        when(strings.getString("nameKey")).thenReturn(new PassThroughLocalizableString("name"));
+        when(strings.getString("descKey")).thenReturn(new PassThroughLocalizableString("desc"));
         builder.id("a");
         builder.serviceType(DummyDomain.class);
         builder.implementationType(DummyInstance.class);
@@ -79,8 +78,8 @@ public class ServiceDescriptorTest {
 
     @Test
     public void builderShouldLocalizeNameAndDescription() {
-        assertThat(builder.build().getName(), is("name"));
-        assertThat(builder.build().getDescription(), is("desc"));
+        assertThat(builder.build().getName().getString(Locale.getDefault()), is("name"));
+        assertThat(builder.build().getDescription().getString(Locale.getDefault()), is("desc"));
     }
 
     @Test

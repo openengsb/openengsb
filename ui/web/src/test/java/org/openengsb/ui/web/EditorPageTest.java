@@ -16,8 +16,12 @@
 
 package org.openengsb.ui.web;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import junit.framework.Assert;
@@ -31,40 +35,36 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import static org.hamcrest.Matchers.is;
-
-import static org.junit.Assert.assertThat;
-
 public class EditorPageTest {
+
+    private static class DummyDomain implements Domain {
+        @Override
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
+        }
+    }
 
     private AttributeDefinition attrib1;
     private ServiceManager manager;
     private WicketTester tester;
 
-
     @Before
-    @SuppressWarnings("deprecation")
     public void setup() {
         tester = new WicketTester();
         manager = mock(ServiceManager.class);
-        attrib1 = new AttributeDefinition();
-        attrib1.setId("a");
-        attrib1.setDefaultValue("a_default");
-        attrib1.setName("a_name");
-        ServiceDescriptor d = new ServiceDescriptor();
-        d.setId("a");
-        d.setName("sn");
-        d.setDescription("sd");
-        d.addAttribute(attrib1);
-        when(manager.getDescriptor(Mockito.any(Locale.class))).thenReturn(d);
+        attrib1 = AttributeDefinition.builder(new PassThroughStringLocalizer()).id("a").defaultValue("a_default")
+                .name("a_name").build();
+        ServiceDescriptor d = ServiceDescriptor.builder(new PassThroughStringLocalizer())
+                .serviceType(DummyDomain.class).implementationType(DummyDomain.class)
+                .id("a").name("sn").description("sd").attribute(attrib1).build();
         when(manager.getDescriptor()).thenReturn(d);
     }
 

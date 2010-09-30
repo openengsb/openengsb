@@ -30,7 +30,6 @@ public class DirectoryRuleManagerCrudTest extends AbstractRuleManagerCrudTest<Di
     public DirectoryRuleManagerCrudTest(
             List<org.openengsb.core.workflow.AbstractRuleManagerCrudTest.TestElement> testelements) {
         super(testelements);
-        // TODO Auto-generated constructor stub
     }
 
     @Override

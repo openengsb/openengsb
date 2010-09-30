@@ -20,11 +20,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Locale;
 import java.util.Map;
 
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.util.BundleStrings;
+import org.openengsb.core.common.l10n.BundleStrings;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.springframework.osgi.context.BundleContextAware;
@@ -32,11 +31,11 @@ import org.springframework.osgi.context.BundleContextAware;
 /**
  * Base class for {@link ServiceManager} implementations. Handles all OSGi related stuff and exporting the right service
  * properties that are needed for service discovery.
- * 
+ *
  * All service-specific action, like descriptor building, service instantiation and service updating are encapsulated in
  * a {@link ServiceInstanceFactory}. Creating a new service manager should be as simple as implementing the
  * {@link ServiceInstanceFactory} and creating a subclass of this class:
- * 
+ *
  * <pre>
  * public class ExampleServiceManager extends AbstractServiceManager&lt;ExampleDomain, TheInstanceType&gt; {
  *     public ExampleServiceManager(ServiceInstanceFactory&lt;ExampleDomain, TheInstanceType&gt; factory) {
@@ -44,7 +43,7 @@ import org.springframework.osgi.context.BundleContextAware;
  *     }
  * }
  * </pre>
- * 
+ *
  * @param <DomainType> interface of the domain this service manages
  * @param <InstanceType> actual service implementation this service manages
  */
@@ -79,12 +78,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
 
     @Override
     public ServiceDescriptor getDescriptor() {
-        return getDescriptor(Locale.getDefault());
-    }
-
-    @Override
-    public ServiceDescriptor getDescriptor(Locale locale) {
-        return factory.getDescriptor(ServiceDescriptor.builder(locale, strings).id(getImplementationClass().getName())
+        return factory.getDescriptor(ServiceDescriptor.builder(strings).id(getImplementationClass().getName())
                 .serviceType(getDomainInterface()).implementationType(getImplementationClass()));
     }
 

@@ -16,6 +16,15 @@
 
 package org.openengsb.ui.web;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,17 +46,6 @@ import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
 import org.openengsb.ui.web.service.DomainService;
-
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 
 public class SendEventPageTest {
 
@@ -141,7 +139,7 @@ public class SendEventPageTest {
         final List<AttributeDefinition> attributes = editorPanel.getAttributes();
         assertNotNull(attributes);
         assertEquals(attributes.size(), 2);
-        assertEquals(attributes.get(1).getName(), "testProperty");
+        assertEquals(attributes.get(1).getName().getString(null), "testProperty");
     }
 
     @Test
@@ -150,7 +148,7 @@ public class SendEventPageTest {
         List<AttributeDefinition> attributes =
                 ((EditorPanel) tester.getComponentFromLastRenderedPage("editor")).getAttributes();
         assertThat(attributes.size(), is(3));
-        assertThat(attributes.get(1).getName(), is("firstProperty"));
+        assertThat(attributes.get(1).getName().getString(null), is("firstProperty"));
     }
 
     @Test

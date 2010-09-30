@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
+package org.openengsb.core.common.l10n;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,10 +34,10 @@ import org.osgi.framework.Constants;
  * Localization helper to lookup string resources from the bundle's localization
  * entries.
  */
-public class BundleStrings {
+public class BundleStrings implements StringLocalizer {
 
     private Bundle bundle;
-    private HashMap<String, URL> entries;
+    private HashMap<String, Properties> entries;
 
     public BundleStrings() {
     }
@@ -46,36 +46,32 @@ public class BundleStrings {
         setBundle(bundle);
     }
 
-    public String getString(String key) {
-        return getString(key, Locale.getDefault());
+    @Override
+    public LocalizableString getString(final String key) {
+        return new LocalizableString() {
+            @Override
+            public String getString(Locale locale) {
+                return BundleStrings.this.getString(key, locale);
+            }
+
+            @Override
+            public String getKey() {
+                return key;
+            }
+        };
     }
 
+    @Override
     public String getString(String key, Locale locale) {
         @SuppressWarnings("unchecked")
         List<Locale> locales = LocaleUtils.localeLookupList(locale, new Locale(""));
         for (Locale l : locales) {
-            URL url = entries.get(buildEntryFilename(l));
-            if (url == null) {
+            Properties p = entries.get(buildEntryFilename(l));
+            if (p == null) {
                 continue;
             }
-            InputStream in = null;
-            try {
-                in = url.openStream();
-                Properties p = new Properties();
-                p.load(in);
-                if (p.containsKey(key)) {
-                    return p.getProperty(key);
-                }
-            } catch (IOException e) {
-                // nop
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        // nop
-                    }
-                }
+            if (p.containsKey(key)) {
+                return p.getProperty(key);
             }
         }
         return null;
@@ -115,12 +111,35 @@ public class BundleStrings {
     private void buildEntriesMap(String directory, String basename) {
         @SuppressWarnings("unchecked")
         Enumeration<URL> resources = bundle.findEntries(directory, basename + "*.properties", false);
-        entries = new HashMap<String, URL>();
+        entries = new HashMap<String, Properties>();
         while (resources != null && resources.hasMoreElements()) {
             URL url = resources.nextElement();
             String name = new File(url.toString()).getName().substring(basename.length());
             name = name.substring(0, name.length() - ".properties".length());
-            entries.put(name, url);
+            Properties p = loadProperties(url);
+            if (p != null) {
+                entries.put(name, p);
+            }
+        }
+    }
+
+    private Properties loadProperties(URL url) {
+        InputStream in = null;
+        try {
+            in = url.openStream();
+            Properties p = new Properties();
+            p.load(in);
+            return p;
+        } catch (IOException e) {
+            return null;
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // nop
+                }
+            }
         }
     }
 }

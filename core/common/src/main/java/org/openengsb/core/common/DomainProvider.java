@@ -17,7 +17,8 @@
 package org.openengsb.core.common;
 
 import java.util.List;
-import java.util.Locale;
+
+import org.openengsb.core.common.l10n.LocalizableString;
 
 /**
  * Provide necessary information about an OpenEngSB domain. Each domain in the OpenEngSB has to create an implementation
@@ -32,24 +33,14 @@ public interface DomainProvider {
     String getId();
 
     /**
-     * Returns the localized name. The {@code Locale} of the system is used.
+     * Returns the localizable name.
      */
-    String getName();
+    LocalizableString getName();
 
     /**
-     * Returns the localized name best matching the specified {@code Locale}.
+     * Returns the localizable description.
      */
-    String getName(Locale locale);
-
-    /**
-     * Returns a localized description. The {@code Locale} of the system is used.
-     */
-    String getDescription();
-
-    /**
-     * Returns the localized description best matching the specified {@code Locale}.
-     */
-    String getDescription(Locale locale);
+    LocalizableString getDescription();
 
     /**
      * Returns the domain-specific interface.
