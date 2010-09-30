@@ -81,6 +81,14 @@ public class WorkflowIT extends AbstractExamTestHelper {
         contextService.putValue("domains/NotificationDomain/defaultConnector/id", "dummyConnector");
         contextService.putValue("domains/ExampleDomain/defaultConnector/id", "dummyLog");
 
+        /*
+         * This is kind of a workaround. But for some reason when the workflow-service waits for these services for 30
+         * seconds, they don't show up. But when provoking an AssertionError using the 2 lines below, the services show
+         * up, and the test runs just fine - ChristophGr
+         */
+        retrieveService(getBundleContext(), ExampleDomain.class);
+        retrieveService(getBundleContext(), NotificationDomain.class);
+
         DummyNotificationDomain dummy = new DummyNotificationDomain();
         String[] clazzes = new String[] { Domain.class.getName(), NotificationDomain.class.getName() };
         Dictionary<String, String> properties = new Hashtable<String, String>();
