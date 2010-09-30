@@ -27,10 +27,8 @@
     <property name="path" value="data/openengsb/rulebase" />
   </bean>
 
-  <osgi:service interface="org.openengsb.core.workflow.RuleManager">
-    <bean class="org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource">
-      <property name="path" value="data/openengsb/rulebase" />
-    </bean>
+  <osgi:service interface="org.openengsb.core.workflow.RuleManager" ref="ruleManager">
+    <ref local="ruleManager" />
   </osgi:service>
 
   <osgi:service interface="org.openengsb.core.workflow.WorkflowService">

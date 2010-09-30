@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.drools.RuleBase;
 import org.drools.StatefulSession;
 import org.drools.event.AgendaEventListener;
@@ -43,6 +45,8 @@ import org.osgi.framework.ServiceReference;
 import org.springframework.osgi.context.BundleContextAware;
 
 public class WorkflowServiceImpl implements WorkflowService, BundleContextAware, ServiceListener {
+
+    private Log log = LogFactory.getLog(WorkflowServiceImpl.class);
 
     private RuleManager rulemanager;
 
@@ -136,10 +140,12 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     protected StatefulSession createSession() throws RuleBaseException {
         RuleBase rb = rulemanager.getRulebase();
+        log.debug("retrieved rulebase: " + rb + "from source " + rulemanager);
         StatefulSession session = rb.newStatefulSession();
         for (AgendaEventListener l : listeners) {
             session.addEventListener(l);
         }
+        log.debug("session started");
         return session;
     }
 

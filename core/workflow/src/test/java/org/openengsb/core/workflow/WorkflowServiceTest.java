@@ -16,10 +16,6 @@
 
 package org.openengsb.core.workflow;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +35,13 @@ import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
+
+import static org.mockito.Mockito.verify;
+
+import static org.hamcrest.CoreMatchers.nullValue;
+
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 public class WorkflowServiceTest {
 
@@ -64,6 +67,7 @@ public class WorkflowServiceTest {
     private RuleManager manager;
     private RuleListener listener;
     private DummyExampleDomain logService;
+    private DummyNotificationDomain notification;
 
     @Before
     public void setUp() throws Exception {
@@ -92,7 +96,7 @@ public class WorkflowServiceTest {
         Map<String, Domain> domains = new HashMap<String, Domain>();
         logService = Mockito.mock(DummyExampleDomain.class);
         domains.put("example", logService);
-        DummyNotificationDomain notification = Mockito.mock(DummyNotificationDomain.class);
+        notification = Mockito.mock(DummyNotificationDomain.class);
         domains.put("notification", notification);
         return domains;
     }
@@ -123,6 +127,15 @@ public class WorkflowServiceTest {
         Event event = new Event("test-context");
         service.processEvent(event);
         Assert.assertTrue(listener.haveRulesFired("logtest"));
+    }
+
+    @Test
+    public void testUpdateRule() throws Exception {
+        manager.update(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1"),
+            "when\n Event ( contextId == \"test-context\")\n then \n example.doSomething(\"21\");");
+        Event event = new Event("test-context");
+        service.processEvent(event);
+        verify(logService).doSomething("21");
     }
 
     @Test
