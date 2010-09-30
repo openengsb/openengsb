@@ -14,7 +14,4 @@
 # limitations under the License.
 #
 
-Import-Package: org.aopalliance.aop,\
-org.springframework.aop,\
-org.springframework.aop.framework,\
-*
+Import-Package: org.openengsb.core.common.util, *
