@@ -210,7 +210,7 @@ public class TestClientTest {
         for (MethodId mid : choices) {
             choiceMethods.add(TestInterface.class.getMethod(mid.getName(), mid.getArgumentTypesAsClasses()));
         }
-        Assert.assertEquals(Arrays.asList(TestInterface.class.getMethods()), choiceMethods);
+        Assert.assertEquals(Arrays.asList(TestInterface.class.getDeclaredMethods()), choiceMethods);
     }
 
     @Test

@@ -39,7 +39,7 @@ public final class MethodUtil {
         List<Method> result = new ArrayList<Method>();
         for (Class<?> serviceInterface : service.getClass().getInterfaces()) {
             if (Domain.class.isAssignableFrom(serviceInterface)) {
-                result.addAll(Arrays.asList(serviceInterface.getMethods()));
+                result.addAll(Arrays.asList(serviceInterface.getDeclaredMethods()));
             }
         }
         return result;
