@@ -23,6 +23,7 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.Inject;
@@ -49,14 +50,26 @@ public abstract class AbstractExamTestHelper {
 
     @BeforeClass
     public static void beforeClass() throws IOException {
-        FileUtils.deleteDirectory(new File(getWorkingDirectory()));
+        try {
+            FileUtils.deleteDirectory(new File(getWorkingDirectory()));
+        } catch (IOException e) {
+            // yes we know about this, but this happens sometimes in windows...
+        }
+    }
+
+    @AfterClass
+    public static void afterClass() throws IOException {
+        try {
+            FileUtils.deleteDirectory(new File(getWorkingDirectory()));
+        } catch (IOException e) {
+            // ok, still not funny but lets try if the test passes if the file still exists
+        }
     }
 
     @Configuration
     public static Option[] configuration() {
         List<Option> baseConfiguration = BaseExamConfiguration.getBaseExamOptions("../");
-        baseConfiguration
-                .add(CoreOptions.systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"));
+        baseConfiguration.add(CoreOptions.systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"));
         baseConfiguration.add(new WorkingDirectoryOption(getWorkingDirectory()));
         BaseExamConfiguration.addEntireOpenEngSBPlatform(baseConfiguration);
         Option[] options = BaseExamConfiguration.convertOptionListToArray(baseConfiguration);
