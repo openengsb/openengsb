@@ -513,6 +513,7 @@
                 <exclude>**/.keep</exclude>
                 <exclude>**/EngSB.sln</exclude>
                 <exclude>README</exclude>
+                <exclude>**/nb-configuration.xml</exclude>
               </excludes>
               <mapping>
                 <bnd>SCRIPT_STYLE</bnd>
