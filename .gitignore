@@ -38,6 +38,11 @@ eclipse-workspace
 *classes
 
 #=================
+#netbeans-project
+#=================
+core/workflow/data
+
+#=================
 #maven-files
 #=================
 *target
