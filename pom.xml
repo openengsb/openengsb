@@ -24,7 +24,7 @@
   <properties>
     <!-- Version Informtations -->
     <openengsb.version.number>${pom.version}</openengsb.version.number>
-    <openengsb.version.name>"Dashing Donald"</openengsb.version.name>
+    <openengsb.version.name>"Emerald Eve"</openengsb.version.name>
     <!-- General Settings -->
     <root.basedir>${project.basedir}</root.basedir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
