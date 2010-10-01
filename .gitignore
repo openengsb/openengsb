@@ -41,6 +41,8 @@ eclipse-workspace
 #netbeans-project
 #=================
 core/workflow/data
+nb-configuration.xml
+nbactions.xml
 
 #=================
 #maven-files
@@ -103,8 +105,3 @@ runner
 *.tmp_*
 velocity.log*
 
-#================
-#netbeans files
-#================
-nb-configuration.xml
-nbactions.xml
