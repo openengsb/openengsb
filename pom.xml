@@ -365,9 +365,9 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pintegration-test,docs,license-check,checkstyle</preparationGoals>
+              <preparationGoals>clean install -Pdocs</preparationGoals>
               <goals>clean install pax:provision assembly:assembly deploy</goals>
-              <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,nightly</releaseProfiles>
+              <releaseProfiles>!run,docs,release,nightly</releaseProfiles>
             </configuration>
           </plugin>
         </plugins>
@@ -395,9 +395,9 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pintegration-test,docs,license-check,checkstyle</preparationGoals>
+              <preparationGoals>clean install -Pdocs</preparationGoals>
               <goals>clean install pax:provision assembly:assembly deploy</goals>
-              <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,milestone</releaseProfiles>
+              <releaseProfiles>!run,docs,release,milestone</releaseProfiles>
             </configuration>
           </plugin>
         </plugins>
@@ -425,9 +425,9 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pintegration-test,docs,license-check,checkstyle</preparationGoals>
+              <preparationGoals>clean install -Pdocs</preparationGoals>
               <goals>clean install pax:provision assembly:assembly deploy</goals>
-              <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,final</releaseProfiles>
+              <releaseProfiles>!run,docs,release,final</releaseProfiles>
             </configuration>
           </plugin>
         </plugins>
