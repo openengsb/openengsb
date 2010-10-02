@@ -86,7 +86,7 @@
 
     <menu name="Development" >
       <item name="Contribution" href="contribution.html" />
-      <item name="Source Github" href="http://github.com/openengsb/openengsb/" />
+      <item name="Source" href="http://github.com/openengsb/openengsb/" />
       <item name="Issues Tracking" href="issue-tracking.html"/>
       <item name="Continuous Integration" href="integration.html"/>
       <item name="Maven Repository" href="http://maven.openengsb.org/" />
