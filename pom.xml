@@ -365,8 +365,8 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pdocs</preparationGoals>
-              <goals>clean install pax:provision assembly:assembly deploy</goals>
+              <preparationGoals>clean install -Pdocs -Dmaven.test.skip=true -DperformRelease=true</preparationGoals>
+              <goals>clean install pax:provision assembly:assembly deploy -Dmaven.test.skip=true -DperformRelease=true</goals>
               <releaseProfiles>!run,docs,release,nightly</releaseProfiles>
             </configuration>
           </plugin>
@@ -395,8 +395,8 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pdocs</preparationGoals>
-              <goals>clean install pax:provision assembly:assembly deploy</goals>
+              <preparationGoals>clean install -Pdocs -Dmaven.test.skip=true -DperformRelease=true</preparationGoals>
+              <goals>clean install pax:provision assembly:assembly deploy -Dmaven.test.skip=true -DperformRelease=true</goals>
               <releaseProfiles>!run,docs,release,milestone</releaseProfiles>
             </configuration>
           </plugin>
@@ -425,8 +425,8 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pdocs</preparationGoals>
-              <goals>clean install pax:provision assembly:assembly deploy</goals>
+              <preparationGoals>clean install -Pdocs -Dmaven.test.skip=true -DperformRelease=true</preparationGoals>
+              <goals>clean install pax:provision assembly:assembly deploy -Dmaven.test.skip=true -DperformRelease=true</goals>
               <releaseProfiles>!run,docs,release,final</releaseProfiles>
             </configuration>
           </plugin>
