@@ -16,5 +16,6 @@
 #
 
 cd $(dirname $0)/../../
-mvn release:prepare release:perform -Pdocs,final
+mvn release:prepare release:perform -Pdocs,final -Dmaven.test.skip=true -DperformRelease=true
+
 
