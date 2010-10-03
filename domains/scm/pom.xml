@@ -38,6 +38,7 @@
 
   <modules>
     <module>implementation</module>
+    <module>git</module>
   </modules>
 
 </project>
