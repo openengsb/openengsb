@@ -299,7 +299,8 @@ public class TestClient extends BasePage {
     }
 
     private void addDomainProvider(DomainProvider provider, DefaultMutableTreeNode node) {
-        DefaultMutableTreeNode providerNode = new DefaultMutableTreeNode(provider.getName());
+        DefaultMutableTreeNode providerNode =
+            new DefaultMutableTreeNode(provider.getName().getString(getSession().getLocale()));
         node.add(providerNode);
         for (ServiceReference serviceReference : this.services
                 .serviceReferencesForDomain(provider.getDomainInterface())) {
