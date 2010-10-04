@@ -37,6 +37,7 @@
 
   <modules>
     <module>implementation</module>
+    <module>trac</module>
   </modules>
 
 </project>
