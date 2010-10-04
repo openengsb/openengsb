@@ -55,6 +55,12 @@
     <release.felix.fileinstall.poll>1000</release.felix.fileinstall.poll>
     <release.felix.fileinstall.noInitialDelay>true</release.felix.fileinstall.noInitialDelay>
 
+    <!-- run/karaf.sh -->
+    <client.properties.linux></client.properties.linux>
+
+    <!-- run/karaf.bat -->
+    <client.properties.windows></client.properties.windows>
+
     <!-- config/* -->   
     <!-- To be extended, currently no properties required here -->
   </properties>
