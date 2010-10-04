@@ -114,7 +114,7 @@
     <felix.gogo.version>0.4.0</felix.gogo.version>
     <felix.version>3.0.3</felix.version>
     <karaf.version>2.0.0</karaf.version>
-    <mina.version>2.0.0-RC1</mina.version>
+    <mina.version>2.0.0</mina.version>
     <sshd.version>0.4.0</sshd.version>
     <hsqldb.version>1.8.0.10</hsqldb.version>
     <h2.version>1.2.139</h2.version>
