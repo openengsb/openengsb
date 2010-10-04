@@ -1,2 +1,3 @@
 org.openengsb.core.workflow.DummyNotificationDomain notification
 org.openengsb.core.workflow.DummyExampleDomain example
+org.openengsb.core.workflow.EventHelper event
