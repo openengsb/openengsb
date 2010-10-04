@@ -1,29 +1,32 @@
-/*
+/**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 
 package org.openengsb.domains.issue.trac.internal.models.xmlrpc;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
+import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.common.TypeConverter;
 import org.apache.xmlrpc.common.TypeConverterFactory;
 import org.apache.xmlrpc.common.TypeConverterFactoryImpl;
+
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * This class is copied and slightly modified from the Trac XML-RPC Plugin Java
@@ -106,16 +109,17 @@ public class TrackerDynamicProxy {
     @SuppressWarnings("unchecked")
     public <T> T newInstance(ClassLoader classLoader, final Class<T> clazz) {
         return (T) Proxy.newProxyInstance(classLoader, new Class[] { clazz }, new InvocationHandler() {
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            public Object invoke(Object proxy, Method method, Object[] args)
+                throws InvocationTargetException, IllegalAccessException, XmlRpcException {
                 if (isObjectMethodLocal() && method.getDeclaringClass().equals(Object.class)) {
                     return method.invoke(proxy, args);
                 }
 
-                String _classname = clazz.getName().replaceFirst(clazz.getPackage().getName() + ".", "").toLowerCase();
+                String classname = clazz.getName().replaceFirst(clazz.getPackage().getName() + ".", "").toLowerCase();
 
-                _classname = _classname.replace("$", "."); // dirty hack TODO
+                classname = classname.replace("$", "."); // dirty hack TODO
 
-                String methodName = _classname + "." + method.getName();
+                String methodName = classname + "." + method.getName();
                 Object result = client.execute(methodName, args);
                 TypeConverter typeConverter = typeConverterFactory.getTypeConverter(method.getReturnType());
                 return typeConverter.convert(result);

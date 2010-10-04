@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
+
 package org.openengsb.domains.issue.trac.internal.models.constants;
 
-public class TracFieldConstants {
-    public final static String FIELD_OWNER = "owner";
-    public final static String FIELD_REPORTER = "reporter";
-    public final static String FIELD_SUMMARY = "summary";
-    public final static String FIELD_DESCRIPTION = "description";
-    public final static String FIELD_PRIORITY = "priority";
-    public final static String FIELD_STATUS = "status";
+public final class TracFieldConstants {
+
+    private TracFieldConstants() {
+        
+    }
+
+    public static final String FIELD_OWNER = "owner";
+    public static final String FIELD_REPORTER = "reporter";
+    public static final String FIELD_SUMMARY = "summary";
+    public static final String FIELD_DESCRIPTION = "description";
+    public static final String FIELD_PRIORITY = "priority";
+    public static final String FIELD_STATUS = "status";
 }
