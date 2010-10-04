@@ -33,7 +33,7 @@
    <!-- JMS ConnectionFactory to use -->
    <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
       <property name="brokerURL">
-        <value>tcp://localhost:61616?broker.persistent=true</value>
+        <value>vm:(broker:(tcp://localhost:6000)?persistent=true)</value>
       </property>
    </bean>
    

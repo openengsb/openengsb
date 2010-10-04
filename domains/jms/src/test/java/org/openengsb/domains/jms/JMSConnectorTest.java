@@ -27,9 +27,9 @@ import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.HashMap;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -38,7 +38,9 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.service.DomainService;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 public class JMSConnectorTest {
@@ -46,6 +48,10 @@ public class JMSConnectorTest {
     @Test
     public void returnMockDomainInterface_shouldAddProxyToBundleContext() {
         BundleContext mockContext = mock(BundleContext.class);
+        Bundle mockBundle = mock(Bundle.class);
+        Dictionary headers = mock(Dictionary.class);
+        when(mockBundle.getHeaders()).thenReturn(headers);
+        when(mockContext.getBundle()).thenReturn(mockBundle);
         DomainService domainService = mock(DomainService.class);
         DomainProvider provider = Mockito.mock(DomainProvider.class);
         when(provider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
@@ -58,13 +64,21 @@ public class JMSConnectorTest {
         InvocationHandler invocationHandlerMock = mock(InvocationHandler.class);
         InvocationHandlerFactory mock = mock(InvocationHandlerFactory.class);
         when(mock.createInstance(Mockito.any(DomainProvider.class))).thenReturn(invocationHandlerMock);
+
         JMSConnector jmsConnector = new JMSConnector(domainService, mock);
         jmsConnector.setBundleContext(mockContext);
         jmsConnector.addProxiesToContext();
+
         ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
-        verify(mockContext).registerService(eq(TestInterface.class.getName()), captor.capture(), any(Dictionary.class));
-        assertTrue(captor.getValue() instanceof Proxy);
-        assertTrue(captor.getValue() instanceof TestInterface);
+        verify(mockContext)
+            .registerService(eq(ServiceManager.class.getName()), captor.capture(), any(Dictionary.class));
+        assertTrue(captor.getValue() instanceof ProxyServiceManager);
+        ProxyServiceManager manager = (ProxyServiceManager) captor.getValue();
+        
+        manager.update("12345", new HashMap<String, String>());
+        verify(mockContext).registerService(eq(new String[]{TestInterface.class.getName(), Domain.class.getName()}),
+            captor.capture(), any(Dictionary.class));
+
         ((TestInterface) captor.getValue()).log(5);
         ArgumentCaptor<Method> methodCaptor = ArgumentCaptor.forClass(Method.class);
         try {

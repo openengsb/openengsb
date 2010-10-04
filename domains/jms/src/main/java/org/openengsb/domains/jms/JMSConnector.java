@@ -17,10 +17,11 @@
 package org.openengsb.domains.jms;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
-import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.service.DomainService;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
@@ -38,12 +39,16 @@ public class JMSConnector implements BundleContextAware {
 
     public void addProxiesToContext() {
         for (DomainProvider domain : domainService.domains()) {
-            Class<? extends Domain> domainInterface = domain.getDomainInterface();
-            InvocationHandler handler = handlerFactory.createInstance(domain);
-            Object newProxyInstance =
-                Proxy.newProxyInstance(domainInterface.getClassLoader(), new Class[]{domainInterface}, handler);
-            bundleContext.registerService(domainInterface.getName(), newProxyInstance, null);
+            addProxyServiceManager(domain);
         }
+    }
+
+    private void addProxyServiceManager(DomainProvider domain) {
+        InvocationHandler handler = handlerFactory.createInstance(domain);
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        properties.put("domain", domain.getDomainInterface().getName());
+        bundleContext.registerService(ServiceManager.class.getName(), new ProxyServiceManager(domain, handler,
+            bundleContext), properties);
     }
 
     @Override
