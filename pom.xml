@@ -42,6 +42,7 @@
     <plugin.paxrunner.version>1.5.0</plugin.paxrunner.version>
     <plugin.release.version>2.0</plugin.release.version>
     <plugin.assembly.version>2.2-beta-5</plugin.assembly.version>
+    <plugin.site.version>2.1.1</plugin.site.version>
   </properties>
 
   <groupId>org.openengsb</groupId>
@@ -306,6 +307,12 @@
           <generatePdf>false</generatePdf>
           <generateXml>true</generateXml>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>${plugin.site.version}</version>
+        <extensions>true</extensions>
       </plugin>
     </plugins>
   </build>

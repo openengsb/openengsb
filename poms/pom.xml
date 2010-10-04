@@ -37,7 +37,6 @@
     <!-- Plugin Versions -->
     <plugin.bundle.version>2.1.0</plugin.bundle.version>
     <plugin.eclipse.version>2.8</plugin.eclipse.version>
-    <plugin.site.version>2.1.1</plugin.site.version>
     <plugin.openjpa.version>1.1</plugin.openjpa.version>
     <plugin.surefire.version>2.5</plugin.surefire.version>
     <docbkx.version>2.0.10</docbkx.version>
@@ -221,12 +220,6 @@
         <plugin>
           <groupId>org.ops4j</groupId>
           <artifactId>maven-pax-plugin</artifactId>
-          <extensions>true</extensions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>${plugin.site.version}</version>
           <extensions>true</extensions>
         </plugin>
         <plugin>
