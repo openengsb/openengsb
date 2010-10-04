@@ -25,13 +25,13 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:service interface="org.openengsb.core.common.DomainProvider">
-    <bean class="org.openengsb.domains.issue.MyDomainProvider" />
+    <bean class="org.openengsb.domains.issue.IssueDomainProvider" />
   </osgi:service>
 
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.Domain</value>
-      <value>org.openengsb.domains.issue.MyDomain</value>
+      <value>org.openengsb.domains.issue.IssueDomain</value>
     </osgi:interfaces>
     <osgi:service-properties>
       <entry key="id" value="domains.mydomain" />
@@ -39,7 +39,7 @@
     </osgi:service-properties>
     <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
       <property name="domainInterface">
-        <value>org.openengsb.domains.issue.MyDomain</value>
+        <value>org.openengsb.domains.issue.IssueDomain</value>
       </property>
       <property name="domainName" value="MyDomain" />
       <property name="context" ref="contextService" />

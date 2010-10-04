@@ -16,8 +16,8 @@
 
 package org.openengsb.domains.issue;
 
-import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.DomainEvents;
 
-public interface MyDomain extends Domain {
+public interface IssueDomainEvents extends DomainEvents {
 
 }

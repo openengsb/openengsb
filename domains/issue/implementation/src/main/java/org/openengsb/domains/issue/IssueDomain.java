@@ -16,8 +16,8 @@
 
 package org.openengsb.domains.issue;
 
-import org.openengsb.core.common.AbstractDomainProvider;
+import org.openengsb.core.common.Domain;
 
-public class MyDomainProvider extends AbstractDomainProvider<MyDomain> {
+public interface IssueDomain extends Domain {
 
 }
