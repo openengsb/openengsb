@@ -35,7 +35,9 @@ import org.springframework.osgi.context.BundleContextAware;
  * All service-specific action, like descriptor building, service instantiation and service updating are encapsulated in
  * a {@link ServiceInstanceFactory}. Creating a new service manager should be as simple as implementing the
  * {@link ServiceInstanceFactory} and creating a subclass of this class:
- *
+ * 
+ * This class has to be instantiated via Spring, as the BundleContext has to be set as it is BundleContextAware.
+ * 
  * <pre>
  * public class ExampleServiceManager extends AbstractServiceManager&lt;ExampleDomain, TheInstanceType&gt; {
  *     public ExampleServiceManager(ServiceInstanceFactory&lt;ExampleDomain, TheInstanceType&gt; factory) {
