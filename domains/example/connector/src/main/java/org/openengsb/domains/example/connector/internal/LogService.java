@@ -34,7 +34,7 @@ public class LogService implements ExampleDomain {
     }
 
     @Override
-    public void doSomething(String message) {
+    public String doSomething(String message) {
         message = id + ": " + message;
         if ("DEBUG".equals(outputMode)) {
             log.debug(message);
@@ -45,6 +45,7 @@ public class LogService implements ExampleDomain {
         } else if ("ERROR".equals(outputMode)) {
             log.error(message);
         }
+        return "LogServiceCalled with: " + message;
     }
 
     public void setOutputMode(String outputMode) {
