@@ -63,7 +63,7 @@
     <exam.version>1.2.2</exam.version>
     <guava.version>r06</guava.version>
     <tinybundle.version>1.2.0</tinybundle.version>
-    <jetty.version>6.1.24</jetty.version>
+    <jetty.version>6.1.25</jetty.version>
     <servlet.version>2.5.0</servlet.version>
     <portlet.version>1.0.0</portlet.version>
     <jasper.version>6.0.24</jasper.version>
@@ -132,7 +132,6 @@
     <h2.version>1.1.116</h2.version>
     <jaxb.version>2.2.1</jaxb.version>
     <jaxen.version>1.1.1</jaxen.version>
-    <jetty.version>6.1.20</jetty.version>
     <jgit.version>0.7.1</jgit.version>
     <jibx.version>1.2.2</jibx.version>
     <joda.version>1.6</joda.version>
