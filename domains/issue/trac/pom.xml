@@ -106,5 +106,11 @@
       <version>${exam.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.xmlrpc</groupId>
+      <artifactId>xmlrpc-client</artifactId>
+      <version>${xmlrpc.version}</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 </project>

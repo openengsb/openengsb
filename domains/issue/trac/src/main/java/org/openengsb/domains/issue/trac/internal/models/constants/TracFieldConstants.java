@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.issue.trac.internal;
+package org.openengsb.domains.issue.trac.internal.models.constants;
 
-import org.openengsb.core.common.util.AliveState;
-import org.openengsb.domains.issue.IssueDomain;
-
-
-public class TracConnector implements IssueDomain {
-    
-    @Override
-    public AliveState getAliveState() {
-        return AliveState.OFFLINE;
-    }
+public class TracFieldConstants {
+    public final static String FIELD_OWNER = "owner";
+    public final static String FIELD_REPORTER = "reporter";
+    public final static String FIELD_SUMMARY = "summary";
+    public final static String FIELD_DESCRIPTION = "description";
+    public final static String FIELD_PRIORITY = "priority";
+    public final static String FIELD_STATUS = "status";
 }

@@ -14,31 +14,10 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.issue.trac.internal;
+package org.openengsb.domains.issue.trac.internal.models.constants;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.openengsb.domains.issue.trac.TracConnector;
-import org.openengsb.domains.issue.trac.internal.models.xmlrpc.Ticket;
-
-
-public class TracConnectorTest {
-
-    Ticket ticket;
-    TracConnector tracConnector;
-
-
-    @Before
-    public void setUp() {
-
-    }
-
-    @Test
-    public void testSetup() {
-        ticket = Mockito.mock(Ticket.class);
-        tracConnector = new TracConnectorImpl();
-        tracConnector.setTicket(ticket);
-    }
-
+public class TracStatusConstants {
+    public final static String STATUS_NEW = "new";
+    public final static String STATUS_ASSIGNED = "assigned";
+    public final static String STATUS_CLOSED = "closed";
 }

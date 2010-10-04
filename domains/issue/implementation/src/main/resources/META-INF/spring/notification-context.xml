@@ -34,14 +34,14 @@
       <value>org.openengsb.domains.issue.IssueDomain</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.mydomain" />
+      <entry key="id" value="domains.issuedomain" />
       <entry key="openengsb.service.type" value="domain" />
     </osgi:service-properties>
     <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
       <property name="domainInterface">
         <value>org.openengsb.domains.issue.IssueDomain</value>
       </property>
-      <property name="domainName" value="MyDomain" />
+      <property name="domainName" value="IssueDomain" />
       <property name="context" ref="contextService" />
     </bean>
   </osgi:service>
