@@ -134,7 +134,6 @@
     <jgit.version>0.7.1</jgit.version>
     <jibx.version>1.2.2</jibx.version>
     <joda.version>1.6</joda.version>
-    <junit.version>4.7</junit.version>
     <log4j.version>1.2.14</log4j.version>
     <lucene.version>2.4.1</lucene.version>
     <maven.code.version>3.0-alpha-2</maven.code.version>
