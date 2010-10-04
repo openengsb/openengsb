@@ -87,7 +87,6 @@
     <commons.pool.version>1.5.4_1</commons.pool.version>
     <commons.dbcp.version>1.2.2_5</commons.dbcp.version>
     <commons.logging.version>1.1.1</commons.logging.version>
-    <slf4j.log4j12.version>1.5.8</slf4j.log4j12.version>
     <serp.version>1.13.1</serp.version>
     <javassist.version>3.9.0.GA</javassist.version>
     <antlr.version>2.7.6</antlr.version>
@@ -145,7 +144,7 @@
     <servicemix.version>3.3.1</servicemix.version>
     <servicemix.subprojects.version>2010.01</servicemix.subprojects.version>
     <servicemix-specs-version>1.3.0</servicemix-specs-version>
-    <slf4j.version>1.5.8</slf4j.version>
+    <slf4j.version>1.6.1</slf4j.version>
     <smack.version>3.1.0</smack.version>
     <spring.activemq.version>2.1</spring.activemq.version>
     <svnkit.version>1.3.0</svnkit.version>
