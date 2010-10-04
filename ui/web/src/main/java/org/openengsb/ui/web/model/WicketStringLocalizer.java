@@ -36,12 +36,12 @@ public class WicketStringLocalizer implements StringLocalizer {
     }
 
     @Override
-    public String getString(String key, Locale locale) {
+    public String getString(String key, Locale locale, String... parameters) {
         return new StringResourceModel(key, component, null).getString();
     }
 
     @Override
-    public LocalizableString getString(final String key) {
+    public LocalizableString getString(final String key, String... parameters) {
         return new LocalizableString() {
             @Override
             public String getKey() {
