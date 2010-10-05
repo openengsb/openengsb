@@ -16,35 +16,23 @@
 
 package org.openengsb.domains.report;
 
-import java.util.List;
+@SuppressWarnings("serial")
+public class NoSuchReportException extends Exception {
 
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.util.AliveState;
-
-public class ReportDomainImpl implements ReportDomain {
-
-    @Override
-    public AliveState getAliveState() {
-        // TODO Auto-generated method stub
-        return null;
+    public NoSuchReportException() {
+        super();
     }
 
-    @Override
-    public Report generateReport(String reportId) {
-        // TODO Auto-generated method stub
-        return null;
+    public NoSuchReportException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    @Override
-    public Report generateReport(List<Event> events) {
-        // TODO Auto-generated method stub
-        return null;
+    public NoSuchReportException(String message) {
+        super(message);
     }
 
-    @Override
-    public String collectData(String idType, String id) {
-        // TODO Auto-generated method stub
-        return null;
+    public NoSuchReportException(Throwable cause) {
+        super(cause);
     }
 
 }

@@ -14,18 +14,36 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.report.datastore;
+package org.openengsb.domains.report.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.core.common.Event;
+public class Report {
 
-public interface EventStore {
+    private String name;
 
-    void storeEvent(StorageKey key, Event event);
+    private List<ReportPart> parts;
 
-    List<Event> getEvents(StorageKey key);
+    public Report(String name) {
+        this.name = name;
+        this.parts = new ArrayList<ReportPart>();
+    }
 
-    void clearEvents(StorageKey key);
+    public String getName() {
+        return name;
+    }
+
+    public void addPart(ReportPart part) {
+        this.parts.add(part);
+    }
+
+    public void removePart(ReportPart part) {
+        this.parts.remove(part);
+    }
+
+    public List<ReportPart> getParts() {
+        return new ArrayList<ReportPart>(parts);
+    }
 
 }

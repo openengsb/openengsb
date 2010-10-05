@@ -14,54 +14,34 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.report;
+package org.openengsb.domains.report.model;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 
-import com.sun.xml.internal.ws.api.message.Attachment;
+public class ReportPart {
 
-public class Report {
+    private String partName;
 
     private byte[] content;
 
     private String contentType;
 
-    private String name;
-
-    private List<Attachment> attachments;
-
-    @SuppressWarnings("unused")
-    private Report() {
-        // for rpc framework
-    }
-
-    public Report(byte[] content, String contentType, String name) {
+    public ReportPart(String partName, byte[] content, String contentType) {
+        this.partName = partName;
         this.content = content;
         this.contentType = contentType;
-        this.name = name;
     }
 
     public byte[] getContent() {
-        return content;
+        return Arrays.copyOf(content, content.length);
     }
 
     public String getContentType() {
         return contentType;
     }
 
-    public String getName() {
-        return name;
+    public String getPartName() {
+        return partName;
     }
 
-    public void setAttachments(List<Attachment> attachments) {
-        this.attachments = attachments;
-    }
-
-    public List<Attachment> getAttachments() {
-        if (attachments == null) {
-            return Collections.emptyList();
-        }
-        return Collections.unmodifiableList(attachments);
-    }
 }

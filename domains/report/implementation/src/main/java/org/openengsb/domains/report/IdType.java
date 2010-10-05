@@ -14,22 +14,8 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.report.datastore;
+package org.openengsb.domains.report;
 
-import java.util.Arrays;
-
-public enum EventStorageType {
-
-    contextId, correlationId, workflowId, workflowInstanceId;
-
-    public static EventStorageType fromString(String string) {
-        for (EventStorageType type : EventStorageType.values()) {
-            if (type.toString().equals(string)) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException("Unknown event storage type. Only "
-                + Arrays.toString(EventStorageType.values()) + " are supported.");
-    }
-
+public enum IdType {
+    CONTEXT_ID, CORRELATION_ID, WORKFLOW_ID, WORKFLOW_INSTANCE_ID
 }
