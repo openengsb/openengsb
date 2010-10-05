@@ -206,38 +206,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-artifacts</id>
-            <phase>package</phase>
-            <goals>
-              <goal>attach-artifact</goal>
-            </goals>
-            <configuration>
-              <artifacts>
-                <artifact>
-                  <file>target/classes/felix.xml</file>
-                  <type>xml</type>
-                  <classifier>platform</classifier>
-                </artifact>
-                <artifact>
-                  <file>target/classes/karaf.composite</file>
-                  <type>composite</type>
-                  <classifier>karaf</classifier>
-                </artifact>
-                <artifact>
-                  <file>target/classes/settings.debug.composite</file>
-                  <type>composite</type>
-                  <classifier>run</classifier>
-                </artifact> 
-              </artifacts>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
