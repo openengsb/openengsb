@@ -155,7 +155,7 @@
       </plugin> 
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.5</version>
+        <version>${maven.plugin.antrun}</version>
         <executions>
           <execution>
             <phase>package</phase>
