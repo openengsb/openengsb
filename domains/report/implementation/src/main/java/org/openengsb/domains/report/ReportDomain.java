@@ -19,6 +19,7 @@ package org.openengsb.domains.report;
 import java.util.List;
 
 import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.Event;
 import org.openengsb.domains.report.model.Report;
 import org.openengsb.domains.report.model.ReportPart;
 
@@ -63,6 +64,13 @@ public interface ReportDomain extends Domain {
      * @throws NoSuchReportException if no report with the given {@code reportId} is currently collecting data.
      */
     void addReportPart(String reportId, ReportPart reportPart) throws NoSuchReportException;
+
+    /**
+     * Analyzes the context in which the given event was raised and adds all information stored in the event to any
+     * active report data collection if the respective id of the event context is equal to the id of the idType
+     * specified when the report data collection was initialized by calling {@link #collectData(IdType, String)}.
+     */
+    void processEvent(Event e);
 
     /**
      * Get all finished reports of the given category. Reports, which are currently generated and collect data are not
