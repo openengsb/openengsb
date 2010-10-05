@@ -462,8 +462,6 @@
                 <param>--executor=script</param>
                 <param>--workingDirectory=target/all/openengsb</param>
                 <param>--console=false</param>
-                <param>scan-composite:file:assembly/target/classes/karaf.composite</param>
-                <param>scan-composite:file:assembly/target/classes/settings.release.composite</param>
                 <param>--ee=J2SE-1.6</param>
                 <param>--definitionURL=file:assembly/target/classes/felix.xml</param>
                 <param>--clean</param>

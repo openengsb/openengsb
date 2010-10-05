@@ -57,7 +57,7 @@
     <maven.war.plugin>2.1-beta-1</maven.war.plugin>
     <twdata.cli.version>1.0.4</twdata.cli.version>
     <clover.version>3.0.2</clover.version>
-    <maven.plugin.antrun>1.5</mven.plugin.antrun>
+    <maven.plugin.antrun>1.5</maven.plugin.antrun>
     <!-- Component Versions -->
     <osgi.version>4.2.0</osgi.version>
     <!-- Library Versions -->

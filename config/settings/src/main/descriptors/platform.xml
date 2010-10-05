@@ -31,7 +31,6 @@
         <include>felix.xml</include>
         <include>karaf.composite</include>
         <include>settings.debug.composite</include>
-        <include>settings.release.composite</include>
       </includes>
     </fileSet>
   </fileSets>
