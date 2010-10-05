@@ -16,25 +16,22 @@
 
 package org.openengsb.domains.report.model;
 
-public abstract class ReportPart {
+import java.util.Arrays;
 
-    private String partName;
+public class SimpleReportPart extends ReportPart {
 
-    private String contentType;
+    private byte[] content;
 
-    public ReportPart(String partName, String contentType) {
-        this.partName = partName;
-        this.contentType = contentType;
+    public SimpleReportPart(String partName, String contentType, byte[] content) {
+        super(partName, contentType);
+        this.content = content;
     }
 
-    public abstract byte[] getContent();
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public String getPartName() {
-        return partName;
+    public byte[] getContent() {
+        if (content == null) {
+            return null;
+        }
+        return Arrays.copyOf(content, content.length);
     }
 
 }

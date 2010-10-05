@@ -74,7 +74,7 @@ public interface ReportDomain extends Domain {
 
     /**
      * Get all finished reports of the given category. Reports, which are currently generated and collect data are not
-     * included.
+     * included. If the given category does not exist an empty list is returned.
      */
     List<Report> getAllReports(String category);
 
