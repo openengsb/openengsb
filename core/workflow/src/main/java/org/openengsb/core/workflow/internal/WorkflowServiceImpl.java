@@ -31,6 +31,7 @@ import org.drools.event.AgendaEventListener;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.workflow.EventHelper;
 import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
@@ -98,6 +99,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         for (RuleBaseElementId id : rulemanager.list(RuleBaseElementType.Global)) {
             globalsToProcess.add(id.getName());
         }
+        globalsToProcess.remove("event");
         globalsToProcess.removeAll(domainServices.keySet());
 
         for (Iterator<String> iterator = globalsToProcess.iterator(); iterator.hasNext();) {

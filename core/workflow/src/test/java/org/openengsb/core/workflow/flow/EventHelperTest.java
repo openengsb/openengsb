@@ -55,6 +55,7 @@ public class EventHelperTest {
         Thread.sleep(200);
         Event e = new Event();
         eventHelper.insertEvent(e);
+        thread.join();
 
         assertThat(thread.getLastEvent(), sameInstance(e));
     }

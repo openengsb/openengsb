@@ -265,6 +265,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
             throw new RuleBaseException(e);
         }
         if (builder.hasErrors()) {
+            System.out.println(content.toString());
             throw new RuleBaseException(builder.getErrors().toString());
         }
 

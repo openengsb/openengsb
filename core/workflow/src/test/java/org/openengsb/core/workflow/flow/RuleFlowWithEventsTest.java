@@ -41,6 +41,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+
+import static org.junit.Assert.assertThat;
+
 public class RuleFlowWithEventsTest {
 
     protected RuleManager source;
@@ -102,6 +106,48 @@ public class RuleFlowWithEventsTest {
         session.dispose();
 
         verify(notification, times(2)).notify(anyString());
+    }
+
+//    @Test(timeout = 2000)
+    @Test
+    public void testEventHelperWithFlowInRuleBase() throws Exception {
+        String ruleString = getStringFromResource("rulebase/org/openengsb/event1.rule");
+        source.add(new RuleBaseElementId(RuleBaseElementType.Rule, "eventtest"), ruleString);
+
+        String flowString = getStringFromResource("rulebase/org/openengsb/flowtest.rf");
+        source.add(new RuleBaseElementId(RuleBaseElementType.Process, "flowtest"), flowString);
+
+        assertThat(rulebase.getPackage("org.openengsb").getRuleFlows().get("flowtest"), notNullValue());
+
+        ruleString = getStringFromResource("rulebase/org/openengsb/flowtest1.rule");
+        source.add(new RuleBaseElementId(RuleBaseElementType.Rule, "flowtest1"), ruleString);
+        ruleString = getStringFromResource("rulebase/org/openengsb/flowtest2.rule");
+        source.add(new RuleBaseElementId(RuleBaseElementType.Rule, "flowtest2"), ruleString);
+
+        session = rulebase.newStatefulSession();
+        EventHelper eventHelper = new EventHelper();
+        session.setGlobal("event", eventHelper);
+
+        DummyNotificationDomain notification = mock(org.openengsb.core.workflow.DummyNotificationDomain.class);
+        session.setGlobal("notification", notification);
+        session.setGlobal("example", mock(org.openengsb.core.workflow.DummyExampleDomain.class));
+
+        new Thread(){
+            @Override
+            public void run() {
+                session.startProcess("flowtest");
+            };
+        }.start();
+
+        eventHelper.insertEvent(new Event("21"));
+        Thread.sleep(200);
+        eventHelper.insertEvent(new Event("42"));
+        Thread.sleep(200);
+        eventHelper.insertEvent(new Event("foo"));
+
+        Thread.sleep(200);
+        session.fireAllRules();
+        verify(notification, times(6)).notify(anyString());
     }
 
     private String getStringFromResource(String name) throws IOException {

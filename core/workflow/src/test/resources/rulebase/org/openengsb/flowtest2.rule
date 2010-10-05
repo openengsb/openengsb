@@ -14,10 +14,11 @@
 # limitations under the License.
 #
 
-package org.openengsb
-
-#list any import classes here.
-import org.openengsb.core.workflow.flow.RuleFlowUT.TestObject
-
-
-#declare any global variables here
+ruleflow-group "testgroup"
+when
+	e2 : Event( contextId == "" )
+then
+	System.out.println("firing because of event: ");
+	System.out.println(e2.toString());
+	Event e = new Event("foo");
+	insert(e);

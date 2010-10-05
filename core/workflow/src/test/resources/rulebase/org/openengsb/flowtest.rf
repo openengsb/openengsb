@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
--->
+--> 
 <process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
@@ -25,27 +25,29 @@
   </header>
 
   <nodes>
-    <start id="1" name="Start" x="190" y="204" width="49" height="49" />
-    <end id="2" name="End" x="367" y="11" width="49" height="49" />
-    <split id="3" name="Gateway" x="172" y="20" width="49" height="49" type="2" >
+    <start id="1" name="Start" x="405" y="8" width="49" height="49" />
+    <end id="2" name="End" x="26" y="17" width="49" height="49" />
+    <split id="3" name="Gateway" x="81" y="150" width="49" height="49" type="2" >
       <constraints>
-        <constraint toNodeId="2" toType="DROOLS_DEFAULT" name="constraint" priority="1" type="rule" dialect="mvel" >TestObject( value == "42")</constraint>
+        <constraint toNodeId="2" toType="DROOLS_DEFAULT" name="constraint" priority="1" type="rule" dialect="mvel" >Event( contextId == "foo")</constraint>
         <constraint toNodeId="4" toType="DROOLS_DEFAULT" name="constraint" priority="2" type="rule" dialect="mvel" >eval(true)</constraint>
       </constraints>
     </split>
-    <join id="4" name="Gateway" x="363" y="112" width="49" height="49" type="2" />
-    <actionNode id="6" name="Reiteration" x="33" y="110" width="107" height="48" >
-        <action type="expression" dialect="java" >System.out.println("reiterate");
-insert(new TestObject("42"));</action>
+    <join id="4" name="Gateway" x="263" y="163" width="49" height="49" type="2" />
+    <ruleSet id="7" name="Rule" x="54" y="291" width="80" height="48" ruleFlowGroup="testgroup" />
+    <actionNode id="8" name="Script" x="224" y="295" width="80" height="48" >
+        <action type="expression" dialect="java" >Event e = event.waitForEvent();
+insert(e);</action>
     </actionNode>
   </nodes>
 
   <connections>
     <connection from="3" to="2" />
-    <connection from="6" to="3" />
+    <connection from="7" to="3" />
     <connection from="3" to="4" />
     <connection from="1" to="4" />
-    <connection from="4" to="6" />
+    <connection from="8" to="7" />
+    <connection from="4" to="8" />
   </connections>
 
 </process>

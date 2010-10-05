@@ -42,7 +42,7 @@ public class DirectoryProcessHandler extends MultiFileResourceHandler {
     @Override
     protected void removeFromRuleBase(RuleBaseElementId name) throws RuleBaseException {
         source.getRulebase().getPackage(name.getPackageName())
-                .removeRuleFlow(String.format("%s.%s", name.getPackageName(), name.getName()));
+                .removeRuleFlow(name.getName());
     }
 
     @Override
@@ -58,7 +58,7 @@ public class DirectoryProcessHandler extends MultiFileResourceHandler {
     @Override
     public String sanitize(RuleBaseElementId name, String code) {
         String replacedId = code.replaceFirst("id=\"[^\"]+\"",
-                String.format("id=\"%s.%s\"", name.getPackageName(), name.getName()));
+                String.format("id=\"%s\"", name.getName()));
         String replacedPackage = replacedId.replaceFirst("package-name=\"[^\"]+\"",
                 String.format("package-name=\"%s\"", name.getPackageName()));
         log.debug("sanitized code: " + replacedPackage);
