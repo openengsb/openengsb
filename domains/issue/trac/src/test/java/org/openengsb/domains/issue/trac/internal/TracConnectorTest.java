@@ -52,9 +52,9 @@ public class TracConnectorTest {
         i.setSummary(s);
         i.setDescription("testdescription");
         i.setOwner("testowner");
-        i.setPriority(Issue.priorityURGENT);
+        i.setPriority(Issue.PRIORITYURGENT);
         i.setReporter("testreporter");
-        i.setStatus(Issue.statusNEW);
+        i.setStatus(Issue.STATUSNEW);
 
         Hashtable<String, String> attributes = new Hashtable<String, String>();
         attributes.put(TracFieldConstants.FIELD_OWNER, "testowner");
@@ -82,28 +82,30 @@ public class TracConnectorTest {
         Mockito.verify(ticket, Mockito.times(1)).update(Mockito.eq(5), Mockito.eq("testcomment"));
     }
 
-     @Test
+    @Test
     public void testUpdateIssue() throws Exception {
         HashMap<String, Object> changes = new HashMap<String, Object>();
-        changes.put(Issue.fieldSTATUS, Issue.statusCLOSED);
+        changes.put(Issue.FIELDSTATUS, Issue.STATUSCLOSED);
 
         Hashtable<String, String> result = new Hashtable<String, String>();
         result.put(TracFieldConstants.FIELD_STATUS, TracStatusConstants.STATUS_CLOSED);
 
         tracConnector.updateIssue(3, null, changes);
-        Mockito.verify(ticket, Mockito.times(1)).update(Mockito.eq(3), Mockito.eq("[No comment added by author]"),
-                Mockito.eq(result));
+        Mockito.verify(ticket, Mockito.times(1))
+            .update(Mockito.eq(3), Mockito.eq("[No comment added by author]"), Mockito.eq(result));
     }
 
     @Test
     public void testCreateOnNotExistingTicket_ShouldPrintErrorMessage() throws Exception {
-        Mockito.when(ticket.create(Mockito.anyString(), Mockito.anyString(), Mockito.any(Hashtable.class))).thenThrow(new XmlRpcException("test"));
+        Mockito.when(ticket.create(Mockito.anyString(), Mockito.anyString(), Mockito.any(Hashtable.class)))
+            .thenThrow(new XmlRpcException("test"));
         tracConnector.createIssue(new Issue());
     }
 
     @Test
     public void testUpdateANotExistingTicket_ShouldPrintErrorMessage() throws Exception {
-        Mockito.when(ticket.update(Mockito.anyInt(), Mockito.anyString(), Mockito.any(Hashtable.class))).thenThrow(new XmlRpcException("test"));
+        Mockito.when(ticket.update(Mockito.anyInt(), Mockito.anyString(), Mockito.any(Hashtable.class)))
+            .thenThrow(new XmlRpcException("test"));
         tracConnector.updateIssue(0, "test", new HashMap<String, Object>());
     }
 

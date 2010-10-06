@@ -1,38 +1,40 @@
-/*
+/**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package org.openengsb.domains.issue.trac.internal.models;
 
 public class Issue {
-    public final static String priorityIMMEDIATE = "IMMEDIATE";
-    public final static String priorityURGENT = "URGEND";
-    public final static String priorityHIGH = "HIGH";
-    public final static String priorityNORMAL = "NORMAL";
-    public final static String priorityLOW = "LOW";
-    public final static String priorityNONE = "NONE";
+    
+    public static final String PRIORITYIMMEDIATE = "IMMEDIATE";
+    public static final String PRIORITYURGENT = "URGEND";
+    public static final String PRIORITYHIGH = "HIGH";
+    public static final String PRIORITYNORMAL = "NORMAL";
+    public static final String PRIORITYLOW = "LOW";
+    public static final String PRIORITYNONE = "NONE";
 
-    public final static String statusNEW = "NEW";
-    public final static String statusASSIGNED = "ASSIGNED";
-    public final static String statusCLOSED = "CLOSED";
+    public static final String STATUSNEW = "NEW";
+    public static final String STATUSASSIGNED = "ASSIGNED";
+    public static final String STATUSCLOSED = "CLOSED";
 
-    public final static String fieldSUMMARY = "SUMMARY";
-    public final static String fieldDESCRIPTION = "DESCRIPTION";
-    public final static String fieldOWNER = "OWNER";
-    public final static String fieldREPORTER = "REPORTER";
-    public final static String fieldPRIORITY = "PRIORITY";
-    public final static String fieldSTATUS = "STATUS";
+    public static final String FIELDSUMMARY = "SUMMARY";
+    public static final String FIELDDESCRIPTION = "DESCRIPTION";
+    public static final String FIELDOWNER = "OWNER";
+    public static final String FIELDREPORTER = "REPORTER";
+    public static final String FIELDPRIORITY = "PRIORITY";
+    public static final String FIELDSTATUS = "STATUS";
 
     private Integer id;
     private String summary;

@@ -33,7 +33,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 public class TracConnectorImpl implements TracConnector {
-    private static final Log log = LogFactory.getLog(TracConnectorImpl.class);
+    
+    private static Log log = LogFactory.getLog(TracConnectorImpl.class);
 
     private Ticket ticket;
     private AliveState state;
@@ -98,17 +99,17 @@ public class TracConnectorImpl implements TracConnector {
 
         for (String field : changes.keySet()) {
             try {
-                if (field.equals(Issue.fieldDESCRIPTION)) {
+                if (field.equals(Issue.FIELDDESCRIPTION)) {
                     attributes.put(TracFieldConstants.FIELD_DESCRIPTION, (String) changes.get(field));
-                } else if (field.equals(Issue.fieldOWNER)) {
+                } else if (field.equals(Issue.FIELDOWNER)) {
                     attributes.put(TracFieldConstants.FIELD_OWNER, (String) changes.get(field));
-                } else if (field.equals(Issue.fieldREPORTER)) {
+                } else if (field.equals(Issue.FIELDREPORTER)) {
                     attributes.put(TracFieldConstants.FIELD_REPORTER, (String) changes.get(field));
-                } else if (field.equals(Issue.fieldSUMMARY)) {
+                } else if (field.equals(Issue.FIELDSUMMARY)) {
                     attributes.put(TracFieldConstants.FIELD_SUMMARY, (String) changes.get(field));
-                } else if (field.equals(Issue.fieldPRIORITY)) {
+                } else if (field.equals(Issue.FIELDPRIORITY)) {
                     addPriority(attributes, (String) changes.get(field));
-                } else if (field.equals(Issue.fieldSTATUS)) {
+                } else if (field.equals(Issue.FIELDSTATUS)) {
                     addStatus(attributes, (String) changes.get(field));
                 }
             } catch (ClassCastException e) {
@@ -137,15 +138,15 @@ public class TracConnectorImpl implements TracConnector {
 
     private void addPriority(Hashtable<String, String> attributes, String priority) {
         if (priority != null) {
-            if (priority.equals(Issue.priorityHIGH)) {
+            if (priority.equals(Issue.PRIORITYHIGH)) {
                 attributes.put(TracFieldConstants.FIELD_PRIORITY, TracPriorityConstants.PRIORITY_HIGH);
-            } else if (priority.equals(Issue.priorityIMMEDIATE)) {
+            } else if (priority.equals(Issue.PRIORITYIMMEDIATE)) {
                 attributes.put(TracFieldConstants.FIELD_PRIORITY, TracPriorityConstants.PRIORITY_IMMEDIATE);
-            } else if (priority.equals(Issue.priorityLOW)) {
+            } else if (priority.equals(Issue.PRIORITYLOW)) {
                 attributes.put(TracFieldConstants.FIELD_PRIORITY, TracPriorityConstants.PRIORITY_LOW);
-            } else if (priority.equals(Issue.priorityNORMAL)) {
+            } else if (priority.equals(Issue.PRIORITYNORMAL)) {
                 attributes.put(TracFieldConstants.FIELD_PRIORITY, TracPriorityConstants.PRIORITY_NORMAL);
-            } else if (priority.equals(Issue.priorityURGENT)) {
+            } else if (priority.equals(Issue.PRIORITYURGENT)) {
                 attributes.put(TracFieldConstants.FIELD_PRIORITY, TracPriorityConstants.PRIORITY_URGENT);
             }
         }
@@ -153,11 +154,11 @@ public class TracConnectorImpl implements TracConnector {
 
     private void addStatus(Hashtable<String, String> attributes, String status) {
         if (status != null) {
-            if (status.equals(Issue.statusNEW)) {
+            if (status.equals(Issue.STATUSNEW)) {
                 attributes.put(TracFieldConstants.FIELD_STATUS, TracStatusConstants.STATUS_NEW);
-            } else if (status.equals(Issue.statusASSIGNED)) {
+            } else if (status.equals(Issue.STATUSASSIGNED)) {
                 attributes.put(TracFieldConstants.FIELD_STATUS, TracStatusConstants.STATUS_ASSIGNED);
-            } else if (status.equals(Issue.statusCLOSED)) {
+            } else if (status.equals(Issue.STATUSCLOSED)) {
                 attributes.put(TracFieldConstants.FIELD_STATUS, TracStatusConstants.STATUS_CLOSED);
             }
         }
