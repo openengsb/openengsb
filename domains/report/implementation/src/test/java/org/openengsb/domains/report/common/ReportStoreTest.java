@@ -26,13 +26,15 @@ import org.junit.Test;
 import org.openengsb.domains.report.model.Report;
 import org.openengsb.domains.report.model.SimpleReportPart;
 
-public class AbstractReportDomainTest {
+public abstract class ReportStoreTest {
 
     private ReportStore reportDomain;
 
+    public abstract ReportStore getReportStore();
+
     @Before
     public void setUp() {
-        this.reportDomain = new InMemoryReportStore();
+        this.reportDomain = getReportStore();
         reportDomain.createCategory("42");
         reportDomain.storeReport("42", new Report("test"));
         reportDomain.storeReport("42", new Report("test1"));
