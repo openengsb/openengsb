@@ -16,64 +16,47 @@
 
 package org.openengsb.domains.report.common;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.openengsb.domains.report.ReportDomain;
 import org.openengsb.domains.report.model.Report;
 
 public abstract class AbstractReportDomain implements ReportDomain {
 
-    private Map<String, Map<String, Report>> reports = new HashMap<String, Map<String, Report>>();
+    private ReportStore store;
 
     @Override
     public List<Report> getAllReports(String category) {
-        Map<String, Report> categoryReports = reports.get(category);
-        if (categoryReports == null) {
-            return new ArrayList<Report>();
-        }
-        return new ArrayList<Report>(categoryReports.values());
+        return store.getAllReports(category);
     }
 
     @Override
     public void storeReport(String category, Report report) {
-        Map<String, Report> categoryReports = getOrCreateCategory(category);
-        categoryReports.put(report.getName(), report);
+        store.storeReport(category, report);
     }
 
     @Override
     public void removeReport(String category, Report report) {
-        Map<String, Report> categoryReports = reports.get(category);
-        if (categoryReports == null) {
-            return;
-        }
-        categoryReports.remove(report.getName());
+        store.removeReport(category, report);
     }
 
     @Override
     public List<String> getAllCategories() {
-        return new ArrayList<String>(reports.keySet());
+        return store.getAllCategories();
     }
 
     @Override
     public void removeCategory(String category) {
-        reports.remove(category);
+        store.removeCategory(category);
     }
 
     @Override
     public void createCategory(String category) {
-        reports.put(category, new HashMap<String, Report>());
+        store.createCategory(category);
     }
 
-    private Map<String, Report> getOrCreateCategory(String category) {
-        Map<String, Report> map = reports.get(category);
-        if (map == null) {
-            map = new HashMap<String, Report>();
-            reports.put(category, map);
-        }
-        return map;
+    public void setStore(ReportStore store) {
+        this.store = store;
     }
 
 }

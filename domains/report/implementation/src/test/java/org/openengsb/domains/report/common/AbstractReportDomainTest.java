@@ -23,21 +23,16 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.util.AliveState;
-import org.openengsb.domains.report.IdType;
-import org.openengsb.domains.report.NoSuchReportException;
 import org.openengsb.domains.report.model.Report;
-import org.openengsb.domains.report.model.ReportPart;
 import org.openengsb.domains.report.model.SimpleReportPart;
 
 public class AbstractReportDomainTest {
 
-    private AbstractReportDomain reportDomain;
+    private ReportStore reportDomain;
 
     @Before
     public void setUp() {
-        this.reportDomain = new TestReportDomain();
+        this.reportDomain = new InMemoryReportStore();
         reportDomain.createCategory("42");
         reportDomain.storeReport("42", new Report("test"));
         reportDomain.storeReport("42", new Report("test1"));
@@ -156,40 +151,6 @@ public class AbstractReportDomainTest {
         this.reportDomain.storeReport("testCategory", new Report("testReport2"));
         List<Report> allReports = reportDomain.getAllReports("testCategory");
         assertThat(allReports.size(), is(3));
-    }
-
-    private class TestReportDomain extends AbstractReportDomain {
-
-        @Override
-        public AliveState getAliveState() {
-            return null;
-        }
-
-        @Override
-        public Report generateReport(String reportId, String category, String reportName) throws NoSuchReportException {
-            return null;
-        }
-
-        @Override
-        public Report getDraft(String reportId, String draftName) throws NoSuchReportException {
-            return null;
-        }
-
-        @Override
-        public String collectData(IdType idType, String id) {
-            return null;
-        }
-
-        @Override
-        public void addReportPart(String reportId, ReportPart reportPart) throws NoSuchReportException {
-
-        }
-
-        @Override
-        public void processEvent(Event e) {
-
-        }
-
     }
 
 }
