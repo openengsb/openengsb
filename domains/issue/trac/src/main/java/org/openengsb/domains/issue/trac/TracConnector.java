@@ -18,11 +18,21 @@
 package org.openengsb.domains.issue.trac;
 
 import org.openengsb.domains.issue.IssueDomain;
+import org.openengsb.domains.issue.trac.internal.models.Issue;
 import org.openengsb.domains.issue.trac.internal.models.xmlrpc.Ticket;
+
+import java.util.HashMap;
 
 
 public interface TracConnector extends IssueDomain {
 
     void setTicket(Ticket ticket);
 
+    Integer createIssue(Issue issue);
+
+    void deleteIssue(Integer id);
+
+    void addComment(Integer id, String comment);
+
+    void updateIssue(Integer id, String comment, HashMap<String, Object> changes);
 }

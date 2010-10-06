@@ -41,7 +41,7 @@ public class TracTest {
     private Ticket ticket;
 
     @Before
-    public void setUp() {
+    public void setUp() {         
         ticket = Mockito.mock(Ticket.class);
         tracConnector = new TracConnector();
         tracConnector.setTicket(ticket);
