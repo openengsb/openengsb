@@ -64,6 +64,10 @@
 
     <!-- config/* -->   
     <!-- To be extended, currently no properties required here -->
+
+    <!-- log settings -->
+    <logging.level>INFO</logging.level>
+
   </properties>
 
   <build>
