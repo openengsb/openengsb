@@ -15,7 +15,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
---> 
+-->
 <process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
@@ -35,10 +35,12 @@
     </split>
     <join id="4" name="Gateway" x="263" y="163" width="49" height="49" type="2" />
     <ruleSet id="7" name="Rule" x="54" y="291" width="80" height="48" ruleFlowGroup="testgroup" />
-    <actionNode id="8" name="Script" x="224" y="295" width="80" height="48" >
-        <action type="expression" dialect="java" >Event e = event.waitForEvent();
-insert(e);</action>
-    </actionNode>
+    <eventNode id="8" name="Message" x="415" y="297" width="48" height="48" variableName="event" >
+      <eventFilters>
+        <eventFilter type="eventType" eventType="Event" />
+      </eventFilters>
+    </eventNode>
+    <join id="9" name="Gateway" x="255" y="294" width="49" height="49" type="1" />
   </nodes>
 
   <connections>
@@ -46,8 +48,9 @@ insert(e);</action>
     <connection from="7" to="3" />
     <connection from="3" to="4" />
     <connection from="1" to="4" />
-    <connection from="8" to="7" />
-    <connection from="4" to="8" />
+    <connection from="9" to="7" />
+    <connection from="8" to="9" />
+    <connection from="4" to="9" />
   </connections>
 
 </process>

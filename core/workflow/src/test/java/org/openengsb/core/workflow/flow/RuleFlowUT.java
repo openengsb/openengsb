@@ -23,10 +23,17 @@ import org.drools.KnowledgeBaseFactory;
 import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
+import org.drools.event.process.DefaultProcessEventListener;
+import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessEventListener;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.is;
+
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 public class RuleFlowUT {
@@ -51,6 +58,11 @@ public class RuleFlowUT {
         public void setValue(String value) {
             this.value = value;
         }
+
+        @Override
+        public String toString() {
+            return String.format("TestObject: \"%s\"", value);
+        }
     }
 
     @Test
@@ -71,6 +83,50 @@ public class RuleFlowUT {
         ksession.startProcess("flowtest");
         ksession.fireAllRules();
 
+        ksession.dispose();
+    }
+
+    @Test
+    public void testRunFlowWithEvents() throws Exception {
+        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add(ResourceFactory.newClassPathResource("flowtest.drl", getClass()), ResourceType.DRL);
+        kbuilder.add(ResourceFactory.newClassPathResource("floweventtest.rf", getClass()), ResourceType.DRF);
+        log.error(kbuilder.getErrors());
+        if (kbuilder.hasErrors()) {
+            fail(kbuilder.getErrors().toString());
+        }
+
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        ProcessEventListener listener = new DefaultProcessEventListener() {
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                log.debug("Process complete " + event.getProcessInstance().getProcessId());
+                ksession.halt();
+            }
+        };
+        ksession.addEventListener(listener);
+        ksession.setGlobal("log", log);
+        ProcessInstance startProcess = ksession.startProcess("flowtest");
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                ksession.fireUntilHalt();
+            }
+        };
+        t.start();
+
+        // submit them in wrong order -> does not matter
+        ksession.signalEvent("TestObject2", new TestObject("foo"), startProcess.getId());
+        Thread.sleep(200);
+        ksession.signalEvent("TestObject", new TestObject("foo"), startProcess.getId());
+
+        t.join(2000);
+        assertThat("Process could not finish", t.getState(), is(Thread.State.TERMINATED));
         ksession.dispose();
     }
 }
