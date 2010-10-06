@@ -23,10 +23,10 @@ import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domains.report.ReportDomain;
-import org.openengsb.domains.report.plaintext.internal.PlaintextReport;
+import org.openengsb.domains.report.plaintext.internal.PlaintextReportService;
 import org.openengsb.domains.report.plaintext.internal.PlaintextReportFactory;
 
-public class PlaintextReportServiceManager extends AbstractServiceManager<ReportDomain, PlaintextReport> {
+public class PlaintextReportServiceManager extends AbstractServiceManager<ReportDomain, PlaintextReportService> {
 
     public PlaintextReportServiceManager(PlaintextReportFactory plaintextReportBuilder) {
         super(plaintextReportBuilder);

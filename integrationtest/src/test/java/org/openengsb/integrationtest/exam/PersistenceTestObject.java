@@ -16,6 +16,8 @@
 
 package org.openengsb.integrationtest.exam;
 
+import org.apache.commons.lang.ObjectUtils;
+
 public class PersistenceTestObject {
     private String string;
 
@@ -59,14 +61,7 @@ public class PersistenceTestObject {
             return false;
         }
         PersistenceTestObject other = (PersistenceTestObject) obj;
-        return safeEquals(this.string, other.string) && safeEquals(this.integer, other.integer);
-    }
-
-    private boolean safeEquals(Object a, Object b) {
-        if (a == null) {
-            return b == null;
-        }
-        return a.equals(b);
+        return ObjectUtils.equals(this.string, other.string) && ObjectUtils.equals(this.integer, other.integer);
     }
 
 }

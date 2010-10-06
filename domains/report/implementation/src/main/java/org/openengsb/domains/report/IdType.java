@@ -18,4 +18,5 @@ package org.openengsb.domains.report;
 
 public enum IdType {
     CONTEXT_ID, CORRELATION_ID, WORKFLOW_ID, WORKFLOW_INSTANCE_ID
+
 }

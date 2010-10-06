@@ -46,4 +46,8 @@ public class Report {
         return new ArrayList<ReportPart>(parts);
     }
 
+    public void setParts(List<ReportPart> parts) {
+        this.parts = new ArrayList<ReportPart>(parts);
+    }
+
 }

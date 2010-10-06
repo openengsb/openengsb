@@ -22,25 +22,33 @@ import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.domains.report.ReportDomain;
+import org.openengsb.domains.report.common.InMemoryReportStore;
 
-public class PlaintextReportFactory implements ServiceInstanceFactory<ReportDomain, PlaintextReport> {
+public class PlaintextReportFactory implements ServiceInstanceFactory<ReportDomain, PlaintextReportService> {
 
     @Override
     public ServiceDescriptor getDescriptor(Builder builder) {
-        // TODO Auto-generated method stub
-        return null;
+        builder.name("reportPlaintext.name").description("reportPlaintext.description");
+        return builder.build();
     }
 
     @Override
-    public void updateServiceInstance(PlaintextReport instance, Map<String, String> attributes) {
-        // TODO Auto-generated method stub
-
+    public void updateServiceInstance(PlaintextReportService instance, Map<String, String> attributes) {
+        setAttributes(instance, attributes);
     }
 
     @Override
-    public PlaintextReport createServiceInstance(String id, Map<String, String> attributes) {
-        // TODO Auto-generated method stub
-        return null;
+    public PlaintextReportService createServiceInstance(String id, Map<String, String> attributes) {
+        PlaintextReportService service = new PlaintextReportService(id);
+        service.setPartStore(new InMemoryReportPartStore());
+        service.setRegistry(new ReportStorageRegistry());
+        service.setStore(new InMemoryReportStore());
+        setAttributes(service, attributes);
+        return service;
+    }
+
+    private void setAttributes(PlaintextReportService service, Map<String, String> attributes) {
+        // do nothing - currently no attributes defined
     }
 
 }

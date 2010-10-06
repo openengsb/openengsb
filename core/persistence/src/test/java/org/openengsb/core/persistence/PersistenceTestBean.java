@@ -16,6 +16,8 @@
 
 package org.openengsb.core.persistence;
 
+import org.apache.commons.lang.ObjectUtils;
+
 public class PersistenceTestBean {
 
     private String stringValue;
@@ -60,14 +62,8 @@ public class PersistenceTestBean {
             return false;
         }
         PersistenceTestBean other = (PersistenceTestBean) obj;
-        return safeEquals(this.intValue, other.intValue) && safeEquals(this.stringValue, other.stringValue);
-    }
-
-    private boolean safeEquals(Object a, Object b) {
-        if (a == null) {
-            return b == null;
-        }
-        return a.equals(b);
+        return ObjectUtils.equals(this.intValue, other.intValue)
+                && ObjectUtils.equals(this.stringValue, other.stringValue);
     }
 
     @Override
