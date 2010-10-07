@@ -25,9 +25,9 @@ import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
+import org.drools.KnowledgeBase;
 import org.drools.event.AgendaEventListener;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -83,7 +83,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     public void processEvent(Event event) throws WorkflowException {
         try {
             currentContextService.setThreadLocalContext(event.getContextId());
-            StatefulSession session = createSession();
+            StatefulKnowledgeSession session = createSession();
             populateGlobals(session);
             session.insert(event);
             session.fireAllRules();
@@ -110,7 +110,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         return globalsToProcess;
     }
 
-    private void populateGlobals(StatefulSession session) throws WorkflowException {
+    private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
         Collection<String> missingGlobals = findMissingGlobals();
         if (!missingGlobals.isEmpty()) {
             try {
@@ -139,13 +139,10 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         this.rulemanager = rulemanager;
     }
 
-    protected StatefulSession createSession() throws RuleBaseException {
-        RuleBase rb = rulemanager.getRulebase();
+    protected StatefulKnowledgeSession createSession() throws RuleBaseException {
+        KnowledgeBase rb = rulemanager.getRulebase();
         log.debug("retrieved rulebase: " + rb + "from source " + rulemanager);
-        StatefulSession session = rb.newStatefulSession();
-        for (AgendaEventListener l : listeners) {
-            session.addEventListener(l);
-        }
+        StatefulKnowledgeSession session = rb.newStatefulKnowledgeSession();
         log.debug("session started");
         return session;
     }

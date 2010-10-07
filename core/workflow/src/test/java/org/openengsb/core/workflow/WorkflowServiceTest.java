@@ -20,8 +20,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -36,6 +34,7 @@ import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.verify;
 
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -65,7 +64,6 @@ public class WorkflowServiceTest {
 
     private WorkflowServiceImpl service;
     private RuleManager manager;
-    private RuleListener listener;
     private DummyExampleDomain logService;
     private DummyNotificationDomain notification;
 
@@ -76,8 +74,6 @@ public class WorkflowServiceTest {
         service.setRulemanager(manager);
         service.setCurrentContextService(Mockito.mock(ContextCurrentService.class));
         setupDomains();
-        listener = new RuleListener();
-        service.registerRuleListener(listener);
     }
 
     private void setupRulemanager() throws RuleBaseException {
@@ -119,14 +115,15 @@ public class WorkflowServiceTest {
     public void testProcessEventTriggersHelloWorld() throws Exception {
         Event event = new Event();
         service.processEvent(event);
-        Assert.assertTrue(listener.haveRulesFired("hello1"));
+        verify(notification, atLeast(1)).notify("Hello");
+        verify(logService, atLeast(1)).doSomething("Hello World");
     }
 
     @Test
     public void testUseLog() throws Exception {
         Event event = new Event("test-context");
         service.processEvent(event);
-        Assert.assertTrue(listener.haveRulesFired("logtest"));
+        verify(logService).doSomething("42");
     }
 
     @Test

@@ -32,12 +32,14 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.drools.RuleBase;
-import org.drools.RuleBaseFactory;
-import org.drools.compiler.DroolsParserException;
-import org.drools.compiler.PackageBuilder;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.rule.Package;
+import org.drools.definition.KnowledgePackage;
+import org.drools.io.ResourceFactory;
 import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.internal.AbstractRuleManager;
 import org.openengsb.core.workflow.internal.ResourceHandler;
@@ -61,7 +63,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
     private String path;
     private File importsFile;
 
-    private RuleBase ruleBase;
+    private KnowledgeBase ruleBase;
     private boolean initialized = false;
 
     private String prelude;
@@ -75,7 +77,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     public void init() throws RuleBaseException {
         if (this.ruleBase == null) {
-            ruleBase = RuleBaseFactory.newRuleBase();
+            ruleBase = KnowledgeBaseFactory.newKnowledgeBase();
             readRuleBase();
             initReloadListener();
         }
@@ -97,7 +99,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
     }
 
     @Override
-    public RuleBase getRulebase() {
+    public KnowledgeBase getRulebase() {
         if (!initialized) {
             log.warn("rulebase not initialized. initializing now...");
             try {
@@ -146,9 +148,14 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         readRuleBase();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Collection<String> listImports() {
-        return ruleBase.getPackages()[0].getImports().keySet();
+        try {
+            return FileUtils.readLines(importsFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -174,7 +181,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
             throw new IllegalStateException("path must be set");
         }
         File pathFile = new File(path);
-        Collection<Package> packages;
+        Collection<KnowledgePackage> packages;
         try {
             if (!pathFile.exists()) {
                 initRuleBase();
@@ -185,21 +192,19 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
             Collection<File> dirs = listAllSubDirs(new File(this.path));
 
-            packages = new LinkedList<Package>();
+            packages = new LinkedList<KnowledgePackage>();
             for (File dir : dirs) {
-                Package p = doReadPackage(dir);
-                packages.add(p);
+                Collection<KnowledgePackage> p = doReadPackage(dir);
+                packages.addAll(p);
             }
         } catch (IOException e) {
             throw new RuleBaseException(e);
         }
 
-        ruleBase.lock();
-        for (Package ep : ruleBase.getPackages()) {
-            ruleBase.removePackage(ep.getName());
+        for (KnowledgePackage ep : ruleBase.getKnowledgePackages()) {
+            ruleBase.removeKnowledgePackage(ep.getName());
         }
-        ruleBase.addPackages(packages.toArray(new Package[packages.size()]));
-        ruleBase.unlock();
+        ruleBase.addKnowledgePackages(packages);
     }
 
     private void initRuleBase() throws IOException {
@@ -218,22 +223,19 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     public void readPackage(String packageName) throws RuleBaseException {
         File dir = new File(this.path, packageName.replace(".", File.separator));
-        Package p;
+        Collection<KnowledgePackage> p;
         try {
             p = doReadPackage(dir);
         } catch (IOException e) {
             throw new RuleBaseException(e);
         }
-        ruleBase.lock();
-        if (ruleBase.getPackage(packageName) != null) {
-            ruleBase.removePackage(packageName);
+        if (ruleBase.getKnowledgePackage(packageName) != null) {
+            ruleBase.removeKnowledgePackage(packageName);
         }
-        log.info("locked rulebase for modifying: " + ruleBase);
-        ruleBase.addPackage(p);
-        ruleBase.unlock();
+        ruleBase.addKnowledgePackages(p);
     }
 
-    private Package doReadPackage(File path) throws IOException, RuleBaseException {
+    private Collection<KnowledgePackage> doReadPackage(File path) throws IOException, RuleBaseException {
         StringBuffer content = new StringBuffer();
         content.append(String.format("package %s;\n", getPackageName(path)));
         content.append(prelude);
@@ -253,23 +255,20 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         Properties properties = new Properties();
         properties.setProperty("drools.dialect.java.compiler", "JANINO");
         PackageBuilderConfiguration conf = new PackageBuilderConfiguration(properties);
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
 
-        final PackageBuilder builder = new PackageBuilder(conf);
-        try {
-            builder.addPackageFromDrl(new StringReader(content.toString()));
-            Collection<File> flows = listFiles(path, FLOW_EXTENSION);
-            for (File f : flows) {
-                builder.addRuleFlow(new FileReader(f));
-            }
-        } catch (DroolsParserException e) {
-            throw new RuleBaseException(e);
+        builder.add(ResourceFactory.newReaderResource(new StringReader(content.toString())), ResourceType.DRL);
+        Collection<File> flows = listFiles(path, FLOW_EXTENSION);
+        for (File f : flows) {
+            builder.add(ResourceFactory.newFileResource(f), ResourceType.DRF);
         }
+
         if (builder.hasErrors()) {
             System.out.println(content.toString());
             throw new RuleBaseException(builder.getErrors().toString());
         }
 
-        return builder.getPackage();
+        return builder.getKnowledgePackages();
 
     }
 

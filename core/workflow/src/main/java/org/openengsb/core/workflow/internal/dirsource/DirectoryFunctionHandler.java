@@ -16,13 +16,14 @@
 
 package org.openengsb.core.workflow.internal.dirsource;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.drools.rule.Package;
+import org.apache.commons.io.FileUtils;
+import org.drools.definition.KnowledgePackage;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-
 
 public class DirectoryFunctionHandler extends MultiFileResourceHandler {
 
@@ -31,9 +32,16 @@ public class DirectoryFunctionHandler extends MultiFileResourceHandler {
     }
 
     @Override
-    protected Collection<RuleBaseElementId> listElementsInPackage(Package p) {
+    protected Collection<RuleBaseElementId> listElementsInPackage(KnowledgePackage p) {
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
-        for (String s : p.getFunctions().keySet()) {
+        String path = p.getName().replace(".", File.separator);
+        File directory = new File(source.getPath(), path);
+        @SuppressWarnings("unchecked")
+        Collection<File> listFiles =
+            FileUtils.listFiles(directory, new String[]{ DirectoryRuleSource.FUNC_EXTENSION }, false);
+
+        for (File f : listFiles) {
+            String s = f.getName().replace("." + DirectoryRuleSource.FUNC_EXTENSION, "");
             result.add(new RuleBaseElementId(RuleBaseElementType.Function, p.getName(), s));
         }
         return result;

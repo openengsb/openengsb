@@ -16,24 +16,15 @@
 
 package org.openengsb.core.workflow;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.matchers.JUnitMatchers.hasItem;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
-import org.drools.rule.Package;
-import org.drools.rule.Rule;
+import org.drools.KnowledgeBase;
+import org.drools.definition.KnowledgePackage;
+import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,11 +34,20 @@ import org.openengsb.core.common.Event;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import static org.junit.matchers.JUnitMatchers.hasItem;
+
 public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
     protected RuleManager source;
-    protected RuleBase rulebase;
-    protected StatefulSession session;
+    protected KnowledgeBase rulebase;
+    protected StatefulKnowledgeSession session;
     protected RuleListener listener;
 
     @Before
@@ -82,7 +82,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
             session.dispose();
             session = null;
         }
-        session = rulebase.newStatefulSession();
+        session = rulebase.newStatefulKnowledgeSession();
         listener = new RuleListener();
         session.addEventListener(listener);
         for (Entry<String, Domain> entry : createDomainMocks().entrySet()) {
@@ -101,9 +101,9 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
     @Test
     public void testGetRuleBase() throws Exception {
-        assertNotNull(rulebase);
-        Package p = rulebase.getPackage("org.openengsb");
-        assertNotNull(p);
+        assertThat(rulebase, notNullValue());
+        KnowledgePackage p = rulebase.getKnowledgePackage("org.openengsb");
+        assertThat(p, notNullValue());
     }
 
     @Test
@@ -132,47 +132,16 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
     @Test
     public void testAddImport() throws Exception {
-        Package p = getPackage();
-        assertNull(p.getImports().get("java.util.Currency"));
-        // RuleBaseElementId id = new
-        // RuleBaseElementId(RuleBaseElementType.Import, "java.util.Currency");
-        // source.add(id, "java.util.Currency");
+        assertThat(source.listImports(), not(hasItem("java.util.Currency")));
         source.addImport("java.util.Currency");
-        p = getPackage();
-        assertNotNull(p.getImports().get("java.util.Currency"));
-    }
-
-    private Package getPackage() throws RuleBaseException {
-        Package p = source.getRulebase().getPackage("org.openengsb");
-        return p;
+        assertThat(source.listImports(), hasItem("java.util.Currency"));
     }
 
     @Test
     public void testRemoveImport() throws Exception {
-        Package p = getPackage();
-        // RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Import, "java.util.Currency");
-        // source.add(id, "ignored");
-        // source.delete(id);
-        p = getPackage();
-        assertNull(p.getImports().get("java.util.Currency"));
-    }
-
-    @Test
-    public void testAddFunction() throws Exception {
-        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Function, "org.openengsb", "notify");
-        source.add(id, "function void notify(String message) {\n" + "System.out.println(\"notify: \" + message);\n}\n");
-        Package p = getPackage();
-        assertFalse(p.getFunctions().isEmpty());
-        assertNotNull(p.getFunctions().get("notify"));
-    }
-
-    @Test
-    public void testRemoveFunction() throws Exception {
-        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Function, "org.openengsb", "notify");
-        source.add(id, "function void notify(String message) {\n" + "System.out.println(\"notify: \" + message);\n}");
-        source.delete(id);
-        Package p = getPackage();
-        assertNull(p.getFunctions().get("notify"));
+        source.addImport("java.util.Currency");
+        source.removeImport("java.util.Currency");
+        assertThat(source.listImports(), not(hasItem("java.util.Currency")));
     }
 
     @Test
@@ -181,9 +150,6 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         source.add(testFunctionId, "function void test(Object message) {\n"
                 + "System.out.println(\"notify: \" + message);\n}");
         source.addImport("java.util.Random");
-        // RuleBaseElementId testImportId = new RuleBaseElementId(RuleBaseElementType.Import, "org.openengsb",
-        // "java.util.Random");
-        // source.add(testImportId, "ignored");
         RuleBaseElementId testRuleId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
         source.add(testRuleId, "when\n" + "  e : Event()\n" + "then\n" + "  test(new Random());\n");
         createSession();
@@ -214,8 +180,8 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         } catch (RuleBaseException e) {
             // expected
         }
-        Rule rule = source.getRulebase().getPackage("org.openengsb").getRule("test");
-        assertNull(rule);
+        Collection<RuleBaseElementId> list = source.list(RuleBaseElementType.Rule);
+        assertThat(list, not(hasItem(id)));
     }
 
     @Test(expected = RuleBaseException.class)

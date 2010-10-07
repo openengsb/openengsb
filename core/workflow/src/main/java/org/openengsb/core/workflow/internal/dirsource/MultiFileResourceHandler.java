@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.apache.commons.io.FileUtils;
-import org.drools.rule.Package;
+import org.drools.definition.KnowledgePackage;
 import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.internal.ResourceHandler;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
@@ -90,13 +90,13 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
     @Override
     public Collection<RuleBaseElementId> list() {
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
-        for (Package p : source.getRulebase().getPackages()) {
+        for (KnowledgePackage p : source.getRulebase().getKnowledgePackages()) {
             result.addAll(listElementsInPackage(p));
         }
         return result;
     }
 
-    protected abstract Collection<RuleBaseElementId> listElementsInPackage(Package p);
+    protected abstract Collection<RuleBaseElementId> listElementsInPackage(KnowledgePackage p);
 
     public String sanitize(RuleBaseElementId name, String code) {
         return code;
@@ -104,6 +104,6 @@ public abstract class MultiFileResourceHandler extends ResourceHandler<Directory
 
     @Override
     public Collection<RuleBaseElementId> list(String packageName) {
-        return listElementsInPackage(source.getRulebase().getPackage(packageName));
+        return listElementsInPackage(source.getRulebase().getKnowledgePackage(packageName));
     }
 }

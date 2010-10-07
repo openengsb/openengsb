@@ -21,7 +21,8 @@ import java.util.HashSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.drools.rule.Package;
+import org.drools.definition.KnowledgePackage;
+import org.drools.definition.process.Process;
 import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
@@ -41,14 +42,14 @@ public class DirectoryProcessHandler extends MultiFileResourceHandler {
 
     @Override
     protected void removeFromRuleBase(RuleBaseElementId name) throws RuleBaseException {
-        source.getRulebase().getPackage(name.getPackageName())
-                .removeRuleFlow(name.getName());
+        source.getRulebase().removeProcess(name.getName());
     }
 
     @Override
-    protected Collection<RuleBaseElementId> listElementsInPackage(Package p) {
+    protected Collection<RuleBaseElementId> listElementsInPackage(KnowledgePackage p) {
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
-        for (String name : p.getRuleFlows().keySet()) {
+        for (Process process : p.getProcesses()) {
+            String name = process.getId();
             result.add(new RuleBaseElementId(RuleBaseElementType.Process, p.getName(), name.replace(p.getName() + ".",
                     "")));
         }
