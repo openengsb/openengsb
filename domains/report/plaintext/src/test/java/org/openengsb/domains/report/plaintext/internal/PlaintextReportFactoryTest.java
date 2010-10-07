@@ -30,7 +30,8 @@ public class PlaintextReportFactoryTest {
     @Test
     public void testCreatePlaintextReportService() throws Exception {
         ReportStoreFactory storeFactory = Mockito.mock(ReportStoreFactory.class);
-        Mockito.when(storeFactory.createReportStore(Mockito.anyString())).thenReturn(Mockito.mock(ReportStore.class));
+        ReportStore store = Mockito.mock(ReportStore.class);
+        Mockito.when(storeFactory.createReportStore(Mockito.anyString())).thenReturn(store);
         PlaintextReportFactory factory = new PlaintextReportFactory(storeFactory);
 
         Map<String, String> attributes = new HashMap<String, String>();
