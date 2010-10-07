@@ -31,7 +31,7 @@
       <constructor-arg>
         <bean class="org.openengsb.domains.report.plaintext.internal.PlaintextReportFactory">
           <constructor-arg>
-            <bean class="org.openengsb.domains.report.commmon.InMemoryReportStoreFactory" />
+            <bean class="org.openengsb.domains.report.common.InMemoryReportStoreFactory" />
           </constructor-arg>
         </bean>
       </constructor-arg>
