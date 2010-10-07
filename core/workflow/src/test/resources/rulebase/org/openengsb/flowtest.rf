@@ -1,21 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-   Copyright 2010 OpenEngSB Division, Vienna University of Technology
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-
--->
+<?xml version="1.0" encoding="UTF-8"?> 
 <process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
@@ -25,32 +8,36 @@
   </header>
 
   <nodes>
-    <start id="1" name="Start" x="405" y="8" width="49" height="49" />
-    <end id="2" name="End" x="26" y="17" width="49" height="49" />
-    <split id="3" name="Gateway" x="81" y="150" width="49" height="49" type="2" >
-      <constraints>
-        <constraint toNodeId="2" toType="DROOLS_DEFAULT" name="constraint" priority="1" type="rule" dialect="mvel" >Event( contextId == "foo")</constraint>
-        <constraint toNodeId="4" toType="DROOLS_DEFAULT" name="constraint" priority="2" type="rule" dialect="mvel" >eval(true)</constraint>
-      </constraints>
-    </split>
-    <join id="4" name="Gateway" x="263" y="163" width="49" height="49" type="2" />
-    <ruleSet id="7" name="Rule" x="54" y="291" width="80" height="48" ruleFlowGroup="testgroup" />
-    <eventNode id="8" name="Message" x="415" y="297" width="48" height="48" variableName="event" >
+    <join id="17" name="Gateway" x="88" y="177" width="49" height="49" type="1" />
+    <start id="1" name="Start" x="32" y="16" width="49" height="49" />
+    <end id="2" name="End" x="136" y="419" width="49" height="49" />
+    <actionNode id="21" name="Script" x="72" y="258" width="80" height="48" >
+        <action type="expression" dialect="mvel" >log.debug("first event recieved, converged");</action>
+    </actionNode>
+    <eventNode id="25" name="Message" x="128" y="97" width="80" height="48" >
       <eventFilters>
-        <eventFilter type="eventType" eventType="Event" />
+        <eventFilter type="eventType" eventType="TaskStartedEvent" />
       </eventFilters>
     </eventNode>
-    <join id="9" name="Gateway" x="255" y="294" width="49" height="49" type="1" />
+    <eventNode id="27" name="Message" x="184" y="258" width="48" height="48" >
+      <eventFilters>
+        <eventFilter type="eventType" eventType="TaskFinishedEvent" />
+      </eventFilters>
+    </eventNode>
+    <join id="26" name="Gateway" x="136" y="338" width="49" height="49" type="1" />
+    <actionNode id="11" name="Script" x="16" y="97" width="80" height="48" >
+        <action type="expression" dialect="java" >log.debug("start testflow");</action>
+    </actionNode>
   </nodes>
 
   <connections>
-    <connection from="3" to="2" />
-    <connection from="7" to="3" />
-    <connection from="3" to="4" />
-    <connection from="1" to="4" />
-    <connection from="9" to="7" />
-    <connection from="8" to="9" />
-    <connection from="4" to="9" />
+    <connection from="11" to="17" />
+    <connection from="25" to="17" />
+    <connection from="26" to="2" />
+    <connection from="17" to="21" />
+    <connection from="21" to="26" />
+    <connection from="27" to="26" />
+    <connection from="1" to="11" />
   </connections>
 
 </process>
