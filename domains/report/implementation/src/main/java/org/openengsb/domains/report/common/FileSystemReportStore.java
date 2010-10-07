@@ -17,11 +17,15 @@
 package org.openengsb.domains.report.common;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.openengsb.domains.report.model.Report;
 import org.openengsb.domains.report.model.ReportPart;
 import org.openengsb.domains.report.model.SimpleReportPart;
@@ -55,7 +59,9 @@ public class FileSystemReportStore implements ReportStore {
     private Report loadReport(File reportFile) {
         Report report = new Report(reportFile.getName());
         for (File partFile : reportFile.listFiles()) {
-            report.addPart(loadPart(partFile));
+            if (!partFile.getName().endsWith(".meta")) {
+                report.addPart(loadPart(partFile));
+            }
         }
         return report;
     }
@@ -63,22 +69,26 @@ public class FileSystemReportStore implements ReportStore {
     private ReportPart loadPart(File partFile) {
         try {
             String partName = partFile.getName();
-            String name = partName.split("[.]")[0];
-            String ending = partName.split("[.]")[1];
+            int partIndex = Integer.parseInt(partName.split("[.]")[0]);
+            Properties metadata = readMetadata(new File(partFile.getParentFile(), partIndex + ".meta"));
             byte[] content = FileUtils.readFileToByteArray(partFile);
-            return new SimpleReportPart(name, getContentType(ending), content);
+            return new SimpleReportPart(metadata.getProperty("partName"), metadata.getProperty("contentType"), content);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String getContentType(String ending) {
-        if (ending.equals("txt")) {
-            return "text/plain";
-        } else if (ending.equals("xml")) {
-            return "text/xml";
+    private Properties readMetadata(File file) throws IOException {
+        FileReader reader = null;
+        try {
+            reader = new FileReader(file);
+            Properties properties = new Properties();
+            properties.load(reader);
+            return properties;
+        } finally {
+            IOUtils.closeQuietly(reader);
         }
-        return "text/plain";
+
     }
 
     @Override
@@ -87,9 +97,13 @@ public class FileSystemReportStore implements ReportStore {
             createCategory(category);
             File categoryFile = new File(rootDirectory, category);
             File reportFile = new File(categoryFile, report.getName());
+            testAndDelete(reportFile);
             reportFile.mkdirs();
-            for (ReportPart part : report.getParts()) {
-                File partFile = new File(reportFile, part.getPartName() + getFileEnding(part.getContentType()));
+            List<ReportPart> parts = report.getParts();
+            for (int i = 0; i < parts.size(); i++) {
+                ReportPart part = parts.get(i);
+                File partFile = new File(reportFile, i + getFileEnding(part.getContentType()));
+                writeMetadata(reportFile, i, part);
                 FileUtils.touch(partFile);
                 if (part.getContent() != null) {
                     FileUtils.writeByteArrayToFile(partFile, part.getContent());
@@ -97,6 +111,26 @@ public class FileSystemReportStore implements ReportStore {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void testAndDelete(File reportFile) throws IOException {
+        if (reportFile.exists()) {
+            FileUtils.deleteDirectory(reportFile);
+        }
+    }
+
+    private void writeMetadata(File reportFile, int i, ReportPart part) throws IOException {
+        FileWriter fw = null;
+        try {
+            File partMetaFile = new File(reportFile, i + ".meta");
+            Properties properties = new Properties();
+            properties.put("partName", part.getPartName());
+            properties.put("contentType", part.getContentType());
+            fw = new FileWriter(partMetaFile);
+            properties.store(fw, "");
+        } finally {
+            IOUtils.closeQuietly(fw);
         }
     }
 
