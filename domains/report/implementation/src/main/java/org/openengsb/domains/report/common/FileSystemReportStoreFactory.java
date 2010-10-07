@@ -16,16 +16,17 @@
 
 package org.openengsb.domains.report.common;
 
-public class InMemoryReportStoreTest extends ReportStoreTest {
+import java.io.File;
+
+public class FileSystemReportStoreFactory implements ReportStoreFactory {
 
     @Override
-    public ReportStore getReportStore() {
-        return new InMemoryReportStore();
+    public ReportStore createReportStore(String id) {
+        String workingDir = System.getProperty("karaf.data");
+        if (workingDir == null) {
+            workingDir = "data";
+        }
+        File rootFile = new File(workingDir + "/openengsb/reports/" + id);
+        return new FileSystemReportStore(rootFile);
     }
-
-    @Override
-    public void clearStore() {
-        // do nothing
-    }
-
 }

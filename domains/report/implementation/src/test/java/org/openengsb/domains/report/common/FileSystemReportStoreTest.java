@@ -16,16 +16,23 @@
 
 package org.openengsb.domains.report.common;
 
-public class InMemoryReportStoreTest extends ReportStoreTest {
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
+
+public class FileSystemReportStoreTest extends ReportStoreTest {
+
+    private File rootDir;
 
     @Override
     public ReportStore getReportStore() {
-        return new InMemoryReportStore();
+        rootDir = new File("reports");
+        return new FileSystemReportStore(rootDir);
     }
 
     @Override
-    public void clearStore() {
-        // do nothing
+    public void clearStore() throws Exception {
+        FileUtils.deleteDirectory(rootDir);
     }
 
 }

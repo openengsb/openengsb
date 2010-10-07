@@ -21,9 +21,11 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.domains.report.model.Report;
+import org.openengsb.domains.report.model.ReportPart;
 import org.openengsb.domains.report.model.SimpleReportPart;
 
 public abstract class ReportStoreTest {
@@ -32,6 +34,8 @@ public abstract class ReportStoreTest {
 
     public abstract ReportStore getReportStore();
 
+    public abstract void clearStore() throws Exception;
+
     @Before
     public void setUp() {
         this.reportStore = getReportStore();
@@ -39,6 +43,11 @@ public abstract class ReportStoreTest {
         reportStore.storeReport("42", new Report("test"));
         reportStore.storeReport("42", new Report("test1"));
         reportStore.storeReport("42", new Report("test2"));
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        clearStore();
     }
 
     @Test
@@ -110,9 +119,13 @@ public abstract class ReportStoreTest {
         Report report = new Report("testReport");
         this.reportStore.storeReport("testCategory", report);
         report = new Report("testReport");
-        report.addPart(new SimpleReportPart("somePart", null, null));
+        report.addPart(new SimpleReportPart("somePart", "text/plain", "foo".getBytes()));
         this.reportStore.storeReport("testCategory", report);
-        assertThat(reportStore.getAllReports("testCategory").get(0).getParts().size(), is(1));
+        List<ReportPart> parts = reportStore.getAllReports("testCategory").get(0).getParts();
+        assertThat(parts.size(), is(1));
+        assertThat(parts.get(0).getPartName(), is("somePart"));
+        assertThat(parts.get(0).getContentType(), is("text/plain"));
+        assertThat(parts.get(0).getContent(), is("foo".getBytes()));
     }
 
     @Test
