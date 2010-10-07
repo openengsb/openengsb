@@ -25,6 +25,8 @@ import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.ServiceManager;
 import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.Inject;
 import org.ops4j.pax.exam.Option;
@@ -32,6 +34,8 @@ import org.ops4j.pax.exam.container.def.options.WorkingDirectoryOption;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -69,7 +73,8 @@ public abstract class AbstractExamTestHelper {
     @Configuration
     public static Option[] configuration() {
         List<Option> baseConfiguration = BaseExamConfiguration.getBaseExamOptions("../");
-        baseConfiguration.add(CoreOptions.systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"));
+        baseConfiguration
+            .add(CoreOptions.systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"));
         baseConfiguration.add(new WorkingDirectoryOption(getWorkingDirectory()));
         BaseExamConfiguration.addEntireOpenEngSBPlatform(baseConfiguration);
         Option[] options = BaseExamConfiguration.convertOptionListToArray(baseConfiguration);
@@ -85,6 +90,21 @@ public abstract class AbstractExamTestHelper {
         tracker.close();
         Assert.assertNotNull(service);
         return service;
+    }
+
+    protected ServiceManager retrieveServiceManager(BundleContext bundleContext, Class<? extends Domain> domain)
+        throws InterruptedException, InvalidSyntaxException {
+        String filter = "(domain=" + domain.getName() + ")";
+        ServiceReference[] allServiceReferences =
+            bundleContext.getAllServiceReferences(ServiceManager.class.getName(), filter);
+        if (allServiceReferences != null) {
+            for (ServiceReference serviceReference : allServiceReferences) {
+                Object service = bundleContext.getService(serviceReference);
+                return (ServiceManager) service;
+            }
+        }
+        Assert.fail("No service manager found.");
+        return null;
     }
 
     protected Version getBundleVersionBySymbolicName(String symbolicName, BundleContext context) {

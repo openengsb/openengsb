@@ -19,23 +19,18 @@ package org.openengsb.integrationtest.exam;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Hashtable;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.domains.report.NoSuchReportException;
 import org.openengsb.domains.report.ReportDomain;
-import org.openengsb.domains.report.common.FileSystemReportStoreFactory;
 import org.openengsb.domains.report.model.Report;
-import org.openengsb.domains.report.plaintext.internal.PlaintextReportFactory;
-import org.openengsb.domains.report.plaintext.internal.PlaintextReportService;
-import org.openengsb.domains.report.plaintext.internal.StringReportPart;
+import org.openengsb.domains.report.model.SimpleReportPart;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
@@ -52,21 +47,14 @@ public class ReportIT extends AbstractExamTestHelper {
         contextService.setThreadLocalContext("42");
         contextService.putValue("domains/ReportDomain/defaultConnector/id", "plaintextConnector");
 
-        PlaintextReportFactory factory = new PlaintextReportFactory(new FileSystemReportStoreFactory());
-        PlaintextReportService reporter =
-            factory.createServiceInstance("plaintextConnector", new HashMap<String, String>());
-
-        String[] clazzes = new String[]{Domain.class.getName(), ReportDomain.class.getName()};
-        Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put("id", "plaintextConnector");
-
-        getBundleContext().registerService(clazzes, reporter, properties);
+        ServiceManager serviceManager = retrieveServiceManager(getBundleContext(), ReportDomain.class);
+        serviceManager.update("plaintextConnector", new HashMap<String, String>());
     }
 
     @Test
     public void testCreateAndRetrieve() throws NoSuchReportException {
         String reportId = reportService.collectData();
-        reportService.addReportPart(reportId, new StringReportPart("part1", "text/plain", "foo"));
+        reportService.addReportPart(reportId, new SimpleReportPart("part1", "text/plain", "foo".getBytes()));
         reportService.processEvent(reportId, new Event("42"));
         reportService.generateReport(reportId, "bar", "buz");
 
