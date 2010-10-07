@@ -26,10 +26,10 @@ import org.openengsb.domains.report.model.ReportPart;
 
 public class InMemoryReportPartStore implements ReportPartStore {
 
-    private Map<StorageKey, List<ReportPart>> reportPartMap = new HashMap<StorageKey, List<ReportPart>>();
+    private Map<String, List<ReportPart>> reportPartMap = new HashMap<String, List<ReportPart>>();
 
     @Override
-    public List<ReportPart> getParts(StorageKey key) {
+    public List<ReportPart> getParts(String key) {
         List<ReportPart> list = reportPartMap.get(key);
         if (list == null) {
             return Collections.emptyList();
@@ -38,7 +38,7 @@ public class InMemoryReportPartStore implements ReportPartStore {
     }
 
     @Override
-    public void storePart(StorageKey key, ReportPart part) {
+    public void storePart(String key, ReportPart part) {
         List<ReportPart> list = reportPartMap.get(key);
         if (list == null) {
             list = new ArrayList<ReportPart>();
@@ -48,7 +48,7 @@ public class InMemoryReportPartStore implements ReportPartStore {
     }
 
     @Override
-    public ReportPart getLastPart(StorageKey key) {
+    public ReportPart getLastPart(String key) {
         List<ReportPart> parts = getParts(key);
         if (parts.isEmpty()) {
             return null;
@@ -57,7 +57,7 @@ public class InMemoryReportPartStore implements ReportPartStore {
     }
 
     @Override
-    public void clearParts(StorageKey key) {
+    public void clearParts(String key) {
         reportPartMap.remove(key);
     }
 

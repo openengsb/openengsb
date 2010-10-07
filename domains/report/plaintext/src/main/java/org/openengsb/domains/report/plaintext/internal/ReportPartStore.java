@@ -22,12 +22,12 @@ import org.openengsb.domains.report.model.ReportPart;
 
 public interface ReportPartStore {
 
-    void storePart(StorageKey key, ReportPart reportPart);
+    void storePart(String key, ReportPart reportPart);
 
-    List<ReportPart> getParts(StorageKey key);
+    List<ReportPart> getParts(String key);
 
-    void clearParts(StorageKey key);
+    void clearParts(String key);
 
-    ReportPart getLastPart(StorageKey key);
+    ReportPart getLastPart(String key);
 
 }

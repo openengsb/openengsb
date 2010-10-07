@@ -27,7 +27,6 @@ import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.domains.report.IdType;
 import org.openengsb.domains.report.model.ReportPart;
 import org.openengsb.domains.report.model.SimpleReportPart;
 
@@ -39,12 +38,12 @@ public abstract class ReportPartStoreTest {
 
     protected abstract void deleteStore();
 
-    private StorageKey alreadyAddedKey;
+    private String alreadyAddedKey;
 
     @Before
     public void setUp() {
         this.store = createStore();
-        alreadyAddedKey = new StorageKey(UUID.randomUUID().toString(), IdType.CONTEXT_ID, UUID.randomUUID().toString());
+        alreadyAddedKey = UUID.randomUUID().toString();
         store.storePart(alreadyAddedKey, new SimpleReportPart("alreadyAdded1", "text/plain", null));
         store.storePart(alreadyAddedKey, new SimpleReportPart("alreadyAdded2", "text/plain", null));
     }
@@ -56,7 +55,7 @@ public abstract class ReportPartStoreTest {
 
     @Test
     public void storePartNewKey_shouldStorePart() {
-        StorageKey newKey = new StorageKey("foo", IdType.CONTEXT_ID, "bar");
+        String newKey = "foo";
         SimpleReportPart reportPart = new SimpleReportPart("42", "text/plain", null);
         store.storePart(newKey, reportPart);
         assertThat(store.getParts(newKey).size(), is(1));
@@ -89,7 +88,7 @@ public abstract class ReportPartStoreTest {
 
     @Test
     public void getPartsNewKey_shouldReturnEmptyList() {
-        StorageKey newKey = new StorageKey("foo", IdType.CONTEXT_ID, "bar");
+        String newKey = "foo";
         List<ReportPart> parts = store.getParts(newKey);
         assertThat(parts.isEmpty(), is(true));
     }
@@ -102,7 +101,7 @@ public abstract class ReportPartStoreTest {
 
     @Test
     public void getLastPartNewKey_shouldReturnNull() {
-        StorageKey newKey = new StorageKey("foo", IdType.CONTEXT_ID, "bar");
+        String newKey = "foo";
         assertThat(store.getLastPart(newKey), nullValue());
     }
 }

@@ -19,13 +19,13 @@ package org.openengsb.domains.report.plaintext.internal;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.util.AliveState;
-import org.openengsb.domains.report.IdType;
 import org.openengsb.domains.report.NoSuchReportException;
 import org.openengsb.domains.report.common.AbstractReportDomain;
 import org.openengsb.domains.report.model.Report;
@@ -35,7 +35,7 @@ public class PlaintextReportService extends AbstractReportDomain {
 
     private static final String CONTENT_TYPE = "text/plain";
 
-    private ReportStorageRegistry registry = new ReportStorageRegistry();
+    private Set<String> activeReportDataCollections = new HashSet<String>();
 
     private ReportPartStore partStore = new InMemoryReportPartStore();
 
@@ -47,39 +47,48 @@ public class PlaintextReportService extends AbstractReportDomain {
 
     @Override
     public Report generateReport(String reportId, String category, String reportName) throws NoSuchReportException {
-        StorageKey storageKey = registry.getKeyFor(reportId);
-        Report report = doGenerateReport(reportName, storageKey);
-        registry.stopStoringDataFor(storageKey);
-        partStore.clearParts(storageKey);
+        checkId(reportId);
+        Report report = doGenerateReport(reportName, reportId);
+        activeReportDataCollections.remove(reportId);
+        partStore.clearParts(reportId);
         storeReport(category, report);
-        return report;
-    }
-
-    private Report doGenerateReport(String reportName, StorageKey storageKey) {
-        List<ReportPart> parts = partStore.getParts(storageKey);
-        Report report = new Report(reportName);
-        report.setParts(parts);
         return report;
     }
 
     @Override
     public Report getDraft(String reportId, String draftName) throws NoSuchReportException {
-        return doGenerateReport(draftName, registry.getKeyFor(reportId));
+        checkId(reportId);
+        return doGenerateReport(draftName, reportId);
     }
 
     @Override
-    public String collectData(IdType idType, String id) {
+    public String collectData() {
         String reportId = UUID.randomUUID().toString();
-        StorageKey storageKey = new StorageKey(reportId, idType, id);
-        registry.storeDataFor(storageKey);
+        activeReportDataCollections.add(reportId);
         return reportId;
     }
 
     @Override
     public void addReportPart(String reportId, ReportPart reportPart) throws NoSuchReportException {
         checkContentType(reportPart);
-        StorageKey storageKey = registry.getKeyFor(reportId);
-        partStore.storePart(storageKey, reportPart);
+        checkId(reportId);
+        partStore.storePart(reportId, reportPart);
+    }
+
+    @Override
+    public void processEvent(String reportId, Event event) throws NoSuchReportException {
+        checkId(reportId);
+        StringReportPart reportPart = new StringReportPart(generatePartName(event), CONTENT_TYPE, getContent(event));
+        partStore.storePart(reportId, reportPart);
+    }
+
+    @Override
+    public AliveState getAliveState() {
+        return AliveState.ONLINE;
+    }
+
+    public String getId() {
+        return id;
     }
 
     private void checkContentType(ReportPart reportPart) {
@@ -91,33 +100,18 @@ public class PlaintextReportService extends AbstractReportDomain {
         }
     }
 
-    @Override
-    public void processEvent(Event event) {
-        StringReportPart reportPart = new StringReportPart(generatePartName(event), CONTENT_TYPE, getContent(event));
-        for (IdType type : IdType.values()) {
-            String id = getId(type, event);
-            if (id != null) {
-                storeForAllKeys(reportPart, registry.getStorageKeysFor(type, id));
-            }
+    private void checkId(String reportId) throws NoSuchReportException {
+        if (activeReportDataCollections.contains(reportId)) {
+            return;
         }
+        throw new NoSuchReportException("Currently no report is generated for reportId: " + reportId);
     }
 
-    private void storeForAllKeys(StringReportPart reportPart, Set<StorageKey> storageKeys) {
-        for (StorageKey key : storageKeys) {
-            partStore.storePart(key, reportPart);
-        }
-    }
-
-    private String getId(IdType type, Event event) {
-        switch (type) {
-            case CONTEXT_ID:
-                return event.getContextId();
-            case CORRELATION_ID:
-            case WORKFLOW_ID:
-            case WORKFLOW_INSTANCE_ID:
-                return null;
-        }
-        return null;
+    private Report doGenerateReport(String reportName, String reportId) {
+        List<ReportPart> parts = partStore.getParts(reportId);
+        Report report = new Report(reportName);
+        report.setParts(parts);
+        return report;
     }
 
     private String getContent(Event event) {
@@ -126,7 +120,7 @@ public class PlaintextReportService extends AbstractReportDomain {
         appendAll(content, "Event context: ", event.getContextId(), "\n");
         appendAll(content, "Event Fields: \n");
         for (Field field : event.getClass().getDeclaredFields()) {
-            appendAll(content, field.getName(), ": ", getFieldValue(field, event), "\n");
+            appendAll(content, "  ", field.getName(), ": ", getFieldValue(field, event), "\n");
         }
         return content.toString();
     }
@@ -152,15 +146,6 @@ public class PlaintextReportService extends AbstractReportDomain {
 
     private String generatePartName(Event e) {
         return e.getClass().getName() + " - " + new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date());
-    }
-
-    @Override
-    public AliveState getAliveState() {
-        return AliveState.ONLINE;
-    }
-
-    public String getId() {
-        return id;
     }
 
 }
