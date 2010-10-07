@@ -79,10 +79,15 @@ public class FileSystemReportStore implements ReportStore {
     }
 
     private Properties readMetadata(File file) throws IOException {
+        Properties properties = new Properties();
+        if (!file.exists()) {
+            properties.put("partName", "unknown");
+            properties.put("contentType", "text/plain");
+            return properties;
+        }
         FileReader reader = null;
         try {
             reader = new FileReader(file);
-            Properties properties = new Properties();
             properties.load(reader);
             return properties;
         } finally {
