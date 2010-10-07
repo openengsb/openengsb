@@ -57,7 +57,7 @@ public class ReportStorageRegistryTest {
     @Test(expected = NoSuchReportException.class)
     public void stopStoringDataForKey_shouldRemoveKeyFromRegistry() throws NoSuchReportException {
         registry.stopStoringDataFor(alreadyAddedKey);
-        registry.getKeyFor(alreadyAddedKey.getId());
+        registry.getKeyFor(alreadyAddedKey.getReportId());
     }
 
     @Test

@@ -33,7 +33,7 @@ public class ReportStorageRegistry {
     }
 
     public void stopStoringDataFor(StorageKey storageKey) {
-        toCollect.remove(storageKey);
+        toCollect.remove(storageKey.getReportId());
     }
 
     public Set<StorageKey> getStorageKeysFor(IdType type, String id) {
@@ -49,7 +49,7 @@ public class ReportStorageRegistry {
     public StorageKey getKeyFor(String reportId) throws NoSuchReportException {
         if (!toCollect.containsKey(reportId)) {
             throw new NoSuchReportException(
-                    "There is currently no data collection process active for a report with id: " + reportId);
+                "There is currently no data collection process active for a report with id: " + reportId);
         }
         return toCollect.get(reportId);
     }
