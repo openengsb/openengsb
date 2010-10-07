@@ -14,22 +14,10 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.report.plaintext.internal;
+package org.openengsb.domains.report.common;
 
-import org.junit.Before;
-import org.mockito.Mockito;
-import org.openengsb.domains.report.common.ReportStore;
+public interface ReportStoreFactory {
 
-public class PlaintextReportServiceTest {
-
-    private PlaintextReportService reportService;
-    private ReportStore store;
-
-    @Before
-    public void setUp() {
-        reportService = new PlaintextReportService("test");
-        store = Mockito.mock(ReportStore.class);
-        reportService.setStore(store);
-    }
+    ReportStore createReportStore(String id);
 
 }

@@ -35,9 +35,9 @@ public class PlaintextReportService extends AbstractReportDomain {
 
     private static final String CONTENT_TYPE = "text/plain";
 
-    private ReportStorageRegistry registry;
+    private ReportStorageRegistry registry = new ReportStorageRegistry();
 
-    private ReportPartStore partStore;
+    private ReportPartStore partStore = new InMemoryReportPartStore();
 
     private String id;
 
@@ -86,8 +86,8 @@ public class PlaintextReportService extends AbstractReportDomain {
         String contentType = reportPart.getContentType();
         if (!contentType.equals(CONTENT_TYPE)) {
             throw new IllegalArgumentException(
-                    "Plaintext report service does not support report parts with content type '" + contentType
-                            + "'. It only supports content type '" + CONTENT_TYPE + "'.");
+                "Plaintext report service does not support report parts with content type '" + contentType
+                        + "'. It only supports content type '" + CONTENT_TYPE + "'.");
         }
     }
 
@@ -157,14 +157,6 @@ public class PlaintextReportService extends AbstractReportDomain {
     @Override
     public AliveState getAliveState() {
         return AliveState.ONLINE;
-    }
-
-    public void setRegistry(ReportStorageRegistry registry) {
-        this.registry = registry;
-    }
-
-    public void setPartStore(ReportPartStore partStore) {
-        this.partStore = partStore;
     }
 
     public String getId() {

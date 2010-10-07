@@ -22,9 +22,15 @@ import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.domains.report.ReportDomain;
-import org.openengsb.domains.report.common.InMemoryReportStore;
+import org.openengsb.domains.report.common.ReportStoreFactory;
 
 public class PlaintextReportFactory implements ServiceInstanceFactory<ReportDomain, PlaintextReportService> {
+
+    private final ReportStoreFactory storeFactory;
+
+    public PlaintextReportFactory(ReportStoreFactory storeFactory) {
+        this.storeFactory = storeFactory;
+    }
 
     @Override
     public ServiceDescriptor getDescriptor(Builder builder) {
@@ -40,9 +46,7 @@ public class PlaintextReportFactory implements ServiceInstanceFactory<ReportDoma
     @Override
     public PlaintextReportService createServiceInstance(String id, Map<String, String> attributes) {
         PlaintextReportService service = new PlaintextReportService(id);
-        service.setPartStore(new InMemoryReportPartStore());
-        service.setRegistry(new ReportStorageRegistry());
-        service.setStore(new InMemoryReportStore());
+        service.setStore(storeFactory.createReportStore(id));
         setAttributes(service, attributes);
         return service;
     }

@@ -29,7 +29,11 @@
     </osgi:service-properties>
     <bean class="org.openengsb.domains.report.plaintext.PlaintextReportServiceManager">
       <constructor-arg>
-        <bean class="org.openengsb.domains.report.plaintext.internal.PlaintextReportFactory" />
+        <bean class="org.openengsb.domains.report.plaintext.internal.PlaintextReportFactory">
+          <constructor-arg>
+            <bean class="org.openengsb.domains.report.commmon.InMemoryReportStoreFactory" />
+          </constructor-arg>
+        </bean>
       </constructor-arg>
     </bean>
   </osgi:service>

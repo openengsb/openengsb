@@ -28,61 +28,61 @@ import org.openengsb.domains.report.model.SimpleReportPart;
 
 public abstract class ReportStoreTest {
 
-    private ReportStore reportDomain;
+    private ReportStore reportStore;
 
     public abstract ReportStore getReportStore();
 
     @Before
     public void setUp() {
-        this.reportDomain = getReportStore();
-        reportDomain.createCategory("42");
-        reportDomain.storeReport("42", new Report("test"));
-        reportDomain.storeReport("42", new Report("test1"));
-        reportDomain.storeReport("42", new Report("test2"));
+        this.reportStore = getReportStore();
+        reportStore.createCategory("42");
+        reportStore.storeReport("42", new Report("test"));
+        reportStore.storeReport("42", new Report("test1"));
+        reportStore.storeReport("42", new Report("test2"));
     }
 
     @Test
     public void createCategory_shouldWork() {
-        assertThat(reportDomain.getAllCategories().contains("testCategory"), is(false));
-        reportDomain.createCategory("testCategory");
-        assertThat(reportDomain.getAllCategories().contains("testCategory"), is(true));
+        assertThat(reportStore.getAllCategories().contains("testCategory"), is(false));
+        reportStore.createCategory("testCategory");
+        assertThat(reportStore.getAllCategories().contains("testCategory"), is(true));
     }
 
     @Test
     public void createCategoryTwice_shouldPerformNoOpOnSecondCreation() {
-        assertThat(reportDomain.getAllCategories().contains("testCategory"), is(false));
-        reportDomain.createCategory("testCategory");
-        List<String> categories = reportDomain.getAllCategories();
-        reportDomain.createCategory("testCategory");
-        assertThat(reportDomain.getAllCategories(), is(categories));
+        assertThat(reportStore.getAllCategories().contains("testCategory"), is(false));
+        reportStore.createCategory("testCategory");
+        List<String> categories = reportStore.getAllCategories();
+        reportStore.createCategory("testCategory");
+        assertThat(reportStore.getAllCategories(), is(categories));
     }
 
     @Test
     public void removeCategory_shouldWork() {
-        assertThat(reportDomain.getAllCategories().contains("42"), is(true));
-        this.reportDomain.removeCategory("42");
-        assertThat(reportDomain.getAllCategories().contains("42"), is(false));
+        assertThat(reportStore.getAllCategories().contains("42"), is(true));
+        this.reportStore.removeCategory("42");
+        assertThat(reportStore.getAllCategories().contains("42"), is(false));
     }
 
     @Test
     public void removeCategoryTwice_shouldPerformNoOpOnSecondRemoval() {
-        this.reportDomain.removeCategory("42");
-        assertThat(reportDomain.getAllCategories().contains("42"), is(false));
-        this.reportDomain.removeCategory("42");
+        this.reportStore.removeCategory("42");
+        assertThat(reportStore.getAllCategories().contains("42"), is(false));
+        this.reportStore.removeCategory("42");
     }
 
     @Test
     public void getAllCategoriesWithoutCategories_shouldReturnEmptyList() {
-        reportDomain.removeCategory("42");
-        assertThat(reportDomain.getAllCategories().isEmpty(), is(true));
+        reportStore.removeCategory("42");
+        assertThat(reportStore.getAllCategories().isEmpty(), is(true));
     }
 
     @Test
     public void getAllCategoriesWithCategories_shouldReturnAllCategories() {
-        this.reportDomain.createCategory("testCategory");
-        this.reportDomain.createCategory("testCategory2");
-        this.reportDomain.createCategory("testCategory3");
-        List<String> categories = reportDomain.getAllCategories();
+        this.reportStore.createCategory("testCategory");
+        this.reportStore.createCategory("testCategory2");
+        this.reportStore.createCategory("testCategory3");
+        List<String> categories = reportStore.getAllCategories();
         assertThat(categories.size(), is(4));
         assertThat(categories.contains("42"), is(true));
         assertThat(categories.contains("testCategory"), is(true));
@@ -93,65 +93,65 @@ public abstract class ReportStoreTest {
     @Test
     public void storeReportNewCategory_shouldCreateCategoryAndStoreReport() {
         Report report = new Report("testReport");
-        this.reportDomain.storeReport("testCategory", report);
-        assertThat(reportDomain.getAllReports("testCategory").get(0).getName(), is("testReport"));
+        this.reportStore.storeReport("testCategory", report);
+        assertThat(reportStore.getAllReports("testCategory").get(0).getName(), is("testReport"));
     }
 
     @Test
     public void storeReportExistingCategory_shouldStoreReport() {
-        this.reportDomain.createCategory("testCategory");
+        this.reportStore.createCategory("testCategory");
         Report report = new Report("testReport");
-        this.reportDomain.storeReport("testCategory", report);
-        assertThat(reportDomain.getAllReports("testCategory").get(0).getName(), is("testReport"));
+        this.reportStore.storeReport("testCategory", report);
+        assertThat(reportStore.getAllReports("testCategory").get(0).getName(), is("testReport"));
     }
 
     @Test
     public void storeReportTwice_shouldOverwriteReport() {
         Report report = new Report("testReport");
-        this.reportDomain.storeReport("testCategory", report);
+        this.reportStore.storeReport("testCategory", report);
         report = new Report("testReport");
         report.addPart(new SimpleReportPart("somePart", null, null));
-        this.reportDomain.storeReport("testCategory", report);
-        assertThat(reportDomain.getAllReports("testCategory").get(0).getParts().size(), is(1));
+        this.reportStore.storeReport("testCategory", report);
+        assertThat(reportStore.getAllReports("testCategory").get(0).getParts().size(), is(1));
     }
 
     @Test
     public void removeReport_shouldWork() {
         Report report = new Report("testReport");
-        this.reportDomain.storeReport("testCategory", report);
-        this.reportDomain.removeReport("testCategory", report);
-        assertThat(reportDomain.getAllReports("testCategory").isEmpty(), is(true));
+        this.reportStore.storeReport("testCategory", report);
+        this.reportStore.removeReport("testCategory", report);
+        assertThat(reportStore.getAllReports("testCategory").isEmpty(), is(true));
 
     }
 
     @Test
     public void removeReportTwice_shouldPerformNoOPOnSecondRemoval() {
         Report report = new Report("testReport");
-        this.reportDomain.storeReport("testCategory", report);
-        this.reportDomain.removeReport("testCategory", report);
-        assertThat(reportDomain.getAllReports("testCategory").isEmpty(), is(true));
-        this.reportDomain.removeReport("testCategory", report);
+        this.reportStore.storeReport("testCategory", report);
+        this.reportStore.removeReport("testCategory", report);
+        assertThat(reportStore.getAllReports("testCategory").isEmpty(), is(true));
+        this.reportStore.removeReport("testCategory", report);
     }
 
     @Test
     public void getAllReportsCategoryDoesNotExist_shouldReturnEmptyList() {
-        List<Report> allReports = this.reportDomain.getAllReports("foo");
+        List<Report> allReports = this.reportStore.getAllReports("foo");
         assertThat(allReports.isEmpty(), is(true));
     }
 
     @Test
     public void getAllReportsEmptyCategory_shouldReturnEmptyList() {
-        reportDomain.createCategory("foo");
-        List<Report> allReports = reportDomain.getAllReports("foo");
+        reportStore.createCategory("foo");
+        List<Report> allReports = reportStore.getAllReports("foo");
         assertThat(allReports.isEmpty(), is(true));
     }
 
     @Test
     public void getAllReports_shouldReturnAllReports() {
-        this.reportDomain.storeReport("testCategory", new Report("testReport"));
-        this.reportDomain.storeReport("testCategory", new Report("testReport1"));
-        this.reportDomain.storeReport("testCategory", new Report("testReport2"));
-        List<Report> allReports = reportDomain.getAllReports("testCategory");
+        this.reportStore.storeReport("testCategory", new Report("testReport"));
+        this.reportStore.storeReport("testCategory", new Report("testReport1"));
+        this.reportStore.storeReport("testCategory", new Report("testReport2"));
+        List<Report> allReports = reportStore.getAllReports("testCategory");
         assertThat(allReports.size(), is(3));
     }
 

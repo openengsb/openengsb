@@ -59,4 +59,8 @@ public abstract class AbstractReportDomain implements ReportDomain {
         this.store = store;
     }
 
+    public ReportStore getStore() {
+        return store;
+    }
+
 }
