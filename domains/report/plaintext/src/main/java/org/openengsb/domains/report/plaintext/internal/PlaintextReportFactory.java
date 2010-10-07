@@ -34,7 +34,7 @@ public class PlaintextReportFactory implements ServiceInstanceFactory<ReportDoma
 
     @Override
     public ServiceDescriptor getDescriptor(Builder builder) {
-        builder.name("reportPlaintext.name").description("reportPlaintext.description");
+        builder.name("plaintextReport.name").description("plaintextReport.description");
         return builder.build();
     }
 
