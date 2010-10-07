@@ -38,12 +38,23 @@ public final class MethodUtil {
 
     public static List<Method> getServiceMethods(Object service) {
         List<Method> result = new ArrayList<Method>();
-        for (Class<?> serviceInterface : service.getClass().getInterfaces()) {
+        for (Class<?> serviceInterface : getAllInterfaces(service)) {
             if (Domain.class.isAssignableFrom(serviceInterface)) {
                 result.addAll(Arrays.asList(serviceInterface.getDeclaredMethods()));
             }
         }
         return result;
+    }
+
+    public static Class<?>[] getAllInterfaces(Object serviceObject) {
+        List<Class<?>> interfaces = new ArrayList<Class<?>>();
+        interfaces.addAll(Arrays.asList(serviceObject.getClass().getInterfaces()));
+        Class<?> superClass = serviceObject.getClass().getSuperclass();
+        while (superClass != null) {
+            interfaces.addAll(Arrays.asList(superClass.getInterfaces()));
+            superClass = superClass.getSuperclass();
+        }
+        return interfaces.toArray(new Class<?>[interfaces.size()]);
     }
 
     public static List<AttributeDefinition> buildAttributesList(Class<?> theClass) {
@@ -56,8 +67,8 @@ public final class MethodUtil {
                         || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
                     continue;
                 }
-                AttributeDefinition a = AttributeDefinition.builder(new PassThroughStringLocalizer())
-                        .id(propertyDescriptor.getName())
+                AttributeDefinition a =
+                    AttributeDefinition.builder(new PassThroughStringLocalizer()).id(propertyDescriptor.getName())
                         .name(propertyDescriptor.getDisplayName())
                         .description(propertyDescriptor.getShortDescription()).build();
                 attributes.add(a);
