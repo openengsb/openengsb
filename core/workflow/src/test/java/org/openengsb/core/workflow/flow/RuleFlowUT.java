@@ -30,6 +30,7 @@ import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.junit.Test;
+import org.openengsb.core.workflow.model.TestObject;
 
 import static org.hamcrest.CoreMatchers.is;
 
@@ -39,31 +40,6 @@ import static org.junit.Assert.fail;
 public class RuleFlowUT {
 
     private Log log = LogFactory.getLog(RuleFlowUT.class);
-
-    public static class TestObject {
-        private String value;
-
-        public TestObject() {
-        }
-
-        public TestObject(String value) {
-            super();
-            this.value = value;
-        }
-
-        public String getValue() {
-            return this.value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("TestObject: \"%s\"", value);
-        }
-    }
 
     @Test
     public void testRunFlow() throws Exception {

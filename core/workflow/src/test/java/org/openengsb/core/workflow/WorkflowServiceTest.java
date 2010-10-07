@@ -167,4 +167,9 @@ public class WorkflowServiceTest {
         service.processEvent(event);
         Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
     }
+
+    @Test
+    public void testStartProcess_shouldBeRecordedInMap() throws Exception {
+
+    }
 }

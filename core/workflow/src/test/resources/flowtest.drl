@@ -17,7 +17,7 @@
 package org.openengsb
 
 #list any import classes here.
-import org.openengsb.core.workflow.flow.RuleFlowUT.TestObject
+import org.openengsb.core.workflow.model.TestObject
 import org.apache.commons.logging.Log
 
 #declare any global variables here
