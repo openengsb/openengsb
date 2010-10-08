@@ -34,6 +34,7 @@ import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.model.TestEvent;
 
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
@@ -90,7 +91,7 @@ public class WorkflowServiceTest {
         manager = new DirectoryRuleSource("data/rulebase");
         ((DirectoryRuleSource) manager).init();
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
-            "when\n Event ( contextId == \"test-context\")\n then \n example.doSomething(\"42\");");
+            "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"42\");");
     }
 
     private void setupDomains() {
@@ -139,7 +140,7 @@ public class WorkflowServiceTest {
     @Test
     public void testUpdateRule() throws Exception {
         manager.update(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1"),
-            "when\n Event ( contextId == \"test-context\")\n then \n example.doSomething(\"21\");");
+            "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"21\");");
         Event event = new Event("test-context");
         service.processEvent(event);
         verify(logService).doSomething("21");
@@ -189,7 +190,7 @@ public class WorkflowServiceTest {
     public void testStartProcessWithEvents_shouldRunScriptNodes() throws Exception {
         long id = service.startFlow("floweventtest");
         service.processEvent(new Event());
-        service.processEvent(new Event());
+        service.processEvent(new TestEvent());
         service.waitForFlowToFinish(id);
         InOrder inOrder2 = inOrder(logService);
         inOrder2.verify(logService).doSomething("start testflow");

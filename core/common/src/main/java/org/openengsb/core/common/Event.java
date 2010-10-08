@@ -17,21 +17,28 @@
 package org.openengsb.core.common;
 
 public class Event {
-    private String contextId;
+    private String name;
 
     public Event() {
-        contextId = "";
     }
 
-    public Event(String contextId) {
-        this.contextId = contextId;
+    public Event(String name) {
+        this.name = name;
     }
 
-    public String getContextId() {
-        return this.contextId;
+    /**
+     * returns the simple Classname by default. Maybe overriden by subclasses to return types other than the classes
+     * name
+     */
+    public String getType() {
+        return this.getClass().getSimpleName();
     }
 
-    public void setContextId(String contextId) {
-        this.contextId = contextId;
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
