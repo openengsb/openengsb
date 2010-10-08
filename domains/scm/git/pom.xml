@@ -60,6 +60,7 @@
       <groupId>org.openengsb.domains.scm</groupId>
       <artifactId>openengsb-domains-scm-implementation</artifactId>
       <version>${pom.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
