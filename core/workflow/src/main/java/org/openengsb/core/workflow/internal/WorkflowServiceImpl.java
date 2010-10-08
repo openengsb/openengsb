@@ -58,10 +58,9 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     private BundleContext bundleContext;
 
-    private long timeout = 10000;
-
-    private Map<Long, RuleFlowThread> flowThreads = new HashMap<Long, RuleFlowThread>();
     private Map<String, StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
+
+    private long timeout = 10000;
 
     private boolean findGlobal(String name) {
         ServiceReference[] allServiceReferences;
@@ -85,15 +84,27 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     @Override
     public void processEvent(Event event) throws WorkflowException {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        session.insert(event);
+        session.fireAllRules();
+    }
+
+    private StatefulKnowledgeSession getSessionForCurrentContext() throws WorkflowException {
+        String currentContextId = currentContextService.getCurrentContextId();
+        if (currentContextId == null) {
+            throw new IllegalStateException("contextID must not be null");
+        }
+        if (sessions.containsKey(currentContextId)) {
+            return sessions.get(currentContextId);
+        }
+        StatefulKnowledgeSession session;
         try {
-            currentContextService.setThreadLocalContext(event.getContextId());
-            StatefulKnowledgeSession session = createSession();
-            session.insert(event);
-            session.fireAllRules();
-            session.dispose();
+            session = createSession();
         } catch (RuleBaseException e) {
             throw new WorkflowException(e);
         }
+        sessions.put(currentContextId, session);
+        return session;
     }
 
     private Collection<String> findMissingGlobals() {
@@ -202,11 +213,11 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         RuleFlowThread rft = new RuleFlowThread(session);
         rft.start();
         ProcessInstance processInstance = session.startProcess(processId);
-        flowThreads.put(processInstance.getId(), rft);
+        // flowThreads.put(processInstance.getId(), rft);
         return processInstance.getId();
     }
 
     public void waitForFlowToFinish(long id) throws InterruptedException {
-        flowThreads.get(id).join();
+        // flowThreads.get(id).join();
     }
 }

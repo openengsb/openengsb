@@ -35,7 +35,9 @@ import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 
@@ -76,7 +78,9 @@ public class WorkflowServiceTest {
         service = new WorkflowServiceImpl();
         setupRulemanager();
         service.setRulemanager(manager);
-        service.setCurrentContextService(Mockito.mock(ContextCurrentService.class));
+        ContextCurrentService currentContext = mock(ContextCurrentService.class);
+        when(currentContext.getCurrentContextId()).thenReturn("42");
+        service.setCurrentContextService(currentContext);
         setupDomains();
     }
 

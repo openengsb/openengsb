@@ -16,11 +16,6 @@
 
 package org.openengsb.core.workflow;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
@@ -36,6 +31,12 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceReference;
+
+import static org.mockito.Matchers.anyString;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class WorkflowServiceDynamicTest {
 
@@ -157,8 +158,11 @@ public class WorkflowServiceDynamicTest {
         workflowService = new WorkflowServiceImpl();
         setupRulemanager();
         workflowService.setRulemanager(manager);
-        workflowService.setCurrentContextService(mock(ContextCurrentService.class));
+        ContextCurrentService currentContext = mock(ContextCurrentService.class);
+        when(currentContext.getCurrentContextId()).thenReturn("42");
+        workflowService.setCurrentContextService(currentContext);
         workflowService.setBundleContext(bundleContext);
+
     }
 
     private void setupRulemanager() throws RuleBaseException {
