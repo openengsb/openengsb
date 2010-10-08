@@ -26,4 +26,14 @@
   <bean id="defaultDomainProxy" class="org.openengsb.core.common.DefaultDomainProxyFactoryBean" abstract="true"
     init-method="init" />
 
+  <bean id="abstractServiceManager" abstract="true" init-method="init">
+    <property name="connectorSetupStore" ref="connectorStore" />
+  </bean>
+
+  <bean id="connectorStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore">
+    <property name="persistence" ref="persistenceService" />
+  </bean>
+
+  <osgi:reference id="persistenceService" interface="org.openengsb.core.persistence.PersistenceService" />
+
 </beans>

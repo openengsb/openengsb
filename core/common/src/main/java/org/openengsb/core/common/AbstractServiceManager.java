@@ -21,7 +21,9 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Set;
 
+import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.BundleStrings;
 import org.osgi.framework.BundleContext;
@@ -30,12 +32,13 @@ import org.springframework.osgi.context.BundleContextAware;
 
 /**
  * Base class for {@link ServiceManager} implementations. Handles all OSGi related stuff and exporting the right service
- * properties that are needed for service discovery.
- *
+ * properties that are needed for service discovery. Furthermore this class also persists the connector state and
+ * restores all persisted connectors at the next startup.
+ * 
  * All service-specific action, like descriptor building, service instantiation and service updating are encapsulated in
  * a {@link ServiceInstanceFactory}. Creating a new service manager should be as simple as implementing the
  * {@link ServiceInstanceFactory} and creating a subclass of this class:
- *
+ * 
  * <pre>
  * public class ExampleServiceManager extends AbstractServiceManager&lt;ExampleDomain, TheInstanceType&gt; {
  *     public ExampleServiceManager(ServiceInstanceFactory&lt;ExampleDomain, TheInstanceType&gt; factory) {
@@ -43,7 +46,7 @@ import org.springframework.osgi.context.BundleContextAware;
  *     }
  * }
  * </pre>
- *
+ * 
  * @param <DomainType> interface of the domain this service manages
  * @param <InstanceType> actual service implementation this service manages
  */
@@ -65,6 +68,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     private final Map<String, DomainRepresentation> services = new HashMap<String, DomainRepresentation>();
     private final ServiceInstanceFactory<DomainType, InstanceType> factory;
     private final Map<String, Map<String, String>> attributeValues = new HashMap<String, Map<String, String>>();
+    private ConnectorSetupStore connectorSetupStore;
 
     public AbstractServiceManager(ServiceInstanceFactory<DomainType, InstanceType> factory) {
         this.factory = factory;
@@ -76,10 +80,21 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         strings = new BundleStrings(bundleContext.getBundle());
     }
 
+    public void init() {
+        loadServiceInstances();
+    }
+
+    private void loadServiceInstances() {
+        Set<String> storedConnectors = connectorSetupStore.getStoredConnectors();
+        for (String id : storedConnectors) {
+            update(id, connectorSetupStore.loadConnectorSetup(id));
+        }
+    }
+
     @Override
     public ServiceDescriptor getDescriptor() {
         return factory.getDescriptor(ServiceDescriptor.builder(strings).id(getImplementationClass().getName())
-                .serviceType(getDomainInterface()).implementationType(getImplementationClass()));
+            .serviceType(getDomainInterface()).implementationType(getImplementationClass()));
     }
 
     @Override
@@ -88,9 +103,9 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             if (!services.containsKey(id)) {
                 InstanceType instance = factory.createServiceInstance(id, attributes);
                 Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
-                ServiceRegistration registration = bundleContext.registerService(new String[] {
-                        getImplementationClass().getName(), getDomainInterface().getName(), Domain.class.getName() },
-                        instance, serviceProperties);
+                ServiceRegistration registration =
+                    bundleContext.registerService(new String[]{getImplementationClass().getName(),
+                        getDomainInterface().getName(), Domain.class.getName()}, instance, serviceProperties);
                 services.put(id, new DomainRepresentation(instance, registration));
             } else {
                 factory.updateServiceInstance(services.get(id).service, attributes);
@@ -100,7 +115,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             } else {
                 attributeValues.put(id, attributes);
             }
-
+            connectorSetupStore.storeConnectorSetup(id, attributes);
         }
     }
 
@@ -110,6 +125,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             services.get(id).registration.unregister();
             services.remove(id);
             attributeValues.remove(id);
+            connectorSetupStore.deleteConnectorSetup(id);
         }
     }
 
@@ -147,4 +163,9 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         }
         return returnValues;
     }
+
+    public void setConnectorSetupStore(ConnectorSetupStore connectorSetupStore) {
+        this.connectorSetupStore = connectorSetupStore;
+    }
+
 }

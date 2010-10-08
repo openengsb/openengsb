@@ -29,6 +29,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mockito;
+import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.l10n.BundleStringsTest;
@@ -119,8 +120,8 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock).registerService(
-                new String[] {DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
-                instance, props);
+            new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
+            props);
     }
 
     @Test
@@ -136,8 +137,8 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
-                new String[] {DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
-                instance, props);
+            new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
+            props);
     }
 
     @Test
@@ -145,8 +146,8 @@ public class AbstractServiceManagerTest {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
         DummyInstance instance = new DummyInstance();
-        ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(
-            bundleContextMock, instance);
+        ServiceRegistration serviceRegistrationMock =
+            appendServiceRegistrationMockToBundleContextMock(bundleContextMock, instance);
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
@@ -160,9 +161,8 @@ public class AbstractServiceManagerTest {
         ServiceRegistration serviceRegistrationMock = Mockito.mock(ServiceRegistration.class);
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.when(
-                bundleContextMock.registerService(
-                        new String[] {DummyInstance.class.getName(), DummyDomain.class.getName(),
-                                Domain.class.getName() }, mock, props)).thenReturn(serviceRegistrationMock);
+            bundleContextMock.registerService(new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(),
+                Domain.class.getName()}, mock, props)).thenReturn(serviceRegistrationMock);
         return serviceRegistrationMock;
     }
 
@@ -178,6 +178,7 @@ public class AbstractServiceManagerTest {
     private DummyServiceManager createDummyManager(BundleContext bundleContextMock, DummyInstance instance) {
         DummyServiceManager manager = new DummyServiceManager(instance);
         manager.setBundleContext(bundleContextMock);
+        manager.setConnectorSetupStore(Mockito.mock(ConnectorSetupStore.class));
         return manager;
     }
 
@@ -232,8 +233,8 @@ public class AbstractServiceManagerTest {
 
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         DummyInstance instance = new DummyInstance();
-        ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(
-            bundleContextMock, instance);
+        ServiceRegistration serviceRegistrationMock =
+            appendServiceRegistrationMockToBundleContextMock(bundleContextMock, instance);
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);

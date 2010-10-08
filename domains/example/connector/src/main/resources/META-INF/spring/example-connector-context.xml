@@ -27,6 +27,6 @@
     <osgi:service-properties>
       <entry key="domain" value="org.openengsb.domains.example.ExampleDomain" />
     </osgi:service-properties>
-    <bean class="org.openengsb.domains.example.connector.LogServiceManager" />
+    <bean class="org.openengsb.domains.example.connector.LogServiceManager" parent="abstractServiceManager"/>
   </osgi:service>
 </beans>
