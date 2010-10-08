@@ -79,14 +79,15 @@
     </menu>
 
     <menu name="Community" >
-      <item name="Mailing Lists" href="mailinglists.html" />
+      <item name="Mailing Lists" href="community/mailinglists.html" />
+      <item name="IRC Channels" href="community/irc.html" />
 	    <item name="Twitter" href="http://twitter.com/openEngSB" />
 	    <item name="Facebook" href="http://www.facebook.com/group.php?gid=208312030232" />
     </menu>
 
     <menu name="Development" >
       <item name="Contribution" href="contribution.html" />
-      <item name="Source Github" href="http://github.com/openengsb/openengsb/" />
+      <item name="Source" href="http://github.com/openengsb/openengsb/" />
       <item name="Issues Tracking" href="issue-tracking.html"/>
       <item name="Continuous Integration" href="integration.html"/>
       <item name="Maven Repository" href="http://maven.openengsb.org/" />
