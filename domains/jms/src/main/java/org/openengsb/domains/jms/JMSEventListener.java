@@ -26,7 +26,6 @@ import javax.jms.TextMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -106,22 +105,21 @@ public class JMSEventListener implements MessageListener {
         return eventClass;
     }
 
-    private String createExceptionMessage(String message) throws JsonGenerationException, JsonMappingException,
-        IOException {
+    private String createExceptionMessage(String message) throws IOException {
         MessageMapping mapping = new MessageMapping();
         mapping.setType(MessageType.Exception);
         mapping.setMessage(message);
         return serialise(mapping);
     }
 
-    private String createOKMessage() throws JsonGenerationException, JsonMappingException, IOException {
+    private String createOKMessage() throws IOException {
         MessageMapping mapping = new MessageMapping();
         mapping.setType(MessageType.Return);
         mapping.setMessage("OK");
         return serialise(mapping);
     }
 
-    private String serialise(MessageMapping mapping) throws JsonGenerationException, JsonMappingException, IOException {
+    private String serialise(MessageMapping mapping) throws IOException {
         StringWriter stringWriter = new StringWriter();
         mapper.writeValue(stringWriter, mapping);
         return stringWriter.toString();
