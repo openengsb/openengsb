@@ -19,10 +19,13 @@ import java.io.File;
 import java.net.URL;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +41,8 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class RuleManagerFlowTest {
+
+    private Log log = LogFactory.getLog(RuleManagerFlowTest.class);
 
     private RuleManager source;
     private KnowledgeBase rulebase;
@@ -103,6 +108,40 @@ public class RuleManagerFlowTest {
         };
         t.start();
         session.startProcess("flowtest");
+        t.join();
+        session.dispose();
+    }
+
+    @Test(timeout = 10000)
+    public void testRunFlowWithEvents() throws Exception {
+        source.addImport(TestObject.class.getName());
+        source.add(new RuleBaseElementId(RuleBaseElementType.Global, "log"), Log.class.getName());
+
+        URL systemResource = ClassLoader.getSystemResource("floweventtest.rf");
+        File flowFile = FileUtils.toFile(systemResource);
+        String flowString = FileUtils.readFileToString(flowFile);
+        source.add(new RuleBaseElementId(RuleBaseElementType.Process, "flowtest"), flowString);
+        session = rulebase.newStatefulKnowledgeSession();
+        session.setGlobal("log", log);
+        session.addEventListener(new DefaultProcessEventListener() {
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                session.halt();
+            }
+        });
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                session.fireAllRules();
+            };
+        };
+        t.start();
+        ProcessInstance startProcess = session.startProcess("flowtest");
+        startProcess.signalEvent("TestObject", new TestObject());
+        /*
+         * invoking: session.signalEvent("TestObject", new TestObject()); does not work
+         */
+        startProcess.signalEvent("TestObject2", new TestObject());
         t.join();
         session.dispose();
     }
