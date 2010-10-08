@@ -5,19 +5,22 @@
          type="RuleFlow" name="Flow Test" id="flowtest" package-name="org.openengsb" routerLayout="2" >
 
   <header>
+    <variables>
+      <variable name="event1value" >
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="TestObject" />
+      </variable>
+    </variables>
   </header>
 
   <nodes>
+    <join id="17" name="Gateway" x="88" y="177" width="49" height="49" type="1" />
     <start id="1" name="Start" x="32" y="16" width="49" height="49" />
     <end id="2" name="End" x="136" y="419" width="49" height="49" />
-    <actionNode id="11" name="Script" x="16" y="97" width="80" height="48" >
-        <action type="expression" dialect="java" >log.debug("start testflow");</action>
-    </actionNode>
-    <join id="17" name="Gateway" x="88" y="177" width="49" height="49" type="1" />
     <actionNode id="21" name="Script" x="72" y="258" width="80" height="48" >
-        <action type="expression" dialect="mvel" >log.debug("first event recieved, converged");</action>
+        <action type="expression" dialect="mvel" >log.debug("first event recieved, converged");
+log.debug("value was: " + event1value);</action>
     </actionNode>
-    <eventNode id="25" name="Message" x="128" y="97" width="80" height="48" >
+    <eventNode id="25" name="Message" x="128" y="97" width="80" height="48" variableName="event1value" >
       <eventFilters>
         <eventFilter type="eventType" eventType="TestObject" />
       </eventFilters>
@@ -28,16 +31,19 @@
       </eventFilters>
     </eventNode>
     <join id="26" name="Gateway" x="136" y="338" width="49" height="49" type="1" />
+    <actionNode id="11" name="Script" x="16" y="97" width="80" height="48" >
+        <action type="expression" dialect="java" >log.debug("start testflow");</action>
+    </actionNode>
   </nodes>
 
   <connections>
-    <connection from="26" to="2" />
-    <connection from="1" to="11" />
     <connection from="11" to="17" />
     <connection from="25" to="17" />
+    <connection from="26" to="2" />
     <connection from="17" to="21" />
     <connection from="21" to="26" />
     <connection from="27" to="26" />
+    <connection from="1" to="11" />
   </connections>
 
 </process>
