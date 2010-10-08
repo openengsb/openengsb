@@ -16,8 +16,28 @@
 
 package org.openengsb.domains.scm;
 
+import java.io.File;
+import java.util.zip.ZipOutputStream;
+
 import org.openengsb.core.common.Domain;
 
 public interface ScmDomain extends Domain {
 
+    /**
+     * Polls the represented repository for updates. Returns true if there have been changes since the last poll.
+     */
+    boolean poll();
+
+    /**
+     * Exports the current head of the repository to the specified directory.
+     *
+     * @param directory if the directory is non-existent, it'll be created. if teh directory already exists it must not
+     *        contain any files.
+     */
+    void export(File directory);
+
+    /**
+     * Exports the current head of the repository to the given {@code ZipOutputStream}.
+     */
+    void export(ZipOutputStream out);
 }
