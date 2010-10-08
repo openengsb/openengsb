@@ -372,9 +372,9 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pintegration-test,docs,license-check,checkstyle</preparationGoals>
-              <goals>clean install pax:provision assembly:assembly deploy</goals>
-              <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,nightly</releaseProfiles>
+              <preparationGoals>clean install -Pdocs -Dmaven.test.skip=true -DperformRelease=true</preparationGoals>
+              <goals>clean install pax:provision assembly:assembly deploy -Dmaven.test.skip=true -DperformRelease=true</goals>
+              <releaseProfiles>!run,docs,release,nightly</releaseProfiles>
             </configuration>
           </plugin>
         </plugins>
@@ -402,9 +402,9 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pintegration-test,docs,license-check,checkstyle</preparationGoals>
-              <goals>clean install pax:provision assembly:assembly deploy</goals>
-              <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,milestone</releaseProfiles>
+              <preparationGoals>clean install -Pdocs -Dmaven.test.skip=true -DperformRelease=true</preparationGoals>
+              <goals>clean install pax:provision assembly:assembly deploy -Dmaven.test.skip=true -DperformRelease=true</goals>
+              <releaseProfiles>!run,docs,release,milestone</releaseProfiles>
             </configuration>
           </plugin>
         </plugins>
@@ -432,9 +432,9 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pintegration-test,docs,license-check,checkstyle</preparationGoals>
-              <goals>clean install pax:provision assembly:assembly deploy</goals>
-              <releaseProfiles>!run,integration-test,docs,release,license-check,checkstyle,final</releaseProfiles>
+              <preparationGoals>clean install -Pdocs -Dmaven.test.skip=true -DperformRelease=true</preparationGoals>
+              <goals>clean install pax:provision assembly:assembly deploy -Dmaven.test.skip=true -DperformRelease=true</goals>
+              <releaseProfiles>!run,docs,release,final</releaseProfiles>
             </configuration>
           </plugin>
         </plugins>

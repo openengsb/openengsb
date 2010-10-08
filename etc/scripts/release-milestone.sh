@@ -16,5 +16,5 @@
 #
 
 cd $(dirname $0)/../../
-mvn release:prepare release:perform -Pintegration-test,docs,license-check,checkstyle,milestone
+mvn release:prepare release:perform -Pdocs,milestone -Dmaven.test.skip=true -DperformRelease=true
 
