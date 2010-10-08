@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.openengsb.domains.jms;
 
 import java.io.IOException;
@@ -62,11 +61,11 @@ public class JMSSender implements Sender {
             if (receive instanceof TextMessage) {
                 String text = ((TextMessage) receive).getText();
                 MessageMapping readValue = new ObjectMapper().readValue(text, MessageMapping.class);
-                switch (readValue.type) {
+                switch (readValue.getType()) {
                     case Exception:
-                        throw new JMSConnectorException(readValue.message);
+                        throw new JMSConnectorException(readValue.getMessage());
                     case Return:
-                        return readValue.message;
+                        return readValue.getMessage();
                     default:
                         throw new JMSConnectorException("Type has to be Return or Exception at this stage");
                 }
@@ -82,26 +81,5 @@ public class JMSSender implements Sender {
         } catch (JMSException e) {
             throw new JMSConnectorException(e.getMessage());
         }
-    }
-
-    public static final class MessageMapping {
-        public MessageType type;
-        public String name;
-        public String message;
-
-        public MessageMapping() {
-            // TODO Auto-generated constructor stub
-        }
-
-        public MessageMapping(MessageType type, String name, String parameters) {
-            super();
-            this.type = type;
-            this.name = name;
-            this.message = parameters;
-        }
-    }
-
-    private static enum MessageType {
-        Call, Return, Exception
     }
 }
