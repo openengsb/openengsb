@@ -79,21 +79,29 @@ public class FileSystemReportStore implements ReportStore {
     }
 
     private Properties readMetadata(File file) throws IOException {
-        Properties properties = new Properties();
         if (!file.exists()) {
-            properties.put("partName", "unknown");
-            properties.put("contentType", "text/plain");
-            return properties;
+            return getDefaultProperties();
         }
+        return readPropertiesFromFile(file);
+    }
+
+    private Properties readPropertiesFromFile(File file) throws IOException {
         FileReader reader = null;
         try {
+            Properties properties = new Properties();
             reader = new FileReader(file);
             properties.load(reader);
             return properties;
         } finally {
             IOUtils.closeQuietly(reader);
         }
+    }
 
+    private Properties getDefaultProperties() {
+        Properties properties = new Properties();
+        properties.put("partName", "unknown");
+        properties.put("contentType", "text/plain");
+        return properties;
     }
 
     @Override
@@ -106,13 +114,7 @@ public class FileSystemReportStore implements ReportStore {
             reportFile.mkdirs();
             List<ReportPart> parts = report.getParts();
             for (int i = 0; i < parts.size(); i++) {
-                ReportPart part = parts.get(i);
-                File partFile = new File(reportFile, i + getFileEnding(part.getContentType()));
-                writeMetadata(reportFile, i, part);
-                FileUtils.touch(partFile);
-                if (part.getContent() != null) {
-                    FileUtils.writeByteArrayToFile(partFile, part.getContent());
-                }
+                storeReportPart(reportFile, i, parts.get(i));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -125,10 +127,19 @@ public class FileSystemReportStore implements ReportStore {
         }
     }
 
-    private void writeMetadata(File reportFile, int i, ReportPart part) throws IOException {
+    private void storeReportPart(File reportFile, int partIndex, ReportPart part) throws IOException {
+        File partFile = new File(reportFile, partIndex + getFileEnding(part.getContentType()));
+        writeMetadata(reportFile, partIndex, part);
+        FileUtils.touch(partFile);
+        if (part.getContent() != null) {
+            FileUtils.writeByteArrayToFile(partFile, part.getContent());
+        }
+    }
+
+    private void writeMetadata(File reportFile, int partIndex, ReportPart part) throws IOException {
         FileWriter fw = null;
         try {
-            File partMetaFile = new File(reportFile, i + ".meta");
+            File partMetaFile = new File(reportFile, partIndex + ".meta");
             Properties properties = new Properties();
             properties.put("partName", part.getPartName());
             properties.put("contentType", part.getContentType());
