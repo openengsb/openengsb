@@ -12,24 +12,22 @@
     <start id="1" name="Start" x="32" y="16" width="49" height="49" />
     <end id="2" name="End" x="136" y="419" width="49" height="49" />
     <actionNode id="21" name="FirstEventScript" x="72" y="258" width="80" height="48" >
-        <action type="expression" dialect="mvel" >example.doSomething("first event recieved");</action>
+        <action type="expression" dialect="mvel" >example.doSomething("first event received");</action>
     </actionNode>
     <eventNode id="25" name="FirstEvent" x="128" y="97" width="80" height="48" >
       <eventFilters>
-        <eventFilter type="eventType" eventType="TestObject" />
+        <eventFilter type="eventType" eventType="Event" />
       </eventFilters>
     </eventNode>
     <eventNode id="27" name="SecondEvent" x="184" y="258" width="48" height="48" >
       <eventFilters>
-        <eventFilter type="eventType" eventType="TestObject2" />
+        <eventFilter type="eventType" eventType="Event" />
       </eventFilters>
     </eventNode>
-    <actionNode id="11" name="StartScript" x="16" y="97" width="80" height="48" >
-        <action type="expression" dialect="java" >System.out.println("entering node");
-example.doSomething("start testflow");
-System.out.println("leaving node");</action>
-    </actionNode>
     <join id="26" name="SecondEventConverge" x="136" y="338" width="49" height="49" type="1" />
+    <actionNode id="11" name="StartScript" x="16" y="97" width="80" height="48" >
+        <action type="expression" dialect="java" >example.doSomething("start testflow");</action>
+    </actionNode>
   </nodes>
 
   <connections>
@@ -37,9 +35,9 @@ System.out.println("leaving node");</action>
     <connection from="25" to="17" />
     <connection from="26" to="2" />
     <connection from="17" to="21" />
-    <connection from="1" to="11" />
     <connection from="21" to="26" />
     <connection from="27" to="26" />
+    <connection from="1" to="11" />
   </connections>
 
 </process>

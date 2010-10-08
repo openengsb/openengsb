@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
@@ -35,6 +36,7 @@ import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
 import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -181,5 +183,16 @@ public class WorkflowServiceTest {
         long id = service.startFlow("flowtest");
         service.waitForFlowToFinish(id);
         verify(logService).doSomething("flow42");
+    }
+
+    @Test
+    public void testStartProcessWithEvents_shouldRunScriptNodes() throws Exception {
+        long id = service.startFlow("floweventtest");
+        service.processEvent(new Event());
+        service.processEvent(new Event());
+        service.waitForFlowToFinish(id);
+        InOrder inOrder2 = inOrder(logService);
+        inOrder2.verify(logService).doSomething("start testflow");
+        inOrder2.verify(logService).doSomething("first event received");
     }
 }

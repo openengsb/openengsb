@@ -88,6 +88,9 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     public void processEvent(Event event) throws WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         session.insert(event);
+        for (ProcessInstance p : session.getProcessInstances()) {
+            p.signalEvent(event.getClass().getSimpleName(), event);
+        }
         session.fireAllRules();
     }
 
