@@ -27,6 +27,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
 import org.drools.event.AgendaEventListener;
+import org.drools.event.process.DefaultProcessEventListener;
+import org.drools.event.process.ProcessCompletedEvent;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.openengsb.core.common.Domain;
@@ -156,10 +158,18 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     protected StatefulKnowledgeSession createSession() throws RuleBaseException, WorkflowException {
         KnowledgeBase rb = rulemanager.getRulebase();
         log.debug("retrieved rulebase: " + rb + "from source " + rulemanager);
-        StatefulKnowledgeSession session = rb.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession session = rb.newStatefulKnowledgeSession();
         log.debug("session started");
         populateGlobals(session);
         log.debug("globals have been set");
+        session.addEventListener(new DefaultProcessEventListener() {
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                synchronized (session) {
+                    session.notifyAll();
+                }
+            }
+        });
         return session;
     }
 
@@ -203,21 +213,17 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     @Override
     public long startFlow(String processId) throws WorkflowException {
-        StatefulKnowledgeSession session;
-        try {
-            session = createSession();
-        } catch (RuleBaseException e) {
-            throw new WorkflowException(e);
-        }
-        session.addEventListener(new ProcessFinishedListener(session));
-        RuleFlowThread rft = new RuleFlowThread(session);
-        rft.start();
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
         ProcessInstance processInstance = session.startProcess(processId);
-        // flowThreads.put(processInstance.getId(), rft);
         return processInstance.getId();
     }
 
-    public void waitForFlowToFinish(long id) throws InterruptedException {
-        // flowThreads.get(id).join();
+    public void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        synchronized (session) {
+            while (session.getProcessInstance(id) != null) {
+                session.wait(5000);
+            }
+        }
     }
 }
