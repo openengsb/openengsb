@@ -17,24 +17,13 @@
 package org.openengsb.domains.notification.email;
 
 import org.openengsb.core.common.AbstractServiceManager;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.email.internal.EmailNotifier;
 import org.openengsb.domains.notification.email.internal.EmailNotifierFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EmailServiceManager extends AbstractServiceManager<NotificationDomain, EmailNotifier> {
 
     public EmailServiceManager(EmailNotifierFactory emailNotifierBuilder) {
         super(emailNotifierBuilder);
-    }
-
-    @Override
-    public MultipleAttributeValidationResult updateWithValidation(String id, Map<String, String> attributes) {
-        this.update(id, attributes);
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
     }
 }

@@ -17,23 +17,12 @@
 package org.openengsb.domains.example.connector;
 
 import org.openengsb.core.common.AbstractServiceManager;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.example.connector.internal.LogService;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class LogServiceManager extends AbstractServiceManager<ExampleDomain, LogService> {
 
     public LogServiceManager() {
         super(new LogServiceInstanceFactory());
-    }
-
-    @Override
-    public MultipleAttributeValidationResult updateWithValidation(String id, Map<String, String> attributes) {
-        this.update(id, attributes);
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
     }
 }

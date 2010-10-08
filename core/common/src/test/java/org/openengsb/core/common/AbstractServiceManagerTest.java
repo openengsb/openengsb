@@ -20,6 +20,10 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -78,13 +82,18 @@ public class AbstractServiceManagerTest {
                 public DummyInstance createServiceInstance(String id, Map<String, String> attributes) {
                     return instance;
                 }
-            });
-        }
 
-        @Override
-        public MultipleAttributeValidationResult updateWithValidation(String anyString, Map<String, String> anyMap) {
-            this.update(anyString, anyMap);
-            return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+                @Override
+                public MultipleAttributeValidationResult updateValidation(DummyInstance instance,
+                        Map<String, String> attributes) {
+                    return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+                }
+
+                @Override
+                public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
+                    return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+                }
+            });
         }
     }
 
@@ -119,8 +128,8 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock).registerService(
-                new String[] {DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
-                instance, props);
+            new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
+            props);
     }
 
     @Test
@@ -136,8 +145,8 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
-                new String[] {DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
-                instance, props);
+            new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
+            props);
     }
 
     @Test
@@ -145,8 +154,8 @@ public class AbstractServiceManagerTest {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
         DummyInstance instance = new DummyInstance();
-        ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(
-            bundleContextMock, instance);
+        ServiceRegistration serviceRegistrationMock =
+            appendServiceRegistrationMockToBundleContextMock(bundleContextMock, instance);
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
@@ -160,9 +169,8 @@ public class AbstractServiceManagerTest {
         ServiceRegistration serviceRegistrationMock = Mockito.mock(ServiceRegistration.class);
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.when(
-                bundleContextMock.registerService(
-                        new String[] {DummyInstance.class.getName(), DummyDomain.class.getName(),
-                                Domain.class.getName() }, mock, props)).thenReturn(serviceRegistrationMock);
+            bundleContextMock.registerService(new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(),
+                Domain.class.getName()}, mock, props)).thenReturn(serviceRegistrationMock);
         return serviceRegistrationMock;
     }
 
@@ -232,8 +240,8 @@ public class AbstractServiceManagerTest {
 
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         DummyInstance instance = new DummyInstance();
-        ServiceRegistration serviceRegistrationMock = appendServiceRegistrationMockToBundleContextMock(
-            bundleContextMock, instance);
+        ServiceRegistration serviceRegistrationMock =
+            appendServiceRegistrationMockToBundleContextMock(bundleContextMock, instance);
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
@@ -267,4 +275,52 @@ public class AbstractServiceManagerTest {
         assertThat(attributeValues.get("attribute2"), is("newAtr2"));
     }
 
+    @Test
+    public void validationfailsForCreation_checkNotAdded() {
+        ServiceInstanceFactory serviceInstanceFactory = mock(ServiceInstanceFactory.class);
+        MultipleAttributeValidationResult validationResult =
+            new MultipleAttributeValidationResultImpl(false, new HashMap<String, String>());
+        when(serviceInstanceFactory.createValidation(Mockito.anyString(), Mockito.anyMap())).thenReturn(
+            validationResult);
+
+        AbstractServiceManager<DummyDomain, DummyInstance> serviceManager =
+            new AbstractServiceManager<DummyDomain, DummyInstance>(serviceInstanceFactory) {
+            };
+
+        MultipleAttributeValidationResult update = serviceManager.update("id", new HashMap<String, String>());
+
+        verify(serviceInstanceFactory, never()).createServiceInstance(Mockito.anyString(), Mockito.anyMap());
+        assertThat(update, sameInstance(validationResult));
+    }
+
+    @Test
+    public void validationfailsForUpdate_checkNotUpdated() {
+        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        ServiceInstanceFactory serviceInstanceFactory = mock(ServiceInstanceFactory.class);
+        ServiceDescriptor descriptor = mock(ServiceDescriptor.class);
+        when(descriptor.getId()).thenReturn("Something");
+
+        when(serviceInstanceFactory.getDescriptor(Mockito.any(Builder.class))).thenReturn(descriptor);
+        HashMap<String, String> attributes = new HashMap<String, String>();
+        MultipleAttributeValidationResult validationResult =
+            new MultipleAttributeValidationResultImpl(false, attributes);
+        when(serviceInstanceFactory.createValidation(Mockito.anyString(), Mockito.anyMap())).thenReturn(
+            new MultipleAttributeValidationResultImpl(true, attributes));
+        when(serviceInstanceFactory.updateValidation(Mockito.any(Domain.class), Mockito.anyMap())).thenReturn(
+            validationResult);
+
+        AbstractServiceManager<DummyDomain, DummyInstance> serviceManager =
+            new AbstractServiceManager<DummyDomain, DummyInstance>(serviceInstanceFactory) {
+            };
+
+        serviceManager.setBundleContext(bundleContextMock);
+
+        String id = "id";
+        serviceManager.update(id, attributes);
+        MultipleAttributeValidationResult update = serviceManager.update(id, attributes);
+
+        verify(serviceInstanceFactory).createServiceInstance(id, attributes);
+        verify(serviceInstanceFactory, never()).updateServiceInstance(Mockito.any(Domain.class), Mockito.anyMap());
+        assertThat(update, sameInstance(validationResult));
+    }
 }

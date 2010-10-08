@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.BundleStrings;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.springframework.osgi.context.BundleContextAware;
@@ -31,11 +32,11 @@ import org.springframework.osgi.context.BundleContextAware;
 /**
  * Base class for {@link ServiceManager} implementations. Handles all OSGi related stuff and exporting the right service
  * properties that are needed for service discovery.
- *
+ * 
  * All service-specific action, like descriptor building, service instantiation and service updating are encapsulated in
  * a {@link ServiceInstanceFactory}. Creating a new service manager should be as simple as implementing the
  * {@link ServiceInstanceFactory} and creating a subclass of this class:
- *
+ * 
  * <pre>
  * public class ExampleServiceManager extends AbstractServiceManager&lt;ExampleDomain, TheInstanceType&gt; {
  *     public ExampleServiceManager(ServiceInstanceFactory&lt;ExampleDomain, TheInstanceType&gt; factory) {
@@ -43,7 +44,7 @@ import org.springframework.osgi.context.BundleContextAware;
  *     }
  * }
  * </pre>
- *
+ * 
  * @param <DomainType> interface of the domain this service manages
  * @param <InstanceType> actual service implementation this service manages
  */
@@ -79,29 +80,46 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     @Override
     public ServiceDescriptor getDescriptor() {
         return factory.getDescriptor(ServiceDescriptor.builder(strings).id(getImplementationClass().getName())
-                .serviceType(getDomainInterface()).implementationType(getImplementationClass()));
+            .serviceType(getDomainInterface()).implementationType(getImplementationClass()));
     }
 
     @Override
-    public void update(String id, Map<String, String> attributes) {
+    public MultipleAttributeValidationResult update(String id, Map<String, String> attributes) {
         synchronized (services) {
+            MultipleAttributeValidationResult result;
             if (!services.containsKey(id)) {
-                InstanceType instance = factory.createServiceInstance(id, attributes);
-                Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
-                ServiceRegistration registration = bundleContext.registerService(new String[] {
-                        getImplementationClass().getName(), getDomainInterface().getName(), Domain.class.getName() },
-                        instance, serviceProperties);
-                services.put(id, new DomainRepresentation(instance, registration));
+                result = createService(id, attributes);
             } else {
-                factory.updateServiceInstance(services.get(id).service, attributes);
+                result = updateService(id, attributes);
             }
             if (attributeValues.containsKey(id)) {
                 attributeValues.get(id).putAll(attributes);
             } else {
                 attributeValues.put(id, attributes);
             }
-
+            return result;
         }
+    }
+
+    private MultipleAttributeValidationResult updateService(String id, Map<String, String> attributes) {
+        MultipleAttributeValidationResult validation = factory.updateValidation(services.get(id).service, attributes);
+        if (validation.isValid()) {
+            factory.updateServiceInstance(services.get(id).service, attributes);
+        }
+        return validation;
+    }
+
+    private MultipleAttributeValidationResult createService(String id, Map<String, String> attributes) {
+        MultipleAttributeValidationResult validation = factory.createValidation(id, attributes);
+        if (validation.isValid()) {
+            InstanceType instance = factory.createServiceInstance(id, attributes);
+            Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
+            ServiceRegistration registration =
+                bundleContext.registerService(new String[]{getImplementationClass().getName(),
+                    getDomainInterface().getName(), Domain.class.getName()}, instance, serviceProperties);
+            services.put(id, new DomainRepresentation(instance, registration));
+        }
+        return validation;
     }
 
     @Override
