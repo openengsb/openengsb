@@ -637,6 +637,13 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>jgit</id>
+      <url>http://download.eclipse.org/jgit/maven</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
 </project>

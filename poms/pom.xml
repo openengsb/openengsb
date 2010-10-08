@@ -130,7 +130,7 @@
     <h2.version>1.1.116</h2.version>
     <jaxb.version>2.2.1</jaxb.version>
     <jaxen.version>1.1.1</jaxen.version>
-    <jgit.version>0.7.1</jgit.version>
+    <jgit.version>0.9.3</jgit.version>
     <jibx.version>1.2.2</jibx.version>
     <joda.version>1.6</joda.version>
     <log4j.version>1.2.14</log4j.version>
