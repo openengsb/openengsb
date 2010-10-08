@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
 import org.drools.event.AgendaEventListener;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -59,6 +60,9 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     private long timeout = 10000;
 
+    private Map<Long, RuleFlowThread> flowThreads = new HashMap<Long, RuleFlowThread>();
+    private Map<String, StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
+
     private boolean findGlobal(String name) {
         ServiceReference[] allServiceReferences;
         try {
@@ -84,7 +88,6 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         try {
             currentContextService.setThreadLocalContext(event.getContextId());
             StatefulKnowledgeSession session = createSession();
-            populateGlobals(session);
             session.insert(event);
             session.fireAllRules();
             session.dispose();
@@ -139,11 +142,13 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         this.rulemanager = rulemanager;
     }
 
-    protected StatefulKnowledgeSession createSession() throws RuleBaseException {
+    protected StatefulKnowledgeSession createSession() throws RuleBaseException, WorkflowException {
         KnowledgeBase rb = rulemanager.getRulebase();
         log.debug("retrieved rulebase: " + rb + "from source " + rulemanager);
         StatefulKnowledgeSession session = rb.newStatefulKnowledgeSession();
         log.debug("session started");
+        populateGlobals(session);
+        log.debug("globals have been set");
         return session;
     }
 
@@ -183,5 +188,25 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     public void setTimeout(long timeout) {
         this.timeout = timeout;
+    }
+
+    @Override
+    public long startFlow(String processId) throws WorkflowException {
+        StatefulKnowledgeSession session;
+        try {
+            session = createSession();
+        } catch (RuleBaseException e) {
+            throw new WorkflowException(e);
+        }
+        session.addEventListener(new ProcessFinishedListener(session));
+        RuleFlowThread rft = new RuleFlowThread(session);
+        rft.start();
+        ProcessInstance processInstance = session.startProcess(processId);
+        flowThreads.put(processInstance.getId(), rft);
+        return processInstance.getId();
+    }
+
+    public void waitForFlowToFinish(long id) throws InterruptedException {
+        flowThreads.get(id).join();
     }
 }

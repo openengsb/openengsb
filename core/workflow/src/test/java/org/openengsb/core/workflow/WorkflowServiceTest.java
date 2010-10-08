@@ -69,6 +69,10 @@ public class WorkflowServiceTest {
 
     @Before
     public void setUp() throws Exception {
+        File ruleSources = FileUtils.toFile(ClassLoader.getSystemResource("rulebase"));
+        File workingDir = new File("data/rulebase");
+        workingDir.mkdirs();
+        FileUtils.copyDirectory(ruleSources, workingDir);
         service = new WorkflowServiceImpl();
         setupRulemanager();
         service.setRulemanager(manager);
@@ -169,7 +173,9 @@ public class WorkflowServiceTest {
     }
 
     @Test
-    public void testStartProcess_shouldBeRecordedInMap() throws Exception {
-
+    public void testStartProcess_shouldRunScriptNodes() throws Exception {
+        long id = service.startFlow("flowtest");
+        service.waitForFlowToFinish(id);
+        verify(logService).doSomething("flow42");
     }
 }

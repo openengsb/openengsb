@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.openengsb.core.workflow.internal;
 
-package org.openengsb.core.workflow;
+import org.drools.runtime.StatefulKnowledgeSession;
 
-import org.openengsb.core.common.Event;
+public class RuleFlowThread extends Thread {
+    private StatefulKnowledgeSession session;
 
-public interface WorkflowService {
-    void processEvent(Event event) throws WorkflowException;
+    public RuleFlowThread(StatefulKnowledgeSession session) {
+        this.session = session;
+    }
 
-    long startFlow(String string) throws WorkflowException;
+    @Override
+    public void run() {
+        session.fireUntilHalt();
+    }
 }
