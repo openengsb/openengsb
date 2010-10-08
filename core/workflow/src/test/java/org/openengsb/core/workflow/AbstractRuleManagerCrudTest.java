@@ -16,6 +16,12 @@
 
 package org.openengsb.core.workflow;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,14 +33,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import static org.junit.matchers.JUnitMatchers.hasItem;
 
 @RunWith(Parameterized.class)
 public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager> extends

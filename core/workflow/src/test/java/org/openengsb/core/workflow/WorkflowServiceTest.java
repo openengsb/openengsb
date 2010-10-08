@@ -16,6 +16,11 @@
 
 package org.openengsb.core.workflow;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.verify;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,13 +40,6 @@ import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-
-import static org.mockito.Mockito.verify;
-
-import static org.hamcrest.CoreMatchers.nullValue;
-
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 public class WorkflowServiceTest {
 

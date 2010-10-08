@@ -16,13 +16,14 @@
 
 package org.openengsb.ui.web;
 
+import java.lang.reflect.Method;
+import java.util.List;
+
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.util.AliveState;
-
-import java.lang.reflect.Method;
-import java.util.List;
 
 public class MethodUtilTest {
 

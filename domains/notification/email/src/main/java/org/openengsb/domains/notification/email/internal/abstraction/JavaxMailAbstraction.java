@@ -16,8 +16,7 @@
 
 package org.openengsb.domains.notification.email.internal.abstraction;
 
-import org.openengsb.core.common.DomainMethodExecutionException;
-import org.openengsb.core.common.util.AliveState;
+import java.util.Properties;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -28,7 +27,9 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.Properties;
+
+import org.openengsb.core.common.DomainMethodExecutionException;
+import org.openengsb.core.common.util.AliveState;
 
 public class JavaxMailAbstraction implements MailAbstraction {
 

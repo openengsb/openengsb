@@ -16,13 +16,13 @@
 
 package org.openengsb.core.common;
 
-import org.junit.Test;
-import org.openengsb.core.common.util.AliveState;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import org.junit.Test;
+import org.openengsb.core.common.util.AliveState;
 
 public class DomainTest {
 

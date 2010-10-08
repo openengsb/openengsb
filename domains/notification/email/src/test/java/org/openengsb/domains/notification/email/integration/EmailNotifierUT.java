@@ -16,6 +16,9 @@
 
 package org.openengsb.domains.notification.email.integration;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 import org.junit.Test;
 import org.openengsb.core.common.DomainMethodExecutionException;
 import org.openengsb.domains.notification.email.internal.EmailNotifier;
@@ -23,9 +26,6 @@ import org.openengsb.domains.notification.email.internal.abstraction.JavaxMailAb
 import org.openengsb.domains.notification.model.Attachment;
 import org.openengsb.domains.notification.model.Notification;
 import org.springframework.test.annotation.ExpectedException;
-
-import java.util.ArrayList;
-import java.util.Date;
 
 public class EmailNotifierUT {
 
