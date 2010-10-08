@@ -44,12 +44,13 @@
     <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
 
     <!-- platform/settings.debug.composite -->
+    <client.debug.properties></client.debug.properties>
     <debug.felix.fileinstall.dir>../assembly/target/openengsb-${project.version}-config/openengsb-${project.version}/config</debug.felix.fileinstall.dir>
     <debug.felix.fileinstall.filter>.*\.cfg</debug.felix.fileinstall.filter>
     <debug.felix.fileinstall.poll>1000</debug.felix.fileinstall.poll>
     <debug.felix.fileinstall.noInitialDelay>true</debug.felix.fileinstall.noInitialDelay>
 
-    <!-- platform/settings.release.composite -->
+    <!-- run/karaf.[sh|bat] -->
     <release.felix.fileinstall.dir>config</release.felix.fileinstall.dir>
     <release.felix.fileinstall.filter>.*\\.cfg</release.felix.fileinstall.filter>
     <release.felix.fileinstall.poll>1000</release.felix.fileinstall.poll>
@@ -63,6 +64,10 @@
 
     <!-- config/* -->   
     <!-- To be extended, currently no properties required here -->
+
+    <!-- log settings -->
+    <logging.level>INFO</logging.level>
+
   </properties>
 
   <build>
@@ -203,38 +208,6 @@
             <goals>
               <goal>single</goal> 
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-artifacts</id>
-            <phase>package</phase>
-            <goals>
-              <goal>attach-artifact</goal>
-            </goals>
-            <configuration>
-              <artifacts>
-                <artifact>
-                  <file>target/classes/felix.xml</file>
-                  <type>xml</type>
-                  <classifier>platform</classifier>
-                </artifact>
-                <artifact>
-                  <file>target/classes/karaf.composite</file>
-                  <type>composite</type>
-                  <classifier>karaf</classifier>
-                </artifact>
-                <artifact>
-                  <file>target/classes/settings.debug.composite</file>
-                  <type>composite</type>
-                  <classifier>run</classifier>
-                </artifact> 
-              </artifacts>
-            </configuration>
           </execution>
         </executions>
       </plugin>

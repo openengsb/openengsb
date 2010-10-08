@@ -196,8 +196,7 @@
       <artifactId>spring-core</artifactId>
       <version>${spring.version}</version>
     </dependency>
-
-    
+        
     <!-- Spring DM Dependencies -->
     <dependency>
       <groupId>org.springframework.osgi</groupId>
@@ -216,22 +215,30 @@
       <exclusions>
         <exclusion>
           <groupId>org.springframework</groupId>
-          <artifactId>spring-aop</artifactId>
+          <artifactId>org.springframework.aop</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.springframework</groupId>
-          <artifactId>spring-context</artifactId>
+          <artifactId>org.springframework.beans</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.springframework</groupId>
-          <artifactId>spring-core</artifactId>
+          <artifactId>org.springframework.asm</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.springframework</groupId>
-          <artifactId>spring-beans</artifactId>
+          <artifactId>org.springframework.context</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.expression</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.core</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
+    </dependency>    
     <dependency>
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-io</artifactId>
@@ -265,7 +272,6 @@
       <version>${aries.version}</version>
     </dependency>
 
-    
     <!-- Apache Karaf Base -->
     <dependency>
       <groupId>org.apache.karaf</groupId>
@@ -551,8 +557,8 @@
 
     <!-- java mail -->
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>com.springsource.javax.mail</artifactId>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.javax.mail</artifactId>
       <version>${javax.mail.version}</version>
     </dependency>
 
