@@ -37,6 +37,7 @@ public class DB4OPersistenceServiceTest extends PersistenceServiceTest {
 
     @After
     public void tearDown() throws IOException {
+        persistence.shutdown();
         FileUtils.forceDelete(new File("db.data"));
     }
 

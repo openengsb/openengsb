@@ -18,9 +18,12 @@ package org.openengsb.core.persistence.internal;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Semaphore;
 
 import org.openengsb.core.persistence.PersistenceException;
 import org.openengsb.core.persistence.PersistenceService;
@@ -34,11 +37,17 @@ public class DB4OPersistenceService implements PersistenceService {
 
     private String dbFile;
 
+    private SmartJdkLoader jdkLoader;
+
+    private ObjectContainer database;
+
+    private Semaphore semaphore = new Semaphore(1);
+
     @Override
     public void create(Object bean) throws PersistenceException {
-        ObjectContainer database = openDataBase(bean);
+        openDataBase(bean);
         database.store(bean);
-        database.close();
+        commit(bean);
     }
 
     @Override
@@ -47,21 +56,21 @@ public class DB4OPersistenceService implements PersistenceService {
             return;
         }
 
-        ObjectContainer database = openDataBase(beans.get(0));
+        openDataBase(beans.get(0));
         for (Object bean : beans) {
             database.store(bean);
         }
 
-        database.close();
+        commit(beans);
     }
 
     @Override
     public <TYPE> void delete(TYPE example) throws PersistenceException {
-        ObjectContainer database = openDataBase(example);
+        openDataBase(example);
 
         List<TYPE> toDelete = database.queryByExample(example);
         if (toDelete.isEmpty()) {
-            database.close();
+            commit();
             throw new PersistenceException("Element '" + example
                     + "' cannot be deleted because it was not found in database.");
         }
@@ -69,7 +78,7 @@ public class DB4OPersistenceService implements PersistenceService {
             database.delete(element);
         }
 
-        database.close();
+        commit();
     }
 
     @Override
@@ -78,7 +87,7 @@ public class DB4OPersistenceService implements PersistenceService {
             return;
         }
 
-        ObjectContainer database = openDataBase(examples.get(0));
+        openDataBase(examples.get(0));
 
         List<TYPE> toDelete = new ArrayList<TYPE>();
 
@@ -89,18 +98,18 @@ public class DB4OPersistenceService implements PersistenceService {
         for (TYPE element : toDelete) {
             database.delete(element);
         }
-        database.close();
+        commit();
     }
 
     @Override
     public <TYPE> List<TYPE> query(TYPE example) {
-        ObjectContainer database = openDataBase(example);
-        List<TYPE> result = new ArrayList<TYPE>(doQuery(example, database));
-        database.close();
+        openDataBase(example);
+        List<TYPE> result = new ArrayList<TYPE>(doQuery(example));
+        commit(result);
         return result;
     }
 
-    private <TYPE> List<TYPE> doQuery(TYPE example, ObjectContainer database) {
+    private <TYPE> List<TYPE> doQuery(TYPE example) {
         List<TYPE> queryByExample = database.queryByExample(example);
         return queryByExample;
     }
@@ -110,28 +119,28 @@ public class DB4OPersistenceService implements PersistenceService {
         if (examples.isEmpty()) {
             return new ArrayList<TYPE>();
         }
-        ObjectContainer database = openDataBase(examples.get(0));
+        openDataBase(examples.get(0));
 
         List<TYPE> results = new ArrayList<TYPE>();
         for (TYPE example : examples) {
-            results.addAll(doQuery(example, database));
+            results.addAll(doQuery(example));
         }
 
-        database.close();
+        commit(results);
         return results;
     }
 
     @Override
     public <TYPE> void update(TYPE oldBean, TYPE newBean) throws PersistenceException {
-        ObjectContainer database = openDataBase(oldBean);
+        openDataBase(oldBean);
         try {
-            doUpdate(database, oldBean, newBean);
+            doUpdate(oldBean, newBean);
         } finally {
-            database.close();
+            commit(newBean);
         }
     }
 
-    private <TYPE> void doUpdate(ObjectContainer database, TYPE oldBean, TYPE newBean) throws PersistenceException {
+    private <TYPE> void doUpdate(TYPE oldBean, TYPE newBean) throws PersistenceException {
         List<TYPE> queryResult = database.queryByExample(oldBean);
         if (queryResult.isEmpty()) {
             throw new PersistenceException("Could not update element '" + oldBean
@@ -149,28 +158,51 @@ public class DB4OPersistenceService implements PersistenceService {
         if (beans.isEmpty()) {
             return;
         }
-        ObjectContainer database = openDataBase(beans.keySet().iterator().next());
+        openDataBase(beans.keySet().iterator().next());
         try {
             for (Entry<TYPE, TYPE> entry : beans.entrySet()) {
-                doUpdate(database, entry.getKey(), entry.getValue());
+                doUpdate(entry.getKey(), entry.getValue());
             }
         } catch (PersistenceException pe) {
             database.rollback();
             throw pe;
         } finally {
-            database.close();
+            commit(beans.values());
         }
     }
 
     public void setDbFile(String dbFile) {
         this.dbFile = dbFile;
+        Configuration config = Db4o.newConfiguration();
+        jdkLoader = new SmartJdkLoader();
+        config.reflectWith(new JdkReflector(jdkLoader));
+        createFolder();
+        database = Db4o.openFile(config, dbFile);
     }
 
-    private ObjectContainer openDataBase(Object object) {
-        Configuration config = Db4o.newConfiguration();
-        config.reflectWith(new JdkReflector(object.getClass().getClassLoader()));
-        createFolder();
-        return Db4o.openFile(config, dbFile);
+    private void openDataBase(Object object) {
+        try {
+            semaphore.acquire();
+            jdkLoader.addClassLoader(object.getClass().getClassLoader());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void commit() {
+        commit(Collections.emptyList());
+    }
+
+    private void commit(Object o) {
+        commit(Collections.singletonList(o));
+    }
+
+    private void commit(Collection<?> objects) {
+        database.commit();
+        for (Object object : objects) {
+            database.ext().purge(object);
+        }
+        semaphore.release();
     }
 
     private void createFolder() {
@@ -179,6 +211,16 @@ public class DB4OPersistenceService implements PersistenceService {
         if (parentFile != null) {
             parentFile.mkdirs();
         }
+    }
+
+    public void shutdown() {
+        try {
+            semaphore.acquire();
+            database.close();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }
