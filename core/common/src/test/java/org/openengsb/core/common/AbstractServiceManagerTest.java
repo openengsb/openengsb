@@ -43,6 +43,7 @@ public class AbstractServiceManagerTest {
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
+    private ConnectorSetupStore setupStoreMock;
 
     private static interface DummyDomain extends Domain {
     }
@@ -122,6 +123,7 @@ public class AbstractServiceManagerTest {
         Mockito.verify(bundleContextMock).registerService(
             new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
             props);
+        Mockito.verify(setupStoreMock).storeConnectorSetup(instance.getClass().getName(), "test", attributes);
     }
 
     @Test
@@ -139,6 +141,10 @@ public class AbstractServiceManagerTest {
         Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
             new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
             props);
+        Mockito.verify(setupStoreMock).storeConnectorSetup(Mockito.eq(instance.getClass().getName()),
+            Mockito.eq("test"), Mockito.same(attributes));
+        Mockito.verify(setupStoreMock).storeConnectorSetup(Mockito.eq(instance.getClass().getName()),
+            Mockito.eq("test"), Mockito.same(verificationAttributes));
     }
 
     @Test
@@ -154,6 +160,7 @@ public class AbstractServiceManagerTest {
         manager.delete("test");
 
         Mockito.verify(serviceRegistrationMock).unregister();
+        Mockito.verify(setupStoreMock).deleteConnectorSetup(instance.getClass().getName(), "test");
     }
 
     private ServiceRegistration appendServiceRegistrationMockToBundleContextMock(BundleContext bundleContextMock,
@@ -178,7 +185,8 @@ public class AbstractServiceManagerTest {
     private DummyServiceManager createDummyManager(BundleContext bundleContextMock, DummyInstance instance) {
         DummyServiceManager manager = new DummyServiceManager(instance);
         manager.setBundleContext(bundleContextMock);
-        manager.setConnectorSetupStore(Mockito.mock(ConnectorSetupStore.class));
+        setupStoreMock = Mockito.mock(ConnectorSetupStore.class);
+        manager.setConnectorSetupStore(setupStoreMock);
         return manager;
     }
 
