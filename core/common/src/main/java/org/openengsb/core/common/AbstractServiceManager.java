@@ -83,7 +83,10 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     public void init() {
         Set<String> storedConnectors = connectorSetupStore.getStoredConnectors(getImplementationClass().getName());
         for (String id : storedConnectors) {
-            update(id, connectorSetupStore.loadConnectorSetup(getImplementationClass().getName(), id));
+            Map<String, String> setup = connectorSetupStore.loadConnectorSetup(getImplementationClass().getName(), id);
+            if (setup != null) {
+                update(id, setup);
+            }
         }
     }
 

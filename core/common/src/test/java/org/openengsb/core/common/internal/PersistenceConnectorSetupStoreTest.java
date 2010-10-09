@@ -17,6 +17,7 @@
 package org.openengsb.core.common.internal;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -88,9 +89,9 @@ public class PersistenceConnectorSetupStoreTest {
     }
 
     @Test
-    public void loadSetupNonExisting_shouldReturnEmptyMap() {
+    public void loadSetupNonExisting_shouldReturnNull() {
         Map<String, String> setup = store.loadConnectorSetup("test", "43");
-        assertThat(setup.isEmpty(), is(true));
+        assertThat(setup, nullValue());
     }
 
     @Test

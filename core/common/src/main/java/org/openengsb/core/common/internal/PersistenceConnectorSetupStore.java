@@ -16,7 +16,6 @@
 
 package org.openengsb.core.common.internal;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +62,7 @@ public class PersistenceConnectorSetupStore implements ConnectorSetupStore {
     public Map<String, String> loadConnectorSetup(String connector, String id) {
         ConnectorSetupBean entry = getEntry(connector, id);
         if (entry == null) {
-            return new HashMap<String, String>();
+            return null;
         }
         return entry.getProperties();
     }
