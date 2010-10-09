@@ -27,6 +27,15 @@
     <osgi:service-properties>
       <entry key="domain" value="org.openengsb.domains.example.ExampleDomain" />
     </osgi:service-properties>
-    <bean class="org.openengsb.domains.example.connector.LogServiceManager" parent="abstractServiceManager"/>
+    <bean class="org.openengsb.domains.example.connector.LogServiceManager" init-method="init">
+      <property name="connectorSetupStore" ref="connectorSetupStore" />
+    </bean>
   </osgi:service>
+
+  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore">
+    <property name="persistence" ref="persistenceService" />
+  </bean>
+
+  <osgi:reference id="persistenceService" interface="org.openengsb.core.persistence.PersistenceService" />
+
 </beans>
