@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.connectorsetupstore;
+package org.openengsb.core.common.internal;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openengsb.core.common.connectorsetupstore.ConnectorSetupBean;
+import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
 import org.openengsb.core.persistence.PersistenceException;
 import org.openengsb.core.persistence.PersistenceService;
 
@@ -60,7 +63,7 @@ public class PersistenceConnectorSetupStore implements ConnectorSetupStore {
     public Map<String, String> loadConnectorSetup(String connector, String id) {
         ConnectorSetupBean entry = getEntry(connector, id);
         if (entry == null) {
-            return null;
+            return new HashMap<String, String>();
         }
         return entry.getProperties();
     }
