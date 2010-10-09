@@ -81,13 +81,9 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     }
 
     public void init() {
-        loadServiceInstances();
-    }
-
-    private void loadServiceInstances() {
-        Set<String> storedConnectors = connectorSetupStore.getStoredConnectors();
+        Set<String> storedConnectors = connectorSetupStore.getStoredConnectors(getImplementationClass().getName());
         for (String id : storedConnectors) {
-            update(id, connectorSetupStore.loadConnectorSetup(id));
+            update(id, connectorSetupStore.loadConnectorSetup(getImplementationClass().getName(), id));
         }
     }
 
@@ -115,7 +111,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             } else {
                 attributeValues.put(id, attributes);
             }
-            connectorSetupStore.storeConnectorSetup(id, attributes);
+            connectorSetupStore.storeConnectorSetup(getImplementationClass().getName(), id, attributes);
         }
     }
 
@@ -125,7 +121,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             services.get(id).registration.unregister();
             services.remove(id);
             attributeValues.remove(id);
-            connectorSetupStore.deleteConnectorSetup(id);
+            connectorSetupStore.deleteConnectorSetup(getImplementationClass().getName(), id);
         }
     }
 

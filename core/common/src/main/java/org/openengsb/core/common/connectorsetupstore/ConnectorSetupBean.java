@@ -21,13 +21,20 @@ import java.util.Map;
 
 public class ConnectorSetupBean {
 
+    private String domain;
+
     private String id;
 
     private Map<String, String> properties;
 
-    public ConnectorSetupBean(String id, Map<String, String> properties) {
+    public ConnectorSetupBean(String domain, String id, Map<String, String> properties) {
+        this.domain = domain;
         this.id = id;
         this.properties = properties;
+    }
+
+    public String getDomain() {
+        return domain;
     }
 
     public String getId() {
