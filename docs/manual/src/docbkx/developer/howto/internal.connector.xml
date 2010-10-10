@@ -113,11 +113,13 @@
       underlying OSGi engine and OpenEngSB infrastructure. It exports instances as OSGi services and adds necessary meta
       information to each instance. Since the basic functionality is mostly similar for all service managers, the
         <literal>MyServiceManager</literal> class extends a common base class
-      <literal>AbstractServiceManager</literal>.</para>
+      <literal>AbstractServiceManager</literal>. In addition the <literal>AbstractServiceManager</literal> also 
+      persists the configuration of each connector, so that the connector instances can be restored after a system
+      restart.</para>
 
     <para>TBW - Spring DM</para>
 
-    <para>The OpenEngSB has been build with localization in mind. The Maven Archetype already generates two
+    <para>The OpenEngSB has been built with localization in mind. The Maven Archetype already generates two
         <literal>bundle*.properties</literal> files, one for English (bundle.properties) and one for the German
       (bundle_de.properties) language. Each connector has to provide localization through the properties files for
       service and attributes text values. This includes localization for names, descriptions, attribute validators,

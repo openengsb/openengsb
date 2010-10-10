@@ -86,6 +86,7 @@
 |     |        -- domains
 |     |           -- test
 |     |              -- MyDomain.java
+|     |              -- MyDomainEvents.java
 |     |              -- MyDomainProvider.java
 |     -- resources
 |        -- META-INF
@@ -132,17 +133,27 @@
           connectors should provide, are specified here.</para>
       </listitem>
       <listitem>
+        <para>Domain event interface - This is the interface that the domain provides for its connectors to send events
+        into the OpenEngSB. The event interface contains a <literal>raiseEvent(SomeEvent event)</literal> method for each 
+        supported event type.</para>
+      </listitem>
+      <listitem>
         <para>Domain Provider - The domain provider is a service that provides information about the domain itself. It
           is used to determine which domains are currently registered in the environment. There is an abstract class,
           that takes over most of the setup.</para>
       </listitem>
       <listitem>
-        <para>Spring context - There are two services, that must be registered with the OSGi service-environment. First
+        <para>Spring context - There are three services, that must be registered with the OSGi service-environment. First
           there is the domainprovider of course. Moreover the domain must provide a kind of connector itself, since it
           must be able to handle service calls and redirect it to the default-connector specified in the current
-          context. There is a beanfactory that creates a Java-Proxy that can be used as ForwardService. This
-          ForwardService looks up the default-connector for the specified domain in the current context and forwards the
-          method-call right to it. </para>
+          context. And finally the domain provides an event interface for its connectors, which can be used by them to send
+          events into the OpenEngSB. The default implementation of this event interface simply forwards all events sent through
+          the domain to the workflow service. But domains can also provide their own implementation of their event interface and
+          add data to events or perform other tasks. There is a beanfactory that creates a Java-Proxy that can be used as 
+          ForwardService both for the forwarding of service calls from domain to connector and for the forwarding of events to
+          the workflow service. The service call ForwardService looks up the default-connector for the specified domain in the
+          current context and forwards the method-call right to it. The event forward service simply forwards all events to 
+          the workflow service of the OpenEngSB.</para>
         <programlisting><![CDATA[<osgi:service>
   <osgi:interfaces>
     <!-- Every Connector must be registered with the Domain-interface -->
@@ -153,8 +164,8 @@
   <osgi:service-properties>
     <!-- The convention for the service-id is "domains.<domain-name>" -->
     <entry key="id" value="domains.notification" />
-    <!-- To allow other services (e.g. workflow) to distinguish the forward-service from other connector-instances,
-      this attribute must be set to "domain" -->
+    <!-- To allow other services (e.g. workflow) to distinguish the forward-service 
+      from other connector-instances, this attribute must be set to "domain" -->
     <entry key="openengsb.service.type" value="domain" />
   </osgi:service-properties>
   <!-- use the bean-factory to generate the forward-service -->
@@ -170,7 +181,35 @@
   </bean>
 </osgi:service>
 
-<osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />]]>
+<osgi:service>
+  <osgi:interfaces>
+    <!-- The common domain event marker interface, each domain events interface has to 
+      extend -->
+    <value>org.openengsb.core.common.DomainEvents</value>
+    <!-- The specific event interface containing the raiseEvent methods -->
+    <value>org.openengsb.domains.notification.NotificationDomainEvents</value>
+  </osgi:interfaces>
+  <osgi:service-properties>
+  <!-- The convention for the service-id is "domains.<domain-name>.events" -->
+    <entry key="id" value="domains.notification.events" />
+    <entry key="openengsb.service.type" value="domain-events" />
+  </osgi:service-properties>
+  <!-- the default implementation of the event interface is provided by this class, 
+    which generates a proxy that forwards all events to the workflow service, 
+    obtained below -->
+  <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
+    <property name="domainEventInterface">
+      <!-- the domain event interface (same as above in the osgi:interfaces section -->
+      <value>org.openengsb.domains.notification.NotificationDomainEvents</value>
+    </property>
+    <property name="workflowService" ref="workflowService" />
+  </bean>
+</osgi:service>
+
+<osgi:reference id="workflowService" 
+  interface="org.openengsb.core.workflow.WorkflowService" />
+<osgi:reference id="contextService" 
+  interface="org.openengsb.core.common.context.ContextService" />]]>
         </programlisting>
       </listitem>
     </orderedlist>
