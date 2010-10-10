@@ -256,7 +256,8 @@ public class TestClient extends BasePage {
         editButton.setEnabled(false);
         ServiceReference[] references = null;
         try {
-            references = bundleContext.getServiceReferences(Domain.class.getName(),
+            references =
+                bundleContext.getServiceReferences(Domain.class.getName(),
                     String.format("(id=%s)", serviceId.getServiceId()));
             String id = "";
             String domain = null;
@@ -303,7 +304,7 @@ public class TestClient extends BasePage {
             new DefaultMutableTreeNode(provider.getName().getString(getSession().getLocale()));
         node.add(providerNode);
         for (ServiceReference serviceReference : this.services
-                .serviceReferencesForDomain(provider.getDomainInterface())) {
+            .serviceReferencesForDomain(provider.getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
             if (id != null) {
                 ServiceId serviceId = new ServiceId();
@@ -318,7 +319,8 @@ public class TestClient extends BasePage {
     }
 
     private Class<?> guessDomainInterface(Object serviceObject) {
-        for (Class<?> candidate : serviceObject.getClass().getInterfaces()) {
+        Class<?>[] interfaces = MethodUtil.getAllInterfaces(serviceObject);
+        for (Class<?> candidate : interfaces) {
             if (!candidate.getName().equals(Domain.class) && candidate.getName().startsWith("org.openengsb.domains")) {
                 return candidate;
             }

@@ -19,26 +19,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <relativePath>../poms/compiled/</relativePath>
-    <groupId>org.openengsb.build</groupId>
-    <artifactId>compiled-bundle-settings</artifactId>
+    <relativePath>..</relativePath>
+    <groupId>org.openengsb.domains</groupId>
+    <artifactId>openengsb-domains-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openengsb.domains</groupId>
-  <artifactId>openengsb-domains-parent</artifactId>
+  <groupId>org.openengsb.domains.report</groupId>
+  <artifactId>openengsb-domains-report-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-
-  <name>OpenEngSB :: Domains :: Parent</name>
+  <name>OpenEngSB :: Domains :: Report :: Parent</name>
 
   <packaging>pom</packaging>
 
   <modules>
-    <module>example</module>
-    <module>notification</module>
-    <module>report</module>
+    <module>implementation</module>
+    <module>plaintext</module>
   </modules>
 
 </project>
