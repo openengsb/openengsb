@@ -21,6 +21,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
 
@@ -58,12 +60,32 @@ public class FileSystemReportStore implements ReportStore {
 
     private Report loadReport(File reportFile) {
         Report report = new Report(reportFile.getName());
-        for (File partFile : reportFile.listFiles()) {
-            if (!partFile.getName().endsWith(".meta")) {
-                report.addPart(loadPart(partFile));
-            }
+        for (File partFile : getAndSortPartFiles(reportFile)) {
+            report.addPart(loadPart(partFile));
         }
         return report;
+    }
+
+    private List<File> getAndSortPartFiles(File reportFile) {
+        File[] files = reportFile.listFiles();
+        List<File> result = new ArrayList<File>(files.length);
+        for (File file : files) {
+            if (file.getName().endsWith(".meta")) {
+                continue;
+            }
+            result.add(file);
+        }
+        Collections.sort(result, new Comparator<File>() {
+            @Override
+            public int compare(File o1, File o2) {
+                String name1 = o1.getName();
+                String name2 = o2.getName();
+                int index1 = Integer.parseInt(name1.split("[.]")[0]);
+                int index2 = Integer.parseInt(name2.split("[.]")[0]);
+                return index1 < index2 ? -1 : (index1 == index2 ? 0 : 1);
+            }
+        });
+        return result;
     }
 
     private ReportPart loadPart(File partFile) {
