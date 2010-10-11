@@ -32,7 +32,10 @@ import org.eclipse.jgit.errors.UnmergedPathException;
 import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
-public class RepositoryFixture {
+public final class RepositoryFixture {
+
+    private RepositoryFixture() {
+    }
 
     public static FileRepository createRepository(File directory) throws Exception {
         FileRepository repository = create(directory);

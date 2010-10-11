@@ -25,8 +25,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeCommand;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
-import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.errors.NotSupportedException;
 import org.eclipse.jgit.errors.TransportException;
 import org.eclipse.jgit.lib.Constants;
@@ -97,8 +95,7 @@ public class GitServiceImpl implements ScmDomain {
         return true;
     }
 
-    protected boolean checkoutWatchBranch(FetchResult result) throws MissingObjectException,
-        IncorrectObjectTypeException, IOException {
+    protected boolean checkoutWatchBranch(FetchResult result) throws IOException {
         Ref head = result.getAdvertisedRef(Constants.R_HEADS + watchBranch);
         if (head == null) {
             return false;

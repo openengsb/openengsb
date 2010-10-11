@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.storage.file.FileRepository;
 import org.junit.Before;
@@ -55,7 +54,7 @@ public class GitServiceImplTest {
     }
 
     @Test
-    public void pollWithEmptyWorkspace_shouldCloneRemoteRepository() throws AmbiguousObjectException, IOException {
+    public void pollWithEmptyWorkspace_shouldCloneRemoteRepository() throws IOException {
         assertThat(service.poll(), is(true));
         ObjectId remote = service.getRepository().resolve("refs/remotes/origin/master");
         assertThat(remote, notNullValue());
