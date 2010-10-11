@@ -40,12 +40,12 @@ public class TrackerDynamicProxy {
 
     /**
      * Creates a new instance.
-     * 
-     * @param client A fully configured XML-RPC client, which is used internally
-     *        to perform XML-RPC calls.
+     *
+     * @param client               A fully configured XML-RPC client, which is used internally
+     *                             to perform XML-RPC calls.
      * @param typeConverterFactory Creates instances of
-     *        {@link TypeConverterFactory}, which are used to transform the
-     *        result object in its target representation.
+     *                             {@link TypeConverterFactory}, which are used to transform the
+     *                             result object in its target representation.
      */
     public TrackerDynamicProxy(XmlRpcClient client, TypeConverterFactory typeConverterFactory) {
         this.typeConverterFactory = typeConverterFactory;
@@ -54,13 +54,13 @@ public class TrackerDynamicProxy {
 
     /**
      * Creates a new instance. Shortcut for
-     * 
+     * <p/>
      * <pre>
      * new ClientFactory(pClient, new TypeConverterFactoryImpl());
      * </pre>
-     * 
+     *
      * @param client A fully configured XML-RPC client, which is used internally
-     *        to perform XML-RPC calls.
+     *               to perform XML-RPC calls.
      * @see TypeConverterFactoryImpl
      */
     public TrackerDynamicProxy(XmlRpcClient client) {
@@ -108,7 +108,7 @@ public class TrackerDynamicProxy {
      */
     @SuppressWarnings("unchecked")
     public <T> T newInstance(ClassLoader classLoader, final Class<T> clazz) {
-        return (T) Proxy.newProxyInstance(classLoader, new Class[] { clazz }, new InvocationHandler() {
+        return (T) Proxy.newProxyInstance(classLoader, new Class[]{clazz}, new InvocationHandler() {
             public Object invoke(Object proxy, Method method, Object[] args)
                 throws InvocationTargetException, IllegalAccessException, XmlRpcException {
                 if (isObjectMethodLocal() && method.getDeclaringClass().equals(Object.class)) {

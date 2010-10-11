@@ -23,6 +23,7 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domains.issue.trac.TracConnector;
 import org.openengsb.domains.issue.trac.internal.models.Issue;
+import org.openengsb.domains.issue.trac.internal.models.TicketHandlerFactory;
 import org.openengsb.domains.issue.trac.internal.models.constants.TracFieldConstants;
 import org.openengsb.domains.issue.trac.internal.models.constants.TracPriorityConstants;
 import org.openengsb.domains.issue.trac.internal.models.constants.TracStatusConstants;
@@ -33,19 +34,22 @@ import java.util.Hashtable;
 import java.util.Map;
 
 public class TracConnectorImpl implements TracConnector {
-    
+
     private static Log log = LogFactory.getLog(TracConnectorImpl.class);
 
-    private Ticket ticket;
     private AliveState state;
+    private String id;
+    private TicketHandlerFactory ticketFactory;
 
-    @Override
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
+
+    public TracConnectorImpl(String id, TicketHandlerFactory ticketFactory) {
+        this.id = id;
+        this.ticketFactory = ticketFactory;
     }
 
     @Override
-    public Integer createIssue(Issue issue) {
+    public String createIssue(Issue issue) {
+        Ticket ticket = createTicket();
         Hashtable<String, String> attributes = generateAttributes(issue);
         Integer issueId = -1;
 
@@ -56,12 +60,13 @@ public class TracConnectorImpl implements TracConnector {
             log.error("Error creating issue " + issue.getSummary() + ". XMLRPC call failed.");
         }
 
-        return issueId;
+        return issueId.toString();
     }
 
     @Override
     public void deleteIssue(Integer id) {
         try {
+            Ticket ticket = createTicket();
             ticket.delete(id);
             log.info("Successfully deleted issue " + id + ".");
         } catch (XmlRpcException e) {
@@ -72,6 +77,7 @@ public class TracConnectorImpl implements TracConnector {
     @Override
     public void addComment(Integer id, String comment) {
         try {
+            Ticket ticket = createTicket();
             ticket.update(id, comment);
             log.info("Successfully added comment to issue " + id + ".");
         } catch (XmlRpcException e) {
@@ -87,11 +93,29 @@ public class TracConnectorImpl implements TracConnector {
         }
 
         try {
+            Ticket ticket = createTicket();
             ticket.update(id, comment, attributes);
             log.info("Successfully updated issue " + id + " with " + changes.size() + " changes.");
         } catch (XmlRpcException e) {
             log.error("Error updating issue " + id + ". XMLRPC call failed.");
         }
+    }
+
+    private Ticket createTicket() {
+        if (ticketFactory != null) {
+            return ticketFactory.createTicket();
+        }
+        throw new RuntimeException("tickethandler not yet set");
+    }
+
+    @Override
+    public TicketHandlerFactory getTicketHandlerFactory() {
+        return this.ticketFactory;
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
     }
 
     private Hashtable<String, String> translateChanges(Map<String, Object> changes) {
@@ -166,6 +190,6 @@ public class TracConnectorImpl implements TracConnector {
 
     @Override
     public AliveState getAliveState() {
-        return this.state;
+        return state;
     }
 }

@@ -18,25 +18,61 @@
 package org.openengsb.domains.issue.trac.internal;
 
 import org.openengsb.core.common.ServiceInstanceFactory;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.domains.issue.IssueDomain;
 import org.openengsb.domains.issue.trac.TracConnector;
+import org.openengsb.domains.issue.trac.internal.models.TicketHandlerFactory;
 
 import java.util.Map;
 
 public class TracServiceInstanceFactory implements ServiceInstanceFactory<IssueDomain, TracConnector> {
+
     @Override
     public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
-        return null;
+        builder.name("trac.name").description("trac.description");
+
+        builder.attribute(buildAttribute(builder, "username", "username.outputMode", "username.outputMode.description"))
+            .attribute(builder.newAttribute().id("userPassword").name("userPassword.outputMode")
+                .description("userPassword.outputMode.description").defaultValue("").required().asPassword().build())
+            .attribute(builder.newAttribute().id("serverUrl").name("serverUrl.outputMode")
+                .description("serverUrl.outputMode.description").defaultValue("").asBoolean().build());
+
+        return builder.build();
+    }
+
+    private AttributeDefinition buildAttribute(ServiceDescriptor.Builder builder, String id, String nameId,
+                                               String descriptionId) {
+        return builder.newAttribute().id(id).name(nameId).description(descriptionId).defaultValue("").required()
+            .build();
+
     }
 
     @Override
     public void updateServiceInstance(TracConnector instance, Map<String, String> attributes) {
-
+        TicketHandlerFactory ticketFactory = instance.getTicketHandlerFactory();
+        updateTicketHandlerFactory(attributes, ticketFactory);
     }
 
     @Override
     public TracConnector createServiceInstance(String id, Map<String, String> attributes) {
-        return null;
+        TicketHandlerFactory ticketFactory = new TicketHandlerFactory();
+        updateTicketHandlerFactory(attributes, ticketFactory);
+        TracConnector tracConnector = new TracConnectorImpl(id, ticketFactory);
+
+        updateServiceInstance(tracConnector, attributes);
+        return tracConnector;
+    }
+
+    private void updateTicketHandlerFactory(Map<String, String> attributes, TicketHandlerFactory ticketFactory) {
+        if (attributes.containsKey("serverUrl")) {
+            ticketFactory.setServerUrl(attributes.get("serverUrl"));
+        }
+        if (attributes.containsKey("user")) {
+            ticketFactory.setUsername(attributes.get("user"));
+        }
+        if (attributes.containsKey("password")) {
+            ticketFactory.setUserPassword(attributes.get("password"));
+        }
     }
 }
