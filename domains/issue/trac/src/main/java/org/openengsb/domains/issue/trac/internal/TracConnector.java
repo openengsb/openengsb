@@ -37,7 +37,7 @@ public class TracConnector implements IssueDomain {
 
     private static Log log = LogFactory.getLog(TracConnector.class);
 
-    private AliveState state;
+    private AliveState state = AliveState.DISCONNECTED;
     private String id;
     private TicketHandlerFactory ticketFactory;
 
@@ -55,11 +55,12 @@ public class TracConnector implements IssueDomain {
 
         try {
             issueId = ticket.create(issue.getSummary(), issue.getDescription(), attributes);
+            this.state = AliveState.ONLINE;
             log.info("Successfully created issue " + issue.getSummary() + ", ID is: " + issueId + ".");
         } catch (XmlRpcException e) {
             log.error("Error creating issue " + issue.getSummary() + ". XMLRPC call failed.");
+            this.state = AliveState.OFFLINE;
         }
-
         return issueId.toString();
     }
 
@@ -103,7 +104,13 @@ public class TracConnector implements IssueDomain {
 
     private Ticket createTicket() {
         if (ticketFactory != null) {
-            return ticketFactory.createTicket();
+            Ticket ticket = ticketFactory.createTicket();
+            if (ticket != null) {
+                this.state = AliveState.CONNECTING;
+            } else {
+                this.state = AliveState.DISCONNECTED;
+            }
+            return ticket;
         }
         throw new RuntimeException("tickethandler not yet set");
     }
