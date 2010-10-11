@@ -193,6 +193,7 @@
   <modules>
     <module>compiled</module>
     <module>nonosgi</module>
+    <module>wrapped</module>
   </modules>
 
   <build>
