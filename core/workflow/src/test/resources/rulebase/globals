@@ -1,2 +1,6 @@
 org.openengsb.core.workflow.DummyNotificationDomain notification
 org.openengsb.core.workflow.DummyExampleDomain example
+org.openengsb.core.workflow.DummyTest test
+org.openengsb.core.workflow.DummyBuild build
+org.openengsb.core.workflow.DummyDeploy deploy
+org.openengsb.core.workflow.DummyReport report

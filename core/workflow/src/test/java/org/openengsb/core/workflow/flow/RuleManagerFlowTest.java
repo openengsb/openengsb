@@ -107,6 +107,7 @@ public class RuleManagerFlowTest {
             };
         };
         t.start();
+        Thread.sleep(200);
         session.startProcess("flowtest");
         t.join();
         session.dispose();

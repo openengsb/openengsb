@@ -5,3 +5,4 @@ java.util.HashMap
 org.openengsb.core.common.Event
 org.openengsb.core.workflow.DummyExampleDomain
 org.openengsb.core.workflow.DummyNotificationDomain
+org.openengsb.core.workflow.model.Value

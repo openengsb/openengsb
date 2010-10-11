@@ -58,15 +58,13 @@ public class DirectoryGlobalHandler extends ResourceHandler<DirectoryRuleSource>
     @Override
     public void delete(RuleBaseElementId name) throws RuleBaseException {
         Collection<String> globalList = readGlobalList();
-        Iterator<String> it = globalList.iterator();
-        String line;
-        for (line = it.next(); it.hasNext(); line = it.next()) {
-            if (line.endsWith(" " + name)) {
+        for (Iterator<String> it = globalList.iterator(); it.hasNext();) {
+            String line = it.next();
+            if (line.endsWith(" " + name.getName())) {
                 it.remove();
                 break;
             }
         }
-
         try {
             FileUtils.writeLines(file, globalList, IOUtils.LINE_SEPARATOR_UNIX);
         } catch (IOException e) {

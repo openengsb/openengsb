@@ -36,9 +36,12 @@ import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.model.TestEvent;
 
+import static org.mockito.Matchers.anyString;
+
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -71,6 +74,10 @@ public class WorkflowServiceTest {
     private RuleManager manager;
     private DummyExampleDomain logService;
     private DummyNotificationDomain notification;
+    private DummyBuild build;
+    private DummyDeploy deploy;
+    private DummyReport report;
+    private DummyTest test;
 
     @Before
     public void setUp() throws Exception {
@@ -105,6 +112,14 @@ public class WorkflowServiceTest {
         domains.put("example", logService);
         notification = Mockito.mock(DummyNotificationDomain.class);
         domains.put("notification", notification);
+        build = mock(DummyBuild.class);
+        domains.put("build", build);
+        deploy = mock(DummyDeploy.class);
+        domains.put("deploy", deploy);
+        report = mock(DummyReport.class);
+        domains.put("report", report);
+        test = mock(DummyTest.class);
+        domains.put("test", test);
         return domains;
     }
 
@@ -195,5 +210,26 @@ public class WorkflowServiceTest {
         InOrder inOrder2 = inOrder(logService);
         inOrder2.verify(logService).doSomething("start testflow");
         inOrder2.verify(logService).doSomething("first event received");
+    }
+
+    @Test
+    public void testCiWorkflow() throws Exception {
+        long id = service.startFlow("ci");
+        service.processEvent(new Event() {
+            @Override
+            public String getType() {
+                return "BuildSuccess";
+            }
+        });
+        service.processEvent(new Event() {
+            @Override
+            public String getType() {
+                return "TestSuccess";
+            }
+        });
+        service.waitForFlowToFinish(id);
+        verify(report, times(1)).collectData();
+        verify(notification, atLeast(1)).notify(anyString());
+        verify(deploy, times(1)).deployProject();
     }
 }
