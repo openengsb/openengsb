@@ -521,6 +521,7 @@
                 <exclude>**/EngSB.sln</exclude>
                 <exclude>README</exclude>
                 <exclude>**/nb-configuration.xml</exclude>
+                <exclude>**/*.checkstyle</exclude>
               </excludes>
               <mapping>
                 <bnd>SCRIPT_STYLE</bnd>
