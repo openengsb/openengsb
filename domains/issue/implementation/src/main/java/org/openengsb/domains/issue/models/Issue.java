@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.issue.trac.internal.models;
+package org.openengsb.domains.issue.models;
 
 public class Issue {
     

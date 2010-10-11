@@ -21,8 +21,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xmlrpc.XmlRpcException;
 import org.openengsb.core.common.util.AliveState;
-import org.openengsb.domains.issue.trac.TracConnector;
-import org.openengsb.domains.issue.trac.internal.models.Issue;
+import org.openengsb.domains.issue.IssueDomain;
+import org.openengsb.domains.issue.models.Issue;
 import org.openengsb.domains.issue.trac.internal.models.TicketHandlerFactory;
 import org.openengsb.domains.issue.trac.internal.models.constants.TracFieldConstants;
 import org.openengsb.domains.issue.trac.internal.models.constants.TracPriorityConstants;
@@ -33,16 +33,16 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class TracConnectorImpl implements TracConnector {
+public class TracConnector implements IssueDomain {
 
-    private static Log log = LogFactory.getLog(TracConnectorImpl.class);
+    private static Log log = LogFactory.getLog(TracConnector.class);
 
     private AliveState state;
     private String id;
     private TicketHandlerFactory ticketFactory;
 
 
-    public TracConnectorImpl(String id, TicketHandlerFactory ticketFactory) {
+    public TracConnector(String id, TicketHandlerFactory ticketFactory) {
         this.id = id;
         this.ticketFactory = ticketFactory;
     }
@@ -108,12 +108,10 @@ public class TracConnectorImpl implements TracConnector {
         throw new RuntimeException("tickethandler not yet set");
     }
 
-    @Override
     public TicketHandlerFactory getTicketHandlerFactory() {
         return this.ticketFactory;
     }
 
-    @Override
     public String getId() {
         return this.id;
     }

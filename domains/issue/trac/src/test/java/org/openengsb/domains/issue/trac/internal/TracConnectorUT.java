@@ -18,13 +18,15 @@ package org.openengsb.domains.issue.trac.internal;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.openengsb.domains.issue.trac.internal.models.Issue;
+import org.openengsb.domains.issue.models.Issue;
 import org.openengsb.domains.issue.trac.internal.models.TicketHandlerFactory;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-public class TracUT {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+
+public class TracConnectorUT {
+
 
     @Test
     public void testCreateIssue() throws XmlRpcException {
@@ -32,13 +34,16 @@ public class TracUT {
         ticketFactory.setUsername("");
         ticketFactory.setUserPassword("");
         ticketFactory.setServerUrl("http://127.0.0.1:8000/test/rpc");
-        TracConnectorImpl tracImpl = new TracConnectorImpl("1", ticketFactory);
+        TracConnector tracImpl = new TracConnector("1", ticketFactory);
         Issue issue = new Issue();
         issue.setDescription("test Issue");
+        issue.setSummary("test summery");
         issue.setId(99);
         issue.setStatus(Issue.STATUSNEW);
         issue.setPriority(Issue.PRIORITYNORMAL);
-        tracImpl.createIssue(issue);
+        String id = tracImpl.createIssue(issue);
+
+        assertThat(id, not(is("-1")));
     }
 
 }
