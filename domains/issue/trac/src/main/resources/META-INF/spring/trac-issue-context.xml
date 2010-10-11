@@ -27,6 +27,10 @@
     <osgi:service-properties>
       <entry key="domain" value="org.openengsb.domains.issue.IssueDomain" />
     </osgi:service-properties>
-    <bean class="org.openengsb.domains.issue.trac.TracServiceManager" />    
+    <bean class="org.openengsb.domains.issue.trac.TracServiceManager">
+       <constructor-arg>
+            <bean class="org.openengsb.domains.issue.trac.internal.TracServiceInstanceFactory" />
+        </constructor-arg>
+    </bean>
   </osgi:service>
 </beans>

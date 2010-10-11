@@ -39,7 +39,6 @@ public class TracUT {
         issue.setStatus(Issue.STATUSNEW);
         issue.setPriority(Issue.PRIORITYNORMAL);
         tracImpl.createIssue(issue);
-
     }
 
 }

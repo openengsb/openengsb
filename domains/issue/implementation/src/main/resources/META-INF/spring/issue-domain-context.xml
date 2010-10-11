@@ -30,13 +30,15 @@
 
   <osgi:service>
     <osgi:interfaces>
-      <value>org.openengsb.core.common.Domain</value>
       <value>org.openengsb.domains.issue.IssueDomain</value>
+      <value>org.openengsb.core.common.Domain</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.issuedomain" />
+      <entry key="id" value="domains.issue" />
       <entry key="openengsb.service.type" value="domain" />
     </osgi:service-properties>
+
+    <!-- this bean replaces the ForwardService -->
     <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
       <property name="domainInterface">
         <value>org.openengsb.domains.issue.IssueDomain</value>
@@ -46,5 +48,25 @@
     </bean>
   </osgi:service>
 
+   <osgi:service>
+    <osgi:interfaces>
+      <value>org.openengsb.domains.issue.IssueDomainEvents</value>
+      <value>org.openengsb.core.common.DomainEvents</value>
+    </osgi:interfaces>
+    <osgi:service-properties>
+      <entry key="id" value="domains.issue.events" />
+      <entry key="openengsb.service.type" value="domain-events" />
+    </osgi:service-properties>
+
+    <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
+      <property name="domainEventInterface">
+        <value>org.openengsb.domains.issue.IssueDomainEvents</value>
+      </property>
+      <property name="workflowService" ref="workflowService" />
+    </bean>
+  </osgi:service>
+
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
+  <osgi:reference id="workflowService" interface="org.openengsb.core.workflow.WorkflowService" />
+
 </beans>
