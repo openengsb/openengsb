@@ -472,8 +472,8 @@
       <version>${fastinfoset.version}</version>
     </dependency>
     <dependency>
-      <groupId>javax.xml.stream</groupId>
-      <artifactId>com.springsource.javax.xml.stream</artifactId>
+      <groupId>org.apache.servicemix.specs</groupId>
+      <artifactId>org.apache.servicemix.specs.stax-api-1.0</artifactId>
       <version>${xml.stream.version}</version>
     </dependency>
     <dependency>
