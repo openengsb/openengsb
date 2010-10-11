@@ -103,6 +103,12 @@ public class GitServiceImpl implements ScmDomain {
             return false;
         }
 
+        if (!Constants.HEAD.equals(head.getName())) {
+            RefUpdate u = repository.updateRef(Constants.HEAD);
+            u.disableRefLog();
+            u.link(head.getName());
+        }
+
         final RevWalk rw = new RevWalk(repository);
         final RevCommit commit;
         try {

@@ -26,7 +26,6 @@
   <osgi:service interface="org.openengsb.core.common.ServiceManager">
     <osgi:service-properties>
       <entry key="domain" value="org.openengsb.domains.scm.ScmDomain" />
-      <entry key="openengsb.service.type" value="connector" />
     </osgi:service-properties>
     <bean class="org.openengsb.domains.scm.git.GitServiceManager">
       <constructor-arg>
