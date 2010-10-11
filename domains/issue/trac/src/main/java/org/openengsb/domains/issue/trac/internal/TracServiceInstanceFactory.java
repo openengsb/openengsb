@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-
 package org.openengsb.domains.issue.trac.internal;
 
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.domains.issue.IssueDomain;
-import org.openengsb.domains.issue.trac.TracConnector;
 import org.openengsb.domains.issue.trac.internal.models.TicketHandlerFactory;
 
 import java.util.Map;
@@ -34,9 +32,9 @@ public class TracServiceInstanceFactory implements ServiceInstanceFactory<IssueD
 
         builder.attribute(buildAttribute(builder, "username", "username.outputMode", "username.outputMode.description"))
             .attribute(builder.newAttribute().id("userPassword").name("userPassword.outputMode")
-                .description("userPassword.outputMode.description").defaultValue("").required().asPassword().build())
+                .description("userPassword.outputMode.description").defaultValue("").asPassword().build())
             .attribute(builder.newAttribute().id("serverUrl").name("serverUrl.outputMode")
-                .description("serverUrl.outputMode.description").defaultValue("").asBoolean().build());
+                .description("serverUrl.outputMode.description").defaultValue("").required().build());
 
         return builder.build();
     }
@@ -58,7 +56,7 @@ public class TracServiceInstanceFactory implements ServiceInstanceFactory<IssueD
     public TracConnector createServiceInstance(String id, Map<String, String> attributes) {
         TicketHandlerFactory ticketFactory = new TicketHandlerFactory();
         updateTicketHandlerFactory(attributes, ticketFactory);
-        TracConnector tracConnector = new TracConnectorImpl(id, ticketFactory);
+        TracConnector tracConnector = new TracConnector(id, ticketFactory);
 
         updateServiceInstance(tracConnector, attributes);
         return tracConnector;

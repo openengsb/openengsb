@@ -16,12 +16,6 @@
 
 package org.openengsb.integrationtest.exam;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-
-import java.util.Dictionary;
-import java.util.Hashtable;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.Domain;
@@ -35,6 +29,12 @@ import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 @RunWith(JUnit4TestRunner.class)
 public class EventForwardIT extends AbstractExamTestHelper {
@@ -71,6 +71,7 @@ public class EventForwardIT extends AbstractExamTestHelper {
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
         contextService.putValue("domains/NotificationDomain/defaultConnector/id", "dummyConnector");
+        contextService.putValue("domains/IssueDomain/defaultConnector/id", "issue");
         contextService.putValue("domains/ExampleDomain/defaultConnector/id", "dummyLog");
 
         DummyNotificationDomain dummy = new DummyNotificationDomain();

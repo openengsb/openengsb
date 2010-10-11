@@ -20,7 +20,7 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.domains.issue.trac.internal.models.Issue;
+import org.openengsb.domains.issue.models.Issue;
 import org.openengsb.domains.issue.trac.internal.models.TicketHandlerFactory;
 import org.openengsb.domains.issue.trac.internal.models.constants.TracFieldConstants;
 import org.openengsb.domains.issue.trac.internal.models.constants.TracPriorityConstants;
@@ -35,14 +35,14 @@ import java.util.Hashtable;
 public class TracConnectorTest {
 
     Ticket ticketMock;
-    TracConnectorImpl tracConnector;
+    TracConnector tracConnector;
 
 
     @Before
     public void setUp() {
         ticketMock = Mockito.mock(Ticket.class);
         TicketHandlerFactory tc = Mockito.mock(TicketHandlerFactory.class);
-        tracConnector = new TracConnectorImpl("1", tc);
+        tracConnector = new TracConnector("1", tc);
         Mockito.when(tc.createTicket()).thenReturn(ticketMock);
     }
 

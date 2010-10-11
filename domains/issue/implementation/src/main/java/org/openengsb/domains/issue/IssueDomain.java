@@ -17,7 +17,37 @@
 package org.openengsb.domains.issue;
 
 import org.openengsb.core.common.Domain;
+import org.openengsb.domains.issue.models.Issue;
+
+import java.util.HashMap;
 
 public interface IssueDomain extends Domain {
+
+    /**
+     * creates an issue on the server and returned the generated id
+     * @param issue
+     */
+    String createIssue(Issue issue);
+
+    /**
+     * delete an issue, specified by his id
+     * @param id
+     */
+    void deleteIssue(Integer id);
+
+    /**
+     * add a comment to an issue, specified by his id
+     * @param id
+     * @param comment
+     */
+    void addComment(Integer id, String comment);
+
+    /**
+     * update an issue, specified by his id
+     * @param id
+     * @param comment
+     * @param changes
+     */
+    void updateIssue(Integer id, String comment, HashMap<String, Object> changes);
 
 }

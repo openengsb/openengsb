@@ -16,10 +16,6 @@
 
 package org.openengsb.ui.web;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -32,6 +28,10 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.ui.web.global.footer.FooterTemplate;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 @SuppressWarnings("serial")
 @AuthorizeInstantiation("ROLE_USER")
@@ -118,6 +118,7 @@ public class BasePage extends WebPage {
             contextService.createContext(sessionContextId + "2");
             contextService.setThreadLocalContext(sessionContextId);
             contextService.putValue("domains/NotificationDomain/defaultConnector/id", "notification");
+            contextService.putValue("domains/IssueDomain/defaultConnector/id", "issue");
             contextService.putValue("domains/ExampleDomain/defaultConnector/id", "example");
         }
     }

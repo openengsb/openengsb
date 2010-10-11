@@ -20,15 +20,15 @@ import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domains.issue.IssueDomain;
-import org.openengsb.domains.issue.trac.internal.TracServiceInstanceFactory;
+import org.openengsb.domains.issue.trac.internal.TracConnector;import org.openengsb.domains.issue.trac.internal.TracServiceInstanceFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class TracServiceManager extends AbstractServiceManager<IssueDomain, TracConnector> {
 
-    public TracServiceManager() {
-        super(new TracServiceInstanceFactory());
+    public TracServiceManager(TracServiceInstanceFactory tracServiceFactory) {
+        super(tracServiceFactory);
     }
 
     @Override
