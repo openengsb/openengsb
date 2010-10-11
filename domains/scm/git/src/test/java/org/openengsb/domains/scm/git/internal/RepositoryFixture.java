@@ -34,15 +34,15 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 public class RepositoryFixture {
 
-    public static FileRepository createRepositor(File directory) throws Exception {
-        FileRepository repository = createRepository(directory);
+    public static FileRepository createRepository(File directory) throws Exception {
+        FileRepository repository = create(directory);
         Git git = new Git(repository);
         addFile(git, "testfile");
         commit(git, "initial commit");
         return repository;
     }
 
-    protected static void addFile(Git git, String filename) throws IOException, NoFilepatternException {
+    public static void addFile(Git git, String filename) throws IOException, NoFilepatternException {
         FileWriter writer = new FileWriter(new File(git.getRepository().getWorkTree(), filename));
         writer.write(filename + "\n");
         writer.close();
@@ -50,14 +50,14 @@ public class RepositoryFixture {
         add.addFilepattern(filename).call();
     }
 
-    protected static void commit(Git git, String message) throws NoHeadException, NoMessageException,
+    public static void commit(Git git, String message) throws NoHeadException, NoMessageException,
         UnmergedPathException,
         ConcurrentRefUpdateException, WrongRepositoryStateException {
         CommitCommand commit = git.commit();
         commit.setMessage(message).call();
     }
 
-    protected static FileRepository createRepository(File directory) throws IOException {
+    private static FileRepository create(File directory) throws IOException {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
         FileRepository repository = builder.setWorkTree(directory).build();
         repository.create();

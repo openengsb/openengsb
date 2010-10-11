@@ -30,6 +30,13 @@ public class GitServiceInstanceFactory implements ServiceInstanceFactory<ScmDoma
     @Override
     public void updateServiceInstance(GitServiceImpl instance, Map<String, String> attributes) {
         if (attributes.containsKey("repository")) {
+            instance.setRemoteLocation(attributes.get("repository"));
+        }
+        if (attributes.containsKey("workspace")) {
+            instance.setLocalWorkspace(attributes.get("workspace"));
+        }
+        if (attributes.containsKey("branch")) {
+            instance.setWatchBranch(attributes.get("branch"));
         }
     }
 
@@ -45,6 +52,10 @@ public class GitServiceInstanceFactory implements ServiceInstanceFactory<ScmDoma
         builder.name("service.name").description("service.description");
         builder.attribute(builder.newAttribute().id("repository").name("service.repository.name")
             .description("service.repository.description").build());
+        builder.attribute(builder.newAttribute().id("workspace").name("service.workspace.name")
+            .description("service.workspace.description").build());
+        builder.attribute(builder.newAttribute().id("branch").name("service.branch.name")
+            .description("service.branch.description").build());
         return builder.build();
     }
 }

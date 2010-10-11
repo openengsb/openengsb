@@ -38,18 +38,20 @@ public class RepositoryFixtureTest {
     public void createSampleDirectory_shoulHaveHiddenDirectoryDotGit() throws Exception {
         File folder = temporaryFolder.newFolder("sample");
         assertThat(folder.isDirectory(), is(true));
-        RepositoryFixture.createRepositor(folder);
+        FileRepository repository = RepositoryFixture.createRepository(folder);
         assertThat(new File(folder, ".git").isDirectory(), is(true));
+        repository.close();
     }
 
     @Test
     public void createSampleDirectory_shouldHaveOneCommit() throws Exception {
         File folder = temporaryFolder.newFolder("sample");
-        FileRepository repository = RepositoryFixture.createRepositor(folder);
+        FileRepository repository = RepositoryFixture.createRepository(folder);
         assertThat(repository.getBranch(), is("master"));
         RevWalk walk = new RevWalk(repository);
         walk.markStart(walk.parseCommit(repository.resolve("refs/heads/master")));
         assertThat(walk.next(), notNullValue());
         assertThat(walk.next(), nullValue());
+        repository.close();
     }
 }
