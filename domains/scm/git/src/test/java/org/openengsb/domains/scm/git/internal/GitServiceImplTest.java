@@ -92,4 +92,14 @@ public class GitServiceImplTest {
         service.setWatchBranch("unknown");
         assertThat(service.poll(), is(false));
     }
+
+    @Test
+    public void exportRepository_shouldCreateFullCopyOfCurrentRepoState() {
+        service.poll();
+        assertThat(new File(localDirectory, "testfile").isFile(), is(true));
+        File exportDirectory = tempFolder.newFolder("export");
+        service.export(exportDirectory);
+        assertThat(new File(exportDirectory, "testfile").isFile(), is(true));
+        assertThat(new File(exportDirectory, ".git").isDirectory(), is(false));
+    }
 }

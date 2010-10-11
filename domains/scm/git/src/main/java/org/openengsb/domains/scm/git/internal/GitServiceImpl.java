@@ -17,11 +17,12 @@
 package org.openengsb.domains.scm.git.internal;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.MergeCommand;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -153,14 +154,16 @@ public class GitServiceImpl implements ScmDomain {
 
     @Override
     public void export(File directory) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void export(ZipOutputStream out) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException();
+        try {
+            FileUtils.copyDirectory(localWorkspace, directory, new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    return !pathname.getName().equals(".git");
+                }
+            });
+        } catch (IOException e) {
+            throw new ScmException(e);
+        }
     }
 
     public void setRemoteLocation(String remoteLocation) {
