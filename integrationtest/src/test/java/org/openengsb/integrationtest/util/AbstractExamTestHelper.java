@@ -72,24 +72,23 @@ public abstract class AbstractExamTestHelper {
     private void waitForActiveSpringService(Bundle bundle) throws InterruptedException {
         int times = 0;
         while (true) {
-            if (bundle.getState() != Bundle.ACTIVE) {
-                if (times > 20) {
-                    Assert.fail(String.format("Bundle %s still not active", bundle.getSymbolicName()));
-                }
-                Thread.sleep(3000);
-                times++;
-                continue;
+            if (bundle.getState() == Bundle.ACTIVE) {
+                break;
             }
-            ServiceTracker tracker = new ServiceTracker(bundle.getBundleContext(),
-                    "org.springframework.context.ApplicationContext", null);
-            tracker.open();
-            Object service = tracker.waitForService(20000);
-            if (service == null) {
-                Assert.fail(String.format("Bundle %s does not start spring service", bundle.getSymbolicName()));
+            if (times > 20) {
+                Assert.fail(String.format("Bundle %s still not active", bundle.getSymbolicName()));
             }
-            tracker.close();
-            break;
+            Thread.sleep(3000);
+            times++;
         }
+        ServiceTracker tracker = new ServiceTracker(bundle.getBundleContext(),
+                "org.springframework.context.ApplicationContext", null);
+        tracker.open();
+        Object service = tracker.waitForService(20000);
+        if (service == null) {
+            Assert.fail(String.format("Bundle %s does not start spring service", bundle.getSymbolicName()));
+        }
+        tracker.close();
     }
 
     @BeforeClass
