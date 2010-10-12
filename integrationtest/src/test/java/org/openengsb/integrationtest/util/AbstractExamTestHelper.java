@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
@@ -14,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openengsb.integrationtest.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -81,8 +80,8 @@ public abstract class AbstractExamTestHelper {
             Thread.sleep(3000);
             times++;
         }
-        ServiceTracker tracker = new ServiceTracker(bundle.getBundleContext(),
-                "org.springframework.context.ApplicationContext", null);
+        ServiceTracker tracker =
+            new ServiceTracker(bundle.getBundleContext(), "org.springframework.context.ApplicationContext", null);
         tracker.open();
         Object service = tracker.waitForService(20000);
         if (service == null) {
@@ -112,7 +111,8 @@ public abstract class AbstractExamTestHelper {
     @Configuration
     public static Option[] configuration() {
         List<Option> baseConfiguration = BaseExamConfiguration.getBaseExamOptions("../");
-        baseConfiguration.add(CoreOptions.systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"));
+        baseConfiguration
+            .add(CoreOptions.systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"));
         baseConfiguration.add(new WorkingDirectoryOption(getWorkingDirectory()));
         BaseExamConfiguration.addEntireOpenEngSBPlatform(baseConfiguration);
         Option[] options = BaseExamConfiguration.convertOptionListToArray(baseConfiguration);
@@ -131,10 +131,10 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected ServiceManager retrieveServiceManager(BundleContext bundleContext, Class<? extends Domain> domain)
-            throws InterruptedException, InvalidSyntaxException {
+        throws InterruptedException, InvalidSyntaxException {
         String filter = "(domain=" + domain.getName() + ")";
         ServiceReference[] allServiceReferences =
-                bundleContext.getAllServiceReferences(ServiceManager.class.getName(), filter);
+            bundleContext.getAllServiceReferences(ServiceManager.class.getName(), filter);
         if (allServiceReferences != null) {
             for (ServiceReference serviceReference : allServiceReferences) {
                 Object service = bundleContext.getService(serviceReference);
