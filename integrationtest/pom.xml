@@ -71,6 +71,16 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.domains.issue</groupId>
+      <artifactId>openengsb-domains-issue-implementation</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domains.issue</groupId>
+      <artifactId>openengsb-domains-issue-trac</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.domains.notification</groupId>
       <artifactId>openengsb-domains-notification-implementation</artifactId>
       <version>${pom.version}</version>

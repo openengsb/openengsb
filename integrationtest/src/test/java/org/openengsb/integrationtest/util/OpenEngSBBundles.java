@@ -33,6 +33,10 @@ public final class OpenEngSBBundles {
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
             .artifactId("com.google.guava-all"));
 
+    public static final MavenArtifactProvisionOption OPENENGSB_WRAPPED_XMLRPC = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
+            .artifactId("org.apache.xmlrpc-all"));
+
     public static final MavenArtifactProvisionOption OPENENGSB_CONFIG_JETTY = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.config").artifactId(
             "openengsb-config-jetty"));
@@ -70,6 +74,14 @@ public final class OpenEngSBBundles {
     public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_NOTIFICATION_EMAIL = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.notification").artifactId(
             "openengsb-domains-notification-email"));
+
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_ISSUE_IMPLEMENTATION = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.issue").artifactId(
+            "openengsb-domains-issue-implementation"));
+
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_ISSUE_TRAC = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.issue").artifactId(
+            "openengsb-domains-issue-trac"));
 
     public static final MavenArtifactProvisionOption OPENENGSB_UI_WEB = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.ui").artifactId("openengsb-ui-web")

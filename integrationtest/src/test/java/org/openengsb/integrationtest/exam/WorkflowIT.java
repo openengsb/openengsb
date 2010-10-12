@@ -16,10 +16,6 @@
 
 package org.openengsb.integrationtest.exam;
 
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Hashtable;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,10 +28,17 @@ import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.domains.example.ExampleDomain;
+import org.openengsb.domains.issue.IssueDomain;
+import org.openengsb.domains.issue.models.Issue;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
 
 @RunWith(JUnit4TestRunner.class)
 public class WorkflowIT extends AbstractExamTestHelper {
@@ -66,6 +69,35 @@ public class WorkflowIT extends AbstractExamTestHelper {
         }
     }
 
+     public static class DummyIssueDomain implements IssueDomain {
+
+        @Override
+        public String createIssue(Issue issue) {
+            return "id1";
+        }
+
+        @Override
+        public void deleteIssue(Integer id) {
+           //ignore
+        }
+
+        @Override
+        public void addComment(Integer id, String comment) {
+           //ignore
+        }
+
+        @Override
+        public void updateIssue(Integer id, String comment, HashMap<String, Object> changes) {
+           //ignore
+        }
+
+        @Override
+        public AliveState getAliveState() {
+              return AliveState.OFFLINE;
+        }
+    }
+
+
     @Test
     public void testHasHelloRule() throws Exception {
         RuleManager ruleManager = retrieveService(getBundleContext(), RuleManager.class);
@@ -80,6 +112,8 @@ public class WorkflowIT extends AbstractExamTestHelper {
         contextService.setThreadLocalContext("42");
         contextService.putValue("domains/NotificationDomain/defaultConnector/id", "dummyConnector");
         contextService.putValue("domains/ExampleDomain/defaultConnector/id", "dummyLog");
+        contextService.putValue("domains/IssueDomain/defaultConnector/id", "dummyIssue");
+
 
         /*
          * This is kind of a workaround. But for some reason when the workflow-service waits for these services for 30
@@ -95,6 +129,11 @@ public class WorkflowIT extends AbstractExamTestHelper {
         properties.put("id", "dummyConnector");
 
         getBundleContext().registerService(clazzes, dummy, properties);
+
+        clazzes = new String[]{Domain.class.getName(), IssueDomain.class.getName()};
+        properties.put("id", "dummyIssue");
+        getBundleContext().registerService(clazzes, new DummyIssueDomain(), properties);
+
 
         clazzes = new String[] { Domain.class.getName(), ExampleDomain.class.getName() };
         properties.put("id", "dummyLog");

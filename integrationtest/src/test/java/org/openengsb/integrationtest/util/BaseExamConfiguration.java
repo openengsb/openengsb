@@ -16,6 +16,16 @@
 
 package org.openengsb.integrationtest.util;
 
+import org.ops4j.pax.exam.CoreOptions;
+import org.ops4j.pax.exam.Option;
+import org.ops4j.pax.exam.container.def.PaxRunnerOptions;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,17 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.ops4j.pax.exam.CoreOptions;
-import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.container.def.PaxRunnerOptions;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 public final class BaseExamConfiguration {
 
     private BaseExamConfiguration() {
@@ -51,6 +50,7 @@ public final class BaseExamConfiguration {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_WICKET));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_JAXB));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_GUAVA));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_XMLRPC));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONFIG_JETTY));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONFIG_WEBEXTENDER));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_COMMON));
@@ -61,6 +61,8 @@ public final class BaseExamConfiguration {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_EXAMPLE_CONNECTOR));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_NOTIFICATION_IMPLEMENTATION));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_NOTIFICATION_EMAIL));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_ISSUE_IMPLEMENTATION));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_ISSUE_TRAC));
         baseConfiguration.add(OpenEngSBBundles.OPENENGSB_UI_WEB);
     }
 

@@ -16,8 +16,8 @@
 
 package org.openengsb.domains.issue;
 
-import org.openengsb.core.common.Domain;
 import org.openengsb.domains.issue.models.Issue;
+import org.openengsb.core.common.Domain;
 
 import java.util.HashMap;
 
