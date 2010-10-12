@@ -16,6 +16,9 @@
 
 package org.openengsb.domains.notification.email;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.email.internal.EmailNotifier;

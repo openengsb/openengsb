@@ -16,9 +16,9 @@
 
 package org.openengsb.ui.web.model;
 
-import org.apache.wicket.model.IModel;
-
 import java.util.Map;
+
+import org.apache.wicket.model.IModel;
 
 @SuppressWarnings("serial")
 public class MapModel<K, V> implements IModel<V> {

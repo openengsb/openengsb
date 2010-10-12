@@ -16,6 +16,9 @@
 
 package org.openengsb.domains.notification.email.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
@@ -23,9 +26,6 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.email.internal.abstraction.MailAbstraction;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EmailNotifierFactory implements ServiceInstanceFactory<NotificationDomain, EmailNotifier> {
 

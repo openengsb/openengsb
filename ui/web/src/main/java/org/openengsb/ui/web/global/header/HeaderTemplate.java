@@ -16,6 +16,9 @@
 
 package org.openengsb.ui.web.global.header;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -30,9 +33,6 @@ import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.ServiceListPage;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {

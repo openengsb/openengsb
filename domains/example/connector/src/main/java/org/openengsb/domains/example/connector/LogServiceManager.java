@@ -16,6 +16,9 @@
 
 package org.openengsb.domains.example.connector;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.example.connector.internal.LogService;

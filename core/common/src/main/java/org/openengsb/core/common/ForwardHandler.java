@@ -16,6 +16,8 @@
 
 package org.openengsb.core.common;
 
+import static java.lang.String.format;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -26,8 +28,6 @@ import org.openengsb.core.common.context.ContextService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-
-import static java.lang.String.format;
 
 public class ForwardHandler implements InvocationHandler {
 

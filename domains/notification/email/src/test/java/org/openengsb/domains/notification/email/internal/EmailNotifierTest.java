@@ -16,6 +16,15 @@
 
 package org.openengsb.domains.notification.email.internal;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 
 import org.junit.Test;
@@ -26,17 +35,6 @@ import org.openengsb.domains.notification.email.internal.abstraction.MailPropert
 import org.openengsb.domains.notification.model.Attachment;
 import org.openengsb.domains.notification.model.Notification;
 import org.springframework.test.annotation.ExpectedException;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
 
 public class EmailNotifierTest {
 

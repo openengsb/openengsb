@@ -33,7 +33,13 @@ package org.openengsb.ui.web.global.header;
 
  */
 
+import static org.mockito.Mockito.mock;
+
+import java.util.Arrays;
+import java.util.List;
+
 import junit.framework.Assert;
+
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
@@ -52,11 +58,6 @@ import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.global.footer.ImprintPage;
 import org.openengsb.ui.web.service.DomainService;
 import org.osgi.framework.BundleContext;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.Mockito.mock;
 
 public class HeaderTemplateTest {
 
