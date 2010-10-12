@@ -49,19 +49,17 @@ public class BundleStringsTest {
 
     public static void mockFindEntries(Bundle bundle) {
         when(bundle.findEntries(Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean())).thenAnswer(
-                new Answer<Enumeration<URL>>() {
-                    @Override
-                    public Enumeration<URL> answer(InvocationOnMock invocation) {
-                        List<URL> messages = new ArrayList<URL>();
-                        messages.add(ClassLoader.getSystemResource("bundle_locales/OSGI-INF/l10n/bundle.properties"));
-                        messages.add(ClassLoader.getSystemResource("bundle_locales/OSGI-INF/l10n/bundle_a.properties"));
-                        messages.add(ClassLoader
-                                .getSystemResource("bundle_locales/OSGI-INF/l10n/bundle_a_B.properties"));
-                        messages.add(ClassLoader
-                                .getSystemResource("bundle_locales/OSGI-INF/l10n/bundle_a_B_c.properties"));
-                        return Collections.enumeration(messages);
-                    }
-                });
+            new Answer<Enumeration<URL>>() {
+                @Override
+                public Enumeration<URL> answer(InvocationOnMock invocation) {
+                    List<URL> messages = new ArrayList<URL>();
+                    messages.add(ClassLoader.getSystemResource("bundle_locales/OSGI-INF/l10n/bundle.testsprops"));
+                    messages.add(ClassLoader.getSystemResource("bundle_locales/OSGI-INF/l10n/bundle_a.testsprops"));
+                    messages.add(ClassLoader.getSystemResource("bundle_locales/OSGI-INF/l10n/bundle_a_B.testsprops"));
+                    messages.add(ClassLoader.getSystemResource("bundle_locales/OSGI-INF/l10n/bundle_a_B_c.testsprops"));
+                    return Collections.enumeration(messages);
+                }
+            });
     }
 
     public static Bundle createBundle() {
