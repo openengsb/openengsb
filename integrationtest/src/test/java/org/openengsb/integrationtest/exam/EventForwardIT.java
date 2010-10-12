@@ -60,7 +60,8 @@ public class EventForwardIT extends AbstractExamTestHelper {
 
     public static class DummyLogDomain implements ExampleDomain {
         @Override
-        public void doSomething(String message) {
+        public String doSomething(String message) {
+            return "something";
         }
 
         @Override

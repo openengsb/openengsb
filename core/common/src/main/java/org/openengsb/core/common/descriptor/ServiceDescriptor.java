@@ -132,13 +132,13 @@ public class ServiceDescriptor {
             return this;
         }
 
-        public Builder name(String key) {
-            desc.name = strings.getString(key);
+        public Builder name(String key, String... parameters) {
+            desc.name = strings.getString(key, parameters);
             return this;
         }
 
-        public Builder description(String key) {
-            desc.description = strings.getString(key);
+        public Builder description(String key, String... parameters) {
+            desc.description = strings.getString(key, parameters);
             return this;
         }
 

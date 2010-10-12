@@ -39,6 +39,7 @@
     <module>notification</module>
     <module>report</module>
     <module>issue</module>
+    <module>jms</module>
   </modules>
 
 </project>

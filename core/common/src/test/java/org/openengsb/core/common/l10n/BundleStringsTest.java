@@ -107,6 +107,6 @@ public class BundleStringsTest {
 
     @Test
     public void passThroughLocalizer_shouldReturnKey() {
-        assertThat(new PassThroughStringLocalizer().getString("a", null), is("a"));
+        assertThat(new PassThroughStringLocalizer().getString("a", Locale.GERMAN), is("a"));
     }
 }

@@ -40,7 +40,7 @@ import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.web.model.LocalizableStringModel;
-import org.openengsb.ui.web.service.DomainService;
+import org.openengsb.core.common.service.DomainService;
 import org.osgi.framework.ServiceReference;
 
 public class ServiceListPage extends BasePage {

@@ -41,11 +41,11 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.ui.web.editor.EditorPanel;
-import org.openengsb.ui.web.service.DomainService;
 
 public class SendEventPageTest {
 

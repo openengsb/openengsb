@@ -25,8 +25,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.service.DomainService;
 import org.openengsb.ui.web.model.LocalizableStringModel;
-import org.openengsb.ui.web.service.DomainService;
 
 @SuppressWarnings("serial")
 public class Index extends BasePage {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.service;
+package org.openengsb.core.common.service;
 
 import java.util.List;
 

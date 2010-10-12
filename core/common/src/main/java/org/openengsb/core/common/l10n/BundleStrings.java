@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +32,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
 /**
- * Localization helper to lookup string resources from the bundle's localization
- * entries.
+ * Localization helper to lookup string resources from the bundle's localization entries.
  */
 public class BundleStrings implements StringLocalizer {
 
@@ -47,11 +47,11 @@ public class BundleStrings implements StringLocalizer {
     }
 
     @Override
-    public LocalizableString getString(final String key) {
+    public LocalizableString getString(final String key, final String... parameters) {
         return new LocalizableString() {
             @Override
             public String getString(Locale locale) {
-                return BundleStrings.this.getString(key, locale);
+                return BundleStrings.this.getString(key, locale, parameters);
             }
 
             @Override
@@ -62,7 +62,7 @@ public class BundleStrings implements StringLocalizer {
     }
 
     @Override
-    public String getString(String key, Locale locale) {
+    public String getString(String key, Locale locale, String... parameters) {
         @SuppressWarnings("unchecked")
         List<Locale> locales = LocaleUtils.localeLookupList(locale, new Locale(""));
         for (Locale l : locales) {
@@ -71,7 +71,9 @@ public class BundleStrings implements StringLocalizer {
                 continue;
             }
             if (p.containsKey(key)) {
-                return p.getProperty(key);
+                String property = p.getProperty(key);
+                String format = MessageFormat.format(property, parameters);
+                return format;
             }
         }
         return null;
