@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="when.to.use" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+    <title>When to use the OpenEngSB</title>
+
+    <para>The OpenEngSB project has several direct purposes which should be explained within this chapter to make clear in which
+    situations the OpenEngSB can be useful for you.
+    </para>
+
+    <section>
+        <title>The OpenEngSB as Base Environment</title>
+        <para>OSGi is a very popular integration environment. Instead of delivering one big product the products get separated into
+        minor parts and deployed within a general envioronment. The problem with this concept is to get old, well known concepts
+        up and running in the new environment. In addition tools such as PAX construct allow a better integration into Apache Maven, 
+        and extended OSGi runtimes, such as Karaf allow a richer and easier development. Neverthless, settting up such a system for 
+        development means a lot of hard manual work. Using the OpenEngSB such systems can be setup within minutes.
+        </para>
+    </section>
+
+    <section>
+        <title>Reusing integration Components and Workflows</title>
+        <para>The OpenEngSB introduces a new level of ESB. Development with all typical ESBs mean to start from the ground and
+        develop a complete, own environment, only using existing connectors. Using the OpenEngSB not only connectors but
+        an entire integrated process, workflow and event environment waits for you. In addition connectors to different tools can
+        not only be adapted to the specific needs, but also simply replaced by other connectors, using the Domain concept.
+        </para>
+    </section>
+
+    <section>
+        <title>Management Environment</title>
+        <para>The OpenEngSB delivers a complete management and monitoring environment. While this environment can
+        be added to your project standalone (similar to e.g. Tomcat management console) you also have the possibility to
+        completely integrate the OpenEngSB management enviornment into your Apache Wicket application.
+        </para>
+    </section>
+
+    <section>
+        <title>Simple Development and Distribution Management</title>
+        <para> While typical ESB have to be installed seperately from your application the OpenEngSB is delivered with your
+        application. Develop your application in the OpenEngSB environment and scripts to embed your application into
+        the OpenEngSB are provided. In addition easy blending allows to adapt the OpenEngSB visually to your needs and
+        cooperate design.
+        </para>
+    </section>
+
+    <section>
+        <title>Simple Plug-Ins and Extensions</title>
+        <para>The OpenEngSB provides the infrastructure for a rich Plug-In and extension system. Using maven archetypes
+        Plug-Ins can be created, uploaded and provided to all other OpenEngSB installations or applications using the OpenEngSB.
+        </para>
+    </section>
+
+</chapter>

@@ -46,6 +46,7 @@
       <para>The target audience of this part are users and developers.</para>
     </partintro>
     <xi:include href="user/whatisopenengsb.xml"/>
+    <xi:include href="user/whentousetheopenengsb.xml"/>
     <!--xi:include href="user/gettingstarted.xml" /-->
     <!--xi:include href="user/whentouseopenengsb.xml" /-->
     <!--xi:include href="user/gettingstarted.xml" /-->
