@@ -47,6 +47,7 @@ public class ReportIT extends AbstractExamTestHelper {
         contextService.setThreadLocalContext("42");
         contextService.putValue("domains/ReportDomain/defaultConnector/id", "plaintextConnector");
 
+        waitForActiveSpringService("org.openengsb.domains.report.plaintext");
         ServiceManager serviceManager = retrieveServiceManager(getBundleContext(), ReportDomain.class);
         serviceManager.update("plaintextConnector", new HashMap<String, String>());
     }

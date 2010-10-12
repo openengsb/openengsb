@@ -68,12 +68,19 @@ public abstract class AbstractExamTestHelper {
         }
     }
 
+    protected void waitForActiveSpringService(String bundleName) throws InterruptedException {
+        Bundle[] bundles = bundleContext.getBundles();
+        for (Bundle bundle : bundles) {
+            if (bundle.getSymbolicName().equals(bundleName)) {
+                waitForActiveSpringService(bundle);
+                return;
+            }
+        }
+    }
+
     private void waitForActiveSpringService(Bundle bundle) throws InterruptedException {
         int times = 0;
-        while (true) {
-            if (bundle.getState() == Bundle.ACTIVE) {
-                break;
-            }
+        while (bundle.getState() != Bundle.ACTIVE) {
             if (times > 20) {
                 Assert.fail(String.format("Bundle %s still not active", bundle.getSymbolicName()));
             }
