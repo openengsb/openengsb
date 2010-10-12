@@ -50,13 +50,13 @@
             <configuration>
               <xincludeSupported>true</xincludeSupported>
               <chunkedOutput>false</chunkedOutput>
-              <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html.xsl</htmlCustomization>
+              <htmlCustomization>${basedir}/src/main/docbkx/resources/xsl/html.xsl</htmlCustomization>
               <preProcess>
                 <delete dir="${basedir}/target/docbkx/html" />
               </preProcess>
               <postProcess>
                 <copy todir="${basedir}/target/docbkx/html">
-                  <fileset dir="${basedir}/src/docbkx/resources">
+                  <fileset dir="${basedir}/src/main/docbkx/resources">
                     <include name="**/*.css" />
                     <include name="**/*.png" />
                     <include name="**/*.gif" />
@@ -64,7 +64,7 @@
                   </fileset>
                 </copy>
                 <copy todir="${basedir}/target/docbkx/html/graphics" flatten="true">
-                  <fileset dir="${basedir}/src/docbkx/">
+                  <fileset dir="${basedir}/src/main/docbkx/">
                     <exclude name="resources/**" />
                     <include name="**/*.png" />
                     <include name="**/*.gif" />
@@ -88,13 +88,13 @@
             <configuration>
               <xincludeSupported>true</xincludeSupported>
               <chunkedOutput>true</chunkedOutput>
-              <htmlCustomization>${basedir}/src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>
+              <htmlCustomization>${basedir}/src/main/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>
               <preProcess>
                 <delete dir="${basedir}/target/docbkx/html" />
               </preProcess>
               <postProcess>
                 <copy todir="${basedir}/target/docbkx/html">
-                  <fileset dir="${basedir}/src/docbkx/resources">
+                  <fileset dir="${basedir}/src/main/docbkx/resources">
                     <include name="**/*.css" />
                     <include name="**/*.png" />
                     <include name="**/*.gif" />
@@ -102,7 +102,7 @@
                   </fileset>
                 </copy>
                 <copy todir="${basedir}/target/docbkx/html/graphics" flatten="true">
-                  <fileset dir="${basedir}/src/docbkx/">
+                  <fileset dir="${basedir}/src/main/docbkx/">
                     <exclude name="resources/**" />
                     <include name="**/*.png" />
                     <include name="**/*.gif" />
@@ -125,8 +125,8 @@
             </goals>
             <configuration>
               <xincludeSupported>true</xincludeSupported>
-              <foCustomization>${basedir}/src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
-              <imgSrcPath>file:///${basedir}/src/docbkx/</imgSrcPath>
+              <foCustomization>${basedir}/src/main/docbkx/resources/xsl/fopdf.xsl</foCustomization>
+              <imgSrcPath>file:///${basedir}/src/main/docbkx/</imgSrcPath>
               <postProcess>
                 <copy todir="${basedir}/target/manual/pdf">
                   <fileset dir="${basedir}/target/docbkx/pdf">
@@ -164,7 +164,7 @@
           <includes>*.xml</includes>
           <htmlStylesheet>css/html.css</htmlStylesheet>
           <xincludeSupported>true</xincludeSupported>
-          <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>
+          <sourceDirectory>${basedir}/src/main/docbkx</sourceDirectory>
           <!-- use extensions -->
           <useExtensions>1</useExtensions>
           <highlightSource>1</highlightSource>
