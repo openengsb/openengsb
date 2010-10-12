@@ -61,7 +61,7 @@ public class OsgiBundleContextSpringBeanReceiverTest {
         Mockito.when(appContext.getBean("bean")).thenReturn(mockbean);
         Mockito.when(bundleContext.getService(ref)).thenReturn(appContext);
         Mockito.when(bundleContext.getAllServiceReferences("org.springframework.context.ApplicationContext", null))
-                .thenReturn(references.toArray(new ServiceReference[] {}));
+            .thenReturn(references.toArray(new ServiceReference[]{}));
         return bundleContext;
     }
 
