@@ -28,11 +28,18 @@
       <entry key="domain" value="${parentPackage}.${domainInterface}" />
       <entry key="openengsb.service.type" value="connector" />
     </osgi:service-properties>
-    <bean class="${package}.MyServiceManager">
+    <bean class="${package}.MyServiceManager" init-method="init">
       <constructor-arg>
         <bean class="${package}.internal.MyServiceInstanceFactory" />
       </constructor-arg>
+      <property name="connectorSetupStore" ref="connectorSetupStore" />
     </bean>
   </osgi:service>
+
+  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore">
+    <property name="persistence" ref="persistenceService" />
+  </bean>
+
+  <osgi:reference id="persistenceService" interface="org.openengsb.core.persistence.PersistenceService" />
 
 </beans>
