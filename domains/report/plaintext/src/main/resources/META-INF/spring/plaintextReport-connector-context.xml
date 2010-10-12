@@ -27,7 +27,7 @@
     <osgi:service-properties>
       <entry key="domain" value="org.openengsb.domains.report.ReportDomain" />
     </osgi:service-properties>
-    <bean class="org.openengsb.domains.report.plaintext.PlaintextReportServiceManager">
+    <bean class="org.openengsb.domains.report.plaintext.PlaintextReportServiceManager" init-method="init">
       <constructor-arg>
         <bean class="org.openengsb.domains.report.plaintext.internal.PlaintextReportFactory">
           <constructor-arg>
@@ -35,7 +35,13 @@
           </constructor-arg>
         </bean>
       </constructor-arg>
+      <property name="connectorSetupStore" ref="connectorSetupStore" />
     </bean>
   </osgi:service>
 
+  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore">
+    <property name="persistence" ref="persistenceService" />
+  </bean>
+
+  <osgi:reference id="persistenceService" interface="org.openengsb.core.persistence.PersistenceService" />
 </beans>
