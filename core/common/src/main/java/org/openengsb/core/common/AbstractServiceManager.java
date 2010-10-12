@@ -109,9 +109,12 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             if (attributeValues.containsKey(id)) {
                 attributeValues.get(id).putAll(attributes);
             } else {
-                attributeValues.put(id, attributes);
+                attributeValues.put(id, new HashMap<String, String>(attributes));
             }
-            connectorSetupStore.storeConnectorSetup(getImplementationClass().getName(), id, attributes);
+            if (result.isValid()) {
+                connectorSetupStore
+                    .storeConnectorSetup(getImplementationClass().getName(), id, attributeValues.get(id));
+            }
             return result;
         }
     }

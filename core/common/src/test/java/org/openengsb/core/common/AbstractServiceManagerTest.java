@@ -32,6 +32,7 @@ import java.util.Map;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
@@ -142,18 +143,20 @@ public class AbstractServiceManagerTest {
 
         DummyInstance instance = new DummyInstance();
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
+        InOrder inOrder = Mockito.inOrder(setupStoreMock, setupStoreMock);
         manager.update("test", attributes);
+        inOrder.verify(setupStoreMock).storeConnectorSetup(instance.getClass().getName(), "test", attributes);
+
         HashMap<String, String> verificationAttributes = new HashMap<String, String>();
+        verificationAttributes.put("foo", "bar");
         manager.update("test", verificationAttributes);
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
             new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
             props);
-        Mockito.verify(setupStoreMock).storeConnectorSetup(Mockito.eq(instance.getClass().getName()),
-            Mockito.eq("test"), Mockito.same(attributes));
-        Mockito.verify(setupStoreMock).storeConnectorSetup(Mockito.eq(instance.getClass().getName()),
-            Mockito.eq("test"), Mockito.same(verificationAttributes));
+        inOrder.verify(setupStoreMock).storeConnectorSetup(instance.getClass().getName(), "test",
+            verificationAttributes);
     }
 
     @Test
