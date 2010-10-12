@@ -17,9 +17,9 @@
 package org.openengsb.domains.issue.models;
 
 public class Issue {
-    
 
-    public enum Priority {
+
+    public enum Priority implements IssueAttribute {
         IMMEDIATE,
         URGEND,
         HIGH,
@@ -28,13 +28,13 @@ public class Issue {
         NONE
     }
 
-    public enum Status {
+    public enum Status implements IssueAttribute {
         NEW,
         ASSIGNED,
         CLOSED
     }
 
-    public enum Field {
+    public enum Field implements IssueAttribute {
         SUMMARY,
         DESCRIPTION,
         OWNER,

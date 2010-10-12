@@ -23,6 +23,7 @@ import org.apache.xmlrpc.XmlRpcException;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domains.issue.IssueDomain;
 import org.openengsb.domains.issue.models.Issue;
+import org.openengsb.domains.issue.models.IssueAttribute;
 import org.openengsb.domains.issue.trac.internal.models.TicketHandlerFactory;
 import org.openengsb.domains.issue.trac.internal.models.constants.TracFieldConstants;
 import org.openengsb.domains.issue.trac.internal.models.constants.TracPriorityConstants;
@@ -50,7 +51,7 @@ public class TracConnector implements IssueDomain {
     @Override
     public String createIssue(Issue issue) {
         Ticket ticket = createTicket();
-        Hashtable<Enum, String> attributes = generateAttributes(issue);
+        Hashtable<IssueAttribute, String> attributes = generateAttributes(issue);
         Integer issueId = -1;
 
         try {
@@ -87,8 +88,8 @@ public class TracConnector implements IssueDomain {
     }
 
     @Override
-    public void updateIssue(Integer id, String comment, HashMap<Enum, String> changes) {
-        Hashtable<Enum, String> attributes = translateChanges(changes);
+    public void updateIssue(Integer id, String comment, HashMap<IssueAttribute, String> changes) {
+        Hashtable<IssueAttribute, String> attributes = translateChanges(changes);
         if (comment == null || comment.equals("")) {
             comment = "[No comment added by author]";
         }
@@ -123,10 +124,10 @@ public class TracConnector implements IssueDomain {
         return this.id;
     }
 
-    private Hashtable<Enum, String> translateChanges(Map<Enum, String> changes) {
-        Hashtable<Enum, String> attributes = new Hashtable<Enum, String>();
+    private Hashtable<IssueAttribute, String> translateChanges(Map<IssueAttribute, String> changes) {
+        Hashtable<IssueAttribute, String> attributes = new Hashtable<IssueAttribute, String>();
 
-        for (Enum field : changes.keySet()) {
+        for (IssueAttribute field : changes.keySet()) {
             try {
                 if (field.equals(Issue.Field.DESCRIPTION)) {
                     attributes.put(TracFieldConstants.DESCRIPTION,  changes.get(field));
@@ -149,8 +150,8 @@ public class TracConnector implements IssueDomain {
         return attributes;
     }
 
-    private Hashtable<Enum, String> generateAttributes(Issue issue) {
-        Hashtable<Enum, String> attributes = new Hashtable<Enum, String>();
+    private Hashtable<IssueAttribute, String> generateAttributes(Issue issue) {
+        Hashtable<IssueAttribute, String> attributes = new Hashtable<IssueAttribute, String>();
 
         if (issue.getOwner() != null) {
             attributes.put(TracFieldConstants.OWNER, issue.getOwner());
@@ -165,7 +166,7 @@ public class TracConnector implements IssueDomain {
         return attributes;
     }
 
-    private void addPriority(Hashtable<Enum, String> attributes, Issue.Priority priority) {
+    private void addPriority(Hashtable<IssueAttribute, String> attributes, Issue.Priority priority) {
         if (priority != null) {
             if (priority.equals(Issue.Priority.HIGH)) {
                 attributes.put(TracFieldConstants.PRIORITY, TracPriorityConstants.HIGH.toString());
@@ -181,7 +182,7 @@ public class TracConnector implements IssueDomain {
         }
     }
 
-    private void addStatus(Hashtable<Enum, String> attributes, Issue.Status status) {
+    private void addStatus(Hashtable<IssueAttribute, String> attributes, Issue.Status status) {
         if (status != null) {
             if (status.equals(Issue.Status.NEW)) {
                 attributes.put(TracFieldConstants.STATUS, TracStatusConstants.NEW.toString());

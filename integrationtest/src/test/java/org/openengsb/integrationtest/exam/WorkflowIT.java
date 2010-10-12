@@ -30,6 +30,7 @@ import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.domains.example.ExampleDomain;
 import org.openengsb.domains.issue.IssueDomain;
 import org.openengsb.domains.issue.models.Issue;
+import org.openengsb.domains.issue.models.IssueAttribute;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
@@ -87,8 +88,8 @@ public class WorkflowIT extends AbstractExamTestHelper {
         }
 
         @Override
-        public void updateIssue(Integer id, String comment, HashMap<String, Object> changes) {
-           //ignore
+        public void updateIssue(Integer id, String comment, HashMap<IssueAttribute, String> changes) {
+            //ignore
         }
 
         @Override

@@ -14,17 +14,7 @@
  * limitations under the License.
  */
 
+package org.openengsb.domains.issue.models;
 
-package org.openengsb.domains.issue.trac.internal.models.constants;
-
-import org.openengsb.domains.issue.models.IssueAttribute;
-
-public enum TracFieldConstants implements IssueAttribute {
-
-        OWNER,
-        REPORTER,
-        SUMMARY,
-        DESCRIPTION,
-        PRIORITY,
-        STATUS
+public interface IssueAttribute {
 }

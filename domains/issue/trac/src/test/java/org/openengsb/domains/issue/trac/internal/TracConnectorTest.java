@@ -19,8 +19,8 @@ package org.openengsb.domains.issue.trac.internal;
 import org.apache.xmlrpc.XmlRpcException;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openengsb.domains.issue.models.Issue;
+import org.openengsb.domains.issue.models.IssueAttribute;
 import org.openengsb.domains.issue.trac.internal.models.TicketHandlerFactory;
 import org.openengsb.domains.issue.trac.internal.models.constants.TracFieldConstants;
 import org.openengsb.domains.issue.trac.internal.models.constants.TracPriorityConstants;
@@ -31,6 +31,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 
 public class TracConnectorTest {
 
@@ -40,10 +49,10 @@ public class TracConnectorTest {
 
     @Before
     public void setUp() {
-        ticketMock = Mockito.mock(Ticket.class);
-        TicketHandlerFactory tc = Mockito.mock(TicketHandlerFactory.class);
+        ticketMock = mock(Ticket.class);
+        TicketHandlerFactory tc = mock(TicketHandlerFactory.class);
         tracConnector = new TracConnector("1", tc);
-        Mockito.when(tc.createTicket()).thenReturn(ticketMock);
+        when(tc.createTicket()).thenReturn(ticketMock);
     }
 
     @Test
@@ -64,59 +73,59 @@ public class TracConnectorTest {
         attributes.put(TracFieldConstants.STATUS, TracStatusConstants.NEW.toString());
 
         tracConnector.createIssue(i);
-        Mockito.verify(ticketMock, Mockito.times(1))
-            .create(Mockito.eq(s), Mockito.eq("testdescription"), Mockito.eq(attributes));
+        verify(ticketMock, times(1))
+            .create(eq(s), eq("testdescription"), eq(attributes));
     }
 
 
     @Test
     public void testToDeleteIssue() throws Exception {
         tracConnector.deleteIssue(-1);
-        Mockito.verify(ticketMock, Mockito.times(1)).delete(Mockito.eq(-1));
+        verify(ticketMock, times(1)).delete(eq(-1));
     }
 
     @Test
     public void testToAddComment() throws Exception {
         tracConnector.addComment(5, "testcomment");
-        Mockito.verify(ticketMock, Mockito.times(1)).update(Mockito.eq(5), Mockito.eq("testcomment"));
+        verify(ticketMock, times(1)).update(eq(5), eq("testcomment"));
     }
 
     @Test
     public void testUpdateIssue() throws Exception {
-        HashMap<Enum, String> changes = new HashMap<Enum, String>();
+        HashMap<IssueAttribute, String> changes = new HashMap<IssueAttribute, String>();
         changes.put(Issue.Field.STATUS, Issue.Status.CLOSED.toString());
 
-        Hashtable<Enum, String> result = new Hashtable<Enum, String>();
+        Hashtable<IssueAttribute, String> result = new Hashtable<IssueAttribute, String>();
         result.put(TracFieldConstants.STATUS, TracStatusConstants.CLOSED.toString());
 
         tracConnector.updateIssue(3, null, changes);
-        Mockito.verify(ticketMock, Mockito.times(1))
-            .update(Mockito.eq(3), Mockito.eq("[No comment added by author]"), Mockito.eq(result));
+        verify(ticketMock, times(1))
+            .update(eq(3), eq("[No comment added by author]"), eq(result));
     }
 
     @Test
-    public void testCreateOnNotExistingTicket_ShouldPrintErrorMessage() throws Exception {
-        Mockito.when(ticketMock.create(Mockito.anyString(), Mockito.anyString(), Mockito.any(Hashtable.class)))
+    public void testCreateOnNotExistingTicket_ShouldPrintErrorMessageAndDonotThrowException() throws Exception {
+        when(ticketMock.create(anyString(), anyString(), any(Hashtable.class)))
             .thenThrow(new XmlRpcException("test"));
         tracConnector.createIssue(new Issue());
     }
 
     @Test
-    public void testUpdateANotExistingTicket_ShouldPrintErrorMessage() throws Exception {
-        Mockito.when(ticketMock.update(Mockito.anyInt(), Mockito.anyString(), Mockito.any(Hashtable.class)))
+    public void testUpdateANotExistingTicket_ShouldPrintErrorMessageAndDonotThrowException() throws Exception {
+        when(ticketMock.update(anyInt(), anyString(), any(Hashtable.class)))
             .thenThrow(new XmlRpcException("test"));
-        tracConnector.updateIssue(0, "test", new HashMap<Enum, String>());
+        tracConnector.updateIssue(0, "test", new HashMap<IssueAttribute, String>());
     }
 
     @Test
-    public void testCommentOnNotExistingTicket_ShouldPrintErrorMessage() throws Exception {
-        Mockito.when(ticketMock.update(Mockito.anyInt(), Mockito.anyString())).thenThrow(new XmlRpcException("test"));
+    public void testCommentOnNotExistingTicket_ShouldPrintErrorMessageAndDonotThrowException() throws Exception {
+        when(ticketMock.update(anyInt(), anyString())).thenThrow(new XmlRpcException("test"));
         tracConnector.addComment(0, "test");
     }
 
     @Test
-    public void testDeleteANotExistingTicket_ShouldPrintErrorMessage() throws Exception {
-        Mockito.when(ticketMock.delete(Mockito.anyInt())).thenThrow(new XmlRpcException("test"));
+    public void testDeleteANotExistingTicket_ShouldPrintErrorMessageAndDonotThrowException() throws Exception {
+        when(ticketMock.delete(anyInt())).thenThrow(new XmlRpcException("test"));
         tracConnector.deleteIssue(0);
     }
 

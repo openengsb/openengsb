@@ -27,6 +27,7 @@ import org.openengsb.domains.example.event.LogEvent;
 import org.openengsb.domains.example.event.LogEvent.Level;
 import org.openengsb.domains.issue.IssueDomain;
 import org.openengsb.domains.issue.models.Issue;
+import org.openengsb.domains.issue.models.IssueAttribute;
 import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
@@ -87,8 +88,8 @@ public class EventForwardIT extends AbstractExamTestHelper {
         }
 
         @Override
-        public void updateIssue(Integer id, String comment, HashMap<String, Object> changes) {
-           //ignore
+        public void updateIssue(Integer id, String comment, HashMap<IssueAttribute, String> changes) {
+            //ignore
         }
 
         @Override

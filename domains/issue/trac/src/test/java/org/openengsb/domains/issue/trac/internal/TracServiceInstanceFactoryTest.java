@@ -17,7 +17,6 @@
 package org.openengsb.domains.issue.trac.internal;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openengsb.domains.issue.trac.internal.models.TicketHandlerFactory;
 
 import java.util.HashMap;
@@ -25,6 +24,10 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 public class TracServiceInstanceFactoryTest {
@@ -43,9 +46,9 @@ public class TracServiceInstanceFactoryTest {
     public void testUpdateTracConnector() {
         TracServiceInstanceFactory factory = new TracServiceInstanceFactory();
 
-        TracConnector tracConnector = Mockito.mock(TracConnector.class);
-        TicketHandlerFactory tc = Mockito.mock(TicketHandlerFactory.class);
-        Mockito.when(tracConnector.getTicketHandlerFactory()).thenReturn(tc);
+        TracConnector tracConnector = mock(TracConnector.class);
+        TicketHandlerFactory tc = mock(TicketHandlerFactory.class);
+        when(tracConnector.getTicketHandlerFactory()).thenReturn(tc);
 
         Map<String, String> newAttributes = new HashMap<String, String>();
         newAttributes.put("serverUrl", "newUrl");
@@ -53,9 +56,9 @@ public class TracServiceInstanceFactoryTest {
         newAttributes.put("password", "newPassword");
 
         factory.updateServiceInstance(tracConnector, newAttributes);
-        Mockito.verify(tc, Mockito.times(1)).setServerUrl("newUrl");
-        Mockito.verify(tc, Mockito.times(1)).setUsername("newUser");
-        Mockito.verify(tc, Mockito.times(1)).setUserPassword("newPassword");
+        verify(tc, times(1)).setServerUrl("newUrl");
+        verify(tc, times(1)).setUsername("newUser");
+        verify(tc, times(1)).setUserPassword("newPassword");
     }
 
 
