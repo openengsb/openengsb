@@ -33,6 +33,10 @@ public final class OpenEngSBBundles {
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
             .artifactId("com.google.guava-all"));
 
+    public static final MavenArtifactProvisionOption OPENENGSB_WRAPPED_JSCH = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
+            .artifactId("com.jcraft.jsch-all"));
+
     public static final MavenArtifactProvisionOption OPENENGSB_CONFIG_JETTY = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.config").artifactId(
             "openengsb-config-jetty"));
