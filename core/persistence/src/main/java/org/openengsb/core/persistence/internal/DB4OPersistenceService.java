@@ -175,6 +175,7 @@ public class DB4OPersistenceService implements PersistenceService {
         this.dbFile = dbFile;
         Configuration config = Db4o.newConfiguration();
         jdkLoader = new SmartJdkLoader();
+        jdkLoader.addClassLoader(Db4o.class.getClassLoader());
         config.reflectWith(new JdkReflector(jdkLoader));
         createFolder();
         database = Db4o.openFile(config, dbFile);
