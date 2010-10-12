@@ -315,6 +315,58 @@
         <version>${plugin.site.version}</version>
         <extensions>true</extensions>
       </plugin>
+          <plugin>
+            <inherited>false</inherited>
+            <groupId>com.mycila.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+            <version>1.8.0</version>
+            <configuration>
+              <header>${basedir}/etc/license/header.txt</header>
+              <failIfMissing>true</failIfMissing>
+              <aggregate>true</aggregate>
+              <strictCheck>true</strictCheck>
+              <excludes>
+                <exclude>etc/eclipse/checkstyle.xml</exclude>
+                <exclude>license.txt</exclude>
+                <exclude>**/*.vm</exclude>
+                <exclude>**/license.txt</exclude>
+                <exclude>runner/**</exclude>
+                <exclude>features/**</exclude>
+                <exclude>NOTICE</exclude>
+                <exclude>**/*.3pm</exclude>
+                <exclude>**/*.dll</exclude>
+                <exclude>**/*.pdb</exclude>
+                <exclude>**/*.pdf</exclude>
+                <exclude>**/LICENSE</exclude>
+                <exclude>**/*checkstyle.xml</exclude>
+                <exclude>**/*.log.*</exclude>
+                <exclude>**/*.log</exclude>
+                <exclude>**/*.packlist</exclude>
+                <exclude>**/*.pod</exclude>
+                <exclude>**/imports</exclude>
+                <exclude>**/globals</exclude>
+                <exclude>**/.keep</exclude>
+                <exclude>**/EngSB.sln</exclude>
+                <exclude>**/README</exclude>
+                <exclude>**/.checkstyle</exclude>
+                <exclude>**/nb-configuration.xml</exclude>
+              </excludes>
+              <mapping>
+                <bnd>SCRIPT_STYLE</bnd>
+                <drl>SCRIPT_STYLE</drl>
+                <index>SCRIPT_STYLE</index>
+                <gitignore>SCRIPT_STYLE</gitignore>
+                <cfg>SCRIPT_STYLE</cfg>
+                <wsdl>XML_STYLE</wsdl>
+                <csproj>XML_STYLE</csproj>
+                <rf>XML_STYLE</rf>
+                <composite>SCRIPT_STYLE</composite>
+                <config>XML_STYLE</config>
+                <script>DOUBLESLASH_STYLE</script>
+                <rule>SCRIPT_STYLE</rule>
+              </mapping>
+            </configuration>
+          </plugin>
     </plugins>
   </build>
 
@@ -542,7 +594,7 @@
             <executions>
               <execution>
                 <id>check-headers</id>
-                <phase>verify</phase>
+                <phase>validate</phase>
                 <goals>
                   <goal>check</goal>
                 </goals>
@@ -552,6 +604,28 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>license-format</id>
+      <build>
+        <plugins>
+          <plugin>
+            <inherited>false</inherited>
+            <groupId>com.mycila.maven-license-plugin</groupId>
+            <artifactId>maven-license-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>check-headers</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>format</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
   </profiles>
 
   <pluginRepositories>
