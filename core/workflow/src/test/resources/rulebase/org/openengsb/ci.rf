@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+--> 
+<process xmlns="http://drools.org/drools-5.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
+         type="RuleFlow" name="ci" id="ci" package-name="org.openengsb" >
+
+  <header>
+    <variables>
+      <variable name="buildResult" >
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" />
+      </variable>
+      <variable name="testResult" >
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" />
+      </variable>
+    </variables>
+  </header>
+
+  <nodes>
+    <eventNode id="34" name="Message" x="16" y="506" width="48" height="49" >
+      <eventFilters>
+        <eventFilter type="eventType" eventType="TestFailed" />
+      </eventFilters>
+    </eventNode>
+    <join id="35" name="Gateway" x="96" y="587" width="49" height="49" type="1" />
+    <start id="1" name="Start" x="177" y="16" width="80" height="40" />
+    <split id="32" name="Gateway" x="193" y="264" width="49" height="49" type="1" />
+    <split id="33" name="Gateway" x="96" y="506" width="49" height="49" type="1" />
+    <actionNode id="5" name="deployProject" x="169" y="668" width="103" height="40" >
+        <action type="expression" dialect="java" >boolean result = deploy.deployProject();
+insert(new Value("deploySuccess", result));</action>
+    </actionNode>
+    <end id="6" name="End" x="180" y="893" width="80" height="40" />
+    <actionNode id="14" name="sendReport" x="180" y="821" width="80" height="40" >
+        <action type="expression" dialect="java" >notification.notify("foo42");</action>
+    </actionNode>
+    <actionNode id="15" name="startReport" x="149" y="88" width="137" height="64" >
+        <action type="expression" dialect="java" >String reportId = report.collectData();
+insert(new Value("reportId", reportId));</action>
+    </actionNode>
+    <actionNode id="16" name="Start build" x="161" y="184" width="112" height="48" >
+        <action type="expression" dialect="java" >String buildId = build.buildProject(); // starts the build
+insert(new Value("buildId", buildId));</action>
+    </actionNode>
+    <join id="20" name="jointoSendReport" x="196" y="740" width="49" height="49" type="2" />
+    <eventNode id="23" name="BuildResultMessage" x="49" y="264" width="112" height="49" variableName="buildResult" >
+      <eventFilters>
+        <eventFilter type="eventType" eventType="BuildSuccess" />
+      </eventFilters>
+    </eventNode>
+    <join id="24" name="joinBuildDone" x="96" y="345" width="49" height="49" type="1" />
+    <eventNode id="27" name="Message" x="177" y="506" width="95" height="49" variableName="testResult" >
+      <eventFilters>
+        <eventFilter type="eventType" eventType="TestSuccess" />
+      </eventFilters>
+    </eventNode>
+    <actionNode id="26" name="Start Tests" x="73" y="426" width="95" height="48" >
+        <action type="expression" dialect="mvel" >String testId = test.runTests();</action>
+    </actionNode>
+    <join id="28" name="JoinTestResult" x="196" y="587" width="49" height="49" type="1" />
+    <join id="31" name="Gateway" x="274" y="345" width="49" height="49" type="1" />
+    <eventNode id="30" name="Message" x="274" y="264" width="48" height="49" >
+      <eventFilters>
+        <eventFilter type="eventType" eventType="BuildFailed" />
+      </eventFilters>
+    </eventNode>
+  </nodes>
+
+  <connections>
+    <connection from="33" to="35" />
+    <connection from="34" to="35" />
+    <connection from="16" to="32" />
+    <connection from="26" to="33" />
+    <connection from="28" to="5" />
+    <connection from="14" to="6" />
+    <connection from="20" to="14" />
+    <connection from="1" to="15" />
+    <connection from="15" to="16" />
+    <connection from="5" to="20" />
+    <connection from="31" to="20" bendpoints="[294,764]" />
+    <connection from="35" to="20" bendpoints="[119,762]" />
+    <connection from="32" to="24" />
+    <connection from="23" to="24" />
+    <connection from="24" to="26" />
+    <connection from="27" to="28" />
+    <connection from="33" to="28" />
+    <connection from="32" to="31" />
+    <connection from="30" to="31" />
+  </connections>
+
+</process>

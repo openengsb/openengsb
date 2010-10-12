@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.core.workflow.model;
 
-public class Event {
-    private String name;
+public class TestObject {
+    private String value;
 
-    public Event() {
+    public TestObject() {
     }
 
-    public Event(String name) {
-        this.name = name;
+    public TestObject(String value) {
+        super();
+        this.value = value;
     }
 
-    /**
-     * returns the simple Classname by default. Maybe overriden by subclasses to return types other than the classes
-     * name
-     */
-    public String getType() {
-        return this.getClass().getSimpleName();
+    public String getValue() {
+        return this.value;
     }
 
-    public String getName() {
-        return this.name;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public String toString() {
+        return String.format("TestObject: \"%s\"", value);
     }
 }

@@ -204,4 +204,9 @@ public class AttributeDefinition implements Serializable {
 
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", name.getString(null), id);
+    }
+
 }

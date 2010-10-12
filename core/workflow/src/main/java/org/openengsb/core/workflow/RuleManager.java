@@ -18,7 +18,7 @@ package org.openengsb.core.workflow;
 
 import java.util.Collection;
 
-import org.drools.RuleBase;
+import org.drools.KnowledgeBase;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
@@ -35,7 +35,7 @@ public interface RuleManager {
      *
      * @return reference to the rulebase
      */
-    RuleBase getRulebase();
+    KnowledgeBase getRulebase();
 
     /**
      *

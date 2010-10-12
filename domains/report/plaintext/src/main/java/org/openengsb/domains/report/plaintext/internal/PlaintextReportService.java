@@ -117,7 +117,6 @@ public class PlaintextReportService extends AbstractReportDomain {
     private String getContent(Event event) {
         StringBuilder content = new StringBuilder();
         appendAll(content, "Event class: ", event.getClass().getName(), "\n");
-        appendAll(content, "Event context: ", event.getContextId(), "\n");
         appendAll(content, "Event Fields: \n");
         for (Field field : event.getClass().getDeclaredFields()) {
             appendAll(content, "  ", field.getName(), ": ", getFieldValue(field, event), "\n");

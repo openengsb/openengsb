@@ -14,31 +14,33 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.core.workflow.model;
 
-public class Event {
-    private String name;
+/**
+ * used to store values like handles to remote processes in the working memory
+ */
+public class Value {
+    private String key;
+    private Object value;
 
-    public Event() {
+    public Value(String key, Object value) {
+        this.key = key;
+        this.value = value;
     }
 
-    public Event(String name) {
-        this.name = name;
+    public String getKey() {
+        return this.key;
     }
 
-    /**
-     * returns the simple Classname by default. Maybe overriden by subclasses to return types other than the classes
-     * name
-     */
-    public String getType() {
-        return this.getClass().getSimpleName();
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public String getName() {
-        return this.name;
+    public Object getValue() {
+        return this.value;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setValue(Object value) {
+        this.value = value;
     }
 }

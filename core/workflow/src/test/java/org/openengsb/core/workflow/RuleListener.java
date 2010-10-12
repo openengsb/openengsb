@@ -20,23 +20,22 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.drools.WorkingMemory;
-import org.drools.event.AfterActivationFiredEvent;
-import org.drools.event.DefaultAgendaEventListener;
-import org.drools.rule.Rule;
+import org.drools.definition.rule.Rule;
+import org.drools.event.rule.AfterActivationFiredEvent;
+import org.drools.event.rule.DefaultAgendaEventListener;
 
 public class RuleListener extends DefaultAgendaEventListener {
     private int numFired = 0;
     private Set<String> rulesFired = new HashSet<String>();
 
     @Override
-    public void afterActivationFired(AfterActivationFiredEvent event, WorkingMemory workingMemory) {
+    public void afterActivationFired(AfterActivationFiredEvent event) {
         Rule rule = event.getActivation().getRule();
         rulesFired.add(rule.getName());
         String fqName = rule.getPackageName() + "." + rule.getName();
         rulesFired.add(fqName);
         numFired++;
-        super.afterActivationFired(event, workingMemory);
+        super.afterActivationFired(event);
     }
 
     public boolean haveRulesFired(String... names) {

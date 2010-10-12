@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+--> 
+<process xmlns="http://drools.org/drools-5.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
+         type="RuleFlow" name="Flow Test" id="floweventtest" package-name="org.openengsb" routerLayout="2" >
+
+  <header>
+  </header>
+
+  <nodes>
+    <join id="17" name="FirstEventConverge" x="88" y="177" width="49" height="49" type="1" />
+    <start id="1" name="Start" x="32" y="16" width="49" height="49" />
+    <end id="2" name="End" x="136" y="419" width="49" height="49" />
+    <actionNode id="21" name="FirstEventScript" x="72" y="258" width="80" height="48" >
+        <action type="expression" dialect="mvel" >example.doSomething("first event received");</action>
+    </actionNode>
+    <eventNode id="25" name="FirstEvent" x="128" y="97" width="80" height="48" >
+      <eventFilters>
+        <eventFilter type="eventType" eventType="Event" />
+      </eventFilters>
+    </eventNode>
+    <eventNode id="27" name="SecondEvent" x="184" y="258" width="48" height="48" >
+      <eventFilters>
+        <eventFilter type="eventType" eventType="TestEvent" />
+      </eventFilters>
+    </eventNode>
+    <actionNode id="11" name="StartScript" x="16" y="97" width="80" height="48" >
+        <action type="expression" dialect="java" >example.doSomething("start testflow");</action>
+    </actionNode>
+    <join id="26" name="SecondEventConverge" x="136" y="338" width="49" height="49" type="1" />
+  </nodes>
+
+  <connections>
+    <connection from="11" to="17" />
+    <connection from="25" to="17" />
+    <connection from="26" to="2" />
+    <connection from="17" to="21" />
+    <connection from="1" to="11" />
+    <connection from="21" to="26" />
+    <connection from="27" to="26" />
+  </connections>
+
+</process>

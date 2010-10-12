@@ -16,9 +16,6 @@
 
 package org.openengsb.integrationtest.exam;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -35,6 +32,10 @@ import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+
+import static org.hamcrest.CoreMatchers.notNullValue;
+
+import static org.junit.Assert.assertThat;
 
 @RunWith(JUnit4TestRunner.class)
 public class EventForwardIT extends AbstractExamTestHelper {
@@ -74,19 +75,19 @@ public class EventForwardIT extends AbstractExamTestHelper {
         contextService.putValue("domains/ExampleDomain/defaultConnector/id", "dummyLog");
 
         DummyNotificationDomain dummy = new DummyNotificationDomain();
-        String[] clazzes = new String[]{Domain.class.getName(), NotificationDomain.class.getName()};
+        String[] clazzes = new String[]{ Domain.class.getName(), NotificationDomain.class.getName() };
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("id", "dummyConnector");
 
         getBundleContext().registerService(clazzes, dummy, properties);
 
-        clazzes = new String[]{Domain.class.getName(), ExampleDomain.class.getName()};
+        clazzes = new String[]{ Domain.class.getName(), ExampleDomain.class.getName() };
         properties.put("id", "dummyLog");
 
         getBundleContext().registerService(clazzes, new DummyLogDomain(), properties);
 
         LogEvent e = new LogEvent();
-        e.setContextId("42");
+        e.setName("42");
         e.setLevel(Level.INFO);
 
         ExampleDomainEvents exampleEvents = retrieveService(getBundleContext(), ExampleDomainEvents.class);

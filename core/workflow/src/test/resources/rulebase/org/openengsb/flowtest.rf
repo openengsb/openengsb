@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<process xmlns="http://drools.org/drools-5.0/process"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+         xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
+         type="RuleFlow" name="Flow Test" id="flowtest" package-name="org.openengsb" routerLayout="2" >
+
+  <header>
+  </header>
+
+  <nodes>
+    <start id="1" name="Start" x="16" y="16" width="49" height="49" />
+    <end id="2" name="End" x="236" y="16" width="49" height="49" />
+    <actionNode id="6" name="Reiteration" x="97" y="16" width="107" height="48" >
+        <action type="expression" dialect="java" >example.doSomething("flow42");</action>
+    </actionNode>
+  </nodes>
+
+  <connections>
+    <connection from="6" to="2" />
+    <connection from="1" to="6" />
+  </connections>
+
+</process>

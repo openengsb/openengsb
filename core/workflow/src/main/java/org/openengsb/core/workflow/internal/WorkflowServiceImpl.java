@@ -25,9 +25,11 @@ import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.drools.RuleBase;
-import org.drools.StatefulSession;
-import org.drools.event.AgendaEventListener;
+import org.drools.KnowledgeBase;
+import org.drools.event.process.DefaultProcessEventListener;
+import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.ProcessInstance;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -49,15 +51,79 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     private Log log = LogFactory.getLog(WorkflowServiceImpl.class);
 
     private RuleManager rulemanager;
-
-    private Collection<AgendaEventListener> listeners = new ArrayList<AgendaEventListener>();
-
     private ContextCurrentService currentContextService;
-    private Map<String, Domain> domainServices = new HashMap<String, Domain>();
-
     private BundleContext bundleContext;
 
+    private Map<String, Domain> domainServices = new HashMap<String, Domain>();
+
+    private Map<String, StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
+
     private long timeout = 10000;
+
+    @Override
+    public void processEvent(Event event) throws WorkflowException {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        session.insert(event);
+        for (ProcessInstance p : session.getProcessInstances()) {
+            p.signalEvent(event.getType(), event);
+        }
+        session.fireAllRules();
+    }
+
+    @Override
+    public long startFlow(String processId) throws WorkflowException {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        ProcessInstance processInstance = session.startProcess(processId);
+        return processInstance.getId();
+    }
+
+    public void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        synchronized (session) {
+            while (session.getProcessInstance(id) != null) {
+                session.wait(5000);
+            }
+        }
+    }
+
+    private StatefulKnowledgeSession getSessionForCurrentContext() throws WorkflowException {
+        String currentContextId = currentContextService.getCurrentContextId();
+        if (currentContextId == null) {
+            throw new IllegalStateException("contextID must not be null");
+        }
+        if (sessions.containsKey(currentContextId)) {
+            return sessions.get(currentContextId);
+        }
+        StatefulKnowledgeSession session;
+        try {
+            session = createSession();
+        } catch (RuleBaseException e) {
+            throw new WorkflowException(e);
+        }
+        sessions.put(currentContextId, session);
+        return session;
+    }
+
+    private Collection<String> findMissingGlobals() {
+        Collection<String> globalsToProcess = new ArrayList<String>();
+        for (RuleBaseElementId id : rulemanager.list(RuleBaseElementType.Global)) {
+            globalsToProcess.add(id.getName());
+        }
+        globalsToProcess.remove("event");
+        globalsToProcess.removeAll(domainServices.keySet());
+
+        return discoverNewGlobalValues(globalsToProcess);
+    }
+
+    private Collection<String> discoverNewGlobalValues(Collection<String> globalsToProcess) {
+        for (Iterator<String> iterator = globalsToProcess.iterator(); iterator.hasNext();) {
+            String g = iterator.next();
+            if (findGlobal(g)) {
+                iterator.remove();
+            }
+        }
+        return globalsToProcess;
+    }
 
     private boolean findGlobal(String name) {
         ServiceReference[] allServiceReferences;
@@ -79,37 +145,25 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         return true;
     }
 
-    @Override
-    public void processEvent(Event event) throws WorkflowException {
-        try {
-            currentContextService.setThreadLocalContext(event.getContextId());
-            StatefulSession session = createSession();
-            populateGlobals(session);
-            session.insert(event);
-            session.fireAllRules();
-            session.dispose();
-        } catch (RuleBaseException e) {
-            throw new WorkflowException(e);
-        }
-    }
-
-    private Collection<String> findMissingGlobals() {
-        Collection<String> globalsToProcess = new ArrayList<String>();
-        for (RuleBaseElementId id : rulemanager.list(RuleBaseElementType.Global)) {
-            globalsToProcess.add(id.getName());
-        }
-        globalsToProcess.removeAll(domainServices.keySet());
-
-        for (Iterator<String> iterator = globalsToProcess.iterator(); iterator.hasNext();) {
-            String g = iterator.next();
-            if (findGlobal(g)) {
-                iterator.remove();
+    protected StatefulKnowledgeSession createSession() throws RuleBaseException, WorkflowException {
+        KnowledgeBase rb = rulemanager.getRulebase();
+        log.debug("retrieved rulebase: " + rb + "from source " + rulemanager);
+        final StatefulKnowledgeSession session = rb.newStatefulKnowledgeSession();
+        log.debug("session started");
+        populateGlobals(session);
+        log.debug("globals have been set");
+        session.addEventListener(new DefaultProcessEventListener() {
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                synchronized (session) {
+                    session.notifyAll();
+                }
             }
-        }
-        return globalsToProcess;
+        });
+        return session;
     }
 
-    private void populateGlobals(StatefulSession session) throws WorkflowException {
+    private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
         Collection<String> missingGlobals = findMissingGlobals();
         if (!missingGlobals.isEmpty()) {
             try {
@@ -134,38 +188,6 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         }
     }
 
-    public void setRulemanager(RuleManager rulemanager) {
-        this.rulemanager = rulemanager;
-    }
-
-    protected StatefulSession createSession() throws RuleBaseException {
-        RuleBase rb = rulemanager.getRulebase();
-        log.debug("retrieved rulebase: " + rb + "from source " + rulemanager);
-        StatefulSession session = rb.newStatefulSession();
-        for (AgendaEventListener l : listeners) {
-            session.addEventListener(l);
-        }
-        log.debug("session started");
-        return session;
-    }
-
-    public void registerRuleListener(AgendaEventListener listener) {
-        listeners.add(listener);
-    }
-
-    public void setCurrentContextService(ContextCurrentService currentContextService) {
-        this.currentContextService = currentContextService;
-    }
-
-    public void setDomainServices(Map<String, Domain> domainServices) {
-        this.domainServices = domainServices;
-    }
-
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-    }
-
     @Override
     public void serviceChanged(ServiceEvent event) {
         if (event.getType() == ServiceEvent.REGISTERED) {
@@ -181,6 +203,23 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
             }
         }
 
+    }
+
+    public void setCurrentContextService(ContextCurrentService currentContextService) {
+        this.currentContextService = currentContextService;
+    }
+
+    public void setDomainServices(Map<String, Domain> domainServices) {
+        this.domainServices = domainServices;
+    }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
+
+    public void setRulemanager(RuleManager rulemanager) {
+        this.rulemanager = rulemanager;
     }
 
     public void setTimeout(long timeout) {

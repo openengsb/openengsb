@@ -19,8 +19,8 @@ package org.openengsb.core.workflow.internal.dirsource;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.drools.rule.Package;
-import org.drools.rule.Rule;
+import org.drools.definition.KnowledgePackage;
+import org.drools.definition.rule.Rule;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
@@ -31,7 +31,7 @@ public class DirectoryRuleHandler extends MultiFileResourceHandler {
     }
 
     @Override
-    protected Collection<RuleBaseElementId> listElementsInPackage(Package p) {
+    protected Collection<RuleBaseElementId> listElementsInPackage(KnowledgePackage p) {
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
         for (Rule rule : p.getRules()) {
             result.add(new RuleBaseElementId(RuleBaseElementType.Rule, p.getName(), rule.getName()));

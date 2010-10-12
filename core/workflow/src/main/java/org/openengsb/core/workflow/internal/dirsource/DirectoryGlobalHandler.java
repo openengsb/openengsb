@@ -38,16 +38,9 @@ public class DirectoryGlobalHandler extends ResourceHandler<DirectoryRuleSource>
         file = new File(source.getPath() + File.separator + DirectoryRuleSource.GLOBALS_FILENAME);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void create(RuleBaseElementId name, String code) throws RuleBaseException {
-        Collection<String> globalList;
-        try {
-            globalList = FileUtils.readLines(file);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-
+        Collection<String> globalList = readGlobalList();
         if (globalList.contains(name.getName())) {
             throw new RuleBaseException(String.format("global with name %s already registered", name.getName()));
         }
@@ -62,25 +55,16 @@ public class DirectoryGlobalHandler extends ResourceHandler<DirectoryRuleSource>
         source.readRuleBase();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void delete(RuleBaseElementId name) throws RuleBaseException {
-        Collection<String> globalList;
-        try {
-            globalList = FileUtils.readLines(file);
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-
-        Iterator<String> it = globalList.iterator();
-        String line;
-        for (line = it.next(); it.hasNext(); line = it.next()) {
-            if (line.endsWith(" " + name)) {
+        Collection<String> globalList = readGlobalList();
+        for (Iterator<String> it = globalList.iterator(); it.hasNext();) {
+            String line = it.next();
+            if (line.endsWith(" " + name.getName())) {
                 it.remove();
                 break;
             }
         }
-
         try {
             FileUtils.writeLines(file, globalList, IOUtils.LINE_SEPARATOR_UNIX);
         } catch (IOException e) {
@@ -91,16 +75,30 @@ public class DirectoryGlobalHandler extends ResourceHandler<DirectoryRuleSource>
 
     @Override
     public String get(RuleBaseElementId name) {
-        return source.getRulebase().getPackages()[0].getGlobals().get(name.getName());
+        // return source.getRulebase().getPackages()[0].getGlobals().get(name.getName());
+        return null;
     }
 
     @Override
     public Collection<RuleBaseElementId> list() {
+        Collection<String> globalList = readGlobalList();
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
-        for (String s : source.getRulebase().getPackages()[0].getGlobals().keySet()) {
-            result.add(new RuleBaseElementId(RuleBaseElementType.Global, s));
+        for (String s : globalList) {
+            String[] parts = s.split(" ");
+            result.add(new RuleBaseElementId(RuleBaseElementType.Global, parts[1]));
         }
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Collection<String> readGlobalList() {
+        Collection<String> globalList;
+        try {
+            globalList = FileUtils.readLines(file);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        return globalList;
     }
 
     @Override

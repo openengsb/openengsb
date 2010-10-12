@@ -20,12 +20,11 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
@@ -35,8 +34,16 @@ import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.model.TestEvent;
 
+import static org.mockito.Matchers.anyString;
+
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 
@@ -65,26 +72,33 @@ public class WorkflowServiceTest {
 
     private WorkflowServiceImpl service;
     private RuleManager manager;
-    private RuleListener listener;
     private DummyExampleDomain logService;
     private DummyNotificationDomain notification;
+    private DummyBuild build;
+    private DummyDeploy deploy;
+    private DummyReport report;
+    private DummyTest test;
 
     @Before
     public void setUp() throws Exception {
+        File ruleSources = FileUtils.toFile(ClassLoader.getSystemResource("rulebase"));
+        File workingDir = new File("data/rulebase");
+        workingDir.mkdirs();
+        FileUtils.copyDirectory(ruleSources, workingDir);
         service = new WorkflowServiceImpl();
         setupRulemanager();
         service.setRulemanager(manager);
-        service.setCurrentContextService(Mockito.mock(ContextCurrentService.class));
+        ContextCurrentService currentContext = mock(ContextCurrentService.class);
+        when(currentContext.getCurrentContextId()).thenReturn("42");
+        service.setCurrentContextService(currentContext);
         setupDomains();
-        listener = new RuleListener();
-        service.registerRuleListener(listener);
     }
 
     private void setupRulemanager() throws RuleBaseException {
         manager = new DirectoryRuleSource("data/rulebase");
         ((DirectoryRuleSource) manager).init();
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
-            "when\n Event ( contextId == \"test-context\")\n then \n example.doSomething(\"42\");");
+            "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"42\");");
     }
 
     private void setupDomains() {
@@ -98,6 +112,14 @@ public class WorkflowServiceTest {
         domains.put("example", logService);
         notification = Mockito.mock(DummyNotificationDomain.class);
         domains.put("notification", notification);
+        build = mock(DummyBuild.class);
+        domains.put("build", build);
+        deploy = mock(DummyDeploy.class);
+        domains.put("deploy", deploy);
+        report = mock(DummyReport.class);
+        domains.put("report", report);
+        test = mock(DummyTest.class);
+        domains.put("test", test);
         return domains;
     }
 
@@ -119,20 +141,21 @@ public class WorkflowServiceTest {
     public void testProcessEventTriggersHelloWorld() throws Exception {
         Event event = new Event();
         service.processEvent(event);
-        Assert.assertTrue(listener.haveRulesFired("hello1"));
+        verify(notification, atLeast(1)).notify("Hello");
+        verify(logService, atLeast(1)).doSomething("Hello World");
     }
 
     @Test
     public void testUseLog() throws Exception {
         Event event = new Event("test-context");
         service.processEvent(event);
-        Assert.assertTrue(listener.haveRulesFired("logtest"));
+        verify(logService).doSomething("42");
     }
 
     @Test
     public void testUpdateRule() throws Exception {
         manager.update(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1"),
-            "when\n Event ( contextId == \"test-context\")\n then \n example.doSomething(\"21\");");
+            "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"21\");");
         Event event = new Event("test-context");
         service.processEvent(event);
         verify(logService).doSomething("21");
@@ -169,5 +192,44 @@ public class WorkflowServiceTest {
         Event event = new Event("test-context");
         service.processEvent(event);
         Mockito.verify(logService, Mockito.times(2)).doSomething(Mockito.anyString());
+    }
+
+    @Test
+    public void testStartProcess_shouldRunScriptNodes() throws Exception {
+        long id = service.startFlow("flowtest");
+        service.waitForFlowToFinish(id);
+        verify(logService).doSomething("flow42");
+    }
+
+    @Test
+    public void testStartProcessWithEvents_shouldRunScriptNodes() throws Exception {
+        long id = service.startFlow("floweventtest");
+        service.processEvent(new Event());
+        service.processEvent(new TestEvent());
+        service.waitForFlowToFinish(id);
+        InOrder inOrder2 = inOrder(logService);
+        inOrder2.verify(logService).doSomething("start testflow");
+        inOrder2.verify(logService).doSomething("first event received");
+    }
+
+    @Test
+    public void testCiWorkflow() throws Exception {
+        long id = service.startFlow("ci");
+        service.processEvent(new Event() {
+            @Override
+            public String getType() {
+                return "BuildSuccess";
+            }
+        });
+        service.processEvent(new Event() {
+            @Override
+            public String getType() {
+                return "TestSuccess";
+            }
+        });
+        service.waitForFlowToFinish(id);
+        verify(report, times(1)).collectData();
+        verify(notification, atLeast(1)).notify(anyString());
+        verify(deploy, times(1)).deployProject();
     }
 }

@@ -97,6 +97,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     private EditorPanel createEditorPanelForClass(Class<?> theClass) {
         Map<String, String> defaults = new HashMap<String, String>();
         List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(theClass);
+        moveNameToFront(attributes);
         EditorPanel editor = new EditorPanel("editor", attributes, defaults) {
             @Override
             public void onSubmit() {
@@ -106,8 +107,8 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
                         eventService.processEvent(event);
                         info(new StringResourceModel("send.event.success", SendEventPage.this, null).getString());
                     } catch (WorkflowException e) {
-                        error(
-                            new StringResourceModel("send.event.error.process", SendEventPage.this, null).getString());
+                        error(new StringResourceModel("send.event.error.process", SendEventPage.this, null)
+                            .getString());
                     }
                 } else {
                     error(new StringResourceModel("send.event.error.build", SendEventPage.this, null).getString());
@@ -116,6 +117,20 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         };
         editor.setOutputMarkupId(true);
         return editor;
+    }
+
+    private List<AttributeDefinition> moveNameToFront(List<AttributeDefinition> attributes) {
+        int i = 0;
+        for (AttributeDefinition a : attributes) {
+            if ("name".equals(a.getId())) {
+                break;
+            }
+            i++;
+        }
+        AttributeDefinition tmp = attributes.get(0);
+        attributes.set(0, attributes.get(i));
+        attributes.set(i, tmp);
+        return attributes;
     }
 
     private Event buildEvent(Class<?> eventClass, Map<String, String> values) {
