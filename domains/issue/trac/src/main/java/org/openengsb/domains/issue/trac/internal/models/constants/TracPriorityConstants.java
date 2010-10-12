@@ -16,15 +16,11 @@
 
 package org.openengsb.domains.issue.trac.internal.models.constants;
 
-public final class TracPriorityConstants {
+public enum TracPriorityConstants {
 
-    private TracPriorityConstants() {
-
-    }
-
-    public static final String PRIORITY_HIGH = "major";
-    public static final String PRIORITY_IMMEDIATE = "blocker";
-    public static final String PRIORITY_LOW = "trivial";
-    public static final String PRIORITY_NORMAL = "minor";
-    public static final String PRIORITY_URGENT = "critical";
+    HIGH,
+    IMMEDIATE,
+    LOW,
+    NORMAL,
+    URGENT,
 }

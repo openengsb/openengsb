@@ -53,15 +53,15 @@ public class TracConnectorTest {
         i.setSummary(s);
         i.setDescription("testdescription");
         i.setOwner("testowner");
-        i.setPriority(Issue.PRIORITYURGENT);
+        i.setPriority(Issue.Priority.URGEND);
         i.setReporter("testreporter");
-        i.setStatus(Issue.STATUSNEW);
+        i.setStatus(Issue.Status.NEW);
 
-        Hashtable<String, String> attributes = new Hashtable<String, String>();
-        attributes.put(TracFieldConstants.FIELD_OWNER, "testowner");
-        attributes.put(TracFieldConstants.FIELD_REPORTER, "testreporter");
-        attributes.put(TracFieldConstants.FIELD_PRIORITY, TracPriorityConstants.PRIORITY_URGENT);
-        attributes.put(TracFieldConstants.FIELD_STATUS, TracStatusConstants.STATUS_NEW);
+        Hashtable<Enum, String> attributes = new Hashtable<Enum, String>();
+        attributes.put(TracFieldConstants.OWNER, "testowner");
+        attributes.put(TracFieldConstants.REPORTER, "testreporter");
+        attributes.put(TracFieldConstants.PRIORITY, TracPriorityConstants.URGENT.toString());
+        attributes.put(TracFieldConstants.STATUS, TracStatusConstants.NEW.toString());
 
         tracConnector.createIssue(i);
         Mockito.verify(ticketMock, Mockito.times(1))
@@ -77,18 +77,17 @@ public class TracConnectorTest {
 
     @Test
     public void testToAddComment() throws Exception {
-
         tracConnector.addComment(5, "testcomment");
         Mockito.verify(ticketMock, Mockito.times(1)).update(Mockito.eq(5), Mockito.eq("testcomment"));
     }
 
     @Test
     public void testUpdateIssue() throws Exception {
-        HashMap<String, Object> changes = new HashMap<String, Object>();
-        changes.put(Issue.FIELDSTATUS, Issue.STATUSCLOSED);
+        HashMap<Enum, String> changes = new HashMap<Enum, String>();
+        changes.put(Issue.Field.STATUS, Issue.Status.CLOSED.toString());
 
-        Hashtable<String, String> result = new Hashtable<String, String>();
-        result.put(TracFieldConstants.FIELD_STATUS, TracStatusConstants.STATUS_CLOSED);
+        Hashtable<Enum, String> result = new Hashtable<Enum, String>();
+        result.put(TracFieldConstants.STATUS, TracStatusConstants.CLOSED.toString());
 
         tracConnector.updateIssue(3, null, changes);
         Mockito.verify(ticketMock, Mockito.times(1))
@@ -106,7 +105,7 @@ public class TracConnectorTest {
     public void testUpdateANotExistingTicket_ShouldPrintErrorMessage() throws Exception {
         Mockito.when(ticketMock.update(Mockito.anyInt(), Mockito.anyString(), Mockito.any(Hashtable.class)))
             .thenThrow(new XmlRpcException("test"));
-        tracConnector.updateIssue(0, "test", new HashMap<String, Object>());
+        tracConnector.updateIssue(0, "test", new HashMap<Enum, String>());
     }
 
     @Test

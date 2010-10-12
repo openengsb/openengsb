@@ -50,7 +50,7 @@ public class TracConnector implements IssueDomain {
     @Override
     public String createIssue(Issue issue) {
         Ticket ticket = createTicket();
-        Hashtable<String, String> attributes = generateAttributes(issue);
+        Hashtable<Enum, String> attributes = generateAttributes(issue);
         Integer issueId = -1;
 
         try {
@@ -87,8 +87,8 @@ public class TracConnector implements IssueDomain {
     }
 
     @Override
-    public void updateIssue(Integer id, String comment, HashMap<String, Object> changes) {
-        Hashtable<String, String> attributes = translateChanges(changes);
+    public void updateIssue(Integer id, String comment, HashMap<Enum, String> changes) {
+        Hashtable<Enum, String> attributes = translateChanges(changes);
         if (comment == null || comment.equals("")) {
             comment = "[No comment added by author]";
         }
@@ -123,23 +123,23 @@ public class TracConnector implements IssueDomain {
         return this.id;
     }
 
-    private Hashtable<String, String> translateChanges(Map<String, Object> changes) {
-        Hashtable<String, String> attributes = new Hashtable<String, String>();
+    private Hashtable<Enum, String> translateChanges(Map<Enum, String> changes) {
+        Hashtable<Enum, String> attributes = new Hashtable<Enum, String>();
 
-        for (String field : changes.keySet()) {
+        for (Enum field : changes.keySet()) {
             try {
-                if (field.equals(Issue.FIELDDESCRIPTION)) {
-                    attributes.put(TracFieldConstants.FIELD_DESCRIPTION, (String) changes.get(field));
-                } else if (field.equals(Issue.FIELDOWNER)) {
-                    attributes.put(TracFieldConstants.FIELD_OWNER, (String) changes.get(field));
-                } else if (field.equals(Issue.FIELDREPORTER)) {
-                    attributes.put(TracFieldConstants.FIELD_REPORTER, (String) changes.get(field));
-                } else if (field.equals(Issue.FIELDSUMMARY)) {
-                    attributes.put(TracFieldConstants.FIELD_SUMMARY, (String) changes.get(field));
-                } else if (field.equals(Issue.FIELDPRIORITY)) {
-                    addPriority(attributes, (String) changes.get(field));
-                } else if (field.equals(Issue.FIELDSTATUS)) {
-                    addStatus(attributes, (String) changes.get(field));
+                if (field.equals(Issue.Field.DESCRIPTION)) {
+                    attributes.put(TracFieldConstants.DESCRIPTION,  changes.get(field));
+                } else if (field.equals(Issue.Field.OWNER)) {
+                    attributes.put(TracFieldConstants.OWNER, changes.get(field));
+                } else if (field.equals(Issue.Field.REPORTER)) {
+                    attributes.put(TracFieldConstants.SUMMARY, changes.get(field));
+                } else if (field.equals(Issue.Field.SUMMARY)) {
+                    attributes.put(TracFieldConstants.SUMMARY, changes.get(field));
+                } else if (field.equals(Issue.Field.PRIORITY)) {
+                    addPriority(attributes,  Issue.Priority.valueOf(changes.get(field)));
+                } else if (field.equals(Issue.Field.STATUS)) {
+                    addStatus(attributes, Issue.Status.valueOf(changes.get(field)));
                 }
             } catch (ClassCastException e) {
                 log.error("Wrong value provided for field " + field + ": " + changes.get(field).getClass().getName());
@@ -149,14 +149,14 @@ public class TracConnector implements IssueDomain {
         return attributes;
     }
 
-    private Hashtable<String, String> generateAttributes(Issue issue) {
-        Hashtable<String, String> attributes = new Hashtable<String, String>();
+    private Hashtable<Enum, String> generateAttributes(Issue issue) {
+        Hashtable<Enum, String> attributes = new Hashtable<Enum, String>();
 
         if (issue.getOwner() != null) {
-            attributes.put(TracFieldConstants.FIELD_OWNER, issue.getOwner());
+            attributes.put(TracFieldConstants.OWNER, issue.getOwner());
         }
         if (issue.getReporter() != null) {
-            attributes.put(TracFieldConstants.FIELD_REPORTER, issue.getReporter());
+            attributes.put(TracFieldConstants.REPORTER, issue.getReporter());
         }
 
         addPriority(attributes, issue.getPriority());
@@ -165,30 +165,30 @@ public class TracConnector implements IssueDomain {
         return attributes;
     }
 
-    private void addPriority(Hashtable<String, String> attributes, String priority) {
+    private void addPriority(Hashtable<Enum, String> attributes, Issue.Priority priority) {
         if (priority != null) {
-            if (priority.equals(Issue.PRIORITYHIGH)) {
-                attributes.put(TracFieldConstants.FIELD_PRIORITY, TracPriorityConstants.PRIORITY_HIGH);
-            } else if (priority.equals(Issue.PRIORITYIMMEDIATE)) {
-                attributes.put(TracFieldConstants.FIELD_PRIORITY, TracPriorityConstants.PRIORITY_IMMEDIATE);
-            } else if (priority.equals(Issue.PRIORITYLOW)) {
-                attributes.put(TracFieldConstants.FIELD_PRIORITY, TracPriorityConstants.PRIORITY_LOW);
-            } else if (priority.equals(Issue.PRIORITYNORMAL)) {
-                attributes.put(TracFieldConstants.FIELD_PRIORITY, TracPriorityConstants.PRIORITY_NORMAL);
-            } else if (priority.equals(Issue.PRIORITYURGENT)) {
-                attributes.put(TracFieldConstants.FIELD_PRIORITY, TracPriorityConstants.PRIORITY_URGENT);
+            if (priority.equals(Issue.Priority.HIGH)) {
+                attributes.put(TracFieldConstants.PRIORITY, TracPriorityConstants.HIGH.toString());
+            } else if (priority.equals(Issue.Priority.IMMEDIATE)) {
+                attributes.put(TracFieldConstants.PRIORITY, TracPriorityConstants.IMMEDIATE.toString());
+            } else if (priority.equals(Issue.Priority.LOW)) {
+                attributes.put(TracFieldConstants.PRIORITY, TracPriorityConstants.LOW.toString());
+            } else if (priority.equals(Issue.Priority.NORMAL)) {
+                attributes.put(TracFieldConstants.PRIORITY, TracPriorityConstants.NORMAL.toString());
+            } else if (priority.equals(Issue.Priority.URGEND)) {
+                attributes.put(TracFieldConstants.PRIORITY, TracPriorityConstants.URGENT.toString());
             }
         }
     }
 
-    private void addStatus(Hashtable<String, String> attributes, String status) {
+    private void addStatus(Hashtable<Enum, String> attributes, Issue.Status status) {
         if (status != null) {
-            if (status.equals(Issue.STATUSNEW)) {
-                attributes.put(TracFieldConstants.FIELD_STATUS, TracStatusConstants.STATUS_NEW);
-            } else if (status.equals(Issue.STATUSASSIGNED)) {
-                attributes.put(TracFieldConstants.FIELD_STATUS, TracStatusConstants.STATUS_ASSIGNED);
-            } else if (status.equals(Issue.STATUSCLOSED)) {
-                attributes.put(TracFieldConstants.FIELD_STATUS, TracStatusConstants.STATUS_CLOSED);
+            if (status.equals(Issue.Status.NEW)) {
+                attributes.put(TracFieldConstants.STATUS, TracStatusConstants.NEW.toString());
+            } else if (status.equals(Issue.Status.ASSIGNED)) {
+                attributes.put(TracFieldConstants.STATUS, TracStatusConstants.ASSIGNED.toString());
+            } else if (status.equals(Issue.Status.CLOSED)) {
+                attributes.put(TracFieldConstants.STATUS, TracStatusConstants.CLOSED.toString());
             }
         }
     }

@@ -16,13 +16,9 @@
 
 package org.openengsb.domains.issue.trac.internal.models.constants;
 
-public final class TracStatusConstants {
+public enum TracStatusConstants {
 
-    private TracStatusConstants() {
-
-    }
-
-    public static final String STATUS_NEW = "new";
-    public static final String STATUS_ASSIGNED = "assigned";
-    public static final String STATUS_CLOSED = "closed";
+    NEW,
+    ASSIGNED,
+    CLOSED
 }

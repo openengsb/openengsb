@@ -17,16 +17,12 @@
 
 package org.openengsb.domains.issue.trac.internal.models.constants;
 
-public final class TracFieldConstants {
+public enum TracFieldConstants {
 
-    private TracFieldConstants() {
-        
-    }
-
-    public static final String FIELD_OWNER = "owner";
-    public static final String FIELD_REPORTER = "reporter";
-    public static final String FIELD_SUMMARY = "summary";
-    public static final String FIELD_DESCRIPTION = "description";
-    public static final String FIELD_PRIORITY = "priority";
-    public static final String FIELD_STATUS = "status";
+        OWNER,
+        REPORTER,
+        SUMMARY,
+        DESCRIPTION,
+        PRIORITY,
+        STATUS
 }

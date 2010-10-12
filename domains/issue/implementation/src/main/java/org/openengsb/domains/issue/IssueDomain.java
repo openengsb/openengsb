@@ -48,6 +48,6 @@ public interface IssueDomain extends Domain {
      * @param comment
      * @param changes
      */
-    void updateIssue(Integer id, String comment, HashMap<String, Object> changes);
+    void updateIssue(Integer id, String comment, HashMap<Enum, String> changes);
 
 }

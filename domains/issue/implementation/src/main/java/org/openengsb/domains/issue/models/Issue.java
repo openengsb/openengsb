@@ -18,31 +18,38 @@ package org.openengsb.domains.issue.models;
 
 public class Issue {
     
-    public static final String PRIORITYIMMEDIATE = "IMMEDIATE";
-    public static final String PRIORITYURGENT = "URGEND";
-    public static final String PRIORITYHIGH = "HIGH";
-    public static final String PRIORITYNORMAL = "NORMAL";
-    public static final String PRIORITYLOW = "LOW";
-    public static final String PRIORITYNONE = "NONE";
 
-    public static final String STATUSNEW = "NEW";
-    public static final String STATUSASSIGNED = "ASSIGNED";
-    public static final String STATUSCLOSED = "CLOSED";
+    public enum Priority {
+        IMMEDIATE,
+        URGEND,
+        HIGH,
+        NORMAL,
+        LOW,
+        NONE
+    }
 
-    public static final String FIELDSUMMARY = "SUMMARY";
-    public static final String FIELDDESCRIPTION = "DESCRIPTION";
-    public static final String FIELDOWNER = "OWNER";
-    public static final String FIELDREPORTER = "REPORTER";
-    public static final String FIELDPRIORITY = "PRIORITY";
-    public static final String FIELDSTATUS = "STATUS";
+    public enum Status {
+        NEW,
+        ASSIGNED,
+        CLOSED
+    }
+
+    public enum Field {
+        SUMMARY,
+        DESCRIPTION,
+        OWNER,
+        REPORTER,
+        PRIORITY,
+        STATUS
+    }
 
     private Integer id;
     private String summary;
     private String description;
     private String owner;
     private String reporter;
-    private String priority;
-    private String status;
+    private Priority priority;
+    private Status status;
 
     public Integer getId() {
         return id;
@@ -84,19 +91,19 @@ public class Issue {
         this.reporter = reporter;
     }
 
-    public String getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
-    public void setPriority(String priority) {
+    public void setPriority(Priority priority) {
         this.priority = priority;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
