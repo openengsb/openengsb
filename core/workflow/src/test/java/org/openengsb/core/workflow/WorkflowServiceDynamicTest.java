@@ -16,6 +16,11 @@
 
 package org.openengsb.core.workflow;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
@@ -33,12 +38,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceReference;
-
-import static org.mockito.Matchers.anyString;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class WorkflowServiceDynamicTest {
 
@@ -155,7 +154,7 @@ public class WorkflowServiceDynamicTest {
         String id = (String) reference.getProperty("id");
         String filter = String.format("(&(openengsb.service.type=domain)(id=%s))", id);
         when(bundleContext.getAllServiceReferences(Domain.class.getName(), filter)).thenReturn(
-            new ServiceReference[]{ reference });
+            new ServiceReference[]{reference});
         if (workflowService != null) {
             workflowService.serviceChanged(setupServiceEventMock(reference));
         }

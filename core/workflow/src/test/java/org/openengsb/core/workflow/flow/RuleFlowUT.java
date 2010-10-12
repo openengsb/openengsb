@@ -16,6 +16,10 @@
 
 package org.openengsb.core.workflow.flow;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
@@ -31,11 +35,6 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.junit.Test;
 import org.openengsb.core.workflow.model.TestObject;
-
-import static org.hamcrest.CoreMatchers.is;
-
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 public class RuleFlowUT {
 

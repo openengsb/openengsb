@@ -16,6 +16,9 @@
 
 package org.openengsb.core.workflow.flow;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 import java.io.File;
 import java.net.URL;
 
@@ -36,10 +39,6 @@ import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.model.TestObject;
-
-import static org.hamcrest.CoreMatchers.notNullValue;
-
-import static org.junit.Assert.assertThat;
 
 public class RuleManagerFlowTest {
 

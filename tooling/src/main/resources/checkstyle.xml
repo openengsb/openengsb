@@ -143,6 +143,5 @@
   </module>
   <module name="FileLength"/>
   <module name="FileTabCharacter"/>
-  <module name="NewlineAtEndOfFile"/>
   <module name="Translation"/>
 </module>

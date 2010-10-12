@@ -16,6 +16,13 @@
 
 package org.openengsb.core.workflow;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,15 +40,6 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
-
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import static org.junit.matchers.JUnitMatchers.hasItem;
 
 public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
