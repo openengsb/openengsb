@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
-import org.drools.event.AgendaEventListener;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
 import org.drools.runtime.StatefulKnowledgeSession;
@@ -52,37 +51,14 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     private Log log = LogFactory.getLog(WorkflowServiceImpl.class);
 
     private RuleManager rulemanager;
-
-    private Collection<AgendaEventListener> listeners = new ArrayList<AgendaEventListener>();
-
     private ContextCurrentService currentContextService;
-    private Map<String, Domain> domainServices = new HashMap<String, Domain>();
-
     private BundleContext bundleContext;
+
+    private Map<String, Domain> domainServices = new HashMap<String, Domain>();
 
     private Map<String, StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
 
     private long timeout = 10000;
-
-    private boolean findGlobal(String name) {
-        ServiceReference[] allServiceReferences;
-        try {
-            allServiceReferences = bundleContext.getAllServiceReferences(Domain.class.getName(),
-                    String.format("(&(openengsb.service.type=domain)(id=domains.%s))", name));
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalStateException(e);
-        }
-        if (allServiceReferences == null) {
-            return false;
-        }
-        if (allServiceReferences.length != 1) {
-            throw new IllegalStateException(String.format("found more than one match for \"%s\".", name));
-        }
-        ServiceReference ref = allServiceReferences[0];
-        Domain service = (Domain) bundleContext.getService(ref);
-        domainServices.put(name, service);
-        return true;
-    }
 
     @Override
     public void processEvent(Event event) throws WorkflowException {
@@ -92,6 +68,22 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
             p.signalEvent(event.getType(), event);
         }
         session.fireAllRules();
+    }
+
+    @Override
+    public long startFlow(String processId) throws WorkflowException {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        ProcessInstance processInstance = session.startProcess(processId);
+        return processInstance.getId();
+    }
+
+    public void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        synchronized (session) {
+            while (session.getProcessInstance(id) != null) {
+                session.wait(5000);
+            }
+        }
     }
 
     private StatefulKnowledgeSession getSessionForCurrentContext() throws WorkflowException {
@@ -120,6 +112,10 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         globalsToProcess.remove("event");
         globalsToProcess.removeAll(domainServices.keySet());
 
+        return discoverNewGlobalValues(globalsToProcess);
+    }
+
+    private Collection<String> discoverNewGlobalValues(Collection<String> globalsToProcess) {
         for (Iterator<String> iterator = globalsToProcess.iterator(); iterator.hasNext();) {
             String g = iterator.next();
             if (findGlobal(g)) {
@@ -127,6 +123,44 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
             }
         }
         return globalsToProcess;
+    }
+
+    private boolean findGlobal(String name) {
+        ServiceReference[] allServiceReferences;
+        try {
+            allServiceReferences = bundleContext.getAllServiceReferences(Domain.class.getName(),
+                    String.format("(&(openengsb.service.type=domain)(id=domains.%s))", name));
+        } catch (InvalidSyntaxException e) {
+            throw new IllegalStateException(e);
+        }
+        if (allServiceReferences == null) {
+            return false;
+        }
+        if (allServiceReferences.length != 1) {
+            throw new IllegalStateException(String.format("found more than one match for \"%s\".", name));
+        }
+        ServiceReference ref = allServiceReferences[0];
+        Domain service = (Domain) bundleContext.getService(ref);
+        domainServices.put(name, service);
+        return true;
+    }
+
+    protected StatefulKnowledgeSession createSession() throws RuleBaseException, WorkflowException {
+        KnowledgeBase rb = rulemanager.getRulebase();
+        log.debug("retrieved rulebase: " + rb + "from source " + rulemanager);
+        final StatefulKnowledgeSession session = rb.newStatefulKnowledgeSession();
+        log.debug("session started");
+        populateGlobals(session);
+        log.debug("globals have been set");
+        session.addEventListener(new DefaultProcessEventListener() {
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                synchronized (session) {
+                    session.notifyAll();
+                }
+            }
+        });
+        return session;
     }
 
     private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
@@ -154,45 +188,6 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         }
     }
 
-    public void setRulemanager(RuleManager rulemanager) {
-        this.rulemanager = rulemanager;
-    }
-
-    protected StatefulKnowledgeSession createSession() throws RuleBaseException, WorkflowException {
-        KnowledgeBase rb = rulemanager.getRulebase();
-        log.debug("retrieved rulebase: " + rb + "from source " + rulemanager);
-        final StatefulKnowledgeSession session = rb.newStatefulKnowledgeSession();
-        log.debug("session started");
-        populateGlobals(session);
-        log.debug("globals have been set");
-        session.addEventListener(new DefaultProcessEventListener() {
-            @Override
-            public void afterProcessCompleted(ProcessCompletedEvent event) {
-                synchronized (session) {
-                    session.notifyAll();
-                }
-            }
-        });
-        return session;
-    }
-
-    public void registerRuleListener(AgendaEventListener listener) {
-        listeners.add(listener);
-    }
-
-    public void setCurrentContextService(ContextCurrentService currentContextService) {
-        this.currentContextService = currentContextService;
-    }
-
-    public void setDomainServices(Map<String, Domain> domainServices) {
-        this.domainServices = domainServices;
-    }
-
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-    }
-
     @Override
     public void serviceChanged(ServiceEvent event) {
         if (event.getType() == ServiceEvent.REGISTERED) {
@@ -210,23 +205,24 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     }
 
-    public void setTimeout(long timeout) {
-        this.timeout = timeout;
+    public void setCurrentContextService(ContextCurrentService currentContextService) {
+        this.currentContextService = currentContextService;
+    }
+
+    public void setDomainServices(Map<String, Domain> domainServices) {
+        this.domainServices = domainServices;
     }
 
     @Override
-    public long startFlow(String processId) throws WorkflowException {
-        StatefulKnowledgeSession session = getSessionForCurrentContext();
-        ProcessInstance processInstance = session.startProcess(processId);
-        return processInstance.getId();
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 
-    public void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException {
-        StatefulKnowledgeSession session = getSessionForCurrentContext();
-        synchronized (session) {
-            while (session.getProcessInstance(id) != null) {
-                session.wait(5000);
-            }
-        }
+    public void setRulemanager(RuleManager rulemanager) {
+        this.rulemanager = rulemanager;
+    }
+
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
     }
 }
