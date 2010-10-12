@@ -15,30 +15,29 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
---><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <relativePath>../poms/compiled/</relativePath>
-    <groupId>org.openengsb.build</groupId>
-    <artifactId>compiled-bundle-settings</artifactId>
+    <groupId>org.openengsb.domains</groupId>
+    <artifactId>openengsb-domains-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openengsb.domains</groupId>
-  <artifactId>openengsb-domains-parent</artifactId>
+  <groupId>org.openengsb.domains.issue</groupId>
+  <artifactId>openengsb-domains-issue-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-
-  <name>OpenEngSB :: Domains :: Parent</name>
+  <name>OpenEngSB :: Domains :: Issue :: Parent</name>
 
   <packaging>pom</packaging>
 
   <modules>
-    <module>example</module>
-    <module>notification</module>
-    <module>report</module>
-    <module>issue</module>
+    <module>implementation</module>
+    <module>trac</module>
   </modules>
 
 </project>

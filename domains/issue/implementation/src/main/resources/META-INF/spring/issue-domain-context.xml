@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="us-ascii" ?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:osgi="http://www.springframework.org/schema/osgi"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
+
+  <osgi:service interface="org.openengsb.core.common.DomainProvider">
+    <bean class="org.openengsb.domains.issue.IssueDomainProvider" />
+  </osgi:service>
+
+  <osgi:service>
+    <osgi:interfaces>
+      <value>org.openengsb.domains.issue.IssueDomain</value>
+      <value>org.openengsb.core.common.Domain</value>
+    </osgi:interfaces>
+    <osgi:service-properties>
+      <entry key="id" value="domains.issue" />
+      <entry key="openengsb.service.type" value="domain" />
+    </osgi:service-properties>
+
+    <!-- this bean replaces the ForwardService -->
+    <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
+      <property name="domainInterface">
+        <value>org.openengsb.domains.issue.IssueDomain</value>
+      </property>
+      <property name="domainName" value="IssueDomain" />
+      <property name="context" ref="contextService" />
+    </bean>
+  </osgi:service>
+
+   <osgi:service>
+    <osgi:interfaces>
+      <value>org.openengsb.domains.issue.IssueDomainEvents</value>
+      <value>org.openengsb.core.common.DomainEvents</value>
+    </osgi:interfaces>
+    <osgi:service-properties>
+      <entry key="id" value="domains.issue.events" />
+      <entry key="openengsb.service.type" value="domain-events" />
+    </osgi:service-properties>
+
+    <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
+      <property name="domainEventInterface">
+        <value>org.openengsb.domains.issue.IssueDomainEvents</value>
+      </property>
+      <property name="workflowService" ref="workflowService" />
+    </bean>
+  </osgi:service>
+
+  <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
+  <osgi:reference id="workflowService" interface="org.openengsb.core.workflow.WorkflowService" />
+
+</beans>

@@ -41,6 +41,7 @@
     <module>com.google.guava</module>
     <module>org.apache.wicket</module>
     <module>javax.xml.jaxb</module>
+    <module>org.apache.xmlrpc</module>
   </modules>
 
 </project>

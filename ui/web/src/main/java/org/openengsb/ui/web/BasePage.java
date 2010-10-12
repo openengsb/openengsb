@@ -118,6 +118,7 @@ public class BasePage extends WebPage {
             contextService.createContext(sessionContextId + "2");
             contextService.setThreadLocalContext(sessionContextId);
             contextService.putValue("domains/NotificationDomain/defaultConnector/id", "notification");
+            contextService.putValue("domains/IssueDomain/defaultConnector/id", "issue");
             contextService.putValue("domains/ExampleDomain/defaultConnector/id", "example");
         }
     }

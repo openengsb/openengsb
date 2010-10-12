@@ -74,6 +74,7 @@ public class WorkflowServiceTest {
     private DummyBuild build;
     private DummyDeploy deploy;
     private DummyReport report;
+    private DummyIssue issue;
     private DummyTest test;
 
     @Before
@@ -115,6 +116,8 @@ public class WorkflowServiceTest {
         domains.put("deploy", deploy);
         report = mock(DummyReport.class);
         domains.put("report", report);
+        issue = mock(DummyIssue.class);
+        domains.put("issue", issue);
         test = mock(DummyTest.class);
         domains.put("test", test);
         return domains;
