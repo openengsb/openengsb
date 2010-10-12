@@ -26,6 +26,7 @@ import java.util.Set;
 import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.BundleStrings;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.springframework.osgi.context.BundleContextAware;
@@ -97,17 +98,13 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     }
 
     @Override
-    public void update(String id, Map<String, String> attributes) {
+    public MultipleAttributeValidationResult update(String id, Map<String, String> attributes) {
         synchronized (services) {
+            MultipleAttributeValidationResult result;
             if (!services.containsKey(id)) {
-                InstanceType instance = factory.createServiceInstance(id, attributes);
-                Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
-                ServiceRegistration registration =
-                    bundleContext.registerService(new String[]{getImplementationClass().getName(),
-                        getDomainInterface().getName(), Domain.class.getName()}, instance, serviceProperties);
-                services.put(id, new DomainRepresentation(instance, registration));
+                result = createService(id, attributes);
             } else {
-                factory.updateServiceInstance(services.get(id).service, attributes);
+                result = updateService(id, attributes);
             }
             if (attributeValues.containsKey(id)) {
                 attributeValues.get(id).putAll(attributes);
@@ -115,7 +112,29 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
                 attributeValues.put(id, attributes);
             }
             connectorSetupStore.storeConnectorSetup(getImplementationClass().getName(), id, attributes);
+            return result;
         }
+    }
+
+    private MultipleAttributeValidationResult updateService(String id, Map<String, String> attributes) {
+        MultipleAttributeValidationResult validation = factory.updateValidation(services.get(id).service, attributes);
+        if (validation.isValid()) {
+            factory.updateServiceInstance(services.get(id).service, attributes);
+        }
+        return validation;
+    }
+
+    private MultipleAttributeValidationResult createService(String id, Map<String, String> attributes) {
+        MultipleAttributeValidationResult validation = factory.createValidation(id, attributes);
+        if (validation.isValid()) {
+            InstanceType instance = factory.createServiceInstance(id, attributes);
+            Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
+            ServiceRegistration registration =
+                bundleContext.registerService(new String[]{getImplementationClass().getName(),
+                    getDomainInterface().getName(), Domain.class.getName()}, instance, serviceProperties);
+            services.put(id, new DomainRepresentation(instance, registration));
+        }
+        return validation;
     }
 
     @Override

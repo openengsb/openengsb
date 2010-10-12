@@ -20,6 +20,10 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -80,13 +84,18 @@ public class AbstractServiceManagerTest {
                 public DummyInstance createServiceInstance(String id, Map<String, String> attributes) {
                     return instance;
                 }
-            });
-        }
 
-        @Override
-        public MultipleAttributeValidationResult updateWithValidation(String anyString, Map<String, String> anyMap) {
-            this.update(anyString, anyMap);
-            return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+                @Override
+                public MultipleAttributeValidationResult updateValidation(DummyInstance instance,
+                        Map<String, String> attributes) {
+                    return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+                }
+
+                @Override
+                public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
+                    return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+                }
+            });
         }
     }
 
@@ -276,4 +285,56 @@ public class AbstractServiceManagerTest {
         assertThat(attributeValues.get("attribute2"), is("newAtr2"));
     }
 
+    @Test
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void validationfailsForCreation_checkNotAdded() {
+        ServiceInstanceFactory serviceInstanceFactory = mock(ServiceInstanceFactory.class);
+        MultipleAttributeValidationResult validationResult =
+            new MultipleAttributeValidationResultImpl(false, new HashMap<String, String>());
+        when(serviceInstanceFactory.createValidation(Mockito.anyString(), Mockito.anyMap())).thenReturn(
+            validationResult);
+
+        AbstractServiceManager<DummyDomain, DummyInstance> serviceManager =
+            new AbstractServiceManager<DummyDomain, DummyInstance>(serviceInstanceFactory) {
+            };
+        serviceManager.setConnectorSetupStore(Mockito.mock(ConnectorSetupStore.class));
+
+        MultipleAttributeValidationResult update = serviceManager.update("id", new HashMap<String, String>());
+
+        verify(serviceInstanceFactory, never()).createServiceInstance(Mockito.anyString(), Mockito.anyMap());
+        assertThat(update, sameInstance(validationResult));
+    }
+
+    @Test
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void validationfailsForUpdate_checkNotUpdated() {
+        BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
+        ServiceInstanceFactory serviceInstanceFactory = mock(ServiceInstanceFactory.class);
+        ServiceDescriptor descriptor = mock(ServiceDescriptor.class);
+        when(descriptor.getId()).thenReturn("Something");
+
+        when(serviceInstanceFactory.getDescriptor(Mockito.any(Builder.class))).thenReturn(descriptor);
+        HashMap<String, String> attributes = new HashMap<String, String>();
+        MultipleAttributeValidationResult validationResult =
+            new MultipleAttributeValidationResultImpl(false, attributes);
+        when(serviceInstanceFactory.createValidation(Mockito.anyString(), Mockito.anyMap())).thenReturn(
+            new MultipleAttributeValidationResultImpl(true, attributes));
+        when(serviceInstanceFactory.updateValidation(Mockito.any(Domain.class), Mockito.anyMap())).thenReturn(
+            validationResult);
+
+        AbstractServiceManager<DummyDomain, DummyInstance> serviceManager =
+            new AbstractServiceManager<DummyDomain, DummyInstance>(serviceInstanceFactory) {
+            };
+        serviceManager.setConnectorSetupStore(Mockito.mock(ConnectorSetupStore.class));
+
+        serviceManager.setBundleContext(bundleContextMock);
+
+        String id = "id";
+        serviceManager.update(id, attributes);
+        MultipleAttributeValidationResult update = serviceManager.update(id, attributes);
+
+        verify(serviceInstanceFactory).createServiceInstance(id, attributes);
+        verify(serviceInstanceFactory, never()).updateServiceInstance(Mockito.any(Domain.class), Mockito.anyMap());
+        assertThat(update, sameInstance(validationResult));
+    }
 }

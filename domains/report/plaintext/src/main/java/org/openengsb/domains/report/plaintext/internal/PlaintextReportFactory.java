@@ -16,11 +16,14 @@
 
 package org.openengsb.domains.report.plaintext.internal;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domains.report.ReportDomain;
 import org.openengsb.domains.report.common.ReportStoreFactory;
 
@@ -53,6 +56,17 @@ public class PlaintextReportFactory implements ServiceInstanceFactory<ReportDoma
 
     private void setAttributes(PlaintextReportService service, Map<String, String> attributes) {
         // do nothing - currently no attributes defined
+    }
+
+    @Override
+    public MultipleAttributeValidationResult updateValidation(PlaintextReportService instance,
+            Map<String, String> attributes) {
+        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+    }
+
+    @Override
+    public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
+        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
     }
 
 }

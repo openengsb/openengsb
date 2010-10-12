@@ -72,7 +72,7 @@ public class ConnectorEditorPage extends BasePage {
                 boolean checkBoxValue = component.getModelObject();
                 if (checkBoxValue) {
                     MultipleAttributeValidationResult updateWithValidation =
-                        serviceManager.updateWithValidation(getValues().get("id"), getValues());
+                        serviceManager.update(getValues().get("id"), getValues());
                     if (!updateWithValidation.isValid()) {
                         Map<String, String> attributeErrorMessages = updateWithValidation.getAttributeErrorMessages();
                         for (String value : attributeErrorMessages.values()) {

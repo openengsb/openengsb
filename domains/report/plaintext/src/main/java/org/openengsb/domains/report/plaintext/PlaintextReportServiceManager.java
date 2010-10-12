@@ -16,15 +16,10 @@
 
 package org.openengsb.domains.report.plaintext;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openengsb.core.common.AbstractServiceManager;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domains.report.ReportDomain;
-import org.openengsb.domains.report.plaintext.internal.PlaintextReportService;
 import org.openengsb.domains.report.plaintext.internal.PlaintextReportFactory;
+import org.openengsb.domains.report.plaintext.internal.PlaintextReportService;
 
 public class PlaintextReportServiceManager extends AbstractServiceManager<ReportDomain, PlaintextReportService> {
 
@@ -32,9 +27,4 @@ public class PlaintextReportServiceManager extends AbstractServiceManager<Report
         super(plaintextReportBuilder);
     }
 
-    @Override
-    public MultipleAttributeValidationResult updateWithValidation(String id, Map<String, String> attributes) {
-        this.update(id, attributes);
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
-    }
 }

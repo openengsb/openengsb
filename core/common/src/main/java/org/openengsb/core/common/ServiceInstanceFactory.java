@@ -19,6 +19,7 @@ package org.openengsb.core.common;
 import java.util.Map;
 
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 
 public interface ServiceInstanceFactory<DomainType extends Domain, InstanceType extends DomainType> {
 
@@ -40,6 +41,11 @@ public interface ServiceInstanceFactory<DomainType extends Domain, InstanceType 
      * @param attributes the new service settings
      */
     void updateServiceInstance(InstanceType instance, Map<String, String> attributes);
+    
+    /**
+     * Validates if the service is correct before updating.
+     */
+    MultipleAttributeValidationResult updateValidation(InstanceType instance, Map<String, String> attributes);
 
     /**
      * The {@link AbstractServiceManager} calls this method each time a new
@@ -49,4 +55,10 @@ public interface ServiceInstanceFactory<DomainType extends Domain, InstanceType 
      * @param attributes the initial service settings
      */
     InstanceType createServiceInstance(String id, Map<String, String> attributes);
+    
+    
+    /**
+     * Validates if the attributes are correct before creation.
+     */
+    MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes);
 }

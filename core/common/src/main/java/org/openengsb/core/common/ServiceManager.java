@@ -37,17 +37,10 @@ public interface ServiceManager {
      *
      * @param id identifier for a new or already existing service instance.
      * @param attributes updates to maybe already set attributes.
+     * @return 
      */
-    void update(String id, Map<String, String> attributes);
+    MultipleAttributeValidationResult update(String id, Map<String, String> attributes);
 
-    /**
-     * Creates or updates a service instance. If the given id does not exist,
-     * this creates a new service instance.
-     *
-     * @param id identifier for a new or already existing service instance.
-     * @param attributes updates to maybe already set attributes.
-     */
-    MultipleAttributeValidationResult updateWithValidation(String id, Map<String, String> attributes);
     /**
      * Deletes the service instanced with the given {@code id}.
      *
