@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.internal;
+package org.openengsb.core.common.connectorsetupstore;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -29,7 +29,6 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.common.connectorsetupstore.ConnectorSetupBean;
 import org.openengsb.core.persistence.PersistenceException;
 import org.openengsb.core.persistence.PersistenceService;
 

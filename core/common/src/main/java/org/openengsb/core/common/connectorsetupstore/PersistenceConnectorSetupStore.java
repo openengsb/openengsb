@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.internal;
+package org.openengsb.core.common.connectorsetupstore;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.openengsb.core.common.connectorsetupstore.ConnectorSetupBean;
-import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
 import org.openengsb.core.persistence.PersistenceException;
 import org.openengsb.core.persistence.PersistenceService;
 
