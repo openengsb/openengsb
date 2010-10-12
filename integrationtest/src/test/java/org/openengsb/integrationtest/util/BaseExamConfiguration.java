@@ -47,6 +47,13 @@ public final class BaseExamConfiguration {
         // methods
     }
 
+    public static List<String> getImportantBundleSymbolicNames() {
+        List<String> importantBundles = new ArrayList<String>();
+        importantBundles.add("org.openengsb.core.persistence");
+        importantBundles.add("org.openengsb.core.workflow");
+        return importantBundles;
+    }
+
     public static void addEntireOpenEngSBPlatform(List<Option> baseConfiguration) {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_WICKET));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_JAXB));

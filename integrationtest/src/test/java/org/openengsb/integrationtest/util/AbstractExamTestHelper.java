@@ -1,3 +1,4 @@
+
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
@@ -13,17 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.openengsb.integrationtest.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.ServiceManager;
@@ -52,6 +54,44 @@ public abstract class AbstractExamTestHelper {
         return System.getProperty("java.io.tmpdir") + "/paxexam_runner_" + System.getProperty("user.name");
     }
 
+    @Before
+    public void before() throws Exception {
+        List<String> importantBundles = BaseExamConfiguration.getImportantBundleSymbolicNames();
+        Bundle[] bundles = bundleContext.getBundles();
+        for (Bundle bundle : bundles) {
+            for (String importantBundleSymbolicName : importantBundles) {
+                if (!bundle.getSymbolicName().equals(importantBundleSymbolicName)) {
+                    continue;
+                }
+                waitForActiveSpringService(bundle);
+                break;
+            }
+        }
+    }
+
+    private void waitForActiveSpringService(Bundle bundle) throws InterruptedException {
+        int times = 0;
+        while (true) {
+            if (bundle.getState() != Bundle.ACTIVE) {
+                if (times > 20) {
+                    Assert.fail(String.format("Bundle %s still not active", bundle.getSymbolicName()));
+                }
+                Thread.sleep(3000);
+                times++;
+                continue;
+            }
+            ServiceTracker tracker = new ServiceTracker(bundle.getBundleContext(),
+                    "org.springframework.context.ApplicationContext", null);
+            tracker.open();
+            Object service = tracker.waitForService(20000);
+            if (service == null) {
+                Assert.fail(String.format("Bundle %s does not start spring service", bundle.getSymbolicName()));
+            }
+            tracker.close();
+            break;
+        }
+    }
+
     @BeforeClass
     public static void beforeClass() throws IOException {
         try {
@@ -73,8 +113,7 @@ public abstract class AbstractExamTestHelper {
     @Configuration
     public static Option[] configuration() {
         List<Option> baseConfiguration = BaseExamConfiguration.getBaseExamOptions("../");
-        baseConfiguration
-            .add(CoreOptions.systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"));
+        baseConfiguration.add(CoreOptions.systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"));
         baseConfiguration.add(new WorkingDirectoryOption(getWorkingDirectory()));
         BaseExamConfiguration.addEntireOpenEngSBPlatform(baseConfiguration);
         Option[] options = BaseExamConfiguration.convertOptionListToArray(baseConfiguration);
@@ -93,10 +132,10 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected ServiceManager retrieveServiceManager(BundleContext bundleContext, Class<? extends Domain> domain)
-        throws InterruptedException, InvalidSyntaxException {
+            throws InterruptedException, InvalidSyntaxException {
         String filter = "(domain=" + domain.getName() + ")";
         ServiceReference[] allServiceReferences =
-            bundleContext.getAllServiceReferences(ServiceManager.class.getName(), filter);
+                bundleContext.getAllServiceReferences(ServiceManager.class.getName(), filter);
         if (allServiceReferences != null) {
             for (ServiceReference serviceReference : allServiceReferences) {
                 Object service = bundleContext.getService(serviceReference);
