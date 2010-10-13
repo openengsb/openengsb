@@ -246,7 +246,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>${maven.source.version}</version>
+        <version>${plugin.source.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
