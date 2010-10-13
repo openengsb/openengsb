@@ -95,7 +95,7 @@ public final class OpenEngSBBundles {
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.issue").artifactId(
             "openengsb-domains-issue-trac"));
     
-  public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_SCM_IMPLEMENTATION = CoreOptions
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_SCM_IMPLEMENTATION = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.scm").artifactId(
             "openengsb-domains-scm-implementation"));
 
