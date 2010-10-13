@@ -62,16 +62,16 @@ public class GitServiceInstanceFactory implements ServiceInstanceFactory<ScmDoma
         return builder.build();
     }
 
-	@Override
-	public MultipleAttributeValidationResult updateValidation(
-			GitServiceImpl instance, Map<String, String> attributes) {
-		updateServiceInstance(instance, attributes);
+    @Override
+    public MultipleAttributeValidationResult updateValidation(
+            GitServiceImpl instance, Map<String, String> attributes) {
+        updateServiceInstance(instance, attributes);
         return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
-	}
+    }
 
-	@Override
-	public MultipleAttributeValidationResult createValidation(String id,
-			Map<String, String> attributes) {
-		return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
-	}
+    @Override
+    public MultipleAttributeValidationResult createValidation(String id,
+            Map<String, String> attributes) {
+        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+    }
 }
