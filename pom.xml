@@ -49,6 +49,7 @@
     <plugin.javadoc.version>2.7</plugin.javadoc.version>
     <plugin.helper.version>1.5</plugin.helper.version>
     <plugin.resources.version>2.4.3</plugin.resources.version>
+    <plugin.install.version>2.3.1</plugin.install.version>
   </properties>
 
   <groupId>org.openengsb</groupId>
@@ -389,6 +390,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
           <version>${plugin.resources.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${plugin.install.version}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
