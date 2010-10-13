@@ -34,7 +34,7 @@
       <value>org.openengsb.domains.scm.ScmDomain</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.scmdomain" />
+      <entry key="id" value="domains.scm" />
       <entry key="openengsb.service.type" value="domain" />
     </osgi:service-properties>
     <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
@@ -52,7 +52,7 @@
       <value>org.openengsb.domains.scm.ScmDomainEvents</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.scmdomain.events" />
+      <entry key="id" value="domains.scm.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </osgi:service-properties>
 
