@@ -114,6 +114,8 @@
     <karaf.version>2.0.0</karaf.version>
     <mina.version>2.0.0</mina.version>
     <sshd.version>0.4.0</sshd.version>
+    <jsch.version>0.1.42</jsch.version>
+    <jzlib.version>1.0.7</jzlib.version>
     <hsqldb.version>1.8.0.10</hsqldb.version>
     <h2.version>1.2.139</h2.version>
     <mysql.version>5.1.13</mysql.version>
@@ -130,7 +132,7 @@
     <h2.version>1.1.116</h2.version>
     <jaxb.version>2.2.1</jaxb.version>
     <jaxen.version>1.1.1</jaxen.version>
-    <jgit.version>0.7.1</jgit.version>
+    <jgit.version>0.9.3</jgit.version>
     <jibx.version>1.2.2</jibx.version>
     <joda.version>1.6</joda.version>
     <log4j.version>1.2.14</log4j.version>

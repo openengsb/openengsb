@@ -42,6 +42,7 @@
     <module>org.apache.wicket</module>
     <module>javax.xml.jaxb</module>
     <module>org.apache.xmlrpc</module>
+    <module>com.jcraft.jsch</module>
   </modules>
 
 </project>

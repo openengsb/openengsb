@@ -53,6 +53,15 @@
     <!--xi:include href="user/testclient.xml" /-->
   </part>
 
+  <part xml:id="domain.manual">
+    <title>Domains</title>
+    <partintro>
+      <para>This part gives an overview about the domains and their functionality the OpenEngSB supports out of the
+        box. Furthermore each connector and necessary external tool configuration is explained.</para>
+    </partintro>
+    <xi:include href="domains/scm/domain.xml"/>
+  </part>
+
   <part xml:id="developer.manual">
     <title>Developer Manual</title>
     <partintro>
