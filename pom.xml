@@ -25,7 +25,7 @@
   <properties>
     <!-- Version Informtations -->
     <openengsb.version.number>${pom.version}</openengsb.version.number>
-    <openengsb.version.name>"Emerald&nbsp;Eve"</openengsb.version.name>
+    <openengsb.version.name>"Emerald&#160;Eve"</openengsb.version.name>
     <!-- General Settings -->
     <root.basedir>${project.basedir}</root.basedir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
