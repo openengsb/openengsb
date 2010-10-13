@@ -16,13 +16,8 @@
 
 package org.openengsb.domains.scm.git;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.core.common.ServiceInstanceFactory;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domains.scm.ScmDomain;
 import org.openengsb.domains.scm.git.internal.GitServiceImpl;
 
@@ -32,9 +27,4 @@ public class GitServiceManager extends AbstractServiceManager<ScmDomain, GitServ
         super(factory);
     }
 
-    @Override
-    public MultipleAttributeValidationResult updateWithValidation(String id, Map<String, String> attributes) {
-        update(id, attributes);
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
-    }
 }

@@ -16,10 +16,13 @@
 
 package org.openengsb.domains.scm.git.internal;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domains.scm.ScmDomain;
 
 public class GitServiceInstanceFactory implements ServiceInstanceFactory<ScmDomain, GitServiceImpl> {
@@ -58,4 +61,17 @@ public class GitServiceInstanceFactory implements ServiceInstanceFactory<ScmDoma
             .description("service.branch.description").build());
         return builder.build();
     }
+
+	@Override
+	public MultipleAttributeValidationResult updateValidation(
+			GitServiceImpl instance, Map<String, String> attributes) {
+		updateServiceInstance(instance, attributes);
+        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+	}
+
+	@Override
+	public MultipleAttributeValidationResult createValidation(String id,
+			Map<String, String> attributes) {
+		return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+	}
 }
