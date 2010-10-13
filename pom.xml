@@ -50,6 +50,8 @@
     <plugin.helper.version>1.5</plugin.helper.version>
     <plugin.resources.version>2.4.3</plugin.resources.version>
     <plugin.install.version>2.3.1</plugin.install.version>
+    <plugin.wagon.webdav.version>1.0-beta-2</plugin.wagon.webdav.version>
+    <plugin.wagon.ssh.version>1.0-beta-6</plugin.wagon.ssh.version>
   </properties>
 
   <groupId>org.openengsb</groupId>
@@ -246,6 +248,18 @@
         </includes>
       </resource>
     </resources>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav</artifactId>
+        <version>${plugin.wagon.webdav.version}</version>
+      </extension>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>${plugin.wagon.ssh.version}</version>
+      </extension>
+    </extensions>  
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
