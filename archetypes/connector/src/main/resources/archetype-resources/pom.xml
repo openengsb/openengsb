@@ -24,7 +24,7 @@
   <parent>
     <groupId>${groupId}</groupId>
     <artifactId>${parentArtifactId}</artifactId>
-    <version>${version}</version>
+    <version>${project.version}</version>
   </parent>
 
   <properties>
@@ -33,8 +33,8 @@
   </properties>
 
   <groupId>${groupId}</groupId>
-  <artifactId>${artifactId}</artifactId>
-  <version>${version}</version>
+  <artifactId>${project.artifactId}</artifactId>
+  <version>${project.version}</version>
 
   <name>${name}</name>
 
@@ -52,19 +52,19 @@
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
-      <version>${pom.version}</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-persistence</artifactId>
-      <version>${pom.version}</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>${groupId}</groupId>
       <artifactId>${domainArtifactId}</artifactId>
-      <version>${pom.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

@@ -23,7 +23,7 @@
 
   <properties>
     <!-- Version Informtations -->
-    <openengsb.version.number>${pom.version}</openengsb.version.number>
+    <openengsb.version.number>${project.version}</openengsb.version.number>
     <openengsb.version.name>"Emerald Eve"</openengsb.version.name>
     <!-- General Settings -->
     <root.basedir>${project.basedir}</root.basedir>
@@ -238,7 +238,7 @@
   </contributors>
 
   <build>
-    <finalName>openengsb-${version}</finalName>
+    <finalName>openengsb-${project.version}</finalName>
     <resources>
       <resource>
         <directory>src/main/resources</directory>

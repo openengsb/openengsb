@@ -203,7 +203,7 @@
   </modules>
 
   <build>
-    <finalName>${artifactId}-${version}</finalName>
+    <finalName>${project.artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -299,7 +299,7 @@
               <dependency>
                 <groupId>org.openengsb.tooling</groupId>
                 <artifactId>openengsb-tooling-checkstyle</artifactId>
-                <version>${pom.version}</version>
+                <version>${project.version}</version>
               </dependency>
             </dependencies>
             <configuration>

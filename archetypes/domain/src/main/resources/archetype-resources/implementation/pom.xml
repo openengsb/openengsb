@@ -23,8 +23,8 @@
 
   <parent>
     <groupId>${groupId}</groupId>
-    <artifactId>${artifactId}</artifactId>
-    <version>${version}</version>
+    <artifactId>${project.artifactId}</artifactId>
+    <version>${project.version}</version>
   </parent>
 
   <properties>
@@ -34,7 +34,7 @@
 
   <groupId>${groupId}</groupId>
   <artifactId>${implementationArtifactId}</artifactId>
-  <version>${version}</version>
+  <version>${project.version}</version>
 
   <name>${implementationName}</name>
 
@@ -44,13 +44,13 @@
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
-      <version>${pom.version}</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-events</artifactId>
-      <version>${pom.version}</version>
+      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

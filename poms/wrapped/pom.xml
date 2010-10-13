@@ -32,7 +32,7 @@
   <packaging>pom</packaging>
 
   <build>
-    <finalName>${artifactId}-${version}</finalName>
+    <finalName>${project.artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.ops4j</groupId>
