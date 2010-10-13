@@ -22,13 +22,13 @@
     <relativePath>../poms/compiled/</relativePath>
     <groupId>org.openengsb.build</groupId>
     <artifactId>compiled-bundle-settings</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.M5</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.config</groupId>
   <artifactId>openengsb-config-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0.M5</version>
 
   <name>OpenEngSB :: Environment Configuration :: Parent</name>
 

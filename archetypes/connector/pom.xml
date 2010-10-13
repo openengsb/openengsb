@@ -21,13 +21,13 @@
   <parent>
     <groupId>org.openengsb.archetypes</groupId>
     <artifactId>openengsb-archetypes-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.M5</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.archetypes</groupId>
   <artifactId>openengsb-archetypes-connector</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0.M5</version>
 
   <name>OpenEngSB :: Archetypes :: Connector</name>
 
