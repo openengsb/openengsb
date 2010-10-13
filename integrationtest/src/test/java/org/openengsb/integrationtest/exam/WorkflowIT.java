@@ -16,6 +16,11 @@
 
 package org.openengsb.integrationtest.exam;
 
+import java.util.Collection;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,11 +40,6 @@ import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
 
 @RunWith(JUnit4TestRunner.class)
 public class WorkflowIT extends AbstractExamTestHelper {
@@ -71,7 +71,7 @@ public class WorkflowIT extends AbstractExamTestHelper {
         }
     }
 
-     public static class DummyIssueDomain implements IssueDomain {
+    public static class DummyIssueDomain implements IssueDomain {
 
         @Override
         public String createIssue(Issue issue) {
@@ -80,25 +80,24 @@ public class WorkflowIT extends AbstractExamTestHelper {
 
         @Override
         public void deleteIssue(Integer id) {
-           //ignore
+            // ignore
         }
 
         @Override
         public void addComment(Integer id, String comment) {
-           //ignore
+            // ignore
         }
 
         @Override
         public void updateIssue(Integer id, String comment, HashMap<IssueAttribute, String> changes) {
-            //ignore
+            // ignore
         }
 
         @Override
         public AliveState getAliveState() {
-              return AliveState.OFFLINE;
+            return AliveState.OFFLINE;
         }
     }
-
 
     @Test
     public void testHasHelloRule() throws Exception {
@@ -116,7 +115,6 @@ public class WorkflowIT extends AbstractExamTestHelper {
         contextService.putValue("domains/ExampleDomain/defaultConnector/id", "dummyLog");
         contextService.putValue("domains/IssueDomain/defaultConnector/id", "dummyIssue");
 
-
         /*
          * This is kind of a workaround. But for some reason when the workflow-service waits for these services for 30
          * seconds, they don't show up. But when provoking an AssertionError using the 2 lines below, the services show
@@ -126,7 +124,7 @@ public class WorkflowIT extends AbstractExamTestHelper {
         retrieveService(getBundleContext(), NotificationDomain.class);
 
         DummyNotificationDomain dummy = new DummyNotificationDomain();
-        String[] clazzes = new String[] { Domain.class.getName(), NotificationDomain.class.getName() };
+        String[] clazzes = new String[]{Domain.class.getName(), NotificationDomain.class.getName()};
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("id", "dummyConnector");
 
@@ -136,8 +134,7 @@ public class WorkflowIT extends AbstractExamTestHelper {
         properties.put("id", "dummyIssue");
         getBundleContext().registerService(clazzes, new DummyIssueDomain(), properties);
 
-
-        clazzes = new String[] { Domain.class.getName(), ExampleDomain.class.getName() };
+        clazzes = new String[]{Domain.class.getName(), ExampleDomain.class.getName()};
         properties.put("id", "dummyLog");
 
         getBundleContext().registerService(clazzes, new DummyLogDomain(), properties);

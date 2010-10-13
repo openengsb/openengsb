@@ -16,6 +16,13 @@
 
 package org.openengsb.integrationtest.exam;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.Domain;
@@ -32,13 +39,6 @@ import org.openengsb.domains.notification.NotificationDomain;
 import org.openengsb.domains.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
-
-import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Hashtable;
-
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
 
 @RunWith(JUnit4TestRunner.class)
 public class EventForwardIT extends AbstractExamTestHelper {
@@ -70,7 +70,6 @@ public class EventForwardIT extends AbstractExamTestHelper {
         }
     }
 
-
     public static class DummyIssueDomain implements IssueDomain {
 
         @Override
@@ -80,22 +79,22 @@ public class EventForwardIT extends AbstractExamTestHelper {
 
         @Override
         public void deleteIssue(Integer id) {
-           //ignore
+            // ignore
         }
 
         @Override
         public void addComment(Integer id, String comment) {
-           //ignore
+            // ignore
         }
 
         @Override
         public void updateIssue(Integer id, String comment, HashMap<IssueAttribute, String> changes) {
-            //ignore
+            // ignore
         }
 
         @Override
         public AliveState getAliveState() {
-              return AliveState.OFFLINE;
+            return AliveState.OFFLINE;
         }
     }
 
@@ -118,7 +117,6 @@ public class EventForwardIT extends AbstractExamTestHelper {
         clazzes = new String[]{Domain.class.getName(), IssueDomain.class.getName()};
         properties.put("id", "dummyIssue");
         getBundleContext().registerService(clazzes, new DummyIssueDomain(), properties);
-
 
         clazzes = new String[]{Domain.class.getName(), ExampleDomain.class.getName()};
         properties.put("id", "dummyLog");
