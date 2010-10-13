@@ -22,7 +22,7 @@
     <relativePath>..</relativePath>
     <groupId>org.openengsb.domains</groupId>
     <artifactId>openengsb-domains-parent</artifactId>
-    <version>1.0.0.M5</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -33,7 +33,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.domains.jms</groupId>
   <artifactId>openengsb-domains-jms</artifactId>
-  <version>1.0.0.M5</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Domains :: JMS</name>
 
