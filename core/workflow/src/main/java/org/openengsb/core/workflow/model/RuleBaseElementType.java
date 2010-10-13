@@ -20,5 +20,5 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType
 public enum RuleBaseElementType {
-    Rule, Function, Process, Global,
+        Rule, Function, Process, Global,
 }

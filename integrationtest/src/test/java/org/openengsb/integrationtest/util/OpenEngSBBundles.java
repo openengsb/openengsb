@@ -36,7 +36,7 @@ public final class OpenEngSBBundles {
     public static final MavenArtifactProvisionOption OPENENGSB_WRAPPED_XMLRPC = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
             .artifactId("org.apache.xmlrpc-all"));
-    
+
     public static final MavenArtifactProvisionOption OPENENGSB_WRAPPED_JSCH = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
             .artifactId("com.jcraft.jsch-all"));
@@ -94,7 +94,7 @@ public final class OpenEngSBBundles {
     public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_ISSUE_TRAC = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.issue").artifactId(
             "openengsb-domains-issue-trac"));
-    
+
     public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_SCM_IMPLEMENTATION = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.scm").artifactId(
             "openengsb-domains-scm-implementation"));

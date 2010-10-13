@@ -75,21 +75,21 @@ public class OsgiDomainServiceTest {
         instanceServiceReferenceMock = mock(ServiceReference.class);
         String filter = String.format("(domain=%s)", DummyDomain.class.getName());
         when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), filter)).thenReturn(
-                new ServiceReference[] { instanceServiceReferenceMock });
+                new ServiceReference[]{ instanceServiceReferenceMock });
         when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), null)).thenReturn(
-                new ServiceReference[] { instanceServiceReferenceMock });
+                new ServiceReference[]{ instanceServiceReferenceMock });
         when(contextMock.getAllServiceReferences(Domain.class.getName(), null)).thenReturn(
-                new ServiceReference[] { instanceServiceReferenceMock });
+                new ServiceReference[]{ instanceServiceReferenceMock });
         String idFilter = String.format("(id=%s)", "42");
         when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), idFilter)).thenReturn(
-                new ServiceReference[] { instanceServiceReferenceMock });
+                new ServiceReference[]{ instanceServiceReferenceMock });
         serviceMock = mock(DummyDomain.class);
         when(contextMock.getService(instanceServiceReferenceMock)).thenReturn(serviceMock);
 
         serviceManagerReferenceMock = mock(ServiceReference.class);
         filter = String.format("(domain=%s)", DummyDomain.class.getName());
         when(contextMock.getAllServiceReferences(ServiceManager.class.getName(), filter)).thenReturn(
-                new ServiceReference[] { serviceManagerReferenceMock });
+                new ServiceReference[]{ serviceManagerReferenceMock });
         serviceManagerMock = mock(ServiceManager.class);
         when(contextMock.getService(serviceManagerReferenceMock)).thenReturn(serviceManagerMock);
     }

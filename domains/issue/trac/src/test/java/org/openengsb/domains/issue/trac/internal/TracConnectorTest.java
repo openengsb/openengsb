@@ -40,12 +40,10 @@ import org.openengsb.domains.issue.trac.internal.models.constants.TracPriorityCo
 import org.openengsb.domains.issue.trac.internal.models.constants.TracStatusConstants;
 import org.openengsb.domains.issue.trac.internal.models.xmlrpc.Ticket;
 
-
 public class TracConnectorTest {
 
     Ticket ticketMock;
     TracConnector tracConnector;
-
 
     @Before
     public void setUp() {
@@ -76,7 +74,6 @@ public class TracConnectorTest {
         verify(ticketMock, times(1))
             .create(eq(s), eq("testdescription"), eq(attributes));
     }
-
 
     @Test
     public void testToDeleteIssue() throws Exception {

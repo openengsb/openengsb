@@ -62,7 +62,7 @@ public class OsgiBundleContextSpringBeanReceiver implements OsgiSpringBeanReceiv
         return references;
     }
 
-    private ApplicationContext getApplicationContextBySymName(String bundleSymbolicName, 
+    private ApplicationContext getApplicationContextBySymName(String bundleSymbolicName,
             ServiceReference[] references) {
         ServiceReference reference = null;
         for (ServiceReference serviceReference : references) {

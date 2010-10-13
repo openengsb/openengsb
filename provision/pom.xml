@@ -92,7 +92,7 @@
       <version>${felix.version}</version>
       <optional>true</optional>
     </dependency>
- 
+
     <!-- Apache Felix Environment -->
     <dependency>
       <groupId>org.apache.felix</groupId>
@@ -130,7 +130,7 @@
       <artifactId>org.apache.felix.gogo.runtime</artifactId>
       <version>${felix.gogo.version}</version>
     </dependency>
-   
+
     <!-- Pax Logging -->
     <dependency>
       <groupId>org.ops4j.pax.logging</groupId>
@@ -142,7 +142,7 @@
       <artifactId>pax-logging-api</artifactId>
       <version>${pax.logging.version}</version>
     </dependency>
-    
+
     <!-- Pax URL -->
     <dependency>
       <groupId>org.ops4j.pax.url</groupId>
@@ -196,7 +196,7 @@
       <artifactId>spring-core</artifactId>
       <version>${spring.version}</version>
     </dependency>
-        
+
     <!-- Spring DM Dependencies -->
     <dependency>
       <groupId>org.springframework.osgi</groupId>
@@ -238,7 +238,7 @@
           <artifactId>org.springframework.core</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-io</artifactId>
@@ -673,7 +673,7 @@
       <artifactId>org.eclipse.jgit</artifactId>
       <version>${jgit.version}</version>
     </dependency>
-  
+
   </dependencies>
 
 </project>

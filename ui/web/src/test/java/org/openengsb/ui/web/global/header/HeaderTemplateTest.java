@@ -15,6 +15,7 @@
  */
 
 package org.openengsb.ui.web.global.header;
+
 /**
 
  Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -61,10 +62,8 @@ import org.osgi.framework.BundleContext;
 
 public class HeaderTemplateTest {
 
-
     private WicketTester tester;
     private ApplicationContextMock context;
-
 
     @Before
     public void setup() {
@@ -143,7 +142,7 @@ public class HeaderTemplateTest {
         context.putBean("ruleManagerBean", mock(RuleManager.class));
         BundleContext bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
-        List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>>asList(Dummy.class);
+        List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(Dummy.class);
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);
 

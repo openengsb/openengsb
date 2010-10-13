@@ -35,7 +35,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class UrlShortenerIT {
     @Resource
     private UrlShortenerUtil urlShortener;
-    
+
     @Test
     public void testTinyUrl() throws HttpException, IOException {
         String s = "http://maps.google.at/maps/place?cid=2469784843158832493&q=tu+wien&hl=de&cd=1&cad=src:pplink&ei=yKOPS-jIA4mH_Qb5pPA7";

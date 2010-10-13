@@ -35,13 +35,13 @@ import org.springframework.osgi.context.BundleContextAware;
  * Base class for {@link ServiceManager} implementations. Handles all OSGi related stuff and exporting the right service
  * properties that are needed for service discovery. Furthermore this class also persists the connector state and
  * restores all persisted connectors at the next startup.
- * 
+ *
  * All service-specific action, like descriptor building, service instantiation and service updating are encapsulated in
  * a {@link ServiceInstanceFactory}. Creating a new service manager should be as simple as implementing the
  * {@link ServiceInstanceFactory} and creating a subclass of this class:
- * 
+ *
  * This class has to be instantiated via Spring, as the BundleContext has to be set as it is BundleContextAware.
- * 
+ *
  * <pre>
  * public class ExampleServiceManager extends AbstractServiceManager&lt;ExampleDomain, TheInstanceType&gt; {
  *     public ExampleServiceManager(ServiceInstanceFactory&lt;ExampleDomain, TheInstanceType&gt; factory) {
@@ -49,7 +49,7 @@ import org.springframework.osgi.context.BundleContextAware;
  *     }
  * }
  * </pre>
- * 
+ *
  * @param <DomainType> interface of the domain this service manages
  * @param <InstanceType> actual service implementation this service manages
  */
@@ -135,8 +135,8 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             InstanceType instance = factory.createServiceInstance(id, attributes);
             Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
             ServiceRegistration registration =
-                bundleContext.registerService(new String[]{getImplementationClass().getName(),
-                    getDomainInterface().getName(), Domain.class.getName()}, instance, serviceProperties);
+                bundleContext.registerService(new String[]{ getImplementationClass().getName(),
+                    getDomainInterface().getName(), Domain.class.getName() }, instance, serviceProperties);
             services.put(id, new DomainRepresentation(instance, registration));
         }
         return validation;

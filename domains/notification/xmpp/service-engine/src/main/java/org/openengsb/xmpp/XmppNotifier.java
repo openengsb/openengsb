@@ -80,7 +80,7 @@ public class XmppNotifier implements NotificationDomain {
         try {
             connection.login(this.user, this.password, this.resources);
         } catch (XMPPException e) {
-            throw new XMPPNotifierException("Login to server failed (" + 
+            throw new XMPPNotifierException("Login to server failed (" +
                     user + "/" + password + "/" + resources + ")", e);
         }
     }

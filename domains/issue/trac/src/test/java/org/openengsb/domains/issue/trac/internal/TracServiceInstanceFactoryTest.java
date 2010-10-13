@@ -29,9 +29,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.openengsb.domains.issue.trac.internal.models.TicketHandlerFactory;
 
-
 public class TracServiceInstanceFactoryTest {
-
 
     @Test
     public void testCreateTracConnector_ShouldReturnTracConnector() {
@@ -60,7 +58,6 @@ public class TracServiceInstanceFactoryTest {
         verify(tc, times(1)).setUsername("newUser");
         verify(tc, times(1)).setUserPassword("newPassword");
     }
-
 
     @Test
     public void getServiceDescriptor_ShouldReturnTracConnectorServiceDescriptor() {

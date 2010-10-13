@@ -86,7 +86,7 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-toolabstraction-maven</artifactId>
     </dependency>
-    
+
     <!-- Servicemix dependencies -->
     <dependency>
       <groupId>org.apache.servicemix</groupId>
@@ -106,7 +106,7 @@
       <groupId>geronimo-spec</groupId>
       <artifactId>geronimo-spec-j2ee</artifactId>
     </dependency>
-    
+
     <!-- Springframework dependencies -->
     <dependency>
       <groupId>org.springframework</groupId>

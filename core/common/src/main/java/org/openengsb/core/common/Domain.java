@@ -19,13 +19,13 @@ package org.openengsb.core.common;
 import org.openengsb.core.common.util.AliveState;
 
 /**
- * Base interface all domain interfaces have to implement to be discoverable in
- * the OpenEngSB environment.
+ * Base interface all domain interfaces have to implement to be discoverable in the OpenEngSB environment.
  */
 public interface Domain {
 
     /**
-     * return the current state of the service, 
+     * return the current state of the service,
+     *
      * @see org.openengsb.core.common.util.AliveState
      */
     AliveState getAliveState();

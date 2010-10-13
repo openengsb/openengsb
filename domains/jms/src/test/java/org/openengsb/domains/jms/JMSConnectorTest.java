@@ -18,7 +18,6 @@ package org.openengsb.domains.jms;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
@@ -67,7 +66,7 @@ public class JMSConnectorTest {
             }
         });
         when(provider.getId()).thenReturn(ID);
-        when(domainService.domains()).thenReturn(Arrays.asList(new DomainProvider[]{provider}));
+        when(domainService.domains()).thenReturn(Arrays.asList(new DomainProvider[]{ provider }));
     }
 
     @Test
@@ -95,14 +94,14 @@ public class JMSConnectorTest {
         ProxyServiceManager manager = (ProxyServiceManager) captor.getValue();
 
         manager.update("12345", new HashMap<String, String>());
-        verify(mockContext).registerService(eq(new String[]{TestInterface.class.getName(), Domain.class.getName()}),
+        verify(mockContext).registerService(eq(new String[]{ TestInterface.class.getName(), Domain.class.getName() }),
             captor.capture(), any(Dictionary.class));
 
         ((TestInterface) captor.getValue()).log(5);
         ArgumentCaptor<Method> methodCaptor = ArgumentCaptor.forClass(Method.class);
         try {
             verify(invocationHandlerMock).invoke(same(captor.getValue()), methodCaptor.capture(),
-                eq(new Object[]{new Integer(5)}));
+                eq(new Object[]{ new Integer(5) }));
         } catch (Throwable e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -113,7 +112,7 @@ public class JMSConnectorTest {
 
     @Test
     public void callAddEventListeners_ShouldSetEventListenersCorrectly() {
-        when(domainService.domains()).thenReturn(Arrays.asList(new DomainProvider[]{provider, provider}));
+        when(domainService.domains()).thenReturn(Arrays.asList(new DomainProvider[]{ provider, provider }));
         ConnectionFactory mock2 = mock(ConnectionFactory.class);
 
         MessageListenerContainerFactory messageListenerFactoryMock = mock(MessageListenerContainerFactory.class);

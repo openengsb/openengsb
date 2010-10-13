@@ -61,7 +61,7 @@ public class DefaultDomainProxyFactoryBean implements BundleContextAware, Factor
     @Override
     public Domain getObject() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Class<?>[] classes = new Class<?>[] {Domain.class, domainInterface, };
+        Class<?>[] classes = new Class<?>[]{ Domain.class, domainInterface, };
         InvocationHandler handler = makeHandler();
         return (Domain) Proxy.newProxyInstance(classLoader, classes, handler);
     }

@@ -76,13 +76,13 @@ public class SvnUT {
 
     @Test
     public void testCreateDirs() {
-        
+
         connector.createDir(name1, "test", true);
         connector.createDir(name1, "test", false);
         connector.createDir(name2, "test", true);
         connector.createDir(name2, "test", false);
         UpdateResult result = connector.update();
-        
+
         assertTrue(result.getCommitted().size() == 0);
         assertTrue(result.getDeletedBranches().size() == 0);
         assertTrue(result.getDeletedTags().size() == 0);

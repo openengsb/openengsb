@@ -21,4 +21,3 @@ public interface PageService {
     String getHelloWorldText();
 
 }
-

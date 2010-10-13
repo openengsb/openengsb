@@ -25,7 +25,7 @@
     <artifactId>openengsb-docs-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  
+
   <artifactId>openengsb-docs-homepage</artifactId>
   <name>OpenEngSB :: Documentation :: Homepage</name>
   <packaging>pom</packaging>
@@ -33,7 +33,7 @@
   <description>
     Homepage for the Open Engineering Service Bus
   </description>
-  
+
   <profiles>
     <profile>
       <id>nightly</id>
@@ -142,7 +142,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin> 
+      </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <version>1.5</version>

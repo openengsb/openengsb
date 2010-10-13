@@ -19,8 +19,8 @@ package org.openengsb.domains.issue.trac.internal.models.constants;
 public enum TracPriorityConstants {
 
     HIGH,
-    IMMEDIATE,
-    LOW,
-    NORMAL,
-    URGENT,
+        IMMEDIATE,
+        LOW,
+        NORMAL,
+        URGENT,
 }

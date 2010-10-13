@@ -82,7 +82,7 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-workflow-domains</artifactId>
     </dependency>
-    
+
     <!-- XMPP dependencies -->
 	<dependency>
       <groupId>jivesoftware</groupId>
@@ -147,12 +147,12 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-core</artifactId>  
+      <artifactId>servicemix-core</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
   </dependencies>
 </project>

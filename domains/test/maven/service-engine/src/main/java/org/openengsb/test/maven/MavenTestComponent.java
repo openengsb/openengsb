@@ -27,5 +27,5 @@ public class MavenTestComponent extends OpenEngSBComponent {
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { MavenTestEndpoint.class };
     }
-    
+
 }

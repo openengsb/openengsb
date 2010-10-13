@@ -33,7 +33,8 @@ public class TracServiceInstanceFactory implements ServiceInstanceFactory<IssueD
     public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
         builder.name("trac.name").description("trac.description");
 
-        builder.attribute(buildAttribute(builder, "username", "username.outputMode", "username.outputMode.description"))
+        builder
+            .attribute(buildAttribute(builder, "username", "username.outputMode", "username.outputMode.description"))
             .attribute(builder.newAttribute().id("userPassword").name("userPassword.outputMode")
                 .description("userPassword.outputMode.description").defaultValue("").asPassword().build())
             .attribute(builder.newAttribute().id("serverUrl").name("serverUrl.outputMode")

@@ -46,7 +46,7 @@ public abstract class PersistenceServiceTest {
         beanC = new PersistenceTestBean("C", 3, beanB);
         beanB.setReference(beanC);
 
-        persistence.create(Arrays.asList(new PersistenceTestBean[]{beanA, beanB, beanC}));
+        persistence.create(Arrays.asList(new PersistenceTestBean[]{ beanA, beanB, beanC }));
     }
 
     @Test
@@ -93,7 +93,7 @@ public abstract class PersistenceServiceTest {
         List<PersistenceTestBean> results = persistence.query(example);
         results.addAll(persistence.query(example2));
         List<PersistenceTestBean> results2 =
-            persistence.query(Arrays.asList(new PersistenceTestBean[]{example, example2}));
+            persistence.query(Arrays.asList(new PersistenceTestBean[]{ example, example2 }));
         assertThat(results2, is(results));
     }
 
@@ -134,7 +134,7 @@ public abstract class PersistenceServiceTest {
     public void testMultiCreate_shouldWork() throws PersistenceException {
         PersistenceTestBean additional1 = new PersistenceTestBean("Test", 1, null);
         PersistenceTestBean additional2 = new PersistenceTestBean("Test", 2, null);
-        persistence.create(Arrays.asList(new PersistenceTestBean[]{additional1, additional2}));
+        persistence.create(Arrays.asList(new PersistenceTestBean[]{ additional1, additional2 }));
 
         List<PersistenceTestBean> results = persistence.query(new PersistenceTestBean("Test", null, null));
         assertThat(results.size(), is(2));
@@ -257,7 +257,7 @@ public abstract class PersistenceServiceTest {
 
         PersistenceTestBean aAndB = new PersistenceTestBean(null, 1, null);
         PersistenceTestBean c = new PersistenceTestBean("C", 3, null);
-        List<PersistenceTestBean> toDelete = Arrays.asList(new PersistenceTestBean[]{aAndB, c});
+        List<PersistenceTestBean> toDelete = Arrays.asList(new PersistenceTestBean[]{ aAndB, c });
         persistence.delete(toDelete);
 
         results = persistence.query(wildcard);

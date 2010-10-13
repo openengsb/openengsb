@@ -20,9 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SerializedEvent {
-    
-    
-    
+
     private Map<String, String> parameters = new HashMap<String, String>();
 
     public Map<String, String> getParameters() {

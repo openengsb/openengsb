@@ -30,7 +30,6 @@ public class TicketHandlerFactory {
     String username = "";
     String userPassword = "";
 
-
     public Ticket createTicket() {
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
 
@@ -53,11 +52,9 @@ public class TicketHandlerFactory {
         return t;
     }
 
-
     public void setServerUrl(String serverUrl) {
         this.serverUrl = serverUrl;
     }
-
 
     public void setUsername(String username) {
         this.username = username;

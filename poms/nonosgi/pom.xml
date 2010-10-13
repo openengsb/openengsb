@@ -38,7 +38,7 @@
       </resource>
     </resources>
   </build>
-  
+
   <dependencies>
     <!-- OSGi Standard References -->
     <dependency>

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 
+ *
  * The interface of the common persistence solution of the OpenEngSB. This service is meant to be used by domains and
  * other components of the OpenEngSB to store their data.
  */
@@ -42,7 +42,7 @@ public interface PersistenceService {
      * Store the given element in the database. Multiple calls with the same element do not fail, but simply stores the
      * element twice independently. Be careful when storing object with references to other objects, as these referenced
      * objects are also stored in the database.
-     * 
+     *
      * @throws PersistenceException if the element could not be stored because of an error of the underlying database
      *         system.
      */
@@ -52,7 +52,7 @@ public interface PersistenceService {
      * Store the given list of elements. Behaves like multiple calls to {@link #create(Object)}, except for objects with
      * references to other objects in the list of objects to create. These are handled correctly storing the respective
      * element only once.
-     * 
+     *
      * @throws PersistenceException if the element could not be stored because of an error of the underlying database
      *         system.
      */
@@ -60,7 +60,7 @@ public interface PersistenceService {
 
     /**
      * Update {@code oldBean} stored in the database with the values from {@code newBean}.
-     * 
+     *
      * @throws PersistenceException if a query using {@code oldBean} does not return exactly one element stored in the
      *         database.
      */
@@ -69,24 +69,24 @@ public interface PersistenceService {
     /**
      * Update the keys of the given map stored in the database with the values of the given map. Has transactional
      * behavior, so if one of the update operations fails no update is performed.
-     * 
+     *
      * @throws PersistenceException if a query using the key element in the map does not return exactly one element
      *         stored in the database.
      */
     <TYPE> void update(Map<TYPE, TYPE> beans) throws PersistenceException;
 
     /**
-     * 
+     *
      * Delete all elements which are returned by a query using the given {@code example} object.
-     * 
+     *
      * @throws PersistenceException if no element can be found for the given query by example object
      */
     <TYPE> void delete(TYPE example) throws PersistenceException;
 
     /**
-     * 
+     *
      * Delete all elements which are returned by a query using the given list of {@code examples}.
-     * 
+     *
      * @throws PersistenceException if the underlying database system throws an exception
      */
     <TYPE> void delete(List<? extends TYPE> examples) throws PersistenceException;

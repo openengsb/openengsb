@@ -43,7 +43,7 @@ public class JSONSerialisationInvocationHandlerTest {
         JSONSerialisationInvocationHandler handler = new JSONSerialisationInvocationHandler(sender);
         newProxyInstance =
             (TestInterface) Proxy.newProxyInstance(TestInterface.class.getClassLoader(),
-                new Class[]{TestInterface.class}, handler);
+                new Class[]{ TestInterface.class }, handler);
     }
 
     @Test

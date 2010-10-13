@@ -50,9 +50,9 @@ public class FacebookNotifierIT {
         Notification notification = new Notification();
         notification.setMessage("test on: " + new Date());
         facebookNotifier.notify(notification);
-        
+
 
     }
 
-    
+
 }

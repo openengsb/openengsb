@@ -90,7 +90,7 @@ public class SvnConnectorExtension extends SvnConnector {
             throw new ScmException(exception);
         }
     }
-    
+
     public void delete(String file) {
         File fileToDelete = new File(getWorkingCopyFile(), file);
         if (!fileToDelete.exists()) {

@@ -18,6 +18,6 @@ package org.openengsb.twitter.common;
 
 public interface TwitterConnector {
     public void updateStatus(String status);
-    
+
     public void sendMessage(String receiver, String message);
 }

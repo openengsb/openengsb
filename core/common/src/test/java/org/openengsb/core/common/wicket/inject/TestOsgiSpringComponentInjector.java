@@ -37,4 +37,3 @@ public class TestOsgiSpringComponentInjector {
         tester.assertContains("helloWorldText");
     }
 }
-

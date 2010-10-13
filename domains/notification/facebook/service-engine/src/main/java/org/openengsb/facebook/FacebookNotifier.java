@@ -41,7 +41,7 @@ public class FacebookNotifier implements NotificationDomain {
         if (notification.getRecipient() == null || notification.getRecipient().equals("")) {
             facebookConnector.updateStatus(notification.getMessage());
         } else {
-            // TODO: add recipient 
+            // TODO: add recipient
         }
     }
 

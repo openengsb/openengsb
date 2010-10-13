@@ -40,7 +40,7 @@ public class Twitter4JTwitterTest {
         Mockito.when(twitter.updateStatus(Mockito.anyString())).thenThrow(new TwitterException("test"));
         ourTwitter.updateStatus("test");
     }
-    
+
     @Test
     public void testMessageErrorCatching() throws TwitterException {
         Mockito.when(twitter.sendDirectMessage(Mockito.anyString(), Mockito.anyString())).thenThrow(new TwitterException("test"));

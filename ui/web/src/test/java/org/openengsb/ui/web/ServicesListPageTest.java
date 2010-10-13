@@ -190,7 +190,6 @@ public class ServicesListPageTest {
     public void verifyIfEditButtonAndDeleteButtonExist_ShouldReturnTrue() {
         setUpServicesMap();
 
-
         tester.startPage(ServiceListPage.class);
         tester.assertComponent("connectingServicePanel:connectingServices:0:updateService", AjaxLink.class);
         tester.assertComponent("connectingServicePanel:connectingServices:0:deleteService", AjaxLink.class);

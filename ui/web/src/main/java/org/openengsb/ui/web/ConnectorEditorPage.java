@@ -56,7 +56,6 @@ public class ConnectorEditorPage extends BasePage {
         createEditor(attributeValues);
     }
 
-
     @SuppressWarnings("serial")
     private void createEditor(Map<String, String> values) {
         List<AttributeDefinition> attributes = buildAttributeList(serviceManager);
@@ -83,7 +82,7 @@ public class ConnectorEditorPage extends BasePage {
                         String id = getValues().get("id");
                         ServiceId reference = new ServiceId(serviceClass, id);
                         setResponsePage(new TestClient(reference));
-//                        info(new StringResourceModel("service.add.succeed", this, null).getString());
+                        // info(new StringResourceModel("service.add.succeed", this, null).getString());
                     }
                 } else {
                     serviceManager.update(getValues().get("id"), getValues());

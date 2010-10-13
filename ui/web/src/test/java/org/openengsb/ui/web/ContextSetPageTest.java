@@ -305,6 +305,6 @@ public class ContextSetPageTest {
                 .putValue("x/y/z", "testvalue");
         tester.executeAjaxEvent("form:save", "onclick");
         verify(contextService).putValue("x/y/z", "testvalue");
-        tester.assertErrorMessages(new String[] {"key identifies a path, put operation not allowed"});
+        tester.assertErrorMessages(new String[]{ "key identifies a path, put operation not allowed" });
     }
 }

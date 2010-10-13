@@ -34,8 +34,8 @@ public enum AliveState {
     OFFLINE,
 
     /**
-     * domain is disconnected means, from the view point of a domain everything is ok, but there is no
-     * connection the the service( e.g. no internet connection,),
+     * domain is disconnected means, from the view point of a domain everything is ok, but there is no connection the
+     * the service( e.g. no internet connection,),
      */
     DISCONNECTED
 

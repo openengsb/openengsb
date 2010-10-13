@@ -35,9 +35,9 @@ import org.osgi.framework.BundleContext;
 /**
  * Tests are only very few, as the ProxyServiceManager is mostly copied from AbstractServiceManager and has to be merged
  * together with it soon.
- * 
+ *
  * @author Florian Motlik
- * 
+ *
  */
 public class ProxyServiceManagerTest {
 

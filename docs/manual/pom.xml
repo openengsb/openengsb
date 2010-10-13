@@ -186,10 +186,10 @@
         </configuration>
         <executions>
           <execution>
-            <id>make-assembly</id> 
+            <id>make-assembly</id>
             <phase>package</phase>
             <goals>
-              <goal>single</goal> 
+              <goal>single</goal>
             </goals>
           </execution>
         </executions>
@@ -220,7 +220,7 @@
                   <file>target/openengsb-docs-manual-${project.version}-pdf.zip</file>
                   <type>zip</type>
                   <classifier>pdf</classifier>
-                </artifact> 
+                </artifact>
               </artifacts>
             </configuration>
           </execution>

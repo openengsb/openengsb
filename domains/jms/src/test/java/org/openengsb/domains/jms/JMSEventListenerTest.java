@@ -17,7 +17,6 @@
 package org.openengsb.domains.jms;
 
 import static junit.framework.Assert.fail;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.doThrow;
@@ -88,7 +87,7 @@ public class JMSEventListenerTest {
         assertThat(captor.getValue().getName(), equalTo(ID));
         verify(jmsTemplateMock).convertAndSend(ID + "_event_return", RETURN);
     }
-    
+
     @Test
     public void throwExceptionInRaiseEvent_shouldSendExceptionEvent()
         throws JMSException, InvalidSyntaxException {

@@ -17,24 +17,22 @@
 package org.openengsb.core.common.context;
 
 /**
- * Service for retrieving the root context for the current thread. This service
- * provides a few convenience methods for managing the {@code Context}.
- * 
- * Path elements are separated by a slash ('/'), e.g. {@code /a/b/c} could mean
- * a path that identifies a context child {@code 'c'} three levels down or (in
- * path and key combinations} a key {@code 'c'} two level down.
+ * Service for retrieving the root context for the current thread. This service provides a few convenience methods for
+ * managing the {@code Context}.
+ *
+ * Path elements are separated by a slash ('/'), e.g. {@code /a/b/c} could mean a path that identifies a context child
+ * {@code 'c'} three levels down or (in path and key combinations} a key {@code 'c'} two level down.
  */
 public interface ContextService {
 
     /**
-     * Sets the value for the given path and key parameter. This creates any
-     * needed sub contexts if they are not existing.
+     * Sets the value for the given path and key parameter. This creates any needed sub contexts if they are not
+     * existing.
      */
     void putValue(String pathAndKey, String value);
 
     /**
-     * Returns the value for the given parameter or null if the given path and
-     * key does not exist.
+     * Returns the value for the given parameter or null if the given path and key does not exist.
      */
     String getValue(String pathAndKey);
 
@@ -46,7 +44,7 @@ public interface ContextService {
     Context getContext();
 
     /**
-     * 
+     *
      * @return the id of the current context
      */
     String getCurrentContextId();

@@ -34,7 +34,7 @@ public class NumberValidatorTest {
     }
 
     // TODO public void testUsingGermanLocale_shouldReturnGermanMessage() {
-    
+
     // TODO public void testUsingEnglishLocale_shouldReturnEnglishMessage()
 
     @Test

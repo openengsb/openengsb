@@ -67,7 +67,7 @@ public abstract class ReportPartStoreTest {
         SimpleReportPart reportPart = new SimpleReportPart("42", "text/plain", null);
         store.storePart(alreadyAddedKey, reportPart);
         List<ReportPart> parts = store.getParts(alreadyAddedKey);
-        List<String> expected = Arrays.asList(new String[]{"42", "alreadyAdded1", "alreadyAdded2"});
+        List<String> expected = Arrays.asList(new String[]{ "42", "alreadyAdded1", "alreadyAdded2" });
         assertThat(parts.size(), is(expected.size()));
         for (int i = 0; i < parts.size(); i++) {
             assertThat(expected.contains(parts.get(i).getPartName()), is(true));

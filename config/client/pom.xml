@@ -28,7 +28,7 @@
 
   <artifactId>openengsb-config-client</artifactId>
   <packaging>pom</packaging>
-  
+
   <name>OpenEngSB :: Environment Configuration :: Adaptable Client Setting Files</name>
 
   <build>
@@ -97,7 +97,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin> 
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -124,10 +124,10 @@
         </configuration>
         <executions>
           <execution>
-            <id>make-assembly</id> 
+            <id>make-assembly</id>
             <phase>package</phase>
             <goals>
-              <goal>single</goal> 
+              <goal>single</goal>
             </goals>
           </execution>
         </executions>

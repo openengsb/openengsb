@@ -23,4 +23,3 @@ public interface OsgiSpringBeanReceiver extends IClusterable {
     Object getBean(String springBeanName, String bundleSymbolicName);
 
 }
-

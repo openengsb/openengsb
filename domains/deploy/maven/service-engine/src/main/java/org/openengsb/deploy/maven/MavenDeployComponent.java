@@ -27,5 +27,5 @@ public class MavenDeployComponent extends OpenEngSBComponent {
     protected Class<?>[] getEndpointClasses() {
         return new Class[] { MavenDeployEndpoint.class };
     }
-    
+
 }

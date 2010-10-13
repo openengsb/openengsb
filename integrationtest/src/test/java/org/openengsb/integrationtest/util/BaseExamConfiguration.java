@@ -98,7 +98,7 @@ public final class BaseExamConfiguration {
             PaxRunnerOptions.scanComposite("file:" + pathToRoot + "assembly/target/classes/karaf.composite"),
             PaxRunnerOptions.scanComposite("file:" + pathToRoot + "assembly/target/classes/settings.debug.composite"),
             PaxRunnerOptions.scanPom("file:" + pathToRoot + "target/finalPom.xml"),
-            CoreOptions.frameworks(CoreOptions.felix())}));
+            CoreOptions.frameworks(CoreOptions.felix()) }));
     }
 
     private static void writeFileFromString(String filepath, String input) {

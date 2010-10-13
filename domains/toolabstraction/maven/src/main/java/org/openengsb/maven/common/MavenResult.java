@@ -22,10 +22,10 @@ import java.util.Map;
 /**
  * The BuildResult represents the possible values, that the build engine
  * provides. The values of Maven are Error, Failure and Success.
- * 
+ *
  * Additional Properties like timestamp, the failure task or the exception list
  * should describe the Output of the Build Engine.
- * 
+ *
  */
 public class MavenResult {
 
@@ -62,7 +62,7 @@ public class MavenResult {
 
     /**
      * Sets the time stamp, when the build finished
-     * 
+     *
      * @param timestamp - time stamp when the build finished
      */
     public void setTimestamp(long timestamp) {
@@ -71,7 +71,7 @@ public class MavenResult {
 
     /**
      * Return the time when the build was finished
-     * 
+     *
      * @return timestamp - time when the build was finished
      */
     public long getTimestamp() {
@@ -80,7 +80,7 @@ public class MavenResult {
 
     /**
      * Sets the name of the failed task
-     * 
+     *
      * @param task - name of the failed task
      */
     public void setTask(String task) {
@@ -89,7 +89,7 @@ public class MavenResult {
 
     /**
      * Returns the name of the failed task, else null
-     * 
+     *
      * @return task - the name of the failed task
      */
     public String getTask() {
@@ -98,7 +98,7 @@ public class MavenResult {
 
     /**
      * Sets the result of the maven process
-     * 
+     *
      * @param result - possible values are error, failure, success
      */
     public void setResult(String result) {
@@ -107,7 +107,7 @@ public class MavenResult {
 
     /**
      * Returns the result of the maven process
-     * 
+     *
      * @return result - possible values are error, failure, success
      */
     public String getResult() {
@@ -116,7 +116,7 @@ public class MavenResult {
 
     /**
      * Sets a short description of the error message
-     * 
+     *
      * @param errorMessage - short description
      */
     public void setErrorMessage(String errorMessage) {
@@ -125,7 +125,7 @@ public class MavenResult {
 
     /**
      * Returns a short description of the error message
-     * 
+     *
      * @return errorMessage
      */
     public String getErrorMessage() {

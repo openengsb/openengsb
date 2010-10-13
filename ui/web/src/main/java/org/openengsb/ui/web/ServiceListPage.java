@@ -179,7 +179,7 @@ public class ServiceListPage extends BasePage {
 
     @SuppressWarnings("serial")
     private LoadableDetachableModel<ServiceManager> createLoadableDetachableServiceManagerModel(
-        final ServiceManager sm) {
+            final ServiceManager sm) {
         return new LoadableDetachableModel<ServiceManager>() {
             @Override
             protected ServiceManager load() {
@@ -199,7 +199,7 @@ public class ServiceListPage extends BasePage {
 
     @SuppressWarnings("serial")
     private LoadableDetachableModel<List<ServiceReference>> createLoadableServiceReferenceModel(
-        final AliveState state) {
+            final AliveState state) {
         return new LoadableDetachableModel<List<ServiceReference>>() {
             @Override
             protected List<ServiceReference> load() {

@@ -174,7 +174,8 @@ public class TestClientTest {
         setupAndStartTestClientPage();
         setServiceInDropDown(0);
 
-        @SuppressWarnings("unchecked") Form<MethodCall> form = (Form<MethodCall>) tester
+        @SuppressWarnings("unchecked")
+        Form<MethodCall> form = (Form<MethodCall>) tester
             .getComponentFromLastRenderedPage("methodCallForm");
         MethodCall modelObject = form.getModelObject();
         ServiceId reference = new ServiceId(TestService.class.getName(), "test");
@@ -199,7 +200,8 @@ public class TestClientTest {
     @Test
     public void testShowMethodListInDropDown() throws Exception {
         setupAndStartTestClientPage();
-        @SuppressWarnings("unchecked") DropDownChoice<MethodId> methodList = (DropDownChoice<MethodId>) tester
+        @SuppressWarnings("unchecked")
+        DropDownChoice<MethodId> methodList = (DropDownChoice<MethodId>) tester
             .getComponentFromLastRenderedPage("methodCallForm:methodList");
 
         setServiceInDropDown(0);
@@ -347,7 +349,7 @@ public class TestClientTest {
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
-        tester.assertInfoMessages(new String[]{"Methodcall called successfully"});
+        tester.assertInfoMessages(new String[]{ "Methodcall called successfully" });
         Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
         Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
     }
@@ -438,7 +440,6 @@ public class TestClientTest {
                 new PassThroughLocalizableString("service.description"));
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
-
         testService = new TestService();
         when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
         when(managedServicesMock.getService(anyString(), anyString())).thenReturn(testService);
@@ -482,7 +483,7 @@ public class TestClientTest {
         }
         tester.assertComponent("methodCallForm:editButton", AjaxButton.class);
         AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
-        //should be disabled when nothing is selected
+        // should be disabled when nothing is selected
         Assert.assertEquals(false, editButton.isEnabled());
     }
 
@@ -493,7 +494,7 @@ public class TestClientTest {
             ServiceReference ref = Mockito.mock(ServiceReference.class);
             Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
             Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-            ServiceReference[] refs = new ServiceReference[]{ref};
+            ServiceReference[] refs = new ServiceReference[]{ ref };
             Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
         } catch (InvalidSyntaxException e) {
             Assert.fail("not expected");
@@ -507,13 +508,11 @@ public class TestClientTest {
         Mockito.when(serviceDescriptor.getDescription()).thenReturn(
                 new PassThroughLocalizableString("ServiceDescription"));
 
-
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptor);
 
         managerList.add(serviceManagerMock);
         Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(managerList);
-
 
         expandServiceListTree();
         tester.debugComponentTrees();

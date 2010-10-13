@@ -86,7 +86,7 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-domains-toolabstraction-maven</artifactId>
     </dependency>
-    
+
     <!-- Servicemix dependencies -->
     <dependency>
       <groupId>org.apache.servicemix</groupId>
@@ -138,7 +138,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.servicemix</groupId>
-      <artifactId>servicemix-core</artifactId>  
+      <artifactId>servicemix-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

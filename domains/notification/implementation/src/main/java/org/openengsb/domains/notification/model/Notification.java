@@ -16,7 +16,6 @@
 
 package org.openengsb.domains.notification.model;
 
-
 import java.util.Collections;
 import java.util.List;
 

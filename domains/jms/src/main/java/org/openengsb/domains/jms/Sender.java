@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.openengsb.domains.jms;
 
 public interface Sender {

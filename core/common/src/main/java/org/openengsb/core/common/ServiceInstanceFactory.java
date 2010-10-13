@@ -25,7 +25,7 @@ public interface ServiceInstanceFactory<DomainType extends Domain, InstanceType 
 
     /**
      * Called when the {@link #ServiceDescriptor} for the provided service is needed.
-     * 
+     *
      * The {@code builder} already has the id, service type and implementation type set to defaults.
      */
     ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder);
@@ -33,7 +33,7 @@ public interface ServiceInstanceFactory<DomainType extends Domain, InstanceType 
     /**
      * Called by the {@link AbstractServiceManager} when updated service attributes for an instance are available. The
      * attributes may only contain changed values and omit previously set attributes.
-     * 
+     *
      * @param instance the instance to update
      * @param attributes the new service settings
      */
@@ -46,7 +46,7 @@ public interface ServiceInstanceFactory<DomainType extends Domain, InstanceType 
 
     /**
      * The {@link AbstractServiceManager} calls this method each time a new service instance has to be started.
-     * 
+     *
      * @param id the unique id this service has been assigned.
      * @param attributes the initial service settings
      */

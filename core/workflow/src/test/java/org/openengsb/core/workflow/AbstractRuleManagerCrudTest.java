@@ -71,7 +71,7 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
         testData.add(new TestElement(funcId1, func1));
         testData.add(new TestElement(funcId2, func2));
         testData.add(new TestElement(funcId2, func2));
-        data.add(new Object[] { testData });
+        data.add(new Object[]{ testData });
 
         testData = new ArrayList<TestElement>();
 
@@ -84,7 +84,7 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
         testData.add(new TestElement(ruleId1, rule2));
         testData.add(new TestElement(ruleId2, rule1));
         testData.add(new TestElement(ruleId2, rule2));
-        data.add(new Object[] { testData });
+        data.add(new Object[]{ testData });
 
         testData = new ArrayList<TestElement>();
         String sampleFlow = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -106,7 +106,7 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
         testData.add(new TestElement(flowId2, sampleFlow));
         testData.add(new TestElement(flowId2, sampleFlow));
 
-        data.add(new Object[] { testData });
+        data.add(new Object[]{ testData });
         // TODO: imports & globals
         // data.add(new Object[] { new
         // RuleBaseElementId(RuleBaseElementType.Import, "ignored",

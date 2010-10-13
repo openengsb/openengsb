@@ -40,13 +40,13 @@
       <groupId>org.openengsb</groupId>
       <artifactId>openengsb-workflow-domains</artifactId>
     </dependency>
-    
+
     <!-- Springframework dependencies -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
     </dependency>
-    
+
     <!-- twitter dependencies -->
     <dependency>
       <groupId>org.twitter4j</groupId>
@@ -66,7 +66,7 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
     </dependency>
-    
+
     <!--  servicemix depedencies -->
     <dependency>
       <groupId>org.apache.servicemix</groupId>

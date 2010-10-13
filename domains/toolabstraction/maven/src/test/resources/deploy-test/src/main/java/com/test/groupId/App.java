@@ -20,7 +20,7 @@ package com.test.groupId;
  * Hello world!
  *
  */
-public class App 
+public class App
 {
     public static void main( String[] args )
     {

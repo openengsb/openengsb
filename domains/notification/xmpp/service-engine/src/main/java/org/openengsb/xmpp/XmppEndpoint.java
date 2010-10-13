@@ -27,7 +27,7 @@ import org.openengsb.drools.NotificationDomain;
  */
 public class XmppEndpoint extends LinkingEndpoint<NotificationDomain> {
     private XmppNotifier xmppNotifier;
-    
+
     @Override
     protected NotificationDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         return xmppNotifier;

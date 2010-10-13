@@ -48,7 +48,7 @@ public class BookmarkablePageLabelLink<Type extends WebPage> extends Bookmarkabl
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see org.apache.wicket.markup.html.link.AbstractLink#onComponentTagBody(org.apache.wicket.markup.MarkupStream,
      *      org.apache.wicket.markup.ComponentTag)
      */

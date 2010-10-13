@@ -46,7 +46,7 @@ public class DomainEventsProxyFactoryBean implements FactoryBean<DomainEvents> {
     @Override
     public DomainEvents getObject() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Class<?>[] classes = new Class<?>[]{DomainEvents.class, domainEventInterface};
+        Class<?>[] classes = new Class<?>[]{ DomainEvents.class, domainEventInterface };
         InvocationHandler handler = makeHandler();
         return (DomainEvents) Proxy.newProxyInstance(classLoader, classes, handler);
     }

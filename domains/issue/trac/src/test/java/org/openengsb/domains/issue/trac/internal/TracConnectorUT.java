@@ -27,7 +27,6 @@ import org.openengsb.domains.issue.trac.internal.models.TicketHandlerFactory;
 
 public class TracConnectorUT {
 
-
     @Test
     public void testCreateIssue() throws XmlRpcException {
         TicketHandlerFactory ticketFactory = new TicketHandlerFactory();

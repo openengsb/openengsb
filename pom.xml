@@ -258,7 +258,7 @@
         <artifactId>wagon-ssh</artifactId>
         <version>${plugin.wagon.ssh.version}</version>
       </extension>
-    </extensions>  
+    </extensions>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -29,7 +29,7 @@ public interface ScmDomain extends Domain {
 
     /**
      * Exports the current head of the repository to the specified directory.
-     * 
+     *
      * @param directory if the directory is non-existent, it'll be created. if the directory already exists it must not
      *        contain any files.
      */

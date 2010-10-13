@@ -33,7 +33,7 @@
   <packaging>jar</packaging>
 
   <description>
-    This component gives a convenient interface for the maven connector, 
+    This component gives a convenient interface for the maven connector,
     which can be used by the tool connectors of the various domains maven can be
     used for, like e.g. test, build, deploy.
   </description>

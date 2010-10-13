@@ -136,7 +136,7 @@
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
     </dependency>
-    
+
     <!-- test dependencies -->
     <dependency>
       <groupId>junit</groupId>

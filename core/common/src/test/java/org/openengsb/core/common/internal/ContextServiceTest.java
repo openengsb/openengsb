@@ -135,12 +135,12 @@ public class ContextServiceTest {
         cs.putValue("/non-existing/path/and/key", "a");
         assertThat(cs.getValue("/non-existing/path/and/key"), is("a"));
     }
-    
+
     @Test
     public void testGetCurrentContext() throws Exception {
         assertEquals("a", cs.getCurrentContextId());
     }
-    
+
     @Test
     public void testChangeCurrentContext() throws Exception {
         cs.createContext("x");

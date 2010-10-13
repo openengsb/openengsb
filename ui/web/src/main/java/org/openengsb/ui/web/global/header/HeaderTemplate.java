@@ -97,7 +97,7 @@ public class HeaderTemplate extends Panel {
 
     /**
      * adds new item to main header navigation
-     * 
+     *
      * @param index - the name of the index @see HeaderMenuItem.index
      * @param linkClass - class name to be linked to
      * @param langKey - language key, the text which should be displayed
@@ -111,7 +111,7 @@ public class HeaderTemplate extends Panel {
 
     /**
      * single header menu item
-     * 
+     *
      */
     private class HeaderMenuItem implements Serializable {
 

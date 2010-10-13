@@ -36,11 +36,11 @@ import org.osgi.framework.ServiceRegistration;
 
 /**
  * Proxy Service Manager to instantiate Proxies to communicate with external systems.
- * 
+ *
  * The proxy for the specified Domain are created upon request for a ServiceDescriptor.
- * 
+ *
  * The ProxyServiceManager is completely generic. Business logic to interpret a certain call is handled via the
- * 
+ *
  * @see InvocationHandler handed to the constructor.
  */
 public class ProxyServiceManager implements ServiceManager {
@@ -85,9 +85,10 @@ public class ProxyServiceManager implements ServiceManager {
             if (!services.containsKey(id)) {
                 Domain newProxyInstance =
                     (Domain) Proxy.newProxyInstance(getDomainInterface().getClassLoader(),
-                        new Class[]{getDomainInterface()}, handler);
+                        new Class[]{ getDomainInterface() }, handler);
                 ServiceRegistration registration =
-                    bundleContext.registerService(new String[]{getDomainInterface().getName(), Domain.class.getName()},
+                    bundleContext.registerService(
+                        new String[]{ getDomainInterface().getName(), Domain.class.getName() },
                         newProxyInstance, createNotificationServiceProperties(id));
                 services.put(id, new DomainRepresentation(registration));
             }

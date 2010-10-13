@@ -16,9 +16,8 @@
 
 package org.openengsb.core.common.validation;
 
-
 public interface SingleAttributeValidationResult {
     String getErrorMessageId();
-    
+
     boolean isValid();
 }

@@ -26,9 +26,9 @@ import org.openengsb.drools.NotificationDomain;
  *                         description="Twitter Notification Endpoint"
  */
 public class TwitterEndpoint extends LinkingEndpoint<NotificationDomain> {
-    
+
     private TwitterNotifier twitterNotifier;
-    
+
     @Override
     protected NotificationDomain getImplementation(ContextHelper contextHelper, MessageProperties msgProperties) {
         return twitterNotifier;

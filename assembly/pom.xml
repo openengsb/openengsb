@@ -34,8 +34,8 @@
 
   <properties>
     <!-- platform/felix.xml -->
-    <!-- The platform does not required any additional configuration (only felix.version) --> 
-    
+    <!-- The platform does not required any additional configuration (only felix.version) -->
+
     <!-- platform/karaf.composite -->
     <felix.log.level>1</felix.log.level>
     <settings.karaf.home>.</settings.karaf.home>
@@ -62,7 +62,7 @@
     <!-- run/karaf.bat -->
     <client.properties.windows />
 
-    <!-- config/* -->   
+    <!-- config/* -->
     <!-- To be extended, currently no properties required here -->
 
     <!-- log settings -->
@@ -157,7 +157,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin> 
+      </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <version>${maven.plugin.antrun}</version>
@@ -203,10 +203,10 @@
         </configuration>
         <executions>
           <execution>
-            <id>make-assembly</id> 
+            <id>make-assembly</id>
             <phase>package</phase>
             <goals>
-              <goal>single</goal> 
+              <goal>single</goal>
             </goals>
           </execution>
         </executions>

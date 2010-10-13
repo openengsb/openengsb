@@ -37,7 +37,7 @@
   <packaging>jbi-service-unit</packaging>
 
   <description>
-    A service unit for the maven test domain connector. 
+    A service unit for the maven test domain connector.
   </description>
 
   <dependencies>

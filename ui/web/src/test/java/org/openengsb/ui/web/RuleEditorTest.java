@@ -199,7 +199,7 @@ public class RuleEditorTest {
         TextArea<String> textArea = (TextArea<String>) tester.getComponentFromLastRenderedPage("ruleEditor:form:text");
         assertTrue(textArea.isEnabled());
         assertEquals("modified source", textArea.getModelObject());
-        tester.assertErrorMessages(new String[]{"error"});
+        tester.assertErrorMessages(new String[]{ "error" });
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
 
@@ -283,7 +283,7 @@ public class RuleEditorTest {
         textArea = (TextArea<String>) tester.getComponentFromLastRenderedPage("ruleEditor:form:text");
         assertTrue(textArea.isEnabled());
         assertEquals("new rule source", textArea.getModelObject());
-        tester.assertErrorMessages(new String[]{"error"});
+        tester.assertErrorMessages(new String[]{ "error" });
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:cancel").isEnabled());
         assertFalse(tester.getComponentFromLastRenderedPage("ruleEditor:form:save").isEnabled());
 

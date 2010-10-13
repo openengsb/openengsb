@@ -26,8 +26,9 @@ import org.apache.wicket.protocol.http.WebApplication;
 public class OsgiSpringComponentInjector extends ComponentInjector {
 
     @SuppressWarnings("serial")
-    private static final MetaDataKey<SpringBeanReceiverHolder> CONTEXT_KEY = 
-        new MetaDataKey<SpringBeanReceiverHolder>() { };
+    private static final MetaDataKey<SpringBeanReceiverHolder> CONTEXT_KEY =
+        new MetaDataKey<SpringBeanReceiverHolder>() {
+        };
 
     public OsgiSpringComponentInjector(WebApplication webapp, OsgiSpringBeanReceiver springBeanReceiver) {
         webapp.setMetaData(CONTEXT_KEY, new SpringBeanReceiverHolder(springBeanReceiver));

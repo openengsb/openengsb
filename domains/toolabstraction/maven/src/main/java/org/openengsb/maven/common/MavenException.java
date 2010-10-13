@@ -19,7 +19,7 @@ package org.openengsb.maven.common;
 /**
  * This exception describes every exception thrown from Maven during different
  * phases. To compare the phases, a string supports the user in error message.
- * 
+ *
  */
 public class MavenException extends RuntimeException {
 

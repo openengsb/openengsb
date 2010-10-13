@@ -80,7 +80,7 @@ public class BasePageTest {
                 return new WicketSession(request);
             }
         });
-        when(contextService.getAvailableContexts()).thenReturn(Arrays.asList(new String[]{"foo", "bar"}));
+        when(contextService.getAvailableContexts()).thenReturn(Arrays.asList(new String[]{ "foo", "bar" }));
         basePage = tester.startPage(new BasePage());
     }
 
@@ -137,7 +137,8 @@ public class BasePageTest {
         FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 
-        @SuppressWarnings("unchecked") DropDownChoice<String> choice =
+        @SuppressWarnings("unchecked")
+        DropDownChoice<String> choice =
             (DropDownChoice<String>) tester.getComponentFromLastRenderedPage("projectChoiceForm:projectChoice");
 
         Class<? extends Page> responsePage = choice.getRequestCycle().getResponsePageClass();

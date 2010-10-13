@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.openengsb.domains.issue.trac.internal;
 
 import java.util.HashMap;
@@ -41,7 +40,6 @@ public class TracConnector implements IssueDomain {
     private AliveState state = AliveState.DISCONNECTED;
     private String id;
     private TicketHandlerFactory ticketFactory;
-
 
     public TracConnector(String id, TicketHandlerFactory ticketFactory) {
         this.id = id;
@@ -130,7 +128,7 @@ public class TracConnector implements IssueDomain {
         for (IssueAttribute field : changes.keySet()) {
             try {
                 if (field.equals(Issue.Field.DESCRIPTION)) {
-                    attributes.put(TracFieldConstants.DESCRIPTION,  changes.get(field));
+                    attributes.put(TracFieldConstants.DESCRIPTION, changes.get(field));
                 } else if (field.equals(Issue.Field.OWNER)) {
                     attributes.put(TracFieldConstants.OWNER, changes.get(field));
                 } else if (field.equals(Issue.Field.REPORTER)) {
@@ -138,7 +136,7 @@ public class TracConnector implements IssueDomain {
                 } else if (field.equals(Issue.Field.SUMMARY)) {
                     attributes.put(TracFieldConstants.SUMMARY, changes.get(field));
                 } else if (field.equals(Issue.Field.PRIORITY)) {
-                    addPriority(attributes,  Issue.Priority.valueOf(changes.get(field)));
+                    addPriority(attributes, Issue.Priority.valueOf(changes.get(field)));
                 } else if (field.equals(Issue.Field.STATUS)) {
                     addStatus(attributes, Issue.Status.valueOf(changes.get(field)));
                 }
