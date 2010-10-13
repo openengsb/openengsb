@@ -16,12 +16,13 @@
 
 package org.openengsb.core.common.l10n;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 /**
  * Represents a string that knows how to localize itself.
  */
-public interface LocalizableString {
+public interface LocalizableString extends Serializable {
 
     /**
      * Localize the string represented by this {@code LocalizableString} to the given @{code locale}.

@@ -21,6 +21,7 @@ import java.util.Locale;
 /**
  * A {@code LocalizableString} which simply returns the value given at construction time.
  */
+@SuppressWarnings("serial")
 public class PassThroughLocalizableString implements LocalizableString {
 
     private final String value;

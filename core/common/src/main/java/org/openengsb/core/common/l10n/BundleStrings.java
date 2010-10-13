@@ -34,9 +34,10 @@ import org.osgi.framework.Constants;
 /**
  * Localization helper to lookup string resources from the bundle's localization entries.
  */
+@SuppressWarnings("serial")
 public class BundleStrings implements StringLocalizer {
 
-    private Bundle bundle;
+    private transient Bundle bundle;
     private HashMap<String, Properties> entries;
 
     public BundleStrings() {

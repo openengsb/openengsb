@@ -21,6 +21,7 @@ import java.util.Locale;
 /**
  * A localizer that simple returns the key as localized string.
  */
+@SuppressWarnings("serial")
 public class PassThroughStringLocalizer implements StringLocalizer {
 
     @Override

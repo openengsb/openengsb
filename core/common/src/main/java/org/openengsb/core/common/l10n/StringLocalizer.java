@@ -16,9 +16,10 @@
 
 package org.openengsb.core.common.l10n;
 
+import java.io.Serializable;
 import java.util.Locale;
 
-public interface StringLocalizer {
+public interface StringLocalizer extends Serializable {
 
     /**
      * Localize a string identified by the given {@code key} to the given {@code locale}.
