@@ -90,7 +90,7 @@ public abstract class AbstractExamTestHelper {
         ServiceTracker tracker =
             new ServiceTracker(bundle.getBundleContext(), "org.springframework.context.ApplicationContext", null);
         tracker.open();
-        Object service = tracker.waitForService(20000);
+        Object service = tracker.waitForService(60000);
         if (service == null) {
             Assert.fail(String.format("Bundle %s does not start spring service", bundle.getSymbolicName()));
         }
