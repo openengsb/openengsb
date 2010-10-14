@@ -24,7 +24,7 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:service interface="org.openengsb.core.persistence.PersistenceService">
-    <bean class="org.openengsb.core.persistence.internal.PersistenceService">
+    <bean class="org.openengsb.core.persistence.internal.NeodatisPersistenceService">
       <property name="dbFile" value="data/openengsb/persistence.data" />
     </bean>    
   </osgi:service>
