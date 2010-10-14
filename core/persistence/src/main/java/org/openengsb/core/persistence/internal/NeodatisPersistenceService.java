@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;
 import org.neodatis.odb.Objects;
+import org.neodatis.odb.OdbConfiguration;
 import org.neodatis.odb.core.query.IQuery;
 import org.neodatis.odb.core.query.nq.NativeQuery;
 import org.openengsb.core.persistence.PersistenceException;
@@ -33,6 +34,10 @@ import org.openengsb.core.persistence.PersistenceService;
 public class NeodatisPersistenceService implements PersistenceService {
 
     private String dbFile;
+
+    public NeodatisPersistenceService() {
+        OdbConfiguration.useMultiThread(true);
+    }
 
     @Override
     public void create(Object bean) throws PersistenceException {
