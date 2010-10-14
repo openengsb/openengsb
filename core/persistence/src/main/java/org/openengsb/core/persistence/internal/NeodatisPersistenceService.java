@@ -35,10 +35,6 @@ public class NeodatisPersistenceService implements PersistenceService {
 
     private String dbFile;
 
-    public NeodatisPersistenceService() {
-        OdbConfiguration.useMultiThread(true);
-    }
-
     @Override
     public void create(Object bean) throws PersistenceException {
         ODB database = ODBFactory.open(dbFile);
@@ -197,6 +193,10 @@ public class NeodatisPersistenceService implements PersistenceService {
 
     public void setDbFile(String dbFile) {
         this.dbFile = dbFile;
+    }
+
+    public void init() {
+        OdbConfiguration.useMultiThread(true);
     }
 
 }
