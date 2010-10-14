@@ -38,6 +38,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.neodatis</groupId>
+      <artifactId>neodatis-odb</artifactId>
+      <version>${odb.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
