@@ -41,6 +41,10 @@ public final class OpenEngSBBundles {
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
             .artifactId("com.jcraft.jsch-all"));
 
+    public static final MavenArtifactProvisionOption OPENENGSB_WRAPPED_NEODATIS = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
+            .artifactId("org.neodatis.odb-all"));
+
     public static final MavenArtifactProvisionOption OPENENGSB_CONFIG_JETTY = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.config").artifactId(
             "openengsb-config-jetty"));
