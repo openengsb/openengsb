@@ -22,11 +22,18 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openengsb.core.persistence.PersistenceException;
+import org.openengsb.core.persistence.PersistenceManager;
 import org.openengsb.core.persistence.PersistenceService;
+import org.osgi.framework.BundleContext;
+import org.springframework.osgi.context.BundleContextAware;
 
-public class PersistenceConnectorSetupStore implements ConnectorSetupStore {
+public class PersistenceConnectorSetupStore implements ConnectorSetupStore, BundleContextAware {
 
-    PersistenceService persistence;
+    private PersistenceService persistence;
+
+    private PersistenceManager persistenceManager;
+
+    private BundleContext bundleContext;
 
     @Override
     public void storeConnectorSetup(String connector, String id, Map<String, String> properties) {
@@ -85,8 +92,16 @@ public class PersistenceConnectorSetupStore implements ConnectorSetupStore {
         }
     }
 
-    public void setPersistence(PersistenceService persistence) {
-        this.persistence = persistence;
+    public void setPersistenceManager(PersistenceManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
     }
 
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
+
+    public void init() {
+        this.persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
+    }
 }

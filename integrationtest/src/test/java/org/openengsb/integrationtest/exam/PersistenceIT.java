@@ -25,6 +25,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.persistence.PersistenceManager;
 import org.openengsb.core.persistence.PersistenceService;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
@@ -38,7 +39,8 @@ public class PersistenceIT extends AbstractExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
-        persistence = retrieveService(getBundleContext(), PersistenceService.class);
+        PersistenceManager manager = retrieveService(getBundleContext(), PersistenceManager.class);
+        persistence = manager.getPersistenceForBundle(getBundleContext().getBundle());
 
         element = new PersistenceTestObject("42", 42);
         persistence.create(element);

@@ -30,7 +30,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.persistence.PersistenceException;
+import org.openengsb.core.persistence.PersistenceManager;
 import org.openengsb.core.persistence.PersistenceService;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 public class PersistenceConnectorSetupStoreTest {
 
@@ -41,7 +44,11 @@ public class PersistenceConnectorSetupStoreTest {
     public void setUp() throws PersistenceException {
         store = new PersistenceConnectorSetupStore();
         persistence = Mockito.mock(PersistenceService.class);
-        store.setPersistence(persistence);
+        PersistenceManager managerMock = Mockito.mock(PersistenceManager.class);
+        Mockito.when(managerMock.getPersistenceForBundle(Mockito.any(Bundle.class))).thenReturn(persistence);
+        store.setPersistenceManager(managerMock);
+        store.setBundleContext(Mockito.mock(BundleContext.class));
+        store.init();
         List<ConnectorSetupBean> result = new ArrayList<ConnectorSetupBean>();
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("foo", "bar");
