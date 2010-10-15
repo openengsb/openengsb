@@ -32,6 +32,7 @@ public class NeodatisPersistenceServiceTest extends PersistenceServiceTest {
     protected PersistenceService createPersitenceService() throws Exception {
         persistence = new NeodatisPersistenceService();
         persistence.setDbFile("target/db.data");
+        persistence.init();
         return persistence;
     }
 
