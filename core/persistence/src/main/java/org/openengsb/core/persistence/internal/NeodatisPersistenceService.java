@@ -31,18 +31,20 @@ import org.neodatis.odb.core.query.IQuery;
 import org.neodatis.odb.core.query.nq.NativeQuery;
 import org.openengsb.core.persistence.PersistenceException;
 import org.openengsb.core.persistence.PersistenceService;
-import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
-public class NeodatisPersistenceService implements PersistenceService, BundleContextAware {
+public class NeodatisPersistenceService implements PersistenceService {
 
     private String dbFile;
 
     private Semaphore semaphore = new Semaphore(1);
 
-    private DelegatingClassLoader classLoader;
-
-    private BundleContext bundleContext;
+    public NeodatisPersistenceService(String dbFile, ClassLoader loader) {
+        this.dbFile = dbFile;
+        OdbConfiguration.useMultiThread(true);
+        OdbConfiguration.setClassLoader(loader);
+        OdbConfiguration.setNumberOfRetryToOpenFile(3);
+        OdbConfiguration.setRetryTimeout(1000);
+    }
 
     @Override
     public void create(Object bean) throws PersistenceException {
@@ -186,15 +188,13 @@ public class NeodatisPersistenceService implements PersistenceService, BundleCon
             @Override
             public boolean match(Object object) {
                 TYPE compare = (TYPE) object;
-                boolean equal = true;
                 for (Field field : fields) {
                     try {
                         field.setAccessible(true);
                         Object exampleField = field.get(example);
                         Object compareField = field.get(compare);
                         if (exampleField != null && !exampleField.equals(compareField)) {
-                            equal = false;
-                            break;
+                            return false;
                         }
                     } catch (IllegalArgumentException e) {
                         throw new RuntimeException(e);
@@ -202,7 +202,7 @@ public class NeodatisPersistenceService implements PersistenceService, BundleCon
                         throw new RuntimeException(e);
                     }
                 }
-                return equal;
+                return true;
             }
 
             @Override
@@ -219,16 +219,6 @@ public class NeodatisPersistenceService implements PersistenceService, BundleCon
         return retVal;
     }
 
-    public void setDbFile(String dbFile) {
-        this.dbFile = dbFile;
-    }
-
-    public void init() {
-        classLoader = new DelegatingClassLoader(this.getClass().getClassLoader(), bundleContext);
-        OdbConfiguration.useMultiThread(true);
-        OdbConfiguration.setClassLoader(classLoader);
-    }
-
     private void closeDatabase(ODB database) {
         database.close();
         semaphore.release();
@@ -241,18 +231,12 @@ public class NeodatisPersistenceService implements PersistenceService, BundleCon
             throw new RuntimeException(e);
         }
         try {
-            classLoader.addClassLoader(object.getClass().getClassLoader());
             ODB database = ODBFactory.open(dbFile);
             return database;
         } catch (RuntimeException re) {
             semaphore.release();
             throw re;
         }
-    }
-
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
     }
 
 }

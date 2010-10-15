@@ -16,27 +16,20 @@
 
 package org.openengsb.core.persistence.internal;
 
-import java.io.File;
-import java.io.IOException;
+import org.osgi.framework.Bundle;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.openengsb.core.persistence.PersistenceService;
-import org.openengsb.core.persistence.PersistenceServiceTest;
+public class CustomClassLoader extends ClassLoader {
 
-public class NeodatisPersistenceServiceTest extends PersistenceServiceTest {
+    private Bundle bundle;
 
-    private NeodatisPersistenceService persistence;
-
-    @Override
-    protected PersistenceService createPersitenceService() throws Exception {
-        persistence = new NeodatisPersistenceService("target/db.data", getClass().getClassLoader());
-        return persistence;
+    public CustomClassLoader(ClassLoader parent, Bundle bundle) {
+        super(parent);
+        this.bundle = bundle;
     }
 
-    @After
-    public void tearDown() throws IOException {
-        FileUtils.forceDelete(new File("target/db.data"));
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        return bundle.loadClass(name);
     }
 
 }
