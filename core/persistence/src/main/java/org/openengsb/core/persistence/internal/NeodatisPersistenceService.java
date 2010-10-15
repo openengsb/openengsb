@@ -38,12 +38,11 @@ public class NeodatisPersistenceService implements PersistenceService {
 
     private Semaphore semaphore = new Semaphore(1);
 
+    private ClassLoader loader;
+
     public NeodatisPersistenceService(String dbFile, ClassLoader loader) {
         this.dbFile = dbFile;
-        OdbConfiguration.useMultiThread(true);
-        OdbConfiguration.setClassLoader(loader);
-        OdbConfiguration.setNumberOfRetryToOpenFile(3);
-        OdbConfiguration.setRetryTimeout(1000);
+        this.loader = loader;
     }
 
     @Override
@@ -231,7 +230,11 @@ public class NeodatisPersistenceService implements PersistenceService {
             throw new RuntimeException(e);
         }
         try {
-            ODB database = ODBFactory.open(dbFile);
+            ODB database = null;
+            synchronized (OdbConfiguration.class) {
+                OdbConfiguration.setClassLoader(loader);
+                database = ODBFactory.open(dbFile);
+            }
             return database;
         } catch (RuntimeException re) {
             semaphore.release();

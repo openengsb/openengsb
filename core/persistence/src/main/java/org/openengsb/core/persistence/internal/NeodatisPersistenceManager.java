@@ -19,6 +19,7 @@ package org.openengsb.core.persistence.internal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.neodatis.odb.OdbConfiguration;
 import org.openengsb.core.persistence.PersistenceManager;
 import org.openengsb.core.persistence.PersistenceService;
 import org.osgi.framework.Bundle;
@@ -28,6 +29,12 @@ public class NeodatisPersistenceManager implements PersistenceManager {
     private String persistenceRootDir;
 
     private Map<String, PersistenceService> persistenceServices = new HashMap<String, PersistenceService>();
+
+    public NeodatisPersistenceManager() {
+        OdbConfiguration.useMultiThread(true);
+        OdbConfiguration.setNumberOfRetryToOpenFile(3);
+        OdbConfiguration.setRetryTimeout(1000);
+    }
 
     @Override
     public synchronized PersistenceService getPersistenceForBundle(Bundle bundle) {
