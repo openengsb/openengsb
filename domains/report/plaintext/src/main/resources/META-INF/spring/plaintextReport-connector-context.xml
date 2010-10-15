@@ -39,9 +39,10 @@
     </bean>
   </osgi:service>
 
-  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore">
-    <property name="persistence" ref="persistenceService" />
+  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
+    init-method="init">
+    <property name="persistenceManager" ref="persistenceServiceManager" />
   </bean>
 
-  <osgi:reference id="persistenceService" interface="org.openengsb.core.persistence.PersistenceService" />
+  <osgi:reference id="persistenceServiceManager" interface="org.openengsb.core.persistence.PersistenceManager" />
 </beans>

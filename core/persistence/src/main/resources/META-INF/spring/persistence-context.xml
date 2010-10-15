@@ -23,9 +23,9 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
-  <osgi:service interface="org.openengsb.core.persistence.PersistenceService">
-    <bean class="org.openengsb.core.persistence.internal.DB4OPersistenceService">
-      <property name="dbFile" value="data/openengsb/persistence.data" />
+  <osgi:service interface="org.openengsb.core.persistence.PersistenceManager">
+    <bean class="org.openengsb.core.persistence.internal.NeodatisPersistenceManager" >
+      <property name="persistenceRootDir" value="data/openengsb/persistence" />
     </bean>    
   </osgi:service>
 

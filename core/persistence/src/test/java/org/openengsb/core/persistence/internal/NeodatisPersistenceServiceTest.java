@@ -24,21 +24,19 @@ import org.junit.After;
 import org.openengsb.core.persistence.PersistenceService;
 import org.openengsb.core.persistence.PersistenceServiceTest;
 
-public class DB4OPersistenceServiceTest extends PersistenceServiceTest {
+public class NeodatisPersistenceServiceTest extends PersistenceServiceTest {
 
-    private DB4OPersistenceService persistence;
+    private NeodatisPersistenceService persistence;
 
     @Override
     protected PersistenceService createPersitenceService() throws Exception {
-        persistence = new DB4OPersistenceService();
-        persistence.setDbFile("db.data");
+        persistence = new NeodatisPersistenceService("target/db.data", getClass().getClassLoader());
         return persistence;
     }
 
     @After
     public void tearDown() throws IOException {
-        persistence.shutdown();
-        FileUtils.forceDelete(new File("db.data"));
+        FileUtils.forceDelete(new File("target/db.data"));
     }
 
 }
