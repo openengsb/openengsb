@@ -228,13 +228,6 @@
       </plugin>
     </plugins>
   </build>
-  <repositories>
-    <repository>
-      <id>jai.repository</id>
-      <name>JAI Repository (indirectly used by Docbook plugin)</name>
-      <url>https://m2proxy.atlassian.com/repository/public</url>
-    </repository>
-  </repositories>
 
 </project>
 

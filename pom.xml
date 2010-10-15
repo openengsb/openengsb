@@ -692,6 +692,12 @@
       <name>twdata.org Maven 2 Repository</name>
       <url>http://twdata-m2-repository.googlecode.com/svn/</url>
     </pluginRepository>
+    <pluginRepository>
+      <id>jai.repository</id>
+      <name>JAI Repository (indirectly used by Docbook plugin)</name>
+      <url>https://m2proxy.atlassian.com/repository/public</url>
+    </pluginRepository>
+
   </pluginRepositories>
 
   <repositories>
