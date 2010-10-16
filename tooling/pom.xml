@@ -28,6 +28,7 @@
 
   <modules>
     <module>checkstyle</module>
+    <module>archetypes</module>
   </modules>
 
   <groupId>org.openengsb.tooling</groupId>

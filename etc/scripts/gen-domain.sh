@@ -42,8 +42,8 @@ fi
 artifactId="openengsb-domains-$DOMAIN-parent"
 
 mvn archetype:generate \
-	-DarchetypeGroupId="org.openengsb.archetypes" \
-	-DarchetypeArtifactId="openengsb-archetypes-domain" \
+	-DarchetypeGroupId="org.openengsb.tooling.archetypes" \
+	-DarchetypeArtifactId="openengsb-tooling-archetypes-domain" \
 	-DarchetypeVersion="$VERSION" \
 	-DgroupId="org.openengsb.domains.$DOMAIN" \
 	-DartifactId="$artifactId" \
