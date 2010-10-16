@@ -80,6 +80,10 @@ public final class BaseExamConfiguration {
         baseConfiguration.add(OpenEngSBBundles.OPENENGSB_UI_WEB);
     }
 
+    public static void addHtmlUnitTestDriver(List<Option> baseConfiguration) {
+        baseConfiguration.add(CoreOptions.mavenBundle("org.openengsb.wrapped", "net.sourceforge.htmlunit-wrapped"));
+    }
+
     public static List<Option> getBaseExamOptions(String pathToRoot) {
         Map<String, String> properties = extractAllPropertiesFromPom(pathToRoot + "poms/pom.xml");
         String pomfile = readFileAsString(pathToRoot + "provision/pom.xml");
