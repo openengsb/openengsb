@@ -19,6 +19,7 @@ package org.openengsb.domains.jms;
 import java.lang.reflect.InvocationHandler;
 
 import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.proxy.InvocationHandlerFactory;
 import org.springframework.jms.core.JmsTemplate;
 
 public class JSONSerializerInvocationHandlerFactoryImpl implements InvocationHandlerFactory {

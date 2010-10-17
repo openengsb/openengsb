@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.jms;
+package org.openengsb.core.common.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;

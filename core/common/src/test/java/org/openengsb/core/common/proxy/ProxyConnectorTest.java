@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.jms;
+package org.openengsb.core.common.proxy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -22,7 +22,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,9 +30,6 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
-
-import javax.jms.ConnectionFactory;
-import javax.jms.MessageListener;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -47,9 +43,8 @@ import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.service.DomainService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.springframework.jms.listener.AbstractMessageListenerContainer;
 
-public class JMSConnectorTest {
+public class ProxyConnectorTest {
 
     private static final String ID = "ID";
     private DomainService domainService;
@@ -81,9 +76,8 @@ public class JMSConnectorTest {
         InvocationHandlerFactory mock = mock(InvocationHandlerFactory.class);
         when(mock.createInstance(Mockito.any(DomainProvider.class))).thenReturn(invocationHandlerMock);
 
-        JMSConnector jmsConnector =
-            new JMSConnector(domainService, mock, mock(MessageListenerContainerFactory.class),
-                mock(ConnectionFactory.class), mock(MessageListenerFactory.class));
+        ProxyConnector jmsConnector =
+            new ProxyConnector(domainService, mock);
         jmsConnector.setBundleContext(mockContext);
         jmsConnector.addProxiesToContext();
 
@@ -108,30 +102,6 @@ public class JMSConnectorTest {
         Method value = methodCaptor.getValue();
         assertEquals("log", value.getName());
         assertEquals(TestInterface.class, value.getDeclaringClass());
-    }
-
-    @Test
-    public void callAddEventListeners_ShouldSetEventListenersCorrectly() {
-        when(domainService.domains()).thenReturn(Arrays.asList(new DomainProvider[]{ provider, provider }));
-        ConnectionFactory mock2 = mock(ConnectionFactory.class);
-
-        MessageListenerContainerFactory messageListenerFactoryMock = mock(MessageListenerContainerFactory.class);
-        AbstractMessageListenerContainer messageListenerMock = mock(AbstractMessageListenerContainer.class);
-        when(messageListenerFactoryMock.instance()).thenReturn(messageListenerMock);
-        MessageListenerFactory messageListenerFactory = mock(MessageListenerFactory.class);
-        MessageListener messageListener = mock(MessageListener.class);
-        when(messageListenerFactory.instance(Mockito.any(DomainProvider.class))).thenReturn(messageListener);
-
-        JMSConnector connector =
-            new JMSConnector(domainService, mock(InvocationHandlerFactory.class), messageListenerFactoryMock, mock2,
-                messageListenerFactory);
-        connector.addEventListeners();
-
-        verify(messageListenerFactoryMock, times(2)).instance();
-        verify(messageListenerMock, times(2)).setConnectionFactory(mock2);
-        verify(messageListenerMock, times(2)).setDestinationName("ID_event_send");
-        verify(messageListenerMock, times(2)).setMessageListener(messageListener);
-        verify(messageListenerMock, times(2)).start();
     }
 
     private static interface TestInterface extends Domain {

@@ -62,9 +62,13 @@
     <constructor-arg ref="jmsFactory"/>
   </bean>
   
-  <bean id="jmsConnector" class="org.openengsb.domains.jms.JMSConnector" init-method="init">
+  <bean id="proxyConnector" class="org.openengsb.core.common.proxy.ProxyConnector" init-method="addProxiesToContext">
     <constructor-arg ref="domainService"/>
     <constructor-arg ref="invocationHandlerFactory"/>
+  </bean>
+  
+  <bean id="jmsConnector" class="org.openengsb.domains.jms.JMSEventListenerSetup">
+    <constructor-arg ref="domainService"/>
     <constructor-arg ref="messageListenerContainerFactory"/>
     <constructor-arg ref="jmsFactory"/>
     <constructor-arg ref="messageListenerFactory"/>

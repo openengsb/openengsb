@@ -29,6 +29,7 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.proxy.ProxyServiceManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
