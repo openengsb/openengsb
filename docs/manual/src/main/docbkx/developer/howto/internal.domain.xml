@@ -130,7 +130,10 @@
     <orderedlist>
       <listitem>
         <para>Domain interface - This is the interface that connectors of that domain must implement. Operations that
-          connectors should provide, are specified here.</para>
+          connectors should provide, are specified here. Events that are raised by this Domain in unexpected fashion 
+          (e.g new commit in scm system) are specified on the Interface. The Raise Annotation and the array of Event 
+          classes it takes as an argument are used. If the Raise annotation is put on a method the events that 
+          are specified through the annotation are raised in sequence upon a call.</para>
       </listitem>
       <listitem>
         <para>Domain event interface - This is the interface that the domain provides for its connectors to send events
