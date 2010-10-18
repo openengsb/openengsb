@@ -37,6 +37,8 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidationError;
+import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.validation.FieldValidator;
@@ -101,7 +103,9 @@ public abstract class EditorPanel extends Panel {
                     if (!validate.isValid()) {
                         Map<String, String> attributeErrorMessages = validate.getAttributeErrorMessages();
                         for (String key : attributeErrorMessages.keySet()) {
-                            error(loadFormComponents.get(key), attributeErrorMessages.get(key));
+                            FormComponent<?> fc = loadFormComponents.get(key);
+                            fc.error((IValidationError) new ValidationError().setMessage(attributeErrorMessages
+                                .get(key)));
                         }
                     }
                 }

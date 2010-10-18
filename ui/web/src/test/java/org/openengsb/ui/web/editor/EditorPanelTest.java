@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.wicket.Component;
@@ -69,6 +70,7 @@ public class EditorPanelTest {
 
     @Before
     public void setup() {
+        Locale.setDefault(Locale.ENGLISH);
         attribOption = newAttribute("attribOption", "option", "").option("label_a", "1").option("label_b", "2").build();
         attribBoolean = newAttribute("attribBool", "bool", "").asBoolean().build();
     }
@@ -154,6 +156,7 @@ public class EditorPanelTest {
 
     @Test
     public void putLetterIntoNumberField_shouldResultInError() throws Exception {
+        
         startEditorPanel(numberAttrib);
         FormTester formTester = tester.newFormTester(editor.getId() + ":form");
         String buildFormComponentId = buildFormComponentId(numberAttrib.getId());
@@ -214,7 +217,7 @@ public class EditorPanelTest {
 
                 Map<String, String> errorMessages = new HashMap<String, String>();
                 for (String key : arrayList) {
-                    errorMessages.put(key, "validation.not");
+                    errorMessages.put(key, "Validation Error");
                 }
                 return new MultipleAttributeValidationResultImpl(false, errorMessages);
             }
