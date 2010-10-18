@@ -251,29 +251,6 @@ div.tabRowContent {
   background: none !important;
 }
 
-.breadCrumbs {
-  font-size: 0.95em;
-  list-style-image: none;
-  list-style-position: outside;
-  list-style-type: none;
-  margin: 0 0 5px 0;
-  padding: 0;
-}
-
-.breadCrumbs li {
-  display: inline;
-  font-style: italic;
-  margin-right: 1px;
-}
-
-.breadCrumbs li a {
-  text-decoration: none;
-}
-
-.breadCrumbs li a span {
-  text-decoration: underline;
-}
-
 .footerValidation {
   text-align: right;
 }
@@ -359,28 +336,6 @@ div.tabRowContent {
   text-decoration: none;
 }
 
-.breadCrumbs {
-  font-size: 0.95em;
-  list-style-image: none;
-  list-style-position: outside;
-  list-style-type: none;
-  margin: 0 0 5px 0;
-  padding: 0;
-}
-
-.breadCrumbs li {
-  display: inline;
-  font-style: italic;
-  margin-right: 1px;
-}
-
-.breadCrumbs li a {
-  text-decoration: none;
-}
-
-.breadCrumbs li a span {
-  text-decoration: underline;
-}
 
 container-1
 
