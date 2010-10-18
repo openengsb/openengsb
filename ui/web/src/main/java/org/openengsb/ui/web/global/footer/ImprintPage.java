@@ -16,15 +16,11 @@
 
 package org.openengsb.ui.web.global.footer;
 
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.openengsb.ui.web.BasePage;
-import org.openengsb.ui.web.Index;
 
 public class ImprintPage extends BasePage {
 
     public ImprintPage() {
-
-        this.add(new BookmarkablePageLink<Index>("index", Index.class));
     }
 
 }

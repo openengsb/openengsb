@@ -41,7 +41,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -216,7 +215,6 @@ public class TestClient extends BasePage {
         feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
-        this.add(new BookmarkablePageLink<Index>("index", Index.class));
     }
 
     public TestClient(ServiceId jumpToService) {
