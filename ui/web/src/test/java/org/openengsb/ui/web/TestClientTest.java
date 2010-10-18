@@ -19,6 +19,7 @@ package org.openengsb.ui.web;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -116,7 +117,7 @@ public class TestClientTest {
     private ApplicationContextMock context;
     private TestService testService;
     private FormTester formTester;
-    private boolean serviceListExpanded;
+    private boolean serviceListExpanded = true;
     private BundleContext bundleContext;
 
     @Before
@@ -155,7 +156,9 @@ public class TestClientTest {
     public void testShowServiceInstancesInDropdown() throws Exception {
         List<ServiceReference> expected = setupAndStartTestClientPage();
 
-        expandServiceListTree();
+        if (!serviceListExpanded) {
+            expandServiceListTree();
+        }
         for (int index = 2; index < expected.size() + 2; index++) {
             tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
                 AjaxLink.class);
@@ -475,8 +478,9 @@ public class TestClientTest {
     @Test
     public void showEditLink() {
         List<ServiceReference> expected = setupAndStartTestClientPage();
-        expandServiceListTree();
-        tester.debugComponentTrees();
+        if (!serviceListExpanded) {
+            expandServiceListTree();
+        }
         for (int index = 2; index < expected.size() + 2; index++) {
             tester.assertComponent("methodCallForm:serviceList:i:" + index + ":nodeComponent:contentLink",
                 AjaxLink.class);
@@ -514,7 +518,9 @@ public class TestClientTest {
         managerList.add(serviceManagerMock);
         Mockito.when(managedServicesMock.serviceManagersForDomain(TestInterface.class)).thenReturn(managerList);
 
-        expandServiceListTree();
+        if (!serviceListExpanded) {
+            expandServiceListTree();
+        }
         tester.debugComponentTrees();
         tester.clickLink("methodCallForm:serviceList:i:2:nodeComponent:contentLink", true);
         AjaxButton editButton = (AjaxButton) tester.getComponentFromLastRenderedPage("methodCallForm:editButton");
