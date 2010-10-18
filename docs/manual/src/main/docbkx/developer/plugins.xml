@@ -38,13 +38,23 @@
       VisualStudio 2008 CSharp Express Edition with the .Net Framework 3.5.</para>
   </section>
   
+  <section xml:id="developer.plugins.proxy">
+    <title>Proxying</title>
+    <para>The proxy mechanism allows for any method call to be intercepted.</para>
+    <section>
+      <title>Proxying internal Connector calls</title>
+      <para>ProxyConnector automatically exports a ServiceManager for every Domain to instantiate a proxy. 
+      An InvocationHandlerFactory has to be provided for proxying any call. The proxy has to be created via the 
+      normal instantiation mechanism on the website.</para>
+  </section>
+  
   <section xml:id="developer.plugins.jms">
     <title>Using JMS proxying</title>
     <para>The current JMS Connector allows for internal method calls being redirected via JMS, as well as 
     Events being raised through jms via an external source.</para>
     <section>
       <title>Proxying internal Connector calls</title>
-      <para>JMSConnector automatically exports a ServiceManager for every Domain to instantiate a proxy. The proxy
+      <para>ProxyConnector automatically exports a ServiceManager for every Domain to instantiate a proxy. The proxy
       has to be created via the normal instantiation mechanism on the website. Whenever now a proxy method is called
       the call is marshalled and sent via JMS to a queue named &lt;DomainID&gt;_method_send. The marshalling is done via
       JSON. The mapping has the parameters type, which can be Call, Exception or Return, message, which in case 
