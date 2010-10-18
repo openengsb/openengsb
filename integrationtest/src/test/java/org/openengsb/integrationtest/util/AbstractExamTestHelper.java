@@ -122,6 +122,7 @@ public abstract class AbstractExamTestHelper {
             .add(CoreOptions.systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"));
         baseConfiguration.add(new WorkingDirectoryOption(getWorkingDirectory()));
         BaseExamConfiguration.addEntireOpenEngSBPlatform(baseConfiguration);
+        BaseExamConfiguration.addHtmlUnitTestDriver(baseConfiguration);
         Option[] options = BaseExamConfiguration.convertOptionListToArray(baseConfiguration);
         return CoreOptions.options(options);
     }
