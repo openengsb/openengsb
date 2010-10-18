@@ -100,33 +100,48 @@ public class TestClient extends BasePage {
     private String lastServiceId;
 
     public TestClient() {
-        IModel<List<ServiceManager>> managersModel = new LoadableDetachableModel<List<ServiceManager>>() {
-            @Override
-            protected List<ServiceManager> load() {
-                List<ServiceManager> managers = new ArrayList<ServiceManager>(services.domains().size());
-                for (DomainProvider provider : services.domains()) {
-                    managers.addAll(services.serviceManagersForDomain(provider.getDomainInterface()));
-                }
-                return managers;
-            }
-        };
         WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
         serviceManagementContainer.setOutputMarkupId(true);
         add(serviceManagementContainer);
-        serviceManagementContainer.add(new ListView<ServiceManager>("services", managersModel) {
+
+        IModel<List<DomainProvider>> domainModel = new LoadableDetachableModel<List<DomainProvider>>() {
+            @Override
+            protected List<DomainProvider> load() {
+                return services.domains();
+            }
+        };
+
+        serviceManagementContainer.add(new ListView<DomainProvider>("domains", domainModel) {
 
             @Override
-            protected void populateItem(ListItem<ServiceManager> item) {
-                ServiceDescriptor desc = item.getModelObject().getDescriptor();
-                item.add(new Link<ServiceManager>("create.new", item.getModel()) {
+            protected void populateItem(final ListItem<DomainProvider> item) {
+                item.add(new Label("domain.name", new LocalizableStringModel(this, item.getModelObject().getName())));
+                item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
+                    .getDescription())));
+                item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
+                IModel<List<ServiceManager>> managersModel = new LoadableDetachableModel<List<ServiceManager>>() {
+                    @Override
+                    protected List<ServiceManager> load() {
+                        return services.serviceManagersForDomain(item.getModelObject().getDomainInterface());
+                    }
+                };
+                item.add(new ListView<ServiceManager>("services", managersModel) {
 
                     @Override
-                    public void onClick() {
-                        setResponsePage(new ConnectorEditorPage(getModelObject()));
+                    protected void populateItem(ListItem<ServiceManager> item) {
+                        ServiceDescriptor desc = item.getModelObject().getDescriptor();
+                        item.add(new Link<ServiceManager>("create.new", item.getModel()) {
+
+                            @Override
+                            public void onClick() {
+                                setResponsePage(new ConnectorEditorPage(getModelObject()));
+                            }
+                        });
+                        item.add(new Label("service.name", new LocalizableStringModel(this, desc.getName())));
+                        item.add(new Label("service.description", new LocalizableStringModel(this, desc
+                            .getDescription())));
                     }
                 });
-                item.add(new Label("service.name", new LocalizableStringModel(this, desc.getName())));
-                item.add(new Label("service.description", new LocalizableStringModel(this, desc.getDescription())));
             }
         });
 
