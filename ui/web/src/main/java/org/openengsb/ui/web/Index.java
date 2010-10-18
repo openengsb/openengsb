@@ -16,42 +16,6 @@
 
 package org.openengsb.ui.web;
 
-import java.util.List;
-
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.service.DomainService;
-import org.openengsb.ui.web.model.LocalizableStringModel;
-
-@SuppressWarnings("serial")
 public class Index extends BasePage {
-
-    @SpringBean
-    private DomainService domainService;
-
-    public Index() {
-        IModel<List<DomainProvider>> domainsModel = new LoadableDetachableModel<List<DomainProvider>>() {
-            @Override
-            protected List<DomainProvider> load() {
-                return domainService.domains();
-            }
-        };
-        add(new ListView<DomainProvider>("domains", domainsModel) {
-
-            @Override
-            protected void populateItem(ListItem<DomainProvider> item) {
-                item.add(new Label("domain.name", new LocalizableStringModel(this, item.getModelObject().getName())));
-                item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
-                        .getDescription())));
-                item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
-            }
-        });
-
-    }
 
 }
