@@ -60,8 +60,8 @@ domainArtifactIdPrefix="openengsb-domains-$DOMAIN"
 artifactId="$domainArtifactIdPrefix-$CONNECTOR"
 
 mvn archetype:generate \
-	-DarchetypeGroupId="org.openengsb.archetypes" \
-	-DarchetypeArtifactId="openengsb-archetypes-connector" \
+	-DarchetypeGroupId="org.openengsb.tooling.archetypes" \
+	-DarchetypeArtifactId="openengsb-tooling-archetypes-connector" \
 	-DarchetypeVersion="$VERSION" \
 	-DparentArtifactId="$domainArtifactIdPrefix-parent" \
 	-DdomainArtifactId="$domainArtifactIdPrefix-implementation" \
