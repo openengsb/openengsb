@@ -171,6 +171,7 @@ public class TestClient extends BasePage {
         };
         serviceList.setOutputMarkupId(true);
         form.add(serviceList);
+        serviceList.getTreeState().expandAll();
 
         methodList = new DropDownChoice<MethodId>("methodList");
         methodList.setModel(new PropertyModel<MethodId>(call, "method"));
@@ -220,6 +221,7 @@ public class TestClient extends BasePage {
 
     public TestClient(ServiceId jumpToService) {
         this();
+        serviceList.getTreeState().collapseAll();
         TreeModel treeModel = serviceList.getModelObject();
         DefaultMutableTreeNode serviceNode = findService((DefaultMutableTreeNode) treeModel.getRoot(), jumpToService);
         expandAllUntilChild(serviceNode);
