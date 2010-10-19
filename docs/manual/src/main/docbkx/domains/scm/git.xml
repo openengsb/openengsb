@@ -24,11 +24,8 @@
   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
 
   <title>Git Connector</title>
-
-  <section>
-    <title>Description</title>
-    <para>TBW</para>
-  </section>
+  
+  The Git Connector is a SCM tool connector for the <link xlink:href="http://git-scm.com/">Git fast version control system</link>.
 
   <section>
     <title>External Tool Configuration</title>
@@ -39,11 +36,6 @@
       <listitem><para>ftp</para></listitem>
     </orderedlist>
     <para>No further configuration is needed.</para>
-  </section>
-
-  <section>
-    <title>Events</title>
-    <para>Currently this connector has no domain-specific events.</para>
   </section>
 
 </section>
