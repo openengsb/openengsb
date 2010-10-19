@@ -16,6 +16,7 @@
 
 package org.openengsb.core.persistence.internal;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +39,7 @@ public class NeodatisPersistenceManager implements PersistenceManager {
 
     @Override
     public synchronized PersistenceService getPersistenceForBundle(Bundle bundle) {
+        checkRootDirCreated();
         String dbFile = persistenceRootDir + "/" + getFileName(bundle);
         if (persistenceServices.containsKey(dbFile)) {
             return persistenceServices.get(dbFile);
@@ -46,6 +48,14 @@ public class NeodatisPersistenceManager implements PersistenceManager {
         PersistenceService bundleService = new NeodatisPersistenceService(dbFile, classLoader);
         persistenceServices.put(dbFile, bundleService);
         return bundleService;
+    }
+
+    private void checkRootDirCreated() {
+        File rootDir = new File(persistenceRootDir);
+        if (rootDir.exists()) {
+            return;
+        }
+        rootDir.mkdirs();
     }
 
     private String getFileName(Bundle bundle) {
