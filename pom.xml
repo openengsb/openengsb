@@ -447,9 +447,6 @@
       <id>run</id>
       <activation>
         <activeByDefault>true</activeByDefault>
-        <property>
-          <name>run</name>
-        </property>
       </activation>
       <build>
         <plugins>
@@ -477,11 +474,6 @@
     </profile>
     <profile>
       <id>nightly</id>
-      <activation>
-        <property>
-          <name>nightly</name>
-        </property>
-      </activation>
       <distributionManagement>
         <snapshotRepository>
           <id>openengsb-snapshots</id>
@@ -507,11 +499,6 @@
     </profile>
     <profile>
       <id>milestone</id>
-      <activation>
-        <property>
-          <name>milestone</name>
-        </property>
-      </activation>
       <distributionManagement>
         <repository>
           <id>openengsb-releases</id>
@@ -537,11 +524,6 @@
     </profile>
     <profile>
       <id>final</id>
-      <activation>
-        <property>
-          <name>final</name>
-        </property>
-      </activation>
       <distributionManagement>
         <repository>
           <id>openengsb-releases</id>
@@ -567,11 +549,6 @@
     </profile>
     <profile>
       <id>release</id>
-      <activation>
-        <property>
-          <name>release</name>
-        </property>
-      </activation>
       <build>
         <plugins>
           <plugin>
