@@ -102,10 +102,9 @@ public abstract class EditorPanel extends Panel {
                     MultipleAttributeValidationResult validate = validator.validate(toValidate);
                     if (!validate.isValid()) {
                         Map<String, String> attributeErrorMessages = validate.getAttributeErrorMessages();
-                        for (String key : attributeErrorMessages.keySet()) {
-                            FormComponent<?> fc = loadFormComponents.get(key);
-                            fc.error((IValidationError) new ValidationError().setMessage(attributeErrorMessages
-                                .get(key)));
+                        for (Map.Entry<String, String> entry : attributeErrorMessages.entrySet()) {
+                            FormComponent<?> fc = loadFormComponents.get(entry.getKey());
+                            fc.error((IValidationError) new ValidationError().setMessage(entry.getValue()));
                         }
                     }
                 }
@@ -181,7 +180,7 @@ public abstract class EditorPanel extends Panel {
     }
 
     private abstract static class EditorFieldValidator<T> extends AbstractValidator<T> {
-        private AttributeDefinition attribute;
+        private final AttributeDefinition attribute;
 
         protected EditorFieldValidator(AttributeDefinition attribute) {
             this.attribute = attribute;

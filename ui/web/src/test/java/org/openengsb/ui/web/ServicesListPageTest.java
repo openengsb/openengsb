@@ -56,7 +56,7 @@ public class ServicesListPageTest {
         void doSomethingToChangeState();
     }
 
-    public class TestService implements TestInterface {
+    public static class TestService implements TestInterface {
 
         private AliveState aliveState = AliveState.CONNECTING;
 

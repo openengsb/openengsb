@@ -60,11 +60,11 @@ public class EventCallerTest {
         void raiseEvent(TestEvent2 event);
     }
 
-    private class TestEvent extends Event {
+    private static class TestEvent extends Event {
 
     }
 
-    private class TestEvent2 extends Event {
+    private static class TestEvent2 extends Event {
 
     }
 }

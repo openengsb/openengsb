@@ -78,7 +78,7 @@ public class MethodUtilTest {
         void dootherstuff();
     }
 
-    public class MultiClass implements Testinterface, TestInterface2 {
+    public static class MultiClass implements Testinterface, TestInterface2 {
         @Override
         public void dootherstuff() {
         }

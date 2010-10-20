@@ -36,7 +36,8 @@ public class DomainProxyFactoryTest {
         boolean methodx();
     }
 
-    public class DefaultImpl implements TestInterface {
+    public static class DefaultImpl implements TestInterface {
+        @Override
         public boolean methodx() {
             return true;
         }

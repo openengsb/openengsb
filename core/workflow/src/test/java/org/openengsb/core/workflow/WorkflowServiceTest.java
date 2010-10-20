@@ -53,8 +53,8 @@ public class WorkflowServiceTest {
         void log(String string);
     }
 
-    public class LogDomainMock implements LogDomain {
-        private StringBuffer log = new StringBuffer();
+    public static class LogDomainMock implements LogDomain {
+        private final StringBuffer log = new StringBuffer();
 
         @Override
         public void log(String string) {

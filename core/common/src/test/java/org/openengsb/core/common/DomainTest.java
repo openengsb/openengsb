@@ -53,9 +53,9 @@ public class DomainTest {
 
     }
 
-    private class TestClass implements TestInterface {
+    private static class TestClass implements TestInterface {
         private AliveState state;
-        private FactoryMethodsInterface fm;
+        private final FactoryMethodsInterface fm;
 
         TestClass(FactoryMethodsInterface fm) {
             this.fm = fm;

@@ -101,7 +101,7 @@ public class JMSConnectorTest {
         ArgumentCaptor<Method> methodCaptor = ArgumentCaptor.forClass(Method.class);
         try {
             verify(invocationHandlerMock).invoke(same(captor.getValue()), methodCaptor.capture(),
-                eq(new Object[]{ new Integer(5) }));
+                eq(new Object[]{ Integer.valueOf(5) }));
         } catch (Throwable e) {
             throw new RuntimeException(e.getMessage(), e);
         }

@@ -111,9 +111,9 @@ public class JavaxMailAbstraction implements MailAbstraction {
         return new MailPropertiesImp();
     }
 
-    private class MailPropertiesImp implements MailProperties {
+    private static class MailPropertiesImp implements MailProperties {
 
-        private Properties properties;
+        private final Properties properties;
         private String username;
         private String password;
         private String sender;

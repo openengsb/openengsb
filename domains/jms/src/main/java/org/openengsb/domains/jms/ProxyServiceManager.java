@@ -45,7 +45,7 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class ProxyServiceManager implements ServiceManager {
 
-    private final class DomainRepresentation {
+    private static final class DomainRepresentation {
         private final ServiceRegistration registration;
 
         private DomainRepresentation(ServiceRegistration registration) {
@@ -53,9 +53,9 @@ public class ProxyServiceManager implements ServiceManager {
         }
     }
 
-    private Log log = LogFactory.getLog(ProxyServiceManager.class);
-    private BundleContext bundleContext;
-    private BundleStrings strings;
+    private final Log log = LogFactory.getLog(ProxyServiceManager.class);
+    private final BundleContext bundleContext;
+    private final BundleStrings strings;
     private final DomainProvider provider;
     private final Map<String, DomainRepresentation> services = new HashMap<String, DomainRepresentation>();
     private final InvocationHandler handler;

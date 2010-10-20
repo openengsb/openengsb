@@ -38,8 +38,8 @@ public class TracConnector implements IssueDomain {
     private static Log log = LogFactory.getLog(TracConnector.class);
 
     private AliveState state = AliveState.DISCONNECTED;
-    private String id;
-    private TicketHandlerFactory ticketFactory;
+    private final String id;
+    private final TicketHandlerFactory ticketFactory;
 
     public TracConnector(String id, TicketHandlerFactory ticketFactory) {
         this.id = id;
@@ -125,23 +125,24 @@ public class TracConnector implements IssueDomain {
     private Hashtable<IssueAttribute, String> translateChanges(Map<IssueAttribute, String> changes) {
         Hashtable<IssueAttribute, String> attributes = new Hashtable<IssueAttribute, String>();
 
-        for (IssueAttribute field : changes.keySet()) {
+        for (Map.Entry<IssueAttribute, String> entry : changes.entrySet()) {
             try {
-                if (field.equals(Issue.Field.DESCRIPTION)) {
-                    attributes.put(TracFieldConstants.DESCRIPTION, changes.get(field));
-                } else if (field.equals(Issue.Field.OWNER)) {
-                    attributes.put(TracFieldConstants.OWNER, changes.get(field));
-                } else if (field.equals(Issue.Field.REPORTER)) {
-                    attributes.put(TracFieldConstants.SUMMARY, changes.get(field));
-                } else if (field.equals(Issue.Field.SUMMARY)) {
-                    attributes.put(TracFieldConstants.SUMMARY, changes.get(field));
-                } else if (field.equals(Issue.Field.PRIORITY)) {
-                    addPriority(attributes, Issue.Priority.valueOf(changes.get(field)));
-                } else if (field.equals(Issue.Field.STATUS)) {
-                    addStatus(attributes, Issue.Status.valueOf(changes.get(field)));
+                if (entry.getKey().equals(Issue.Field.DESCRIPTION)) {
+                    attributes.put(TracFieldConstants.DESCRIPTION, entry.getValue());
+                } else if (entry.getKey().equals(Issue.Field.OWNER)) {
+                    attributes.put(TracFieldConstants.OWNER, entry.getValue());
+                } else if (entry.getKey().equals(Issue.Field.REPORTER)) {
+                    attributes.put(TracFieldConstants.SUMMARY, entry.getValue());
+                } else if (entry.getKey().equals(Issue.Field.SUMMARY)) {
+                    attributes.put(TracFieldConstants.SUMMARY, entry.getValue());
+                } else if (entry.getKey().equals(Issue.Field.PRIORITY)) {
+                    addPriority(attributes, Issue.Priority.valueOf(entry.getValue()));
+                } else if (entry.getKey().equals(Issue.Field.STATUS)) {
+                    addStatus(attributes, Issue.Status.valueOf(entry.getValue()));
                 }
             } catch (ClassCastException e) {
-                log.error("Wrong value provided for field " + field + ": " + changes.get(field).getClass().getName());
+                log.error("Wrong value provided for field " + entry.getKey() + ": "
+                        + entry.getValue().getClass().getName());
             }
         }
 

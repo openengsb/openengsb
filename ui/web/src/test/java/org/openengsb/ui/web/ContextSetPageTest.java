@@ -106,7 +106,6 @@ public class ContextSetPageTest {
         assertThat(textField.isEnabled(), is(true));
         FormTester formTester = tester.newFormTester("form");
         formTester.setValue(textFieldId, "a");
-        node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage(nodeLinkId);
         tester.executeAjaxEvent(textField, "onblur");
         verify(contextService).putValue("/a/b/c/d", "a");
     }
@@ -123,7 +122,6 @@ public class ContextSetPageTest {
         assertThat(textField.isEnabled(), is(true));
         FormTester formTester = tester.newFormTester("form");
         formTester.setValue(textFieldId, "");
-        node = (AjaxLink<?>) tester.getComponentFromLastRenderedPage(nodeLinkId);
         tester.executeAjaxEvent(textField, "onblur");
         verify(contextService).putValue("/a/b/c/d", "");
     }
