@@ -96,8 +96,8 @@ public abstract class EditorPanel extends Panel {
                 public void validate(Form<?> form) {
                     Map<String, FormComponent<?>> loadFormComponents = loadFormComponents(form);
                     Map<String, String> toValidate = new HashMap<String, String>();
-                    for (String key : loadFormComponents.keySet()) {
-                        toValidate.put(key, loadFormComponents.get(key).getValue());
+                    for (Map.Entry<String, FormComponent<?>> entry : loadFormComponents.entrySet()) {
+                        toValidate.put(entry.getKey(), entry.getValue().getValue());
                     }
                     MultipleAttributeValidationResult validate = validator.validate(toValidate);
                     if (!validate.isValid()) {
