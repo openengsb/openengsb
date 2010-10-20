@@ -37,7 +37,6 @@ import org.osgi.framework.Constants;
 @SuppressWarnings("serial")
 public class BundleStrings implements StringLocalizer {
 
-    private transient Bundle bundle;
     private HashMap<String, Properties> entries;
 
     public BundleStrings() {
@@ -95,7 +94,6 @@ public class BundleStrings implements StringLocalizer {
     }
 
     public void setBundle(Bundle bundle) {
-        this.bundle = bundle;
         String path = (String) bundle.getHeaders().get(Constants.BUNDLE_LOCALIZATION);
         if (path == null) {
             path = Constants.BUNDLE_LOCALIZATION_DEFAULT_BASENAME;
@@ -103,15 +101,15 @@ public class BundleStrings implements StringLocalizer {
         path = path.trim();
         int idx = path.lastIndexOf('/');
         if (idx == -1) {
-            buildEntriesMap("/", path);
+            buildEntriesMap(bundle, "/", path);
         } else if (idx == 0) {
-            buildEntriesMap("/", path.substring(1));
+            buildEntriesMap(bundle, "/", path.substring(1));
         } else {
-            buildEntriesMap(path.substring(0, idx), path.substring(idx + 1));
+            buildEntriesMap(bundle, path.substring(0, idx), path.substring(idx + 1));
         }
     }
 
-    private void buildEntriesMap(String directory, String basename) {
+    private void buildEntriesMap(Bundle bundle, String directory, String basename) {
         @SuppressWarnings("unchecked")
         Enumeration<URL> resources = bundle.findEntries(directory, basename + "*.properties", false);
         entries = new HashMap<String, Properties>();
