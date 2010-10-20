@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -39,8 +38,8 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
         AbstractRuleManagerTest<SourceType> {
 
     public static final class TestElement {
-        private RuleBaseElementId id;
-        private String code;
+        private final RuleBaseElementId id;
+        private final String code;
 
         public TestElement(RuleBaseElementId id, String code) {
             this.id = id;
@@ -129,12 +128,6 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
             this.code[i] = el.code;
             this.id[i] = el.id;
         }
-    }
-
-    @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
     }
 
     @Test

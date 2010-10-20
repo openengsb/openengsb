@@ -33,11 +33,6 @@ public class DirectoryRuleManagerCrudTest extends AbstractRuleManagerCrudTest<Di
     }
 
     @Override
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    @Override
     public void tearDown() throws Exception {
         super.tearDown();
         File ruleDir = new File("data");

@@ -29,15 +29,10 @@ import org.openengsb.core.workflow.model.RuleBaseElementType;
 
 public class DirectoryProcessHandler extends MultiFileResourceHandler {
 
-    private Log log = LogFactory.getLog(DirectoryProcessHandler.class);
+    private final Log log = LogFactory.getLog(DirectoryProcessHandler.class);
 
     public DirectoryProcessHandler(DirectoryRuleSource source) {
         super(source);
-    }
-
-    @Override
-    public void create(RuleBaseElementId name, String code) throws RuleBaseException {
-        super.create(name, code);
     }
 
     @Override
