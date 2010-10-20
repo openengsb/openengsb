@@ -54,6 +54,12 @@
     <plugin.wagon.ssh.version>1.0-beta-6</plugin.wagon.ssh.version>
   </properties>
 
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>5</version>
+  </parent>
+
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-parent</artifactId>
   <packaging>pom</packaging>
