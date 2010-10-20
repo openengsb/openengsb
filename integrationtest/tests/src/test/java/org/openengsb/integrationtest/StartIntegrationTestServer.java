@@ -33,7 +33,7 @@ public class StartIntegrationTestServer {
 
     @Configuration
     public static Option[] configuration() {
-        List<Option> baseConfiguration = BaseExamConfiguration.getBaseExamOptions("../");
+        List<Option> baseConfiguration = BaseExamConfiguration.getBaseExamOptions("../../");
         configurePlatform(baseConfiguration);
         Option[] options = BaseExamConfiguration.convertOptionListToArray(baseConfiguration);
         return CoreOptions.options(options);

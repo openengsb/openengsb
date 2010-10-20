@@ -81,7 +81,7 @@ public final class BaseExamConfiguration {
     }
 
     public static void addHtmlUnitTestDriver(List<Option> baseConfiguration) {
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_BUNDLED_HTMLUNIT));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_INTEGRATIONTEST_WRAPPED_HTMLUNIT));
     }
 
     public static List<Option> getBaseExamOptions(String pathToRoot) {

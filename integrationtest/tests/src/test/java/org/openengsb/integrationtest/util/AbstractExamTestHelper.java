@@ -117,7 +117,7 @@ public abstract class AbstractExamTestHelper {
 
     @Configuration
     public static Option[] configuration() {
-        List<Option> baseConfiguration = BaseExamConfiguration.getBaseExamOptions("../");
+        List<Option> baseConfiguration = BaseExamConfiguration.getBaseExamOptions("../../");
         baseConfiguration
             .add(CoreOptions.systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"));
         baseConfiguration.add(new WorkingDirectoryOption(getWorkingDirectory()));
