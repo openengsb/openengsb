@@ -41,9 +41,20 @@
     classical way, but require some additional, special work.
   </description>
 
-  <modules>
-    <module>net.sourceforge.htmlunit</module>
-  </modules>
-
+  <profiles>
+    <profile>
+      <id>release</id> 
+      <modules>
+        <module>net.sourceforge.htmlunit</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>integration-test</id> 
+      <modules>
+        <module>net.sourceforge.htmlunit</module>
+      </modules>
+    </profile>
+  </profiles>
+  
 </project>
 
