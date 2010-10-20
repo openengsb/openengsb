@@ -46,6 +46,7 @@
       <para>ProxyConnector automatically exports a ServiceManager for every Domain to instantiate a proxy. 
       An InvocationHandlerFactory has to be provided for proxying any call. The proxy has to be created via the 
       normal instantiation mechanism on the website.</para>
+    </section>
   </section>
   
   <section xml:id="developer.plugins.jms">
