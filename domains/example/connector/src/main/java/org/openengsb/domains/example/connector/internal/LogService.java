@@ -20,6 +20,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domains.example.ExampleDomain;
+import org.openengsb.domains.example.ExampleDomainEvents;
+import org.openengsb.domains.example.event.LogEvent;
+import org.openengsb.domains.example.event.LogEvent.Level;
 
 public class LogService implements ExampleDomain {
 
@@ -27,25 +30,40 @@ public class LogService implements ExampleDomain {
     private String outputMode;
     private final String id;
     private AliveState aliveState = AliveState.OFFLINE;
+    private ExampleDomainEvents domainEventInterface;
 
-    public LogService(String id) {
+    public LogService(String id, ExampleDomainEvents domainEventInterface) {
         this.id = id;
+        this.domainEventInterface = domainEventInterface;
         aliveState = AliveState.CONNECTING;
     }
 
     @Override
     public String doSomething(String message) {
         message = id + ": " + message;
+        Level level = Level.INFO;
         if ("DEBUG".equals(outputMode)) {
             log.debug(message);
+            level = Level.DEBUG;
         } else if ("INFO".equals(outputMode)) {
             log.info(message);
+            level = Level.INFO;
         } else if ("WARN".equals(outputMode)) {
             log.warn(message);
+            level = Level.WARN;
         } else if ("ERROR".equals(outputMode)) {
             log.error(message);
+            level = Level.ERROR;
         }
+        raiseEvent(message, level);
         return "LogServiceCalled with: " + message;
+    }
+
+    private void raiseEvent(String message, Level level) {
+        LogEvent event = new LogEvent();
+        event.setMessage(message);
+        event.setLevel(level);
+        domainEventInterface.raiseEvent(event);
     }
 
     public void setOutputMode(String outputMode) {

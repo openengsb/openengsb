@@ -17,7 +17,12 @@
 package org.openengsb.domains.example;
 
 import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.Raises;
+import org.openengsb.domains.example.event.LogEvent;
 
 public interface ExampleDomain extends Domain {
+
+    @Raises(LogEvent.class)
     String doSomething(String message);
+
 }
