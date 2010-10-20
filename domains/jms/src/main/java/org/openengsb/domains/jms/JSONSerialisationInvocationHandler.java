@@ -43,7 +43,7 @@ public class JSONSerialisationInvocationHandler implements InvocationHandler {
         try {
             mapper.writeValue(writer, arg2);
             String send = sender.send(arg1.getName(), writer.toString());
-            if (arg1.getReturnType().getName() != "void") {
+            if ("void".equals(arg1.getReturnType().getName())) {
                 return mapper.readValue(send, TypeFactory.type(arg1.getGenericReturnType()));
             } else {
                 return null;
