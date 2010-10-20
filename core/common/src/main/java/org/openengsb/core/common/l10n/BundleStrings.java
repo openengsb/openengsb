@@ -73,7 +73,7 @@ public class BundleStrings implements StringLocalizer {
             }
             if (p.containsKey(key)) {
                 String property = p.getProperty(key);
-                String format = MessageFormat.format(property, parameters);
+                String format = MessageFormat.format(property, (Object[]) parameters);
                 return format;
             }
         }
