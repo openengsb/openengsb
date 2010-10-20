@@ -18,7 +18,6 @@ package org.openengsb.domains.jms;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
@@ -74,7 +73,7 @@ public class JMSConnectorTest {
     public void returnMockDomainInterface_shouldAddProxyToBundleContext() {
         BundleContext mockContext = mock(BundleContext.class);
         Bundle mockBundle = mock(Bundle.class);
-        Dictionary headers = mock(Dictionary.class);
+        Dictionary<?, ?> headers = mock(Dictionary.class);
         when(mockBundle.getHeaders()).thenReturn(headers);
         when(mockContext.getBundle()).thenReturn(mockBundle);
 

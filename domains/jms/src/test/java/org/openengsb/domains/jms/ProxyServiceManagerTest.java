@@ -54,7 +54,7 @@ public class ProxyServiceManagerTest {
         });
         BundleContext mockContext = mock(BundleContext.class);
         Bundle mockBundle = mock(Bundle.class);
-        Dictionary headers = mock(Dictionary.class);
+        Dictionary<?, ?> headers = mock(Dictionary.class);
         when(mockBundle.getHeaders()).thenReturn(headers);
         when(mockContext.getBundle()).thenReturn(mockBundle);
 

@@ -64,7 +64,7 @@ public class TracConnectorTest {
         i.setReporter("testreporter");
         i.setStatus(Issue.Status.NEW);
 
-        Hashtable<Enum, String> attributes = new Hashtable<Enum, String>();
+        Hashtable<Enum<?>, String> attributes = new Hashtable<Enum<?>, String>();
         attributes.put(TracFieldConstants.OWNER, "testowner");
         attributes.put(TracFieldConstants.REPORTER, "testreporter");
         attributes.put(TracFieldConstants.PRIORITY, TracPriorityConstants.URGENT.toString());
