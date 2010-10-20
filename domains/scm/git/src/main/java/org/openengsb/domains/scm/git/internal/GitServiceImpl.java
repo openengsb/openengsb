@@ -47,6 +47,7 @@ import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domains.scm.ScmDomain;
 import org.openengsb.domains.scm.ScmException;
 
+@SuppressWarnings("deprecation")
 public class GitServiceImpl implements ScmDomain {
 
     private String remoteLocation;
