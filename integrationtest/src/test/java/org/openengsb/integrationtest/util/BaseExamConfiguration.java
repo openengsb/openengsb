@@ -35,7 +35,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.container.def.PaxRunnerOptions;
-import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -82,8 +81,7 @@ public final class BaseExamConfiguration {
     }
 
     public static void addHtmlUnitTestDriver(List<Option> baseConfiguration) {
-        baseConfiguration.add(CoreOptions.mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
-                .artifactId("net.sourceforge.htmlunit-wrapped").versionAsInProject()));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_BUNDLED_HTMLUNIT));
     }
 
     public static List<Option> getBaseExamOptions(String pathToRoot) {

@@ -32,24 +32,6 @@
   <version>1.0.0-SNAPSHOT</version>
   <name>OpenEngSB :: Integration Tests</name>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.ops4j.pax.exam</groupId>
-        <artifactId>maven-paxexam-plugin</artifactId>
-        <version>${exam.version}</version>
-        <executions>
-          <execution>
-            <id>generate-config</id>
-            <goals>
-              <goal>generate-depends-file</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
   <dependencies>
     <!-- Internal Dependencies -->
     <dependency>
@@ -118,8 +100,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.wrapped</groupId>
-      <artifactId>net.sourceforge.htmlunit-wrapped</artifactId>
+      <groupId>net.sourceforge.htmlunit</groupId>
+      <artifactId>htmlunit</artifactId>
       <version>${htmlunit.version}</version>
       <scope>test</scope>
     </dependency>
