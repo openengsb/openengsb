@@ -619,7 +619,6 @@
                 <exclude>**/globals</exclude>
                 <exclude>**/.keep</exclude>
                 <exclude>**/EngSB.sln</exclude>
-                <exclude>README</exclude>
                 <exclude>**/nb-configuration.xml</exclude>
                 <exclude>**/*.checkstyle</exclude>
                 <!-- the exclusion for .rf-files should be removed, when the xmlstyle is fixed OPENENGSB-379 -->
