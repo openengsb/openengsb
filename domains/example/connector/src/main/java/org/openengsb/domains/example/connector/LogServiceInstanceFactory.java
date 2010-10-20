@@ -25,9 +25,12 @@ import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domains.example.ExampleDomain;
+import org.openengsb.domains.example.ExampleDomainEvents;
 import org.openengsb.domains.example.connector.internal.LogService;
 
 public class LogServiceInstanceFactory implements ServiceInstanceFactory<ExampleDomain, LogService> {
+
+    private ExampleDomainEvents domainEventInterface;
 
     @Override
     public ServiceDescriptor getDescriptor(Builder builder) {
@@ -52,7 +55,7 @@ public class LogServiceInstanceFactory implements ServiceInstanceFactory<Example
 
     @Override
     public LogService createServiceInstance(String id, Map<String, String> attributes) {
-        LogService instance = new LogService(id);
+        LogService instance = new LogService(id, domainEventInterface);
         updateServiceInstance(instance, attributes);
         return instance;
     }
@@ -65,5 +68,9 @@ public class LogServiceInstanceFactory implements ServiceInstanceFactory<Example
     @Override
     public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
         return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+    }
+
+    public void setDomainEventInterface(ExampleDomainEvents domainEventInterface) {
+        this.domainEventInterface = domainEventInterface;
     }
 }

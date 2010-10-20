@@ -28,6 +28,11 @@
       <entry key="domain" value="org.openengsb.domains.example.ExampleDomain" />
     </osgi:service-properties>
     <bean class="org.openengsb.domains.example.connector.LogServiceManager" init-method="init">
+      <constructor-arg>
+        <bean class="org.openengsb.domains.example.connector.LogServiceInstanceFactory">
+          <property name="domainEventInterface" ref="domainEventInterface" />
+        </bean>
+      </constructor-arg>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
     </bean>
   </osgi:service>
@@ -38,5 +43,6 @@
   </bean>
 
   <osgi:reference id="persistenceServiceManager" interface="org.openengsb.core.persistence.PersistenceManager" />
+  <osgi:reference id="domainEventInterface" interface="org.openengsb.domains.example.ExampleDomainEvents" />
 
 </beans>

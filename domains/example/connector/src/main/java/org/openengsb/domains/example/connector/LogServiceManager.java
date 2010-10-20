@@ -22,7 +22,7 @@ import org.openengsb.domains.example.connector.internal.LogService;
 
 public class LogServiceManager extends AbstractServiceManager<ExampleDomain, LogService> {
 
-    public LogServiceManager() {
-        super(new LogServiceInstanceFactory());
+    public LogServiceManager(LogServiceInstanceFactory factory) {
+        super(factory);
     }
 }

@@ -21,13 +21,14 @@ import org.openengsb.core.common.Event;
 public class LogEvent extends Event {
 
     public static enum Level {
-            INFO, WARN, ERROR
+            INFO, WARN, ERROR, DEBUG
     }
 
     private String message;
     private Level level;
 
     public LogEvent() {
+        super("LogEvent");
     }
 
     public String getMessage() {
