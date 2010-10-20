@@ -365,7 +365,6 @@
             <exclude>**/globals</exclude>
             <exclude>**/.keep</exclude>
             <exclude>**/EngSB.sln</exclude>
-            <exclude>**/README</exclude>
             <exclude>**/.checkstyle</exclude>
             <exclude>**/nb-configuration.xml</exclude>
           </excludes>
