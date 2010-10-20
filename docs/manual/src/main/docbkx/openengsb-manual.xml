@@ -47,6 +47,7 @@
     </partintro>
     <xi:include href="user/whatisopenengsb.xml"/>
     <xi:include href="user/whentousetheopenengsb.xml"/>
+    <xi:include href="user/quickstart.xml"/>
     <!--xi:include href="user/gettingstarted.xml" /-->
     <!--xi:include href="user/whentouseopenengsb.xml" /-->
     <!--xi:include href="user/gettingstarted.xml" /-->
