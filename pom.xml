@@ -35,7 +35,6 @@
     <plugin.eclipse.version>2.8</plugin.eclipse.version>
     <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
     <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
-    <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
     <plugin.deploy.version>2.5</plugin.deploy.version>
     <twdata.cli.version>1.0.4</twdata.cli.version>
     <clover.version>3.0.2</clover.version>
@@ -285,39 +284,6 @@
           <meminitial>128m</meminitial>
           <maxmem>512m</maxmem>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>${maven.plugin.enforcer.version}</version>
-        <executions>
-          <execution>
-            <id>enforce-maven</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>[${mvn.version},)</version>
-                </requireMavenVersion>
-              </rules>
-            </configuration>
-          </execution>
-          <execution>
-            <id>enforce-java</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireJavaVersion>
-                  <version>${jdk.version}</version>
-                </requireJavaVersion>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
