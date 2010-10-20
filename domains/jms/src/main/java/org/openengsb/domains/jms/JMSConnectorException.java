@@ -16,6 +16,7 @@
 
 package org.openengsb.domains.jms;
 
+@SuppressWarnings("serial")
 public class JMSConnectorException extends RuntimeException {
 
     public JMSConnectorException() {

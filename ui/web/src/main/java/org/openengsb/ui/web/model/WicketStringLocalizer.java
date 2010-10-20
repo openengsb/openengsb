@@ -27,6 +27,7 @@ import org.openengsb.core.common.l10n.StringLocalizer;
  * String localizer that implements the OpenEngSB's {@link StringLocalizer} interface and uses Wicket to localize the
  * actual string.
  */
+@SuppressWarnings("serial")
 public class WicketStringLocalizer implements StringLocalizer {
 
     private final Component component;
