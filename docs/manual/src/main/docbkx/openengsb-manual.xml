@@ -37,7 +37,7 @@
   </info>
 
   <part xml:id="user.manual">
-    <title>User Manual</title>
+    <title>OpenEngSB Framework</title>
     <partintro>
       <para>This part gives an introduction into the OpenEngSB project and explains its base usage environment and the
         concepts, such as Domains, Connectors, Workflows and similar important ideas. Furthermore this part covers
@@ -54,7 +54,7 @@
   </part>
 
   <part xml:id="domain.manual">
-    <title>Domains</title>
+    <title>OpenEngSB Available Domains &amp; Connectors</title>
     <partintro>
       <para>This part gives an overview about the domains and their functionality the OpenEngSB supports out of the
         box. Furthermore each connector and necessary external tool configuration is explained.</para>
@@ -63,7 +63,7 @@
   </part>
 
   <part xml:id="developer.manual">
-    <title>Developer Manual</title>
+    <title>OpenEngSB Commiters &amp; Contributors</title>
     <partintro>
       <para>This part explains how to develop additional domains, connectors and similar parts. In addition it explains
         the rules and infrastructure according to which the project is developed.</para>
