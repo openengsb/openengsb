@@ -21,6 +21,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -48,14 +49,82 @@ public class FileSystemReportStore implements ReportStore {
     @Override
     public List<Report> getAllReports(String category) {
         List<Report> result = new ArrayList<Report>();
-        File categoryFile = new File(rootDirectory, category);
+        File categoryFile = new File(rootDirectory, getCategoryFileName(category));
         if (!categoryFile.exists()) {
             return result;
         }
         for (File reportFile : categoryFile.listFiles()) {
-            result.add(loadReport(reportFile));
+            if (!reportFile.getName().endsWith(".meta")) {
+                result.add(loadReport(reportFile));
+            }
         }
         return result;
+    }
+
+    @Override
+    public void storeReport(String category, Report report) {
+        try {
+            createCategory(category);
+            File categoryFile = new File(rootDirectory, getCategoryFileName(category));
+            File reportFile = createReportDirectory(report, categoryFile);
+            List<ReportPart> parts = report.getParts();
+            for (int i = 0; i < parts.size(); i++) {
+                storeReportPart(reportFile, i, parts.get(i));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void removeReport(String category, Report report) {
+        File categoryFile = new File(rootDirectory, getCategoryFileName(category));
+        if (!categoryFile.exists()) {
+            return;
+        }
+        File reportFile = new File(categoryFile, getReportFileName(report));
+        if (!reportFile.exists()) {
+            return;
+        }
+        try {
+            FileUtils.deleteDirectory(reportFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<String> getAllCategories() {
+        List<String> result = new ArrayList<String>();
+        File[] files = rootDirectory.listFiles();
+        for (File file : files) {
+            if (file.isDirectory() && Arrays.asList(file.list()).contains("category.meta")) {
+                result.add(getCategoryName(file));
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void removeCategory(String category) {
+        try {
+            File categoryFile = new File(rootDirectory, getCategoryFileName(category));
+            if (categoryFile.exists()) {
+                FileUtils.deleteDirectory(categoryFile);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void createCategory(String category) {
+        File categoryFile = new File(rootDirectory, getCategoryFileName(category));
+        if (categoryFile.exists()) {
+            return;
+        }
+        categoryFile.mkdirs();
+        writeCategoryMetadata(category, categoryFile);
     }
 
     private Report loadReport(File reportFile) {
@@ -129,23 +198,8 @@ public class FileSystemReportStore implements ReportStore {
         return properties;
     }
 
-    @Override
-    public void storeReport(String category, Report report) {
-        try {
-            createCategory(category);
-            File categoryFile = new File(rootDirectory, category);
-            File reportFile = createReportDirectory(report, categoryFile);
-            List<ReportPart> parts = report.getParts();
-            for (int i = 0; i < parts.size(); i++) {
-                storeReportPart(reportFile, i, parts.get(i));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private File createReportDirectory(Report report, File categoryFile) throws IOException {
-        String name = getReportName(report);
+        String name = getReportFileName(report);
         File reportFile = new File(categoryFile, name);
         testAndDelete(reportFile);
         reportFile.mkdirs();
@@ -198,58 +252,33 @@ public class FileSystemReportStore implements ReportStore {
         return ".data";
     }
 
-    @Override
-    public void removeReport(String category, Report report) {
-        File categoryFile = new File(rootDirectory, category);
-        if (!categoryFile.exists()) {
-            return;
-        }
-        File reportFile = new File(categoryFile, getReportName(report));
-        if (!reportFile.exists()) {
-            return;
-        }
-        try {
-            FileUtils.deleteDirectory(reportFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private String getReportName(Report report) {
+    private String getReportFileName(Report report) {
         return String.valueOf(report.getName().hashCode());
     }
 
-    @Override
-    public List<String> getAllCategories() {
-        List<String> result = new ArrayList<String>();
-        File[] files = rootDirectory.listFiles();
-        for (File file : files) {
-            if (file.isDirectory()) {
-                result.add(file.getName());
-            }
-        }
-        return result;
+    private String getCategoryFileName(String category) {
+        return String.valueOf(category.hashCode());
     }
 
-    @Override
-    public void removeCategory(String category) {
+    private String getCategoryName(File categoryFile) {
         try {
-            File categoryFile = new File(rootDirectory, category);
-            if (categoryFile.exists()) {
-                FileUtils.deleteDirectory(categoryFile);
-            }
+            File meta = new File(categoryFile, "category.meta");
+            Properties properties = readPropertiesFromFile(meta);
+            return properties.getProperty("categoryName");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @Override
-    public void createCategory(String category) {
-        File categoryFile = new File(rootDirectory, category);
-        if (categoryFile.exists()) {
-            return;
+    private void writeCategoryMetadata(String category, File categoryFile) {
+        try {
+            File meta = new File(categoryFile, "category.meta");
+            Properties properties = new Properties();
+            properties.setProperty("categoryName", category);
+            writeProperties(meta, properties);
+        } catch (IOException ioe) {
+            throw new RuntimeException(ioe);
         }
-        categoryFile.mkdirs();
     }
 
 }
