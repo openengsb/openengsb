@@ -33,8 +33,6 @@ public class NeodatisPersistenceManager implements PersistenceManager {
 
     public NeodatisPersistenceManager() {
         OdbConfiguration.useMultiThread(true);
-        OdbConfiguration.setNumberOfRetryToOpenFile(3);
-        OdbConfiguration.setRetryTimeout(1000);
     }
 
     @Override
