@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="developer.admin" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>Admin</title>
+
+	<para>see http://openengsb.org/team-list.html</para>
+
+  <section xml:id="developer.admin.server">
+    <title>OpenEngSB Infrastructure Server</title>
+    <para>The main server hosting our selfmaintained infrastructure runs
+    Ubuntu Linux and is hosted under the domain "openengsb.org". The server
+    is mainained remotely via SSH [pw:server].</para>
+    <para>An apache2 server processes all requests and forwards it to the
+    corresponding service. The config-file that connects the subdomains to the
+    corresponding services is located in /etc/apache2/sites-enabled/000-default.
+    </para>
+    <para>
+    This forwards point to a directory in /var/www that redirects the browser
+    to the correct page (like build.openengsb.org -> build.openengsb.org/hudson)
+    The tomcat-server for the homepage is located in /var/opt/tomcat.
+    JIRA is located in /var/opt/atlassian-jira-enterprise-4.1.2/
+    Further all passwd-files to control http-access are located in /etc/apache2
+    </para>
+  </section>
+
+  <section xml:id="developer.admin.build">
+    <title>OpenEngSB Build</title>
+    <para>Hudson is accessible at http://build.openengsb.org.
+    To become an admin create account and write mail to one of the current
+    admins.</para>
+	</section>
+
+	<section xml:id="developer.admin.issue">
+    <title>OpenEngSB Issuetracker</title>
+    <para>JIRA is accessible at http://issues.openengsb.org.
+    To become an admin create account and write mail to one of the current
+    admins.</para>
+	</section>
+
+	<section xml:id="developer.admin.git">
+    <title>OpenEngSB git</title>
+    <para>The github is located at http://git.openengsb.org.
+    To become an admin create a github-account (if you don't have one) and
+    write mail to one of the current admins.</para>
+	</section>
+
+	<section xml:id="developer.admin.maven">
+		<title>OpenEngSB Maven</title>
+		<section xml:id="developer.admin.maven.internal">
+			<title>internal</title>
+			<para>The internal maven-repo is accessible at maven.openengsb.org.
+			Use [pw:nexus] to login.</para>
+		</section>
+		<section>
+			<title>external</title>
+			<para>The external maven-repo hosting released artifacts is located at
+			oss.sonatype.org. Use [pw:maven] to login.</para>
+		</section>
+	</section>
+
+	<section xml:id="developer.admin.mailinglist">
+		<title>OpenEngSB Mailinglist</title>
+		<para>To obtain admin-access for the mailing lists register
+		google-account (if you don't have one), join mailinglists
+		(http://openengsb.org/community/mailinglists.html)
+		and write mail to one of the current admins</para>
+	</section>
+
+</chapter>
