@@ -474,13 +474,6 @@
     </profile>
     <profile>
       <id>nightly</id>
-      <distributionManagement>
-        <snapshotRepository>
-          <id>openengsb-snapshots</id>
-          <name>OpenEngSB Snapshot Repository</name>
-          <url>dav:http://maven.openengsb.org/nexus/content/repositories/openengsb-snapshots/</url>
-        </snapshotRepository>
-      </distributionManagement>
       <build>
         <plugins>
           <plugin>
@@ -499,13 +492,6 @@
     </profile>
     <profile>
       <id>milestone</id>
-      <distributionManagement>
-        <repository>
-          <id>openengsb-releases</id>
-          <name>OpenEngSB Release Repository</name>
-          <url>dav:http://maven.openengsb.org/nexus/content/repositories/openengsb-releases/</url>
-        </repository>
-      </distributionManagement>
       <build>
         <plugins>
           <plugin>
@@ -524,13 +510,6 @@
     </profile>
     <profile>
       <id>final</id>
-      <distributionManagement>
-        <repository>
-          <id>openengsb-releases</id>
-          <name>OpenEngSB Release Repository</name>
-          <url>dav:http://maven.openengsb.org/nexus/content/repositories/openengsb-releases/</url>
-        </repository>
-      </distributionManagement>
       <build>
         <plugins>
           <plugin>
