@@ -36,7 +36,6 @@
   <properties>
     <!-- Plugin Versions -->
     <plugin.bundle.version>2.1.0</plugin.bundle.version>
-    <plugin.eclipse.version>2.8</plugin.eclipse.version>
     <plugin.openjpa.version>1.1</plugin.openjpa.version>
     <plugin.surefire.version>2.5</plugin.surefire.version>
     <docbkx.version>2.0.10</docbkx.version>
@@ -51,7 +50,6 @@
     <maven.plugin.surefire.report>2.5</maven.plugin.surefire.report>
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
     <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
-    <maven.eclipse.plugin.version>2.8</maven.eclipse.plugin.version>
     <maven.rat.version>0.6</maven.rat.version>
     <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
     <maven.war.plugin>2.1-beta-1</maven.war.plugin>
@@ -205,19 +203,6 @@
 
   <build>
     <finalName>${project.artifactId}-${project.version}</finalName>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>${plugin.eclipse.version}</version>
-        <configuration>
-          <downloadSources>true</downloadSources>
-          <downloadJavadocs>true</downloadJavadocs>
-          <workspace>eclipse-workspace</workspace>
-          <workspaceCodeStylesURL>http://dev.openengsb.org/resources/eclipse/formatter.xml</workspaceCodeStylesURL>
-        </configuration>
-      </plugin>
-    </plugins>
     <pluginManagement>
       <plugins>
         <plugin>

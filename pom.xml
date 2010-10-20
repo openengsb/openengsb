@@ -32,6 +32,7 @@
     <jdk.version>1.6</jdk.version>
     <mvn.version>2.1</mvn.version>
     <!-- Plugin Version -->
+    <plugin.eclipse.version>2.8</plugin.eclipse.version>
     <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
     <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
     <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
@@ -303,6 +304,17 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>${plugin.eclipse.version}</version>
+        <configuration>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>true</downloadJavadocs>
+          <workspace>eclipse-workspace</workspace>
+          <workspaceCodeStylesURL>file:etc/eclipse/formatter.xml</workspaceCodeStylesURL>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
