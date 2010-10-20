@@ -21,19 +21,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <relativePath>../poms</relativePath>
-    <groupId>org.openengsb.build</groupId>
-    <artifactId>shared-plugin-settings</artifactId>
+    <groupId>org.openengsb.integrationtest</groupId>
+    <artifactId>openengsb-integrationtest-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.openengsb.bundled</groupId>
-  <artifactId>openengsb-bundled-parent</artifactId>
+  <groupId>org.openengsb.integrationtest.wrapped</groupId>
+  <artifactId>openengsb-integrationtest-wrapped-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
   <packaging>pom</packaging>
 
-  <name>OpenEngSB :: OSGi Composed Wrapped Bundles :: Parent</name>
+  <name>OpenEngSB :: Integration Tests :: OSGi Composed Wrapped Bundles :: Parent</name>
 
   <description>
     While most bundles work quite find with the typical wrapped bundle code from poms/wrapped there are some special
@@ -41,20 +40,9 @@
     classical way, but require some additional, special work.
   </description>
 
-  <profiles>
-    <profile>
-      <id>release</id> 
-      <modules>
-        <module>net.sourceforge.htmlunit</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>integration-test</id> 
-      <modules>
-        <module>net.sourceforge.htmlunit</module>
-      </modules>
-    </profile>
-  </profiles>
+  <modules>
+    <module>net.sourceforge.htmlunit</module>
+  </modules>
   
 </project>
 
