@@ -56,13 +56,19 @@ public class ServiceId implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.serviceClass == null) ? 0 : this.serviceClass.hashCode());
-        result = prime * result + ((this.serviceId == null) ? 0 : this.serviceId.hashCode());
+        result = prime * result + (this.serviceClass == null ? 0 : this.serviceClass.hashCode());
+        result = prime * result + (this.serviceId == null ? 0 : this.serviceId.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
         if (!(obj instanceof ServiceId)) {
             return false;
         }
