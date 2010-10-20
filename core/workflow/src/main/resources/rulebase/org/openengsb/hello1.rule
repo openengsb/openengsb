@@ -15,7 +15,7 @@
 #
 
 when
-	Event()
+	Event(name == "42")
 then
 	example.doSomething("Hello World");
 	Notification n = new Notification();
