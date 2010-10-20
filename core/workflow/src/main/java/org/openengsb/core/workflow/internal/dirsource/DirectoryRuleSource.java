@@ -305,7 +305,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
             if (!line.trim().isEmpty()) {
                 result.append("global ");
                 result.append(line);
-                result.append("\n");
+                result.append('\n');
             }
         }
         reader.close();
@@ -321,7 +321,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
             if (!line.trim().isEmpty()) {
                 result.append("import ");
                 result.append(line);
-                result.append("\n");
+                result.append('\n');
             }
         }
         reader.close();
@@ -348,7 +348,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         result.append(id.getPackageName().replace('.', File.separatorChar));
         result.append(File.separator);
         result.append(id.getName());
-        result.append(".");
+        result.append('.');
         return result.toString();
     }
 }

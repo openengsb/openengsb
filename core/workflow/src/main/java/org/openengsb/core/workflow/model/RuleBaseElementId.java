@@ -76,9 +76,9 @@ public class RuleBaseElementId implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((this.name == null) ? 0 : this.name.hashCode());
-        result = prime * result + ((this.packageName == null) ? 0 : this.packageName.hashCode());
-        result = prime * result + ((this.type == null) ? 0 : this.type.hashCode());
+        result = prime * result + (this.name == null ? 0 : this.name.hashCode());
+        result = prime * result + (this.packageName == null ? 0 : this.packageName.hashCode());
+        result = prime * result + (this.type == null ? 0 : this.type.hashCode());
         return result;
     }
 
@@ -122,7 +122,7 @@ public class RuleBaseElementId implements Serializable {
     public String toString() {
         StringBuilder result = new StringBuilder(packageName);
         if (name != null) {
-            result.append(".").append(name).toString();
+            result.append('.').append(name).toString();
         }
         return result.toString();
     }

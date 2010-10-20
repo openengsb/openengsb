@@ -85,7 +85,7 @@ public class MethodId implements Serializable {
     public String toString() {
         StringBuffer result = new StringBuffer();
         result.append(name);
-        result.append("(");
+        result.append('(');
         boolean first = true;
         for (String s : argumentTypes) {
             if (first) {
@@ -95,7 +95,7 @@ public class MethodId implements Serializable {
             }
             result.append(s);
         }
-        result.append(")");
+        result.append(')');
         return result.toString();
     }
 
