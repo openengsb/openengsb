@@ -31,7 +31,7 @@
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>${wrapped.groupId}-all</artifactId>
+  <artifactId>org.apache.xmlrpc-all</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: OSGi Wrapped Bundles :: XMLRPC</name>

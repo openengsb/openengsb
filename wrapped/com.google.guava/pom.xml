@@ -34,7 +34,7 @@
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>${wrapped.groupId}-all</artifactId>
+  <artifactId>com.google.guava-all</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: OSGi Wrapped Bundles :: Guava</name>
