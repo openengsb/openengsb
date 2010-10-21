@@ -20,6 +20,11 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Raises;
 import org.openengsb.domains.example.event.LogEvent;
 
+/**
+ * This is the interface of the example domain. Besides this functional interface, which has to be implemented by
+ * connectors, this domain also provides the event interface {@link ExampleDomainEvents}, which can be used by
+ * connectors.
+ */
 public interface ExampleDomain extends Domain {
 
     @Raises(LogEvent.class)

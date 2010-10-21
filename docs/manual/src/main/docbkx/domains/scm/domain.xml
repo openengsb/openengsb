@@ -25,26 +25,22 @@
   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
 
   <title>SCM Domain</title>
-
-  <para>The SCM Domain polls external repositories for changes of content under source control and provides
-    functionality to copy/export the repository content for further processing.</para>
-
+  <para>The software configuration management (SCM) domain is the tool domain for all SCM tools, like Git or Subversion.</para> 
   <section>
     <title>Description</title>
-    <para>TBW</para>
+    <para>The SCM Domain polls external repositories for changes of content under source control and provides functionality to 
+      copy/export the repository content for further processing.</para>
   </section>
 
   <section>
     <title>Functional Interface</title>
-    <para><ulink url="http://github.com/openengsb/openengsb/blob/master/domains/scm/implementation/src/main/java/org/openengsb/domains/scm/ScmDomain.java">Link</ulink>
-      to the Java Domain Interface on Github.</para>
+    <para><link xlink:href="http://github.com/openengsb/openengsb/blob/master/domains/scm/implementation/src/main/java/org/openengsb/domains/scm/ScmDomain.java">Link</link>
+      to the Java Domain Interface on Github.  This interface also contains information about events raised by this domain.</para>
   </section>
 
   <section>
-    <title>Events</title>
-    <para>Currently this domain has no domain-specific events.</para>
+    <title>Connectors</title>  
+    <xi:include href="git.xml" />
   </section>
-
-  <xi:include href="git.xml" />
 
 </chapter>

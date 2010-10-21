@@ -17,25 +17,19 @@
 
 -->
 
-<section xml:id="domains.scm.git" version="5.0" xmlns="http://docbook.org/ns/docbook"
+<section xml:id="domains.notification.email" version="5.0" xmlns="http://docbook.org/ns/docbook"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
 
-  <title>Git Connector</title>
+  <title>Email Connector</title>
   
-  <para>The Git Connector is a SCM tool connector for the 
-  <link xlink:href="http://git-scm.com/">Git fast version control system</link>.</para>
+  <para>The email connector is a simple notification connector based on the java mail API.</para>
+
   <section>
     <title>External Tool Configuration</title>
-    <para>The external Git repository must be anonymously accessible with one of the following protocols:</para>
-    <orderedlist>
-      <listitem><para>git</para></listitem>
-      <listitem><para>http</para></listitem>
-      <listitem><para>ftp</para></listitem>
-    </orderedlist>
-    <para>No further configuration is needed.</para>
+    <para>No external tool configuration is necessary.</para>
   </section>
 
 </section>
