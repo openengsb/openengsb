@@ -34,12 +34,7 @@
   <section>
     <title>Functional Interface</title>
     <para><link xlink:href="http://github.com/openengsb/openengsb/blob/master/domains/issue/implementation/src/main/java/org/openengsb/domains/issue/IssueDomain.java">Link</link>
-      to the Java Domain Interface on Github.</para>
-  </section>
-
-  <section>
-    <title>Events</title>
-    <para>Currently this domain has no domain-specific events.</para>
+      to the Java Domain Interface on Github. This interface also contains information about events raised by this domain.</para>
   </section>
 
   <section>
