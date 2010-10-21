@@ -34,14 +34,14 @@
     Homepage for the Open Engineering Service Bus
   </description>
 
+  
   <profiles>
     <profile>
       <id>nightly</id>
-      <activation>
-        <property>
-          <name>nightly</name>
-        </property>
-      </activation>
+      <properties>
+        <latest>https://oss.sonatype.org/content/groups/public/org/openengsb/openengsb/${project.version}/</latest>
+        <older>https://oss.sonatype.org/content/groups/public/org/openengsb/openengsb/${project.version}/</older>
+      </properties>
       <distributionManagement>
         <site>
           <id>OpenengsbWebServer</id>
@@ -51,11 +51,10 @@
     </profile>
     <profile>
       <id>milestone</id>
-      <activation>
-        <property>
-          <name>milestone</name>
-        </property>
-      </activation>
+      <properties>
+        <latest>http://uk1.maven.org/maven2/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
+        <older>http://uk1.maven.org/maven2/org/openengsb/openengsb/</older>
+      </properties>
       <distributionManagement>
         <site>
           <id>OpenengsbWebServer</id>
@@ -65,11 +64,10 @@
     </profile>
     <profile>
       <id>final</id>
-      <activation>
-        <property>
-          <name>final</name>
-        </property>
-      </activation>
+      <properties>
+        <latest>http://uk1.maven.org/maven2/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
+        <older>http://uk1.maven.org/maven2/org/openengsb/openengsb/</older>
+      </properties>
       <distributionManagement>
         <site>
           <id>OpenengsbWebServer</id>
