@@ -133,20 +133,6 @@
                   <artifactId>openengsb-docs-manual</artifactId>
                   <version>${project.version}</version>
                   <type>zip</type>
-                  <classifier>html-multi</classifier>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb.docs</groupId>
-                  <artifactId>openengsb-docs-manual</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                  <classifier>html-single</classifier>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb.docs</groupId>
-                  <artifactId>openengsb-docs-manual</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
                   <classifier>pdf</classifier>
                 </artifactItem>
               </artifactItems>
