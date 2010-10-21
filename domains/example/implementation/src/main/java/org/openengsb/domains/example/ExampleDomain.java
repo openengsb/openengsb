@@ -18,6 +18,11 @@ package org.openengsb.domains.example;
 
 import org.openengsb.core.common.Domain;
 
+/**
+ * This is the interface of the example domain. Besides this functional interface, which has to be implemented by
+ * connectors, this domain also provides the event interface {@link ExampleDomainEvents}, which can be used by
+ * connectors.
+ */
 public interface ExampleDomain extends Domain {
     String doSomething(String message);
 }
