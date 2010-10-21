@@ -361,6 +361,7 @@
             <exclude>**/*.vm</exclude>
             <exclude>**/license.txt</exclude>
             <exclude>runner/**</exclude>
+            <exclude>assembly/runner/**</exclude>
             <exclude>features/**</exclude>
             <exclude>NOTICE</exclude>
             <exclude>**/*.3pm</exclude>
@@ -614,6 +615,7 @@
                 <exclude>**/*.vm</exclude>
                 <exclude>**/license.txt</exclude>
                 <exclude>runner/**</exclude>
+                <exclude>assembly/runner/**</exclude>
                 <exclude>features/**</exclude>
                 <exclude>NOTICE</exclude>
                 <exclude>**/*.3pm</exclude>
