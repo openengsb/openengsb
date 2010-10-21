@@ -448,9 +448,9 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pdocs -Dmaven.test.skip=true -DperformRelease=true</preparationGoals>
-              <goals>clean install pax:provision assembly:assembly deploy -Dmaven.test.skip=true -DperformRelease=true</goals>
-              <releaseProfiles>!run,docs,release,nightly</releaseProfiles>
+              <mavenExecutorId>forked-path</mavenExecutorId>
+              <useReleaseProfile>false</useReleaseProfile>
+              <arguments>-Psonatype-oss-release,!run,release,nightly</arguments>
             </configuration>
           </plugin>
         </plugins>
@@ -466,9 +466,9 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pdocs -Dmaven.test.skip=true -DperformRelease=true</preparationGoals>
-              <goals>clean install pax:provision assembly:assembly deploy -Dmaven.test.skip=true -DperformRelease=true</goals>
-              <releaseProfiles>!run,docs,release,milestone</releaseProfiles>
+              <mavenExecutorId>forked-path</mavenExecutorId>
+              <useReleaseProfile>false</useReleaseProfile>
+              <arguments>-Psonatype-oss-release,!run,release,milestone</arguments>
             </configuration>
           </plugin>
         </plugins>
@@ -484,9 +484,9 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pdocs -Dmaven.test.skip=true -DperformRelease=true</preparationGoals>
-              <goals>clean install pax:provision assembly:assembly deploy -Dmaven.test.skip=true -DperformRelease=true</goals>
-              <releaseProfiles>!run,docs,release,final</releaseProfiles>
+              <mavenExecutorId>forked-path</mavenExecutorId>
+              <useReleaseProfile>false</useReleaseProfile>
+              <arguments>-Psonatype-oss-release,!run,release,final</arguments>
             </configuration>
           </plugin>
         </plugins>
