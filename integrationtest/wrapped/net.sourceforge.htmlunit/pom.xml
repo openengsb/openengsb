@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.openengsb.integrationtest.wrapped</groupId>
+    <artifactId>openengsb-integrationtest-wrapped-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <bundle.symbolicName>net.sourceforge.htmlunit</bundle.symbolicName>
+    <wrapped.groupId>net.sourceforge.htmlunit</wrapped.groupId>
+    <wrapped.artifactId>htmlunit</wrapped.artifactId>
+    <wrapped.version>${htmlunit.version}</wrapped.version>
+    <bundle.namespace>com.gargoylesoftware.htmlunit</bundle.namespace>
+  </properties>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>net.sourceforge.htmlunit-all</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <name>OpenEngSB :: Integration Tests :: OSGi Composed Wrapped Bundles :: HTML Unit Testing Framework</name>
+
+  <packaging>bundle</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${plugin.bundle.version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Export-Package>com.gargoylesoftware.htmlunit.*</Export-Package>
+            <Embed-Transitive>true</Embed-Transitive>
+            <Embed-Dependency>*;scope=compile;inline=**</Embed-Dependency>
+            <Import-Package>*;resolution:=optional</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>${wrapped.groupId}</groupId>
+      <artifactId>${wrapped.artifactId}</artifactId>
+      <version>${wrapped.version}</version>
+    </dependency>
+  </dependencies>
+
+</project>
+

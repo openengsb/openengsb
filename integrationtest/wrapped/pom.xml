@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -21,23 +21,28 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <relativePath>../poms/nonosgi/</relativePath>
-    <groupId>org.openengsb.build</groupId>
-    <artifactId>non-osgi-settings</artifactId>
+    <groupId>org.openengsb.integrationtest</groupId>
+    <artifactId>openengsb-integrationtest-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.openengsb.integrationtest</groupId>
-  <artifactId>openengsb-integrationtest-parent</artifactId>
+  <groupId>org.openengsb.integrationtest.wrapped</groupId>
+  <artifactId>openengsb-integrationtest-wrapped-parent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <name>OpenEngSB :: Integration Tests :: Parent</name>
 
   <packaging>pom</packaging>
 
-  <modules>
-    <module>wrapped</module>  
-    <module>tests</module>
-  </modules>
+  <name>OpenEngSB :: Integration Tests :: OSGi Composed Wrapped Bundles :: Parent</name>
 
+  <description>
+    While most bundles work quite find with the typical wrapped bundle code from poms/wrapped there are some special
+    cases where it does not work this way. This parent contains all bundles which are not meant to be wrapped in the
+    classical way, but require some additional, special work.
+  </description>
+
+  <modules>
+    <module>net.sourceforge.htmlunit</module>
+  </modules>
+  
 </project>
 

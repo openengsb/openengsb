@@ -33,6 +33,7 @@
     <mvn.version>2.1</mvn.version>
     <!-- Plugin Version -->
     <plugin.eclipse.version>2.8</plugin.eclipse.version>
+    <plugin.surefire.version>2.5</plugin.surefire.version>
     <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
     <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
     <plugin.deploy.version>2.5</plugin.deploy.version>
@@ -92,7 +93,6 @@
     <module>core</module>
     <module>domains</module>
     <module>assembly</module>
-    <module>integrationtest</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -622,7 +622,30 @@
         </plugins>
       </build>
     </profile>
-
+    <profile>
+      <id>integration-test</id>
+      <modules>
+        <module>integrationtest</module>
+      </modules>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${plugin.surefire.version}</version>
+            <configuration>
+              <excludes>
+                <exclude>*</exclude>
+              </excludes>
+              <includes>
+                <include>**/*Test.java</include>
+                <include>**/*IT.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <pluginRepositories>

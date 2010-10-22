@@ -45,6 +45,10 @@ public final class OpenEngSBBundles {
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
             .artifactId("org.neodatis.odb-all"));
 
+    public static final MavenArtifactProvisionOption OPENENGSB_INTEGRATIONTEST_WRAPPED_HTMLUNIT = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.integrationtest.wrapped")
+            .artifactId("net.sourceforge.htmlunit-all"));
+
     public static final MavenArtifactProvisionOption OPENENGSB_CONFIG_JETTY = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.config").artifactId(
             "openengsb-config-jetty"));
