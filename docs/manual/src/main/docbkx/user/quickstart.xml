@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="user.quickstart" version="5.0" xmlns="http://docbook.org/ns/docbook"
+    xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+    http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+    http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+    <title>Quickstart</title>
+
+    <para>As a developer you have basically two ways in which you can use the OpenEngSB. One option is to use the OpenEngSB as a
+      runtime environment for any project. In addition you've the possibility to write Plug-Ins (Domains, Connectors, ...) for 
+      the OpenEngSB. Both cases are explained in this chapter.</para>
+
+    <section>
+        <title>The OpenEngSB as Base Environment</title>
+        <para>Repository for snapshots: https://oss.sonatype.org/content/groups/public/</para>
+        <para>Staging Repository: https://oss.sonatype.org/content/groups/public/</para>
+        <para>Release Repository: http://repo1.maven.org/maven2/</para>
+    </section>
+
+    <section>
+        <title>Writing Components for the OpenEngSB</title>
+        <para>TBW</para>
+    </section>
+
+</chapter>
+

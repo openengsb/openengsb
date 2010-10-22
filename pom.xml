@@ -35,7 +35,6 @@
     <plugin.eclipse.version>2.8</plugin.eclipse.version>
     <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
     <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
-    <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
     <plugin.deploy.version>2.5</plugin.deploy.version>
     <twdata.cli.version>1.0.4</twdata.cli.version>
     <clover.version>3.0.2</clover.version>
@@ -54,6 +53,12 @@
     <plugin.wagon.ssh.version>1.0-beta-6</plugin.wagon.ssh.version>
   </properties>
 
+  <parent>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>5</version>
+  </parent>
+
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-parent</artifactId>
   <packaging>pom</packaging>
@@ -67,6 +72,14 @@
   </description>
 
   <url>http://openengsb.org</url>
+
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <modules>
     <module>tooling</module>
@@ -274,39 +287,6 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>${maven.plugin.enforcer.version}</version>
-        <executions>
-          <execution>
-            <id>enforce-maven</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>[${mvn.version},)</version>
-                </requireMavenVersion>
-              </rules>
-            </configuration>
-          </execution>
-          <execution>
-            <id>enforce-java</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireJavaVersion>
-                  <version>${jdk.version}</version>
-                </requireJavaVersion>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
         <version>${plugin.eclipse.version}</version>
         <configuration>
@@ -434,9 +414,6 @@
       <id>run</id>
       <activation>
         <activeByDefault>true</activeByDefault>
-        <property>
-          <name>run</name>
-        </property>
       </activation>
       <build>
         <plugins>
@@ -464,18 +441,6 @@
     </profile>
     <profile>
       <id>nightly</id>
-      <activation>
-        <property>
-          <name>nightly</name>
-        </property>
-      </activation>
-      <distributionManagement>
-        <snapshotRepository>
-          <id>openengsb-snapshots</id>
-          <name>OpenEngSB Snapshot Repository</name>
-          <url>dav:http://maven.openengsb.org/nexus/content/repositories/openengsb-snapshots/</url>
-        </snapshotRepository>
-      </distributionManagement>
       <build>
         <plugins>
           <plugin>
@@ -484,9 +449,9 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pdocs -Dmaven.test.skip=true -DperformRelease=true</preparationGoals>
-              <goals>clean install pax:provision assembly:assembly deploy -Dmaven.test.skip=true -DperformRelease=true</goals>
-              <releaseProfiles>!run,docs,release,nightly</releaseProfiles>
+              <mavenExecutorId>forked-path</mavenExecutorId>
+              <useReleaseProfile>false</useReleaseProfile>
+              <arguments>-Psonatype-oss-release,!run,release,nightly</arguments>
             </configuration>
           </plugin>
         </plugins>
@@ -494,18 +459,6 @@
     </profile>
     <profile>
       <id>milestone</id>
-      <activation>
-        <property>
-          <name>milestone</name>
-        </property>
-      </activation>
-      <distributionManagement>
-        <repository>
-          <id>openengsb-releases</id>
-          <name>OpenEngSB Release Repository</name>
-          <url>dav:http://maven.openengsb.org/nexus/content/repositories/openengsb-releases/</url>
-        </repository>
-      </distributionManagement>
       <build>
         <plugins>
           <plugin>
@@ -514,9 +467,9 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pdocs -Dmaven.test.skip=true -DperformRelease=true</preparationGoals>
-              <goals>clean install pax:provision assembly:assembly deploy -Dmaven.test.skip=true -DperformRelease=true</goals>
-              <releaseProfiles>!run,docs,release,milestone</releaseProfiles>
+              <mavenExecutorId>forked-path</mavenExecutorId>
+              <useReleaseProfile>false</useReleaseProfile>
+              <arguments>-Psonatype-oss-release,!run,release,milestone</arguments>
             </configuration>
           </plugin>
         </plugins>
@@ -524,18 +477,6 @@
     </profile>
     <profile>
       <id>final</id>
-      <activation>
-        <property>
-          <name>final</name>
-        </property>
-      </activation>
-      <distributionManagement>
-        <repository>
-          <id>openengsb-releases</id>
-          <name>OpenEngSB Release Repository</name>
-          <url>dav:http://maven.openengsb.org/nexus/content/repositories/openengsb-releases/</url>
-        </repository>
-      </distributionManagement>
       <build>
         <plugins>
           <plugin>
@@ -544,9 +485,9 @@
             <version>${plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
-              <preparationGoals>clean install -Pdocs -Dmaven.test.skip=true -DperformRelease=true</preparationGoals>
-              <goals>clean install pax:provision assembly:assembly deploy -Dmaven.test.skip=true -DperformRelease=true</goals>
-              <releaseProfiles>!run,docs,release,final</releaseProfiles>
+              <mavenExecutorId>forked-path</mavenExecutorId>
+              <useReleaseProfile>false</useReleaseProfile>
+              <arguments>-Psonatype-oss-release,!run,release,final</arguments>
             </configuration>
           </plugin>
         </plugins>
@@ -554,11 +495,6 @@
     </profile>
     <profile>
       <id>release</id>
-      <activation>
-        <property>
-          <name>release</name>
-        </property>
-      </activation>
       <build>
         <plugins>
           <plugin>
