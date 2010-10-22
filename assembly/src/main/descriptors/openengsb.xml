@@ -41,14 +41,14 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>${project.basedir}/assembly/target/openengsb-${project.version}-config/openengsb-${project.version}/</directory>
+      <directory>${project.basedir}/target/openengsb-${project.version}/openengsb-${project.version}/</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>config/*</include>
       </includes>
     </fileSet>
     <fileSet>
-      <directory>${project.basedir}/assembly/src/main/distribution/base/</directory>
+      <directory>${project.basedir}/src/main/distribution/base/</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>*</include>
@@ -56,7 +56,7 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>${project.basedir}/assembly/target/classes/</directory>
+      <directory>${project.basedir}/target/classes/</directory>
       <outputDirectory>/bin/</outputDirectory>
       <includes>
         <include>karaf.sh</include>
@@ -65,7 +65,7 @@
       <fileMode>0755</fileMode>
     </fileSet>
     <fileSet>
-      <directory>${project.basedir}/assembly/target/manual/pdf</directory>
+      <directory>${project.basedir}/target/manual/pdf</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>*</include>

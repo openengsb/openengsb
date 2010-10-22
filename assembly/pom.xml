@@ -180,11 +180,11 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>${plugin.assembly.version}</version>
+        <version>${maven.plugin.assembly.version}</version>
         <configuration>
           <appendAssemblyId>true</appendAssemblyId>
           <descriptors>
-            <descriptor>src/main/descriptors/config.xml</descriptor>
+            <descriptor>${project.basedir}/src/main/descriptors/config.xml</descriptor>
           </descriptors>
         </configuration>
         <executions>
@@ -199,6 +199,114 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.ops4j</groupId>
+            <artifactId>maven-pax-plugin</artifactId>
+            <version>${plugin.pax.version}</version>
+            <configuration>
+              <runner>${plugin.paxrunner.version}</runner>
+              <framework>felix</framework>
+              <noDependencies>true</noDependencies>
+              <deployPoms>../provision/pom.xml</deployPoms>
+              <deployURLs>
+                scan-bundle:mvn:org.openengsb.wrapped/com.google.guava-all/${project.version},
+                scan-bundle:mvn:org.openengsb.wrapped/com.jcraft.jsch-all/${project.version},
+                scan-bundle:mvn:org.openengsb.wrapped/javax.xml.jaxb-all/${project.version},
+                scan-bundle:mvn:org.openengsb.wrapped/org.apache.wicket-all/${project.version},
+                scan-bundle:mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${project.version},
+                scan-bundle:mvn:org.openengsb.wrapped/org.neodatis.odb-all/${project.version},
+                scan-bundle:mvn:org.openengsb.config/openengsb-config-jetty/${project.version},
+                scan-bundle:mvn:org.openengsb.config/openengsb-config-webextender/${project.version},
+                scan-bundle:mvn:org.openengsb.core/openengsb-core-common/${project.version},
+                scan-bundle:mvn:org.openengsb.core/openengsb-core-events/${project.version},
+                scan-bundle:mvn:org.openengsb.core/openengsb-core-persistence/${project.version},
+                scan-bundle:mvn:org.openengsb.core/openengsb-core-workflow/${project.version},
+                scan-bundle:mvn:org.openengsb.domains.example/openengsb-domains-example-implementation/${project.version},
+                scan-bundle:mvn:org.openengsb.domains.example/openengsb-domains-example-connector/${project.version},
+                scan-bundle:mvn:org.openengsb.domains.notification/openengsb-domains-notification-implementation/${project.version},
+                scan-bundle:mvn:org.openengsb.domains.notification/openengsb-domains-notification-email/${project.version},
+                scan-bundle:mvn:org.openengsb.domains.report/openengsb-domains-report-implementation/${project.version},
+                scan-bundle:mvn:org.openengsb.domains.report/openengsb-domains-report-plaintext/${project.version},
+                scan-bundle:mvn:org.openengsb.domains.issue/openengsb-domains-issue-implementation/${project.version},
+                scan-bundle:mvn:org.openengsb.domains.issue/openengsb-domains-issue-trac/${project.version},
+                scan-bundle:mvn:org.openengsb.domains.scm/openengsb-domains-scm-implementation/${project.version},
+                scan-bundle:mvn:org.openengsb.domains.scm/openengsb-domains-scm-git/${project.version},
+                scan-bundle:mvn:org.openengsb.ui/openengsb-ui-web/${project.version}/war,
+              </deployURLs>
+              <provision>
+                <param>--platform=felix</param>
+                <param>--executor=script</param>
+                <param>--workingDirectory=${project.basedir}/target/all/openengsb</param>
+                <param>--console=false</param>
+                <param>--ee=J2SE-1.6</param>
+                <param>scan-composite:file:${project.basedir}/target/classes/karaf.composite</param>
+                <param>scan-composite:file:${project.basedir}/target/classes/settings.debug.composite</param>
+                <param>--definitionURL=file:${project.basedir}/target/classes/felix.xml</param>
+                <param>--clean</param>
+              </provision>
+            </configuration>
+            <executions>
+              <execution>
+                <id>prepare-openengsb</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>provision</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>${maven.plugin.assembly.version}</version>
+            <configuration>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>${project.basedir}/src/main/descriptors/config.xml</descriptor>
+                <descriptor>${project.basedir}/src/main/descriptors/openengsb.xml</descriptor>
+              </descriptors>
+            </configuration>
+            <executions>
+              <execution>
+                <id>assembly-openengsb</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-artifacts</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>${project.basedir}/target/openengsb-${project.version}.zip</file>
+                      <type>zip</type>
+                      <!--<classifier>bin</classifier>-->
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
 

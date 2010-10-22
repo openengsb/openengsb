@@ -175,7 +175,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>${plugin.assembly.version}</version>
+        <version>${maven.plugin.assembly.version}</version>
         <configuration>
           <appendAssemblyId>true</appendAssemblyId>
           <descriptors>

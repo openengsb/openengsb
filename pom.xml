@@ -42,7 +42,6 @@
     <plugin.pax.version>1.4</plugin.pax.version>
     <plugin.paxrunner.version>1.5.0</plugin.paxrunner.version>
     <plugin.release.version>2.0</plugin.release.version>
-    <plugin.assembly.version>2.2-beta-5</plugin.assembly.version>
     <plugin.site.version>2.1.1</plugin.site.version>
     <plugin.source.version>2.1.2</plugin.source.version>
     <plugin.mvn.license>1.8.0</plugin.mvn.license>
@@ -251,7 +250,6 @@
   </contributors>
 
   <build>
-    <finalName>openengsb-${project.version}</finalName>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -488,44 +486,6 @@
               <mavenExecutorId>forked-path</mavenExecutorId>
               <useReleaseProfile>false</useReleaseProfile>
               <arguments>-Psonatype-oss-release,!run,release,final</arguments>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>release</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.ops4j</groupId>
-            <artifactId>maven-pax-plugin</artifactId>
-            <version>${plugin.pax.version}</version>
-            <configuration>
-              <runner>${plugin.paxrunner.version}</runner>
-              <framework>felix</framework>
-              <noDependencies>true</noDependencies>
-              <provision>
-                <param>--platform=felix</param>
-                <param>--executor=script</param>
-                <param>--workingDirectory=target/all/openengsb</param>
-                <param>--console=false</param>
-                <param>--ee=J2SE-1.6</param>
-                <param>scan-composite:file:assembly/target/classes/karaf.composite</param>
-                <param>scan-composite:file:assembly/target/classes/settings.debug.composite</param>
-                <param>--definitionURL=file:assembly/target/classes/felix.xml</param>
-                <param>--clean</param>
-              </provision>
-            </configuration>
-          </plugin>
-          <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>${plugin.assembly.version}</version>
-            <configuration>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>${project.basedir}/assembly/src/main/descriptors/openengsb.xml</descriptor>
-              </descriptors>
             </configuration>
           </plugin>
         </plugins>
