@@ -684,6 +684,10 @@
       </snapshots>
     </repository>
     <repository>
+      <!-- required for maven-default-skin/1.0/maven-default-skin-1.0.jar
+        cd docs; mvn -Pdocs clean install site:run
+        does not work without
+      -->
       <id>apache</id>
       <name>Apache Public Repository</name>
       <url>https://repository.apache.org/content/groups/public/</url>
