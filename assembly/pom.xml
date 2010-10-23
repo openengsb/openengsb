@@ -40,6 +40,7 @@
     <felix.log.level>1</felix.log.level>
     <settings.karaf.home>.</settings.karaf.home>
     <settings.karaf.base>.</settings.karaf.base>
+    <settings.karaf.data>.</settings.karaf.data>
     <org.osgi.service.http.port>8080</org.osgi.service.http.port>
     <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
 
