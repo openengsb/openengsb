@@ -20,12 +20,16 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.neodatis.odb.OdbConfiguration;
 import org.openengsb.core.persistence.PersistenceManager;
 import org.openengsb.core.persistence.PersistenceService;
 import org.osgi.framework.Bundle;
 
 public class NeodatisPersistenceManager implements PersistenceManager {
+
+    private Log log = LogFactory.getLog(NeodatisPersistenceManager.class);
 
     private String persistenceRootDir;
 
@@ -38,7 +42,7 @@ public class NeodatisPersistenceManager implements PersistenceManager {
     @Override
     public synchronized PersistenceService getPersistenceForBundle(Bundle bundle) {
         checkRootDirCreated();
-        String dbFile = persistenceRootDir + "/" + getFileName(bundle);
+        String dbFile = new File(getAbsoluteRootDir(), getFileName(bundle)).getPath();
         if (persistenceServices.containsKey(dbFile)) {
             return persistenceServices.get(dbFile);
         }
@@ -49,11 +53,17 @@ public class NeodatisPersistenceManager implements PersistenceManager {
     }
 
     private void checkRootDirCreated() {
-        File rootDir = new File(persistenceRootDir);
+        File rootDir = getAbsoluteRootDir();
         if (rootDir.exists()) {
             return;
         }
         rootDir.mkdirs();
+    }
+
+    private File getAbsoluteRootDir() {
+        String karafData = System.getProperty("karaf.data");
+        log.info("karafData: " + karafData);
+        return new File(karafData, persistenceRootDir);
     }
 
     private String getFileName(Bundle bundle) {
