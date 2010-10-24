@@ -35,9 +35,9 @@ import org.osgi.framework.BundleContext;
 /**
  * Tests are only very few, as the ProxyServiceManager is mostly copied from AbstractServiceManager and has to be merged
  * together with it soon.
- *
+ * 
  * @author Florian Motlik
- *
+ * 
  */
 public class ProxyServiceManagerTest {
 
@@ -58,7 +58,8 @@ public class ProxyServiceManagerTest {
         when(mockBundle.getHeaders()).thenReturn(headers);
         when(mockContext.getBundle()).thenReturn(mockBundle);
 
-        ProxyServiceManager manager = new ProxyServiceManager(provider, null, mockContext);
+        ProxyServiceManager manager = new ProxyServiceManager(provider, null);
+        manager.setBundleContext(mockContext);
         ServiceDescriptor descriptor = manager.getDescriptor();
         assertThat(descriptor.getId(), equalTo(string));
         assertThat(descriptor.getAttributes().size(), equalTo(0));
