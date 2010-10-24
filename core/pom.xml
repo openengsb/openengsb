@@ -40,6 +40,7 @@
     <module>persistence</module>
     <module>events</module>
     <module>proxy</module>
+    <module>taskbox</module>
   </modules>
 
 </project>
