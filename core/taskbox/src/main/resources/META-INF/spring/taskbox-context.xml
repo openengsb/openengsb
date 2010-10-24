@@ -23,10 +23,11 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
-  <osgi:service interface="org.openengsb.core.taskbox.TaskboxManager">
-    <bean class="org.openengsb.core.persistence.internal.NeodatisPersistenceManager" >
-      <property name="persistenceRootDir" value="data/openengsb/persistence" />
-    </bean>    
+  <osgi:service>
+    <osgi:interfaces>
+      <value>org.openengsb.core.taskbox.TaskboxService</value>
+    </osgi:interfaces>
+    <bean class="org.openengsb.core.taskbox.TaskboxServiceImpl" />
   </osgi:service>
 
 </beans>

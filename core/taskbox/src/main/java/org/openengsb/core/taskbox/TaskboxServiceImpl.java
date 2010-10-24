@@ -16,9 +16,9 @@
 
 package org.openengsb.core.taskbox;
 
-/**
- * Bla
- */
-public interface TaskboxService {
-    public String getDemoMessage();
+public class TaskboxServiceImpl implements TaskboxService {
+    @Override
+    public String getDemoMessage() {
+        return "This is a test message from the taskbox component!";
+    }
 }
