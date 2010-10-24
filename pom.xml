@@ -133,6 +133,7 @@
       <roles>
         <role>Project Lead</role>
         <role>Developer</role>
+        <role>Admin</role>
       </roles>
     </developer>
     <developer>
@@ -151,6 +152,7 @@
       <timezone>+1</timezone>
       <roles>
         <role>Developer</role>
+        <role>Admin</role>
       </roles>
     </developer>
     <developer>
