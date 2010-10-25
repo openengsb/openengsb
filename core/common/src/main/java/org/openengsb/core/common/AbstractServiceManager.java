@@ -16,6 +16,8 @@
 
 package org.openengsb.core.common;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -30,13 +32,13 @@ import org.osgi.framework.ServiceRegistration;
  * Base class for {@link ServiceManager} implementations. Handles all OSGi related stuff and exporting the right service
  * properties that are needed for service discovery. Furthermore this class also persists the connector state and
  * restores all persisted connectors at the next startup.
- * 
+ *
  * All service-specific action, like descriptor building, service instantiation and service updating are encapsulated in
  * a {@link ServiceInstanceFactory}. Creating a new service manager should be as simple as implementing the
  * {@link ServiceInstanceFactory} and creating a subclass of this class:
- * 
+ *
  * This class has to be instantiated via Spring, as the BundleContext has to be set as it is BundleContextAware.
- * 
+ *
  * <pre>
  * public class ExampleServiceManager extends AbstractServiceManager&lt;ExampleDomain, TheInstanceType&gt; {
  *     public ExampleServiceManager(ServiceInstanceFactory&lt;ExampleDomain, TheInstanceType&gt; factory) {
@@ -44,16 +46,18 @@ import org.osgi.framework.ServiceRegistration;
  *     }
  * }
  * </pre>
- * 
+ *
  * @param <DomainType> interface of the domain this service manages
  * @param <InstanceType> actual service implementation this service manages
  */
 public abstract class AbstractServiceManager<DomainType extends Domain, InstanceType extends DomainType> extends
-        AbstractServiceManagerParent<DomainType, InstanceType> implements ServiceManager {
+        AbstractServiceManagerParent implements ServiceManager {
 
     private final ServiceInstanceFactory<DomainType, InstanceType> factory;
     final Map<String, Map<String, String>> attributeValues = new HashMap<String, Map<String, String>>();
     ConnectorSetupStore connectorSetupStore;
+
+    private final Map<String, DomainRepresentation> services = new HashMap<String, DomainRepresentation>();
 
     public AbstractServiceManager(ServiceInstanceFactory<DomainType, InstanceType> factory) {
         this.factory = factory;
@@ -77,9 +81,9 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
 
     @Override
     public MultipleAttributeValidationResult update(String id, Map<String, String> attributes) {
-        synchronized (getServices()) {
+        synchronized (services) {
             MultipleAttributeValidationResult result;
-            if (!getServices().containsKey(id)) {
+            if (!services.containsKey(id)) {
                 result = createService(id, attributes);
             } else {
                 result = updateService(id, attributes);
@@ -138,9 +142,49 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         this.connectorSetupStore = connectorSetupStore;
     }
 
+    protected boolean servicesContainsKey(String id) {
+        return this.services.containsKey(id);
+    }
+
+    protected void addDomainRepresentation(String id, InstanceType instance, ServiceRegistration registration) {
+        services.put(id, new DomainRepresentation(instance, registration));
+    }
+
+    protected InstanceType getService(String id) {
+        return services.get(id).service;
+    }
+
     @Override
-    protected void deleteOnChild(String id) {
-        attributeValues.remove(id);
-        connectorSetupStore.deleteConnectorSetup(getImplementationClass().getName(), id);
+    public void delete(String id) {
+        synchronized (services) {
+            services.get(id).registration.unregister();
+            services.remove(id);
+            attributeValues.remove(id);
+            connectorSetupStore.deleteConnectorSetup(getImplementationClass().getName(), id);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Class<DomainType> getDomainInterface() {
+        return (Class<DomainType>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Class<InstanceType> getImplementationClass() {
+        ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
+        Type instanceType = genericSuperclass.getActualTypeArguments()[1];
+        return (Class<InstanceType>) instanceType;
+    }
+
+    protected final class DomainRepresentation {
+        private final InstanceType service;
+        final ServiceRegistration registration;
+
+        private DomainRepresentation(InstanceType service, ServiceRegistration registration) {
+            this.service = service;
+            this.registration = registration;
+        }
     }
 }

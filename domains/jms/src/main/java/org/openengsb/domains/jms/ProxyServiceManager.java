@@ -32,17 +32,19 @@ import org.osgi.framework.ServiceRegistration;
 
 /**
  * Proxy Service Manager to instantiate Proxies to communicate with external systems.
- * 
+ *
  * The proxy for the specified Domain are created upon request for a ServiceDescriptor.
- * 
+ *
  * The ProxyServiceManager is completely generic. Business logic to interpret a certain call is handled via the
- * 
+ *
  * @see InvocationHandler handed to the constructor.
  */
 public class ProxyServiceManager extends AbstractServiceManagerParent implements ServiceManager {
 
     private final DomainProvider provider;
     private final InvocationHandler handler;
+
+    private final Map<String, ServiceRegistration> services = new HashMap<String, ServiceRegistration>();
 
     public ProxyServiceManager(DomainProvider provider, InvocationHandler handler) {
         this.provider = provider;
@@ -64,7 +66,7 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
     @Override
     public MultipleAttributeValidationResult update(String id, Map<String, String> attributes) {
         synchronized (getStrings()) {
-            if (!servicesContainsKey(id)) {
+            if (!services.containsKey(id)) {
                 Domain newProxyInstance =
                     (Domain) Proxy.newProxyInstance(getDomainInterface().getClassLoader(),
                         new Class[]{getDomainInterface()}, handler);
@@ -72,7 +74,7 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
                     getBundleContext().registerService(
                         new String[]{getDomainInterface().getName(), Domain.class.getName()}, newProxyInstance,
                         createNotificationServiceProperties(id));
-                addDomainRepresentation(id, newProxyInstance, registration);
+                services.put(id, registration);
             }
         }
         return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
@@ -84,6 +86,15 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
     }
 
     @Override
-    protected void deleteOnChild(String id) {
+    public void delete(String id) {
+        synchronized (services) {
+            services.get(id).unregister();
+            this.services.remove(id);
+        }
+    }
+
+    @Override
+    protected Class<? extends Domain> getImplementationClass() {
+        return provider.getDomainInterface();
     }
 }

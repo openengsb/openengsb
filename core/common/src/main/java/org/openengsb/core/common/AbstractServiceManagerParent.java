@@ -16,34 +16,17 @@
 
 package org.openengsb.core.common;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.BundleStrings;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.springframework.osgi.context.BundleContextAware;
 
-public abstract class AbstractServiceManagerParent<DomainType extends Domain, InstanceType extends DomainType>
-        implements BundleContextAware {
-
-    protected final class DomainRepresentation {
-        private final InstanceType service;
-        final ServiceRegistration registration;
-
-        private DomainRepresentation(InstanceType service, ServiceRegistration registration) {
-            this.service = service;
-            this.registration = registration;
-        }
-    }
+public abstract class AbstractServiceManagerParent implements BundleContextAware {
 
     private BundleContext bundleContext;
     private BundleStrings strings;
-    private final Map<String, DomainRepresentation> services = new HashMap<String, DomainRepresentation>();
 
     public AbstractServiceManagerParent() {
         super();
@@ -57,34 +40,10 @@ public abstract class AbstractServiceManagerParent<DomainType extends Domain, In
         return bundleContext;
     }
 
-    protected boolean servicesContainsKey(String id) {
-        return this.services.containsKey(id);
-    }
-
-    public final Map<String, DomainRepresentation> getServices() {
-        return services;
-    }
-
     @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
         strings = new BundleStrings(bundleContext.getBundle());
-    }
-
-    public void delete(String id) {
-        synchronized (services) {
-            services.get(id).registration.unregister();
-            services.remove(id);
-            deleteOnChild(id);
-        }
-    }
-
-    protected void addDomainRepresentation(String id, InstanceType instance, ServiceRegistration registration) {
-        services.put(id, new DomainRepresentation(instance, registration));
-    }
-
-    protected InstanceType getService(String id) {
-        return services.get(id).service;
     }
 
     protected Hashtable<String, String> createNotificationServiceProperties(String id) {
@@ -98,18 +57,7 @@ public abstract class AbstractServiceManagerParent<DomainType extends Domain, In
 
     protected abstract ServiceDescriptor getDescriptor();
 
-    @SuppressWarnings("unchecked")
-    protected Class<DomainType> getDomainInterface() {
-        return (Class<DomainType>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-    }
+    protected abstract Class<? extends Domain> getDomainInterface();
 
-    @SuppressWarnings("unchecked")
-    protected Class<InstanceType> getImplementationClass() {
-        ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
-        Type instanceType = genericSuperclass.getActualTypeArguments()[1];
-        return (Class<InstanceType>) instanceType;
-    }
-
-    protected abstract void deleteOnChild(String id);
-
+    protected abstract Class<? extends Domain> getImplementationClass();
 }
