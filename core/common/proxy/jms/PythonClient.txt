@@ -1,0 +1,30 @@
+====
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+====
+
+To test the OPENENGSB jms implementation with Python download Stomppy from http://code.google.com/p/stomppy/.
+It comes with a cli.py script used to send JMS Messages via stomp.
+
+Start the Stomppy client with Host and PORT parameters. Default should be:
+python cli.py -H localhost -P 6549.
+
+To subscribe to a specific Queue call "subscribe /queue/<DomainName>_method_send". For example:
+"subscribe /queue/ExampleDomain_method_send".
+
+When a request is sent via the above queue you can answer via sending a message to the return queue:
+"send /queue/ExampleDomain_method_return {"type":"Return","message":"abcde"}". Please consult the JMS Connector documentation
+for information about the message format.
+
+The return message will then be mapped to the return value of the request method and ultimately shown in the UI.

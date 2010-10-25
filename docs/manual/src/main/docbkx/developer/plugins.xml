@@ -67,5 +67,11 @@
       to RETURN and message set to OK. In case of Exception the type is set to exception and the message is set to 
       the exception message.</para>
     </section>
+    <section>
+      <title>Test JMS Connector with Python Stomppy Client</title>
+      <para>To test the OPENENGSB JMS implementation with Python please follow the 
+        <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/common/proxy/jms/PythonClient.txt">instructions</link>
+      </para>
+    </section>
   </section>
 </chapter>
