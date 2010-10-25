@@ -78,16 +78,19 @@ public class ConnectorEditorPage extends BasePage {
                             error(new StringResourceModel(value, this, null).getString());
                         }
                     } else {
-                        String serviceClass = serviceManager.getDescriptor().getServiceType().getName();
-                        String id = getValues().get("id");
-                        ServiceId reference = new ServiceId(serviceClass, id);
-                        setResponsePage(new TestClient(reference));
-                        // info(new StringResourceModel("service.add.succeed", this, null).getString());
+                        returnToTestClient();
                     }
                 } else {
                     serviceManager.update(getValues().get("id"), getValues());
-                    info(new StringResourceModel("service.add.succeed", this, null).getString());
+                    returnToTestClient();
                 }
+            }
+
+            private void returnToTestClient() {
+                String serviceClass = serviceManager.getDescriptor().getServiceType().getName();
+                String id = getValues().get("id");
+                ServiceId reference = new ServiceId(serviceClass, id);
+                setResponsePage(new TestClient(reference));
             }
         };
         add(editorPanel);
