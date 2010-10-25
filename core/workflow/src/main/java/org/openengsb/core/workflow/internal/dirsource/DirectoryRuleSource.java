@@ -23,13 +23,17 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Timer;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
@@ -118,8 +122,6 @@ public class DirectoryRuleSource extends AbstractRuleManager {
                 return new DirectoryRuleHandler(this);
             case Function:
                 return new DirectoryFunctionHandler(this);
-            case Global:
-                return new DirectoryGlobalHandler(this);
             case Process:
                 return new DirectoryProcessHandler(this);
             default:
@@ -330,8 +332,6 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     public File getFilePath(RuleBaseElementId id) {
         switch (id.getType()) {
-            case Global:
-                return new File(this.path, GLOBALS_FILENAME);
             case Function:
                 return new File(this.path, getPathName(id) + FUNC_EXTENSION);
             case Rule:
@@ -350,5 +350,69 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         result.append(id.getName());
         result.append('.');
         return result.toString();
+    }
+
+    @Override
+    public void addGlobal(String className, String name) throws RuleBaseException {
+        Collection<String> globalList = readGlobalLines();
+        if (findGlobalLine(globalList, name) != null) {
+            throw new RuleBaseException(String.format("global with name %s already registered", name));
+        }
+        String line = String.format("%s %s", className, name);
+        globalList.add(line);
+
+        writeGlobalFile(globalList);
+        readRuleBase();
+    }
+
+    private String findGlobalLine(Collection<String> globalList, String name) {
+        for (Iterator<String> it = globalList.iterator(); it.hasNext();) {
+            String line = it.next();
+            if (line.endsWith(" " + name)) {
+                return line;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void removeGlobal(String name) throws RuleBaseException {
+        Collection<String> globalList = readGlobalLines();
+        String line = findGlobalLine(globalList, name);
+        if (line != null) {
+            globalList.remove(line);
+            writeGlobalFile(globalList);
+            readRuleBase();
+        }
+    }
+
+    @Override
+    public Map<String, String> listGlobals() {
+        Collection<String> globalList = readGlobalLines();
+        Map<String, String> result = new HashMap<String, String>();
+        for (String s : globalList) {
+            String[] parts = s.split(" ");
+            result.put(parts[1], parts[0]);
+        }
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Collection<String> readGlobalLines() {
+        try {
+            File file = new File(this.path, GLOBALS_FILENAME);
+            return FileUtils.readLines(file);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void writeGlobalFile(Collection<String> lines) {
+        File file = new File(this.path, GLOBALS_FILENAME);
+        try {
+            FileUtils.writeLines(file, lines, IOUtils.LINE_SEPARATOR_UNIX);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

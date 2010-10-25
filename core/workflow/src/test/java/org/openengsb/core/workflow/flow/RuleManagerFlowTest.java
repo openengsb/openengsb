@@ -116,7 +116,7 @@ public class RuleManagerFlowTest {
     @Test(timeout = 10000)
     public void testRunFlowWithEvents() throws Exception {
         source.addImport(TestObject.class.getName());
-        source.add(new RuleBaseElementId(RuleBaseElementType.Global, "log"), Log.class.getName());
+        source.addGlobal(Log.class.getName(), "log");
 
         URL systemResource = ClassLoader.getSystemResource("floweventtest.rf");
         File flowFile = FileUtils.toFile(systemResource);

@@ -32,8 +32,6 @@ import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
-import org.openengsb.core.workflow.model.RuleBaseElementId;
-import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -80,7 +78,7 @@ public class WorkflowServiceDynamicTest {
     }
 
     private void mockDomain(String name) throws RuleBaseException {
-        manager.delete(new RuleBaseElementId(RuleBaseElementType.Global, name));
+        manager.removeGlobal(name);
     }
 
     @After
