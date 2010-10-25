@@ -49,14 +49,6 @@ public final class OpenEngSBBundles {
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.integrationtest.wrapped")
             .artifactId("net.sourceforge.htmlunit-all"));
 
-    public static final MavenArtifactProvisionOption OPENENGSB_CONFIG_JETTY = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.config").artifactId(
-            "openengsb-config-jetty"));
-
-    public static final MavenArtifactProvisionOption OPENENGSB_CONFIG_WEBEXTENDER = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.config").artifactId(
-            "openengsb-config-webextender"));
-
     public static final MavenArtifactProvisionOption OPENENGSB_CORE_COMMON = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId("openengsb-core-common"));
 
