@@ -19,6 +19,7 @@ package org.openengsb.core.taskbox;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class TaskboxServiceTest {
@@ -29,6 +30,7 @@ public class TaskboxServiceTest {
         service = new TaskboxServiceImpl();
     }
 
+    @Ignore
     @Test
     public void testStartWorkflow() throws TaskboxException {
         service.startWorkflow();
