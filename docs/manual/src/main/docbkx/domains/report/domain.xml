@@ -29,14 +29,14 @@
   <section>
     <title>Description</title>
     <para>The report domain supports basic report generation functionality, like event logging and manual
-    report building. Furthermore it provides basic report management features, like persitent storage of 
+    report building. Furthermore it provides basic report management features, like persistent storage of 
     reports and a category system for report storage.</para>
   </section>
 
   <section>
     <title>Functional Interface</title>
     <para><link xlink:href="http://github.com/openengsb/openengsb/blob/master/domains/report/implementation/src/main/java/org/openengsb/domains/report/ReportDomain.java">Link</link>
-      to the Java Domain Interface on Github.  This interface also contains information about events raised by this domain.</para>
+      to the Java Domain Interface on Github. This interface also contains information about events raised by this domain.</para>
   </section>
 
 
