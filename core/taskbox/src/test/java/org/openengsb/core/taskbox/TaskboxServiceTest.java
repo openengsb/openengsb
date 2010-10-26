@@ -16,17 +16,22 @@
 
 package org.openengsb.core.taskbox;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
 
-public abstract class TaskboxServiceTest {
+public class TaskboxServiceTest {
+    private TaskboxServiceImpl service;
+    
     @Before
     public void init() throws Exception {
-        
+        service = new TaskboxServiceImpl();
     }
 
     @Test
-    public void test1() {
-        
+    public void testStartWorkflow() throws TaskboxException {
+        service.startWorkflow();
+        assertEquals(service.getWorkflowMessage(), "affe");
     }
 }

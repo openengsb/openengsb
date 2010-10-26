@@ -16,9 +16,68 @@
 
 package org.openengsb.core.taskbox;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.workflow.RuleBaseException;
+import org.openengsb.core.workflow.RuleManager;
+import org.openengsb.core.workflow.WorkflowException;
+import org.openengsb.core.workflow.WorkflowService;
+import org.openengsb.core.workflow.model.RuleBaseElementId;
+import org.openengsb.core.workflow.model.RuleBaseElementType;
+
 public class TaskboxServiceImpl implements TaskboxService {
+    private static Log log = LogFactory.getLog(TaskboxServiceImpl.class);
+    
+    private String message;
+    
+    private WorkflowService workflowService;
+    private RuleManager ruleManager;
+    
+    public void init() {
+        /*try {
+            File workflowFile = new File("data/openengsb/rulebase/workflows/tasktest.rf");
+            String wf = FileUtils.readFileToString(workflowFile);
+            RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Process, "tasktest");
+            ruleManager.add(id, wf);
+        } catch (RuleBaseException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+    }
+
     @Override
-    public String getDemoMessage() {
-        return "This is a test message from the taskbox component!";
+    public String getWorkflowMessage() throws TaskboxException {
+        if (message == null) {
+            throw new TaskboxException();
+        }
+        
+        return message;
+    }
+
+    @Override
+    public void setWorkflowMessage(String message) {
+        this.message = message;
+    }
+
+    @Override
+    public void startWorkflow() throws TaskboxException {
+        try {
+            workflowService.startFlow("tasktest");
+        } catch (WorkflowException e) {
+            throw new TaskboxException(e);
+        }
+    }
+    
+    public void setWorkflowService(WorkflowService workflowService) {
+        this.workflowService = workflowService;
+    }
+
+    public void setRuleManager(RuleManager ruleManager) {
+        this.ruleManager = ruleManager;
     }
 }

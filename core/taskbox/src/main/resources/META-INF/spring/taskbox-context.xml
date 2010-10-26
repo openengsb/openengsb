@@ -23,12 +23,13 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
-  <osgi:service>
-    <osgi:interfaces>
-      <value>org.openengsb.core.taskbox.TaskboxService</value>
-    </osgi:interfaces>
-    <bean class="org.openengsb.core.taskbox.TaskboxServiceImpl" />
+  <osgi:service interface="org.openengsb.core.taskbox.TaskboxService">
+    <bean class="org.openengsb.core.taskbox.TaskboxServiceImpl" init-method="init">
+      <property name="workflowService" ref="workflowService" />
+      <property name="ruleManager" ref="ruleManager" />
+    </bean>
   </osgi:service>
 
+  <osgi:reference id="workflowService" interface="org.openengsb.core.workflow.WorkflowService" />
+  <osgi:reference id="ruleManager" interface="org.openengsb.core.workflow.RuleManager" />
 </beans>
-

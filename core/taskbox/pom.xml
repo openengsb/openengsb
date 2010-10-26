@@ -38,6 +38,18 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-common</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-workflow</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.neodatis</groupId>
       <artifactId>neodatis-odb</artifactId>
       <version>${odb.version}</version>
@@ -55,7 +67,6 @@
       <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
 </project>
