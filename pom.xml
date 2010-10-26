@@ -674,7 +674,7 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <repository>
+    <repository> <!-- manually wrapped jaxb and latest version of neodatis -->
       <id>thirdparty</id>
       <name>OpenEngSB 3rd Party Repository</name>
       <url>http://maven.openengsb.org/nexus/content/repositories/thirdparty/</url>
@@ -700,13 +700,18 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <repository>
+    <repository> <!-- JGIT  -->
       <id>jgit</id>
       <url>http://download.eclipse.org/jgit/maven</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository> <!-- Latest PAX artifacts as long as not in central -->
+      <id>sonatype.pax</id>
+      <url>https://oss.sonatype.org/content/groups/ops4j-with-staging/</url>
+    </repository>
   </repositories>
 
 </project>
+
