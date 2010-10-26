@@ -38,7 +38,7 @@ public class ProxyConnector implements BundleContextAware {
 
     public ProxyConnector(DomainService domainService, InvocationHandlerFactory factory) {
         this.domainService = domainService;
-        this.handlerFactory = factory;        
+        handlerFactory = factory;
     }
 
     public void addProxiesToContext() {
@@ -51,8 +51,8 @@ public class ProxyConnector implements BundleContextAware {
         InvocationHandler handler = handlerFactory.createInstance(domain);
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("domain", domain.getDomainInterface().getName());
-        bundleContext.registerService(ServiceManager.class.getName(), new ProxyServiceManager(domain, handler,
-            bundleContext), properties);
+        bundleContext.registerService(ServiceManager.class.getName(), new ProxyServiceManager(domain, handler),
+            properties);
     }
 
     @Override

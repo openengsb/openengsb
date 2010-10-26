@@ -18,6 +18,7 @@ package org.openengsb.core.common.proxy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
@@ -40,6 +41,7 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.service.DomainService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -60,6 +62,8 @@ public class ProxyConnectorTest {
                 return TestInterface.class;
             }
         });
+        LocalizableString stringMock = mock(LocalizableString.class);
+        when(provider.getName()).thenReturn(stringMock);
         when(provider.getId()).thenReturn(ID);
         when(domainService.domains()).thenReturn(Arrays.asList(new DomainProvider[]{ provider }));
     }
@@ -87,6 +91,8 @@ public class ProxyConnectorTest {
         assertTrue(captor.getValue() instanceof ProxyServiceManager);
         ProxyServiceManager manager = (ProxyServiceManager) captor.getValue();
 
+        // This line is required since spring cannot set it automatically
+        manager.setBundleContext(mockContext);
         manager.update("12345", new HashMap<String, String>());
         verify(mockContext).registerService(eq(new String[]{ TestInterface.class.getName(), Domain.class.getName() }),
             captor.capture(), any(Dictionary.class));
