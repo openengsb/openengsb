@@ -78,8 +78,9 @@ public class JMSConnector implements BundleContextAware {
         InvocationHandler handler = handlerFactory.createInstance(domain);
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("domain", domain.getDomainInterface().getName());
-        bundleContext.registerService(ServiceManager.class.getName(), new ProxyServiceManager(domain, handler,
-            bundleContext), properties);
+        ProxyServiceManager service = new ProxyServiceManager(domain, handler);
+        service.setBundleContext(bundleContext);
+        bundleContext.registerService(ServiceManager.class.getName(), service, properties);
     }
 
     @Override

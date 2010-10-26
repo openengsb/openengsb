@@ -25,23 +25,20 @@ import java.util.Set;
 
 import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.l10n.BundleStrings;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-import org.springframework.osgi.context.BundleContextAware;
 
 /**
  * Base class for {@link ServiceManager} implementations. Handles all OSGi related stuff and exporting the right service
  * properties that are needed for service discovery. Furthermore this class also persists the connector state and
  * restores all persisted connectors at the next startup.
- *
+ * 
  * All service-specific action, like descriptor building, service instantiation and service updating are encapsulated in
  * a {@link ServiceInstanceFactory}. Creating a new service manager should be as simple as implementing the
  * {@link ServiceInstanceFactory} and creating a subclass of this class:
- *
+ * 
  * This class has to be instantiated via Spring, as the BundleContext has to be set as it is BundleContextAware.
- *
+ * 
  * <pre>
  * public class ExampleServiceManager extends AbstractServiceManager&lt;ExampleDomain, TheInstanceType&gt; {
  *     public ExampleServiceManager(ServiceInstanceFactory&lt;ExampleDomain, TheInstanceType&gt; factory) {
@@ -49,38 +46,21 @@ import org.springframework.osgi.context.BundleContextAware;
  *     }
  * }
  * </pre>
- *
+ * 
  * @param <DomainType> interface of the domain this service manages
  * @param <InstanceType> actual service implementation this service manages
  */
-public abstract class AbstractServiceManager<DomainType extends Domain, InstanceType extends DomainType> implements
-        ServiceManager, BundleContextAware {
+public abstract class AbstractServiceManager<DomainType extends Domain, InstanceType extends DomainType> extends
+        AbstractServiceManagerParent implements ServiceManager {
 
-    private final class DomainRepresentation {
-        private final InstanceType service;
-        private final ServiceRegistration registration;
-
-        private DomainRepresentation(InstanceType service, ServiceRegistration registration) {
-            this.service = service;
-            this.registration = registration;
-        }
-    }
-
-    private BundleContext bundleContext;
-    private BundleStrings strings;
-    private final Map<String, DomainRepresentation> services = new HashMap<String, DomainRepresentation>();
     private final ServiceInstanceFactory<DomainType, InstanceType> factory;
     private final Map<String, Map<String, String>> attributeValues = new HashMap<String, Map<String, String>>();
     private ConnectorSetupStore connectorSetupStore;
 
+    private final Map<String, DomainRepresentation> services = new HashMap<String, DomainRepresentation>();
+
     public AbstractServiceManager(ServiceInstanceFactory<DomainType, InstanceType> factory) {
         this.factory = factory;
-    }
-
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-        strings = new BundleStrings(bundleContext.getBundle());
     }
 
     public void init() {
@@ -95,7 +75,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
 
     @Override
     public ServiceDescriptor getDescriptor() {
-        return factory.getDescriptor(ServiceDescriptor.builder(strings).id(getImplementationClass().getName())
+        return factory.getDescriptor(ServiceDescriptor.builder(getStrings()).id(getImplementationClass().getName())
             .serviceType(getDomainInterface()).implementationType(getImplementationClass()));
     }
 
@@ -122,9 +102,10 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     }
 
     private MultipleAttributeValidationResult updateService(String id, Map<String, String> attributes) {
-        MultipleAttributeValidationResult validation = factory.updateValidation(services.get(id).service, attributes);
+        InstanceType service = getService(id);
+        MultipleAttributeValidationResult validation = factory.updateValidation(service, attributes);
         if (validation.isValid()) {
-            factory.updateServiceInstance(services.get(id).service, attributes);
+            factory.updateServiceInstance(service, attributes);
         }
         return validation;
     }
@@ -135,42 +116,12 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             InstanceType instance = factory.createServiceInstance(id, attributes);
             Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
             ServiceRegistration registration =
-                bundleContext.registerService(new String[]{ getImplementationClass().getName(),
-                    getDomainInterface().getName(), Domain.class.getName() }, instance, serviceProperties);
-            services.put(id, new DomainRepresentation(instance, registration));
+                getBundleContext().registerService(
+                    new String[]{getImplementationClass().getName(), getDomainInterface().getName(),
+                        Domain.class.getName()}, instance, serviceProperties);
+            addDomainRepresentation(id, instance, registration);
         }
         return validation;
-    }
-
-    @Override
-    public void delete(String id) {
-        synchronized (services) {
-            services.get(id).registration.unregister();
-            services.remove(id);
-            attributeValues.remove(id);
-            connectorSetupStore.deleteConnectorSetup(getImplementationClass().getName(), id);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    protected Class<DomainType> getDomainInterface() {
-        return (Class<DomainType>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-    }
-
-    @SuppressWarnings("unchecked")
-    protected Class<InstanceType> getImplementationClass() {
-        ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
-        Type instanceType = genericSuperclass.getActualTypeArguments()[1];
-        return (Class<InstanceType>) instanceType;
-    }
-
-    private Hashtable<String, String> createNotificationServiceProperties(String id) {
-        Hashtable<String, String> serviceProperties = new Hashtable<String, String>();
-        serviceProperties.put("id", id);
-        serviceProperties.put("domain", getDomainInterface().getName());
-        serviceProperties.put("class", getImplementationClass().getName());
-        serviceProperties.put("managerId", getDescriptor().getId());
-        return serviceProperties;
     }
 
     @Override
@@ -191,4 +142,49 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         this.connectorSetupStore = connectorSetupStore;
     }
 
+    protected boolean servicesContainsKey(String id) {
+        return this.services.containsKey(id);
+    }
+
+    protected void addDomainRepresentation(String id, InstanceType instance, ServiceRegistration registration) {
+        services.put(id, new DomainRepresentation(instance, registration));
+    }
+
+    protected InstanceType getService(String id) {
+        return services.get(id).service;
+    }
+
+    @Override
+    public void delete(String id) {
+        synchronized (services) {
+            services.get(id).registration.unregister();
+            services.remove(id);
+            attributeValues.remove(id);
+            connectorSetupStore.deleteConnectorSetup(getImplementationClass().getName(), id);
+        }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Class<DomainType> getDomainInterface() {
+        return (Class<DomainType>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Class<InstanceType> getImplementationClass() {
+        ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
+        Type instanceType = genericSuperclass.getActualTypeArguments()[1];
+        return (Class<InstanceType>) instanceType;
+    }
+
+    protected final class DomainRepresentation {
+        private final InstanceType service;
+        final ServiceRegistration registration;
+
+        private DomainRepresentation(InstanceType service, ServiceRegistration registration) {
+            this.service = service;
+            this.registration = registration;
+        }
+    }
 }
