@@ -69,14 +69,15 @@
       <para>For the moment the OpenEngSB artifacts are not stored at maven.central, but in an own Nexus maven repository
         available at <ulink url="http://maven.openengsb.org/nexus">maven.openengsb.org</ulink>. If any additional
         artifacts are required currently not at any maven repository we can host them on the server. Please simply write
-        to the mailing list which artifact is required and provide the artifact and the pom GAF parameters.</para>
+        to the mailing list which artifact is required and provide the artifact and the pom GAF parameters. Please always
+        validate if we are allowed to redeploy the artifact.</para>
     </section>
 
     <section xml:id="developer.quickstart.infrastructure.hudson">
       <title>Build Server</title>
-      <para>All branches in the OpenEngSB repository are watched and built by a Hudson build server instance available at
-        <ulink url="http://build.openengsb.org/hudson/">build.openengsb.org</ulink>. Notifications about failures are 
-        directly send to the OpenEngSB developer list.</para>
+      <para>The master and integration branch of the OpenEngSB repository are watched and built by a Hudson build server 
+        instance available at <ulink url="http://build.openengsb.org/hudson/">build.openengsb.org</ulink>. Notifications 
+        about failures are directly send to the OpenEngSB developer list.</para>
     </section>
 
   </section>
@@ -102,7 +103,7 @@
 
     <section xml:id="developer.quickstart.pre.maven">
       <title>Installing Maven</title>
-      <para> Finally download Apache Maven and unpack it. Add the path of the maven binary to your <envar>PATH</envar> variable.
+      <para> Finally download Apache Maven3 and unpack it. Add the path of the maven binary to your <envar>PATH</envar> variable.
         Furthermore you should set the <envar>MAVEN_OPTS</envar> environment variable to allow Maven to use more RAM. If
         you don't you'll get Out Of Memory errors.
         <literallayout>
