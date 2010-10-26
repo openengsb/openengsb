@@ -82,6 +82,47 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <reportPlugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-project-info-reports-plugin</artifactId>
+              <version>${maven.plugin.project.info.reports.version}</version>
+              <configuration>
+                <webAccessUrl>http://github.com/openengsb/openengsb</webAccessUrl>
+                <anonymousConnection>scm:git:git://github.com/openengsb/openengsb.git</anonymousConnection>
+                <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+              </configuration>
+              <reportSets>
+                <reportSet>
+                  <reports>
+                    <report>project-team</report>
+                    <report>mailing-list</report>
+                    <report>cim</report>
+                    <report>issue-tracking</report>
+                    <report>license</report>
+                    <report>scm</report>
+                  </reports>
+                </reportSet>
+              </reportSets>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-changes-plugin</artifactId>
+              <version>${maven.plugin.changes.version}</version>
+              <configuration>
+                <onlyCurrentVersion>false</onlyCurrentVersion>
+              </configuration>
+              <reportSets>
+                <reportSet>
+                  <reports>
+                    <report>jira-report</report>
+                  </reports>
+                </reportSet>
+              </reportSets>
+            </plugin>
+          </reportPlugins>
+        </configuration>
         <executions>
           <execution>
             <id>mvnSite</id>
@@ -164,42 +205,6 @@
       </plugin>
     </plugins>
   </build>
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>${maven.plugin.project.info.reports.version}</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>project-team</report>
-              <report>mailing-list</report>
-              <report>cim</report>
-              <report>issue-tracking</report>
-              <report>license</report>
-              <report>scm</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <version>${maven.plugin.changes.version}</version>
-        <configuration>
-          <onlyCurrentVersion>true</onlyCurrentVersion>
-        </configuration>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>jira-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-    </plugins>
-  </reporting>
 
 </project>
 

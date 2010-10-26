@@ -42,7 +42,7 @@
     <plugin.pax.version>1.4</plugin.pax.version>
     <plugin.paxrunner.version>1.5.0</plugin.paxrunner.version>
     <plugin.release.version>2.0</plugin.release.version>
-    <plugin.site.version>2.1.1</plugin.site.version>
+    <plugin.site.version>3.0-beta-3</plugin.site.version>
     <plugin.source.version>2.1.2</plugin.source.version>
     <plugin.mvn.license>1.8.0</plugin.mvn.license>
     <plugin.javadoc.version>2.7</plugin.javadoc.version>
