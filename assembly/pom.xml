@@ -42,9 +42,10 @@
     <settings.karaf.base>.</settings.karaf.base>
     <settings.karaf.data>${settings.karaf.base}/data</settings.karaf.data>
     
-    <!-- Ports of the web application --> 
+    <!-- Ports of the openengsb --> 
     <org.osgi.service.http.port>8090</org.osgi.service.http.port>
     <org.osgi.service.http.port.secure>8091</org.osgi.service.http.port.secure>
+    <jms.port>6549</jms.port>
 
     <!-- platform/settings.debug.composite -->
     <client.debug.properties />
