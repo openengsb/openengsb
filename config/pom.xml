@@ -37,8 +37,6 @@
   <modules>
     <module>settings</module>
     <module>client</module>
-    <module>jetty</module>
-    <module>webextender</module>
   </modules>
 
 </project>
