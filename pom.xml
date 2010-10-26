@@ -672,7 +672,7 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <repository>
+    <repository> <!-- manually wrapped jaxb and latest version of neodatis -->
       <id>thirdparty</id>
       <name>OpenEngSB 3rd Party Repository</name>
       <url>http://maven.openengsb.org/nexus/content/repositories/thirdparty/</url>
@@ -683,7 +683,7 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-    <repository>
+    <repository> <!-- Maven skin -->
       <id>apache</id>
       <name>Apache Public Repository</name>
       <url>https://repository.apache.org/content/groups/public/</url>
@@ -694,14 +694,14 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <repository>
+    <repository> <!-- Maven skin -->
       <id>apache-release</id>
       <url>https://repository.apache.org/content/repositories/releases</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <repository>
+    <repository> <!-- JGIT  -->
       <id>jgit</id>
       <url>http://download.eclipse.org/jgit/maven</url>
       <snapshots>
