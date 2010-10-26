@@ -708,6 +708,10 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository> <!-- Latest PAX artifacts as long as not in central -->
+      <id>sonatype.pax</id>
+      <url>https://oss.sonatype.org/content/groups/ops4j-with-staging/</url>
+    </repository>
   </repositories>
 
 </project>
