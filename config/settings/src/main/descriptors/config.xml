@@ -36,6 +36,7 @@
         <include>org.apache.felix.karaf.shell.cfg</include>
         <include>org.ops4j.pax.logging.cfg</include>
         <include>org.ops4j.pax.url.mvn.cfg</include>
+        <include>org.openengsb.ports.cfg</include>
         <include>shell.init.script</include>
         <include>startup.properties</include>
         <include>system.properties</include>
