@@ -128,43 +128,41 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     }
 
     private boolean findDomainGlobal(String name) {
-        ServiceReference[] allServiceReferences;
-        try {
-            allServiceReferences =
-                bundleContext.getAllServiceReferences(Domain.class.getName(),
-                    String.format("(&(openengsb.service.type=domain)(id=domains.%s))", name));
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalStateException(e);
-        }
-        if (allServiceReferences == null) {
+        String clazz = Domain.class.getName();
+        String filter = String.format("(&(openengsb.service.type=domain)(id=domains.%s))", name);
+        ServiceReference ref = findGlobalReference(name, clazz, filter);
+        if (ref == null) {
             return false;
         }
-        if (allServiceReferences.length != 1) {
-            throw new IllegalStateException(String.format("found more than one match for \"%s\".", name));
-        }
-        ServiceReference ref = allServiceReferences[0];
         Domain service = (Domain) bundleContext.getService(ref);
         domainServices.put(name, service);
         return true;
     }
 
-    private boolean findNonDomainGlobal(String name) {
-        String clazz = rulemanager.listGlobals().get(name);
+    private ServiceReference findGlobalReference(String name, String clazz, String filter) {
         ServiceReference[] allServiceReferences;
         try {
-            String filter =
-                String.format("(&(openengsb.service.type=workflow-service)(openengsb.workflow.globalid=%s))", name);
             allServiceReferences = bundleContext.getAllServiceReferences(clazz, filter);
         } catch (InvalidSyntaxException e) {
             throw new IllegalStateException(e);
         }
         if (allServiceReferences == null) {
-            return false;
+            return null;
         }
         if (allServiceReferences.length != 1) {
             throw new IllegalStateException(String.format("found more than one match for \"%s\".", name));
         }
-        ServiceReference ref = allServiceReferences[0];
+        return allServiceReferences[0];
+    }
+
+    private boolean findNonDomainGlobal(String name) {
+        String clazz = rulemanager.listGlobals().get(name);
+        String filter =
+            String.format("(&(openengsb.service.type=workflow-service)(openengsb.workflow.globalid=%s))", name);
+        ServiceReference ref = findGlobalReference(name, clazz, filter);
+        if (ref == null) {
+            return false;
+        }
         Object service = bundleContext.getService(ref);
         otherServices.put(name, service);
         return true;
