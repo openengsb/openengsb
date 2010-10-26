@@ -23,5 +23,6 @@
 echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
 
 cd $(dirname $0)/../..
+rm -r runner
 mvn install pax:provision -Dmaven.test.skip=true
 
