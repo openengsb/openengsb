@@ -76,6 +76,7 @@ public class WorkflowServiceTest {
     private DummyReport report;
     private DummyIssue issue;
     private DummyTest test;
+    private DummyService myservice;
 
     @Before
     public void setUp() throws Exception {
@@ -90,6 +91,7 @@ public class WorkflowServiceTest {
         when(currentContext.getCurrentContextId()).thenReturn("42");
         service.setCurrentContextService(currentContext);
         setupDomains();
+        setupOtherServices();
     }
 
     private void setupRulemanager() throws RuleBaseException {
@@ -104,11 +106,18 @@ public class WorkflowServiceTest {
         service.setDomainServices(domains);
     }
 
+    private void setupOtherServices() {
+        Map<String, Object> services = new HashMap<String, Object>();
+        myservice = mock(DummyService.class);
+        services.put("myservice", myservice);
+        service.setOtherServices(services);
+    }
+
     private Map<String, Domain> createDomainMocks() {
         Map<String, Domain> domains = new HashMap<String, Domain>();
-        logService = Mockito.mock(DummyExampleDomain.class);
+        logService = mock(DummyExampleDomain.class);
         domains.put("example", logService);
-        notification = Mockito.mock(DummyNotificationDomain.class);
+        notification = mock(DummyNotificationDomain.class);
         domains.put("notification", notification);
         build = mock(DummyBuild.class);
         domains.put("build", build);
@@ -143,6 +152,7 @@ public class WorkflowServiceTest {
         service.processEvent(event);
         verify(notification, atLeast(1)).notify("Hello");
         verify(logService, atLeast(1)).doSomething("Hello World");
+        verify(myservice, atLeast(1)).call();
     }
 
     @Test

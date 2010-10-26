@@ -19,3 +19,4 @@ when
 then
 	example.doSomething("Hello World");
 	notification.notify("Hello");
+	myservice.call();
