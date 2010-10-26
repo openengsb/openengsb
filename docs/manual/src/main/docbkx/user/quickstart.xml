@@ -30,14 +30,17 @@
       the OpenEngSB. Both cases are explained in this chapter.</para>
 
     <section>
-        <title>The OpenEngSB as Base Environment</title>
-        <para>Repository for snapshots: https://oss.sonatype.org/content/groups/public/</para>
-        <para>Staging Repository: https://oss.sonatype.org/content/groups/public/</para>
-        <para>Release Repository: http://repo1.maven.org/maven2/</para>
+        <title>Writing new projects using the OpenEngSB</title>
+        <para>TBW</para>
     </section>
 
     <section>
-        <title>Writing Components for the OpenEngSB</title>
+        <title>Writing Domains for the OpenEngSB</title>
+        <para>TBW</para>
+    </section>
+
+    <section>
+        <title>Writing Connectors for the OpenEngSB</title>
         <para>TBW</para>
     </section>
 
