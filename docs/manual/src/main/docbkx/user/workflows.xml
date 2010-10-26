@@ -27,7 +27,7 @@
 
   <para>The OpenEngSB supports the modeling of workflows. This could be done
   by two different approaches. First of all a rule-based event approach, by
-  defining actions based on events (and their content) whiche where thrown in
+  defining actions based on events (and their content) which were thrown in
   or to the bus. Events are practical for "short-time handling" since they are
   also easy to replace and extend. For long running business processes the
   secondary workflow method could be used which is <link
@@ -40,30 +40,31 @@
 
   <para>The workflow component consists of two main parts: The RuleManager and
   the WorkflowService. </para>
-  <subsection>
+  <section>
     <title>Workflow service</title>
 
-    <para>The WorkflowService is responsible for processing Events, and
-    makes sure the rulebase is connected to the environment (domains and
-    connectors). When an event is fired, the workflow-service spawns a new
-    Session of the rulebase. The session gets populated with references to
-    domain-services and other helper-objects in form of global variables. A
-    drools-session is running an a sandbox. This means that the supplied
-    globals are the only way of triggering actions outside the rule-session.
+    <para>The 
+    <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/workflow/src/main/java/org/openengsb/core/workflow/WorkflowService.java">workflow service</link> 
+    is responsible for processing events, and makes sure the rulebase is 
+    connected to the environment (domains and connectors). When an event is 
+    fired, the workflow-service spawns a new session of the rulebase. The 
+    session gets populated with references to domain-services and other 
+    helper-objects in form of global variables. A drools-session is running 
+    in a sandbox. This means that the supplied globals are the only way of 
+    triggering actions outside the rule-session.
     </para>
-  </subsection>
-  <subsection>
+  </section>
+  <section>
     <title>Rulemanager</title>
-
-    <para>The RuleManager provides methods for modifying the rulebase. As
-    opposed to plain drl-files, the rulemanager organized the elements of
-    the rulebase in its own manner. Rules, Functions and flows are saved
-    separately. All elements share a common collection of import- and
-    global-declarations. These parts are sticked together by the
-    rulemanager, to a consistent rulebase. So when adding a new rule or
+    <para>The <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/workflow/src/main/java/org/openengsb/core/workflow/RuleManager.java">rule manager</link>
+    provides methods for modifying the rulebase. As opposed to plain drl-files, 
+    the rulemanager organized the elements of the rulebase in its own manner. 
+    Rules, Functions and flows are saved separately. All elements share a common 
+    collection of import- and global-declarations. These parts are sticked together 
+    by the rulemanager, to a consistent rulebase. So when adding a new rule or
     function to the rulebase, make sure that all imports are present before.
     Otherwise the adding of the elements will fail. </para>
-  </subsection>
+  </section>
 
   <section xml:id="workflows.processes">
     <title>Processes</title>
