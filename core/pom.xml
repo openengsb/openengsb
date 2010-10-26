@@ -39,6 +39,7 @@
     <module>workflow</module>
     <module>persistence</module>
     <module>events</module>
+    <module>proxy</module>
   </modules>
 
 </project>
