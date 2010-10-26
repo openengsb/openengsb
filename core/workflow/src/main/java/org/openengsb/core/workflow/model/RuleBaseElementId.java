@@ -31,6 +31,9 @@ public class RuleBaseElementId implements Serializable {
     private String packageName;
     private String name;
 
+    /**
+     * package defaults to "org.openengsb"
+     */
     public RuleBaseElementId(RuleBaseElementType type, String name) {
         this.type = type;
         this.name = name;

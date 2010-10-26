@@ -37,8 +37,6 @@ import org.openengsb.core.workflow.RuleBaseException;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
-import org.openengsb.core.workflow.model.RuleBaseElementId;
-import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -105,10 +103,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     }
 
     private Collection<String> findMissingGlobals() {
-        Collection<String> globalsToProcess = new ArrayList<String>();
-        for (RuleBaseElementId id : rulemanager.list(RuleBaseElementType.Global)) {
-            globalsToProcess.add(id.getName());
-        }
+        Collection<String> globalsToProcess = new ArrayList<String>(rulemanager.listGlobals().keySet());
         globalsToProcess.remove("event");
         globalsToProcess.removeAll(domainServices.keySet());
 

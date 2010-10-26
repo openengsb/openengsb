@@ -159,7 +159,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
     @Test
     public void testAddGlobal() throws Exception {
-        source.add(new RuleBaseElementId(RuleBaseElementType.Global, "bla"), "java.util.Random");
+        source.addGlobal("java.util.Random", "bla");
         source.add(new RuleBaseElementId(RuleBaseElementType.Rule, "bla"),
             "when\n then example.doSomething(\"\" + bla.nextInt());");
         createSession();

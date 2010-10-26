@@ -17,14 +17,22 @@
 package org.openengsb.core.workflow;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.drools.KnowledgeBase;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 
 /**
- * provides methods to manage the current content of the rulebase. Note: When adding a new rule or function to the
- * rulebase, make sure that all imports are present before. Otherwise the adding of the elements will fail.
+ * The RuleManager serves as an abstraction to modify the rulebase used by the workflow engine. It offers methods to
+ * modify the rulebase and makes sure that the changes are propagated to the WorkflowService. The elements in a rulebase
+ * are identified using the {@link RuleBaseElementId} class.
+ *
+ * Declaration of imports and global variables are handled explicitly. Also they are the same in all packages, so they
+ * are only saved once. The assignment of values to the globals is handled by the WorkflowService.
+ *
+ * Note: When adding a new rule or function to the rulebase, make sure that all imports are present before. Otherwise
+ * the adding of the elements will fail.
  */
 public interface RuleManager {
 
@@ -92,5 +100,22 @@ public interface RuleManager {
      * retrieves a list of all imports. Note that all packages share the same list of imports.
      */
     Collection<String> listImports();
+
+    /**
+     *
+     * @throws RuleBaseException if a global with the name already exists
+     */
+    void addGlobal(String className, String name) throws RuleBaseException;
+
+    /**
+     * @throws RuleBaseException if removing the global would leave the rulebase in an inconsistent state (because it is
+     *         still used in some rules)
+     */
+    void removeGlobal(String name) throws RuleBaseException;
+
+    /**
+     * @return list all globals with the name as key and the classname as value
+     */
+    Map<String, String> listGlobals();
 
 }
