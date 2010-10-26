@@ -52,7 +52,7 @@
           For the formerly created wicket project org.apache.wicket should be added to the module section.</para>
       </listitem>
       <listitem>
-        <para>Now create an pom.xml file and a osgi.bnd file in the newly created project folder.</para>
+        <para>Now create a pom.xml file and a osgi.bnd file in the newly created project folder.</para>
       </listitem>
       <listitem>
         <para>The pom.xml contains the basic project information. As parent for the project the wrapped/pom.xml should
@@ -92,11 +92,11 @@ OPENENGSB LICENSE
 </project>]]></programlisting></para>
       </listitem>
       <listitem><para>The osgi.bnd file contains the OSGi specific statements for the maven-bundle-plugin. While the
-          default export and import is already handled in the root pom only project specific settings have to be
-          configured here. For example always all packages witin inthe bundle-namespace are exported. This is for most
-          scenarios sufficient. In addition all dependencies foudn are automatically imported as required. This is
-          mostly not what is wanted. Instead the parts of the library which have to be importated should be defined
-          separated. The following listing should give an short example how such a osgi.bnl file can look like. For a
+          default export and import are already handled in the root pom project specific settings have to be
+          configured here. For example all packages witin the bundle-namespace are always exported. This is for most
+          scenarios sufficient. In addition all dependencies found are automatically imported as required. This is
+          generally not desired. Instead the parts of the library which have to be importated should be defined
+          separately. The following listing gives a short example how such a osgi.bnl file can look like. For a
           full list of possible commands see the <link
             xlink:href="http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html">maven-bundle-plugin
             documentation</link>.
@@ -114,7 +114,7 @@ javax.servlet;version="[2.5.0, 3.0.0)",\
 
   <section xml:id="developer.wrapped.workflow">
     <title>Workflow</title>
-    <para>The regular OpenEngSB typically does not have to modify anything within this directory. In addition all
+    <para>The OpenEngSB typically does not have to modify anything within this directory. In addition all
       artifacts in this part are independent of the typical OpenEngSB build and deploy life-cycle. The versions within
       these artifacts change completely independent of the OpenEngSB. Therefore this directory and its subprojects are
       not entered within the module section of the root pom! Instead, if it is really required to build them (e.g. if a
