@@ -25,7 +25,7 @@
   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
 
   <title>SCM Domain</title>
-  <para>The software configuration management (SCM) domain is the tool domain for all SCM tools, like Git or Subversion.</para> 
+  <para>The source code management (SCM) domain is the tool domain for all SCM tools, like Git or Subversion.</para> 
   <section>
     <title>Description</title>
     <para>The SCM Domain polls external repositories for changes of content under source control and provides functionality to 
