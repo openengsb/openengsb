@@ -306,7 +306,7 @@
 
           <listitem>
             <para>Tests should have descriptive method names. It should be deducible what will be tested. Bad:
-                <code>testError()</code>. Good: <code>invalidInMessageShouldReturnErrorResponse()</code>.</para>
+                <code>testError()</code>. Good: <code>invalidInMessage_ShouldReturnErrorResponse()</code>.</para>
           </listitem>
         </itemizedlist>
       </para>

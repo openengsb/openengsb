@@ -86,7 +86,7 @@
       <itemizedlist>
         <listitem>
           <bridgehead>Description</bridgehead>
-          <para>TBW</para>
+          <para>Describe briefly what the purpose of the Domain is.</para>
         </listitem>
         <listitem>
           <bridgehead>Functional interface</bridgehead>
@@ -112,7 +112,7 @@
       <itemizedlist>
         <listitem>
           <bridgehead>Description</bridgehead>
-          <para>TBW</para>
+          <para>Provide a description of the external tool and its purpose.</para>
         </listitem>
         <listitem>
           <bridgehead>External tool configuration</bridgehead>
