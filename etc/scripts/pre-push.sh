@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-MVN_COMMAND="mvn clean install -Plicense-check,integration-test,checkstyle,docs"
+MVN_COMMAND="mvn clean install -Plicense-check,integration-test,checkstyle"
 
 function check_for_maven_3(){
 	mvn --version | grep "^Apache Maven 3\." > /dev/null

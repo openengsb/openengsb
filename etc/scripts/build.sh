@@ -16,5 +16,5 @@
 #
 
 cd $(dirname $0)/../..
-mvn install -Pdocs -Dmaven.test.skip=true
+mvn install -Dmaven.test.skip=true
 

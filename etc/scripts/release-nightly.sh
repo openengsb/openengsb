@@ -16,5 +16,5 @@
 #
 
 cd $(dirname $0)/../../
-mvn release:prepare release:perform -Pdocs,nightly -Dmaven.test.skip=true 
+mvn release:prepare release:perform -Pnightly -Dmaven.test.skip=true 
 
