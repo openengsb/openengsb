@@ -31,8 +31,8 @@
 
   <section>
     <title>Prerequisites</title>
-    <para>In case it isn't known what a domain is and how it defines the interface and events for connectors, then (TODO
-      link to architecture) is a good starting point.</para>
+    <para>In case it isn't known what a domain is and how it defines the interface and events for connectors, then 
+    <xref linkend="developer.chapter" /> is a good starting point.</para>
   </section>
 
   <section>
