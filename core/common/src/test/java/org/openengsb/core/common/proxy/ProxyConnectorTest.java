@@ -18,7 +18,6 @@ package org.openengsb.core.common.proxy;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
@@ -92,7 +91,6 @@ public class ProxyConnectorTest {
         ProxyServiceManager manager = (ProxyServiceManager) captor.getValue();
 
         // This line is required since spring cannot set it automatically
-        manager.setBundleContext(mockContext);
         manager.update("12345", new HashMap<String, String>());
         verify(mockContext).registerService(eq(new String[]{ TestInterface.class.getName(), Domain.class.getName() }),
             captor.capture(), any(Dictionary.class));
