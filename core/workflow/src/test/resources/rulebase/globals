@@ -5,3 +5,4 @@ org.openengsb.core.workflow.DummyBuild build
 org.openengsb.core.workflow.DummyDeploy deploy
 org.openengsb.core.workflow.DummyReport report
 org.openengsb.core.workflow.DummyIssue issue
+org.openengsb.core.workflow.DummyService myservice

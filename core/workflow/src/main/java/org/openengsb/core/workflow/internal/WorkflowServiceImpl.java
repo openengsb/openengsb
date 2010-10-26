@@ -54,6 +54,8 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     private Map<String, Domain> domainServices = new HashMap<String, Domain>();
 
+    private Map<String, Object> otherServices = new HashMap<String, Object>();
+
     private Map<String, StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
 
     private long timeout = 10000;
@@ -106,6 +108,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         Collection<String> globalsToProcess = new ArrayList<String>(rulemanager.listGlobals().keySet());
         globalsToProcess.remove("event");
         globalsToProcess.removeAll(domainServices.keySet());
+        globalsToProcess.removeAll(otherServices.keySet());
 
         return discoverNewGlobalValues(globalsToProcess);
     }
@@ -121,22 +124,47 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     }
 
     private boolean findGlobal(String name) {
+        return findDomainGlobal(name) || findNonDomainGlobal(name);
+    }
+
+    private boolean findDomainGlobal(String name) {
+        String clazz = Domain.class.getName();
+        String filter = String.format("(&(openengsb.service.type=domain)(id=domains.%s))", name);
+        ServiceReference ref = findGlobalReference(name, clazz, filter);
+        if (ref == null) {
+            return false;
+        }
+        Domain service = (Domain) bundleContext.getService(ref);
+        domainServices.put(name, service);
+        return true;
+    }
+
+    private ServiceReference findGlobalReference(String name, String clazz, String filter) {
         ServiceReference[] allServiceReferences;
         try {
-            allServiceReferences = bundleContext.getAllServiceReferences(Domain.class.getName(),
-                    String.format("(&(openengsb.service.type=domain)(id=domains.%s))", name));
+            allServiceReferences = bundleContext.getAllServiceReferences(clazz, filter);
         } catch (InvalidSyntaxException e) {
             throw new IllegalStateException(e);
         }
         if (allServiceReferences == null) {
-            return false;
+            return null;
         }
         if (allServiceReferences.length != 1) {
             throw new IllegalStateException(String.format("found more than one match for \"%s\".", name));
         }
-        ServiceReference ref = allServiceReferences[0];
-        Domain service = (Domain) bundleContext.getService(ref);
-        domainServices.put(name, service);
+        return allServiceReferences[0];
+    }
+
+    private boolean findNonDomainGlobal(String name) {
+        String clazz = rulemanager.listGlobals().get(name);
+        String filter =
+            String.format("(&(openengsb.service.type=workflow-service)(openengsb.workflow.globalid=%s))", name);
+        ServiceReference ref = findGlobalReference(name, clazz, filter);
+        if (ref == null) {
+            return false;
+        }
+        Object service = bundleContext.getService(ref);
+        otherServices.put(name, service);
         return true;
     }
 
@@ -161,18 +189,8 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
         Collection<String> missingGlobals = findMissingGlobals();
         if (!missingGlobals.isEmpty()) {
-            try {
-                synchronized (domainServices) {
-                    domainServices.wait(timeout);
-                }
-            } catch (InterruptedException e) {
-                throw new WorkflowException(e);
-            }
-            for (Iterator<String> iterator = missingGlobals.iterator(); iterator.hasNext();) {
-                if (domainServices.get(iterator.next()) != null) {
-                    iterator.remove();
-                }
-            }
+            waitForGlobals(missingGlobals, domainServices);
+            waitForGlobals(missingGlobals, otherServices);
             if (!missingGlobals.isEmpty()) {
                 throw new WorkflowException("there are unassigned globals, maybe some service is missing "
                         + missingGlobals);
@@ -180,6 +198,25 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         }
         for (Entry<String, Domain> entry : domainServices.entrySet()) {
             session.setGlobal(entry.getKey(), entry.getValue());
+        }
+        for (Entry<String, Object> entry : otherServices.entrySet()) {
+            session.setGlobal(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private void waitForGlobals(Collection<String> missingGlobals, Map<String, ? extends Object> services)
+        throws WorkflowException {
+        try {
+            synchronized (services) {
+                services.wait(timeout);
+            }
+        } catch (InterruptedException e) {
+            throw new WorkflowException(e);
+        }
+        for (Iterator<String> iterator = missingGlobals.iterator(); iterator.hasNext();) {
+            if (services.get(iterator.next()) != null) {
+                iterator.remove();
+            }
         }
     }
 
@@ -195,6 +232,13 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
                     domainServices.put(name, service);
                     domainServices.notify();
                 }
+            } else if (serviceReference.getProperty("openengsb.service.type").equals("workflow-service")) {
+                String name = (String) serviceReference.getProperty("openengsb.workflow.globalid");
+                Object service = bundleContext.getService(serviceReference);
+                synchronized (otherServices) {
+                    otherServices.put(name, service);
+                    otherServices.notify();
+                }
             }
         }
 
@@ -206,6 +250,10 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     public void setDomainServices(Map<String, Domain> domainServices) {
         this.domainServices = domainServices;
+    }
+
+    public void setOtherServices(Map<String, Object> otherServices) {
+        this.otherServices = otherServices;
     }
 
     @Override

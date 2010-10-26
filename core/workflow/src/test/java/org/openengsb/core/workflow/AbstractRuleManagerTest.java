@@ -72,6 +72,13 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         return domains;
     }
 
+    private Map<String, Object> createOtherServiceMocks() {
+        Map<String, Object> services = new HashMap<String, Object>();
+        DummyService service = Mockito.mock(DummyService.class);
+        services.put("myservice", service);
+        return services;
+    }
+
     /**
      * create new stateful session from the rulebase and attach a listener to validate testresults
      */
@@ -84,6 +91,9 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         listener = new RuleListener();
         session.addEventListener(listener);
         for (Entry<String, Domain> entry : createDomainMocks().entrySet()) {
+            session.setGlobal(entry.getKey(), entry.getValue());
+        }
+        for (Entry<String, Object> entry : createOtherServiceMocks().entrySet()) {
             session.setGlobal(entry.getKey(), entry.getValue());
         }
     }
