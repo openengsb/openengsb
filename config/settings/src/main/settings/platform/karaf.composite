@@ -28,6 +28,7 @@
 -Dkaraf.startRemoteShell=true
 -Dkaraf.home=${settings.karaf.home}
 -Dkaraf.base=${settings.karaf.base}
+-Dkaraf.data=${settings.karaf.data}
 
 ##############################
 ## Web Port Settings

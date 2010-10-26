@@ -98,8 +98,9 @@ public class DirectoryRuleSource extends AbstractRuleManager {
     }
 
     public final void setPath(String path) {
-        this.path = path;
-        importsFile = new File(path, IMPORTS_FILENAME);
+        String karafData = System.getProperty("karaf.data");
+        this.path = new File(karafData, path).getPath();
+        importsFile = new File(this.path, IMPORTS_FILENAME);
     }
 
     @Override
