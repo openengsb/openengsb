@@ -16,5 +16,6 @@
 #
 
 cd $(dirname $0)/../../
-mvn release:prepare release:perform -Pfinal -Dmaven.test.skip=true
+mvn release:prepare -Pfinal -Dmaven.test.skip=true -Dgpg.passphrase=$1
+mvn release:perform -Pfinal -Dmaven.test.skip=true -Dgpg.passphrase=$1 -DconnectionUrl=scm:git:file://$2
 
