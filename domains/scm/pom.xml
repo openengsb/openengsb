@@ -24,12 +24,12 @@
   <parent>
     <groupId>org.openengsb.domains</groupId>
     <artifactId>openengsb-domains-parent</artifactId>
-    <version>1.0.0.M6</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.domains.scm</groupId>
   <artifactId>openengsb-domains-scm-parent</artifactId>
-  <version>1.0.0.M6</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Domains :: Scm :: Parent</name>
 

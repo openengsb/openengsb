@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.openengsb.domains</groupId>
     <artifactId>openengsb-domains-parent</artifactId>
-    <version>1.0.0.M6</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.domains.issue</groupId>
   <artifactId>openengsb-domains-issue-parent</artifactId>
-  <version>1.0.0.M6</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Domains :: Issue :: Parent</name>
 

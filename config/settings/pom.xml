@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.openengsb.config</groupId>
     <artifactId>openengsb-config-parent</artifactId>
-    <version>1.0.0.M6</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>openengsb-config-settings</artifactId>
