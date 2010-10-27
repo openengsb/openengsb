@@ -452,6 +452,7 @@
               <mavenExecutorId>forked-path</mavenExecutorId>
               <useReleaseProfile>false</useReleaseProfile>
               <pushChanges>false</pushChanges>
+              <arguments>-Psonatype-oss-release,release,milestone</arguments>
             </configuration>
           </plugin>
         </plugins>
@@ -470,6 +471,7 @@
               <mavenExecutorId>forked-path</mavenExecutorId>
               <useReleaseProfile>false</useReleaseProfile>
               <pushChanges>false</pushChanges>
+              <arguments>-Psonatype-oss-release,release,final</arguments>
             </configuration>
           </plugin>
         </plugins>
