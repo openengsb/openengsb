@@ -452,7 +452,7 @@
               <mavenExecutorId>forked-path</mavenExecutorId>
               <useReleaseProfile>false</useReleaseProfile>
               <pushChanges>false</pushChanges>
-              <arguments>-Psonatype-oss-release,release,milestone</arguments>
+              <arguments>-Psonatype-oss-release,release,milestone -Dmaven.test.skip=true</arguments>
               <preparationGoals>clean install</preparationGoals>
             </configuration>
           </plugin>
@@ -472,7 +472,7 @@
               <mavenExecutorId>forked-path</mavenExecutorId>
               <useReleaseProfile>false</useReleaseProfile>
               <pushChanges>false</pushChanges>
-              <arguments>-Psonatype-oss-release,release,final</arguments>
+              <arguments>-Psonatype-oss-release,release,final -Dmaven.test.skip=true</arguments>
               <preparationGoals>clean install</preparationGoals>
             </configuration>
           </plugin>
