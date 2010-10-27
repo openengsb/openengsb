@@ -51,6 +51,7 @@
     <plugin.install.version>2.3.1</plugin.install.version>
     <plugin.wagon.webdav.version>1.0-beta-2</plugin.wagon.webdav.version>
     <plugin.wagon.ssh.version>1.0-beta-6</plugin.wagon.ssh.version>
+    <passphrase>password</passphrase>
   </properties>
 
   <parent>
@@ -451,7 +452,7 @@
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
               <useReleaseProfile>false</useReleaseProfile>
-              <arguments>-Psonatype-oss-release,release,milestone</arguments>
+              <arguments>-Psonatype-oss-release,release,milestone -Dgpg.passphrase=${passphrase}</arguments>
               <pushChanges>false</pushChanges>
             </configuration>
           </plugin>
@@ -470,7 +471,7 @@
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
               <useReleaseProfile>false</useReleaseProfile>
-              <arguments>-Psonatype-oss-release,release,final</arguments>
+              <arguments>-Psonatype-oss-release,release,final -Dgpg.passphrase=${passphrase}</arguments>
               <pushChanges>false</pushChanges>
             </configuration>
           </plugin>
