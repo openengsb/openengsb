@@ -451,7 +451,8 @@
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
               <useReleaseProfile>false</useReleaseProfile>
-              <arguments>-Psonatype-oss-release,!run,release,nightly</arguments>
+              <arguments>-Psonatype-oss-release,release,nightly</arguments>
+              <pushChanges>false</pushChanges>
             </configuration>
           </plugin>
         </plugins>
@@ -469,7 +470,8 @@
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
               <useReleaseProfile>false</useReleaseProfile>
-              <arguments>-Psonatype-oss-release,!run,release,milestone</arguments>
+              <arguments>-Psonatype-oss-release,release,milestone</arguments>
+              <pushChanges>false</pushChanges>
             </configuration>
           </plugin>
         </plugins>
@@ -487,7 +489,8 @@
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
               <useReleaseProfile>false</useReleaseProfile>
-              <arguments>-Psonatype-oss-release,!run,release,final</arguments>
+              <arguments>-Psonatype-oss-release,release,final</arguments>
+              <pushChanges>false</pushChanges>
             </configuration>
           </plugin>
         </plugins>
