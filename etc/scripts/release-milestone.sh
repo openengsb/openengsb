@@ -16,6 +16,6 @@
 #
 
 cd $(dirname $0)/../../
-mvn release:prepare -Pmilestone -Dmaven.test.skip=true -Dgpg.passphrase=$1
-mvn release:perform -Pmilestone -Dmaven.test.skip=true -Dgpg.passphrase=$1 -DconnectionUrl=scm:git:file://$2
+mvn release:prepare -Pmilestone -Dmaven.test.skip=true -Darguments="-Psonatype-oss-release,release,milestone -Dgpg.passphrase=$1" -Dgpg.passphrase=$1
+mvn release:perform -Pmilestone -Dmaven.test.skip=true -Darguments="-Psonatype-oss-release,release,milestone -Dgpg.passphrase=$1" -Dgpg.passphrase=$1 -DconnectionUrl=scm:git:file://$2
 
