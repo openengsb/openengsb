@@ -15,7 +15,12 @@
 # limitations under the License.
 #
 
+if [ -z "$1" ]; then
+  echo "The location of the repository to checkout have to be added."
+  exit 0
+fi
+
 cd $(dirname $0)/../../
-mvn release:prepare -Pmilestone -Dmaven.test.skip=true -Dgpg.passphrase=$1
-mvn release:perform -Pmilestone -Dmaven.test.skip=true -Dgpg.passphrase=$1 -DconnectionUrl=scm:git:file://$2
+mvn release:prepare -Pmilestone -Dmaven.test.skip=true 
+mvn release:perform -Pmilestone -Dmaven.test.skip=true -DconnectionUrl=scm:git:file://$1
 

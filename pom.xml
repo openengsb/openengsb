@@ -24,7 +24,7 @@
   <properties>
     <!-- Version Informtations -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
-    <openengsb.version.name>"Fuzzy&#160;Fry"</openengsb.version.name>
+    <openengsb.version.name>"Fuzzy Fry"</openengsb.version.name>
     <!-- General Settings -->
     <root.basedir>${project.basedir}</root.basedir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -451,8 +451,9 @@
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
               <useReleaseProfile>false</useReleaseProfile>
-              <arguments>-Psonatype-oss-release,release,milestone</arguments>
               <pushChanges>false</pushChanges>
+              <arguments>-Psonatype-oss-release,release,milestone -Dmaven.test.skip=true</arguments>
+              <preparationGoals>clean install</preparationGoals>
             </configuration>
           </plugin>
         </plugins>
@@ -470,8 +471,9 @@
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
               <useReleaseProfile>false</useReleaseProfile>
-              <arguments>-Psonatype-oss-release,release,final</arguments>
               <pushChanges>false</pushChanges>
+              <arguments>-Psonatype-oss-release,release,final -Dmaven.test.skip=true</arguments>
+              <preparationGoals>clean install</preparationGoals>
             </configuration>
           </plugin>
         </plugins>
