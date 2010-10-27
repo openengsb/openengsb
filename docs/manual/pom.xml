@@ -36,7 +36,27 @@
   </description>
 
   <build>
+    <resources>
+      <resource>
+        <directory>src/main/docbkx</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.4.3</version>
+        <executions>
+          <execution>
+            <id>resources</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>com.agilejava.docbkx</groupId>
         <artifactId>docbkx-maven-plugin</artifactId>
@@ -164,7 +184,7 @@
           <includes>*.xml</includes>
           <htmlStylesheet>css/html.css</htmlStylesheet>
           <xincludeSupported>true</xincludeSupported>
-          <sourceDirectory>${basedir}/src/main/docbkx</sourceDirectory>
+          <sourceDirectory>${basedir}/target/classes</sourceDirectory>
           <!-- use extensions -->
           <useExtensions>1</useExtensions>
           <highlightSource>1</highlightSource>
