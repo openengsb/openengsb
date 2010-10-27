@@ -30,10 +30,8 @@
     </osgi:service-properties>
     <bean class="org.openengsb.core.taskbox.TaskboxServiceImpl" init-method="init">
       <property name="workflowService" ref="workflowService" />
-      <property name="ruleManager" ref="ruleManager" />
     </bean>
   </osgi:service>
 
   <osgi:reference id="workflowService" interface="org.openengsb.core.workflow.WorkflowService" />
-  <osgi:reference id="ruleManager" interface="org.openengsb.core.workflow.RuleManager" />
 </beans>

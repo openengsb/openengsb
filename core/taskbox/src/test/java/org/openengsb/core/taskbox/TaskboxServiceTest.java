@@ -16,24 +16,31 @@
 
 package org.openengsb.core.taskbox;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+import org.mockito.Mockito;
+import org.openengsb.core.workflow.WorkflowException;
+import org.openengsb.core.workflow.WorkflowService;
 
 public class TaskboxServiceTest {
     private TaskboxServiceImpl service;
+    private WorkflowService workflowService;
     
     @Before
     public void init() throws Exception {
+        workflowService = mock(WorkflowService.class);
+        
         service = new TaskboxServiceImpl();
+        service.setWorkflowService(workflowService);
     }
 
-    @Ignore
     @Test
-    public void testStartWorkflow() throws TaskboxException {
+    public void testStartWorkflow() throws TaskboxException, WorkflowException {
         service.startWorkflow();
-        assertEquals(service.getWorkflowMessage(), "affe");
+        
+        verify(workflowService, Mockito.times(1)).startFlow(Mockito.eq("tasktest"));
     }
 }
