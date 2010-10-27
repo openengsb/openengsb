@@ -21,6 +21,7 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.openengsb.ui.web.model.User;
 
@@ -37,7 +38,7 @@ public class LoginPage extends WebPage {
                 if (session.signIn(user.getUsername(), user.getPassword())) {
                     setDefaultResponsePageIfNecessary();
                 } else {
-                    error("Login failed");
+                    error("Username and password did not match");
                 }
             }
 
@@ -51,6 +52,8 @@ public class LoginPage extends WebPage {
         add(loginForm);
         loginForm.add(new RequiredTextField<String>("username"));
         loginForm.add(new PasswordTextField("password"));
-
+        FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
+        feedbackPanel.setOutputMarkupId(true);
+        add(feedbackPanel);
     }
 }
