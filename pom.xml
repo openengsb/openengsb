@@ -453,6 +453,7 @@
               <useReleaseProfile>false</useReleaseProfile>
               <pushChanges>false</pushChanges>
               <arguments>-Psonatype-oss-release,release,milestone</arguments>
+              <preparationGoals>clean install</preparationGoals>
             </configuration>
           </plugin>
         </plugins>
@@ -472,6 +473,7 @@
               <useReleaseProfile>false</useReleaseProfile>
               <pushChanges>false</pushChanges>
               <arguments>-Psonatype-oss-release,release,final</arguments>
+              <preparationGoals>clean install</preparationGoals>
             </configuration>
           </plugin>
         </plugins>
