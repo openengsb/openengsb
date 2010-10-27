@@ -440,25 +440,6 @@
       </build>
     </profile>
     <profile>
-      <id>nightly</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>${plugin.release.version}</version>
-            <configuration>
-              <autoVersionSubmodules>true</autoVersionSubmodules>
-              <mavenExecutorId>forked-path</mavenExecutorId>
-              <useReleaseProfile>false</useReleaseProfile>
-              <arguments>-Psonatype-oss-release,release,nightly</arguments>
-              <pushChanges>false</pushChanges>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
       <id>milestone</id>
       <build>
         <plugins>
