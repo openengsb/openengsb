@@ -19,34 +19,83 @@
 
 <faqs id="General FAQ">
   <part id="General">
-    <title>General</title>
+    <title>General questions about the OpenEngSB</title>
     <faq id="What">
       <question>What is the OpenEngSB</question>
       <answer>
-        <p>
-	  TBW
-	</p>
-      </answer>
-    </faq>
-    <faq id="why">
-      <question>Why do we develop the OpenEngSB?</question>
-      <answer>
-        <p>
-          TBW
-        </p>
+        A short introduction abouth the OpenEngSB can be found <a href="http://openengsb.org/about.html">here</a>.
+        For further information please take a look at the <a href="http://openengsb.org/manual/index.html">user manual</a>.
       </answer>
     </faq>
     <faq id="why">
       <question>Why is the OpenEngSB developed as a free project?</question>
       <answer>
         <p>
-          TBW
+          The OpenEngSB is developed as a FOSS project to provide projects with a free and adaptable platform for the
+          integration of different engineering tools. This makes it possible for engineers to stick with their own well
+          known tools rather than creating a closed environment, where only specific tools are supported by the integration
+          system. The environment in which the OpenEngSB is meant to be used is heterogeneous and therefore the OpenEngSB has
+          to be a flexible, adaptable solution.
+        </p>
+      </answer>
+    </faq>
+    <faq id="where">
+      <question>Where can I find help?</question>
+      <answer>
+        <p>
+          The <a href="http://openengsb.org/manual/index.html">user manual</a> contains basic information about the OpenEngSB. 
+          For further information please contact the respective mailing lists available <a href="http://openengsb.org/community/mailinglists.html">here</a>.
+        </p>
+      </answer>
+    </faq>
+    <faq id="platforms">
+      <question>What platforms does the OpenEngSB support?</question>
+      <answer>
+        <p>
+          The OpenEngSB is basically platform independent, but is currently developed and tested for Unix and Windows systems.
+        </p>
+      </answer>
+    </faq>
+    <faq id="license">
+      <question>What is the license?</question>
+      <answer>
+        <p>
+          The OpenEngSB is licensed under the Apache License, Version 2.0.
+        </p>
+      </answer>
+    </faq>
+    <faq id="source">
+      <question>Where can I find the source code?</question>
+      <answer>
+        <p>
+          The source code is available at <a href="http://github.com/openengsb/openengsb">http://github.com/openengsb/openengsb</a>.
+          For more information see <a href="http://openengsb.org/source-repository.html">http://openengsb.org/source-repository.html</a>.
+        </p>
+      </answer>
+    </faq>
+    <faq id="issues">
+      <question>Where can I report issues?</question>
+      <answer>
+        <p>
+          <a href="http://openengsb.org/issue-tracking.html">Here</a> is information about our issue tracking process. Please feel free
+          to let us know about any bugs, issues or other problems you encounter. We are especially happy about feedback regarding the
+          documentation of the OpenEngSB project. If you have ideas how to improve the OpenEngSB please contact us via the 
+          <a href="http://openengsb.org/community/mailinglists.html">mailing list</a> or feel free to create an issue.
         </p>
       </answer>
     </faq>
   </part>
   <part id="Development">
     <title>Development</title>
+    <faq id="contribute">
+      <question>How can I contribute to the OpenEngSB project?</question>
+      <answer>
+        <p>
+          If you have an idea how the OpenEngSB can be improved please contact us on the developer <a href="http://openengsb.org/community/mailinglists.html">mailing list</a>. 
+          Further information can be found <a href="http://openengsb.org/contribution.html">here</a>.
+        </p>
+      </answer>
+    </faq>
     <faq id="File Limit">
       <question>Maven throws errors that it isn't able to open file [xyz], what's wrong?</question>
       <answer>
@@ -60,14 +109,6 @@
 	<p>
 	  to your /etc/security/limits.conf file and restart your device.
 	</p>
-      </answer>
-    </faq>
-    <faq id="Debug">
-      <question>Is it possible to debug OpenEngSB while running in servicemix?</question>
-      <answer>
-        <p>
-          Yes, to debug in Eclipse just stick with <a href="http://servicemix.apache.org/remote-debugging-servicemix-in-eclipse.html">http://servicemix.apache.org/remote-debugging-servicemix-in-eclipse.html</a>, but mind that SERVICEMIX_DEBUG has to be replaced with KARAF_DEBUG.
-        </p>
       </answer>
     </faq>
   </part>
