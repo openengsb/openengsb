@@ -43,24 +43,24 @@
   <section>
     <title>Workflow service</title>
 
-    <para>The 
-    <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/workflow/src/main/java/org/openengsb/core/workflow/WorkflowService.java">workflow service</link> 
-    is responsible for processing events, and makes sure the rulebase is 
-    connected to the environment (domains and connectors). When an event is 
-    fired, the workflow-service spawns a new session of the rulebase. The 
-    session gets populated with references to domain-services and other 
-    helper-objects in form of global variables. A drools-session is running 
-    in a sandbox. This means that the supplied globals are the only way of 
+    <para>The
+    <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/workflow/src/main/java/org/openengsb/core/workflow/WorkflowService.java">workflow service</link>
+    is responsible for processing events, and makes sure the rulebase is
+    connected to the environment (domains and connectors). When an event is
+    fired, the workflow-service spawns a new session of the rulebase. The
+    session gets populated with references to domain-services and other
+    helper-objects in form of global variables. A drools-session is running
+    in a sandbox. This means that the supplied globals are the only way of
     triggering actions outside the rule-session.
     </para>
   </section>
   <section>
     <title>Rulemanager</title>
     <para>The <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/workflow/src/main/java/org/openengsb/core/workflow/RuleManager.java">rule manager</link>
-    provides methods for modifying the rulebase. As opposed to plain drl-files, 
-    the rulemanager organized the elements of the rulebase in its own manner. 
-    Rules, Functions and flows are saved separately. All elements share a common 
-    collection of import- and global-declarations. These parts are sticked together 
+    provides methods for modifying the rulebase. As opposed to plain drl-files,
+    the rulemanager organized the elements of the rulebase in its own manner.
+    Rules, Functions and flows are saved separately. All elements share a common
+    collection of import- and global-declarations. These parts are sticked together
     by the rulemanager, to a consistent rulebase. So when adding a new rule or
     function to the rulebase, make sure that all imports are present before.
     Otherwise the adding of the elements will fail. </para>
@@ -68,7 +68,14 @@
 
   <section xml:id="workflows.processes">
     <title>Processes</title>
+    <para>In addition to processing Events in global/context-specific rules, it
+    is also possible to use them to control a predefined workflow. The
+    WorkflowService provides methods for starting and controlling
+    workflow-processes.</para>
 
-    <para>TBW - explain Drools-Flow processes.</para>
+    <para>When the workflow service receives an event, it is inserted into the
+    rulebase as a new fact (and rules are fired accordingly). In addition the
+    event is "signaled" to every active workflow-process. Workflow logic may
+    use specific rules to filter these events.</para>
   </section>
 </chapter>
