@@ -35,7 +35,7 @@
     <para>In case it isn't known what a tool domain is and how it defines the interface for the tool connector then
       <xref linkend="developer.architecture.domain" /> is a good starting point. If there's already a matching domain for
       this tool it is strongly recommended to use it. But if this tool requires a new domain it has to be created. This
-      is also described in (TODO link to developer.howto.internal.domain).</para>
+      is also described in <xref linkend="developer.howto.internal.domain" />.</para>
   </section>
 
   <section>
@@ -46,9 +46,46 @@
       the OpenEngSB repository, a shell script can be found at <literal>etc/scripts/gen-connector.sh</literal> for
       further help in creating a new connector project.</para>
 
-    <section>
+   <section>
       <title>Using the Maven Archetype</title>
-      <para>TBW - explain all variables</para>
+
+      <para>It is not recommended to use the maven archetype directly, because the gen-connector.sh script executes additional
+      tasks, like the renaming of the resulting project. Furthermore the shell script tries to make sure that the new project
+      is consistent with the naming conventions of the OpenEngSB project.</para>
+      
+      <para>The following parameters have to be specified to execute the correct archetype:
+        <itemizedlist>
+          <listitem>archetypeGroupId - the groupId of the OpenEngSB connector archetype.</listitem>
+          <listitem>archetypeArtifactId - the artifactId of the OpenEngSB connector archetype.</listitem>
+          <listitem>archetypeVersion - the current version of the OpenEngSB connector archetype.</listitem>
+        </itemizedlist>
+      </para>
+      <para>The following parameters have to be defined for the parent of the new connector, which is not only parent
+      of the connector, but also for the implementation of the domain and all other connectors of this domain. 
+        <itemizedlist>
+          <listitem>parentArtifactId - the artifactId of the project parent.</listitem>
+        </itemizedlist>
+      </para>
+      <para>The following parameters have to be defined for the domain of the new connector.
+        <itemizedlist>
+          <listitem>groupId - the groupId of the domain.</listitem>
+          <listitem>domainArtifactId - the artifactId of the domain.</listitem>
+        </itemizedlist>
+      </para>
+      <para>The following parameters have to be defined for the connector. 
+        <itemizedlist>
+          <listitem>artifactId - the connector artifact id. Has to be &quot;openengsb-domains-&lt;yourDomain&gt;-&lt;yourConnector&gt;&quot;.</listitem>
+          <listitem>version - the package for the source code of the domain implementation. Has to be &quot;org.openengsb.domains.&lt;yourDomain&gt;&quot;.</listitem>
+          <listitem>domainInterface - The name of the domain interface.</listitem>
+          <listitem>parentPackage - The package in which the domain interface can be found.</listitem>
+          <listitem>package - the package for the connector code. Usually &lt;parentPackage&gt;.&lt;yourConnector&gt; is used.</listitem>
+          <listitem>name - the name of the implementation module. Has to be &quot;OpenEngSB :: Domains :: &lt;yourDomain&gt; :: &lt;yourConnector&gt;&quot;</listitem>
+        </itemizedlist>
+        Where &lt;yourDomain&gt; has to be replaced by your domain name and &lt;yourConnector&gt; has to be replaced by the respective connector name.
+      </para>
+      <para>Note that the archetype will use the artifactId to name the project, but the OpenEngSB convention is to use the
+      connector name. Therefore you will have to rename the resulting project. Do not forget to check that the new connector is 
+      included in the modules section of the domain parent pom.</para>
     </section>
 
     <section>
@@ -117,7 +154,8 @@
       persists the configuration of each connector, so that the connector instances can be restored after a system
       restart.</para>
 
-    <para>TBW - Spring DM</para>
+    <para>The spring setup in the resources folder contains the setup of the service manager. Here additional bean setup and
+    dependency injection can be configured.</para>
 
     <para>The OpenEngSB has been built with localization in mind. The Maven Archetype already generates two
         <literal>bundle*.properties</literal> files, one for English (bundle.properties) and one for the German
@@ -128,15 +166,10 @@
   </section>
 
   <section>
-    <title>Customizing</title>
-
-    <para>TBW add attributes, validation, ...</para>
-  </section>
-
-  <section>
     <title>Integrating the Connector into the OpenEngSB environment</title>
 
-    <para>TBW - add in integrationtest</para>
+    <para>The service manager is responsible for the integration of the connector into the OpenEngSB infrastructure. The correct
+    definition of this service is critical.</para>
   </section>
 
 </chapter>
