@@ -239,6 +239,8 @@ public class TestClient extends BasePage {
         DefaultMutableTreeNode serviceNode = findService((DefaultMutableTreeNode) treeModel.getRoot(), jumpToService);
         expandAllUntilChild(serviceNode);
         serviceList.getTreeState().selectNode(serviceNode, true);
+        call.setService(jumpToService);
+        populateMethodList();
 
     }
 
