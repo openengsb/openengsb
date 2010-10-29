@@ -95,7 +95,8 @@
     </menu>
 
 	<menu name="Subprojects" >
-	  <item name="OpenCIT" href="http://github.com/openengsb/opencit" />
+	  <item name="OpenCIT" href="http://opencit.openengsb.org" />
+    <item name="OpenTicket" href="http://openticket.openengsb.org/" />
     <item name="YASTE" href="http://yaste.openengsb.org/" />
   </menu>
   </body>
