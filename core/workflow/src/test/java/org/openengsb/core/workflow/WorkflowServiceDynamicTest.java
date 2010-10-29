@@ -118,13 +118,13 @@ public class WorkflowServiceDynamicTest {
     public void processEventShortlyBeforeServiceEvent_shouldProcessEventDelayed() throws Exception {
         setupWorkflowService();
         simulateServiceStart(exampleReference);
+        simulateOtherServiceStart(myserviceReference);
         ProcessEventThread processEventThread = new ProcessEventThread();
         processEventThread.start();
         processEventThread.setPriority(Thread.MIN_PRIORITY);
         Thread.sleep(100);
 
         simulateServiceStart(notificationReference);
-        simulateOtherServiceStart(myserviceReference);
         processEventThread.join(5000);
         if (processEventThread.resultException != null) {
             throw processEventThread.resultException;

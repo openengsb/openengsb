@@ -90,8 +90,7 @@ public class WorkflowServiceTest {
         ContextCurrentService currentContext = mock(ContextCurrentService.class);
         when(currentContext.getCurrentContextId()).thenReturn("42");
         service.setCurrentContextService(currentContext);
-        setupDomains();
-        setupOtherServices();
+        setupDomainsAndOtherServices();
     }
 
     private void setupRulemanager() throws RuleBaseException {
@@ -101,16 +100,13 @@ public class WorkflowServiceTest {
             "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"42\");");
     }
 
-    private void setupDomains() {
-        Map<String, Domain> domains = createDomainMocks();
-        service.setDomainServices(domains);
-    }
-
-    private void setupOtherServices() {
+    private void setupDomainsAndOtherServices() {
         Map<String, Object> services = new HashMap<String, Object>();
+        Map<String, Domain> domains = createDomainMocks();
+        services.putAll(domains);
         myservice = mock(DummyService.class);
         services.put("myservice", myservice);
-        service.setOtherServices(services);
+        service.setServices(services);
     }
 
     private Map<String, Domain> createDomainMocks() {

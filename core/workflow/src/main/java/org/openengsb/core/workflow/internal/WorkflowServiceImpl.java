@@ -52,9 +52,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     private ContextCurrentService currentContextService;
     private BundleContext bundleContext;
 
-    private Map<String, Domain> domainServices = new HashMap<String, Domain>();
-
-    private Map<String, Object> otherServices = new HashMap<String, Object>();
+    private Map<String, Object> services = new HashMap<String, Object>();
 
     private Map<String, StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
 
@@ -107,8 +105,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     private Collection<String> findMissingGlobals() {
         Collection<String> globalsToProcess = new ArrayList<String>(rulemanager.listGlobals().keySet());
         globalsToProcess.remove("event");
-        globalsToProcess.removeAll(domainServices.keySet());
-        globalsToProcess.removeAll(otherServices.keySet());
+        globalsToProcess.removeAll(services.keySet());
 
         return discoverNewGlobalValues(globalsToProcess);
     }
@@ -134,8 +131,8 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         if (ref == null) {
             return false;
         }
-        Domain service = (Domain) bundleContext.getService(ref);
-        domainServices.put(name, service);
+        Object service = bundleContext.getService(ref);
+        services.put(name, service);
         return true;
     }
 
@@ -164,7 +161,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
             return false;
         }
         Object service = bundleContext.getService(ref);
-        otherServices.put(name, service);
+        services.put(name, service);
         return true;
     }
 
@@ -189,34 +186,28 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
         Collection<String> missingGlobals = findMissingGlobals();
         if (!missingGlobals.isEmpty()) {
-            waitForGlobals(missingGlobals, domainServices);
-            waitForGlobals(missingGlobals, otherServices);
+            waitForGlobals(missingGlobals);
             if (!missingGlobals.isEmpty()) {
                 throw new WorkflowException("there are unassigned globals, maybe some service is missing "
                         + missingGlobals);
             }
         }
-        for (Entry<String, Domain> entry : domainServices.entrySet()) {
-            session.setGlobal(entry.getKey(), entry.getValue());
-        }
-        for (Entry<String, Object> entry : otherServices.entrySet()) {
+        for (Entry<String, Object> entry : services.entrySet()) {
             session.setGlobal(entry.getKey(), entry.getValue());
         }
     }
 
-    private void waitForGlobals(Collection<String> missingGlobals, Map<String, ? extends Object> services)
-        throws WorkflowException {
-        try {
-            synchronized (services) {
-                services.wait(timeout);
+    private void waitForGlobals(Collection<String> missingGlobals) throws WorkflowException {
+        boolean hasChanged = true;
+        while (hasChanged && !missingGlobals.isEmpty()) {
+            try {
+                synchronized (services) {
+                    services.wait(timeout);
+                }
+            } catch (InterruptedException e) {
+                throw new WorkflowException(e);
             }
-        } catch (InterruptedException e) {
-            throw new WorkflowException(e);
-        }
-        for (Iterator<String> iterator = missingGlobals.iterator(); iterator.hasNext();) {
-            if (services.get(iterator.next()) != null) {
-                iterator.remove();
-            }
+            hasChanged = missingGlobals.removeAll(services.keySet());
         }
     }
 
@@ -228,16 +219,16 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
                 String id = (String) serviceReference.getProperty("id");
                 String name = id.replaceFirst("domains.", "");
                 Domain service = (Domain) bundleContext.getService(serviceReference);
-                synchronized (domainServices) {
-                    domainServices.put(name, service);
-                    domainServices.notify();
+                synchronized (services) {
+                    services.put(name, service);
+                    services.notify();
                 }
             } else if (serviceReference.getProperty("openengsb.service.type").equals("workflow-service")) {
                 String name = (String) serviceReference.getProperty("openengsb.workflow.globalid");
                 Object service = bundleContext.getService(serviceReference);
-                synchronized (otherServices) {
-                    otherServices.put(name, service);
-                    otherServices.notify();
+                synchronized (services) {
+                    services.put(name, service);
+                    services.notify();
                 }
             }
         }
@@ -248,12 +239,8 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         this.currentContextService = currentContextService;
     }
 
-    public void setDomainServices(Map<String, Domain> domainServices) {
-        this.domainServices = domainServices;
-    }
-
-    public void setOtherServices(Map<String, Object> otherServices) {
-        this.otherServices = otherServices;
+    public void setServices(Map<String, Object> services) {
+        this.services = services;
     }
 
     @Override
