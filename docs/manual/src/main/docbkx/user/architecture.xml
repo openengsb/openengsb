@@ -25,7 +25,27 @@
 
   <title>Architecture of the OpenEngSB</title>
 
-  <para>This chapter explains the architecture of the OpenEngSB in detail. TBW(Add explanation of graphic here)</para>
+  <para>This chapter tries to give a short summary of the most important concepts in the OpenEngSB architecture.</para>
+
+  <para>The following graphic scratches the architecture of the OpenEngSB. In the center we use a bus system
+  to integrate different modules. In this case we do not use a classical Enterprise Service Bus (ESB), but rather the
+  OSGi service infrastructure via Spring-DM (<link linked="architecture.concept.esb">OpenEngSB ESB</link>). To use 
+  the OSGi service model we're using <ulink url="http://karaf.apache.org">Apache Karaf</ulink> as the OSGi
+  environment. Karaf is used in this case, instead of a most basic OSGi environment, such as 
+  <ulink url="http://felix.apache.org">Apache Felix</ulink> or 
+  <ulink url="http://www.eclipse.org">Eclipse Equinox</ulink> , because it supports us with additional features as 
+  extended console support and the feature definitions.
+  This base infrastructure, including all modifications required for the OpenEngSB is called the 
+  <link linked="architecture.concept.infrastructure">OpenEngSB Infrastructure</link>. Within the OpenEngSB 
+  Infrastructure so called <link linked="architecture.concept.components">Core Components</link> and 
+  <link linked="architecture.concept.tooldomains">Tool Domains</link> are installed. Both
+  types are written in a JVM compatible language, including OSGi configuration files to run in the OpenEngSB 
+  Infrastructure. They are explained later within this chapter. Different tools running outside the OpenEngSB 
+  Infrastructure are called <link linked="architecture.concept.clienttools">Client Tools</link> or 
+  <link linked="architecture.concept.domaintools">Domain Tools</link>, depending on their usage scenario. 
+  To integrate and use them within the OpenEngSB so called 
+  <link linked="architecture.concept.connectors">Connectors</link> are used. All of these concepts are explained 
+  within the next sections.</para>
 
   <para>
     <mediaobject>
@@ -37,10 +57,8 @@
     </mediaobject>
   </para>
 
-  <para>TBW(Short introduction into the different components which are going to be explained next)</para> 
-
   <section xml:id="architecture.concept.esb">
-    <title>Enterprise Service Bus (ESB)</title>
+    <title>OpenEngSB Enterprise Service Bus (ESB)</title>
     <para>One of the principal concepts for the OpenEngSB development is (if possible) 
     to use already existing and proven solutions rather than inventing new ones. In this manner the OpenEngSB is an 
     extension to the ESB concept described in section 3.1.5. Since the Java Business Integration (JBI, section 
@@ -97,6 +115,16 @@
   </section>
 
   <section xml:id="architecture.concept.domaintools">
+    <title>Domain Tools (Service Provider)</title>
+    <para>Domain Tools (Service Provider) Domain Tools, compared to Client Tools, denote the other extreme of only 
+    providing services. Classically, single purpose server tools, like issue tracker or chat server, match the 
+    category of Domain Tools best. Most tools in (software+) engineering environments fit of course in both 
+    categories, but since there are significant technically differences between them (see section 7.5) they are 
+    described as two different component types.
+</para>
+  </section>
+
+  <section xml:id="architecture.concept.connectors">
     <title>Domain- and Client Tool Connectors</title>
     <para>Tool Connectors wrap up tools as Domain Tool Connectors to provide their services to accommodate the 
     relevant Tool Domain with the expected interface. As Client Tool Connectors they provide a Client Tool with 
