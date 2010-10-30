@@ -71,9 +71,10 @@
  
   <section xml:id="architecture.concept.infrastructure">
     <title>OpenEngSB Infrastructure</title>
-    <para>Although the JBI specification delivers a reliable and solid technical 
-    specification for an integration solution, it does not cover all use cases. The OpenEngSB infrastructure 
-    summarizes all extensions to the JBI messaging protocol in section 7.2.</para>
+    <para>While Apache Karaf provides a rich environment and functionality we're not done with it. Via the Spring-DM
+    extension mechanism, AOP and the OSGi listener model the OpenEngSB directly extends the environment to provide
+    own commands for the console, fine grained security and a full grown workflow model. These extensions are optional
+    and not required if you want to use the platform alone. Add or remove them as required for your use case.</para>
   </section>
 
   <section xml:id="architecture.concept.components">
