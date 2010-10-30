@@ -191,6 +191,15 @@
         <role>Developer</role>
       </roles>
     </developer>
+    <developer>
+      <id>mhe</id>
+      <name>Michael Heil</name>
+      <email>michael.heil [at] chello.at</email>
+      <timezone>+1</timezone>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
   </developers>
 
   <contributors>
@@ -212,11 +221,6 @@
     <contributor>
       <name>David Waldhans</name>
       <email>david [at] waldhans.at</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Michael Heil</name>
-      <email>michael.heil [at] chello.at</email>
       <timezone>+1</timezone>
     </contributor>
     <contributor>
