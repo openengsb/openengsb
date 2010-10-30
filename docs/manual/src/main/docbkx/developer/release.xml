@@ -146,7 +146,12 @@
 
   <section>
     <title>Perform the release</title>
-    <para></para>
+    <para>Performing a release is quite simple, because of the maven release plugin and some scripts. Simple
+    follow these steps:</para>
+    <itemizedlist>
+      <listitem>1) Execute ./etc/scripts/release-[final|milestone].sh with the path to your repository (e.g. ~/openengsb</listitem>
+      <listitem>If everything works fine execute git push;git push --tags</listitem>
+    </itemizedlist>
   </section>
 
   <section>
