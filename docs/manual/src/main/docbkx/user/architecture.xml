@@ -103,8 +103,7 @@
     services, but consume services provided by Tool Domains and Core Components instead. A classical example from 
     software engineering for a client tool is the Integrated Development Environment (IDE). Developer prefer to 
     have the entire development environment, reaching from the tickets for a project to its build results, at
-    hand. On the other hand they do not need to provide any services. The detailed technical point of view on 
-    Client Tools is given in section 7.5.</para>
+    hand. On the other hand they do not need to provide any services.</para>
   </section>
 
   <section xml:id="architecture.concept.domaintools">
