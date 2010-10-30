@@ -97,14 +97,6 @@
     the tool domains finally result in the OpenEngSB.</para>
   </section>
 
-  <section xml:id="architecture.concept.bridge">
-    <title>Bridge</title>
-    <para>JBI does not allow components that are not deployed in the JBI infrastructure to directly interact with 
-    services provided over the Normalized Message Router (NMR). This means that neither tools deployed to the 
-    OpenEngSB can directly access external components nor the other way round. To overcome this challenge the 
-    concept of the bridge is introduced and explained in section 7.4.</para>
-  </section>
-
   <section xml:id="architecture.concept.clienttools">
     <title>Client Tools (Service Consumer)</title>
     <para>Client Tools in the OpenEngSB concept are tools which do not provide any 
