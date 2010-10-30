@@ -37,6 +37,17 @@
     </author>
   </info>
 
+  <part xml:id="introduction.manual">
+    <title>Introduction</title>
+    <partintro>
+      <para>This parts provides general information to the project, the document, changelog and similar data
+      which fits neither in the framework description nor in the contributor section.</para>
+      <para>The target audience of this part are developers, contributors and managers.</para>
+    </partintro>
+    <xi:include href="introduction/whatisopenengsb.xml"/>
+    <xi:include href="introduction/whentousetheopenengsb.xml"/>
+  </part>
+
   <part xml:id="user.manual">
     <title>OpenEngSB Framework</title>
     <partintro>
@@ -47,8 +58,6 @@
         to your needs.</para>
       <para>The target audience of this part are users and developers.</para>
     </partintro>
-    <xi:include href="user/whatisopenengsb.xml"/>
-    <xi:include href="user/whentousetheopenengsb.xml"/>
     <xi:include href="user/quickstart.xml"/>
     <xi:include href="user/architecture.xml" />
     <xi:include href="user/context.xml"/>
