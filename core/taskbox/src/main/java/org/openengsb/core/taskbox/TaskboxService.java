@@ -16,26 +16,33 @@
 
 package org.openengsb.core.taskbox;
 
+/**
+ * The Taskbox is a service which can be used when human interaction is required, e.g. by help desk applications. This
+ * core part core is responsible for storing tasks, throwing events and starting workflows. Therefore it provides
+ * methods which can be called by workflows e.g. assigning a task to different user-roles (such as case worker or
+ * developer) or setting a task status. Another job is to choose the right wicket panel from the UI project to display
+ * the right information in a certain situation.
+ * 
+ * The component uses the persistence compontent to store tasks and the workflow component to take control of specific
+ * workflows.
+ */
 public interface TaskboxService {
     /**
      * Gets the message set by a workflow
      * 
-     * @return workflow message
-     * @throws TaskboxException
+     * @throws TaskboxException when the message is not set
      */
     String getWorkflowMessage() throws TaskboxException;
 
     /**
      * Starts a test workflow
      * 
-     * @throws TaskboxException
+     * @throws TaskboxException when the test workflow could not be started
      */
     void startWorkflow() throws TaskboxException;
 
     /**
      * Used by a workflow to set a message
-     * 
-     * @param message to be set
      */
     void setWorkflowMessage(String message);
 }

@@ -38,7 +38,7 @@ public class TaskboxIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testStartWorkflow() throws Exception {
+    public void testStartUnknownWorkflow_ShouldThrowIllegalArgumentException() throws Exception {
         taskboxService.startWorkflow();
     }
 }
