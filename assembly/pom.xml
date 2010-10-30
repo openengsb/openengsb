@@ -229,6 +229,7 @@
                 scan-bundle:mvn:org.openengsb.core/openengsb-core-events/${project.version},
                 scan-bundle:mvn:org.openengsb.core/openengsb-core-persistence/${project.version},
                 scan-bundle:mvn:org.openengsb.core/openengsb-core-workflow/${project.version},
+                scan-bundle:mvn:org.openengsb.core/openengsb-core-taskbox/${project.version},
                 scan-bundle:mvn:org.openengsb.core.proxy/openengsb-core-proxy-jms/${project.version},
                 scan-bundle:mvn:org.openengsb.domains.example/openengsb-domains-example-implementation/${project.version},
                 scan-bundle:mvn:org.openengsb.domains.example/openengsb-domains-example-connector/${project.version},

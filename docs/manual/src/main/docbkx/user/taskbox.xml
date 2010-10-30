@@ -25,20 +25,26 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Taskbox</title>
 
-  <para>The Taskbox is a service to be used by help desk applications. It consists of a core and an UI project.
-  The core is responsible for storing tickets and tasks (via persistence) and used to throw events and start workflows.
-  It also provides methods which can be called by workflows e.g. assigning a task to a different role or setting a status.
-  It is also the job of the core taskbox to choose the right wicket panel from the UI project to display the right
-  information in a certain situation. So the idea is that an application which wants to use the taskbox only has to
-  define an area in a wicket page in which the taskbox is to be bound. The taskbox then takes control and takes user
-  interaction and autonomously decides which panel to show.</para>
+  <para>The Taskbox is a service which can be used when human interaction is required, e.g. by help desk applications.
+  It consists of a core and an UI project. The core is responsible for storing tasks (via persistence), throwing
+  events and starting workflows. Therefore it provides methods which can be called by workflows e.g. assigning a task to
+  different user-roles (such as case worker or developer) or setting a task status.</para>
+
+  <para>It is also the job of the core taskbox to choose the right wicket panel from the UI project to display the right
+  information in a certain situation. A wicket panel contains of a HTML-snippet which can be embedded into another HTML file,
+  an underlying data model some logic like buttonlisteners and session handling.</para>
+
+  <para>So the idea is that an application which wants to use the taskbox only has to define an area in a wicket page where
+  the taskbox is to be bound. The taskbox then takes control and takes user input to fill in the domain object behind
+  which then gets stored again and used to decide how the workflow will go on. Based on the workflow and user interaction
+  the taskbox then decides which panel is to be shown.</para>
 
   <para>For each main action, the Taskbox throws an event. Examples for that are create, assign, finish or edit events.
   These events are used to trigger or resume workflows and they can also be recorded by another component which then can
   reconstruct the flow based on them.</para>
 
   <para>The 
-      <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/taskbox/src/main/java/org/openengsb/core/taskbox/TaskboxService.java">Taskbox service</link> 
-      provides the methods to be called by workflows and to bind it to a UI.
-    </para>
+  <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/taskbox/src/main/java/org/openengsb/core/taskbox/TaskboxService.java">Taskbox service</link> 
+  provides the methods to be called by workflows and to bind it to a UI. Take a closer look to explore its usage and
+  possibilities.</para>
 </chapter>
