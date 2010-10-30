@@ -121,9 +121,9 @@
     <para>Tool Connectors wrap up tools as Domain Tool Connectors to provide their services to accommodate the 
     relevant Tool Domain with the expected interface. As Client Tool Connectors they provide a Client Tool with 
     an access to the OpenEngSB services. Again, Domain- and Client Tool Connectors are mostly mixed up but 
-    separated because of their technical differences (see section 7.5). Additionally it is worth mentioning that 
+    separated because of their technical differences. Additionally it is worth mentioning that 
     tools can be integrated with more than one connector. This allows one tool to act in many different domains. 
-    Maven 2 is an example for such multi-purpose tools, relevant for build, as well as test and deploy of Java 
+    Maven 3 is an example for such multi-purpose tools, relevant for build, as well as test and deploy of Java 
     projects.</para>
   </section>
 
