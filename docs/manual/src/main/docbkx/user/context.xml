@@ -28,10 +28,17 @@
   <para>Each project in the OpenEngSB has its own context to store meta information necessary for running inside of the
     OpenEngSB. The context basically is represented as a tree structure with key-value pairs as leafs.</para>
 
-  <para>TBW - how to get initial values into the context when a service instance is created.</para>
+  <para>The context in which a workflow is executed, a rule fired or another action happens can be compared to the 
+  project in which the respective action happens. The context store therefore offers the possibility to perform
+  project specific configurations.</para>
 
-  <para>TBW - how to do context lookup inside of domain and connectors.</para>
-
-  <para>TBW - how to write into the context inside of domain and connectors.</para>
+  <para>The <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/common/src/main/java/org/openengsb/core/common/context/ContextService.java">context service</link>
+  can be used to query the context and to insert, update or delete values. Note that under a specific name either a node or a leaf can be found, but not both. That means that
+  the context can be compared to a file system, where context nodes are directories and context leaves files. The leaves in the context contain string key-value pairs.
+  </para>
+  
+  <para>The <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/common/src/main/java/org/openengsb/core/common/context/ContextCurrentService.java">current context service</link>
+    extends the context service and provides additional methods for the management of the current context of a thread and the creation of new root context entries (which correspond to projects).
+  </para>
 
 </chapter>
