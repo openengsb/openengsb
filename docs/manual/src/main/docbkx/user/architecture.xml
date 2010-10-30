@@ -27,6 +27,16 @@
 
   <para>This chapter explains the architecture of the OpenEngSB in detail.</para>
 
+  <para>
+    <mediaobject>
+      <alt>Technical view of the OpenEngSB highlighting the most important concepts of the integration system.</alt>
+      <imageobject>
+        <imagedata fileref="graphics/extendedEngSB.png" format="png" width="450" align="center"/>
+      </imageobject>
+      <caption><para>Technical view of the OpenEngSB highlighting the most important concepts of the integration system</para></caption>
+    </mediaobject>
+  </para>
+
   <section xml:id="developer.architecture.domain">
     <title>Domain</title>
     <para>TBW</para>
@@ -38,3 +48,4 @@
   </section>
 
 </chapter>
+
