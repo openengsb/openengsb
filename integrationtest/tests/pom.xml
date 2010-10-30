@@ -58,6 +58,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-taskbox</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.domains.example</groupId>
       <artifactId>openengsb-domains-example-implementation</artifactId>
       <version>${project.version}</version>

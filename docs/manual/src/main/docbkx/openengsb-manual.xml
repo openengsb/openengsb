@@ -64,6 +64,7 @@
     <xi:include href="user/context.xml"/>
     <xi:include href="user/persistence.xml"/>
     <xi:include href="user/workflows.xml"/>
+    <xi:include href="user/taskbox.xml"/>
     <xi:include href="user/plugins.xml" />
   </part>
 

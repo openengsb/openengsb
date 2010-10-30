@@ -63,6 +63,10 @@ public final class OpenEngSBBundles {
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core")
             .artifactId("openengsb-core-workflow"));
 
+    public static final MavenArtifactProvisionOption OPENENGSB_CORE_TASKBOX = CoreOptions
+    .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core")
+        .artifactId("openengsb-core-taskbox"));
+
     public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_EXAMPLE_IMPLEMENTATION = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.example").artifactId(
             "openengsb-domains-example-implementation"));
