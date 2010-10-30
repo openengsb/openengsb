@@ -93,9 +93,8 @@
     and distill the common functionality for such a group of tools into one Tool Domain interface (and component).
     Tool domains could be compared best to the concept of abstract classes in in object orientated programming 
     languages. Similar to these, they can contain code, workflows, additional logic and data, but they are useless 
-    without a concrete implementation. This and further concepts are explained in greater detail in section 7.4. 
-    Together with the ESB, the OpenEngSB infrastructure and the core components the tool domains finally result 
-    in the OpenEngSB.</para>
+    without a concrete implementation. Together with the ESB, the OpenEngSB infrastructure and the core components 
+    the tool domains finally result in the OpenEngSB.</para>
   </section>
 
   <section xml:id="architecture.concept.bridge">
