@@ -25,7 +25,9 @@
 
   <title>Admin</title>
 
-	<para>see http://openengsb.org/team-list.html</para>
+	<para>This section is relevant for everyone marked in the <ulink url="http://openengsb.org/team-list.html">
+  OpenEngSB Team List</ulink> as administrator. If you require anything of the following points to be done please
+  write to the openengsb-dev mailing list or send a mail directly to one of the administrators.</para>
 
   <section xml:id="developer.admin.server">
     <title>OpenEngSB Infrastructure Server</title>
