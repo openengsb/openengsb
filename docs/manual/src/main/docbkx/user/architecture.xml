@@ -79,10 +79,10 @@
 
   <section xml:id="architecture.concept.components">
     <title>OpenEngSB Components</title>
-    <para>The concept of Core Components contains all additional developed components providing 
-    services not available by external tools or the JBI integration infrastructure. These components add essential 
-    functionality to the OpenEngSB like a registry (section 7.3.1) or workﬂow administration (section 7.3.2) and 
-    therefore provide a rich framework for modeling (software+) engineering environments.</para>
+    <para>These libraries are the OpenEngSB core. The core is responsible to provide the OpenEngSB infrastructure
+    as well as general services such as persistence, security and workflows. To provide best integration most of
+    these components are tied to the OpenEngSB ESB environment. Nevertheless, feel free to add or remove them
+    as required for your use case.</para>
   </section>
 
   <section xml:id="architecture.concept.tooldomains">
