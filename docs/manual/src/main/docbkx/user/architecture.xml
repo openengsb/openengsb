@@ -111,7 +111,7 @@
     <para>Domain Tools (Service Provider) Domain Tools, compared to Client Tools, denote the other extreme of only 
     providing services. Classically, single purpose server tools, like issue tracker or chat server, match the 
     category of Domain Tools best. Most tools in (software+) engineering environments fit of course in both 
-    categories, but since there are significant technically differences between them (see section 7.5) they are 
+    categories, but since there are significant technically differences between them they are 
     described as two different component types.
 </para>
   </section>
