@@ -44,6 +44,7 @@
       which fits neither in the framework description nor in the contributor section.</para>
       <para>The target audience of this part are developers, contributors and managers.</para>
     </partintro>
+    <xi:include href="introduction/howtoread.xml"/>
     <xi:include href="introduction/whatisopenengsb.xml"/>
     <xi:include href="introduction/whentousetheopenengsb.xml"/>
   </part>
