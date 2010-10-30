@@ -17,7 +17,7 @@
 package org.openengsb.core.taskbox;
 
 /**
- * Bla
+ * Currently just test methods
  */
 public interface TaskboxService {
     public String getWorkflowMessage() throws TaskboxException;
