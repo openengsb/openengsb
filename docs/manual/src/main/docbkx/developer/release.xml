@@ -26,7 +26,7 @@
   <title>Release and Release Process</title>
 
   <para>This section provides a step by step description to execute a release of the OpenEngSB. It is relevant for 
-  everyone marked in the <ulink url="http://openengsb.org/team-list.html">OpenEngSB Team List</ulink> as releas 
+  everyone marked in the <ulink url="http://openengsb.org/team-list.html">OpenEngSB Team List</ulink> as release
   manager because only they have the required rights to execute the following steps.</para>
 
   <section>
@@ -78,7 +78,51 @@
 
   <section>
     <title>Configure Maven</title>
-    <para></para>
+    <para>For the right rights to deploy to maven central and upload maven site to openengsb.org the following
+    entries are required in your ~/.m2/settings.xml file:
+    <programlisting language="xml"><![CDATA[<settings>
+  <server>
+    <id>sonatype-nexus-snapshots</id>
+    <username>SONATYPE_USERNAME</username>
+    <password>SONATYPE_PASSWORD</password>
+  </server>
+  <server>
+    <id>sonatype-nexus-staging</id>
+    <username>SONATYPE_USERNAME</username>
+    <password>SONATYPE_PASSWORD</password>
+  </server>
+  <server>
+    <id>OpenengsbWebServer</id>
+    <username>OPENENGSB_SERVER_USERNAME</username>
+    <password>OPENEGNSB_SERVER_PASSWORD</password>
+  </server>
+  <profiles>
+    <profile>
+      <id>milestone</id>
+      <properties>
+        <gpg.passphrase>GPG_PASSPHRASE</gpg.passphrase>
+      </properties>
+    </profile>
+    <profile>
+      <id>release</id>
+      <properties>
+        <gpg.passphrase>GPG_PASSPHRASE</gpg.passphrase>
+      </properties>
+    </profile>
+    <profile>
+      <id>final</id>
+      <properties>
+        <gpg.passphrase>GPG_PASSPHRASE</gpg.passphrase>
+      </properties>
+    </profile>
+  </profiles>
+<settings>]]></programlisting></para>
+
+    <para>All the usernames and passwords can be retrieved from someone marked as administrator in the
+    <ulink url="http://openengsb.org/team-list.html">OpenEngSB Team List</ulink>.</para>
+
+    <para>In addition you have to have a GPG key for your mail address (the same you're using to commit to the 
+    OpenEngSB source repository which is uploaded to the <ulink url="hkp://pgp.mit.edu/">MIT Key Server</ulink>.</para>
   </section>
 
   <section>
