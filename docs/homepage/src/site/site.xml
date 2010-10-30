@@ -62,7 +62,6 @@
       <item name="What is OpenEngSB?" href="about.html" />
 	    <item name="Latest Version" href="${latest}" />
       <item name="Older Versions" href="${older}" />
-	    <item name="Changelog" href="jira-report.html" />
       <item name="Sponsors" href="sponsors.html" />
     </menu>
 

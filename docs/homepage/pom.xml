@@ -106,21 +106,6 @@
                 </reportSet>
               </reportSets>
             </plugin>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-changes-plugin</artifactId>
-              <version>${maven.plugin.changes.version}</version>
-              <configuration>
-                <onlyCurrentVersion>false</onlyCurrentVersion>
-              </configuration>
-              <reportSets>
-                <reportSet>
-                  <reports>
-                    <report>jira-report</report>
-                  </reports>
-                </reportSet>
-              </reportSets>
-            </plugin>
           </reportPlugins>
         </configuration>
         <executions>
