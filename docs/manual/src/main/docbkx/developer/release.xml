@@ -126,8 +126,22 @@
   </section>
 
   <section>
-    <title>Adapt JIRA</title>
-    <para></para>
+    <title>Adapt Jira</title>
+    <para>A word in front, how Jira is used for the OpenEngSB. Jira is used for bug tracking and release planning.
+    ONLY each Milestone release has its own target. Release candidates and final releases are handled differently. 
+    Since we release RC and MINOR releases quite often its much too much administration work to keep JIRA up to date.
+    For simplicity we provide for all release candidates of 1.0.0 only one 1.0.0.RCX release target. This is closed 
+    with the final release and replaced by 1.0.X.RELEASE target. This is replaced by 1.1.X.RELEASE. We don't know for
+    the moment how we should handle older releases, but for the moment the OpenEngSB team simply do not have the
+    man power to support older releases.</para>
+
+    <para>Ok, knowing that the release process is simple:</para>
+    <itemizedlist>
+      <listitem>If you release a milestone release close the release target (e.g. 1.0.0.M1)</listitem>
+      <listitem>If you release a release candidate create a VERSION.RCX release target.</listitem>
+      <listitem>If you release a final release (MAYOR RELEASE) create a new release target 1.0.X.RELEASE.</listitem>
+      <listitem>If you release a minor release do nothing with Jira.</listitem>
+    </itemizedlist>
   </section>
 
   <section>
