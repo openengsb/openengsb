@@ -105,3 +105,8 @@ runner
 *.tmp_*
 velocity.log*
 
+#================
+#vi tmp files
+#================
+*.swp
+
