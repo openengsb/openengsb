@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="developer.release" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>Release and Release Process</title>
+
+  <para>This section provides a step by step description to execute a release of the OpenEngSB. It is relevant for 
+  everyone marked in the <ulink url="http://openengsb.org/team-list.html">OpenEngSB Team List</ulink> as releas 
+  manager because only they have the required rights to execute the following steps.</para>
+
+  <section>
+    <title>Releases and the OpenEngSB</title>
+    <para>Every release of the OpenEngSB consists of the following parts: RELEASE.MAYOR.MINOR.TYPE. Every release
+    of this type is available at <ulink url="http://repo1.maven.org/maven2/">Maven Central</ulink>. Optinally 
+    SNAPSHOT is appended. Snapshot releases are available from the
+    <ulink url="https://oss.sonatype.org/content/groups/public/">Sonatype Snapshot repository</ulink>. This section
+    explains what each modifier means and how it is used within the OpenEngSB.</para>
+
+    <para>SNAPSHOTS: Snapshots are always available from the latest build of the OpenEngSB. They are taken from the
+    master branch automatically at each commit.</para>
+  
+    <para>TYPE: Type could be MX, RCX or RELEASE, where X is a number. While RELEASE marks a final release, ready for
+    use in your production environment, M and RC are typically not ready for production. M stands for Milestone
+    release and is cut every two weeks to present the current state of the OpenEngSB and allow a coarse grained 
+    planning and roadmap for the OpenEngSB team. RC, release candidates, are handled differently. After everything is
+    finished and the OpenEngSB teams think that the current work is ready for a release, we provide a release candidate
+    and invite everyone to test the release. If there are any issues with the release we fix them and provide another 
+    release candidate. During this process no new features, but only bug fixes are handled. We continue this process as
+    long as there are no new bug reports for a RC for two weeks. Then we re-release the latest release candidate as
+    final release. This process only applies for RELEASE and MAYOR. MINOR is handled differently, as explained later
+    on.</para>
+
+    <para>RELEASE is a increasing number used for mayor changes within the OpenEngSB architecture. In addition all
+    methods and interfaces marked as deprecated are removed during such a release. It is also possible that a
+    RELEASE does not enhance any mayor architectural concept but is only used to get rid of all the deprecated
+    methods, generated during MAYOR releases.</para>
+
+    <para>MAYOR is the main feature development number of the OpenEngSB. Each release containing new features will be
+    a MAYOR release. Nevertheless, between MAYOR releases architectural concepts are not removed but only set to
+    deprecated. This means they only enhance functionality but try to not break with former releases.</para>
+
+    <para>MINOR releases are bug-fix releases. They do not include any new features but only fix bugs within the
+    OpenEngSB. They have no release plan, but are simply cut after each bug-fix.</para>
+
+    <para>To visualize the explained process the following example. Assume we have released openengsb-1.0.0.RELEASE.
+    Now we're working on openengsb-1.1.0.RELEASE. Therefore we start developing openengsb-1.1.0.M1 which will be
+    released in two weeks. During the development of 1.1.0.M1 a bug occurs at openengsb-1.0.0.RELEASE. During the
+    development the bug is fixed and openengsb-1.0.1.RELEASE is released. After 1.1.0.M1 we require three additional
+    milestone releases to get feature releases. Six weeks after 1.1.0.M1 we'll release 1.1.0.RC1. From now on we 
+    continue to develop 1.2.0.M1 (or 2.0.0.M1, depending on the gravity of the changes) and wait for feedback on 
+    1.1.0.RC1. Now a bug-report occurs for 1.0.1.RELEASE. We fix the bug, release 1.0.2.RELEASE with the fix. If
+    it also affects 1.1.0.RC1, we fix the bug there too and release 1.1.0.RC2 (still working on 1.2.0.M1(!)). Now 
+    assume that some other bug reports are received for 1.0.0.RC2. We fix them and release 1.1.0.RC3. In the meantime 
+    we finished 1.2.0.M1 and start work on 1.2.0.M2. Now two weeks after the release of 1.1.0.RC3 without any new 
+    bug-reports we re-release 1.1.0.RC3 to 1.1.0.RELEASE (starting the game again from the beginning).</para>
+  </section>
+
+  <section>
+    <title>Configure Maven</title>
+    <para></para>
+  </section>
+
+  <section>
+    <title>Adapt JIRA</title>
+    <para></para>
+  </section>
+
+  <section>
+    <title>Perform the release</title>
+    <para></para>
+  </section>
+
+  <section>
+    <title>Spread the News</title>
+    <para></para>
+  </section>
+
+</chapter>
+
