@@ -22,12 +22,12 @@ import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 
 public class TaskboxServiceImpl implements TaskboxService {
-    private static Log log = LogFactory.getLog(TaskboxServiceImpl.class);
-    
-    private String message;
-    
+    private Log log = LogFactory.getLog(getClass());
+
     private WorkflowService workflowService;
-    
+
+    private String message;
+
     public void init() {
 
     }
@@ -37,7 +37,7 @@ public class TaskboxServiceImpl implements TaskboxService {
         if (message == null) {
             throw new TaskboxException();
         }
-        
+
         return message;
     }
 
@@ -55,7 +55,7 @@ public class TaskboxServiceImpl implements TaskboxService {
             throw new TaskboxException(e);
         }
     }
-    
+
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
     }

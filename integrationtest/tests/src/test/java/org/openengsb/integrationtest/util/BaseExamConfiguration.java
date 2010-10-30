@@ -63,6 +63,7 @@ public final class BaseExamConfiguration {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_NEODATIS));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_COMMON));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_WORKFLOW));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_TASKBOX));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_EVENTS));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_PERSISTENCE));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_EXAMPLE_IMPLEMENTATION));

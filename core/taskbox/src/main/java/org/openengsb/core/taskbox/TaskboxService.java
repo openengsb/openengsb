@@ -16,13 +16,26 @@
 
 package org.openengsb.core.taskbox;
 
-/**
- * Currently just test methods
- */
 public interface TaskboxService {
-    public String getWorkflowMessage() throws TaskboxException;
-    
-    public void startWorkflow() throws TaskboxException;
-    
-    public void setWorkflowMessage(String message);
+    /**
+     * Gets the message set by a workflow
+     * 
+     * @return workflow message
+     * @throws TaskboxException
+     */
+    String getWorkflowMessage() throws TaskboxException;
+
+    /**
+     * Starts a test workflow
+     * 
+     * @throws TaskboxException
+     */
+    void startWorkflow() throws TaskboxException;
+
+    /**
+     * Used by a workflow to set a message
+     * 
+     * @param message to be set
+     */
+    void setWorkflowMessage(String message);
 }
