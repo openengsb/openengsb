@@ -26,13 +26,13 @@
   <title>How to read the Manual</title>
 
   <para>Like any open source project we have the problem that writing documentation is a pain and
-  nobody is paid for doing it. In addition to the rapidly changing and enhancements in the OpenEngSB
+  nobody is paid for doing it. In combination with the rapidly changing OpenEngSB
   source base this will lead to a huge mess within shortest time. To avoid this problem we've
-  introduced regular documentation reviews and, more important, the following rules which apply
-  either for writing the document as well as reading it.
+  introduced regular documentation reviews and, more importantly, the following rules which apply
+  both for writing the document and for reading it.
   <itemizedlist>
-    <listitem>The manual is written as slim and precise as possible (less text means lesser to read and even lesser to review)</listitem>
-    <listitem>The manual does not describe how to use an interface but only coarse grained concepts in the OpenEngSB. Since the OpenEngSB is not an end user application, but rather a framework for developers we expect that Javadoc is no problem for them. Writing Javadoc and keep it up to date is still hard for developers, but much easier than maintaining an external document. Therefore, all concepts are explained and linked directly to the very well documented interfaces in the OpenEngSB on Github. To fully understand and use them you'll have to read this manual in parallel with the Interfaces linked here to Github.</listitem>
+    <listitem>The manual is written as short and precise as possible (less text means lesser to read and even lesser to review)</listitem>
+    <listitem>The manual does not describe how to use an interface but only coarse grained concepts in the OpenEngSB. Since the OpenEngSB is not an end user application, but rather a framework for developers we expect that Javadoc is no problem for them. Writing Javadoc and keep it up to date is still hard for developers, but much easier than maintaining an external document. Therefore, all concepts are explained and linked directly to the very well documented interfaces in the OpenEngSB on Github. To fully understand and use them you'll have to read this manual parallel to the interface documentation in the source code.</listitem>
   </itemizedlist>
   </para>
 
