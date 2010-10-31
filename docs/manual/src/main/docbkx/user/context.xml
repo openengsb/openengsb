@@ -32,13 +32,14 @@
   project in which the respective action happens. The context store therefore offers the possibility to perform
   project specific configurations.</para>
 
-  <para>The <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/common/src/main/java/org/openengsb/core/common/context/ContextService.java">context service</link>
+  <para>The <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/context/ContextService.java">context service</link>
   can be used to query the context and to insert, update or delete values. Note that under a specific name either a node or a leaf can be found, but not both. That means that
   the context can be compared to a file system, where context nodes are directories and context leaves files. The leaves in the context contain string key-value pairs.
   </para>
   
-  <para>The <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/common/src/main/java/org/openengsb/core/common/context/ContextCurrentService.java">current context service</link>
+  <para>The <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/context/ContextCurrentService.java">current context service</link>
     extends the context service and provides additional methods for the management of the current context of a thread and the creation of new root context entries (which correspond to projects).
   </para>
 
 </chapter>
+

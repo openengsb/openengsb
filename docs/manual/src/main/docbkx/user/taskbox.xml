@@ -44,7 +44,8 @@
   reconstruct the flow based on them.</para>
 
   <para>The 
-  <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/taskbox/src/main/java/org/openengsb/core/taskbox/TaskboxService.java">Taskbox service</link> 
+  <link xlink:href="${github}/core/taskbox/src/main/java/org/openengsb/core/taskbox/TaskboxService.java">Taskbox service</link> 
   provides the methods to be called by workflows and to bind it to a UI. Take a closer look to explore its usage and
   possibilities.</para>
 </chapter>
+
