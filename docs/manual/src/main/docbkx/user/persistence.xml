@@ -32,11 +32,11 @@
 
   <para>
     The interface of the
-    <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/persistence/src/main/java/org/openengsb/core/persistence/PersistenceService.java">persistence service</link>
+    <link xlink:href="${github}/core/persistence/src/main/java/org/openengsb/core/persistence/PersistenceService.java">persistence service</link>
     supports basic CRUD (create, update, retrieve, delete) mechanisms. Instances of the persistence service are created
     per bundle and have to make sure that data is stored persistently. If bundles need to share data the common
     persistence service cannot be used, as it does not support this feature. The 
-    <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/persistence/src/main/java/org/openengsb/core/persistence/PersistenceManager.java">persistence manager</link>
+    <link xlink:href="${github}/core/persistence/src/main/java/org/openengsb/core/persistence/PersistenceManager.java">persistence manager</link>
     is responsible for the management of persistence service instances per bundle. On the first request from a
     bundle the persistence manager creates a persistence service. All later requests from a specific bundle should
     get the exact same instance of the persistence service.
@@ -46,8 +46,9 @@
     The persistence solution of the OpenEngSB was designed to support different possible back-end database systems.
     So if a project has high performance or security requirements, which can not be fulfilled with the default database
     system used by the persistence service, it is possible to implement a different persistence back-end. To make this
-    exchange easier a  <link xlink:href="http://github.com/openengsb/openengsb/tree/master/core/persistence/src/test/java/org/openengsb/core/persistence/PersistenceServiceTest.java">test</link>
+    exchange easier a  <link xlink:href="${github}/core/persistence/src/test/java/org/openengsb/core/persistence/PersistenceServiceTest.java">test</link>
     for the expected behavior of the persistence service is provided.
   </para>
 
 </chapter>
+

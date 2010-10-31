@@ -35,7 +35,7 @@
 
   <section>
     <title>Functional Interface</title>
-    <para><link xlink:href="http://github.com/openengsb/openengsb/blob/master/domains/report/implementation/src/main/java/org/openengsb/domains/report/ReportDomain.java">Link</link>
+    <para><link xlink:href="${github}/domains/report/implementation/src/main/java/org/openengsb/domains/report/ReportDomain.java">Link</link>
       to the Java Domain Interface on Github. This interface also contains information about events raised by this domain.</para>
   </section>
 
