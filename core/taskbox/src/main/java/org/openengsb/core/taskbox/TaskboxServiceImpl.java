@@ -16,20 +16,33 @@
 
 package org.openengsb.core.taskbox;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.persistence.PersistenceManager;
+import org.openengsb.core.persistence.PersistenceService;
+import org.openengsb.core.persistence.PersistenceException;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
+import org.osgi.framework.BundleContext;
+import org.springframework.osgi.context.BundleContextAware;
 
-public class TaskboxServiceImpl implements TaskboxService {
+public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     private Log log = LogFactory.getLog(getClass());
 
     private WorkflowService workflowService;
 
     private String message;
 
-    public void init() {
+    private PersistenceService persistence;
 
+    private PersistenceManager persistenceManager;
+
+    private BundleContext bundleContext;
+    
+    public void init() {
+    	this.persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
     }
 
     @Override
@@ -37,13 +50,26 @@ public class TaskboxServiceImpl implements TaskboxService {
         if (message == null) {
             throw new TaskboxException();
         }
-
-        return message;
+        
+        //return message;
+        
+        List<Ticket> tickets = persistence.query(new Ticket("Ticket-<" + message + ">"));
+        if (tickets.isEmpty()) {
+            throw new TaskboxException("Ticket: Ticket-<" + message + "> doesn't exist.");
+        }
+        
+        return tickets.get(0).getID();
     }
 
     @Override
     public void setWorkflowMessage(String message) {
         this.message = message;
+        
+        Ticket ticket = new Ticket("Ticket-<" + message + ">");
+        
+        try {
+        	this.persistence.create(ticket);
+        } catch(PersistenceException e) {}
     }
 
     @Override
@@ -58,5 +84,14 @@ public class TaskboxServiceImpl implements TaskboxService {
 
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
+    }
+    
+    public void setPersistenceManager(PersistenceManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
+    }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 }
