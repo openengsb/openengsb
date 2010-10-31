@@ -92,6 +92,7 @@
     <xi:include href="developer/howto/internal.connector.xml" />
     <xi:include href="developer/howto/internal.domain.xml" />
     <xi:include href="developer/wrapped.xml" />
+    <xi:include href="developer/release.xml" />
     <xi:include href="developer/admin.xml" />
   </part>
 
