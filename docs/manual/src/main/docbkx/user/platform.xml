@@ -25,11 +25,12 @@
 
     <title>OpenEngSB Platform</title>
 
-    <para>The aim of the OpenEngSB project, as for every open source project is world domination (of course,
-    what else :) ). With that said, we want to support projects using the OpenEngSB as base environment, or
+    <para>The aim of the OpenEngSB project, as for every open source project, is to make the life of everyone better.
+    Or at least the life of engineers :). With that said, we want to support projects using the OpenEngSB as base 
+    environment, or
     providing domains and connectors. While it is easy to find a source repository and use the OpenEngSB (because
     of its business friendly Apache 2 license), it is not that easy to get the visibility your project earns. We want
-    to provide you with this visibility providing your project within the OpenEngSB infrastructure. Basically we 
+    to provide you with this visibility by including your project into the OpenEngSB product family. Basically we 
     provide you with the following infrastructure:</para>
 
     <itemizedlist>
