@@ -25,30 +25,23 @@
 
   <title>Prepare and use Non-OSGi Artifacts</title>
 
-  <section xml:id="developer.wrapped.use">
-    <title>Use Wrapped Jars</title>
-    <para> Basically, wrapped JARs do not differ in any way from basic Maven artifacts, besides that they are deployable
-      in OSGi environments. If it is required to use these artifacts in OpenEngSB nothing specific has to be done. All
-      artifacts in the wrapped directory are deployed in a Maven repository which is added to the root POM. Therefore
-      these artifacts can be used directly. In any case you like to build these artifacts on your own point your console
-      to the wrapped directory and execute <code>mvn clean install</code>. This will install the artifacts in the local
-      Maven repository and make them available for the application. </para>
-  </section>
+  <para> Basically, wrapped JARs do not differ in any way from basic jars, besides that they are deployable
+  in OSGi environments. They are used as regular jar files in the OpenEngSB. Nevertheless, the wrapping
+  itself is not as painless. This chapter tries to explain the process in detail.</para>
 
   <section xml:id="developer.wrapped.base">
     <title>Create Wrapped Artifacts</title>
     <para>This chapter is a step by step guide on how to create a wrapped JAR.</para>
     <orderedlist>
       <listitem>
-        <para>In case that no already wrapped library is available in the public repositories a package has to be
-          created. While there are packages available to generate the project they are not required. Most of the work is
-          already abstracted into the root-pom of the wrapped directory. Therefore the project should be created
-          manually. First of all create a folder with the name of the project you like to wrap. Typically the groupId of
+        <para>In case that no osginized library is available in the public repositories a package has to be
+          created. Because of the simplicity of the process it should be done by hand. First of all create a folder 
+          with the name of the project you like to wrap within openengsb/wrapped. Typically the groupId of
           the bundle to wrap is sufficient. For example, for a project wrapping all Wicket bundles the folder
           org.apache.wicket is created.</para>
       </listitem>
       <listitem>
-        <para>As a next step add the newly created folder as a module to the wrapped/pom.xml file in the module section.
+        <para>As a next step add the newly created folder as a module to the openengsb/wrapped/pom.xml file in the module section.
           For the formerly created Wicket project org.apache.wicket should be added to the module section.</para>
       </listitem>
       <listitem>
@@ -112,18 +105,19 @@ javax.servlet;version="[2.5.0, 3.0.0)",\
     </orderedlist>
   </section>
 
-  <section xml:id="developer.wrapped.workflow">
-    <title>Workflow</title>
-    <para>The OpenEngSB typically does not have to modify anything within this directory. In addition all
-      artifacts in this part are independent of the typical OpenEngSB build and deploy life-cycle. The versions within
-      these artifacts change completely independent of the OpenEngSB. Therefore this directory and its subprojects are
-      not entered within the module section of the root pom! Instead, if it is really required to build them (e.g. if a
-      new artifact is added) the maven commands have to be executed directly in the wrapped sub-directory.</para>
-    <para>If a developer adds a new library in this folder it is NOT directly available to all other developers. For
-      testing it is possible that the other developers build the wrapped directory independently. Nevertheless, the
-      proposed solution is to inform a project admin about the new library in you branch. The admin can simply deploy
-      (using <literal>maven clean install deploy</literal>) your artifacts to the maven repositories. Afterwards the
-      wrapped artifacts are downloaded for all other developers during the build process.</para>
+  <section>
+    <title>Tips and Tricks</title>
+    <para>Although the description above sounds quite simple (and wrapping bundles is simple mostly) still some nasty problems
+    can occur. This section summarizes good tips and ideas how to wrap bundles within the OpenEngSB.</para>
+    <itemizedlist>
+      <listitem>The best workflow to wrap a bundle is according to our experiences, to execute the previously described steps
+      and simply start the OpenEngSB (pax:provision). Either it works or creates a huge stack of exceptions with missing import
+      statements. Simply try to fulfill one problem, than start again till all references are resolved.</listitem>
+      <listitem>Embedding artifacts is nothing bad. Although it is recommended to use all references artifacts of a bundle
+      directly as OSGi components it can be such a pain sometimes. Some references are simply not required by any other bundle
+      or are too hard to port. In such cases feel free to directly embed the dependencies in the wrapped jar.</listitem>
+    </itemizedlist>
   </section>
 
 </chapter>
+
