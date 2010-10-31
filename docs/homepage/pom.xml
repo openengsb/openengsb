@@ -34,7 +34,6 @@
     Homepage for the Open Engineering Service Bus
   </description>
 
-  
   <profiles>
     <profile>
       <id>nightly</id>
