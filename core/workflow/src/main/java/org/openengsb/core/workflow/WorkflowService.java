@@ -16,6 +16,8 @@
 
 package org.openengsb.core.workflow;
 
+import java.util.Map;
+
 import org.openengsb.core.common.Event;
 
 public interface WorkflowService {
@@ -36,4 +38,9 @@ public interface WorkflowService {
      *         started
      */
     long startFlow(String processId) throws WorkflowException;
+    
+    /**
+     * Starts a flow supplying objects in the parameterMap
+     * */
+    long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException;
 }

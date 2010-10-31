@@ -39,7 +39,7 @@ public class TaskboxServiceTest {
 
     @Test
     public void testStartWorkflow() throws TaskboxException, WorkflowException {
-        service.startWorkflow();
+        service.startWorkflow("");
 
         verify(workflowService, Mockito.times(1)).startFlow(Mockito.eq("tasktest"));
     }
