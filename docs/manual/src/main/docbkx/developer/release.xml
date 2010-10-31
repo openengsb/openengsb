@@ -160,7 +160,9 @@
 
   <section>
     <title>Spread the News</title>
-    <para></para>
+    <para>Post a message to the OpenEngSB twitter account with the following content:
+<programlisting><![CDATA[openengsb-VERSION "NAME" released, closing XX issues (JIRA_RELEASE_REPORT_SHORT_URL). 
+Try the new features now: http://openengsb.org]]></programlisting></para>
   </section>
 
 </chapter>
