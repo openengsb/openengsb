@@ -171,7 +171,6 @@ Try the new features now: http://openengsb.org]]></programlisting></para>
     have to be copied in the current changelog file (the latest version always has the most "on-top" position in the 
     text file):
 <programlisting><![CDATA[h1. openengsb-VERSION
-Full issue-based chanelog avialable here (link to jira release description)
 
 h2. Bug fixes 
 * Bugfix
