@@ -25,7 +25,7 @@
   </formats>
   <fileSets>
     <fileSet>
-      <directory>${project.basedir}/python</directory>
+      <directory>${project.basedir}/connectors/python</directory>
     </fileSet>
   </fileSets>
 </assembly>
