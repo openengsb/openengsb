@@ -29,21 +29,21 @@
 
   <para>The following graphic shows the architecture of the OpenEngSB. In the center we use a bus system
   to integrate different modules. In this case we do not use a classical Enterprise Service Bus (ESB), but rather the
-  OSGi service infrastructure via Spring-DM (<link linked="architecture.concept.esb">OpenEngSB ESB</link>). We are using <ulink url="http://karaf.apache.org">Apache Karaf</ulink> as the OSGi
+  OSGi service infrastructure via Spring-DM (<xref linkend="architecture.concept.esb" />). We are using <link xlink:href="http://karaf.apache.org">Apache Karaf</link> as the OSGi
   environment. Karaf is used in this case, instead of a most basic OSGi environment, such as 
-  <ulink url="http://felix.apache.org">Apache Felix</ulink> or 
-  <ulink url="http://www.eclipse.org">Eclipse Equinox</ulink> , because it supports us with additional features as 
+  <link xlink:href="http://felix.apache.org">Apache Felix</link> or 
+  <link xlink:href="http://www.eclipse.org">Eclipse Equinox</link> , because it supports us with additional features as 
   extended console support and the feature definitions.
   This base infrastructure, including all modifications required for the OpenEngSB is called the 
-  <link linked="architecture.concept.infrastructure">OpenEngSB Infrastructure</link>. Within the OpenEngSB 
-  Infrastructure so called <link linked="architecture.concept.components">Core Components</link> and 
-  <link linked="architecture.concept.tooldomains">Tool Domains</link> are installed. Both
+  <xref linkend="architecture.concept.infrastructure" />. Within the OpenEngSB 
+  Infrastructure so called <xref linkend="architecture.concept.components" /> and 
+  <xref linkend="architecture.concept.tooldomains" /> are installed. Both
   types are written in a JVM compatible language, including OSGi configuration files to run in the OpenEngSB 
   Infrastructure. They are explained later within this chapter. Different tools running outside the OpenEngSB 
-  Infrastructure are called <link linked="architecture.concept.clienttools">Client Tools</link> or 
-  <link linked="architecture.concept.domaintools">Domain Tools</link>, depending on their usage scenario. 
+  Infrastructure are called <xref linkend="architecture.concept.clienttools" /> or 
+  <xref linkend="architecture.concept.domaintools" />, depending on their usage scenario. 
   To integrate and use them within the OpenEngSB so called 
-  <link linked="architecture.concept.connectors">Connectors</link> are used. All of these concepts are explained 
+  <xref linkend="architecture.concept.connectors" /> are used. All of these concepts are explained 
   within the next sections.</para>
 
   <para>
@@ -61,7 +61,7 @@
     <para>One of the principal concepts for the OpenEngSB development is (if possible) 
     to use already existing and proven solutions rather than inventing new ones. In this manner the OpenEngSB is an 
     extension to the ESB concept. Typical ESBs such as 
-    <link linked="http://servicemix.apache.org">Apache Servicemix</link> or other JBI or ESB implementations 
+    <link xlink:href="http://servicemix.apache.org">Apache Servicemix</link> or other JBI or ESB implementations 
     always have the feeling to be huge and bloated. Complex integration patterns, messaging, huge configuration files
     and similar concepts/problems lead to this feeling. And those feelings are right. They are bloated. The OpenEngsB
     tries a different approach. Using Karaf as its base framework the environment is VERY lightweight. Depending on 
