@@ -16,6 +16,7 @@
 
 package org.openengsb.ui.web.editor;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,8 @@ import org.openengsb.ui.web.model.MapModel;
 @SuppressWarnings("serial")
 public class BeanArgumentPanel extends Panel {
 
+    private Map<String, String> fieldViewIds = new HashMap<String, String>();
+
     public BeanArgumentPanel(String id, ArgumentModel argModel, Map<String, String> values) {
         super(id);
         add(new Label("index", "" + argModel.getIndex()));
@@ -45,7 +48,9 @@ public class BeanArgumentPanel extends Panel {
 
         List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(argModel.getType());
         for (AttributeDefinition a : attributes) {
-            WebMarkupContainer row = new WebMarkupContainer(a.getId());
+            String fieldViewId = fields.newChildId();
+            fieldViewIds.put(a.getId(), fieldViewId);
+            WebMarkupContainer row = new WebMarkupContainer(fieldViewId);
             fields.add(row);
             row.add(createEditor("row", new MapModel<String, String>(values, a.getId()), a));
         }
@@ -61,6 +66,10 @@ public class BeanArgumentPanel extends Panel {
         } else {
             return new InputField(id, model, attribute, null);
         }
+    }
+
+    public String getFieldViewId(String fieldId) {
+        return fieldViewIds.get(fieldId);
     }
 
 }

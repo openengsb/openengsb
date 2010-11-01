@@ -107,8 +107,9 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
                         eventService.processEvent(event);
                         info(new StringResourceModel("send.event.success", SendEventPage.this, null).getString());
                     } catch (WorkflowException e) {
-                        error(new StringResourceModel("send.event.error.process", SendEventPage.this, null)
-                            .getString());
+                        StringResourceModel resourceModel =
+                            new StringResourceModel("send.event.error.process", SendEventPage.this, null);
+                        error(resourceModel.getString());
                     }
                 } else {
                     error(new StringResourceModel("send.event.error.build", SendEventPage.this, null).getString());
@@ -139,8 +140,8 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
             BeanInfo beanInfo = Introspector.getBeanInfo(eventClass);
             PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
             for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-                if (propertyDescriptor.getWriteMethod() == null || !Modifier
-                    .isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
+                if (propertyDescriptor.getWriteMethod() == null
+                        || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
                     continue;
                 }
                 propertyDescriptor.getWriteMethod().invoke(obj, values.get(propertyDescriptor.getName()));

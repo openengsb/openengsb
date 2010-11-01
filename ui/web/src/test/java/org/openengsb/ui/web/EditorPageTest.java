@@ -60,11 +60,12 @@ public class EditorPageTest {
     public void setup() {
         tester = new WicketTester();
         manager = mock(ServiceManager.class);
-        attrib1 = AttributeDefinition.builder(new PassThroughStringLocalizer()).id("a").defaultValue("a_default")
+        attrib1 =
+            AttributeDefinition.builder(new PassThroughStringLocalizer()).id("a").defaultValue("a_default")
                 .name("a_name").build();
-        ServiceDescriptor d = ServiceDescriptor.builder(new PassThroughStringLocalizer())
-                .serviceType(DummyDomain.class).implementationType(DummyDomain.class)
-                .id("a").name("sn").description("sd").attribute(attrib1).build();
+        ServiceDescriptor d =
+            ServiceDescriptor.builder(new PassThroughStringLocalizer()).serviceType(DummyDomain.class)
+                .implementationType(DummyDomain.class).id("a").name("sn").description("sd").attribute(attrib1).build();
         when(manager.getDescriptor()).thenReturn(d);
     }
 
@@ -92,19 +93,20 @@ public class EditorPageTest {
         ConnectorEditorPage page = new ConnectorEditorPage(manager, "a");
         tester.startPage(page);
         tester.debugComponentTrees();
-        TextField<String> idField = (TextField<String>) tester
-                .getComponentFromLastRenderedPage("editor:form:fields:id:row:field");
+        String id = page.getEditorPanel().getAttributeViewId("id");
+        TextField<String> idField =
+            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:fields:" + id + ":row:field");
         assertThat(page.getEditorPanel().getAttributes().size(), is(2));
         assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("id"));
         Assert.assertEquals("id1", idField.getDefaultModel().getObject());
     }
 
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({"unchecked", "serial"})
     public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("a", "validation.service.not");
         when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
-                new MultipleAttributeValidationResultImpl(false, errorMessages));
+            new MultipleAttributeValidationResultImpl(false, errorMessages));
         WicketTester tester = new WicketTester();
         tester.startPage(new ITestPageSource() {
             @Override
@@ -115,18 +117,18 @@ public class EditorPageTest {
         FormTester formTester = tester.newFormTester("editor:form");
         formTester.setValue("fields:id:row:field", "someValue");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{ "Service Validation Error" });
+        tester.assertErrorMessages(new String[]{"Service Validation Error"});
         tester.assertRenderedPage(ConnectorEditorPage.class);
     }
 
     @Test
-    @SuppressWarnings({ "unchecked", "serial" })
+    @SuppressWarnings({"unchecked", "serial"})
     @Ignore("OPENENGSB-277, what checks should be bypassed")
     public void uncheckValidationCheckbox_shouldBypassValidation() {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("a", "validation.service.not");
         when(manager.update(Mockito.anyString(), Mockito.anyMap())).thenReturn(
-                new MultipleAttributeValidationResultImpl(false, errorMessages));
+            new MultipleAttributeValidationResultImpl(false, errorMessages));
         WicketTester tester = new WicketTester();
         tester.startPage(new ITestPageSource() {
             @Override
@@ -139,7 +141,7 @@ public class EditorPageTest {
         formTester.setValue("validate", false);
         formTester.submit();
         tester.assertErrorMessages(new String[]{});
-        tester.assertInfoMessages(new String[]{ "Service can be added" });
+        tester.assertInfoMessages(new String[]{"Service can be added"});
         Mockito.verify(manager).update(Mockito.anyString(), Mockito.anyMap());
         Mockito.verify(manager, Mockito.never()).update(Mockito.anyString(), Mockito.anyMap());
     }

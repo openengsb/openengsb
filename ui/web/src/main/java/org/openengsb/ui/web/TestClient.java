@@ -384,13 +384,13 @@ public class TestClient extends BasePage {
             ArgumentModel argModel = new ArgumentModel(i + 1, p, null);
             arguments.add(argModel);
             if (p.isPrimitive() || p.equals(String.class)) {
-                SimpleArgumentPanel arg = new SimpleArgumentPanel("arg" + i, argModel);
+                SimpleArgumentPanel arg = new SimpleArgumentPanel(String.valueOf(i), argModel);
                 argumentList.add(arg);
             } else {
                 Map<String, String> beanAttrs = new HashMap<String, String>();
                 argModel.setValue(beanAttrs);
                 argModel.setBean(true);
-                BeanArgumentPanel arg = new BeanArgumentPanel("arg" + i, argModel, beanAttrs);
+                BeanArgumentPanel arg = new BeanArgumentPanel(String.valueOf(i), argModel, beanAttrs);
                 argumentList.add(arg);
             }
             i++;

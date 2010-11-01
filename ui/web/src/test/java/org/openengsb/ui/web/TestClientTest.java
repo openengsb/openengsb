@@ -20,7 +20,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -187,6 +186,7 @@ public class TestClientTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testJumpToService() throws Exception {
         setupTestClientPage();
         ServiceId reference = new ServiceId(TestService.class.getName(), "test");
@@ -264,9 +264,9 @@ public class TestClientTest {
         setMethodInDropDown(1);
 
         Assert.assertEquals(1, argList.size());
-        Assert.assertEquals(BeanArgumentPanel.class, argList.get("arg0").getClass());
+        Assert.assertEquals(BeanArgumentPanel.class, argList.get("0").getClass());
 
-        RepeatingView panel = (RepeatingView) argList.get("arg0:fields");
+        RepeatingView panel = (RepeatingView) argList.get("0:fields");
         Assert.assertEquals(2, panel.size());
     }
 
@@ -281,7 +281,7 @@ public class TestClientTest {
         setMethodInDropDown(0);
 
         for (int i = 0; i < argList.size(); i++) {
-            formTester.setValue("argumentListContainer:argumentList:arg" + i + ":value", "test");
+            formTester.setValue("argumentListContainer:argumentList:" + i + ":value", "test");
         }
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
@@ -296,8 +296,13 @@ public class TestClientTest {
         setServiceInDropDown(0);
         setMethodInDropDown(1);
 
-        formTester.setValue("argumentListContainer:argumentList:arg0:fields:id:row:field", "42");
-        formTester.setValue("argumentListContainer:argumentList:arg0:fields:name:row:field", "test");
+        String beanPanelPath = "argumentListContainer:argumentList:0";
+        BeanArgumentPanel beanPanel =
+            (BeanArgumentPanel) tester.getComponentFromLastRenderedPage("methodCallForm:" + beanPanelPath);
+        String idFieldId = beanPanel.getFieldViewId("id");
+        String nameFieldId = beanPanel.getFieldViewId("name");
+        formTester.setValue(beanPanelPath + ":fields:" + idFieldId + ":row:field", "42");
+        formTester.setValue(beanPanelPath + ":fields:" + nameFieldId + ":row:field", "test");
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
@@ -334,8 +339,8 @@ public class TestClientTest {
         setServiceInDropDown(0);
         setMethodInDropDown(0);
 
-        formTester.setValue("argumentListContainer:argumentList:arg0:value", "test");
-        formTester.setValue("argumentListContainer:argumentList:arg1:value", "test");
+        formTester.setValue("argumentListContainer:argumentList:0:value", "test");
+        formTester.setValue("argumentListContainer:argumentList:1:value", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         RepeatingView argList =
@@ -356,12 +361,12 @@ public class TestClientTest {
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
-        formTester.setValue("argumentListContainer:argumentList:arg0:value", "test");
-        formTester.setValue("argumentListContainer:argumentList:arg1:value", "test");
+        formTester.setValue("argumentListContainer:argumentList:0:value", "test");
+        formTester.setValue("argumentListContainer:argumentList:1:value", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
-        tester.assertInfoMessages(new String[]{ "Methodcall called successfully" });
+        tester.assertInfoMessages(new String[]{"Methodcall called successfully"});
         Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
         Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
     }
@@ -372,8 +377,8 @@ public class TestClientTest {
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
-        formTester.setValue("argumentListContainer:argumentList:arg0:value", "fail");
-        formTester.setValue("argumentListContainer:argumentList:arg1:value", "test");
+        formTester.setValue("argumentListContainer:argumentList:0:value", "fail");
+        formTester.setValue("argumentListContainer:argumentList:1:value", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
         String resultException = (String) tester.getMessages(FeedbackMessage.ERROR).get(0);
         assertThat(resultException, containsString(IllegalArgumentException.class.getName()));
@@ -520,7 +525,7 @@ public class TestClientTest {
             ServiceReference ref = Mockito.mock(ServiceReference.class);
             Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
             Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-            ServiceReference[] refs = new ServiceReference[]{ ref };
+            ServiceReference[] refs = new ServiceReference[]{ref};
             Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
         } catch (InvalidSyntaxException e) {
             Assert.fail("not expected");
