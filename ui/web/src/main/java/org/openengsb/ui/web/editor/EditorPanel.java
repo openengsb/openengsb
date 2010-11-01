@@ -59,6 +59,7 @@ public abstract class EditorPanel extends Panel {
     private final Map<String, String> values;
     private final List<AttributeDefinition> attributes;
     private final FormValidator validator;
+    private final Map<String, String> attributeViewIds = new HashMap<String, String>();
 
     public EditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values) {
         this(id, attributes, values, new DefaultPassingFormValidator());
@@ -82,8 +83,11 @@ public abstract class EditorPanel extends Panel {
         RepeatingView fields = new RepeatingView("fields");
         form.add(fields);
 
+        attributeViewIds.clear();
         for (AttributeDefinition a : attributes) {
-            WebMarkupContainer row = new WebMarkupContainer(a.getId());
+            String attributeViewId = fields.newChildId();
+            attributeViewIds.put(a.getId(), attributeViewId);
+            WebMarkupContainer row = new WebMarkupContainer(attributeViewId);
             fields.add(row);
             row.add(createEditor("row", new MapModel<String, String>(values, a.getId()), a));
         }
@@ -119,7 +123,7 @@ public abstract class EditorPanel extends Panel {
                     Map<String, FormComponent<?>> formComponents = new HashMap<String, FormComponent<?>>();
                     if (validator != null) {
                         for (String attribute : validator.fieldsToValidate()) {
-                            Component component = form.get("fields:" + attribute + ":row:field");
+                            Component component = form.get("fields:" + getAttributeViewId(attribute) + ":row:field");
                             if (component instanceof FormComponent<?>) {
                                 formComponents.put(attribute, (FormComponent<?>) component);
                             }
@@ -206,5 +210,9 @@ public abstract class EditorPanel extends Panel {
         private StringFieldValidator(AttributeDefinition attribute) {
             super(attribute);
         }
+    }
+
+    public String getAttributeViewId(String attribute) {
+        return attributeViewIds.get(attribute);
     }
 }

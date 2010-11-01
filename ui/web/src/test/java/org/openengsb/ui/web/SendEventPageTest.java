@@ -62,7 +62,7 @@ public class SendEventPageTest {
         tester = new WicketTester();
         AnnotApplicationContextMock context = new AnnotApplicationContextMock();
         tester.getApplication().addComponentInstantiationListener(
-                new SpringComponentInjector(tester.getApplication(), context, false));
+            new SpringComponentInjector(tester.getApplication(), context, false));
         eventService = mock(WorkflowService.class);
         RuleManager ruleManager = mock(RuleManager.class);
         context.putBean(ruleManager);
@@ -72,8 +72,7 @@ public class SendEventPageTest {
         eventClasses = Arrays.<Class<? extends Event>> asList(Dummy.class, Dummy2.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         editorPanel = (EditorPanel) tester.getComponentFromLastRenderedPage("editor");
-        dropdown = (DropDownChoice<Class<?>>) tester
-                .getComponentFromLastRenderedPage("form:dropdown");
+        dropdown = (DropDownChoice<Class<?>>) tester.getComponentFromLastRenderedPage("form:dropdown");
         formTester = tester.newFormTester("editor:form");
     }
 
@@ -146,14 +145,15 @@ public class SendEventPageTest {
     public void selectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
         selectEventType(1);
         List<AttributeDefinition> attributes =
-                ((EditorPanel) tester.getComponentFromLastRenderedPage("editor")).getAttributes();
+            ((EditorPanel) tester.getComponentFromLastRenderedPage("editor")).getAttributes();
         assertThat(attributes.size(), is(3));
         assertThat(attributes.get(1).getName().getString(null), is("firstProperty"));
     }
 
     @Test
     public void submittingForm_shouldCallDroolsServiceWithInstantiatedEvent() throws WorkflowException {
-        formTester.setValue("fields:testProperty:row:field", "a");
+        String id = editorPanel.getAttributeViewId("testProperty");
+        formTester.setValue("fields:" + id + ":row:field", "a");
         tester.debugComponentTrees();
         submitForm();
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
