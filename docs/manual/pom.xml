@@ -35,31 +35,6 @@
     Manual for the Open Engineering Service Bus
   </description>
 
-  <properties>
-    <github>http://github.com/openengsb/openengsb/blob/integration/</github>
-  </properties>
-
-  <profiles>
-    <profile>
-      <id>nightly</id>
-      <properties>
-        <github>http://github.com/openengsb/openengsb/blob/master/</github>
-      </properties>
-    </profile>
-    <profile>
-      <id>milestone</id>
-      <properties>
-        <github>http://github.com/openengsb/openengsb/blob/openengsb-${project.version}/</github>
-      </properties>
-    </profile>
-    <profile>
-      <id>final</id>
-      <properties>
-        <github>http://github.com/openengsb/openengsb/blob/openengsb-${project.version}/</github>
-      </properties>
-    </profile>
-  </profiles>
-
   <build>
     <resources>
       <resource>

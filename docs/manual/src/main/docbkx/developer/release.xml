@@ -165,5 +165,28 @@
 Try the new features now: http://openengsb.org]]></programlisting></para>
   </section>
 
+  <section>
+    <title>Prepare Changelog</title>
+    <para>Finally the CHANGELOG.md file has to be updated. Therefore the following template with the correct version
+    have to be copied in the current changelog file (the latest version always has the most "on-top" position in the 
+    text file):
+<programlisting><![CDATA[openengsb-VERSION
+------------------
+
+### Bug fixes 
+* Bugfix
+
+### Changed Components
+* New Projects
+  * openengsb-core-taskbox
+* Removed Projects
+
+### New Features & Changed Behaviour
+* Feature
+
+### Depricated or remvoed Features
+* interface xyz]]></programlisting></para>
+  </section>
+
 </chapter>
 
