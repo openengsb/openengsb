@@ -38,8 +38,8 @@
     <profile>
       <id>nightly</id>
       <properties>
-        <latest>https://oss.sonatype.org/content/groups/public/org/openengsb/openengsb/${project.version}/</latest>
-        <older>https://oss.sonatype.org/content/groups/public/org/openengsb/openengsb/${project.version}/</older>
+        <latest>${repos.snapshot}org/openengsb/openengsb/${project.version}/</latest>
+        <older>${repos.snapshot}org/openengsb/openengsb/${project.version}/</older>
       </properties>
       <distributionManagement>
         <site>
@@ -51,8 +51,8 @@
     <profile>
       <id>milestone</id>
       <properties>
-        <latest>http://uk1.maven.org/maven2/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
-        <older>http://uk1.maven.org/maven2/org/openengsb/openengsb/</older>
+        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
+        <older>${repos.final}org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
         <site>
@@ -64,8 +64,8 @@
     <profile>
       <id>final</id>
       <properties>
-        <latest>http://uk1.maven.org/maven2/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
-        <older>http://uk1.maven.org/maven2/org/openengsb/openengsb/</older>
+        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
+        <older>${repos.final}org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
         <site>

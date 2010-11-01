@@ -32,6 +32,11 @@
   <packaging>pom</packaging>
   <name>OpenEngSB :: Documentation :: Parent</name>
 
+  <properties>
+    <repos.snapshot>https://oss.sonatype.org/content/groups/public/</repos.snapshot> 
+    <repos.final>http://uk1.maven.org/maven2/</repos.final>
+  </properties>
+
   <profiles>
     <profile>
       <activation>
