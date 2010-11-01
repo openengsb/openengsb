@@ -49,21 +49,21 @@
 
   <section xml:id="developer.admin.build">
     <title>OpenEngSB Build</title>
-    <para>Hudson is accessible at http://build.openengsb.org.
+    <para>Hudson is accessible at <link xlink:href="http://build.openengsb.org" />.
     To become an admin create account and write mail to one of the current
     admins.</para>
 	</section>
 
 	<section xml:id="developer.admin.issue">
     <title>OpenEngSB Issuetracker</title>
-    <para>JIRA is accessible at http://issues.openengsb.org.
+    <para>JIRA is accessible at <link xlink:href="http://issues.openengsb.org" />.
     To become an admin create account and write mail to one of the current
     admins.</para>
 	</section>
 
 	<section xml:id="developer.admin.git">
     <title>OpenEngSB git</title>
-    <para>The github is located at http://git.openengsb.org.
+    <para>The github is located at <link xlink:href="http://git.openengsb.org" />.
     To become an admin create a github-account (if you don't have one) and
     write mail to one of the current admins.</para>
 	</section>
@@ -72,21 +72,21 @@
 		<title>OpenEngSB Maven</title>
 		<section xml:id="developer.admin.maven.internal">
 			<title>internal</title>
-			<para>The internal maven-repo is accessible at maven.openengsb.org.
+			<para>The internal maven-repo is accessible at <link xlink:href="http://maven.openengsb.org" />.
 			Use [pw:nexus] to login.</para>
 		</section>
 		<section>
 			<title>external</title>
 			<para>The external maven-repo hosting released artifacts is located at
-			oss.sonatype.org. Use [pw:maven] to login.</para>
+			<link xlink:href="http://oss.sonatype.org" />. Use [pw:maven] to login.</para>
 		</section>
 	</section>
 
 	<section xml:id="developer.admin.mailinglist">
 		<title>OpenEngSB Mailinglist</title>
 		<para>To obtain admin-access for the mailing lists register
-		google-account (if you don't have one), join mailinglists
-		(http://openengsb.org/community/mailinglists.html)
+		google-account (if you don't have one), join 
+        <link xlink:href="http://openengsb.org/community/mailinglists.html">mailinglists</link>
 		and write mail to one of the current admins</para>
 	</section>
 
