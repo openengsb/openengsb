@@ -6,7 +6,7 @@ openengsb-1.0.0.RELEASE
 
 ### Changed Components
 * New Projects
-* openengsb-core-taskbox
+** openengsb-core-taskbox
 * Removed Projects
 
 ### New Features & Changed Behaviour
