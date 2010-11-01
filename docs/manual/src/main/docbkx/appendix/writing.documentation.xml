@@ -228,10 +228,15 @@
             <td> Type &lt;command> &lt;replaceable>/path/to/maven&lt;/replaceable> </td>
           </tr>
           <tr>
-            <td> &lt;ulink> </td>
+            <td> &lt;link> </td>
             <td> Used for links to external resources </td>
-            <td> You should read &lt;ulink url="http://www.docbook.org/tdg5/en/html/docbook.html">DocBook 5: The
-              Definitive Guide&lt;/ulink>. </td>
+            <td> You should read &lt;link xlink:href="http://www.docbook.org/tdg5/en/html/docbook.html">DocBook 5: The
+              Definitive Guide&lt;/link>. </td>
+          </tr>
+          <tr>
+            <td> &lt;xref> </td>
+            <td> Used for internal links</td>
+            <td> This inserts a link to the description of the the OpenEngSB &lt;xref linkend="architecture" />. </td>
           </tr>
           <tr>
             <td> &lt;userinput> </td>
