@@ -77,14 +77,14 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
             throw new TaskboxException();
         }
         
-        //return message;
+        return message;
         
-        List<Ticket> tickets = persistence.query(new Ticket("Ticket-<" + message + ">", ""));
+        /*List<Ticket> tickets = persistence.query(new Ticket("Ticket-<" + message + ">", ""));
         if (tickets.isEmpty()) {
             throw new TaskboxException("Ticket: Ticket-<" + message + "> doesn't exist.");
         }
         
-        return tickets.get(0).getID();
+        return tickets.get(0).getID();*/
     }
 
     @Override
