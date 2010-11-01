@@ -34,6 +34,10 @@
 
   <properties>
     <github>http://github.com/openengsb/openengsb/blob/integration/</github>
+    <repos.snapshot>https://oss.sonatype.org/content/groups/public/</repos.snapshot> 
+    <repos.final>http://uk1.maven.org/maven2/</repos.final>
+    <repos.current></repos.current>
+    <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
   </properties>
 
   <profiles>
@@ -44,6 +48,7 @@
       <id>docs</id>
       <modules>
         <module>skin</module>
+        <module>examples</module>
         <module>manual</module>
         <module>homepage</module>
       </modules>
@@ -52,12 +57,15 @@
       <id>nightly</id>
       <properties>
         <github>http://github.com/openengsb/openengsb/blob/master/</github>
+        <repos.current>${repos.snapshot}</repos.current>
+        <repos.current>${repos.final}</repos.current>
       </properties>
     </profile>
     <profile>
       <id>milestone</id>
       <properties>
         <github>http://github.com/openengsb/openengsb/blob/openengsb-${project.version}/</github>
+        <repos.current>${repos.final}</repos.current>
       </properties>
     </profile>
     <profile>
