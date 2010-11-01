@@ -40,6 +40,7 @@
       <id>docs</id>
       <modules>
         <module>skin</module>
+        <module>examples</module>
         <module>manual</module>
         <module>homepage</module>
       </modules>
