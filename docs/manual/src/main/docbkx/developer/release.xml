@@ -165,5 +165,28 @@
 Try the new features now: http://openengsb.org]]></programlisting></para>
   </section>
 
+  <section>
+    <title>Prepare Changelog</title>
+    <para>Finally the CHANGELOG.txt file has to be updated. Therefore the following template with the correct version
+    have to be copied in the current changelog file (the latest version always has the most "on-top" position in the 
+    text file):
+<programlisting><![CDATA[h1. openengsb-VERSION
+Full issue-based chanelog avialable here (link to jira release description)
+
+h2. Bug fixes 
+* Bugfix
+
+h2. Changed Components
+* New Projects
+  * openengsb-core-taskbox
+* Removed Projects
+
+h2. New Features & Changed Behaviour
+* Feature
+
+h2. Depricated or remvoed Features
+* interface xyz]]></programlisting></para>
+  </section>
+
 </chapter>
 
