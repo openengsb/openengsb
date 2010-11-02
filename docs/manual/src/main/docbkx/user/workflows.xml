@@ -30,9 +30,8 @@
   defining actions based on events (and their content) which were thrown in
   or to the bus. Events are practical for "short-time handling" since they are
   also easy to replace and extend. For long running business processes the
-  secondary workflow method could be used which is <link
-  linkend="workflows.processes">based on processes described in
-  Drools-Flow</link>.</para>
+  secondary workflow method could be used which is based on <xref linkend="workflows.processes" />
+  described in Drools-Flow.</para>
 
   <para>The workflow service takes "events" as input and handles them using a
   rulebased system (JBoss Drools). It provides methods to manage the

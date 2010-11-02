@@ -26,15 +26,15 @@
   <title>Release and Release Process</title>
 
   <para>This section provides a step by step description to execute a release of the OpenEngSB. It is relevant for 
-  everyone marked in the <ulink url="http://openengsb.org/team-list.html">OpenEngSB Team List</ulink> as release
+  everyone marked in the <link xlink:href="http://openengsb.org/team-list.html">OpenEngSB Team List</link> as release
   manager because only they have the required rights to execute the following steps.</para>
 
   <section>
     <title>Releases and the OpenEngSB</title>
     <para>Every release of the OpenEngSB consists of the following parts: RELEASE.MAYOR.MINOR.TYPE. Every release
-    of this type is available at <ulink url="http://repo1.maven.org/maven2/">Maven Central</ulink>. Optinally 
+    of this type is available at <link xlink:href="http://repo1.maven.org/maven2/">Maven Central</link>. Optionally
     SNAPSHOT is appended. Snapshot releases are available from the
-    <ulink url="https://oss.sonatype.org/content/groups/public/">Sonatype Snapshot repository</ulink>. This section
+    <link xlink:href="https://oss.sonatype.org/content/groups/public/">Sonatype Snapshot repository</link>. This section
     explains what each modifier means and how it is used within the OpenEngSB.</para>
 
     <para>SNAPSHOTS: Snapshots are always available from the latest build of the OpenEngSB. They are taken from the
@@ -119,10 +119,10 @@
 <settings>]]></programlisting></para>
 
     <para>All the usernames and passwords can be retrieved from someone marked as administrator in the
-    <ulink url="http://openengsb.org/team-list.html">OpenEngSB Team List</ulink>.</para>
+    <link xlink:href="http://openengsb.org/team-list.html">OpenEngSB Team List</link>.</para>
 
     <para>In addition you have to have a GPG key for your mail address (the same you're using to commit to the 
-    OpenEngSB source repository which is uploaded to the <ulink url="hkp://pgp.mit.edu/">MIT Key Server</ulink>.</para>
+    OpenEngSB source repository which is uploaded to the <link xlink:href="hkp://pgp.mit.edu/">MIT Key Server</link>.</para>
   </section>
 
   <section>
@@ -152,8 +152,8 @@
       <listitem>1) Execute ./etc/scripts/release-[final|milestone].sh with the path to your repository (e.g. ~/openengsb</listitem>
       <listitem>Now that the artifacts are available for sync to maven central you have to push them from the 
       staging to the final repository. Therefore follow the steps as explained 
-      <ulink url="https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide">
-      here</ulink></listitem>
+      <link xlink:href="https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide">
+      here</link></listitem>
       <listitem>If everything works fine execute git push;git push --tags</listitem>
     </itemizedlist>
   </section>

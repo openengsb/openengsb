@@ -37,8 +37,8 @@
       <para>The most important communication medium for the OpenEngSB development team is email. Mostly all of
         the vital design, architectural and infrastructural decisions are discussed on the OpenEngSB developer
         list. Therefore, the first step to get involved into the development of the OpenEngSB is to register to the 
-        <ulink url="http://groups.google.com/group/openengsb-dev">Google Groups OpenEngSB Developer Mailing List
-        </ulink> and say hello world.</para>
+        <link xlink:href="http://groups.google.com/group/openengsb-dev">Google Groups OpenEngSB Developer Mailing List
+        </link> and say hello world.</para>
       <para>While notifications from the Hudson Build Server, about code commits and Jira issues are vital for the
         OpenEngSB core developer, they may not be as interesting for you. If you get annoyed by the automatically 
         generated notification mails ignore all mails from openengsb@gmail.com and noreply@github.com to 
@@ -49,17 +49,17 @@
 
     <section xml:id="developer.quickstart.infrastructure.jira">
       <title>Jira Issue Tracker</title>
-      <para>All issues are stored within a Jira instance reachable at <ulink 
-      url="http://issues.openengsb.org/jira/browse/OPENENGSB">issues.openengsb.org</ulink>. Please use the issue tracker
+      <para>All issues are stored within a Jira instance reachable at <link 
+      xlink:href="http://issues.openengsb.org/jira/browse/OPENENGSB">issues.openengsb.org</link>. Please use the issue tracker
       to keep track of all bugs, ideas and new features you're currently working or of which you think they might be
       interesting.</para>
     </section>
 
     <section xml:id="developer.quickstart.infrastructure.github">
       <title>Code Repository</title>
-      <para>As for any open source project the source code is public available. We've chosen <ulink url="http://github.com">
-        Github</ulink> for this task. The project is available at <ulink url="http://github.com/openengsb/openengsb">
-        github.com/openengsb/openengsb</ulink>.</para>
+      <para>As for any open source project the source code is public available. We've chosen <link xlink:href="http://github.com">
+        Github</link> for this task. The project is available at <link xlink:href="http://github.com/openengsb/openengsb">
+        github.com/openengsb/openengsb</link>.</para>
       <para>As explained later within this document Github is not only used to store our code, but also for collaboration,
         code review and patch-tracking.</para>
     </section>
@@ -67,7 +67,7 @@
     <section xml:id="developer.quickstart.infrastructure.maven">
       <title>Maven Repository</title>
       <para>For the moment the OpenEngSB artifacts are not stored at maven.central, but in an own Nexus maven repository
-        available at <ulink url="http://maven.openengsb.org/nexus">maven.openengsb.org</ulink>. If any additional
+        available at <link xlink:href="http://maven.openengsb.org/nexus">maven.openengsb.org</link>. If any additional
         artifacts are required currently not at any maven repository we can host them on the server. Please simply write
         to the mailing list which artifact is required and provide the artifact and the pom GAF parameters. Please always
         validate if we are allowed to redeploy the artifact.</para>
@@ -76,7 +76,7 @@
     <section xml:id="developer.quickstart.infrastructure.hudson">
       <title>Build Server</title>
       <para>The master and integration branch of the OpenEngSB repository are watched and built by a Hudson build server 
-        instance available at <ulink url="http://build.openengsb.org/hudson/">build.openengsb.org</ulink>. Notifications 
+        instance available at <link xlink:href="http://build.openengsb.org/hudson/">build.openengsb.org</link>. Notifications 
         about failures are directly send to the OpenEngSB developer list.</para>
     </section>
 
@@ -91,8 +91,8 @@
       <title>Installing Git</title>
       <para> It is assumed that Git is installed. For Linux your distribution provides already a 
         package for git. Please use the package manager of your distribution (apt, yum, pacman, ...) to install it. For MAC
-        binaries are available at <ulink url="git-scm.com">git-scm.com</ulink>. For MS users <ulink url="www.cygwin.com">cygwin
-        </ulink> or <ulink url="code.google.com/p/msysgit">msysgit</ulink>. After installing, set at least the following 
+        binaries are available at <link xlink:href="git-scm.com">git-scm.com</link>. For MS users <link xlink:href="www.cygwin.com">cygwin
+        </link> or <link xlink:href="code.google.com/p/msysgit">msysgit</link>. After installing, set at least the following 
         variables:</para>
       <literallayout>
         <command>git config</command> <option>--global</option> user.name "<replaceable>Firstname Lastname</replaceable>"
