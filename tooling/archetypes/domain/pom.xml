@@ -32,5 +32,13 @@
   <name>OpenEngSB :: Tooling :: Archetypes :: Domain</name>
 
   <packaging>jar</packaging>
+  
+  <description></description>
+  <url></url>
+  <licenses></licenses>
+  <scm>
+    <connection></connection>
+    <url></url>
+  </scm>
 
 </project>

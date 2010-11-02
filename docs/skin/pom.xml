@@ -30,10 +30,17 @@ under the License.
 
   <artifactId>openengsb-docs-skin</artifactId>
   <name>OpenEngSB :: Documentation :: Skin</name>
-
+  
   <description>
     Skin for the Open Engineering Service Bus Homepage
   </description>
+  
+  <url></url>
+  <licenses></licenses>
+  <scm>
+    <connection></connection>
+    <url></url>
+  </scm>
 
 </project>
 

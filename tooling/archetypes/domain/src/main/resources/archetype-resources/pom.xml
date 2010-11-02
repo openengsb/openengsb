@@ -34,6 +34,14 @@
   <name>${name}</name>
 
   <packaging>pom</packaging>
+  
+  <description></description>
+  <url></url>
+  <licenses></licenses>
+  <scm>
+    <connection></connection>
+    <url></url>
+  </scm>
 
   <modules>
     <module>implementation</module>

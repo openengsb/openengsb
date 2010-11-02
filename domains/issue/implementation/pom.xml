@@ -38,6 +38,14 @@
   <name>OpenEngSB :: Domains :: Issue :: Implementation</name>
 
   <packaging>bundle</packaging>
+  
+  <description></description>
+  <url></url>
+  <licenses></licenses>
+  <scm>
+    <connection></connection>
+    <url></url>
+  </scm>
 
   <dependencies>
     <dependency>

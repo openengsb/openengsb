@@ -39,6 +39,13 @@
   <description>Web Administration Interface for the OpenEngSB</description>
 
   <packaging>war</packaging>
+  
+  <url></url>
+  <licenses></licenses>
+  <scm>
+    <connection></connection>
+    <url></url>
+  </scm>
 
   <build>
     <resources>

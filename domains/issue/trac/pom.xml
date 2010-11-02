@@ -37,6 +37,14 @@
   <name>OpenEngSB :: Domains :: Issue :: Trac</name>
 
   <packaging>bundle</packaging>
+  
+  <description></description>
+  <url></url>
+  <licenses></licenses>
+  <scm>
+    <connection></connection>
+    <url></url>
+  </scm>
 
   <dependencies>
     <!-- Pax Logging -->

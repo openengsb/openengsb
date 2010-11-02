@@ -39,6 +39,14 @@
   <name>OpenEngSB :: Domains :: Scm :: Git</name>
 
   <packaging>bundle</packaging>
+  
+  <description></description>
+  <url></url>
+  <licenses></licenses>
+  <scm>
+    <connection></connection>
+    <url></url>
+  </scm>
 
   <build>
     <resources>

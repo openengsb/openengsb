@@ -28,6 +28,14 @@
 
   <artifactId>openengsb-tooling-checkstyle</artifactId>
   <name>OpenEngSB :: Tooling :: Checkstyle</name>
+  
+  <description></description>
+  <url></url>
+  <licenses></licenses>
+  <scm>
+    <connection></connection>
+    <url></url>
+  </scm>
 
 </project>
 
