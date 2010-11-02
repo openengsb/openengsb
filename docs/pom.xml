@@ -53,7 +53,6 @@
       <properties>
         <github>http://github.com/openengsb/openengsb/blob/master/</github>
         <repos.current>${repos.snapshot}</repos.current>
-        <repos.current>${repos.final}</repos.current>
       </properties>
     </profile>
     <profile>
@@ -67,6 +66,7 @@
       <id>final</id>
       <properties>
         <github>http://github.com/openengsb/openengsb/blob/openengsb-${project.version}/</github>
+        <repos.current>${repos.final}</repos.current>
       </properties>
     </profile>
   </profiles>
