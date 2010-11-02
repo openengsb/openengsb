@@ -40,19 +40,14 @@
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
   </properties>
 
+  <modules>
+    <module>skin</module>
+    <module>examples</module>
+    <module>manual</module>
+    <module>homepage</module>
+  </modules>
+
   <profiles>
-    <profile>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <id>docs</id>
-      <modules>
-        <module>skin</module>
-        <module>examples</module>
-        <module>manual</module>
-        <module>homepage</module>
-      </modules>
-    </profile>
     <profile>
       <id>nightly</id>
       <properties>
