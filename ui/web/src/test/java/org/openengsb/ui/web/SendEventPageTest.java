@@ -19,7 +19,6 @@ package org.openengsb.ui.web;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -28,8 +27,10 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
@@ -40,21 +41,19 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
-import org.openengsb.ui.web.editor.ServiceEditorPanel;
 
 public class SendEventPageTest {
 
     private WicketTester tester;
-    private ServiceEditorPanel editorPanel;
     private DropDownChoice<Class<?>> dropdown;
     private WorkflowService eventService;
     private List<Class<? extends Event>> eventClasses;
     private FormTester formTester;
+    private RepeatingView fieldList;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -71,9 +70,9 @@ public class SendEventPageTest {
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
         eventClasses = Arrays.<Class<? extends Event>> asList(Dummy.class, Dummy2.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
-        editorPanel = (ServiceEditorPanel) tester.getComponentFromLastRenderedPage("editor");
+        fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
         dropdown = (DropDownChoice<Class<?>>) tester.getComponentFromLastRenderedPage("form:dropdown");
-        formTester = tester.newFormTester("editor:form");
+        formTester = tester.newFormTester("form");
     }
 
     static class Dummy extends Event {
@@ -120,9 +119,8 @@ public class SendEventPageTest {
     @Test
     public void testStandardPageComponents() throws Exception {
         tester.assertVisible("form:dropdown");
-        tester.assertVisible("editor");
+        tester.assertVisible("form:fieldContainer:fields");
         assertThat(dropdown, notNullValue());
-        assertThat(editorPanel, notNullValue());
     }
 
     @Test
@@ -135,26 +133,24 @@ public class SendEventPageTest {
 
     @Test
     public void firstClassIsDefault_shouldCreateEditorFieldsBasedOnDefault() {
-        final List<AttributeDefinition> attributes = editorPanel.getAttributes();
-        assertNotNull(attributes);
-        assertEquals(attributes.size(), 2);
-        assertEquals(attributes.get(1).getName().getString(null), "testProperty");
+        tester.debugComponentTrees();
+        assertThat(fieldList.size(), is(2));
+        Component attributeName = fieldList.get("2:row:name");
+        assertThat(attributeName.getDefaultModelObjectAsString(), is("testProperty"));
     }
 
     @Test
     public void selectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
         selectEventType(1);
-        List<AttributeDefinition> attributes =
-            ((ServiceEditorPanel) tester.getComponentFromLastRenderedPage("editor")).getAttributes();
-        assertThat(attributes.size(), is(3));
-        assertThat(attributes.get(1).getName().getString(null), is("firstProperty"));
+        fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
+        assertThat(fieldList.size(), is(3));
+        Component attributeName = fieldList.get("2:row:name");
+        assertThat(attributeName.getDefaultModelObjectAsString(), is("firstProperty"));
     }
 
     @Test
     public void submittingForm_shouldCallDroolsServiceWithInstantiatedEvent() throws WorkflowException {
-        String id = editorPanel.getAttributeViewId("testProperty");
-        formTester.setValue("fields:" + id + ":row:field", "a");
-        tester.debugComponentTrees();
+        formTester.setValue("fieldContainer:fields:2:row:field", "a");
         submitForm();
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
         verify(eventService).processEvent(captor.capture());
@@ -164,7 +160,7 @@ public class SendEventPageTest {
     }
 
     private void submitForm() {
-        tester.executeAjaxEvent("editor:form:submitButton", "onclick");
+        tester.executeAjaxEvent("form:submitButton", "onclick");
     }
 
     @Test
@@ -194,6 +190,6 @@ public class SendEventPageTest {
         FormTester typeFormTester = tester.newFormTester("form");
         typeFormTester.select("dropdown", idx);
         tester.executeAjaxEvent(dropdown, "onchange");
-        formTester = tester.newFormTester("editor:form");
+        formTester = tester.newFormTester("form");
     }
 }
