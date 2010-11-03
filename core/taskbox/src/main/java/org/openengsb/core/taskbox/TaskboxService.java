@@ -16,7 +16,7 @@
 
 package org.openengsb.core.taskbox;
 
-import org.openengsb.core.taskbox.model.Ticket;
+import org.openengsb.core.taskbox.model.Task;
 
 /**
  * The Taskbox is a service which can be used when human interaction is required, e.g. by help desk applications. This
@@ -38,25 +38,15 @@ public interface TaskboxService {
 
     /**
      * Starts a test workflow
-     * ID - The ID of the ticket to be processed by the workflow
+     * taskVariableName - the name of the variable containing the taskObject in the workflow
+     * task - the taskobject to be reasoned about
      * 
      * @throws TaskboxException when the test workflow could not be started
      */
-    void startWorkflow(String ID) throws TaskboxException;
+    void startWorkflow(String taskVariableName, Task task) throws TaskboxException;
 
     /**
      * Used by a workflow to set a message
      */
     void setWorkflowMessage(String message);
-    
-    /**
-     * Creates a new Ticketobject and stores it in the Persistence Service.
-     * Returns ID of the Ticket
-     * */
-    String createTicket(String type);
-    
-    /**
-     * Return Ticket with the matching ID
-     * */
-    Ticket getTicket(String ID) throws TaskboxException;
 }

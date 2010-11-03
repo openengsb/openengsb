@@ -78,8 +78,8 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     @Override
     public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
-        ProcessInstance processInstance = session.startProcess(processId, parameterMap);
-        return processInstance.getId();
+    	ProcessInstance processInstance = session.startProcess(processId, parameterMap);
+        return processInstance.getId();   
     }
     
     public void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException {

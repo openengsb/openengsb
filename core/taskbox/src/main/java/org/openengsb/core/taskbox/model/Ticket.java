@@ -1,33 +1,29 @@
 package org.openengsb.core.taskbox.model;
 
-public class Ticket {
-	private String ID;
-	private String Type;
+public class Ticket implements Task {
+	private String id;
+	private String type;
 	
 	public Ticket(String id) {
 		super();
-		ID = id;
+		this.id = id;
+	}
+
+	@Override
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 	
-	public Ticket(String id, String type) {
-		super();
-		ID = id;
-		Type = type;
-	}
-
-	public String getID() {
-		return ID;
-	}
-
-	public void setID(String id) {
-		ID = id;
-	}
-
+	@Override
 	public String getType() {
-		return Type;
+		return type;
 	}
 
 	public void setType(String type) {
-		Type = type;
+		this.type = type;
 	}
 }

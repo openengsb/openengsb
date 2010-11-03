@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.openengsb.core.common.Event;
 
+
 public interface WorkflowService {
     /**
      * processes the event in the knowledgebase by inserting it as a fact, and signaling it to every running process in
@@ -40,7 +41,13 @@ public interface WorkflowService {
     long startFlow(String processId) throws WorkflowException;
     
     /**
-     * Starts a flow supplying objects in the parameterMap
+     * Starts a flow with the given id, in the current context's session.
+     * The Objects supplied in the ParameterMap are added to the flow as variables.
+     * 
+     * @return the process' instance ID as returned by drools's KnowledgeSession. It's unique in the scope of the same
+     *         context.
+     * @throws WorkflowException when there is a problem with obtaining the KnowledgeSession or the flow could not be
+     *         started
      * */
     long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException;
 }
