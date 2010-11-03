@@ -49,8 +49,9 @@ public class HeaderTemplate extends Panel {
         HeaderTemplate.menuIndex = menuIndex;
         this.add(new BookmarkablePageLink<Index>("indexLogo1", Index.class));
         this.add(new BookmarkablePageLink<Index>("indexLogo2", Index.class));
-        this.add(new Label("version", System.getProperty("openengsb.version.number") + " "
-                + System.getProperty("openengsb.version.name")));
+        this.add(new Label("version", System.getProperty("openengsb.version.number") + " \""
+                + System.getProperty("openengsb.version.name.adjective") + " "
+                + System.getProperty("openengsb.version.name.noun") + "\""));
 
         this.addHeaderMenuItem("Index", Index.class, "index.title");
         this.addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
@@ -58,13 +59,13 @@ public class HeaderTemplate extends Panel {
         this.addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
         this.addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
 
-        if (HeaderTemplate.getActiveIndex() == null || !this.avialableItems.contains(HeaderTemplate.getActiveIndex())) {
+        if (HeaderTemplate.getActiveIndex() == null || !avialableItems.contains(HeaderTemplate.getActiveIndex())) {
             // update menu item to index, because page index is not found!
             HeaderTemplate.menuIndex = "Index";
         }
 
         // generate main navigation
-        ListView<HeaderMenuItem> headerMenuItems = new ListView<HeaderMenuItem>("headerMenuItems", this.menuItems) {
+        ListView<HeaderMenuItem> headerMenuItems = new ListView<HeaderMenuItem>("headerMenuItems", menuItems) {
             private static final long serialVersionUID = -2458903054129857522L;
 
             @Override
@@ -98,21 +99,21 @@ public class HeaderTemplate extends Panel {
 
     /**
      * adds new item to main header navigation
-     *
+     * 
      * @param index - the name of the index @see HeaderMenuItem.index
      * @param linkClass - class name to be linked to
      * @param langKey - language key, the text which should be displayed
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey) {
         StringResourceModel label = new StringResourceModel(langKey, this, null);
-        this.menuItems.add(new HeaderMenuItem(index, new BookmarkablePageLabelLink("link", linkClass, label)));
-        this.avialableItems.add(index);
+        menuItems.add(new HeaderMenuItem(index, new BookmarkablePageLabelLink("link", linkClass, label)));
+        avialableItems.add(index);
     }
 
     /**
      * single header menu item
-     *
+     * 
      */
     private static class HeaderMenuItem implements Serializable {
 
@@ -125,11 +126,11 @@ public class HeaderTemplate extends Panel {
         }
 
         public String getItemName() {
-            return this.index;
+            return index;
         }
 
         public BookmarkablePageLabelLink<? extends WebPage> getLink() {
-            return this.link;
+            return link;
         }
     }
 }
