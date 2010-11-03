@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -21,19 +20,18 @@
 <body>
 <wicket:panel>
   <form wicket:id="form">
-    <table>
-      <tr wicket:id="fields">
-        <wicket:container wicket:id="row" />
-      </tr>
-      <tr>
-        <th></th>
-        <td>
-          <div wicket:id="feedback"></div>
-          <input type="checkbox" wicket:id="validate" ><wicket:message key="editor.validate">Validate Service</wicket:message></input>
-          <input type="submit" wicket:message="value:editor.submit" wicket:id="submitButton"/>
-        </td>
-      </tr>
-    </table>
+  <table>
+    <tr wicket:id="fields">
+      <wicket:container wicket:id="row" />
+    </tr>
+    <tr>
+      <th></th>
+      <td>
+      <div wicket:id="feedback"></div>
+      <input type="checkbox" wicket:id="validate"><wicket:message key="editor.validate">Validate Service</wicket:message></input>
+      <input type="submit" wicket:message="value:editor.submit" wicket:id="submitButton" /></td>
+    </tr>
+  </table>
   </form>
 </wicket:panel>
 </body>
