@@ -18,8 +18,7 @@ package org.openengsb.domains.test;
 
 import org.openengsb.core.common.Domain;
 
-// TODO rename interface to appropriate name
 public interface TestDomain extends Domain {
 
-    // TODO add your domain-specific methods here
+    Boolean runTests(); 
 }

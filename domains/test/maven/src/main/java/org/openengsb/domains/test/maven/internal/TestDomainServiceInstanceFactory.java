@@ -16,11 +16,13 @@
 
 package org.openengsb.domains.test.maven.internal;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domains.test.TestDomain;
 
 public class TestDomainServiceInstanceFactory implements ServiceInstanceFactory<TestDomain, TestDomainServiceImpl> {
@@ -45,7 +47,8 @@ public class TestDomainServiceInstanceFactory implements ServiceInstanceFactory<
     @Override
     public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
         builder.name("service.name").description("service.description");
-        builder.attribute(builder.newAttribute().id("attr").name("service.attr.name").description("service.attr.description").build());
+        builder.attribute(builder.newAttribute().id("attr").name("service.attr.name")
+            .description("service.attr.description").build());
         return builder.build();
     }
 
@@ -53,12 +56,14 @@ public class TestDomainServiceInstanceFactory implements ServiceInstanceFactory<
     public MultipleAttributeValidationResult updateValidation(TestDomainServiceImpl instance,
             Map<String, String> attributes) {
         // TODO Auto-generated method stub
-        return null;
+        Map<String, String> emptyMap = Collections.emptyMap();
+        return new MultipleAttributeValidationResultImpl(true, emptyMap);
     }
 
     @Override
     public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
         // TODO Auto-generated method stub
-        return null;
+        Map<String, String> emptyMap = Collections.emptyMap();
+        return new MultipleAttributeValidationResultImpl(true, emptyMap);
     }
 }

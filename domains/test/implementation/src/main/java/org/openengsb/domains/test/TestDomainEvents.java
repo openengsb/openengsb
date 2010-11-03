@@ -18,8 +18,9 @@ package org.openengsb.domains.test;
 
 import org.openengsb.core.common.DomainEvents;
 
-// TODO rename interface to appropriate name
 public interface TestDomainEvents extends DomainEvents {
 
-    // TODO add your domain-specific methods here
+    void raiseEvent(TestStartEvent e);
+    
+    void raiseEvent(TestEndEvent e);
 }

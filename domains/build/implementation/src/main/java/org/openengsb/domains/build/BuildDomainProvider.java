@@ -18,7 +18,6 @@ package org.openengsb.domains.build;
 
 import org.openengsb.core.common.AbstractDomainProvider;
 
-// TODO rename to an appropriate name
 public class BuildDomainProvider extends AbstractDomainProvider<BuildDomain, BuildDomainEvents> {
 
 }

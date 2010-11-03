@@ -18,8 +18,7 @@ package org.openengsb.domains.build;
 
 import org.openengsb.core.common.Domain;
 
-// TODO rename interface to appropriate name
 public interface BuildDomain extends Domain {
 
-    // TODO add your domain-specific methods here
+    Boolean build();
 }

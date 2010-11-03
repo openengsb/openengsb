@@ -18,8 +18,9 @@ package org.openengsb.domains.build;
 
 import org.openengsb.core.common.DomainEvents;
 
-// TODO rename interface to appropriate name
 public interface BuildDomainEvents extends DomainEvents {
 
-    // TODO add your domain-specific methods here
+    void raiseEvent(BuildStartEvent e);
+    
+    void raiseEvent(BuildEndEvent e);
 }

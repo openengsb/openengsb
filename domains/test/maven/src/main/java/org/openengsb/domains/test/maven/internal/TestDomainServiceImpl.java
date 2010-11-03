@@ -33,6 +33,12 @@ public class TestDomainServiceImpl implements TestDomain {
     @Override
     public AliveState getAliveState() {
         // TODO Auto-generated method stub
+        return AliveState.DISCONNECTED;
+    }
+
+    @Override
+    public Boolean runTests() {
+        // TODO Auto-generated method stub
         return null;
     }
 

@@ -18,8 +18,9 @@ package org.openengsb.domains.deploy;
 
 import org.openengsb.core.common.DomainEvents;
 
-// TODO rename interface to appropriate name
 public interface DeployDomainEvents extends DomainEvents {
 
-    // TODO add your domain-specific methods here
+    void raiseEvent(DeployStartEvent e);
+    
+    void raiseEvent(DeployEndEvent e);
 }

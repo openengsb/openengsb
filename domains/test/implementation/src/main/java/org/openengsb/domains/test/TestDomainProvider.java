@@ -18,7 +18,6 @@ package org.openengsb.domains.test;
 
 import org.openengsb.core.common.AbstractDomainProvider;
 
-// TODO rename to an appropriate name
 public class TestDomainProvider extends AbstractDomainProvider<TestDomain, TestDomainEvents> {
 
 }

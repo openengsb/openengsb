@@ -18,8 +18,7 @@ package org.openengsb.domains.deploy;
 
 import org.openengsb.core.common.Domain;
 
-// TODO rename interface to appropriate name
 public interface DeployDomain extends Domain {
 
-    // TODO add your domain-specific methods here
+    Boolean deploy();
 }

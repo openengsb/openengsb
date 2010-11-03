@@ -18,7 +18,6 @@ package org.openengsb.domains.deploy;
 
 import org.openengsb.core.common.AbstractDomainProvider;
 
-// TODO rename to an appropriate name
 public class DeployDomainProvider extends AbstractDomainProvider<DeployDomain, DeployDomainEvents> {
 
 }
