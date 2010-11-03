@@ -40,12 +40,8 @@ public final class EditorFieldFactory {
     public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
             Map<String, String> values) {
         RepeatingView fields = new RepeatingView(id);
-
         for (AttributeDefinition a : attributes) {
-            String attributeViewId = fields.newChildId();
-            WebMarkupContainer row = new WebMarkupContainer(attributeViewId);
-            fields.add(row);
-            row.add(createEditorField("row", new MapModel<String, String>(values, a.getId()), a));
+            addRowToView(values, fields, a);
         }
         return fields;
     }
@@ -53,15 +49,19 @@ public final class EditorFieldFactory {
     public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
             Map<String, String> values, Map<String, String> attributeViewIds) {
         RepeatingView fields = new RepeatingView(id);
-
         for (AttributeDefinition a : attributes) {
-            String attributeViewId = fields.newChildId();
-            WebMarkupContainer row = new WebMarkupContainer(attributeViewId);
-            fields.add(row);
-            row.add(createEditorField("row", new MapModel<String, String>(values, a.getId()), a));
+            String attributeViewId = addRowToView(values, fields, a);
             attributeViewIds.put(a.getId(), attributeViewId);
         }
         return fields;
+    }
+
+    private static String addRowToView(Map<String, String> values, RepeatingView fields, AttributeDefinition a) {
+        String attributeViewId = fields.newChildId();
+        WebMarkupContainer row = new WebMarkupContainer(attributeViewId);
+        fields.add(row);
+        row.add(createEditorField("row", new MapModel<String, String>(values, a.getId()), a));
+        return attributeViewId;
     }
 
     public static AbstractField<?> createEditorField(String id, IModel<String> model,
