@@ -22,23 +22,30 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.openengsb.domains.deploy</groupId>
-    <artifactId>openengsb-domains-deploy-parent</artifactId>
+    <groupId>org.openengsb.connectors</groupId>
+    <artifactId>openengsb-connectors-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.domains.deploy</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.domains.deploy</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.connectors.maven</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.connectors.maven</bundle.namespace>
   </properties>
 
-  <groupId>org.openengsb.domains.deploy</groupId>
-  <artifactId>openengsb-domains-deploy-implementation</artifactId>
+  <artifactId>openengsb-connectors-maven</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Domains :: Deploy :: Implementation</name>
+  <name>OpenEngSB :: Connectors :: Maven</name>
 
   <packaging>bundle</packaging>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+  </build>
 
   <dependencies>
     <dependency>
@@ -49,9 +56,32 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-events</artifactId>
+      <artifactId>openengsb-core-persistence</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domains.test</groupId>
+      <artifactId>openengsb-domains-test-implementation</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <version>${hamcrest.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

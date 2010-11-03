@@ -19,27 +19,38 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
-    <groupId>org.openengsb.domains.issue</groupId>
-    <artifactId>openengsb-domains-issue-parent</artifactId>
+    <groupId>org.openengsb.connectors</groupId>
+    <artifactId>openengsb-connectors-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.domains.issue.trac</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.domains.issue.trac</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.connectors.example</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.connectors.example</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openengsb.domains.issue</groupId>
-  <artifactId>openengsb-domains-issue-trac</artifactId>
+  <artifactId>openengsb-connectors-example</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Domains :: Issue :: Trac</name>
+  <name>OpenEngSB :: Connectors :: Example</name>
 
   <packaging>bundle</packaging>
 
   <dependencies>
     <!-- Pax Logging -->
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-service</artifactId>
+      <version>${pax.logging.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.logging</groupId>
+      <artifactId>pax-logging-api</artifactId>
+      <version>${pax.logging.version}</version>
+      <optional>true</optional>
+    </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
@@ -47,14 +58,14 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.domains.issue</groupId>
-      <artifactId>openengsb-domains-issue-implementation</artifactId>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-persistence</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
-     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-persistence</artifactId>
+    <dependency>
+      <groupId>org.openengsb.domains.example</groupId>
+      <artifactId>openengsb-domains-example-implementation</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -77,10 +88,28 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.xmlrpc</groupId>
-      <artifactId>xmlrpc-client</artifactId>
-      <version>${xmlrpc.version}</version>
-      <scope>compile</scope>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${spring.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam</artifactId>
+      <version>${exam.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam-container-default</artifactId>
+      <version>${exam.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ops4j.pax.exam</groupId>
+      <artifactId>pax-exam-junit</artifactId>
+      <version>${exam.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>

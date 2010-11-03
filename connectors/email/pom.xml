@@ -19,22 +19,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
-    <groupId>org.openengsb.domains.notification</groupId>
-    <artifactId>openengsb-domains-notification-parent</artifactId>
+    <groupId>org.openengsb.connectors</groupId>
+    <artifactId>openengsb-connectors-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
 
   <properties>
-    <bundle.symbolicName>org.openengsb.domains.notification.email</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.domains.notification.email</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.connectors.email</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.connectors.email</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>openengsb-domains-notification-email</artifactId>
+  <artifactId>openengsb-connectors-email</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Domains :: Notification :: Email </name>
+  <name>OpenEngSB :: Connectors :: Email </name>
 
   <packaging>bundle</packaging>
 

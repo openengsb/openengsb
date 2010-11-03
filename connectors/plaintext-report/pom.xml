@@ -16,31 +16,29 @@
    limitations under the License.
 
 -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-
   <parent>
-    <groupId>org.openengsb.domains.scm</groupId>
-    <artifactId>openengsb-domains-scm-parent</artifactId>
+    <groupId>org.openengsb.connectors</groupId>
+    <artifactId>openengsb-connectors-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
+
   <properties>
-    <bundle.symbolicName>org.openengsb.domains.scm.git</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.domains.scm.git</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.connectors.plaintextReport</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.connectors.plaintextReport</bundle.namespace>
   </properties>
 
-  <groupId>org.openengsb.domains.scm</groupId>
-  <artifactId>openengsb-domains-scm-git</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>openengsb-connectors-plaintextReport</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Domains :: Scm :: Git</name>
+  <name>OpenEngSB :: Connectors :: Plaintext Report</name>
 
   <packaging>bundle</packaging>
 
-  <build>
+   <build>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -56,8 +54,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.domains.scm</groupId>
-      <artifactId>openengsb-domains-scm-implementation</artifactId>
+      <groupId>org.openengsb.domains.report</groupId>
+      <artifactId>openengsb-domains-report-implementation</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -79,6 +77,11 @@
       <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>${spring.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
 </project>

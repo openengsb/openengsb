@@ -16,27 +16,39 @@
    limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
-    <relativePath>..</relativePath>
     <groupId>org.openengsb.domains</groupId>
     <artifactId>openengsb-domains-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <bundle.symbolicName>org.openengsb.domains.notification</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.domains.notification</bundle.namespace>
+  </properties>
+
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openengsb.domains.notification</groupId>
-  <artifactId>openengsb-domains-notification-parent</artifactId>
+  <artifactId>openengsb-domains-notification</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Domains :: Notification :: Parent</name>
+  <name>OpenEngSB :: Domains :: Notification</name>
 
-  <packaging>pom</packaging>
+  <packaging>bundle</packaging>
 
-  <modules>
-    <module>email</module>
-    <module>implementation</module>
-  </modules>
-
+  <dependencies>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-common</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-events</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
 </project>
