@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package org.openengsb.domains.build;
+package org.openengsb.domain.build;
 
-import org.openengsb.core.common.AbstractDomainProvider;
+import org.openengsb.core.common.DomainEvents;
 
-public class BuildDomainProvider extends AbstractDomainProvider<BuildDomain, BuildDomainEvents> {
+public interface BuildDomainEvents extends DomainEvents {
 
+    void raiseEvent(BuildStartEvent e);
+    
+    void raiseEvent(BuildEndEvent e);
 }

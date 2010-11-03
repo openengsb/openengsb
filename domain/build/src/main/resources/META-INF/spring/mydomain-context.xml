@@ -25,21 +25,21 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:service interface="org.openengsb.core.common.DomainProvider">
-    <bean class="org.openengsb.domains.build.BuildDomainProvider" />
+    <bean class="org.openengsb.domain.build.BuildDomainProvider" />
   </osgi:service>
 
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.Domain</value>
-      <value>org.openengsb.domains.build.BuildDomain</value>
+      <value>org.openengsb.domain.build.BuildDomain</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.mydomain" />
+      <entry key="id" value="domain.build" />
       <entry key="openengsb.service.type" value="domain" />
     </osgi:service-properties>
     <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
       <property name="domainInterface">
-        <value>org.openengsb.domains.build.BuildDomain</value>
+        <value>org.openengsb.domain.build.BuildDomain</value>
       </property>
       <property name="domainName" value="BuildDomain" />
       <property name="context" ref="contextService" />
@@ -49,16 +49,16 @@
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.DomainEvents</value>
-      <value>org.openengsb.domains.build.BuildDomainEvents</value>
+      <value>org.openengsb.domain.build.BuildDomainEvents</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.mydomain.events" />
+      <entry key="id" value="domain.build.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </osgi:service-properties>
 
     <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
       <property name="domainEventInterface">
-        <value>org.openengsb.domains.build.BuildDomainEvents</value>
+        <value>org.openengsb.domain.build.BuildDomainEvents</value>
       </property>
       <property name="workflowService" ref="workflowService" />
     </bean>

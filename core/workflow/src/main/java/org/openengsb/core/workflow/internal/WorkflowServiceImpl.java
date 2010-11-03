@@ -126,7 +126,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     private boolean findDomainGlobal(String name) {
         String clazz = Domain.class.getName();
-        String filter = String.format("(&(openengsb.service.type=domain)(id=domains.%s))", name);
+        String filter = String.format("(&(openengsb.service.type=domain)(id=domain.%s))", name);
         ServiceReference ref = findGlobalReference(name, clazz, filter);
         if (ref == null) {
             return false;
@@ -217,7 +217,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
             ServiceReference serviceReference = event.getServiceReference();
             if (serviceReference.getProperty("openengsb.service.type").equals("domain")) {
                 String id = (String) serviceReference.getProperty("id");
-                String name = id.replaceFirst("domains.", "");
+                String name = id.replaceFirst("domain.", "");
                 Domain service = (Domain) bundleContext.getService(serviceReference);
                 synchronized (services) {
                     services.put(name, service);
