@@ -25,12 +25,12 @@
 
   <osgi:service interface="org.openengsb.core.common.ServiceManager">
     <osgi:service-properties>
-      <entry key="domain" value="org.openengsb.domains.test.TestDomain" />
+      <entry key="domain" value="org.openengsb.domain.test.TestDomain" />
       <entry key="openengsb.service.type" value="connector" />
     </osgi:service-properties>
-    <bean class="org.openengsb.domains.test.maven.TestDomainServiceManager" init-method="init">
+    <bean class="org.openengsb.connector.maven.TestDomainServiceManager" init-method="init">
       <constructor-arg>
-        <bean class="org.openengsb.domains.test.maven.internal.TestDomainServiceInstanceFactory" />
+        <bean class="org.openengsb.connector.maven.internal.TestDomainServiceInstanceFactory" />
       </constructor-arg>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
     </bean>

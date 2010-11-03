@@ -25,21 +25,21 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:service interface="org.openengsb.core.common.DomainProvider">
-    <bean class="org.openengsb.domains.report.ReportDomainProvider" />
+    <bean class="org.openengsb.domain.report.ReportDomainProvider" />
   </osgi:service>
 
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.Domain</value>
-      <value>org.openengsb.domains.report.ReportDomain</value>
+      <value>org.openengsb.domain.report.ReportDomain</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.report" />
+      <entry key="id" value="domain.report" />
       <entry key="openengsb.service.type" value="domain" />
     </osgi:service-properties>
     <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
       <property name="domainInterface">
-        <value>org.openengsb.domains.report.ReportDomain</value>
+        <value>org.openengsb.domain.report.ReportDomain</value>
       </property>
       <property name="domainName" value="ReportDomain" />
       <property name="context" ref="contextService" />
@@ -48,17 +48,17 @@
   
   <osgi:service>
     <osgi:interfaces>
-      <value>org.openengsb.domains.report.ReportDomainEvents</value>
+      <value>org.openengsb.domain.report.ReportDomainEvents</value>
       <value>org.openengsb.core.common.DomainEvents</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.report.events" />
+      <entry key="id" value="domain.report.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </osgi:service-properties>
 
     <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
       <property name="domainEventInterface">
-        <value>org.openengsb.domains.report.ReportDomainEvents</value>
+        <value>org.openengsb.domain.report.ReportDomainEvents</value>
       </property>
       <property name="workflowService" ref="workflowService" />
     </bean>

@@ -25,11 +25,11 @@
 
   <osgi:service interface="org.openengsb.core.common.ServiceManager">
     <osgi:service-properties>
-      <entry key="domain" value="org.openengsb.domains.scm.ScmDomain" />
+      <entry key="domain" value="org.openengsb.domain.scm.ScmDomain" />
     </osgi:service-properties>
-    <bean class="org.openengsb.domains.scm.git.GitServiceManager" init-method="init">
+    <bean class="org.openengsb.connector.git.GitServiceManager" init-method="init">
       <constructor-arg>
-        <bean class="org.openengsb.domains.scm.git.internal.GitServiceInstanceFactory" />
+        <bean class="org.openengsb.connector.git.internal.GitServiceInstanceFactory" />
       </constructor-arg>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
     </bean>

@@ -25,11 +25,11 @@
 
   <osgi:service interface="org.openengsb.core.common.ServiceManager">
     <osgi:service-properties>
-      <entry key="domain" value="org.openengsb.domains.issue.IssueDomain" />
+      <entry key="domain" value="org.openengsb.domain.issue.IssueDomain" />
     </osgi:service-properties>
-    <bean class="org.openengsb.domains.issue.trac.TracServiceManager" init-method="init">
+    <bean class="org.openengsb.connector.trac.TracServiceManager" init-method="init">
       <constructor-arg>
-        <bean class="org.openengsb.domains.issue.trac.internal.TracServiceInstanceFactory" />
+        <bean class="org.openengsb.connector.trac.internal.TracServiceInstanceFactory" />
       </constructor-arg>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
     </bean>

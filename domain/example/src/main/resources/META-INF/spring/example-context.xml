@@ -24,23 +24,23 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:service interface="org.openengsb.core.common.DomainProvider">
-    <bean class="org.openengsb.domains.example.ExampleDomainProvider" />
+    <bean class="org.openengsb.domain.example.ExampleDomainProvider" />
   </osgi:service>
 
   <osgi:service>
     <osgi:interfaces>
-      <value>org.openengsb.domains.example.ExampleDomain</value>
+      <value>org.openengsb.domain.example.ExampleDomain</value>
       <value>org.openengsb.core.common.Domain</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.example" />
+      <entry key="id" value="domain.example" />
       <entry key="openengsb.service.type" value="domain" />
     </osgi:service-properties>
 
     <!-- this bean replaces the ForwardService -->
     <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
       <property name="domainInterface">
-        <value>org.openengsb.domains.example.ExampleDomain</value>
+        <value>org.openengsb.domain.example.ExampleDomain</value>
       </property>
       <property name="domainName" value="ExampleDomain" />
       <property name="context" ref="contextService" />
@@ -49,17 +49,17 @@
 
   <osgi:service>
     <osgi:interfaces>
-      <value>org.openengsb.domains.example.ExampleDomainEvents</value>
+      <value>org.openengsb.domain.example.ExampleDomainEvents</value>
       <value>org.openengsb.core.common.DomainEvents</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.example.events" />
+      <entry key="id" value="domain.example.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </osgi:service-properties>
 
     <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
       <property name="domainEventInterface">
-        <value>org.openengsb.domains.example.ExampleDomainEvents</value>
+        <value>org.openengsb.domain.example.ExampleDomainEvents</value>
       </property>
       <property name="workflowService" ref="workflowService" />
     </bean>

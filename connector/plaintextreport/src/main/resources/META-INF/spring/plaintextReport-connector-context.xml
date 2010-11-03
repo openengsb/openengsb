@@ -25,13 +25,13 @@
 
   <osgi:service interface="org.openengsb.core.common.ServiceManager">
     <osgi:service-properties>
-      <entry key="domain" value="org.openengsb.domains.report.ReportDomain" />
+      <entry key="domain" value="org.openengsb.domain.report.ReportDomain" />
     </osgi:service-properties>
-    <bean class="org.openengsb.domains.report.plaintext.PlaintextReportServiceManager" init-method="init">
+    <bean class="org.openengsb.connector.plaintextreport.PlaintextReportServiceManager" init-method="init">
       <constructor-arg>
-        <bean class="org.openengsb.domains.report.plaintext.internal.PlaintextReportFactory">
+        <bean class="org.openengsb.connector.plaintextreport.internal.PlaintextReportFactory">
           <constructor-arg>
-            <bean class="org.openengsb.domains.report.common.FileSystemReportStoreFactory" />
+            <bean class="org.openengsb.domain.report.common.FileSystemReportStoreFactory" />
           </constructor-arg>
         </bean>
       </constructor-arg>

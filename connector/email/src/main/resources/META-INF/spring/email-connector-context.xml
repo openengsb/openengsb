@@ -25,25 +25,24 @@
 
   <osgi:service interface="org.openengsb.core.common.ServiceManager">
     <osgi:service-properties>
-      <entry key="domain" value="org.openengsb.domains.notification.NotificationDomain" />
+      <entry key="domain" value="org.openengsb.domain.notification.NotificationDomain" />
     </osgi:service-properties>
-    <bean class="org.openengsb.domains.notification.email.EmailServiceManager" init-method="init">
+    <bean class="org.openengsb.connector.email.EmailServiceManager" init-method="init">
       <constructor-arg>
-        <bean class="org.openengsb.domains.notification.email.internal.EmailNotifierFactory">
+        <bean class="org.openengsb.connector.email.internal.EmailNotifierFactory">
           <constructor-arg>
-            <bean class="org.openengsb.domains.notification.email.internal.abstraction.JavaxMailAbstraction" />
+            <bean class="org.openengsb.connector.email.internal.abstraction.JavaxMailAbstraction" />
           </constructor-arg>
         </bean>
       </constructor-arg>
-      <property name="connectorSetupStore" ref="connectorSetupStore" />
+      <property name="connectorSetupStore">
+        <bean class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore" init-method="init">
+          <property name="persistenceManager">
+            <osgi:reference interface="org.openengsb.core.persistence.PersistenceManager" />
+          </property>
+        </bean>
+      </property>
     </bean>
   </osgi:service>
-
-  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
-    init-method="init">
-    <property name="persistenceManager" ref="persistenceServiceManager" />
-  </bean>
-
-  <osgi:reference id="persistenceServiceManager" interface="org.openengsb.core.persistence.PersistenceManager" />
 
 </beans>

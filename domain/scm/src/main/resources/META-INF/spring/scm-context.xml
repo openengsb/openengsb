@@ -25,21 +25,21 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:service interface="org.openengsb.core.common.DomainProvider">
-    <bean class="org.openengsb.domains.scm.ScmDomainProvider" />
+    <bean class="org.openengsb.domain.scm.ScmDomainProvider" />
   </osgi:service>
 
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.Domain</value>
-      <value>org.openengsb.domains.scm.ScmDomain</value>
+      <value>org.openengsb.domain.scm.ScmDomain</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.scm" />
+      <entry key="id" value="domain.scm" />
       <entry key="openengsb.service.type" value="domain" />
     </osgi:service-properties>
     <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
       <property name="domainInterface">
-        <value>org.openengsb.domains.scm.ScmDomain</value>
+        <value>org.openengsb.domain.scm.ScmDomain</value>
       </property>
       <property name="domainName" value="ScmDomain" />
       <property name="context" ref="contextService" />
@@ -49,16 +49,16 @@
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.DomainEvents</value>
-      <value>org.openengsb.domains.scm.ScmDomainEvents</value>
+      <value>org.openengsb.domain.scm.ScmDomainEvents</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.scm.events" />
+      <entry key="id" value="domain.scm.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </osgi:service-properties>
 
     <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
       <property name="domainEventInterface">
-        <value>org.openengsb.domains.scm.ScmDomainEvents</value>
+        <value>org.openengsb.domain.scm.ScmDomainEvents</value>
       </property>
       <property name="workflowService" ref="workflowService" />
     </bean>
