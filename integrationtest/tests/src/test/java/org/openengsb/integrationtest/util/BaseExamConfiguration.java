@@ -174,6 +174,28 @@ public final class BaseExamConfiguration {
         }
     }
 
+    public static String getRootPropertiesFromPom(String fileUrl) {
+        try {
+            Map<String, String> versions = new HashMap<String, String>();
+            File file = new File(fileUrl);
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(file);
+            doc.getDocumentElement().normalize();
+            NodeList nodeLst = doc.getDocumentElement().getChildNodes();
+            for (int s = 0; s < nodeLst.getLength(); s++) {
+                Node fstNode = nodeLst.item(s);
+                if (fstNode.getNodeType() == Node.ELEMENT_NODE
+                        && ((Element) fstNode).getNodeName().equals("version")) {
+                    return fstNode.getTextContent();
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException("Internal Error", e);
+        }
+    }
+
     public static void debug(List<Option> baseConfiguration) {
         baseConfiguration.add(PaxRunnerOptions
                 .vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"));

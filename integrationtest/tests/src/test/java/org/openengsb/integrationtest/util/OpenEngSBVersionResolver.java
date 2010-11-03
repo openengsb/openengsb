@@ -22,7 +22,7 @@ public class OpenEngSBVersionResolver implements VersionResolver {
 
     @Override
     public String getVersion(String arg0, String arg1) {
-        return "1.0.0-SNAPSHOT";
+        return BaseExamConfiguration.getRootPropertiesFromPom("../../pom.xml");
     }
 
 }
