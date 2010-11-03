@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -17,16 +16,13 @@
 
 -->
 
-<wicket:panel
-	xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
-	<form wicket:id="form">
-		<select wicket:id="typeChoice" />
-		<select wicket:id="ruleChoice" />
-		<input wicket:id="ruleName" />	
-		<button wicket:id="new"><wicket:message key="button.new">[button.new]</wicket:message></button>
-		<button wicket:id="save"><wicket:message key="button.save">[button.save]</wicket:message></button>
-		<button wicket:id="cancel"><wicket:message key="button.cancel">[button.cancel]</wicket:message></button><br/>
-		<textarea wicket:id="text" rows="30" cols="80"> </textarea>
-	</form>
-	<span wicket:id="feedback"/>
+<wicket:panel xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
+  <form wicket:id="form"><select wicket:id="typeChoice" /> <select wicket:id="ruleChoice" /> <input
+    wicket:id="ruleName" />
+  <button wicket:id="new"><wicket:message key="button.new">[button.new]</wicket:message></button>
+  <button wicket:id="save"><wicket:message key="button.save">[button.save]</wicket:message></button>
+  <button wicket:id="cancel"><wicket:message key="button.cancel">[button.cancel]</wicket:message></button>
+  <br />
+  <textarea wicket:id="text" rows="30" cols="80"> </textarea></form>
+  <span wicket:id="feedback" />
 </wicket:panel>
