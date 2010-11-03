@@ -42,18 +42,18 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.ui.web.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
-public abstract class EditorPanel extends Panel {
+public abstract class ServiceEditorPanel extends Panel {
 
     private final Map<String, String> values;
     private final List<AttributeDefinition> attributes;
     private final FormValidator validator;
     private final Map<String, String> attributeViewIds = new HashMap<String, String>();
 
-    public EditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values) {
+    public ServiceEditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values) {
         this(id, attributes, values, new DefaultPassingFormValidator());
     }
 
-    public EditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values,
+    public ServiceEditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values,
             FormValidator validator) {
         super(id);
         this.attributes = attributes;
@@ -117,7 +117,7 @@ public abstract class EditorPanel extends Panel {
         AjaxButton submitButton = new IndicatingAjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                EditorPanel.this.onSubmit();
+                ServiceEditorPanel.this.onSubmit();
                 if (hasErrorMessage()) {
                     addAjaxValidationToForm(form);
                     target.addComponent(form);

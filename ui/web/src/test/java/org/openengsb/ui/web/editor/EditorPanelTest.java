@@ -59,7 +59,7 @@ import org.openengsb.ui.web.validation.NumberValidator;
 public class EditorPanelTest {
 
     private WicketTester tester;
-    private EditorPanel editor;
+    private ServiceEditorPanel editor;
     private Map<String, String> defaultValues;
     private AttributeDefinition attribOption;
     private AttributeDefinition attribBoolean;
@@ -272,10 +272,10 @@ public class EditorPanelTest {
         }
         defaultValues = new HashMap<String, String>(values);
         tester = new WicketTester();
-        editor = (EditorPanel) tester.startPanel(new TestPanelSource() {
+        editor = (ServiceEditorPanel) tester.startPanel(new TestPanelSource() {
             @Override
             public Panel getTestPanel(String panelId) {
-                return new EditorPanel(panelId, Arrays.asList(attributes), values, validator) {
+                return new ServiceEditorPanel(panelId, Arrays.asList(attributes), values, validator) {
                     @Override
                     public void onSubmit() {
                     }

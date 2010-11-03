@@ -42,7 +42,7 @@ import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
-import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.editor.ServiceEditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 
@@ -84,7 +84,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 Class<?> theClass = dropDownChoice.getModelObject();
-                EditorPanel editor = createEditorPanelForClass(theClass);
+                ServiceEditorPanel editor = createEditorPanelForClass(theClass);
                 SendEventPage.this.replace(editor);
                 target.addComponent(editor);
             }
@@ -94,11 +94,11 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         add(new RuleEditorPanel("ruleEditor", this));
     }
 
-    private EditorPanel createEditorPanelForClass(Class<?> theClass) {
+    private ServiceEditorPanel createEditorPanelForClass(Class<?> theClass) {
         Map<String, String> defaults = new HashMap<String, String>();
         List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(theClass);
         moveNameToFront(attributes);
-        EditorPanel editor = new EditorPanel("editor", attributes, defaults) {
+        ServiceEditorPanel editor = new ServiceEditorPanel("editor", attributes, defaults) {
             @Override
             public void onSubmit() {
                 Event event = buildEvent(dropDownChoice.getModelObject(), getValues());

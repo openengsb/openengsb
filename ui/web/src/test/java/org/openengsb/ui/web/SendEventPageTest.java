@@ -45,12 +45,12 @@ import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
-import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.editor.ServiceEditorPanel;
 
 public class SendEventPageTest {
 
     private WicketTester tester;
-    private EditorPanel editorPanel;
+    private ServiceEditorPanel editorPanel;
     private DropDownChoice<Class<?>> dropdown;
     private WorkflowService eventService;
     private List<Class<? extends Event>> eventClasses;
@@ -71,7 +71,7 @@ public class SendEventPageTest {
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
         eventClasses = Arrays.<Class<? extends Event>> asList(Dummy.class, Dummy2.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
-        editorPanel = (EditorPanel) tester.getComponentFromLastRenderedPage("editor");
+        editorPanel = (ServiceEditorPanel) tester.getComponentFromLastRenderedPage("editor");
         dropdown = (DropDownChoice<Class<?>>) tester.getComponentFromLastRenderedPage("form:dropdown");
         formTester = tester.newFormTester("editor:form");
     }
@@ -145,7 +145,7 @@ public class SendEventPageTest {
     public void selectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
         selectEventType(1);
         List<AttributeDefinition> attributes =
-            ((EditorPanel) tester.getComponentFromLastRenderedPage("editor")).getAttributes();
+            ((ServiceEditorPanel) tester.getComponentFromLastRenderedPage("editor")).getAttributes();
         assertThat(attributes.size(), is(3));
         assertThat(attributes.get(1).getName().getString(null), is("firstProperty"));
     }
