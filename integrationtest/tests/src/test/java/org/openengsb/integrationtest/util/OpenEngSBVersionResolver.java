@@ -20,9 +20,14 @@ import org.ops4j.pax.exam.options.MavenUrlReference.VersionResolver;
 
 public class OpenEngSBVersionResolver implements VersionResolver {
 
+    private static String openengsbVersion;
+
     @Override
     public String getVersion(String arg0, String arg1) {
-        return BaseExamConfiguration.getRootPropertiesFromPom("../../pom.xml");
+        if (openengsbVersion == null) {
+            openengsbVersion = BaseExamConfiguration.getRootPropertiesFromPom("../../pom.xml");
+        }
+        return openengsbVersion;
     }
 
 }
