@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.plaintextreport.internal;
+package org.openengsb.integrationtest.util;
 
-public class InMemoryReportPartStoreTest extends ReportPartStoreTest {
+import org.ops4j.pax.exam.options.MavenUrlReference.VersionResolver;
 
-    @Override
-    protected ReportPartStore createStore() {
-        return new InMemoryReportPartStore();
-    }
+public class OpenEngSBVersionResolver implements VersionResolver {
 
     @Override
-    protected void deleteStore() {
-        // do nothing
+    public String getVersion(String arg0, String arg1) {
+        return "1.0.0-SNAPSHOT";
     }
 
 }

@@ -23,8 +23,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.connector.email.internal.EmailNotifier;
-import org.openengsb.connector.email.internal.EmailNotifierFactory;
 import org.openengsb.connector.email.internal.abstraction.MailAbstraction;
 import org.openengsb.connector.email.internal.abstraction.MailProperties;
 

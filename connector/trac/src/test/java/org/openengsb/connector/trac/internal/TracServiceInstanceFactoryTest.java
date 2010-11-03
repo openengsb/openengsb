@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Test;
-import org.openengsb.connector.trac.internal.TracConnector;
-import org.openengsb.connector.trac.internal.TracServiceInstanceFactory;
 import org.openengsb.connector.trac.internal.models.TicketHandlerFactory;
 
 public class TracServiceInstanceFactoryTest {

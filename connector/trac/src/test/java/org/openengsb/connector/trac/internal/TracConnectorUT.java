@@ -22,7 +22,6 @@ import static org.hamcrest.core.IsNot.not;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.junit.Test;
-import org.openengsb.connector.trac.internal.TracConnector;
 import org.openengsb.connector.trac.internal.models.TicketHandlerFactory;
 import org.openengsb.domain.issue.models.Issue;
 

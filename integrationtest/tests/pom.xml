@@ -64,43 +64,43 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.domains.example</groupId>
-      <artifactId>openengsb-domains-example-implementation</artifactId>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-example</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.domains.example</groupId>
-      <artifactId>openengsb-domains-example-connector</artifactId>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>openengsb-connector-example</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.domains.issue</groupId>
-      <artifactId>openengsb-domains-issue-implementation</artifactId>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-issue</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.domains.notification</groupId>
-      <artifactId>openengsb-domains-notification-implementation</artifactId>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-notification</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.domains.notification</groupId>
-      <artifactId>openengsb-domains-notification-email</artifactId>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>openengsb-connector-email</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
      <dependency>
-      <groupId>org.openengsb.domains.report</groupId>
-      <artifactId>openengsb-domains-report-implementation</artifactId>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-report</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.domains.report</groupId>
-      <artifactId>openengsb-domains-report-plaintext</artifactId>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>openengsb-connector-plaintextreport</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>

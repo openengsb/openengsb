@@ -24,7 +24,6 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.domain.report.common.ReportStore;
 import org.openengsb.domain.report.model.Report;
 import org.openengsb.domain.report.model.ReportPart;
 import org.openengsb.domain.report.model.SimpleReportPart;
@@ -39,7 +38,7 @@ public abstract class ReportStoreTest {
 
     @Before
     public void setUp() {
-        this.reportStore = getReportStore();
+        reportStore = getReportStore();
         reportStore.createCategory("42");
         reportStore.storeReport("42", new Report("test"));
         reportStore.storeReport("42", new Report("test1"));
@@ -70,15 +69,15 @@ public abstract class ReportStoreTest {
     @Test
     public void removeCategory_shouldWork() {
         assertThat(reportStore.getAllCategories().contains("42"), is(true));
-        this.reportStore.removeCategory("42");
+        reportStore.removeCategory("42");
         assertThat(reportStore.getAllCategories().contains("42"), is(false));
     }
 
     @Test
     public void removeCategoryTwice_shouldPerformNoOpOnSecondRemoval() {
-        this.reportStore.removeCategory("42");
+        reportStore.removeCategory("42");
         assertThat(reportStore.getAllCategories().contains("42"), is(false));
-        this.reportStore.removeCategory("42");
+        reportStore.removeCategory("42");
     }
 
     @Test
@@ -89,9 +88,9 @@ public abstract class ReportStoreTest {
 
     @Test
     public void getAllCategoriesWithCategories_shouldReturnAllCategories() {
-        this.reportStore.createCategory("testCategory");
-        this.reportStore.createCategory("testCategory2");
-        this.reportStore.createCategory("testCategory3");
+        reportStore.createCategory("testCategory");
+        reportStore.createCategory("testCategory2");
+        reportStore.createCategory("testCategory3");
         List<String> categories = reportStore.getAllCategories();
         assertThat(categories.size(), is(4));
         assertThat(categories.contains("42"), is(true));
@@ -103,25 +102,25 @@ public abstract class ReportStoreTest {
     @Test
     public void storeReportNewCategory_shouldCreateCategoryAndStoreReport() {
         Report report = new Report("testReport");
-        this.reportStore.storeReport("testCategory", report);
+        reportStore.storeReport("testCategory", report);
         assertThat(reportStore.getAllReports("testCategory").get(0).getName(), is("testReport"));
     }
 
     @Test
     public void storeReportExistingCategory_shouldStoreReport() {
-        this.reportStore.createCategory("testCategory");
+        reportStore.createCategory("testCategory");
         Report report = new Report("testReport");
-        this.reportStore.storeReport("testCategory", report);
+        reportStore.storeReport("testCategory", report);
         assertThat(reportStore.getAllReports("testCategory").get(0).getName(), is("testReport"));
     }
 
     @Test
     public void storeReportTwice_shouldOverwriteReport() {
         Report report = new Report("testReport");
-        this.reportStore.storeReport("testCategory", report);
+        reportStore.storeReport("testCategory", report);
         report = new Report("testReport");
         report.addPart(new SimpleReportPart("somePart", "text/plain", "foo".getBytes()));
-        this.reportStore.storeReport("testCategory", report);
+        reportStore.storeReport("testCategory", report);
         List<ReportPart> parts = reportStore.getAllReports("testCategory").get(0).getParts();
         assertThat(parts.size(), is(1));
         assertThat(parts.get(0).getPartName(), is("somePart"));
@@ -132,8 +131,8 @@ public abstract class ReportStoreTest {
     @Test
     public void removeReport_shouldWork() {
         Report report = new Report("testReport");
-        this.reportStore.storeReport("testCategory", report);
-        this.reportStore.removeReport("testCategory", report);
+        reportStore.storeReport("testCategory", report);
+        reportStore.removeReport("testCategory", report);
         assertThat(reportStore.getAllReports("testCategory").isEmpty(), is(true));
 
     }
@@ -141,15 +140,15 @@ public abstract class ReportStoreTest {
     @Test
     public void removeReportTwice_shouldPerformNoOPOnSecondRemoval() {
         Report report = new Report("testReport");
-        this.reportStore.storeReport("testCategory", report);
-        this.reportStore.removeReport("testCategory", report);
+        reportStore.storeReport("testCategory", report);
+        reportStore.removeReport("testCategory", report);
         assertThat(reportStore.getAllReports("testCategory").isEmpty(), is(true));
-        this.reportStore.removeReport("testCategory", report);
+        reportStore.removeReport("testCategory", report);
     }
 
     @Test
     public void getAllReportsCategoryDoesNotExist_shouldReturnEmptyList() {
-        List<Report> allReports = this.reportStore.getAllReports("foo");
+        List<Report> allReports = reportStore.getAllReports("foo");
         assertThat(allReports.isEmpty(), is(true));
     }
 
@@ -162,9 +161,9 @@ public abstract class ReportStoreTest {
 
     @Test
     public void getAllReports_shouldReturnAllReports() {
-        this.reportStore.storeReport("testCategory", new Report("testReport"));
-        this.reportStore.storeReport("testCategory", new Report("testReport1"));
-        this.reportStore.storeReport("testCategory", new Report("testReport2"));
+        reportStore.storeReport("testCategory", new Report("testReport"));
+        reportStore.storeReport("testCategory", new Report("testReport1"));
+        reportStore.storeReport("testCategory", new Report("testReport2"));
         List<Report> allReports = reportStore.getAllReports("testCategory");
         assertThat(allReports.size(), is(3));
     }

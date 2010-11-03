@@ -23,8 +23,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.connector.plaintextreport.internal.PlaintextReportFactory;
-import org.openengsb.connector.plaintextreport.internal.PlaintextReportService;
 import org.openengsb.domain.report.common.ReportStore;
 import org.openengsb.domain.report.common.ReportStoreFactory;
 

@@ -32,7 +32,6 @@ import java.util.Hashtable;
 import org.apache.xmlrpc.XmlRpcException;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.connector.trac.internal.TracConnector;
 import org.openengsb.connector.trac.internal.models.TicketHandlerFactory;
 import org.openengsb.connector.trac.internal.models.constants.TracFieldConstants;
 import org.openengsb.connector.trac.internal.models.constants.TracPriorityConstants;

@@ -27,7 +27,6 @@ import java.util.UUID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.connector.plaintextreport.internal.ReportPartStore;
 import org.openengsb.domain.report.model.ReportPart;
 import org.openengsb.domain.report.model.SimpleReportPart;
 
@@ -43,7 +42,7 @@ public abstract class ReportPartStoreTest {
 
     @Before
     public void setUp() {
-        this.store = createStore();
+        store = createStore();
         alreadyAddedKey = UUID.randomUUID().toString();
         store.storePart(alreadyAddedKey, new SimpleReportPart("alreadyAdded1", "text/plain", null));
         store.storePart(alreadyAddedKey, new SimpleReportPart("alreadyAdded2", "text/plain", null));

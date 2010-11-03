@@ -27,10 +27,10 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.domains.report.NoSuchReportException;
-import org.openengsb.domains.report.ReportDomain;
-import org.openengsb.domains.report.model.Report;
-import org.openengsb.domains.report.model.SimpleReportPart;
+import org.openengsb.domain.report.NoSuchReportException;
+import org.openengsb.domain.report.ReportDomain;
+import org.openengsb.domain.report.model.Report;
+import org.openengsb.domain.report.model.SimpleReportPart;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 

@@ -1,2 +1,2 @@
-org.openengsb.domains.notification.NotificationDomain notification
-org.openengsb.domains.example.ExampleDomain example
+org.openengsb.domain.notification.NotificationDomain notification
+org.openengsb.domain.example.ExampleDomain example

@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 
 import org.junit.Test;
-import org.openengsb.connector.email.internal.EmailNotifier;
 import org.openengsb.connector.email.internal.abstraction.MailAbstraction;
 import org.openengsb.connector.email.internal.abstraction.MailProperties;
 import org.openengsb.core.common.DomainMethodExecutionException;

@@ -32,7 +32,6 @@
     <bundle.namespace>org.openengsb.domain.deploy</bundle.namespace>
   </properties>
 
-  <groupId>org.openengsb.domain.deploy</groupId>
   <artifactId>openengsb-domain-deploy</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 

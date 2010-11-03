@@ -32,12 +32,12 @@ import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
-import org.openengsb.domains.example.ExampleDomain;
-import org.openengsb.domains.issue.IssueDomain;
-import org.openengsb.domains.issue.models.Issue;
-import org.openengsb.domains.issue.models.IssueAttribute;
-import org.openengsb.domains.notification.NotificationDomain;
-import org.openengsb.domains.notification.model.Notification;
+import org.openengsb.domain.example.ExampleDomain;
+import org.openengsb.domain.issue.IssueDomain;
+import org.openengsb.domain.issue.models.Issue;
+import org.openengsb.domain.issue.models.IssueAttribute;
+import org.openengsb.domain.notification.NotificationDomain;
+import org.openengsb.domain.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 

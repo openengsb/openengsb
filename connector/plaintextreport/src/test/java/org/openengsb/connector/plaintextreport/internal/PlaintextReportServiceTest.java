@@ -22,7 +22,6 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.connector.plaintextreport.internal.PlaintextReportService;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.report.NoSuchReportException;
