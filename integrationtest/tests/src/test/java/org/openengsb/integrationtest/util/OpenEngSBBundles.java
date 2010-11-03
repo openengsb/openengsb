@@ -67,45 +67,61 @@ public final class OpenEngSBBundles {
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core")
             .artifactId("openengsb-core-taskbox"));
 
-    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_EXAMPLE_IMPLEMENTATION = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.example").artifactId(
-            "openengsb-domains-example-implementation"));
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAIN_EXAMPLE = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domain")
+            .artifactId("openengsb-domain-example"));
 
-    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_EXAMPLE_CONNECTOR = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.example").artifactId(
-            "openengsb-domains-example-connector"));
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAIN_NOTIFICATION = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domain")
+            .artifactId("openengsb-domain-notification"));
 
-    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_NOTIFICATION_IMPLEMENTATION = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.notification").artifactId(
-            "openengsb-domains-notification-implementation"));
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAIN_REPORT = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domain")
+            .artifactId("openengsb-domain-report"));
 
-    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_NOTIFICATION_EMAIL = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.notification").artifactId(
-            "openengsb-domains-notification-email"));
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAIN_ISSUE = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domain")
+            .artifactId("openengsb-domain-issue"));
 
-    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_REPORT_IMPLEMENTATION = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.report").artifactId(
-            "openengsb-domains-report-implementation"));
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAIN_SCM = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domain")
+            .artifactId("openengsb-domain-scm"));
 
-    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_REPORT_PLAINTEXT = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.report").artifactId(
-            "openengsb-domains-report-plaintext"));
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAIN_TEST = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domain")
+            .artifactId("openengsb-domain-test"));
 
-    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_ISSUE_IMPLEMENTATION = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.issue").artifactId(
-            "openengsb-domains-issue-implementation"));
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAIN_DEPLOY = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domain")
+            .artifactId("openengsb-domain-deploy"));
 
-    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_ISSUE_TRAC = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.issue").artifactId(
-            "openengsb-domains-issue-trac"));
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAIN_BUILD = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domain")
+            .artifactId("openengsb-domain-build"));
 
-    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_SCM_IMPLEMENTATION = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.scm").artifactId(
-            "openengsb-domains-scm-implementation"));
+    public static final MavenArtifactProvisionOption OPENENGSB_CONNECTOR_EXAMPLE = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.connector")
+            .artifactId("openengsb-connector-example"));
 
-    public static final MavenArtifactProvisionOption OPENENGSB_DOMAINS_SCM_GIT = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domains.scm").artifactId(
-            "openengsb-domains-scm-git"));
+    public static final MavenArtifactProvisionOption OPENENGSB_CONNECTOR_EMAIL = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.connector")
+            .artifactId("openengsb-connector-email"));
+
+    public static final MavenArtifactProvisionOption OPENENGSB_CONNECTOR_PLAINTEXTREPORT = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.connector")
+            .artifactId("openengsb-connector-plaintextreport"));
+
+    public static final MavenArtifactProvisionOption OPENENGSB_CONNECTOR_TRAC = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.connector")
+            .artifactId("openengsb-connector-trac"));
+
+    public static final MavenArtifactProvisionOption OPENENGSB_CONNECTOR_GIT = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.connector")
+            .artifactId("openengsb-connector-git"));
+
+    public static final MavenArtifactProvisionOption OPENENGSB_CONNECTOR_MAVEN = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.connector")
+            .artifactId("openengsb-connector-maven"));
 
     public static final MavenArtifactProvisionOption OPENENGSB_UI_WEB = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.ui").artifactId("openengsb-ui-web")
