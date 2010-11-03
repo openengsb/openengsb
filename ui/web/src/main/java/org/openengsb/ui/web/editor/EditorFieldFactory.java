@@ -15,6 +15,11 @@
  */
 package org.openengsb.ui.web.editor;
 
+import java.util.List;
+import java.util.Map;
+
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
@@ -26,9 +31,37 @@ import org.openengsb.ui.web.editor.fields.CheckboxField;
 import org.openengsb.ui.web.editor.fields.DropdownField;
 import org.openengsb.ui.web.editor.fields.InputField;
 import org.openengsb.ui.web.editor.fields.PasswordField;
+import org.openengsb.ui.web.model.MapModel;
 
 public final class EditorFieldFactory {
     private EditorFieldFactory() {
+    }
+
+    public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
+            Map<String, String> values) {
+        RepeatingView fields = new RepeatingView(id);
+
+        for (AttributeDefinition a : attributes) {
+            String attributeViewId = fields.newChildId();
+            WebMarkupContainer row = new WebMarkupContainer(attributeViewId);
+            fields.add(row);
+            row.add(createEditorField("row", new MapModel<String, String>(values, a.getId()), a));
+        }
+        return fields;
+    }
+
+    public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
+            Map<String, String> values, Map<String, String> attributeViewIds) {
+        RepeatingView fields = new RepeatingView(id);
+
+        for (AttributeDefinition a : attributes) {
+            String attributeViewId = fields.newChildId();
+            WebMarkupContainer row = new WebMarkupContainer(attributeViewId);
+            fields.add(row);
+            row.add(createEditorField("row", new MapModel<String, String>(values, a.getId()), a));
+            attributeViewIds.put(a.getId(), attributeViewId);
+        }
+        return fields;
     }
 
     public static AbstractField<?> createEditorField(String id, IModel<String> model,
