@@ -53,16 +53,14 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestD
     }
 
     @Override
-    public MultipleAttributeValidationResult updateValidation(MavenServiceImpl instance,
-            Map<String, String> attributes) {
-        // TODO Auto-generated method stub
+    public MultipleAttributeValidationResult
+        updateValidation(MavenServiceImpl instance, Map<String, String> attributes) {
         Map<String, String> emptyMap = Collections.emptyMap();
         return new MultipleAttributeValidationResultImpl(true, emptyMap);
     }
 
     @Override
     public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
-        // TODO Auto-generated method stub
         Map<String, String> emptyMap = Collections.emptyMap();
         return new MultipleAttributeValidationResultImpl(true, emptyMap);
     }
