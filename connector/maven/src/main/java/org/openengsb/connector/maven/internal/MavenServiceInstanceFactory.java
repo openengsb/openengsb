@@ -25,21 +25,21 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domain.test.TestDomain;
 
-public class TestDomainServiceInstanceFactory implements ServiceInstanceFactory<TestDomain, TestDomainServiceImpl> {
+public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestDomain, MavenServiceImpl> {
 
-    public TestDomainServiceInstanceFactory() {
+    public MavenServiceInstanceFactory() {
     }
 
     @Override
-    public void updateServiceInstance(TestDomainServiceImpl instance, Map<String, String> attributes) {
-        if (attributes.containsKey("attr")) {
-            instance.setAttr(attributes.get("attr"));
+    public void updateServiceInstance(MavenServiceImpl instance, Map<String, String> attributes) {
+        if (attributes.containsKey("projectPath")) {
+            instance.setProjectPath(attributes.get("projectPath"));
         }
     }
 
     @Override
-    public TestDomainServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
-        TestDomainServiceImpl service = new TestDomainServiceImpl();
+    public MavenServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
+        MavenServiceImpl service = new MavenServiceImpl();
         updateServiceInstance(service, attributes);
         return service;
     }
@@ -47,13 +47,13 @@ public class TestDomainServiceInstanceFactory implements ServiceInstanceFactory<
     @Override
     public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
         builder.name("service.name").description("service.description");
-        builder.attribute(builder.newAttribute().id("attr").name("service.attr.name")
-            .description("service.attr.description").build());
+        builder.attribute(builder.newAttribute().id("projectPath").name("service.projectPath.name")
+            .description("service.projectPath.description").build());
         return builder.build();
     }
 
     @Override
-    public MultipleAttributeValidationResult updateValidation(TestDomainServiceImpl instance,
+    public MultipleAttributeValidationResult updateValidation(MavenServiceImpl instance,
             Map<String, String> attributes) {
         // TODO Auto-generated method stub
         Map<String, String> emptyMap = Collections.emptyMap();

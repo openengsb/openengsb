@@ -19,15 +19,15 @@ package org.openengsb.connector.maven.internal;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.test.TestDomain;
 
-public class TestDomainServiceImpl implements TestDomain {
+public class MavenServiceImpl implements TestDomain {
 
-    private String attr;
+    private String projectPath;
 
-    public TestDomainServiceImpl() {
+    public MavenServiceImpl() {
     }
 
-    void setAttr(String attr) {
-        this.attr = attr;
+    void setProjectPath(String projectPath) {
+        this.projectPath = projectPath;
     }
 
     @Override
