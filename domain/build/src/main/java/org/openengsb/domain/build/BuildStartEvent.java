@@ -20,4 +20,8 @@ import org.openengsb.core.common.Event;
 
 public class BuildStartEvent extends Event {
 
+    public BuildStartEvent() {
+        super("BuildStartEvent");
+    }
+
 }

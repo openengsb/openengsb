@@ -14,28 +14,15 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.build;
+package test;
 
-import org.openengsb.core.common.Event;
+/**
+ * Hello world!
+ * 
+ */
+public final class App {
+    private App() {
 
-public class BuildEndEvent extends Event {
-
-    private boolean success;
-
-    private String output;
-
-    public BuildEndEvent(boolean success, String output) {
-        super("BuildEndEvent");
-        this.success = success;
-        this.output = output;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public String getOutput() {
-        return output;
     }
 
 }

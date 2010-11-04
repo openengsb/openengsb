@@ -23,9 +23,18 @@ import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.domain.build.BuildDomainEvents;
+import org.openengsb.domain.deploy.DeployDomainEvents;
 import org.openengsb.domain.test.TestDomain;
+import org.openengsb.domain.test.TestDomainEvents;
 
 public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestDomain, MavenServiceImpl> {
+
+    private BuildDomainEvents buildEvents;
+
+    private TestDomainEvents testEvents;
+
+    private DeployDomainEvents deployEvents;
 
     public MavenServiceInstanceFactory() {
     }
@@ -40,6 +49,9 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestD
     @Override
     public MavenServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
         MavenServiceImpl service = new MavenServiceImpl();
+        service.setBuildEvents(buildEvents);
+        service.setTestEvents(testEvents);
+        service.setDeployEvents(deployEvents);
         updateServiceInstance(service, attributes);
         return service;
     }
@@ -53,8 +65,7 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestD
     }
 
     @Override
-    public MultipleAttributeValidationResult
-        updateValidation(MavenServiceImpl instance, Map<String, String> attributes) {
+    public MultipleAttributeValidationResult updateValidation(MavenServiceImpl instance, Map<String, String> attr) {
         Map<String, String> emptyMap = Collections.emptyMap();
         return new MultipleAttributeValidationResultImpl(true, emptyMap);
     }
@@ -63,5 +74,17 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestD
     public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
         Map<String, String> emptyMap = Collections.emptyMap();
         return new MultipleAttributeValidationResultImpl(true, emptyMap);
+    }
+
+    public void setBuildEvents(BuildDomainEvents buildEvents) {
+        this.buildEvents = buildEvents;
+    }
+
+    public void setTestEvents(TestDomainEvents testEvents) {
+        this.testEvents = testEvents;
+    }
+
+    public void setDeployEvents(DeployDomainEvents deployEvents) {
+        this.deployEvents = deployEvents;
     }
 }

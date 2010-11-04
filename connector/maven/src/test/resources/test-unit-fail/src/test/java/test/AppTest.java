@@ -14,28 +14,36 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.build;
+package test;
 
-import org.openengsb.core.common.Event;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
-public class BuildEndEvent extends Event {
-
-    private boolean success;
-
-    private String output;
-
-    public BuildEndEvent(boolean success, String output) {
-        super("BuildEndEvent");
-        this.success = success;
-        this.output = output;
+/**
+ * Unit test for simple App.
+ */
+public class AppTest extends TestCase {
+    /**
+     * Create the test case
+     * 
+     * @param testName name of the test case
+     */
+    public AppTest(String testName) {
+        super(testName);
     }
 
-    public boolean isSuccess() {
-        return success;
+    /**
+     * @return the suite of tests being tested
+     */
+    public static Test suite() {
+        return new TestSuite(AppTest.class);
     }
 
-    public String getOutput() {
-        return output;
+    /**
+     * Rigourous Test :-)
+     */
+    public void testApp() {
+        assertTrue(false);
     }
-
 }

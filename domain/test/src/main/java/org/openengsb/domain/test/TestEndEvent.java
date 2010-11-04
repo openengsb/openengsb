@@ -20,4 +20,21 @@ import org.openengsb.core.common.Event;
 
 public class TestEndEvent extends Event {
 
+    private boolean success;
+    private String output;
+
+    public TestEndEvent(boolean success, String output) {
+        super("TestEndEvent");
+        this.success = success;
+        this.output = output;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
 }

@@ -16,7 +16,8 @@
 
 package org.openengsb.integrationtest.exam;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,22 +49,27 @@ public class MavenConnectorIT extends AbstractExamTestHelper {
         serviceManager = retrieveServiceManager(getBundleContext(), TestDomain.class);
         serviceManager.update("mavenConnector", new HashMap<String, String>());
     }
-    
+
     @Test
-    public void testTestSuccess() {       
+    public void testTestSuccess() {
         Map<String, String> properties = new HashMap<String, String>();
-        properties.put("basedir", "target/test-classes/test-unit-success");
+        properties.put("projectPath", getPath("test-unit-success"));
         serviceManager.update("mavenConnector", properties);
 
-        assertTrue(mavenService.runTests());
+        assertThat(mavenService.runTests(), is(true));
     }
+
     @Test
-    public void testTestFail() {       
+    public void testTestFail() {
         Map<String, String> properties = new HashMap<String, String>();
-        properties.put("basedir", "target/test-classes/test-unit-fail");
+        properties.put("projectPath", getPath("test-unit-fail"));
         serviceManager.update("mavenConnector", properties);
-        
-        assertTrue(mavenService.runTests());
+
+        assertThat(mavenService.runTests(), is(false));
+    }
+
+    private String getPath(String folder) {
+        return getClass().getClassLoader().getResource(folder).getPath();
     }
 
 }

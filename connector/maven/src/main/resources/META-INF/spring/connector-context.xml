@@ -56,7 +56,11 @@
     </osgi:service-properties>
     <bean class="org.openengsb.connector.maven.DeployDomainServiceManager" init-method="init">
       <constructor-arg>
-        <bean class="org.openengsb.connector.maven.internal.MavenServiceInstanceFactory" />
+        <bean class="org.openengsb.connector.maven.internal.MavenServiceInstanceFactory">
+          <property name="buildEvents" ref="buildEvents"/>
+          <property name="testEvents" ref="testEvents"/>
+          <property name="deployEvents" ref="deployEvents"/>
+        </bean>
       </constructor-arg>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
     </bean>
@@ -67,5 +71,9 @@
   </bean>
 
   <osgi:reference id="persistenceServiceManager" interface="org.openengsb.core.persistence.PersistenceManager" />
+  <osgi:reference id="buildEvents" interface="org.openengsb.domain.build.BuildDomainEvents" />
+  <osgi:reference id="testEvents" interface="org.openengsb.domain.test.TestDomainEvents" />
+  <osgi:reference id="deployEvents" interface="org.openengsb.domain.deploy.DeployDomainEvents" />
+
 
 </beans>

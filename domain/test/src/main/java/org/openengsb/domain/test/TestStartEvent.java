@@ -20,4 +20,8 @@ import org.openengsb.core.common.Event;
 
 public class TestStartEvent extends Event {
 
+    public TestStartEvent() {
+        super("TestStartEvent");
+    }
+
 }

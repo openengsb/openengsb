@@ -20,4 +20,8 @@ import org.openengsb.core.common.Event;
 
 public class DeployStartEvent extends Event {
 
+    public DeployStartEvent() {
+        super("DeployStartEvent");
+    }
+
 }
