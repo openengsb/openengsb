@@ -23,8 +23,8 @@
 
   <parent>
     <groupId>${groupId}</groupId>
-    <artifactId>${project.artifactId}</artifactId>
-    <version>${project.version}</version>
+    <artifactId>${artifactId}</artifactId>
+    <version>${version}</version>
   </parent>
 
   <properties>
@@ -34,7 +34,7 @@
 
   <groupId>${groupId}</groupId>
   <artifactId>${implementationArtifactId}</artifactId>
-  <version>${project.version}</version>
+  <version>${version}</version>
 
   <name>${implementationName}</name>
 

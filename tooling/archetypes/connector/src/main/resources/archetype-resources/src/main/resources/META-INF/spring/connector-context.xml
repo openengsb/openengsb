@@ -28,9 +28,9 @@
       <entry key="domain" value="${parentPackage}.${domainInterface}" />
       <entry key="openengsb.service.type" value="connector" />
     </osgi:service-properties>
-    <bean class="${package}.MyServiceManager" init-method="init">
+    <bean class="${package}.${domainInterface}ServiceManager" init-method="init">
       <constructor-arg>
-        <bean class="${package}.internal.MyServiceInstanceFactory" />
+        <bean class="${package}.internal.${domainInterface}ServiceInstanceFactory" />
       </constructor-arg>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
     </bean>

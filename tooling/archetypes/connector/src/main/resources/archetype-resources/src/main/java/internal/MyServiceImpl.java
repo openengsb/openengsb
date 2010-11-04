@@ -16,18 +16,26 @@
 
 package ${package}.internal;
 
+import org.openengsb.core.common.util.AliveState;
+
 import ${parentPackage}.${domainInterface};
 
-public class MyServiceImpl implements ${domainInterface} {
+public class ${domainInterface}ServiceImpl implements ${domainInterface} {
 
     private String attr;
 
-    public MyServiceImpl() {
+    public ${domainInterface}ServiceImpl() {
     }
 
     void setAttr(String attr) {
         this.attr = attr;
     }
-
+    
+    @Override
+    public AliveState getAliveState() {
+        // TODO Auto-generated method stub
+        return AliveState.DISCONNECTED;
+    }
+    
     // TODO implement domain methods here
 }

@@ -16,28 +16,33 @@
 
 package ${package}.internal;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.domains.test.maven.internal.TestDomainServiceImpl;
+
 import ${parentPackage}.${domainInterface};
 
-public class MyServiceInstanceFactory implements ServiceInstanceFactory<${domainInterface}, MyServiceImpl> {
+public class ${domainInterface}ServiceInstanceFactory implements ServiceInstanceFactory<${domainInterface}, ${domainInterface}ServiceImpl> {
 
-    public MyServiceInstanceFactory() {
+    public ${domainInterface}ServiceInstanceFactory() {
     }
 
     @Override
-    public void updateServiceInstance(MyServiceImpl instance, Map<String, String> attributes) {
+    public void updateServiceInstance(${domainInterface}ServiceImpl instance, Map<String, String> attributes) {
         if (attributes.containsKey("attr")) {
             instance.setAttr(attributes.get("attr"));
         }
     }
 
     @Override
-    public MyServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
-        MyServiceImpl service = new MyServiceImpl();
+    public ${domainInterface}ServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
+        ${domainInterface}ServiceImpl service = new ${domainInterface}ServiceImpl();
         updateServiceInstance(service, attributes);
         return service;
     }
@@ -47,5 +52,20 @@ public class MyServiceInstanceFactory implements ServiceInstanceFactory<${domain
         builder.name("service.name").description("service.description");
         builder.attribute(builder.newAttribute().id("attr").name("service.attr.name").description("service.attr.description").build());
         return builder.build();
+    }
+    
+    @Override
+    public MultipleAttributeValidationResult updateValidation(${domainInterface}ServiceImpl instance,
+            Map<String, String> attributes) {
+        // TODO Auto-generated method stub
+        Map<String, String> emptyMap = Collections.emptyMap();
+        return new MultipleAttributeValidationResultImpl(true, emptyMap);
+    }
+
+    @Override
+    public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
+        // TODO Auto-generated method stub
+        Map<String, String> emptyMap = Collections.emptyMap();
+        return new MultipleAttributeValidationResultImpl(true, emptyMap);
     }
 }
