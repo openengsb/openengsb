@@ -153,7 +153,7 @@ public class WorkflowServiceDynamicTest {
     private ServiceReference setupServiceReferenceMock(String id) throws InvalidSyntaxException {
         ServiceReference reference = mock(ServiceReference.class);
         when(reference.getProperty("openengsb.service.type")).thenReturn("domain");
-        when(reference.getProperty("id")).thenReturn("domains." + id);
+        when(reference.getProperty("id")).thenReturn("domain." + id);
         return reference;
     }
 
@@ -168,7 +168,7 @@ public class WorkflowServiceDynamicTest {
         String id = (String) reference.getProperty("id");
         String filter = String.format("(&(openengsb.service.type=domain)(id=%s))", id);
         when(bundleContext.getAllServiceReferences(Domain.class.getName(), filter)).thenReturn(
-            new ServiceReference[]{reference});
+            new ServiceReference[]{ reference });
         if (workflowService != null) {
             workflowService.serviceChanged(setupServiceEventMock(reference));
         }
@@ -179,7 +179,7 @@ public class WorkflowServiceDynamicTest {
         String filter =
             String.format("(&(openengsb.service.type=workflow-service)(openengsb.workflow.globalid=%s))", id);
         when(bundleContext.getAllServiceReferences(Mockito.any(String.class), Mockito.eq(filter))).thenReturn(
-            new ServiceReference[]{reference});
+            new ServiceReference[]{ reference });
         if (workflowService != null) {
             workflowService.serviceChanged(setupServiceEventMock(reference));
         }

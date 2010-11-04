@@ -88,8 +88,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.domains.example</groupId>
-      <artifactId>openengsb-domains-example-implementation</artifactId>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-example</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>

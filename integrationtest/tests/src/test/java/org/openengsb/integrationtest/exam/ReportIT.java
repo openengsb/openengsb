@@ -27,10 +27,10 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.domains.report.NoSuchReportException;
-import org.openengsb.domains.report.ReportDomain;
-import org.openengsb.domains.report.model.Report;
-import org.openengsb.domains.report.model.SimpleReportPart;
+import org.openengsb.domain.report.NoSuchReportException;
+import org.openengsb.domain.report.ReportDomain;
+import org.openengsb.domain.report.model.Report;
+import org.openengsb.domain.report.model.SimpleReportPart;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
@@ -45,9 +45,9 @@ public class ReportIT extends AbstractExamTestHelper {
         ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
-        contextService.putValue("domains/ReportDomain/defaultConnector/id", "plaintextConnector");
+        contextService.putValue("domain/ReportDomain/defaultConnector/id", "plaintextConnector");
 
-        waitForActiveSpringService("org.openengsb.domains.report.plaintext");
+        waitForActiveSpringService("org.openengsb.connector.plaintextreport");
         ServiceManager serviceManager = retrieveServiceManager(getBundleContext(), ReportDomain.class);
         serviceManager.update("plaintextConnector", new HashMap<String, String>());
     }

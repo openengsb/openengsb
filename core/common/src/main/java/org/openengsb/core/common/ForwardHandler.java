@@ -43,9 +43,9 @@ public class ForwardHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws IllegalAccessException,
-            InvocationTargetException {
+        InvocationTargetException {
         log.info("Forwarding invocation to default connector");
-        String connectorId = context.getValue("/domains/" + domainName + "/defaultConnector/id");
+        String connectorId = context.getValue("/domain/" + domainName + "/defaultConnector/id");
         log.debug(format("Default connector for %s is %s", domainName, connectorId));
         ServiceReference serviceRef = getServiceRef(connectorId);
         Object service = bundleContext.getService(serviceRef);

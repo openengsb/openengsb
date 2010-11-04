@@ -66,16 +66,20 @@ public final class BaseExamConfiguration {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_TASKBOX));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_EVENTS));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_PERSISTENCE));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_EXAMPLE_IMPLEMENTATION));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_EXAMPLE_CONNECTOR));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_NOTIFICATION_IMPLEMENTATION));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_NOTIFICATION_EMAIL));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_REPORT_IMPLEMENTATION));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_REPORT_PLAINTEXT));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_ISSUE_IMPLEMENTATION));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_ISSUE_TRAC));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_SCM_IMPLEMENTATION));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAINS_SCM_GIT));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_EXAMPLE));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_NOTIFICATION));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_REPORT));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_ISSUE));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_SCM));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_TEST));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_DEPLOY));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_BUILD));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONNECTOR_EXAMPLE));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONNECTOR_EMAIL));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONNECTOR_PLAINTEXTREPORT));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONNECTOR_TRAC));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONNECTOR_GIT));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONNECTOR_MAVEN));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_UI_WEB));
     }
 
@@ -165,6 +169,28 @@ public final class BaseExamConfiguration {
                 }
             }
             return versions;
+        } catch (Exception e) {
+            throw new RuntimeException("Internal Error", e);
+        }
+    }
+
+    public static String getRootPropertiesFromPom(String fileUrl) {
+        try {
+            Map<String, String> versions = new HashMap<String, String>();
+            File file = new File(fileUrl);
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(file);
+            doc.getDocumentElement().normalize();
+            NodeList nodeLst = doc.getDocumentElement().getChildNodes();
+            for (int s = 0; s < nodeLst.getLength(); s++) {
+                Node fstNode = nodeLst.item(s);
+                if (fstNode.getNodeType() == Node.ELEMENT_NODE
+                        && ((Element) fstNode).getNodeName().equals("version")) {
+                    return fstNode.getTextContent();
+                }
+            }
+            return null;
         } catch (Exception e) {
             throw new RuntimeException("Internal Error", e);
         }

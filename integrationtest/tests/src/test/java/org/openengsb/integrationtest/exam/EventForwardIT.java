@@ -28,15 +28,15 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.util.AliveState;
-import org.openengsb.domains.example.ExampleDomain;
-import org.openengsb.domains.example.ExampleDomainEvents;
-import org.openengsb.domains.example.event.LogEvent;
-import org.openengsb.domains.example.event.LogEvent.Level;
-import org.openengsb.domains.issue.IssueDomain;
-import org.openengsb.domains.issue.models.Issue;
-import org.openengsb.domains.issue.models.IssueAttribute;
-import org.openengsb.domains.notification.NotificationDomain;
-import org.openengsb.domains.notification.model.Notification;
+import org.openengsb.domain.example.ExampleDomain;
+import org.openengsb.domain.example.ExampleDomainEvents;
+import org.openengsb.domain.example.event.LogEvent;
+import org.openengsb.domain.example.event.LogEvent.Level;
+import org.openengsb.domain.issue.IssueDomain;
+import org.openengsb.domain.issue.models.Issue;
+import org.openengsb.domain.issue.models.IssueAttribute;
+import org.openengsb.domain.notification.NotificationDomain;
+import org.openengsb.domain.notification.model.Notification;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
@@ -103,22 +103,22 @@ public class EventForwardIT extends AbstractExamTestHelper {
         ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
-        contextService.putValue("domains/NotificationDomain/defaultConnector/id", "dummyConnector");
-        contextService.putValue("domains/IssueDomain/defaultConnector/id", "dummyIssue");
-        contextService.putValue("domains/ExampleDomain/defaultConnector/id", "dummyLog");
+        contextService.putValue("domain/NotificationDomain/defaultConnector/id", "dummyConnector");
+        contextService.putValue("domain/IssueDomain/defaultConnector/id", "dummyIssue");
+        contextService.putValue("domain/ExampleDomain/defaultConnector/id", "dummyLog");
 
         DummyNotificationDomain dummy = new DummyNotificationDomain();
-        String[] clazzes = new String[]{ Domain.class.getName(), NotificationDomain.class.getName() };
+        String[] clazzes = new String[]{Domain.class.getName(), NotificationDomain.class.getName()};
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("id", "dummyConnector");
 
         getBundleContext().registerService(clazzes, dummy, properties);
 
-        clazzes = new String[]{ Domain.class.getName(), IssueDomain.class.getName() };
+        clazzes = new String[]{Domain.class.getName(), IssueDomain.class.getName()};
         properties.put("id", "dummyIssue");
         getBundleContext().registerService(clazzes, new DummyIssueDomain(), properties);
 
-        clazzes = new String[]{ Domain.class.getName(), ExampleDomain.class.getName() };
+        clazzes = new String[]{Domain.class.getName(), ExampleDomain.class.getName()};
         properties.put("id", "dummyLog");
 
         getBundleContext().registerService(clazzes, new DummyLogDomain(), properties);

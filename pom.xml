@@ -89,9 +89,10 @@
     <module>provision</module>
     <module>wrapped</module>
     <module>config</module>
-    <module>ui</module>
     <module>core</module>
-    <module>domains</module>
+    <module>domain</module>
+    <module>connector</module>
+    <module>ui</module>
     <module>assembly</module>
   </modules>
 
