@@ -38,11 +38,21 @@ public final class EditorFieldFactory {
     private EditorFieldFactory() {
     }
 
+    /**
+     * creates a RepeatingView providing a suitable editor field for every property.
+     *
+     * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
+     */
     public static RepeatingView createFieldList(String id, Class<?> bean, Map<String, String> values) {
         List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(bean);
         return createFieldList(id, attributes, values);
     }
 
+    /**
+     * creates a RepeatingView providing a suitable editor field for every attribute in the list.
+     *
+     * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
+     */
     public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
             Map<String, String> values) {
         RepeatingView fields = new RepeatingView(id);
@@ -52,6 +62,13 @@ public final class EditorFieldFactory {
         return fields;
     }
 
+    /**
+     * creates a RepeatingView providing a suitable editor field for every attribute in the list.
+     *
+     * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
+     * @param attributeViewIds this Map is populated with ids of the generated elements
+     * @return
+     */
     public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
             Map<String, String> values, Map<String, String> attributeViewIds) {
         RepeatingView fields = new RepeatingView(id);
@@ -70,6 +87,9 @@ public final class EditorFieldFactory {
         return attributeViewId;
     }
 
+    /**
+     * creates a single EditorField for the given attribute
+     */
     public static AbstractField<?> createEditorField(String id, IModel<String> model,
             final AttributeDefinition attribute) {
         if (attribute.isBoolean()) {
