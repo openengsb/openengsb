@@ -30,7 +30,33 @@
     </osgi:service-properties>
     <bean class="org.openengsb.connector.maven.TestDomainServiceManager" init-method="init">
       <constructor-arg>
-        <bean class="org.openengsb.connector.maven.internal.TestDomainServiceInstanceFactory" />
+        <bean class="org.openengsb.connector.maven.internal.MavenServiceInstanceFactory" />
+      </constructor-arg>
+      <property name="connectorSetupStore" ref="connectorSetupStore" />
+    </bean>
+  </osgi:service>
+  
+  <osgi:service interface="org.openengsb.core.common.ServiceManager">
+    <osgi:service-properties>
+      <entry key="domain" value="org.openengsb.domain.build.BuildDomain" />
+      <entry key="openengsb.service.type" value="connector" />
+    </osgi:service-properties>
+    <bean class="org.openengsb.connector.maven.BuildDomainServiceManager" init-method="init">
+      <constructor-arg>
+        <bean class="org.openengsb.connector.maven.internal.MavenServiceInstanceFactory" />
+      </constructor-arg>
+      <property name="connectorSetupStore" ref="connectorSetupStore" />
+    </bean>
+  </osgi:service>
+  
+  <osgi:service interface="org.openengsb.core.common.ServiceManager">
+    <osgi:service-properties>
+      <entry key="domain" value="org.openengsb.domain.deploy.DeployDomain" />
+      <entry key="openengsb.service.type" value="connector" />
+    </osgi:service-properties>
+    <bean class="org.openengsb.connector.maven.DeployDomainServiceManager" init-method="init">
+      <constructor-arg>
+        <bean class="org.openengsb.connector.maven.internal.MavenServiceInstanceFactory" />
       </constructor-arg>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
     </bean>

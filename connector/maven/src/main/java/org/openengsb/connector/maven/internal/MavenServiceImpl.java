@@ -16,11 +16,20 @@
 
 package org.openengsb.connector.maven.internal;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.util.AliveState;
+import org.openengsb.domain.build.BuildDomain;
+import org.openengsb.domain.deploy.DeployDomain;
 import org.openengsb.domain.test.TestDomain;
 
-public class MavenServiceImpl implements TestDomain {
+public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
 
+    private static final String MVN_COMMAND = "mvn";
+    private Log log = LogFactory.getLog(this.getClass());
     private String projectPath;
 
     public MavenServiceImpl() {
@@ -32,15 +41,49 @@ public class MavenServiceImpl implements TestDomain {
 
     @Override
     public AliveState getAliveState() {
-        // TODO Auto-generated method stub
-        return AliveState.DISCONNECTED;
+        if (validate()) {
+            return AliveState.ONLINE;
+        } else {
+            return AliveState.OFFLINE;
+        }
     }
 
     @Override
     public Boolean runTests() {
-        // TODO Auto-generated method stub
-        return null;
+        return excuteGoal("test");
     }
 
-    // TODO implement domain methods here
+    @Override
+    public Boolean build() {
+        return excuteGoal("build");
+    }
+
+    @Override
+    public Boolean deploy() {
+        return excuteGoal("deploy");
+    }
+
+    public Boolean validate() {
+        return excuteGoal("validate");
+    }
+
+    private synchronized Boolean excuteGoal(String goal) {
+        File dir = new File(projectPath);
+
+        StringBuilder command = new StringBuilder(MVN_COMMAND);
+        command.append(' ');
+        command.append(goal);
+        try {
+            Process process = Runtime.getRuntime().exec(command.toString(), new String[]{}, dir);
+            return process.waitFor() == 0;
+        } catch (IOException e) {
+            log.error(e);
+            return false;
+        } catch (InterruptedException e) {
+            log.error(e);
+            return false;
+        }
+
+    }
+
 }
