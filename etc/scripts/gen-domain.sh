@@ -51,6 +51,7 @@ mvn archetype:generate \
 	-DimplementationArtifactId="openengsb-domains-$DOMAIN-implementation" \
 	-Dpackage="org.openengsb.domains.$DOMAIN" \
 	-Dname="$NAME_PREFIX :: Parent" \
+    -DdomainInterface="${DOMAIN~}" \
 	-DimplementationName="$NAME_PREFIX :: Implementation"
 
 if [ $? != 0 ]; then
@@ -74,3 +75,4 @@ echo ""
 echo "DON'T FORGET TO ADD THE DOMAIN TO THE INTEGRATION TEST PROJECT!"
 echo "SUCCESS"
 echo ""
+echo "execute >find . -iname My*.java | xargs rename -v 's/(.*)My(.*\.java)/\$1$Domain \$2/'< to rename classfiles properly"

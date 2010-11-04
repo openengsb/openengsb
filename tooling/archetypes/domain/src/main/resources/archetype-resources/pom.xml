@@ -28,8 +28,8 @@
   </parent>
 
   <groupId>${groupId}</groupId>
-  <artifactId>${project.artifactId}</artifactId>
-  <version>${project.version}</version>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
 
   <name>${name}</name>
 
