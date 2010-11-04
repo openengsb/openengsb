@@ -47,7 +47,7 @@ import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
-import org.openengsb.ui.web.editor.EditorFieldFactory;
+import org.openengsb.ui.web.editor.AttributeEditorUtil;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 
@@ -140,7 +140,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         values.clear();
         List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(theClass);
         moveNameToFront(attributes);
-        fieldList = EditorFieldFactory.createFieldList("fields", attributes, values);
+        fieldList = AttributeEditorUtil.createFieldList("fields", attributes, values);
         return fieldList;
     }
 

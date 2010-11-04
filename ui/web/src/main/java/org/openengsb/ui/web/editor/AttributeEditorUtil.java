@@ -34,8 +34,8 @@ import org.openengsb.ui.web.editor.fields.InputField;
 import org.openengsb.ui.web.editor.fields.PasswordField;
 import org.openengsb.ui.web.model.MapModel;
 
-public final class EditorFieldFactory {
-    private EditorFieldFactory() {
+public final class AttributeEditorUtil {
+    private AttributeEditorUtil() {
     }
 
     /**

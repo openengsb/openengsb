@@ -69,7 +69,7 @@ public abstract class ServiceEditorPanel extends Panel {
 
         form.add(new FeedbackPanel("feedback").setOutputMarkupId(true));
         attributeViewIds.clear();
-        RepeatingView fields = EditorFieldFactory.createFieldList("fields", attributes, values, attributeViewIds);
+        RepeatingView fields = AttributeEditorUtil.createFieldList("fields", attributes, values, attributeViewIds);
         form.add(fields);
         CheckBox checkbox = new CheckBox("validate", new Model<Boolean>(true));
         form.add(checkbox);
