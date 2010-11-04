@@ -26,6 +26,7 @@ import org.apache.wicket.validation.validator.AbstractValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
+import org.openengsb.ui.web.MethodUtil;
 import org.openengsb.ui.web.editor.fields.AbstractField;
 import org.openengsb.ui.web.editor.fields.CheckboxField;
 import org.openengsb.ui.web.editor.fields.DropdownField;
@@ -35,6 +36,11 @@ import org.openengsb.ui.web.model.MapModel;
 
 public final class EditorFieldFactory {
     private EditorFieldFactory() {
+    }
+
+    public static RepeatingView createFieldList(String id, Class<?> bean, Map<String, String> values) {
+        List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(bean);
+        return createFieldList(id, attributes, values);
     }
 
     public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
