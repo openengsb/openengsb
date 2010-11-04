@@ -338,7 +338,7 @@ public class TestClient extends BasePage {
     private Class<?> guessDomainInterface(Object serviceObject) {
         Class<?>[] interfaces = MethodUtil.getAllInterfaces(serviceObject);
         for (Class<?> candidate : interfaces) {
-            if (!candidate.equals(Domain.class) && candidate.getName().startsWith("org.openengsb.domains")) {
+            if (!candidate.equals(Domain.class) && candidate.getName().startsWith("org.openengsb.domain")) {
                 return candidate;
             }
         }

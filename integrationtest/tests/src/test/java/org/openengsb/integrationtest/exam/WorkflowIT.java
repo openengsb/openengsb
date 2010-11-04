@@ -111,9 +111,9 @@ public class WorkflowIT extends AbstractExamTestHelper {
         ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
-        contextService.putValue("domains/NotificationDomain/defaultConnector/id", "dummyConnector");
-        contextService.putValue("domains/ExampleDomain/defaultConnector/id", "dummyLog");
-        contextService.putValue("domains/IssueDomain/defaultConnector/id", "dummyIssue");
+        contextService.putValue("domain/NotificationDomain/defaultConnector/id", "dummyConnector");
+        contextService.putValue("domain/ExampleDomain/defaultConnector/id", "dummyLog");
+        contextService.putValue("domain/IssueDomain/defaultConnector/id", "dummyIssue");
 
         /*
          * This is kind of a workaround. But for some reason when the workflow-service waits for these services for 30
@@ -124,17 +124,17 @@ public class WorkflowIT extends AbstractExamTestHelper {
         retrieveService(getBundleContext(), NotificationDomain.class);
 
         DummyNotificationDomain dummy = new DummyNotificationDomain();
-        String[] clazzes = new String[]{ Domain.class.getName(), NotificationDomain.class.getName() };
+        String[] clazzes = new String[]{Domain.class.getName(), NotificationDomain.class.getName()};
         Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("id", "dummyConnector");
 
         getBundleContext().registerService(clazzes, dummy, properties);
 
-        clazzes = new String[]{ Domain.class.getName(), IssueDomain.class.getName() };
+        clazzes = new String[]{Domain.class.getName(), IssueDomain.class.getName()};
         properties.put("id", "dummyIssue");
         getBundleContext().registerService(clazzes, new DummyIssueDomain(), properties);
 
-        clazzes = new String[]{ Domain.class.getName(), ExampleDomain.class.getName() };
+        clazzes = new String[]{Domain.class.getName(), ExampleDomain.class.getName()};
         properties.put("id", "dummyLog");
 
         getBundleContext().registerService(clazzes, new DummyLogDomain(), properties);
