@@ -9,4 +9,8 @@ public interface Task {
 	void setType(String type);
 	
 	//TaskStep getCurrentTaskStep();
+	//void setCurrentTaskStep();
+	
+	//return ID of the UI Panel to display the Tasks Details
+	//String getUIDetailId();
 }
