@@ -17,8 +17,17 @@
 package org.openengsb.domain.deploy;
 
 import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.Raises;
 
+/**
+ * This domain can be used to deploy projects. The affected project is usually configured in the respective tool
+ * connector.
+ */
 public interface DeployDomain extends Domain {
 
+    /**
+     * Deploy the currently configured project.
+     */
+    @Raises({DeployStartEvent.class, DeployEndEvent.class})
     Boolean deploy();
 }

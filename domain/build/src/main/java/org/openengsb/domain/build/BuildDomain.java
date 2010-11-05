@@ -17,8 +17,17 @@
 package org.openengsb.domain.build;
 
 import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.Raises;
 
+/**
+ * This domain can be used to build projects. The affected project is usually configured in the respective tool
+ * connector.
+ */
 public interface BuildDomain extends Domain {
 
+    /**
+     * build the currently configured project.
+     */
+    @Raises({BuildStartEvent.class, BuildEndEvent.class})
     Boolean build();
 }
