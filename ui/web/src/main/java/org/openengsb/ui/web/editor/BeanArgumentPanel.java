@@ -24,21 +24,15 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
-import org.apache.wicket.model.IModel;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.ui.web.ArgumentModel;
 import org.openengsb.ui.web.MethodUtil;
-import org.openengsb.ui.web.editor.fields.AbstractField;
-import org.openengsb.ui.web.editor.fields.CheckboxField;
-import org.openengsb.ui.web.editor.fields.DropdownField;
-import org.openengsb.ui.web.editor.fields.InputField;
-import org.openengsb.ui.web.editor.fields.PasswordField;
 import org.openengsb.ui.web.model.MapModel;
 
 @SuppressWarnings("serial")
 public class BeanArgumentPanel extends Panel {
 
-    private Map<String, String> fieldViewIds = new HashMap<String, String>();
+    private final Map<String, String> fieldViewIds = new HashMap<String, String>();
 
     public BeanArgumentPanel(String id, ArgumentModel argModel, Map<String, String> values) {
         super(id);
@@ -52,19 +46,7 @@ public class BeanArgumentPanel extends Panel {
             fieldViewIds.put(a.getId(), fieldViewId);
             WebMarkupContainer row = new WebMarkupContainer(fieldViewId);
             fields.add(row);
-            row.add(createEditor("row", new MapModel<String, String>(values, a.getId()), a));
-        }
-    }
-
-    private AbstractField<?> createEditor(String id, IModel<String> model, AttributeDefinition attribute) {
-        if (!attribute.getOptions().isEmpty()) {
-            return new DropdownField(id, model, attribute, null);
-        } else if (attribute.isBoolean()) {
-            return new CheckboxField(id, model, attribute, null);
-        } else if (attribute.isPassword()) {
-            return new PasswordField(id, model, attribute, null);
-        } else {
-            return new InputField(id, model, attribute, null);
+            row.add(EditorFieldFactory.createEditorField("row", new MapModel<String, String>(values, a.getId()), a));
         }
     }
 
