@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openengsb.ui.web.editor;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public final class AttributeEditorUtil {
 
     /**
      * creates a RepeatingView providing a suitable editor field for every property.
-     *
+     * 
      * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
      */
     public static RepeatingView createFieldList(String id, Class<?> bean, Map<String, String> values) {
@@ -50,7 +51,7 @@ public final class AttributeEditorUtil {
 
     /**
      * creates a RepeatingView providing a suitable editor field for every attribute in the list.
-     *
+     * 
      * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
      */
     public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
@@ -64,7 +65,7 @@ public final class AttributeEditorUtil {
 
     /**
      * creates a RepeatingView providing a suitable editor field for every attribute in the list.
-     *
+     * 
      * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
      * @param attributeViewIds this Map is populated with ids of the generated elements
      * @return
