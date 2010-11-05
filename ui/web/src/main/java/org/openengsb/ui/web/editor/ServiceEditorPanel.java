@@ -26,7 +26,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -34,38 +33,27 @@ import org.apache.wicket.markup.html.form.validation.AbstractFormValidator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.ValidationError;
-import org.apache.wicket.validation.validator.AbstractValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.FormValidator;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.SingleAttributeValidationResult;
-import org.openengsb.ui.web.editor.fields.AbstractField;
-import org.openengsb.ui.web.editor.fields.CheckboxField;
-import org.openengsb.ui.web.editor.fields.DropdownField;
-import org.openengsb.ui.web.editor.fields.InputField;
-import org.openengsb.ui.web.editor.fields.PasswordField;
-import org.openengsb.ui.web.model.MapModel;
 import org.openengsb.ui.web.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
-public abstract class EditorPanel extends Panel {
+public abstract class ServiceEditorPanel extends Panel {
 
     private final Map<String, String> values;
     private final List<AttributeDefinition> attributes;
     private final FormValidator validator;
     private final Map<String, String> attributeViewIds = new HashMap<String, String>();
 
-    public EditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values) {
+    public ServiceEditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values) {
         this(id, attributes, values, new DefaultPassingFormValidator());
     }
 
-    public EditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values,
+    public ServiceEditorPanel(String id, List<AttributeDefinition> attributes, Map<String, String> values,
             FormValidator validator) {
         super(id);
         this.attributes = attributes;
@@ -80,17 +68,9 @@ public abstract class EditorPanel extends Panel {
         add(form);
 
         form.add(new FeedbackPanel("feedback").setOutputMarkupId(true));
-        RepeatingView fields = new RepeatingView("fields");
-        form.add(fields);
-
         attributeViewIds.clear();
-        for (AttributeDefinition a : attributes) {
-            String attributeViewId = fields.newChildId();
-            attributeViewIds.put(a.getId(), attributeViewId);
-            WebMarkupContainer row = new WebMarkupContainer(attributeViewId);
-            fields.add(row);
-            row.add(createEditor("row", new MapModel<String, String>(values, a.getId()), a));
-        }
+        RepeatingView fields = AttributeEditorUtil.createFieldList("fields", attributes, values, attributeViewIds);
+        form.add(fields);
         CheckBox checkbox = new CheckBox("validate", new Model<Boolean>(true));
         form.add(checkbox);
         if (validator != null) {
@@ -137,7 +117,7 @@ public abstract class EditorPanel extends Panel {
         AjaxButton submitButton = new IndicatingAjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                EditorPanel.this.onSubmit();
+                ServiceEditorPanel.this.onSubmit();
                 if (hasErrorMessage()) {
                     addAjaxValidationToForm(form);
                     target.addComponent(form);
@@ -159,20 +139,6 @@ public abstract class EditorPanel extends Panel {
         AjaxFormValidatingBehavior.addToAllFormComponents(form, "onChange");
     }
 
-    private AbstractField<?> createEditor(String id, IModel<String> model, final AttributeDefinition attribute) {
-        if (attribute.isBoolean()) {
-            return new CheckboxField(id, model, attribute, new BooleanFieldValidator(attribute));
-        }
-        StringFieldValidator validator = new StringFieldValidator(attribute);
-        if (!attribute.getOptions().isEmpty()) {
-            return new DropdownField(id, model, attribute, validator);
-        } else if (attribute.isPassword()) {
-            return new PasswordField(id, model, attribute, validator);
-        } else {
-            return new InputField(id, model, attribute, validator);
-        }
-    }
-
     public abstract void onSubmit();
 
     public List<AttributeDefinition> getAttributes() {
@@ -181,35 +147,6 @@ public abstract class EditorPanel extends Panel {
 
     public Map<String, String> getValues() {
         return values;
-    }
-
-    private abstract static class EditorFieldValidator<T> extends AbstractValidator<T> {
-        private final AttributeDefinition attribute;
-
-        protected EditorFieldValidator(AttributeDefinition attribute) {
-            this.attribute = attribute;
-        }
-
-        @Override
-        protected void onValidate(IValidatable<T> validatable) {
-            FieldValidator validator = this.attribute.getValidator();
-            SingleAttributeValidationResult validationResult = validator.validate(validatable.getValue().toString());
-            if (!validationResult.isValid()) {
-                error(validatable, validationResult.getErrorMessageId());
-            }
-        }
-    }
-
-    private static final class BooleanFieldValidator extends EditorFieldValidator<Boolean> {
-        private BooleanFieldValidator(AttributeDefinition attribute) {
-            super(attribute);
-        }
-    }
-
-    private static final class StringFieldValidator extends EditorFieldValidator<String> {
-        private StringFieldValidator(AttributeDefinition attribute) {
-            super(attribute);
-        }
     }
 
     public String getAttributeViewId(String attribute) {

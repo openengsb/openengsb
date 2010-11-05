@@ -29,9 +29,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -42,7 +47,7 @@ import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.workflow.RuleManager;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
-import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.editor.AttributeEditorUtil;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 
@@ -61,6 +66,10 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     @SpringBean
     private RuleManager ruleManager;
 
+    private Map<String, String> values = new HashMap<String, String>();
+
+    private RepeatingView fieldList;
+
     public SendEventPage() {
         List<Class<? extends Event>> classes = new ArrayList<Class<? extends Event>>();
         classes.add(Event.class);
@@ -78,46 +87,61 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         Form<Object> form = new Form<Object>("form");
         add(form);
         ChoiceRenderer<Class<?>> choiceRenderer = new ChoiceRenderer<Class<?>>("canonicalName", "simpleName");
+        final WebMarkupContainer container = new WebMarkupContainer("fieldContainer");
         dropDownChoice = new DropDownChoice<Class<?>>("dropdown", classes, choiceRenderer);
         dropDownChoice.setModel(new Model<Class<?>>(classes.get(0)));
+
         dropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 Class<?> theClass = dropDownChoice.getModelObject();
-                EditorPanel editor = createEditorPanelForClass(theClass);
-                SendEventPage.this.replace(editor);
-                target.addComponent(editor);
+                fieldList.removeAll();
+                container.replace(createEditorPanelForClass(theClass));
+                target.addComponent(container);
             }
         });
         form.add(dropDownChoice);
-        add(createEditorPanelForClass(classes.get(0)));
-        add(new RuleEditorPanel("ruleEditor", this));
-    }
+        form.add(container);
+        container.add(createEditorPanelForClass(classes.get(0)));
+        container.setOutputMarkupId(true);
+        form.add(new FeedbackPanel("feedback"));
 
-    private EditorPanel createEditorPanelForClass(Class<?> theClass) {
-        Map<String, String> defaults = new HashMap<String, String>();
-        List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(theClass);
-        moveNameToFront(attributes);
-        EditorPanel editor = new EditorPanel("editor", attributes, defaults) {
+        AjaxButton submitButton = new IndicatingAjaxButton("submitButton", form) {
             @Override
-            public void onSubmit() {
-                Event event = buildEvent(dropDownChoice.getModelObject(), getValues());
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                Event event = buildEvent(dropDownChoice.getModelObject(), values);
                 if (event != null) {
                     try {
                         eventService.processEvent(event);
                         info(new StringResourceModel("send.event.success", SendEventPage.this, null).getString());
                     } catch (WorkflowException e) {
                         StringResourceModel resourceModel =
-                            new StringResourceModel("send.event.error.process", SendEventPage.this, null);
+                                new StringResourceModel("send.event.error.process", SendEventPage.this, null);
                         error(resourceModel.getString());
                     }
                 } else {
                     error(new StringResourceModel("send.event.error.build", SendEventPage.this, null).getString());
                 }
+                target.addComponent(form);
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                target.addComponent(form);
             }
         };
-        editor.setOutputMarkupId(true);
-        return editor;
+        submitButton.setOutputMarkupId(true);
+        form.add(submitButton);
+
+        add(new RuleEditorPanel("ruleEditor", this));
+    }
+
+    private RepeatingView createEditorPanelForClass(Class<?> theClass) {
+        values.clear();
+        List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(theClass);
+        moveNameToFront(attributes);
+        fieldList = AttributeEditorUtil.createFieldList("fields", attributes, values);
+        return fieldList;
     }
 
     private List<AttributeDefinition> moveNameToFront(List<AttributeDefinition> attributes) {

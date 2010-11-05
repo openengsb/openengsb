@@ -20,8 +20,17 @@
   xml:lang="en" lang="en">
 <body>
 <wicket:extend>
-  <form wicket:id="form"><select wicket:id="dropdown" /></form>
-  <div wicket:id="editor" />
+  <form wicket:id="form"><select wicket:id="dropdown" />
+    <div wicket:id="fieldContainer">
+    <table>
+      <tr wicket:id="fields">
+        <wicket:container wicket:id="row" />
+      </tr>
+    </table>
+    </div>
+    <div wicket:id="feedback"></div>
+    <input type="submit" wicket:message="value:editor.submit" wicket:id="submitButton" />
+  </form>
   <div wicket:id="ruleEditor" />
 </wicket:extend>
 </body>
