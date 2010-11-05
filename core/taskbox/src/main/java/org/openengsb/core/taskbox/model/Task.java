@@ -9,8 +9,8 @@ public interface Task {
 	void setType(String type);
 	
 	//TaskStep getCurrentTaskStep();
-	//void setCurrentTaskStep();
+	//void setCurrentTaskStep(TaskStep taskStep);
 	
 	//return ID of the UI Panel to display the Tasks Details
-	//String getUIDetailId();
+	//WicketPanel createViewingPanel();
 }

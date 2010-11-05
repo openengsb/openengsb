@@ -16,9 +16,9 @@ public class CompleteTicketInformationStep implements TaskStep {
 		return null;
 	}
 
-	@Override
-	public String getUIId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	//return ID of the According UI Panel
+	//WicketPanel createEditingPanel();
+	
+	//return ID of the According UI Panel
+	//WicketPanel createViewingPanel();
 }

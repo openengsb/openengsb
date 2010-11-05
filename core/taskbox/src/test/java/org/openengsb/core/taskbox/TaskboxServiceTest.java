@@ -22,6 +22,7 @@ import static org.mockito.Mockito.verify;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openengsb.core.taskbox.model.Ticket;
 import org.openengsb.core.workflow.WorkflowException;
 import org.openengsb.core.workflow.WorkflowService;
 
@@ -39,8 +40,11 @@ public class TaskboxServiceTest {
 
     @Test
     public void testStartWorkflow() throws TaskboxException, WorkflowException {
-        //service.startWorkflow("ticket", null);
+        Ticket t = new Ticket("1");
+        t.setType("developer");
+    	
+    	service.startWorkflow("ticket", t);
         
-        //verify(workflowService, Mockito.times(1)).startFlow(Mockito.anyString(), Mockito.anyObject());
+        verify(workflowService, Mockito.times(1)).startFlow(Mockito.anyString(), Mockito.anyMap());
     }
 }

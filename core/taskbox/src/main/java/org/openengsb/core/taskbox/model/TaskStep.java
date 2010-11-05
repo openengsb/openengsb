@@ -6,5 +6,8 @@ public interface TaskStep {
 	String getDescription();
 	
 	//return ID of the According UI Panel
-	String getUIId();
+	//WicketPanel createEditingPanel();
+	
+	//return ID of the According UI Panel
+	//WicketPanel createViewingPanel();
 }
