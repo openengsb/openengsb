@@ -26,8 +26,9 @@ import org.openengsb.core.common.Raises;
 public interface TestDomain extends Domain {
 
     /**
-     * run all tests for the currently configured project.
+     * run all tests for the currently configured project. This method returns at once with an id. The tests are run
+     * asynchronously. The result can be retrieved using the events raised by this domain, which also contain the id.
      */
     @Raises({TestStartEvent.class, TestEndEvent.class})
-    Boolean runTests();
+    String runTests();
 }

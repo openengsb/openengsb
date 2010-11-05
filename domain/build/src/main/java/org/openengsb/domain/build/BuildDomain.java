@@ -26,8 +26,10 @@ import org.openengsb.core.common.Raises;
 public interface BuildDomain extends Domain {
 
     /**
-     * build the currently configured project.
+     * build the currently configured project. This method returns at once with an id. The build is conducted
+     * asynchronously. The result can be retrieved using the events raised by this domain, which also contain the id.
      */
     @Raises({BuildStartEvent.class, BuildEndEvent.class})
-    Boolean build();
+    String build();
+
 }

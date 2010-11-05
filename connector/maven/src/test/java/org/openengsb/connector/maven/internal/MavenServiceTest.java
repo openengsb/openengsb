@@ -49,36 +49,38 @@ public class MavenServiceTest {
         mavenService.setBuildEvents(buildEvents);
         mavenService.setTestEvents(testEvents);
         mavenService.setDeployEvents(deployEvents);
+        mavenService.setSynchronous(true);
     }
 
     @Test
     public void build_shouldWork() {
         mavenService.setProjectPath(getPath("test-unit-success"));
-        assertThat(mavenService.build(), is(true));
+        String id = mavenService.build();
         Mockito.verify(buildEvents).raiseEvent(Mockito.any(BuildStartEvent.class));
-        Mockito.verify(buildEvents).raiseEvent(Mockito.any(BuildEndEvent.class));
+        Mockito.verify(buildEvents).raiseEvent(Mockito.refEq(new BuildEndEvent(id, true, null), "output"));
     }
 
     @Test
     public void test_shouldWork() {
         mavenService.setProjectPath(getPath("test-unit-success"));
-        assertThat(mavenService.runTests(), is(true));
+        String id = mavenService.runTests();
         Mockito.verify(testEvents).raiseEvent(Mockito.any(TestStartEvent.class));
-        Mockito.verify(testEvents).raiseEvent(Mockito.any(TestEndEvent.class));
+        Mockito.verify(testEvents).raiseEvent(Mockito.refEq(new TestEndEvent(id, true, null), "output"));
     }
 
     @Test
     public void deploy_shoudWork() {
         mavenService.setProjectPath(getPath("test-unit-success"));
-        assertThat(mavenService.deploy(), is(true));
+        String id = mavenService.deploy();
         Mockito.verify(deployEvents).raiseEvent(Mockito.any(DeployStartEvent.class));
-        Mockito.verify(deployEvents).raiseEvent(Mockito.any(DeployEndEvent.class));
+        Mockito.verify(deployEvents).raiseEvent(Mockito.refEq(new DeployEndEvent(id, true, null), "output"));
     }
 
     @Test
     public void testTestFail() {
         mavenService.setProjectPath(getPath("test-unit-fail"));
-        assertThat(mavenService.runTests(), is(false));
+        String id = mavenService.runTests();
+        Mockito.verify(testEvents).raiseEvent(Mockito.refEq(new TestEndEvent(id, false, null), "output"));
     }
 
     @Test

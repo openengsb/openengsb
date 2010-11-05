@@ -24,10 +24,17 @@ public class BuildEndEvent extends Event {
 
     private String output;
 
-    public BuildEndEvent(boolean success, String output) {
+    private String buildId;
+
+    public BuildEndEvent(String buildId, boolean success, String output) {
         super("BuildEndEvent");
+        this.buildId = buildId;
         this.success = success;
         this.output = output;
+    }
+
+    public String getBuildId() {
+        return buildId;
     }
 
     public boolean isSuccess() {

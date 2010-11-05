@@ -20,8 +20,15 @@ import org.openengsb.core.common.Event;
 
 public class DeployStartEvent extends Event {
 
-    public DeployStartEvent() {
+    private String deployId;
+
+    public DeployStartEvent(String deployId) {
         super("DeployStartEvent");
+        this.deployId = deployId;
+    }
+
+    public String getDeployId() {
+        return deployId;
     }
 
 }

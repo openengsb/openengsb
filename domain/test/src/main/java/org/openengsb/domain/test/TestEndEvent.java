@@ -20,13 +20,19 @@ import org.openengsb.core.common.Event;
 
 public class TestEndEvent extends Event {
 
+    private String testId;
     private boolean success;
     private String output;
 
-    public TestEndEvent(boolean success, String output) {
+    public TestEndEvent(String testId, boolean success, String output) {
         super("TestEndEvent");
+        this.testId = testId;
         this.success = success;
         this.output = output;
+    }
+
+    public String getTestId() {
+        return testId;
     }
 
     public boolean isSuccess() {

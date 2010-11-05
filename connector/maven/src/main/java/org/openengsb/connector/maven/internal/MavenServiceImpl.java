@@ -20,6 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -48,6 +51,14 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
     private TestDomainEvents testEvents;
     private DeployDomainEvents deployEvents;
 
+    private Executor executor;
+
+    private boolean synchronous = false;
+
+    public MavenServiceImpl() {
+        executor = Executors.newSingleThreadExecutor();
+    }
+
     private static String addSystemEnding() {
         if (System.getProperty("os.name").contains("Windows")) {
             return ".bat";
@@ -69,27 +80,63 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
     }
 
     @Override
-    public Boolean runTests() {
-        testEvents.raiseEvent(new TestStartEvent());
-        MavenResult result = excuteGoal("test");
-        testEvents.raiseEvent(new TestEndEvent(result.isSuccess(), result.getOutput()));
-        return result.isSuccess();
+    public String runTests() {
+        final String id = createId();
+        testEvents.raiseEvent(new TestStartEvent(id));
+        Runnable runTests = new Runnable() {
+
+            @Override
+            public void run() {
+                MavenResult result = excuteGoal("test");
+                testEvents.raiseEvent(new TestEndEvent(id, result.isSuccess(), result.getOutput()));
+            }
+        };
+        execute(runTests);
+        return id;
     }
 
     @Override
-    public Boolean build() {
-        buildEvents.raiseEvent(new BuildStartEvent());
-        MavenResult result = excuteGoal("compile");
-        buildEvents.raiseEvent(new BuildEndEvent(result.isSuccess(), result.getOutput()));
-        return result.isSuccess();
+    public String build() {
+        final String id = createId();
+        buildEvents.raiseEvent(new BuildStartEvent(id));
+        Runnable doBuild = new Runnable() {
+
+            @Override
+            public void run() {
+                MavenResult result = excuteGoal("compile");
+                buildEvents.raiseEvent(new BuildEndEvent(id, result.isSuccess(), result.getOutput()));
+            }
+        };
+        execute(doBuild);
+        return id;
+    }
+
+    private void execute(Runnable runnable) {
+        if (synchronous) {
+            runnable.run();
+        } else {
+            executor.execute(runnable);
+        }
     }
 
     @Override
-    public Boolean deploy() {
-        deployEvents.raiseEvent(new DeployStartEvent());
-        MavenResult result = excuteGoal("install");
-        deployEvents.raiseEvent(new DeployEndEvent(result.isSuccess(), result.getOutput()));
-        return result.isSuccess();
+    public String deploy() {
+        final String id = createId();
+        deployEvents.raiseEvent(new DeployStartEvent(id));
+        Runnable doDeploy = new Runnable() {
+
+            @Override
+            public void run() {
+                MavenResult result = excuteGoal("install");
+                deployEvents.raiseEvent(new DeployEndEvent(id, result.isSuccess(), result.getOutput()));
+            }
+        };
+        execute(doDeploy);
+        return id;
+    }
+
+    private String createId() {
+        return UUID.randomUUID().toString();
     }
 
     public Boolean validate() {
@@ -154,4 +201,13 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
             return success;
         }
     }
+
+    public void setSynchronous(boolean synchronous) {
+        this.synchronous = synchronous;
+    }
+
+    public boolean isSynchronous() {
+        return synchronous;
+    }
+
 }
