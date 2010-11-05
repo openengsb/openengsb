@@ -61,7 +61,7 @@ public class BasePage extends WebPage {
         Form<?> form = new Form<Object>("projectChoiceForm");
         form.add(createProjectChoice());
         add(form);
-        add(new Link<Object>("logout") {
+        form.add(new Link<Object>("logout") {
             @Override
             public void onClick() {
                 ((AuthenticatedWebSession) this.getSession()).signOut();

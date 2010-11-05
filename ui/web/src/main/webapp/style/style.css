@@ -298,6 +298,12 @@ div.tabRowContent {
   right: 10px;
 }
 
+.projectChoicePosition {
+  position: relative;
+  top: -30px;
+  float:right;
+}
+
 .languageIconsG img {
   position: absolute;
   top: 10px;
