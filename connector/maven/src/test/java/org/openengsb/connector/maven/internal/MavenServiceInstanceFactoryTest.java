@@ -16,13 +16,14 @@
 
 package org.openengsb.connector.maven.internal;
 
+import static org.mockito.Mockito.mock;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openengsb.domain.build.BuildDomainEvents;
 import org.openengsb.domain.deploy.DeployDomainEvents;
 import org.openengsb.domain.test.TestDomainEvents;
@@ -32,9 +33,9 @@ public class MavenServiceInstanceFactoryTest {
     @Test
     public void testCreatePlaintextReportService() throws Exception {
         MavenServiceInstanceFactory factory = new MavenServiceInstanceFactory();
-        factory.setBuildEvents(Mockito.mock(BuildDomainEvents.class));
-        factory.setTestEvents(Mockito.mock(TestDomainEvents.class));
-        factory.setDeployEvents(Mockito.mock(DeployDomainEvents.class));
+        factory.setBuildEvents(mock(BuildDomainEvents.class));
+        factory.setTestEvents(mock(TestDomainEvents.class));
+        factory.setDeployEvents(mock(DeployDomainEvents.class));
 
         Map<String, String> attributes = new HashMap<String, String>();
         attributes.put("projectPath", "someValue");

@@ -18,10 +18,13 @@ package org.openengsb.connector.maven.internal;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.refEq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.build.BuildDomainEvents;
 import org.openengsb.domain.build.BuildEndEvent;
@@ -43,9 +46,9 @@ public class MavenServiceTest {
     @Before
     public void setUp() {
         this.mavenService = new MavenServiceImpl();
-        buildEvents = Mockito.mock(BuildDomainEvents.class);
-        testEvents = Mockito.mock(TestDomainEvents.class);
-        deployEvents = Mockito.mock(DeployDomainEvents.class);
+        buildEvents = mock(BuildDomainEvents.class);
+        testEvents = mock(TestDomainEvents.class);
+        deployEvents = mock(DeployDomainEvents.class);
         mavenService.setBuildEvents(buildEvents);
         mavenService.setTestEvents(testEvents);
         mavenService.setDeployEvents(deployEvents);
@@ -56,31 +59,31 @@ public class MavenServiceTest {
     public void build_shouldWork() {
         mavenService.setProjectPath(getPath("test-unit-success"));
         String id = mavenService.build();
-        Mockito.verify(buildEvents).raiseEvent(Mockito.any(BuildStartEvent.class));
-        Mockito.verify(buildEvents).raiseEvent(Mockito.refEq(new BuildEndEvent(id, true, null), "output"));
+        verify(buildEvents).raiseEvent(any(BuildStartEvent.class));
+        verify(buildEvents).raiseEvent(refEq(new BuildEndEvent(id, true, null), "output"));
     }
 
     @Test
     public void test_shouldWork() {
         mavenService.setProjectPath(getPath("test-unit-success"));
         String id = mavenService.runTests();
-        Mockito.verify(testEvents).raiseEvent(Mockito.any(TestStartEvent.class));
-        Mockito.verify(testEvents).raiseEvent(Mockito.refEq(new TestEndEvent(id, true, null), "output"));
+        verify(testEvents).raiseEvent(any(TestStartEvent.class));
+        verify(testEvents).raiseEvent(refEq(new TestEndEvent(id, true, null), "output"));
     }
 
     @Test
     public void deploy_shoudWork() {
         mavenService.setProjectPath(getPath("test-unit-success"));
         String id = mavenService.deploy();
-        Mockito.verify(deployEvents).raiseEvent(Mockito.any(DeployStartEvent.class));
-        Mockito.verify(deployEvents).raiseEvent(Mockito.refEq(new DeployEndEvent(id, true, null), "output"));
+        verify(deployEvents).raiseEvent(any(DeployStartEvent.class));
+        verify(deployEvents).raiseEvent(refEq(new DeployEndEvent(id, true, null), "output"));
     }
 
     @Test
     public void testTestFail() {
         mavenService.setProjectPath(getPath("test-unit-fail"));
         String id = mavenService.runTests();
-        Mockito.verify(testEvents).raiseEvent(Mockito.refEq(new TestEndEvent(id, false, null), "output"));
+        verify(testEvents).raiseEvent(refEq(new TestEndEvent(id, false, null), "output"));
     }
 
     @Test
