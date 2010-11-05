@@ -34,15 +34,16 @@
                                                                title="" src="images/english_icon.png"/> </a>
   <a class="languageIconsG" href="#" wicket:id="lang.de"> <img wicket:message="title:headerPage.title" alt="Deutsch"
                                                                title="" src="images/german_icon.png"/> </a>
-  <a class="logoutPosition" href="#" wicket:id="logout">
-    <wicket:message key="logout.label">[logout.label]</wicket:message>
-  </a>
+
 
   <form wicket:id="projectChoiceForm" class="projectChoicePosition">
     <wicket:message key="project.choice.label">[project.choice.label]</wicket:message>
     <select wicket:id="projectChoice"/>
-  </form>
 
+    <a href="#" wicket:id="logout" >
+      <wicket:message key="logout.label">[logout.label]</wicket:message>
+    </a>
+  </form>
   <wicket:child>[children]</wicket:child>
   <div wicket:id="footer">footer</div>
 

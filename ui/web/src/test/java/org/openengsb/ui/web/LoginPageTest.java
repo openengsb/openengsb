@@ -128,7 +128,7 @@ public class LoginPageTest {
         formTester.setValue("username", "test");
         formTester.setValue("password", "password");
         formTester.submit();
-        tester.clickLink("logout");
+        tester.clickLink("projectChoiceForm:logout");
         tester.assertRenderedPage(LoginPage.class);
     }
 
