@@ -119,7 +119,7 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
         ProcessBuilder builder = new ProcessBuilder(command);
         Process process = builder.directory(dir).start();
         String output = IOUtils.toString(process.getInputStream());
-        log.info(output);
+        log.trace(output);
         boolean result = process.waitFor() == 0;
         return new MavenResult(result, output);
     }

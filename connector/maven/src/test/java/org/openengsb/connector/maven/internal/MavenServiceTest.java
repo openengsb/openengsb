@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.build.BuildDomainEvents;
 import org.openengsb.domain.build.BuildEndEvent;
 import org.openengsb.domain.build.BuildStartEvent;
@@ -78,6 +79,18 @@ public class MavenServiceTest {
     public void testTestFail() {
         mavenService.setProjectPath(getPath("test-unit-fail"));
         assertThat(mavenService.runTests(), is(false));
+    }
+
+    @Test
+    public void testGetAliveState_shouldReturnOnline() {
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        assertThat(mavenService.getAliveState(), is(AliveState.ONLINE));
+    }
+
+    @Test
+    public void testGetAliveStateWrongPath_shouldReturnOffline() {
+        mavenService.setProjectPath("pathThatDoesForSureNotExistBecauseItIsStrange");
+        assertThat(mavenService.getAliveState(), is(AliveState.OFFLINE));
     }
 
     private String getPath(String folder) {
