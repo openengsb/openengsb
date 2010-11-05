@@ -79,7 +79,7 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
     @Override
     public Boolean build() {
         buildEvents.raiseEvent(new BuildStartEvent());
-        MavenResult result = excuteGoal("build");
+        MavenResult result = excuteGoal("compile");
         buildEvents.raiseEvent(new BuildEndEvent(result.isSuccess(), result.getOutput()));
         return result.isSuccess();
     }
@@ -87,7 +87,7 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
     @Override
     public Boolean deploy() {
         deployEvents.raiseEvent(new DeployStartEvent());
-        MavenResult result = excuteGoal("deploy");
+        MavenResult result = excuteGoal("install");
         deployEvents.raiseEvent(new DeployEndEvent(result.isSuccess(), result.getOutput()));
         return result.isSuccess();
     }
@@ -119,7 +119,7 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
         ProcessBuilder builder = new ProcessBuilder(command);
         Process process = builder.directory(dir).start();
         String output = IOUtils.toString(process.getInputStream());
-        log.trace(output);
+        log.info(output);
         boolean result = process.waitFor() == 0;
         return new MavenResult(result, output);
     }

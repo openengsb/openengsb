@@ -23,7 +23,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.domain.build.BuildDomainEvents;
+import org.openengsb.domain.build.BuildEndEvent;
+import org.openengsb.domain.build.BuildStartEvent;
 import org.openengsb.domain.deploy.DeployDomainEvents;
+import org.openengsb.domain.deploy.DeployEndEvent;
+import org.openengsb.domain.deploy.DeployStartEvent;
 import org.openengsb.domain.test.TestDomainEvents;
 import org.openengsb.domain.test.TestEndEvent;
 import org.openengsb.domain.test.TestStartEvent;
@@ -32,22 +36,42 @@ public class MavenServiceTest {
 
     private MavenServiceImpl mavenService;
     private TestDomainEvents testEvents;
+    private BuildDomainEvents buildEvents;
+    private DeployDomainEvents deployEvents;
 
     @Before
     public void setUp() {
         this.mavenService = new MavenServiceImpl();
-        mavenService.setBuildEvents(Mockito.mock(BuildDomainEvents.class));
+        buildEvents = Mockito.mock(BuildDomainEvents.class);
         testEvents = Mockito.mock(TestDomainEvents.class);
+        deployEvents = Mockito.mock(DeployDomainEvents.class);
+        mavenService.setBuildEvents(buildEvents);
         mavenService.setTestEvents(testEvents);
-        mavenService.setDeployEvents(Mockito.mock(DeployDomainEvents.class));
+        mavenService.setDeployEvents(deployEvents);
     }
 
     @Test
-    public void testTestSuccess() {
+    public void build_shouldWork() {
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        assertThat(mavenService.build(), is(true));
+        Mockito.verify(buildEvents).raiseEvent(Mockito.any(BuildStartEvent.class));
+        Mockito.verify(buildEvents).raiseEvent(Mockito.any(BuildEndEvent.class));
+    }
+
+    @Test
+    public void test_shouldWork() {
         mavenService.setProjectPath(getPath("test-unit-success"));
         assertThat(mavenService.runTests(), is(true));
         Mockito.verify(testEvents).raiseEvent(Mockito.any(TestStartEvent.class));
         Mockito.verify(testEvents).raiseEvent(Mockito.any(TestEndEvent.class));
+    }
+
+    @Test
+    public void deploy_shoudWork() {
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        assertThat(mavenService.deploy(), is(true));
+        Mockito.verify(deployEvents).raiseEvent(Mockito.any(DeployStartEvent.class));
+        Mockito.verify(deployEvents).raiseEvent(Mockito.any(DeployEndEvent.class));
     }
 
     @Test
