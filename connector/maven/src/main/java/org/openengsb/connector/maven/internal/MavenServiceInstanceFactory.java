@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.openengsb.core.common.ServiceInstanceFactory;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
@@ -35,6 +36,8 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestD
     private TestDomainEvents testEvents;
 
     private DeployDomainEvents deployEvents;
+
+    private ContextCurrentService contextService;
 
     public MavenServiceInstanceFactory() {
     }
@@ -52,6 +55,7 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestD
         service.setBuildEvents(buildEvents);
         service.setTestEvents(testEvents);
         service.setDeployEvents(deployEvents);
+        service.setContextService(contextService);
         updateServiceInstance(service, attributes);
         return service;
     }
@@ -86,5 +90,9 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestD
 
     public void setDeployEvents(DeployDomainEvents deployEvents) {
         this.deployEvents = deployEvents;
+    }
+
+    public void setContextService(ContextCurrentService contextService) {
+        this.contextService = contextService;
     }
 }

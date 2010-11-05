@@ -71,12 +71,13 @@
     <property name="buildEvents" ref="buildEvents" />
     <property name="testEvents" ref="testEvents" />
     <property name="deployEvents" ref="deployEvents" />
+    <property name="contextService" ref="contextService" />
   </bean>
 
   <osgi:reference id="persistenceServiceManager" interface="org.openengsb.core.persistence.PersistenceManager" />
   <osgi:reference id="buildEvents" interface="org.openengsb.domain.build.BuildDomainEvents" />
   <osgi:reference id="testEvents" interface="org.openengsb.domain.test.TestDomainEvents" />
   <osgi:reference id="deployEvents" interface="org.openengsb.domain.deploy.DeployDomainEvents" />
-
+  <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextCurrentService" />
 
 </beans>

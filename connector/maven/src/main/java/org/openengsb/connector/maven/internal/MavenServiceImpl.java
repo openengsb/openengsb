@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.build.BuildDomain;
 import org.openengsb.domain.build.BuildDomainEvents;
@@ -55,6 +56,8 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
 
     private boolean synchronous = false;
 
+    private ContextCurrentService contextService;
+
     public MavenServiceImpl() {
         executor = Executors.newSingleThreadExecutor();
     }
@@ -82,11 +85,13 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
     @Override
     public String runTests() {
         final String id = createId();
+        final String contextId = contextService.getThreadLocalContext();
         testEvents.raiseEvent(new TestStartEvent(id));
         Runnable runTests = new Runnable() {
 
             @Override
             public void run() {
+                contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteGoal("test");
                 testEvents.raiseEvent(new TestEndEvent(id, result.isSuccess(), result.getOutput()));
             }
@@ -98,11 +103,13 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
     @Override
     public String build() {
         final String id = createId();
+        final String contextId = contextService.getThreadLocalContext();
         buildEvents.raiseEvent(new BuildStartEvent(id));
         Runnable doBuild = new Runnable() {
 
             @Override
             public void run() {
+                contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteGoal("compile");
                 buildEvents.raiseEvent(new BuildEndEvent(id, result.isSuccess(), result.getOutput()));
             }
@@ -122,11 +129,13 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
     @Override
     public String deploy() {
         final String id = createId();
+        final String contextId = contextService.getThreadLocalContext();
         deployEvents.raiseEvent(new DeployStartEvent(id));
         Runnable doDeploy = new Runnable() {
 
             @Override
             public void run() {
+                contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteGoal("install");
                 deployEvents.raiseEvent(new DeployEndEvent(id, result.isSuccess(), result.getOutput()));
             }
@@ -183,6 +192,18 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
         this.deployEvents = deployEvents;
     }
 
+    public void setContextService(ContextCurrentService contextService) {
+        this.contextService = contextService;
+    }
+
+    public void setSynchronous(boolean synchronous) {
+        this.synchronous = synchronous;
+    }
+
+    public boolean isSynchronous() {
+        return synchronous;
+    }
+
     private class MavenResult {
         private String output;
 
@@ -200,14 +221,6 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
         public boolean isSuccess() {
             return success;
         }
-    }
-
-    public void setSynchronous(boolean synchronous) {
-        this.synchronous = synchronous;
-    }
-
-    public boolean isSynchronous() {
-        return synchronous;
     }
 
 }

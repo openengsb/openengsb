@@ -25,6 +25,7 @@ import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.build.BuildDomainEvents;
 import org.openengsb.domain.build.BuildEndEvent;
@@ -52,6 +53,7 @@ public class MavenServiceTest {
         mavenService.setBuildEvents(buildEvents);
         mavenService.setTestEvents(testEvents);
         mavenService.setDeployEvents(deployEvents);
+        mavenService.setContextService(mock(ContextCurrentService.class));
         mavenService.setSynchronous(true);
     }
 
