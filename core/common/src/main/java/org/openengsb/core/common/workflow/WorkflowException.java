@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.common.workflow;
 
 @SuppressWarnings("serial")
 public class WorkflowException extends Exception {

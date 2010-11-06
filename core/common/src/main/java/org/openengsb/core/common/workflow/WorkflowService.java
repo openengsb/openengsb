@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.common.workflow;
 
 import org.openengsb.core.common.Event;
 

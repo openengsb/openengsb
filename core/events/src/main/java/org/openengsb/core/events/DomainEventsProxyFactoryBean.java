@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
 import org.openengsb.core.common.DomainEvents;
-import org.openengsb.core.workflow.WorkflowService;
+import org.openengsb.core.common.workflow.WorkflowService;
 import org.springframework.beans.factory.FactoryBean;
 
 public class DomainEventsProxyFactoryBean implements FactoryBean<DomainEvents> {

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.common.workflow;
 
 import java.util.Collection;
 import java.util.Map;
 
 import org.drools.KnowledgeBase;
-import org.openengsb.core.workflow.model.RuleBaseElementId;
-import org.openengsb.core.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 
 /**
  * The RuleManager serves as an abstraction to modify the rulebase used by the workflow engine. It offers methods to

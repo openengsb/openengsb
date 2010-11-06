@@ -67,6 +67,6 @@
   </osgi:service>
 
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
-  <osgi:reference id="workflowService" interface="org.openengsb.core.workflow.WorkflowService" />
+  <osgi:reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
 
 </beans>

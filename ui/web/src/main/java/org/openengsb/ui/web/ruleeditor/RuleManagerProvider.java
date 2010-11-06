@@ -16,7 +16,7 @@
 
 package org.openengsb.ui.web.ruleeditor;
 
-import org.openengsb.core.workflow.RuleManager;
+import org.openengsb.core.common.workflow.RuleManager;
 
 public interface RuleManagerProvider {
 

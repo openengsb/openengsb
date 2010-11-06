@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.persistence;
+package org.openengsb.core.common.persistence;
 
 @SuppressWarnings("serial")
 public class PersistenceException extends Exception {
