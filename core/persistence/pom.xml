@@ -36,12 +36,20 @@
 
   <packaging>bundle</packaging>
 
-  <description></description>
-  <url></url>
-  <licenses></licenses>
+  <description>OpenEngSB Core classes for Persistence Layer</description>
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
   <scm>
-    <connection></connection>
-    <url></url>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
   </scm>
   
   <dependencies>
