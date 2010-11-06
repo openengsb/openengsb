@@ -47,7 +47,11 @@ div.clear hr{
   font-weight: bold;
 }
 #bannerLeft img, #bannerRight img {
+  position: absolute;
   margin: 0px;
+  height: 81px;
+  top: 20px;
+  left: 10px;
 }
 .xleft, #bannerLeft img {
   float:left;

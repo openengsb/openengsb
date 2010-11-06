@@ -289,7 +289,9 @@ div.tabRowContent {
 
 .pageLogo img {
   position: absolute;
-  right: 0px;
+  left: 10px;
+  top: 32px;
+  height: 68px;
 }
 
 .languageIconsE img {
