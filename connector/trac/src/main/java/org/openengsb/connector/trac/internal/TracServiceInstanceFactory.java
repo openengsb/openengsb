@@ -29,15 +29,20 @@ import org.openengsb.domain.issue.IssueDomain;
 
 public class TracServiceInstanceFactory implements ServiceInstanceFactory<IssueDomain, TracConnector> {
 
+    static final String ATTRIB_SERVER = "serverUrl";
+    static final String ATTRIB_PASSWORD = "userPassword";
+    static final String ATTRIB_USERNAME = "username";
+
     @Override
     public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
         builder.name("trac.name").description("trac.description");
 
         builder
-            .attribute(buildAttribute(builder, "username", "username.outputMode", "username.outputMode.description"))
-            .attribute(builder.newAttribute().id("userPassword").name("userPassword.outputMode")
+            .attribute(
+                buildAttribute(builder, ATTRIB_USERNAME, "username.outputMode", "username.outputMode.description"))
+            .attribute(builder.newAttribute().id(ATTRIB_PASSWORD).name("userPassword.outputMode")
                 .description("userPassword.outputMode.description").defaultValue("").asPassword().build())
-            .attribute(builder.newAttribute().id("serverUrl").name("serverUrl.outputMode")
+            .attribute(builder.newAttribute().id(ATTRIB_SERVER).name("serverUrl.outputMode")
                 .description("serverUrl.outputMode.description").defaultValue("").required().build());
 
         return builder.build();
@@ -77,14 +82,14 @@ public class TracServiceInstanceFactory implements ServiceInstanceFactory<IssueD
     }
 
     private void updateTicketHandlerFactory(Map<String, String> attributes, TicketHandlerFactory ticketFactory) {
-        if (attributes.containsKey("serverUrl")) {
-            ticketFactory.setServerUrl(attributes.get("serverUrl"));
+        if (attributes.containsKey(ATTRIB_SERVER)) {
+            ticketFactory.setServerUrl(attributes.get(ATTRIB_SERVER));
         }
-        if (attributes.containsKey("user")) {
-            ticketFactory.setUsername(attributes.get("user"));
+        if (attributes.containsKey(ATTRIB_USERNAME)) {
+            ticketFactory.setUsername(attributes.get(ATTRIB_USERNAME));
         }
-        if (attributes.containsKey("password")) {
-            ticketFactory.setUserPassword(attributes.get("password"));
+        if (attributes.containsKey(ATTRIB_PASSWORD)) {
+            ticketFactory.setUserPassword(attributes.get(ATTRIB_PASSWORD));
         }
     }
 }

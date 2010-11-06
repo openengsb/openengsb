@@ -49,9 +49,9 @@ public class TracServiceInstanceFactoryTest {
         when(tracConnector.getTicketHandlerFactory()).thenReturn(tc);
 
         Map<String, String> newAttributes = new HashMap<String, String>();
-        newAttributes.put("serverUrl", "newUrl");
-        newAttributes.put("user", "newUser");
-        newAttributes.put("password", "newPassword");
+        newAttributes.put(TracServiceInstanceFactory.ATTRIB_SERVER, "newUrl");
+        newAttributes.put(TracServiceInstanceFactory.ATTRIB_USERNAME, "newUser");
+        newAttributes.put(TracServiceInstanceFactory.ATTRIB_PASSWORD, "newPassword");
 
         factory.updateServiceInstance(tracConnector, newAttributes);
         verify(tc, times(1)).setServerUrl("newUrl");
