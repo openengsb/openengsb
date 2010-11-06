@@ -5,6 +5,10 @@ public interface TaskStep {
 	
 	String getDescription();
 	
+	void setDoneFlag(boolean doneFlag);
+	
+	boolean getDoneFlag();
+	
 	//return ID of the According UI Panel
 	//WicketPanel createEditingPanel();
 	

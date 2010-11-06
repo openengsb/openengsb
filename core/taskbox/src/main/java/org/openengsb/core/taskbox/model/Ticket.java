@@ -10,7 +10,11 @@ public class Ticket implements Task {
 	private String id;
 	private String type;
 	
+	//the current Task Step is saved here
+	private TaskStep currentTaskStep;
 	
+	//history of all previous Task Steps
+	private List<TaskStep> historyTaskSteps;
 	
 	//stores detailed history info about the lifecycle of the ticket
 	private List<String> history;
@@ -24,6 +28,9 @@ public class Ticket implements Task {
 		this.id = id;
 		this.history = new ArrayList<String>();
 		this.notes = new ArrayList<String>();
+		
+		this.currentTaskStep = null;
+		this.historyTaskSteps = new ArrayList<TaskStep>();
 		
 		this.addHistoryEntry("created empty Ticket");
 	}
@@ -71,5 +78,35 @@ public class Ticket implements Task {
 			noteEntry);
 		
 		this.addHistoryEntry("added new NoteEntry");
+	}
+
+	public void setCurrentTaskStep(TaskStep currentTaskStep) {
+		this.currentTaskStep = currentTaskStep;
+	}
+
+	public TaskStep getCurrentTaskStep() {
+		return currentTaskStep;
+	}
+	
+	public TaskStep finishCurrentTaskStep() {
+		TaskStep ts = currentTaskStep;
+		ts.setDoneFlag(true);
+		this.currentTaskStep = null;
+		if(ts != null) {
+			this.historyTaskSteps.add(ts);
+			return ts;
+		} else
+			return null;
+	}
+	
+	public TaskStep finishCurrentTaskStep(TaskStep nextTaskStep) {
+		TaskStep ts = currentTaskStep;
+		ts.setDoneFlag(true);
+		this.currentTaskStep = nextTaskStep;
+		if(ts != null) {
+			this.historyTaskSteps.add(ts);
+			return ts;
+		} else
+			return null;
 	}
 }
