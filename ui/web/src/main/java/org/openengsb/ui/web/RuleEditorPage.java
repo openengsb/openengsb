@@ -17,7 +17,7 @@
 package org.openengsb.ui.web;
 
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.workflow.RuleManager;
+import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 

@@ -22,8 +22,8 @@ import static org.mockito.Mockito.verify;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.workflow.WorkflowException;
-import org.openengsb.core.workflow.WorkflowService;
+import org.openengsb.core.common.workflow.WorkflowException;
+import org.openengsb.core.common.workflow.WorkflowService;
 
 public class TaskboxServiceTest {
     private TaskboxServiceImpl service;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.model;
+package org.openengsb.core.common.workflow.model;
 
 import java.io.Serializable;
 

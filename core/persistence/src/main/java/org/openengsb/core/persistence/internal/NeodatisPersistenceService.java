@@ -29,16 +29,16 @@ import org.neodatis.odb.Objects;
 import org.neodatis.odb.OdbConfiguration;
 import org.neodatis.odb.core.query.IQuery;
 import org.neodatis.odb.core.query.nq.NativeQuery;
-import org.openengsb.core.persistence.PersistenceException;
-import org.openengsb.core.persistence.PersistenceService;
+import org.openengsb.core.common.persistence.PersistenceException;
+import org.openengsb.core.common.persistence.PersistenceService;
 
 public class NeodatisPersistenceService implements PersistenceService {
 
-    private String dbFile;
+    private final String dbFile;
 
-    private Semaphore semaphore = new Semaphore(1);
+    private final Semaphore semaphore = new Semaphore(1);
 
-    private ClassLoader loader;
+    private final ClassLoader loader;
 
     public NeodatisPersistenceService(String dbFile, ClassLoader loader) {
         this.dbFile = dbFile;

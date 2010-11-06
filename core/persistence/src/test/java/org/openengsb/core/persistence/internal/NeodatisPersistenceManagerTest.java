@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.persistence.PersistenceService;
+import org.openengsb.core.common.persistence.PersistenceService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 

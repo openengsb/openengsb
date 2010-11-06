@@ -33,5 +33,5 @@
     </bean>
   </osgi:service>
 
-  <osgi:reference id="workflowService" interface="org.openengsb.core.workflow.WorkflowService" />
+  <osgi:reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
 </beans>

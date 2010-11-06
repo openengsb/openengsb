@@ -14,24 +14,33 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.core.common.workflow.model;
 
-@SuppressWarnings("serial")
-public class RuleBaseException extends Exception {
+/**
+ * used to store values like handles to remote processes in the working memory
+ */
+public class Value {
+    private String key;
+    private Object value;
 
-    public RuleBaseException() {
+    public Value(String key, Object value) {
+        this.key = key;
+        this.value = value;
     }
 
-    public RuleBaseException(String message) {
-        super(message);
+    public String getKey() {
+        return this.key;
     }
 
-    public RuleBaseException(Throwable cause) {
-        super(cause);
+    public void setKey(String key) {
+        this.key = key;
     }
 
-    public RuleBaseException(String message, Throwable cause) {
-        super(message, cause);
+    public Object getValue() {
+        return this.value;
     }
 
+    public void setValue(Object value) {
+        this.value = value;
+    }
 }

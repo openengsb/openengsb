@@ -23,9 +23,9 @@ import java.util.HashSet;
 
 import org.apache.commons.io.FileUtils;
 import org.drools.definition.KnowledgePackage;
-import org.openengsb.core.workflow.RuleBaseException;
+import org.openengsb.core.common.workflow.RuleBaseException;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.internal.ResourceHandler;
-import org.openengsb.core.workflow.model.RuleBaseElementId;
 
 public abstract class MultiFileResourceHandler extends ResourceHandler<DirectoryRuleSource> {
 

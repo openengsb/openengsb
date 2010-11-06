@@ -14,33 +14,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.model;
+package org.openengsb.core.common.workflow.model;
 
-/**
- * used to store values like handles to remote processes in the working memory
- */
-public class Value {
-    private String key;
-    private Object value;
+import javax.xml.bind.annotation.XmlType;
 
-    public Value(String key, Object value) {
-        this.key = key;
-        this.value = value;
-    }
-
-    public String getKey() {
-        return this.key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public Object getValue() {
-        return this.value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
+@XmlType
+public enum RuleBaseElementType {
+        Rule, Function, Process,
 }

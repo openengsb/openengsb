@@ -14,11 +14,24 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.model;
+package org.openengsb.core.common.workflow;
 
-import javax.xml.bind.annotation.XmlType;
+@SuppressWarnings("serial")
+public class RuleBaseException extends Exception {
 
-@XmlType
-public enum RuleBaseElementType {
-        Rule, Function, Process,
+    public RuleBaseException() {
+    }
+
+    public RuleBaseException(String message) {
+        super(message);
+    }
+
+    public RuleBaseException(Throwable cause) {
+        super(cause);
+    }
+
+    public RuleBaseException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

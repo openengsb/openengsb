@@ -21,7 +21,7 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
-import org.openengsb.core.persistence.PersistenceService;
+import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.persistence.PersistenceServiceTest;
 
 public class NeodatisPersistenceServiceTest extends PersistenceServiceTest {

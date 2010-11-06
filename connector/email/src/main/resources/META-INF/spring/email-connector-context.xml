@@ -38,7 +38,7 @@
       <property name="connectorSetupStore">
         <bean class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore" init-method="init">
           <property name="persistenceManager">
-            <osgi:reference interface="org.openengsb.core.persistence.PersistenceManager" />
+            <osgi:reference interface="org.openengsb.core.common.persistence.PersistenceManager" />
           </property>
         </bean>
       </property>

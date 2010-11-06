@@ -176,7 +176,6 @@ public final class BaseExamConfiguration {
 
     public static String getRootPropertiesFromPom(String fileUrl) {
         try {
-            Map<String, String> versions = new HashMap<String, String>();
             File file = new File(fileUrl);
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();

@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.DomainEvents;
 import org.openengsb.core.common.Event;
-import org.openengsb.core.workflow.WorkflowService;
+import org.openengsb.core.common.workflow.WorkflowService;
 
 public class DomainProxyFactoryTest {
 

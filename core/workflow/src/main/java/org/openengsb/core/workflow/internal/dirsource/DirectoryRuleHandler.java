@@ -21,8 +21,8 @@ import java.util.HashSet;
 
 import org.drools.definition.KnowledgePackage;
 import org.drools.definition.rule.Rule;
-import org.openengsb.core.workflow.model.RuleBaseElementId;
-import org.openengsb.core.workflow.model.RuleBaseElementType;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 
 public class DirectoryRuleHandler extends MultiFileResourceHandler {
 
