@@ -321,16 +321,16 @@ div.tabRowContent {
 }
 
 #mainMenu ul {
-  display: table-row;
+  display: table;
   list-style-image: none;
   list-style-position: outside;
   list-style-type: none;
   margin: 0;
-  padding: 0;
+  padding: 8px 16px 8px 16px;
 }
 
 #mainMenu li {
-  display: table-cell;
+  display: inline;
   padding: 8px 16px 8px 16px;
   border-right: 1px #cdcdcd solid;
 }
