@@ -30,7 +30,7 @@ public class LogService implements ExampleDomain {
     private String outputMode;
     private final String id;
     private AliveState aliveState = AliveState.OFFLINE;
-    private ExampleDomainEvents domainEventInterface;
+    private final ExampleDomainEvents domainEventInterface;
 
     public LogService(String id, ExampleDomainEvents domainEventInterface) {
         this.id = id;
@@ -74,5 +74,16 @@ public class LogService implements ExampleDomain {
     @Override
     public AliveState getAliveState() {
         return this.aliveState;
+    }
+
+    @Override
+    public String doSomething(ExampleEnum exampleEnum) {
+        log.info(exampleEnum);
+        return "Called with: " + exampleEnum.toString();
+    }
+
+    @Override
+    public String doSomethingWithLogEvent(LogEvent event) {
+        return "Called: " + event.getMessage() + " " + event.getLevel();
     }
 }

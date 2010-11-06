@@ -68,6 +68,16 @@ public class EventForwardIT extends AbstractExamTestHelper {
         public AliveState getAliveState() {
             return AliveState.OFFLINE;
         }
+
+        @Override
+        public String doSomething(ExampleEnum exampleEnum) {
+            return "something";
+        }
+
+        @Override
+        public String doSomethingWithLogEvent(LogEvent event) {
+            return "something";
+        }
     }
 
     public static class DummyIssueDomain implements IssueDomain {

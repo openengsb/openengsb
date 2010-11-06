@@ -67,7 +67,7 @@ public class ArgumentModel implements Serializable {
     @SuppressWarnings("unchecked")
     public Object toValue() {
         if (!isBean) {
-            return getValue();
+            return MethodUtil.convertToCorrectClass(type, value);
         } else {
             return MethodUtil.buildBean(type, (Map<String, String>) value);
         }

@@ -33,6 +33,7 @@ import org.openengsb.core.workflow.WorkflowService;
 import org.openengsb.core.workflow.model.RuleBaseElementId;
 import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.domain.example.ExampleDomain;
+import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.issue.IssueDomain;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
@@ -68,6 +69,16 @@ public class WorkflowIT extends AbstractExamTestHelper {
         @Override
         public AliveState getAliveState() {
             return AliveState.OFFLINE;
+        }
+
+        @Override
+        public String doSomething(ExampleEnum exampleEnum) {
+            return "something";
+        }
+
+        @Override
+        public String doSomethingWithLogEvent(LogEvent event) {
+            return "something";
         }
     }
 

@@ -30,4 +30,11 @@ public interface ExampleDomain extends Domain {
     @Raises(LogEvent.class)
     String doSomething(String message);
 
+    String doSomething(ExampleEnum exampleEnum);
+
+    String doSomethingWithLogEvent(LogEvent event);
+
+    public enum ExampleEnum {
+        ONE, TWO, THREE
+    }
 }

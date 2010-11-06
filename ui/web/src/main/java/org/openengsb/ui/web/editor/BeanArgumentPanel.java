@@ -46,7 +46,7 @@ public class BeanArgumentPanel extends Panel {
             fieldViewIds.put(a.getId(), fieldViewId);
             WebMarkupContainer row = new WebMarkupContainer(fieldViewId);
             fields.add(row);
-            row.add(EditorFieldFactory.createEditorField("row", new MapModel<String, String>(values, a.getId()), a));
+            row.add(AttributeEditorUtil.createEditorField("row", new MapModel<String, String>(values, a.getId()), a));
         }
     }
 

@@ -16,13 +16,24 @@
 
 package org.openengsb.ui.web;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.when;
+
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Locale;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
+import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
+import org.openengsb.core.common.l10n.LocalizableString;
+import org.openengsb.core.common.l10n.StringLocalizer;
 import org.openengsb.core.common.util.AliveState;
 
 public class MethodUtilTest {
@@ -93,6 +104,10 @@ public class MethodUtilTest {
         }
     }
 
+    public static enum TestEnum {
+        ONE, TWO
+    }
+
     @Test
     public void testOnlyInterface() throws Exception {
         List<Method> methods = MethodUtil.getServiceMethods(new TestClass());
@@ -119,5 +134,30 @@ public class MethodUtilTest {
         List<Method> methods = MethodUtil.getServiceMethods(new TestClass());
         Method hidden = HiddenInterface.class.getMethod("hiddenMethod");
         Assert.assertFalse(methods.contains(hidden));
+    }
+
+    @Test
+    public void addEnumValues() {
+        StringLocalizer mock = Mockito.mock(StringLocalizer.class);
+        LocalizableString mock2 = Mockito.mock(LocalizableString.class);
+        LocalizableString mock3 = Mockito.mock(LocalizableString.class);
+        when(mock2.getKey()).thenReturn("123");
+        when(mock2.getString(Locale.getDefault())).thenReturn("ONE");
+        when(mock2.getKey()).thenReturn("123");
+        when(mock3.getString(Locale.getDefault())).thenReturn("TWO");
+        when(mock.getString("ONE")).thenReturn(mock2);
+        when(mock.getString("TWO")).thenReturn(mock2);
+
+        Builder builder = AttributeDefinition.builder(mock);
+        builder.name("ONE").id("123");
+        MethodUtil.addEnumValues(TestEnum.class, builder);
+        AttributeDefinition build = builder.build();
+        List<Option> options = build.getOptions();
+        Option option0 = options.get(0);
+        assertThat(option0.getLabel().getString(Locale.getDefault()), equalTo(TestEnum.ONE.toString()));
+        assertThat(option0.getValue().toString(), equalTo(TestEnum.ONE.toString()));
+        Option option1 = options.get(1);
+        assertThat(option1.getLabel().getString(Locale.getDefault()), equalTo(TestEnum.ONE.toString()));
+        assertThat(option1.getValue().toString(), equalTo(TestEnum.TWO.toString()));
     }
 }

@@ -53,14 +53,19 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.ui.web.editor.AttributeEditorUtil;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
-import org.openengsb.ui.web.editor.SimpleArgumentPanel;
+import org.openengsb.ui.web.editor.fields.AbstractField;
 import org.openengsb.ui.web.model.LocalizableStringModel;
 import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
@@ -383,9 +388,15 @@ public class TestClient extends BasePage {
         for (Class<?> p : m.getParameterTypes()) {
             ArgumentModel argModel = new ArgumentModel(i + 1, p, null);
             arguments.add(argModel);
-            if (p.isPrimitive() || p.equals(String.class)) {
-                SimpleArgumentPanel arg = new SimpleArgumentPanel(String.valueOf(i), argModel);
-                argumentList.add(arg);
+            if (p.isPrimitive() || p.equals(String.class) || p.isEnum()) {
+                Builder builder = AttributeDefinition.builder(new PassThroughStringLocalizer());
+                MethodUtil.addEnumValues(argModel.getType(), builder);
+                builder.id("value").name(
+                    new StringResourceModel("argument", this, new Model<ArgumentModel>(argModel)).getString());
+                AbstractField<?> createEditorField =
+                    AttributeEditorUtil.createEditorField("argument_" + i,
+                        new PropertyModel<String>(argModel, "value"), builder.build());
+                argumentList.add(createEditorField);
             } else {
                 Map<String, String> beanAttrs = new HashMap<String, String>();
                 argModel.setValue(beanAttrs);
