@@ -94,9 +94,7 @@ public class TestClient extends BasePage {
 
     private AjaxButton editButton;
 
-    private ServiceManager lastManager;
-
-    private String lastServiceId;
+    private ServiceId lastServiceId;
 
     public TestClient() {
         WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
@@ -153,10 +151,14 @@ public class TestClient extends BasePage {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 log.info("edit button pressed");
-                if (lastManager != null && lastServiceId != null) {
-                    setResponsePage(new ConnectorEditorPage(lastManager, lastServiceId));
-                }
 
+                if (lastServiceId != null) {
+                    ServiceManager lastManager = getLastManager(lastServiceId);
+                    if (lastManager != null) {
+                        setResponsePage(new ConnectorEditorPage(lastManager, lastServiceId.getServiceId()));
+                    }
+
+                }
             }
 
         };
@@ -268,9 +270,12 @@ public class TestClient extends BasePage {
     }
 
     private void updateEditButton(ServiceId serviceId) {
-        lastManager = null;
         lastServiceId = null;
         editButton.setEnabled(false);
+        editButton.setEnabled(getLastManager(serviceId) != null);
+    }
+
+    private ServiceManager getLastManager(ServiceId serviceId) {
         ServiceReference[] references = null;
         try {
             references =
@@ -293,15 +298,14 @@ public class TestClient extends BasePage {
 
             for (ServiceManager sm : managerList) {
                 if (sm.getDescriptor().getId().equals(id)) {
-                    lastManager = sm;
-                    lastServiceId = serviceId.getServiceId();
-                    editButton.setEnabled(true);
+                    lastServiceId = serviceId;
+                    return sm;
                 }
             }
-
         } catch (InvalidSyntaxException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     private TreeModel createModel() {
