@@ -51,12 +51,6 @@
       <version>${spring.version}</version>
       <scope>provided</scope>
     </dependency>
-  	<dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>${mockito.version}</version>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>org.apache.activemq</groupId>
       <artifactId>activemq-core</artifactId>
@@ -68,9 +62,9 @@
       <version>${jackson.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-all</artifactId>
-      <version>${hamcrest.version}</version>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-test</artifactId>
+      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
