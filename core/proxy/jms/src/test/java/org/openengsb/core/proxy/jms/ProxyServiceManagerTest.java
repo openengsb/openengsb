@@ -32,6 +32,7 @@ import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.proxy.ProxyServiceManager;
+import org.openengsb.core.test.NullDomain;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -49,7 +50,7 @@ public class ProxyServiceManagerTest {
         when(provider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
             public Class<? extends Domain> answer(InvocationOnMock invocation) {
-                return TestInterface.class;
+                return NullDomain.class;
             }
         });
         when(provider.getName()).thenReturn(new NullString());
@@ -64,11 +65,8 @@ public class ProxyServiceManagerTest {
         ServiceDescriptor descriptor = manager.getDescriptor();
         assertThat(descriptor.getId(), equalTo(string));
         assertThat(descriptor.getAttributes().size(), equalTo(0));
-        assertThat(descriptor.getImplementationType().getName(), equalTo(TestInterface.class.getName()));
-        assertThat(descriptor.getServiceType().getName(), equalTo(TestInterface.class.getName()));
-    }
-
-    private static interface TestInterface extends Domain {
+        assertThat(descriptor.getImplementationType().getName(), equalTo(NullDomain.class.getName()));
+        assertThat(descriptor.getServiceType().getName(), equalTo(NullDomain.class.getName()));
     }
 
     @SuppressWarnings("serial")

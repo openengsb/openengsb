@@ -40,7 +40,6 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.util.AliveState;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
@@ -50,24 +49,6 @@ import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.TestEvent;
 
 public class WorkflowServiceTest {
-
-    public interface LogDomain extends Domain {
-        void log(String string);
-    }
-
-    public static class LogDomainMock implements LogDomain {
-        private final StringBuffer log = new StringBuffer();
-
-        @Override
-        public void log(String string) {
-            log.append(string);
-        }
-
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
-        }
-    }
 
     private WorkflowServiceImpl service;
     private RuleManager manager;

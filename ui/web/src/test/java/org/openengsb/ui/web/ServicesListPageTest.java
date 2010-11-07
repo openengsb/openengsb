@@ -35,13 +35,13 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.ServiceReference;
 
 public class ServicesListPageTest {
@@ -51,25 +51,6 @@ public class ServicesListPageTest {
     private DomainService domainServiceMock;
     private List<ServiceReference> managedServiceInstances;
     private List<ServiceManager> serviceManagerListMock;
-
-    public interface TestInterface extends Domain {
-        void doSomethingToChangeState();
-    }
-
-    public static class TestService implements TestInterface {
-
-        private AliveState aliveState = AliveState.CONNECTING;
-
-        @Override
-        public AliveState getAliveState() {
-            return aliveState;
-        }
-
-        @Override
-        public void doSomethingToChangeState() {
-            aliveState = AliveState.ONLINE;
-        }
-    }
 
     @Before
     public void setup() {
@@ -103,7 +84,8 @@ public class ServicesListPageTest {
         when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
         when(serRef.getProperty("id")).thenReturn("testService");
         managedServiceInstances.add(serRef);
-        TestService domainService = new TestService();
+        NullDomainImpl domainService = new NullDomainImpl();
+        domainService.setAliveState(AliveState.CONNECTING);
         when(domainServiceMock.getService(serRef)).thenReturn(domainService);
 
         tester.startPage(ServiceListPage.class);
@@ -124,7 +106,7 @@ public class ServicesListPageTest {
     @Test
     @SuppressWarnings("unchecked")
     public void verifyListViews_ServiceShouldBeAfterStateChangeInOtherList() {
-        TestInterface domainService = setUpServicesMap();
+        NullDomainImpl domainService = setUpServicesMap();
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
         when(serviceDescriptorMock.getName()).thenReturn(new PassThroughLocalizableString("name"));
@@ -140,7 +122,7 @@ public class ServicesListPageTest {
             .getComponentFromLastRenderedPage("onlineServicePanel:onlineServices");
         assertThat(onlineServices.getModelObject().size(), is(0));
 
-        domainService.doSomethingToChangeState();
+        domainService.setAliveState(AliveState.ONLINE);
 
         final WebRequestCycle cycle = tester.setupRequestAndResponse();
         try {
@@ -218,19 +200,20 @@ public class ServicesListPageTest {
         tester.assertVisible("disconnectedServicePanel:noDisServices");
     }
 
-    private TestInterface setUpServicesMap() {
+    private NullDomainImpl setUpServicesMap() {
         serviceManagerListMock.add(serviceManagerMock);
         ServiceReference serRef = mock(ServiceReference.class);
         when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
         when(serRef.getProperty("id")).thenReturn("testService");
         when(serRef.getProperty("managerId")).thenReturn("serviceManagerId");
         managedServiceInstances.add(serRef);
-        TestInterface domainService = new TestService();
+        NullDomainImpl domainService = new NullDomainImpl();
         when(domainServiceMock.getService(serRef)).thenReturn(domainService);
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);
         when(serviceDescriptorMock.getId()).thenReturn("serviceManagerId");
         when(serviceDescriptorMock.getDescription()).thenReturn(new PassThroughLocalizableString("testDescription"));
         when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
+        domainService.setAliveState(AliveState.CONNECTING);
         return domainService;
     }
 }
