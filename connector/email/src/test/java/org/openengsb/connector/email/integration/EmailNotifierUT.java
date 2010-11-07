@@ -25,7 +25,6 @@ import org.openengsb.connector.email.internal.abstraction.JavaxMailAbstraction;
 import org.openengsb.core.common.DomainMethodExecutionException;
 import org.openengsb.domain.notification.model.Attachment;
 import org.openengsb.domain.notification.model.Notification;
-import org.springframework.test.annotation.ExpectedException;
 
 public class EmailNotifierUT {
 
@@ -38,8 +37,7 @@ public class EmailNotifierUT {
         notifier.notify(notification);
     }
 
-    @ExpectedException(DomainMethodExecutionException.class)
-    @Test
+    @Test(expected = DomainMethodExecutionException.class)
     public void testToSendAnEmailWithWrongUserdata() throws Exception {
         EmailNotifier notifier =
                 createNotifier("notifier2", "pre2: ", true, "doesnotexist", "smtp.gmail.com", "totallyWrong",

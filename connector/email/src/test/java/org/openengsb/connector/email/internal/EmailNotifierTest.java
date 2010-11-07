@@ -34,7 +34,6 @@ import org.openengsb.core.common.DomainMethodExecutionException;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.notification.model.Attachment;
 import org.openengsb.domain.notification.model.Notification;
-import org.springframework.test.annotation.ExpectedException;
 
 public class EmailNotifierTest {
 
@@ -56,13 +55,12 @@ public class EmailNotifierTest {
 
     }
 
-    @Test
-    @ExpectedException(DomainMethodExecutionException.class)
+    @Test(expected = DomainMethodExecutionException.class)
     public void testThatDomainMethodExecutionExceptionIsThrown() throws Exception {
         MailAbstraction mailMock = mock(MailAbstraction.class);
         MailProperties propertiesMock = mock(MailProperties.class);
         when(mailMock.createMailProperties()).thenReturn(propertiesMock);
-        EmailNotifier notifier = mock(EmailNotifier.class);
+        EmailNotifier notifier = new EmailNotifier("", mailMock);
 
         Notification notificationMock = mock(Notification.class);
 
