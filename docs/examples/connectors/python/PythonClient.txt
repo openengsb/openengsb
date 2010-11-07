@@ -20,6 +20,7 @@ It comes with a cli.py script used to send JMS Messages via stomp.
 Start the Stomppy client with Host and PORT parameters. Default should be:
 python cli.py -H localhost -P 6549.
 
+--------- Receiving Method Calls ---------
 To subscribe to a specific Queue call "subscribe /queue/<DomainName>_method_send". For example:
 "subscribe /queue/ExampleDomain_method_send".
 
@@ -28,3 +29,10 @@ When a request is sent via the above queue you can answer via sending a message 
 for information about the message format.
 
 The return message will then be mapped to the return value of the request method and ultimately shown in the UI.
+
+--------- Raising Events ---------
+To raise an Event call "send /queue/<DomainName>_event_send". For example:
+
+"send /queue/ExampleDomain_event_send {"type":"org.openengsb.domain.example.event.LogEvent","event":{"name":"Name", "message":"Message", "level":"INFO"}}"
+
+The return can then be read via "subscribe /queue/ExampleDomain_event_return".
