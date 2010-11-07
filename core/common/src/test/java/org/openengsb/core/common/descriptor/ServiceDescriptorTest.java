@@ -27,30 +27,14 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.l10n.StringLocalizer;
-import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.support.DomainImpl;
+import org.openengsb.core.common.support.NullDomain;
+import org.openengsb.core.common.support.NullDomainImpl;
 
 public class ServiceDescriptorTest {
-
-    private static interface DummyDomain extends Domain {
-    }
-
-    private static class DummyInstance implements DummyDomain {
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
-        }
-    }
-
-    private static class OtherInstance implements Domain {
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
-        }
-    }
 
     private StringLocalizer strings;
     private Builder builder;
@@ -65,8 +49,8 @@ public class ServiceDescriptorTest {
         when(strings.getString("nameKey")).thenReturn(new PassThroughLocalizableString("name"));
         when(strings.getString("descKey")).thenReturn(new PassThroughLocalizableString("desc"));
         builder.id("a");
-        builder.serviceType(DummyDomain.class);
-        builder.implementationType(DummyInstance.class);
+        builder.serviceType(NullDomain.class);
+        builder.implementationType(NullDomainImpl.class);
         builder.name("nameKey");
         builder.description("descKey");
     }
@@ -106,7 +90,7 @@ public class ServiceDescriptorTest {
     @Test
     public void implementationTypeDoesNotImplementServiceType_shouldThrowISE() {
         expectMessage("service");
-        builder.implementationType(OtherInstance.class);
+        builder.implementationType(DomainImpl.class);
         builder.build();
     }
 

@@ -42,6 +42,7 @@ import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.common.support.NullDomain;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -58,7 +59,7 @@ public class ProxyConnectorTest {
         when(provider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
             public Class<? extends Domain> answer(InvocationOnMock invocation) {
-                return TestInterface.class;
+                return NullDomain.class;
             }
         });
         LocalizableString stringMock = mock(LocalizableString.class);
@@ -92,10 +93,10 @@ public class ProxyConnectorTest {
 
         // This line is required since spring cannot set it automatically
         manager.update("12345", new HashMap<String, String>());
-        verify(mockContext).registerService(eq(new String[]{ TestInterface.class.getName(), Domain.class.getName() }),
+        verify(mockContext).registerService(eq(new String[]{ NullDomain.class.getName(), Domain.class.getName() }),
             captor.capture(), any(Dictionary.class));
 
-        ((TestInterface) captor.getValue()).log(5);
+        ((NullDomain) captor.getValue()).nullMethod(5);
         ArgumentCaptor<Method> methodCaptor = ArgumentCaptor.forClass(Method.class);
         try {
             verify(invocationHandlerMock).invoke(same(captor.getValue()), methodCaptor.capture(),
@@ -104,11 +105,7 @@ public class ProxyConnectorTest {
             throw new RuntimeException(e.getMessage(), e);
         }
         Method value = methodCaptor.getValue();
-        assertEquals("log", value.getName());
-        assertEquals(TestInterface.class, value.getDeclaringClass());
-    }
-
-    private static interface TestInterface extends Domain {
-        void log(int i);
+        assertEquals("nullMethod", value.getName());
+        assertEquals(NullDomain.class, value.getDeclaringClass());
     }
 }

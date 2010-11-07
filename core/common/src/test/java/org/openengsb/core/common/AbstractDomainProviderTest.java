@@ -27,15 +27,12 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.l10n.BundleStringsTest;
+import org.openengsb.core.common.support.NullDomain;
 import org.osgi.framework.BundleContext;
 
 public class AbstractDomainProviderTest {
 
-    private static interface DummyDomain extends Domain {
-
-    }
-
-    private static interface DummyDomainEvents extends DomainEvents {
+    private static interface NullDomainEvents extends DomainEvents {
 
         void raiseEvent(DummyEvent event);
 
@@ -50,11 +47,11 @@ public class AbstractDomainProviderTest {
 
     }
 
-    private static class DummyProvider extends AbstractDomainProvider<DummyDomain, DummyDomainEvents> {
+    private static class DummyProvider extends AbstractDomainProvider<NullDomain, NullDomainEvents> {
 
     }
 
-    private AbstractDomainProvider<DummyDomain, DummyDomainEvents> provider;
+    private AbstractDomainProvider<NullDomain, NullDomainEvents> provider;
     private BundleContext bundleContext;
 
     @Before
@@ -76,17 +73,17 @@ public class AbstractDomainProviderTest {
 
     @Test
     public void parameterizedDomain_shouldExtractDomainInterfaceFromGenerics() {
-        Assert.assertEquals(DummyDomain.class, provider.getDomainInterface());
+        Assert.assertEquals(NullDomain.class, provider.getDomainInterface());
     }
 
     @Test
     public void getId_shouldReturnSimpleClassNameOfDomain() {
-        assertThat(provider.getId(), is(DummyDomain.class.getSimpleName()));
+        assertThat(provider.getId(), is(NullDomain.class.getSimpleName()));
     }
 
     @Test
     public void parameterizedDomainEvents_shouldExtractDomainEventsInterfaceFromGenerics() {
-        Assert.assertEquals(DummyDomainEvents.class, provider.getDomainEventInterface());
+        Assert.assertEquals(NullDomainEvents.class, provider.getDomainEventInterface());
     }
 
     @Test
