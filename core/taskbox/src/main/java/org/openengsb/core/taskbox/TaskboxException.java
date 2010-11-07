@@ -16,6 +16,7 @@
 
 package org.openengsb.core.taskbox;
 
+@SuppressWarnings("serial")
 public class TaskboxException extends Exception {
     public TaskboxException() {
     }
