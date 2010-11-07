@@ -16,13 +16,18 @@
 
 package org.openengsb.ui.web;
 
+import java.util.Locale;
+
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.openengsb.ui.web.global.footer.FooterTemplate;
+import org.openengsb.ui.web.global.header.HeaderTemplate;
 import org.openengsb.ui.web.model.User;
 
 public class LoginPage extends WebPage {
@@ -30,8 +35,21 @@ public class LoginPage extends WebPage {
     private User user = new User();
 
     public LoginPage() {
-        @SuppressWarnings("serial")
-        Form<User> loginForm = new Form<User>("form") {
+
+        add(new Link<Object>("lang.en") {
+            @Override
+            public void onClick() {
+                this.getSession().setLocale(Locale.ENGLISH);
+            }
+        });
+        add(new Link<Object>("lang.de") {
+            @Override
+            public void onClick() {
+                this.getSession().setLocale(Locale.GERMAN);
+            }
+        });
+
+        @SuppressWarnings("serial") Form<User> loginForm = new Form<User>("form") {
             @Override
             protected void onSubmit() {
                 AuthenticatedWebSession session = AuthenticatedWebSession.get();
@@ -55,5 +73,8 @@ public class LoginPage extends WebPage {
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
+
+        this.add(new HeaderTemplate("header", this.getClass().getSimpleName()));
+        this.add(new FooterTemplate("footer"));
     }
 }

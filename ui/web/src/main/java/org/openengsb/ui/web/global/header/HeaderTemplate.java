@@ -30,6 +30,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.ui.web.ContextSetPage;
 import org.openengsb.ui.web.Index;
+import org.openengsb.ui.web.LoginPage;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.ServiceListPage;
 import org.openengsb.ui.web.TestClient;
@@ -45,20 +46,35 @@ public class HeaderTemplate extends Panel {
 
     public HeaderTemplate(String id, String menuIndex) {
         super(id);
-
         HeaderTemplate.menuIndex = menuIndex;
         this.add(new BookmarkablePageLink<Index>("indexLogo1", Index.class));
         this.add(new BookmarkablePageLink<Index>("indexLogo2", Index.class));
         this.add(new Label("version", System.getProperty("openengsb.version.number") + " \""
-                + System.getProperty("openengsb.version.name.adjective") + " "
-                + System.getProperty("openengsb.version.name.noun") + "\""));
+            + System.getProperty("openengsb.version.name.adjective") + " "
+            + System.getProperty("openengsb.version.name.noun") + "\""));
 
+        if (LoginPage.class.getSimpleName().equals(menuIndex)) {
+            initLoginMenuItems();
+        } else {
+            initMainMenuItems();
+        }
+        add(initMenu());
+    }
+
+    private void initLoginMenuItems() {
+        this.addHeaderMenuItem("LoginPage", LoginPage.class, "loginPage.title");
+    }
+
+
+    private void initMainMenuItems() {
         this.addHeaderMenuItem("Index", Index.class, "index.title");
         this.addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
         this.addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
         this.addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
         this.addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
+    }
 
+    private ListView<HeaderMenuItem> initMenu() {
         if (HeaderTemplate.getActiveIndex() == null || !avialableItems.contains(HeaderTemplate.getActiveIndex())) {
             // update menu item to index, because page index is not found!
             HeaderTemplate.menuIndex = "Index";
@@ -86,8 +102,7 @@ public class HeaderTemplate extends Panel {
                 }
             }
         };
-
-        this.add(headerMenuItems);
+        return headerMenuItems;
     }
 
     /**
@@ -99,12 +114,12 @@ public class HeaderTemplate extends Panel {
 
     /**
      * adds new item to main header navigation
-     * 
-     * @param index - the name of the index @see HeaderMenuItem.index
+     *
+     * @param index     - the name of the index @see HeaderMenuItem.index
      * @param linkClass - class name to be linked to
-     * @param langKey - language key, the text which should be displayed
+     * @param langKey   - language key, the text which should be displayed
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey) {
         StringResourceModel label = new StringResourceModel(langKey, this, null);
         menuItems.add(new HeaderMenuItem(index, new BookmarkablePageLabelLink("link", linkClass, label)));
@@ -113,7 +128,6 @@ public class HeaderTemplate extends Panel {
 
     /**
      * single header menu item
-     * 
      */
     private static class HeaderMenuItem implements Serializable {
 
