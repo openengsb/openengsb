@@ -25,7 +25,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.DomainEvents;
 import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.Event;
+import org.openengsb.core.test.NullEvent;
+import org.openengsb.core.test.NullEvent2;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -46,25 +47,17 @@ public class EventCallerTest {
         TestInterface testInterface = mock(TestInterface.class);
         when(context.getService(mock2)).thenReturn(testInterface);
         EventCaller caller = new EventCaller(context, provider);
-        TestEvent event = new TestEvent();
+        NullEvent event = new NullEvent();
         caller.raiseEvent(event);
         verify(testInterface).raiseEvent(event);
-        TestEvent2 event2 = new TestEvent2();
+        NullEvent2 event2 = new NullEvent2();
         caller.raiseEvent(event2);
         verify(testInterface).raiseEvent(event2);
     }
 
     private interface TestInterface extends DomainEvents {
-        void raiseEvent(TestEvent event);
+        void raiseEvent(NullEvent event);
 
-        void raiseEvent(TestEvent2 event);
-    }
-
-    private static class TestEvent extends Event {
-
-    }
-
-    private static class TestEvent2 extends Event {
-
+        void raiseEvent(NullEvent2 event);
     }
 }
