@@ -77,13 +77,13 @@ public class TracConnectorTest {
 
     @Test
     public void testToDeleteIssue() throws Exception {
-        tracConnector.deleteIssue(-1);
+        tracConnector.deleteIssue("-1");
         verify(ticketMock, times(1)).delete(eq(-1));
     }
 
     @Test
     public void testToAddComment() throws Exception {
-        tracConnector.addComment(5, "testcomment");
+        tracConnector.addComment("5", "testcomment");
         verify(ticketMock, times(1)).update(eq(5), eq("testcomment"));
     }
 
@@ -95,7 +95,7 @@ public class TracConnectorTest {
         Hashtable<IssueAttribute, String> result = new Hashtable<IssueAttribute, String>();
         result.put(TracFieldConstants.STATUS, TracStatusConstants.CLOSED.toString());
 
-        tracConnector.updateIssue(3, null, changes);
+        tracConnector.updateIssue("3", null, changes);
         verify(ticketMock, times(1))
             .update(eq(3), eq("[No comment added by author]"), eq(result));
     }
@@ -111,19 +111,19 @@ public class TracConnectorTest {
     public void testUpdateANotExistingTicket_ShouldPrintErrorMessageAndDonotThrowException() throws Exception {
         when(ticketMock.update(anyInt(), anyString(), any(Hashtable.class)))
             .thenThrow(new XmlRpcException("test"));
-        tracConnector.updateIssue(0, "test", new HashMap<IssueAttribute, String>());
+        tracConnector.updateIssue("0", "test", new HashMap<IssueAttribute, String>());
     }
 
     @Test
     public void testCommentOnNotExistingTicket_ShouldPrintErrorMessageAndDonotThrowException() throws Exception {
         when(ticketMock.update(anyInt(), anyString())).thenThrow(new XmlRpcException("test"));
-        tracConnector.addComment(0, "test");
+        tracConnector.addComment("0", "test");
     }
 
     @Test
     public void testDeleteANotExistingTicket_ShouldPrintErrorMessageAndDonotThrowException() throws Exception {
         when(ticketMock.delete(anyInt())).thenThrow(new XmlRpcException("test"));
-        tracConnector.deleteIssue(0);
+        tracConnector.deleteIssue("0");
     }
 
 }

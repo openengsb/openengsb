@@ -37,7 +37,7 @@ public class TracConnectorUT {
         Issue issue = new Issue();
         issue.setDescription("test Issue");
         issue.setSummary("test summery");
-        issue.setId(99);
+        issue.setId("99");
         issue.setStatus(Issue.Status.NEW);
         issue.setPriority(Issue.Priority.NONE);
         String id = tracImpl.createIssue(issue);

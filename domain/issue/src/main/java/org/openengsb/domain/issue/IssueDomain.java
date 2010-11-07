@@ -32,17 +32,17 @@ public interface IssueDomain extends Domain {
     /**
      * delete an issue, specified by his id
      */
-    void deleteIssue(Integer id);
+    void deleteIssue(String id);
 
     /**
      * add a comment to an issue, specified by his id
      */
-    void addComment(Integer id, String comment);
+    void addComment(String id, String comment);
 
     /**
      * update an issue, specified by his id, the comment param can be null, changes: key of map is what field has to be
      * changed,
      */
-    void updateIssue(Integer id, String comment, HashMap<IssueAttribute, String> changes);
+    void updateIssue(String id, String comment, HashMap<IssueAttribute, String> changes);
 
 }

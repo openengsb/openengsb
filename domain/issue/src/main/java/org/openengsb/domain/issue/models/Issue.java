@@ -42,7 +42,7 @@ public class Issue {
             STATUS
     }
 
-    private Integer id;
+    private String id;
     private String summary;
     private String description;
     private String owner;
@@ -50,11 +50,11 @@ public class Issue {
     private Priority priority;
     private Status status;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -79,17 +79,17 @@ public class WorkflowIT extends AbstractExamTestHelper {
         }
 
         @Override
-        public void deleteIssue(Integer id) {
+        public void deleteIssue(String id) {
             // ignore
         }
 
         @Override
-        public void addComment(Integer id, String comment) {
+        public void addComment(String id, String comment) {
             // ignore
         }
 
         @Override
-        public void updateIssue(Integer id, String comment, HashMap<IssueAttribute, String> changes) {
+        public void updateIssue(String id, String comment, HashMap<IssueAttribute, String> changes) {
             // ignore
         }
 

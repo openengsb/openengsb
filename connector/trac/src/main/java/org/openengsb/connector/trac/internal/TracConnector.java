@@ -50,10 +50,10 @@ public class TracConnector implements IssueDomain {
     public String createIssue(Issue issue) {
         Ticket ticket = createTicket();
         Hashtable<IssueAttribute, String> attributes = generateAttributes(issue);
-        Integer issueId = -1;
+        String issueId = "-1";
 
         try {
-            issueId = ticket.create(issue.getSummary(), issue.getDescription(), attributes);
+            issueId = ticket.create(issue.getSummary(), issue.getDescription(), attributes).toString();
             this.state = AliveState.ONLINE;
             log.info("Successfully created issue " + issue.getSummary() + ", ID is: " + issueId + ".");
         } catch (XmlRpcException e) {
@@ -64,10 +64,10 @@ public class TracConnector implements IssueDomain {
     }
 
     @Override
-    public void deleteIssue(Integer id) {
+    public void deleteIssue(String id) {
         try {
             Ticket ticket = createTicket();
-            ticket.delete(id);
+            ticket.delete(Integer.valueOf(id));
             log.info("Successfully deleted issue " + id + ".");
         } catch (XmlRpcException e) {
             log.error("Error deleting issue " + id + ". XMLRPC call failed.");
@@ -75,10 +75,10 @@ public class TracConnector implements IssueDomain {
     }
 
     @Override
-    public void addComment(Integer id, String comment) {
+    public void addComment(String id, String comment) {
         try {
             Ticket ticket = createTicket();
-            ticket.update(id, comment);
+            ticket.update(Integer.valueOf(id), comment);
             log.info("Successfully added comment to issue " + id + ".");
         } catch (XmlRpcException e) {
             log.error("Error adding comment to issue " + id + ". XMLRPC call failed.");
@@ -86,7 +86,7 @@ public class TracConnector implements IssueDomain {
     }
 
     @Override
-    public void updateIssue(Integer id, String comment, HashMap<IssueAttribute, String> changes) {
+    public void updateIssue(String id, String comment, HashMap<IssueAttribute, String> changes) {
         Hashtable<IssueAttribute, String> attributes = translateChanges(changes);
         if (comment == null || comment.equals("")) {
             comment = "[No comment added by author]";
@@ -94,7 +94,7 @@ public class TracConnector implements IssueDomain {
 
         try {
             Ticket ticket = createTicket();
-            ticket.update(id, comment, attributes);
+            ticket.update(Integer.valueOf(id), comment, attributes);
             log.info("Successfully updated issue " + id + " with " + changes.size() + " changes.");
         } catch (XmlRpcException e) {
             log.error("Error updating issue " + id + ". XMLRPC call failed.");
