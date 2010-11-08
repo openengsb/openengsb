@@ -21,12 +21,12 @@ import java.util.Set;
 
 public interface ConnectorSetupStore {
 
-    void storeConnectorSetup(String connector, String id, Map<String, String> properties);
+    void storeConnectorSetup(ConnectorDomainPair connectorDomainPair, String id, Map<String, String> properties);
 
-    void deleteConnectorSetup(String connector, String id);
+    void deleteConnectorSetup(ConnectorDomainPair connectorDomainPair, String id);
 
-    Map<String, String> loadConnectorSetup(String connector, String id);
+    Map<String, String> loadConnectorSetup(ConnectorDomainPair connectorDomainPair, String id);
 
-    Set<String> getStoredConnectors(String connector);
+    Set<String> getStoredConnectors(ConnectorDomainPair connectorDomainPair);
 
 }

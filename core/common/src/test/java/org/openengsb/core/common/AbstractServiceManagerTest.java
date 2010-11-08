@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.openengsb.core.common.connectorsetupstore.ConnectorDomainPair;
 import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
@@ -131,10 +132,11 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock).registerService(
-            new String[]{ DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
-            instance,
+            new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
             props);
-        Mockito.verify(setupStoreMock).storeConnectorSetup(instance.getClass().getName(), "test", attributes);
+
+        ConnectorDomainPair pair = new ConnectorDomainPair(DummyDomain.class.getName(), instance.getClass().getName());
+        Mockito.verify(setupStoreMock).storeConnectorSetup(pair, "test", attributes);
     }
 
     @Test
@@ -146,7 +148,9 @@ public class AbstractServiceManagerTest {
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         InOrder inOrder = Mockito.inOrder(setupStoreMock, setupStoreMock);
         manager.update("test", attributes);
-        inOrder.verify(setupStoreMock).storeConnectorSetup(instance.getClass().getName(), "test", attributes);
+
+        ConnectorDomainPair pair = new ConnectorDomainPair(DummyDomain.class.getName(), instance.getClass().getName());
+        inOrder.verify(setupStoreMock).storeConnectorSetup(pair, "test", attributes);
 
         HashMap<String, String> verificationAttributes = new HashMap<String, String>();
         verificationAttributes.put("foo", "bar");
@@ -154,11 +158,9 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
-            new String[]{ DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
-            instance,
+            new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName()}, instance,
             props);
-        inOrder.verify(setupStoreMock).storeConnectorSetup(instance.getClass().getName(), "test",
-            verificationAttributes);
+        inOrder.verify(setupStoreMock).storeConnectorSetup(pair, "test", verificationAttributes);
     }
 
     @Test
@@ -174,7 +176,8 @@ public class AbstractServiceManagerTest {
         manager.delete("test");
 
         Mockito.verify(serviceRegistrationMock).unregister();
-        Mockito.verify(setupStoreMock).deleteConnectorSetup(instance.getClass().getName(), "test");
+        ConnectorDomainPair pair = new ConnectorDomainPair(DummyDomain.class.getName(), instance.getClass().getName());
+        Mockito.verify(setupStoreMock).deleteConnectorSetup(pair, "test");
     }
 
     private ServiceRegistration appendServiceRegistrationMockToBundleContextMock(BundleContext bundleContextMock,
@@ -182,8 +185,8 @@ public class AbstractServiceManagerTest {
         ServiceRegistration serviceRegistrationMock = Mockito.mock(ServiceRegistration.class);
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.when(
-            bundleContextMock.registerService(new String[]{ DummyInstance.class.getName(), DummyDomain.class.getName(),
-                Domain.class.getName() }, mock, props)).thenReturn(serviceRegistrationMock);
+            bundleContextMock.registerService(new String[]{DummyInstance.class.getName(), DummyDomain.class.getName(),
+                Domain.class.getName()}, mock, props)).thenReturn(serviceRegistrationMock);
         return serviceRegistrationMock;
     }
 
@@ -291,7 +294,7 @@ public class AbstractServiceManagerTest {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void validationfailsForCreation_checkNotAdded() {
         ServiceInstanceFactory serviceInstanceFactory = mock(ServiceInstanceFactory.class);
         MultipleAttributeValidationResult validationResult =
@@ -311,7 +314,7 @@ public class AbstractServiceManagerTest {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void validationfailsForUpdate_checkNotUpdated() {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         ServiceInstanceFactory serviceInstanceFactory = mock(ServiceInstanceFactory.class);

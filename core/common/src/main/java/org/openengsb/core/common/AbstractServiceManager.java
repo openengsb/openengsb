@@ -23,6 +23,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
+import org.openengsb.core.common.connectorsetupstore.ConnectorDomainPair;
 import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
@@ -64,9 +65,10 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     }
 
     public void init() {
-        Set<String> storedConnectors = connectorSetupStore.getStoredConnectors(getImplementationClass().getName());
+        ConnectorDomainPair connectorDomainPair = getDomainConnectorPair();
+        Set<String> storedConnectors = connectorSetupStore.getStoredConnectors(connectorDomainPair);
         for (String id : storedConnectors) {
-            Map<String, String> setup = connectorSetupStore.loadConnectorSetup(getImplementationClass().getName(), id);
+            Map<String, String> setup = connectorSetupStore.loadConnectorSetup(connectorDomainPair, id);
             if (setup != null) {
                 update(id, setup);
             }
@@ -94,8 +96,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
                 attributeValues.put(id, new HashMap<String, String>(attributes));
             }
             if (result.isValid()) {
-                connectorSetupStore
-                    .storeConnectorSetup(getImplementationClass().getName(), id, attributeValues.get(id));
+                connectorSetupStore.storeConnectorSetup(getDomainConnectorPair(), id, attributeValues.get(id));
             }
             return result;
         }
@@ -160,7 +161,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             services.get(id).registration.unregister();
             services.remove(id);
             attributeValues.remove(id);
-            connectorSetupStore.deleteConnectorSetup(getImplementationClass().getName(), id);
+            connectorSetupStore.deleteConnectorSetup(getDomainConnectorPair(), id);
         }
     }
 
@@ -176,6 +177,12 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
         Type instanceType = genericSuperclass.getActualTypeArguments()[1];
         return (Class<InstanceType>) instanceType;
+    }
+
+    private ConnectorDomainPair getDomainConnectorPair() {
+        String domain = getDomainInterface().getName();
+        String connector = getImplementationClass().getName();
+        return new ConnectorDomainPair(domain, connector);
     }
 
     protected final class DomainRepresentation {

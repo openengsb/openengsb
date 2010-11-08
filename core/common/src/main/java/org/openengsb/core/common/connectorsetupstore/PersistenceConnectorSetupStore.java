@@ -36,26 +36,26 @@ public class PersistenceConnectorSetupStore implements ConnectorSetupStore, Bund
     private BundleContext bundleContext;
 
     @Override
-    public void storeConnectorSetup(String connector, String id, Map<String, String> properties) {
+    public void storeConnectorSetup(ConnectorDomainPair connDomainPair, String id, Map<String, String> properties) {
         try {
-            deleteEntry(connector, id);
-            ConnectorSetupBean setupBean = new ConnectorSetupBean(connector, id, properties);
+            deleteEntry(connDomainPair, id);
+            ConnectorSetupBean setupBean = new ConnectorSetupBean(connDomainPair, id, properties);
             persistence.create(setupBean);
         } catch (PersistenceException pe) {
             throw new RuntimeException(pe);
         }
     }
 
-    private void deleteEntry(String connector, String id) throws PersistenceException {
-        ConnectorSetupBean example = new ConnectorSetupBean(connector, id, null);
+    private void deleteEntry(ConnectorDomainPair connectorDomainPair, String id) throws PersistenceException {
+        ConnectorSetupBean example = new ConnectorSetupBean(connectorDomainPair, id, null);
         List<ConnectorSetupBean> storedForThisId = persistence.query(example);
         for (ConnectorSetupBean old : storedForThisId) {
             persistence.delete(old);
         }
     }
 
-    private ConnectorSetupBean getEntry(String connector, String id) {
-        ConnectorSetupBean example = new ConnectorSetupBean(connector, id, null);
+    private ConnectorSetupBean getEntry(ConnectorDomainPair connectorDomainPair, String id) {
+        ConnectorSetupBean example = new ConnectorSetupBean(connectorDomainPair, id, null);
         List<ConnectorSetupBean> storedForThisId = persistence.query(example);
         if (storedForThisId.isEmpty()) {
             return null;
@@ -64,8 +64,8 @@ public class PersistenceConnectorSetupStore implements ConnectorSetupStore, Bund
     }
 
     @Override
-    public Map<String, String> loadConnectorSetup(String connector, String id) {
-        ConnectorSetupBean entry = getEntry(connector, id);
+    public Map<String, String> loadConnectorSetup(ConnectorDomainPair connectorDomainPair, String id) {
+        ConnectorSetupBean entry = getEntry(connectorDomainPair, id);
         if (entry == null) {
             return null;
         }
@@ -73,8 +73,8 @@ public class PersistenceConnectorSetupStore implements ConnectorSetupStore, Bund
     }
 
     @Override
-    public Set<String> getStoredConnectors(String connector) {
-        ConnectorSetupBean example = new ConnectorSetupBean(connector, null, null);
+    public Set<String> getStoredConnectors(ConnectorDomainPair connectorDomainPair) {
+        ConnectorSetupBean example = new ConnectorSetupBean(connectorDomainPair, null, null);
         List<ConnectorSetupBean> beans = persistence.query(example);
         Set<String> result = new HashSet<String>(beans.size());
         for (ConnectorSetupBean bean : beans) {
@@ -84,9 +84,9 @@ public class PersistenceConnectorSetupStore implements ConnectorSetupStore, Bund
     }
 
     @Override
-    public void deleteConnectorSetup(String connector, String id) {
+    public void deleteConnectorSetup(ConnectorDomainPair connectorDomainPair, String id) {
         try {
-            deleteEntry(connector, id);
+            deleteEntry(connectorDomainPair, id);
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
