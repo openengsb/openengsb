@@ -24,25 +24,25 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
-import org.openengsb.domains.test.maven.internal.TestDomainServiceImpl;
+import ${package}.internal.${connectorName}ServiceImpl;
 
 import ${parentPackage}.${domainInterface};
 
-public class ${domainInterface}ServiceInstanceFactory implements ServiceInstanceFactory<${domainInterface}, ${domainInterface}ServiceImpl> {
+public class ${connectorName}ServiceInstanceFactory implements ServiceInstanceFactory<${domainInterface}, ${connectorName}ServiceImpl> {
 
-    public ${domainInterface}ServiceInstanceFactory() {
+    public ${connectorName}ServiceInstanceFactory() {
     }
 
     @Override
-    public void updateServiceInstance(${domainInterface}ServiceImpl instance, Map<String, String> attributes) {
+    public void updateServiceInstance(${connectorName}ServiceImpl instance, Map<String, String> attributes) {
         if (attributes.containsKey("attr")) {
             instance.setAttr(attributes.get("attr"));
         }
     }
 
     @Override
-    public ${domainInterface}ServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
-        ${domainInterface}ServiceImpl service = new ${domainInterface}ServiceImpl();
+    public ${connectorName}ServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
+        ${connectorName}ServiceImpl service = new ${connectorName}ServiceImpl();
         updateServiceInstance(service, attributes);
         return service;
     }
@@ -55,7 +55,7 @@ public class ${domainInterface}ServiceInstanceFactory implements ServiceInstance
     }
     
     @Override
-    public MultipleAttributeValidationResult updateValidation(${domainInterface}ServiceImpl instance,
+    public MultipleAttributeValidationResult updateValidation(${connectorName}ServiceImpl instance,
             Map<String, String> attributes) {
         // TODO Auto-generated method stub
         Map<String, String> emptyMap = Collections.emptyMap();

@@ -40,6 +40,9 @@
     <requiredProperty key="name">
       <defaultValue>OpenEngSB :: Domains :: Domainname :: Connectorname</defaultValue>
     </requiredProperty>
+    <requiredProperty key="connectorName">
+      <defaultValue>Connectorname</defaultValue>
+    </requiredProperty>
     <requiredProperty key="domainInterface">
       <defaultValue>DomainInterfaceName</defaultValue>
     </requiredProperty>

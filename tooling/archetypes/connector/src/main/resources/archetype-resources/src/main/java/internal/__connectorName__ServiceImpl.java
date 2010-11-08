@@ -20,11 +20,11 @@ import org.openengsb.core.common.util.AliveState;
 
 import ${parentPackage}.${domainInterface};
 
-public class ${domainInterface}ServiceImpl implements ${domainInterface} {
+public class ${connectorName}ServiceImpl implements ${domainInterface} {
 
     private String attr;
 
-    public ${domainInterface}ServiceImpl() {
+    public ${connectorName}ServiceImpl() {
     }
 
     void setAttr(String attr) {
