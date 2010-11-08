@@ -180,7 +180,7 @@ public class TestClientTest {
         @SuppressWarnings("unchecked")
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
         MethodCall modelObject = form.getModelObject();
-        ServiceId reference = new ServiceId(TestService.class.getName(), "test");
+        ServiceId reference = new ServiceId(TestInterface.class.getName(), "test");
 
         Assert.assertEquals(reference.toString(), modelObject.getService().toString());
     }
@@ -189,7 +189,7 @@ public class TestClientTest {
     @SuppressWarnings("unchecked")
     public void testJumpToService() throws Exception {
         setupTestClientPage();
-        ServiceId reference = new ServiceId(TestService.class.getName(), "test");
+        ServiceId reference = new ServiceId(TestInterface.class.getName(), "test");
         tester.startPage(new TestClient(reference));
         tester.assertComponent("methodCallForm:serviceList:i:3:nodeComponent:contentLink:content", Label.class);
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
