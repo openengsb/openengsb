@@ -45,6 +45,8 @@ import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.core.test.NullEvent;
+import org.openengsb.core.test.NullEvent2;
 
 public class SendEventPageTest {
 
@@ -68,46 +70,11 @@ public class SendEventPageTest {
         context.putBean("eventService", eventService);
         context.putBean("domainService", mock(DomainService.class));
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
-        eventClasses = Arrays.<Class<? extends Event>> asList(Dummy.class, Dummy2.class, BrokenEvent.class);
+        eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent2.class, NullEvent.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
         dropdown = (DropDownChoice<Class<?>>) tester.getComponentFromLastRenderedPage("form:dropdown");
         formTester = tester.newFormTester("form");
-    }
-
-    static class Dummy extends Event {
-
-        private String testProperty;
-
-        public String getTestProperty() {
-            return testProperty;
-        }
-
-        public void setTestProperty(String testProperty) {
-            this.testProperty = testProperty;
-        }
-    }
-
-    static class Dummy2 extends Event {
-
-        private String firstProperty;
-        private String secondProperty;
-
-        public String getFirstProperty() {
-            return firstProperty;
-        }
-
-        public void setFirstProperty(String firstProperty) {
-            this.firstProperty = firstProperty;
-        }
-
-        public String getSecondProperty() {
-            return secondProperty;
-        }
-
-        public void setSecondProperty(String secondProperty) {
-            this.secondProperty = secondProperty;
-        }
     }
 
     static final class BrokenEvent extends Event {
@@ -126,9 +93,9 @@ public class SendEventPageTest {
     @Test
     public void givenClassesInCtor_shouldAddThemToTheDropDown() {
         assertEquals(eventClasses.size(), dropdown.getChoices().size());
-        assertEquals(Dummy.class, dropdown.getChoices().get(0));
-        assertEquals("Dummy", dropdown.getValue());
-        assertEquals(Dummy2.class, dropdown.getChoices().get(1));
+        assertEquals(NullEvent2.class, dropdown.getChoices().get(0));
+        assertEquals("NullEvent2", dropdown.getValue());
+        assertEquals(NullEvent.class, dropdown.getChoices().get(1));
     }
 
     @Test
@@ -143,9 +110,9 @@ public class SendEventPageTest {
     public void selectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
         selectEventType(1);
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
-        assertThat(fieldList.size(), is(3));
-        Component attributeName = fieldList.get("2:row:name");
-        assertThat(attributeName.getDefaultModelObjectAsString(), is("firstProperty"));
+        assertThat(fieldList.size(), is(1));
+        Component attributeName = fieldList.get("1:row:name");
+        assertThat(attributeName.getDefaultModelObjectAsString(), is("name"));
     }
 
     @Test
@@ -155,8 +122,8 @@ public class SendEventPageTest {
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
         verify(eventService).processEvent(captor.capture());
         assertThat(captor.getValue(), notNullValue());
-        assertThat(captor.getValue(), is(Dummy.class));
-        assertThat(((Dummy) captor.getValue()).getTestProperty(), is("a"));
+        assertThat(captor.getValue(), is(NullEvent2.class));
+        assertThat(((NullEvent2) captor.getValue()).getTestProperty(), is((Object) "a"));
     }
 
     private void submitForm() {

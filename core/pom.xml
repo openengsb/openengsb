@@ -41,6 +41,7 @@
     <module>events</module>
     <module>proxy</module>
     <module>taskbox</module>
+    <module>test</module>
   </modules>
 
 </project>

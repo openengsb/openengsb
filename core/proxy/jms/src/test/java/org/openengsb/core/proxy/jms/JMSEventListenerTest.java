@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.test.NullEvent;
 import org.osgi.framework.InvalidSyntaxException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
@@ -44,7 +45,7 @@ public class JMSEventListenerTest {
     private static final String EXCEPTION = "{\"name\":null,\"message\":\"message\",\"type\":\"Exception\"}";
     private static final String ID = "12345";
     private static final String SEND =
-        "{\"type\":\"org.openengsb.core.proxy.jms.JMSEventListenerTest$TestEvent\",\"event\":{\"name\":\"" + ID
+        "{\"type\":\"" + NullEvent.class.getName() + "\",\"event\":{\"name\":\"" + ID
                 + "\"}}";
 
     @Test
@@ -83,7 +84,7 @@ public class JMSEventListenerTest {
         TextMessage mock = mock(TextMessage.class);
         when(mock.getText()).thenReturn(SEND);
         listener.onMessage(mock);
-        ArgumentCaptor<TestEvent> captor = ArgumentCaptor.forClass(TestEvent.class);
+        ArgumentCaptor<NullEvent> captor = ArgumentCaptor.forClass(NullEvent.class);
         verify(caller).raiseEvent(captor.capture());
         assertThat(captor.getValue().getName(), equalTo(ID));
         verify(jmsTemplateMock).convertAndSend(ID + "_event_return", RETURN);
@@ -99,7 +100,7 @@ public class JMSEventListenerTest {
         TextMessage mock = mock(TextMessage.class);
         when(mock.getText()).thenReturn(SEND);
         listener.onMessage(mock);
-        ArgumentCaptor<TestEvent> captor = ArgumentCaptor.forClass(TestEvent.class);
+        ArgumentCaptor<NullEvent> captor = ArgumentCaptor.forClass(NullEvent.class);
         verify(caller).raiseEvent(captor.capture());
         assertThat(captor.getValue().getName(), equalTo(ID));
         verify(jmsTemplateMock).convertAndSend(ID + "_event_return", EXCEPTION);
@@ -107,8 +108,5 @@ public class JMSEventListenerTest {
 
     public interface TestInterface {
         void raiseEvent();
-    }
-
-    public static class TestEvent extends Event {
     }
 }

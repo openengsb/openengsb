@@ -50,6 +50,7 @@ import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.internal.ContextImpl;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.test.NullDomain;
 import org.osgi.framework.ServiceReference;
 
 public class ContextSetPageTest {
@@ -211,7 +212,7 @@ public class ContextSetPageTest {
         when(domainProvider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
             public Class<? extends Domain> answer(InvocationOnMock invocation) {
-                return TestInterface.class;
+                return NullDomain.class;
             }
         });
         domainProviderList.add(wrongDomainProvider);
@@ -222,7 +223,7 @@ public class ContextSetPageTest {
             }
         });
         when(domainService.domains()).thenReturn(domainProviderList);
-        when(domainService.serviceReferencesForDomain(TestInterface.class)).thenReturn(serviceReferenceList);
+        when(domainService.serviceReferencesForDomain(NullDomain.class)).thenReturn(serviceReferenceList);
         when(domainService.serviceReferencesForDomain(Domain.class)).thenReturn(wrongServiceReferenceList);
 
         String nodeLinkId = "form:treeTable:i:8:sideColumns:0:nodeLink";
@@ -271,10 +272,6 @@ public class ContextSetPageTest {
                 .getComponentFromLastRenderedPage(textFieldId);
         List<? extends String> choices = connectorChoices.getChoices();
         assertFalse(choices.contains("connectorService"));
-    }
-
-    public interface TestInterface extends Domain {
-
     }
 
     @Test

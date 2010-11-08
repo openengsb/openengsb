@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Dictionary;
+import java.util.Locale;
 
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -29,16 +30,15 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.proxy.ProxyServiceManager;
+import org.openengsb.core.test.NullDomain;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
  * Tests are only very few, as the ProxyServiceManager is mostly copied from AbstractServiceManager and has to be merged
  * together with it soon.
- * 
- * @author Florian Motlik
- * 
  */
 public class ProxyServiceManagerTest {
 
@@ -50,9 +50,10 @@ public class ProxyServiceManagerTest {
         when(provider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
             public Class<? extends Domain> answer(InvocationOnMock invocation) {
-                return TestInterface.class;
+                return NullDomain.class;
             }
         });
+        when(provider.getName()).thenReturn(new NullString());
         BundleContext mockContext = mock(BundleContext.class);
         Bundle mockBundle = mock(Bundle.class);
         Dictionary<?, ?> headers = mock(Dictionary.class);
@@ -64,10 +65,20 @@ public class ProxyServiceManagerTest {
         ServiceDescriptor descriptor = manager.getDescriptor();
         assertThat(descriptor.getId(), equalTo(string));
         assertThat(descriptor.getAttributes().size(), equalTo(0));
-        assertThat(descriptor.getImplementationType().getName(), equalTo(TestInterface.class.getName()));
-        assertThat(descriptor.getServiceType().getName(), equalTo(TestInterface.class.getName()));
+        assertThat(descriptor.getImplementationType().getName(), equalTo(NullDomain.class.getName()));
+        assertThat(descriptor.getServiceType().getName(), equalTo(NullDomain.class.getName()));
     }
 
-    private static interface TestInterface extends Domain {
+    @SuppressWarnings("serial")
+    private static class NullString implements LocalizableString {
+        @Override
+        public String getString(Locale locale) {
+            return "";
+        }
+
+        @Override
+        public String getKey() {
+            return "";
+        }
     }
 }

@@ -27,17 +27,15 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.l10n.BundleStringsTest;
+import org.openengsb.core.common.support.NullDomain;
+import org.openengsb.core.common.support.NullEvent;
 import org.osgi.framework.BundleContext;
 
 public class AbstractDomainProviderTest {
 
-    private static interface DummyDomain extends Domain {
+    private static interface NullDomainEvents extends DomainEvents {
 
-    }
-
-    private static interface DummyDomainEvents extends DomainEvents {
-
-        void raiseEvent(DummyEvent event);
+        void raiseEvent(NullEvent event);
 
         void raiseEvent();
 
@@ -46,15 +44,11 @@ public class AbstractDomainProviderTest {
         void someMethod();
     }
 
-    private static class DummyEvent extends Event {
+    private static class DummyProvider extends AbstractDomainProvider<NullDomain, NullDomainEvents> {
 
     }
 
-    private static class DummyProvider extends AbstractDomainProvider<DummyDomain, DummyDomainEvents> {
-
-    }
-
-    private AbstractDomainProvider<DummyDomain, DummyDomainEvents> provider;
+    private AbstractDomainProvider<NullDomain, NullDomainEvents> provider;
     private BundleContext bundleContext;
 
     @Before
@@ -76,23 +70,23 @@ public class AbstractDomainProviderTest {
 
     @Test
     public void parameterizedDomain_shouldExtractDomainInterfaceFromGenerics() {
-        Assert.assertEquals(DummyDomain.class, provider.getDomainInterface());
+        Assert.assertEquals(NullDomain.class, provider.getDomainInterface());
     }
 
     @Test
     public void getId_shouldReturnSimpleClassNameOfDomain() {
-        assertThat(provider.getId(), is(DummyDomain.class.getSimpleName()));
+        assertThat(provider.getId(), is(NullDomain.class.getSimpleName()));
     }
 
     @Test
     public void parameterizedDomainEvents_shouldExtractDomainEventsInterfaceFromGenerics() {
-        Assert.assertEquals(DummyDomainEvents.class, provider.getDomainEventInterface());
+        Assert.assertEquals(NullDomainEvents.class, provider.getDomainEventInterface());
     }
 
     @Test
     public void getEvents_shouldReturnDummyEvent() {
         List<Class<? extends Event>> events = provider.getEvents();
-        assertThat(events.contains(DummyEvent.class), is(true));
+        assertThat(events.contains(NullEvent.class), is(true));
         assertThat(events.size(), is(1));
     }
 }

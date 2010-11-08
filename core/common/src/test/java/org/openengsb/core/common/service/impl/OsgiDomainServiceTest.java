@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.support.NullDomain;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -48,10 +49,7 @@ public class OsgiDomainServiceTest {
     private ServiceReference instanceServiceReferenceMock;
     private ServiceReference serviceManagerReferenceMock;
     private ServiceManager serviceManagerMock;
-    private DummyDomain serviceMock;
-
-    private static interface DummyDomain extends Domain {
-    }
+    private NullDomain serviceMock;
 
     private ServiceReference[] getServiceReferenceArray() {
         return allServices.toArray(new ServiceReference[allServices.size()]);
@@ -61,7 +59,7 @@ public class OsgiDomainServiceTest {
     public void setUp() throws Exception {
         contextMock = mock(BundleContext.class);
         allServices = new ArrayList<ServiceReference>();
-        when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), null)).thenReturn(
+        when(contextMock.getAllServiceReferences(NullDomain.class.getName(), null)).thenReturn(
                 getServiceReferenceArray());
 
         service = new OsgiDomainService();
@@ -73,21 +71,21 @@ public class OsgiDomainServiceTest {
         service.setDomains(providerList);
 
         instanceServiceReferenceMock = mock(ServiceReference.class);
-        String filter = String.format("(domain=%s)", DummyDomain.class.getName());
-        when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), filter)).thenReturn(
+        String filter = String.format("(domain=%s)", NullDomain.class.getName());
+        when(contextMock.getAllServiceReferences(NullDomain.class.getName(), filter)).thenReturn(
                 new ServiceReference[]{ instanceServiceReferenceMock });
-        when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), null)).thenReturn(
+        when(contextMock.getAllServiceReferences(NullDomain.class.getName(), null)).thenReturn(
                 new ServiceReference[]{ instanceServiceReferenceMock });
         when(contextMock.getAllServiceReferences(Domain.class.getName(), null)).thenReturn(
                 new ServiceReference[]{ instanceServiceReferenceMock });
         String idFilter = String.format("(id=%s)", "42");
-        when(contextMock.getAllServiceReferences(DummyDomain.class.getName(), idFilter)).thenReturn(
+        when(contextMock.getAllServiceReferences(NullDomain.class.getName(), idFilter)).thenReturn(
                 new ServiceReference[]{ instanceServiceReferenceMock });
-        serviceMock = mock(DummyDomain.class);
+        serviceMock = mock(NullDomain.class);
         when(contextMock.getService(instanceServiceReferenceMock)).thenReturn(serviceMock);
 
         serviceManagerReferenceMock = mock(ServiceReference.class);
-        filter = String.format("(domain=%s)", DummyDomain.class.getName());
+        filter = String.format("(domain=%s)", NullDomain.class.getName());
         when(contextMock.getAllServiceReferences(ServiceManager.class.getName(), filter)).thenReturn(
                 new ServiceReference[]{ serviceManagerReferenceMock });
         serviceManagerMock = mock(ServiceManager.class);
@@ -103,14 +101,14 @@ public class OsgiDomainServiceTest {
 
     @Test
     public void serviceManagersForDomainClass() throws InvalidSyntaxException {
-        List<ServiceManager> serviceManagers = service.serviceManagersForDomain(DummyDomain.class);
+        List<ServiceManager> serviceManagers = service.serviceManagersForDomain(NullDomain.class);
 
         assertThat(serviceManagers, hasItem(serviceManagerMock));
     }
 
     @Test
     public void serviceReferencesForDomain() throws InvalidSyntaxException {
-        List<ServiceReference> serviceReferencesForConnector = service.serviceReferencesForDomain(DummyDomain.class);
+        List<ServiceReference> serviceReferencesForConnector = service.serviceReferencesForDomain(NullDomain.class);
 
         assertThat(serviceReferencesForConnector, hasItem(instanceServiceReferenceMock));
     }
@@ -138,12 +136,12 @@ public class OsgiDomainServiceTest {
 
     @Test
     public void testGetServiceById() throws Exception {
-        DummyDomain service2 = (DummyDomain) service.getService(DummyDomain.class.getName(), "42");
+        NullDomain service2 = (NullDomain) service.getService(NullDomain.class.getName(), "42");
         assertThat(service2, sameInstance(serviceMock));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetNonExistingService_shouldThrowIllegalArgumentException() throws Exception {
-        service.getService(DummyDomain.class.getName(), "21");
+        service.getService(NullDomain.class.getName(), "21");
     }
 }

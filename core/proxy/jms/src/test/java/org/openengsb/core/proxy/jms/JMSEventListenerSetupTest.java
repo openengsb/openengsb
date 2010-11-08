@@ -34,6 +34,7 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.test.NullDomain;
 import org.springframework.jms.listener.AbstractMessageListenerContainer;
 
 public class JMSEventListenerSetupTest {
@@ -49,7 +50,7 @@ public class JMSEventListenerSetupTest {
         when(provider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
             public Class<? extends Domain> answer(InvocationOnMock invocation) {
-                return TestInterface.class;
+                return NullDomain.class;
             }
         });
         when(provider.getId()).thenReturn(ID);
@@ -75,9 +76,5 @@ public class JMSEventListenerSetupTest {
         verify(messageListenerMock, times(2)).setDestinationName("ID_event_send");
         verify(messageListenerMock, times(2)).setMessageListener(messageListener);
         verify(messageListenerMock, times(2)).start();
-    }
-
-    private static interface TestInterface extends Domain {
-        void log(int i);
     }
 }
