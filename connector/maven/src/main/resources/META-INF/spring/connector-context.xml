@@ -64,9 +64,7 @@
 
   <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
     init-method="init">
-    <property name="persistenceManager">
-      <osgi:reference interface="org.openengsb.core.common.persistence.PersistenceManager" />
-    </property>
+    <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
   <bean id="serviceFactory" class="org.openengsb.connector.maven.internal.MavenServiceInstanceFactory">
@@ -76,6 +74,7 @@
     <property name="contextService" ref="contextService" />
   </bean>
 
+  <osgi:reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
   <osgi:reference id="buildEvents" interface="org.openengsb.domain.build.BuildDomainEvents" />
   <osgi:reference id="testEvents" interface="org.openengsb.domain.test.TestDomainEvents" />
   <osgi:reference id="deployEvents" interface="org.openengsb.domain.deploy.DeployDomainEvents" />
