@@ -23,6 +23,10 @@ import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -101,7 +105,12 @@ public class MavenServiceTest {
     }
 
     private String getPath(String folder) {
-        return getClass().getClassLoader().getResource(folder).getPath();
+        try {
+            URI uri = getClass().getClassLoader().getResource(folder).toURI();
+            return new File(uri).getAbsolutePath();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
