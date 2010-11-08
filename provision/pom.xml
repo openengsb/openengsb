@@ -431,6 +431,16 @@
       <version>${aopalliance.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>com.springsource.org.aspectj.runtime</artifactId>
+      <version>${aspectj.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>com.springsource.org.aspectj.weaver</artifactId>
+      <version>${aspectj.version}</version>
+    </dependency>
+    <dependency>
       <groupId>javax.el</groupId>
       <artifactId>com.springsource.javax.el</artifactId>
       <version>${el.version}</version>
