@@ -39,7 +39,7 @@ if [ "$NAME_PREFIX" = "" ]; then
 	NAME_PREFIX=$DEFAULT_NAME_PREFIX
 fi
 
-artifactId="openengsb-domains-$DOMAIN-parent"
+artifactId="openengsb-domains-$DOMAIN"
 
 mvn archetype:generate \
 	-DarchetypeGroupId="org.openengsb.tooling.archetypes" \
@@ -50,9 +50,10 @@ mvn archetype:generate \
 	-Dversion="$VERSION" \
 	-DimplementationArtifactId="openengsb-domains-$DOMAIN-implementation" \
 	-Dpackage="org.openengsb.domains.$DOMAIN" \
-	-Dname="$NAME_PREFIX :: Parent" \
+	-Dname="$NAME_PREFIX" \
     -DdomainInterface="${DOMAIN~}" \
-	-DimplementationName="$NAME_PREFIX :: Implementation"
+	-DimplementationName="$NAME_PREFIX :: Implementation"\
+    -o
 
 if [ $? != 0 ]; then
 	exit $?
@@ -75,4 +76,3 @@ echo ""
 echo "DON'T FORGET TO ADD THE DOMAIN TO THE INTEGRATION TEST PROJECT!"
 echo "SUCCESS"
 echo ""
-echo "execute >find . -iname My*.java | xargs rename -v 's/(.*)My(.*\.java)/\$1$Domain \$2/'< to rename classfiles properly"

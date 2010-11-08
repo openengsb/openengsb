@@ -63,7 +63,7 @@ mvn archetype:generate \
 	-DarchetypeGroupId="org.openengsb.tooling.archetypes" \
 	-DarchetypeArtifactId="openengsb-tooling-archetypes-connector" \
 	-DarchetypeVersion="$VERSION" \
-	-DparentArtifactId="$domainArtifactIdPrefix-parent" \
+	-DparentArtifactId="$domainArtifactIdPrefix" \
 	-DdomainArtifactId="$domainArtifactIdPrefix-implementation" \
 	-DartifactId="$artifactId" \
 	-DgroupId="$domainGroupId" \
@@ -71,7 +71,8 @@ mvn archetype:generate \
 	-DdomainInterface="$INTERFACE" \
 	-Dpackage="$domainGroupId.$CONNECTOR" \
 	-DparentPackage="$domainGroupId" \
-	-Dname="$NAME"
+	-Dname="$NAME"\
+    -o
 
 if [ $? != 0 ]; then
 	exit $?
@@ -94,4 +95,3 @@ echo ""
 echo "DON'T FORGET TO ADD THE CONNECTOR TO THE INTEGRATIONTEST PROJECT!"
 echo "SUCCESS"
 echo ""
-echo "execute >find . -iname My*.java | xargs rename -v 's/(.*)My(.*\.java)/\$1$Domain\$2/'< to rename classfiles properly"
