@@ -34,6 +34,5 @@ public class SimpleArgumentPanel extends Panel {
         MethodUtil.addEnumValues(arg.getType(), builder);
         builder.id("value").name(new StringResourceModel("argument", this, new Model<ArgumentModel>(arg)).getString());
         add(AttributeEditorUtil.createEditorField("value", new PropertyModel<String>(arg, "value"), builder.build()));
-        // add(new TextField<String>("value", new PropertyModel<String>(arg, "value")));
     }
 }
