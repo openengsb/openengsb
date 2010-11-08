@@ -43,7 +43,7 @@ public class JSONSerialisationInvocationHandlerTest {
         JSONSerialisationInvocationHandler handler = new JSONSerialisationInvocationHandler(sender);
         newProxyInstance =
             (TestInterface) Proxy.newProxyInstance(TestInterface.class.getClassLoader(),
-                new Class[]{ TestInterface.class }, handler);
+                new Class[]{TestInterface.class}, handler);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class JSONSerialisationInvocationHandlerTest {
         map.put("b", new TestObject("zwei", 1));
         map.put("a", new TestObject("vier", 3));
         newProxyInstance.test(map);
-        verify(sender).send("test", "[{\"b\":{\"string\":\"zwei\",\"i\":1},\"a\":{\"string\":\"vier\",\"i\":3}}]");
+        verify(sender).send("test", "[{\"b\":{\"i\":1,\"string\":\"zwei\"},\"a\":{\"i\":3,\"string\":\"vier\"}}]");
     }
 
     @Test
