@@ -83,7 +83,7 @@ public class ConnectorEditorPage extends BasePage {
                             returnToTestClient();
                         }
                     } else {
-                        serviceManager.update(getValues().get("id"), getValues());
+                        serviceManager.updateWithoutValidation(getValues().get("id"), getValues());
                         returnToTestClient();
                     }
                 }

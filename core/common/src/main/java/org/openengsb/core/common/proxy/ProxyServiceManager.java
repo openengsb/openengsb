@@ -33,11 +33,11 @@ import org.osgi.framework.ServiceRegistration;
 
 /**
  * Proxy Service Manager to instantiate Proxies to communicate with external systems.
- *
+ * 
  * The proxy for the specified Domain are created upon request for a ServiceDescriptor.
- *
+ * 
  * The ProxyServiceManager is completely generic. Business logic to interpret a certain call is handled via the
- *
+ * 
  * @see InvocationHandler handed to the constructor.
  */
 public class ProxyServiceManager extends AbstractServiceManagerParent implements ServiceManager {
@@ -82,6 +82,11 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
     }
 
     @Override
+    public void updateWithoutValidation(String id, Map<String, String> attributes) {
+        update(id, attributes);
+    }
+
+    @Override
     public Map<String, String> getAttributeValues(String id) {
         return new HashMap<String, String>();
     }
@@ -98,4 +103,5 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
     protected Class<? extends Domain> getImplementationClass() {
         return provider.getDomainInterface();
     }
+
 }
