@@ -26,7 +26,6 @@ import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.openengsb.ui.web.global.footer.FooterTemplate;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
 import org.openengsb.ui.web.model.User;
 
@@ -75,6 +74,5 @@ public class LoginPage extends WebPage {
         add(feedbackPanel);
 
         this.add(new HeaderTemplate("header", this.getClass().getSimpleName()));
-        this.add(new FooterTemplate("footer"));
     }
 }

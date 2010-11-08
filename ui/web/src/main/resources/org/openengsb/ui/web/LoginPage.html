@@ -35,10 +35,16 @@
   <a class="languageIconsG" href="#" wicket:id="lang.de"> <img wicket:message="title:headerPage.title" alt="Deutsch"
                                                                title="" src="images/german_icon.png"/> </a>
 
-  <form wicket:id="form">username: <input wicket:id="username"/> <br/>
-    password: <input type="password" wicket:id="password"/> <br/>
-    <input type="submit" value="Login"/></form>
+  <form wicket:id="form" class="loginForm">
+    <div class="formFieldLabel">
+      <wicket:message key="username.label">username:</wicket:message>
+    </div>
+    <input wicket:id="username"/> <br/>
+    <div class="formFieldLabel">
+      <wicket:message key="password.label">username:</wicket:message>
+    </div>
+    <input type="password" wicket:id="password"/> <br/>
+    <input type="submit" value="Login" wicket:message="value:login.button"/></form>
   <div wicket:id="feedback"/>
-  <div wicket:id="footer">footer</div>
 </body>
 </html>

@@ -39,7 +39,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.ui.web.global.footer.FooterTemplate;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
 import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -150,6 +149,5 @@ public class LoginPageTest {
     public void testIfHeaderAndFooterIsVisible() {
         tester.startPage(LoginPage.class);
         tester.assertComponent("header", HeaderTemplate.class);
-        tester.assertComponent("footer", FooterTemplate.class);
     }
 }
