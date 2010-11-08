@@ -48,7 +48,7 @@ public class ReviewerTaskStep implements TaskStep {
 		this.reviewStatus = reviewStatus;
 	}
 
-	public boolean isReviewStatus() {
+	public boolean getReviewStatus() {
 		return reviewStatus;
 	}
 
