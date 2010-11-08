@@ -362,3 +362,15 @@ container-1
 	color:#0066FF;
 }
 
+
+.loginForm label, select {
+  width: 200px;
+}
+
+.formFieldLabel {
+	text-align: right;
+	float: left;
+	width: 100px;
+}
+
+

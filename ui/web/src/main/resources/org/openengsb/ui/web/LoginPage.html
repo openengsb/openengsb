@@ -17,21 +17,34 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
-  xml:lang="en" lang="en">
+      xml:lang="en" lang="en">
 
 <wicket:head>
-  <link rel="stylesheet" type="text/css" href="style/style.css" />
-  <link rel="shortcut icon" href="images/openengsb.ico" type="image/x-icon" />
+  <link rel="stylesheet" type="text/css" href="style/style.css"/>
+  <link rel="shortcut icon" href="images/openengsb.ico" type="image/x-icon"/>
   <script type="text/javascript" src="js/jquery.js"></script>
   <script type="text/javascript" src="js/jquery.tools.js"></script>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <title>OpenEngSB</title>
 </wicket:head>
 
 <body>
-<form wicket:id="form">username: <input wicket:id="username" /> <br />
-password: <input type="password" wicket:id="password" /> <br />
-<input type="submit" value="Login" /></form>
-<div wicket:id="feedback" />
+  <div wicket:id="header">header</div>
+  <a class="languageIconsE" href="#" wicket:id="lang.en"> <img wicket:message="title:headerPage.title" alt="English"
+                                                               title="" src="images/english_icon.png"/> </a>
+  <a class="languageIconsG" href="#" wicket:id="lang.de"> <img wicket:message="title:headerPage.title" alt="Deutsch"
+                                                               title="" src="images/german_icon.png"/> </a>
+
+  <form wicket:id="form" class="loginForm">
+    <div class="formFieldLabel">
+      <wicket:message key="username.label">username:</wicket:message>
+    </div>
+    <input wicket:id="username"/> <br/>
+    <div class="formFieldLabel">
+      <wicket:message key="password.label">username:</wicket:message>
+    </div>
+    <input type="password" wicket:id="password"/> <br/>
+    <input type="submit" value="Login" wicket:message="value:login.button"/></form>
+  <div wicket:id="feedback"/>
 </body>
 </html>
