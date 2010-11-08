@@ -101,7 +101,7 @@ public class MavenServiceTest {
     }
 
     private String getPath(String folder) {
-        return ClassLoader.getSystemResource(folder).getFile().replaceAll("%20", " ");
+        return ClassLoader.getSystemResource(folder).getFile();
     }
 
 }
