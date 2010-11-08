@@ -43,7 +43,7 @@ public class TaskboxServiceTest {
         Ticket t = new Ticket("1");
         t.setType("developer");
     	
-    	service.startWorkflow("ticket", t);
+    	service.startWorkflow("tasktest","ticket", t);
         
         verify(workflowService, Mockito.times(1)).startFlow(Mockito.anyString(), Mockito.anyMap());
     }

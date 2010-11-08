@@ -44,7 +44,8 @@ public interface TaskboxService {
      * 
      * @throws TaskboxException when the test workflow could not be started
      */
-    void startWorkflow(String taskVariableName, Task task) throws TaskboxException;
+        
+    void startWorkflow(String workflowName, String taskVariableName, Task task) throws TaskboxException;
 
     /**
      * Used by a workflow to set a message
