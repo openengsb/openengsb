@@ -51,21 +51,15 @@
 
   <fileSets>
     <fileSet filtered="true" packaged="true">
-      <directory>implementation/src/main/java</directory>
+      <directory>src/main/java</directory>
       <includes>
         <include>**/*.java</include>
       </includes>
     </fileSet>
     <fileSet filtered="true" packaged="false">
-      <directory>implementation/src/main/resources</directory>
+      <directory>src/main/resources</directory>
       <includes>
         <include>**/*</include>
-      </includes>
-    </fileSet>
-    <fileSet filtered="true" packaged="false">
-      <directory>implementation</directory>
-      <includes>
-        <include>*.xml</include>
       </includes>
     </fileSet>
   </fileSets>
