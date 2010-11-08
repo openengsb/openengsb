@@ -326,23 +326,11 @@ public class TestClient extends BasePage {
             if (id != null) {
                 ServiceId serviceId = new ServiceId();
                 serviceId.setServiceId(id);
-                Object serviceObject = services.getService(serviceReference);
-                Class<?> domainInterface = guessDomainInterface(serviceObject);
-                serviceId.setServiceClass(domainInterface.getName());
+                serviceId.setServiceClass(provider.getDomainInterface().getName());
                 DefaultMutableTreeNode referenceNode = new DefaultMutableTreeNode(serviceId, false);
                 providerNode.add(referenceNode);
             }
         }
-    }
-
-    private Class<?> guessDomainInterface(Object serviceObject) {
-        Class<?>[] interfaces = MethodUtil.getAllInterfaces(serviceObject);
-        for (Class<?> candidate : interfaces) {
-            if (!candidate.equals(Domain.class) && candidate.getName().startsWith("org.openengsb.domain")) {
-                return candidate;
-            }
-        }
-        return serviceObject.getClass();
     }
 
     protected void performCall() {
