@@ -19,11 +19,11 @@ package ${package};
 import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.core.common.ServiceInstanceFactory;
 import ${parentPackage}.${domainInterface};
-import ${package}.internal.${domainInterface}ServiceImpl;
+import ${package}.internal.${connectorName}ServiceImpl;
 
-public class ${domain}ServiceManager extends AbstractServiceManager<${domainInterface}, ${domainInterface}ServiceImpl> {
+public class ${connectorName}ServiceManager extends AbstractServiceManager<${domainInterface}, ${connectorName}ServiceImpl> {
 
-    public ${domain}ServiceManager(ServiceInstanceFactory<${domainInterface}, ${domainInterface}ServiceImpl> factory) {
+    public ${connectorName}ServiceManager(ServiceInstanceFactory<${domainInterface}, ${connectorName}ServiceImpl> factory) {
         super(factory);
     }
 }
