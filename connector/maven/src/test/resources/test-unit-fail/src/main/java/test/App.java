@@ -14,33 +14,15 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.maven.internal;
+package test;
 
-import org.openengsb.core.common.util.AliveState;
-import org.openengsb.domain.test.TestDomain;
+/**
+ * Hello world!
+ * 
+ */
+public final class App {
+    private App() {
 
-public class TestDomainServiceImpl implements TestDomain {
-
-    private String attr;
-
-    public TestDomainServiceImpl() {
     }
 
-    void setAttr(String attr) {
-        this.attr = attr;
-    }
-
-    @Override
-    public AliveState getAliveState() {
-        // TODO Auto-generated method stub
-        return AliveState.DISCONNECTED;
-    }
-
-    @Override
-    public Boolean runTests() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    // TODO implement domain methods here
 }

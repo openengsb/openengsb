@@ -17,8 +17,18 @@
 package org.openengsb.domain.test;
 
 import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.Raises;
 
+/**
+ * This domain can be used to run tests for projects. The affected project is usually configured in the respective tool
+ * connector.
+ */
 public interface TestDomain extends Domain {
 
-    Boolean runTests(); 
+    /**
+     * run all tests for the currently configured project. This method returns at once with an id. The tests are run
+     * asynchronously. The result can be retrieved using the events raised by this domain, which also contain the id.
+     */
+    @Raises({TestStartEvent.class, TestEndEvent.class})
+    String runTests();
 }

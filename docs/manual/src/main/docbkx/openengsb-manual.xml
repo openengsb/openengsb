@@ -80,6 +80,10 @@
     <xi:include href="domains/scm/domain.xml"/>
     <xi:include href="domains/issue/domain.xml"/>
     <xi:include href="domains/report/domain.xml"/>
+    <xi:include href="domains/build/domain.xml"/>
+    <xi:include href="domains/test/domain.xml"/>
+    <xi:include href="domains/deploy/domain.xml"/>
+    <xi:include href="domains/multi-domain/connectors.xml" />
   </part>
 
   <part xml:id="developer.manual">

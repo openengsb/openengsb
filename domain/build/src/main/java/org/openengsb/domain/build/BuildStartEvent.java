@@ -20,4 +20,15 @@ import org.openengsb.core.common.Event;
 
 public class BuildStartEvent extends Event {
 
+    private String buildId;
+
+    public BuildStartEvent(String buildId) {
+        super("BuildStartEvent");
+        this.buildId = buildId;
+    }
+
+    public String getBuildId() {
+        return buildId;
+    }
+
 }

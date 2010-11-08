@@ -20,4 +20,28 @@ import org.openengsb.core.common.Event;
 
 public class DeployEndEvent extends Event {
 
+    private boolean success;
+
+    private String output;
+
+    private String deployId;
+
+    public DeployEndEvent(String deployId, boolean success, String output) {
+        this.deployId = deployId;
+        this.success = success;
+        this.output = output;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public String getDeployId() {
+        return deployId;
+    }
+
 }

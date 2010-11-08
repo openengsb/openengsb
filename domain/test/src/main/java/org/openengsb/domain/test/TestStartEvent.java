@@ -20,4 +20,14 @@ import org.openengsb.core.common.Event;
 
 public class TestStartEvent extends Event {
 
+    private String testId;
+
+    public TestStartEvent(String testId) {
+        super("TestStartEvent");
+        this.testId = testId;
+    }
+
+    public String getTestId() {
+        return testId;
+    }
 }
