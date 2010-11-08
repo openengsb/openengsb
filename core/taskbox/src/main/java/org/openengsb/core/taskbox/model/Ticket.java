@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.openengsb.core.taskbox.web.TicketPanel;
 
 public class Ticket implements Task {
 	private String id;
@@ -108,5 +110,10 @@ public class Ticket implements Task {
 			return ts;
 		} else
 			return null;
+	}
+	
+	public Panel getPanel(String id){
+	    Panel panel = new TicketPanel(id, this);
+	    return panel;
 	}
 }

@@ -17,10 +17,12 @@
 package org.openengsb.core.taskbox;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.persistence.PersistenceException;
 import org.openengsb.core.persistence.PersistenceManager;
 import org.openengsb.core.persistence.PersistenceService;
 import org.openengsb.core.taskbox.model.Task;
@@ -28,6 +30,7 @@ import org.openengsb.core.taskbox.model.Ticket;
 import org.openengsb.core.workflow.WorkflowService;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
+import org.apache.wicket.markup.html.panel.Panel;
 
 public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     private Log log = LogFactory.getLog(getClass());
@@ -41,17 +44,17 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     private PersistenceManager persistenceManager;
 
     private BundleContext bundleContext;
-    
+
     public void init() {
-    	this.persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
+        this.persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
     }
-    
+
     @Override
     public String getWorkflowMessage() throws TaskboxException {
         if (message == null) {
             throw new TaskboxException();
         }
-        
+
         return message;
     }
 
@@ -59,28 +62,42 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     public void setWorkflowMessage(String message) {
         this.message = message;
     }
-
+    /*
     @Override
     public void startWorkflow(String taskVariableName, Task task) throws TaskboxException {
         try {
-    		Map<String, Object> parameterMap = 
-                new HashMap<String, Object>();
+            Map<String, Object> parameterMap = new HashMap<String, Object>();
             parameterMap.put(taskVariableName, task);
-            
+
             workflowService.startFlow("tasktest", parameterMap);
             
             log.trace("Started workflow 'tasktest'");
         } catch (Exception e) {
-        	log.error(e.getMessage() + " STACKTRACE: " + e.getStackTrace());
-        	throw new TaskboxException(e);
+            log.error(e.getMessage() + " STACKTRACE: " + e.getStackTrace());
+            throw new TaskboxException(e);
         }
-        
-    }
 
+    }
+    */
+    @Override
+    public void startWorkflow(String workflowName, String taskVariableName, Task task) throws TaskboxException {
+        try {
+            Map<String, Object> parameterMap = new HashMap<String, Object>();
+            parameterMap.put(taskVariableName, task);
+
+            workflowService.startFlow(workflowName, parameterMap);
+            
+            log.trace("Started workflow "+ workflowName);
+        } catch (Exception e) {
+            log.error(e.getMessage() + " STACKTRACE: " + e.getStackTrace());
+            throw new TaskboxException(e);
+        }
+
+    }
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
     }
-    
+
     public void setPersistenceManager(PersistenceManager persistenceManager) {
         this.persistenceManager = persistenceManager;
     }
@@ -88,5 +105,17 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+    }
+
+    @Override
+    public Panel createPanel(String objectid, String panelid) {
+        List<Ticket> ticket = persistence.query(new Ticket(objectid));
+        Ticket ret;
+        if(ticket.size() == 0){
+            ret = new Ticket(objectid);
+        }else{
+            ret = ticket.get(0);
+        }
+        return ret.getPanel(panelid);
     }
 }
