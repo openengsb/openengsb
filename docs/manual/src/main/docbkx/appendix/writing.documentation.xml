@@ -31,41 +31,56 @@
 
   <section>
     <title>General Documentation Guidelines</title>
-    <para>A chapter should consist of these parts: <itemizedlist>
-        <listitem>
-          <bridgehead>Introduction</bridgehead>
-          <para>It should explained who the target audience for this chapter is and in what case this chapter should be
-            read. There should also be a basic summary of what this chapter is about. </para>
-        </listitem>
-        <listitem>
-          <bridgehead>Prerequisites</bridgehead>
-          <para>Any prerequisites should be listed. Link to the appropriate chapter or to a website to give the reader a
-            good starting point in case they need to learn something else first. </para>
-        </listitem>
-        <listitem>
-          <bridgehead>Context</bridgehead>
-          <para>In the context section the reader should learn in which context this chapter is applicable. If necessary
-            abbrevations and acronyms used in this chapter can be explained here. </para>
-        </listitem>
-        <listitem>
-          <bridgehead>Content</bridgehead>
-          <para>The actual content of this chapter. This should be structured in as many sections as appropriate.
-          </para>
-        </listitem>
-        <listitem>
-          <bridgehead>Example</bridgehead>
-          <para>If possible there should be an example to illustrate the points of the chapter. </para>
-        </listitem>
-        <listitem>
-          <bridgehead>Common Problems</bridgehead>
-          <para> If there are some known pitfalls or bugs they should be described in this section. </para>
-        </listitem>
-        <listitem>
-          <bridgehead>Closing Remarks</bridgehead>
-          <para> In this section the content of the chapter can be summarized once more. The reader should get
-            information on what to do next. </para>
-        </listitem>
-      </itemizedlist>
+    <para>A chapter should consist of these parts: 
+    <variablelist>
+        <varlistentry>
+          <term>Introduction</term>
+          <listitem>
+            <para>It should explained who the target audience for this chapter is and in what case this chapter should be
+              read. There should also be a basic summary of what this chapter is about. </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Prerequisites</term>
+          <listitem>
+            <para>Any prerequisites should be listed. Link to the appropriate chapter or to a website to give the reader a
+              good starting point in case they need to learn something else first. </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Context</term>
+          <listitem>
+            <para>In the context section the reader should learn in which context this chapter is applicable. If necessary
+              abbrevations and acronyms used in this chapter can be explained here. </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Content</term>
+          <listitem>
+            <para>The actual content of this chapter. This should be structured in as many sections as appropriate.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Example</term>
+          <listitem>
+            <para>If possible there should be an example to illustrate the points of the chapter. </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Common Problems</term>
+          <listitem>
+            <para> If there are some known pitfalls or bugs they should be described in this section. </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Closing Remarks</term>
+          <listitem>
+            <para> In this section the content of the chapter can be summarized once more. The reader should get
+              information on what to do next. </para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
     </para>
     <para> It is not necessary that every part is a docbook section. Parts can be combined if it seems appropriate.
     </para>
@@ -83,22 +98,28 @@
 
       <para>The documentation of a domain should at least consist of the following parts:</para>
 
-      <itemizedlist>
-        <listitem>
-          <bridgehead>Description</bridgehead>
-          <para>Describe briefly what the purpose of the Domain is.</para>
-        </listitem>
-        <listitem>
-          <bridgehead>Functional interface</bridgehead>
-          <para>The link to the actual java interface (and any domain models used in the interface) at Github. The
-            domain interface and models should have enough Javadoc to explain the usage.</para>
-        </listitem>
-        <listitem>
-          <bridgehead>Events</bridgehead>
-          <para>If the domain adds new events to the OpenEngSB, the link to the events package at Github should be
-            provided. The meaning of each events should be documented through the Javadoc at the actual class.</para>
-        </listitem>
-      </itemizedlist>
+      <variablelist>
+        <varlistentry>
+          <term>Description</term>
+          <listitem>
+            <para>Describe briefly what the purpose of the Domain is.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Functional interface</term>
+          <listitem>
+            <para>The link to the actual java interface (and any domain models used in the interface) at Github. The
+              domain interface and models should have enough Javadoc to explain the usage.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Events</term>
+          <listitem>
+            <para>If the domain adds new events to the OpenEngSB, the link to the events package at Github should be
+              provided. The meaning of each events should be documented through the Javadoc at the actual class.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
     </section>
 
     <section>
@@ -109,21 +130,27 @@
 
       <para>The documentation of a connector should at least conisst of the following parts:</para>
 
-      <itemizedlist>
-        <listitem>
-          <bridgehead>Description</bridgehead>
-          <para>Provide a description of the external tool and its purpose.</para>
-        </listitem>
-        <listitem>
-          <bridgehead>External tool configuration</bridgehead>
-          <para>A section on how to configure the actual external tool for usage with the OpenEngSB has to be provided.</para>
-        </listitem>
-        <listitem>
-          <bridgehead>Support for domain interface</bridgehead>
-          <para>Any deviation to the provided functionality of the domain should be documented. E.g a connector may only
-            implement parts of the domain interface.</para>
-        </listitem>
-      </itemizedlist>
+      <variablelist>
+        <varlistentry>
+          <term>Description</term>
+          <listitem>
+            <para>Provide a description of the external tool and its purpose.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>External tool configuration</term>
+          <listitem>
+            <para>A section on how to configure the actual external tool for usage with the OpenEngSB has to be provided.</para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>Support for domain interface</term>
+          <listitem>
+            <para>Any deviation to the provided functionality of the domain should be documented. E.g a connector may only
+              implement parts of the domain interface.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
     </section>
 
   </section>

@@ -66,18 +66,16 @@
 
     <section xml:id="developer.quickstart.infrastructure.maven">
       <title>Maven Repository</title>
-      <para>For the moment the OpenEngSB artifacts are not stored at maven.central, but in an own Nexus maven repository
-        available at <link xlink:href="http://maven.openengsb.org/nexus">maven.openengsb.org</link>. If any additional
-        artifacts are required currently not at any maven repository we can host them on the server. Please simply write
-        to the mailing list which artifact is required and provide the artifact and the pom GAF parameters. Please always
-        validate if we are allowed to redeploy the artifact.</para>
+      <para>The OpenEngSB is available at <link xlink:href="http://repo1.maven.org/maven2/org/openengsb/">Maven Central</link>. We still
+        have our own Maven repository at <link xlink:href="http://maven.openengsb.org/">maven.openengsb.org/</link> and snapshots are available
+        via the sonatype Maven repository at <link xlink:href="http://oss.sonatype.org" />.</para>
     </section>
 
     <section xml:id="developer.quickstart.infrastructure.hudson">
       <title>Build Server</title>
       <para>The master and integration branch of the OpenEngSB repository are watched and built by a Hudson build server 
         instance available at <link xlink:href="http://build.openengsb.org/hudson/">build.openengsb.org</link>. Notifications 
-        about failures are directly send to the OpenEngSB developer list.</para>
+        about failures are directly sent to the OpenEngSB developer list.</para>
     </section>
 
   </section>
@@ -223,11 +221,11 @@
       <title>Additional Rules</title>
       <para>
         <orderedlist>
-          <listitem><para>(Contributor/Committer) All development is done in forks (also of the core developers) One
+          <listitem><para>(Contributor/Committer) All development is done in branches (also of the core developers) One
             exception to this rule exists: Small fixes and maintenance work which is NOT related to a new feature and
             does not exceed 2 commits should be cherry-picked into the master directly.</para></listitem>
 
-          <listitem><para>Contributor/Committer) Rebase is <emphasis>not</emphasis> dead (although we use merges).
+          <listitem><para>(Contributor/Committer) Rebase is <emphasis>not</emphasis> dead (although we use merges).
               <emphasis>Never ever</emphasis> commit local merges. You still should develop in local dev branches and
             rebasing them with the upstream branches. Only if nobody else has access to your fork you can be sure that
             nobody changed it!</para></listitem>

@@ -29,7 +29,7 @@
   <link xlink:href="http://maven.apache.org/">Maven</link>.</para>
   <section>
     <title>External Tool Configuration</title>
-    <para>No external configuration is needed.</para>
+    <para>The Maven executable has to be on the system path to make this connector work.</para>
   </section>
 
 </section>

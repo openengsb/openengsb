@@ -103,7 +103,7 @@
     </para>
     <itemizedlist>
       <listitem>openengsb.png: The full logo of the OpenEngSB in png format. The size is not too 
-        important. At every location used it is resized according to the requirements autmoatically.</listitem>
+        important. At every location used it is resized according to the requirements automatically.</listitem>
       <listitem>openengsb_small.png: A reduced version of the OpenEngSB logo. The most important thing with this
         logo is that it have to be rectangular, since some cases require this.</listitem>
       <listitem>openengsb.ico: This is the openengsb_small.png logo, reduced to 256x256 and converted to .ico. 
