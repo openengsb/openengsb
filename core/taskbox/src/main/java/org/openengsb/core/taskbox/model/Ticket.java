@@ -99,7 +99,7 @@ public class Ticket implements Task {
 		if(newCurrentTaskStep != null) {
 			this.currentTaskStep = newCurrentTaskStep;
 		
-			this.addHistoryEntry("set currentTaskStep (of type: <" + this.currentTaskStep.getTaskStepType() + ">)");
+			this.addHistoryEntry("set currentTaskStep (of type: <" + this.currentTaskStep.getTaskStepTypeText() + ">)");
 		}
 	}
 

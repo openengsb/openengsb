@@ -23,6 +23,7 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.taskbox.model.Ticket;
+import org.openengsb.core.taskbox.model.TaskStepType;
 
 public class TaskboxModelTest {
 	
@@ -68,26 +69,26 @@ public class TaskboxModelTest {
     @Test
     public void testCompleteTicketInformationStep() throws Exception {
     	TaskStep ts = new CompleteTicketInformationStep("name", "desc");
-    	assertThat(ts.getTaskStepType(), is("CompleteTicketInformationStep"));
+    	assertThat(ts.getTaskStepTypeText(), is("CompleteTicketInformationStep"));
     }
     
     @Test
     public void testDeveloperTaskStep() throws Exception {
     	TaskStep ts = new DeveloperTaskStep("name", "desc");
-    	assertThat(ts.getTaskStepType(), is("DeveloperTaskStep"));
+    	assertThat(ts.getTaskStepType(), is(TaskStepType.DeveloperTaskStep));
     }
     
     @Test
     public void testInformationTaskStep() throws Exception {
     	TaskStep ts = new InformationTaskStep("name", "desc");
-    	assertThat(ts.getTaskStepType(), is("InformationTaskStep"));
+    	assertThat(ts.getTaskStepTypeText(), is("InformationTaskStep"));
     }
     
     @Test
     public void testReviewerTaskStep() throws Exception {
     	TaskStep ts = new ReviewerTaskStep("name", "desc");
     	System.out.println(ts.getTaskStepType());
-    	assertThat(ts.getTaskStepType(), is("ReviewerTaskStep"));
+    	assertThat(ts.getTaskStepTypeText(), is("ReviewerTaskStep"));
     }
     
     @Test

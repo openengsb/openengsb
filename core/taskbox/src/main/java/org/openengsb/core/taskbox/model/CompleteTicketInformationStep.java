@@ -42,15 +42,20 @@ public class CompleteTicketInformationStep implements TaskStep {
 	public String getName() {
 		return name;
 	}
-
+	
 	@Override
-	public String getTaskStepType() {
+	public TaskStepType getTaskStepType() {
+		return TaskStepType.CompleteTicketInformationStep;
+	}
+	
+	@Override
+	public String getTaskStepTypeText() {
 		//String className=this.getClass().getName();
 		return "CompleteTicketInformationStep";
 	}
 
 	@Override
-	public String getTaskStepTypeText() {
+	public String getTaskStepTypeDescription() {
 		return "Complete Ticket Information";
 	}
 
@@ -61,6 +66,7 @@ public class CompleteTicketInformationStep implements TaskStep {
 	public String getMissingInformation() {
 		return missingInformation;
 	}
+
 
 	//return ID of the According UI Panel
 	//WicketPanel createEditingPanel();

@@ -61,14 +61,19 @@ public class ReviewerTaskStep implements TaskStep {
 	}
 
 	@Override
-	public String getTaskStepType() {
+	public String getTaskStepTypeText() {
 		//String className=this.getClass().getName();
 		return "ReviewerTaskStep";
 	}
 
 	@Override
-	public String getTaskStepTypeText() {
+	public String getTaskStepTypeDescription() {
 		return "Review";
+	}
+
+	@Override
+	public TaskStepType getTaskStepType() {
+		return TaskStepType.ReviewerTaskStep;
 	}
 
 	//return ID of the According UI Panel

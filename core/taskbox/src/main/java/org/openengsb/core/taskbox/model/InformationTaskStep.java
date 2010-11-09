@@ -52,14 +52,19 @@ public class InformationTaskStep implements TaskStep {
 	}
 
 	@Override
-	public String getTaskStepType() {
+	public String getTaskStepTypeText() {
 		//String className=this.getClass().getName();
 		return "InformationTaskStep";
 	}
 
 	@Override
-	public String getTaskStepTypeText() {
+	public String getTaskStepTypeDescription() {
 		return "Information";
+	}
+
+	@Override
+	public TaskStepType getTaskStepType() {
+		return TaskStepType.InformationTaskStep;
 	}
 
 	//return ID of the According UI Panel

@@ -61,14 +61,19 @@ public class DeveloperTaskStep implements TaskStep {
 	}
 
 	@Override
-	public String getTaskStepType() {
+	public String getTaskStepTypeText() {
 		//String className=this.getClass().getName();
 		return "DeveloperTaskStep";
 	}
 
 	@Override
-	public String getTaskStepTypeText() {
+	public String getTaskStepTypeDescription() {
 		return "Development";
+	}
+
+	@Override
+	public TaskStepType getTaskStepType() {
+		return TaskStepType.DeveloperTaskStep;
 	}
 
 	//return ID of the According UI Panel
