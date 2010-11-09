@@ -17,16 +17,12 @@
 package org.openengsb.core.workflow.dirsource;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.AbstractRuleManagerCrudTest;
+import org.openengsb.core.workflow.RuleUtil;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 
 public class DirectoryRuleManagerCrudTest extends AbstractRuleManagerCrudTest<DirectoryRuleSource> {
@@ -49,23 +45,8 @@ public class DirectoryRuleManagerCrudTest extends AbstractRuleManagerCrudTest<Di
     protected RuleManager getRuleBaseSource() throws Exception {
         DirectoryRuleSource source = new DirectoryRuleSource("data/rulebase");
         source.init();
-        addHello1Rule(source);
+        RuleUtil.addHello1Rule(source);
         return source;
     }
 
-    private void addHello1Rule(DirectoryRuleSource source) throws Exception {
-        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "hello1");
-        String rule = readRule();
-        source.add(id, rule);
-    }
-
-    private String readRule() throws IOException {
-        InputStream helloWorldRule = null;
-        try {
-            helloWorldRule = this.getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/hello1.rule");
-            return IOUtils.toString(helloWorldRule);
-        } finally {
-            IOUtils.closeQuietly(helloWorldRule);
-        }
-    }
 }

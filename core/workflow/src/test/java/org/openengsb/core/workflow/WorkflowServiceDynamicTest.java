@@ -22,11 +22,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,8 +34,6 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.osgi.framework.BundleContext;
@@ -212,23 +207,7 @@ public class WorkflowServiceDynamicTest {
         mockDomain("test");
         mockDomain("report");
         mockDomain("issue");
-        addHello1Rule();
-    }
-
-    private void addHello1Rule() throws Exception {
-        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "hello1");
-        String rule = readRule();
-        manager.add(id, rule);
-    }
-
-    private String readRule() throws IOException {
-        InputStream helloWorldRule = null;
-        try {
-            helloWorldRule = this.getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/hello1.rule");
-            return IOUtils.toString(helloWorldRule);
-        } finally {
-            IOUtils.closeQuietly(helloWorldRule);
-        }
+        RuleUtil.addHello1Rule(manager);
     }
 
 }
