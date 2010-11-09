@@ -16,5 +16,5 @@
 #
 
 cd $(dirname $0)/../../
-mvn install -Prelease -Dmaven.test.skip=true
+mvn install -Prelease,nightly -Dmaven.test.skip=true
 
