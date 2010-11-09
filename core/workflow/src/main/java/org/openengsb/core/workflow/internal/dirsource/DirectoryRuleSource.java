@@ -214,14 +214,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         File pathFile = new File(path);
         pathFile.mkdirs();
         URL defaultImports = this.getClass().getClassLoader().getResource("rulebase/imports");
-        URL defaultglobals = this.getClass().getClassLoader().getResource("rulebase/globals");
-        URL helloWorldRule = this.getClass().getClassLoader().getResource("rulebase/org/openengsb/hello1.rule");
-
         FileUtils.copyURLToFile(defaultImports, new File(path, IMPORTS_FILENAME));
-        FileUtils.copyURLToFile(defaultglobals, new File(path, GLOBALS_FILENAME));
-        File packagePath = new File(path, "org/openengsb/hello1.rule");
-        packagePath.getParentFile().mkdirs();
-        FileUtils.copyURLToFile(helloWorldRule, packagePath);
     }
 
     public void readPackage(String packageName) throws RuleBaseException {
@@ -277,7 +270,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     @SuppressWarnings("unchecked")
     private Collection<File> listFiles(File path, String extension) {
-        Collection<File> functions = FileUtils.listFiles(path, new String[]{ extension }, false);
+        Collection<File> functions = FileUtils.listFiles(path, new String[]{extension}, false);
         return functions;
     }
 

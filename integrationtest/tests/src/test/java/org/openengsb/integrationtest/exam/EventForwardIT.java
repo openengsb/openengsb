@@ -19,15 +19,21 @@ package org.openengsb.integrationtest.exam;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
@@ -110,6 +116,7 @@ public class EventForwardIT extends AbstractExamTestHelper {
 
     @Test
     public void testSendEvent() throws Exception {
+        addHelloWorldRule();
         ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
@@ -142,6 +149,31 @@ public class EventForwardIT extends AbstractExamTestHelper {
         exampleEvents.raiseEvent(e);
 
         assertThat(dummy.notification, notNullValue());
+    }
+
+    private void addHelloWorldRule() throws Exception {
+        RuleManager ruleManager = retrieveService(getBundleContext(), RuleManager.class);
+        ruleManager.addImport("org.openengsb.domain.example.ExampleDomain");
+        ruleManager.addImport("org.openengsb.domain.notification.NotificationDomain");
+        ruleManager.addImport("org.openengsb.domain.notification.model.Notification");
+        ruleManager.addImport("org.openengsb.domain.notification.model.Attachment");
+
+        ruleManager.addGlobal("org.openengsb.domain.notification.NotificationDomain", "notification");
+        ruleManager.addGlobal("org.openengsb.domain.example.ExampleDomain", "example");
+
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "hello1");
+        String rule = readRule();
+        ruleManager.add(id, rule);
+    }
+
+    private String readRule() throws IOException {
+        InputStream helloWorldRule = null;
+        try {
+            helloWorldRule = this.getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/hello1.rule");
+            return IOUtils.toString(helloWorldRule);
+        } finally {
+            IOUtils.closeQuietly(helloWorldRule);
+        }
     }
 
 }
