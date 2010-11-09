@@ -21,28 +21,28 @@ import java.util.Map;
 
 public class ConnectorSetupBean {
 
-    private String domain;
+    private ConnectorDomainPair connectorDomainPair;
 
     private String id;
 
     private Map<String, String> properties;
 
-    public ConnectorSetupBean(String domain, String id, Map<String, String> properties) {
-        this.domain = domain;
+    public ConnectorSetupBean(ConnectorDomainPair connectorDomainPair, String id, Map<String, String> properties) {
+        this.connectorDomainPair = connectorDomainPair;
         this.id = id;
         this.properties = properties;
     }
 
-    public String getDomain() {
-        return domain;
+    public Map<String, String> getProperties() {
+        return new HashMap<String, String>(properties);
+    }
+
+    public ConnectorDomainPair getConnectorDomainPair() {
+        return connectorDomainPair;
     }
 
     public String getId() {
         return id;
-    }
-
-    public Map<String, String> getProperties() {
-        return new HashMap<String, String>(properties);
     }
 
 }
