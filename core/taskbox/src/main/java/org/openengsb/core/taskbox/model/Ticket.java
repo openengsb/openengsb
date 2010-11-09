@@ -28,6 +28,7 @@ public class Ticket implements Task {
 	public Ticket(String id) {
 		super();
 		this.id = id;
+		this.type = null;
 		this.history = new ArrayList<String>();
 		this.notes = new ArrayList<String>();
 		
@@ -71,6 +72,12 @@ public class Ticket implements Task {
 		this.history.add(timestamp + " - " + historyEntry);
 	}
 	
+	public List<String> getHistory() {
+		if(this.history==null || this.history.isEmpty())
+			return null;
+		return this.history;
+	}
+	
 	public void addNoteEntry(String noteEntry) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		Date date = new Date();
@@ -81,9 +88,19 @@ public class Ticket implements Task {
 		
 		this.addHistoryEntry("added new NoteEntry");
 	}
+	
+	public List<String> getNotes() {
+		if(this.notes==null || this.notes.isEmpty())
+			return null;
+		return this.notes;
+	}
 
-	public void setCurrentTaskStep(TaskStep currentTaskStep) {
-		this.currentTaskStep = currentTaskStep;
+	public void setCurrentTaskStep(TaskStep newCurrentTaskStep) {
+		if(newCurrentTaskStep != null) {
+			this.currentTaskStep = newCurrentTaskStep;
+		
+			this.addHistoryEntry("set currentTaskStep (of type: <" + this.currentTaskStep.getTaskStepType() + ">)");
+		}
 	}
 
 	public TaskStep getCurrentTaskStep() {
@@ -92,24 +109,34 @@ public class Ticket implements Task {
 	
 	public TaskStep finishCurrentTaskStep() {
 		TaskStep ts = currentTaskStep;
-		ts.setDoneFlag(true);
 		this.currentTaskStep = null;
 		if(ts != null) {
+			ts.setDoneFlag(true);
 			this.historyTaskSteps.add(ts);
+			this.addHistoryEntry("finished the last currentTaskStep!");
 			return ts;
 		} else
 			return null;
 	}
 	
 	public TaskStep finishCurrentTaskStep(TaskStep nextTaskStep) {
-		TaskStep ts = currentTaskStep;
-		ts.setDoneFlag(true);
-		this.currentTaskStep = nextTaskStep;
+		TaskStep ts = this.currentTaskStep;
 		if(ts != null) {
+			ts.setDoneFlag(true);
 			this.historyTaskSteps.add(ts);
+			this.addHistoryEntry("finished the last currentTaskStep!");
+			this.setCurrentTaskStep(nextTaskStep);
 			return ts;
-		} else
+		} else {
+			this.setCurrentTaskStep(nextTaskStep);
 			return null;
+		}
+	}
+	
+	public List<TaskStep> getHistoryTaskSteps() {
+		if(this.historyTaskSteps==null || this.historyTaskSteps.isEmpty())
+			return null;
+		return this.historyTaskSteps;
 	}
 	
 	public Panel getPanel(String id){

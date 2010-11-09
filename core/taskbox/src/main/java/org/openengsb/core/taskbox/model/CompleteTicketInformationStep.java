@@ -10,6 +10,10 @@ public class CompleteTicketInformationStep implements TaskStep {
 	//description of this step
 	private String description;
 	
+	//Specific CompleteTicketInformationStep properties:
+	// missingInformation
+	private String missingInformation;
+	
 	//flag, if step is done or not
 	private boolean doneFlag;
 	
@@ -37,6 +41,25 @@ public class CompleteTicketInformationStep implements TaskStep {
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public String getTaskStepType() {
+		//String className=this.getClass().getName();
+		return "CompleteTicketInformationStep";
+	}
+
+	@Override
+	public String getTaskStepTypeText() {
+		return "Complete Ticket Information";
+	}
+
+	public void setMissingInformation(String missingInformation) {
+		this.missingInformation = missingInformation;
+	}
+
+	public String getMissingInformation() {
+		return missingInformation;
 	}
 
 	//return ID of the According UI Panel

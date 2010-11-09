@@ -9,6 +9,10 @@ public interface TaskStep {
 	
 	boolean getDoneFlag();
 	
+	String getTaskStepType();
+	
+	String getTaskStepTypeText();
+	
 	//return ID of the According UI Panel
 	//WicketPanel createEditingPanel();
 	

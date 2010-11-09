@@ -60,6 +60,17 @@ public class DeveloperTaskStep implements TaskStep {
 		return developerComment;
 	}
 
+	@Override
+	public String getTaskStepType() {
+		//String className=this.getClass().getName();
+		return "DeveloperTaskStep";
+	}
+
+	@Override
+	public String getTaskStepTypeText() {
+		return "Development";
+	}
+
 	//return ID of the According UI Panel
 	//WicketPanel createEditingPanel();
 	

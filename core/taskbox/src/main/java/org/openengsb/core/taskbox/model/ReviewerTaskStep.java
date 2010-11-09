@@ -60,6 +60,17 @@ public class ReviewerTaskStep implements TaskStep {
 		return feedback;
 	}
 
+	@Override
+	public String getTaskStepType() {
+		//String className=this.getClass().getName();
+		return "ReviewerTaskStep";
+	}
+
+	@Override
+	public String getTaskStepTypeText() {
+		return "Review";
+	}
+
 	//return ID of the According UI Panel
 	//WicketPanel createEditingPanel();
 	

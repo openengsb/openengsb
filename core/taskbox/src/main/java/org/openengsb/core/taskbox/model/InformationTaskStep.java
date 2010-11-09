@@ -51,6 +51,17 @@ public class InformationTaskStep implements TaskStep {
 		return information;
 	}
 
+	@Override
+	public String getTaskStepType() {
+		//String className=this.getClass().getName();
+		return "InformationTaskStep";
+	}
+
+	@Override
+	public String getTaskStepTypeText() {
+		return "Information";
+	}
+
 	//return ID of the According UI Panel
 	//WicketPanel createEditingPanel();
 	
