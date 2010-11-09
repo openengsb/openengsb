@@ -214,7 +214,10 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         File pathFile = new File(path);
         pathFile.mkdirs();
         URL defaultImports = this.getClass().getClassLoader().getResource("rulebase/imports");
+        URL defaultglobals = this.getClass().getClassLoader().getResource("rulebase/globals");
+
         FileUtils.copyURLToFile(defaultImports, new File(path, IMPORTS_FILENAME));
+        FileUtils.copyURLToFile(defaultglobals, new File(path, GLOBALS_FILENAME));
     }
 
     public void readPackage(String packageName) throws RuleBaseException {
