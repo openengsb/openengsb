@@ -18,7 +18,6 @@ package org.openengsb.integrationtest.exam;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -111,13 +110,6 @@ public class WorkflowIT extends AbstractExamTestHelper {
         public AliveState getAliveState() {
             return AliveState.OFFLINE;
         }
-    }
-
-    @Test
-    public void testHasNoRule() throws Exception {
-        RuleManager ruleManager = retrieveService(getBundleContext(), RuleManager.class);
-        Collection<RuleBaseElementId> list = ruleManager.list(RuleBaseElementType.Rule);
-        Assert.assertTrue(list.isEmpty());
     }
 
     @Test
