@@ -34,7 +34,7 @@
 
   <packaging>pom</packaging>
 
-  <description>Environment Configuration</description>
+  <description>Parent for all configuration projects for OpenEngSB</description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

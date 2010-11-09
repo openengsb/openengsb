@@ -33,7 +33,7 @@
   <packaging>pom</packaging>
   <name>OpenEngSB :: Documentation :: Parent</name>
 
-  <description>Homepage for OpenEngSB</description>
+  <description>Parent project for projects regarding Homepage and Manual for OpenEngSB</description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

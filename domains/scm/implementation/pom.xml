@@ -39,7 +39,10 @@
 
   <packaging>bundle</packaging>
   
-  <description>SCM Domain Implementation</description>
+  <description>
+    Implementation of the SCM Domain which polls external repositories for changes of content under source control
+    and provides functionality to copy/export the repository content for further processing.
+  </description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

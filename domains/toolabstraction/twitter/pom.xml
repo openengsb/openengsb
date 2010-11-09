@@ -33,9 +33,7 @@
   <name>openengsb-domains-toolabstraction-twitter</name>
   <packaging>jar</packaging>
 
-  <description>
-    This component gives a convenient interface for the twitter API.
-  </description>
+  <description>This component gives a convenient interface for the twitter API</description>
 
   <url>http://www.openengsb.org</url>
   <licenses>

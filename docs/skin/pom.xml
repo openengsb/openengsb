@@ -35,9 +35,7 @@ under the License.
   
   <packaging>jar</packaging>
   
-  <description>
-    Skin for the Open Engineering Service Bus Homepage
-  </description>
+  <description>Skin for the Open Engineering Service Bus Homepage</description>
   
   <url>http://www.openengsb.org</url>
   <licenses>

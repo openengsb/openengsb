@@ -32,7 +32,8 @@
   <name>openengsb-domains-scm-common</name>
 
   <description>
-    Common implementation for all SCM-Domain-implementations.
+    Provides abstract class to be extended by SCM connectors as well as common classes
+    for all SCM Connectors.
   </description>
 
   <dependencies>

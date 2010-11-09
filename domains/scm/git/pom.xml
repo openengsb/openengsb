@@ -40,7 +40,10 @@
 
   <packaging>bundle</packaging>
   
-  <description>Git Connector</description>
+  <description>
+    Git Connector implements SCM Domain and is an SCM connector
+    for the git version control system.
+  </description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

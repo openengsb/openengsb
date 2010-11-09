@@ -38,7 +38,10 @@
 
   <packaging>bundle</packaging>
   
-  <description>Notification Domain Implementation</description>
+  <description>
+    Implementation of Notification Domain. It is an abstraction of basic notification services (e.g. email)
+    and provides the functionality for sending notifications to a specific recipent.
+  </description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

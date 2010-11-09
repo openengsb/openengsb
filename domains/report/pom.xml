@@ -34,7 +34,7 @@
 
   <packaging>pom</packaging>
 
-  <description>Report Domain</description>
+  <description>Parent project for Report Domain and Connectors that implement it</description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

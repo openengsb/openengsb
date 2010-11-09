@@ -39,7 +39,10 @@
 
   <packaging>bundle</packaging>
   
-  <description>OpenEngSB Core classes for JMS Proxying</description>
+  <description>
+    OpenEngSB Core classes for sending message calls and receiving messages via JMS.
+    The messages can be of type Call, Return or Exception. The marshalling of the messages is done with JSON.
+  </description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

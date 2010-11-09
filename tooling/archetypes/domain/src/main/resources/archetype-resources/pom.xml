@@ -35,7 +35,7 @@
 
   <packaging>pom</packaging>
   
-  <description>Description of Domain</description>
+  <description>Parent project of Domain and Connectors</description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

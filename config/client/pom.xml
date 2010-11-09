@@ -33,7 +33,10 @@
 
   <name>OpenEngSB :: Environment Configuration :: Adaptable Client Setting Files</name>
 
-  <description>Adaptable client setting files</description>
+  <description>
+    Post-processor of base configuration settings, adds configuration not known to clients
+    and works as pre-processor for all client projects.
+  </description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

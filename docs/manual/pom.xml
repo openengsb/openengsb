@@ -33,9 +33,7 @@
   <name>OpenEngSB :: Documentation :: Manual</name>
   <packaging>pom</packaging>
 
-  <description>
-    Manual for the Open Engineering Service Bus
-  </description>
+  <description>Manual for the Open Engineering Service Bus</description>
 
   <url>http://www.openengsb.org</url>
   <licenses>

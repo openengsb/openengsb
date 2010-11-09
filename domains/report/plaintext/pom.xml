@@ -39,7 +39,7 @@
 
   <packaging>bundle</packaging>
   
-  <description>Plaintext Report Connector</description>
+  <description>Plaintext Report Connector implements the Report Domain and generates plain text reports</description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

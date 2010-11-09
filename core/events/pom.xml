@@ -38,7 +38,10 @@
 
   <packaging>bundle</packaging>
 
-  <description>OpenEngSB Core classes to handle Events</description>
+  <description>
+    Bean Factory to create Domain Events Proxies and forwarding of events
+    to the workflow service.
+  </description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

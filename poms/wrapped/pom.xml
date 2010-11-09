@@ -33,7 +33,7 @@
 
   <packaging>pom</packaging>
 
-  <description>Parent for all wrapped bundles</description>
+  <description>Parent of all wrapped bundles</description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

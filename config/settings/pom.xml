@@ -33,7 +33,10 @@
 
   <name>OpenEngSB :: Environment Configuration :: Adaptable Base Setting Files</name>
 
-  <description>Adaptable client setting files</description>
+  <description>
+    Contains all Karaf configuration files, configuration files for logging,
+    scripts for starting and stopping server, startup, system and user properties.
+  </description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

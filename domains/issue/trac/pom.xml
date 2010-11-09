@@ -38,7 +38,10 @@
 
   <packaging>bundle</packaging>
   
-  <description>Issue Tracking Connector</description>
+  <description>
+    Trac Connector implements the Issue Domain and is an issue tool
+    connector for the Trac project management and issue tracker system.
+  </description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

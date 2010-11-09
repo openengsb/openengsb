@@ -33,7 +33,7 @@
   
   <packaging>jar</packaging>
   
-  <description>Configuration files for formatting and checkstyle</description>
+  <description>Configuration files for code formatting and checkstyle</description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

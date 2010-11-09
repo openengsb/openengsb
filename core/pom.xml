@@ -34,7 +34,7 @@
 
   <packaging>pom</packaging>
 
-  <description>OpenEngSB Core classes</description>
+  <description>Parent project for all OpenEngSB Core classes</description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

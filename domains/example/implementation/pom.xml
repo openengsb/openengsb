@@ -38,7 +38,7 @@
 
   <packaging>bundle</packaging>
   
-  <description>Example Domain Implementation</description>
+  <description>Implemetation of the Example Domain. It is used for logging events.</description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

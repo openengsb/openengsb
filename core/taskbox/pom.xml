@@ -36,7 +36,10 @@
 
   <packaging>bundle</packaging>
   
-  <description>OpenEngSB Core classes for Taskbox Service</description>
+  <description>
+    OpenEngSB Core classes for Taskbox Service (responsible for storing tasks, throwing events
+    and starting workflows, provides methods regarding tasks which can be called by workflows).
+  </description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>

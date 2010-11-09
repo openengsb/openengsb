@@ -39,7 +39,10 @@
 
   <packaging>bundle</packaging>
   
-  <description>Issue Tracking Domain Implementation</description>
+  <description>
+    Implementation of Issue Domain. The Issue Domain is the tool domain for all issue tracking tools,
+    like Jira, Trac or Mantis and provides the possibility to create, update, delete and comment issues.
+  </description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>
