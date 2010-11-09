@@ -63,6 +63,13 @@
       </properties>
     </profile>
     <profile>
+      <id>rc</id>
+      <properties>
+        <github>http://github.com/openengsb/openengsb/blob/openengsb-${project.version}/</github>
+        <repos.current>${repos.final}</repos.current>
+      </properties>
+    </profile>
+    <profile>
       <id>final</id>
       <properties>
         <github>http://github.com/openengsb/openengsb/blob/openengsb-${project.version}/</github>

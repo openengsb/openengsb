@@ -62,6 +62,19 @@
       </distributionManagement>
     </profile>
     <profile>
+      <id>rc</id>
+      <properties>
+        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
+        <older>${repos.final}org/openengsb/openengsb/</older>
+      </properties>
+      <distributionManagement>
+        <site>
+          <id>OpenengsbWebServer</id>
+          <url>scp://openengsb.org/var/www/openengsb/</url>
+        </site>
+      </distributionManagement>
+    </profile>
+    <profile>
       <id>final</id>
       <properties>
         <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
