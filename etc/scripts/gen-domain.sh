@@ -52,8 +52,7 @@ mvn archetype:generate \
 	-Dpackage="org.openengsb.domains.$DOMAIN" \
 	-Dname="$NAME_PREFIX" \
     -DdomainInterface="${DOMAIN~}" \
-	-DimplementationName="$NAME_PREFIX :: Implementation"\
-    -o
+	-DimplementationName="$NAME_PREFIX :: Implementation"
 
 if [ $? != 0 ]; then
 	exit $?

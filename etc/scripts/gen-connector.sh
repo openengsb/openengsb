@@ -72,8 +72,7 @@ mvn archetype:generate \
 	-Dpackage="$domainGroupId.$CONNECTOR" \
 	-DparentPackage="$domainGroupId" \
 	-Dname="$NAME"\
-    -DconnectorName="${CONNECTOR~}"\
-    -o
+    -DconnectorName="${CONNECTOR~}"
 
 if [ $? != 0 ]; then
 	exit $?
