@@ -16,11 +16,13 @@
 
 package org.openengsb.integrationtest.exam;
 
-import java.util.Collection;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -111,14 +113,9 @@ public class WorkflowIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testHasHelloRule() throws Exception {
-        RuleManager ruleManager = retrieveService(getBundleContext(), RuleManager.class);
-        Collection<RuleBaseElementId> list = ruleManager.list(RuleBaseElementType.Rule);
-        Assert.assertTrue(list.contains(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1")));
-    }
-
-    @Test
     public void testSendEvent() throws Exception {
+        addHelloWorldRule();
+
         ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
@@ -155,5 +152,30 @@ public class WorkflowIT extends AbstractExamTestHelper {
         workflowService.processEvent(e);
 
         Assert.assertNotNull(dummy.notification);
+    }
+
+    private void addHelloWorldRule() throws Exception {
+        RuleManager ruleManager = retrieveService(getBundleContext(), RuleManager.class);
+        ruleManager.addImport("org.openengsb.domain.example.ExampleDomain");
+        ruleManager.addImport("org.openengsb.domain.notification.NotificationDomain");
+        ruleManager.addImport("org.openengsb.domain.notification.model.Notification");
+        ruleManager.addImport("org.openengsb.domain.notification.model.Attachment");
+
+        ruleManager.addGlobal("org.openengsb.domain.notification.NotificationDomain", "notification");
+        ruleManager.addGlobal("org.openengsb.domain.example.ExampleDomain", "example");
+
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "hello1");
+        String rule = readRule();
+        ruleManager.add(id, rule);
+    }
+
+    private String readRule() throws IOException {
+        InputStream helloWorldRule = null;
+        try {
+            helloWorldRule = this.getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/hello1.rule");
+            return IOUtils.toString(helloWorldRule);
+        } finally {
+            IOUtils.closeQuietly(helloWorldRule);
+        }
     }
 }

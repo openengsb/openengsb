@@ -20,9 +20,9 @@ import java.io.File;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.workflow.AbstractRuleManagerCrudTest;
+import org.openengsb.core.workflow.RuleUtil;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 
 public class DirectoryRuleManagerCrudTest extends AbstractRuleManagerCrudTest<DirectoryRuleSource> {
@@ -42,9 +42,11 @@ public class DirectoryRuleManagerCrudTest extends AbstractRuleManagerCrudTest<Di
     }
 
     @Override
-    protected RuleManager getRuleBaseSource() throws RuleBaseException {
+    protected RuleManager getRuleBaseSource() throws Exception {
         DirectoryRuleSource source = new DirectoryRuleSource("data/rulebase");
         source.init();
+        RuleUtil.addHello1Rule(source);
         return source;
     }
+
 }

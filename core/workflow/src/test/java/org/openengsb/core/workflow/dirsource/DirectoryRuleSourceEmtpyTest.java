@@ -19,9 +19,9 @@ package org.openengsb.core.workflow.dirsource;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
-import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.workflow.AbstractRuleManagerTest;
+import org.openengsb.core.workflow.RuleUtil;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 
 public class DirectoryRuleSourceEmtpyTest extends AbstractRuleManagerTest<DirectoryRuleSource> {
@@ -32,9 +32,11 @@ public class DirectoryRuleSourceEmtpyTest extends AbstractRuleManagerTest<Direct
     }
 
     @Override
-    protected RuleManager getRuleBaseSource() throws RuleBaseException {
+    protected RuleManager getRuleBaseSource() throws Exception {
         DirectoryRuleSource source = new DirectoryRuleSource("data/rulebase");
         source.init();
+        RuleUtil.addHello1Rule(source);
         return source;
     }
+
 }

@@ -171,7 +171,7 @@ public class WorkflowServiceDynamicTest {
         String id = (String) reference.getProperty("id");
         String filter = String.format("(&(openengsb.service.type=domain)(id=%s))", id);
         when(bundleContext.getAllServiceReferences(Domain.class.getName(), filter)).thenReturn(
-            new ServiceReference[]{ reference });
+            new ServiceReference[]{reference});
         if (workflowService != null) {
             workflowService.serviceChanged(setupServiceEventMock(reference));
         }
@@ -182,13 +182,13 @@ public class WorkflowServiceDynamicTest {
         String filter =
             String.format("(&(openengsb.service.type=workflow-service)(openengsb.workflow.globalid=%s))", id);
         when(bundleContext.getAllServiceReferences(Mockito.any(String.class), Mockito.eq(filter))).thenReturn(
-            new ServiceReference[]{ reference });
+            new ServiceReference[]{reference});
         if (workflowService != null) {
             workflowService.serviceChanged(setupServiceEventMock(reference));
         }
     }
 
-    private void setupWorkflowService() throws RuleBaseException {
+    private void setupWorkflowService() throws Exception {
         workflowService = new WorkflowServiceImpl();
         setupRulemanager();
         workflowService.setRulemanager(manager);
@@ -199,7 +199,7 @@ public class WorkflowServiceDynamicTest {
 
     }
 
-    private void setupRulemanager() throws RuleBaseException {
+    private void setupRulemanager() throws Exception {
         manager = new DirectoryRuleSource("data/rulebase");
         ((DirectoryRuleSource) manager).init();
         mockDomain("deploy");
@@ -207,6 +207,7 @@ public class WorkflowServiceDynamicTest {
         mockDomain("test");
         mockDomain("report");
         mockDomain("issue");
+        RuleUtil.addHello1Rule(manager);
     }
 
 }
