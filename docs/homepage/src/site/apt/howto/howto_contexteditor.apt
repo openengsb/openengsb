@@ -41,9 +41,38 @@ HowTo - Events with the OpenEngSB (Using the logging service)
 
 [../images/howto/contextOverview.png]
 
-* Adapting a rule
+* Creating a rule
 
-  On the <<Send Event Page>> you can edit Rules. Therefore they have to be edited directly with a text editor. The initial system already contains a rule with the name "org.openengsb.hello1". To edit the rule choose "org.openengsb.hello1" from the drop down. As soon as you edit the content of the rule the you can save you changes by clicking save or revert the changes by clicking cancel. To create a new rule click new and enter a name where which will automatically be prefixed with org.openengsb.
+  On the <<Send Event Page>> you can create and edit Rules. Therefore they have to be edited directly with a text editor. The initial system is empty and does not include any rules. To create a rule choose "new". Enter "hello1" into the rulename input field. Make also sure that "Rule" is selected in the type dropdown box.
+  As soon as you edit the content of the rule you can save your changes by clicking "save" or revert the changes by clicking "cancel". The name of the rule will automatically be prefixed with "org.openengsb". Please insert the following content into the text box and save the changes:
+  
+--------------------------------------------
+#
+# Copyright 2010 OpenEngSB Division, Vienna University of Technology
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+when
+	Event(name == "42")
+then
+	example.doSomething("Hello World");
+	Notification n = new Notification();
+	n.setSubject("testsubject");
+	n.setMessage("testMessage");
+	n.setRecipient("testRecipient");
+	notification.notify(n);
+-------------------------------------------- 
 
 [../images/howto/event.png]
 
