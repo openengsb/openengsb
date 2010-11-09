@@ -31,6 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
 
 public final class MethodUtil {
@@ -67,16 +68,27 @@ public final class MethodUtil {
                         || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
                     continue;
                 }
-                AttributeDefinition a =
+                Builder builder =
                     AttributeDefinition.builder(new PassThroughStringLocalizer()).id(propertyDescriptor.getName())
                         .name(propertyDescriptor.getDisplayName())
-                        .description(propertyDescriptor.getShortDescription()).build();
+                        .description(propertyDescriptor.getShortDescription());
+                addEnumValues(propertyDescriptor.getPropertyType(), builder);
+                AttributeDefinition a = builder.build();
                 attributes.add(a);
             }
         } catch (IntrospectionException ex) {
             log.error("building attribute list failed", ex);
         }
         return attributes;
+    }
+
+    public static void addEnumValues(Class<?> theClass, Builder builder) {
+        if (theClass.isEnum()) {
+            Object[] enumConstants = theClass.getEnumConstants();
+            for (Object object : enumConstants) {
+                builder.option(object.toString(), object.toString());
+            }
+        }
     }
 
     public static Object buildBean(Class<?> beanClass, Map<String, String> values) {
@@ -89,11 +101,28 @@ public final class MethodUtil {
                         || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
                     continue;
                 }
-                propertyDescriptor.getWriteMethod().invoke(obj, values.get(propertyDescriptor.getName()));
+
+                String value = values.get(propertyDescriptor.getName());
+                Object ob = convertToCorrectClass(propertyDescriptor.getPropertyType(), value);
+                propertyDescriptor.getWriteMethod().invoke(obj, ob);
             }
             return obj;
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static Object convertToCorrectClass(Class<?> type, Object value) {
+        if (type.isEnum()) {
+            type.getEnumConstants();
+            for (Object object : type.getEnumConstants()) {
+                if (object.toString().equals(value)) {
+                    return object;
+                }
+            }
+            return null;
+        } else {
+            return value;
         }
     }
 
