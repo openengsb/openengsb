@@ -16,6 +16,7 @@
 
 package org.openengsb.core.common;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
@@ -24,7 +25,7 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 /**
  * Instance provider for a specific service interface.
  */
-public interface ServiceManager {
+public interface ServiceManager extends Serializable{
 
     /**
      * Returns the {@code ServiceDescriptor} describing the managed service.
