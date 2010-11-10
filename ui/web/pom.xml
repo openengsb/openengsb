@@ -66,6 +66,7 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>${maven.war.plugin}</version>
         <configuration>
+          <attachClasses>true</attachClasses>
           <archive>
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
           </archive>

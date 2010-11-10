@@ -16,6 +16,7 @@
 
 package org.openengsb.core.common.descriptor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import org.openengsb.core.common.validation.FormValidator;
 
 import com.google.common.base.Preconditions;
 
-public class ServiceDescriptor {
+public class ServiceDescriptor implements Serializable {
     private String id;
     private Class<? extends Domain> serviceType;
     private LocalizableString name;
