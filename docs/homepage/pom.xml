@@ -57,7 +57,7 @@
       <distributionManagement>
         <site>
           <id>OpenengsbWebServer</id>
-          <url>scp://openengsb.org/var/www/openengsb/</url>
+          <url>scp://openengsb.org/var/www/openengsb/milestone</url>
         </site>
       </distributionManagement>
     </profile>
@@ -70,7 +70,7 @@
       <distributionManagement>
         <site>
           <id>OpenengsbWebServer</id>
-          <url>scp://openengsb.org/var/www/openengsb/</url>
+          <url>scp://openengsb.org/var/www/openengsb/rc</url>
         </site>
       </distributionManagement>
     </profile>
@@ -83,7 +83,7 @@
       <distributionManagement>
         <site>
           <id>OpenengsbWebServer</id>
-          <url>scp://openengsb.org/var/www/openengsb/</url>
+          <url>scp://openengsb.org/var/www/openengsb</url>
         </site>
       </distributionManagement>
     </profile>
@@ -96,7 +96,7 @@
       <distributionManagement>
         <site>
           <id>OpenengsbWebServer</id>
-          <url>scp://openengsb.org/var/www/openengsb/</url>
+          <url>scp://openengsb.org/var/www/openengsb/support</url>
         </site>
       </distributionManagement>
     </profile>
