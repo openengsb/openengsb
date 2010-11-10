@@ -16,7 +16,6 @@
 
 package org.openengsb.core.common;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
