@@ -21,7 +21,6 @@ package org.openengsb.core.taskbox.model;
 import org.apache.wicket.markup.html.panel.Panel;
 
 public class InformationTaskStep implements TaskStep {
-<<<<<<< HEAD
 
     // name of this step
     private String name;
