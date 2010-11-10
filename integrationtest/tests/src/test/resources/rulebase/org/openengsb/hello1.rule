@@ -18,8 +18,3 @@ when
 	Event(name == "42")
 then
 	example.doSomething("Hello World");
-	Notification n = new Notification();
-	n.setSubject("testsubject");
-	n.setMessage("testMessage");
-	n.setRecipient("testRecipient");
-	notification.notify(n);
