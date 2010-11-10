@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.openengsb.integrationtest</groupId>
     <artifactId>openengsb-integrationtest-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.integrationtest</groupId>
   <artifactId>openengsb-integrationtest-test</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <name>OpenEngSB :: Integration Tests :: Tests</name>
 
   <dependencies>
@@ -75,60 +75,6 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>openengsb-domain-issue</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>openengsb-domain-notification</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-email</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>openengsb-domain-report</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-plaintextreport</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>openengsb-domain-build</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>openengsb-domain-test</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>openengsb-domain-deploy</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-maven</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    
 
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>

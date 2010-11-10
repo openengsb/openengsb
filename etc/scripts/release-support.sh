@@ -1,3 +1,4 @@
+#!/bin/bash
 #
 # Copyright 2010 OpenEngSB Division, Vienna University of Technology
 #
@@ -14,7 +15,12 @@
 # limitations under the License.
 #
 
-when
-	Event(name == "42")
-then
-	example.doSomething("Hello World");
+if [ -z "$1" ]; then
+  echo "The location of the repository to checkout have to be added."
+  exit 0
+fi
+
+cd $(dirname $0)/../../
+mvn release:prepare -Psupport -Dmaven.test.skip=true 
+mvn release:perform -Psupport -Dmaven.test.skip=true -DconnectionUrl=scm:git:file://$1
+

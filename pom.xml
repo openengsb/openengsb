@@ -24,8 +24,8 @@
   <properties>
     <!-- Version Informtations -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
-    <openengsb.version.name.adjective>Groovy</openengsb.version.name.adjective>
-    <openengsb.version.name.noun>Goofy</openengsb.version.name.noun>
+    <openengsb.version.name.adjective>Harmonic</openengsb.version.name.adjective>
+    <openengsb.version.name.noun>Hulk</openengsb.version.name.noun>
     <!-- General Settings -->
     <root.basedir>${project.basedir}</root.basedir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -63,7 +63,7 @@
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <name>OpenEngSB :: Parent</name>
 
   <description>
@@ -514,6 +514,26 @@
               <useReleaseProfile>false</useReleaseProfile>
               <pushChanges>false</pushChanges>
               <arguments>-Psonatype-oss-release,release,final -Dmaven.test.skip=true -DpushChanges=false</arguments>
+              <preparationGoals>clean install</preparationGoals>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>support</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>${plugin.release.version}</version>
+            <configuration>
+              <autoVersionSubmodules>true</autoVersionSubmodules>
+              <mavenExecutorId>forked-path</mavenExecutorId>
+              <useReleaseProfile>false</useReleaseProfile>
+              <pushChanges>false</pushChanges>
+              <arguments>-Psonatype-oss-release,release,support -Dmaven.test.skip=true -DpushChanges=false</arguments>
               <preparationGoals>clean install</preparationGoals>
             </configuration>
           </plugin>
