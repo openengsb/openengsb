@@ -16,6 +16,9 @@
 
 package org.openengsb.core.taskbox;
 
+import org.openengsb.core.taskbox.model.Task;
+import org.apache.wicket.markup.html.panel.Panel;
+
 /**
  * The Taskbox is a service which can be used when human interaction is required, e.g. by help desk applications. This
  * core part core is responsible for storing tasks, throwing events and starting workflows. Therefore it provides
@@ -36,13 +39,22 @@ public interface TaskboxService {
 
     /**
      * Starts a test workflow
+     * taskVariableName - the name of the variable containing the taskObject in the workflow
+     * task - the taskobject to be reasoned about
      * 
      * @throws TaskboxException when the test workflow could not be started
      */
-    void startWorkflow() throws TaskboxException;
+        
+    void startWorkflow(String workflowName, String taskVariableName, Task task) throws TaskboxException;
 
     /**
      * Used by a workflow to set a message
      */
     void setWorkflowMessage(String message);
+    
+    /**
+     * Used by the webfrontend to create a panel for a specific task or taskstep
+     */
+    
+    Panel createPanel(String objectid, String panelid);
 }
