@@ -1,5 +1,7 @@
 package org.openengsb.core.taskbox.model;
 
+import org.apache.wicket.markup.html.panel.Panel;
+
 public class ReviewerTaskStep implements TaskStep {
 	
 	
@@ -59,6 +61,12 @@ public class ReviewerTaskStep implements TaskStep {
 	public String getFeedback() {
 		return feedback;
 	}
+
+    @Override
+    public Panel getPanel(String id) {
+        // TODO Auto-generated method stub
+        return new Panel("null");
+    }
 
 	//return ID of the According UI Panel
 	//WicketPanel createEditingPanel();

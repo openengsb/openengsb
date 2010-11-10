@@ -1,6 +1,11 @@
 package org.openengsb.core.taskbox.model;
 
-public class DeveloperTaskStep implements TaskStep {
+import java.io.Serializable;
+
+import org.apache.wicket.markup.html.panel.Panel;
+import org.openengsb.core.taskbox.web.DeveloperTaskStepPanel;
+
+public class DeveloperTaskStep implements TaskStep, Serializable {
 	
 	
 	
@@ -59,6 +64,11 @@ public class DeveloperTaskStep implements TaskStep {
 	public String getDeveloperComment() {
 		return developerComment;
 	}
+
+    @Override
+    public Panel getPanel(String id) {
+        return new DeveloperTaskStepPanel(id, this);
+    }
 
 	//return ID of the According UI Panel
 	//WicketPanel createEditingPanel();

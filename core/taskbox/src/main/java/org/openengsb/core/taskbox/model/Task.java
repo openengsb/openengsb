@@ -1,5 +1,7 @@
 package org.openengsb.core.taskbox.model;
 
+import org.apache.wicket.markup.html.panel.Panel;
+
 public interface Task {
 	
 	String getId();
@@ -11,6 +13,8 @@ public interface Task {
 	//TaskStep getCurrentTaskStep();
 	//void setCurrentTaskStep(TaskStep taskStep);
 	
-	//return ID of the UI Panel to display the Tasks Details
-	//WicketPanel createViewingPanel();
+	/**
+	 * returns the Wicket Panel for this task
+	 */
+	Panel getPanel(String id);
 }
