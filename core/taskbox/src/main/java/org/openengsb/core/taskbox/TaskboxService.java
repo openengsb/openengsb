@@ -16,7 +16,9 @@
 
 package org.openengsb.core.taskbox;
 
+import org.openengsb.core.common.Event;
 import org.openengsb.core.taskbox.model.Task;
+import org.openengsb.core.workflow.WorkflowException;
 import org.apache.wicket.markup.html.panel.Panel;
 
 /**
@@ -57,4 +59,10 @@ public interface TaskboxService {
      */
     
     Panel createPanel(String objectid, String panelid);
+    
+    /**
+     * Redirect events to workflowService 
+     * @throws WorkflowException 
+     */
+    void processEvent(Event event) throws WorkflowException;
 }

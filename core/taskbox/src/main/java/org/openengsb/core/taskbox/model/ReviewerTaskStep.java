@@ -18,7 +18,10 @@
 
 package org.openengsb.core.taskbox.model;
 
+import org.apache.wicket.markup.html.panel.Panel;
+
 public class ReviewerTaskStep implements TaskStep {
+<<<<<<< HEAD
 
     // name of this step
     private String name;
@@ -76,6 +79,12 @@ public class ReviewerTaskStep implements TaskStep {
 
     public String getFeedback() {
         return feedback;
+    }
+
+    @Override
+    public Panel getPanel(String id) {
+        // TODO Auto-generated method stub
+        return new Panel("null");
     }
 
     @Override

@@ -18,6 +18,8 @@
 
 package org.openengsb.core.taskbox.model;
 
+import org.apache.wicket.markup.html.panel.Panel;
+
 public class CompleteTicketInformationStep implements TaskStep {
     // used if a Ticket is not configured sufficient
     // e.g. Type is not chosen, Issue-Info is incomplete
@@ -60,6 +62,12 @@ public class CompleteTicketInformationStep implements TaskStep {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+	public Panel getPanel(String id) {
+	    // TODO Auto-generated method stub
+	    return new Panel("null");
     }
 
     @Override

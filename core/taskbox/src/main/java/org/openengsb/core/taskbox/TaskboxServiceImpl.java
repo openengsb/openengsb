@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.core.common.Event;
 import org.openengsb.core.persistence.PersistenceException;
 import org.openengsb.core.persistence.PersistenceManager;
 import org.openengsb.core.persistence.PersistenceService;
@@ -118,5 +119,10 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
             ret = ticket.get(0);
         }
         return ret.getPanel(panelid);
+    }
+
+    @Override
+    public void processEvent(Event event) throws WorkflowException {
+        workflowService.processEvent(event);
     }
 }

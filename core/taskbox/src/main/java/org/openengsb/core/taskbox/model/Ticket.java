@@ -18,6 +18,7 @@
 
 package org.openengsb.core.taskbox.model;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.List;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.taskbox.web.TicketPanel;
 
-public class Ticket implements Task {
+public class Ticket implements Task, Serializable {
     private String id;
     private String type;
 
@@ -159,8 +160,13 @@ public class Ticket implements Task {
         return this.historyTaskSteps;
     }
 
-    public Panel getPanel(String id) {
-        Panel panel = new TicketPanel(id, this);
-        return panel;
-    }
+    public Panel getPanel(String id){
+        if(currentTaskStep==null){
+            this.setCurrentTaskStep(new DeveloperTaskStep("initial", "initial step"));
+            this.finishCurrentTaskStep(new DeveloperTaskStep("first", "first step"));
+            this.finishCurrentTaskStep(new DeveloperTaskStep("second", "second step"));
+        }
+	    Panel panel = new TicketPanel(id, this);
+	    return panel;
+	}
 }
