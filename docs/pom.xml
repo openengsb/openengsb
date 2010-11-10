@@ -76,6 +76,13 @@
         <repos.current>${repos.final}</repos.current>
       </properties>
     </profile>
+    <profile>
+      <id>support</id>
+      <properties>
+        <github>http://github.com/openengsb/openengsb/blob/openengsb-${project.version}/</github>
+        <repos.current>${repos.final}</repos.current>
+      </properties>
+    </profile>
   </profiles>
 
 </project>
