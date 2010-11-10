@@ -25,7 +25,7 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 /**
  * Instance provider for a specific service interface.
  */
-public interface ServiceManager extends Serializable{
+public interface ServiceManager {
 
     /**
      * Returns the {@code ServiceDescriptor} describing the managed service.
