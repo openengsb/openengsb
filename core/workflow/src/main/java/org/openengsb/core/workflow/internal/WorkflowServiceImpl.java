@@ -210,6 +210,10 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     }
 
     protected StatefulKnowledgeSession createSession() throws RuleBaseException, WorkflowException {
+        if (!rulemanager.listGlobals().containsKey("flowHelper")) {
+            log.info("add missing global \"flowHelper\"");
+            rulemanager.addGlobal(DroolsFlowHelper.class.getName(), "flowHelper");
+        }
         KnowledgeBase rb = rulemanager.getRulebase();
         log.debug("retrieved rulebase: " + rb + "from source " + rulemanager);
         final StatefulKnowledgeSession session = rb.newStatefulKnowledgeSession();
@@ -228,7 +232,12 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     }
 
     private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
-        session.setGlobal("flowHelper", new DroolsFlowHelper(session));
+        if (rulemanager.listGlobals().containsKey("flowHelper")) {
+            session.setGlobal("flowHelper", new DroolsFlowHelper(session));
+        } else {
+            throw new RuntimeException("global was added but it was not found...");
+        }
+
         Collection<String> missingGlobals = findMissingGlobals();
         if (!missingGlobals.isEmpty()) {
             waitForGlobals(missingGlobals);
