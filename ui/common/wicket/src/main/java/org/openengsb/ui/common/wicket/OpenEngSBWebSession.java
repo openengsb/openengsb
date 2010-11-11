@@ -1,3 +1,4 @@
+package org.openengsb.ui.common.wicket;
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
@@ -14,7 +15,6 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web;
 
 import static java.lang.String.format;
 
@@ -34,7 +34,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 @SuppressWarnings("serial")
-public class WicketSession extends AuthenticatedWebSession {
+public class OpenEngSBWebSession extends AuthenticatedWebSession {
 
     private String threadContextId;
 
@@ -43,7 +43,7 @@ public class WicketSession extends AuthenticatedWebSession {
     @SpringBean(name = "authenticationManager")
     private AuthenticationManager authenticationManager;
 
-    public WicketSession(Request request) {
+    public OpenEngSBWebSession(Request request) {
         super(request);
         injectDependencies();
         ensureDependenciesNotNull();
@@ -58,9 +58,9 @@ public class WicketSession extends AuthenticatedWebSession {
         return threadContextId;
     }
 
-    public static WicketSession get() {
-        if (Session.get() instanceof WicketSession) {
-            return (WicketSession) Session.get();
+    public static OpenEngSBWebSession get() {
+        if (Session.get() instanceof OpenEngSBWebSession) {
+            return (OpenEngSBWebSession) Session.get();
         } else {
             return null;
         }

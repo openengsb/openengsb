@@ -33,6 +33,7 @@ public class LoginPage extends WebPage {
 
     private User user = new User();
 
+    @SuppressWarnings("serial")
     public LoginPage() {
 
         add(new Link<Object>("lang.en") {
@@ -48,7 +49,7 @@ public class LoginPage extends WebPage {
             }
         });
 
-        @SuppressWarnings("serial") Form<User> loginForm = new Form<User>("form") {
+        Form<User> loginForm = new Form<User>("form") {
             @Override
             protected void onSubmit() {
                 AuthenticatedWebSession session = AuthenticatedWebSession.get();
