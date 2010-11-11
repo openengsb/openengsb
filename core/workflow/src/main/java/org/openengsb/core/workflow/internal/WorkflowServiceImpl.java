@@ -17,6 +17,7 @@
 package org.openengsb.core.workflow.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,8 +48,6 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.springframework.osgi.context.BundleContextAware;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 public class WorkflowServiceImpl implements WorkflowService, BundleContextAware, ServiceListener {
 
