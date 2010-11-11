@@ -224,10 +224,10 @@ public class WorkflowServiceTest {
 
     @Test
     public void testStartWorkflowTriggeredByEvent() throws Exception {
-        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n" +
-                "  Event()\n" +
-                "then\n" +
-                "  flowHelper.startFlow(\"ci\");\n");
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n"
+                + "  Event()\n"
+                + "then\n"
+                + "  flowHelper.startFlow(\"ci\");\n");
         service.processEvent(new Event());
         assertThat(service.getRunningFlows().isEmpty(), is(false));
     }
