@@ -19,7 +19,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <relativePath>../poms/compiled/</relativePath>
+		<relativePath>../../poms/compiled/</relativePath>
     <groupId>org.openengsb.build</groupId>
     <artifactId>compiled-bundle-settings</artifactId>
     <version>1.1.0-SNAPSHOT</version>
@@ -27,16 +27,15 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.ui</groupId>
-  <artifactId>openengsb-ui-parent</artifactId>
+  <artifactId>openengsb-ui-common-parent</artifactId>
   <version>1.1.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: User Interface :: Parent</name>
+  <name>OpenEngSB :: User Interface :: Common :: Parent</name>
 
   <packaging>pom</packaging>
 
   <modules>
-    <module>web</module>
-    <module>common</module>
+    <module>wicket</module>
   </modules>
 
 </project>

@@ -20,25 +20,25 @@
 
   <parent>
     <groupId>org.openengsb.ui</groupId>
-    <artifactId>openengsb-ui-parent</artifactId>
+    <artifactId>openengsb-ui-common-parent</artifactId>
     <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.ui.web</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.ui.web</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.ui.common.wicket</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.ui.common.wicket</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.ui</groupId>
-  <artifactId>openengsb-ui-web</artifactId>
+  <artifactId>openengsb-ui-common-wicket</artifactId>
   <version>1.1.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: User Interface :: Web Administration</name>
+  <name>OpenEngSB :: User Interface :: Common :: Wicket</name>
 
-  <description>Web Administration Interface for the OpenEngSB</description>
+  <description>Common classes for wicket UIs</description>
 
-  <packaging>war</packaging>
+  <packaging>bundle</packaging>
 
   <build>
     <resources>
@@ -61,17 +61,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>${maven.war.plugin}</version>
-        <configuration>
-          <attachClasses>true</attachClasses>
-          <archive>
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
@@ -80,37 +69,6 @@
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.ui</groupId>
-      <artifactId>openengsb-ui-common-wicket</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.domain</groupId>
-      <artifactId>openengsb-domain-example</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
-      <version>${slf4j.version}</version>
       <scope>provided</scope>
     </dependency>
 
