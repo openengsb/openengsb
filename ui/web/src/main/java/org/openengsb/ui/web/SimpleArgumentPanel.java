@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.common.wicket.editor;
+package org.openengsb.ui.web;
 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
@@ -24,6 +24,7 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
 import org.openengsb.core.common.util.MethodUtil;
+import org.openengsb.ui.common.wicket.editor.AttributeEditorUtil;
 import org.openengsb.ui.common.wicket.model.Argument;
 
 @SuppressWarnings("serial")
