@@ -43,6 +43,7 @@
     <module>test</module>
     <module>deploy</module>
     <module>build</module>
+    <module>dac</module>
   </modules>
 
 </project>
