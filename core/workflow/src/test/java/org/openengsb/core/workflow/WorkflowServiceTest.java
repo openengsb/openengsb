@@ -231,4 +231,12 @@ public class WorkflowServiceTest {
         service.processEvent(new Event());
         assertThat(service.getRunningFlows().isEmpty(), is(false));
     }
+
+    @Test
+    public void testRegisterWorkflowTrigger() throws Exception {
+        service.registerFlowTriggerEvent(new Event("triggerEvent"), "ci");
+        service.processEvent(new Event());
+        service.processEvent(new Event("triggerEvent"));
+        assertThat(service.getRunningFlows().size(), is(1));
+    }
 }

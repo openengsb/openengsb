@@ -36,4 +36,14 @@ public interface WorkflowService {
      *         started
      */
     long startFlow(String processId) throws WorkflowException;
+
+    /**
+     * this method adds a rule to the rulebase that always starts a workflow when a certain event is raised
+     *
+     * @param event Event that must be raised to trigger the flow
+     * @param flowId id of the flow that should be triggered
+     *
+     * @throws WorkflowException when there is a problem while adding the new rule
+     */
+    void registerFlowTriggerEvent(Event event, String flowId) throws WorkflowException;
 }
