@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.ui.web.ArgumentModel;
+import org.openengsb.ui.common.wicket.model.ArgumentModel;
 
 @SuppressWarnings("serial")
 public class MethodCall implements Serializable {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.editor.fields;
+package org.openengsb.ui.common.wicket.editor.fields;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
@@ -25,7 +25,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.ui.web.model.LocalizableStringModel;
+import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
 
 @SuppressWarnings("serial")
 public abstract class AbstractField<T> extends Panel {

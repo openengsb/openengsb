@@ -14,35 +14,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.model;
+package org.openengsb.ui.common.wicket.validation;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.wicket.model.IModel;
+import org.openengsb.core.common.validation.FormValidator;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
+import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 
 @SuppressWarnings("serial")
-public class MapModel<K, V> implements IModel<V> {
-    private final Map<K, V> map;
-    private final K key;
-
-    public MapModel(Map<K, V> map, K key) {
-        this.map = map;
-        this.key = key;
-
+public class DefaultPassingFormValidator implements FormValidator {
+    @Override
+    public MultipleAttributeValidationResult validate(Map<String, String> attributes) {
+        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
     }
 
     @Override
-    public V getObject() {
-        return map.get(key);
-    }
-
-    @Override
-    public void setObject(V object) {
-        map.put(key, object);
-    }
-
-    @Override
-    public void detach() {
-        // nop
+    public List<String> fieldsToValidate() {
+        return new ArrayList<String>();
     }
 }

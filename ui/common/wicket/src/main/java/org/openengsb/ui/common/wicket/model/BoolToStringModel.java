@@ -14,26 +14,34 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.validation;
+package org.openengsb.ui.common.wicket.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.openengsb.core.common.validation.FormValidator;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
+import org.apache.wicket.model.IModel;
 
 @SuppressWarnings("serial")
-public class DefaultPassingFormValidator implements FormValidator {
-    @Override
-    public MultipleAttributeValidationResult validate(Map<String, String> attributes) {
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+public class BoolToStringModel implements IModel<Boolean> {
+    private final IModel<String> model;
+
+    public BoolToStringModel(IModel<String> model) {
+        this.model = model;
+        if ("".equals(model.getObject())) {
+            setObject(false);
+        }
     }
 
     @Override
-    public List<String> fieldsToValidate() {
-        return new ArrayList<String>();
+    public Boolean getObject() {
+        String v = model.getObject();
+        return "1".equals(v) || "true".equals(v) || "on".equals(v);
+    }
+
+    @Override
+    public void setObject(Boolean object) {
+        model.setObject(object.toString());
+    }
+
+    @Override
+    public void detach() {
+        // noop
     }
 }

@@ -29,8 +29,8 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.ui.web.editor.ServiceEditorPanel;
-import org.openengsb.ui.web.model.LocalizableStringModel;
+import org.openengsb.ui.common.wicket.editor.ServiceEditorPanel;
+import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.model.WicketStringLocalizer;
 

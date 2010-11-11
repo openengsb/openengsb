@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web;
+package org.openengsb.ui.common.wicket.model;
 
 import java.io.Serializable;
 import java.util.Map;
+
+import org.openengsb.core.common.util.MethodUtil;
 
 @SuppressWarnings("serial")
 public class ArgumentModel implements Serializable {

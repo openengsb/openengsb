@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.editor;
+package org.openengsb.ui.common.wicket.editor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,9 +25,9 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.ui.web.ArgumentModel;
-import org.openengsb.ui.web.MethodUtil;
-import org.openengsb.ui.web.model.MapModel;
+import org.openengsb.core.common.util.MethodUtil;
+import org.openengsb.ui.common.wicket.model.ArgumentModel;
+import org.openengsb.ui.common.wicket.model.MapModel;
 
 @SuppressWarnings("serial")
 public class BeanArgumentPanel extends Panel {

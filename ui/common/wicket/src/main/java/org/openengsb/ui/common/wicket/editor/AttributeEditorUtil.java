@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.editor;
+package org.openengsb.ui.common.wicket.editor;
 
 import java.util.List;
 import java.util.Map;
@@ -25,15 +25,15 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.util.MethodUtil;
 import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
-import org.openengsb.ui.web.MethodUtil;
-import org.openengsb.ui.web.editor.fields.AbstractField;
-import org.openengsb.ui.web.editor.fields.CheckboxField;
-import org.openengsb.ui.web.editor.fields.DropdownField;
-import org.openengsb.ui.web.editor.fields.InputField;
-import org.openengsb.ui.web.editor.fields.PasswordField;
-import org.openengsb.ui.web.model.MapModel;
+import org.openengsb.ui.common.wicket.editor.fields.AbstractField;
+import org.openengsb.ui.common.wicket.editor.fields.CheckboxField;
+import org.openengsb.ui.common.wicket.editor.fields.DropdownField;
+import org.openengsb.ui.common.wicket.editor.fields.InputField;
+import org.openengsb.ui.common.wicket.editor.fields.PasswordField;
+import org.openengsb.ui.common.wicket.model.MapModel;
 
 public final class AttributeEditorUtil {
     private AttributeEditorUtil() {
@@ -41,7 +41,7 @@ public final class AttributeEditorUtil {
 
     /**
      * creates a RepeatingView providing a suitable editor field for every property.
-     * 
+     *
      * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
      */
     public static RepeatingView createFieldList(String id, Class<?> bean, Map<String, String> values) {
@@ -51,7 +51,7 @@ public final class AttributeEditorUtil {
 
     /**
      * creates a RepeatingView providing a suitable editor field for every attribute in the list.
-     * 
+     *
      * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
      */
     public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
@@ -65,7 +65,7 @@ public final class AttributeEditorUtil {
 
     /**
      * creates a RepeatingView providing a suitable editor field for every attribute in the list.
-     * 
+     *
      * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
      * @param attributeViewIds this Map is populated with ids of the generated elements
      * @return

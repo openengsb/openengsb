@@ -14,24 +14,35 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.editor.fields;
+package org.openengsb.ui.common.wicket.model;
 
-import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.TextField;
+import java.util.Map;
+
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.validation.IValidator;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
 
 @SuppressWarnings("serial")
-public class InputField extends AbstractField<String> {
+public class MapModel<K, V> implements IModel<V> {
+    private final Map<K, V> map;
+    private final K key;
 
-    public InputField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<String> validator) {
-        super(id, model, attribute, validator);
+    public MapModel(Map<K, V> map, K key) {
+        this.map = map;
+        this.key = key;
+
     }
 
     @Override
-    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
-        TextField<String> field = new TextField<String>("field", model);
-        return field;
+    public V getObject() {
+        return map.get(key);
+    }
+
+    @Override
+    public void setObject(V object) {
+        map.put(key, object);
+    }
+
+    @Override
+    public void detach() {
+        // nop
     }
 }

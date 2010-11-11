@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.editor;
+package org.openengsb.ui.common.wicket.editor;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ import org.apache.wicket.validation.ValidationError;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.validation.FormValidator;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.ui.web.validation.DefaultPassingFormValidator;
+import org.openengsb.ui.common.wicket.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
 public abstract class ServiceEditorPanel extends Panel {

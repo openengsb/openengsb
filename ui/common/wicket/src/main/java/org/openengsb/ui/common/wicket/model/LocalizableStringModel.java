@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.model;
+package org.openengsb.ui.common.wicket.model;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.model.LoadableDetachableModel;

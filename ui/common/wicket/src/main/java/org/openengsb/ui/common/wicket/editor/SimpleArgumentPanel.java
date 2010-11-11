@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.editor;
+package org.openengsb.ui.common.wicket.editor;
 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
@@ -23,8 +23,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
-import org.openengsb.ui.web.ArgumentModel;
-import org.openengsb.ui.web.MethodUtil;
+import org.openengsb.core.common.util.MethodUtil;
+import org.openengsb.ui.common.wicket.model.ArgumentModel;
 
 @SuppressWarnings("serial")
 public class SimpleArgumentPanel extends Panel {

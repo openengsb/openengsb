@@ -14,34 +14,24 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.model;
+package org.openengsb.ui.common.wicket.editor.fields;
 
+import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.validation.IValidator;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
 
 @SuppressWarnings("serial")
-public class BoolToStringModel implements IModel<Boolean> {
-    private final IModel<String> model;
+public class InputField extends AbstractField<String> {
 
-    public BoolToStringModel(IModel<String> model) {
-        this.model = model;
-        if ("".equals(model.getObject())) {
-            setObject(false);
-        }
+    public InputField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<String> validator) {
+        super(id, model, attribute, validator);
     }
 
     @Override
-    public Boolean getObject() {
-        String v = model.getObject();
-        return "1".equals(v) || "true".equals(v) || "on".equals(v);
-    }
-
-    @Override
-    public void setObject(Boolean object) {
-        model.setObject(object.toString());
-    }
-
-    @Override
-    public void detach() {
-        // noop
+    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+        TextField<String> field = new TextField<String>("field", model);
+        return field;
     }
 }

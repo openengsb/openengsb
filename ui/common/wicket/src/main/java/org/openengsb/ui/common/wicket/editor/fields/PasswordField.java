@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.editor.fields;
+package org.openengsb.ui.common.wicket.editor.fields;
 
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.ui.web.model.BoolToStringModel;
 
 @SuppressWarnings("serial")
-public class CheckboxField extends AbstractField<Boolean> {
+public class PasswordField extends AbstractField<String> {
 
-    public CheckboxField(String id, IModel<String> model, AttributeDefinition attribute,
-            IValidator<Boolean> fieldValidationValidator) {
+    public PasswordField(String id, IModel<String> model, AttributeDefinition attribute,
+            IValidator<String> fieldValidationValidator) {
         super(id, model, attribute, fieldValidationValidator);
     }
 
     @Override
-    protected FormComponent<Boolean> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
-        return new CheckBox("field", new BoolToStringModel(model));
+    protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
+        PasswordTextField field = new PasswordTextField("field", model);
+        field.setResetPassword(false);
+        return field;
     }
 }
