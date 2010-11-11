@@ -19,6 +19,7 @@ package org.openengsb.core.workflow.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -37,6 +38,7 @@ import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.core.workflow.DroolsFlowHelper;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -84,6 +86,15 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         }
     }
 
+    public Collection<Long> getRunningFlows() throws WorkflowException {
+        Collection<ProcessInstance> processInstances = getSessionForCurrentContext().getProcessInstances();
+        Collection<Long> result = new HashSet<Long>();
+        for (ProcessInstance p : processInstances) {
+            result.add(p.getId());
+        }
+        return result;
+    }
+
     private StatefulKnowledgeSession getSessionForCurrentContext() throws WorkflowException {
         String currentContextId = currentContextService.getCurrentContextId();
         if (currentContextId == null) {
@@ -104,7 +115,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     private Collection<String> findMissingGlobals() {
         Collection<String> globalsToProcess = new ArrayList<String>(rulemanager.listGlobals().keySet());
-        globalsToProcess.remove("event");
+        globalsToProcess.remove("flowHelper");
         globalsToProcess.removeAll(services.keySet());
 
         return discoverNewGlobalValues(globalsToProcess);
@@ -184,6 +195,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     }
 
     private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
+        session.setGlobal("flowHelper", new DroolsFlowHelper(session));
         Collection<String> missingGlobals = findMissingGlobals();
         if (!missingGlobals.isEmpty()) {
             waitForGlobals(missingGlobals);
