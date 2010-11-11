@@ -67,7 +67,7 @@ import org.openengsb.core.common.util.MethodUtil;
 import org.openengsb.ui.common.wicket.editor.AttributeEditorUtil;
 import org.openengsb.ui.common.wicket.editor.BeanArgumentPanel;
 import org.openengsb.ui.common.wicket.editor.fields.AbstractField;
-import org.openengsb.ui.common.wicket.model.ArgumentModel;
+import org.openengsb.ui.common.wicket.model.Argument;
 import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
 import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
@@ -376,17 +376,17 @@ public class TestClient extends BasePage {
     protected void populateArgumentList() {
         argumentList.removeAll();
         Method m = findMethod();
-        List<ArgumentModel> arguments = new ArrayList<ArgumentModel>();
+        List<Argument> arguments = new ArrayList<Argument>();
         call.setArguments(arguments);
         int i = 0;
         for (Class<?> p : m.getParameterTypes()) {
-            ArgumentModel argModel = new ArgumentModel(i + 1, p, null);
+            Argument argModel = new Argument(i + 1, p, null);
             arguments.add(argModel);
             if (p.isPrimitive() || p.equals(String.class) || p.isEnum()) {
                 Builder builder = AttributeDefinition.builder(new PassThroughStringLocalizer());
                 MethodUtil.addEnumValues(argModel.getType(), builder);
                 builder.id("value").name(
-                    new StringResourceModel("argument", this, new Model<ArgumentModel>(argModel)).getString());
+                    new StringResourceModel("argument", this, new Model<Argument>(argModel)).getString());
                 AbstractField<?> createEditorField =
                     AttributeEditorUtil.createEditorField("argument_" + i,
                         new PropertyModel<String>(argModel, "value"), builder.build());

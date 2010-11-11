@@ -24,15 +24,15 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
 import org.openengsb.core.common.util.MethodUtil;
-import org.openengsb.ui.common.wicket.model.ArgumentModel;
+import org.openengsb.ui.common.wicket.model.Argument;
 
 @SuppressWarnings("serial")
 public class SimpleArgumentPanel extends Panel {
-    public SimpleArgumentPanel(String id, ArgumentModel arg) {
+    public SimpleArgumentPanel(String id, Argument arg) {
         super(id);
         Builder builder = AttributeDefinition.builder(new PassThroughStringLocalizer());
         MethodUtil.addEnumValues(arg.getType(), builder);
-        builder.id("value").name(new StringResourceModel("argument", this, new Model<ArgumentModel>(arg)).getString());
+        builder.id("value").name(new StringResourceModel("argument", this, new Model<Argument>(arg)).getString());
         add(AttributeEditorUtil.createEditorField("value", new PropertyModel<String>(arg, "value"), builder.build()));
     }
 }

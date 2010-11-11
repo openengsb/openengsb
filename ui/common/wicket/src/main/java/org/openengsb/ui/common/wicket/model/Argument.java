@@ -22,16 +22,16 @@ import java.util.Map;
 import org.openengsb.core.common.util.MethodUtil;
 
 @SuppressWarnings("serial")
-public class ArgumentModel implements Serializable {
+public class Argument implements Serializable {
     private int index;
     private Class<?> type;
     private Object value;
     private boolean isBean;
 
-    public ArgumentModel() {
+    public Argument() {
     }
 
-    public ArgumentModel(int index, Class<?> type, String value) {
+    public Argument(int index, Class<?> type, String value) {
         this.index = index;
         this.value = value;
         this.type = type;

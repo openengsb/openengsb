@@ -26,7 +26,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.util.MethodUtil;
-import org.openengsb.ui.common.wicket.model.ArgumentModel;
+import org.openengsb.ui.common.wicket.model.Argument;
 import org.openengsb.ui.common.wicket.model.MapModel;
 
 @SuppressWarnings("serial")
@@ -34,7 +34,7 @@ public class BeanArgumentPanel extends Panel {
 
     private final Map<String, String> fieldViewIds = new HashMap<String, String>();
 
-    public BeanArgumentPanel(String id, ArgumentModel argModel, Map<String, String> values) {
+    public BeanArgumentPanel(String id, Argument argModel, Map<String, String> values) {
         super(id);
         add(new Label("index", "" + argModel.getIndex()));
         RepeatingView fields = new RepeatingView("fields");
