@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.validation;
+package org.openengsb.ui.common.wicket.editor;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

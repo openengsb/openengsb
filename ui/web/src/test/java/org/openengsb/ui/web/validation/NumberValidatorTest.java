@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
+import org.openengsb.ui.common.wicket.editor.NumberValidator;
 
 public class NumberValidatorTest {
 

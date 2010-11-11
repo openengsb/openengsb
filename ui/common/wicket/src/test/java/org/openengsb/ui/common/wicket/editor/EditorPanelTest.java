@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.editor;
+package org.openengsb.ui.common.wicket.editor;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -51,10 +51,8 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.core.common.validation.ValidationResultImpl;
-import org.openengsb.ui.common.wicket.editor.ServiceEditorPanel;
 import org.openengsb.ui.common.wicket.editor.fields.AbstractField;
 import org.openengsb.ui.common.wicket.validation.DefaultPassingFormValidator;
-import org.openengsb.ui.web.validation.NumberValidator;
 
 @SuppressWarnings("serial")
 public class EditorPanelTest {
