@@ -35,5 +35,5 @@
   </osgi:service>
 
   <osgi:reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
-  <osgi:reference id="persistenceManager" interface="org.openengsb.core.persistence.PersistenceManager" />
+  <osgi:reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
 </beans>
