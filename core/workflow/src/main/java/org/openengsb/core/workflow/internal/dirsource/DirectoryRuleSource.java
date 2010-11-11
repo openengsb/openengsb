@@ -47,6 +47,7 @@ import org.drools.io.ResourceFactory;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.DroolsFlowHelper;
 import org.openengsb.core.workflow.internal.AbstractRuleManager;
 import org.openengsb.core.workflow.internal.ResourceHandler;
 
@@ -83,6 +84,9 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         if (this.ruleBase == null) {
             ruleBase = KnowledgeBaseFactory.newKnowledgeBase();
             readRuleBase();
+            if (!listGlobals().containsKey("flowHelper")) {
+                addGlobal(DroolsFlowHelper.class.getName(), "flowHelper");
+            }
             initReloadListener();
         }
         initialized = true;
@@ -273,7 +277,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     @SuppressWarnings("unchecked")
     private Collection<File> listFiles(File path, String extension) {
-        Collection<File> functions = FileUtils.listFiles(path, new String[]{extension}, false);
+        Collection<File> functions = FileUtils.listFiles(path, new String[]{ extension }, false);
         return functions;
     }
 
