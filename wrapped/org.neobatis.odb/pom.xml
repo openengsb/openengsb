@@ -26,7 +26,7 @@
 
   <properties>
     <bundle.symbolicName>org.neodatis.odb</bundle.symbolicName>
-    <wrapped.groupId>org.neodatis</wrapped.groupId>
+    <wrapped.groupId>org.neodatis.odb</wrapped.groupId>
     <wrapped.artifactId>neodatis-odb</wrapped.artifactId>
     <wrapped.version>${odb.version}</wrapped.version>
     <bundle.namespace>org.neodatis</bundle.namespace>
@@ -42,7 +42,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.neodatis</groupId>
+      <groupId>org.neodatis.odb</groupId>
       <artifactId>neodatis-odb</artifactId>
       <version>${odb.version}</version>
     </dependency>
