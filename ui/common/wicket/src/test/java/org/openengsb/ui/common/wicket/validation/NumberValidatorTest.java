@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.validation;
+package org.openengsb.ui.common.wicket.validation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
