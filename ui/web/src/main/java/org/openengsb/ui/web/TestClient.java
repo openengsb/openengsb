@@ -65,7 +65,7 @@ import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.util.MethodUtil;
 import org.openengsb.ui.common.wicket.editor.AttributeEditorUtil;
-import org.openengsb.ui.common.wicket.editor.BeanArgumentPanel;
+import org.openengsb.ui.common.wicket.editor.BeanEditorPanel;
 import org.openengsb.ui.common.wicket.editor.fields.AbstractField;
 import org.openengsb.ui.common.wicket.model.Argument;
 import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
@@ -395,7 +395,7 @@ public class TestClient extends BasePage {
                 Map<String, String> beanAttrs = new HashMap<String, String>();
                 argModel.setValue(beanAttrs);
                 argModel.setBean(true);
-                BeanArgumentPanel arg = new BeanArgumentPanel(String.valueOf(i), argModel, beanAttrs);
+                BeanEditorPanel arg = new BeanEditorPanel(String.valueOf(i), argModel, beanAttrs);
                 argumentList.add(arg);
             }
             i++;

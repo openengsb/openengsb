@@ -30,11 +30,11 @@ import org.openengsb.ui.common.wicket.model.Argument;
 import org.openengsb.ui.common.wicket.model.MapModel;
 
 @SuppressWarnings("serial")
-public class BeanArgumentPanel extends Panel {
+public class BeanEditorPanel extends Panel {
 
     private final Map<String, String> fieldViewIds = new HashMap<String, String>();
 
-    public BeanArgumentPanel(String id, Argument argModel, Map<String, String> values) {
+    public BeanEditorPanel(String id, Argument argModel, Map<String, String> values) {
         super(id);
         add(new Label("index", "" + argModel.getIndex()));
         RepeatingView fields = new RepeatingView("fields");

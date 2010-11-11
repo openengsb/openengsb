@@ -65,7 +65,7 @@ import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.util.AliveState;
-import org.openengsb.ui.common.wicket.editor.BeanArgumentPanel;
+import org.openengsb.ui.common.wicket.editor.BeanEditorPanel;
 import org.openengsb.ui.common.wicket.editor.fields.DropdownField;
 import org.openengsb.ui.common.wicket.editor.fields.InputField;
 import org.openengsb.ui.web.model.MethodCall;
@@ -294,7 +294,7 @@ public class TestClientTest {
         setMethodInDropDown(1);
 
         Assert.assertEquals(1, argList.size());
-        Assert.assertEquals(BeanArgumentPanel.class, argList.get("0").getClass());
+        Assert.assertEquals(BeanEditorPanel.class, argList.get("0").getClass());
 
         RepeatingView panel = (RepeatingView) argList.get("0:fields");
         Assert.assertEquals(2, panel.size());
@@ -327,8 +327,8 @@ public class TestClientTest {
         setMethodInDropDown(1);
 
         String beanPanelPath = "argumentListContainer:argumentList:0";
-        BeanArgumentPanel beanPanel =
-            (BeanArgumentPanel) tester.getComponentFromLastRenderedPage("methodCallForm:" + beanPanelPath);
+        BeanEditorPanel beanPanel =
+            (BeanEditorPanel) tester.getComponentFromLastRenderedPage("methodCallForm:" + beanPanelPath);
         String idFieldId = beanPanel.getFieldViewId("id");
         String nameFieldId = beanPanel.getFieldViewId("name");
         formTester.setValue(beanPanelPath + ":fields:" + idFieldId + ":row:field", "42");
