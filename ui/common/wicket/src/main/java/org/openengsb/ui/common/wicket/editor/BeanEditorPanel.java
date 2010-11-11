@@ -21,12 +21,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.util.MethodUtil;
-import org.openengsb.ui.common.wicket.model.Argument;
 import org.openengsb.ui.common.wicket.model.MapModel;
 
 @SuppressWarnings("serial")
@@ -34,13 +32,10 @@ public class BeanEditorPanel extends Panel {
 
     private final Map<String, String> fieldViewIds = new HashMap<String, String>();
 
-    public BeanEditorPanel(String id, Argument argModel, Map<String, String> values) {
+    public BeanEditorPanel(String id, Class<?> type, Map<String, String> values) {
         super(id);
-        add(new Label("index", "" + argModel.getIndex()));
         RepeatingView fields = new RepeatingView("fields");
-        add(fields);
-
-        List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(argModel.getType());
+        List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(type);
         for (AttributeDefinition a : attributes) {
             String fieldViewId = fields.newChildId();
             fieldViewIds.put(a.getId(), fieldViewId);
@@ -48,6 +43,7 @@ public class BeanEditorPanel extends Panel {
             fields.add(row);
             row.add(AttributeEditorUtil.createEditorField("row", new MapModel<String, String>(values, a.getId()), a));
         }
+        add(fields);
     }
 
     public String getFieldViewId(String fieldId) {

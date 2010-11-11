@@ -16,8 +16,6 @@
 
 package org.openengsb.ui.web;
 
-import static junit.framework.Assert.assertFalse;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -89,7 +87,7 @@ public class TestClientTest {
     }
 
     public enum UpdateEnum {
-        ONE, TWO
+            ONE, TWO
     }
 
     public class TestService implements TestInterface {
@@ -253,11 +251,11 @@ public class TestClientTest {
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
-
         Assert.assertEquals(2, argList.size());
         Iterator<? extends Component> iterator = argList.iterator();
         while (iterator.hasNext()) {
-            Assert.assertEquals(InputField.class, iterator.next().getClass());
+            Component next = iterator.next();
+            tester.assertComponent(next.getPageRelativePath() + ":valueEditor", InputField.class);
         }
     }
 
@@ -272,10 +270,8 @@ public class TestClientTest {
         setMethodInDropDown(2);
 
         Assert.assertEquals(1, argList.size());
-        Iterator<? extends Component> iterator = argList.iterator();
-        Component next = iterator.next();
-        Assert.assertEquals(DropdownField.class, next.getClass());
-        assertFalse(iterator.hasNext());
+        tester.assertComponent("methodCallForm:argumentListContainer:argumentList:arg0panel:valueEditor",
+            DropdownField.class);
     }
 
     private void setMethodInDropDown(int index) {
@@ -294,9 +290,9 @@ public class TestClientTest {
         setMethodInDropDown(1);
 
         Assert.assertEquals(1, argList.size());
-        Assert.assertEquals(BeanEditorPanel.class, argList.get("0").getClass());
-
-        RepeatingView panel = (RepeatingView) argList.get("0:fields");
+        Assert.assertEquals(BeanEditorPanel.class, argList.get("arg0panel:valueEditor").getClass());
+        tester.debugComponentTrees();
+        RepeatingView panel = (RepeatingView) argList.get("arg0panel:valueEditor:fields");
         Assert.assertEquals(2, panel.size());
     }
 
@@ -309,9 +305,9 @@ public class TestClientTest {
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
-
+        tester.debugComponentTrees();
         for (int i = 0; i < argList.size(); i++) {
-            formTester.setValue("argumentListContainer:argumentList:argument_" + i + ":field", "test");
+            formTester.setValue("argumentListContainer:argumentList:arg" + i + "panel:valueEditor:field", "test");
         }
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
@@ -326,7 +322,7 @@ public class TestClientTest {
         setServiceInDropDown(0);
         setMethodInDropDown(1);
 
-        String beanPanelPath = "argumentListContainer:argumentList:0";
+        String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
         BeanEditorPanel beanPanel =
             (BeanEditorPanel) tester.getComponentFromLastRenderedPage("methodCallForm:" + beanPanelPath);
         String idFieldId = beanPanel.getFieldViewId("id");
@@ -369,8 +365,8 @@ public class TestClientTest {
         setServiceInDropDown(0);
         setMethodInDropDown(0);
 
-        formTester.setValue("argumentListContainer:argumentList:argument_0:field", "test");
-        formTester.setValue("argumentListContainer:argumentList:argument_1:field", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg1panel:valueEditor:field", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         RepeatingView argList =
@@ -391,12 +387,12 @@ public class TestClientTest {
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
-        formTester.setValue("argumentListContainer:argumentList:argument_0:field", "test");
-        formTester.setValue("argumentListContainer:argumentList:argument_1:field", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg1panel:valueEditor:field", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
-        tester.assertInfoMessages(new String[]{"Methodcall called successfully"});
+        tester.assertInfoMessages(new String[]{ "Methodcall called successfully" });
         Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
         Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
     }
@@ -407,8 +403,8 @@ public class TestClientTest {
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
-        formTester.setValue("argumentListContainer:argumentList:argument_0:field", "fail");
-        formTester.setValue("argumentListContainer:argumentList:argument_1:field", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "fail");
+        formTester.setValue("argumentListContainer:argumentList:arg1panel:valueEditor:field", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
         String resultException = (String) tester.getMessages(FeedbackMessage.ERROR).get(0);
         assertThat(resultException, containsString(IllegalArgumentException.class.getName()));
@@ -555,7 +551,7 @@ public class TestClientTest {
             ServiceReference ref = Mockito.mock(ServiceReference.class);
             Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
             Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-            ServiceReference[] refs = new ServiceReference[]{ref};
+            ServiceReference[] refs = new ServiceReference[]{ ref };
             Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
         } catch (InvalidSyntaxException e) {
             Assert.fail("not expected");
