@@ -34,25 +34,17 @@ package org.openengsb.ui.web.global.header;
 
  */
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.Assert;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.injection.annot.test.AnnotApplicationContextMock;
 import org.apache.wicket.spring.test.ApplicationContextMock;
-import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,28 +55,22 @@ import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
-import org.openengsb.ui.web.BasePage;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.TestClient;
-import org.openengsb.ui.web.WicketSession;
 import org.openengsb.ui.web.global.footer.ImprintPage;
 import org.osgi.framework.BundleContext;
 
 public class HeaderTemplateTest {
+
     private WicketTester tester;
     private ApplicationContextMock context;
-    private ContextCurrentService contextService;
-    private Page basePage;
 
     @Before
     public void setup() {
         tester = new WicketTester();
         context = new ApplicationContextMock();
-        contextService = mock(ContextCurrentService.class);
-        context.putBean(contextService);
-        when(contextService.getAvailableContexts()).thenReturn(Arrays.asList(new String[]{ "foo", "bar" }));
-        basePage = tester.startPage(new BasePage());
+        context.putBean(Mockito.mock(ContextCurrentService.class));
     }
 
     @Test
@@ -160,49 +146,5 @@ public class HeaderTemplateTest {
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);
-    }
-    
-    @Test
-    public void test_label_present() {
-        String labelString =
-            tester.getApplication().getResourceSettings().getLocalizer().getString("project.choice.label", basePage);
-        tester.assertContains(labelString);
-    }
-
-    @Test
-    public void test_default_context_initialization() {
-        Component c = tester.getComponentFromLastRenderedPage("header:projectChoiceForm:projectChoice");
-        tester.assertComponent("header:projectChoiceForm:projectChoice", DropDownChoice.class);
-        assertThat("foo", is(WicketSession.get().getThreadContextId()));
-    }
-
-    @Test
-    public void test_context_change() {
-        tester.assertComponent("header:projectChoiceForm:projectChoice", DropDownChoice.class);
-        assertThat("foo", is(WicketSession.get().getThreadContextId()));
-
-        verify(contextService).setThreadLocalContext("foo");
-
-        FormTester formTester = tester.newFormTester("header:projectChoiceForm");
-        formTester.select("projectChoice", 1);
-
-        assertThat("bar", is(WicketSession.get().getThreadContextId()));
-
-        // simulated page reload...
-        tester.startPage(new BasePage());
-        verify(contextService).setThreadLocalContext("bar");
-    }
-
-    @Test
-    public void test_correct_response_page() {
-        FormTester formTester = tester.newFormTester("header:projectChoiceForm");
-        formTester.select("projectChoice", 1);
-
-        @SuppressWarnings("unchecked")
-        DropDownChoice<String> choice =
-            (DropDownChoice<String>) tester.getComponentFromLastRenderedPage("header:projectChoiceForm:projectChoice");
-
-        Class<? extends Page> responsePage = choice.getRequestCycle().getResponsePageClass();
-        assertThat(choice.getPage(), is(responsePage));
     }
 }
