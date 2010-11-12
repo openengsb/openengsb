@@ -94,6 +94,7 @@
     <module>connector</module>
     <module>ui</module>
     <module>assembly</module>
+    <module>integrationtest</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -653,9 +654,6 @@
     </profile>
     <profile>
       <id>integration-test</id>
-      <modules>
-        <module>integrationtest</module>
-      </modules>
       <build>
         <plugins>
           <plugin>
