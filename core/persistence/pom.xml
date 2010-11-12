@@ -44,7 +44,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.neodatis</groupId>
+      <groupId>org.neodatis.odb</groupId>
       <artifactId>neodatis-odb</artifactId>
       <version>${odb.version}</version>
       <optional>true</optional>
