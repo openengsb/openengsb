@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -43,6 +44,7 @@ import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.web.model.LocalizableStringModel;
 import org.osgi.framework.ServiceReference;
 
+@AuthorizeInstantiation("ROLE_USER")
 public class ServiceListPage extends BasePage {
 
     private static Log log = LogFactory.getLog(ServiceListPage.class);

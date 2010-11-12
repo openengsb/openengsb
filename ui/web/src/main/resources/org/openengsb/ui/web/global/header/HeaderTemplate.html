@@ -17,27 +17,48 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
-  xml:lang="en" lang="en">
+  xml:lang="en">
+
 <body>
-<wicket:panel>
+  <wicket:panel>
+    <div id="header">
+      <div id="banner">
+        <a class="pageLogo" href="" wicket:id="logo">
+          <img wicket:message="title:headerPage.title" alt="" title="" src="images/openengsb_small.png">
+        </a>
+        <span class="languages">
+          <a href="#" wicket:id="lang.en">
+            <img wicket:message="title:headerPage.title" alt="English" title="English" src="images/english_icon.png" />
+          </a>
+          <a href="#" wicket:id="lang.de">
+            <img wicket:message="title:headerPage.title" alt="Deutsch" title="Deutsch" src="images/german_icon.png" />
+          </a>
+        </span>
+        <span class="version" wicket:id="version"></span>
+      </div>
 
-  <div id="header"><a id="top"></a>
-
-  <div id="logo">
-  <div class="logoInner">
-  <h1 class="pageTitle"><a href="" wicket:id="indexLogo1"> <wicket:message key="headerPage.title">[create.new]</wicket:message>
-  [headerPage.title]</a></h1>
-  <a class="pageLogo" href="" wicket:id="indexLogo2"> <img wicket:message="title:headerPage.title" alt="" title=""
-    src="images/openengsb.png" /> </a> <span wicket:id="version" /></div>
-  </div>
-
-  <div id="mainMenu">
-  <ul>
-    <li wicket:id="headerMenuItems"><a href="" wicket:id="link">linkTarget</a></li>
-  </ul>
-  </div>
-
-  </div>
-</wicket:panel>
+      <div id="mainMenu">
+        <ul>
+          <li wicket:id="headerMenuItems">
+            <a href="" wicket:id="link">linkTarget</a>
+          </li>
+        </ul>
+        <div class="menuRight">
+          <form wicket:id="projectChoiceForm" class="projectChoicePosition">
+            <wicket:message key="project.choice.label">[project.choice.label]</wicket:message>:
+            <select wicket:id="projectChoice" />
+          </form>
+          <a class="logout" href="#" wicket:id="logout" >
+            <span wicket:id="logintext">
+              <wicket:message key="login">[login]</wicket:message>
+            </span>
+            <span wicket:id="logouttext">
+              <wicket:message key="logout">[logout]</wicket:message>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </wicket:panel>
 </body>
 </html>

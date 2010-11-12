@@ -15,20 +15,59 @@
  */
 
 body {
-  background-color: white;
-  color: black;
-  font-family: 'Tahoma', 'Lucida Sans', 'Arial', 'Helvetica', 'Sans-serif', 'sans';
-  font-size: 9pt;
+  font-family: Calibri, Verdana, Tahoma, Arial;
+  font-size: 0.9em;
+  background-color: #EEEEFA;
+  color: #3C4650;
+  margin-top: 0px;
+  margin: auto;
+  min-width: 750px;
+  max-width: 850px;
 }
 
 h1, h2, h3, h4, h5, h6, h7, h8 {
-  color: #000000;
   font-weight: bold;
 }
 
-h1, h2 {
-  letter-spacing: -1px;
-  font-family: 'Trebuchet MS';
+h1 {
+  font-size: 1.5em;
+}
+
+h2 {
+  font-size: 1.3em;
+}
+
+h3 {
+  font-size: 1.1em;
+}
+
+hr {
+  color: #3C4650;
+}
+
+a {
+  color: #648296;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a:focus,
+a:hover,
+a:active {
+  text-decoration: underline;
+}
+
+img {
+  border: none;
+}
+
+tr.none {
+  background: transparent;
+}
+
+a.none {
+  background: transparent;
+  padding-right: 0px;
 }
 
 .feedbackPanelERROR {
@@ -76,40 +115,14 @@ h1, h2 {
   background-color: #008000;
 }
 
-#loginBox {
-  width: 30%;
+.loginForm {
+  text-align: center;
 }
 
-#navigation {
-  min-width: 10%;
-  text-wrap: suppress;
-}
-
-a {
-  color: #008E9C;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-img {
-  border: none;
-}
-
-pre {
-  font-family: 'Lucida Sans', 'Helvetica', 'Sans serif', 'sans';
-}
-
-tr.none {
-  background: transparent;
-}
-
-a.none {
-  background: transparent;
-  padding-right: 0px;
+.login {
+  margin-left: 10px;
+  margin-right: 20px;
+  width: 100px;
 }
 
 .inputForm label {
@@ -256,92 +269,128 @@ div.tabRowContent {
 }
 
 .footerValidation p {
-  margin: 20px 0 0 0;
+  margin: 20px 0px 0px 0px;
 }
 
-#header, #main {
-
-}
-
-#logo {
-  height: 92px;
-  background: transparent url("../images/header.png") no-repeat scroll top left;
-}
-
-#logo h1.pageTitle {
-  display: block;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  position: absolute;
+#banner {
+  float: left;
   width: 100%;
-}
-
-#logo h1 {
-  left: -9000px;
-  position: absolute;
-  top: -9000px;
-}
-
-.pageLogo {
-  width: 100%;
+  height: 80px;
+  border-left: 1px #738764 solid;
+  border-right: 1px #738764 solid;
+  background: transparent url("../images/header.png") repeat-x scroll top left;
 }
 
 .pageLogo img {
-  position: absolute;
-  left: 10px;
-  top: 32px;
-  height: 68px;
-}
-
-.languageIconsE img {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.projectChoicePosition {
   position: relative;
-  top: -30px;
-  float:right;
+  left: 15px;
+  top: 12px;
 }
 
-.languageIconsG img {
-  position: absolute;
-  top: 10px;
-  right: 45px;
+#banner .languages {
+  float: right;
+  position: relative;
+  top: 25px;
+  right: 5px;
+}
+
+#banner .version {
+  color: white;
+  float: right;
+  position: relative;
+  right: -50px;
 }
 
 #mainMenu {
-  background-color: #f3f3f3;
+  float: left;
+  width: 100%;
+  background-color: #EEEEFA;
+  border-top: 3px #777777 solid;
   border-bottom: 3px #777777 solid;
+  border-left: 1px #738764 solid;
+  border-right: 1px #738764 solid;
 }
 
-#mainMenu .active {
-  background: transparent url("../images/activeMenuItem.png") no-repeat scroll bottom center;
-  font-style: italic;
+#mainMenu li.active {
+  background-color: #C8D7D2;
+  border-right: 1px #A0B4B4 solid;
+  border-left: 1px #A0B4B4 solid;
 }
 
 #mainMenu ul {
-  display: table;
-  list-style-image: none;
-  list-style-position: outside;
-  list-style-type: none;
-  margin: 0;
-  padding: 8px 16px 8px 16px;
+  margin: 0px 0px 0px 0px;
+  padding: 0px;
+  float: left;
+  list-style: none;
 }
 
 #mainMenu li {
-  display: inline;
+  float: left;
   padding: 8px 16px 8px 16px;
-  border-right: 1px #cdcdcd solid;
+  border-right: 1px #EBF4E3 solid;
+  border-left: 1px #EBF4E3 solid;
 }
 
-#mainMenu a, #mainMenu a:visited, #mainMenu li a:hover {
+#mainMenu a,
+#mainMenu a:visited,
+#mainMenu li a:hover {
   color: #4b4a4a;
   font-weight: bold;
   font-size: 110%;
   text-decoration: none;
+}
+
+.menuRight {
+  float: right;
+  position: relative;
+  top: 7px;
+  right: 10px;
+}
+
+.projectChoicePosition,
+.logout {
+  margin-left: 10px;
+  float: left;
+}
+
+.projectChoicePosition select {
+  width: 80px;
+}
+
+.menuRight .logout {
+  font-size: 1em !important;
+  position: relative;
+  top: 2px;
+}
+
+.mainFrame {
+  float: left;
+  width: 100%;
+  background: white;
+  border-left: 1px #738764 solid;
+  border-right: 1px #738764 solid;
+}
+
+.mainArea {
+  padding: 20px 20px 20px 20px;
+}
+
+#footer {
+  text-align: center;
+  position: relative;
+  padding-top: 5px;
+  height: 30px;
+  border-top: 3px #777777 solid;
+  float: left;
+  width: 100.2%;
+}
+
+#footer span {
+  padding: 5px 10px 5px 10px;
+}
+
+#footer span.separator {
+  border-left: 1px #C8DCF0 solid;
 }
 
 
@@ -360,11 +409,6 @@ container-1
   width:200px;
 	border:1px #0066FF solid;
 	color:#0066FF;
-}
-
-
-.loginForm label, select {
-  width: 200px;
 }
 
 .formFieldLabel {

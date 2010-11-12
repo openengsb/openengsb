@@ -19,11 +19,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
   xml:lang="en" lang="en">
 <body>
-<wicket:panel>
-  <div id="footer">
-  <div class="copyright">&#xA9; 2009-2010 | <a href="" wicket:id="imprint"><wicket:message
-    key="globalFooterImprint">[globalFooterImprint]</wicket:message></a></div>
-  </div>
-</wicket:panel>
+  <wicket:panel>
+    <div id="footer">
+      <span>
+        &copy; 2009 - 2010 
+      </span>
+      <span class="separator">
+        <a href="" wicket:id="imprint">
+          <wicket:message key="imprint">[globalFooterImprint]</wicket:message>
+        </a>
+      </span>
+    </div>
+  </wicket:panel>
 </body>
 </html>

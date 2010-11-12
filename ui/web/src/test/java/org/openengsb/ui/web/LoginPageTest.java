@@ -107,7 +107,7 @@ public class LoginPageTest {
 
     @Test
     public void testRedirectToLogin() throws Exception {
-        tester.startPage(Index.class);
+        tester.startPage(TestClient.class);
         tester.assertRenderedPage(LoginPage.class);
     }
 
@@ -129,8 +129,8 @@ public class LoginPageTest {
         formTester.setValue("username", "test");
         formTester.setValue("password", "password");
         formTester.submit();
-        tester.clickLink("projectChoiceForm:logout");
-        tester.assertRenderedPage(LoginPage.class);
+        tester.clickLink("header:logout");
+        tester.assertRenderedPage(Index.class);
     }
 
     @Test

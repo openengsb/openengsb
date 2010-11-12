@@ -23,6 +23,7 @@ import javax.swing.tree.TreeModel;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation;
 import org.apache.wicket.extensions.markup.html.tree.table.ColumnLocation.Alignment;
@@ -44,7 +45,7 @@ import org.openengsb.core.common.service.DomainService;
 import org.openengsb.ui.web.tree.ModelBean;
 import org.openengsb.ui.web.tree.PropertyEditableColumn;
 
-@SuppressWarnings("serial")
+@AuthorizeInstantiation("ROLE_USER")
 public class ContextSetPage extends BasePage {
 
     @SpringBean

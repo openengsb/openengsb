@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -51,7 +52,7 @@ import org.openengsb.ui.web.editor.AttributeEditorUtil;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 
-@SuppressWarnings("serial")
+@AuthorizeInstantiation("ROLE_USER")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 
     private transient Log log = LogFactory.getLog(SendEventPage.class);
