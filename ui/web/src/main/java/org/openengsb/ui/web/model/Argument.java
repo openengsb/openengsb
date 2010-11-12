@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.common.wicket.model;
+package org.openengsb.ui.web.model;
 
 import java.io.Serializable;
 import java.util.Map;
