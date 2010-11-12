@@ -19,7 +19,7 @@ package org.openengsb.core.workflow.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
-import org.openengsb.core.workflow.DroolsFlowHelper;
+import org.openengsb.core.workflow.droolsinternal.DroolsFlowHelper;
 
 public class DroolsFlowHelperImpl implements DroolsFlowHelper {
     private Log log = LogFactory.getLog(DroolsFlowHelper.class);
