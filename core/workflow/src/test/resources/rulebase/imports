@@ -6,3 +6,4 @@ org.openengsb.core.common.Event
 org.openengsb.core.workflow.DummyExampleDomain
 org.openengsb.core.workflow.DummyNotificationDomain
 org.openengsb.core.common.workflow.model.Value
+org.openengsb.core.workflow.DroolsFlowHelper
