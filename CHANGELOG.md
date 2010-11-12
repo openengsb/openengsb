@@ -11,7 +11,8 @@ openengsb-1.1.0.RELEASE
   * [e.g.] openengsb-domain-scm
 
 ### Upgraded Projects
-  * org.neodatis.odb/neodatis-odb/1.9.30.687
+ * org.apache.wicket/wicket-*/1.4.13
+ * org.neodatis.odb/neodatis-odb/1.9.30.687
 
 ### Remvoed External References
   * [e.g.] javax.ejb/com.springsource.javax.ejb
