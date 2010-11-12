@@ -16,5 +16,5 @@
 #
 
 cd $(dirname $0)/../../
-mvn clean install deploy -Prelease,nightly 
+mvn clean install deploy -Prelease,nightly -Dmaven.test.skip=true
 
