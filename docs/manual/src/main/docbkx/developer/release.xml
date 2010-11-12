@@ -174,7 +174,7 @@ Try the new features now: http://openengsb.org]]></programlisting></para>
 ------------------
 
 ### Bug fixes
-* [e.g.] Fix problem with setting files
+  * [e.g.] Fix problem with setting files
 
 ### New Projects
   * [e.g.] openengsb-core-taskbox
@@ -190,10 +190,10 @@ Try the new features now: http://openengsb.org]]></programlisting></para>
   * [e.g.] javax.ejb/com.springsource.javax.ejb
 
 ### New Features & Changed Behaviour
-* [e.g.] Added possibility to delete workfows
+  * [e.g.] Added possibility to delete workfows
 
 ### Depricated or Removed Features
-* [e.g.] org.openengsb.domain.scm.doSomething() is removed]]></programlisting></para>
+  * [e.g.] org.openengsb.domain.scm.doSomething() is removed]]></programlisting></para>
 
     <para>The following sections explain shortly what changes belong to which part of the changelog.</para>
 
