@@ -28,12 +28,18 @@ public interface WorkflowService {
     void processEvent(Event event) throws WorkflowException;
 
     /**
-     * Starts a flow with the given id, in the current context's session.
+     * Starts a flow with the given id, in the current context's session and returns the process' instance ID as
+     * returned by drools's KnowledgeSession. It's unique in the scope of the same context.
      *
-     * @return the process' instance ID as returned by drools's KnowledgeSession. It's unique in the scope of the same
-     *         context.
      * @throws WorkflowException when there is a problem with obtaining the KnowledgeSession or the flow could not be
      *         started
      */
     long startFlow(String processId) throws WorkflowException;
+
+    /**
+     * this method adds a rule to the rulebase that always starts workflow(s) when a certain event is raised
+     *
+     * @throws WorkflowException when there is a problem while adding the new rule
+     */
+    void registerFlowTriggerEvent(Event event, String... flowIds) throws WorkflowException;
 }
