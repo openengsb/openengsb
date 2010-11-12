@@ -16,9 +16,9 @@
 
 package org.openengsb.core.workflow;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
@@ -220,5 +220,23 @@ public class WorkflowServiceTest {
         verify(report, times(1)).collectData();
         verify(notification, atLeast(1)).notify(anyString());
         verify(deploy, times(1)).deployProject();
+    }
+
+    @Test
+    public void testStartWorkflowTriggeredByEvent() throws Exception {
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n"
+                + "  Event()\n"
+                + "then\n"
+                + "  flowHelper.startFlow(\"ci\");\n");
+        service.processEvent(new Event());
+        assertThat(service.getRunningFlows().isEmpty(), is(false));
+    }
+
+    @Test
+    public void testRegisterWorkflowTrigger() throws Exception {
+        service.registerFlowTriggerEvent(new Event("triggerEvent"), "ci");
+        service.processEvent(new Event());
+        service.processEvent(new Event("triggerEvent"));
+        assertThat(service.getRunningFlows().size(), is(1));
     }
 }
