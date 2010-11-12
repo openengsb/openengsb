@@ -16,20 +16,7 @@
 
 package org.openengsb.core.workflow;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.drools.runtime.StatefulKnowledgeSession;
 
-public class DroolsFlowHelper {
-    private Log log = LogFactory.getLog(DroolsFlowHelper.class);
-    private StatefulKnowledgeSession session;
-
-    public DroolsFlowHelper(StatefulKnowledgeSession session) {
-        this.session = session;
-    }
-
-    public void startFlow(String flowid) {
-        log.info("starting flow with id " + flowid);
-        session.startProcess(flowid);
-    }
+public interface DroolsFlowHelper {
+    void startFlow(String flowid);
 }
