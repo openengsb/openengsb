@@ -2,7 +2,7 @@ openengsb-1.1.0.RELEASE
 -----------------------
 
 ### Bug fixes
-* [e.g.] Fix problem with setting files
+  * [e.g.] Fix problem with setting files
 
 ### New Projects
   * [e.g.] openengsb-core-taskbox
@@ -18,10 +18,10 @@ openengsb-1.1.0.RELEASE
   * [e.g.] javax.ejb/com.springsource.javax.ejb
 
 ### New Features & Changed Behaviour
-* [e.g.] Added possibility to delete workfows
+  * [e.g.] Added possibility to delete workfows
 
 ### Depricated or Removed Features
-* [e.g.] org.openengsb.domain.scm.doSomething() is removed
+  * [e.g.] org.openengsb.domain.scm.doSomething() is removed
 
 openengsb-1.0.0.RELEASE
 -----------------------
