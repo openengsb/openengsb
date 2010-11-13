@@ -196,16 +196,16 @@
       <para>Contributor are all developer who like to contribute to the OpenEngSB project, but not have commit rights
         to openengsb/openengsb.</para>
       <para>Please keep in mind, that this manual is NOT a Git tutorial. Github itself, e.g. provides a great help at 
-        <link xlink:href="help.github.com">help.github.com</link>. All base concepts such as forking, pull-requests, ...</para>
+        <link xlink:href="http://book.git-scm.com/">help.github.com</link>. All base concepts such as forking, pull-requests, ...</para>
       <para>Please start by choose or create a new issue. Now create a new fork of the OpenEngSB at Github (if you've not
         done already so; otherwise this is explained <link xlink:href="http://help.github.com/forking/">here</link>). 
-        Clone you're fork, but also add the original openengsb repository as remote repository. This is also explained
-        <link xlink:href="http://help.github.com/forking/">here</link>. In difference to this tutorial please do not change or
-        commit direclty to the master, but rather create a new branch named OPENENGSB-ISSUE_NUMBER_YOURE_WORKING_ON. 
-        Optionally append /DESCRIPTION. 
+        Clone your fork, but also add the original openengsb repository as remote repository. This is also explained
+        <link xlink:href="http://help.github.com/forking/">here</link>. In difference to the Github tutorial please do not 
+        commit to the master, but rather create a new branch named OPENENGSB-ISSUE_NUMBER_YOURE_WORKING_ON. 
+        Optionally append /DESCRIPTION (e.g. OPENENGSB-586/mvn-eclipse-download-fix). 
         <literallayout><command>git checkout</command> <option>-b</option> <replaceable>OPENENGSB-ISSUE origin/BRANCH</replaceable></literallayout>
-        Branch is the point where you like to start your work. If you like to contribute to the head this will be typically
-        integration. But could also be a commit or a complete different branch. This is the OpenEngSB schema for naming branches 
+        <replaceable>BRANCH</replaceable> is the point where you like to start your work. If you like to contribute to the head this will be typically
+        integration, but could also be a commit or a complete different branch. This is the OpenEngSB schema for naming branches 
         and we'll really appreciate if you work according to it.</para>
       <para>Now hack, commit and push as you like. If you think you're finished execute the 
         <filename>etc/scripts/pre-push.sh</filename> script validating your code, tests, licenses and so on. If 
