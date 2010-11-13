@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web;
+package org.openengsb.ui.web.global.header;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -31,6 +31,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.Request;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
+import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -42,6 +43,9 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.ui.web.BasePage;
+import org.openengsb.ui.web.Index;
+import org.openengsb.ui.web.WicketSession;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,8 +53,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
-public class BasePageTest {
-
+public class ProjectTest {
     private WicketTester tester;
     private ContextCurrentService contextService;
     private Page basePage;
@@ -80,6 +83,11 @@ public class BasePageTest {
                 return new WicketSession(request);
             }
         });
+
+        // Maybe there is a more elegant way to do this...
+        AuthenticatedWebSession session = AuthenticatedWebSession.get();
+        session.signIn("", "password");
+
         when(contextService.getAvailableContexts()).thenReturn(Arrays.asList(new String[]{ "foo", "bar" }));
         basePage = tester.startPage(new BasePage());
     }
@@ -105,7 +113,8 @@ public class BasePageTest {
     @Test
     public void test_label_present() {
         String labelString =
-            tester.getApplication().getResourceSettings().getLocalizer().getString("project.choice.label", basePage);
+            tester.getApplication().getResourceSettings().getLocalizer().getString("project.choice.label",
+                basePage.get("header"));
         tester.assertContains(labelString);
     }
 

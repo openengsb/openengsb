@@ -146,6 +146,5 @@ public class HeaderTemplateTest {
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);
-
     }
 }

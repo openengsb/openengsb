@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.model.StringResourceModel;
@@ -34,6 +35,7 @@ import org.openengsb.ui.web.model.LocalizableStringModel;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.model.WicketStringLocalizer;
 
+@AuthorizeInstantiation("ROLE_USER")
 public class ConnectorEditorPage extends BasePage {
 
     private final transient ServiceManager serviceManager;

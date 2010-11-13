@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <!--
 
     Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -17,7 +18,7 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
-      xml:lang="en" lang="en">
+      xml:lang="en">
 
 <wicket:head>
   <link rel="stylesheet" type="text/css" href="style/style.css"/>
@@ -29,22 +30,17 @@
 </wicket:head>
 
 <body>
-  <div wicket:id="header">header</div>
-  <a class="languageIconsE" href="#" wicket:id="lang.en"> <img wicket:message="title:headerPage.title" alt="English"
-                                                               title="" src="images/english_icon.png"/> </a>
-  <a class="languageIconsG" href="#" wicket:id="lang.de"> <img wicket:message="title:headerPage.title" alt="Deutsch"
-                                                               title="" src="images/german_icon.png"/> </a>
-
-  <form wicket:id="form" class="loginForm">
-    <div class="formFieldLabel">
-      <wicket:message key="username.label">username:</wicket:message>
+  <wicket:extend>
+    <div class="loginForm">
+      <form wicket:id="form">
+        <wicket:message key="username"></wicket:message>:
+          <input wicket:id="username" class="login" />
+          <wicket:message key="password"></wicket:message>:
+          <input type="password" wicket:id="password" class="login" />
+          <input type="submit" wicket:message="value:button.login,title:button.login" />
+        </form>
+      <span wicket:id="feedback" />
     </div>
-    <input wicket:id="username"/> <br/>
-    <div class="formFieldLabel">
-      <wicket:message key="password.label">username:</wicket:message>
-    </div>
-    <input type="password" wicket:id="password"/> <br/>
-    <input type="submit" value="Login" wicket:message="value:login.button"/></form>
-  <div wicket:id="feedback"/>
+  </wicket:extend>
 </body>
 </html>

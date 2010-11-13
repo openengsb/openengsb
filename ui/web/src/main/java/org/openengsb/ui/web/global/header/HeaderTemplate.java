@@ -18,27 +18,30 @@ package org.openengsb.ui.web.global.header;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.authorization.strategies.role.Roles;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.protocol.http.WebSession;
 import org.openengsb.ui.web.ContextSetPage;
 import org.openengsb.ui.web.Index;
-import org.openengsb.ui.web.LoginPage;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.ServiceListPage;
 import org.openengsb.ui.web.TestClient;
+import org.openengsb.ui.web.WicketSession;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
-
     private final ArrayList<HeaderMenuItem> menuItems = new ArrayList<HeaderMenuItem>();
     private final ArrayList<String> avialableItems = new ArrayList<String>();
 
@@ -46,35 +49,57 @@ public class HeaderTemplate extends Panel {
 
     public HeaderTemplate(String id, String menuIndex) {
         super(id);
+
+        baseInitialization(menuIndex);
+        initializeMenu();
+    }
+
+    private void baseInitialization(String menuIndex) {
+        add(new Link<Object>("lang.en") {
+            @Override
+            public void onClick() {
+                this.getSession().setLocale(Locale.ENGLISH);
+            }
+        });
+        add(new Link<Object>("lang.de") {
+            @Override
+            public void onClick() {
+                this.getSession().setLocale(Locale.GERMAN);
+            }
+        });
+
         HeaderTemplate.menuIndex = menuIndex;
-        this.add(new BookmarkablePageLink<Index>("indexLogo1", Index.class));
-        this.add(new BookmarkablePageLink<Index>("indexLogo2", Index.class));
-        this.add(new Label("version", System.getProperty("openengsb.version.number") + " \""
-            + System.getProperty("openengsb.version.name.adjective") + " "
-            + System.getProperty("openengsb.version.name.noun") + "\""));
 
-        if (LoginPage.class.getSimpleName().equals(menuIndex)) {
-            initLoginMenuItems();
-        } else {
-            initMainMenuItems();
-        }
-        add(initMenu());
+        add(new BookmarkablePageLink<Index>("logo", Index.class));
+        add(new Label("version", System.getProperty("openengsb.version.number") + " \""
+                + System.getProperty("openengsb.version.name.adjective") + " "
+                + System.getProperty("openengsb.version.name.noun") + "\""));
     }
-
-    private void initLoginMenuItems() {
-        this.addHeaderMenuItem("LoginPage", LoginPage.class, "loginPage.title");
-    }
-
 
     private void initMainMenuItems() {
-        this.addHeaderMenuItem("Index", Index.class, "index.title");
-        this.addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
-        this.addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
-        this.addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
-        this.addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
+        addHeaderMenuItem("Index", Index.class, "index.title");
+
+        try {
+            Roles roles = ((WicketSession) WebSession.get()).getRoles();
+            for (String role : roles) {
+                if (role.equals("ROLE_USER")) {
+                    addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
+                    addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
+                    addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
+                    addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
+                }
+            }
+        } catch (ClassCastException e) {
+            addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
+            addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
+            addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
+            addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
+        }
     }
 
-    private ListView<HeaderMenuItem> initMenu() {
+    private void initializeMenu() {
+        initMainMenuItems();
+
         if (HeaderTemplate.getActiveIndex() == null || !avialableItems.contains(HeaderTemplate.getActiveIndex())) {
             // update menu item to index, because page index is not found!
             HeaderTemplate.menuIndex = "Index";
@@ -82,8 +107,6 @@ public class HeaderTemplate extends Panel {
 
         // generate main navigation
         ListView<HeaderMenuItem> headerMenuItems = new ListView<HeaderMenuItem>("headerMenuItems", menuItems) {
-            private static final long serialVersionUID = -2458903054129857522L;
-
             @Override
             protected void populateItem(ListItem<HeaderMenuItem> item) {
                 HeaderMenuItem menuItem = item.getModelObject();
@@ -92,8 +115,6 @@ public class HeaderTemplate extends Panel {
                 // set menu item to active
                 if (menuItem.getItemName().equals(HeaderTemplate.getActiveIndex())) {
                     item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel<String>() {
-                        private static final long serialVersionUID = 1L;
-
                         @Override
                         public String getObject() {
                             return "active";
@@ -102,7 +123,8 @@ public class HeaderTemplate extends Panel {
                 }
             }
         };
-        return headerMenuItems;
+
+        add(headerMenuItems);
     }
 
     /**
@@ -114,23 +136,19 @@ public class HeaderTemplate extends Panel {
 
     /**
      * adds new item to main header navigation
-     *
-     * @param index     - the name of the index @see HeaderMenuItem.index
+     * 
+     * @param index - the name of the index @see HeaderMenuItem.index
      * @param linkClass - class name to be linked to
-     * @param langKey   - language key, the text which should be displayed
+     * @param langKey - language key, the text which should be displayed
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey) {
         StringResourceModel label = new StringResourceModel(langKey, this, null);
         menuItems.add(new HeaderMenuItem(index, new BookmarkablePageLabelLink("link", linkClass, label)));
         avialableItems.add(index);
     }
 
-    /**
-     * single header menu item
-     */
     private static class HeaderMenuItem implements Serializable {
-
         private final String index;
         private final BookmarkablePageLabelLink<? extends WebPage> link;
 
@@ -147,4 +165,5 @@ public class HeaderTemplate extends Panel {
             return link;
         }
     }
+
 }
