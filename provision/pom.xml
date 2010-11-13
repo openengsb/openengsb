@@ -243,6 +243,12 @@
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-web</artifactId>
       <version>${spring.osgi.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.springframework.osgi</groupId>
