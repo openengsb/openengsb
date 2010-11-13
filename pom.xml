@@ -765,6 +765,28 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository> <!-- Additional Repositories for Karaf -->
+      <id>servicemix</id>
+      <name>Apache ServiceMix Repository</name>
+      <url>http://svn.apache.org/repos/asf/servicemix/m2-repo</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository> <!-- Additional Repositories for Karaf -->
+      <id>fusesource.snapshots</id>
+      <name>FuseSource snapshot repository</name>
+      <url>http://repo.fusesource.com/nexus/content/repositories/releases</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
     <repository> <!-- JGIT  -->
       <id>jgit</id>
       <url>http://download.eclipse.org/jgit/maven</url>
