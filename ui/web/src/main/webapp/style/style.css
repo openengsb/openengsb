@@ -285,6 +285,8 @@ div.tabRowContent {
   position: relative;
   left: 15px;
   top: 12px;
+  width: 105px;
+  height: 68px; 
 }
 
 #banner .languages {
