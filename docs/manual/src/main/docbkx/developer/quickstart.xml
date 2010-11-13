@@ -195,18 +195,25 @@
       <title>Contributor Workflow</title>
       <para>Contributor are all developer who like to contribute to the OpenEngSB project, but not have commit rights
         to openengsb/openengsb.</para>
+      <para>Please keep in mind, that this manual is NOT a Git tutorial. Github itself, e.g. provides a great help at 
+        <link xlink:href="help.github.com">help.github.com</link>. All base concepts such as forking, pull-requests, ...</para>
       <para>Please start by choose or create a new issue. Now create a new fork of the OpenEngSB at Github (if you've not
-        done already so). Clone you're fork, but also add the original openengsb repository as remote repository. Please
-        create a new branch named OPENENGSB-ISSUE_NUMBER_YOURE_WORKING_ON. Optionally append /DESCRIPTION. This is the
-        OpenEngSB schema for naming branches and we'll really appreciate if you work according to it. In addition create
-        the branch based on the origin/master oder origin/integration and not the branches of your fork. In this case
-        you don't have to bother with updates of these branches in the OpenEngSB.</para>
+        done already so; otherwise this is explained <link xlink:href="http://help.github.com/forking/">here</link>). 
+        Clone you're fork, but also add the original openengsb repository as remote repository. This is also explained
+        <link xlink:href="http://help.github.com/forking/">here</link>. In difference to this tutorial please do not change or
+        commit direclty to the master, but rather create a new branch named OPENENGSB-ISSUE_NUMBER_YOURE_WORKING_ON. 
+        Optionally append /DESCRIPTION. 
+        <literallayout><command>git checkout</command> <option>-b</option> <replaceable>OPENENGSB-ISSUE origin/BRANCH</replaceable></literallayout>
+        Branch is the point where you like to start your work. If you like to contribute to the head this will be typically
+        integration. But could also be a commit or a complete different branch. This is the OpenEngSB schema for naming branches 
+        and we'll really appreciate if you work according to it.</para>
       <para>Now hack, commit and push as you like. If you think you're finished execute the 
         <filename>etc/scripts/pre-push.sh</filename> script validating your code, tests, licenses and so on. If 
         everything works without errors create a Github pull request on Github, between the master or integration
-        branch (depending on where you've created your branch on) and your branch. In addition it will help if you
-        add the link to the pull request to the issue you're working on. A commiter will tend as fast as possible to
-        your request and give feedback or directly merge your commit into the integration/master branch.</para>
+        branch (depending on where you've created your branch on) and your branch. This process is also explained at
+        help.github.com (<link xlink:href="http://help.github.com/pull-requests/">here</link>). In addition it will help 
+        if you add the link to the pull request to the issue you're working on. A commiter will tend as fast as possible 
+        to your request and give feedback or directly merge your commit into the integration/master branch.</para>
     </section>
     <section>
       <title>Commiter Workflow</title>
