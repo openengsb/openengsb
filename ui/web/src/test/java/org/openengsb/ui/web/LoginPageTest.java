@@ -129,7 +129,7 @@ public class LoginPageTest {
         formTester.setValue("username", "test");
         formTester.setValue("password", "password");
         formTester.submit();
-        tester.clickLink("header:logout");
+        tester.clickLink("logout");
         tester.assertRenderedPage(Index.class);
     }
 

@@ -19,7 +19,15 @@ package org.openengsb.ui.web;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.authentication.AuthenticatedWebSession;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.ui.web.global.footer.FooterTemplate;
@@ -30,9 +38,85 @@ public class BasePage extends WebPage {
     private ContextCurrentService contextService;
 
     public BasePage() {
-        add(new HeaderTemplate("header", getHeaderMenuItem(), this));
-        add(new FooterTemplate("footer"));
+        initializeHeader();
+        initializeLoginLogoutTemplate();
+        initializeFooter();
         initContextForCurrentThread();
+    }
+
+    private void initializeFooter() {
+        add(new FooterTemplate("footer"));
+    }
+
+    @SuppressWarnings("serial")
+    private void initializeLoginLogoutTemplate() {
+        Form<?> form = new Form<Object>("projectChoiceForm");
+        form.add(createProjectChoice());
+        add(form);
+        try {
+            form.setVisible(((WicketSession) WebSession.get()).isSignedIn());
+        } catch (ClassCastException e) {
+        }
+
+        Link<Object> link = new Link<Object>("logout") {
+            @Override
+            public void onClick() {
+                boolean signedIn = ((WicketSession) WebSession.get()).isSignedIn();
+                if (signedIn) {
+                    ((AuthenticatedWebSession) this.getSession()).signOut();
+                }
+                setResponsePage(signedIn ? Index.class : LoginPage.class);
+            }
+        };
+        add(link);
+
+        WebMarkupContainer container = new WebMarkupContainer("logintext");
+        link.add(container);
+        try {
+            container.setVisible(!((WicketSession) WebSession.get()).isSignedIn());
+        } catch (ClassCastException e) {
+        }
+        container = new WebMarkupContainer("logouttext");
+        link.add(container);
+        try {
+            container.setVisible(((WicketSession) WebSession.get()).isSignedIn());
+        } catch (ClassCastException e) {
+        }
+    }
+
+    private void initializeHeader() {
+        add(new HeaderTemplate("header", getHeaderMenuItem()));
+    }
+
+    @SuppressWarnings("serial")
+    private Component createProjectChoice() {
+        DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
+            @Override
+            public String getObject() {
+                return getSessionContextId();
+            }
+
+            @Override
+            public void setObject(String object) {
+                setThreadLocalContext(object);
+            }
+
+            @Override
+            public void detach() {
+            }
+        }, getAvailableContexts()) {
+            @Override
+            protected boolean wantOnSelectionChangedNotifications() {
+                return true;
+            }
+
+            @Override
+            protected void onModelChanged() {
+                setResponsePage(BasePage.class);
+            }
+
+        };
+        return dropDownChoice;
     }
 
     /**

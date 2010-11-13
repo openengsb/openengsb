@@ -120,18 +120,18 @@ public class ProjectTest {
 
     @Test
     public void test_default_context_initialization() {
-        tester.assertComponent("header:projectChoiceForm:projectChoice", DropDownChoice.class);
+        tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
         assertThat("foo", is(WicketSession.get().getThreadContextId()));
     }
 
     @Test
     public void test_context_change() {
-        tester.assertComponent("header:projectChoiceForm:projectChoice", DropDownChoice.class);
+        tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
         assertThat("foo", is(WicketSession.get().getThreadContextId()));
 
         verify(contextService).setThreadLocalContext("foo");
 
-        FormTester formTester = tester.newFormTester("header:projectChoiceForm");
+        FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 
         assertThat("bar", is(WicketSession.get().getThreadContextId()));
@@ -143,12 +143,12 @@ public class ProjectTest {
 
     @Test
     public void test_correct_response_page() {
-        FormTester formTester = tester.newFormTester("header:projectChoiceForm");
+        FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 
         @SuppressWarnings("unchecked")
         DropDownChoice<String> choice =
-            (DropDownChoice<String>) tester.getComponentFromLastRenderedPage("header:projectChoiceForm:projectChoice");
+            (DropDownChoice<String>) tester.getComponentFromLastRenderedPage("projectChoiceForm:projectChoice");
 
         Class<? extends Page> responsePage = choice.getRequestCycle().getResponsePageClass();
         assertThat(choice.getPage(), is(responsePage));

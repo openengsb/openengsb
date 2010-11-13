@@ -21,44 +21,34 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
-import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authorization.strategies.role.Roles;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebSession;
-import org.openengsb.ui.web.BasePage;
 import org.openengsb.ui.web.ContextSetPage;
 import org.openengsb.ui.web.Index;
-import org.openengsb.ui.web.LoginPage;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.ServiceListPage;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.WicketSession;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 
+@SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
-    private BasePage base;
-
     private final ArrayList<HeaderMenuItem> menuItems = new ArrayList<HeaderMenuItem>();
     private final ArrayList<String> avialableItems = new ArrayList<String>();
 
     private static String menuIndex;
 
-    public HeaderTemplate(String id, String menuIndex, BasePage base) {
+    public HeaderTemplate(String id, String menuIndex) {
         super(id);
-        this.base = base;
 
         baseInitialization(menuIndex);
         initializeMenu();
@@ -77,39 +67,6 @@ public class HeaderTemplate extends Panel {
                 this.getSession().setLocale(Locale.GERMAN);
             }
         });
-
-        Form<?> form = new Form<Object>("projectChoiceForm");
-        form.add(createProjectChoice());
-        add(form);
-        try {
-            form.setVisible(((WicketSession) WebSession.get()).isSignedIn());
-        } catch (ClassCastException e) {
-        }
-
-        Link<Object> link = new Link<Object>("logout") {
-            @Override
-            public void onClick() {
-                boolean signedIn = ((WicketSession) WebSession.get()).isSignedIn();
-                if (signedIn) {
-                    ((AuthenticatedWebSession) this.getSession()).signOut();
-                }
-                setResponsePage(signedIn ? Index.class : LoginPage.class);
-            }
-        };
-        add(link);
-
-        WebMarkupContainer container = new WebMarkupContainer("logintext");
-        link.add(container);
-        try {
-            container.setVisible(!((WicketSession) WebSession.get()).isSignedIn());
-        } catch (ClassCastException e) {
-        }
-        container = new WebMarkupContainer("logouttext");
-        link.add(container);
-        try {
-            container.setVisible(((WicketSession) WebSession.get()).isSignedIn());
-        } catch (ClassCastException e) {
-        }
 
         HeaderTemplate.menuIndex = menuIndex;
 
@@ -184,16 +141,13 @@ public class HeaderTemplate extends Panel {
      * @param linkClass - class name to be linked to
      * @param langKey - language key, the text which should be displayed
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey) {
         StringResourceModel label = new StringResourceModel(langKey, this, null);
         menuItems.add(new HeaderMenuItem(index, new BookmarkablePageLabelLink("link", linkClass, label)));
         avialableItems.add(index);
     }
 
-    /**
-     * single header menu item
-     */
     private static class HeaderMenuItem implements Serializable {
         private final String index;
         private final BookmarkablePageLabelLink<? extends WebPage> link;
@@ -212,30 +166,4 @@ public class HeaderTemplate extends Panel {
         }
     }
 
-    private Component createProjectChoice() {
-        DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
-            public String getObject() {
-                return base.getSessionContextId();
-            }
-
-            public void setObject(String object) {
-                base.setThreadLocalContext(object);
-            }
-
-            public void detach() {
-            }
-        }, base.getAvailableContexts()) {
-            @Override
-            protected boolean wantOnSelectionChangedNotifications() {
-                return true;
-            }
-
-            @Override
-            protected void onModelChanged() {
-                setResponsePage(base.getClass());
-            }
-
-        };
-        return dropDownChoice;
-    }
 }

@@ -33,6 +33,19 @@
   <div wicket:id="header">[header]</div>
 
   <div class="mainFrame">
+    <div class="menuRight">
+      <form wicket:id="projectChoiceForm" class="projectChoicePosition">
+        <wicket:message key="project.choice.label" />:<select wicket:id="projectChoice" />
+      </form>
+      <a class="logout" href="#" wicket:id="logout" >
+        <span wicket:id="logintext">
+          <wicket:message key="login">[login]</wicket:message>
+        </span>
+        <span wicket:id="logouttext">
+          <wicket:message key="logout">[logout]</wicket:message>
+        </span>
+      </a>
+    </div>
     <div class="mainArea"><wicket:child>[children]</wicket:child></div>
   </div>
 
