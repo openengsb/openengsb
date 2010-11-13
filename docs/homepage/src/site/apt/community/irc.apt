@@ -19,7 +19,7 @@ Project Mailing Lists
   We use the following IRC channels for discussion and answering questions. At least one
  member of the core development team should be available on this channel most of the time.
  Nevertheless we encourage you to use the {{{./mailinglists.html}mailing lists}} instead, since they are easier 
- archive- and searchable.
+ archive- and searchable. Github will also publish commit notifications on this channel.
  
 *----------*----*---------*
 | Server | Port | Channel |

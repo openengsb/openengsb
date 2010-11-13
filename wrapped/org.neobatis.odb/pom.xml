@@ -21,12 +21,12 @@
   <parent>
     <groupId>org.openengsb.wrapped</groupId>
     <artifactId>openengsb-wrapped-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <properties>
     <bundle.symbolicName>org.neodatis.odb</bundle.symbolicName>
-    <wrapped.groupId>org.neodatis</wrapped.groupId>
+    <wrapped.groupId>org.neodatis.odb</wrapped.groupId>
     <wrapped.artifactId>neodatis-odb</wrapped.artifactId>
     <wrapped.version>${odb.version}</wrapped.version>
     <bundle.namespace>org.neodatis</bundle.namespace>
@@ -34,7 +34,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>org.neodatis.odb-all</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: OSGi Wrapped Bundles :: Neodatis Object Database</name>
 
@@ -59,7 +59,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.neodatis</groupId>
+      <groupId>org.neodatis.odb</groupId>
       <artifactId>neodatis-odb</artifactId>
       <version>${odb.version}</version>
     </dependency>

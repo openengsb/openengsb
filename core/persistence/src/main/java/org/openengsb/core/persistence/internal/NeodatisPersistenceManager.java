@@ -23,17 +23,17 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.neodatis.odb.OdbConfiguration;
-import org.openengsb.core.persistence.PersistenceManager;
-import org.openengsb.core.persistence.PersistenceService;
+import org.openengsb.core.common.persistence.PersistenceManager;
+import org.openengsb.core.common.persistence.PersistenceService;
 import org.osgi.framework.Bundle;
 
 public class NeodatisPersistenceManager implements PersistenceManager {
 
-    private Log log = LogFactory.getLog(NeodatisPersistenceManager.class);
+    private final Log log = LogFactory.getLog(NeodatisPersistenceManager.class);
 
     private String persistenceRootDir;
 
-    private Map<String, PersistenceService> persistenceServices = new HashMap<String, PersistenceService>();
+    private final Map<String, PersistenceService> persistenceServices = new HashMap<String, PersistenceService>();
 
     public NeodatisPersistenceManager() {
         OdbConfiguration.useMultiThread(true);

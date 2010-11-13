@@ -41,7 +41,7 @@
    <!-- JMS ConnectionFactory to use -->
    <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
       <property name="brokerURL">
-        <value>vm:(broker:(stomp://localhost:${jms.port})?persistent=true)</value>
+        <value>vm:(broker:(stomp://localhost:${jms.port})?persistent=false)</value>
       </property>
    </bean>
    

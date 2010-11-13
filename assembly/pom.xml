@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.openengsb.build</groupId>
     <artifactId>shared-plugin-settings</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <relativePath>../poms/</relativePath>
   </parent>
 
@@ -247,16 +247,20 @@
                 scan-bundle:mvn:org.openengsb.core/openengsb-core-workflow/${project.version},
                 scan-bundle:mvn:org.openengsb.core/openengsb-core-taskbox/${project.version},
                 scan-bundle:mvn:org.openengsb.core.proxy/openengsb-core-proxy-jms/${project.version},
-                scan-bundle:mvn:org.openengsb.domains.example/openengsb-domains-example-implementation/${project.version},
-                scan-bundle:mvn:org.openengsb.domains.example/openengsb-domains-example-connector/${project.version},
-                scan-bundle:mvn:org.openengsb.domains.notification/openengsb-domains-notification-implementation/${project.version},
-                scan-bundle:mvn:org.openengsb.domains.notification/openengsb-domains-notification-email/${project.version},
-                scan-bundle:mvn:org.openengsb.domains.report/openengsb-domains-report-implementation/${project.version},
-                scan-bundle:mvn:org.openengsb.domains.report/openengsb-domains-report-plaintext/${project.version},
-                scan-bundle:mvn:org.openengsb.domains.issue/openengsb-domains-issue-implementation/${project.version},
-                scan-bundle:mvn:org.openengsb.domains.issue/openengsb-domains-issue-trac/${project.version},
-                scan-bundle:mvn:org.openengsb.domains.scm/openengsb-domains-scm-implementation/${project.version},
-                scan-bundle:mvn:org.openengsb.domains.scm/openengsb-domains-scm-git/${project.version},
+                scan-bundle:mvn:org.openengsb.domain/openengsb-domain-example/${project.version},
+                scan-bundle:mvn:org.openengsb.domain/openengsb-domain-notification/${project.version},
+                scan-bundle:mvn:org.openengsb.domain/openengsb-domain-report/${project.version},
+                scan-bundle:mvn:org.openengsb.domain/openengsb-domain-issue/${project.version},
+                scan-bundle:mvn:org.openengsb.domain/openengsb-domain-scm/${project.version},
+                scan-bundle:mvn:org.openengsb.domain/openengsb-domain-test/${project.version},
+                scan-bundle:mvn:org.openengsb.domain/openengsb-domain-deploy/${project.version},
+                scan-bundle:mvn:org.openengsb.domain/openengsb-domain-build/${project.version},
+                scan-bundle:mvn:org.openengsb.connector/openengsb-connector-example/${project.version},
+                scan-bundle:mvn:org.openengsb.connector/openengsb-connector-email/${project.version},
+                scan-bundle:mvn:org.openengsb.connector/openengsb-connector-plaintextreport/${project.version},
+                scan-bundle:mvn:org.openengsb.connector/openengsb-connector-trac/${project.version},
+                scan-bundle:mvn:org.openengsb.connector/openengsb-connector-git/${project.version},
+                scan-bundle:mvn:org.openengsb.connector/openengsb-connector-maven/${project.version},
                 scan-bundle:mvn:org.openengsb.ui/openengsb-ui-web/${project.version}/war,
               </deployURLs>
               <provision>

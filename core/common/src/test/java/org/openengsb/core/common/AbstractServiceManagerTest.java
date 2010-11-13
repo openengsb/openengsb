@@ -34,11 +34,13 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.openengsb.core.common.connectorsetupstore.ConnectorDomainPair;
 import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.l10n.BundleStringsTest;
-import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.support.NullDomain;
+import org.openengsb.core.common.support.NullDomainImpl;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.osgi.framework.BundleContext;
@@ -50,31 +52,19 @@ public class AbstractServiceManagerTest {
     public ExpectedException expected = ExpectedException.none();
     private ConnectorSetupStore setupStoreMock;
 
-    private static interface DummyDomain extends Domain {
-    }
+    private static class DummyServiceManager extends AbstractServiceManager<NullDomain, NullDomainImpl> {
 
-    private static class DummyInstance implements DummyDomain {
-        private final AliveState aliveState = AliveState.OFFLINE;
-
-        @Override
-        public AliveState getAliveState() {
-            return aliveState;
-        }
-    }
-
-    private static class DummyServiceManager extends AbstractServiceManager<DummyDomain, DummyInstance> {
-
-        public DummyServiceManager(final DummyInstance instance) {
-            super(new ServiceInstanceFactory<DummyDomain, DummyInstance>() {
+        public DummyServiceManager(final NullDomainImpl instance) {
+            super(new ServiceInstanceFactory<NullDomain, NullDomainImpl>() {
 
                 @Override
-                public void updateServiceInstance(DummyInstance instance, Map<String, String> attributes) {
+                public void updateServiceInstance(NullDomainImpl instance, Map<String, String> attributes) {
                 }
 
                 @Override
                 public ServiceDescriptor getDescriptor(Builder builder) {
-                    builder.implementationType(DummyInstance.class);
-                    builder.serviceType(DummyDomain.class);
+                    builder.implementationType(NullDomainImpl.class);
+                    builder.serviceType(NullDomain.class);
                     builder.name("abstract.name");
                     builder.description("abstract.description");
                     builder.id("DummyServiceManager");
@@ -82,12 +72,12 @@ public class AbstractServiceManagerTest {
                 }
 
                 @Override
-                public DummyInstance createServiceInstance(String id, Map<String, String> attributes) {
+                public NullDomainImpl createServiceInstance(String id, Map<String, String> attributes) {
                     return instance;
                 }
 
                 @Override
-                public MultipleAttributeValidationResult updateValidation(DummyInstance instance,
+                public MultipleAttributeValidationResult updateValidation(NullDomainImpl instance,
                         Map<String, String> attributes) {
                     return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
                 }
@@ -103,38 +93,39 @@ public class AbstractServiceManagerTest {
     @Test
     public void testInterfaceGetters() {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
-        DummyServiceManager manager = createDummyManager(bundleContextMock, new DummyInstance());
-        assertThat(manager.getDomainInterface(), sameInstance(DummyDomain.class));
-        assertThat(manager.getImplementationClass(), sameInstance(DummyInstance.class));
+        DummyServiceManager manager = createDummyManager(bundleContextMock, new NullDomainImpl());
+        assertThat(manager.getDomainInterface(), sameInstance(NullDomain.class));
+        assertThat(manager.getImplementationClass(), sameInstance(NullDomainImpl.class));
     }
 
     @Test
     public void testGetDescriptor() {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
-        DummyServiceManager manager = createDummyManager(bundleContextMock, new DummyInstance());
+        DummyServiceManager manager = createDummyManager(bundleContextMock, new NullDomainImpl());
 
         ServiceDescriptor descriptor = manager.getDescriptor();
 
         assertThat(descriptor.getId(), is(DummyServiceManager.class.getSimpleName()));
-        assertEquals(descriptor.getServiceType(), DummyDomain.class);
-        assertEquals(descriptor.getImplementationType(), DummyInstance.class);
+        assertEquals(descriptor.getServiceType(), NullDomain.class);
+        assertEquals(descriptor.getImplementationType(), NullDomainImpl.class);
     }
 
     @Test
     public void testAddNewOne() {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
-        DummyInstance instance = new DummyInstance();
+        NullDomainImpl instance = new NullDomainImpl();
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock).registerService(
-            new String[]{ DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
-            instance,
+            new String[]{NullDomainImpl.class.getName(), NullDomain.class.getName(), Domain.class.getName()}, instance,
             props);
-        Mockito.verify(setupStoreMock).storeConnectorSetup(instance.getClass().getName(), "test", attributes);
+
+        ConnectorDomainPair pair = new ConnectorDomainPair(NullDomain.class.getName(), instance.getClass().getName());
+        Mockito.verify(setupStoreMock).storeConnectorSetup(pair, "test", attributes);
     }
 
     @Test
@@ -142,11 +133,13 @@ public class AbstractServiceManagerTest {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
 
-        DummyInstance instance = new DummyInstance();
+        NullDomainImpl instance = new NullDomainImpl();
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         InOrder inOrder = Mockito.inOrder(setupStoreMock, setupStoreMock);
         manager.update("test", attributes);
-        inOrder.verify(setupStoreMock).storeConnectorSetup(instance.getClass().getName(), "test", attributes);
+
+        ConnectorDomainPair pair = new ConnectorDomainPair(NullDomain.class.getName(), instance.getClass().getName());
+        inOrder.verify(setupStoreMock).storeConnectorSetup(pair, "test", attributes);
 
         HashMap<String, String> verificationAttributes = new HashMap<String, String>();
         verificationAttributes.put("foo", "bar");
@@ -154,18 +147,16 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
-            new String[]{ DummyInstance.class.getName(), DummyDomain.class.getName(), Domain.class.getName() },
-            instance,
+            new String[]{NullDomainImpl.class.getName(), NullDomain.class.getName(), Domain.class.getName()}, instance,
             props);
-        inOrder.verify(setupStoreMock).storeConnectorSetup(instance.getClass().getName(), "test",
-            verificationAttributes);
+        inOrder.verify(setupStoreMock).storeConnectorSetup(pair, "test", verificationAttributes);
     }
 
     @Test
     public void testDeleteService() {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         HashMap<String, String> attributes = new HashMap<String, String>();
-        DummyInstance instance = new DummyInstance();
+        NullDomainImpl instance = new NullDomainImpl();
         ServiceRegistration serviceRegistrationMock =
             appendServiceRegistrationMockToBundleContextMock(bundleContextMock, instance);
 
@@ -174,29 +165,30 @@ public class AbstractServiceManagerTest {
         manager.delete("test");
 
         Mockito.verify(serviceRegistrationMock).unregister();
-        Mockito.verify(setupStoreMock).deleteConnectorSetup(instance.getClass().getName(), "test");
+        ConnectorDomainPair pair = new ConnectorDomainPair(NullDomain.class.getName(), instance.getClass().getName());
+        Mockito.verify(setupStoreMock).deleteConnectorSetup(pair, "test");
     }
 
     private ServiceRegistration appendServiceRegistrationMockToBundleContextMock(BundleContext bundleContextMock,
-            DummyInstance mock) {
+            NullDomainImpl mock) {
         ServiceRegistration serviceRegistrationMock = Mockito.mock(ServiceRegistration.class);
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.when(
-            bundleContextMock.registerService(new String[]{ DummyInstance.class.getName(), DummyDomain.class.getName(),
-                Domain.class.getName() }, mock, props)).thenReturn(serviceRegistrationMock);
+            bundleContextMock.registerService(new String[]{NullDomainImpl.class.getName(), NullDomain.class.getName(),
+                Domain.class.getName()}, mock, props)).thenReturn(serviceRegistrationMock);
         return serviceRegistrationMock;
     }
 
     private Hashtable<String, String> createVerificationHashmap() {
         Hashtable<String, String> props = new Hashtable<String, String>();
         props.put("id", "test");
-        props.put("domain", DummyDomain.class.getName());
-        props.put("class", DummyInstance.class.getName());
+        props.put("domain", NullDomain.class.getName());
+        props.put("class", NullDomainImpl.class.getName());
         props.put("managerId", DummyServiceManager.class.getSimpleName());
         return props;
     }
 
-    private DummyServiceManager createDummyManager(BundleContext bundleContextMock, DummyInstance instance) {
+    private DummyServiceManager createDummyManager(BundleContext bundleContextMock, NullDomainImpl instance) {
         DummyServiceManager manager = new DummyServiceManager(instance);
         manager.setBundleContext(bundleContextMock);
         setupStoreMock = Mockito.mock(ConnectorSetupStore.class);
@@ -211,7 +203,7 @@ public class AbstractServiceManagerTest {
         attributes.put("id", "test");
         attributes.put("attribute2", "atr2");
 
-        DummyInstance instance = new DummyInstance();
+        NullDomainImpl instance = new NullDomainImpl();
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
@@ -228,7 +220,7 @@ public class AbstractServiceManagerTest {
         attributes.put("id", "test");
         attributes.put("attribute2", "atr2");
 
-        DummyInstance instance = new DummyInstance();
+        NullDomainImpl instance = new NullDomainImpl();
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
@@ -254,7 +246,7 @@ public class AbstractServiceManagerTest {
         attributes.put("attribute2", "atr2");
 
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
-        DummyInstance instance = new DummyInstance();
+        NullDomainImpl instance = new NullDomainImpl();
         ServiceRegistration serviceRegistrationMock =
             appendServiceRegistrationMockToBundleContextMock(bundleContextMock, instance);
 
@@ -275,7 +267,7 @@ public class AbstractServiceManagerTest {
         attributes.put("id", "test");
         attributes.put("attribute2", "atr2");
 
-        DummyInstance instance = new DummyInstance();
+        NullDomainImpl instance = new NullDomainImpl();
 
         DummyServiceManager manager = createDummyManager(bundleContextMock, instance);
         manager.update("test", attributes);
@@ -291,7 +283,7 @@ public class AbstractServiceManagerTest {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void validationfailsForCreation_checkNotAdded() {
         ServiceInstanceFactory serviceInstanceFactory = mock(ServiceInstanceFactory.class);
         MultipleAttributeValidationResult validationResult =
@@ -299,8 +291,8 @@ public class AbstractServiceManagerTest {
         when(serviceInstanceFactory.createValidation(Mockito.anyString(), Mockito.anyMap())).thenReturn(
             validationResult);
 
-        AbstractServiceManager<DummyDomain, DummyInstance> serviceManager =
-            new AbstractServiceManager<DummyDomain, DummyInstance>(serviceInstanceFactory) {
+        AbstractServiceManager<NullDomain, NullDomainImpl> serviceManager =
+            new AbstractServiceManager<NullDomain, NullDomainImpl>(serviceInstanceFactory) {
             };
         serviceManager.setConnectorSetupStore(Mockito.mock(ConnectorSetupStore.class));
 
@@ -311,7 +303,7 @@ public class AbstractServiceManagerTest {
     }
 
     @Test
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void validationfailsForUpdate_checkNotUpdated() {
         BundleContext bundleContextMock = BundleStringsTest.createBundleContextMockWithBundleStrings();
         ServiceInstanceFactory serviceInstanceFactory = mock(ServiceInstanceFactory.class);
@@ -327,8 +319,8 @@ public class AbstractServiceManagerTest {
         when(serviceInstanceFactory.updateValidation(Mockito.any(Domain.class), Mockito.anyMap())).thenReturn(
             validationResult);
 
-        AbstractServiceManager<DummyDomain, DummyInstance> serviceManager =
-            new AbstractServiceManager<DummyDomain, DummyInstance>(serviceInstanceFactory) {
+        AbstractServiceManager<NullDomain, NullDomainImpl> serviceManager =
+            new AbstractServiceManager<NullDomain, NullDomainImpl>(serviceInstanceFactory) {
             };
         serviceManager.setConnectorSetupStore(Mockito.mock(ConnectorSetupStore.class));
 

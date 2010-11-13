@@ -28,12 +28,12 @@
   <para>This chapter describes how to implement a domain for the OpenEngSB environment. A domain provides a common
     interface and common events and thereby defines how to interact with connectors for this domain. For a better 
     description of what a domain exactly consists of, take a look at the architecture guide 
-    <xref linkend="developer.chapter" />.</para>
+    <xref linkend="architecture" />.</para>
 
   <section>
     <title>Prerequisites</title>
     <para>In case it isn't known what a domain is and how it defines the interface and events for connectors, then 
-    <xref linkend="developer.chapter" /> is a good starting point.</para>
+    <xref linkend="architecture.concept.tooldomains" /> is a good starting point.</para>
   </section>
 
   <section>

@@ -27,11 +27,11 @@
 
   <bannerLeft>
     <name>Open Engineering Service Bus (OpenEngSB)</name>
-    <src>images/openengsb_small.png</src>
+    <src>images/openengsb.png</src>
   </bannerLeft>
 
   <publishDate position="left" />
-  <version position=${openengsb.version.name} />
+  <version position="${openengsb.version.name.adjective} ${openengsb.version.name.noun}" />
 
   <body>
      <head>
@@ -53,7 +53,8 @@
 
     <links>
       <item name="Final Release" href="http://openengsb.org/" />
-      <item name="Milestone Release" href="http://openengsb.org/" />
+      <item name="Release Candidate" href="http://openengsb.org/rc" />
+      <item name="Milestone Release" href="http://openengsb.org/milestone" />
       <item name="Nightly Release" href="http://openengsb.org/nightly" />
     </links>
 

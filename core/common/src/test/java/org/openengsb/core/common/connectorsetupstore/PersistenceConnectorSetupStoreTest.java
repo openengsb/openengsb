@@ -29,9 +29,9 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.persistence.PersistenceException;
-import org.openengsb.core.persistence.PersistenceManager;
-import org.openengsb.core.persistence.PersistenceService;
+import org.openengsb.core.common.persistence.PersistenceException;
+import org.openengsb.core.common.persistence.PersistenceManager;
+import org.openengsb.core.common.persistence.PersistenceService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -39,6 +39,7 @@ public class PersistenceConnectorSetupStoreTest {
 
     private PersistenceConnectorSetupStore store;
     private PersistenceService persistence;
+    private ConnectorDomainPair connectorDomainPair = new ConnectorDomainPair("test", "conn");
 
     @Before
     public void setUp() throws PersistenceException {
@@ -52,8 +53,8 @@ public class PersistenceConnectorSetupStoreTest {
         List<ConnectorSetupBean> result = new ArrayList<ConnectorSetupBean>();
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("foo", "bar");
-        ConnectorSetupBean setupBean = new ConnectorSetupBean("test", "42", map);
-        ConnectorSetupBean setupBean2 = new ConnectorSetupBean("test", null, map);
+        ConnectorSetupBean setupBean = new ConnectorSetupBean(connectorDomainPair, "42", map);
+        ConnectorSetupBean setupBean2 = new ConnectorSetupBean(connectorDomainPair, null, map);
         result.add(setupBean);
         Mockito.when(persistence.query(Mockito.refEq(setupBean, "properties"))).thenReturn(result);
         Mockito.when(persistence.query(Mockito.refEq(setupBean2, "properties"))).thenReturn(result);
@@ -61,55 +62,55 @@ public class PersistenceConnectorSetupStoreTest {
 
     @Test
     public void storeSetupNew_shouldWork() throws PersistenceException {
-        store.storeConnectorSetup("test", "53", new HashMap<String, String>());
-        ConnectorSetupBean setupBean = new ConnectorSetupBean("test", "53", new HashMap<String, String>());
+        store.storeConnectorSetup(connectorDomainPair, "53", new HashMap<String, String>());
+        ConnectorSetupBean setupBean = new ConnectorSetupBean(connectorDomainPair, "53", new HashMap<String, String>());
         Mockito.verify(persistence).create(Mockito.refEq(setupBean, "properties"));
     }
 
     @Test
     public void storeSetupExsiting_shouldOverrideOldSetup() throws PersistenceException {
-        store.storeConnectorSetup("test", "42", new HashMap<String, String>());
-        ConnectorSetupBean setupBean = new ConnectorSetupBean("test", "42", new HashMap<String, String>());
+        store.storeConnectorSetup(connectorDomainPair, "42", new HashMap<String, String>());
+        ConnectorSetupBean setupBean = new ConnectorSetupBean(connectorDomainPair, "42", new HashMap<String, String>());
         Mockito.verify(persistence).delete(Mockito.refEq(setupBean, "properties"));
         Mockito.verify(persistence).create(Mockito.refEq(setupBean, "properties"));
     }
 
     @Test
     public void deleteSetup_shouldWork() throws PersistenceException {
-        store.deleteConnectorSetup("test", "42");
-        ConnectorSetupBean setupBean = new ConnectorSetupBean("test", "42", new HashMap<String, String>());
+        store.deleteConnectorSetup(connectorDomainPair, "42");
+        ConnectorSetupBean setupBean = new ConnectorSetupBean(connectorDomainPair, "42", new HashMap<String, String>());
         Mockito.verify(persistence).delete(Mockito.refEq(setupBean, "properties"));
     }
 
     @Test
     public void deleteSetupTwice_shouldIgnoreSecondCall() {
-        store.deleteConnectorSetup("test", "42");
-        store.deleteConnectorSetup("test", "42");
+        store.deleteConnectorSetup(connectorDomainPair, "42");
+        store.deleteConnectorSetup(connectorDomainPair, "42");
     }
 
     @Test
     public void loadSetupExisting_shouldWork() {
-        Map<String, String> setup = store.loadConnectorSetup("test", "42");
+        Map<String, String> setup = store.loadConnectorSetup(connectorDomainPair, "42");
         assertThat(setup.size(), is(1));
         assertThat(setup.get("foo"), is("bar"));
     }
 
     @Test
     public void loadSetupNonExisting_shouldReturnNull() {
-        Map<String, String> setup = store.loadConnectorSetup("test", "43");
+        Map<String, String> setup = store.loadConnectorSetup(connectorDomainPair, "43");
         assertThat(setup, nullValue());
     }
 
     @Test
     public void getStoredConnectors_shouldReturnAllConnectors() {
-        Set<String> connectors = store.getStoredConnectors("test");
+        Set<String> connectors = store.getStoredConnectors(connectorDomainPair);
         assertThat(connectors.size(), is(1));
         assertThat(connectors.iterator().next(), is("42"));
     }
 
     @Test
     public void getStoredConnectorsNonStored_shouldReturnEmptySet() {
-        Set<String> connectors = store.getStoredConnectors("foo");
+        Set<String> connectors = store.getStoredConnectors(new ConnectorDomainPair("foo", "conn"));
         assertThat(connectors.isEmpty(), is(true));
     }
 

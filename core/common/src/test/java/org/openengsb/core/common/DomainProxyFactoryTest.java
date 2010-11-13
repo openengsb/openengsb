@@ -25,36 +25,21 @@ import static org.mockito.Mockito.when;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.context.ContextService;
-import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.support.NullDomain;
+import org.openengsb.core.common.support.NullDomainImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public class DomainProxyFactoryTest {
 
-    public interface TestInterface extends Domain {
-        boolean methodx();
-    }
-
-    public static class DefaultImpl implements TestInterface {
-        @Override
-        public boolean methodx() {
-            return true;
-        }
-
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.ONLINE;
-        }
-    }
-
-    private DefaultImpl targetService;
+    private NullDomainImpl targetService;
     private ContextService contextMock;
     private BundleContext bundleContextMock;
 
     @Before
     public void setUp() throws Exception {
-        targetService = new DefaultImpl();
+        targetService = new NullDomainImpl();
         setupContextMock();
         setupBundleContextMock();
     }
@@ -75,14 +60,15 @@ public class DomainProxyFactoryTest {
     @Test
     public void testSelectCorrectConnector() throws Exception {
         DefaultDomainProxyFactoryBean factory = new DefaultDomainProxyFactoryBean();
-        factory.setDomainInterface(TestInterface.class);
+        factory.setDomainInterface(NullDomain.class);
         factory.setContext(contextMock);
         factory.setDomainName("testDomain");
         factory.setBundleContext(bundleContextMock);
 
-        TestInterface obj = (TestInterface) factory.getObject();
+        NullDomain obj = (NullDomain) factory.getObject();
 
-        assertTrue(obj.methodx());
+        String s = "42";
+        assertTrue(s == obj.nullMethod(s));
     }
 
 }

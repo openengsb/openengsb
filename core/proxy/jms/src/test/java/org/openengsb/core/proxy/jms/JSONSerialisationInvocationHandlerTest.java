@@ -23,11 +23,13 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -43,7 +45,7 @@ public class JSONSerialisationInvocationHandlerTest {
         JSONSerialisationInvocationHandler handler = new JSONSerialisationInvocationHandler(sender);
         newProxyInstance =
             (TestInterface) Proxy.newProxyInstance(TestInterface.class.getClassLoader(),
-                new Class[]{ TestInterface.class }, handler);
+                new Class[]{TestInterface.class}, handler);
     }
 
     @Test
@@ -60,7 +62,19 @@ public class JSONSerialisationInvocationHandlerTest {
         map.put("b", new TestObject("zwei", 1));
         map.put("a", new TestObject("vier", 3));
         newProxyInstance.test(map);
-        verify(sender).send("test", "[{\"b\":{\"string\":\"zwei\",\"i\":1},\"a\":{\"string\":\"vier\",\"i\":3}}]");
+        String result = getString(map);
+        verify(sender).send("test", "[" + result + "]");
+    }
+
+    private String getString(Map<String, TestObject> map) {
+        ObjectMapper mapper = new ObjectMapper();
+        StringWriter writer = new StringWriter();
+        try {
+            mapper.writeValue(writer, map);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return writer.toString();
     }
 
     @Test

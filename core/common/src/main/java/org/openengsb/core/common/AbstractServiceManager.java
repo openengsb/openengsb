@@ -23,6 +23,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
+import org.openengsb.core.common.connectorsetupstore.ConnectorDomainPair;
 import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
@@ -64,9 +65,10 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     }
 
     public void init() {
-        Set<String> storedConnectors = connectorSetupStore.getStoredConnectors(getImplementationClass().getName());
+        ConnectorDomainPair connectorDomainPair = getDomainConnectorPair();
+        Set<String> storedConnectors = connectorSetupStore.getStoredConnectors(connectorDomainPair);
         for (String id : storedConnectors) {
-            Map<String, String> setup = connectorSetupStore.loadConnectorSetup(getImplementationClass().getName(), id);
+            Map<String, String> setup = connectorSetupStore.loadConnectorSetup(connectorDomainPair, id);
             if (setup != null) {
                 update(id, setup);
             }
@@ -80,48 +82,59 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     }
 
     @Override
+    public void updateWithoutValidation(String id, Map<String, String> attributes) {
+        updateServiceInstance(id, attributes);
+    }
+
+    @Override
     public MultipleAttributeValidationResult update(String id, Map<String, String> attributes) {
+        MultipleAttributeValidationResult validateService;
+        if (isAlreadyCreated(id)) {
+            validateService = factory.updateValidation(getService(id), attributes);
+        } else {
+            validateService = factory.createValidation(id, attributes);
+        }
+        if (validateService.isValid()) {
+            updateServiceInstance(id, attributes);
+        }
+        return validateService;
+    }
+
+    private void updateServiceInstance(String id, Map<String, String> attributes) {
         synchronized (services) {
-            MultipleAttributeValidationResult result;
-            if (!services.containsKey(id)) {
-                result = createService(id, attributes);
+            if (isAlreadyCreated(id)) {
+                updateService(id, attributes);
             } else {
-                result = updateService(id, attributes);
+                createService(id, attributes);
             }
             if (attributeValues.containsKey(id)) {
                 attributeValues.get(id).putAll(attributes);
             } else {
                 attributeValues.put(id, new HashMap<String, String>(attributes));
             }
-            if (result.isValid()) {
-                connectorSetupStore
-                    .storeConnectorSetup(getImplementationClass().getName(), id, attributeValues.get(id));
-            }
-            return result;
+            connectorSetupStore.storeConnectorSetup(getDomainConnectorPair(), id, attributeValues.get(id));
         }
     }
 
-    private MultipleAttributeValidationResult updateService(String id, Map<String, String> attributes) {
+    private boolean isAlreadyCreated(String id) {
+        return services.containsKey(id);
+    }
+
+    private void updateService(String id, Map<String, String> attributes) {
         InstanceType service = getService(id);
-        MultipleAttributeValidationResult validation = factory.updateValidation(service, attributes);
-        if (validation.isValid()) {
-            factory.updateServiceInstance(service, attributes);
-        }
-        return validation;
+        factory.updateServiceInstance(service, attributes);
     }
 
-    private MultipleAttributeValidationResult createService(String id, Map<String, String> attributes) {
-        MultipleAttributeValidationResult validation = factory.createValidation(id, attributes);
-        if (validation.isValid()) {
-            InstanceType instance = factory.createServiceInstance(id, attributes);
-            Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
-            ServiceRegistration registration =
-                getBundleContext().registerService(
+    private void createService(String id, Map<String, String> attributes) {
+        InstanceType instance = factory.createServiceInstance(id, attributes);
+        Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
+        ServiceRegistration registration =
+            getBundleContext()
+                .registerService(
                     new String[]{getImplementationClass().getName(), getDomainInterface().getName(),
                         Domain.class.getName()}, instance, serviceProperties);
-            addDomainRepresentation(id, instance, registration);
-        }
-        return validation;
+        addDomainRepresentation(id, instance, registration);
+
     }
 
     @Override
@@ -151,7 +164,10 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     }
 
     protected InstanceType getService(String id) {
-        return services.get(id).service;
+        synchronized (services) {
+            InstanceType service = services.get(id).service;
+            return service;
+        }
     }
 
     @Override
@@ -160,7 +176,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             services.get(id).registration.unregister();
             services.remove(id);
             attributeValues.remove(id);
-            connectorSetupStore.deleteConnectorSetup(getImplementationClass().getName(), id);
+            connectorSetupStore.deleteConnectorSetup(getDomainConnectorPair(), id);
         }
     }
 
@@ -176,6 +192,12 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         ParameterizedType genericSuperclass = (ParameterizedType) getClass().getGenericSuperclass();
         Type instanceType = genericSuperclass.getActualTypeArguments()[1];
         return (Class<InstanceType>) instanceType;
+    }
+
+    private ConnectorDomainPair getDomainConnectorPair() {
+        String domain = getDomainInterface().getName();
+        String connector = getImplementationClass().getName();
+        return new ConnectorDomainPair(domain, connector);
     }
 
     protected final class DomainRepresentation {

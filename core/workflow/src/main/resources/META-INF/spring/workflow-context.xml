@@ -27,11 +27,11 @@
     <property name="path" value="data/openengsb/rulebase" />
   </bean>
 
-  <osgi:service interface="org.openengsb.core.workflow.RuleManager" >
+  <osgi:service interface="org.openengsb.core.common.workflow.RuleManager" >
     <ref local="ruleManager" />
   </osgi:service>
 
-  <osgi:service interface="org.openengsb.core.workflow.WorkflowService">
+  <osgi:service interface="org.openengsb.core.common.workflow.WorkflowService">
     <bean class="org.openengsb.core.workflow.internal.WorkflowServiceImpl">
       <property name="rulemanager" ref="ruleManager" />
       <property name="currentContextService" ref="contextService" />

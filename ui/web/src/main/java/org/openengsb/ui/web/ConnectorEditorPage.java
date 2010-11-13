@@ -29,7 +29,7 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.ui.web.editor.EditorPanel;
+import org.openengsb.ui.web.editor.ServiceEditorPanel;
 import org.openengsb.ui.web.model.LocalizableStringModel;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.model.WicketStringLocalizer;
@@ -37,7 +37,7 @@ import org.openengsb.ui.web.model.WicketStringLocalizer;
 public class ConnectorEditorPage extends BasePage {
 
     private final transient ServiceManager serviceManager;
-    private EditorPanel editorPanel;
+    private ServiceEditorPanel editorPanel;
 
     public ConnectorEditorPage(ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
@@ -64,35 +64,37 @@ public class ConnectorEditorPage extends BasePage {
                 values.put(attribute.getId(), attribute.getDefaultValue().getString(getSession().getLocale()));
             }
         }
-        editorPanel = new EditorPanel("editor", attributes, values, serviceManager.getDescriptor().getFormValidator()) {
-            @Override
-            public void onSubmit() {
-                CheckBox component = (CheckBox) editorPanel.get("form:validate");
-                boolean checkBoxValue = component.getModelObject();
-                if (checkBoxValue) {
-                    MultipleAttributeValidationResult updateWithValidation =
-                        serviceManager.update(getValues().get("id"), getValues());
-                    if (!updateWithValidation.isValid()) {
-                        Map<String, String> attributeErrorMessages = updateWithValidation.getAttributeErrorMessages();
-                        for (String value : attributeErrorMessages.values()) {
-                            error(new StringResourceModel(value, this, null).getString());
+        editorPanel =
+            new ServiceEditorPanel("editor", attributes, values, serviceManager.getDescriptor().getFormValidator()) {
+                @Override
+                public void onSubmit() {
+                    CheckBox component = (CheckBox) editorPanel.get("form:validate");
+                    boolean checkBoxValue = component.getModelObject();
+                    if (checkBoxValue) {
+                        MultipleAttributeValidationResult updateWithValidation =
+                            serviceManager.update(getValues().get("id"), getValues());
+                        if (!updateWithValidation.isValid()) {
+                            Map<String, String> attributeErrorMessages =
+                                updateWithValidation.getAttributeErrorMessages();
+                            for (String value : attributeErrorMessages.values()) {
+                                error(new StringResourceModel(value, this, null).getString());
+                            }
+                        } else {
+                            returnToTestClient();
                         }
                     } else {
+                        serviceManager.updateWithoutValidation(getValues().get("id"), getValues());
                         returnToTestClient();
                     }
-                } else {
-                    serviceManager.update(getValues().get("id"), getValues());
-                    returnToTestClient();
                 }
-            }
 
-            private void returnToTestClient() {
-                String serviceClass = serviceManager.getDescriptor().getServiceType().getName();
-                String id = getValues().get("id");
-                ServiceId reference = new ServiceId(serviceClass, id);
-                setResponsePage(new TestClient(reference));
-            }
-        };
+                private void returnToTestClient() {
+                    String serviceClass = serviceManager.getDescriptor().getServiceType().getName();
+                    String id = getValues().get("id");
+                    ServiceId reference = new ServiceId(serviceClass, id);
+                    setResponsePage(new TestClient(reference));
+                }
+            };
         add(editorPanel);
     }
 
@@ -107,7 +109,7 @@ public class ConnectorEditorPage extends BasePage {
         return attributes;
     }
 
-    public EditorPanel getEditorPanel() {
+    public ServiceEditorPanel getEditorPanel() {
         return editorPanel;
     }
 

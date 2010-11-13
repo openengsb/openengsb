@@ -53,14 +53,19 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.ui.web.editor.AttributeEditorUtil;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
-import org.openengsb.ui.web.editor.SimpleArgumentPanel;
+import org.openengsb.ui.web.editor.fields.AbstractField;
 import org.openengsb.ui.web.model.LocalizableStringModel;
 import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
@@ -94,9 +99,7 @@ public class TestClient extends BasePage {
 
     private AjaxButton editButton;
 
-    private ServiceManager lastManager;
-
-    private String lastServiceId;
+    private ServiceId lastServiceId;
 
     public TestClient() {
         WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
@@ -153,10 +156,14 @@ public class TestClient extends BasePage {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 log.info("edit button pressed");
-                if (lastManager != null && lastServiceId != null) {
-                    setResponsePage(new ConnectorEditorPage(lastManager, lastServiceId));
-                }
 
+                if (lastServiceId != null) {
+                    ServiceManager lastManager = getLastManager(lastServiceId);
+                    if (lastManager != null) {
+                        setResponsePage(new ConnectorEditorPage(lastManager, lastServiceId.getServiceId()));
+                    }
+
+                }
             }
 
         };
@@ -268,9 +275,12 @@ public class TestClient extends BasePage {
     }
 
     private void updateEditButton(ServiceId serviceId) {
-        lastManager = null;
         lastServiceId = null;
         editButton.setEnabled(false);
+        editButton.setEnabled(getLastManager(serviceId) != null);
+    }
+
+    private ServiceManager getLastManager(ServiceId serviceId) {
         ServiceReference[] references = null;
         try {
             references =
@@ -293,15 +303,14 @@ public class TestClient extends BasePage {
 
             for (ServiceManager sm : managerList) {
                 if (sm.getDescriptor().getId().equals(id)) {
-                    lastManager = sm;
-                    lastServiceId = serviceId.getServiceId();
-                    editButton.setEnabled(true);
+                    lastServiceId = serviceId;
+                    return sm;
                 }
             }
-
         } catch (InvalidSyntaxException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     private TreeModel createModel() {
@@ -326,23 +335,11 @@ public class TestClient extends BasePage {
             if (id != null) {
                 ServiceId serviceId = new ServiceId();
                 serviceId.setServiceId(id);
-                Object serviceObject = services.getService(serviceReference);
-                Class<?> domainInterface = guessDomainInterface(serviceObject);
-                serviceId.setServiceClass(domainInterface.getName());
+                serviceId.setServiceClass(provider.getDomainInterface().getName());
                 DefaultMutableTreeNode referenceNode = new DefaultMutableTreeNode(serviceId, false);
                 providerNode.add(referenceNode);
             }
         }
-    }
-
-    private Class<?> guessDomainInterface(Object serviceObject) {
-        Class<?>[] interfaces = MethodUtil.getAllInterfaces(serviceObject);
-        for (Class<?> candidate : interfaces) {
-            if (!candidate.equals(Domain.class) && candidate.getName().startsWith("org.openengsb.domains")) {
-                return candidate;
-            }
-        }
-        return serviceObject.getClass();
     }
 
     protected void performCall() {
@@ -383,9 +380,15 @@ public class TestClient extends BasePage {
         for (Class<?> p : m.getParameterTypes()) {
             ArgumentModel argModel = new ArgumentModel(i + 1, p, null);
             arguments.add(argModel);
-            if (p.isPrimitive() || p.equals(String.class)) {
-                SimpleArgumentPanel arg = new SimpleArgumentPanel(String.valueOf(i), argModel);
-                argumentList.add(arg);
+            if (p.isPrimitive() || p.equals(String.class) || p.isEnum()) {
+                Builder builder = AttributeDefinition.builder(new PassThroughStringLocalizer());
+                MethodUtil.addEnumValues(argModel.getType(), builder);
+                builder.id("value").name(
+                    new StringResourceModel("argument", this, new Model<ArgumentModel>(argModel)).getString());
+                AbstractField<?> createEditorField =
+                    AttributeEditorUtil.createEditorField("argument_" + i,
+                        new PropertyModel<String>(argModel, "value"), builder.build());
+                argumentList.add(createEditorField);
             } else {
                 Map<String, String> beanAttrs = new HashMap<String, String>();
                 argModel.setValue(beanAttrs);

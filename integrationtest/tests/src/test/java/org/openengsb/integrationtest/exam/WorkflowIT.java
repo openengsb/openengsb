@@ -16,52 +16,39 @@
 
 package org.openengsb.integrationtest.exam;
 
-import java.util.Collection;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
 
-import org.junit.Assert;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.util.AliveState;
-import org.openengsb.core.workflow.RuleManager;
-import org.openengsb.core.workflow.WorkflowService;
-import org.openengsb.core.workflow.model.RuleBaseElementId;
-import org.openengsb.core.workflow.model.RuleBaseElementType;
-import org.openengsb.domains.example.ExampleDomain;
-import org.openengsb.domains.issue.IssueDomain;
-import org.openengsb.domains.issue.models.Issue;
-import org.openengsb.domains.issue.models.IssueAttribute;
-import org.openengsb.domains.notification.NotificationDomain;
-import org.openengsb.domains.notification.model.Notification;
+import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.domain.example.ExampleDomain;
+import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
 @RunWith(JUnit4TestRunner.class)
 public class WorkflowIT extends AbstractExamTestHelper {
 
-    public static class DummyNotificationDomain implements NotificationDomain {
-
-        private Notification notification;
-
-        @Override
-        public void notify(Notification notification) {
-            this.notification = notification;
-        }
-
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
-        }
-    }
-
     public static class DummyLogDomain implements ExampleDomain {
+        private boolean wasCalled = false;
+
         @Override
         public String doSomething(String message) {
+            this.wasCalled = true;
             return "something";
         }
 
@@ -69,80 +56,71 @@ public class WorkflowIT extends AbstractExamTestHelper {
         public AliveState getAliveState() {
             return AliveState.OFFLINE;
         }
-    }
-
-    public static class DummyIssueDomain implements IssueDomain {
 
         @Override
-        public String createIssue(Issue issue) {
-            return "id1";
+        public String doSomething(ExampleEnum exampleEnum) {
+            this.wasCalled = true;
+            return "something";
         }
 
         @Override
-        public void deleteIssue(Integer id) {
-            // ignore
+        public String doSomethingWithLogEvent(LogEvent event) {
+            this.wasCalled = true;
+            return "something";
         }
 
-        @Override
-        public void addComment(Integer id, String comment) {
-            // ignore
+        public boolean isWasCalled() {
+            return wasCalled;
         }
-
-        @Override
-        public void updateIssue(Integer id, String comment, HashMap<IssueAttribute, String> changes) {
-            // ignore
-        }
-
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
-        }
-    }
-
-    @Test
-    public void testHasHelloRule() throws Exception {
-        RuleManager ruleManager = retrieveService(getBundleContext(), RuleManager.class);
-        Collection<RuleBaseElementId> list = ruleManager.list(RuleBaseElementType.Rule);
-        Assert.assertTrue(list.contains(new RuleBaseElementId(RuleBaseElementType.Rule, "hello1")));
     }
 
     @Test
     public void testSendEvent() throws Exception {
+        addHelloWorldRule();
+
         ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
-        contextService.putValue("domains/NotificationDomain/defaultConnector/id", "dummyConnector");
-        contextService.putValue("domains/ExampleDomain/defaultConnector/id", "dummyLog");
-        contextService.putValue("domains/IssueDomain/defaultConnector/id", "dummyIssue");
+        contextService.putValue("domain/ExampleDomain/defaultConnector/id", "dummyLog");
 
         /*
          * This is kind of a workaround. But for some reason when the workflow-service waits for these services for 30
-         * seconds, they don't show up. But when provoking an AssertionError using the 2 lines below, the services show
-         * up, and the test runs just fine - ChristophGr
+         * seconds, they don't show up. But when provoking an AssertionError using the line below, the services show up,
+         * and the test runs just fine - ChristophGr
          */
         retrieveService(getBundleContext(), ExampleDomain.class);
-        retrieveService(getBundleContext(), NotificationDomain.class);
 
-        DummyNotificationDomain dummy = new DummyNotificationDomain();
-        String[] clazzes = new String[]{ Domain.class.getName(), NotificationDomain.class.getName() };
         Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put("id", "dummyConnector");
-
-        getBundleContext().registerService(clazzes, dummy, properties);
-
-        clazzes = new String[]{ Domain.class.getName(), IssueDomain.class.getName() };
-        properties.put("id", "dummyIssue");
-        getBundleContext().registerService(clazzes, new DummyIssueDomain(), properties);
-
-        clazzes = new String[]{ Domain.class.getName(), ExampleDomain.class.getName() };
+        String[] clazzes = new String[]{ Domain.class.getName(), ExampleDomain.class.getName() };
         properties.put("id", "dummyLog");
 
-        getBundleContext().registerService(clazzes, new DummyLogDomain(), properties);
+        DummyLogDomain logService = new DummyLogDomain();
+        getBundleContext().registerService(clazzes, logService, properties);
 
         WorkflowService workflowService = retrieveService(getBundleContext(), WorkflowService.class);
         Event e = new Event("42");
         workflowService.processEvent(e);
 
-        Assert.assertNotNull(dummy.notification);
+        assertThat(logService.isWasCalled(), is(true));
+    }
+
+    private void addHelloWorldRule() throws Exception {
+        RuleManager ruleManager = retrieveService(getBundleContext(), RuleManager.class);
+        ruleManager.addImport("org.openengsb.domain.example.ExampleDomain");
+        ruleManager.addGlobal("org.openengsb.domain.example.ExampleDomain", "example");
+
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "hello1");
+        String rule = readRule();
+        ruleManager.add(id, rule);
+    }
+
+    private String readRule() throws IOException {
+        InputStream helloWorldRule = null;
+        try {
+            helloWorldRule = this.getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/hello1.rule");
+            return IOUtils.toString(helloWorldRule);
+        } finally {
+            IOUtils.closeQuietly(helloWorldRule);
+        }
     }
 }

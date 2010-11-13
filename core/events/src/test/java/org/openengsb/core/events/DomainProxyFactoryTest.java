@@ -22,13 +22,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.DomainEvents;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.workflow.WorkflowService;
+import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.core.test.NullEvent;
 
 public class DomainProxyFactoryTest {
 
     public interface TestInterface extends DomainEvents {
-        void raiseEvent(DummyEvent e);
+        void raiseEvent(NullEvent e);
     }
 
     public interface TestInterfaceFailName extends DomainEvents {
@@ -41,10 +41,6 @@ public class DomainProxyFactoryTest {
 
     public interface TestInterfaceFailParamType extends DomainEvents {
         void raiseEvent(String string);
-    }
-
-    public static class DummyEvent extends Event {
-
     }
 
     private WorkflowService workflowMock;
@@ -62,7 +58,7 @@ public class DomainProxyFactoryTest {
 
         TestInterface obj = (TestInterface) factory.getObject();
 
-        DummyEvent event = new DummyEvent();
+        NullEvent event = new NullEvent();
         obj.raiseEvent(event);
 
         Mockito.verify(workflowMock, Mockito.atLeastOnce()).processEvent(event);

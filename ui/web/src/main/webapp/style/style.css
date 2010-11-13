@@ -289,13 +289,21 @@ div.tabRowContent {
 
 .pageLogo img {
   position: absolute;
-  right: 0px;
+  left: 10px;
+  top: 32px;
+  height: 68px;
 }
 
 .languageIconsE img {
   position: absolute;
   top: 10px;
   right: 10px;
+}
+
+.projectChoicePosition {
+  position: relative;
+  top: -30px;
+  float:right;
 }
 
 .languageIconsG img {
@@ -315,16 +323,16 @@ div.tabRowContent {
 }
 
 #mainMenu ul {
-  display: table-row;
+  display: table;
   list-style-image: none;
   list-style-position: outside;
   list-style-type: none;
   margin: 0;
-  padding: 0;
+  padding: 8px 16px 8px 16px;
 }
 
 #mainMenu li {
-  display: table-cell;
+  display: inline;
   padding: 8px 16px 8px 16px;
   border-right: 1px #cdcdcd solid;
 }
@@ -353,4 +361,16 @@ container-1
 	border:1px #0066FF solid;
 	color:#0066FF;
 }
+
+
+.loginForm label, select {
+  width: 200px;
+}
+
+.formFieldLabel {
+	text-align: right;
+	float: left;
+	width: 100px;
+}
+
 

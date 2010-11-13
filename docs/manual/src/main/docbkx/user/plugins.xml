@@ -44,7 +44,7 @@
   <section xml:id="developer.plugins.jms">
     <title>Using JMS proxying</title>
     <para>The current JMS Connector allows for internal method calls being redirected via JMS, as well as 
-    Events being raised through jms via an external source.</para>
+    Events being raised through JMS via an external source.</para>
     <section>
       <title>Proxying internal Connector calls</title>
       <para>ProxyConnector automatically exports a ServiceManager for every Domain to instantiate a proxy. The proxy
@@ -62,8 +62,9 @@
     <section>
       <title>Event handling via JMS</title>
       <para>For every Domain found at the start of the OPENEngSB Server JMSConnector starts a listener on the 
-      &lt;DomainID&gt;_event_send queue. The parameters used are type and event. The type parameter is the class that
-      has to be used to deserialise the event and be used as the argument to raiseEvent. After the correct class is loaded
+        &lt;DomainID&gt;_event_send queue. The parameters used are type and event. The type parameter is the fully 
+        qualified class name that
+        has to be used to deserialise the event and be used as the argument to raiseEvent. After the correct class is loaded
       the content of the event parameter gets deserialised into an instance of the type parameter. The corresponding
       raiseEvent method is then called for the domain supported by this EventListener.</para>
       <para>When the Event was processed a message is sent to the &lt;DomainID&gt;_event_return queue with the type set
@@ -75,7 +76,7 @@
       <section>
         <title>Connect With Python</title>
         <para>To test the OPENENGSB JMS implementation with Python please follow the 
-          <link xlink:href="${github}/nonjava/python/PythonClient.txt">instructions</link>
+          <link xlink:href="${github}/docs/examples/connectors/python/PythonClient.txt">instructions</link>
         </para>
         <para>The example can be downloaded <link xlink:href="${repos.example}-python-connector.zip">here</link></para>
       </section>

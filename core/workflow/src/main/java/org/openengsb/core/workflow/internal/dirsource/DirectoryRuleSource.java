@@ -44,11 +44,11 @@ import org.drools.builder.ResourceType;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.definition.KnowledgePackage;
 import org.drools.io.ResourceFactory;
-import org.openengsb.core.workflow.RuleBaseException;
+import org.openengsb.core.common.workflow.RuleBaseException;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.internal.AbstractRuleManager;
 import org.openengsb.core.workflow.internal.ResourceHandler;
-import org.openengsb.core.workflow.model.RuleBaseElementId;
-import org.openengsb.core.workflow.model.RuleBaseElementType;
 
 public class DirectoryRuleSource extends AbstractRuleManager {
 
@@ -215,13 +215,11 @@ public class DirectoryRuleSource extends AbstractRuleManager {
         pathFile.mkdirs();
         URL defaultImports = this.getClass().getClassLoader().getResource("rulebase/imports");
         URL defaultglobals = this.getClass().getClassLoader().getResource("rulebase/globals");
-        URL helloWorldRule = this.getClass().getClassLoader().getResource("rulebase/org/openengsb/hello1.rule");
 
         FileUtils.copyURLToFile(defaultImports, new File(path, IMPORTS_FILENAME));
         FileUtils.copyURLToFile(defaultglobals, new File(path, GLOBALS_FILENAME));
-        File packagePath = new File(path, "org/openengsb/hello1.rule");
-        packagePath.getParentFile().mkdirs();
-        FileUtils.copyURLToFile(helloWorldRule, packagePath);
+        File defaultPackage = new File(pathFile, "org/openengsb");
+        defaultPackage.mkdirs();
     }
 
     public void readPackage(String packageName) throws RuleBaseException {
@@ -277,7 +275,7 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
     @SuppressWarnings("unchecked")
     private Collection<File> listFiles(File path, String extension) {
-        Collection<File> functions = FileUtils.listFiles(path, new String[]{ extension }, false);
+        Collection<File> functions = FileUtils.listFiles(path, new String[]{extension}, false);
         return functions;
     }
 

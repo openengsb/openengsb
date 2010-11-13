@@ -16,9 +16,9 @@
 
 package org.openengsb.core.workflow;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
@@ -40,32 +40,15 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.workflow.RuleBaseException;
+import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
-import org.openengsb.core.workflow.model.RuleBaseElementId;
-import org.openengsb.core.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.model.TestEvent;
 
 public class WorkflowServiceTest {
-
-    public interface LogDomain extends Domain {
-        void log(String string);
-    }
-
-    public static class LogDomainMock implements LogDomain {
-        private final StringBuffer log = new StringBuffer();
-
-        @Override
-        public void log(String string) {
-            log.append(string);
-        }
-
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
-        }
-    }
 
     private WorkflowServiceImpl service;
     private RuleManager manager;
@@ -237,5 +220,23 @@ public class WorkflowServiceTest {
         verify(report, times(1)).collectData();
         verify(notification, atLeast(1)).notify(anyString());
         verify(deploy, times(1)).deployProject();
+    }
+
+    @Test
+    public void testStartWorkflowTriggeredByEvent() throws Exception {
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n"
+                + "  Event()\n"
+                + "then\n"
+                + "  flowHelper.startFlow(\"ci\");\n");
+        service.processEvent(new Event());
+        assertThat(service.getRunningFlows().isEmpty(), is(false));
+    }
+
+    @Test
+    public void testRegisterWorkflowTrigger() throws Exception {
+        service.registerFlowTriggerEvent(new Event("triggerEvent"), "ci");
+        service.processEvent(new Event());
+        service.processEvent(new Event("triggerEvent"));
+        assertThat(service.getRunningFlows().size(), is(1));
     }
 }

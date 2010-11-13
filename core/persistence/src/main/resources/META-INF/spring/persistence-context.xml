@@ -23,7 +23,7 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
-  <osgi:service interface="org.openengsb.core.persistence.PersistenceManager">
+  <osgi:service interface="org.openengsb.core.common.persistence.PersistenceManager">
     <bean class="org.openengsb.core.persistence.internal.NeodatisPersistenceManager" >
       <property name="persistenceRootDir" value="data/openengsb/persistence" />
     </bean>    

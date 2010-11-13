@@ -33,6 +33,7 @@ public class PasswordField extends AbstractField<String> {
     @Override
     protected FormComponent<String> createFormComponent(AttributeDefinition attribute, IModel<String> model) {
         PasswordTextField field = new PasswordTextField("field", model);
+        field.setResetPassword(false);
         return field;
     }
 }

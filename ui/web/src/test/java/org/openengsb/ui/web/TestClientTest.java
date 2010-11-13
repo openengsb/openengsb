@@ -16,6 +16,8 @@
 
 package org.openengsb.ui.web;
 
+import static junit.framework.Assert.assertFalse;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -64,7 +66,8 @@ import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.web.editor.BeanArgumentPanel;
-import org.openengsb.ui.web.editor.SimpleArgumentPanel;
+import org.openengsb.ui.web.editor.fields.DropdownField;
+import org.openengsb.ui.web.editor.fields.InputField;
 import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
@@ -81,6 +84,12 @@ public class TestClientTest {
 
         void update(TestBean test);
 
+        void update(UpdateEnum updateEnum);
+
+    }
+
+    public enum UpdateEnum {
+        ONE, TWO
     }
 
     public class TestService implements TestInterface {
@@ -108,6 +117,10 @@ public class TestClientTest {
         @Override
         public AliveState getAliveState() {
             return AliveState.OFFLINE;
+        }
+
+        @Override
+        public void update(UpdateEnum updateEnum) {
         }
 
     }
@@ -180,7 +193,7 @@ public class TestClientTest {
         @SuppressWarnings("unchecked")
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
         MethodCall modelObject = form.getModelObject();
-        ServiceId reference = new ServiceId(TestService.class.getName(), "test");
+        ServiceId reference = new ServiceId(TestInterface.class.getName(), "test");
 
         Assert.assertEquals(reference.toString(), modelObject.getService().toString());
     }
@@ -189,7 +202,7 @@ public class TestClientTest {
     @SuppressWarnings("unchecked")
     public void testJumpToService() throws Exception {
         setupTestClientPage();
-        ServiceId reference = new ServiceId(TestService.class.getName(), "test");
+        ServiceId reference = new ServiceId(TestInterface.class.getName(), "test");
         tester.startPage(new TestClient(reference));
         tester.assertComponent("methodCallForm:serviceList:i:3:nodeComponent:contentLink:content", Label.class);
         Form<MethodCall> form = (Form<MethodCall>) tester.getComponentFromLastRenderedPage("methodCallForm");
@@ -244,8 +257,25 @@ public class TestClientTest {
         Assert.assertEquals(2, argList.size());
         Iterator<? extends Component> iterator = argList.iterator();
         while (iterator.hasNext()) {
-            Assert.assertEquals(SimpleArgumentPanel.class, iterator.next().getClass());
+            Assert.assertEquals(InputField.class, iterator.next().getClass());
         }
+    }
+
+    @Test
+    public void testCreateDropdownForOptionArguments() throws Exception {
+        setupAndStartTestClientPage();
+        RepeatingView argList =
+            (RepeatingView) tester
+                .getComponentFromLastRenderedPage("methodCallForm:argumentListContainer:argumentList");
+
+        setServiceInDropDown(0);
+        setMethodInDropDown(2);
+
+        Assert.assertEquals(1, argList.size());
+        Iterator<? extends Component> iterator = argList.iterator();
+        Component next = iterator.next();
+        Assert.assertEquals(DropdownField.class, next.getClass());
+        assertFalse(iterator.hasNext());
     }
 
     private void setMethodInDropDown(int index) {
@@ -281,7 +311,7 @@ public class TestClientTest {
         setMethodInDropDown(0);
 
         for (int i = 0; i < argList.size(); i++) {
-            formTester.setValue("argumentListContainer:argumentList:" + i + ":value", "test");
+            formTester.setValue("argumentListContainer:argumentList:argument_" + i + ":field", "test");
         }
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
@@ -339,8 +369,8 @@ public class TestClientTest {
         setServiceInDropDown(0);
         setMethodInDropDown(0);
 
-        formTester.setValue("argumentListContainer:argumentList:0:value", "test");
-        formTester.setValue("argumentListContainer:argumentList:1:value", "test");
+        formTester.setValue("argumentListContainer:argumentList:argument_0:field", "test");
+        formTester.setValue("argumentListContainer:argumentList:argument_1:field", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         RepeatingView argList =
@@ -361,8 +391,8 @@ public class TestClientTest {
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
-        formTester.setValue("argumentListContainer:argumentList:0:value", "test");
-        formTester.setValue("argumentListContainer:argumentList:1:value", "test");
+        formTester.setValue("argumentListContainer:argumentList:argument_0:field", "test");
+        formTester.setValue("argumentListContainer:argumentList:argument_1:field", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
@@ -377,8 +407,8 @@ public class TestClientTest {
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
-        formTester.setValue("argumentListContainer:argumentList:0:value", "fail");
-        formTester.setValue("argumentListContainer:argumentList:1:value", "test");
+        formTester.setValue("argumentListContainer:argumentList:argument_0:field", "fail");
+        formTester.setValue("argumentListContainer:argumentList:argument_1:field", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
         String resultException = (String) tester.getMessages(FeedbackMessage.ERROR).get(0);
         assertThat(resultException, containsString(IllegalArgumentException.class.getName()));

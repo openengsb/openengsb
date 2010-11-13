@@ -31,6 +31,9 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.workflow.RuleBaseException;
+import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.osgi.framework.BundleContext;
@@ -153,7 +156,7 @@ public class WorkflowServiceDynamicTest {
     private ServiceReference setupServiceReferenceMock(String id) throws InvalidSyntaxException {
         ServiceReference reference = mock(ServiceReference.class);
         when(reference.getProperty("openengsb.service.type")).thenReturn("domain");
-        when(reference.getProperty("id")).thenReturn("domains." + id);
+        when(reference.getProperty("id")).thenReturn("domain." + id);
         return reference;
     }
 
@@ -185,7 +188,7 @@ public class WorkflowServiceDynamicTest {
         }
     }
 
-    private void setupWorkflowService() throws RuleBaseException {
+    private void setupWorkflowService() throws Exception {
         workflowService = new WorkflowServiceImpl();
         setupRulemanager();
         workflowService.setRulemanager(manager);
@@ -196,7 +199,7 @@ public class WorkflowServiceDynamicTest {
 
     }
 
-    private void setupRulemanager() throws RuleBaseException {
+    private void setupRulemanager() throws Exception {
         manager = new DirectoryRuleSource("data/rulebase");
         ((DirectoryRuleSource) manager).init();
         mockDomain("deploy");
@@ -204,6 +207,7 @@ public class WorkflowServiceDynamicTest {
         mockDomain("test");
         mockDomain("report");
         mockDomain("issue");
+        RuleUtil.addHello1Rule(manager);
     }
 
 }

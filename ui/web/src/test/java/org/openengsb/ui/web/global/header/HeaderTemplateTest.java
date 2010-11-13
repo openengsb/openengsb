@@ -52,8 +52,9 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.workflow.RuleManager;
-import org.openengsb.core.workflow.WorkflowService;
+import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.core.test.NullEvent;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.TestClient;
@@ -142,23 +143,9 @@ public class HeaderTemplateTest {
         context.putBean("ruleManagerBean", mock(RuleManager.class));
         BundleContext bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
-        List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(Dummy.class);
+        List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);
 
     }
-
-    static class Dummy extends Event {
-
-        private String testProperty;
-
-        public String getTestProperty() {
-            return testProperty;
-        }
-
-        public void setTestProperty(String testProperty) {
-            this.testProperty = testProperty;
-        }
-    }
-
 }

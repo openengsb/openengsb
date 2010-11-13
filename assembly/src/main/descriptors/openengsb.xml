@@ -33,7 +33,7 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>${project.basedir}</directory>
+      <directory>${project.basedir}/../</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>NOTICE</include>

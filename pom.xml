@@ -24,7 +24,8 @@
   <properties>
     <!-- Version Informtations -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
-    <openengsb.version.name>"Groovy&#160;Goofy"</openengsb.version.name>
+    <openengsb.version.name.adjective>Harmonic</openengsb.version.name.adjective>
+    <openengsb.version.name.noun>Hulk</openengsb.version.name.noun>
     <!-- General Settings -->
     <root.basedir>${project.basedir}</root.basedir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -62,7 +63,7 @@
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <name>OpenEngSB :: Parent</name>
 
   <description>
@@ -88,10 +89,12 @@
     <module>provision</module>
     <module>wrapped</module>
     <module>config</module>
-    <module>ui</module>
     <module>core</module>
-    <module>domains</module>
+    <module>domain</module>
+    <module>connector</module>
+    <module>ui</module>
     <module>assembly</module>
+    <module>integrationtest</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -448,6 +451,37 @@
       </build>
     </profile>
     <profile>
+      <id>nightly</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
       <id>milestone</id>
       <build>
         <plugins>
@@ -481,6 +515,46 @@
               <useReleaseProfile>false</useReleaseProfile>
               <pushChanges>false</pushChanges>
               <arguments>-Psonatype-oss-release,release,final -Dmaven.test.skip=true -DpushChanges=false</arguments>
+              <preparationGoals>clean install</preparationGoals>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>support</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>${plugin.release.version}</version>
+            <configuration>
+              <autoVersionSubmodules>true</autoVersionSubmodules>
+              <mavenExecutorId>forked-path</mavenExecutorId>
+              <useReleaseProfile>false</useReleaseProfile>
+              <pushChanges>false</pushChanges>
+              <arguments>-Psonatype-oss-release,release,support -Dmaven.test.skip=true -DpushChanges=false</arguments>
+              <preparationGoals>clean install</preparationGoals>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>rc</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>${plugin.release.version}</version>
+            <configuration>
+              <autoVersionSubmodules>true</autoVersionSubmodules>
+              <mavenExecutorId>forked-path</mavenExecutorId>
+              <useReleaseProfile>false</useReleaseProfile>
+              <pushChanges>false</pushChanges>
+              <arguments>-Psonatype-oss-release,release,rc -Dmaven.test.skip=true -DpushChanges=false</arguments>
               <preparationGoals>clean install</preparationGoals>
             </configuration>
           </plugin>
@@ -580,9 +654,6 @@
     </profile>
     <profile>
       <id>integration-test</id>
-      <modules>
-        <module>integrationtest</module>
-      </modules>
       <build>
         <plugins>
           <plugin>

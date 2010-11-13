@@ -107,6 +107,10 @@ public class WicketSession extends AuthenticatedWebSession {
     }
 
     private void addRolesFromAuthentication(Roles roles, Authentication authentication) {
+        if (authentication == null) {
+            signOut();
+            return;
+        }
         for (GrantedAuthority authority : authentication.getAuthorities()) {
             roles.add(authority.getAuthority());
         }

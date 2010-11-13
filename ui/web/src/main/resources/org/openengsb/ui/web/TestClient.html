@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -26,36 +25,32 @@
   <div wicket:id="serviceManagementContainer">
   <ul wicket:id="domains">
     <li>
-      <h3><span wicket:id="domain.name">[domain.name]</span></h3>
+    <h3><span wicket:id="domain.name">[domain.name]</span></h3>
 
-      <p><span wicket:id="domain.class">[domain.class]</span></p>
+    <p><span wicket:id="domain.class">[domain.class]</span></p>
 
-      <p><span wicket:id="domain.description">[domain.description]</span></p>
-      
-      <ul wicket:id="services">
+    <p><span wicket:id="domain.description">[domain.description]</span></p>
+
+    <ul wicket:id="services">
       <li>
-        <h3><span wicket:id="service.name">[service.name]</span>
-          <span class="smallFont light" wicket:id="service.description">[service.description]</span>
-          <a href="#" wicket:id="create.new"><wicket:message key="create.new">[create.new]</wicket:message></a>
-        </h3>
+      <h3><span wicket:id="service.name">[service.name]</span> <span class="smallFont light"
+        wicket:id="service.description">[service.description]</span> <a href="#" wicket:id="create.new"><wicket:message
+        key="create.new">[create.new]</wicket:message></a></h3>
       </li>
     </ul>
-    
+
     </li>
   </ul>
   </div>
 
   <wicket:message key="serviceList" />
 
-  <form wicket:id="methodCallForm">
-    <span wicket:id="serviceList" ></span>
-    <select wicket:id="methodList"></select>
-    <div wicket:id="argumentListContainer">
-      <div wicket:id="argumentList"> </div>
-    </div>
-    <input type="submit" wicket:id="submitButton" wicket:message="value:form.call" />
-    <input type="submit" wicket:id="editButton" wicket:message="value:service.edit" />
-  </form>
+  <form wicket:id="methodCallForm"><span wicket:id="serviceList"></span> <select wicket:id="methodList"></select>
+  <div wicket:id="argumentListContainer">
+  <div wicket:id="argumentList"></div>
+  </div>
+  <input type="submit" wicket:id="submitButton" wicket:message="value:form.call" /> <input type="submit"
+    wicket:id="editButton" wicket:message="value:service.edit" /></form>
   <div wicket:id="feedback">[feedback]</div>
 
 </wicket:extend>

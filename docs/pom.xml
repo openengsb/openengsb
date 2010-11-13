@@ -23,13 +23,13 @@
   <parent>
     <groupId>org.openengsb.build</groupId>
     <artifactId>shared-plugin-settings</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <relativePath>../poms/</relativePath>
   </parent>
 
   <groupId>org.openengsb.docs</groupId>
   <artifactId>openengsb-docs-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>OpenEngSB :: Documentation :: Parent</name>
 
@@ -53,29 +53,23 @@
     <github>http://github.com/openengsb/openengsb/blob/integration/</github>
     <repos.snapshot>https://oss.sonatype.org/content/groups/public/</repos.snapshot> 
     <repos.final>http://uk1.maven.org/maven2/</repos.final>
-    <repos.current></repos.current>
+    <repos.current />
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
   </properties>
 
+  <modules>
+    <module>skin</module>
+    <module>examples</module>
+    <module>manual</module>
+    <module>homepage</module>
+  </modules>
+
   <profiles>
-    <profile>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <id>docs</id>
-      <modules>
-        <module>skin</module>
-        <module>examples</module>
-        <module>manual</module>
-        <module>homepage</module>
-      </modules>
-    </profile>
     <profile>
       <id>nightly</id>
       <properties>
         <github>http://github.com/openengsb/openengsb/blob/master/</github>
         <repos.current>${repos.snapshot}</repos.current>
-        <repos.current>${repos.final}</repos.current>
       </properties>
     </profile>
     <profile>
@@ -86,9 +80,24 @@
       </properties>
     </profile>
     <profile>
+      <id>rc</id>
+      <properties>
+        <github>http://github.com/openengsb/openengsb/blob/openengsb-${project.version}/</github>
+        <repos.current>${repos.final}</repos.current>
+      </properties>
+    </profile>
+    <profile>
       <id>final</id>
       <properties>
         <github>http://github.com/openengsb/openengsb/blob/openengsb-${project.version}/</github>
+        <repos.current>${repos.final}</repos.current>
+      </properties>
+    </profile>
+    <profile>
+      <id>support</id>
+      <properties>
+        <github>http://github.com/openengsb/openengsb/blob/openengsb-${project.version}/</github>
+        <repos.current>${repos.final}</repos.current>
       </properties>
     </profile>
   </profiles>

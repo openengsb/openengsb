@@ -23,8 +23,8 @@ import java.lang.reflect.Method;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.Event;
-import org.openengsb.core.workflow.WorkflowException;
-import org.openengsb.core.workflow.WorkflowService;
+import org.openengsb.core.common.workflow.WorkflowException;
+import org.openengsb.core.common.workflow.WorkflowService;
 
 public class ForwardHandler implements InvocationHandler {
 

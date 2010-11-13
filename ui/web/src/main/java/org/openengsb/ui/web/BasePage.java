@@ -61,7 +61,7 @@ public class BasePage extends WebPage {
         Form<?> form = new Form<Object>("projectChoiceForm");
         form.add(createProjectChoice());
         add(form);
-        add(new Link<Object>("logout") {
+        form.add(new Link<Object>("logout") {
             @Override
             public void onClick() {
                 ((AuthenticatedWebSession) this.getSession()).signOut();
@@ -117,9 +117,9 @@ public class BasePage extends WebPage {
             contextService.createContext(sessionContextId);
             contextService.createContext(sessionContextId + "2");
             contextService.setThreadLocalContext(sessionContextId);
-            contextService.putValue("domains/NotificationDomain/defaultConnector/id", "notification");
-            contextService.putValue("domains/IssueDomain/defaultConnector/id", "issue");
-            contextService.putValue("domains/ExampleDomain/defaultConnector/id", "example");
+            contextService.putValue("domain/NotificationDomain/defaultConnector/id", "notification");
+            contextService.putValue("domain/IssueDomain/defaultConnector/id", "issue");
+            contextService.putValue("domain/ExampleDomain/defaultConnector/id", "example");
         }
     }
 
@@ -143,7 +143,7 @@ public class BasePage extends WebPage {
 
     /**
      * @return the class name, which should be the index in navigation bar
-     *
+     * 
      */
     public String getHeaderMenuItem() {
         return this.getClass().getSimpleName();

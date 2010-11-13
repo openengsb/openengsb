@@ -35,22 +35,15 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
-import org.openengsb.core.common.util.AliveState;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
+import org.openengsb.core.test.NullDomain;
+import org.openengsb.core.test.NullDomainImpl;
 
 public class EditorPageTest {
-
-    private static class DummyDomain implements Domain {
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
-        }
-    }
 
     private AttributeDefinition attrib1;
     private ServiceManager manager;
@@ -64,8 +57,9 @@ public class EditorPageTest {
             AttributeDefinition.builder(new PassThroughStringLocalizer()).id("a").defaultValue("a_default")
                 .name("a_name").build();
         ServiceDescriptor d =
-            ServiceDescriptor.builder(new PassThroughStringLocalizer()).serviceType(DummyDomain.class)
-                .implementationType(DummyDomain.class).id("a").name("sn").description("sd").attribute(attrib1).build();
+            ServiceDescriptor.builder(new PassThroughStringLocalizer()).serviceType(NullDomain.class)
+                .implementationType(NullDomainImpl.class).id("a").name("sn").description("sd").attribute(attrib1)
+                .build();
         when(manager.getDescriptor()).thenReturn(d);
     }
 

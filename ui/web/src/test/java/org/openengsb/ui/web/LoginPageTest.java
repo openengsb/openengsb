@@ -39,6 +39,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.ui.web.global.header.HeaderTemplate;
 import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -128,7 +129,7 @@ public class LoginPageTest {
         formTester.setValue("username", "test");
         formTester.setValue("password", "password");
         formTester.submit();
-        tester.clickLink("logout");
+        tester.clickLink("projectChoiceForm:logout");
         tester.assertRenderedPage(LoginPage.class);
     }
 
@@ -142,5 +143,11 @@ public class LoginPageTest {
         tester.assertRenderedPage(LoginPage.class);
         List<Serializable> messages = tester.getMessages(FeedbackMessage.ERROR);
         assertFalse(messages.isEmpty());
+    }
+
+    @Test
+    public void testIfHeaderAndFooterIsVisible() {
+        tester.startPage(LoginPage.class);
+        tester.assertComponent("header", HeaderTemplate.class);
     }
 }

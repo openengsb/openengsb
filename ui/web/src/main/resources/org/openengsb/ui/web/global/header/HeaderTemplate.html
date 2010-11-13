@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
     Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -17,37 +16,26 @@
 
 -->
 
-<html
-        xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
-        xml:lang="en"
-        lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
+  xml:lang="en" lang="en">
 <body>
 <wicket:panel>
 
-  <div id="header">
+  <div id="header"><a id="top"></a>
 
-    <a id="top"></a>
+  <div id="logo">
+  <div class="logoInner">
+  <h1 class="pageTitle"><a href="" wicket:id="indexLogo1"> <wicket:message key="headerPage.title">[create.new]</wicket:message>
+  [headerPage.title]</a></h1>
+  <a class="pageLogo" href="" wicket:id="indexLogo2"> <img wicket:message="title:headerPage.title" alt="" title=""
+    src="images/openengsb.png" /> </a> <span wicket:id="version" /></div>
+  </div>
 
-    <div id="logo">
-      <div class="logoInner">
-        <h1 class="pageTitle">
-          <a href="" wicket:id="indexLogo1">
-            <wicket:message key="headerPage.title">[create.new]</wicket:message>
-            [headerPage.title]</a>
-        </h1>
-        <a class="pageLogo" href="" wicket:id="indexLogo2">
-          <img wicket:message="title:headerPage.title" alt="" title="" src="images/logo2.png"/>
-        </a>
-        <span wicket:id="version" />
-      </div>
-    </div>
-
-    <div id="mainMenu">
-      <ul>
-        <li wicket:id="headerMenuItems"><a href="" wicket:id="link">linkTarget</a></li>
-      </ul>
-    </div>
+  <div id="mainMenu">
+  <ul>
+    <li wicket:id="headerMenuItems"><a href="" wicket:id="link">linkTarget</a></li>
+  </ul>
+  </div>
 
   </div>
 </wicket:panel>

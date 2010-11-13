@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.openengsb.docs</groupId>
     <artifactId>openengsb-docs-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.docs</groupId>
   <artifactId>openengsb-docs-homepage</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <name>OpenEngSB :: Documentation :: Homepage</name>
   <packaging>pom</packaging>
 
@@ -72,7 +72,20 @@
       <distributionManagement>
         <site>
           <id>OpenengsbWebServer</id>
-          <url>scp://openengsb.org/var/www/openengsb/</url>
+          <url>scp://openengsb.org/var/www/openengsb/milestone</url>
+        </site>
+      </distributionManagement>
+    </profile>
+    <profile>
+      <id>rc</id>
+      <properties>
+        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
+        <older>${repos.final}org/openengsb/openengsb/</older>
+      </properties>
+      <distributionManagement>
+        <site>
+          <id>OpenengsbWebServer</id>
+          <url>scp://openengsb.org/var/www/openengsb/rc</url>
         </site>
       </distributionManagement>
     </profile>
@@ -85,7 +98,20 @@
       <distributionManagement>
         <site>
           <id>OpenengsbWebServer</id>
-          <url>scp://openengsb.org/var/www/openengsb/</url>
+          <url>scp://openengsb.org/var/www/openengsb</url>
+        </site>
+      </distributionManagement>
+    </profile>
+    <profile>
+      <id>support</id>
+      <properties>
+        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
+        <older>${repos.final}org/openengsb/openengsb/</older>
+      </properties>
+      <distributionManagement>
+        <site>
+          <id>OpenengsbWebServer</id>
+          <url>scp://openengsb.org/var/www/openengsb/support</url>
         </site>
       </distributionManagement>
     </profile>

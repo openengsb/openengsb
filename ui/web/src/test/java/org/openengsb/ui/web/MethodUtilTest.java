@@ -16,14 +16,27 @@
 
 package org.openengsb.ui.web;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.when;
+
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Locale;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
+import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
+import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
+import org.openengsb.core.common.l10n.LocalizableString;
+import org.openengsb.core.common.l10n.StringLocalizer;
 import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.test.NullDomain;
+import org.openengsb.core.test.NullDomainImpl;
 
 public class MethodUtilTest {
 
@@ -31,27 +44,12 @@ public class MethodUtilTest {
         void hiddenMethod();
     }
 
-    public interface Testinterface extends Domain {
-        void dosomething();
-    }
-
-    public class TestClass implements Testinterface, HiddenInterface {
+    public class TestClass extends NullDomainImpl implements HiddenInterface {
         @Override
-        public void dosomething() {
+        public void hiddenMethod() {
         }
 
         public void dootherstuff() {
-
-        }
-
-        @Override
-        public void hiddenMethod() {
-
-        }
-
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
         }
     }
 
@@ -59,18 +57,23 @@ public class MethodUtilTest {
         public abstract void dootherstuff();
     }
 
-    public class SubTestClass extends AbstractTestClass implements Testinterface {
+    public class SubTestClass extends AbstractTestClass implements NullDomain {
         @Override
         public void dootherstuff() {
         }
 
         @Override
-        public void dosomething() {
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
         }
 
         @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
+        public void nullMethod() {
+        }
+
+        @Override
+        public Object nullMethod(Object o) {
+            return o;
         }
     }
 
@@ -78,39 +81,48 @@ public class MethodUtilTest {
         void dootherstuff();
     }
 
-    public static class MultiClass implements Testinterface, TestInterface2 {
+    public static class MultiClass implements NullDomain, TestInterface2 {
         @Override
         public void dootherstuff() {
-        }
-
-        @Override
-        public void dosomething() {
         }
 
         @Override
         public AliveState getAliveState() {
             return AliveState.OFFLINE;
         }
+
+        @Override
+        public void nullMethod() {
+        }
+
+        @Override
+        public Object nullMethod(Object o) {
+            return o;
+        }
+    }
+
+    public static enum TestEnum {
+        ONE, TWO
     }
 
     @Test
     public void testOnlyInterface() throws Exception {
         List<Method> methods = MethodUtil.getServiceMethods(new TestClass());
-        Assert.assertTrue(methods.contains(Testinterface.class.getMethod("dosomething")));
+        Assert.assertTrue(methods.contains(NullDomain.class.getMethod("nullMethod")));
         Assert.assertFalse(methods.contains(TestClass.class.getMethod("dootherstuff")));
     }
 
     @Test
     public void testAbstractClass() throws Exception {
         List<Method> methods = MethodUtil.getServiceMethods(new SubTestClass());
-        Assert.assertTrue(methods.contains(Testinterface.class.getMethod("dosomething")));
+        Assert.assertTrue(methods.contains(NullDomain.class.getMethod("nullMethod")));
         Assert.assertFalse(methods.contains(SubTestClass.class.getMethod("dootherstuff")));
     }
 
     @Test
     public void testMultipleInterfaces() throws Exception {
         List<Method> methods = MethodUtil.getServiceMethods(new MultiClass());
-        Assert.assertTrue(methods.contains(Testinterface.class.getMethod("dosomething")));
+        Assert.assertTrue(methods.contains(NullDomain.class.getMethod("nullMethod")));
         Assert.assertTrue(methods.contains(TestInterface2.class.getMethod("dootherstuff")));
     }
 
@@ -119,5 +131,30 @@ public class MethodUtilTest {
         List<Method> methods = MethodUtil.getServiceMethods(new TestClass());
         Method hidden = HiddenInterface.class.getMethod("hiddenMethod");
         Assert.assertFalse(methods.contains(hidden));
+    }
+
+    @Test
+    public void addEnumValues() {
+        StringLocalizer mock = Mockito.mock(StringLocalizer.class);
+        LocalizableString mock2 = Mockito.mock(LocalizableString.class);
+        LocalizableString mock3 = Mockito.mock(LocalizableString.class);
+        when(mock2.getKey()).thenReturn("123");
+        when(mock2.getString(Locale.getDefault())).thenReturn("ONE");
+        when(mock2.getKey()).thenReturn("123");
+        when(mock3.getString(Locale.getDefault())).thenReturn("TWO");
+        when(mock.getString("ONE")).thenReturn(mock2);
+        when(mock.getString("TWO")).thenReturn(mock2);
+
+        Builder builder = AttributeDefinition.builder(mock);
+        builder.name("ONE").id("123");
+        MethodUtil.addEnumValues(TestEnum.class, builder);
+        AttributeDefinition build = builder.build();
+        List<Option> options = build.getOptions();
+        Option option0 = options.get(0);
+        assertThat(option0.getLabel().getString(Locale.getDefault()), equalTo(TestEnum.ONE.toString()));
+        assertThat(option0.getValue().toString(), equalTo(TestEnum.ONE.toString()));
+        Option option1 = options.get(1);
+        assertThat(option1.getLabel().getString(Locale.getDefault()), equalTo(TestEnum.ONE.toString()));
+        assertThat(option1.getValue().toString(), equalTo(TestEnum.TWO.toString()));
     }
 }

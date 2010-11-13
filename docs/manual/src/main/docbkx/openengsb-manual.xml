@@ -27,7 +27,7 @@
       <year>2010</year>
       <holder>OpenEngSB Division, Vienna University of Technology</holder>
     </copyright>
-    <subtitle>${project.version} ${openengsb.version.name}</subtitle>
+    <subtitle>${project.version} "${openengsb.version.name.adjective} ${openengsb.version.name.noun}"</subtitle>
     <author>
       <personname>
         <firstname>Open Engineering Service Bus</firstname>
@@ -80,6 +80,10 @@
     <xi:include href="domains/scm/domain.xml"/>
     <xi:include href="domains/issue/domain.xml"/>
     <xi:include href="domains/report/domain.xml"/>
+    <xi:include href="domains/build/domain.xml"/>
+    <xi:include href="domains/test/domain.xml"/>
+    <xi:include href="domains/deploy/domain.xml"/>
+    <xi:include href="domains/multi-domain/connectors.xml" />
   </part>
 
   <part xml:id="developer.manual">
@@ -100,6 +104,7 @@
   <part xml:id="appendix">
     <title>Appendix</title>
     <xi:include href="appendix/codestyle.xml"/>
+    <xi:include href="appendix/recommended.eclipse.plugins.xml"/>
     <xi:include href="appendix/writing.documentation.xml"/>
     <xi:include href="appendix/license.xml"/>
   </part>
