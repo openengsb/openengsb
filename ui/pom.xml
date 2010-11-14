@@ -36,6 +36,7 @@
 
   <modules>
     <module>web</module>
+	<module>taskbox</module>
   </modules>
 
 </project>
