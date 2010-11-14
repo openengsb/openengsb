@@ -260,6 +260,21 @@
       <email>kristof.meixner [at] fatlenny.net</email>
       <timezone>+1</timezone>
     </contributor>
+    <contributor>
+      <name>Lukas Stampf</name>
+      <email>lukas.stampf [at] gmx.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Gregor Ryba</name>
+      <email>gregor.ryba [at] infor.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Daniel Driza</name>
+      <email>daniel.driza [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
   </contributors>
 
   <build>
