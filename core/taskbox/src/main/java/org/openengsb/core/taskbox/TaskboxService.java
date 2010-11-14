@@ -55,12 +55,6 @@ public interface TaskboxService {
     void setWorkflowMessage(String message);
 
     /**
-     * Used by the webfrontend to create a panel for a specific task or taskstep
-     */
-
-    Panel createPanel(String objectid, String panelid);
-
-    /**
      * Redirect events to workflowService
      * @throws WorkflowException
      */

@@ -25,14 +25,11 @@ import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.common.Event;
-import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.taskbox.model.Task;
-import org.openengsb.core.taskbox.model.Ticket;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
-import org.apache.wicket.markup.html.panel.Panel;
 
 public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     private Log log = LogFactory.getLog(getClass());
@@ -107,18 +104,6 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
-    }
-
-    @Override
-    public Panel createPanel(String objectid, String panelid) {
-        List<Ticket> ticket = persistence.query(new Ticket(objectid));
-        Ticket ret;
-        if(ticket.size() == 0){
-            ret = new Ticket(objectid);
-        }else{
-            ret = ticket.get(0);
-        }
-        return ret.getPanel(panelid);
     }
 
     @Override
