@@ -24,8 +24,8 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.util.MethodUtil;
 import org.openengsb.ui.common.wicket.model.MapModel;
+import org.openengsb.ui.common.wicket.util.MethodUtil;
 
 @SuppressWarnings("serial")
 public class BeanEditorPanel extends Panel {

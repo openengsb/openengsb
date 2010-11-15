@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
@@ -56,8 +57,8 @@ import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.util.MethodUtil;
 import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
+import org.openengsb.ui.common.wicket.util.MethodUtil;
 import org.openengsb.ui.web.model.Argument;
 import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;

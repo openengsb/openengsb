@@ -1,3 +1,4 @@
+package org.openengsb.ui.common.wicket.util;
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
@@ -14,7 +15,6 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.util;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;

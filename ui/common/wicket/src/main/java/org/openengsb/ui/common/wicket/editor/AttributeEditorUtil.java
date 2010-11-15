@@ -25,7 +25,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.AbstractValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.util.MethodUtil;
 import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.ui.common.wicket.editor.fields.AbstractField;
@@ -34,6 +33,7 @@ import org.openengsb.ui.common.wicket.editor.fields.DropdownField;
 import org.openengsb.ui.common.wicket.editor.fields.InputField;
 import org.openengsb.ui.common.wicket.editor.fields.PasswordField;
 import org.openengsb.ui.common.wicket.model.MapModel;
+import org.openengsb.ui.common.wicket.util.MethodUtil;
 
 public final class AttributeEditorUtil {
     private AttributeEditorUtil() {

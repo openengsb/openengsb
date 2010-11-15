@@ -25,10 +25,10 @@ import org.apache.wicket.model.PropertyModel;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
-import org.openengsb.core.common.util.MethodUtil;
 import org.openengsb.ui.common.wicket.editor.AttributeEditorUtil;
 import org.openengsb.ui.common.wicket.editor.BeanEditorPanel;
 import org.openengsb.ui.common.wicket.editor.fields.AbstractField;
+import org.openengsb.ui.common.wicket.util.MethodUtil;
 import org.openengsb.ui.web.model.Argument;
 
 @SuppressWarnings("serial")

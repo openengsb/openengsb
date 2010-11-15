@@ -1,3 +1,4 @@
+package org.openengsb.ui.common.wicket.util;
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
@@ -14,7 +15,6 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -35,9 +35,9 @@ import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.StringLocalizer;
 import org.openengsb.core.common.util.AliveState;
-import org.openengsb.core.common.util.MethodUtil;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
+import org.openengsb.ui.common.wicket.util.MethodUtil;
 
 public class MethodUtilTest {
 
