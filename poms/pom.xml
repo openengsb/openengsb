@@ -60,15 +60,15 @@
     <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
     <maven.plugin.changes.version>2.3</maven.plugin.changes.version>
     <maven.plugin.release.version>2.0-beta-9</maven.plugin.release.version>
-    <maven.plugin.checkstyle.version>2.5</maven.plugin.checkstyle.version>
-    <maven.plugin.surefire>2.4.3</maven.plugin.surefire>
+    <maven.plugin.checkstyle.version>2.6</maven.plugin.checkstyle.version>
+    <maven.plugin.surefire>2.6</maven.plugin.surefire>
     <maven.plugin.surefire.report>2.5</maven.plugin.surefire.report>
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
-    <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
+    <maven.plugin.compiler.version>2.3.2</maven.plugin.compiler.version>
     <maven.rat.version>0.6</maven.rat.version>
     <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
     <maven.war.plugin>2.1.1</maven.war.plugin>
-    <twdata.cli.version>1.0.4</twdata.cli.version>
+    <twdata.cli.version>1.0.5</twdata.cli.version>
     <clover.version>3.0.2</clover.version>
     <maven.plugin.antrun>1.5</maven.plugin.antrun>
     <!-- Component Versions -->
@@ -98,7 +98,7 @@
     <xml.bind.version>2.0.0</xml.bind.version>
     <xml.stream.version>1.5.0</xml.stream.version>
     <commons.collection.version>3.2.1</commons.collection.version>
-    <commons.lang.version>2.4</commons.lang.version>
+    <commons.lang.version>2.6</commons.lang.version>
     <commons.pool.version>1.5.4_1</commons.pool.version>
     <commons.dbcp.version>1.2.2_5</commons.dbcp.version>
     <commons.logging.version>1.1.1</commons.logging.version>
@@ -144,7 +144,7 @@
     <hibernate.version>3.4.0.GA</hibernate.version>
     <httpcomponent.version>4.0-alpha4</httpcomponent.version>
     <h2.version>1.1.116</h2.version>
-    <jaxb.version>2.2.1</jaxb.version>
+    <jaxb.version>2.2.2-promoted-b94</jaxb.version>
     <jaxen.version>1.1.1</jaxen.version>
     <jgit.version>0.9.3</jgit.version>
     <jibx.version>1.2.2</jibx.version>

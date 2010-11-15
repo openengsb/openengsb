@@ -36,9 +36,11 @@
     <plugin.eclipse.version>2.8</plugin.eclipse.version>
     <plugin.surefire.version>2.5</plugin.surefire.version>
     <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
-    <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
+    <maven.plugin.compiler.version>2.3.2</maven.plugin.compiler.version>
+    <maven.plugin.clean.version>2.4.1</maven.plugin.clean.version>
+    <maven.plugin.jar.version>2.3.1</maven.plugin.jar.version>
     <plugin.deploy.version>2.5</plugin.deploy.version>
-    <twdata.cli.version>1.0.4</twdata.cli.version>
+    <twdata.cli.version>1.0.5</twdata.cli.version>
     <clover.version>3.0.2</clover.version>
     <plugin.pax.version>1.4</plugin.pax.version>
     <plugin.paxrunner.version>1.5.0</plugin.paxrunner.version>
