@@ -21,13 +21,13 @@
     <relativePath>../poms/compiled/</relativePath>
     <groupId>org.openengsb.build</groupId>
     <artifactId>compiled-bundle-settings</artifactId>
-    <version>1.0.0.RC3</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.connector</groupId>
   <artifactId>openengsb-connector-parent</artifactId>
-  <version>1.0.0.RC3</version>
+  <version>1.0.0-SNAPSHOT</version>
 
 
   <name>OpenEngSB :: Connector :: Parent</name>

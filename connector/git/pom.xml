@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
-    <version>1.0.0.RC3</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -33,7 +33,7 @@
   </properties>
 
   <artifactId>openengsb-connector-git</artifactId>
-  <version>1.0.0.RC3</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Connector :: Git</name>
 
