@@ -17,15 +17,15 @@
 package org.openengsb.domain.scm;
 
 /**
- * An abstraction for commit reference (commit-ref) to a commit in SCM. 
+ * An abstraction for commit reference (commit-ref) to a commit id in SCM. 
  */
 public interface CommitRef {
 
 	/**
-	 * Gets this commit-ref value
+	 * Gets this commit-ref value String representation.
 	 * 
-	 * @return commit-ref value 
+	 * @return String representation of this commit-ref value 
 	 */
-	String getValue();
+	String getStringRepresentation();
 
 }

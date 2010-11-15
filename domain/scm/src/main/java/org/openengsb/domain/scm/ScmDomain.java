@@ -42,6 +42,7 @@ public interface ScmDomain extends Domain {
 
     /**
      * Checks if file or directory specified by relative {@code path} exists in repository.
+     * Returns true if item exists in repository, otherwise false.
      * 
      * @return true if item exists in repository, otherwise false
      */
@@ -49,7 +50,7 @@ public interface ScmDomain extends Domain {
 
     /**
      * Checks if file or directory specified by relative {@code path} and {@code id}
-     * (commit-ref) exists in repository.
+     * (commit-ref) exists in repository. Returns true if item exists in repository, otherwise false.
      * 
      * @return true if item exists in repository, otherwise false
      */
@@ -75,7 +76,7 @@ public interface ScmDomain extends Domain {
 
     /**
      * Commit a single {@code file} to SCM repository. The {@code comment}
-     * parameter adds message to given commit.
+     * parameter adds message to given commit. Reference to commit in SCM is returned as instance of {@link CommitRef}.
      * 
      * @throws {@link ScmException} if working {@code file} does not exist or is
      *         not accessible.
@@ -86,8 +87,8 @@ public interface ScmDomain extends Domain {
     /**
      * Commit changes on working {@code directory} to SCM repository. The
      * {@code comment} parameter adds message to given commit. The
-     * {@code recursive} option set if also changes for its children will be
-     * committed.
+     * {@code recursive} option sets if also changes for its children will be
+     * committed. Reference to commit in SCM is returned as instance of {@link CommitRef}.
      * 
      * @throws {@link ScmException} if working {@code directory} does not exist
      *         or is not accessible.
