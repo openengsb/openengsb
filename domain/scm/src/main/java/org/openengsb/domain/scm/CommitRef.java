@@ -26,14 +26,6 @@ public interface CommitRef {
 	 * 
 	 * @return commit-ref value 
 	 */
-	Object getValue();
-	
-	
-	/**
-	 * Gets this commitRef type
-	 * 
-	 * @return commit-ref type
-	 */
-	CommitRefType getType();
+	String getValue();
 
 }
