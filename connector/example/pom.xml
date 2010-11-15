@@ -30,12 +30,32 @@
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
+  <groupId>org.openengsb.connector</groupId>
   <artifactId>openengsb-connector-example</artifactId>
   <version>1.1.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Connector :: Example</name>
 
   <packaging>bundle</packaging>
+
+  <description>
+    Example Connector which implements Example Domain. It logs messages with a specific log level
+    to the OSGI logger.
+  </description>
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
 
   <dependencies>
     <dependency>
