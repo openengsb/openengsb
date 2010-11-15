@@ -57,6 +57,7 @@ public abstract class ServiceEditor extends Panel {
         add(form);
         serviceEditorPanel = new ServiceEditorPanel("attributesPanel", attributes, values);
         form.add(serviceEditorPanel);
+
         if (validator != null) {
             serviceEditorPanel.attachFormValidator(form, validator);
         }
@@ -98,5 +99,9 @@ public abstract class ServiceEditor extends Panel {
 
     protected boolean isValidating(){
         return serviceEditorPanel.isValidating();
+    }
+
+    public String getAttributeViewId(String attribute) {
+        return serviceEditorPanel.getAttributeViewId(attribute);
     }
 }

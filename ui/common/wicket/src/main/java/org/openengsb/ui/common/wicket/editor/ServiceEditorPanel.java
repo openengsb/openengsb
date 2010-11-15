@@ -90,7 +90,7 @@ public class ServiceEditorPanel extends Panel {
                 Map<String, FormComponent<?>> formComponents = new HashMap<String, FormComponent<?>>();
                 if (validator != null) {
                     for (String attribute : validator.fieldsToValidate()) {
-                        Component component = form.get("fields:" + getAttributeViewId(attribute) + ":row:field");
+                        Component component = form.get("attributesPanel:fields:" + getAttributeViewId(attribute) + ":row:field");
                         if (component instanceof FormComponent<?>) {
                             formComponents.put(attribute, (FormComponent<?>) component);
                         }

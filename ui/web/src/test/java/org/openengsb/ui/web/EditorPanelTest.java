@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.common.wicket.editor;
+package org.openengsb.ui.web;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -29,11 +29,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.markup.html.form.CheckBox;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.FormComponent;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
@@ -51,15 +46,14 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.core.common.validation.ValidationResultImpl;
-import org.openengsb.ui.common.wicket.editor.fields.AbstractField;
+import org.openengsb.ui.common.wicket.editor.NumberValidator;
 import org.openengsb.ui.common.wicket.validation.DefaultPassingFormValidator;
 
 @SuppressWarnings("serial")
-@Ignore("editor-panel-refactor")
 public class EditorPanelTest {
 
     private WicketTester tester;
-    private ServiceEditorPanel editor;
+    private ServiceEditor editor;
     private Map<String, String> defaultValues;
     private AttributeDefinition attribOption;
     private AttributeDefinition attribBoolean;
@@ -76,25 +70,6 @@ public class EditorPanelTest {
     }
 
     @Test
-    public void editingStringAttribute_shouldRenderTextFieldWithPresetValues() throws Exception {
-        startEditorPanel(attrib);
-        TextField<?> tf = getEditorFieldFormComponent(attrib.getId(), TextField.class);
-        assertThat(tf.getValue(), is(defaultValues.get(attrib.getId())));
-    }
-
-    @Test
-    public void attributeWithDescription_shouldRenderTooltipImageWithTitle() throws Exception {
-        startEditorPanel(attrib);
-        assertThat(((Image) getEditorField(attrib.getId()).get("tooltip")).isVisible(), is(true));
-    }
-
-    @Test
-    public void attributeWithoutDescription_shouldShowNoTooltipImage() throws Exception {
-        startEditorPanel(attribNoDesc);
-        assertThat(getEditorField(attribNoDesc.getId()).get("tooltip").isVisible(), is(false));
-    }
-
-    @Test
     @Ignore("empty string in model gets replaced with null, why is this happening")
     public void submittingFormWithoutChange_shouldReturnInitialValues() throws Exception {
         startEditorPanel(attrib, attribNoDesc);
@@ -107,26 +82,10 @@ public class EditorPanelTest {
     public void submittingFormWithChanges_shouldReflectChangesInValues() throws Exception {
         startEditorPanel(attrib);
         FormTester formTester = tester.newFormTester(editor.getId() + ":form");
+        tester.debugComponentTrees();
         formTester.setValue(buildFormComponentId(attrib.getId()), "new_value_a");
         formTester.submit();
         assertThat(editor.getValues().get(attrib.getId()), is("new_value_a"));
-    }
-
-    @Test
-    public void optionAttribute_shouldBeDisplayedAsDropDown() {
-        startEditorPanel(attribOption);
-        DropDownChoice<?> choice = getEditorFieldFormComponent(attribOption.getId(), DropDownChoice.class);
-        assertThat(choice.getChoices().size(), is(attribOption.getOptions().size()));
-    }
-
-    @Test
-    public void choicesInDropDownChoice_shouldBeInSameOrderAsOptionAttribute() {
-        startEditorPanel(attribOption);
-        @SuppressWarnings("unchecked")
-        List<String> choice = getEditorFieldFormComponent(attribOption.getId(), DropDownChoice.class).getChoices();
-        for (int i = 0; i < attribOption.getOptions().size(); ++i) {
-            assertThat(choice.get(i), is(attribOption.getOptions().get(i).getValue()));
-        }
     }
 
     @Test
@@ -136,13 +95,6 @@ public class EditorPanelTest {
         formTester.select(buildFormComponentId(attribOption.getId()), 1);
         formTester.submit();
         assertThat(editor.getValues().get(attribOption.getId()), is(attribOption.getOptions().get(1).getValue()));
-    }
-
-    @Test
-    public void boolAttribute_shouldBeDisplayedAsCheckBox() {
-        startEditorPanel(attribBoolean);
-        CheckBox cb = getEditorFieldFormComponent(attribBoolean.getId(), CheckBox.class);
-        assertThat(cb, notNullValue());
     }
 
     @Test
@@ -254,7 +206,7 @@ public class EditorPanelTest {
     @Test
     public void startEditorPanel_ShouldHaveCheckedValidateCheckbox() {
         startEditorPanel(attrib);
-        tester.assertModelValue(editor.getId() + ":form:validate", true);
+        tester.assertModelValue(editor.getId() + ":form:attributesPanel:validate", true);
     }
 
     private AttributeDefinition.Builder newAttribute(String id, String name, String desc) {
@@ -272,17 +224,21 @@ public class EditorPanelTest {
         }
         defaultValues = new HashMap<String, String>(values);
         tester = new WicketTester();
-        editor = (ServiceEditorPanel) tester.startPanel(new TestPanelSource() {
+        editor = (ServiceEditor) tester.startPanel(new TestPanelSource() {
             @Override
             public Panel getTestPanel(String panelId) {
-                return new ServiceEditorPanel(panelId, Arrays.asList(attributes), values);
+                return new ServiceEditor(panelId, Arrays.asList(attributes), values, validator) {
+                    @Override
+                    public void onSubmit() {
+                    }
+                };
             }
         });
     }
 
     @SuppressWarnings("unchecked")
     private <T> T getEditorFieldFormComponent(String attributeId, Class<T> componentType) {
-        String id = editor.getId() + ":form:" + buildFormComponentId(attributeId);
+        String id = editor.getId() + ":" + buildFormComponentId(attributeId);
         Component c = tester.getComponentFromLastRenderedPage(id);
         assertThat(c, notNullValue());
         assertThat(c, is(componentType));
@@ -290,11 +246,8 @@ public class EditorPanelTest {
     }
 
     public String buildFormComponentId(String attributeId) {
-        return "fields:" + editor.getAttributeViewId(attributeId) + ":row:field";
-    }
-
-    private AbstractField<?> getEditorField(String attributeId) {
-        return (AbstractField<?>) getEditorFieldFormComponent(attributeId, FormComponent.class).getParent();
+        String string = "attributesPanel:fields:" + editor.getAttributeViewId(attributeId) + ":row:field";
+        return string;
     }
 
     private static final class FailValidator implements FieldValidator {

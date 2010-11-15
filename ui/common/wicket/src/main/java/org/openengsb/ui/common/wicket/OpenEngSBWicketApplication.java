@@ -24,7 +24,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.openengsb.ui.common.wicket.OpenEngSBWebSession;
 
 public abstract class OpenEngSBWicketApplication extends AuthenticatedWebApplication {
 
