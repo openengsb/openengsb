@@ -44,6 +44,7 @@ import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.Transport;
 import org.openengsb.core.common.util.AliveState;
+import org.openengsb.domain.scm.CommitRef;
 import org.openengsb.domain.scm.ScmDomain;
 import org.openengsb.domain.scm.ScmException;
 
@@ -182,5 +183,53 @@ public class GitServiceImpl implements ScmDomain {
 
     public FileRepository getRepository() {
         return repository;
+    }
+
+    @Override
+    public void addDirectory(File arg0, boolean arg1) throws ScmException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void addFile(File arg0) throws ScmException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void checkoutDirectory(String arg0, CommitRef arg1, boolean arg2, File arg3) throws ScmException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void checkoutFile(String arg0, CommitRef arg1, File arg2) throws ScmException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public CommitRef commitDirectory(File arg0, String arg1, boolean arg2) throws ScmException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public CommitRef commitFile(File arg0, String arg1) throws ScmException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean exists(String arg0) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean exists(String arg0, CommitRef arg1) {
+        // TODO Auto-generated method stub
+        return false;
     }
 }
