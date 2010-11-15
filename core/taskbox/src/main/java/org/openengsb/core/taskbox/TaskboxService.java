@@ -17,9 +17,8 @@
 package org.openengsb.core.taskbox;
 
 import org.openengsb.core.common.Event;
-import org.openengsb.core.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
-import org.apache.wicket.markup.html.panel.Panel;
+import org.openengsb.core.taskbox.model.Task;
 
 /**
  * The Taskbox is a service which can be used when human interaction is required, e.g. by help desk applications. This

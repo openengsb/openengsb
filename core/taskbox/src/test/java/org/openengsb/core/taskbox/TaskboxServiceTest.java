@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.workflow.WorkflowException;
@@ -40,6 +39,7 @@ public class TaskboxServiceTest {
         service.setWorkflowService(workflowService);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testStartWorkflow() throws TaskboxException, WorkflowException {
         Task t = null;

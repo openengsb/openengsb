@@ -24,5 +24,4 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:reference id="taskboxService" interface="org.openengsb.core.taskbox.TaskboxService" />
-  <osgi:reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
 </beans>
