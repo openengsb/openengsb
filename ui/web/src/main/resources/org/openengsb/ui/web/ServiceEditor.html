@@ -19,19 +19,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
   <body>
     <wicket:panel>
-      <table>
-        <tr wicket:id="fields">
-          <wicket:container wicket:id="row" />
-        </tr>
-        <tr>
-          <th></th>
-          <td>
-            <input type="checkbox" wicket:id="validate">
-              <wicket:message key="editor.validate">Validate Service</wicket:message>
-            </input>
-          </td>
-        </tr>
-      </table>
+      <form wicket:id="form">
+        <div wicket:id="attributesPanel" />
+        <div wicket:id="feedback" />
+        <input type="submit" wicket:message="value:editor.submit" wicket:id="submitButton" />
+      </form>
     </wicket:panel>
   </body>
 </html>

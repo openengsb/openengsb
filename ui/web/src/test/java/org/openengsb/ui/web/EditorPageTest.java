@@ -89,7 +89,7 @@ public class EditorPageTest {
         tester.debugComponentTrees();
         String id = page.getEditorPanel().getAttributeViewId("id");
         TextField<String> idField =
-            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:fields:" + id + ":row:field");
+            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:" + id + ":row:field");
         assertThat(page.getEditorPanel().getAttributes().size(), is(2));
         assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("id"));
         Assert.assertEquals("id1", idField.getDefaultModel().getObject());

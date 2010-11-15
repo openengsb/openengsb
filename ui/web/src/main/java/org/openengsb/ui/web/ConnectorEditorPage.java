@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
@@ -37,7 +36,7 @@ import org.openengsb.ui.web.model.WicketStringLocalizer;
 public class ConnectorEditorPage extends BasePage {
 
     private final transient ServiceManager serviceManager;
-    private ServiceEditorPanel editorPanel;
+    private ServiceEditor editor;
 
     public ConnectorEditorPage(ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
@@ -64,12 +63,11 @@ public class ConnectorEditorPage extends BasePage {
                 values.put(attribute.getId(), attribute.getDefaultValue().getString(getSession().getLocale()));
             }
         }
-        editorPanel =
-            new ServiceEditorPanel("editor", attributes, values, serviceManager.getDescriptor().getFormValidator()) {
+        editor =
+            new ServiceEditor("editor", attributes, values, serviceManager.getDescriptor().getFormValidator()) {
                 @Override
                 public void onSubmit() {
-                    CheckBox component = (CheckBox) editorPanel.get("form:validate");
-                    boolean checkBoxValue = component.getModelObject();
+                    boolean checkBoxValue = isValidating();
                     if (checkBoxValue) {
                         MultipleAttributeValidationResult updateWithValidation =
                             serviceManager.update(getValues().get("id"), getValues());
@@ -95,7 +93,7 @@ public class ConnectorEditorPage extends BasePage {
                     setResponsePage(new TestClient(reference));
                 }
             };
-        add(editorPanel);
+        add(editor);
     }
 
     private List<AttributeDefinition> buildAttributeList(ServiceManager service) {
@@ -110,7 +108,7 @@ public class ConnectorEditorPage extends BasePage {
     }
 
     public ServiceEditorPanel getEditorPanel() {
-        return editorPanel;
+        return editor.getServiceEditorPanel();
     }
 
     @Override
