@@ -98,7 +98,7 @@
     <xml.bind.version>2.0.0</xml.bind.version>
     <xml.stream.version>1.5.0</xml.stream.version>
     <commons.collection.version>3.2.1</commons.collection.version>
-    <commons.lang.version>2.6</commons.lang.version>
+    <commons.lang.version>2.5</commons.lang.version>
     <commons.pool.version>1.5.4_1</commons.pool.version>
     <commons.dbcp.version>1.2.2_5</commons.dbcp.version>
     <commons.logging.version>1.1.1</commons.logging.version>
