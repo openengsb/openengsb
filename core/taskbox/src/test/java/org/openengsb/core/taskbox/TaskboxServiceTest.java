@@ -16,6 +16,7 @@
 
 package org.openengsb.core.taskbox;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -42,8 +43,20 @@ public class TaskboxServiceTest {
     @Test
     public void testStartWorkflow() throws TaskboxException, WorkflowException {
         Task t = null;
-    	service.startWorkflow("tasktest","ticket", t);
+        service.startWorkflow("tasktest", "ticket", t);
 
         verify(workflowService, Mockito.times(1)).startFlow(Mockito.anyString(), Mockito.anyMap());
     }
+
+    @Test(expected = TaskboxException.class)
+    public void testGetEmptyWorkflowMessage() throws TaskboxException {
+        service.getWorkflowMessage();
+    }
+
+    @Test
+    public void testWorkflowMessage() throws TaskboxException {
+        service.setWorkflowMessage("testmessage");
+        assertEquals("testmessage", service.getWorkflowMessage());
+    }
+
 }

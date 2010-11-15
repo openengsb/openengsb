@@ -61,23 +61,7 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     public void setWorkflowMessage(String message) {
         this.message = message;
     }
-    /*
-    @Override
-    public void startWorkflow(String taskVariableName, Task task) throws TaskboxException {
-        try {
-            Map<String, Object> parameterMap = new HashMap<String, Object>();
-            parameterMap.put(taskVariableName, task);
 
-            workflowService.startFlow("tasktest", parameterMap);
-
-            log.trace("Started workflow 'tasktest'");
-        } catch (Exception e) {
-            log.error(e.getMessage() + " STACKTRACE: " + e.getStackTrace());
-            throw new TaskboxException(e);
-        }
-
-    }
-    */
     @Override
     public void startWorkflow(String workflowName, String taskVariableName, Task task) throws TaskboxException {
         try {
@@ -86,13 +70,14 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
 
             workflowService.startFlow(workflowName, parameterMap);
 
-            log.trace("Started workflow "+ workflowName);
+            log.trace("Started workflow " + workflowName);
         } catch (Exception e) {
             log.error(e.getMessage() + " STACKTRACE: " + e.getStackTrace());
             throw new TaskboxException(e);
         }
 
     }
+
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
     }

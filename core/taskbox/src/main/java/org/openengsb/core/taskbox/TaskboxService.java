@@ -27,23 +27,22 @@ import org.apache.wicket.markup.html.panel.Panel;
  * methods which can be called by workflows e.g. assigning a task to different user-roles (such as case worker or
  * developer) or setting a task status. Another job is to choose the right wicket panel from the UI project to display
  * the right information in a certain situation.
- *
+ * 
  * The component uses the persistence compontent to store tasks and the workflow component to take control of specific
  * workflows.
  */
 public interface TaskboxService {
     /**
      * Gets the message set by a workflow
-     *
+     * 
      * @throws TaskboxException when the message is not set
      */
     String getWorkflowMessage() throws TaskboxException;
 
     /**
-     * Starts a test workflow
-     * taskVariableName - the name of the variable containing the taskObject in the workflow
-     * task - the taskobject to be reasoned about
-     *
+     * Starts a test workflow taskVariableName - the name of the variable containing the taskObject in the workflow task
+     * - the taskobject to be reasoned about
+     * 
      * @throws TaskboxException when the test workflow could not be started
      */
 
@@ -56,6 +55,7 @@ public interface TaskboxService {
 
     /**
      * Redirect events to workflowService
+     * 
      * @throws WorkflowException
      */
     void processEvent(Event event) throws WorkflowException;

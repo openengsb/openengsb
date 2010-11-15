@@ -31,7 +31,7 @@ public interface Task {
     // void setCurrentTaskStep(TaskStep taskStep);
 
     /**
-	 * returns the Wicket Panel for this task
-	 */
-	Panel getPanel(String id);
+     * returns the Wicket Panel for this task
+     */
+    Panel getPanel(String id);
 }
