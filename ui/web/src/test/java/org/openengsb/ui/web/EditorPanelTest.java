@@ -17,7 +17,6 @@
 package org.openengsb.ui.web;
 
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.TestPanelSource;
@@ -234,15 +232,6 @@ public class EditorPanelTest {
                 };
             }
         });
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> T getEditorFieldFormComponent(String attributeId, Class<T> componentType) {
-        String id = editor.getId() + ":" + buildFormComponentId(attributeId);
-        Component c = tester.getComponentFromLastRenderedPage(id);
-        assertThat(c, notNullValue());
-        assertThat(c, is(componentType));
-        return (T) c;
     }
 
     public String buildFormComponentId(String attributeId) {

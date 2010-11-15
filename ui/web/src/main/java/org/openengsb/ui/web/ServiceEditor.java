@@ -97,7 +97,7 @@ public abstract class ServiceEditor extends Panel {
         return values;
     }
 
-    protected boolean isValidating(){
+    protected boolean isValidating() {
         return serviceEditorPanel.isValidating();
     }
 

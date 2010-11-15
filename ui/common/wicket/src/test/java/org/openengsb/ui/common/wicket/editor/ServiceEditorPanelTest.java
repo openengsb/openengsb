@@ -41,10 +41,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
-import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.FormValidator;
-import org.openengsb.core.common.validation.SingleAttributeValidationResult;
-import org.openengsb.core.common.validation.ValidationResultImpl;
 import org.openengsb.ui.common.wicket.editor.fields.AbstractField;
 import org.openengsb.ui.common.wicket.validation.DefaultPassingFormValidator;
 
@@ -57,8 +54,6 @@ public class ServiceEditorPanelTest {
     private AttributeDefinition attribOption;
     private AttributeDefinition attribBoolean;
     private final AttributeDefinition attrib = newAttribute("attrib", "name", "desc").build();
-    private final AttributeDefinition numberAttrib = newAttribute("attrib", "name", "desc").validator(
-        new NumberValidator()).build();
     private final AttributeDefinition attribNoDesc = newAttribute("attribNoDesc", "name", "").build();
 
     @Before
@@ -158,14 +153,5 @@ public class ServiceEditorPanelTest {
 
     private AbstractField<?> getEditorField(String attributeId) {
         return (AbstractField<?>) getEditorFieldFormComponent(attributeId, FormComponent.class).getParent();
-    }
-
-    private static final class FailValidator implements FieldValidator {
-
-        @Override
-        public SingleAttributeValidationResult validate(String validate) {
-            return new ValidationResultImpl(false, "validation.not");
-        }
-
     }
 }
