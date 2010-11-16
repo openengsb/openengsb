@@ -39,9 +39,17 @@
         <para>TBW</para>
     </section>
 
-    <section>
+    <section xml:id="user.quickstart.connectors">
         <title>Writing Connectors for the OpenEngSB</title>
         <para>TBW</para>
+        <para>Unimplemented domain methods should always throw an exception rather than return default value or do nothing.
+            Therefore each domain method without body must throw DomainMethodNotImplementedException to indicate that requested domain functionality is not implemented.      
+           <programlisting>
+            <![CDATA[public void foo() {
+                    throw new DomainMethodNotImplementedException();
+            }]]>
+          </programlisting>         
+        </para>
     </section>
 
 </chapter>
