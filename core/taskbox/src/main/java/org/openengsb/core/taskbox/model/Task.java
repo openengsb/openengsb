@@ -18,8 +18,7 @@ package org.openengsb.core.taskbox.model;
 
 public interface Task {
     String getId();
-
+    void setId(String id);
     String getType();
-
     void setType(String type);
 }
