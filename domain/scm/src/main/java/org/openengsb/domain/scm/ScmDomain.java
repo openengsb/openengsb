@@ -20,18 +20,98 @@ import java.io.File;
 
 import org.openengsb.core.common.Domain;
 
+/**
+ * ScmDomain is an abstraction for working with SCM tools. 
+ * 
+ */
 public interface ScmDomain extends Domain {
 
     /**
-     * Polls the represented repository for updates. Returns true if there have been changes since the last poll.
+     * Polls the represented repository for updates. Returns true if there have
+     * been changes since the last poll.
      */
     boolean poll();
 
     /**
      * Exports the current head of the repository to the specified directory.
-     *
-     * @param directory if the directory is non-existent, it'll be created. if the directory already exists it must not
-     *        contain any files.
+     * 
+     * @param directory if the directory is non-existent, it'll be created. if
+     *        the directory already exists it must not contain any files.
      */
     void export(File directory);
+
+    /**
+     * Checks if file or directory specified by relative {@code path} exists in repository.
+     * Returns true if item exists in repository, otherwise false.
+     * 
+     * @return true if item exists in repository, otherwise false
+     */
+    boolean exists(String path);
+
+    /**
+     * Checks if file or directory specified by relative {@code path} and {@code id}
+     * (commit-ref) exists in repository. Returns true if item exists in repository, otherwise false.
+     * 
+     * @return true if item exists in repository, otherwise false
+     */
+    boolean exists(String path, CommitRef id);
+
+    /**
+     * Adds new working {@code file} to SCM index.
+     * 
+     * @throws {@link ScmException} if working {@code file} does not exist or is
+     *         not accessible.
+     */
+    void addFile(File file) throws ScmException;
+
+    /**
+     * Adds new working {@code directory} to SCM repository. The
+     * {@code recursive} option sets if also its children will be added to
+     * index.
+     * 
+     * @throws {@link ScmException} if working {@code directory} does not exist
+     *         or is not accessible.
+     */
+    void addDirectory(File directory, boolean recursive) throws ScmException;
+
+    /**
+     * Commit a single {@code file} to SCM repository. The {@code comment}
+     * parameter adds message to given commit. Reference to commit in SCM is returned as instance of {@link CommitRef}.
+     * 
+     * @throws {@link ScmException} if working {@code file} does not exist or is
+     *         not accessible.
+     * @return commit-ref, see {@link CommitRef}
+     */
+    CommitRef commitFile(File file, String comment) throws ScmException;
+
+    /**
+     * Commit changes on working {@code directory} to SCM repository. The
+     * {@code comment} parameter adds message to given commit. The
+     * {@code recursive} option sets if also changes for its children will be
+     * committed. Reference to commit in SCM is returned as instance of {@link CommitRef}.
+     * 
+     * @throws {@link ScmException} if working {@code directory} does not exist
+     *         or is not accessible.
+     * @return commit-ref, see {@link CommitRef}
+     */
+    CommitRef commitDirectory(File directory, String comment, boolean recursive) throws ScmException;
+
+    /**
+     * Copy repository file specified by relative {@code path}
+     * and commit-ref {@code id} into working {@code directory}.
+     * 
+     * @throws {@link ScmException} if working {@code directory} is not
+     *         accessible or can not be created.
+     */
+    void checkoutFile(String path, CommitRef id, File directory) throws ScmException;
+
+    /**
+     * Copy repository directory specified by relative {@code path} and
+     * commit-ref {@code id} into newly created working {@code directory}. To
+     * get also all children use {@code recursive} option.
+     * 
+     * @throws {@link ScmException} if working {@code directory} is not
+     *         accessible or can not be created.
+     */
+    void checkoutDirectory(String path, CommitRef id, boolean recursive, File directory) throws ScmException;
 }

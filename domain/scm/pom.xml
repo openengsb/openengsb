@@ -16,9 +16,8 @@
    limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
     <groupId>org.openengsb.domain</groupId>
@@ -31,6 +30,8 @@
     <bundle.namespace>org.openengsb.domain.scm</bundle.namespace>
   </properties>
 
+  <modelVersion>4.0.0</modelVersion>
+
   <groupId>org.openengsb.domain</groupId>
   <artifactId>openengsb-domain-scm</artifactId>
   <version>1.1.0-SNAPSHOT</version>
@@ -38,10 +39,11 @@
   <name>OpenEngSB :: Domain :: Scm</name>
 
   <packaging>bundle</packaging>
-  
+
   <description>
-    SCM Domain polls external repositories for changes of content under source control
-    and provides functionality to copy/export the repository content for further processing.
+    SCM Domain is an abstraction for basic interaction with revision control systems (e.g. Git, Subversion).
+    It polls external repositories for changes of content under source control and provides functionality 
+    to copy/export the repository content for further processing. 
   </description>
   <url>http://www.openengsb.org</url>
   <licenses>
@@ -74,3 +76,4 @@
   </dependencies>
 
 </project>
+

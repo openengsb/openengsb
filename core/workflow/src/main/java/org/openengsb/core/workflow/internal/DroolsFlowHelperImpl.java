@@ -35,3 +35,4 @@ public class DroolsFlowHelperImpl implements DroolsFlowHelper {
         session.startProcess(flowid);
     }
 }
+
