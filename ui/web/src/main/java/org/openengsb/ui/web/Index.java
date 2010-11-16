@@ -17,5 +17,7 @@
 package org.openengsb.ui.web;
 
 public class Index extends BasePage {
+    public Index() {
 
+    }
 }

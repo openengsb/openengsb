@@ -26,7 +26,7 @@
 
   <properties>
     <bundle.symbolicName>org.neodatis.odb</bundle.symbolicName>
-    <wrapped.groupId>org.neodatis</wrapped.groupId>
+    <wrapped.groupId>org.neodatis.odb</wrapped.groupId>
     <wrapped.artifactId>neodatis-odb</wrapped.artifactId>
     <wrapped.version>${odb.version}</wrapped.version>
     <bundle.namespace>org.neodatis</bundle.namespace>
@@ -40,9 +40,26 @@
 
   <packaging>bundle</packaging>
 
+  <description>Neodatis Object Database wrapped bundle</description>
+
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
+
   <dependencies>
     <dependency>
-      <groupId>org.neodatis</groupId>
+      <groupId>org.neodatis.odb</groupId>
       <artifactId>neodatis-odb</artifactId>
       <version>${odb.version}</version>
     </dependency>

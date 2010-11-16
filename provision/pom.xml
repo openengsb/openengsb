@@ -34,6 +34,21 @@
 
   <packaging>pom</packaging>
 
+  <description>Extracts all artifacts to be deployed to the osgi environment</description>
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
 
   <build>
     <resources>
@@ -243,6 +258,12 @@
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-web</artifactId>
       <version>${spring.osgi.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>org.springframework.core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.springframework.osgi</groupId>

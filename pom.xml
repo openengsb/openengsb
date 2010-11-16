@@ -36,9 +36,11 @@
     <plugin.eclipse.version>2.8</plugin.eclipse.version>
     <plugin.surefire.version>2.5</plugin.surefire.version>
     <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
-    <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
+    <maven.plugin.compiler.version>2.3.2</maven.plugin.compiler.version>
+    <maven.plugin.clean.version>2.4.1</maven.plugin.clean.version>
+    <maven.plugin.jar.version>2.3.1</maven.plugin.jar.version>
     <plugin.deploy.version>2.5</plugin.deploy.version>
-    <twdata.cli.version>1.0.4</twdata.cli.version>
+    <twdata.cli.version>1.0.5</twdata.cli.version>
     <clover.version>3.0.2</clover.version>
     <plugin.pax.version>1.4</plugin.pax.version>
     <plugin.paxrunner.version>1.5.0</plugin.paxrunner.version>
@@ -94,6 +96,7 @@
     <module>connector</module>
     <module>ui</module>
     <module>assembly</module>
+    <module>integrationtest</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -259,6 +262,21 @@
       <email>kristof.meixner [at] fatlenny.net</email>
       <timezone>+1</timezone>
     </contributor>
+    <contributor>
+      <name>Lukas Stampf</name>
+      <email>lukas.stampf [at] gmx.at</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Gregor Ryba</name>
+      <email>gregor.ryba [at] infor.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Daniel Driza</name>
+      <email>daniel.driza [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
   </contributors>
 
   <build>
@@ -294,6 +312,16 @@
           <meminitial>128m</meminitial>
           <maxmem>512m</maxmem>
         </configuration>
+    </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven.plugin.jar.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${maven.plugin.clean.version}</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -653,9 +681,6 @@
     </profile>
     <profile>
       <id>integration-test</id>
-      <modules>
-        <module>integrationtest</module>
-      </modules>
       <build>
         <plugins>
           <plugin>
@@ -760,6 +785,28 @@
       <id>apache</id>
       <name>Apache Public Repository</name>
       <url>https://repository.apache.org/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository> <!-- Additional Repositories for Karaf -->
+      <id>servicemix</id>
+      <name>Apache ServiceMix Repository</name>
+      <url>http://svn.apache.org/repos/asf/servicemix/m2-repo</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository> <!-- Additional Repositories for Karaf -->
+      <id>fusesource.snapshots</id>
+      <name>FuseSource snapshot repository</name>
+      <url>http://repo.fusesource.com/nexus/content/repositories/releases</url>
       <releases>
         <enabled>true</enabled>
       </releases>

@@ -33,6 +33,22 @@
 
   <packaging>pom</packaging>
 
+  <description>Parent for all osgi bundles, non-osgi and wrapped bundles</description>
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
+
   <properties>
     <!-- Plugin Versions -->
     <plugin.bundle.version>2.1.0</plugin.bundle.version>
@@ -44,15 +60,15 @@
     <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
     <maven.plugin.changes.version>2.3</maven.plugin.changes.version>
     <maven.plugin.release.version>2.0-beta-9</maven.plugin.release.version>
-    <maven.plugin.checkstyle.version>2.5</maven.plugin.checkstyle.version>
-    <maven.plugin.surefire>2.4.3</maven.plugin.surefire>
+    <maven.plugin.checkstyle.version>2.6</maven.plugin.checkstyle.version>
+    <maven.plugin.surefire>2.6</maven.plugin.surefire>
     <maven.plugin.surefire.report>2.5</maven.plugin.surefire.report>
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
-    <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
+    <maven.plugin.compiler.version>2.3.2</maven.plugin.compiler.version>
     <maven.rat.version>0.6</maven.rat.version>
     <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
     <maven.war.plugin>2.1.1</maven.war.plugin>
-    <twdata.cli.version>1.0.4</twdata.cli.version>
+    <twdata.cli.version>1.0.5</twdata.cli.version>
     <clover.version>3.0.2</clover.version>
     <maven.plugin.antrun>1.5</maven.plugin.antrun>
     <!-- Component Versions -->
@@ -76,13 +92,13 @@
     <enterprise.loader.version>1.0.0</enterprise.loader.version>
     <oracle.classloader.version>10.1.3.1</oracle.classloader.version>
     <el.version>2.1.0</el.version>
-    <wicket.version>1.4.12</wicket.version>
+    <wicket.version>1.4.13</wicket.version>
     <jackson.version>1.5.3</jackson.version>
     <aopalliance.version>1.0_4</aopalliance.version>
     <xml.bind.version>2.0.0</xml.bind.version>
     <xml.stream.version>1.5.0</xml.stream.version>
     <commons.collection.version>3.2.1</commons.collection.version>
-    <commons.lang.version>2.4</commons.lang.version>
+    <commons.lang.version>2.5</commons.lang.version>
     <commons.pool.version>1.5.4_1</commons.pool.version>
     <commons.dbcp.version>1.2.2_5</commons.dbcp.version>
     <commons.logging.version>1.1.1</commons.logging.version>
@@ -187,7 +203,7 @@
     <antlr.version>3.1.3</antlr.version>
     <commons.io.version>1.4</commons.io.version>
     <janino.version>2.5.15</janino.version>
-    <odb.version>1.9.24.679</odb.version>
+    <odb.version>1.9.30.687</odb.version>
     <org.apache.geronimo.specs.version>1.0.1</org.apache.geronimo.specs.version>
     <javax.ejb.version>3.0.0</javax.ejb.version>
     <javax.xml.rpc>1.1.0</javax.xml.rpc>

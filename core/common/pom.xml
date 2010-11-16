@@ -38,6 +38,28 @@
 
   <packaging>bundle</packaging>
 
+  <description>
+    OpenEngSB Common Core Utility classes, abstract classes to be extended by Domains and Connectors
+    (Domains, DomainEvents, DomainProviders, ServiceManagers), interfaces to be implemented by Domains,
+    Connectors and Events which handle intatiation of Services and Proxies, classes for registration
+    of bundles and services, classes for localization, classes that save connector properties (Persistence)
+    and finally classes that enable the web application to have access to OSGI bundles.
+  </description>
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>org.slf4j</groupId>

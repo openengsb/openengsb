@@ -19,7 +19,6 @@ package org.openengsb.ui.web;
 import java.io.Serializable;
 import java.util.Map;
 
-@SuppressWarnings("serial")
 public class ArgumentModel implements Serializable {
     private int index;
     private Class<?> type;

@@ -36,6 +36,25 @@
 
   <packaging>bundle</packaging>
 
+  <description>
+    OpenEngSB Persistence Interfaces to be used by Domains and Services to store their data
+    and implementation of storing data in NeoDatis ODB.
+  </description>
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
+  
   <dependencies>
     <dependency>
       <groupId>org.openengsb.core</groupId>
@@ -44,7 +63,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.neodatis</groupId>
+      <groupId>org.neodatis.odb</groupId>
       <artifactId>neodatis-odb</artifactId>
       <version>${odb.version}</version>
       <optional>true</optional>

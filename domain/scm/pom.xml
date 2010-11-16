@@ -30,6 +30,7 @@
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>org.openengsb.domain</groupId>
   <artifactId>openengsb-domain-scm</artifactId>
   <version>1.1.0-SNAPSHOT</version>
@@ -37,9 +38,11 @@
   <name>OpenEngSB :: Domain :: Scm</name>
 
   <packaging>bundle</packaging>
-
+  
   <description>
-    Scm Domain is an abstraction of services which provides interaction with revision control systems (e.g. Git, Subversion). 
+    SCM Domain is an abstraction for basic interaction with revision control systems (e.g. Git, Subversion).
+    It polls external repositories for changes of content under source control and provides functionality 
+    to copy/export the repository content for further processing. 
   </description>
   <url>http://www.openengsb.org</url>
   <licenses>

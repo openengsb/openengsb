@@ -43,6 +43,7 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.Transport;
+import org.openengsb.core.common.DomainMethodNotImplementedException;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.scm.CommitRef;
 import org.openengsb.domain.scm.ScmDomain;
@@ -187,49 +188,45 @@ public class GitServiceImpl implements ScmDomain {
 
     @Override
     public void addDirectory(File arg0, boolean arg1) throws ScmException {
-        // TODO Auto-generated method stub
+        throw new DomainMethodNotImplementedException();
         
     }
 
     @Override
     public void addFile(File arg0) throws ScmException {
-        // TODO Auto-generated method stub
+        throw new DomainMethodNotImplementedException();
         
     }
 
     @Override
     public void checkoutDirectory(String arg0, CommitRef arg1, boolean arg2, File arg3) throws ScmException {
-        // TODO Auto-generated method stub
+        throw new DomainMethodNotImplementedException();
         
     }
 
     @Override
     public void checkoutFile(String arg0, CommitRef arg1, File arg2) throws ScmException {
-        // TODO Auto-generated method stub
+        throw new DomainMethodNotImplementedException();
         
     }
 
     @Override
     public CommitRef commitDirectory(File arg0, String arg1, boolean arg2) throws ScmException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new DomainMethodNotImplementedException();
     }
 
     @Override
     public CommitRef commitFile(File arg0, String arg1) throws ScmException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new DomainMethodNotImplementedException();
     }
 
     @Override
     public boolean exists(String arg0) {
-        // TODO Auto-generated method stub
-        return false;
+        throw new DomainMethodNotImplementedException();
     }
 
     @Override
     public boolean exists(String arg0, CommitRef arg1) {
-        // TODO Auto-generated method stub
-        return false;
+        throw new DomainMethodNotImplementedException();
     }
 }

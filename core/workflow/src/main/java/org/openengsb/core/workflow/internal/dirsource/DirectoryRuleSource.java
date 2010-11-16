@@ -218,6 +218,8 @@ public class DirectoryRuleSource extends AbstractRuleManager {
 
         FileUtils.copyURLToFile(defaultImports, new File(path, IMPORTS_FILENAME));
         FileUtils.copyURLToFile(defaultglobals, new File(path, GLOBALS_FILENAME));
+        File defaultPackage = new File(pathFile, "org/openengsb");
+        defaultPackage.mkdirs();
     }
 
     public void readPackage(String packageName) throws RuleBaseException {

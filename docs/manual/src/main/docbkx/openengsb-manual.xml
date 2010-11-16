@@ -104,6 +104,7 @@
   <part xml:id="appendix">
     <title>Appendix</title>
     <xi:include href="appendix/codestyle.xml"/>
+    <xi:include href="appendix/writing.code.xml"/>
     <xi:include href="appendix/recommended.eclipse.plugins.xml"/>
     <xi:include href="appendix/writing.documentation.xml"/>
     <xi:include href="appendix/license.xml"/>

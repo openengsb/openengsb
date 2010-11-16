@@ -3,3 +3,5 @@ java.util.ArrayList
 java.util.Map
 java.util.HashMap
 org.openengsb.core.common.Event
+org.openengsb.core.common.workflow.model.Value
+org.openengsb.core.workflow.droolsinternal.DroolsFlowHelper
