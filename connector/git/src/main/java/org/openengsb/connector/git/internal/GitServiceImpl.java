@@ -186,6 +186,7 @@ public class GitServiceImpl implements ScmDomain {
         return repository;
     }
 
+
     @Override
     public void addDirectory(File arg0, boolean arg1) throws ScmException {
         throw new DomainMethodNotImplementedException();
@@ -229,4 +230,5 @@ public class GitServiceImpl implements ScmDomain {
     public boolean exists(String arg0, CommitRef arg1) {
         throw new DomainMethodNotImplementedException();
     }
+
 }
