@@ -44,12 +44,6 @@
     </license>
   </licenses>
 
-  <scm>
-    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
-    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
-    <url>http://github.com/openengsb/openengsb</url>
-  </scm>
-
   <build>
     <resources>
       <resource>
@@ -681,6 +675,12 @@
     </dependency>
 
   </dependencies>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
 
 </project>
 
