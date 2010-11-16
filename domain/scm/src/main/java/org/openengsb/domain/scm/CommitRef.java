@@ -21,11 +21,12 @@ package org.openengsb.domain.scm;
  */
 public interface CommitRef {
 
-	/**
-	 * Gets this commit-ref value String representation.
-	 * 
-	 * @return String representation of this commit-ref value 
-	 */
-	String getStringRepresentation();
+    /**
+     * Gets this commit-ref value String representation.
+     * 
+     * @return String representation of this commit-ref value 
+     */
+    String getStringRepresentation();
 
 }
+

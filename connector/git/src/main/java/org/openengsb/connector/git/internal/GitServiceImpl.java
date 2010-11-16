@@ -188,36 +188,36 @@ public class GitServiceImpl implements ScmDomain {
 
 
     @Override
-    public void addDirectory(File arg0, boolean arg1) throws ScmException {
+    public void addDirectory(File arg0, boolean arg1) {
         throw new DomainMethodNotImplementedException();
         
     }
 
     @Override
-    public void addFile(File arg0) throws ScmException {
+    public void addFile(File arg0) {
         throw new DomainMethodNotImplementedException();
         
     }
 
     @Override
-    public void checkoutDirectory(String arg0, CommitRef arg1, boolean arg2, File arg3) throws ScmException {
+    public void checkoutDirectory(String arg0, CommitRef arg1, boolean arg2, File arg3) {
         throw new DomainMethodNotImplementedException();
         
     }
 
     @Override
-    public void checkoutFile(String arg0, CommitRef arg1, File arg2) throws ScmException {
+    public void checkoutFile(String arg0, CommitRef arg1, File arg2) {
         throw new DomainMethodNotImplementedException();
         
     }
 
     @Override
-    public CommitRef commitDirectory(File arg0, String arg1, boolean arg2) throws ScmException {
+    public CommitRef commitDirectory(File arg0, String arg1, boolean arg2) {
         throw new DomainMethodNotImplementedException();
     }
 
     @Override
-    public CommitRef commitFile(File arg0, String arg1) throws ScmException {
+    public CommitRef commitFile(File arg0, String arg1) {
         throw new DomainMethodNotImplementedException();
     }
 

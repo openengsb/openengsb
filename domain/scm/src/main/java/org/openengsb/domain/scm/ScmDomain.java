@@ -62,7 +62,7 @@ public interface ScmDomain extends Domain {
      * @throws {@link ScmException} if working {@code file} does not exist or is
      *         not accessible.
      */
-    void addFile(File file) throws ScmException;
+    void addFile(File file);
 
     /**
      * Adds new working {@code directory} to SCM repository. The
@@ -72,7 +72,7 @@ public interface ScmDomain extends Domain {
      * @throws {@link ScmException} if working {@code directory} does not exist
      *         or is not accessible.
      */
-    void addDirectory(File directory, boolean recursive) throws ScmException;
+    void addDirectory(File directory, boolean recursive);
 
     /**
      * Commit a single {@code file} to SCM repository. The {@code comment}
@@ -82,7 +82,7 @@ public interface ScmDomain extends Domain {
      *         not accessible.
      * @return commit-ref, see {@link CommitRef}
      */
-    CommitRef commitFile(File file, String comment) throws ScmException;
+    CommitRef commitFile(File file, String comment);
 
     /**
      * Commit changes on working {@code directory} to SCM repository. The
@@ -94,7 +94,7 @@ public interface ScmDomain extends Domain {
      *         or is not accessible.
      * @return commit-ref, see {@link CommitRef}
      */
-    CommitRef commitDirectory(File directory, String comment, boolean recursive) throws ScmException;
+    CommitRef commitDirectory(File directory, String comment, boolean recursive);
 
     /**
      * Copy repository file specified by relative {@code path}
@@ -103,7 +103,7 @@ public interface ScmDomain extends Domain {
      * @throws {@link ScmException} if working {@code directory} is not
      *         accessible or can not be created.
      */
-    void checkoutFile(String path, CommitRef id, File directory) throws ScmException;
+    void checkoutFile(String path, CommitRef id, File directory);
 
     /**
      * Copy repository directory specified by relative {@code path} and
@@ -113,5 +113,6 @@ public interface ScmDomain extends Domain {
      * @throws {@link ScmException} if working {@code directory} is not
      *         accessible or can not be created.
      */
-    void checkoutDirectory(String path, CommitRef id, boolean recursive, File directory) throws ScmException;
+    void checkoutDirectory(String path, CommitRef id, boolean recursive, File directory);
 }
+
