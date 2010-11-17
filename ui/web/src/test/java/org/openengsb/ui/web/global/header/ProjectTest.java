@@ -43,9 +43,9 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.ui.common.wicket.OpenEngSBWebSession;
 import org.openengsb.ui.web.BasePage;
 import org.openengsb.ui.web.Index;
-import org.openengsb.ui.web.WicketSession;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -80,7 +80,7 @@ public class ProjectTest {
 
             @Override
             public Session newSession(Request request, Response response) {
-                return new WicketSession(request);
+                return new OpenEngSBWebSession(request);
             }
         });
 
@@ -121,20 +121,20 @@ public class ProjectTest {
     @Test
     public void test_default_context_initialization() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
-        assertThat("foo", is(WicketSession.get().getThreadContextId()));
+        assertThat("foo", is(OpenEngSBWebSession.get().getThreadContextId()));
     }
 
     @Test
     public void test_context_change() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
-        assertThat("foo", is(WicketSession.get().getThreadContextId()));
+        assertThat("foo", is(OpenEngSBWebSession.get().getThreadContextId()));
 
         verify(contextService).setThreadLocalContext("foo");
 
         FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 
-        assertThat("bar", is(WicketSession.get().getThreadContextId()));
+        assertThat("bar", is(OpenEngSBWebSession.get().getThreadContextId()));
 
         // simulated page reload...
         tester.startPage(new BasePage());

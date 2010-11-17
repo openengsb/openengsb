@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.authorization.strategies.role.Roles;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -31,13 +30,11 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.protocol.http.WebSession;
 import org.openengsb.ui.web.ContextSetPage;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.ServiceListPage;
 import org.openengsb.ui.web.TestClient;
-import org.openengsb.ui.web.WicketSession;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 
 @SuppressWarnings("serial")
@@ -79,22 +76,10 @@ public class HeaderTemplate extends Panel {
     private void initMainMenuItems() {
         addHeaderMenuItem("Index", Index.class, "index.title");
 
-        try {
-            Roles roles = ((WicketSession) WebSession.get()).getRoles();
-            for (String role : roles) {
-                if (role.equals("ROLE_USER")) {
-                    addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
-                    addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
-                    addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
-                    addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
-                }
-            }
-        } catch (ClassCastException e) {
-            addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
-            addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
-            addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
-            addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
-        }
+        addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
+        addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
+        addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
+        addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
     }
 
     private void initializeMenu() {
@@ -136,7 +121,7 @@ public class HeaderTemplate extends Panel {
 
     /**
      * adds new item to main header navigation
-     * 
+     *
      * @param index - the name of the index @see HeaderMenuItem.index
      * @param linkClass - class name to be linked to
      * @param langKey - language key, the text which should be displayed

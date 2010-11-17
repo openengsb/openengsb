@@ -48,7 +48,8 @@ import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
-import org.openengsb.ui.web.editor.AttributeEditorUtil;
+import org.openengsb.ui.common.wicket.editor.AttributeEditorUtil;
+import org.openengsb.ui.common.wicket.util.MethodUtil;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 

@@ -89,13 +89,14 @@ public class EditorPageTest {
         tester.debugComponentTrees();
         String id = page.getEditorPanel().getAttributeViewId("id");
         TextField<String> idField =
-            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:fields:" + id + ":row:field");
+            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:" + id
+                    + ":row:field");
         assertThat(page.getEditorPanel().getAttributes().size(), is(2));
         assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("id"));
         Assert.assertEquals("id1", idField.getDefaultModel().getObject());
     }
 
-    @SuppressWarnings({"unchecked", "serial"})
+    @SuppressWarnings({ "unchecked", "serial" })
     public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("a", "validation.service.not");
@@ -111,12 +112,12 @@ public class EditorPageTest {
         FormTester formTester = tester.newFormTester("editor:form");
         formTester.setValue("fields:id:row:field", "someValue");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{"Service Validation Error"});
+        tester.assertErrorMessages(new String[]{ "Service Validation Error" });
         tester.assertRenderedPage(ConnectorEditorPage.class);
     }
 
     @Test
-    @SuppressWarnings({"unchecked", "serial"})
+    @SuppressWarnings({ "unchecked", "serial" })
     @Ignore("OPENENGSB-277, what checks should be bypassed")
     public void uncheckValidationCheckbox_shouldBypassValidation() {
         Map<String, String> errorMessages = new HashMap<String, String>();
@@ -135,7 +136,7 @@ public class EditorPageTest {
         formTester.setValue("validate", false);
         formTester.submit();
         tester.assertErrorMessages(new String[]{});
-        tester.assertInfoMessages(new String[]{"Service can be added"});
+        tester.assertInfoMessages(new String[]{ "Service can be added" });
         Mockito.verify(manager).update(Mockito.anyString(), Mockito.anyMap());
         Mockito.verify(manager, Mockito.never()).update(Mockito.anyString(), Mockito.anyMap());
     }
