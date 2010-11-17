@@ -77,7 +77,7 @@ public class ContextSetPageTest {
         when(contextService.getContext()).thenReturn(context);
         when(contextService.getValue("/a/b/c/d")).thenReturn("e");
         when(contextService.getValue("/domains/domains.example/defaultConnector/id")).thenReturn("blabla");
-        when(contextService.getCurrentContextId()).thenReturn("foo");
+        when(contextService.getThreadLocalContext()).thenReturn("foo");
         tester.startPage(new ContextSetPage());
     }
 

@@ -28,8 +28,8 @@ import com.google.common.base.Preconditions;
 
 public class ContextImpl implements Context {
 
-    private final Map<String, String> values = new TreeMap<String, String>();
-    private final Map<String, Context> children = new TreeMap<String, Context>();
+    private Map<String, String> values = new TreeMap<String, String>();
+    private Map<String, Context> children = new TreeMap<String, Context>();
 
     @Override
     public Set<String> getKeys() {

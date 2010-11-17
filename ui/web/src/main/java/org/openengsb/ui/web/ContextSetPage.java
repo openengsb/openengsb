@@ -39,7 +39,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.context.Context;
-import org.openengsb.core.common.context.ContextService;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.ui.web.tree.ModelBean;
 import org.openengsb.ui.web.tree.PropertyEditableColumn;
@@ -48,7 +48,7 @@ import org.openengsb.ui.web.tree.PropertyEditableColumn;
 public class ContextSetPage extends BasePage {
 
     @SpringBean
-    private ContextService contextService;
+    private ContextCurrentService contextService;
 
     @SpringBean
     private DomainService domainService;
