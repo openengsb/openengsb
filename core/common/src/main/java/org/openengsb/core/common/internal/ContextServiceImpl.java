@@ -63,8 +63,7 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
 
     private void storeContext() {
         try {
-            ContextStorageBean old = persistence.query(new ContextStorageBean(null)).get(0);
-            persistence.update(old, new ContextStorageBean((ContextImpl) rootContext));
+            persistence.update(new ContextStorageBean(null), new ContextStorageBean((ContextImpl) rootContext));
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }
