@@ -75,8 +75,12 @@ public final class OpenEngSBBundles {
             .artifactId("openengsb-domain-example").version(new OpenEngSBVersionResolver()));
 
     public static final MavenArtifactProvisionOption OPENENGSB_CONNECTOR_EXAMPLE = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.connector")
-            .artifactId("openengsb-connector-example").version(new OpenEngSBVersionResolver()));
+    .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.connector")
+        .artifactId("openengsb-connector-example").version(new OpenEngSBVersionResolver()));
+
+    public static final MavenArtifactProvisionOption OPENENGSB_UI_COMMON_WICKET = CoreOptions
+    .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.ui")
+        .artifactId("openengsb-ui-common-wicket").version(new OpenEngSBVersionResolver()));
 
     public static final MavenArtifactProvisionOption OPENENGSB_UI_WEB = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.ui").artifactId("openengsb-ui-web")

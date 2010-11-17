@@ -68,6 +68,7 @@ public final class BaseExamConfiguration {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_PERSISTENCE));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_EXAMPLE));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONNECTOR_EXAMPLE));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_UI_COMMON_WICKET));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_UI_WEB));
     }
 
