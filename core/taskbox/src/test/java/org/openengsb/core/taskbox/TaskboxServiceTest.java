@@ -41,20 +41,21 @@ public class TaskboxServiceTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testStartWorkflow() throws TaskboxException, WorkflowException {
+    public void testStartWorkflow_ShouldStartOneWorkflow() throws TaskboxException, WorkflowException {
         Task t = null;
+
         service.startWorkflow("tasktest", "ticket", t);
 
         verify(workflowService, Mockito.times(1)).startFlow(Mockito.anyString(), Mockito.anyMap());
     }
 
     @Test(expected = TaskboxException.class)
-    public void testGetEmptyWorkflowMessage() throws TaskboxException {
+    public void testGetEmptyWorkflowMessage_ShouldThrowTaskboxException() throws TaskboxException {
         service.getWorkflowMessage();
     }
 
     @Test
-    public void testWorkflowMessage() throws TaskboxException {
+    public void testWorkflowMessage_ShouldSetString() throws TaskboxException {
         service.setWorkflowMessage("testmessage");
         assertEquals("testmessage", service.getWorkflowMessage());
     }
