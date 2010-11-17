@@ -22,6 +22,8 @@ public class CustomClassLoader extends ClassLoader {
 
     private Bundle bundle;
 
+    private ClassLoader backUpClassLoader;
+
     public CustomClassLoader(ClassLoader parent, Bundle bundle) {
         super(parent);
         this.bundle = bundle;
@@ -29,7 +31,37 @@ public class CustomClassLoader extends ClassLoader {
 
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException {
-        return bundle.loadClass(name);
+        try {
+            return bundle.loadClass(name);
+        } catch (ClassNotFoundException cnfe) {
+            return tryBackupClassLoader(name);
+        }
+    }
+
+    private Class<?> tryBackupClassLoader(String name) throws ClassNotFoundException {
+        if (backUpClassLoader == null) {
+            throw new ClassNotFoundException(getExceptionText(name, false));
+        }
+        try {
+            return backUpClassLoader.loadClass(name);
+        } catch (ClassNotFoundException cnfe) {
+            throw new ClassNotFoundException(getExceptionText(name, true));
+        }
+    }
+
+    private String getExceptionText(String name, boolean backupUsed) {
+        String message = "CustomClassLoader for OpenEngSB persistence cannot load class with name '" + name
+                + "' with default class loader and bundle class loader.";
+        if (backupUsed) {
+            message += "Backup class loader '" + backUpClassLoader + "' used.";
+        } else {
+            message += "No backup class loader configured.";
+        }
+        return message;
+    }
+
+    public void setBackUpClassLoader(ClassLoader backUpClassLoader) {
+        this.backUpClassLoader = backUpClassLoader;
     }
 
 }

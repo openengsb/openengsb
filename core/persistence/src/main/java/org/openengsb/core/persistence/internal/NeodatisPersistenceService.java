@@ -38,9 +38,9 @@ public class NeodatisPersistenceService implements PersistenceService {
 
     private final Semaphore semaphore = new Semaphore(1);
 
-    private final ClassLoader loader;
+    private final CustomClassLoader loader;
 
-    public NeodatisPersistenceService(String dbFile, ClassLoader loader) {
+    public NeodatisPersistenceService(String dbFile, CustomClassLoader loader) {
         this.dbFile = dbFile;
         this.loader = loader;
     }
@@ -179,7 +179,7 @@ public class NeodatisPersistenceService implements PersistenceService {
         }
     }
 
-    @SuppressWarnings({"unchecked", "serial"})
+    @SuppressWarnings({ "unchecked", "serial" })
     private <TYPE> List<TYPE> queryByExample(ODB database, final TYPE example) {
         final Field[] fields = example.getClass().getDeclaredFields();
         IQuery query = new NativeQuery() {
@@ -232,6 +232,7 @@ public class NeodatisPersistenceService implements PersistenceService {
         try {
             ODB database = null;
             synchronized (OdbConfiguration.class) {
+                configureLoader(object);
                 OdbConfiguration.setClassLoader(loader);
                 database = ODBFactory.open(dbFile);
             }
@@ -239,6 +240,14 @@ public class NeodatisPersistenceService implements PersistenceService {
         } catch (RuntimeException re) {
             semaphore.release();
             throw re;
+        }
+    }
+
+    private void configureLoader(Object object) {
+        if (object != null) {
+            loader.setBackUpClassLoader(object.getClass().getClassLoader());
+        } else {
+            loader.setBackUpClassLoader(null);
         }
     }
 
