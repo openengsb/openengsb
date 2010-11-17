@@ -47,8 +47,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.context.Context;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.internal.ContextImpl;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.test.NullDomain;
 import org.osgi.framework.ServiceReference;
@@ -58,7 +58,7 @@ public class ContextSetPageTest {
     private WicketTester tester;
     private ContextCurrentService contextService;
     private DomainService domainService;
-    private ContextImpl context;
+    private Context context;
 
     @Before
     public void setup() {
@@ -70,7 +70,7 @@ public class ContextSetPageTest {
         appContext.putBean(domainService);
         tester.getApplication().addComponentInstantiationListener(
                 new SpringComponentInjector(tester.getApplication(), appContext, false));
-        context = new ContextImpl();
+        context = new Context();
         context.createChild("a").createChild("b").createChild("c").put("d", "e");
         context.createChild("domains").createChild("domains.example").createChild("defaultConnector")
                 .put("id", "blabla");

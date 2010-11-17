@@ -23,7 +23,9 @@ import java.util.Map;
 
 import org.openengsb.core.common.context.Context;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.context.ContextPath;
 import org.openengsb.core.common.context.ContextService;
+import org.openengsb.core.common.context.ContextStorageBean;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
@@ -50,7 +52,7 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
 
             List<ContextStorageBean> contexts = persistence.query(new ContextStorageBean(null));
             if (contexts.isEmpty()) {
-                ContextImpl root = new ContextImpl();
+                Context root = new Context();
                 persistence.create(new ContextStorageBean(root));
                 rootContext = root;
             } else {
@@ -63,7 +65,7 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
 
     private void storeContext() {
         try {
-            persistence.update(new ContextStorageBean(null), new ContextStorageBean((ContextImpl) rootContext));
+            persistence.update(new ContextStorageBean(null), new ContextStorageBean(rootContext));
         } catch (PersistenceException e) {
             throw new RuntimeException(e);
         }

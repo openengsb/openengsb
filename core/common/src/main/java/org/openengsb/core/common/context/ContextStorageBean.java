@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.internal;
+package org.openengsb.core.common.context;
 
 public class ContextStorageBean {
 
-    private ContextImpl rootContext;
+    private Context rootContext;
 
-    public ContextStorageBean(ContextImpl rootContext) {
+    public ContextStorageBean(Context rootContext) {
         this.rootContext = rootContext;
     }
 
-    public ContextImpl getRootContext() {
+    public Context getRootContext() {
         return rootContext;
     }
 
