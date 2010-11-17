@@ -18,7 +18,8 @@ package org.openengsb.core.workflow;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
@@ -71,7 +72,7 @@ public class WorkflowServiceTest {
         setupRulemanager();
         service.setRulemanager(manager);
         ContextCurrentService currentContext = mock(ContextCurrentService.class);
-        when(currentContext.getCurrentContextId()).thenReturn("42");
+        when(currentContext.getThreadLocalContext()).thenReturn("42");
         service.setCurrentContextService(currentContext);
         setupDomainsAndOtherServices();
     }

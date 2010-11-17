@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.internal;
+package org.openengsb.core.common.context;
 
 public class ContextPath {
 

@@ -29,7 +29,10 @@
       <value>org.openengsb.core.common.context.ContextService</value>
       <value>org.openengsb.core.common.context.ContextCurrentService</value>
     </osgi:interfaces>
-    <bean class="org.openengsb.core.common.internal.ContextServiceImpl" />
+    <bean class="org.openengsb.core.common.internal.ContextServiceImpl" init-method="init" >
+      <property name="persistenceManager" ref="persistenceManager"/>
+    </bean>
   </osgi:service>
 
+  <osgi:reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
 </beans>
