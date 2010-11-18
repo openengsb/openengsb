@@ -23,5 +23,5 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
-  <osgi:reference id="taskboxService" interface="org.openengsb.core.taskbox.TaskboxService" />
+  <osgi:reference id="taskboxService" interface="org.openengsb.core.common.taskbox.TaskboxService" />
 </beans>
