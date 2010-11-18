@@ -62,18 +62,6 @@
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-workflow</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-persistence</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
 
     <dependency>
       <groupId>org.neodatis</groupId>

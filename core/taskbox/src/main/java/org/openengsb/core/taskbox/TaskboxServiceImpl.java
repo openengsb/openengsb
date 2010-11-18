@@ -24,9 +24,11 @@ import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
+import org.openengsb.core.common.taskbox.TaskboxException;
+import org.openengsb.core.common.taskbox.TaskboxService;
+import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
-import org.openengsb.core.taskbox.model.Task;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 
@@ -41,7 +43,7 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     private String message;
 
     public void init() {
-        this.persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
+        persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
     }
 
     @Override

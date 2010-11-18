@@ -14,22 +14,18 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.taskbox;
+package org.openengsb.core.common.taskbox.model;
 
-@SuppressWarnings("serial")
-public class TaskboxException extends Exception {
-    public TaskboxException() {
-    }
+public interface TaskStep {
+    String getName();
 
-    public TaskboxException(String message) {
-        super(message);
-    }
+    String getDescription();
 
-    public TaskboxException(Throwable cause) {
-        super(cause);
-    }
+    void setDoneFlag(boolean doneFlag);
 
-    public TaskboxException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    boolean getDoneFlag();
+
+    String getTaskStepTypeDescription();
+
+    String getTaskStepType();
 }

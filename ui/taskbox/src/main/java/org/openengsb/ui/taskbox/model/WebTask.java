@@ -17,7 +17,7 @@
 package org.openengsb.ui.taskbox.model;
 
 import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.taskbox.model.Task;
+import org.openengsb.core.common.taskbox.model.Task;
 
 public interface WebTask extends Task {
     /**

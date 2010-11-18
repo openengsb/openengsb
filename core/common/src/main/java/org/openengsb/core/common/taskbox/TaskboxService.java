@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.taskbox;
+package org.openengsb.core.common.taskbox;
 
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.workflow.WorkflowException;
-import org.openengsb.core.taskbox.model.Task;
+import org.openengsb.core.common.taskbox.model.Task;
 
 /**
  * The Taskbox is a service which can be used when human interaction is required, e.g. by help desk applications. This

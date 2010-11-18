@@ -23,9 +23,10 @@ import static org.mockito.Mockito.verify;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openengsb.core.common.taskbox.TaskboxException;
+import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
-import org.openengsb.core.taskbox.model.Task;
 
 public class TaskboxServiceTest {
     private TaskboxServiceImpl service;

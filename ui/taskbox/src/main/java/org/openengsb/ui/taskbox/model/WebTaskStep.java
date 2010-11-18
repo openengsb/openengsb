@@ -17,7 +17,7 @@
 package org.openengsb.ui.taskbox.model;
 
 import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.taskbox.model.TaskStep;
+import org.openengsb.core.common.taskbox.model.TaskStep;
 
 public interface WebTaskStep extends TaskStep {
     /**
