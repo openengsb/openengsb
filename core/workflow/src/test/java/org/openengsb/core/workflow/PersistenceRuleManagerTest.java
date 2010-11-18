@@ -53,9 +53,4 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerCrudTest<Pers
         super.tearDown();
         FileUtils.deleteQuietly(new File("data"));
     }
-
-    public static void main(String[] args) {
-        org.junit.runner.JUnitCore.main(PersistenceRuleManagerTest.class.getName());
-    }
-
 }

@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -40,8 +38,6 @@ import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 @RunWith(Parameterized.class)
 public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager> extends
         AbstractRuleManagerTest<SourceType> {
-
-    private Log log = LogFactory.getLog(AbstractRuleManagerCrudTest.class);
 
     public static final class TestElement {
         private final RuleBaseElementId id;
