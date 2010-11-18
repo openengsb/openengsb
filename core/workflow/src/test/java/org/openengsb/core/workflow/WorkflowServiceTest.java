@@ -45,7 +45,7 @@ import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
-import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
+import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.model.TestEvent;
 
 public class WorkflowServiceTest {
@@ -77,8 +77,7 @@ public class WorkflowServiceTest {
     }
 
     private void setupRulemanager() throws RuleBaseException {
-        manager = new DirectoryRuleSource("data/rulebase");
-        ((DirectoryRuleSource) manager).init();
+        manager = new PersistenceRuleManager();
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
             "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"42\");");
     }

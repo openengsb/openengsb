@@ -35,7 +35,7 @@ import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
-import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
+import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -200,8 +200,7 @@ public class WorkflowServiceDynamicTest {
     }
 
     private void setupRulemanager() throws Exception {
-        manager = new DirectoryRuleSource("data/rulebase");
-        ((DirectoryRuleSource) manager).init();
+        manager = new PersistenceRuleManager();
         mockDomain("deploy");
         mockDomain("build");
         mockDomain("test");

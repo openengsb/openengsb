@@ -22,21 +22,16 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 
 import org.drools.KnowledgeBase;
-import org.drools.definition.KnowledgePackage;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
@@ -53,6 +48,9 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     @Before
     public void setUp() throws Exception {
         source = getRuleBaseSource();
+        source.addImport(DummyExampleDomain.class.getName());
+        source.addImport(Event.class.getName());
+        source.addGlobal(DummyExampleDomain.class.getName(), "example");
         rulebase = source.getRulebase();
     }
 
@@ -65,22 +63,6 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
     protected abstract RuleManager getRuleBaseSource() throws Exception;
 
-    private Map<String, Domain> createDomainMocks() {
-        Map<String, Domain> domains = new HashMap<String, Domain>();
-        DummyExampleDomain logService = Mockito.mock(DummyExampleDomain.class);
-        domains.put("example", logService);
-        DummyNotificationDomain notification = Mockito.mock(DummyNotificationDomain.class);
-        domains.put("notification", notification);
-        return domains;
-    }
-
-    private Map<String, Object> createOtherServiceMocks() {
-        Map<String, Object> services = new HashMap<String, Object>();
-        DummyService service = Mockito.mock(DummyService.class);
-        services.put("myservice", service);
-        return services;
-    }
-
     /**
      * create new stateful session from the rulebase and attach a listener to validate testresults
      */
@@ -92,12 +74,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         session = rulebase.newStatefulKnowledgeSession();
         listener = new RuleListener();
         session.addEventListener(listener);
-        for (Entry<String, Domain> entry : createDomainMocks().entrySet()) {
-            session.setGlobal(entry.getKey(), entry.getValue());
-        }
-        for (Entry<String, Object> entry : createOtherServiceMocks().entrySet()) {
-            session.setGlobal(entry.getKey(), entry.getValue());
-        }
+        session.setGlobal("example", mock(DummyExampleDomain.class));
     }
 
     /**
@@ -112,12 +89,11 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     @Test
     public void testGetRuleBase() throws Exception {
         assertThat(rulebase, notNullValue());
-        KnowledgePackage p = rulebase.getKnowledgePackage("org.openengsb");
-        assertThat(p, notNullValue());
     }
 
     @Test
     public void testGetRules() throws Exception {
+        source.addImport("java.util.HashSet");
         createSession();
         Event testEvent = new Event();
         session.insert(testEvent);
@@ -126,15 +102,18 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
     @Test
     public void testListImports() throws Exception {
+        source.addImport("java.util.Map");
         Collection<String> listImports = source.listImports();
         assertThat(listImports, hasItem("java.util.Map"));
     }
 
     @Test
     public void testAddRule() throws Exception {
+        source.addImport(Event.class.getName());
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test3");
         source.add(id, "when\n" + "  e : Event()\n" + "then\n"
                 + "  example.doSomething(\"this rule was added by the addrule-function\");\n");
+
         createSession();
         executeTestSession();
         assertTrue(listener.haveRulesFired("test3"));
@@ -160,6 +139,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         source.add(testFunctionId, "function void test(Object message) {\n"
                 + "System.out.println(\"notify: \" + message);\n}");
         source.addImport("java.util.Random");
+        source.addImport(Event.class.getName());
         RuleBaseElementId testRuleId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
         source.add(testRuleId, "when\n" + "  e : Event()\n" + "then\n" + "  test(new Random());\n");
         createSession();
@@ -197,6 +177,7 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     @Test(expected = RuleBaseException.class)
     public void testAddExistingRule() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "hello1");
+        source.add(id, "when\nthen\nexample.doSomething(\"bla\");");
         source.add(id, "when\nthen\nexample.doSomething(\"bla\");");
     }
 
