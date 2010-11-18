@@ -22,8 +22,8 @@ import org.junit.runner.RunWith;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
-import org.openengsb.core.taskbox.TaskboxException;
-import org.openengsb.core.taskbox.TaskboxService;
+import org.openengsb.core.common.taskbox.TaskboxException;
+import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
