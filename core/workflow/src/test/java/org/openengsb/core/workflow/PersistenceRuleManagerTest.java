@@ -15,15 +15,12 @@
  */
 package org.openengsb.core.workflow;
 
-import java.io.File;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
-import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
+import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
 
 public class PersistenceRuleManagerTest extends AbstractRuleManagerCrudTest<PersistenceRuleManager> {
 
@@ -34,23 +31,13 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerCrudTest<Pers
 
     @Override
     protected RuleManager getRuleBaseSource() throws Exception {
-        PersistenceRuleManager m = new PersistenceRuleManager();
-        PersistenceService service = new NeodatisPersistenceService("data", ClassLoader.getSystemClassLoader());
-        m.setPersistence(service);
-        m.init();
-        return m;
-    }
-
-    @Override
-    public void setUp() throws Exception {
-        FileUtils.deleteQuietly(new File("data"));
-        super.setUp();
+        return PersistenceTestUtil.getRuleManager();
     }
 
     @Override
     @After
     public void tearDown() throws Exception {
         super.tearDown();
-        FileUtils.deleteQuietly(new File("data"));
+        PersistenceTestUtil.cleanup();
     }
 }
