@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component-sets>
+  <components>
+    <component>
+      <role>org.openengsb.tooling.pluginsuite.openengsbplugin.tools.MavenExecutor</role>
+      <role-hint>default</role-hint>
+      <implementation>org.openengsb.tooling.pluginsuite.openengsbplugin.tools.DefaultMavenExecutor</implementation>
+    </component>
+  </components>
+</component-sets>
