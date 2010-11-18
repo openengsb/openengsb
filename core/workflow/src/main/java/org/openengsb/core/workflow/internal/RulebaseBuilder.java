@@ -96,7 +96,6 @@ public class RulebaseBuilder {
     public void reloadPackage(String packageName) throws RuleBaseException {
         long start = System.currentTimeMillis();
         packageStrings.clear();
-        reloadDeclarations();
         StringBuffer packageString = initNewPackageString(packageName);
 
         for (RuleBaseElementId id : manager.list(RuleBaseElementType.Function, packageName)) {
