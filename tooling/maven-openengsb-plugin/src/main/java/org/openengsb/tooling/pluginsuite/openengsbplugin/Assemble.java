@@ -25,10 +25,13 @@ import org.apache.maven.plugin.MojoExecutionException;
 /**
  * @goal assemble
  * 
+ * @inheritedByDefault false
+ * 
  * @requiresProject true
  */
 public class Assemble extends AbstractOpenengsbMojo {
 
+	@Override
     public void execute() throws MojoExecutionException {
 
         if (!getProject().isExecutionRoot()) {
