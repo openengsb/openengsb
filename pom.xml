@@ -277,6 +277,11 @@
       <email>daniel.driza [at] gmail.com</email>
       <timezone>+1</timezone>
     </contributor>
+    <contributor>
+      <name>Petr Horinek</name>
+      <email>horinek.petr [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
   </contributors>
 
   <build>
