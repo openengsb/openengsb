@@ -16,20 +16,36 @@
 package org.openengsb.core.workflow.persistence;
 
 import java.io.File;
+import java.net.URL;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.openengsb.core.common.Event;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
+import org.openengsb.core.workflow.internal.persistence.GlobalDeclaration;
+import org.openengsb.core.workflow.internal.persistence.ImportDeclaration;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 
 public final class PersistenceTestUtil {
 
+    private static PersistenceService persistence;
+
     public static RuleManager getRuleManager() throws Exception {
         FileUtils.deleteQuietly(new File("data"));
         PersistenceRuleManager m = new PersistenceRuleManager();
-        PersistenceService service = new NeodatisPersistenceService("data", ClassLoader.getSystemClassLoader());
-        m.setPersistence(service);
+        persistence = new NeodatisPersistenceService("data", ClassLoader.getSystemClassLoader());
+        persistence.create(new ImportDeclaration(Event.class.getName()));
+        URL globalURL = ClassLoader.getSystemResource("rulebase/globals");
+        File globalFile = FileUtils.toFile(globalURL);
+        @SuppressWarnings("unchecked")
+        List<String> globalLines = FileUtils.readLines(globalFile);
+        for (String s : globalLines) {
+            String[] parts = s.split(" ");
+            persistence.create(new GlobalDeclaration(parts[0], parts[1]));
+        }
+        m.setPersistence(persistence);
         m.init();
         return m;
     }
