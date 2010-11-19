@@ -31,21 +31,29 @@ import org.apache.maven.plugin.MojoFailureException;
  */
 public class LicenseCheck extends AbstractOpenengsbMojo {
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+	@Override
+	public void execute() throws MojoExecutionException, MojoFailureException {
 
-        if (!getProject().isExecutionRoot()) {
-            return;
-        }
+		if (!getProject().isExecutionRoot()) {
+			return;
+		}
 
-        assert (getMavenExecutor() != null);
+		if (!(getProject().getGroupId().equals(OPENENGSB_ROOT_GROUP_ID) && getProject()
+				.getArtifactId().equals(OPENENGSB_ROOT_ARTIFACT_ID))) {
+			throw new MojoExecutionException(
+					"Please invoke this mojo only in the OpenEngSB root!");
+		}
 
-        List<String> goals = Arrays.asList(new String[] { "clean", "validate" });
-        List<String> activatedProfiles = Arrays.asList(new String[] { "license-check" });
+		assert (getMavenExecutor() != null);
 
-        getMavenExecutor().execute(this, goals, activatedProfiles, null, null, getProject(), getSession(), getMaven(),
-                true);
+		List<String> goals = Arrays
+				.asList(new String[] { "clean", "validate" });
+		List<String> activatedProfiles = Arrays
+				.asList(new String[] { "license-check" });
 
-    }
+		getMavenExecutor().execute(this, goals, activatedProfiles, null, null,
+				getProject(), getSession(), getMaven(), true);
+
+	}
 
 }

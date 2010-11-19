@@ -24,41 +24,44 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.MavenExecutor;
 
 public abstract class AbstractOpenengsbMojo extends AbstractMojo {
 
-    /**
-     * @parameter expression="${project}"
-     */
-    private MavenProject project;
+	public final String OPENENGSB_ROOT_GROUP_ID = "org.openengsb";
+	public final String OPENENGSB_ROOT_ARTIFACT_ID = "openengsb-parent";
 
-    /**
-     * @parameter expression="${session}"
-     */
-    private MavenSession session;
+	/**
+	 * @parameter expression="${project}"
+	 */
+	private MavenProject project;
 
-    /**
-     * @component role="org.apache.maven.Maven"
-     */
-    private Maven maven;
+	/**
+	 * @parameter expression="${session}"
+	 */
+	private MavenSession session;
 
-    /**
-     * @component role=
-     *            "org.openengsb.tooling.pluginsuite.openengsbplugin.tools.MavenExecutor"
-     */
-    private MavenExecutor mavenExecutor;
+	/**
+	 * @component role="org.apache.maven.Maven"
+	 */
+	private Maven maven;
 
-    public MavenProject getProject() {
-        return project;
-    }
+	/**
+	 * @component role=
+	 *            "org.openengsb.tooling.pluginsuite.openengsbplugin.tools.MavenExecutor"
+	 */
+	private MavenExecutor mavenExecutor;
 
-    public MavenSession getSession() {
-        return session;
-    }
+	public MavenProject getProject() {
+		return project;
+	}
 
-    public Maven getMaven() {
-        return maven;
-    }
+	public MavenSession getSession() {
+		return session;
+	}
 
-    public MavenExecutor getMavenExecutor() {
-        return mavenExecutor;
-    }
+	public Maven getMaven() {
+		return maven;
+	}
+
+	public MavenExecutor getMavenExecutor() {
+		return mavenExecutor;
+	}
 
 }

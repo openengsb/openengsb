@@ -32,22 +32,29 @@ import org.apache.maven.plugin.MojoExecutionException;
 public class Assemble extends AbstractOpenengsbMojo {
 
 	@Override
-    public void execute() throws MojoExecutionException {
+	public void execute() throws MojoExecutionException {
 
-        if (!getProject().isExecutionRoot()) {
-            return;
-        }
+		if (!getProject().isExecutionRoot()) {
+			return;
+		}
 
-        assert (getMavenExecutor() != null);
+		if (!(getProject().getGroupId().equals(OPENENGSB_ROOT_GROUP_ID) && getProject()
+				.getArtifactId().equals(OPENENGSB_ROOT_ARTIFACT_ID))) {
+			throw new MojoExecutionException(
+					"Please invoke this mojo only in the OpenEngSB root!");
+		}
 
-        List<String> goals = Arrays.asList(new String[] { "install" });
-        List<String> activatedProfiles = Arrays.asList(new String[] { "release", "nightly" });
+		assert (getMavenExecutor() != null);
 
-        Properties userproperties = new Properties();
-        userproperties.put("skipTests", "true");
+		List<String> goals = Arrays.asList(new String[] { "install" });
+		List<String> activatedProfiles = Arrays.asList(new String[] {
+				"release", "nightly" });
 
-        getMavenExecutor().execute(this, goals, activatedProfiles, null, userproperties, getProject(), getSession(),
-                getMaven(), true);
+		Properties userproperties = new Properties();
+		userproperties.put("skipTests", "true");
 
-    }
+		getMavenExecutor().execute(this, goals, activatedProfiles, null,
+				userproperties, getProject(), getSession(), getMaven(), true);
+
+	}
 }
