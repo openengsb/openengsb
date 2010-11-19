@@ -48,9 +48,6 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     @Before
     public void setUp() throws Exception {
         source = getRuleBaseSource();
-        source.addImport(DummyExampleDomain.class.getName());
-        source.addImport(Event.class.getName());
-        source.addGlobal(DummyExampleDomain.class.getName(), "example");
         rulebase = source.getRulebase();
     }
 
@@ -93,7 +90,6 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
     @Test
     public void testGetRules() throws Exception {
-        source.addImport("java.util.HashSet");
         createSession();
         Event testEvent = new Event();
         session.insert(testEvent);
@@ -109,7 +105,6 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
 
     @Test
     public void testAddRule() throws Exception {
-        source.addImport(Event.class.getName());
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test3");
         source.add(id, "when\n" + "  e : Event()\n" + "then\n"
                 + "  example.doSomething(\"this rule was added by the addrule-function\");\n");
@@ -139,7 +134,6 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         source.add(testFunctionId, "function void test(Object message) {\n"
                 + "System.out.println(\"notify: \" + message);\n}");
         source.addImport("java.util.Random");
-        source.addImport(Event.class.getName());
         RuleBaseElementId testRuleId = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
         source.add(testRuleId, "when\n" + "  e : Event()\n" + "then\n" + "  test(new Random());\n");
         createSession();
