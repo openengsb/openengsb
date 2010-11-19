@@ -16,16 +16,43 @@
 
 package org.openengsb.core.common.taskbox.model;
 
+/**
+ * A TaskStep represents one action that has to be done in a Task
+ * (e.g.: Task = handling of a Ticket in a SupportSystem
+ * TaskStep(s) = Filling out information about the Request;
+ *               Processing a Change Request;
+ *               Reviewing the Change Request;
+ *               Sending Deliverables to Customer;
+ *               Closing Ticket;)
+ */
 public interface TaskStep {
+    /**
+     * returns the Name of the TaskStep
+     */
     String getName();
 
+    /**
+     * returns a Description for the TaskStep
+     */
     String getDescription();
 
+    /**
+     * sets the DoneFlag - used to mark a TaskStep as completed
+     */
     void setDoneFlag(boolean doneFlag);
 
+    /**
+     * returns the Completion State of a TaskStep
+     */
     boolean getDoneFlag();
-
+    
+    /**
+     * returns a Description according to the Type of a TaskStep
+     */
     String getTaskStepTypeDescription();
-
+    
+    /**
+     * returns the Type of a TaskStep
+     */
     String getTaskStepType();
 }

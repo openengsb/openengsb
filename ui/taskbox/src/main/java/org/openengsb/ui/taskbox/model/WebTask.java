@@ -19,9 +19,14 @@ package org.openengsb.ui.taskbox.model;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.common.taskbox.model.Task;
 
+/**
+ * WebTask extends a normal Task by adding graphical Functionality so it
+ * can be used and displayed in Web-Applications 
+ */
 public interface WebTask extends Task {
     /**
-     * returns the Wicket Panel for this task
+     * returns the according Wicket Panel for the task
+     * can be used to give an Overview over a Task and its contained TaskSteps
      */
     Panel getPanel(String id);
 }

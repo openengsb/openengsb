@@ -19,9 +19,15 @@ package org.openengsb.ui.taskbox.model;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.common.taskbox.model.TaskStep;
 
+/**
+ * WebTaskStep extends a normal TaskStep by adding graphical Functionality so it
+ * can be used and displayed in Web-Applications 
+ */
 public interface WebTaskStep extends TaskStep {
     /**
-     * returns the Wicket Panel for this task
+     * returns the according Wicket Panel for the TaskStep
+     * can be used to display detailed information about the TaskStep
+     * e.g. Web-Controls representing all implemented properties 
      */
     Panel getPanel(String id);
 }

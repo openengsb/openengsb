@@ -16,12 +16,30 @@
 
 package org.openengsb.core.common.taskbox.model;
 
+/**
+ * A Task is handled by the TaskboxService and consists of 1 or more TaskSteps.
+ * It represents a more or less long running process (e.g.: handling of a Ticket
+ * in a SupportSystem) 
+ */
 public interface Task {
+    /**
+     * returns the Unique ID the Task can be identified with
+     */
     String getId();
 
+    /**
+     * sets the Unique ID the Task can be identified with
+     */
     void setId(String id);
 
+    /**
+     * returns the Type of the Task. 
+     * The Type is used to group similar Tasks together
+     */
     String getType();
 
+    /**
+     * sets the Type of the Task
+     */
     void setType(String type);
 }
