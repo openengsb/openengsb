@@ -67,6 +67,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.neodatis.odb</groupId>
+      <artifactId>neodatis-odb</artifactId>
+      <version>${odb.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-test</artifactId>
       <version>${project.version}</version>

@@ -74,6 +74,8 @@ public class WorkflowServiceTest {
 
     private void setupRulemanager() throws Exception {
         manager = PersistenceTestUtil.getRuleManager();
+        RuleUtil.addHello1Rule(manager);
+        RuleUtil.addTestFlows(manager);
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
             "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"42\");");
     }

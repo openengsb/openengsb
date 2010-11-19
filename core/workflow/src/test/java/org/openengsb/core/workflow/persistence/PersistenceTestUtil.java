@@ -16,15 +16,16 @@
 package org.openengsb.core.workflow.persistence;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
-import org.openengsb.core.workflow.RuleUtil;
 import org.openengsb.core.workflow.internal.persistence.GlobalDeclaration;
 import org.openengsb.core.workflow.internal.persistence.ImportDeclaration;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
@@ -38,6 +39,14 @@ public final class PersistenceTestUtil {
         PersistenceRuleManager m = new PersistenceRuleManager();
         persistence = new NeodatisPersistenceService("data", ClassLoader.getSystemClassLoader());
         persistence.create(new ImportDeclaration(Event.class.getName()));
+        readImports();
+        readGlobals();
+        m.setPersistence(persistence);
+        m.init();
+        return m;
+    }
+
+    private static void readGlobals() throws IOException, PersistenceException {
         URL globalURL = ClassLoader.getSystemResource("rulebase/globals");
         File globalFile = FileUtils.toFile(globalURL);
         @SuppressWarnings("unchecked")
@@ -46,10 +55,16 @@ public final class PersistenceTestUtil {
             String[] parts = s.split(" ");
             persistence.create(new GlobalDeclaration(parts[0], parts[1]));
         }
-        m.setPersistence(persistence);
-        m.init();
-        RuleUtil.addHello1Rule(m);
-        return m;
+    }
+
+    private static void readImports() throws IOException, PersistenceException {
+        URL importsURL = ClassLoader.getSystemResource("rulebase/imports");
+        File importsFile = FileUtils.toFile(importsURL);
+        @SuppressWarnings("unchecked")
+        List<String> importLines = FileUtils.readLines(importsFile);
+        for (String s : importLines) {
+            persistence.create(new ImportDeclaration(s));
+        }
     }
 
     public static void cleanup() throws Exception {
