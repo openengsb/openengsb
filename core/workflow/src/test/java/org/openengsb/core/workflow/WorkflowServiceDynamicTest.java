@@ -22,7 +22,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
@@ -64,6 +66,16 @@ public class WorkflowServiceDynamicTest {
     private ServiceReference exampleReference;
     private ServiceReference notificationReference;
     private ServiceReference myserviceReference;
+
+    @AfterClass
+    public static void tearDownClass() {
+        PersistenceTestUtil.cleanupReferenceData();
+    }
+
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        PersistenceTestUtil.createReferencePersistence();
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -164,7 +176,7 @@ public class WorkflowServiceDynamicTest {
         String id = (String) reference.getProperty("id");
         String filter = String.format("(&(openengsb.service.type=domain)(id=%s))", id);
         when(bundleContext.getAllServiceReferences(Domain.class.getName(), filter)).thenReturn(
-            new ServiceReference[]{reference});
+            new ServiceReference[]{ reference });
         if (workflowService != null) {
             workflowService.serviceChanged(setupServiceEventMock(reference));
         }
@@ -175,7 +187,7 @@ public class WorkflowServiceDynamicTest {
         String filter =
             String.format("(&(openengsb.service.type=workflow-service)(openengsb.workflow.globalid=%s))", id);
         when(bundleContext.getAllServiceReferences(Mockito.any(String.class), Mockito.eq(filter))).thenReturn(
-            new ServiceReference[]{reference});
+            new ServiceReference[]{ reference });
         if (workflowService != null) {
             workflowService.serviceChanged(setupServiceEventMock(reference));
         }

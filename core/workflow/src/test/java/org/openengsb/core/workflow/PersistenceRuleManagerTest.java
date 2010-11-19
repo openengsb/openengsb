@@ -18,6 +18,8 @@ package org.openengsb.core.workflow;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
@@ -39,5 +41,15 @@ public class PersistenceRuleManagerTest extends AbstractRuleManagerCrudTest<Pers
     public void tearDown() throws Exception {
         super.tearDown();
         PersistenceTestUtil.cleanup();
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+        PersistenceTestUtil.cleanupReferenceData();
+    }
+
+    @BeforeClass
+    public static void setupClass() throws Exception {
+        PersistenceTestUtil.createReferencePersistence();
     }
 }

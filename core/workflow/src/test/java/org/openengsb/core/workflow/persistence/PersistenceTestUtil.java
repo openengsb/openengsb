@@ -21,9 +21,12 @@ import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceService;
+import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
 import org.openengsb.core.workflow.internal.persistence.GlobalDeclaration;
@@ -32,7 +35,9 @@ import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 
 public final class PersistenceTestUtil {
 
-    public static RuleManager getRuleManager() throws Exception {
+    private static Log log = LogFactory.getLog(PersistenceTestUtil.class);
+
+    public static RuleManager getRuleManager() throws PersistenceException, IOException, RuleBaseException {
         PersistenceRuleManager manager = new PersistenceRuleManager();
         NeodatisPersistenceService persistence = createPersistence();
         manager.setPersistence(persistence);
@@ -41,13 +46,27 @@ public final class PersistenceTestUtil {
     }
 
     private static NeodatisPersistenceService createPersistence() throws PersistenceException, IOException {
-        FileUtils.deleteQuietly(new File("data"));
+        log.debug("creating persistence");
+        final File dataFile = new File("data");
+        FileUtils.deleteQuietly(dataFile);
+        File refData = new File("data.ref");
+        if (!refData.exists()) {
+            log.debug("creating reference persistence");
+            createReferencePersistence();
+        }
+        FileUtils.copyFile(refData, dataFile);
         NeodatisPersistenceService persistence =
             new NeodatisPersistenceService("data", ClassLoader.getSystemClassLoader());
+        return persistence;
+    }
+
+    public static void createReferencePersistence() throws PersistenceException, IOException {
+        FileUtils.deleteQuietly(new File("data.ref"));
+        NeodatisPersistenceService persistence =
+            new NeodatisPersistenceService("data.ref", ClassLoader.getSystemClassLoader());
         persistence.create(new ImportDeclaration(Event.class.getName()));
         readImports(persistence);
         readGlobals(persistence);
-        return persistence;
     }
 
     private static void readGlobals(PersistenceService persistence) throws IOException, PersistenceException {
@@ -71,8 +90,12 @@ public final class PersistenceTestUtil {
         }
     }
 
-    public static void cleanup() throws Exception {
+    public static void cleanup() {
         FileUtils.deleteQuietly(new File("data"));
+    }
+
+    public static void cleanupReferenceData() {
+        FileUtils.deleteQuietly(new File("data.ref"));
     }
 
     private PersistenceTestUtil() {
