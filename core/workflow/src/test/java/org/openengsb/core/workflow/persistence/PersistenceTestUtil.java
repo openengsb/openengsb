@@ -32,21 +32,25 @@ import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 
 public final class PersistenceTestUtil {
 
-    private static PersistenceService persistence;
-
     public static RuleManager getRuleManager() throws Exception {
-        FileUtils.deleteQuietly(new File("data"));
-        PersistenceRuleManager m = new PersistenceRuleManager();
-        persistence = new NeodatisPersistenceService("data", ClassLoader.getSystemClassLoader());
-        persistence.create(new ImportDeclaration(Event.class.getName()));
-        readImports();
-        readGlobals();
-        m.setPersistence(persistence);
-        m.init();
-        return m;
+        PersistenceRuleManager manager = new PersistenceRuleManager();
+        NeodatisPersistenceService persistence = createPersistence();
+        manager.setPersistence(persistence);
+        manager.init();
+        return manager;
     }
 
-    private static void readGlobals() throws IOException, PersistenceException {
+    private static NeodatisPersistenceService createPersistence() throws PersistenceException, IOException {
+        FileUtils.deleteQuietly(new File("data"));
+        NeodatisPersistenceService persistence =
+            new NeodatisPersistenceService("data", ClassLoader.getSystemClassLoader());
+        persistence.create(new ImportDeclaration(Event.class.getName()));
+        readImports(persistence);
+        readGlobals(persistence);
+        return persistence;
+    }
+
+    private static void readGlobals(PersistenceService persistence) throws IOException, PersistenceException {
         URL globalURL = ClassLoader.getSystemResource("rulebase/globals");
         File globalFile = FileUtils.toFile(globalURL);
         @SuppressWarnings("unchecked")
@@ -57,7 +61,7 @@ public final class PersistenceTestUtil {
         }
     }
 
-    private static void readImports() throws IOException, PersistenceException {
+    private static void readImports(PersistenceService persistence) throws IOException, PersistenceException {
         URL importsURL = ClassLoader.getSystemResource("rulebase/imports");
         File importsFile = FileUtils.toFile(importsURL);
         @SuppressWarnings("unchecked")
