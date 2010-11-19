@@ -24,6 +24,7 @@ import org.openengsb.core.common.Event;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
+import org.openengsb.core.workflow.RuleUtil;
 import org.openengsb.core.workflow.internal.persistence.GlobalDeclaration;
 import org.openengsb.core.workflow.internal.persistence.ImportDeclaration;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
@@ -47,6 +48,7 @@ public final class PersistenceTestUtil {
         }
         m.setPersistence(persistence);
         m.init();
+        RuleUtil.addHello1Rule(m);
         return m;
     }
 
