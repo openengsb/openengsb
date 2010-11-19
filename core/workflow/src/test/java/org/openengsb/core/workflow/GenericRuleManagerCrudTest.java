@@ -36,8 +36,8 @@ import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 
 @RunWith(Parameterized.class)
-public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager> extends
-        AbstractRuleManagerTest<SourceType> {
+public abstract class GenericRuleManagerCrudTest<SourceType extends RuleManager> extends
+        AbstractRuleManagerTest {
 
     public static final class TestElement {
         private final RuleBaseElementId id;
@@ -124,7 +124,7 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
     protected String[] code = new String[4];
     protected RuleBaseElementId[] id = new RuleBaseElementId[4];
 
-    public AbstractRuleManagerCrudTest(List<TestElement> testelements) {
+    public GenericRuleManagerCrudTest(List<TestElement> testelements) {
         for (int i = 0; i < 3; i++) {
             TestElement el = testelements.get(i);
             this.code[i] = el.code;

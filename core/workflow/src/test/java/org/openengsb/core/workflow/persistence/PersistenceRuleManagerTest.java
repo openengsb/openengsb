@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.openengsb.core.workflow;
+package org.openengsb.core.workflow.persistence;
 
 import java.util.List;
 
@@ -21,10 +21,11 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.workflow.GenericRuleManagerCrudTest;
+import org.openengsb.core.workflow.GenericRuleManagerCrudTest.TestElement;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
-import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
 
-public class PersistenceRuleManagerTest extends AbstractRuleManagerCrudTest<PersistenceRuleManager> {
+public class PersistenceRuleManagerTest extends GenericRuleManagerCrudTest<PersistenceRuleManager> {
 
     public PersistenceRuleManagerTest(
             List<TestElement> testelements) {
