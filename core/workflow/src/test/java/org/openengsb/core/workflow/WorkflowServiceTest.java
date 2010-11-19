@@ -45,8 +45,8 @@ import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
-import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.model.TestEvent;
+import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
 
 public class WorkflowServiceTest {
 
@@ -63,12 +63,8 @@ public class WorkflowServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        File ruleSources = FileUtils.toFile(ClassLoader.getSystemResource("rulebase"));
-        File workingDir = new File("data/rulebase");
-        workingDir.mkdirs();
-        FileUtils.copyDirectory(ruleSources, workingDir);
-        service = new WorkflowServiceImpl();
         setupRulemanager();
+        service = new WorkflowServiceImpl();
         service.setRulemanager(manager);
         ContextCurrentService currentContext = mock(ContextCurrentService.class);
         when(currentContext.getCurrentContextId()).thenReturn("42");
@@ -76,8 +72,8 @@ public class WorkflowServiceTest {
         setupDomainsAndOtherServices();
     }
 
-    private void setupRulemanager() throws RuleBaseException {
-        manager = new PersistenceRuleManager();
+    private void setupRulemanager() throws Exception {
+        manager = PersistenceTestUtil.getRuleManager();
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
             "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"42\");");
     }
