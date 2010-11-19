@@ -74,4 +74,9 @@ public class RuleBaseElement {
         return new RuleBaseElementId(type, packageName, name);
     }
 
+    @Override
+    public String toString() {
+        return String.format("%s %s[%s]", type, packageName, name);
+    }
+
 }
