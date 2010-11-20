@@ -35,7 +35,7 @@ import org.springframework.osgi.context.BundleContextAware;
 
 public class PersistenceRuleManager extends AbstractRuleManager implements BundleContextAware {
 
-    private PersistenceManager persistenceManger;
+    private PersistenceManager persistenceManager;
     private PersistenceService persistence;
     private BundleContext bundleContext;
 
@@ -43,7 +43,7 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
     public void init() throws RuleBaseException {
         if (persistence == null) {
             Bundle self = bundleContext.getBundle();
-            persistence = persistenceManger.getPersistenceForBundle(self);
+            persistence = persistenceManager.getPersistenceForBundle(self);
         }
         super.init();
     }
@@ -206,7 +206,7 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
         this.bundleContext = bundleContext;
     }
 
-    public void setPersistenceManger(PersistenceManager persistenceManger) {
-        this.persistenceManger = persistenceManger;
+    public void setPersistenceManager(PersistenceManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
     }
 }
