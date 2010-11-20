@@ -5,7 +5,7 @@ openengsb-1.1.0.RELEASE
   * [e.g.] Fix problem with setting files
 
 ### New Projects
-  * [e.g.] openengsb-core-taskbox
+  * maven-openengsb-plugin
 
 ### Removed Projects
   * [e.g.] openengsb-domain-scm
