@@ -23,15 +23,30 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.common.persistence.PersistenceException;
+import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.internal.AbstractRuleManager;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.springframework.osgi.context.BundleContextAware;
 
-public class PersistenceRuleManager extends AbstractRuleManager {
+public class PersistenceRuleManager extends AbstractRuleManager implements BundleContextAware {
 
+    private PersistenceManager persistenceManger;
     private PersistenceService persistence;
+    private BundleContext bundleContext;
+
+    @Override
+    public void init() throws RuleBaseException {
+        if (persistence == null) {
+            Bundle self = bundleContext.getBundle();
+            persistence = persistenceManger.getPersistenceForBundle(self);
+        }
+        super.init();
+    }
 
     @Override
     public void add(RuleBaseElementId name, String code) throws RuleBaseException {
@@ -184,5 +199,14 @@ public class PersistenceRuleManager extends AbstractRuleManager {
 
     public void setPersistence(PersistenceService persistence) {
         this.persistence = persistence;
+    }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
+
+    public void setPersistenceManger(PersistenceManager persistenceManger) {
+        this.persistenceManger = persistenceManger;
     }
 }
