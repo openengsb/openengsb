@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.openengsb.core.workflow.internal.persistence;
 
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
