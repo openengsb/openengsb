@@ -27,6 +27,7 @@ import org.openengsb.core.common.validation.FormValidator;
 
 import com.google.common.base.Preconditions;
 
+@SuppressWarnings("serial")
 public class ServiceDescriptor implements Serializable {
     private String id;
     private Class<? extends Domain> serviceType;
@@ -102,7 +103,7 @@ public class ServiceDescriptor implements Serializable {
     }
 
     public void setFormValidator(FormValidator validator) {
-        this.formValidator = validator;
+        formValidator = validator;
     }
 
     public static Builder builder(StringLocalizer strings) {

@@ -16,7 +16,9 @@
 
 package org.openengsb.core.common.taskbox;
 
+@SuppressWarnings("serial")
 public class TaskboxException extends Exception {
+
     public TaskboxException() {
     }
 
@@ -31,4 +33,5 @@ public class TaskboxException extends Exception {
     public TaskboxException(String message, Throwable cause) {
         super(message, cause);
     }
+
 }
