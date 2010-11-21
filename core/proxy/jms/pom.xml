@@ -22,7 +22,7 @@
     <relativePath>..</relativePath>
     <groupId>org.openengsb.core.proxy</groupId>
     <artifactId>openengsb-core-proxy-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.RC4</version>
   </parent>
 
   <properties>
@@ -32,7 +32,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>openengsb-core-proxy-jms</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0.RC4</version>
 
   <name>OpenEngSB :: Core :: External Protocol Proxies :: JMS</name>
 
