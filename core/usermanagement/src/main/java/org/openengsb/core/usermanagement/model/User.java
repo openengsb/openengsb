@@ -29,6 +29,7 @@ import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
+
 //copied from the org.springframework.security.core.user
 
 public class User implements UserDetails, CredentialsContainer {

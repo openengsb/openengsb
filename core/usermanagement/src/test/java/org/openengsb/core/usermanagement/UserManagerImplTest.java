@@ -64,7 +64,7 @@ public class UserManagerImplTest {
     }
 
     @Test
-    public void testToCreateUser_shouldWork() throws PersistenceException {
+    public void testToCreateUser_ShouldWork() throws PersistenceException {
         User user = new User("testUser1", "testPass");
         userManager.createUser(user);
         verify(persistMock, times(1)).create(user);

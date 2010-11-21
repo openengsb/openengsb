@@ -22,12 +22,12 @@ import org.openengsb.core.usermanagement.model.User;
 
 public interface UserManager {
 
-    public void createUser(User user) throws UserExistsException;
+    void createUser(User user) throws UserExistsException;
 
-    public void updateUser(User oldUser, User newUser) throws UserNotFoundException;
+    void updateUser(User oldUser, User newUser) throws UserNotFoundException;
 
-    public void deleteUser(String username) throws UserNotFoundException;
+    void deleteUser(String username) throws UserNotFoundException;
 
-    public User loadUserByUsername(String username) throws UserNotFoundException;
+    User loadUserByUsername(String username) throws UserNotFoundException;
 
 }
