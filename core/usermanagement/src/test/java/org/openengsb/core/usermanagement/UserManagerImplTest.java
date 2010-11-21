@@ -16,6 +16,8 @@
 
 package org.openengsb.core.usermanagement;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,10 +30,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
 import org.openengsb.core.usermanagement.exceptions.UserExistsException;
+import org.openengsb.core.usermanagement.exceptions.UserNotFoundException;
 import org.openengsb.core.usermanagement.model.User;
-import org.springframework.security.core.GrantedAuthority;
 
 public class UserManagerImplTest {
     private UserManagerImpl userManager;
@@ -55,6 +56,11 @@ public class UserManagerImplTest {
         List<User> userList2 = new ArrayList<User>();
         userList2.add(testUser2);
         when(persistMock.query(testUser2)).thenReturn(userList2);
+
+        User testUser3 = new User("testUser3", "testPass");
+        List<User> userList3 = new ArrayList<User>();
+        userList3.add(testUser3);
+        when(persistMock.query(testUser3)).thenReturn(userList3);
     }
 
     @Test
@@ -70,5 +76,42 @@ public class UserManagerImplTest {
         userManager.createUser(user);
     }
 
-    
+    @Test
+    public void testToLoadAnExistingUser_ShouldWork() {
+        User user = userManager.loadUserByUsername("testUser2");
+        assertThat(user.getUsername(), is("testUser2"));
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void testToLoadAnNotExistingUser_ShouldThrowUserNotFoundException() {
+        userManager.loadUserByUsername("testUser1");
+    }
+
+    @Test
+    public void updateUser_ShouldWork() throws PersistenceException {
+        User userOld = new User("testUser2", "testPass");
+        User userNew = new User("testUser2", "testPassNew");
+        userManager.updateUser(userOld, userNew);
+        verify(persistMock, times(1)).update(userOld, userNew);
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void updateNotExistingUser_ShouldThrowUserNotFoundException() throws PersistenceException {
+        User userOld = new User("testUser1", "testPass");
+        User userNew = new User("testUser1", "testPassNew");
+        userManager.updateUser(userOld, userNew);
+        verify(persistMock, times(0)).update(userOld, userNew);
+    }
+
+    @Test
+    public void deleteUser_ShouldWork() throws PersistenceException {
+        userManager.deleteUser("testUser3");
+        verify(persistMock, times(1)).delete(new User("testUser3", null));
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void deleteNotExistingUser_ShouldThrowUserNotFoundException() throws PersistenceException {
+        userManager.deleteUser("testUser1");
+        verify(persistMock, times(0)).delete(new User("testUser1", null));
+    }
 }
