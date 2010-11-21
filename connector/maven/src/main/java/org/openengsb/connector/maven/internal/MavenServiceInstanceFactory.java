@@ -47,6 +47,9 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestD
         if (attributes.containsKey("projectPath")) {
             instance.setProjectPath(attributes.get("projectPath"));
         }
+        if (attributes.containsKey("command")) {
+            instance.setCommand(attributes.get("command"));
+        }
     }
 
     @Override
@@ -64,7 +67,9 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestD
     public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
         builder.name("service.name").description("service.description");
         builder.attribute(builder.newAttribute().id("projectPath").name("service.projectPath.name")
-            .description("service.projectPath.description").build());
+            .description("service.projectPath.description").required().build());
+        builder.attribute(builder.newAttribute().id("command").name("service.command.name")
+            .description("service.command.description").required().build());
         return builder.build();
     }
 
