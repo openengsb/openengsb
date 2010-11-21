@@ -194,7 +194,53 @@
     <title>Spread the News</title>
     <para>Post a message to the OpenEngSB twitter account with the following content:
 <programlisting><![CDATA[openengsb-VERSION "NAME" released, closing XX issues (JIRA_RELEASE_REPORT_SHORT_URL).
-Try the new features now: http://openengsb.org]]></programlisting></para>
+  Try the new features now: http://openengsb.org]]></programlisting></para>
+    <para>Mails in this case are not only used for notification but also to get the developers and users
+      to try a new release and report issues and problems. Therefore, we use different templates for different
+      types of releases of the project.
+    </para>
+    <para>The following template shows a copy and paste template for mails send for a release candidate. This 
+      mail should only be sent to the developer mailing list:<programlisting><![CDATA[Hey guys,
+
+I've just uploaded openengsb-1.0.0.RC4 to maven central (Should be available
+within the next hour).
+
+Sources can be downloaded here:
+
+https://github.com/openengsb/openengsb/zipball/openengsb-1.0.0.RC4
+
+The binary release can be downloaded here:
+
+http://repo1.maven.org/maven2/org/openengsb/openengsb/1.0.0.RC4/openengsb-1.0.0.RC4.zip
+
+Between openengsb-1.0.0.RC3 and openegnsb-1.0.0.RC4 we've fixed the following
+issues:
+
+** Bug
+  * [OPENENGSB-548] - jetty7 - felix problems 
+  * [OPENENGSB-605] - Use png as favicon for openengsb war file and script
+
+** Improvement
+  * [OPENENGSB-603] - Context has to be stored persistently and
+  * restored on system startup
+  * [OPENENGSB-610] - Maven connector has to support the execution of a configurable command
+
+** Task
+  * [OPENENGSB-606] - update docs new jira release 
+
+** TBD
+  * [OPENENGSB-589] - document release process for stable branches
+
+Please give it a try and report all problems you encounter here:
+
+http://issues.openengsb.org/jira/browse/OPENENGSB/fixforversion/10142
+
+If there are no new issues reported within the next 72 hours I set RC4 as the
+final release 1.0.0.RELEASE.
+
+Kind regards,
+andreas]]></programlisting>
+    </para>
   </section>
 
   <section>
