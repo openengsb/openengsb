@@ -292,6 +292,11 @@
       <email>horinek.petr [at] gmail.com</email>
       <timezone>+1</timezone>
     </contributor>
+    <contributor>
+      <name>Eduard Szente</name>
+      <email>eduard.szente [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
   </contributors>
 
   <build>
