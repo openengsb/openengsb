@@ -18,6 +18,7 @@ package org.openengsb.core.usermanagement;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -29,21 +30,28 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.persistence.PersistenceException;
+import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.usermanagement.exceptions.UserExistsException;
 import org.openengsb.core.usermanagement.exceptions.UserNotFoundException;
 import org.openengsb.core.usermanagement.model.User;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 public class UserManagerImplTest {
     private UserManagerImpl userManager;
     private PersistenceService persistMock;
 
-
     @Before
     public void setUp() {
         userManager = new UserManagerImpl();
         persistMock = mock(PersistenceService.class);
-        userManager.setPersistence(persistMock);
+         PersistenceManager persistManagerMock = mock(PersistenceManager.class);
+        when(persistManagerMock.getPersistenceForBundle(any(Bundle.class))).thenReturn(persistMock);
+        userManager.setPersistenceManager(persistManagerMock);
+        BundleContext bundleMock = mock(BundleContext.class);
+        userManager.setBundleContext(bundleMock);
+        userManager.init();
         createTestUsers();
     }
 

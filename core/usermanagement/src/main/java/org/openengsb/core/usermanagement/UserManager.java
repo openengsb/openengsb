@@ -17,8 +17,9 @@
 package org.openengsb.core.usermanagement;
 
 import org.openengsb.core.usermanagement.model.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserManager {
+public interface UserManager extends UserDetailsService{
 
     void createUser(User user) ;
 

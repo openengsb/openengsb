@@ -20,15 +20,20 @@ package org.openengsb.core.usermanagement;
 import java.util.List;
 
 import org.openengsb.core.common.persistence.PersistenceException;
+import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.usermanagement.exceptions.UserExistsException;
 import org.openengsb.core.usermanagement.exceptions.UserNotFoundException;
 import org.openengsb.core.usermanagement.model.User;
+import org.osgi.framework.BundleContext;
+import org.springframework.osgi.context.BundleContextAware;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class UserManagerImpl implements UserManager {
+public class UserManagerImpl implements UserManager, BundleContextAware {
 
     private PersistenceService persistence;
+    private PersistenceManager persistenceManager;
+    private BundleContext bundleContext;
 
     public UserManagerImpl() {
     }
@@ -86,7 +91,16 @@ public class UserManagerImpl implements UserManager {
         }
     }
 
-    public void setPersistence(PersistenceService persistence) {
-        this.persistence = persistence;
+    public void setPersistenceManager(PersistenceManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
+    }
+
+    public void init() {
+        persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
+    }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 }
