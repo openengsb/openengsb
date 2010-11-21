@@ -75,6 +75,41 @@
     we finished 1.2.0.M1 and start work on 1.2.0.M2. Now two weeks after the release of 1.1.0.RC3 without any new
     bug-reports we re-release 1.1.0.RC3 to 1.1.0.RELEASE (starting the game again from the beginning).</para>
   </section>
+  
+  <section>
+	<title>Git Branches</title>
+	<para>For the best cooperation between Git and Maven the OpenEngSB team has developed its own workflow with branches
+	during releases. For different project phases (milestone, RC, final, support) different workflows apply.</para>
+	<section>
+		<title>New Feature Workflow</title>
+		<para>For new features the already described workflow apply. This means create a feature branch based on the integration
+		branch, add your commits and create a pull request if you're finished. Your changes will be merged (after review) to
+		the integration branch. From time to time the integration branch ins merged into the master, which is pushed as 
+		snapshots to sonatype.</para>
+	</section>
+	<section>
+		<title>Milestone Releases</title>
+		<para>For milestone releases about one day before a planned release a openensb-1.X.0-release branch is created. This
+		branch can be forward merged to integration as often as liked (no backward merges are allowed). If all final bugs
+		and changes are done the MX version is released on this branch and the branch is merged into integration and deleted
+		again. During this process any number of new features are merged into integration, without affecting the release any
+		longer.</para>
+	</section>
+	<section>
+		<title>Release Candidates</title>
+		<para>RCs are the pre-level for final releases. This means, after the openengsb team decides a release is ready to
+		go, two new branch  are created from the latest commit AFTER the milestone release (where the mvn versions are set back
+		to the snapshot version): openengsb-1.X.x-dev and openengsb-1.X.x-release. openengsb-1.X.x-dev is used for bug-fixes. Every
+		fix which should also be merged into the integration branch/master should be branched off openengsb-1.X.x-dev and afterewards
+		merged into integration and openengsb-1.X.x-dev. If a release is ready openengsb-1.X.x-dev is merged into openengsb-1.X.x-release,
+		where the release takes place. BUT no merge from openengsb-1.X.x-release to openengsb-1.X.x-release is allowed!</para>
+	</section>
+	<section>
+		<title>Final and Support Releases</title>
+		<para>All support and final releases are handled exactly as the RC releases between the openengsb-1.X.x-dev and
+		openengsb-1.X.x-release branch.</para>
+	</section>
+  </section>
 
   <section>
     <title>Configure Maven</title>
