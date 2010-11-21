@@ -5,7 +5,7 @@ openengsb-1.1.0.RELEASE
   * [e.g.] Fix problem with setting files
 
 ### New Projects
-  * [e.g.] openengsb-core-taskbox
+  * maven-openengsb-plugin
 
 ### Removed Projects
   * [e.g.] openengsb-domain-scm
@@ -18,7 +18,7 @@ openengsb-1.1.0.RELEASE
   * [e.g.] javax.ejb/com.springsource.javax.ejb
 
 ### New Features & Changed Behaviour
-  * [e.g.] Added possibility to delete workfows
+  * Added tooling plugin to execute license-check plugin and assemble scripts via mvn.
 
 ### Depricated or Removed Features
   * [e.g.] org.openengsb.domain.scm.doSomething() is removed
