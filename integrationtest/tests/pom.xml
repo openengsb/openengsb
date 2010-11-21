@@ -23,12 +23,12 @@
   <parent>
     <groupId>org.openengsb.integrationtest</groupId>
     <artifactId>openengsb-integrationtest-parent</artifactId>
-    <version>1.0.0.RC4</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.integrationtest</groupId>
   <artifactId>openengsb-integrationtest-test</artifactId>
-  <version>1.0.0.RC4</version>
+  <version>1.0.0-SNAPSHOT</version>
   <name>OpenEngSB :: Integration Tests :: Tests</name>
 
   <dependencies>
