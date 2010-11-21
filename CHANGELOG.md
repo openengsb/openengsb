@@ -16,6 +16,7 @@ openengsb-1.1.0.RELEASE
 ### Upgraded Projects
  * org.apache.wicket/wicket-*/1.4.13
  * org.neodatis.odb/neodatis-odb/1.9.30.687
+ * junit/junit/4.8.2
 
 ### Remvoed External References
   * [e.g.] javax.ejb/com.springsource.javax.ejb
