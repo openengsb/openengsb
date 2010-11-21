@@ -16,18 +16,16 @@
 
 package org.openengsb.core.usermanagement;
 
-import org.openengsb.core.usermanagement.exceptions.UserExistsException;
-import org.openengsb.core.usermanagement.exceptions.UserNotFoundException;
 import org.openengsb.core.usermanagement.model.User;
 
 public interface UserManager {
 
-    void createUser(User user) throws UserExistsException;
+    void createUser(User user) ;
 
-    void updateUser(User oldUser, User newUser) throws UserNotFoundException;
+    void updateUser(User oldUser, User newUser) ;
 
-    void deleteUser(String username) throws UserNotFoundException;
+    void deleteUser(String username) ;
 
-    User loadUserByUsername(String username) throws UserNotFoundException;
+    User loadUserByUsername(String username) ;
 
 }

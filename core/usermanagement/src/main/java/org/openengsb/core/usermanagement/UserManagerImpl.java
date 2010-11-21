@@ -77,7 +77,7 @@ public class UserManagerImpl implements UserManager {
 
 
     @Override
-    public User loadUserByUsername(String username) throws UserNotFoundException {
+    public User loadUserByUsername(String username) {
         List<User> list = persistence.query(new User(username, null));
         if (list.size() > 0) {
             return list.get(0);
