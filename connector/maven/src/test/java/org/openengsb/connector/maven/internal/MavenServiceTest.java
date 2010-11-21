@@ -60,6 +60,7 @@ public class MavenServiceTest {
     @Test
     public void build_shouldWork() {
         mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("clean compile");
         String id = mavenService.build();
         verify(buildEvents).raiseEvent(any(BuildStartEvent.class));
         verify(buildEvents).raiseEvent(refEq(new BuildEndEvent(id, true, null), "output"));
@@ -68,6 +69,7 @@ public class MavenServiceTest {
     @Test
     public void test_shouldWork() {
         mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("test");
         String id = mavenService.runTests();
         verify(testEvents).raiseEvent(any(TestStartEvent.class));
         verify(testEvents).raiseEvent(refEq(new TestEndEvent(id, true, null), "output"));
@@ -76,6 +78,7 @@ public class MavenServiceTest {
     @Test
     public void deploy_shoudWork() {
         mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("install -Dmaven.test.skip=true");
         String id = mavenService.deploy();
         verify(deployEvents).raiseEvent(any(DeployStartEvent.class));
         verify(deployEvents).raiseEvent(refEq(new DeployEndEvent(id, true, null), "output"));
@@ -84,6 +87,7 @@ public class MavenServiceTest {
     @Test
     public void testTestFail() {
         mavenService.setProjectPath(getPath("test-unit-fail"));
+        mavenService.setCommand("test");
         String id = mavenService.runTests();
         verify(testEvents).raiseEvent(refEq(new TestEndEvent(id, false, null), "output"));
     }

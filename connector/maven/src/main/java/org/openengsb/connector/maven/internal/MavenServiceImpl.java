@@ -19,6 +19,7 @@ package org.openengsb.connector.maven.internal;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executor;
@@ -58,6 +59,8 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
 
     private ContextCurrentService contextService;
 
+    private String command;
+
     public MavenServiceImpl() {
         executor = Executors.newSingleThreadExecutor();
     }
@@ -92,7 +95,7 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
-                MavenResult result = excuteGoal("test");
+                MavenResult result = excuteCommand(command);
                 testEvents.raiseEvent(new TestEndEvent(id, result.isSuccess(), result.getOutput()));
             }
         };
@@ -110,7 +113,7 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
-                MavenResult result = excuteGoal("compile");
+                MavenResult result = excuteCommand(command);
                 buildEvents.raiseEvent(new BuildEndEvent(id, result.isSuccess(), result.getOutput()));
             }
         };
@@ -136,7 +139,7 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
-                MavenResult result = excuteGoal("install");
+                MavenResult result = excuteCommand(command);
                 deployEvents.raiseEvent(new DeployEndEvent(id, result.isSuccess(), result.getOutput()));
             }
         };
@@ -149,15 +152,15 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
     }
 
     public Boolean validate() {
-        return excuteGoal("validate").isSuccess();
+        return excuteCommand("validate").isSuccess();
     }
 
-    private synchronized MavenResult excuteGoal(String goal) {
+    private synchronized MavenResult excuteCommand(String goal) {
         File dir = new File(projectPath);
 
         List<String> command = new ArrayList<String>();
         command.add(MVN_COMMAND);
-        command.add(goal);
+        command.addAll(Arrays.asList(goal.trim().split(" ")));
 
         try {
             return runMaven(dir, command);
@@ -202,6 +205,10 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
 
     public boolean isSynchronous() {
         return synchronous;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
     }
 
     private class MavenResult {

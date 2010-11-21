@@ -126,7 +126,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     }
 
     private StatefulKnowledgeSession getSessionForCurrentContext() throws WorkflowException {
-        String currentContextId = currentContextService.getCurrentContextId();
+        String currentContextId = currentContextService.getThreadLocalContext();
         if (currentContextId == null) {
             throw new IllegalStateException("contextID must not be null");
         }
