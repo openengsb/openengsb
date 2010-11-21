@@ -95,6 +95,7 @@ public class TestClient extends BasePage {
 
     private ServiceId lastServiceId;
 
+    @SuppressWarnings("serial")
     public TestClient() {
         WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
         serviceManagementContainer.setOutputMarkupId(true);
@@ -323,7 +324,7 @@ public class TestClient extends BasePage {
         DefaultMutableTreeNode providerNode =
             new DefaultMutableTreeNode(provider.getName().getString(getSession().getLocale()));
         node.add(providerNode);
-        for (ServiceReference serviceReference : this.services
+        for (ServiceReference serviceReference : services
             .serviceReferencesForDomain(provider.getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
             if (id != null) {

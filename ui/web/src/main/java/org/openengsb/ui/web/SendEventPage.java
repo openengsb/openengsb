@@ -85,6 +85,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         init(classes);
     }
 
+    @SuppressWarnings("serial")
     private void init(List<? extends Class<?>> classes) {
         Form<Object> form = new Form<Object>("form");
         add(form);

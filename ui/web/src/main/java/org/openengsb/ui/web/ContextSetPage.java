@@ -62,6 +62,7 @@ public class ContextSetPage extends BasePage {
 
     private final FeedbackPanel feedbackPanel;
 
+    @SuppressWarnings("serial")
     public ContextSetPage() {
         add(new AjaxLink<String>("expandAll") {
             @Override

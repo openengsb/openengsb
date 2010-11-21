@@ -19,6 +19,7 @@ package org.openengsb.ui.web.global.footer;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 
+@SuppressWarnings("serial")
 public class FooterTemplate extends Panel {
     public FooterTemplate(String id) {
         super(id);
