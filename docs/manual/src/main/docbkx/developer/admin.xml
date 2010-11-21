@@ -106,10 +106,14 @@
         important. At every location used it is resized according to the requirements automatically.</listitem>
       <listitem>openengsb_small.png: A reduced version of the OpenEngSB logo. The most important thing with this
         logo is that it have to be rectangular, since some cases require this.</listitem>
-      <listitem>openengsb.ico: This is the openengsb_small.png logo, reduced to 256x256 and converted to .ico. 
-        In unix systems <literal>convert openengsb.png openengsb.ico</literal> in the command line should do 
-        the job.</listitem>
-    </itemizedlist>
+      <listitem>openengsb.ico: This is the openengsb_small.png logo convert to an ico file. Threfore scale the
+	    openengsb_small.png. On unix install imagemagic and png2ico and follow the following steps. Before you start
+		upate openengsb_smal.png in <literal>etc/branding</literal>
+		<literallayout><command>convert -resize 64x64 openengsb_small.png openengsb64x64.png</command>
+<command>convert -resize 32x32 openengsb_small.png openengsb32x32.png</command>
+<command>convert -resize 16x16 openengsb_small.png openengsb16x16.png</command>
+<command>png2ico openengsb.ico openengsb16x16.png openengsb32x32.png openengsb32x32.png</command></literallayout></listitem>
+	</itemizedlist>
     <section>
       <title>External Infrastructure</title>
       <para>This section describes which tools have to be upgraded and how this is done.</para>
