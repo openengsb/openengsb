@@ -68,7 +68,7 @@ public class User implements UserDetails, CredentialsContainer {
                 boolean credentialsNonExpired, boolean accountNonLocked,
                 Collection<? extends GrantedAuthority> authorities) {
 
-        if (((username == null) || "".equals(username))) {
+        if (username == null || "".equals(username)) {
             throw new IllegalArgumentException("Cannot pass null or empty values to constructor");
         }
 
@@ -85,7 +85,7 @@ public class User implements UserDetails, CredentialsContainer {
      * Default User
      */
     public User(String username, String password) {
-         if (((username == null) || "".equals(username))) {
+        if (username == null || "".equals(username)) {
             throw new IllegalArgumentException("Cannot pass null or empty values to constructor");
         }
 
