@@ -107,6 +107,12 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         return ruleCode;
     }
 
+    public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        ProcessInstance processInstance = session.startProcess(processId, parameterMap);
+        return processInstance.getId();
+    }
+
     public void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         synchronized (session) {
@@ -303,3 +309,4 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         this.timeout = timeout;
     }
 }
+

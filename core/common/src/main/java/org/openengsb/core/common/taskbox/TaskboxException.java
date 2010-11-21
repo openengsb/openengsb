@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.taskbox;
+package org.openengsb.core.common.taskbox;
 
-@SuppressWarnings("serial")
 public class TaskboxException extends Exception {
     public TaskboxException() {
     }

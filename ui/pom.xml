@@ -53,6 +53,7 @@
   <modules>
     <module>web</module>
     <module>common</module>
+    <module>taskbox</module>
   </modules>
 
 </project>

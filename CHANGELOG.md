@@ -6,6 +6,7 @@ openengsb-1.1.0.RELEASE
 
 ### New Projects
   * maven-openengsb-plugin
+  * openengsb-core-taskbox
 
 ### Removed Projects
   * [e.g.] openengsb-domain-scm

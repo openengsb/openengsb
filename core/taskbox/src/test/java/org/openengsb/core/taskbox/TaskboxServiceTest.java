@@ -16,12 +16,15 @@
 
 package org.openengsb.core.taskbox;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openengsb.core.common.taskbox.TaskboxException;
+import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 
@@ -37,10 +40,25 @@ public class TaskboxServiceTest {
         service.setWorkflowService(workflowService);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void testStartWorkflow() throws TaskboxException, WorkflowException {
-        service.startWorkflow();
+    public void testStartWorkflow_ShouldStartOneWorkflow() throws TaskboxException, WorkflowException {
+        Task t = null;
 
-        verify(workflowService, Mockito.times(1)).startFlow(Mockito.eq("tasktest"));
+        service.startWorkflow("tasktest", "ticket", t);
+
+        verify(workflowService, Mockito.times(1)).startFlow(Mockito.anyString(), Mockito.anyMap());
     }
+
+    @Test(expected = TaskboxException.class)
+    public void testGetEmptyWorkflowMessage_ShouldThrowTaskboxException() throws TaskboxException {
+        service.getWorkflowMessage();
+    }
+
+    @Test
+    public void testWorkflowMessage_ShouldSetString() throws TaskboxException {
+        service.setWorkflowMessage("testmessage");
+        assertEquals("testmessage", service.getWorkflowMessage());
+    }
+
 }
