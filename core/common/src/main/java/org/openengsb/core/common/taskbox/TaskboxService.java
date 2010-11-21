@@ -17,33 +17,30 @@
 package org.openengsb.core.common.taskbox;
 
 import org.openengsb.core.common.Event;
-import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.common.workflow.WorkflowException;
 
 /**
  * The Taskbox is a service which can be used when human interaction is required, e.g. by help desk applications. This
- * core part is responsible for storing tasks, throwing events and starting workflows. Therefore it provides
- * methods which can be called by workflows e.g. assigning a task to different user-roles (such as case worker or
- * developer) or setting a task status. Another job is to choose the right wicket panel from the UI project to display
- * the right information in a certain situation.
+ * core part is responsible for storing tasks, throwing events and starting workflows. Therefore it provides methods
+ * which can be called by workflows e.g. assigning a task to different user-roles (such as case worker or developer) or
+ * setting a task status. Another job is to choose the right wicket panel from the UI project to display the right
+ * information in a certain situation.
  * 
  * The component uses the persistence compontent to store tasks and the workflow component to take control of specific
  * workflows.
  */
 public interface TaskboxService {
     /**
-     * Gets the message set by a workflow
-     * Used for testing purposes up to now
+     * Gets the message set by a workflow Used for testing purposes up to now
      * 
      * @throws TaskboxException when the message is not set
      */
     String getWorkflowMessage() throws TaskboxException;
 
     /**
-     * Starts a test workflow 
-     * workflowName - the name of the workflow to be started
-     * taskVariableName - the name of the variable containing the taskObject in the workflow 
-     * task - the taskobject to be reasoned about
+     * Starts a test workflow workflowName - the name of the workflow to be started taskVariableName - the name of the
+     * variable containing the taskObject in the workflow task - the taskobject to be reasoned about
      * 
      * @throws TaskboxException when the test workflow could not be started
      */
@@ -51,8 +48,7 @@ public interface TaskboxService {
     void startWorkflow(String workflowName, String taskVariableName, Task task) throws TaskboxException;
 
     /**
-     * Used by a workflow to set a message
-     * Used for testing purposes up to now
+     * Used by a workflow to set a message Used for testing purposes up to now
      */
     void setWorkflowMessage(String message);
 
