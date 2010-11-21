@@ -17,6 +17,7 @@ openengsb-1.1.0.RELEASE
  * org.apache.wicket/wicket-*/1.4.13
  * org.neodatis.odb/neodatis-odb/1.9.30.687
  * junit/junit/4.8.2
+ * org.springframework.security/spring-security-*/3.0.5.RELEASE
 
 ### Remvoed External References
   * [e.g.] javax.ejb/com.springsource.javax.ejb
