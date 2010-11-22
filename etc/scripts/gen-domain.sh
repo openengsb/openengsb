@@ -25,7 +25,7 @@ if [ "$DOMAIN" = "" ]; then
 	DOMAIN=$DEFAULT_DOMAIN
 fi
 
-DEFAULT_VERSION="1.0.0-SNAPSHOT"
+DEFAULT_VERSION="1.1.0-SNAPSHOT"
 echo -n "Version (is $DEFAULT_VERSION): "
 read VERSION
 if [ "$VERSION" = "" ]; then

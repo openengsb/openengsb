@@ -26,19 +26,16 @@
       <defaultValue>openengsb-domains-domainname-parent</defaultValue>
     </requiredProperty>
     <requiredProperty key="domainArtifactId">
-      <defaultValue>openengsb-domains-domainname-implementation</defaultValue>
+      <defaultValue>openengsb-domains-domainname</defaultValue>
     </requiredProperty>
     <requiredProperty key="artifactId">
-      <defaultValue>openengsb-domains-domainname-connectorname</defaultValue>
-    </requiredProperty>
-    <requiredProperty key="groupId">
-      <defaultValue>org.openengsb.domains.domainname</defaultValue>
+      <defaultValue>openengsb-connector-connectorname</defaultValue>
     </requiredProperty>
     <requiredProperty key="version">
-      <defaultValue>1.0.0-SNAPSHOT</defaultValue>
+      <defaultValue>1.1.0-SNAPSHOT</defaultValue>
     </requiredProperty>
     <requiredProperty key="name">
-      <defaultValue>OpenEngSB :: Domains :: Domainname :: Connectorname</defaultValue>
+      <defaultValue>OpenEngSB :: Connector :: Connectorname</defaultValue>
     </requiredProperty>
     <requiredProperty key="connectorName">
       <defaultValue>Connectorname</defaultValue>
@@ -47,10 +44,10 @@
       <defaultValue>DomainInterfaceName</defaultValue>
     </requiredProperty>
     <requiredProperty key="parentPackage">
-      <defaultValue>org.openengsb.domains.domainname</defaultValue>
+      <defaultValue>org.openengsb.domain.domainname</defaultValue>
     </requiredProperty>
     <requiredProperty key="package">
-      <defaultValue>org.openengsb.domains.domainname.connectorname</defaultValue>
+      <defaultValue>org.openengsb.connector.connectorname</defaultValue>
     </requiredProperty>
   </requiredProperties>
 

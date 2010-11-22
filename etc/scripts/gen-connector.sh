@@ -41,22 +41,22 @@ if [ "$CONNECTOR" = "" ]; then
 	exit 1
 fi
 
-DEFAULT_VERSION="1.0.0-SNAPSHOT"
+DEFAULT_VERSION="1.1.0-SNAPSHOT"
 echo -n "Version (is $DEFAULT_VERSION): "
 read VERSION
 if [ "$VERSION" = "" ]; then
 	VERSION=$DEFAULT_VERSION
 fi
 
-DEFAULT_NAME="OpenEngSB :: Domains :: ${DOMAIN~} :: ${CONNECTOR~}"
+DEFAULT_NAME="OpenEngSB :: Connector :: ${CONNECTOR~}"
 echo -n "Project Name (is $DEFAULT_NAME): "
 read NAME
 if [ "$NAME" = "" ]; then
 	NAME=$DEFAULT_NAME
 fi
 
-domainGroupId="org.openengsb.domains.$DOMAIN"
-domainArtifactIdPrefix="openengsb-domains-$DOMAIN"
+domainGroupId="org.openengsb.domain.$DOMAIN"
+domainArtifactIdPrefix="openengsb-domain-$DOMAIN"
 artifactId="$domainArtifactIdPrefix-$CONNECTOR"
 
 mvn archetype:generate \
@@ -64,15 +64,16 @@ mvn archetype:generate \
 	-DarchetypeArtifactId="openengsb-tooling-archetypes-connector" \
 	-DarchetypeVersion="$VERSION" \
 	-DparentArtifactId="$domainArtifactIdPrefix" \
-	-DdomainArtifactId="$domainArtifactIdPrefix-implementation" \
-	-DartifactId="$artifactId" \
-	-DgroupId="$domainGroupId" \
+	-DdomainArtifactId="$domainArtifactIdPrefix" \
+	-DartifactId="openengsb-connector-$CONNECTOR" \
+    -DgroupId="org.openengsb.connector" \
 	-Dversion="$VERSION" \
 	-DdomainInterface="$INTERFACE" \
-	-Dpackage="$domainGroupId.$CONNECTOR" \
+	-Dpackage="org.openengsb.connector.$CONNECTOR" \
 	-DparentPackage="$domainGroupId" \
 	-Dname="$NAME"\
-    -DconnectorName="${CONNECTOR~}"
+    -DconnectorName="${CONNECTOR~}" \
+    -o
 
 if [ $? != 0 ]; then
 	exit $?
