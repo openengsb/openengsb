@@ -16,17 +16,16 @@
 
 package org.openengsb.integrationtest.htmlunit;
 
-import static org.junit.Assert.assertTrue;
-
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlForm;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnit4TestRunner.class)
 public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
@@ -39,7 +38,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         final HtmlPage page = webClient.getPage(loginPageEntryUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
-        form.getInputByName("username").setValueAttribute("user");
+        form.getInputByName("username").setValueAttribute("admin");
         form.getInputByName("password").setValueAttribute("password");
         HtmlPage indexPage = loginButton.click();
         assertTrue(indexPage.asText().contains("This page represents"));
