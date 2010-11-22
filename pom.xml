@@ -54,6 +54,11 @@
     <plugin.install.version>2.3.1</plugin.install.version>
     <plugin.wagon.webdav.version>1.0-beta-2</plugin.wagon.webdav.version>
     <plugin.wagon.ssh.version>1.0-beta-6</plugin.wagon.ssh.version>
+    <!-- Dependency Versions -->
+    <junit.version>4.8.2</junit.version>
+    <mvn.pluginapi.version>2.0</mvn.pluginapi.version>
+    <mvn.core.version>3.0</mvn.core.version>
+    <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
   </properties>
 
   <parent>
@@ -275,6 +280,21 @@
     <contributor>
       <name>Daniel Driza</name>
       <email>daniel.driza [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Ioanna Lytra</name>
+      <email>jlytra [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Petr Horinek</name>
+      <email>horinek.petr [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
+    <contributor>
+      <name>Eduard Szente</name>
+      <email>eduard.szente [at] gmail.com</email>
       <timezone>+1</timezone>
     </contributor>
   </contributors>

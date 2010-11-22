@@ -16,20 +16,34 @@
 
 package org.openengsb.core.taskbox;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.Event;
+import org.openengsb.core.common.persistence.PersistenceManager;
+import org.openengsb.core.common.persistence.PersistenceService;
+import org.openengsb.core.common.taskbox.TaskboxException;
+import org.openengsb.core.common.taskbox.TaskboxService;
+import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
+import org.osgi.framework.BundleContext;
+import org.springframework.osgi.context.BundleContextAware;
 
-public class TaskboxServiceImpl implements TaskboxService {
+public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     private Log log = LogFactory.getLog(getClass());
 
     private WorkflowService workflowService;
+    private PersistenceService persistence;
+    private PersistenceManager persistenceManager;
+    private BundleContext bundleContext;
 
     private String message;
 
     public void init() {
-
+        persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
     }
 
     @Override
@@ -47,16 +61,36 @@ public class TaskboxServiceImpl implements TaskboxService {
     }
 
     @Override
-    public void startWorkflow() throws TaskboxException {
+    public void startWorkflow(String workflowName, String taskVariableName, Task task) throws TaskboxException {
         try {
-            workflowService.startFlow("tasktest");
-            log.trace("Started workflow 'tasktest'");
-        } catch (WorkflowException e) {
+            Map<String, Object> parameterMap = new HashMap<String, Object>();
+            parameterMap.put(taskVariableName, task);
+
+            workflowService.startFlow(workflowName, parameterMap);
+
+            log.trace("Started workflow " + workflowName);
+        } catch (Exception e) {
+            log.error(e.getMessage() + " STACKTRACE: " + e.getStackTrace());
             throw new TaskboxException(e);
         }
+
     }
 
     public void setWorkflowService(WorkflowService workflowService) {
         this.workflowService = workflowService;
+    }
+
+    public void setPersistenceManager(PersistenceManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
+    }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
+
+    @Override
+    public void processEvent(Event event) throws WorkflowException {
+        workflowService.processEvent(event);
     }
 }

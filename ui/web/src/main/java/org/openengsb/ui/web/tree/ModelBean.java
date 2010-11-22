@@ -18,16 +18,16 @@ package org.openengsb.ui.web.tree;
 
 import java.io.Serializable;
 
-import org.openengsb.core.common.context.ContextService;
+import org.openengsb.core.common.context.ContextCurrentService;
 
 @SuppressWarnings("serial")
 public class ModelBean implements Serializable {
 
-    private final ContextService contextService;
+    private final ContextCurrentService contextService;
     private final String key;
     private final boolean isLeaf;
 
-    public ModelBean(ContextService contextService, String key, boolean isLeaf) {
+    public ModelBean(ContextCurrentService contextService, String key, boolean isLeaf) {
         this.contextService = contextService;
         this.key = key;
         this.isLeaf = isLeaf;
@@ -42,7 +42,7 @@ public class ModelBean implements Serializable {
         if (path.length - 1 >= 0) {
             return path[path.length - 1];
         } else {
-            return contextService.getCurrentContextId();
+            return contextService.getThreadLocalContext();
         }
     }
 

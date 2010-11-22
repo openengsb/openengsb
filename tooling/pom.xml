@@ -29,6 +29,7 @@
   <modules>
     <module>checkstyle</module>
     <module>archetypes</module>
+    <module>maven-openengsb-plugin</module>
   </modules>
 
   <groupId>org.openengsb.tooling</groupId>

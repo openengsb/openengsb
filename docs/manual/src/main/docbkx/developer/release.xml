@@ -75,6 +75,41 @@
     we finished 1.2.0.M1 and start work on 1.2.0.M2. Now two weeks after the release of 1.1.0.RC3 without any new
     bug-reports we re-release 1.1.0.RC3 to 1.1.0.RELEASE (starting the game again from the beginning).</para>
   </section>
+  
+  <section>
+	<title>Git Branches</title>
+	<para>For the best cooperation between Git and Maven the OpenEngSB team has developed its own workflow with branches
+	during releases. For different project phases (milestone, RC, final, support) different workflows apply.</para>
+	<section>
+		<title>New Feature Workflow</title>
+		<para>For new features the already described workflow apply. This means create a feature branch based on the integration
+		branch, add your commits and create a pull request if you're finished. Your changes will be merged (after review) to
+		the integration branch. From time to time the integration branch ins merged into the master, which is pushed as 
+		snapshots to sonatype.</para>
+	</section>
+	<section>
+		<title>Milestone Releases</title>
+		<para>For milestone releases about one day before a planned release a openensb-1.X.0-release branch is created. This
+		branch can be forward merged to integration as often as liked (no backward merges are allowed). If all final bugs
+		and changes are done the MX version is released on this branch and the branch is merged into integration and deleted
+		again. During this process any number of new features are merged into integration, without affecting the release any
+		longer.</para>
+	</section>
+	<section>
+		<title>Release Candidates</title>
+		<para>RCs are the pre-level for final releases. This means, after the openengsb team decides a release is ready to
+		go, two new branch  are created from the latest commit AFTER the milestone release (where the mvn versions are set back
+		to the snapshot version): openengsb-1.X.x-dev and openengsb-1.X.x-release. openengsb-1.X.x-dev is used for bug-fixes. Every
+		fix which should also be merged into the integration branch/master should be branched off openengsb-1.X.x-dev and afterewards
+		merged into integration and openengsb-1.X.x-dev. If a release is ready openengsb-1.X.x-dev is merged into openengsb-1.X.x-release,
+		where the release takes place. BUT no merge from openengsb-1.X.x-release to openengsb-1.X.x-release is allowed!</para>
+	</section>
+	<section>
+		<title>Final and Support Releases</title>
+		<para>All support and final releases are handled exactly as the RC releases between the openengsb-1.X.x-dev and
+		openengsb-1.X.x-release branch.</para>
+	</section>
+  </section>
 
   <section>
     <title>Configure Maven</title>
@@ -130,17 +165,14 @@
     <para>A word in front, how Jira is used for the OpenEngSB. Jira is used for bug tracking and release planning.
     ONLY each Milestone release has its own target. Release candidates and final releases are handled differently.
     Since we release RC and MINOR releases quite often its much too much administration work to keep JIRA up to date.
-    For simplicity we provide for all release candidates of 1.0.0 only one 1.0.0.RCX release target. This is closed
-    with the final release and replaced by 1.0.X.RELEASE target. This is replaced by 1.1.X.RELEASE. We don't know for
-    the moment how we should handle older releases, but for the moment the OpenEngSB team simply do not have the
-    man power to support older releases.</para>
+    </para>
 
     <para>Ok, knowing that the release process is simple:</para>
     <itemizedlist>
       <listitem>If you release a milestone release close the release target (e.g. 1.0.0.M1)</listitem>
-      <listitem>If you release a release candidate create a VERSION.RCX release target.</listitem>
+      <listitem>If you release a release candidate create a VERSION.RCX release target and close the old one.</listitem>
       <listitem>If you release a final release (MAJOR RELEASE) create a new release target 1.0.X.RELEASE.</listitem>
-      <listitem>If you release a minor release do nothing with Jira.</listitem>
+      <listitem>If you release a minor release close the 1.0.X.RELEASE target and create 1.0.(X+1).RELEASE.</listitem>
     </itemizedlist>
   </section>
 
@@ -162,7 +194,53 @@
     <title>Spread the News</title>
     <para>Post a message to the OpenEngSB twitter account with the following content:
 <programlisting><![CDATA[openengsb-VERSION "NAME" released, closing XX issues (JIRA_RELEASE_REPORT_SHORT_URL).
-Try the new features now: http://openengsb.org]]></programlisting></para>
+  Try the new features now: http://openengsb.org]]></programlisting></para>
+    <para>Mails in this case are not only used for notification but also to get the developers and users
+      to try a new release and report issues and problems. Therefore, we use different templates for different
+      types of releases of the project.
+    </para>
+    <para>The following template shows a copy and paste template for mails send for a release candidate. This 
+      mail should only be sent to the developer mailing list:<programlisting><![CDATA[Hey guys,
+
+I've just uploaded openengsb-1.0.0.RC4 to maven central (Should be available
+within the next hour).
+
+Sources can be downloaded here:
+
+https://github.com/openengsb/openengsb/zipball/openengsb-1.0.0.RC4
+
+The binary release can be downloaded here:
+
+http://repo1.maven.org/maven2/org/openengsb/openengsb/1.0.0.RC4/openengsb-1.0.0.RC4.zip
+
+Between openengsb-1.0.0.RC3 and openegnsb-1.0.0.RC4 we've fixed the following
+issues:
+
+** Bug
+  * [OPENENGSB-548] - jetty7 - felix problems 
+  * [OPENENGSB-605] - Use png as favicon for openengsb war file and script
+
+** Improvement
+  * [OPENENGSB-603] - Context has to be stored persistently and
+  * restored on system startup
+  * [OPENENGSB-610] - Maven connector has to support the execution of a configurable command
+
+** Task
+  * [OPENENGSB-606] - update docs new jira release 
+
+** TBD
+  * [OPENENGSB-589] - document release process for stable branches
+
+Please give it a try and report all problems you encounter here:
+
+http://issues.openengsb.org/jira/browse/OPENENGSB/fixforversion/10142
+
+If there are no new issues reported within the next 72 hours I set RC4 as the
+final release 1.0.0.RELEASE.
+
+Kind regards,
+andreas]]></programlisting>
+    </para>
   </section>
 
   <section>

@@ -21,8 +21,10 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
+import org.mockito.Mockito;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.persistence.PersistenceServiceTest;
+import org.osgi.framework.Bundle;
 
 public class NeodatisPersistenceServiceTest extends PersistenceServiceTest {
 
@@ -30,7 +32,8 @@ public class NeodatisPersistenceServiceTest extends PersistenceServiceTest {
 
     @Override
     protected PersistenceService createPersitenceService() throws Exception {
-        persistence = new NeodatisPersistenceService("target/db.data", getClass().getClassLoader());
+        CustomClassLoader classLoader = new CustomClassLoader(getClass().getClassLoader(), Mockito.mock(Bundle.class));
+        persistence = new NeodatisPersistenceService("target/db.data", classLoader);
         return persistence;
     }
 

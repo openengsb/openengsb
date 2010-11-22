@@ -20,25 +20,30 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.taskbox.TaskboxService;
+import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.WorkflowException;
+import org.openengsb.core.common.taskbox.TaskboxException;
+import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
 @RunWith(JUnit4TestRunner.class)
 public class TaskboxIT extends AbstractExamTestHelper {
     private TaskboxService taskboxService;
+    private RuleManager ruleManager;
 
     @Before
     public void setUp() throws Exception {
         taskboxService = retrieveService(getBundleContext(), TaskboxService.class);
-
+        ruleManager = retrieveService(getBundleContext(), RuleManager.class);
         ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);
-        contextService.createContext("42");
-        contextService.setThreadLocalContext("42");
+        contextService.createContext("it-taskbox");
+        contextService.setThreadLocalContext("it-taskbox");
+        ruleManager.addGlobal(TaskboxService.class.getCanonicalName(), "taskbox");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testStartUnknownWorkflow_ShouldThrowIllegalArgumentException() throws Exception {
-        taskboxService.startWorkflow();
+    @Test
+    public void test_Name() throws TaskboxException, WorkflowException {
+
     }
 }

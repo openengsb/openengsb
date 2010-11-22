@@ -31,7 +31,7 @@ public class ContextTest {
 
     @Before
     public void setup() {
-        context = new ContextImpl();
+        context = new Context();
     }
 
     @Test

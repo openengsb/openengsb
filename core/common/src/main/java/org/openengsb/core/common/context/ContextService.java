@@ -19,7 +19,7 @@ package org.openengsb.core.common.context;
 /**
  * Service for retrieving the root context for the current thread. This service provides a few convenience methods for
  * managing the {@code Context}.
- *
+ * 
  * Path elements are separated by a slash ('/'), e.g. {@code /a/b/c} could mean a path that identifies a context child
  * {@code 'c'} three levels down or (in path and key combinations} a key {@code 'c'} two level down.
  */
@@ -43,9 +43,4 @@ public interface ContextService {
      */
     Context getContext();
 
-    /**
-     *
-     * @return the id of the current context
-     */
-    String getCurrentContextId();
 }

@@ -48,7 +48,8 @@ import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
-import org.openengsb.ui.web.editor.AttributeEditorUtil;
+import org.openengsb.ui.common.wicket.editor.AttributeEditorUtil;
+import org.openengsb.ui.common.wicket.util.MethodUtil;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 
@@ -84,6 +85,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         init(classes);
     }
 
+    @SuppressWarnings("serial")
     private void init(List<? extends Class<?>> classes) {
         Form<Object> form = new Form<Object>("form");
         add(form);

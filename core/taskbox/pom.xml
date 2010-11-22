@@ -37,7 +37,7 @@
   <name>OpenEngSB :: Core :: Taskbox</name>
 
   <packaging>bundle</packaging>
-  
+
   <description>
     OpenEngSB Core classes for Taskbox Service (responsible for storing tasks, throwing events
     and starting workflows, provides methods regarding tasks which can be called by workflows).
@@ -64,6 +64,7 @@
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
+
     <dependency>
       <groupId>org.neodatis.odb</groupId>
       <artifactId>neodatis-odb</artifactId>

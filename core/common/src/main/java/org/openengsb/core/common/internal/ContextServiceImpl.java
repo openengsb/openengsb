@@ -23,21 +23,60 @@ import java.util.Map;
 
 import org.openengsb.core.common.context.Context;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.context.ContextPath;
 import org.openengsb.core.common.context.ContextService;
+import org.openengsb.core.common.context.ContextStorageBean;
+import org.openengsb.core.common.persistence.PersistenceException;
+import org.openengsb.core.common.persistence.PersistenceManager;
+import org.openengsb.core.common.persistence.PersistenceService;
+import org.osgi.framework.BundleContext;
+import org.springframework.osgi.context.BundleContextAware;
 
 import com.google.common.base.Preconditions;
 
-public class ContextServiceImpl implements ContextCurrentService, ContextService {
+public class ContextServiceImpl implements ContextCurrentService, ContextService, BundleContextAware {
 
     private ThreadLocal<String> currentContext = new ThreadLocal<String>();
-    private final Context rootContext = new ContextImpl();
+    private Context rootContext;
     private ThreadLocal<String> currentContextId = new ThreadLocal<String>();
+
+    private PersistenceManager persistenceManager;
+
+    private PersistenceService persistence;
+
+    private BundleContext bundleContext;
+
+    public void init() {
+        try {
+            persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
+
+            List<ContextStorageBean> contexts = persistence.query(new ContextStorageBean(null));
+            if (contexts.isEmpty()) {
+                Context root = new Context();
+                persistence.create(new ContextStorageBean(root));
+                rootContext = root;
+            } else {
+                rootContext = contexts.get(0).getRootContext();
+            }
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void storeContext() {
+        try {
+            persistence.update(new ContextStorageBean(null), new ContextStorageBean(rootContext));
+        } catch (PersistenceException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void putValue(String pathAndKey, String value) {
         String[] split = splitPath(pathAndKey);
         Context context = getContext(split[0], true);
         context.put(split[1], value);
+        storeContext();
     }
 
     @Override
@@ -80,6 +119,7 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
     @Override
     public void createContext(String contextId) {
         rootContext.createChild(contextId);
+        storeContext();
     }
 
     @Override
@@ -123,7 +163,12 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
     }
 
     @Override
-    public String getCurrentContextId() {
-        return currentContextId.get();
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
+
+    public void setPersistenceManager(PersistenceManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
+    }
+
 }
