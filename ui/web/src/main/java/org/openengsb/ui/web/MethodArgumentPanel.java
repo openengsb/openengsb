@@ -44,6 +44,9 @@ public class MethodArgumentPanel extends Panel {
             Builder builder = AttributeDefinition.builder(new PassThroughStringLocalizer());
             MethodUtil.addEnumValues(type, builder);
             builder.id("value").name("value");
+            if(type.equals(boolean.class) || type.equals(Boolean.class)){
+                builder.asBoolean();
+            }
             AbstractField<?> field =
                 AttributeEditorUtil
                     .createEditorField("valueEditor", new PropertyModel<String>(arg, "value"), builder.build());
