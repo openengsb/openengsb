@@ -16,8 +16,8 @@
 
 package org.openengsb.core.common.support;
 
+import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.util.AliveState;
 
 public class DomainImpl implements Domain {
     @Override

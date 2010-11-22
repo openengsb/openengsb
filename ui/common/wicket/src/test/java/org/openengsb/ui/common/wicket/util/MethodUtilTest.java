@@ -28,13 +28,13 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.StringLocalizer;
-import org.openengsb.core.common.util.AliveState;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 
