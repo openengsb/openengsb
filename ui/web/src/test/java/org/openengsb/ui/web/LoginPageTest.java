@@ -113,7 +113,7 @@ public class LoginPageTest {
     @Test
     public void testEnterLogin() throws Exception {
         tester.startPage(LoginPage.class);
-        FormTester formTester = tester.newFormTester("form");
+        FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "test");
         formTester.setValue("password", "password");
         formTester.submit();
@@ -124,7 +124,7 @@ public class LoginPageTest {
     @Test
     public void testLogout() throws Exception {
         tester.startPage(LoginPage.class);
-        FormTester formTester = tester.newFormTester("form");
+        FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "test");
         formTester.setValue("password", "password");
         formTester.submit();
@@ -135,7 +135,7 @@ public class LoginPageTest {
     @Test
     public void testInvalidLogin() throws Exception {
         tester.startPage(LoginPage.class);
-        FormTester formTester = tester.newFormTester("form");
+        FormTester formTester = tester.newFormTester("loginForm");
         formTester.setValue("username", "test");
         formTester.setValue("password", "wrongpassword");
         formTester.submit();
@@ -149,4 +149,6 @@ public class LoginPageTest {
         tester.startPage(LoginPage.class);
         tester.assertComponent("header", HeaderTemplate.class);
     }
+
+    
 }
