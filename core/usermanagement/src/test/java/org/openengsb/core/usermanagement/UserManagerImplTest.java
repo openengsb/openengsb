@@ -111,13 +111,13 @@ public class UserManagerImplTest {
     @Test
     public void deleteUser_ShouldWork() throws PersistenceException {
         userManager.deleteUser("testUser3");
-        verify(persistMock, times(1)).delete(new User("testUser3", null));
+        verify(persistMock, times(1)).delete(new User("testUser3"));
     }
 
     @Test(expected = UserNotFoundException.class)
     public void deleteNotExistingUser_ShouldThrowUserNotFoundException() throws PersistenceException {
         userManager.deleteUser("testUser1");
-        verify(persistMock, times(0)).delete(new User("testUser1", null));
+        verify(persistMock, times(0)).delete(new User("testUser1"));
     }
 
     @Test
@@ -130,11 +130,11 @@ public class UserManagerImplTest {
         BundleContext bundleMock = mock(BundleContext.class);
         userManager.setBundleContext(bundleMock);
 
-        User testUser1 = new User(null, null);
+        User testUser1 = new User(null);
         when(persistMock.query(testUser1)).thenReturn(new ArrayList<User>());
 
         userManager.init();
-        verify(persistMock, times(1)).query(new User(null, null));
+        verify(persistMock, times(1)).query(new User(null));
         verify(persistMock, times(1)).create(new User("admin", "password"));
 
     }

@@ -25,8 +25,11 @@ import org.openengsb.core.usermanagement.exceptions.UserNotFoundException;
 import org.openengsb.core.usermanagement.model.User;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserManagerImpl implements UserManager, BundleContextAware {
@@ -67,7 +70,7 @@ public class UserManagerImpl implements UserManager, BundleContextAware {
         if (!userNameExists(username)) {
             throw new UserNotFoundException("User with username: " + username + " does not exists");
         }
-        UserDetails toBeDeleted = new User(username, null);
+        UserDetails toBeDeleted = new User(username);
         try {
             persistence.delete(toBeDeleted);
         } catch (PersistenceException e) {
@@ -76,14 +79,14 @@ public class UserManagerImpl implements UserManager, BundleContextAware {
     }
 
     private boolean userNameExists(String username) {
-        List<User> list = persistence.query(new User(username, null));
+        List<User> list = persistence.query(new User(username));
         return list.size() > 0;
     }
 
 
     @Override
     public User loadUserByUsername(String username) {
-        List<User> list = persistence.query(new User(username, null));
+        List<User> list = persistence.query(new User(username));
         if (list.size() > 0) {
             return list.get(0);
         } else {
@@ -100,7 +103,9 @@ public class UserManagerImpl implements UserManager, BundleContextAware {
         try {
             loadUserByUsername(null);
         } catch (UserNotFoundException ex) {//create dummy admin user
-            createUser(new User("admin", "password"));
+            List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
+            auth.add(new GrantedAuthorityImpl("ROLE_USER"));
+            createUser(new User("admin", "password", true, true, true,true, auth));
         }
     }
 

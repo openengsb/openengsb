@@ -29,12 +29,12 @@ import java.util.*;
 public class User implements UserDetails, CredentialsContainer {
 
     private String password;
-    private final String username;
-    private final Set<GrantedAuthority> authorities;
-    private final boolean accountNonExpired;
-    private final boolean accountNonLocked;
-    private final boolean credentialsNonExpired;
-    private final boolean enabled;
+    private String username;
+    private List<GrantedAuthority> authorities;
+    private boolean accountNonExpired;
+    private boolean accountNonLocked;
+    private boolean credentialsNonExpired;
+    private boolean enabled;
 
 
     /**
@@ -73,7 +73,7 @@ public class User implements UserDetails, CredentialsContainer {
         this.accountNonExpired = accountNonExpired;
         this.credentialsNonExpired = credentialsNonExpired;
         this.accountNonLocked = accountNonLocked;
-        this.authorities = Collections.unmodifiableSet(sortAuthorities(authorities));
+        this.authorities = Collections.unmodifiableList(sortAuthorities(authorities));
     }
 
     /**
@@ -87,11 +87,17 @@ public class User implements UserDetails, CredentialsContainer {
         this.accountNonExpired = true;
         this.credentialsNonExpired = true;
         this.accountNonLocked = true;
-        Set<? extends GrantedAuthority> emptySet = Collections.emptySet();
-        this.authorities = Collections.unmodifiableSet(emptySet);
+        this.authorities = Collections.unmodifiableList(new ArrayList<GrantedAuthority>());
     }
 
-    //~ Methods ========================================================================================================
+    // User for searching in Database
+    public User(String username) {
+        this.username = username;
+        this.enabled = true;
+        this.accountNonExpired = true;
+        this.credentialsNonExpired = true;
+        this.accountNonLocked = true;
+    }
 
     public Collection<GrantedAuthority> getAuthorities() {
         return authorities;
@@ -125,16 +131,16 @@ public class User implements UserDetails, CredentialsContainer {
         password = null;
     }
 
-    private static SortedSet<GrantedAuthority> sortAuthorities(Collection<? extends GrantedAuthority> authorities) {
+    private static List<GrantedAuthority> sortAuthorities(Collection<? extends GrantedAuthority> authorities) {
         Assert.notNull(authorities, "Cannot pass a null GrantedAuthority collection");
         // Ensure array iteration order is predictable (as per UserDetails.getAuthorities() contract and SEC-717)
-        SortedSet<GrantedAuthority> sortedAuthorities = new TreeSet<GrantedAuthority>(new AuthorityComparator());
+        List<GrantedAuthority> sortedAuthorities = new ArrayList<GrantedAuthority>();
 
         for (GrantedAuthority grantedAuthority : authorities) {
             Assert.notNull(grantedAuthority, "GrantedAuthority list cannot contain any null elements");
             sortedAuthorities.add(grantedAuthority);
         }
-
+        Collections.sort(sortedAuthorities, new AuthorityComparator());
         return sortedAuthorities;
     }
 
