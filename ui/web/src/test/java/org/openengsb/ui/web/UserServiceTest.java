@@ -22,11 +22,16 @@ import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.usermanagement.UserManager;
 import org.openengsb.core.usermanagement.exceptions.UserExistsException;
 import org.openengsb.core.usermanagement.model.User;
 import org.osgi.framework.BundleContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -89,4 +94,19 @@ public class UserServiceTest {
 
     }
 
+    @Test
+    public void testShowCreatedUser_ShouldShowAdmin() {
+        when(userManager.getAllUser()).thenAnswer(new Answer<List<User>>() {
+            @Override
+            public List<User> answer(InvocationOnMock invocationOnMock) throws Throwable {
+                List<User> users = new ArrayList<User>();
+                users.add(new User("admin", "password"));
+                return users;
+            }
+        });
+        tester.startPage(UserService.class);
+        tester.assertContains("Existing Users");
+        tester.assertContains("admin");
+        tester.assertContains("delete");
+    }
 }

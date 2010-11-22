@@ -419,4 +419,15 @@ container-1
 	width: 100px;
 }
 
+.createUserForm {
+  float: left !important;
+  padding: 10px;
+}
+
+.userList {
+  list-style-type : none ; 
+  width: 400px;
+  padding: 10px;
+}
+
 

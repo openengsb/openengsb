@@ -18,17 +18,26 @@ package org.openengsb.ui.web;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.usermanagement.UserManager;
 import org.openengsb.core.usermanagement.exceptions.UserExistsException;
 import org.openengsb.core.usermanagement.model.User;
+
+import java.util.List;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class UserService extends BasePage {
@@ -64,8 +73,30 @@ public class UserService extends BasePage {
         userForm.setModel(new CompoundPropertyModel<User>(user));
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
+
         add(feedbackPanel);
         add(userForm);
+
+
+        IModel<List<User>> userList = new LoadableDetachableModel<List<User>>() {
+            @Override
+            protected List<User> load() {
+                return userManager.getAllUser();
+            }
+        };
+        ListView<User> users = new ListView<User>("users",userList) {
+            @Override
+            protected void populateItem(final ListItem<User> userListItem) {
+                userListItem.add(new Label("user.name", userListItem.getModelObject().getUsername()));
+                userListItem.add(new AjaxLink<User>("user.delete") {
+                    @Override
+                    public void onClick(AjaxRequestTarget ajaxRequestTarget) {
+                        userManager.deleteUser(userListItem.getModelObject().getUsername());
+                    }
+                });
+            }
+        };
+        add(users);
     }
 
 }
