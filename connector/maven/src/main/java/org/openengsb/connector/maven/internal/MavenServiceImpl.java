@@ -25,7 +25,6 @@ import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -177,10 +176,18 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
         log.info("running '" + command + "' in directory '" + dir.getPath() + "'");
         ProcessBuilder builder = new ProcessBuilder(command);
         Process process = builder.directory(dir).start();
-        String output = IOUtils.toString(process.getInputStream());
-        log.trace(output);
+
+        StreamReader output = new StreamReader(process.getInputStream());
+        StreamReader error = new StreamReader(process.getErrorStream());
+        output.start();
+        error.start();
+
         boolean result = process.waitFor() == 0;
-        return new MavenResult(result, output);
+        output.join();
+        error.join();
+
+        log.info("Maven connector error stream output: " + error.getString());
+        return new MavenResult(result, output.getString());
     }
 
     public void setBuildEvents(BuildDomainEvents buildEvents) {
