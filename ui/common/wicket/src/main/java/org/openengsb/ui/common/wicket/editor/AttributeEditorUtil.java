@@ -41,7 +41,7 @@ public final class AttributeEditorUtil {
 
     /**
      * creates a RepeatingView providing a suitable editor field for every property.
-     *
+     * 
      * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
      */
     public static RepeatingView createFieldList(String id, Class<?> bean, Map<String, String> values) {
@@ -51,7 +51,7 @@ public final class AttributeEditorUtil {
 
     /**
      * creates a RepeatingView providing a suitable editor field for every attribute in the list.
-     *
+     * 
      * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
      */
     public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
@@ -65,7 +65,7 @@ public final class AttributeEditorUtil {
 
     /**
      * creates a RepeatingView providing a suitable editor field for every attribute in the list.
-     *
+     * 
      * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
      * @param attributeViewIds this Map is populated with ids of the generated elements
      * @return
@@ -84,7 +84,11 @@ public final class AttributeEditorUtil {
         String attributeViewId = fields.newChildId();
         WebMarkupContainer row = new WebMarkupContainer(attributeViewId);
         fields.add(row);
-        row.add(createEditorField("row", new MapModel<String, String>(values, a.getId()), a));
+        boolean editable = true;
+        if ("id".equals(a.getId()) && !"".equals(values.get("id"))) {
+            editable = false;
+        }
+        row.add(createEditorField("row", new MapModel<String, String>(values, a.getId()), a, editable));
         return attributeViewId;
     }
 
@@ -93,6 +97,14 @@ public final class AttributeEditorUtil {
      */
     public static AbstractField<?> createEditorField(String id, IModel<String> model,
             final AttributeDefinition attribute) {
+        return createEditorField(id, model, attribute, true);
+    }
+
+    /**
+     * creates a single EditorField for the given attribute
+     */
+    public static AbstractField<?> createEditorField(String id, IModel<String> model,
+            final AttributeDefinition attribute, boolean editable) {
         if (attribute.isBoolean()) {
             return new CheckboxField(id, model, attribute, new BooleanFieldValidator(attribute));
         }
@@ -102,7 +114,8 @@ public final class AttributeEditorUtil {
         } else if (attribute.isPassword()) {
             return new PasswordField(id, model, attribute, validator);
         } else {
-            return new InputField(id, model, attribute, validator);
+            InputField inputField = new InputField(id, model, attribute, validator, editable);
+            return inputField;
         }
     }
 

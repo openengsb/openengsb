@@ -30,7 +30,8 @@ import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
 @SuppressWarnings("serial")
 public abstract class AbstractField<T> extends Panel {
 
-    public AbstractField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<T> validator) {
+    public AbstractField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<T> validator,
+            boolean editable) {
         super(id);
         FormComponent<T> component = createFormComponent(attribute, model);
         if (validator != null) {
@@ -40,9 +41,14 @@ public abstract class AbstractField<T> extends Panel {
         component.setOutputMarkupId(true);
         component.setMarkupId(attribute.getId());
         component.setRequired(attribute.isRequired());
+        component.setEnabled(editable);
         add(new SimpleFormComponentLabel("name", component).add(new SimpleAttributeModifier("for", attribute.getId())));
         add(component);
         addTooltip(attribute);
+    }
+
+    public AbstractField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<T> validator) {
+        this(id, model, attribute, validator, true);
     }
 
     private void addTooltip(AttributeDefinition attribute) {
