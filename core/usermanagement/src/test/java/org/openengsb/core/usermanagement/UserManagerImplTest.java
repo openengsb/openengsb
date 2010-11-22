@@ -66,6 +66,12 @@ public class UserManagerImplTest {
         List<User> userList3 = new ArrayList<User>();
         userList3.add(testUser3);
         when(persistMock.query(testUser3)).thenReturn(userList3);
+
+        List<User> allUsers = new ArrayList<User>();
+        allUsers.add(testUser1);
+        allUsers.add(testUser2);
+        allUsers.add(testUser3);
+        when(persistMock.query(new User(null))).thenReturn(allUsers);
     }
 
     @Test
@@ -138,4 +144,11 @@ public class UserManagerImplTest {
         verify(persistMock, times(1)).create(new User("admin", "password"));
 
     }
+
+    @Test
+    public void testGetAllUser_ShouldContain3Users() {
+        List<User> allUser = userManager.getAllUser();
+        assertThat(allUser.size(), is(3));
+    }
+    
 }

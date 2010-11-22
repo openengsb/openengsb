@@ -20,6 +20,8 @@ import org.openengsb.core.usermanagement.model.User;
 import org.springframework.osgi.context.BundleContextAware;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.List;
+
 public interface UserManager extends UserDetailsService, BundleContextAware {
 
     void createUser(User user) ;
@@ -28,6 +30,8 @@ public interface UserManager extends UserDetailsService, BundleContextAware {
 
     void deleteUser(String username) ;
 
-    User loadUserByUsername(String username) ;
+    User loadUserByUsername(String username);
+
+    List<User> getAllUser();
 
 }

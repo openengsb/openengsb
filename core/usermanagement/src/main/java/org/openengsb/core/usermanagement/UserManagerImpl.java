@@ -93,6 +93,11 @@ public class UserManagerImpl implements UserManager {
         }
     }
 
+    @Override
+    public List<User> getAllUser() {
+       return persistence.query(new User(null));
+    }
+
     public void setPersistenceManager(PersistenceManager persistenceManager) {
         this.persistenceManager = persistenceManager;
     }
@@ -104,7 +109,7 @@ public class UserManagerImpl implements UserManager {
         } catch (UserNotFoundException ex) {//create dummy admin user
             List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
             auth.add(new GrantedAuthorityImpl("ROLE_USER"));
-            createUser(new User("admin", "password", true, true, true,true, auth));
+            createUser(new User("admin", "password", auth));
         }
     }
 
