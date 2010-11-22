@@ -65,7 +65,6 @@ import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.common.wicket.editor.BeanEditorPanel;
 import org.openengsb.ui.common.wicket.editor.fields.DropdownField;
 import org.openengsb.ui.common.wicket.editor.fields.InputField;
@@ -87,43 +86,12 @@ public class TestClientTest {
 
         void update(UpdateEnum updateEnum);
 
+        void update(Integer integer);
+
     }
 
     public enum UpdateEnum {
             ONE, TWO
-    }
-
-    public class TestService implements TestInterface {
-
-        private boolean called = false;
-        private TestBean test;
-
-        @Override
-        public void update(String id, String name) {
-            if ("fail".equals(id)) {
-                throw new IllegalArgumentException();
-            }
-            called = true;
-        }
-
-        @Override
-        public void update(TestBean test) {
-            this.test = test;
-        }
-
-        public String getName(String id) {
-            return "";
-        }
-
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
-        }
-
-        @Override
-        public void update(UpdateEnum updateEnum) {
-        }
-
     }
 
     private WicketTester tester;
@@ -334,6 +302,21 @@ public class TestClientTest {
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
         verify(testService).update(new TestBean("42", "test"));
+    }
+
+    @Test
+    public void testPerformMethodCallWithIntegerObjectArgument() throws Exception {
+        setupAndStartTestClientPage();
+
+        setServiceInDropDown(0);
+        setMethodInDropDown(3);
+
+        String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
+        tester.debugComponentTrees();
+        formTester.setValue(beanPanelPath + ":field", "42");
+
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+        verify(testService).update(new Integer(42));
     }
 
     private void setServiceInDropDown(int index) {

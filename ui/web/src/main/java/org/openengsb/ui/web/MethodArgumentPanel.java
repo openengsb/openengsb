@@ -33,17 +33,17 @@ import org.openengsb.ui.web.model.Argument;
 
 @SuppressWarnings("serial")
 public class MethodArgumentPanel extends Panel {
+
     public MethodArgumentPanel(String id, Argument arg) {
         super(id);
 
         add(new Label("index", String.format("Argument #%d", arg.getIndex())));
 
         Class<?> type = arg.getType();
-        if (type.isPrimitive() || type.equals(String.class) || type.isEnum()) {
+        if (type.isPrimitive() || type.isEnum() || hasStringOnlyConstructor(type)) {
             Builder builder = AttributeDefinition.builder(new PassThroughStringLocalizer());
             MethodUtil.addEnumValues(type, builder);
-            builder.id("value").name("argument 1");
-            // new StringResourceModel("argument", this, new Model<Argument>(arg)).getString());
+            builder.id("value").name("value");
             AbstractField<?> field =
                 AttributeEditorUtil
                     .createEditorField("valueEditor", new PropertyModel<String>(arg, "value"), builder.build());
@@ -56,4 +56,9 @@ public class MethodArgumentPanel extends Panel {
             add(field);
         }
     }
+
+    private boolean hasStringOnlyConstructor(Class<?> type) {
+        return MethodUtil.getStringOnlyConstructor(type) != null;
+    }
+
 }

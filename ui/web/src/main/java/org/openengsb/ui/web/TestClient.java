@@ -377,22 +377,6 @@ public class TestClient extends BasePage {
             arguments.add(argModel);
             MethodArgumentPanel argumentPanel = new MethodArgumentPanel("arg" + i + "panel", argModel);
             argumentList.add(argumentPanel);
-            // if (p.isPrimitive() || p.equals(String.class) || p.isEnum()) {
-            // Builder builder = AttributeDefinition.builder(new PassThroughStringLocalizer());
-            // MethodUtil.addEnumValues(argModel.getType(), builder);
-            // builder.id("value").name(
-            // new StringResourceModel("argument", this, new Model<Argument>(argModel)).getString());
-            // AbstractField<?> createEditorField =
-            // AttributeEditorUtil.createEditorField("argument_" + i,
-            // new PropertyModel<String>(argModel, "value"), builder.build());
-            // argumentList.add(createEditorField);
-            // } else {
-            // Map<String, String> beanAttrs = new HashMap<String, String>();
-            // argModel.setValue(beanAttrs);
-            // argModel.setBean(true);
-            // BeanEditorPanel arg = new BeanEditorPanel(String.valueOf(i), argModel, beanAttrs);
-            // argumentList.add(arg);
-            // }
             i++;
         }
         call.setArguments(arguments);
