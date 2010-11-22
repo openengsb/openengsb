@@ -18,6 +18,7 @@ package org.openengsb.core.usermanagement.model;
 
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
@@ -87,7 +88,9 @@ public class User implements UserDetails, CredentialsContainer {
         this.accountNonExpired = true;
         this.credentialsNonExpired = true;
         this.accountNonLocked = true;
-        this.authorities = Collections.unmodifiableList(new ArrayList<GrantedAuthority>());
+        ArrayList<GrantedAuthority> authorities1 = new ArrayList<GrantedAuthority>();
+        authorities1.add(new GrantedAuthorityImpl("ROLE_USER"));
+        this.authorities = Collections.unmodifiableList(authorities1);
     }
 
     // User for searching in Database
