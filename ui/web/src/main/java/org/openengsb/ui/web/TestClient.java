@@ -19,6 +19,7 @@ package org.openengsb.ui.web;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,7 +60,6 @@ import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
-import org.openengsb.ui.common.wicket.util.MethodUtil;
 import org.openengsb.ui.web.model.Argument;
 import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
@@ -413,9 +413,14 @@ public class TestClient extends BasePage {
         if (service == null) {
             return Collections.emptyList();
         }
-        Object serviceObject = getService(service);
-        log.info("retrieved service Object of type " + serviceObject.getClass().getName());
-        List<Method> methods = MethodUtil.getServiceMethods(serviceObject);
+        Class<?> connectorInterface;
+        try {
+            connectorInterface = Class.forName(service.getServiceClass());
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+        List<Method> methods = Arrays.asList(connectorInterface.getMethods());
         return methods;
     }
 

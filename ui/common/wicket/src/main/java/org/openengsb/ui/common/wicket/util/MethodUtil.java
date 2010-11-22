@@ -20,7 +20,6 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,23 +28,12 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
 
 public final class MethodUtil {
     private static Log log = LogFactory.getLog(MethodUtil.class);
-
-    public static List<Method> getServiceMethods(Object service) {
-        List<Method> result = new ArrayList<Method>();
-        for (Class<?> serviceInterface : getAllInterfaces(service)) {
-            if (Domain.class.isAssignableFrom(serviceInterface)) {
-                result.addAll(Arrays.asList(serviceInterface.getDeclaredMethods()));
-            }
-        }
-        return result;
-    }
 
     public static Class<?>[] getAllInterfaces(Object serviceObject) {
         List<Class<?>> interfaces = new ArrayList<Class<?>>();
