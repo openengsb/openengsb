@@ -97,6 +97,11 @@ public class UserManagerImpl implements UserManager, BundleContextAware {
 
     public void init() {
         persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
+        try {
+            loadUserByUsername(null);
+        } catch (UserNotFoundException ex) {//create dummy admin user
+            createUser(new User("admin", "password"));
+        }
     }
 
     @Override

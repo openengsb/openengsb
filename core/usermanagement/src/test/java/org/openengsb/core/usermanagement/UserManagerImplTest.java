@@ -16,17 +16,6 @@
 
 package org.openengsb.core.usermanagement;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.persistence.PersistenceException;
@@ -38,6 +27,14 @@ import org.openengsb.core.usermanagement.model.User;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
+
 public class UserManagerImplTest {
     private UserManagerImpl userManager;
     private PersistenceService persistMock;
@@ -46,7 +43,7 @@ public class UserManagerImplTest {
     public void setUp() {
         userManager = new UserManagerImpl();
         persistMock = mock(PersistenceService.class);
-         PersistenceManager persistManagerMock = mock(PersistenceManager.class);
+        PersistenceManager persistManagerMock = mock(PersistenceManager.class);
         when(persistManagerMock.getPersistenceForBundle(any(Bundle.class))).thenReturn(persistMock);
         userManager.setPersistenceManager(persistManagerMock);
         BundleContext bundleMock = mock(BundleContext.class);
@@ -121,5 +118,24 @@ public class UserManagerImplTest {
     public void deleteNotExistingUser_ShouldThrowUserNotFoundException() throws PersistenceException {
         userManager.deleteUser("testUser1");
         verify(persistMock, times(0)).delete(new User("testUser1", null));
+    }
+
+    @Test
+    public void testInitMethodCreateNewUserIfNoUserIsPresent() throws PersistenceException {
+        UserManagerImpl userManager = new UserManagerImpl();
+        persistMock = mock(PersistenceService.class);
+        PersistenceManager persistManagerMock = mock(PersistenceManager.class);
+        when(persistManagerMock.getPersistenceForBundle(any(Bundle.class))).thenReturn(persistMock);
+        userManager.setPersistenceManager(persistManagerMock);
+        BundleContext bundleMock = mock(BundleContext.class);
+        userManager.setBundleContext(bundleMock);
+
+        User testUser1 = new User(null, null);
+        when(persistMock.query(testUser1)).thenReturn(new ArrayList<User>());
+
+        userManager.init();
+        verify(persistMock, times(1)).query(new User(null, null));
+        verify(persistMock, times(1)).create(new User("admin", "password"));
+
     }
 }

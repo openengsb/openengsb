@@ -80,9 +80,6 @@ public class User implements UserDetails, CredentialsContainer {
      * Default User
      */
     public User(String username, String password) {
-        if (username == null || "".equals(username)) {
-            throw new IllegalArgumentException("Cannot pass null or empty values to constructor");
-        }
 
         this.username = username;
         this.password = password;
@@ -90,7 +87,8 @@ public class User implements UserDetails, CredentialsContainer {
         this.accountNonExpired = true;
         this.credentialsNonExpired = true;
         this.accountNonLocked = true;
-        this.authorities = Collections.unmodifiableSet(sortAuthorities(new ArrayList<GrantedAuthority>()));
+        Set<? extends GrantedAuthority> emptySet = Collections.emptySet();
+        this.authorities = Collections.unmodifiableSet(emptySet);
     }
 
     //~ Methods ========================================================================================================
@@ -166,6 +164,9 @@ public class User implements UserDetails, CredentialsContainer {
     @Override
     public boolean equals(Object rhs) {
         if (rhs instanceof User) {
+            if (username == null) {
+                return ((User) rhs).username == null;
+            }
             return username.equals(((User) rhs).username);
         }
         return false;
