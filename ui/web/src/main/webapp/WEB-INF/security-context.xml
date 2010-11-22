@@ -31,22 +31,15 @@
     </http>
 
     <authentication-manager alias="authenticationManager">
-        <!--<authentication-provider>-->
-            <!--&lt;!&ndash; TODO change this to reference our real user service &ndash;&gt;-->
-            <!--<user-service id="inMemoryUserService">-->
-                <!--<user name="user" password="password" authorities="ROLE_USER"/>-->
-            <!--</user-service>-->
-        <!--</authentication-provider>-->
         <authentication-provider user-service-ref="userManager">
         </authentication-provider>
     </authentication-manager>
 
-
-    <!-- Dao authentication provider with in-memory user details service. -->
     <beans:bean id="daoAuthenticationProvider"
                 class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
         <beans:property name="userDetailsService" ref="userManager"/>
     </beans:bean>
+    
     <beans:bean id="userManager" class="org.openengsb.core.usermanagement.UserManagerImpl" init-method="init">
         <beans:property name="persistenceManager">
             <osgi:reference interface="org.openengsb.core.common.persistence.PersistenceManager"/>

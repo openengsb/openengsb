@@ -36,8 +36,8 @@ public class UserService extends BasePage {
     private static Log log = LogFactory.getLog(UserService.class);
     private User user = new User(null, null);
 
-    @SpringBean(name = "userManager")
-    UserManagerImpl userManager;
+    @SpringBean
+    private UserManagerImpl userManagerImpl;
 
     public UserService() {
         Form<User> userForm = new Form<User>("form") {
@@ -49,9 +49,9 @@ public class UserService extends BasePage {
                     error(new StringResourceModel("passwordError", this, null).getString());
                 } else {
                     try {
-                        userManager.createUser(user);
+                        userManagerImpl.createUser(user);
                         info(new StringResourceModel("success", this, null).getString());
-                        userManager.loadUserByUsername(user.getUsername());
+                        userManagerImpl.loadUserByUsername(user.getUsername());
                     } catch (UserExistsException ex) {
                         error(new StringResourceModel("userExistError", this, null).getString());
                         return;
