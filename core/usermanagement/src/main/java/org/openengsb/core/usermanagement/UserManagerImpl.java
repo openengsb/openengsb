@@ -24,7 +24,6 @@ import org.openengsb.core.usermanagement.exceptions.UserExistsException;
 import org.openengsb.core.usermanagement.exceptions.UserNotFoundException;
 import org.openengsb.core.usermanagement.model.User;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +31,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserManagerImpl implements UserManager, BundleContextAware {
+public class UserManagerImpl implements UserManager {
 
     private PersistenceService persistence;
     private PersistenceManager persistenceManager;

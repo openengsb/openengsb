@@ -17,9 +17,10 @@
 package org.openengsb.core.usermanagement;
 
 import org.openengsb.core.usermanagement.model.User;
+import org.springframework.osgi.context.BundleContextAware;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserManager extends UserDetailsService {
+public interface UserManager extends UserDetailsService, BundleContextAware {
 
     void createUser(User user) ;
 

@@ -26,7 +26,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.usermanagement.UserManagerImpl;
+import org.openengsb.core.usermanagement.UserManager;
 import org.openengsb.core.usermanagement.exceptions.UserExistsException;
 import org.openengsb.core.usermanagement.model.User;
 
@@ -37,7 +37,7 @@ public class UserService extends BasePage {
     private User user = new User(null, null);
 
     @SpringBean
-    private UserManagerImpl userManagerImpl;
+    private UserManager userManager;
 
     public UserService() {
         Form<User> userForm = new Form<User>("form") {
@@ -49,9 +49,9 @@ public class UserService extends BasePage {
                     error(new StringResourceModel("passwordError", this, null).getString());
                 } else {
                     try {
-                        userManagerImpl.createUser(user);
+                        userManager.createUser(user);
                         info(new StringResourceModel("success", this, null).getString());
-                        userManagerImpl.loadUserByUsername(user.getUsername());
+                        userManager.loadUserByUsername(user.getUsername());
                     } catch (UserExistsException ex) {
                         error(new StringResourceModel("userExistError", this, null).getString());
                         return;

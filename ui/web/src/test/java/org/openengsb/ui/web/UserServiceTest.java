@@ -23,7 +23,7 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.usermanagement.UserManagerImpl;
+import org.openengsb.core.usermanagement.UserManager;
 import org.openengsb.core.usermanagement.exceptions.UserExistsException;
 import org.openengsb.core.usermanagement.model.User;
 import org.osgi.framework.BundleContext;
@@ -37,7 +37,7 @@ public class UserServiceTest {
     private ApplicationContextMock context;
     private FormTester formTester;
     private BundleContext bundleContext;
-    private UserManagerImpl userManager;
+    private UserManager userManager;
 
     @Before
     public void setup() {
@@ -46,7 +46,7 @@ public class UserServiceTest {
         context.putBean(mock(ContextCurrentService.class));
         bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
-        userManager = mock(UserManagerImpl.class);
+        userManager = mock(UserManager.class);
         context.putBean("userManager", userManager);
         setupTesterWithSpringMockContext();
     }
