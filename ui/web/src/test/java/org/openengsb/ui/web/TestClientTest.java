@@ -22,7 +22,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
@@ -126,7 +129,7 @@ public class TestClientTest {
     private WicketTester tester;
 
     private ApplicationContextMock context;
-    private TestService testService;
+    private TestInterface testService;
     private FormTester formTester;
     private boolean serviceListExpanded = true;
     private BundleContext bundleContext;
@@ -311,8 +314,7 @@ public class TestClientTest {
         }
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
-
-        Assert.assertTrue(testService.called);
+        verify(testService).update("test", "test");
     }
 
     @Test
@@ -331,8 +333,7 @@ public class TestClientTest {
         formTester.setValue(beanPanelPath + ":fields:" + nameFieldId + ":row:field", "test");
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
-
-        Assert.assertNotNull(testService.test);
+        verify(testService).update(new TestBean("42", "test"));
     }
 
     private void setServiceInDropDown(int index) {
@@ -485,7 +486,8 @@ public class TestClientTest {
             new PassThroughLocalizableString("service.description"));
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
-        testService = new TestService();
+        testService = mock(TestInterface.class);
+        doThrow(new IllegalArgumentException()).when(testService).update(eq("fail"), anyString());
         when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
         when(managedServicesMock.getService(anyString(), anyString())).thenReturn(testService);
         context.putBean(managedServicesMock);
