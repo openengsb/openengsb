@@ -17,25 +17,40 @@
 
 -->
 
-<beans:beans xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://www.springframework.org/schema/security"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-  http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns="http://www.springframework.org/schema/security"
+             xmlns:osgi="http://www.springframework.org/schema/osgi"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+  http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd">
 
 
-  <http create-session="never" auto-config="true">
-    <remember-me />
-    <intercept-url pattern="/**" />
-  </http>
+    <http create-session="never" auto-config="true" >
+        <remember-me/>
+        <intercept-url pattern="/**"/>
+    </http>
 
-  <authentication-manager alias="authenticationManager">
-    <authentication-provider>
-      <!-- TODO change this to reference our real user service -->
-      <user-service>
-        <user name="user" password="password" authorities="ROLE_USER" />
-      </user-service>
-    </authentication-provider>
-  </authentication-manager>
+    <authentication-manager alias="authenticationManager">
+        <authentication-provider>
+            <!-- TODO change this to reference our real user service -->
+            <user-service>
+                <user name="user" password="password" authorities="ROLE_USER"/>
+            </user-service>
+        </authentication-provider>
+        <authentication-provider user-service-ref="userManager">
+        </authentication-provider>
+    </authentication-manager>
 
-  <global-method-security secured-annotations="enabled" />
+    <!-- Dao authentication provider with in-memory user details service. -->
+    <beans:bean id="daoAuthenticationProvider"
+                class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <beans:property name="userDetailsService" ref="userManager"/>
+    </beans:bean>
+    <beans:bean id="userManager" class="org.openengsb.core.usermanagement.UserManagerImpl">
+        <beans:property name="persistenceManager">
+            <osgi:reference interface="org.openengsb.core.common.persistence.PersistenceManager"/>
+        </beans:property>
+    </beans:bean>
+
+    <global-method-security secured-annotations="enabled"/>
 </beans:beans>

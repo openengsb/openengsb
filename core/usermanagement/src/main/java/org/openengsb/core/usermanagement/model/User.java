@@ -16,19 +16,13 @@
 
 package org.openengsb.core.usermanagement.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
+
+import java.io.Serializable;
+import java.util.*;
 
 //copied from the org.springframework.security.core.user
 
@@ -93,8 +87,8 @@ public class User implements UserDetails, CredentialsContainer {
         this.username = username;
         this.password = password;
         this.enabled = true;
-        this.accountNonExpired = false;
-        this.credentialsNonExpired = false;
+        this.accountNonExpired = true;
+        this.credentialsNonExpired = true;
         this.accountNonLocked = true;
         this.authorities = Collections.unmodifiableSet(sortAuthorities(new ArrayList<GrantedAuthority>()));
     }

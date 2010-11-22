@@ -17,8 +17,6 @@
 package org.openengsb.core.usermanagement;
 
 
-import java.util.List;
-
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
@@ -28,6 +26,8 @@ import org.openengsb.core.usermanagement.model.User;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.List;
 
 public class UserManagerImpl implements UserManager, BundleContextAware {
 

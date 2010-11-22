@@ -16,17 +16,6 @@
 
 package org.openengsb.ui.web;
 
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -39,19 +28,28 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.usermanagement.UserManagerImpl;
+import org.openengsb.core.usermanagement.model.User;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
 import org.osgi.framework.ServiceReference;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class LoginPageTest {
 
     private WicketTester tester;
     private ApplicationContextMock contextMock;
+    private UserManagerImpl userManager;
 
     @Before
     public void setUp() {
@@ -82,18 +80,19 @@ public class LoginPageTest {
     }
 
     private void mockAuthentication() {
-        AuthenticationManager authManager = mock(AuthenticationManager.class);
-        final Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        authorities.add(new GrantedAuthorityImpl("ROLE_USER"));
-        when(authManager.authenticate(any(Authentication.class))).thenAnswer(new Answer<Authentication>() {
+        ProviderManager authManager = new ProviderManager();
+        List<AuthenticationProvider> providers = new ArrayList<AuthenticationProvider>();
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        userManager = mock(UserManagerImpl.class);
+        provider.setUserDetailsService(userManager);
+        providers.add(provider);
+        authManager.setProviders(providers);
+
+        final User user = new User("test", "password");
+        when(userManager.loadUserByUsername("test")).thenAnswer(new Answer<User>() {
             @Override
-            public Authentication answer(InvocationOnMock invocation) {
-                Authentication auth = (Authentication) invocation.getArguments()[0];
-                if (auth.getCredentials().equals("password")) {
-                    return new UsernamePasswordAuthenticationToken(auth.getPrincipal(), auth.getCredentials(),
-                        authorities);
-                }
-                throw new BadCredentialsException("wrong password");
+            public User answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return user;
             }
         });
         contextMock.putBean("authenticationManager", authManager);
