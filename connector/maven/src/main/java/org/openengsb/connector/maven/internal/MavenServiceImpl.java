@@ -186,7 +186,10 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
         output.join();
         error.join();
 
-        log.info("Maven connector error stream output: " + error.getString());
+        String errorOutput = error.getString();
+        if (!errorOutput.isEmpty()) {
+            log.warn("Maven connector error stream output: " + errorOutput);
+        }
         return new MavenResult(result, output.getString());
     }
 
