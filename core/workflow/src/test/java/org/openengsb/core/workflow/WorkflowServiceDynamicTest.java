@@ -22,9 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Domain;
@@ -66,16 +64,6 @@ public class WorkflowServiceDynamicTest {
     private ServiceReference exampleReference;
     private ServiceReference notificationReference;
     private ServiceReference myserviceReference;
-
-    @AfterClass
-    public static void tearDownClass() {
-        PersistenceTestUtil.cleanupReferenceData();
-    }
-
-    @BeforeClass
-    public static void setupClass() throws Exception {
-        PersistenceTestUtil.createReferencePersistence();
-    }
 
     @Before
     public void setUp() throws Exception {

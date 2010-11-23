@@ -33,9 +33,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -62,16 +60,6 @@ public class WorkflowServiceTest {
     private DummyIssue issue;
     private DummyTest test;
     private DummyService myservice;
-
-    @AfterClass
-    public static void tearDownClass() {
-        PersistenceTestUtil.cleanupReferenceData();
-    }
-
-    @BeforeClass
-    public static void setupClass() throws Exception {
-        PersistenceTestUtil.createReferencePersistence();
-    }
 
     @Before
     public void setUp() throws Exception {

@@ -16,13 +16,12 @@
 
 package org.openengsb.core.workflow.persistence;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.workflow.GenericRuleManagerTest;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 
+@Ignore
 public class PersistenceRuleManagerCrudTest extends GenericRuleManagerTest<PersistenceRuleManager> {
 
     @Override
@@ -30,20 +29,20 @@ public class PersistenceRuleManagerCrudTest extends GenericRuleManagerTest<Persi
         return PersistenceTestUtil.getRuleManager();
     }
 
-    @Override
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
-        PersistenceTestUtil.cleanup();
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        PersistenceTestUtil.cleanupReferenceData();
-    }
-
-    @BeforeClass
-    public static void setupClass() throws Exception {
-        PersistenceTestUtil.createReferencePersistence();
-    }
+//    @Override
+//    @After
+//    public void tearDown() throws Exception {
+//        super.tearDown();
+//        PersistenceTestUtil.cleanup();
+//    }
+//
+//    @AfterClass
+//    public static void tearDownClass() {
+//        PersistenceTestUtil.cleanupReferenceData();
+//    }
+//
+//    @BeforeClass
+//    public static void setupClass() throws Exception {
+//        PersistenceTestUtil.createReferencePersistence();
+//    }
 }

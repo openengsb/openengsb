@@ -26,6 +26,7 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import java.util.Collection;
 import java.util.Random;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.workflow.RuleBaseException;
@@ -33,6 +34,7 @@ import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 
+@Ignore
 public abstract class GenericRuleManagerTest<SourceType extends RuleManager> extends AbstractRuleManagerTest {
 
     @Test
