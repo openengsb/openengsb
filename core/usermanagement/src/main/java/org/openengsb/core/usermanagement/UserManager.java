@@ -16,17 +16,17 @@
 
 package org.openengsb.core.usermanagement;
 
+import java.util.List;
+
 import org.openengsb.core.usermanagement.model.User;
 import org.springframework.osgi.context.BundleContextAware;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.List;
 
 public interface UserManager extends UserDetailsService, BundleContextAware {
 
     void createUser(User user) ;
 
-    void updateUser(User oldUser, User newUser) ;
+    void updateUser(User user) ;
 
     void deleteUser(String username) ;
 

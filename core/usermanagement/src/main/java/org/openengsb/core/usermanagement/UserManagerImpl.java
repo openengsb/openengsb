@@ -17,6 +17,9 @@
 package org.openengsb.core.usermanagement;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
@@ -27,9 +30,6 @@ import org.osgi.framework.BundleContext;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UserManagerImpl implements UserManager {
 
@@ -53,12 +53,13 @@ public class UserManagerImpl implements UserManager {
     }
 
     @Override
-    public void updateUser(User oldUser, User newUser) {
+    public void updateUser(User user) {
+        User oldUser = new User(user.getUsername());
         if (!userNameExists(oldUser.getUsername())) {
             throw new UserNotFoundException("User with username: " + oldUser.getUsername() + " does not exists");
         }
         try {
-            persistence.update(oldUser, oldUser);
+            persistence.update(oldUser, user);
         } catch (PersistenceException e) {
             //TODO: rethink
         }

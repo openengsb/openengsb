@@ -16,6 +16,17 @@
 
 package org.openengsb.core.usermanagement;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.persistence.PersistenceException;
@@ -26,14 +37,6 @@ import org.openengsb.core.usermanagement.exceptions.UserNotFoundException;
 import org.openengsb.core.usermanagement.model.User;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 public class UserManagerImplTest {
     private UserManagerImpl userManager;
@@ -100,17 +103,17 @@ public class UserManagerImplTest {
 
     @Test
     public void updateUser_ShouldWork() throws PersistenceException {
-        User userOld = new User("testUser2", "testPass");
+        User userOld = new User("testUser2");
         User userNew = new User("testUser2", "testPassNew");
-        userManager.updateUser(userOld, userNew);
+        userManager.updateUser(userNew);
         verify(persistMock, times(1)).update(userOld, userNew);
     }
 
     @Test(expected = UserNotFoundException.class)
     public void updateNotExistingUser_ShouldThrowUserNotFoundException() throws PersistenceException {
-        User userOld = new User("testUser1", "testPass");
+        User userOld = new User("testUser1");
         User userNew = new User("testUser1", "testPassNew");
-        userManager.updateUser(userOld, userNew);
+        userManager.updateUser(userNew);
         verify(persistMock, times(0)).update(userOld, userNew);
     }
 
