@@ -419,6 +419,13 @@ container-1
 	width: 100px;
 }
 
+
+.createUserFormField {
+	text-align: left;
+	float: left;
+	width: 100px;
+}
+
 .createUserform {
   margin-bottom: 10px;
   width: 50%;
@@ -429,11 +436,10 @@ container-1
 	border: none;
 }
 
-.createUserform formFieldLabel {
+.createUserform createUserFormField {
   display: inline-block;
   vertical-align: top;
   width: 120px;
-	text-align: left;
 }
 
 .formField {
@@ -458,7 +464,7 @@ container-1
 	border: none;
 }
 
-.existingUsers formFieldLabel {
+.existingUsers createUserFormField {
   display: inline-block;
   vertical-align: top;
   width: 100px;

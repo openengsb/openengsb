@@ -16,6 +16,15 @@
 
 package org.openengsb.ui.web;
 
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.FormTester;
@@ -29,11 +38,6 @@ import org.openengsb.core.usermanagement.UserManager;
 import org.openengsb.core.usermanagement.exceptions.UserExistsException;
 import org.openengsb.core.usermanagement.model.User;
 import org.osgi.framework.BundleContext;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.Mockito.*;
 
 public class UserServiceTest {
 
@@ -74,6 +78,7 @@ public class UserServiceTest {
         FormTester formTester = tester.newFormTester("form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password");
         formTester.submit();
         tester.assertNoErrorMessage();
         verify(userManager, times(1)).createUser(new User("user1", "password"));
@@ -88,6 +93,7 @@ public class UserServiceTest {
         FormTester formTester = tester.newFormTester("form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password");
         formTester.submit();
         tester.assertErrorMessages(new String[]{"User already exists"});
         verify(userManager, times(1)).createUser(new User("user1", "password"));
@@ -109,4 +115,19 @@ public class UserServiceTest {
         tester.assertContains("admin");
         tester.assertContains("delete");
     }
+
+@Test
+    public void testErrorMessage_ShouldReturnWrongSecondPassword() {
+        tester.startPage(UserService.class);
+        doThrow(new UserExistsException("user exists")).
+                when(userManager).createUser(new User("user1", "password"));
+        FormTester formTester = tester.newFormTester("form");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password2");
+        formTester.submit();
+        tester.assertErrorMessages(new String[]{"Invalid password"});
+        verify(userManager, times(0)).createUser(new User("user1", "password"));
+    }
+
 }

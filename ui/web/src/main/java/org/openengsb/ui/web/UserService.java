@@ -16,6 +16,9 @@
 
 package org.openengsb.ui.web;
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -37,30 +40,30 @@ import org.openengsb.core.usermanagement.UserManager;
 import org.openengsb.core.usermanagement.exceptions.UserExistsException;
 import org.openengsb.core.usermanagement.model.User;
 
-import java.util.List;
-
 @AuthorizeInstantiation("ROLE_USER")
 public class UserService extends BasePage {
 
     private static Log log = LogFactory.getLog(UserService.class);
-    private User user = new User(null, null);
+    UserInput input = new UserInput();
+
 
     @SpringBean
     private UserManager userManager;
 
     public UserService() {
-        Form<User> userForm = new Form<User>("form") {
+        Form<UserInput> userForm = new Form<UserInput>("form") {
             @Override
             protected void onSubmit() {
-                if (user.getUsername() == null) {
+                if (input.getUsername() == null) {
                     error(new StringResourceModel("usernameError", this, null).getString());
-                } else if (user.getPassword() == null) {
+                } else if (input.getPassword() == null || !input.getPassword().equals(input.getPasswordVerification())) {
                     error(new StringResourceModel("passwordError", this, null).getString());
                 } else {
                     try {
+                        User user = new User(input.getUsername(), input.getPassword());
                         userManager.createUser(user);
                         info(new StringResourceModel("success", this, null).getString());
-                        userManager.loadUserByUsername(user.getUsername());
+                        userManager.loadUserByUsername(input.getUsername());
                     } catch (UserExistsException ex) {
                         error(new StringResourceModel("userExistError", this, null).getString());
                         return;
@@ -70,11 +73,13 @@ public class UserService extends BasePage {
         };
         userForm.add(new RequiredTextField<String>("username"));
         userForm.add(new PasswordTextField("password"));
-        userForm.setModel(new CompoundPropertyModel<User>(user));
+
+        userForm.add(new PasswordTextField("passwordVerification"));
+        userForm.setModel(new CompoundPropertyModel<UserInput>(input));
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
 
-        add(feedbackPanel);
+        userForm.add(feedbackPanel);
         add(userForm);
 
 
@@ -84,7 +89,7 @@ public class UserService extends BasePage {
                 return userManager.getAllUser();
             }
         };
-        ListView<User> users = new ListView<User>("users",userList) {
+        ListView<User> users = new ListView<User>("users", userList) {
             @Override
             protected void populateItem(final ListItem<User> userListItem) {
                 userListItem.add(new Label("user.name", userListItem.getModelObject().getUsername()));
@@ -97,6 +102,37 @@ public class UserService extends BasePage {
             }
         };
         add(users);
+    }
+
+    private class UserInput implements Serializable {
+
+        private String passwordVerification;
+        private String password;
+        private String username;
+
+        public String getPasswordVerification() {
+            return passwordVerification;
+        }
+
+        public void setPasswordVerification(String passwordVerification) {
+            this.passwordVerification = passwordVerification;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
     }
 
 }
