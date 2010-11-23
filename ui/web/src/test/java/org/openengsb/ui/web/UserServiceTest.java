@@ -67,15 +67,15 @@ public class UserServiceTest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication().addComponentInstantiationListener(
-                new SpringComponentInjector(tester.getApplication(), context, true));
+        tester.getApplication()
+            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
     }
 
     @Test
     public void testUserCreation_ShouldWork() {
         tester.startPage(UserService.class);
 
-        FormTester formTester = tester.newFormTester("form");
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password");
@@ -89,8 +89,8 @@ public class UserServiceTest {
     public void testErrorMessage_shouldReturnUserExists() {
         tester.startPage(UserService.class);
         doThrow(new UserExistsException("user exists")).
-                when(userManager).createUser(new User("user1", "password"));
-        FormTester formTester = tester.newFormTester("form");
+            when(userManager).createUser(new User("user1", "password"));
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password");
@@ -116,12 +116,12 @@ public class UserServiceTest {
         tester.assertContains("delete");
     }
 
-@Test
+    @Test
     public void testErrorMessage_ShouldReturnWrongSecondPassword() {
         tester.startPage(UserService.class);
         doThrow(new UserExistsException("user exists")).
-                when(userManager).createUser(new User("user1", "password"));
-        FormTester formTester = tester.newFormTester("form");
+            when(userManager).createUser(new User("user1", "password"));
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password2");
@@ -129,5 +129,8 @@ public class UserServiceTest {
         tester.assertErrorMessages(new String[]{"Invalid password"});
         verify(userManager, times(0)).createUser(new User("user1", "password"));
     }
+
+
+    
 
 }

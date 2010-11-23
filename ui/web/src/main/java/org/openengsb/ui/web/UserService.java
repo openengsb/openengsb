@@ -24,7 +24,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
@@ -45,43 +47,55 @@ public class UserService extends BasePage {
 
     private static Log log = LogFactory.getLog(UserService.class);
     UserInput input = new UserInput();
-
+    RequiredTextField<String> usernameField;
+    PasswordTextField passwordField;
+    private PasswordTextField passwordVerficationField;
 
     @SpringBean
     private UserManager userManager;
 
     public UserService() {
-        Form<UserInput> userForm = new Form<UserInput>("form") {
+        final WebMarkupContainer usermanagementContainer = new WebMarkupContainer("usermanagementContainer");
+        usermanagementContainer.setOutputMarkupId(true);
+
+        final Form<UserInput> userForm = new Form<UserInput>("form") {
             @Override
             protected void onSubmit() {
-                if (input.getUsername() == null) {
-                    error(new StringResourceModel("usernameError", this, null).getString());
-                } else if (input.getPassword() == null || !input.getPassword().equals(input.getPasswordVerification())) {
-                    error(new StringResourceModel("passwordError", this, null).getString());
-                } else {
-                    try {
-                        User user = new User(input.getUsername(), input.getPassword());
-                        userManager.createUser(user);
-                        info(new StringResourceModel("success", this, null).getString());
-                        userManager.loadUserByUsername(input.getUsername());
-                    } catch (UserExistsException ex) {
-                        error(new StringResourceModel("userExistError", this, null).getString());
-                        return;
-                    }
-                }
+                createUser();
             }
-        };
-        userForm.add(new RequiredTextField<String>("username"));
-        userForm.add(new PasswordTextField("password"));
 
-        userForm.add(new PasswordTextField("passwordVerification"));
+
+        };
+
+
+        usernameField = new RequiredTextField<String>("username");
+        passwordField = new PasswordTextField("password");
+        passwordVerficationField = new PasswordTextField("passwordVerification");
+        usernameField.setOutputMarkupId(true);
+        passwordField.setOutputMarkupId(true);
+        passwordVerficationField.setOutputMarkupId(true);
+
+        userForm.add(usernameField);
+        userForm.add(passwordField);
+        userForm.add(passwordVerficationField);
+
         userForm.setModel(new CompoundPropertyModel<UserInput>(input));
+
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
 
         userForm.add(feedbackPanel);
-        add(userForm);
 
+        Button resetButton = new Button("resetbutton") {
+            @Override
+            public void onSubmit() {
+                input = new UserInput();
+                usernameField.setEnabled(true);
+            }
+        };
+
+        resetButton.setDefaultFormProcessing(false);
+        userForm.add(resetButton);
 
         IModel<List<User>> userList = new LoadableDetachableModel<List<User>>() {
             @Override
@@ -97,12 +111,47 @@ public class UserService extends BasePage {
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         userManager.deleteUser(userListItem.getModelObject().getUsername());
+                        ajaxRequestTarget.addComponent(usermanagementContainer);
+                    }
+                });
+                userListItem.add(new AjaxLink<User>("user.update") {
+                    @Override
+                    public void onClick(AjaxRequestTarget ajaxRequestTarget) {
+                        input.setUsername(userListItem.getModelObject().getUsername());
+                        input.setPassword(userListItem.getModelObject().getPassword());
+                        input.setPasswordVerification(userListItem.getModelObject().getPassword());
+                        usernameField.setEnabled(false);
+                        ajaxRequestTarget.addComponent(usermanagementContainer);
                     }
                 });
             }
         };
-        add(users);
+        users.setOutputMarkupId(true);
+
+        usermanagementContainer.add(users);
+        usermanagementContainer.add(userForm);
+        add(usermanagementContainer);
     }
+
+    private void createUser() {
+        if (input.getUsername() == null) {
+            error(new StringResourceModel("usernameError", this, null).getString());
+        } else if (input.getPassword() == null || !input.getPassword().equals(input.getPasswordVerification())) {
+            error(new StringResourceModel("passwordError", this, null).getString());
+        } else {
+            try {
+                User user = new User(input.getUsername(), input.getPassword());
+                userManager.createUser(user);
+                info(new StringResourceModel("success", this, null).getString());
+                userManager.loadUserByUsername(input.getUsername());
+                usernameField.setEnabled(true);
+            } catch (UserExistsException ex) {
+                error(new StringResourceModel("userExistError", this, null).getString());
+                return;
+            }
+        }
+    }
+
 
     private class UserInput implements Serializable {
 

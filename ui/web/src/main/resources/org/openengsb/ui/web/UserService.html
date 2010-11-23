@@ -21,42 +21,47 @@
       xml:lang="en" lang="en">
 <body>
   <wicket:extend>
-    <form wicket:id="form" class="createUserform">
-      <fieldset>
-        <legend>
-          <wicket:message key="createUser.title">[existingUsers]</wicket:message>
-        </legend>
-        <ol>
-          <li>
-            <div class="formFieldLabel"><wicket:message key="username.title" >[username]</wicket:message></div>
-            <div class="formField"><input wicket:id="username"/></div>
-          </li>
-          <li>
-            <div class="formFieldLabel"> <wicket:message key="password.title">[password]</wicket:message></div>
-            <div class="formField"><input type="password" wicket:id="password"/></div>
-          </li>
-          <li>
-            <div class="formFieldLabel"> <wicket:message key="rePassword.title">[password]</wicket:message></div>
-            <div class="formField"><input type="password" wicket:id="passwordVerification"/></div>
-          </li>
-          <input type="submit" wicket:message="value:createButton,title:createButton"/>
-        </ol>
-      <span wicket:id="feedback"/>
-      </fieldset>
-    </form>
+    <div wicket:id="usermanagementContainer">
+      <form wicket:id="form" class="createUserform">
+        <fieldset>
+          <legend>
+            <wicket:message key="createUser.title">[existingUsers]</wicket:message>
+          </legend>
+          <ol>
+            <li>
+              <div class="createUserFormField"><wicket:message key="username.title" >[username]</wicket:message></div>
+              <div class="formField"><input wicket:id="username"/></div>
+            </li>
+            <li>
+              <div class="createUserFormField"> <wicket:message key="password.title">[password]</wicket:message></div>
+              <div class="formField"><input type="password" wicket:id="password"/></div>
+            </li>
+            <li>
+              <div class="createUserFormField"> <wicket:message key="rePassword.title">[password]</wicket:message></div>
+              <div class="formField"><input type="password" wicket:id="passwordVerification"/></div>
+            </li>
+            <input type="submit" wicket:message="value:createButton,title:createButton"/>
+            <input type="reset" wicket:id="resetbutton" wicket:message="value:resetButton,title:resetButton"/>
+          </ol>
+          <span wicket:id="feedback"/>
+        </fieldset>
+      </form>
 
-    <div class="existingUsers">
-      <fieldset>
-        <legend>
-          <wicket:message key="existingUser.title">[existingUsers]</wicket:message>
-        </legend>
-        <ol wicket:id="users">
-          <li>
-            <div class="formFieldLabel"><span wicket:id="user.name">[service.name]</span></div>
-            <div class="formField"><a href="#" wicket:id="user.delete"><wicket:message key="delete.user">[delete.user]</wicket:message></a></div>
-          </li>
-        </ol>
-      </fieldset>
+      <div class="existingUsers">
+        <fieldset>
+          <legend>
+            <wicket:message key="existingUser.title">[existingUsers]</wicket:message>
+          </legend>
+          <ol wicket:id="users">
+            <li>
+              <div class="formField"><span wicket:id="user.name">[service.name]</span>
+                <a href="#" wicket:id="user.delete"><img wicket:message="title:delete.use" alt="delete.user" title="delete" src="images/deleteS.png"/></a>
+                <a href="#" wicket:id="user.update"><img wicket:message="title:delete.use" alt="update.user" title="update" src="images/editS.png"/></a>
+              </div>
+            </li>
+          </ol>
+        </fieldset>
+      </div>
     </div>
   </wicket:extend>
 </body>

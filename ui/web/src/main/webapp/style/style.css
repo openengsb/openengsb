@@ -473,7 +473,11 @@ container-1
 
 .existingUsers .formField a{
 	margin: 2px 0;
-  width: 100px; 
+}
+
+.existingUsers img{
+  width: 20px;
+  height: 20px;
 }
 
 .existingUsers ol {
