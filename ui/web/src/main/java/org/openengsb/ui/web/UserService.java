@@ -23,10 +23,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
@@ -53,6 +53,7 @@ public class UserService extends BasePage {
 
     @SpringBean
     private UserManager userManager;
+    private boolean editMode = false;
 
     public UserService() {
         final WebMarkupContainer usermanagementContainer = new WebMarkupContainer("usermanagementContainer");
@@ -63,8 +64,6 @@ public class UserService extends BasePage {
             protected void onSubmit() {
                 createUser();
             }
-
-
         };
 
 
@@ -86,11 +85,16 @@ public class UserService extends BasePage {
 
         userForm.add(feedbackPanel);
 
-        Button resetButton = new Button("resetbutton") {
+        AjaxButton resetButton = new AjaxButton("resetbutton") {
             @Override
-            public void onSubmit() {
-                input = new UserInput();
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                input.setPassword("");
+                input.setUsername("");
+                input.setPasswordVerification("");
+                form.clearInput();
                 usernameField.setEnabled(true);
+                editMode = false;
+                target.addComponent(usermanagementContainer);
             }
         };
 
@@ -121,6 +125,7 @@ public class UserService extends BasePage {
                         input.setUsername(userListItem.getModelObject().getUsername());
                         input.setPassword(userListItem.getModelObject().getPassword());
                         input.setPasswordVerification(userListItem.getModelObject().getPassword());
+                        editMode = true;
                         usernameField.setEnabled(false);
                         ajaxRequestTarget.addComponent(usermanagementContainer);
                     }
@@ -142,10 +147,15 @@ public class UserService extends BasePage {
         } else {
             try {
                 User user = new User(input.getUsername(), input.getPassword());
-                userManager.createUser(user);
+                if (editMode) {
+                    userManager.updateUser(user);
+                } else {
+                    userManager.createUser(user);
+                }
                 info(new StringResourceModel("success", this, null).getString());
                 userManager.loadUserByUsername(input.getUsername());
                 usernameField.setEnabled(true);
+                editMode = false;
             } catch (UserExistsException ex) {
                 error(new StringResourceModel("userExistError", this, null).getString());
                 return;
