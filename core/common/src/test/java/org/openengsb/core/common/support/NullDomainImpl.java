@@ -16,7 +16,7 @@
 
 package org.openengsb.core.common.support;
 
-import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.AliveState;
 
 public class NullDomainImpl implements NullDomain {
 

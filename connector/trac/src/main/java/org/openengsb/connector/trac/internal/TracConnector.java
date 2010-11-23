@@ -28,7 +28,7 @@ import org.openengsb.connector.trac.internal.models.constants.TracFieldConstants
 import org.openengsb.connector.trac.internal.models.constants.TracPriorityConstants;
 import org.openengsb.connector.trac.internal.models.constants.TracStatusConstants;
 import org.openengsb.connector.trac.internal.models.xmlrpc.Ticket;
-import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.issue.IssueDomain;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;

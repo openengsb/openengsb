@@ -35,12 +35,12 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.util.AliveState;
 import org.openengsb.core.test.NullDomainImpl;
 import org.osgi.framework.ServiceReference;
 

@@ -1,4 +1,5 @@
 package org.openengsb.ui.common.wicket.util;
+
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
@@ -15,26 +16,22 @@ package org.openengsb.ui.common.wicket.util;
  * limitations under the License.
  */
 
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Option;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.StringLocalizer;
-import org.openengsb.core.common.util.AliveState;
 import org.openengsb.core.test.NullDomain;
 import org.openengsb.core.test.NullDomainImpl;
 
@@ -102,35 +99,7 @@ public class MethodUtilTest {
     }
 
     public static enum TestEnum {
-        ONE, TWO
-    }
-
-    @Test
-    public void testOnlyInterface() throws Exception {
-        List<Method> methods = MethodUtil.getServiceMethods(new TestClass());
-        Assert.assertTrue(methods.contains(NullDomain.class.getMethod("nullMethod")));
-        Assert.assertFalse(methods.contains(TestClass.class.getMethod("dootherstuff")));
-    }
-
-    @Test
-    public void testAbstractClass() throws Exception {
-        List<Method> methods = MethodUtil.getServiceMethods(new SubTestClass());
-        Assert.assertTrue(methods.contains(NullDomain.class.getMethod("nullMethod")));
-        Assert.assertFalse(methods.contains(SubTestClass.class.getMethod("dootherstuff")));
-    }
-
-    @Test
-    public void testMultipleInterfaces() throws Exception {
-        List<Method> methods = MethodUtil.getServiceMethods(new MultiClass());
-        Assert.assertTrue(methods.contains(NullDomain.class.getMethod("nullMethod")));
-        Assert.assertTrue(methods.contains(TestInterface2.class.getMethod("dootherstuff")));
-    }
-
-    @Test
-    public void onlyDomainMethodsAreReturned() throws Exception {
-        List<Method> methods = MethodUtil.getServiceMethods(new TestClass());
-        Method hidden = HiddenInterface.class.getMethod("hiddenMethod");
-        Assert.assertFalse(methods.contains(hidden));
+            ONE, TWO
     }
 
     @Test

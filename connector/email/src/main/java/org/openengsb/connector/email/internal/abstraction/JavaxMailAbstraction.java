@@ -28,8 +28,8 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.DomainMethodExecutionException;
-import org.openengsb.core.common.util.AliveState;
 
 public class JavaxMailAbstraction implements MailAbstraction {
 
