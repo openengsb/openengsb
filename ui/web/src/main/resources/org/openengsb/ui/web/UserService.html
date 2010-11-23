@@ -20,36 +20,40 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
       xml:lang="en" lang="en">
 <body>
-<wicket:extend>
-    <div class="createUserForm">
-        <form wicket:id="form">
-            <wicket:message key="username.title">[username]</wicket:message>
-            :
-            <input wicket:id="username"/>
-            <wicket:message key="password.title">[password]</wicket:message>
-            :
-            <input type="password" wicket:id="password"/>
-            <input type="submit" wicket:message="value:createButton,title:createButton"/>
-        </form>
-        <span wicket:id="feedback"/>
-    </div>
-    <div id="userList" class="userList">
+  <wicket:extend>
+    <form wicket:id="form" class="createUserform">
+      <fieldset>
+        <legend>
+          <wicket:message key="createUser.title">[existingUsers]</wicket:message>
+        </legend>
+        <ol>
+          <li>
+            <div class="formFieldLabel"><wicket:message key="username.title" >[username]</wicket:message></div>
+            <div class="formField"><input wicket:id="username"/></div>
+          </li>
+          <li>
+            <div class="formFieldLabel"> <wicket:message key="password.title">[password]</wicket:message></div>
+            <div class="formField"><input type="password" wicket:id="password"/></div>
+          </li>
+          <input type="submit" wicket:message="value:createButton,title:createButton"/>
+        </ol>
+      <span wicket:id="feedback"/>
+      </fieldset>
+    </form>
 
-
-        <h3>
-            <wicket:message key="existingUser.title">[existingUsers]</wicket:message>
-        </h3>
-        <ul wicket:id="users">
-            <li>
-                <span wicket:id="user.name">[service.name]</span>
-                <a href="#" wicket:id="user.delete">
-                    <wicket:message
-                            key="delete.user">[delete.user]
-                    </wicket:message>
-                </a>
-            </li>
-        </ul>
+    <div class="existingUsers">
+      <fieldset>
+        <legend>
+          <wicket:message key="existingUser.title">[existingUsers]</wicket:message>
+        </legend>
+        <ol wicket:id="users">
+          <li>
+            <div class="formFieldLabel"><span wicket:id="user.name">[service.name]</span></div>
+            <div class="formField"><a href="#" wicket:id="user.delete"><wicket:message key="delete.user">[delete.user]</wicket:message></a></div>
+          </li>
+        </ol>
+      </fieldset>
     </div>
-</wicket:extend>
+  </wicket:extend>
 </body>
 </html>

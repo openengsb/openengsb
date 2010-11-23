@@ -419,15 +419,65 @@ container-1
 	width: 100px;
 }
 
-.createUserForm {
-  float: left !important;
-  padding: 10px;
+.createUserform {
+  margin-bottom: 10px;
+  width: 50%;
+  float: left;
 }
 
-.userList {
-  list-style-type : none ; 
-  width: 400px;
-  padding: 10px;
+.createUserform fieldset {
+	border: none;
+}
+
+.createUserform formFieldLabel {
+  display: inline-block;
+  vertical-align: top;
+  width: 120px;
+	text-align: left;
+}
+
+.formField {
+	padding: 0;
+}
+
+.createUserform .formField input, .formField select{
+	margin: 2px 0;
+}
+
+.createUserform fieldset ol {
+  margin: 0;
+  padding: 0;
+}
+
+.createUserform fieldset li {
+  list-style: none;
+  margin: 0;
+}
+
+.existingUsers fieldset{
+	border: none;
+}
+
+.existingUsers formFieldLabel {
+  display: inline-block;
+  vertical-align: top;
+  width: 100px;
+	text-align: left;
+}
+
+.existingUsers .formField a{
+	margin: 2px 0;
+  width: 100px; 
+}
+
+.existingUsers ol {
+  margin: 0;
+  padding: 0;
+}
+
+.existingUsers  li {
+  list-style: none;
+  margin: 0;
 }
 
 
