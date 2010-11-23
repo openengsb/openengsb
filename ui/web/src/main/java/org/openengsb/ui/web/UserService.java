@@ -111,6 +111,7 @@ public class UserService extends BasePage {
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
                         userManager.deleteUser(userListItem.getModelObject().getUsername());
+                        getList().remove(userListItem.getModelObject());
                         ajaxRequestTarget.addComponent(usermanagementContainer);
                     }
                 });
