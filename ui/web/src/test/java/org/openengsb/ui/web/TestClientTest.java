@@ -22,7 +22,10 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
@@ -62,7 +65,6 @@ import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.util.AliveState;
 import org.openengsb.ui.common.wicket.editor.BeanEditorPanel;
 import org.openengsb.ui.common.wicket.editor.fields.DropdownField;
 import org.openengsb.ui.common.wicket.editor.fields.InputField;
@@ -84,49 +86,18 @@ public class TestClientTest {
 
         void update(UpdateEnum updateEnum);
 
+        void update(Integer integer);
+
     }
 
     public enum UpdateEnum {
             ONE, TWO
     }
 
-    public class TestService implements TestInterface {
-
-        private boolean called = false;
-        private TestBean test;
-
-        @Override
-        public void update(String id, String name) {
-            if ("fail".equals(id)) {
-                throw new IllegalArgumentException();
-            }
-            called = true;
-        }
-
-        @Override
-        public void update(TestBean test) {
-            this.test = test;
-        }
-
-        public String getName(String id) {
-            return "";
-        }
-
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
-        }
-
-        @Override
-        public void update(UpdateEnum updateEnum) {
-        }
-
-    }
-
     private WicketTester tester;
 
     private ApplicationContextMock context;
-    private TestService testService;
+    private TestInterface testService;
     private FormTester formTester;
     private boolean serviceListExpanded = true;
     private BundleContext bundleContext;
@@ -311,8 +282,7 @@ public class TestClientTest {
         }
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
-
-        Assert.assertTrue(testService.called);
+        verify(testService).update("test", "test");
     }
 
     @Test
@@ -331,8 +301,22 @@ public class TestClientTest {
         formTester.setValue(beanPanelPath + ":fields:" + nameFieldId + ":row:field", "test");
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+        verify(testService).update(new TestBean("42", "test"));
+    }
 
-        Assert.assertNotNull(testService.test);
+    @Test
+    public void testPerformMethodCallWithIntegerObjectArgument() throws Exception {
+        setupAndStartTestClientPage();
+
+        setServiceInDropDown(0);
+        setMethodInDropDown(3);
+
+        String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
+        tester.debugComponentTrees();
+        formTester.setValue(beanPanelPath + ":field", "42");
+
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+        verify(testService).update(new Integer(42));
     }
 
     private void setServiceInDropDown(int index) {
@@ -485,7 +469,8 @@ public class TestClientTest {
             new PassThroughLocalizableString("service.description"));
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
-        testService = new TestService();
+        testService = mock(TestInterface.class);
+        doThrow(new IllegalArgumentException()).when(testService).update(eq("fail"), anyString());
         when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
         when(managedServicesMock.getService(anyString(), anyString())).thenReturn(testService);
         context.putBean(managedServicesMock);

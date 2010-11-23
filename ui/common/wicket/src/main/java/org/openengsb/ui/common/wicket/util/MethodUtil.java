@@ -1,4 +1,5 @@
 package org.openengsb.ui.common.wicket.util;
+
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
@@ -15,11 +16,12 @@ package org.openengsb.ui.common.wicket.util;
  * limitations under the License.
  */
 
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -112,7 +114,14 @@ public final class MethodUtil {
         }
     }
 
+    public enum TestEnum {
+            a, b, c
+    }
+
     public static Object convertToCorrectClass(Class<?> type, Object value) {
+        if (type.isInstance(value)) {
+            return value;
+        }
         if (type.isEnum()) {
             type.getEnumConstants();
             for (Object object : type.getEnumConstants()) {
@@ -120,9 +129,34 @@ public final class MethodUtil {
                     return object;
                 }
             }
+        }
+        if (String.class.equals(value.getClass())) {
+            Constructor<?> constructor = getStringOnlyConstructor(type);
+            if (constructor != null) {
+                try {
+                    return constructor.newInstance(value);
+                } catch (IllegalArgumentException e) {
+                    throw new RuntimeException(e);
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Constructor<?> getStringOnlyConstructor(Class<?> type) {
+        try {
+            return type.getConstructor(String.class);
+        } catch (SecurityException e) {
+            log.error("unexpected security-exception occured", e);
             return null;
-        } else {
-            return value;
+        } catch (NoSuchMethodException e) {
+            return null;
         }
     }
 
