@@ -41,7 +41,6 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
         form.getInputByName("username").setValueAttribute("admin");
         form.getInputByName("password").setValueAttribute("password");
-        form.getInputByName("passwordVerification").setValueAttribute("password");
         HtmlPage indexPage = loginButton.click();
         assertTrue(indexPage.asText().contains("This page represents"));
         HtmlPage testClient = indexPage.getAnchorByText("Test Client").click();
