@@ -25,6 +25,11 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 @SuppressWarnings("serial")
 public class InputField extends AbstractField<String> {
 
+    public InputField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<String> validator,
+            boolean editable) {
+        super(id, model, attribute, validator, editable);
+    }
+
     public InputField(String id, IModel<String> model, AttributeDefinition attribute, IValidator<String> validator) {
         super(id, model, attribute, validator);
     }
