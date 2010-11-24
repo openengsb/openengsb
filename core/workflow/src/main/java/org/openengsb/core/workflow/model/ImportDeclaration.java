@@ -14,5 +14,24 @@
  * limitations under the License.
  */
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.openengsb.org/drools/message/1.0")
-package org.openengsb.core.model;
+package org.openengsb.core.workflow.model;
+
+public class ImportDeclaration {
+    private String className;
+
+    public ImportDeclaration(String className) {
+        this.className = className;
+    }
+
+    public ImportDeclaration() {
+    }
+
+    public String getClassName() {
+        return this.className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+}

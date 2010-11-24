@@ -15,4 +15,4 @@
 #
 
 Import-Package: sun.reflect, *
-
+Dynamic-ImportPackage: *

@@ -33,12 +33,11 @@ import org.drools.runtime.process.ProcessInstance;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
-import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
 import org.openengsb.core.workflow.model.TestObject;
+import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
 
 public class RuleManagerFlowTest {
 
@@ -70,9 +69,8 @@ public class RuleManagerFlowTest {
         }
     }
 
-    protected RuleManager getRuleBaseSource() throws RuleBaseException {
-        DirectoryRuleSource source = new DirectoryRuleSource("data/rulebase");
-        source.init();
+    protected RuleManager getRuleBaseSource() throws Exception {
+        RuleManager source = PersistenceTestUtil.getRuleManager();
         return source;
     }
 

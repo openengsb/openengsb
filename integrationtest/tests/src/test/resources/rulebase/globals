@@ -1,0 +1,2 @@
+org.openengsb.domain.example.ExampleDomain example
+org.openengsb.core.workflow.droolsinternal.DroolsFlowHelper flowHelper
