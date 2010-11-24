@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.internal.persistence;
+package org.openengsb.core.workflow.model;
 
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
