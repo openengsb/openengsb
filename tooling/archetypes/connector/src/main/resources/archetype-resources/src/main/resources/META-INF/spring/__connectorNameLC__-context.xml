@@ -40,6 +40,6 @@
     <property name="persistenceManager" ref="persistenceServiceManager" />
   </bean>
 
-  <osgi:reference id="persistenceServiceManager" interface="org.openengsb.core.persistence.PersistenceManager" />
+  <osgi:reference id="persistenceServiceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
 
 </beans>

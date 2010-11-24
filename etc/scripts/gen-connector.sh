@@ -57,23 +57,23 @@ fi
 
 domainGroupId="org.openengsb.domain.$DOMAIN"
 domainArtifactIdPrefix="openengsb-domain-$DOMAIN"
-artifactId="$domainArtifactIdPrefix-$CONNECTOR"
-
+artifactId="openengsb-connector-$CONNECTOR"
+echo "gnaa $artifactId"
 mvn archetype:generate \
 	-DarchetypeGroupId="org.openengsb.tooling.archetypes" \
 	-DarchetypeArtifactId="openengsb-tooling-archetypes-connector" \
 	-DarchetypeVersion="$VERSION" \
 	-DparentArtifactId="$domainArtifactIdPrefix" \
 	-DdomainArtifactId="$domainArtifactIdPrefix" \
-	-DartifactId="openengsb-connector-$CONNECTOR" \
+	-DartifactId="$artifactId" \
+    -DconnectorNameLC="$CONNECTOR" \
     -DgroupId="org.openengsb.connector" \
 	-Dversion="$VERSION" \
 	-DdomainInterface="$INTERFACE" \
 	-Dpackage="org.openengsb.connector.$CONNECTOR" \
 	-DparentPackage="$domainGroupId" \
 	-Dname="$NAME"\
-    -DconnectorName="${CONNECTOR~}" \
-    -o
+    -DconnectorName="${CONNECTOR~}"
 
 if [ $? != 0 ]; then
 	exit $?
@@ -90,10 +90,11 @@ if [ -e "$artifactId" ]; then
 	else
 		echo "WARNING: Renaming of project to '$CONNECTOR' not possible, project already exists!"
 	fi
+else 
+    echo "gnaa $artifactId"
 fi
 
 echo ""
-echo "DON'T FORGET TO ADD THE CONNECTOR TO YOUR INTEGRATIONTEST PROJECT!"
 echo "DON'T FORGET TO ADD THE CONNECTOR TO YOUR RELEASE/ASSEMBLY PROJECT!"
 echo "SUCCESS"
 echo ""

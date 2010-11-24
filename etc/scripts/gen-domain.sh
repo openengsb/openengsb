@@ -32,32 +32,33 @@ if [ "$VERSION" = "" ]; then
 	VERSION=$DEFAULT_VERSION
 fi
 
-DEFAULT_NAME_PREFIX="OpenEngSB :: Domains :: ${DOMAIN~}"
+DEFAULT_NAME_PREFIX="OpenEngSB :: Domain :: ${DOMAIN~}"
 echo -n "Prefix for project names (is $DEFAULT_NAME_PREFIX): "
 read NAME_PREFIX
 if [ "$NAME_PREFIX" = "" ]; then
 	NAME_PREFIX=$DEFAULT_NAME_PREFIX
 fi
 
-artifactId="openengsb-domains-$DOMAIN"
+artifactId="openengsb-domain-$DOMAIN"
 
 mvn archetype:generate \
 	-DarchetypeGroupId="org.openengsb.tooling.archetypes" \
 	-DarchetypeArtifactId="openengsb-tooling-archetypes-domain" \
 	-DarchetypeVersion="$VERSION" \
-	-DgroupId="org.openengsb.domains.$DOMAIN" \
+	-DgroupId="org.openengsb.domain.$DOMAIN" \
 	-DartifactId="$artifactId" \
 	-Dversion="$VERSION" \
-	-DimplementationArtifactId="openengsb-domains-$DOMAIN-implementation" \
-	-Dpackage="org.openengsb.domains.$DOMAIN" \
+    -DdomainName="$DOMAIN" \
+	-DimplementationArtifactId="openengsb-domain-$DOMAIN" \
+	-Dpackage="org.openengsb.domain.$DOMAIN" \
 	-Dname="$NAME_PREFIX" \
     -DdomainInterface="${DOMAIN~}" \
-	-DimplementationName="$NAME_PREFIX :: Implementation"
+	-DimplementationName="$NAME_PREFIX"
 
 if [ $? != 0 ]; then
 	exit $?
 fi
-
+echo "WARNING: aid ${artifactId}"
 if [ -e "$artifactId" ]; then
 	if [ ! -e "$DOMAIN" ]; then
 		echo "INFO: Renaming project from '$artifactId' to '$DOMAIN'"
@@ -69,10 +70,11 @@ if [ -e "$artifactId" ]; then
 	else
 		echo "WARNING: Renaming of domain directory to '$DOMAIN' not possible, directory already exists!"
 	fi
+else 
+    echo "WARNING: no rename ${artifactId}"
 fi
 
 echo ""
-echo "DON'T FORGET TO ADD THE DOMAIN TO YOUR INTEGRATIONTEST PROJECT!"
 echo "DON'T FORGET TO ADD THE DOMAIN TO YOUR RELEASE/ASSEMBLY PROJECT!"
 echo "SUCCESS"
 echo ""

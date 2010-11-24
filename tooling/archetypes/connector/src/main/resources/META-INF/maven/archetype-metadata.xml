@@ -23,10 +23,10 @@
 
   <requiredProperties>
     <requiredProperty key="parentArtifactId">
-      <defaultValue>openengsb-domains-domainname-parent</defaultValue>
+      <defaultValue>openengsb-domain-domainname-parent</defaultValue>
     </requiredProperty>
     <requiredProperty key="domainArtifactId">
-      <defaultValue>openengsb-domains-domainname</defaultValue>
+      <defaultValue>openengsb-domain-domainname</defaultValue>
     </requiredProperty>
     <requiredProperty key="artifactId">
       <defaultValue>openengsb-connector-connectorname</defaultValue>
@@ -39,6 +39,9 @@
     </requiredProperty>
     <requiredProperty key="connectorName">
       <defaultValue>Connectorname</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="connectorNameLC">
+      <defaultValue>connectorname</defaultValue>
     </requiredProperty>
     <requiredProperty key="domainInterface">
       <defaultValue>DomainInterfaceName</defaultValue>
