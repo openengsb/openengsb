@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.integrationtest.workflow;
 
 import java.util.Arrays;
 import java.util.HashSet;

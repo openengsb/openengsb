@@ -93,6 +93,13 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>org.neodatis.odb</groupId>
+      <artifactId>neodatis-odb</artifactId>
+      <version>${odb.version}</version>
+      <optional>true</optional>
+    </dependency>
 
     <dependency>
       <groupId>net.sourceforge.htmlunit</groupId>

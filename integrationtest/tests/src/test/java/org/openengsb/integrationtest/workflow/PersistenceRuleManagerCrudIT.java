@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow;
+package org.openengsb.integrationtest.workflow;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -31,13 +31,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 
 @RunWith(Parameterized.class)
-public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager> extends
-        AbstractRuleManagerTest<SourceType> {
+public class PersistenceRuleManagerCrudIT extends
+        AbstractRuleManagerIT {
 
     public static final class TestElement {
         private final RuleBaseElementId id;
@@ -108,6 +107,7 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
         testData.add(new TestElement(flowId2, sampleFlow));
 
         data.add(new Object[]{ testData });
+
         // TODO: imports & globals
         // data.add(new Object[] { new
         // RuleBaseElementId(RuleBaseElementType.Import, "ignored",
@@ -124,7 +124,7 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
     protected String[] code = new String[4];
     protected RuleBaseElementId[] id = new RuleBaseElementId[4];
 
-    public AbstractRuleManagerCrudTest(List<TestElement> testelements) {
+    public PersistenceRuleManagerCrudIT(List<TestElement> testelements) {
         for (int i = 0; i < 3; i++) {
             TestElement el = testelements.get(i);
             this.code[i] = el.code;
@@ -134,39 +134,39 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
 
     @Test
     public void testCreate() throws RuleBaseException {
-        source.add(id[0], code[0]);
-        assertEquals(code[0], source.get(id[0]));
+        ruleManager.add(id[0], code[0]);
+        assertEquals(code[0], ruleManager.get(id[0]));
     }
 
     @Test
     public void testUpdate() throws RuleBaseException {
-        source.add(id[0], code[0]);
-        source.update(id[1], code[1]);
-        assertThat(source.get(id[0]), equalTo(code[1]));
+        ruleManager.add(id[0], code[0]);
+        ruleManager.update(id[1], code[1]);
+        assertThat(ruleManager.get(id[0]), equalTo(code[1]));
     }
 
     @Test
     public void testList() throws RuleBaseException {
-        source.add(id[0], code[0]);
-        source.add(id[2], code[2]);
-        Collection<RuleBaseElementId> result = source.list(id[0].getType(), id[0].getPackageName());
+        ruleManager.add(id[0], code[0]);
+        ruleManager.add(id[2], code[2]);
+        Collection<RuleBaseElementId> result = ruleManager.list(id[0].getType(), id[0].getPackageName());
         assertThat(result, hasItem(id[0]));
         assertThat(result, not(hasItem(id[2])));
     }
 
     @Test
     public void testListAll() throws RuleBaseException {
-        source.add(id[0], code[0]);
-        source.add(id[2], code[2]);
-        Collection<RuleBaseElementId> result = source.list(id[0].getType());
+        ruleManager.add(id[0], code[0]);
+        ruleManager.add(id[2], code[2]);
+        Collection<RuleBaseElementId> result = ruleManager.list(id[0].getType());
         assertThat(result, hasItem(id[0]));
         assertThat(result, hasItem(id[2]));
     }
 
     @Test
     public void testDelete() throws RuleBaseException {
-        source.add(id[0], code[0]);
-        source.delete(id[0]);
+        ruleManager.add(id[0], code[0]);
+        ruleManager.delete(id[0]);
     }
 
 }
