@@ -263,8 +263,8 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domain.notification.NotificationDomain;
 
-public class MyServiceInstanceFactory implements ServiceInstanceFactory<NotificationDomain,
-          MyServiceImpl> {
+public class MyServiceInstanceFactory implements 
+          ServiceInstanceFactory<NotificationDomain, MyServiceImpl> {
 
     private final MailAbstraction mailAbstraction;
 
