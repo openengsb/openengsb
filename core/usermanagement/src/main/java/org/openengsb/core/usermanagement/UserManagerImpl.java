@@ -96,7 +96,7 @@ public class UserManagerImpl implements UserManager {
 
     @Override
     public List<User> getAllUser() {
-       return persistence.query(new User(null));
+        return persistence.query(new User(null));
     }
 
     public void setPersistenceManager(PersistenceManager persistenceManager) {
@@ -107,7 +107,8 @@ public class UserManagerImpl implements UserManager {
         persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
         try {
             loadUserByUsername(null);
-        } catch (UserNotFoundException ex) {//create dummy admin user
+        } catch (UserNotFoundException ex) {
+            //create dummy admin user
             List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
             auth.add(new GrantedAuthorityImpl("ROLE_USER"));
             createUser(new User("admin", "password", auth));

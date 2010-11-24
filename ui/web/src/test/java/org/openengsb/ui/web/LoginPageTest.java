@@ -16,6 +16,15 @@
 
 package org.openengsb.ui.web;
 
+import static org.junit.Assert.assertFalse;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
@@ -35,15 +44,6 @@ import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class LoginPageTest {
 
@@ -91,7 +91,7 @@ public class LoginPageTest {
         final User user = new User("test", "password");
         when(userManager.loadUserByUsername("test")).thenAnswer(new Answer<User>() {
             @Override
-            public User answer(InvocationOnMock invocationOnMock) throws Throwable {
+            public User answer(InvocationOnMock invocationOnMock) {
                 return user;
             }
         });

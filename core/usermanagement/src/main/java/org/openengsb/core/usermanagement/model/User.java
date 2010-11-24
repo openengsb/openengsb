@@ -16,18 +16,20 @@
 
 package org.openengsb.core.usermanagement.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.Assert;
 
-import java.io.Serializable;
-import java.util.*;
-
-//copied from the org.springframework.security.core.user
-
-public class User implements UserDetails, CredentialsContainer {
+public class User implements CredentialsContainer, UserDetails {
 
     private String password;
     private String username;
@@ -65,6 +67,7 @@ public class User implements UserDetails, CredentialsContainer {
     }
 
     // User for searching in Database
+
     public User(String username) {
         this.username = username;
         this.enabled = true;

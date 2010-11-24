@@ -16,6 +16,10 @@
 
 package org.openengsb.ui.web.global.header;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Locale;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -26,12 +30,13 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.openengsb.ui.web.*;
+import org.openengsb.ui.web.ContextSetPage;
+import org.openengsb.ui.web.Index;
+import org.openengsb.ui.web.SendEventPage;
+import org.openengsb.ui.web.ServiceListPage;
+import org.openengsb.ui.web.TestClient;
+import org.openengsb.ui.web.UserService;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Locale;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {

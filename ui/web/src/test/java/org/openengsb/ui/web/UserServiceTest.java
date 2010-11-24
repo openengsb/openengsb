@@ -104,7 +104,7 @@ public class UserServiceTest {
     public void testShowCreatedUser_ShouldShowAdmin() {
         when(userManager.getAllUser()).thenAnswer(new Answer<List<User>>() {
             @Override
-            public List<User> answer(InvocationOnMock invocationOnMock) throws Throwable {
+            public List<User> answer(InvocationOnMock invocationOnMock) {
                 List<User> users = new ArrayList<User>();
                 users.add(new User("admin", "password"));
                 return users;
