@@ -101,6 +101,14 @@
     <xi:include href="developer/admin.xml" />
   </part>
 
+  <part xml:id="tutorials.manual">
+    <title>Tutorials</title>
+    <partintro>
+      <para>This part contains tutorials for the OpenEngSB.</para>
+    </partintro>
+    <xi:include href="howto/howtoCreateConnector.xml" />
+  </part>
+
   <part xml:id="appendix">
     <title>Appendix</title>
     <xi:include href="appendix/codestyle.xml"/>
