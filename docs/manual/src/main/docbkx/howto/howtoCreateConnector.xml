@@ -159,11 +159,11 @@ parentPackage: org.openengsb.domain.notification
 <profile>
   <id>release</id>
   ...
-         <deployURLs>
-           ...
-           scan-bundle:mvn:org.openengsb.connector/openengsb-connector-email/${project.version},
-           ...
-         </deployURLs>
+     <deployURLs>
+       ...
+       scan-bundle:mvn:org.openengsb.connector/openengsb-connector-email/${project.version},
+       ...
+     </deployURLs>
 ...
   ]]>
   </programlisting>
@@ -204,12 +204,13 @@ public class MyServiceImpl implements NotificationDomain {
     }
 
     /**
-     * Perform the given notification, which defines message, recipient, subject and attachments.
+     * Perform the given notification, which defines message, recipient, subject and 
+     * attachments.
      */
     @Override
     public void notify(Notification notification) {
-        mailAbstraction.send(properties, notification.getSubject(), notification.getMessage(), notification
-                .getRecipient());
+        mailAbstraction.send(properties, notification.getSubject(), notification
+                .getMessage(), notification.getRecipient());
     }
 
     /**
@@ -244,10 +245,12 @@ public class MyServiceImpl implements NotificationDomain {
 }
   </programlisting>
   
-  <para>As you can see, without the mail specific stuff the implementation is quite straight forward. <!-- TODO: bitte die methoden mit javadoc versehen, egal wie simple sie sind-->
+  <para>As you can see, without the mail specific stuff the implementation is quite straight forward.
   Simply implement the domain interface as well as the getAliveState() method, which is used to query to current status of a tool.</para>
   
-  <programlisting>package org.openengsb.connector.email.internal;
+  <programlisting>
+<![CDATA[ 
+package org.openengsb.connector.email.internal;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -260,7 +263,8 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domain.notification.NotificationDomain;
 
-public class MyServiceInstanceFactory implements ServiceInstanceFactory<NotificationDomain, MyServiceImpl> {
+public class MyServiceInstanceFactory implements ServiceInstanceFactory<NotificationDomain,
+          MyServiceImpl> {
 
     private final MailAbstraction mailAbstraction;
 
@@ -268,7 +272,8 @@ public class MyServiceInstanceFactory implements ServiceInstanceFactory<Notifica
         this.mailAbstraction = mailAbstraction;
     }
 
-    private void setAttributesOnNotifier(Map<String, String> attributes, MyServiceImpl notifier) {
+    private void setAttributesOnNotifier(Map<String, String> attributes, 
+            MyServiceImpl notifier) {
 
         if (attributes.containsKey("user")) {
             notifier.getProperties().setUser(attributes.get("user"));
@@ -280,7 +285,8 @@ public class MyServiceInstanceFactory implements ServiceInstanceFactory<Notifica
             notifier.getProperties().setPrefix(attributes.get("prefix"));
         }
         if (attributes.containsKey("smtpAuth")) {
-            notifier.getProperties().setSmtpAuth(Boolean.parseBoolean(attributes.get("smtpAuth")));
+            notifier.getProperties().setSmtpAuth(Boolean.parseBoolean(attributes.
+                    get("smtpAuth")));
         }
         if (attributes.containsKey("smtpSender")) {
             notifier.getProperties().setSender(attributes.get("smtpSender"));
@@ -296,21 +302,26 @@ public class MyServiceInstanceFactory implements ServiceInstanceFactory<Notifica
     /**
      * Called when the {@link #ServiceDescriptor} for the provided service is needed.
      *
-     * The {@code builder} already has the id, service type and implementation type set to defaults.
+     * The {@code builder} already has the id, service type and implementation type
+     * set to defaults.
      */
     @Override
     public ServiceDescriptor getDescriptor(ServiceDescriptor.Builder builder) {
         builder.name("email.name").description("email.description");
 
         builder
-            .attribute(buildAttribute(builder, "user", "username.outputMode", "username.outputMode.description"))
+            .attribute(buildAttribute(builder, "user", "username.outputMode", 
+                    "username.outputMode.description"))
             .attribute(
                 builder.newAttribute().id("password").name("password.outputMode")
-                    .description("password.outputMode.description").defaultValue("").required().asPassword().build())
-            .attribute(buildAttribute(builder, "prefix", "prefix.outputMode", "prefix.outputMode.description"))
+                    .description("password.outputMode.description").defaultValue("")
+                    .required().asPassword().build())
+            .attribute(buildAttribute(builder, "prefix", "prefix.outputMode", 
+                    "prefix.outputMode.description"))
             .attribute(
                 builder.newAttribute().id("smtpAuth").name("mail.smtp.auth.outputMode")
-                    .description("mail.smtp.auth.outputMode.description").defaultValue("false").asBoolean().build())
+                    .description("mail.smtp.auth.outputMode.description")
+                    .defaultValue("false").asBoolean().build())
             .attribute(
                 buildAttribute(builder, "smtpSender", "mail.smtp.sender.outputMode",
                     "mail.smtp.sender.outputMode.description"))
@@ -324,33 +335,36 @@ public class MyServiceInstanceFactory implements ServiceInstanceFactory<Notifica
         return builder.build();
     }
 
-    private AttributeDefinition buildAttribute(ServiceDescriptor.Builder builder, String id, String nameId,
-            String descriptionId) {
-        return builder.newAttribute().id(id).name(nameId).description(descriptionId).defaultValue("").required()
-            .build();
+    private AttributeDefinition buildAttribute(ServiceDescriptor.Builder builder, 
+            String id, String nameId, String descriptionId) {
+        return builder.newAttribute().id(id).name(nameId).description(descriptionId)
+            .defaultValue("").required().build();
 
     }
     
     /**
-     * Called by the {@link AbstractServiceManager} when updated service attributes for an instance are available. The
-     * attributes may only contain changed values and omit previously set attributes.
+     * Called by the {@link AbstractServiceManager} when updated service attributes for
+     * an instance are available. The attributes may only contain changed values and 
+     * omit previously set attributes.
      *
      * @param instance the instance to update
      * @param attributes the new service settings
      */
     @Override
-    public void updateServiceInstance(MyServiceImpl instance, Map<String, String> attributes) {
+    public void updateServiceInstance(MyServiceImpl instance, Map<String, 
+            String> attributes) {
         setAttributesOnNotifier(attributes, instance);
     }
 
     /**
-     * The {@link AbstractServiceManager} calls this method each time a new service instance has to be started.
+     * The {@link AbstractServiceManager} calls this method each time a new service 
+     * instance has to be started.
      *
      * @param id the unique id this service has been assigned.
      * @param attributes the initial service settings
      */
     @Override
-    public MyServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
+    public MyServiceImpl createServiceInstance(String id, Map<String, String> attributes){
         MyServiceImpl notifier = new MyServiceImpl(id, mailAbstraction);
         setAttributesOnNotifier(attributes, notifier);
         return notifier;
@@ -360,18 +374,23 @@ public class MyServiceInstanceFactory implements ServiceInstanceFactory<Notifica
      * Validates if the service is correct before updating.
      */
     @Override
-    public MultipleAttributeValidationResult updateValidation(EmailNotifier instance, Map<String, String> attributes) {
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+    public MultipleAttributeValidationResult updateValidation(EmailNotifier instance, 
+            Map<String, String> attributes) {
+        return new MultipleAttributeValidationResultImpl(true, 
+                new HashMap<String, String>());
     }
 
     /**
      * Validates if the attributes are correct before creation.
      */
     @Override
-    public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
-        return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
+    public MultipleAttributeValidationResult createValidation(String id, 
+            Map<String, String> attributes) {
+        return new MultipleAttributeValidationResultImpl(true, 
+                new HashMap<String, String>());
     }
 }
+]]>
   </programlisting>
   <para>
     The factory is more interesting with respect to the OpenEngSB. It is used to create and configure
@@ -409,7 +428,7 @@ prefix.outputMode = Prefix
 prefix.outputMode.description = Subject prefix for all mails sent by this connector
 
 mail.smtp.auth.outputMode = Authentification
-mail.smtp.auth.outputMode.description = Specifies if the smtp authentification is on or off
+mail.smtp.auth.outputMode.description = Specifies if the smtp authentication is on or off
 
 mail.smtp.sender.outputMode = Sender Emailadress
 mail.smtp.sender.outputMode.description = Specifies the Emailadress of the sender
