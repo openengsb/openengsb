@@ -61,8 +61,6 @@
     <maven.plugin.changes.version>2.3</maven.plugin.changes.version>
     <maven.plugin.release.version>2.0-beta-9</maven.plugin.release.version>
     <maven.plugin.checkstyle.version>2.6</maven.plugin.checkstyle.version>
-    <maven.plugin.surefire>2.6</maven.plugin.surefire>
-    <maven.plugin.surefire.report>2.5</maven.plugin.surefire.report>
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
     <maven.plugin.compiler.version>2.3.2</maven.plugin.compiler.version>
     <maven.rat.version>0.6</maven.rat.version>
@@ -226,7 +224,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>${maven.plugin.surefire}</version>
           <configuration>
             <includes>
               <include>**/*Test.java</include>
@@ -236,7 +233,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-report-plugin</artifactId>
-          <version>${maven.plugin.surefire.report}</version>
           <configuration>
             <reportSets>
               <reportSet>

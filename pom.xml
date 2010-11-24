@@ -34,7 +34,8 @@
     <mvn.version>2.1</mvn.version>
     <!-- Plugin Version -->
     <plugin.eclipse.version>2.8</plugin.eclipse.version>
-    <plugin.surefire.version>2.5</plugin.surefire.version>
+    <plugin.surefire.version>2.6</plugin.surefire.version>
+    <plugin.surefire.report.version>2.6</plugin.surefire.report.version>
     <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
     <maven.plugin.compiler.version>2.3.2</maven.plugin.compiler.version>
     <maven.plugin.clean.version>2.4.1</maven.plugin.clean.version>
@@ -463,6 +464,16 @@
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>${plugin.helper.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${plugin.surefire.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-report-plugin</artifactId>
+          <version>${plugin.surefire.report.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -706,7 +717,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>${plugin.surefire.version}</version>
             <configuration>
               <excludes>
                 <exclude>*</exclude>

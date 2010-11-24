@@ -18,6 +18,8 @@ openengsb-1.1.0.RELEASE
  * org.neodatis.odb/neodatis-odb/1.9.30.687
  * junit/junit/4.8.2
  * org.springframework.security/spring-security-*/3.0.5.RELEASE
+ * org.apache.maven.plugins/maven-surefire-plugini/2.6
+ * org.apache.maven.plugins/maven-surefire-report-plugini/2.6
 
 ### Remvoed External References
   * [e.g.] javax.ejb/com.springsource.javax.ejb
