@@ -18,8 +18,7 @@ package ${package};
 
 import org.openengsb.core.common.Domain;
 
-// TODO rename interface to appropriate name
-public interface MyDomain extends Domain {
+public interface ${domainInterface} extends Domain {
 
     // TODO add your domain-specific methods here
 }

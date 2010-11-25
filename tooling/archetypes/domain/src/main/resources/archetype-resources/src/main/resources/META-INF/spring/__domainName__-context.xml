@@ -25,23 +25,23 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:service interface="org.openengsb.core.common.DomainProvider">
-    <bean class="${package}.MyDomainProvider" />
+    <bean class="${package}.${domainInterface}Provider" />
   </osgi:service>
 
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.Domain</value>
-      <value>${package}.MyDomain</value>
+      <value>${package}.${domainInterface}</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.mydomain" />
+      <entry key="id" value="domain.${domainName}" />
       <entry key="openengsb.service.type" value="domain" />
     </osgi:service-properties>
     <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
       <property name="domainInterface">
-        <value>${package}.MyDomain</value>
+        <value>${package}.${domainInterface}</value>
       </property>
-      <property name="domainName" value="MyDomain" />
+      <property name="domainName" value="${domainInterface}" />
       <property name="context" ref="contextService" />
     </bean>
   </osgi:service>
@@ -49,21 +49,21 @@
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.DomainEvents</value>
-      <value>${package}.MyDomainEvents</value>
+      <value>${package}.${domainInterface}Events</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.mydomain.events" />
+      <entry key="id" value="domain.${domainName}.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </osgi:service-properties>
 
     <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
       <property name="domainEventInterface">
-        <value>${package}.MyDomainEvents</value>
+        <value>${package}.${domainInterface}Events</value>
       </property>
       <property name="workflowService" ref="workflowService" />
     </bean>
   </osgi:service>
 
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
-  <osgi:reference id="workflowService" interface="org.openengsb.core.workflow.WorkflowService" />
+  <osgi:reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
 </beans>

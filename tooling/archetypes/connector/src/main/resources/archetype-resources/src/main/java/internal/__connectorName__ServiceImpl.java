@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
-package ${package};
+package ${package}.internal;
 
-import org.openengsb.core.common.AbstractServiceManager;
-import org.openengsb.core.common.ServiceInstanceFactory;
-import ${parentPackage}.${domainInterface};
-import ${package}.internal.MyServiceImpl;
+import org.openengsb.core.common.util.AliveState;
 
-public class MyServiceManager extends AbstractServiceManager<${domainInterface}, MyServiceImpl> {
+import ${domainPackage}.${domainInterface};
 
-    public MyServiceManager(ServiceInstanceFactory<${domainInterface}, MyServiceImpl> factory) {
-        super(factory);
+public class ${connectorName}ServiceImpl implements ${domainInterface} {
+
+    private String attr;
+
+    public ${connectorName}ServiceImpl() {
     }
+
+    void setAttr(String attr) {
+        this.attr = attr;
+    }
+    
+    @Override
+    public AliveState getAliveState() {
+        // TODO Auto-generated method stub
+        return AliveState.DISCONNECTED;
+    }
+    
+    // TODO implement domain methods here
 }

@@ -18,16 +18,32 @@
 # Helper script to generate an OpenEngSB connector project. Tries to guess
 # needed variables based on provided input.
 
+capitalize_ichar ()          #  Capitalizes initial character
+{                            #+ of argument string(s) passed.
+
+  string0="$@"               # Accepts multiple arguments.
+
+  firstchar=${string0:0:1}   # First character.
+  string1=${string0:1}       # Rest of string(s).
+
+  FirstChar=`echo "$firstchar" | tr a-z A-Z`
+                             # Capitalize first character.
+
+  echo "$FirstChar$string1"  # Output to stdout.
+
+}
+
 CUR_DIR=`pwd`
 
-DEFAULT_DOMAIN=`basename $CUR_DIR`
+DEFAULT_DOMAIN="domainname"
 echo -n "Domain Name (is $DEFAULT_DOMAIN): "
 read DOMAIN
 if [ "$DOMAIN" = "" ]; then
 	DOMAIN=$DEFAULT_DOMAIN
 fi
 
-DEFAULT_INTERFACE="${DOMAIN~}Domain"
+CAP_DOMAIN=`capitalize_ichar ${DOMAIN}`
+DEFAULT_INTERFACE="${CAP_DOMAIN}Domain"
 echo -n "Domain Interface (is $DEFAULT_INTERFACE): "
 read INTERFACE
 if [ "$INTERFACE" = "" ]; then
@@ -41,37 +57,39 @@ if [ "$CONNECTOR" = "" ]; then
 	exit 1
 fi
 
-DEFAULT_VERSION="1.0.0-SNAPSHOT"
+DEFAULT_VERSION="1.1.0-SNAPSHOT"
 echo -n "Version (is $DEFAULT_VERSION): "
 read VERSION
 if [ "$VERSION" = "" ]; then
 	VERSION=$DEFAULT_VERSION
 fi
 
-DEFAULT_NAME="OpenEngSB :: Domains :: ${DOMAIN~} :: ${CONNECTOR~}"
+CAP_CONNECTOR=`capitalize_ichar ${CONNECTOR}`
+
+DEFAULT_NAME="OpenEngSB :: Connector :: ${CAP_CONNECTOR}"
 echo -n "Project Name (is $DEFAULT_NAME): "
 read NAME
 if [ "$NAME" = "" ]; then
 	NAME=$DEFAULT_NAME
 fi
 
-domainGroupId="org.openengsb.domains.$DOMAIN"
-domainArtifactIdPrefix="openengsb-domains-$DOMAIN"
-artifactId="$domainArtifactIdPrefix-$CONNECTOR"
-
+domainGroupId="org.openengsb.domain.$DOMAIN"
+domainArtifactIdPrefix="openengsb-domain-$DOMAIN"
+artifactId="openengsb-connector-$CONNECTOR"
 mvn archetype:generate \
 	-DarchetypeGroupId="org.openengsb.tooling.archetypes" \
 	-DarchetypeArtifactId="openengsb-tooling-archetypes-connector" \
 	-DarchetypeVersion="$VERSION" \
-	-DparentArtifactId="$domainArtifactIdPrefix-parent" \
-	-DdomainArtifactId="$domainArtifactIdPrefix-implementation" \
+	-DdomainArtifactId="$domainArtifactIdPrefix" \
 	-DartifactId="$artifactId" \
-	-DgroupId="$domainGroupId" \
+    -DconnectorNameLC="$CONNECTOR" \
+    -DgroupId="org.openengsb.connector" \
 	-Dversion="$VERSION" \
 	-DdomainInterface="$INTERFACE" \
-	-Dpackage="$domainGroupId.$CONNECTOR" \
-	-DparentPackage="$domainGroupId" \
-	-Dname="$NAME"
+	-Dpackage="org.openengsb.connector.$CONNECTOR" \
+	-DdomainPackage="$domainGroupId" \
+	-Dname="$NAME"\
+    -DconnectorName="${CAP_CONNECTOR}"
 
 if [ $? != 0 ]; then
 	exit $?
@@ -88,9 +106,11 @@ if [ -e "$artifactId" ]; then
 	else
 		echo "WARNING: Renaming of project to '$CONNECTOR' not possible, project already exists!"
 	fi
+else 
+    echo "gnaa $artifactId"
 fi
 
 echo ""
-echo "DON'T FORGET TO ADD THE CONNECTOR TO THE INTEGRATIONTEST PROJECT!"
+echo "DON'T FORGET TO ADD THE CONNECTOR TO YOUR RELEASE/ASSEMBLY PROJECT!"
 echo "SUCCESS"
 echo ""

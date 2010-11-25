@@ -18,8 +18,7 @@ package ${package};
 
 import org.openengsb.core.common.DomainEvents;
 
-// TODO rename interface to appropriate name
-public interface MyDomain extends DomainEvents {
+public interface ${domainInterface}Events extends DomainEvents {
 
     // TODO add your domain-specific methods here
 }

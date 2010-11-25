@@ -14,20 +14,10 @@
  * limitations under the License.
  */
 
-package ${package}.internal;
+package ${package};
 
-import ${parentPackage}.${domainInterface};
+import org.openengsb.core.common.AbstractDomainProvider;
 
-public class MyServiceImpl implements ${domainInterface} {
+public class ${domainInterface}Provider extends AbstractDomainProvider<${domainInterface}, ${domainInterface}Events> {
 
-    private String attr;
-
-    public MyServiceImpl() {
-    }
-
-    void setAttr(String attr) {
-        this.attr = attr;
-    }
-
-    // TODO implement domain methods here
 }

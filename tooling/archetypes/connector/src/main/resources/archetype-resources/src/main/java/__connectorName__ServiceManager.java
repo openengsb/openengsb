@@ -16,9 +16,14 @@
 
 package ${package};
 
-import org.openengsb.core.common.AbstractDomainProvider;
+import org.openengsb.core.common.AbstractServiceManager;
+import org.openengsb.core.common.ServiceInstanceFactory;
+import ${domainPackage}.${domainInterface};
+import ${package}.internal.${connectorName}ServiceImpl;
 
-// TODO rename to an appropriate name
-public class MyDomainProvider extends AbstractDomainProvider<MyDomain, MyDomainEvents> {
+public class ${connectorName}ServiceManager extends AbstractServiceManager<${domainInterface}, ${connectorName}ServiceImpl> {
 
+    public ${connectorName}ServiceManager(ServiceInstanceFactory<${domainInterface}, ${connectorName}ServiceImpl> factory) {
+        super(factory);
+    }
 }
