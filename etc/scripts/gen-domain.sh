@@ -18,11 +18,26 @@
 # Helper script to generate an OpenEngSB domain. Tries to guess need variables
 # based on provided input.
 
+capitalize_ichar ()          #  Capitalizes initial character
+{                            #+ of argument string(s) passed.
+
+  string0="$@"               # Accepts multiple arguments.
+
+  firstchar=${string0:0:1}   # First character.
+  string1=${string0:1}       # Rest of string(s).
+
+  FirstChar=`echo "$firstchar" | tr a-z A-Z`
+                             # Capitalize first character.
+
+  echo "$FirstChar$string1"  # Output to stdout.
+
+}  
+
 DEFAULT_DOMAIN="mydomain"
 echo -n "Domain Name (is mydomain): "
 read DOMAIN
 if [ "$DOMAIN" = "" ]; then
-	DOMAIN=$DEFAULT_DOMAIN
+       DOMAIN=$DEFAULT_DOMAIN
 fi
 
 DEFAULT_VERSION="1.1.0-SNAPSHOT"
@@ -32,7 +47,8 @@ if [ "$VERSION" = "" ]; then
 	VERSION=$DEFAULT_VERSION
 fi
 
-DEFAULT_NAME_PREFIX="OpenEngSB :: Domain :: ${DOMAIN~}"
+CAP_DOMAIN=`capitalize_ichar ${DOMAIN}`
+DEFAULT_NAME_PREFIX="OpenEngSB :: Domain :: ${CAP_DOMAIN}"
 echo -n "Prefix for project names (is $DEFAULT_NAME_PREFIX): "
 read NAME_PREFIX
 if [ "$NAME_PREFIX" = "" ]; then
@@ -52,7 +68,7 @@ mvn archetype:generate \
 	-DimplementationArtifactId="openengsb-domain-$DOMAIN" \
 	-Dpackage="org.openengsb.domain.$DOMAIN" \
 	-Dname="$NAME_PREFIX" \
-    -DdomainInterface="${DOMAIN~}" \
+    -DdomainInterface="${CAP_DOMAIN}Domain" \
 	-DimplementationName="$NAME_PREFIX"
 
 if [ $? != 0 ]; then

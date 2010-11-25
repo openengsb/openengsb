@@ -16,8 +16,9 @@
 
 package ${package};
 
-import org.openengsb.core.common.AbstractDomainProvider;
+import org.openengsb.core.common.Domain;
 
-public class ${domainInterface}DomainProvider extends AbstractDomainProvider<${domainInterface}Domain, ${domainInterface}DomainEvents> {
+public interface ${domainInterface} extends Domain {
 
+    // TODO add your domain-specific methods here
 }

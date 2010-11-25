@@ -25,13 +25,13 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:service interface="org.openengsb.core.common.DomainProvider">
-    <bean class="${package}.${domainInterface}DomainProvider" />
+    <bean class="${package}.${domainInterface}Provider" />
   </osgi:service>
 
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.Domain</value>
-      <value>${package}.${domainInterface}Domain</value>
+      <value>${package}.${domainInterface}</value>
     </osgi:interfaces>
     <osgi:service-properties>
       <entry key="id" value="domain.${domainName}" />
@@ -39,9 +39,9 @@
     </osgi:service-properties>
     <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
       <property name="domainInterface">
-        <value>${package}.${domainInterface}Domain</value>
+        <value>${package}.${domainInterface}</value>
       </property>
-      <property name="domainName" value="${domainInterface}Domain" />
+      <property name="domainName" value="${domainInterface}" />
       <property name="context" ref="contextService" />
     </bean>
   </osgi:service>
@@ -49,7 +49,7 @@
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.DomainEvents</value>
-      <value>${package}.${domainInterface}DomainEvents</value>
+      <value>${package}.${domainInterface}Events</value>
     </osgi:interfaces>
     <osgi:service-properties>
       <entry key="id" value="domain.${domainName}.events" />
@@ -58,7 +58,7 @@
 
     <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
       <property name="domainEventInterface">
-        <value>${package}.${domainInterface}DomainEvents</value>
+        <value>${package}.${domainInterface}Events</value>
       </property>
       <property name="workflowService" ref="workflowService" />
     </bean>

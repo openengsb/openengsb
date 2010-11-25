@@ -45,7 +45,7 @@
       <defaultValue>org.openengsb.domain.domainname</defaultValue>
     </requiredProperty>
     <requiredProperty key="domainInterface">
-      <defaultValue>Domainname</defaultValue>
+      <defaultValue>DomainnameDomain</defaultValue>
     </requiredProperty>
     <requiredProperty key="domainName">
       <defaultValue>domainname</defaultValue>
