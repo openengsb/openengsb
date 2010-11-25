@@ -33,33 +33,35 @@
     <jdk.version>1.6</jdk.version>
     <mvn.version>2.1</mvn.version>
     <!-- Plugin Version -->
-    <plugin.eclipse.version>2.8</plugin.eclipse.version>
-    <plugin.surefire.version>2.6</plugin.surefire.version>
-    <plugin.surefire.report.version>2.6</plugin.surefire.report.version>
+    <maven.plugin.eclipse.version>2.8</maven.plugin.eclipse.version>
+    <maven.plugin.surefire.version>2.6</maven.plugin.surefire.version>
+    <maven.plugin.surefire.report.version>2.6</maven.plugin.surefire.report.version>
     <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
     <maven.plugin.compiler.version>2.3.2</maven.plugin.compiler.version>
     <maven.plugin.clean.version>2.4.1</maven.plugin.clean.version>
     <maven.plugin.jar.version>2.3.1</maven.plugin.jar.version>
-    <plugin.deploy.version>2.5</plugin.deploy.version>
-    <twdata.cli.version>1.0.5</twdata.cli.version>
-    <clover.version>3.0.2</clover.version>
-    <plugin.pax.version>1.4</plugin.pax.version>
-    <plugin.paxrunner.version>1.5.0</plugin.paxrunner.version>
-    <plugin.release.version>2.0</plugin.release.version>
-    <plugin.site.version>3.0-beta-3</plugin.site.version>
-    <plugin.source.version>2.1.2</plugin.source.version>
-    <plugin.mvn.license>1.8.0</plugin.mvn.license>
-    <plugin.javadoc.version>2.7</plugin.javadoc.version>
-    <plugin.helper.version>1.5</plugin.helper.version>
-    <plugin.resources.version>2.4.3</plugin.resources.version>
-    <plugin.install.version>2.3.1</plugin.install.version>
-    <plugin.wagon.webdav.version>1.0-beta-2</plugin.wagon.webdav.version>
-    <plugin.wagon.ssh.version>1.0-beta-6</plugin.wagon.ssh.version>
+    <maven.plugin.deploy.version>2.5</maven.plugin.deploy.version>
+    <maven.plugin.release.version>2.0</maven.plugin.release.version>
+    <maven.plugin.site.version>3.0-beta-3</maven.plugin.site.version>
+    <maven.plugin.source.version>2.1.2</maven.plugin.source.version>
+    <maven.plugin.mvn.license>1.8.0</maven.plugin.mvn.license>
+    <maven.plugin.javadoc.version>2.7</maven.plugin.javadoc.version>
+    <maven.plugin.helper.version>1.5</maven.plugin.helper.version>
+    <maven.plugin.resources.version>2.4.3</maven.plugin.resources.version>
+    <maven.plugin.install.version>2.3.1</maven.plugin.install.version>
+    <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>
+    <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
+    <javax.xml.soap>1.3.0</javax.xml.soap>
     <!-- Dependency Versions -->
     <junit.version>4.8.2</junit.version>
     <mvn.pluginapi.version>2.0</mvn.pluginapi.version>
     <mvn.core.version>3.0</mvn.core.version>
     <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
+
+    <twdata.cli.version>1.0.5</twdata.cli.version>
+    <clover.version>3.0.2</clover.version>
+    <plugin.pax.version>1.4</plugin.pax.version>
+    <plugin.paxrunner.version>1.5.0</plugin.paxrunner.version>
   </properties>
 
   <parent>
@@ -313,12 +315,12 @@
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-webdav</artifactId>
-        <version>${plugin.wagon.webdav.version}</version>
+        <version>${maven.plugin.wagon.webdav.version}</version>
       </extension>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-ssh</artifactId>
-        <version>${plugin.wagon.ssh.version}</version>
+        <version>${maven.plugin.wagon.ssh.version}</version>
       </extension>
     </extensions>
     <plugins>
@@ -347,7 +349,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
-        <version>${plugin.eclipse.version}</version>
+        <version>${maven.plugin.eclipse.version}</version>
         <configuration>
           <downloadSources>true</downloadSources>
           <downloadJavadocs>true</downloadJavadocs>
@@ -358,7 +360,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>${plugin.deploy.version}</version>
+        <version>${maven.plugin.deploy.version}</version>
         <configuration>
           <remoteOBR>true</remoteOBR>
         </configuration>
@@ -381,14 +383,14 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>${plugin.site.version}</version>
+        <version>${maven.plugin.site.version}</version>
         <extensions>true</extensions>
       </plugin>
       <plugin>
         <inherited>false</inherited>
         <groupId>com.mycila.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
-        <version>${plugin.mvn.license}</version>
+        <version>${maven.plugin.mvn.license}</version>
         <configuration>
           <header>${basedir}/etc/license/header.txt</header>
           <failIfMissing>true</failIfMissing>
@@ -442,37 +444,37 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>${plugin.source.version}</version>
+          <version>${maven.plugin.source.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${plugin.javadoc.version}</version>
+          <version>${maven.plugin.javadoc.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>${plugin.resources.version}</version>
+          <version>${maven.plugin.resources.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
-          <version>${plugin.install.version}</version>
+          <version>${maven.plugin.install.version}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${plugin.helper.version}</version>
+          <version>${maven.plugin.helper.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>${plugin.surefire.version}</version>
+          <version>${maven.plugin.surefire.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-report-plugin</artifactId>
-          <version>${plugin.surefire.report.version}</version>
+          <version>${maven.plugin.surefire.report.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -546,7 +548,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>${plugin.release.version}</version>
+            <version>${maven.plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
@@ -566,7 +568,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>${plugin.release.version}</version>
+            <version>${maven.plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
@@ -586,7 +588,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>${plugin.release.version}</version>
+            <version>${maven.plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
@@ -606,7 +608,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>${plugin.release.version}</version>
+            <version>${maven.plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
