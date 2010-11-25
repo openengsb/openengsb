@@ -37,6 +37,8 @@
    </osgix:cm-properties>
    
    <context:property-placeholder properties-ref="ports" />
+   
+   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextCurrentService" />
     
    <!-- JMS ConnectionFactory to use -->
    <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
@@ -68,6 +70,7 @@
   
   <bean id="messageListenerFactory" class="org.openengsb.core.proxy.jms.MessageListenerFactory">
     <constructor-arg ref="jmsFactory"/>
+    <constructor-arg ref="contextService"/>
   </bean>
   
   <bean id="proxyConnector" class="org.openengsb.core.common.proxy.ProxyConnector" init-method="addProxiesToContext">

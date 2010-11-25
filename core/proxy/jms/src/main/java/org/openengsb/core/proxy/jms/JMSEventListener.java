@@ -19,7 +19,6 @@ package org.openengsb.core.proxy.jms;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
@@ -27,10 +26,9 @@ import javax.jms.TextMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.springframework.jms.core.JmsTemplate;
 
 public class JMSEventListener implements MessageListener {
@@ -39,19 +37,22 @@ public class JMSEventListener implements MessageListener {
 
     private final EventCaller caller;
 
-    private final String id;
-
     private final JmsTemplate template;
 
     public static final String EVENT_RETURN = "_event_return";
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public JMSEventListener(String id, EventCaller caller, JmsTemplate template) {
+    private final ContextCurrentService contextService;
+
+    private final String destinationName;
+
+    public JMSEventListener(String id, EventCaller caller, JmsTemplate template, ContextCurrentService contextService) {
         super();
-        this.id = id;
+        this.destinationName = id + EVENT_RETURN;
         this.caller = caller;
         this.template = template;
+        this.contextService = contextService;
     }
 
     @Override
@@ -60,16 +61,13 @@ public class JMSEventListener implements MessageListener {
             TextMessage textMessage = (TextMessage) message;
             try {
                 JsonNode parsedMessage = mapper.readValue(textMessage.getText(), JsonNode.class);
+                contextService.setThreadLocalContext(textMessage.getStringProperty("contextId"));
                 Class<?> eventClass = getEventType(parsedMessage);
                 if (Event.class.isAssignableFrom(eventClass)) {
                     JsonNode event = parsedMessage.path("event");
                     Object readValue2 = mapper.readValue(event.traverse(), eventClass);
-                    String destinationName = id + EVENT_RETURN;
-                    try {
-                        caller.raiseEvent((Event) readValue2);
-                    } catch (Exception e) {
-                        template.convertAndSend(destinationName, createExceptionMessage(e.getMessage()));
-                    }
+
+                    caller.raiseEvent((Event) readValue2);
 
                     String okMessage = createOKMessage();
 
@@ -77,25 +75,16 @@ public class JMSEventListener implements MessageListener {
                 } else {
                     log.error("Serializable Event type has to be subclass of Event");
                 }
-            } catch (JsonParseException e) {
-                throw new JMSConnectorException(e);
-            } catch (JsonMappingException e) {
-                throw new JMSConnectorException(e);
-            } catch (IOException e) {
-                throw new JMSConnectorException(e);
-            } catch (JMSException e) {
-                throw new JMSConnectorException(e);
-            } catch (SecurityException e) {
-                throw new JMSConnectorException(e);
-            } catch (IllegalArgumentException e) {
-                throw new JMSConnectorException(e);
-            } catch (ClassNotFoundException e) {
-                throw new JMSConnectorException(e);
+            } catch (Exception e) {
+                sendExceptionMessage(e);
             }
-
         } else {
             throw new IllegalArgumentException("Message has to be Textmessage");
         }
+    }
+
+    private void sendExceptionMessage(Exception e) {
+        template.convertAndSend(destinationName, createExceptionMessage(e.getMessage()));
     }
 
     private Class<?> getEventType(JsonNode parsedMessage) throws ClassNotFoundException {
@@ -105,11 +94,12 @@ public class JMSEventListener implements MessageListener {
         return eventClass;
     }
 
-    private String createExceptionMessage(String message) throws IOException {
+    private String createExceptionMessage(String message) {
         MessageMapping mapping = new MessageMapping();
         mapping.setType(MessageType.Exception);
         mapping.setMessage(message);
-        return serialise(mapping);
+        String serialise = serialise(mapping);
+        return serialise;
     }
 
     private String createOKMessage() throws IOException {
@@ -119,9 +109,13 @@ public class JMSEventListener implements MessageListener {
         return serialise(mapping);
     }
 
-    private String serialise(MessageMapping mapping) throws IOException {
+    private String serialise(MessageMapping mapping) {
         StringWriter stringWriter = new StringWriter();
-        mapper.writeValue(stringWriter, mapping);
+        try {
+            mapper.writeValue(stringWriter, mapping);
+        } catch (IOException e) {
+            stringWriter.append(e.getMessage());
+        }
         return stringWriter.toString();
     }
 }

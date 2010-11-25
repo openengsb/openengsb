@@ -31,6 +31,9 @@ for information about the message format.
 The return message will then be mapped to the return value of the request method and ultimately shown in the UI.
 
 --------- Raising Events ---------
+As Stomppy has no builtin possibility of setting headers in cli Raising Events fails, because the ContextId cannot be set.
+The following commands are only here for reference, bit will NOT work.
+
 To raise an Event call "send /queue/<DomainName>_event_send". For example:
 
 "send /queue/ExampleDomain_event_send {"type":"org.openengsb.domain.example.event.LogEvent","event":{"name":"Name", "message":"Message", "level":"INFO"}}"
