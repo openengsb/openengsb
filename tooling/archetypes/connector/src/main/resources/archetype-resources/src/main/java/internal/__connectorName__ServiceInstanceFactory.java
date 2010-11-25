@@ -26,7 +26,7 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import ${package}.internal.${connectorName}ServiceImpl;
 
-import ${parentPackage}.${domainInterface};
+import ${domainPackage}.${domainInterface};
 
 public class ${connectorName}ServiceInstanceFactory implements ServiceInstanceFactory<${domainInterface}, ${connectorName}ServiceImpl> {
 

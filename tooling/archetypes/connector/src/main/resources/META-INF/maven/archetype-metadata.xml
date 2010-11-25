@@ -22,9 +22,6 @@
   name="OpenEngSB Connector" partial="false">
 
   <requiredProperties>
-    <requiredProperty key="parentArtifactId">
-      <defaultValue>openengsb-domain-domainname-parent</defaultValue>
-    </requiredProperty>
     <requiredProperty key="domainArtifactId">
       <defaultValue>openengsb-domain-domainname</defaultValue>
     </requiredProperty>
@@ -46,7 +43,7 @@
     <requiredProperty key="domainInterface">
       <defaultValue>DomainInterfaceName</defaultValue>
     </requiredProperty>
-    <requiredProperty key="parentPackage">
+    <requiredProperty key="domainPackage">
       <defaultValue>org.openengsb.domain.domainname</defaultValue>
     </requiredProperty>
     <requiredProperty key="package">

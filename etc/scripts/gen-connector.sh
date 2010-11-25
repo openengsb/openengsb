@@ -18,6 +18,21 @@
 # Helper script to generate an OpenEngSB connector project. Tries to guess
 # needed variables based on provided input.
 
+capitalize_ichar ()          #  Capitalizes initial character
+{                            #+ of argument string(s) passed.
+
+  string0="$@"               # Accepts multiple arguments.
+
+  firstchar=${string0:0:1}   # First character.
+  string1=${string0:1}       # Rest of string(s).
+
+  FirstChar=`echo "$firstchar" | tr a-z A-Z`
+                             # Capitalize first character.
+
+  echo "$FirstChar$string1"  # Output to stdout.
+
+}
+
 CUR_DIR=`pwd`
 
 DEFAULT_DOMAIN=`basename $CUR_DIR`
@@ -27,7 +42,8 @@ if [ "$DOMAIN" = "" ]; then
 	DOMAIN=$DEFAULT_DOMAIN
 fi
 
-DEFAULT_INTERFACE="${DOMAIN~}Domain"
+CAP_DOMAIN=`capitalize_ichar ${DOMAIN}`
+DEFAULT_INTERFACE="${CAP_DOMAIN}Domain"
 echo -n "Domain Interface (is $DEFAULT_INTERFACE): "
 read INTERFACE
 if [ "$INTERFACE" = "" ]; then
@@ -48,7 +64,9 @@ if [ "$VERSION" = "" ]; then
 	VERSION=$DEFAULT_VERSION
 fi
 
-DEFAULT_NAME="OpenEngSB :: Connector :: ${CONNECTOR~}"
+CAP_CONNECTOR=`capitalize_ichar ${CONNECTOR}`
+
+DEFAULT_NAME="OpenEngSB :: Connector :: ${CAP_CONNECTOR}"
 echo -n "Project Name (is $DEFAULT_NAME): "
 read NAME
 if [ "$NAME" = "" ]; then
@@ -73,7 +91,7 @@ mvn archetype:generate \
 	-Dpackage="org.openengsb.connector.$CONNECTOR" \
 	-DparentPackage="$domainGroupId" \
 	-Dname="$NAME"\
-    -DconnectorName="${CONNECTOR~}"
+    -DconnectorName="${CAP_CONNECTOR}"
 
 if [ $? != 0 ]; then
 	exit $?

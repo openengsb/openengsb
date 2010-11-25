@@ -18,7 +18,7 @@ package ${package}.internal;
 
 import org.openengsb.core.common.util.AliveState;
 
-import ${parentPackage}.${domainInterface};
+import ${domainPackage}.${domainInterface};
 
 public class ${connectorName}ServiceImpl implements ${domainInterface} {
 
