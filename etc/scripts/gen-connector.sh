@@ -35,7 +35,7 @@ capitalize_ichar ()          #  Capitalizes initial character
 
 CUR_DIR=`pwd`
 
-DEFAULT_DOMAIN=`basename $CUR_DIR`
+DEFAULT_DOMAIN="domainname"
 echo -n "Domain Name (is $DEFAULT_DOMAIN): "
 read DOMAIN
 if [ "$DOMAIN" = "" ]; then
@@ -76,12 +76,10 @@ fi
 domainGroupId="org.openengsb.domain.$DOMAIN"
 domainArtifactIdPrefix="openengsb-domain-$DOMAIN"
 artifactId="openengsb-connector-$CONNECTOR"
-echo "gnaa $artifactId"
 mvn archetype:generate \
 	-DarchetypeGroupId="org.openengsb.tooling.archetypes" \
 	-DarchetypeArtifactId="openengsb-tooling-archetypes-connector" \
 	-DarchetypeVersion="$VERSION" \
-	-DparentArtifactId="$domainArtifactIdPrefix" \
 	-DdomainArtifactId="$domainArtifactIdPrefix" \
 	-DartifactId="$artifactId" \
     -DconnectorNameLC="$CONNECTOR" \
@@ -89,7 +87,7 @@ mvn archetype:generate \
 	-Dversion="$VERSION" \
 	-DdomainInterface="$INTERFACE" \
 	-Dpackage="org.openengsb.connector.$CONNECTOR" \
-	-DparentPackage="$domainGroupId" \
+	-DdomainPackage="$domainGroupId" \
 	-Dname="$NAME"\
     -DconnectorName="${CAP_CONNECTOR}"
 
