@@ -367,7 +367,8 @@ public class EmailServiceInstanceFactory implements
      * @param attributes the initial service settings
      */
     @Override
-    public EmailServiceImpl createServiceInstance(String id, Map<String, String> attributes){
+    public EmailServiceImpl createServiceInstance(String id, 
+            Map<String, String> attributes) {
         EmailServiceImpl notifier = new EmailServiceImpl(id, mailAbstraction);
         setAttributesOnNotifier(attributes, notifier);
         return notifier;
