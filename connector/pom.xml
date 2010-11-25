@@ -58,6 +58,7 @@
     <module>git</module>
     <module>maven</module>
     <module>jira</module>
+    <module>memoryauditing</module>
   </modules>
 
 </project>
