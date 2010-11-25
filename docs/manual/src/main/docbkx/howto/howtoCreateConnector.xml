@@ -57,66 +57,67 @@
     generates the result in the directory from where it is started, therefore it is recommended to run it
     from the "connector" directory. You can also run it from a different directory and copy the results to
     the "connector" directory. Fill in the following values (if no input is provided the default value is kept):</para>
-    <programlisting>Domain Name (is openengsb): notification
-Domain Interface (is notificationDomain): NotificationDomain
+    <programlisting>Domain Name (is domainname): notification
+Domain Interface (is NotificationDomain):
 Connector Name: email
 Version (is 1.1.0-SNAPSHOT):
-Project Name (is OpenEngSB :: Connector :: email): OpenEngSB :: Connector :: Email
+Project Name (is OpenEngSB :: Connector :: Email):
     </programlisting>
     <para>Now the maven archetype is executed. It asks you to confirm the configuration:</para>
-    <programlisting>Confirm properties configuration:
-groupId: org.openengsb.connector
+    <programlisting>groupId: org.openengsb.connector
 artifactId: openengsb-connector-email
 version: 1.1.0-SNAPSHOT
 package: org.openengsb.connector.email
+connectorName: Email
+connectorNameLC: email
 domainArtifactId: openengsb-domain-notification
 domainInterface: NotificationDomain
+domainPackage: org.openengsb.domain.notification
 name: OpenEngSB :: Connector :: Email
-parentArtifactId: openengsb-domain-notification
-parentPackage: org.openengsb.domain.notification
  Y: : y
     </programlisting>
-    <para>A project is named openengsb-connector-email is created with the following structure:</para>
-    <programlisting>openengsb-connector-email
+    <para>A project named "email" is created with the following structure:</para>
+    <programlisting>email
 |
 |---pom.xml
 |
-|---src---main
-            |
-            |---java
-            |     |
-            |     |---org
-            |          |
-            |          |---openengsb
-            |                  |
-            |                  |---connector
-            |                          |
-            |                          |---email
-            |                                |
-            |                                |---MyServiceManager.java
-            |                                |
-            |                                |---internal
-            |                                       |
-            |                                       |---MyServiceImpl.java
-            |                                       |
-            |                                       |---MyServiceInstanceFactory.java  
-            |
-            |---resources
-                    |
-                    |---META-INF
-                    |      |
-                    |      |---spring
-                    |             |
-                    |             |---connector-context.xml
-                    |
-                    |---OSGI-INF
-                            |
-                            |---l10n
-                                 |
-                                 |---bundle.properties
-                                 |
-                                 |---bundle_de.properties
-    
+|---src
+     |
+     |---main
+          |
+          |---java
+          |     |
+          |     |---org
+          |          |
+          |          |---openengsb
+          |                  |
+          |                  |---connector
+          |                          |
+          |                          |---email
+          |                                |
+          |                                |---EmailServiceManager.java
+          |                                |
+          |                                |---internal
+          |                                       |
+          |                                       |---EmailServiceImpl.java
+          |                                       |
+          |                                       |---EmailServiceInstanceFactory.java
+          |
+          |---resources
+                  |
+                  |---META-INF
+                  |      |
+                  |      |---spring
+                  |             |
+                  |             |---email-context.xml
+                  |
+                  |---OSGI-INF
+                          |
+                          |---l10n
+                               |
+                               |---bundle.properties
+                               |
+                               |---bundle_de.properties
     </programlisting>
     <para>All these artifacts will be covered during the implementation of the connector explained in
     step 2 of this tutorial.</para>
@@ -124,7 +125,7 @@ parentPackage: org.openengsb.domain.notification
   <section>
     <title>Step 2 - Add the dependencies</title>
     <para>Let's start with the dependencies. As the email connector will be based upon the javax mail
-    libraries, we need to include dependencies for the OSGI versions of these artifacts into the 
+    libraries, we need to include dependencies for the OSGI versions of these artifacts into the
     pom file located at "provision/pom.xml". So we add this dependency to the dependencies section:</para>
     <programlisting>
     <![CDATA[<dependency>
@@ -139,13 +140,15 @@ parentPackage: org.openengsb.domain.notification
   <section>
     <title>Step 3 - Configure the connector</title>
     <para>To configure the connector as part of the OpenEngSB two more things are necessary. At first
-    we have to add the connector to the modules section of its parent pom. So open the file
-    "/connector/pom.xml" file and add the new connector to the modules section:</para>
+    we have to add the connector to the modules section of its parent pom if it is not already present there.
+    If you have run the "gen-connector" script from the "connector" directory this step should aready be performed
+    automatically for you. To check or manually add the entry, open the file "/connector/pom.xml" file and add the
+    new connector to the modules section:</para>
 
   <programlisting>
   <![CDATA[...
 <modules>
-  <module>openengsb-connector-email</module>
+  <module>email</module>
 ...
 </modules>
 ...
@@ -174,9 +177,9 @@ parentPackage: org.openengsb.domain.notification
     project for the new connector: </para>
     <programlisting>mvn eclipse:eclipse</programlisting>
     <para>Now import the connector project into Eclipse and implement the email service by implementing
-    the classes MyServiceImpl.java and MyServiceInstanceFactory.java. We won't go into detail about
+    the classes EmailServiceImpl.java and EmailServiceInstanceFactory.java. We won't go into detail about
     the actual mail implementation here, so we encapsulated the mailing functionality in a mail
-    abstraction. While the class MyServiceImpl is responsible for the realization of the domain
+    abstraction. While the class EmailServiceImpl is responsible for the realization of the domain
     interface, the factory is responsible for creating instances of the email service and for
     publishing the meta data necessary to configure an instance of the email service. These two classes
     are now explained in detail.</para>
@@ -189,7 +192,7 @@ import org.openengsb.domain.notification.NotificationDomain;
 import org.openengsb.domain.notification.model.Notification;
 import org.osgi.framework.ServiceRegistration;
 
-public class MyServiceImpl implements NotificationDomain {
+public class EmailServiceImpl implements NotificationDomain {
 
     private final String id;
 
@@ -197,7 +200,7 @@ public class MyServiceImpl implements NotificationDomain {
     private ServiceRegistration serviceRegistration;
     private final MailProperties properties;
 
-    public MyServiceImpl(String id, MailAbstraction mailAbstraction) {
+    public EmailServiceImpl(String id, MailAbstraction mailAbstraction) {
         this.id = id;
         this.mailAbstraction = mailAbstraction;
         properties = mailAbstraction.createMailProperties();
@@ -263,17 +266,17 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domain.notification.NotificationDomain;
 
-public class MyServiceInstanceFactory implements 
-          ServiceInstanceFactory<NotificationDomain, MyServiceImpl> {
+public class EmailServiceInstanceFactory implements
+          ServiceInstanceFactory<NotificationDomain, EmailServiceImpl> {
 
     private final MailAbstraction mailAbstraction;
 
-    public MyServiceInstanceFactory(MailAbstraction mailAbstraction) {
+    public EmailServiceInstanceFactory(MailAbstraction mailAbstraction) {
         this.mailAbstraction = mailAbstraction;
     }
 
     private void setAttributesOnNotifier(Map<String, String> attributes, 
-            MyServiceImpl notifier) {
+            EmailServiceImpl notifier) {
 
         if (attributes.containsKey("user")) {
             notifier.getProperties().setUser(attributes.get("user"));
@@ -351,7 +354,7 @@ public class MyServiceInstanceFactory implements
      * @param attributes the new service settings
      */
     @Override
-    public void updateServiceInstance(MyServiceImpl instance, Map<String, 
+    public void updateServiceInstance(EmailServiceImpl instance, Map<String,
             String> attributes) {
         setAttributesOnNotifier(attributes, instance);
     }
@@ -364,8 +367,8 @@ public class MyServiceInstanceFactory implements
      * @param attributes the initial service settings
      */
     @Override
-    public MyServiceImpl createServiceInstance(String id, Map<String, String> attributes){
-        MyServiceImpl notifier = new MyServiceImpl(id, mailAbstraction);
+    public EmailServiceImpl createServiceInstance(String id, Map<String, String> attributes){
+        EmailServiceImpl notifier = new EmailServiceImpl(id, mailAbstraction);
         setAttributesOnNotifier(attributes, notifier);
         return notifier;
     }
@@ -374,7 +377,7 @@ public class MyServiceInstanceFactory implements
      * Validates if the service is correct before updating.
      */
     @Override
-    public MultipleAttributeValidationResult updateValidation(EmailNotifier instance, 
+    public MultipleAttributeValidationResult updateValidation(EmailServiceImpl instance,
             Map<String, String> attributes) {
         return new MultipleAttributeValidationResultImpl(true, 
                 new HashMap<String, String>());
