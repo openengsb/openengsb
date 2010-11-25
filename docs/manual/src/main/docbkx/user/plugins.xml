@@ -67,6 +67,8 @@
         has to be used to deserialise the event and be used as the argument to raiseEvent. After the correct class is loaded
       the content of the event parameter gets deserialised into an instance of the type parameter. The corresponding
       raiseEvent method is then called for the domain supported by this EventListener.</para>
+      <para>A &lt;contextId&gt; property has to be set in the JMS message to configure the context that should to be used
+        for the event handling.</para>
       <para>When the Event was processed a message is sent to the &lt;DomainID&gt;_event_return queue with the type set
       to RETURN and message set to OK. In case of Exception the type is set to exception and the message is set to 
       the exception message.</para>

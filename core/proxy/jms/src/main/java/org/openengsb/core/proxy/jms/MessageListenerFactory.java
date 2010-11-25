@@ -20,6 +20,7 @@ import javax.jms.ConnectionFactory;
 import javax.jms.MessageListener;
 
 import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.osgi.context.BundleContextAware;
@@ -28,14 +29,16 @@ public class MessageListenerFactory implements BundleContextAware {
 
     private BundleContext bundleContext;
     private final ConnectionFactory connectionFactory;
+    private final ContextCurrentService contextService;
 
-    public MessageListenerFactory(ConnectionFactory connectionFactory) {
+    public MessageListenerFactory(ConnectionFactory connectionFactory, ContextCurrentService contextService) {
         this.connectionFactory = connectionFactory;
+        this.contextService = contextService;
     }
 
     public MessageListener instance(DomainProvider domain) {
         return new JMSEventListener(domain.getId(), new EventCaller(bundleContext, domain), new JmsTemplate(
-            connectionFactory));
+            connectionFactory), contextService);
     }
 
     @Override

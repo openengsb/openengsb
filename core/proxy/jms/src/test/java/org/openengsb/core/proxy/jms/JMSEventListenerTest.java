@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.test.NullEvent;
 import org.osgi.framework.InvalidSyntaxException;
 import org.springframework.jms.core.JmsTemplate;
@@ -44,14 +45,15 @@ public class JMSEventListenerTest {
     private static final String RETURN = "{\"name\":null,\"message\":\"OK\",\"type\":\"Return\"}";
     private static final String EXCEPTION = "{\"name\":null,\"message\":\"message\",\"type\":\"Exception\"}";
     private static final String ID = "12345";
-    private static final String SEND =
-        "{\"type\":\"" + NullEvent.class.getName() + "\",\"event\":{\"name\":\"" + ID
-                + "\"}}";
+    private static final String SEND = "{\"type\":\"" + NullEvent.class.getName() + "\",\"event\":{\"name\":\"" + ID
+            + "\"}}";
 
     @Test
     public void handNotTextMessage_shouldThrowException() {
 
-        JMSEventListener listener = new JMSEventListener("12345", mock(EventCaller.class), mock(JmsTemplate.class));
+        JMSEventListener listener =
+            new JMSEventListener("12345", mock(EventCaller.class), mock(JmsTemplate.class),
+                mock(ContextCurrentService.class));
         try {
             listener.onMessage(mock(Message.class));
             fail();
@@ -64,7 +66,8 @@ public class JMSEventListenerTest {
         ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=true");
         JmsTemplate jmsTemplate = new JmsTemplate(cf);
         EventCaller caller = mock(EventCaller.class);
-        JMSEventListener listener = new JMSEventListener("12345", caller, jmsTemplate);
+        JMSEventListener listener =
+            new JMSEventListener("12345", caller, jmsTemplate, mock(ContextCurrentService.class));
         SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
         simpleMessageListenerContainer.setConnectionFactory(cf);
         simpleMessageListenerContainer.setDestinationName("12345_event_send");
@@ -80,7 +83,8 @@ public class JMSEventListenerTest {
         throws JMSException, InvalidSyntaxException {
         EventCaller caller = mock(EventCaller.class);
         JmsTemplate jmsTemplateMock = mock(JmsTemplate.class);
-        JMSEventListener listener = new JMSEventListener(ID, caller, jmsTemplateMock);
+        JMSEventListener listener =
+            new JMSEventListener(ID, caller, jmsTemplateMock, mock(ContextCurrentService.class));
         TextMessage mock = mock(TextMessage.class);
         when(mock.getText()).thenReturn(SEND);
         listener.onMessage(mock);
@@ -91,12 +95,12 @@ public class JMSEventListenerTest {
     }
 
     @Test
-    public void throwExceptionInRaiseEvent_shouldSendExceptionEvent()
-        throws JMSException, InvalidSyntaxException {
+    public void throwExceptionInRaiseEvent_shouldSendExceptionEvent() throws JMSException, InvalidSyntaxException {
         EventCaller caller = mock(EventCaller.class);
         doThrow(new RuntimeException("message")).when(caller).raiseEvent(Mockito.any(Event.class));
         JmsTemplate jmsTemplateMock = mock(JmsTemplate.class);
-        JMSEventListener listener = new JMSEventListener(ID, caller, jmsTemplateMock);
+        JMSEventListener listener =
+            new JMSEventListener(ID, caller, jmsTemplateMock, mock(ContextCurrentService.class));
         TextMessage mock = mock(TextMessage.class);
         when(mock.getText()).thenReturn(SEND);
         listener.onMessage(mock);
@@ -104,6 +108,20 @@ public class JMSEventListenerTest {
         verify(caller).raiseEvent(captor.capture());
         assertThat(captor.getValue().getName(), equalTo(ID));
         verify(jmsTemplateMock).convertAndSend(ID + "_event_return", EXCEPTION);
+    }
+
+    @Test
+    public void sendTextMessage_shouldSetContextId() throws JMSException {
+        EventCaller caller = mock(EventCaller.class);
+        doThrow(new RuntimeException("message")).when(caller).raiseEvent(Mockito.any(Event.class));
+        JmsTemplate jmsTemplateMock = mock(JmsTemplate.class);
+        ContextCurrentService contextService = mock(ContextCurrentService.class);
+        JMSEventListener listener = new JMSEventListener(ID, caller, jmsTemplateMock, contextService);
+        TextMessage mock = mock(TextMessage.class);
+        when(mock.getText()).thenReturn(SEND);
+        when(mock.getStringProperty("contextId")).thenReturn(ID);
+        listener.onMessage(mock);
+        verify(contextService).setThreadLocalContext(ID);
     }
 
     public interface TestInterface {
