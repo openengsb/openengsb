@@ -7,6 +7,7 @@ openengsb-1.1.0.RELEASE
 ### New Projects
   * maven-openengsb-plugin
   * openengsb-core-taskbox
+  * openengsb-core-usermanagement
   * openengsb-ui-taskbox
   * openengsb-ui-common-wicket
 
