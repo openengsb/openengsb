@@ -1,5 +1,3 @@
-package org.openengsb.ui.common.wicket.util;
-
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
@@ -15,6 +13,8 @@ package org.openengsb.ui.common.wicket.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.openengsb.ui.common.wicket.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
