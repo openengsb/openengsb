@@ -62,10 +62,11 @@ public final class BaseExamConfiguration {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_JSCH));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_WRAPPED_NEODATIS));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_COMMON));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_WORKFLOW));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_TASKBOX));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_EVENTS));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_PERSISTENCE));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_WORKFLOW));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_TASKBOX));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_USERMANAGEMENT));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_EXAMPLE));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONNECTOR_EXAMPLE));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_UI_COMMON_WICKET));

@@ -70,6 +70,10 @@ public final class OpenEngSBBundles {
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core")
             .artifactId("openengsb-core-taskbox").version(new OpenEngSBVersionResolver()));
 
+    public static final MavenArtifactProvisionOption OPENENGSB_CORE_USERMANAGEMENT = CoreOptions
+          .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core")
+                          .artifactId("openengsb-core-usermanagement").version(new OpenEngSBVersionResolver()));
+
     public static final MavenArtifactProvisionOption OPENENGSB_DOMAIN_EXAMPLE = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domain")
             .artifactId("openengsb-domain-example").version(new OpenEngSBVersionResolver()));
