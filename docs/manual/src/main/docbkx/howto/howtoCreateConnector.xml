@@ -36,8 +36,7 @@
   <section>
     <title>Time to Complete</title>
     <para>If you are already familiar with the OpenEngSB about 30 minutes. If you are not familiar with
-    the OpenEngSB please read the this manual from the start or check
-    the <link xlink:href="http://www.openengsb.org">homepage</link> for further information.</para>
+    the OpenEngSB please read this manual from the start or check the <link xlink:href="http://www.openengsb.org">homepage</link> for further information.</para>
   </section>
   <section>
     <title>Prerequisites</title>
@@ -52,11 +51,11 @@
     <title>Step 1 - Use the archetype</title>
     <para> As the development of a connector is a recurring task the OpenEngSB developer team has prepared
     Maven archetypes and useful scripts, which provide support for the initial creation of a connector.
-    The "gen-connector.sh" script for the creation of a new connector can be found at "etc/scripts".</para>
-    <para>Go into the directory "connector" and run from here the "gen-connector.sh" script from there. The script
+    The script for creating a new connector can be found at "/etc/scripts/gen-connector.sh".</para>
+    <para>Go into the directory "/connector" and run from there the "gen-connector.sh" script. The script
     generates the result in the directory from where it is started, therefore it is recommended to run it
-    from the "connector" directory. You can also run it from a different directory and copy the results to
-    the "connector" directory. Fill in the following values (if no input is provided the default value is kept):</para>
+    from the "/connector" directory. You can also run it from a different directory and copy the results into
+    the "/connector" directory. Fill in the following values (if no input is provided the default value is kept):</para>
     <programlisting>Domain Name (is domainname): notification
 Domain Interface (is NotificationDomain):
 Connector Name: email
@@ -119,14 +118,14 @@ name: OpenEngSB :: Connector :: Email
                                |
                                |---bundle_de.properties
     </programlisting>
-    <para>All these artifacts will be covered during the implementation of the connector explained in
+    <para>All these artifacts will be covered during the implementation of the connector and explained in
     step 2 of this tutorial.</para>
   </section>
   <section>
     <title>Step 2 - Add the dependencies</title>
     <para>Let's start with the dependencies. As the email connector will be based upon the javax mail
     libraries, we need to include dependencies for the OSGI versions of these artifacts into the
-    pom file located at "provision/pom.xml". So we add this dependency to the dependencies section:</para>
+    pom file located at "/provision/pom.xml". So we add this dependency to the dependencies section:</para>
     <programlisting>
     <![CDATA[<dependency>
   <groupId>org.apache.servicemix.bundles</groupId>
@@ -141,8 +140,8 @@ name: OpenEngSB :: Connector :: Email
     <title>Step 3 - Configure the connector</title>
     <para>To configure the connector as part of the OpenEngSB two more things are necessary. At first
     we have to add the connector to the modules section of its parent pom if it is not already present there.
-    If you have run the "gen-connector" script from the "connector" directory this step should aready be performed
-    automatically for you. To check or manually add the entry, open the file "/connector/pom.xml" file and add the
+    If you have run the "gen-connector" script in the "connector" directory this step should have already been performed
+    automatically for you. To check or manually add the entry, open the file "/connector/pom.xml" and add the
     new connector to the modules section:</para>
 
   <programlisting>
