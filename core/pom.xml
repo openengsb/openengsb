@@ -58,6 +58,7 @@
     <module>proxy</module>
     <module>taskbox</module>
     <module>test</module>
+    <module>usermanagement</module>
   </modules>
 
 </project>

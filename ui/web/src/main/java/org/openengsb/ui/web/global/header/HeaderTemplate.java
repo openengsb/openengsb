@@ -35,6 +35,7 @@ import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.ServiceListPage;
 import org.openengsb.ui.web.TestClient;
+import org.openengsb.ui.web.UserService;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 
 @SuppressWarnings("serial")
@@ -80,6 +81,7 @@ public class HeaderTemplate extends Panel {
         addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
         addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
         addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
+        addHeaderMenuItem("UserService", UserService.class, "userService.title");
     }
 
     private void initializeMenu() {
