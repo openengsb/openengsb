@@ -51,9 +51,9 @@
   </scm>
 
   <modules>
-    <module>web</module>
     <module>common</module>
     <module>taskbox</module>
+    <module>web</module>
   </modules>
 
 </project>

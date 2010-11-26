@@ -98,7 +98,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.ui</groupId>
+      <groupId>org.openengsb.ui.common</groupId>
       <artifactId>openengsb-ui-common-wicket</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
@@ -109,7 +109,12 @@
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-usermanagement</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>

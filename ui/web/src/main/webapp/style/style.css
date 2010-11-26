@@ -420,3 +420,74 @@ container-1
 }
 
 
+.createUserFormField {
+	text-align: left;
+	float: left;
+	width: 100px;
+}
+
+.createUserform {
+  margin-bottom: 10px;
+  width: 50%;
+  float: left;
+}
+
+.createUserform fieldset {
+	border: none;
+}
+
+.createUserform createUserFormField {
+  display: inline-block;
+  vertical-align: top;
+  width: 120px;
+}
+
+.formField {
+	padding: 0;
+}
+
+.createUserform .formField input, .formField select{
+	margin: 2px 0;
+}
+
+.createUserform fieldset ol {
+  margin: 0;
+  padding: 0;
+}
+
+.createUserform fieldset li {
+  list-style: none;
+  margin: 0;
+}
+
+.existingUsers fieldset{
+	border: none;
+}
+
+.existingUsers createUserFormField {
+  display: inline-block;
+  vertical-align: top;
+  width: 100px;
+	text-align: left;
+}
+
+.existingUsers .formField a{
+	margin: 2px 0;
+}
+
+.existingUsers img{
+  width: 20px;
+  height: 20px;
+}
+
+.existingUsers ol {
+  margin: 0;
+  padding: 0;
+}
+
+.existingUsers  li {
+  list-style: none;
+  margin: 0;
+}
+
+

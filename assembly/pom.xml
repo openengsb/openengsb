@@ -246,6 +246,7 @@
                 scan-bundle:mvn:org.openengsb.core/openengsb-core-persistence/${project.version},
                 scan-bundle:mvn:org.openengsb.core/openengsb-core-workflow/${project.version},
                 scan-bundle:mvn:org.openengsb.core/openengsb-core-taskbox/${project.version},
+                scan-bundle:mvn:org.openengsb.core/openengsb-core-usermanagement/${project.version},
                 scan-bundle:mvn:org.openengsb.core.proxy/openengsb-core-proxy-jms/${project.version},
                 scan-bundle:mvn:org.openengsb.domain/openengsb-domain-example/${project.version},
                 scan-bundle:mvn:org.openengsb.domain/openengsb-domain-notification/${project.version},
@@ -261,6 +262,8 @@
                 scan-bundle:mvn:org.openengsb.connector/openengsb-connector-trac/${project.version},
                 scan-bundle:mvn:org.openengsb.connector/openengsb-connector-git/${project.version},
                 scan-bundle:mvn:org.openengsb.connector/openengsb-connector-maven/${project.version},
+                scan-bundle:mvn:org.openengsb.ui.common/openengsb-ui-common-wicket/${project.version},
+                scan-bundle:mvn:org.openengsb.ui/openengsb-ui-taskbox/${project.version},
                 scan-bundle:mvn:org.openengsb.ui/openengsb-ui-web/${project.version}/war,
               </deployURLs>
               <provision>

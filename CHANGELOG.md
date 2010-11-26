@@ -7,11 +7,11 @@ openengsb-1.1.0.RELEASE
 ### New Projects
   * maven-openengsb-plugin
   * openengsb-core-taskbox
+  * openengsb-core-usermanagement
   * openengsb-ui-taskbox
   * openengsb-ui-common-wicket
 
 ### Removed Projects
-  * [e.g.] openengsb-domain-scm
 
 ### Upgraded Projects
  * org.apache.wicket/wicket-*/1.4.13
@@ -29,14 +29,12 @@ openengsb-1.1.0.RELEASE
  * org.apache.maven.plugins/maven-checkstyle-plugin/2.6
  * apache-commons/commons-lang/2.6
 
-### Removed External References
-  * [e.g.] javax.ejb/com.springsource.javax.ejb
+### Remvoed External References
 
 ### New Features & Changed Behaviour
   * Added tooling plugin to execute license-check plugin and assemble scripts via mvn.
 
 ### Depricated or Removed Features
-  * [e.g.] org.openengsb.domain.scm.doSomething() is removed
 
 openengsb-1.0.0.RELEASE
 -----------------------

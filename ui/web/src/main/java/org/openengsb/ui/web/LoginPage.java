@@ -30,7 +30,7 @@ public class LoginPage extends BasePage {
 
     @SuppressWarnings("serial")
     public LoginPage() {
-        Form<User> loginForm = new Form<User>("form") {
+        Form<User> loginForm = new Form<User>("loginForm") {
             @Override
             protected void onSubmit() {
                 AuthenticatedWebSession session = AuthenticatedWebSession.get();

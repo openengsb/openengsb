@@ -17,21 +17,11 @@
 
 -->
 
-<beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-  xmlns:osgi="http://www.springframework.org/schema/osgi"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:osgi="http://www.springframework.org/schema/osgi"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
-    <bean id="domainService" class="org.openengsb.core.common.service.impl.OsgiDomainService">
-        <property name="domains" ref="domains"/>
-    </bean>
-
-    <bean id="userManager" class="org.openengsb.core.usermanagement.UserManagerImpl" init-method="init">
-        <property name="persistenceManager">
-            <osgi:reference interface="org.openengsb.core.common.persistence.PersistenceManager"/>
-        </property>
-    </bean>
-
 </beans>
+
