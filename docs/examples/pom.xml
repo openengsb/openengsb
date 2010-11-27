@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.openengsb.docs</groupId>
     <artifactId>openengsb-docs-parent</artifactId>
-    <version>1.0.0.RELEASE</version>
+    <version>1.0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>openengsb-docs-examples</artifactId>
