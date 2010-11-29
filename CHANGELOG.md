@@ -27,6 +27,7 @@ openengsb-1.1.0.RELEASE
  * org.apache.maven.plugins/maven-install-plugin/2.3.1
  * org.apache.maven.plugins/maven-resources-plugin/2.4.3
  * org.apache.maven.plugins/maven-checkstyle-plugin/2.6
+ * org.apache.karaf/*/2.1.2
  * apache-commons/commons-lang/2.6
 
 ### Remvoed External References
