@@ -63,7 +63,6 @@ public class TracConnector implements IssueDomain {
         return issueId.toString();
     }
 
-    @Override
     public void deleteIssue(String id) {
         try {
             Ticket ticket = createTicket();

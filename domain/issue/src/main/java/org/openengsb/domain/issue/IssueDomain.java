@@ -30,11 +30,6 @@ public interface IssueDomain extends Domain {
     String createIssue(Issue issue);
 
     /**
-     * delete an issue, specified by his id
-     */
-    void deleteIssue(String id);
-
-    /**
      * add a comment to an issue, specified by his id
      */
     void addComment(String id, String comment);
