@@ -16,6 +16,7 @@
    limitations under the License.
 
 -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <parent>
@@ -61,42 +62,14 @@
   </scm>
 
   <dependencies>
+    <!-- Drools Dependencies -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-      <scope>provided</scope>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-api</artifactId>
+      <version>${drools.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
-      <version>${slf4j.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <version>${osgi.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <version>${osgi.version}</version>
-      <scope>provided</scope>
-    </dependency>
+
+    <!-- Wicket Dependencies -->
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket</artifactId>
@@ -145,25 +118,7 @@
       <version>${wicket.version}</version>
       <optional>true</optional>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-all</artifactId>
-      <version>${hamcrest.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>${mockito.version}</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+ </dependencies>
 
 </project>
 
