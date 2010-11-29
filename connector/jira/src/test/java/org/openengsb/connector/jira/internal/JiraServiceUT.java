@@ -27,37 +27,66 @@ import org.openengsb.domain.issue.models.Issue.Priority;
 import org.openengsb.domain.issue.models.Issue.Status;
 import org.openengsb.domain.issue.models.IssueAttribute;
 
+/**
+ * User test, testing the basic Jira connector service funtionality
+ * <p>
+ * Prerequisites:
+ * <ul>
+ * <li>A default local Jira installation in {@value JIRA_URI},
+ * <li>a project with key {@value JIRA_PROJECT} (CAUTION: the test will create issues there),
+ * <li>a user {@value JIRA_USER} with password {@value JIRA_PASSWORD} and developer rights in the project
+ * <li>and a second user {@value JIRA_2ND_USER} with developer rights in the project
+ * </ul>
+ */
 public class JiraServiceUT {
+    
+    /**
+     * The URI of the Jira instance
+     */
     public static final String JIRA_URI = "http://localhost:8080";
-    public static final String RPC_PATH = "/rpc/xmlrpc";
+    
+    /**
+     * The user used for RPCs (has to have developer rights)
+     */
     public static final String JIRA_USER = "admin";
+    
+    /**
+     * The password for the user specified in {@link JiraServiceUT#JIRA_USER}
+     */
     public static final String JIRA_PASSWORD = "admin";
+    
+    /**
+     * A second user with developer rights
+     */
+    public static final String JIRA_2ND_USER = "jirauser";
+    
+    /**
+     * The project key of project used for the test
+     */
+    public static final String JIRA_PROJECT = "PP";
 
     @Test
-    public void testAll() throws Exception {
+    public void testBasicServiceFuntionality() throws Exception {
         JiraProxyFactory proxyFactory = new JiraProxyFactory(JIRA_URI);
-        JiraRpcConverter rpcConverter = new JiraRpcConverter("PP");
+        JiraRpcConverter rpcConverter = new JiraRpcConverter(JIRA_PROJECT);
         JiraService issueSystem = new JiraService("someId", proxyFactory, rpcConverter);
         issueSystem.setJiraUser(JIRA_USER);
         issueSystem.setJiraPassword(JIRA_PASSWORD);
 
         Issue issue = new Issue();
-        issue.setDescription("issue.description " + new Date());
-        issue.setOwner("cka");
+        issue.setDescription(timestamped("issue.description"));
+        issue.setOwner(JIRA_2ND_USER);
         issue.setReporter(JIRA_USER);
         issue.setPriority(Priority.IMMEDIATE);
         issue.setStatus(Status.NEW);
-        issue.setSummary("issue.summary " + new Date());
-        issue.setId(issueSystem.createIssue(issue));
+        issue.setSummary(timestamped("issue.summary"));
+        issue.setId(issueSystem.createIssue(issue)); 
 
         issueSystem.addComment(issue.getId(), timestamped("New comment on"));
 
         HashMap<IssueAttribute, String> changes = new HashMap<IssueAttribute, String>();
-        changes.put(Issue.Field.OWNER, "admin");
-        //changes.put(Issue.Field.PRIORITY, Priority.URGEND.toString());
+        changes.put(Issue.Field.OWNER, JIRA_USER);
         issueSystem.updateIssue(issue.getId(), timestamped("comment for issue update"), changes);
-
-        System.out.println("JiraConnector test app stopped");
     }
 
     private static String timestamped(String message) {
