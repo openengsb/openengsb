@@ -30,6 +30,8 @@
     <bundle>mvn:org.eclipse.jetty/jetty-server/${jetty.version}</bundle>
     <bundle>mvn:org.eclipse.jetty/jetty-security/${jetty.version}</bundle>
     <bundle>mvn:org.eclipse.jetty/jetty-servlet/${jetty.version}</bundle>
+    <bundle>mvn:org.eclipse.jetty/jetty-client/${jetty.version}</bundle>
+    <bundle>mvn:org.eclipse.jetty/jetty-servlets/${jetty.version}</bundle>
     <bundle>mvn:org.eclipse.jetty/jetty-xml/${jetty.version}</bundle>
   </feature>
   <!--<feature name="http" version="${project.version}" resolver="(obr)">-->
