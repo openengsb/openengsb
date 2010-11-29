@@ -14,6 +14,7 @@ openengsb-1.1.0.RELEASE
 ### Removed Projects
   * openengsb-config-settings
   * openengsb-config-client
+  * provision
 
 ### Upgraded Projects
  * org.apache.wicket/wicket-*/1.4.13
