@@ -59,6 +59,7 @@ import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.global.footer.ImprintPage;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 import org.osgi.framework.BundleContext;
 
 public class HeaderTemplateTest {
@@ -71,6 +72,7 @@ public class HeaderTemplateTest {
         tester = new WicketTester();
         context = new ApplicationContextMock();
         context.putBean(Mockito.mock(ContextCurrentService.class));
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
     }
 
     @Test
@@ -141,6 +143,7 @@ public class HeaderTemplateTest {
         context.putBean("domainService", mock(DomainService.class));
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
         context.putBean("ruleManagerBean", mock(RuleManager.class));
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
         BundleContext bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);

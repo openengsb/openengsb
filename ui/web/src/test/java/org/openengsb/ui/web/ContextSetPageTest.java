@@ -51,6 +51,7 @@ import org.openengsb.core.common.context.Context;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.test.NullDomain;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 import org.osgi.framework.ServiceReference;
 
 public class ContextSetPageTest {
@@ -68,6 +69,7 @@ public class ContextSetPageTest {
         AnnotApplicationContextMock appContext = new AnnotApplicationContextMock();
         appContext.putBean(contextService);
         appContext.putBean(domainService);
+        appContext.putBean("openengsbVersion", new OpenEngSBVersion());
         tester.getApplication().addComponentInstantiationListener(
                 new SpringComponentInjector(tester.getApplication(), appContext, false));
         context = new Context();

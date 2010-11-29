@@ -30,6 +30,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.ui.web.ContextSetPage;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
@@ -37,6 +38,7 @@ import org.openengsb.ui.web.ServiceListPage;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.UserService;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
@@ -44,6 +46,9 @@ public class HeaderTemplate extends Panel {
     private final ArrayList<String> avialableItems = new ArrayList<String>();
 
     private static String menuIndex;
+
+    @SpringBean(name = "openengsbVersion")
+    private OpenEngSBVersion openengsbVersion;
 
     public HeaderTemplate(String id, String menuIndex) {
         super(id);
@@ -69,9 +74,12 @@ public class HeaderTemplate extends Panel {
         HeaderTemplate.menuIndex = menuIndex;
 
         add(new BookmarkablePageLink<Index>("logo", Index.class));
-        add(new Label("version", System.getProperty("openengsb.version.number") + " \""
-                + System.getProperty("openengsb.version.name.adjective") + " "
-                + System.getProperty("openengsb.version.name.noun") + "\""));
+        if (openengsbVersion == null) {
+            openengsbVersion = new OpenEngSBVersion();
+        }
+        add(new Label("version", openengsbVersion.getVersionNumber() + " \""
+                + openengsbVersion.getNameAdjective() + " "
+                + openengsbVersion.getNameNoun() + "\""));
     }
 
     private void initMainMenuItems() {
@@ -123,7 +131,7 @@ public class HeaderTemplate extends Panel {
 
     /**
      * adds new item to main header navigation
-     *
+     * 
      * @param index - the name of the index @see HeaderMenuItem.index
      * @param linkClass - class name to be linked to
      * @param langKey - language key, the text which should be displayed

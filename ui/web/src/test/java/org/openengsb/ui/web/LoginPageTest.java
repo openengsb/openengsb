@@ -40,6 +40,7 @@ import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.usermanagement.UserManagerImpl;
 import org.openengsb.core.usermanagement.model.User;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -77,6 +78,7 @@ public class LoginPageTest {
         });
         contextMock.putBean(managedServicesMock);
         contextMock.putBean(mock(ContextCurrentService.class));
+        contextMock.putBean("openengsbVersion", new OpenEngSBVersion());
     }
 
     private void mockAuthentication() {
@@ -150,5 +152,4 @@ public class LoginPageTest {
         tester.assertComponent("header", HeaderTemplate.class);
     }
 
-    
 }
