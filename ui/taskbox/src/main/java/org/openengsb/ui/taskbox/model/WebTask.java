@@ -49,7 +49,7 @@ public class WebTask extends Task {
     public Panel getPanel(String id) {
         // Standard-Panel WebTaskPanel
         // oder Task-spezifisches bzw. processBag-spezifisches Panel
-        // zurückgeben...
+        // zurÃ¼ckgeben...
         return new Panel(id);
     }
 }
