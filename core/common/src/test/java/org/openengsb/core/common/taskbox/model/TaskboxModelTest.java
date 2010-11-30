@@ -26,33 +26,33 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TaskboxModelTest {
-    
+
     private ProcessBag pb;
 
     @Before
     public void init() throws Exception {
         pb = new ProcessBag("test ID", "test context", "testuser");
     }
-    
+
     @Test
     public void testCreateProcessBag_shouldNotFail() throws Exception {
         pb = new ProcessBag("4711", "c", "test-user");
         Object obj = new String("4711");
         assertThat(pb.getProperty("process ID"), is(obj));
     }
-    
-    @Test 
+
+    @Test
     public void testGetPropertyClass_shouldNotFail() throws Exception {
         Class<?> c = pb.getPropertyClass("context");
         assertThat(c, is(String.class));
     }
-    
+
     @Test
     public void testGetPropertyKeyList_shouldbeSize3() throws Exception {
         List<String> list = pb.getPropertyKeyList();
         assertThat(list.size(), is(3));
     }
-    
+
     @Test
     public void testGetPropertyKeyList_shouldContainContext() throws Exception {
         pb.removeProperty("process ID");

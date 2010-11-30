@@ -21,35 +21,35 @@ import org.openengsb.core.common.taskbox.model.ProcessBag;
 import org.openengsb.core.common.taskbox.model.Task;
 
 /**
- * WebTask extends a normal Task by adding graphical Functionality so it
- * can be used and displayed in Web-Applications 
+ * WebTask extends a normal Task by adding graphical Functionality so it can be
+ * used and displayed in Web-Applications
  */
 public class WebTask extends Task {
-    
+
     public WebTask(String taskId) {
         super(taskId);
     }
-    
+
     public WebTask(String taskId, ProcessBag processBag) {
         super(taskId, processBag);
     }
-    
+
     public WebTask(String taskId, String taskType) {
         super(taskId, taskType);
     }
-    
+
     public WebTask(String taskId, String taskType, ProcessBag processBag) {
         super(taskId, taskType, processBag);
     }
 
     /**
-     * returns the according Wicket Panel for the task
-     * can be used to give an Overview over a Task and its contained TaskSteps
+     * returns the according Wicket Panel for the task can be used to give an
+     * Overview over a Task and its contained TaskSteps
      */
     public Panel getPanel(String id) {
-        //Standard-Panel WebTaskPanel 
-        //oder Task-spezifisches bzw. processBag-spezifisches Panel
-        //zurückgeben...
+        // Standard-Panel WebTaskPanel
+        // oder Task-spezifisches bzw. processBag-spezifisches Panel
+        // zurückgeben...
         return new Panel(id);
     }
 }

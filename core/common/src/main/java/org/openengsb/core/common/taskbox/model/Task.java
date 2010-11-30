@@ -19,13 +19,13 @@ package org.openengsb.core.common.taskbox.model;
 /**
  * A Task is handled by the TaskboxService and consists of 1 or more TaskSteps.
  * It represents a more or less long running process (e.g.: handling of a Ticket
- * in a SupportSystem) 
+ * in a SupportSystem)
  */
 public class Task {
-    
+
     protected String taskId;
     protected String taskType;
-    
+
     /**
      * Every Task has/wraps a ProcessBag
      */
@@ -34,23 +34,23 @@ public class Task {
     public Task(String taskId) {
         this.taskId = taskId;
     }
-    
+
     public Task(String taskId, ProcessBag processBag) {
         this.taskId = taskId;
         this.processBag = processBag;
     }
-    
+
     public Task(String taskId, String taskType) {
         this.taskId = taskId;
         this.taskType = taskType;
     }
-    
+
     public Task(String taskId, String taskType, ProcessBag processBag) {
         this.taskId = taskId;
         this.taskType = taskType;
         this.processBag = processBag;
     }
-    
+
     /**
      * returns the Unique ID the Task can be identified with
      */
@@ -66,8 +66,8 @@ public class Task {
     }
 
     /**
-     * returns the Type of the Task. 
-     * The Type is used to group similar Tasks together
+     * returns the Type of the Task. The Type is used to group similar Tasks
+     * together
      */
     public String getTaskType() {
         return this.taskType;
@@ -82,6 +82,7 @@ public class Task {
 
     /**
      * sets the ProcessBag of the Task
+     * 
      * @param processBag
      */
     public void setProcessBag(ProcessBag processBag) {
@@ -90,6 +91,7 @@ public class Task {
 
     /**
      * returns the ProcessBag
+     * 
      * @return returns the ProcessBag of this Task
      */
     public ProcessBag getProcessBag() {
