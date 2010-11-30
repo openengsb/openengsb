@@ -300,6 +300,11 @@
       <email>eduard.szente [at] gmail.com</email>
       <timezone>+1</timezone>
     </contributor>
+    <contributor>
+      <name>Christoph Karner</name>
+      <email>ch.karner [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
   </contributors>
 
   <build>
