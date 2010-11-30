@@ -133,7 +133,6 @@
     <h2.version>1.2.139</h2.version>
     <mysql.version>5.1.13</mysql.version>
     <activemq.version>5.2.0</activemq.version>
-    <commons.io.version>1.4</commons.io.version>
     <commons.net.version>20030805.205232</commons.net.version>
     <dom4j.version>1.6.1</dom4j.version>
     <exist.version>1.4.0</exist.version>
