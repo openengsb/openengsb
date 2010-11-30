@@ -44,7 +44,7 @@ public class TaskboxModelTest {
     @Test
     public void testGetPropertyClass_shouldNotFail() throws Exception {
         Class<?> c = pb.getPropertyClass("context");
-        assertThat(c, is(String.class));
+        assert(c == String.class);
     }
 
     @Test
