@@ -91,6 +91,8 @@
       <artifactId>org.osgi.compendium</artifactId>
       <version>${osgi.version}</version>
     </dependency>
+
+    <!-- Common Spring Dependencies -->
     <dependency>
       <groupId>org.springframework.osgi</groupId>
       <artifactId>spring-osgi-core</artifactId>
