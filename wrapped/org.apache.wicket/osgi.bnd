@@ -16,6 +16,8 @@
 
 Embed-Dependency: *;scope=compile|runtime;type=!pom;inline=true
 
+DynamicImport-Package: *
+
 Import-Package: sun.misc;resolution:=optional,\
 sun.reflect;resolution:=optional,\
 javax.crypto,\
