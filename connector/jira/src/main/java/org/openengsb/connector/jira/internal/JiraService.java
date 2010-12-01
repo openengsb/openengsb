@@ -36,14 +36,13 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
     private static Log log = LogFactory.getLog(JiraService.class);
 
     private AliveState state = AliveState.DISCONNECTED;
-    private final String id;
     private String jiraUser;
     private String jiraPassword;
     private JiraProxyFactory proxyFactory;
     private JiraRpcConverter rpcConverter;
 
     public JiraService(String id, JiraProxyFactory proxyFactory, JiraRpcConverter rpcConverter) {
-        this.id = id;
+        super(id);
         this.proxyFactory = proxyFactory;
         this.rpcConverter = rpcConverter;
     }
@@ -99,10 +98,6 @@ public class JiraService extends AbstractOpenEngSBService implements IssueDomain
         } finally {
             this.state = AliveState.DISCONNECTED;
         }
-    }
-
-    public String getId() {
-        return this.id;
     }
 
     @Override

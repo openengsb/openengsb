@@ -58,7 +58,8 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     private String watchBranch;
     private FileRepository repository;
 
-    public GitServiceImpl() {
+    public GitServiceImpl(String instanceId) {
+        super(instanceId);
     }
 
     @Override

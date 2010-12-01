@@ -54,7 +54,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService
     private TestDomainEvents testEvents;
     private DeployDomainEvents deployEvents;
 
-    private Executor executor;
+    private Executor executor = Executors.newSingleThreadExecutor();
 
     private boolean synchronous = false;
 
@@ -62,8 +62,8 @@ public class MavenServiceImpl extends AbstractOpenEngSBService
 
     private String command;
 
-    public MavenServiceImpl() {
-        executor = Executors.newSingleThreadExecutor();
+    public MavenServiceImpl(String id) {
+        super(id);
     }
 
     private static String addSystemEnding() {

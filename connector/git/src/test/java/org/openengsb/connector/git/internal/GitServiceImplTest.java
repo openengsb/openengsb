@@ -47,7 +47,7 @@ public class GitServiceImplTest {
         remoteDirectory = tempFolder.newFolder("remote");
         localDirectory = tempFolder.newFolder("local");
         repository = RepositoryFixture.createRepository(remoteDirectory);
-        service = new GitServiceImpl();
+        service = new GitServiceImpl("42");
         service.setLocalWorkspace(localDirectory.getAbsolutePath());
         service.setRemoteLocation(remoteDirectory.toURI().toURL().toExternalForm());
         service.setWatchBranch("master");

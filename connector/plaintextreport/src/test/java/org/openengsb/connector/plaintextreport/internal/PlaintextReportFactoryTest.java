@@ -39,7 +39,7 @@ public class PlaintextReportFactoryTest {
 
         Assert.assertNotNull(reportService);
         Assert.assertNotNull(reportService.getStore());
-        Assert.assertEquals("id", reportService.getId());
+        Assert.assertEquals("id", reportService.getInstanceId());
     }
 
 }

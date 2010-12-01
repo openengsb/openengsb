@@ -25,15 +25,12 @@ import org.openengsb.domain.notification.model.Notification;
 import org.osgi.framework.ServiceRegistration;
 
 public class EmailNotifier extends AbstractOpenEngSBService implements NotificationDomain {
-
-    private final String id;
-
     private final MailAbstraction mailAbstraction;
     private ServiceRegistration serviceRegistration;
     private final MailProperties properties;
 
-    public EmailNotifier(String id, MailAbstraction mailAbstraction) {
-        this.id = id;
+    public EmailNotifier(String instanceId, MailAbstraction mailAbstraction) {
+        super(instanceId);
         this.mailAbstraction = mailAbstraction;
         properties = mailAbstraction.createMailProperties();
     }
@@ -51,10 +48,6 @@ public class EmailNotifier extends AbstractOpenEngSBService implements Notificat
             return AliveState.OFFLINE;
         }
         return aliveState;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public ServiceRegistration getServiceRegistration() {

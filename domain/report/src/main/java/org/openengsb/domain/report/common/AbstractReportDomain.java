@@ -26,6 +26,10 @@ public abstract class AbstractReportDomain extends AbstractOpenEngSBService impl
 
     private ReportStore store;
 
+    public AbstractReportDomain(String instanceId) {
+        super(instanceId);
+    }
+
     @Override
     public List<Report> getAllReports(String category) {
         return store.getAllReports(category);

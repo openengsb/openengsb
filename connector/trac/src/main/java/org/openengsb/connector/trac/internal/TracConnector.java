@@ -39,11 +39,10 @@ public class TracConnector extends AbstractOpenEngSBService implements IssueDoma
     private static Log log = LogFactory.getLog(TracConnector.class);
 
     private AliveState state = AliveState.DISCONNECTED;
-    private final String id;
     private final TicketHandlerFactory ticketFactory;
 
     public TracConnector(String id, TicketHandlerFactory ticketFactory) {
-        this.id = id;
+        super(id);
         this.ticketFactory = ticketFactory;
     }
 
@@ -116,10 +115,6 @@ public class TracConnector extends AbstractOpenEngSBService implements IssueDoma
 
     public TicketHandlerFactory getTicketHandlerFactory() {
         return this.ticketFactory;
-    }
-
-    public String getId() {
-        return this.id;
     }
 
     private Hashtable<IssueAttribute, String> translateChanges(Map<IssueAttribute, String> changes) {
