@@ -29,6 +29,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 public class DefaultMavenExecutor implements MavenExecutor {
+	
+	private boolean interActiveMode = true;
 
     @Override
     public void execute(AbstractMojo mojo, List<String> goals, List<String> activatedProfiles,
@@ -38,6 +40,8 @@ public class DefaultMavenExecutor implements MavenExecutor {
         MavenExecutionRequest wrapperRequest = session.getRequest();
 
         MavenExecutionRequest embeddedRequest = DefaultMavenExecutionRequest.copy(wrapperRequest);
+        
+        embeddedRequest.setInteractiveMode(interActiveMode);
 
         embeddedRequest.getGoals().clear();
         embeddedRequest.getGoals().addAll(goals);
@@ -86,5 +90,10 @@ public class DefaultMavenExecutor implements MavenExecutor {
         }
 
     }
+
+	@Override
+	public void setInterActiveMode(boolean interactiveMode) {
+		this.interActiveMode = interactiveMode;
+	}
 
 }

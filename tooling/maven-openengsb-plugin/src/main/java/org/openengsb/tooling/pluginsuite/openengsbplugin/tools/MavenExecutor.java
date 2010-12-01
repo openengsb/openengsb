@@ -27,8 +27,44 @@ import org.apache.maven.project.MavenProject;
 
 public interface MavenExecutor {
 
-    void execute(AbstractMojo mojo, List<String> goals, List<String> activatedProfiles,
-            List<String> deactivatedProfiles, Properties userproperties, MavenProject project, MavenSession session,
-            Maven maven, boolean showErrors) throws MojoExecutionException;
+	/**
+	 * Builds and executes a
+	 * {@link org.apache.maven.execution.MavenExecutionRequest
+	 * MavenExecutionRequest} with given parameters.
+	 * 
+	 * @param mojo
+	 *            the wrapper mojo
+	 * @param goals
+	 *            goals to execute
+	 * @param activatedProfiles
+	 *            active profiles
+	 * @param deactivatedProfiles
+	 *            inactive profiles
+	 * @param userproperties
+	 *            properties for the mojo
+	 * @param project
+	 *            maven project from the wrapper mojo
+	 * @param session
+	 *            maven session from the wrapper mojo
+	 * @param maven
+	 *            maven implementation from the wrapper mojo
+	 * @param showErrors
+	 *            <code>true</code> is equivalent to
+	 *            <code>mvn -e &lt;goal&gt;</code>
+	 * @throws MojoExecutionException
+	 */
+	void execute(AbstractMojo mojo, List<String> goals,
+			List<String> activatedProfiles, List<String> deactivatedProfiles,
+			Properties userproperties, MavenProject project,
+			MavenSession session, Maven maven, boolean showErrors)
+			throws MojoExecutionException;
+    
+    
+	/**
+	 * @param interactiveMode
+	 *            <code>true</code> enables interactive mode for this execution <br/>
+	 *            <code>false</code> is equivalent to <code>mvn --batch-mode &lt;goal&gt;
+	 */
+	void setInterActiveMode(boolean interactiveMode);
 
 }
