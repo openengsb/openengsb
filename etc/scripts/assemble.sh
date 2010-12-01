@@ -23,7 +23,7 @@ PLUGIN_ARTIFACT_ID="maven-openengsb-plugin"
 
 GOAL="assemble"
 
-RELATIVE_PLUGINDIR=../../tooling/$PLUGIN_ARTIFACT_ID
+PLUGINDIR=$(dirname $0)/../../tooling/$PLUGIN_ARTIFACT_ID
 
 function check_m2_userdir(){
   if [ -d $M2_REPO ]; then
@@ -42,12 +42,10 @@ function check_for_plugin(){
 }
 
 function install_plugin(){
-  cd $SCRIPT_DIR/$RELATIVE_PLUGINDIR
+  cd $PLUGINDIR
   echo "Installing $PLUGIN_ARTIFACT_ID!"
   mvn clean install
 }
-
-SCRIPT_DIR=`pwd`
 
 if [ $1 ]; then
   M2_REPO=$1
@@ -62,7 +60,7 @@ if [ ! `check_for_plugin` -eq 0 ]; then
   install_plugin
 fi
 
-cd $SCRIPT_DIR/../..
+cd $(dirname $0)/../../
 
 echo "Invoking maven-openengsb-plugin"
 
