@@ -240,4 +240,14 @@ public class WorkflowServiceTest {
         service.processEvent(new Event("triggerEvent"));
         assertThat(service.getRunningFlows().size(), is(1));
     }
+
+    @Test
+    public void testIfEventIsRetracted() throws Exception {
+        Event event = new Event();
+        service.processEvent(event);
+        event = new Event("test-context");
+        service.processEvent(event);
+        verify(logService, times(2)).doSomething("Hello World");
+    }
+
 }
