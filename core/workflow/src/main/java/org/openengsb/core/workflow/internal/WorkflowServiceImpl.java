@@ -72,13 +72,12 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     @Override
     public void processEvent(Event event) throws WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
-        session.insert(event);
+        FactHandle factHandle = session.insert(event);
         session.fireAllRules();
         for (ProcessInstance p : session.getProcessInstances()) {
             p.signalEvent(event.getType(), event);
         }
-        FactHandle eventFactHandle = session.getFactHandle(event);
-        session.retract(eventFactHandle);
+        session.retract(factHandle);
     }
 
     @Override
