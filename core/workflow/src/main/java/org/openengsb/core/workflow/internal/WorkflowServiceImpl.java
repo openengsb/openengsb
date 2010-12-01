@@ -32,6 +32,7 @@ import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.rule.FactHandle;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -72,10 +73,12 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     public void processEvent(Event event) throws WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         session.insert(event);
+        session.fireAllRules();
         for (ProcessInstance p : session.getProcessInstances()) {
             p.signalEvent(event.getType(), event);
         }
-        session.fireAllRules();
+        FactHandle eventFactHandle = session.getFactHandle(event);
+        session.retract(eventFactHandle);
     }
 
     @Override
