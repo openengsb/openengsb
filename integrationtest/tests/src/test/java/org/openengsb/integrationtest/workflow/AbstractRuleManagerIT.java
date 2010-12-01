@@ -72,6 +72,12 @@ public abstract class AbstractRuleManagerIT {
         ExampleDomain exampleService = new ExampleDomain() {
 
             @Override
+            public String getInstanceId() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            @Override
             public AliveState getAliveState() {
                 // TODO Auto-generated method stub
                 return null;

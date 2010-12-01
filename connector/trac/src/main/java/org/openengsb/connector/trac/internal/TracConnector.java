@@ -28,12 +28,13 @@ import org.openengsb.connector.trac.internal.models.constants.TracFieldConstants
 import org.openengsb.connector.trac.internal.models.constants.TracPriorityConstants;
 import org.openengsb.connector.trac.internal.models.constants.TracStatusConstants;
 import org.openengsb.connector.trac.internal.models.xmlrpc.Ticket;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.issue.IssueDomain;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 
-public class TracConnector implements IssueDomain {
+public class TracConnector extends AbstractOpenEngSBService implements IssueDomain {
 
     private static Log log = LogFactory.getLog(TracConnector.class);
 

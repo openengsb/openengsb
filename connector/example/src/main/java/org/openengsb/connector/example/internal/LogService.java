@@ -18,13 +18,14 @@ package org.openengsb.connector.example.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.event.LogEvent.Level;
 
-public class LogService implements ExampleDomain {
+public class LogService extends AbstractOpenEngSBService implements ExampleDomain {
 
     private final Log log = LogFactory.getLog(getClass());
     private String outputMode;

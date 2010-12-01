@@ -18,10 +18,11 @@ package org.openengsb.domain.report.common;
 
 import java.util.List;
 
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.domain.report.ReportDomain;
 import org.openengsb.domain.report.model.Report;
 
-public abstract class AbstractReportDomain implements ReportDomain {
+public abstract class AbstractReportDomain extends AbstractOpenEngSBService implements ReportDomain {
 
     private ReportStore store;
 

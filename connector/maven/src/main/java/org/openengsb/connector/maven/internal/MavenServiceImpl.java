@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.domain.build.BuildDomain;
@@ -42,7 +43,8 @@ import org.openengsb.domain.test.TestDomainEvents;
 import org.openengsb.domain.test.TestEndEvent;
 import org.openengsb.domain.test.TestStartEvent;
 
-public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
+public class MavenServiceImpl extends AbstractOpenEngSBService
+        implements TestDomain, BuildDomain, DeployDomain {
 
     private static final String MVN_COMMAND = "mvn" + addSystemEnding();
     private Log log = LogFactory.getLog(this.getClass());

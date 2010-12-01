@@ -27,6 +27,7 @@ import java.util.Hashtable;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
@@ -43,7 +44,7 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 @RunWith(JUnit4TestRunner.class)
 public class WorkflowIT extends AbstractExamTestHelper {
 
-    public static class DummyLogDomain implements ExampleDomain {
+    public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain {
         private boolean wasCalled = false;
 
         @Override
