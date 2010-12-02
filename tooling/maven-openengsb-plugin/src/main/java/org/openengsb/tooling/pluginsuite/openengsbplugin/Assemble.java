@@ -54,7 +54,7 @@ public class Assemble extends AbstractOpenengsbMojo {
 				"release", "nightly" });
 
 		Properties userproperties = new Properties();
-		userproperties.put("skipTests", "true");
+		userproperties.put("maven.test.skip", "true");
 
 		getMavenExecutor().execute(this, goals, activatedProfiles, null,
 				userproperties, getProject(), getSession(), getMaven(), true);
