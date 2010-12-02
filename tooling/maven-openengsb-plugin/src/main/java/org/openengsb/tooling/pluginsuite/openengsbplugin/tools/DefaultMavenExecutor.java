@@ -76,23 +76,31 @@ public class DefaultMavenExecutor implements MavenExecutor {
         }
 
         MavenExecutionResult result = maven.execute(embeddedRequest);
-        mojo.getLog().info(String.format("EMBEDDED EXECUTION REQUESTS - END"));
-        mojo.getLog().info("////////////////////////////////////////////////");
+		mojo.getLog().info(String.format("EMBEDDED EXECUTION REQUESTS - END"));
+		mojo.getLog().info("////////////////////////////////////////////////");
 
-        if (result.hasExceptions()) {
-            mojo.getLog().warn("###################");
-            mojo.getLog().warn(
-                    String.format("The following exceptions occured during executions of mojo %s:", mojo.getClass()
-                            .getName()));
-            for (Throwable t : result.getExceptions()) {
-                mojo.getLog().warn("--------");
-                mojo.getLog().warn(t);
-            }
-            mojo.getLog().warn("###################");
-            throw new MojoExecutionException("FAIL - see log for additional info");
-        }
+		if (result.hasExceptions()) {
+			mojo.getLog().warn("###################");
+			mojo.getLog()
+					.warn(String
+							.format("The following exceptions occured during executions of mojo %s:",
+									mojo.getClass().getName()));
+			for (Throwable t : result.getExceptions()) {
+				mojo.getLog().warn("--------");
+				mojo.getLog().warn(t);
+			}
+			mojo.getLog().warn("###################");
+			Throwable ex = result.getExceptions().get(0);
+			Throwable cause = ex.getCause();
+			String errmsg = (cause != null ? cause.getMessage() : ex
+					.getMessage());
+			throw new MojoExecutionException(
+					String.format(
+							"%s\nFAIL - see log statements above for additional info",
+							errmsg));
+		}
 
-    }
+	}
 
 	@Override
 	public void setInterActiveMode(boolean interactiveMode) {

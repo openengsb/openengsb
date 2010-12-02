@@ -23,6 +23,8 @@ import java.util.Properties;
 import org.apache.maven.plugin.MojoExecutionException;
 
 /**
+ * equivalent to <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
+ * 
  * @goal assemble
  * 
  * @inheritedByDefault false
@@ -31,9 +33,6 @@ import org.apache.maven.plugin.MojoExecutionException;
  */
 public class Assemble extends AbstractOpenengsbMojo {
 
-	/**
-	 * equivalent to <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
-	 */
 	@Override
 	public void execute() throws MojoExecutionException {
 
@@ -41,8 +40,7 @@ public class Assemble extends AbstractOpenengsbMojo {
 			return;
 		}
 
-		if (!(getProject().getGroupId().equals(OPENENGSB_ROOT_GROUP_ID) && getProject()
-				.getArtifactId().equals(OPENENGSB_ROOT_ARTIFACT_ID))) {
+		if (getProject().hasParent()) {
 			throw new MojoExecutionException(
 					"Please invoke this mojo only in the OpenEngSB root!");
 		}
