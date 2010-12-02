@@ -1,12 +1,11 @@
 package org.openengsb.core.security;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
@@ -20,7 +19,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor;
 import org.springframework.security.access.method.MethodSecurityMetadataSource;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -34,25 +34,28 @@ import edu.emory.mathcs.backport.java.util.Arrays;
 
 public class MethodInterceptorTest {
 
-    private ServiceCallInterceptor interceptor;
+    private static final String DEFAULT_USER = "foo";
+    private MethodSecurityInterceptor interceptor;
     private Bundle bundleMock;
     private ProviderManager authenticationManager;
     private PersistenceService persistence;
     private DummyService service;
+    private DummyService service2;
 
     @Before
     public void setUp() throws Exception {
         authenticationManager = initAuthenticationManager();
-
-        interceptor = new ServiceCallInterceptor();
-        MethodSecurityMetadataSource metadataSource = mock(MethodSecurityMetadataSource.class);
+        interceptor = new MethodSecurityInterceptor();
+        MethodSecurityMetadataSource metadataSource = new MetadataSource();
         interceptor.setSecurityMetadataSource(metadataSource);
+        interceptor.setRejectPublicInvocations(true);
         interceptor.setAuthenticationManager(authenticationManager);
 
         final AffirmativeBased accessDecisionManager = new AffirmativeBased();
         accessDecisionManager.setDecisionVoters(makeVoterList());
         interceptor.setAccessDecisionManager(accessDecisionManager);
         service = (DummyService) secure(new DummyServiceImpl("42"));
+        service2 = (DummyService) secure(new DummyServiceImpl("21"));
     }
 
     private List<AccessDecisionVoter> makeVoterList() {
@@ -62,22 +65,7 @@ public class MethodInterceptorTest {
     }
 
     private AccessDecisionVoter makeVoter() {
-        AccessDecisionVoter voter = new AccessDecisionVoter() {
-            @Override
-            public int vote(Authentication authentication, Object object, Collection<ConfigAttribute> attributes) {
-                return ACCESS_GRANTED;
-            }
-
-            @Override
-            public boolean supports(Class<?> clazz) {
-                return true;
-            }
-
-            @Override
-            public boolean supports(ConfigAttribute attribute) {
-                return true;
-            }
-        };
+        AccessDecisionVoter voter = new AuthenticatedUserAccessDecisionVoter();
         return voter;
     }
 
@@ -100,7 +88,7 @@ public class MethodInterceptorTest {
         bundleMock = mock(Bundle.class);
         when(bundleContextMock.getBundle()).thenReturn(bundleMock);
         persistence = persistenceManager.getPersistenceForBundle(bundleMock);
-        persistence.create(new User("user", "password"));
+        persistence.create(new User(DEFAULT_USER, "password"));
         userDetailsService.setBundleContext(bundleContextMock);
         userDetailsService.init();
         return userDetailsService;
@@ -115,21 +103,29 @@ public class MethodInterceptorTest {
     @Test
     public void testAuthenticate() {
         Authentication authentication =
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("user", "password"));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(DEFAULT_USER, "password"));
         assertThat(authentication.isAuthenticated(), is(true));
+    }
+
+    @Test(expected = BadCredentialsException.class)
+    public void testFalseAuthenticate() {
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(DEFAULT_USER, "wrong"));
     }
 
     @Test
     public void testInvokeMethod() throws Exception {
         Authentication authentication =
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("user", "password"));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(DEFAULT_USER, "password"));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
+        // just invoke the method, and avoid failing
         service.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
-    @Test(expected = BadCredentialsException.class)
-    public void testApp() {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken("user", "wrong"));
+    @Test(expected = AccessDeniedException.class)
+    public void testInvokeMethodOnWrongServiceInstance() throws Exception {
+        Authentication authentication =
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(DEFAULT_USER, "password"));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        service2.getTheAnswerToLifeTheUniverseAndEverything();
     }
 }
