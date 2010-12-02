@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.usermanagement;
+package org.openengsb.core.security.usermanagement;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
