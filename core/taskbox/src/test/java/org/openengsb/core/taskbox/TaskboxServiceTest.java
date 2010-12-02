@@ -17,13 +17,13 @@
 package org.openengsb.core.taskbox;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -60,11 +60,9 @@ public class TaskboxServiceTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testStartWorkflow_ShouldStartOneWorkflow() throws TaskboxException, WorkflowException {
-        Task t = null;
+        service.startWorkflow("tasktest", "ticket", null);
 
-        service.startWorkflow("tasktest", "ticket", t);
-
-        verify(workflowService, Mockito.times(1)).startFlow(Mockito.anyString(), Mockito.anyMap());
+        verify(workflowService).startFlow(Mockito.anyString(), Mockito.anyMap());
     }
 
     @Test(expected = TaskboxException.class)
@@ -88,9 +86,8 @@ public class TaskboxServiceTest {
         /* actual test */
         List<Task> ret = service.getOpenTasks();
         assertEquals(1, ret.size());
-        for (Iterator<Task> i = result.iterator(); i.hasNext();) {
-            assertEquals(false, i.next().isTaskFinished());
+        for (Task task : result) {
+            assertFalse(task.isTaskFinished());
         }
-
     }
 }

@@ -97,8 +97,7 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
 
     @Override
     public List<Task> getOpenTasks() {
-        Task example= Task.returnNullTask();
-        example.setDoneFlag(false);
+        Task example = Task.returnNullTask();
         return getTasksForExample(example);
     }
 
