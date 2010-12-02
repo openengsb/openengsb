@@ -47,10 +47,10 @@ public class ProcessBag {
      * @param user
      */
     public ProcessBag(String processId, String context, String user) {
+        this();
         this.processId = processId;
         this.context = context;
-        this.user = user;
-        properties = new HashMap<String, Object>();
+        this.user = user;        
     }
 
     /**

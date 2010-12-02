@@ -21,8 +21,7 @@ import java.util.Calendar;
 import java.util.UUID;
 
 /**
- * A Task is handled by the TaskboxService and represents a human action to be
- * done and proper information / properties
+ * A Task is handled by the TaskboxService and represents a human action to be done and proper information / properties
  */
 public class Task extends ProcessBag {
 
@@ -35,31 +34,27 @@ public class Task extends ProcessBag {
 
     public Task() {
         super();
-        this.taskId = UUID.randomUUID().toString();
-        doneFlag = new Boolean(false);
-        taskCreationTimestamp = Calendar.getInstance().getTime();
+        init();
     }
 
     public Task(String processId, String context, String user) {
         super(processId, context, user);
-        this.taskId = UUID.randomUUID().toString();
-        doneFlag = new Boolean(false);
-        taskCreationTimestamp = Calendar.getInstance().getTime();
+        init();
     }
 
     public Task(String taskType) {
-        super();
-        this.taskId = UUID.randomUUID().toString();
+        this();
         this.taskType = taskType;
-        doneFlag = new Boolean(false);
-        taskCreationTimestamp = Calendar.getInstance().getTime();
     }
 
     public Task(String taskType, String processId, String context, String user) {
-        super(processId, context, user);
-        this.taskId = UUID.randomUUID().toString();
+        this(processId, context, user);
         this.taskType = taskType;
-        doneFlag = new Boolean(false);
+    }
+
+    private void init() {
+        taskId = UUID.randomUUID().toString();
+        doneFlag = false;
         taskCreationTimestamp = Calendar.getInstance().getTime();
     }
 
@@ -95,8 +90,7 @@ public class Task extends ProcessBag {
     }
 
     /**
-     * returns the Type of the Task. The Type is used to group similar Tasks
-     * together
+     * returns the Type of the Task. The Type is used to group similar Tasks together
      */
     public String getTaskType() {
         return this.taskType;
