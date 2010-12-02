@@ -93,6 +93,13 @@
     </dependency>
 
     <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-test</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>

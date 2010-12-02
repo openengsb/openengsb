@@ -17,12 +17,12 @@
  */
 package org.openengsb.core.security;
 
-import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor;
 
-public class ServiceCallInterceptor implements MethodInterceptor {
+public class ServiceCallInterceptor extends MethodSecurityInterceptor {
 
     private Log log = LogFactory.getLog(ServiceCallInterceptor.class);
 
@@ -30,7 +30,7 @@ public class ServiceCallInterceptor implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         log.info("intercepting thread id: " + Thread.currentThread().getId());
         log.info("intercepting invocation of method " + invocation.getMethod().getName());
-        return invocation.proceed();
+        return super.invoke(invocation);
     }
 
 }
