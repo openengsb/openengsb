@@ -18,15 +18,14 @@ package org.openengsb.core.common.taskbox.model;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
-import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class TaskboxModelTest {
-
     private ProcessBag pb;
 
     @Before
@@ -53,7 +52,7 @@ public class TaskboxModelTest {
     public void testGetPropertyKeyList_shouldbeSize3() throws Exception {
         pb.addProperty("test", new String("42"));
         pb.addProperty("number", new Integer(42));
-        List<String> list = pb.getPropertyKeyList();
+        Set<String> list = pb.getPropertyKeyList();
         assertThat(list.size(), is(2));
     }
 
@@ -62,7 +61,7 @@ public class TaskboxModelTest {
         pb.addProperty("number", new Integer(42));
         pb.addProperty("TestString", new String("42"));
         pb.removeProperty("number");
-        List<String> list = pb.getPropertyKeyList();
-        assertThat(list.get(0), is("TestString"));
+        Set<String> list = pb.getPropertyKeyList();
+        assertTrue(list.contains("TestString"));
     }
 }

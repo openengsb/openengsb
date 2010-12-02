@@ -16,41 +16,29 @@
 
 package org.openengsb.core.common.taskbox.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
 
 /**
- * A ProcessBag can be used to dynamically save many different properties as
- * key-value pairs (key is a String, value is any object)
+ * A ProcessBag can be used to dynamically save many different properties as key-value pairs (key is a String, value is
+ * any object)
  */
 public class ProcessBag {
-
     private String processId;
     private String context;
     private String user;
 
-    private HashMap<String, Object> properties;
+    protected HashMap<String, Object> properties;
 
-    /**
-     * Constructor
-     */
     public ProcessBag() {
         properties = new HashMap<String, Object>();
     }
 
-    /**
-     * Constructor
-     * 
-     * @param processId
-     * @param context
-     * @param user
-     */
     public ProcessBag(String processId, String context, String user) {
         this();
         this.processId = processId;
         this.context = context;
-        this.user = user;        
+        this.user = user;
     }
 
     /**
@@ -99,19 +87,18 @@ public class ProcessBag {
     }
 
     public boolean addProperty(String key, Object value) {
-        if (properties.containsKey(key))
+        if (properties.containsKey(key)) {
             return false;
-        else
+        } else {
             properties.put(key, value);
+        }
         return true;
     }
 
     /**
-     * This method adds a property and replaces an potential old one with the
-     * same key
+     * This method adds a property and replaces an potential old one with the same key
      * 
-     * @return: The previous value to that key is returned, or null if there was
-     *          no previous value to that key
+     * @return: The previous value to that key is returned, or null if there was no previous value to that key
      */
     public Object addOrReplaceProperty(String key, Object value) {
         return properties.put(key, value);
@@ -133,8 +120,8 @@ public class ProcessBag {
         return properties.get(key).getClass();
     }
 
-    public List<String> getPropertyKeyList() {
-        return new ArrayList<String>(properties.keySet());
+    public Set<String> getPropertyKeyList() {
+        return properties.keySet();
     }
 
     public Integer getNumberOfProperties() {

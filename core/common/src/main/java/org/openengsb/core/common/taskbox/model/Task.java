@@ -17,21 +17,12 @@
 package org.openengsb.core.common.taskbox.model;
 
 import java.util.Date;
-import java.util.Calendar;
 import java.util.UUID;
 
 /**
  * A Task is handled by the TaskboxService and represents a human action to be done and proper information / properties
  */
 public class Task extends ProcessBag {
-
-    protected String taskId;
-    protected String taskType;
-    protected String name;
-    protected String description;
-    protected Boolean doneFlag;
-    protected Date taskCreationTimestamp;
-
     public Task() {
         super();
         init();
@@ -44,28 +35,28 @@ public class Task extends ProcessBag {
 
     public Task(String taskType) {
         this();
-        this.taskType = taskType;
+        setTaskType(taskType);
     }
 
     public Task(String taskType, String processId, String context, String user) {
         this(processId, context, user);
-        this.taskType = taskType;
+        setTaskType(taskType);
     }
 
     private void init() {
-        taskId = UUID.randomUUID().toString();
-        doneFlag = false;
-        taskCreationTimestamp = Calendar.getInstance().getTime();
+        properties.put("taskId", UUID.randomUUID().toString());
+        properties.put("finished", false);
+        properties.put("taskCreationTimestamp", new Date());
     }
 
     public void setNull() {
         super.setNull();
-        this.taskId = null;
-        this.taskType = null;
-        this.name = null;
-        this.description = null;
-        this.doneFlag = null;
-        this.taskCreationTimestamp = null;
+        properties.remove("taskId");
+        properties.remove("taskType");
+        properties.remove("name");
+        properties.remove("description");
+        properties.remove("finished");
+        properties.remove("taskCreationTimestamp");
     }
 
     public static Task returnNullTask() {
@@ -78,62 +69,60 @@ public class Task extends ProcessBag {
      * returns the Unique ID the Task can be identified with
      */
     public String getTaskId() {
-        return this.taskId;
+        return (String) properties.get("taskId");
     }
 
     /**
      * generates and returns the Unique ID the Task can be identified with
      */
     public String generateTaskId() {
-        this.taskId = UUID.randomUUID().toString();
-        return taskId;
+        properties.put("taskId", UUID.randomUUID().toString());
+        return (String) properties.get("taskId");
     }
 
     /**
      * returns the Type of the Task. The Type is used to group similar Tasks together
      */
     public String getTaskType() {
-        return this.taskType;
+        return (String) properties.get("taskType");
     }
 
-    /**
-     * sets the Type of the Task
-     */
     public void setTaskType(String taskType) {
-        this.taskType = taskType;
+        properties.put("taskType", taskType);
     }
 
     public String getName() {
-        return name;
+        return (String) properties.get("name");
     }
 
     public void setName(String name) {
-        this.name = name;
+        properties.put("name", name);
     }
 
     public String getDescription() {
-        return description;
+        return (String) properties.get("description");
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        properties.put("description", description);
     }
 
-    public Boolean getDoneFlag() {
-        return doneFlag;
+    public boolean getDoneFlag() {
+        return (Boolean) properties.get("finished");
     }
 
-    public void setDoneFlag(Boolean doneFlag) {
-        this.doneFlag = doneFlag;
+    public void setFinished(boolean finished) {
+        properties.put("finished", finished);
     }
 
     public boolean isTaskFinished() {
-        if (doneFlag == null)
+        if (!properties.containsKey("finished")) {
             return false;
-        return doneFlag.booleanValue();
+        }
+        return (Boolean) properties.get("finished");
     }
 
     public Date getTaskCreationTimestamp() {
-        return taskCreationTimestamp;
+        return (Date) properties.get("taskCreationTimestamp");
     }
 }

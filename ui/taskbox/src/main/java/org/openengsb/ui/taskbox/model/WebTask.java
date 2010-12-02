@@ -20,37 +20,35 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.common.taskbox.model.Task;
 
 /**
- * WebTask extends a normal Task by adding graphical Functionality so it can be
- * used and displayed in Web-Applications - that means that a any Panel can be
- * associated with a WebTask
+ * WebTask extends a normal Task by adding graphical Functionality so it can be used and displayed in Web-Applications -
+ * that means that a any Panel can be associated with a WebTask
  */
 public class WebTask extends Task {
-
     Class<? extends Panel> panelClass;
 
     public WebTask() {
         super();
-        // defaultPanelClass();
+        // panelClass = DefaultWebTaskPanel.class;
     }
 
     public WebTask(String processId, String context, String user) {
         super(processId, context, user);
-        // defaultPanelClass();
+        // panelClass = DefaultWebTaskPanel.class;
     }
 
     public WebTask(String taskType) {
         super(taskType);
-        // defaultPanelClass();
+        // panelClass = DefaultWebTaskPanel.class;
     }
 
     public WebTask(String taskType, String processId, String context, String user) {
         super(taskType, processId, context, user);
-        // defaultPanelClass();
+        // panelClass = DefaultWebTaskPanel.class;
     }
 
     public void setNull() {
         super.setNull();
-        this.panelClass = null;
+        // panelClass = DefaultWebTaskPanel.class;
     }
 
     public static Task returnNullTask() {
@@ -72,12 +70,4 @@ public class WebTask extends Task {
     public void setPanelClass(Class<? extends Panel> panelClass) {
         this.panelClass = panelClass;
     }
-
-    /**
-     * sets and returns the default Wicket Panel Class for the task
-     */
-    /*
-     * public Class<? extends Panel> defaultPanelClass() { this.panelClass =
-     * DefaultWebTaskPanel.class; }
-     */
 }

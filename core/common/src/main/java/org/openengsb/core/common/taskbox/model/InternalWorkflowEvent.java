@@ -19,62 +19,30 @@ package org.openengsb.core.common.taskbox.model;
 import org.openengsb.core.common.Event;
 
 /**
- * This event is used to finish taskbox sub-workflows and to indicate that a
- * human task has finished
+ * This event is used to finish taskbox sub-workflows and to indicate that a human task has finished
  */
 public class InternalWorkflowEvent extends Event {
-
-    /**
-     * Each TaskFinishedEvent has a ProcessBag
-     */
     private ProcessBag processBag;
-
-    /**
-     * Type of the Event
-     */
     private String type;
 
-    /**
-     * Constructor
-     */
     public InternalWorkflowEvent() {
         this.processBag = new ProcessBag();
     }
 
-    /**
-     * Constructor
-     * 
-     * @param type
-     */
     public InternalWorkflowEvent(String type) {
         this.type = type;
         this.processBag = new ProcessBag();
     }
 
-    /**
-     * Constructor
-     * 
-     * @param processBag
-     */
     public InternalWorkflowEvent(ProcessBag processBag) {
         this.processBag = processBag;
     }
 
-    /**
-     * Constructor
-     * 
-     * @param type
-     * @param processBag
-     */
     public InternalWorkflowEvent(String type, ProcessBag processBag) {
         this.type = type;
         this.processBag = processBag;
     }
 
-    /**
-     * get the Event's type This method overwrites the getTpe() method from
-     * Event
-     */
     @Override
     public String getType() {
         return type;
@@ -84,20 +52,10 @@ public class InternalWorkflowEvent extends Event {
         this.type = type;
     }
 
-    /**
-     * for setting the Event's ProcessBag
-     * 
-     * @param processBag
-     */
     public void setProcessBag(ProcessBag processBag) {
         this.processBag = processBag;
     }
 
-    /**
-     * get the Event's processBag
-     * 
-     * @return processBag
-     */
     public ProcessBag getProcessBag() {
         return processBag;
     }
