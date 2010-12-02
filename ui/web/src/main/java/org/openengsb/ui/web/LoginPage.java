@@ -23,10 +23,10 @@ import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.openengsb.ui.web.model.User;
+import org.openengsb.core.security.model.User;
 
 public class LoginPage extends BasePage {
-    private User user = new User();
+    private User user = new User("");
 
     @SuppressWarnings("serial")
     public LoginPage() {

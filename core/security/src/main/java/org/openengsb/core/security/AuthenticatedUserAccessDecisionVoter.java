@@ -35,6 +35,9 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
         if (user.getUsername().equals("foo") && !instanceId.equals("21")) {
             return ACCESS_GRANTED;
         }
+        if (user.getUsername().equals("admin")) {
+            return ACCESS_GRANTED;
+        }
         return ACCESS_ABSTAIN;
     }
 

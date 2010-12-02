@@ -38,9 +38,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.usermanagement.UserManager;
-import org.openengsb.core.usermanagement.exceptions.UserExistsException;
-import org.openengsb.core.usermanagement.model.User;
+import org.openengsb.core.security.model.User;
+import org.openengsb.core.security.usermanagement.UserExistsException;
+import org.openengsb.core.security.usermanagement.UserManager;
 
 @AuthorizeInstantiation("ROLE_USER")
 public class UserService extends BasePage {

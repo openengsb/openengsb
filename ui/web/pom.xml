@@ -111,7 +111,7 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-usermanagement</artifactId>
+      <artifactId>openengsb-core-security</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>

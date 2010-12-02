@@ -34,9 +34,9 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.usermanagement.UserManager;
-import org.openengsb.core.usermanagement.exceptions.UserExistsException;
-import org.openengsb.core.usermanagement.model.User;
+import org.openengsb.core.security.model.User;
+import org.openengsb.core.security.usermanagement.UserExistsException;
+import org.openengsb.core.security.usermanagement.UserManager;
 import org.osgi.framework.BundleContext;
 
 public class UserServiceTest {
@@ -131,6 +131,6 @@ public class UserServiceTest {
     }
 
 
-    
+
 
 }

@@ -35,16 +35,6 @@
         </authentication-provider>
     </authentication-manager>
 
-    <beans:bean id="daoAuthenticationProvider"
-                class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
-        <beans:property name="userDetailsService" ref="userManager"/>
-    </beans:bean>
-    
-    <beans:bean id="userManager" class="org.openengsb.core.usermanagement.UserManagerImpl" init-method="init">
-        <beans:property name="persistenceManager">
-            <osgi:reference interface="org.openengsb.core.common.persistence.PersistenceManager"/>
-        </beans:property>
-    </beans:bean>
+    <osgi:reference id="userManager" interface="org.openengsb.core.security.usermanagement.UserManager" />
 
-    <global-method-security secured-annotations="enabled"/>
 </beans:beans>

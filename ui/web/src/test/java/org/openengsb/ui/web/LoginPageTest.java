@@ -37,8 +37,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.usermanagement.UserManagerImpl;
-import org.openengsb.core.usermanagement.model.User;
+import org.openengsb.core.security.model.User;
+import org.openengsb.core.security.usermanagement.UserManagerImpl;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
 import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -150,5 +150,5 @@ public class LoginPageTest {
         tester.assertComponent("header", HeaderTemplate.class);
     }
 
-    
+
 }
