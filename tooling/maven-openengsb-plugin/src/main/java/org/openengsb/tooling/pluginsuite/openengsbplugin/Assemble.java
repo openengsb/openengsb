@@ -31,8 +31,8 @@ import org.apache.maven.plugin.MojoExecutionException;
  */
 public class Assemble extends AbstractOpenengsbMojo {
 
-	/*
-	 * equivalent to "mvn install -Prelease,nightly -Dmaven.test.skip=true"
+	/**
+	 * equivalent to <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
 	 */
 	@Override
 	public void execute() throws MojoExecutionException {

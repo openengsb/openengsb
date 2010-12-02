@@ -31,8 +31,8 @@ import org.apache.maven.plugin.MojoFailureException;
  */
 public class LicenseCheck extends AbstractOpenengsbMojo {
 
-	/*
-	 * equivalent to "mvn clean validate -Plicense-check"
+	/**
+	 * equivalent to <code>mvn clean validate -Plicense-check</code>
 	 */
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
