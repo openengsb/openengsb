@@ -18,6 +18,7 @@ package org.openengsb.core.security.usermanagement;
 
 import org.springframework.security.core.AuthenticationException;
 
+@SuppressWarnings("serial")
 public class UserExistsException extends AuthenticationException {
 
     public UserExistsException(String msg, Throwable t) {

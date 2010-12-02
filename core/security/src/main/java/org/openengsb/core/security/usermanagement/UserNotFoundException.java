@@ -18,8 +18,9 @@ package org.openengsb.core.security.usermanagement;
 
 import org.springframework.security.core.AuthenticationException;
 
+@SuppressWarnings("serial")
 public class UserNotFoundException extends AuthenticationException {
-    
+
     public UserNotFoundException(String msg, Throwable t) {
         super(msg, t);
     }
