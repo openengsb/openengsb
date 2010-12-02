@@ -17,27 +17,44 @@
 package org.openengsb.core.taskbox;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openengsb.core.common.persistence.PersistenceManager;
+import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 public class TaskboxServiceTest {
     private TaskboxServiceImpl service;
+    private PersistenceService persistenceService;
     private WorkflowService workflowService;
 
     @Before
     public void init() throws Exception {
         workflowService = mock(WorkflowService.class);
+        persistenceService = mock(PersistenceService.class);
 
+        PersistenceManager persistenceManager = mock(PersistenceManager.class);
+        when(persistenceManager.getPersistenceForBundle(any(Bundle.class))).thenReturn(persistenceService);
         service = new TaskboxServiceImpl();
+        service.setBundleContext(mock(BundleContext.class));
         service.setWorkflowService(workflowService);
+        service.setPersistenceManager(persistenceManager);
+        service.init();
     }
 
     @SuppressWarnings("unchecked")
@@ -61,4 +78,19 @@ public class TaskboxServiceTest {
         assertEquals("testmessage", service.getWorkflowMessage());
     }
 
+    @Test
+    public void testGetOpenTasks_ShouldReturnOpenTasks() {
+        /* result object for querys to persistence mock */
+        List<Task> result = new ArrayList<Task>();
+        result.add(new Task());
+        when(persistenceService.query(any(Task.class))).thenReturn(result);
+
+        /* actual test */
+        List<Task> ret = service.getOpenTasks();
+        assertEquals(1, ret.size());
+        for (Iterator<Task> i = result.iterator(); i.hasNext();) {
+            assertEquals(false, i.next().isTaskFinished());
+        }
+
+    }
 }

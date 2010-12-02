@@ -17,6 +17,7 @@
 package org.openengsb.core.taskbox;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -92,5 +93,17 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     @Override
     public void processEvent(Event event) throws WorkflowException {
         workflowService.processEvent(event);
+    }
+
+    @Override
+    public List<Task> getOpenTasks() {
+        Task example= Task.returnNullTask();
+        example.setDoneFlag(false);
+        return getTasksForExample(example);
+    }
+
+    @Override
+    public List<Task> getTasksForExample(Task example) {
+        return persistence.query(example);
     }
 }

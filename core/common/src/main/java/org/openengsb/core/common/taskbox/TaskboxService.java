@@ -16,6 +16,8 @@
 
 package org.openengsb.core.common.taskbox;
 
+import java.util.List;
+
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
@@ -58,4 +60,17 @@ public interface TaskboxService {
      * @throws WorkflowException
      */
     void processEvent(Event event) throws WorkflowException;
+
+    /**
+     * Loads all open tasks out of the persistence service.
+     * 
+     * @return List of open tasks
+     */
+    List<Task> getOpenTasks();
+    /**
+     * Loads all tasks which match the example task. 
+     * @param example
+     * @return List of tasks fitting the example
+     */
+    List<Task> getTasksForExample(Task example);
 }
