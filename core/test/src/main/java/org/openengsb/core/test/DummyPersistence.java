@@ -72,8 +72,11 @@ public class DummyPersistence implements PersistenceService {
 
     @Override
     public <TYPE> List<TYPE> query(List<TYPE> examples) {
-        // TODO Auto-generated method stub
-        return null;
+        List<TYPE> result = new ArrayList<TYPE>();
+        for (TYPE o : examples) {
+            result.addAll(query(o));
+        }
+        return result;
     }
 
     @Override
@@ -83,8 +86,9 @@ public class DummyPersistence implements PersistenceService {
 
     @Override
     public void create(List<? extends Object> beans) throws PersistenceException {
-        // TODO Auto-generated method stub
-
+        for (Object o : beans) {
+            create(o);
+        }
     }
 
     @Override
@@ -95,8 +99,9 @@ public class DummyPersistence implements PersistenceService {
 
     @Override
     public <TYPE> void update(Map<TYPE, TYPE> beans) throws PersistenceException {
-        // TODO Auto-generated method stub
-
+        for (Map.Entry<TYPE, TYPE> e : beans.entrySet()) {
+            update(e.getKey(), e.getValue());
+        }
     }
 
     @Override
@@ -109,8 +114,9 @@ public class DummyPersistence implements PersistenceService {
 
     @Override
     public <TYPE> void delete(List<? extends TYPE> examples) throws PersistenceException {
-        // TODO Auto-generated method stub
-
+        for (TYPE o : examples) {
+            delete(o);
+        }
     }
 
 }
