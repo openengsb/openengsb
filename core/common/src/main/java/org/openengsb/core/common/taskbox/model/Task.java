@@ -51,12 +51,6 @@ public class Task extends ProcessBag {
 
     public void setNull() {
         super.setNull();
-        properties.remove("taskId");
-        properties.remove("taskType");
-        properties.remove("name");
-        properties.remove("description");
-        properties.remove("finished");
-        properties.remove("taskCreationTimestamp");
     }
 
     public static Task returnNullTask() {
