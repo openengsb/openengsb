@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.usermanagement;
+package org.openengsb.core.security.usermanagement;
 
 import java.util.List;
 
-import org.openengsb.core.usermanagement.model.User;
+import org.openengsb.core.security.model.User;
 import org.springframework.osgi.context.BundleContextAware;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

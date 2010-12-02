@@ -32,9 +32,10 @@ import org.junit.Test;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.usermanagement.exceptions.UserExistsException;
-import org.openengsb.core.usermanagement.exceptions.UserNotFoundException;
-import org.openengsb.core.usermanagement.model.User;
+import org.openengsb.core.security.model.User;
+import org.openengsb.core.security.usermanagement.UserExistsException;
+import org.openengsb.core.security.usermanagement.UserManagerImpl;
+import org.openengsb.core.security.usermanagement.UserNotFoundException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 

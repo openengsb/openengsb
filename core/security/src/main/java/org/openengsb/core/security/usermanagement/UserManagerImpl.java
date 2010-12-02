@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.usermanagement;
+package org.openengsb.core.security.usermanagement;
 
 
 import java.util.ArrayList;
@@ -23,9 +23,7 @@ import java.util.List;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.usermanagement.exceptions.UserExistsException;
-import org.openengsb.core.usermanagement.exceptions.UserNotFoundException;
-import org.openengsb.core.usermanagement.model.User;
+import org.openengsb.core.security.model.User;
 import org.osgi.framework.BundleContext;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;

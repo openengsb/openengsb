@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.usermanagement.model;
+package org.openengsb.core.security.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
