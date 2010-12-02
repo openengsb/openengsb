@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.persistence;
+package org.openengsb.core.test;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
