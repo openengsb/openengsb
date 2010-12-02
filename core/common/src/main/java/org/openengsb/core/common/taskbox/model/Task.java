@@ -16,39 +16,67 @@
 
 package org.openengsb.core.common.taskbox.model;
 
+import java.util.Date;
+import java.util.Calendar;
+import java.util.UUID;
+
 /**
- * A Task is handled by the TaskboxService and consists of 1 or more TaskSteps.
- * It represents a more or less long running process (e.g.: handling of a Ticket
- * in a SupportSystem)
+ * A Task is handled by the TaskboxService and represents a human action to be
+ * done and proper information / properties
  */
-public class Task {
+public class Task extends ProcessBag {
 
     protected String taskId;
     protected String taskType;
+    protected String name;
+    protected String description;
+    protected Boolean doneFlag;
+    protected Date taskCreationTimestamp;
 
-    /**
-     * Every Task has/wraps a ProcessBag
-     */
-    protected ProcessBag processBag;
-
-    public Task(String taskId) {
-        this.taskId = taskId;
+    public Task() {
+        super();
+        this.taskId = UUID.randomUUID().toString();
+        doneFlag = new Boolean(false);
+        taskCreationTimestamp = Calendar.getInstance().getTime();
     }
 
-    public Task(String taskId, ProcessBag processBag) {
-        this.taskId = taskId;
-        this.processBag = processBag;
+    public Task(String processId, String context, String user) {
+        super(processId, context, user);
+        this.taskId = UUID.randomUUID().toString();
+        doneFlag = new Boolean(false);
+        taskCreationTimestamp = Calendar.getInstance().getTime();
     }
 
-    public Task(String taskId, String taskType) {
-        this.taskId = taskId;
+    public Task(String taskType) {
+        super();
+        this.taskId = UUID.randomUUID().toString();
         this.taskType = taskType;
+        doneFlag = new Boolean(false);
+        taskCreationTimestamp = Calendar.getInstance().getTime();
     }
 
-    public Task(String taskId, String taskType, ProcessBag processBag) {
-        this.taskId = taskId;
+    public Task(String taskType, String processId, String context, String user) {
+        super(processId, context, user);
+        this.taskId = UUID.randomUUID().toString();
         this.taskType = taskType;
-        this.processBag = processBag;
+        doneFlag = new Boolean(false);
+        taskCreationTimestamp = Calendar.getInstance().getTime();
+    }
+
+    public void setNull() {
+        super.setNull();
+        this.taskId = null;
+        this.taskType = null;
+        this.name = null;
+        this.description = null;
+        this.doneFlag = null;
+        this.taskCreationTimestamp = null;
+    }
+
+    public static Task returnNullTask() {
+        Task t = new Task();
+        t.setNull();
+        return t;
     }
 
     /**
@@ -59,10 +87,11 @@ public class Task {
     }
 
     /**
-     * sets the Unique ID the Task can be identified with
+     * generates and returns the Unique ID the Task can be identified with
      */
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
+    public String generateTaskId() {
+        this.taskId = UUID.randomUUID().toString();
+        return taskId;
     }
 
     /**
@@ -80,21 +109,37 @@ public class Task {
         this.taskType = taskType;
     }
 
-    /**
-     * sets the ProcessBag of the Task
-     * 
-     * @param processBag
-     */
-    public void setProcessBag(ProcessBag processBag) {
-        this.processBag = processBag;
+    public String getName() {
+        return name;
     }
 
-    /**
-     * returns the ProcessBag
-     * 
-     * @return returns the ProcessBag of this Task
-     */
-    public ProcessBag getProcessBag() {
-        return processBag;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getDoneFlag() {
+        return doneFlag;
+    }
+
+    public void setDoneFlag(Boolean doneFlag) {
+        this.doneFlag = doneFlag;
+    }
+
+    public boolean isTaskFinished() {
+        if (doneFlag == null)
+            return false;
+        return doneFlag.booleanValue();
+    }
+
+    public Date getTaskCreationTimestamp() {
+        return taskCreationTimestamp;
     }
 }

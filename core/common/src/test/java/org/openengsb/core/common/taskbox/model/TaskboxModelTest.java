@@ -37,27 +37,32 @@ public class TaskboxModelTest {
     @Test
     public void testCreateProcessBag_shouldNotFail() throws Exception {
         pb = new ProcessBag("4711", "c", "test-user");
-        Object obj = new String("4711");
-        assertThat(pb.getProperty("process ID"), is(obj));
+        pb.addProperty("test", new String("42"));
+        Object obj = new String("42");
+        assertThat(pb.getProperty("test"), is(obj));
     }
 
     @Test
     public void testGetPropertyClass_shouldNotFail() throws Exception {
-        Class<?> c = pb.getPropertyClass("context");
+        pb.addProperty("test", new String("42"));
+        Class<?> c = pb.getPropertyClass("test");
         assert(c == String.class);
     }
 
     @Test
     public void testGetPropertyKeyList_shouldbeSize3() throws Exception {
+        pb.addProperty("test", new String("42"));
+        pb.addProperty("number", new Integer(42));
         List<String> list = pb.getPropertyKeyList();
-        assertThat(list.size(), is(3));
+        assertThat(list.size(), is(2));
     }
 
     @Test
-    public void testGetPropertyKeyList_shouldContainContext() throws Exception {
-        pb.removeProperty("process ID");
-        pb.removeProperty("user");
+    public void testGetPropertyKeyList_shouldContainTestString() throws Exception {
+        pb.addProperty("number", new Integer(42));
+        pb.addProperty("TestString", new String("42"));
+        pb.removeProperty("number");
         List<String> list = pb.getPropertyKeyList();
-        assertThat(list.get(0), is("context"));
+        assertThat(list.get(0), is("TestString"));
     }
 }

@@ -17,39 +17,67 @@
 package org.openengsb.ui.taskbox.model;
 
 import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.common.taskbox.model.ProcessBag;
 import org.openengsb.core.common.taskbox.model.Task;
 
 /**
  * WebTask extends a normal Task by adding graphical Functionality so it can be
- * used and displayed in Web-Applications
+ * used and displayed in Web-Applications - that means that a any Panel can be
+ * associated with a WebTask
  */
 public class WebTask extends Task {
 
-    public WebTask(String taskId) {
-        super(taskId);
+    Class<? extends Panel> panelClass;
+
+    public WebTask() {
+        super();
+        // defaultPanelClass();
     }
 
-    public WebTask(String taskId, ProcessBag processBag) {
-        super(taskId, processBag);
+    public WebTask(String processId, String context, String user) {
+        super(processId, context, user);
+        // defaultPanelClass();
     }
 
-    public WebTask(String taskId, String taskType) {
-        super(taskId, taskType);
+    public WebTask(String taskType) {
+        super(taskType);
+        // defaultPanelClass();
     }
 
-    public WebTask(String taskId, String taskType, ProcessBag processBag) {
-        super(taskId, taskType, processBag);
+    public WebTask(String taskType, String processId, String context, String user) {
+        super(taskType, processId, context, user);
+        // defaultPanelClass();
+    }
+
+    public void setNull() {
+        super.setNull();
+        this.panelClass = null;
+    }
+
+    public static Task returnNullTask() {
+        WebTask wt = new WebTask();
+        wt.setNull();
+        return wt;
     }
 
     /**
-     * returns the according Wicket Panel for the task can be used to give an
-     * Overview over a Task and its contained TaskSteps
+     * returns the according Wicket Panel Class for the task
      */
-    public Panel getPanel(String id) {
-        // Standard-Panel WebTaskPanel
-        // oder Task-spezifisches bzw. processBag-spezifisches Panel
-        // zurückgeben...
-        return new Panel(id);
+    public Class<? extends Panel> getPanelClass() {
+        return panelClass;
     }
+
+    /**
+     * sets the according Wicket Panel Class for the task
+     */
+    public void setPanelClass(Class<? extends Panel> panelClass) {
+        this.panelClass = panelClass;
+    }
+
+    /**
+     * sets and returns the default Wicket Panel Class for the task
+     */
+    /*
+     * public Class<? extends Panel> defaultPanelClass() { this.panelClass =
+     * DefaultWebTaskPanel.class; }
+     */
 }

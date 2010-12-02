@@ -21,7 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * TODO: document what a ProcessBag is...
+ * A ProcessBag can be used to dynamically save many different properties as
+ * key-value pairs (key is a String, value is any object)
  */
 public class ProcessBag {
 
@@ -31,15 +32,46 @@ public class ProcessBag {
 
     private HashMap<String, Object> properties;
 
+    /**
+     * Constructor
+     */
+    public ProcessBag() {
+        properties = new HashMap<String, Object>();
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param processId
+     * @param context
+     * @param user
+     */
     public ProcessBag(String processId, String context, String user) {
         this.processId = processId;
         this.context = context;
         this.user = user;
-
         properties = new HashMap<String, Object>();
-        addProperty("process ID", processId);
-        addProperty("context", context);
-        addProperty("user", user);
+    }
+
+    /**
+     * this method sets all attributes of this ProcessBag to null
+     */
+    public void setNull() {
+        this.processId = null;
+        this.context = null;
+        this.user = null;
+        this.properties = null;
+    }
+
+    /**
+     * static method to get a totally empty ProcessBag for testing reasons
+     * 
+     * @return an empty ProcessBag
+     */
+    public static ProcessBag returnNullProcessBag() {
+        ProcessBag pb = new ProcessBag();
+        pb.setNull();
+        return pb;
     }
 
     public void setProcessId(String processId) {
@@ -74,11 +106,14 @@ public class ProcessBag {
         return true;
     }
 
+    /**
+     * This method adds a property and replaces an potential old one with the
+     * same key
+     * 
+     * @return: The previous value to that key is returned, or null if there was
+     *          no previous value to that key
+     */
     public Object addOrReplaceProperty(String key, Object value) {
-        /**
-         * @return: The previous value to that key is returned, or null if there
-         *          was no previous value to that key
-         */
         return properties.put(key, value);
     }
 
@@ -98,16 +133,15 @@ public class ProcessBag {
         return properties.get(key).getClass();
     }
 
-    /*
-     * public String[] getPropertyKeys() { return
-     * properties.keySet().toArray(new String[properties.keySet().size()]); }
-     */
-
     public List<String> getPropertyKeyList() {
         return new ArrayList<String>(properties.keySet());
     }
 
     public Integer getNumberOfProperties() {
         return properties.size();
+    }
+
+    public void removeAllProperties() {
+        properties.clear();
     }
 }
