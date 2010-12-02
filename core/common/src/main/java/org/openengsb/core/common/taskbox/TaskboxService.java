@@ -19,6 +19,7 @@ package org.openengsb.core.common.taskbox;
 import java.util.List;
 
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
 
@@ -73,4 +74,12 @@ public interface TaskboxService {
      * @return List of tasks fitting the example
      */
     List<Task> getTasksForExample(Task example);
+    
+    /**
+     * Sends a TaskFinishedEvent and removes task from the persistence. 
+     * @param task to close
+     * @throws PersistenceException 
+     * @throws WorkflowException 
+     */    
+    void finishTask(Task task) throws PersistenceException, WorkflowException;
 }

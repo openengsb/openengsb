@@ -23,11 +23,13 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.common.taskbox.model.TaskFinishedEvent;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.osgi.framework.BundleContext;
@@ -104,5 +106,12 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     @Override
     public List<Task> getTasksForExample(Task example) {
         return persistence.query(example);
+    }
+
+    @Override
+    public void finishTask(Task task) throws PersistenceException, WorkflowException {
+        TaskFinishedEvent finishedEvent=new TaskFinishedEvent(task);
+        persistence.delete(task);
+        workflowService.processEvent(finishedEvent);
     }
 }
