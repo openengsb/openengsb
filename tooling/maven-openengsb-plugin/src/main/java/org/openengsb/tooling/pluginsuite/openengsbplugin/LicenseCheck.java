@@ -41,7 +41,7 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
 			return;
 		}
 
-		if (getProject().hasParent() && getProject().getParent().getName().equals("oss-parent")) {
+		if (getProject().hasParent() && !getProject().getParent().getArtifactId().equals("oss-parent")) {
 			throw new MojoExecutionException(
 					"Please invoke this mojo only in the OpenEngSB root!");
 		}
