@@ -258,7 +258,7 @@
 
   <section xml:id="developer.quickstart.tools">
   <title>Useful Tools</title>
-  <section>
+  <section xml:id="developer.quickstart.tools.mavenplugin">
     <title>maven-openengsb-plugin</title>
     <para>
       The maven-openengsb-plugin is a plugin for Apache Maven, intended to simplify various activities (creating
@@ -303,6 +303,13 @@
     <para>
       Installs the OpenEngSB. Is equivalent to executing <command>mvn install -Prelease,nightly
       -Dmaven.test.skip=true</command>
+    </para>
+    <para>
+      <command>genDomain</command>
+    </para>
+    <para>
+      Guides interactively through the creation of a domain and generates the artifact via the domain archetype.
+      For additional info how to create a domain see <xref linkend="developer.howto.internal.domain" />
     </para>
     <para>
       <command>licenseCheck</command>
