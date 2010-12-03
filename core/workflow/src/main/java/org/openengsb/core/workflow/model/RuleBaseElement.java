@@ -71,7 +71,7 @@ public class RuleBaseElement {
         this.code = code;
     }
 
-    public RuleBaseElementId getId() {
+    public RuleBaseElementId generateId() {
         return new RuleBaseElementId(type, packageName, name);
     }
 
