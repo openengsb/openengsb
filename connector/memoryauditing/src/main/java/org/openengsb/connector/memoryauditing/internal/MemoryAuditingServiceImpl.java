@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.MemoryAuditing.internal;
+package org.openengsb.connector.memoryauditing.internal;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.auditing.AuditingDomain;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class MemoryAuditingServiceImpl implements AuditingDomain {
 
@@ -53,6 +52,4 @@ public class MemoryAuditingServiceImpl implements AuditingDomain {
     public List<String> getAudits() {
         return Collections.unmodifiableList(messages);
     }
-
-    // TODO implement domain methods here
 }

@@ -28,9 +28,9 @@
       <entry key="domain" value="org.openengsb.domain.auditing.AuditingDomain" />
       <entry key="openengsb.service.type" value="connector" />
     </osgi:service-properties>
-    <bean class="org.openengsb.connector.MemoryAuditing.memoryauditingServiceManager" init-method="init">
+    <bean class="org.openengsb.connector.memoryauditing.MemoryAuditingServiceManager" init-method="init">
       <constructor-arg>
-        <bean class="org.openengsb.connector.MemoryAuditing.internal.memoryauditingServiceInstanceFactory" />
+        <bean class="org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceInstanceFactory" />
       </constructor-arg>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
     </bean>
@@ -40,6 +40,6 @@
     <property name="persistenceManager" ref="persistenceServiceManager" />
   </bean>
 
-  <osgi:reference id="persistenceServiceManager" interface="org.openengsb.core.persistence.PersistenceManager" />
+  <osgi:reference id="persistenceServiceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
 
 </beans>

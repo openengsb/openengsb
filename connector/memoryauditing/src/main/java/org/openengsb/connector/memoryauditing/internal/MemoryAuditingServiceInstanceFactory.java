@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.connector.MemoryAuditing.internal;
+package org.openengsb.connector.memoryauditing.internal;
 
 import java.util.Collections;
 import java.util.Map;
@@ -56,14 +56,12 @@ public class MemoryAuditingServiceInstanceFactory implements
     @Override
     public MultipleAttributeValidationResult updateValidation(MemoryAuditingServiceImpl instance,
         Map<String, String> attributes) {
-        // TODO Auto-generated method stub
         Map<String, String> emptyMap = Collections.emptyMap();
         return new MultipleAttributeValidationResultImpl(true, emptyMap);
     }
 
     @Override
     public MultipleAttributeValidationResult createValidation(String id, Map<String, String> attributes) {
-        // TODO Auto-generated method stub
         Map<String, String> emptyMap = Collections.emptyMap();
         return new MultipleAttributeValidationResultImpl(true, emptyMap);
     }

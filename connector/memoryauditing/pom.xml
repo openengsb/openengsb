@@ -28,8 +28,8 @@
   </parent>
 
   <properties>
-    <bundle.symbolicName>org.openengsb.connector.MemoryAuditing</bundle.symbolicName>
-    <bundle.namespace>org.openengsb.connector.MemoryAuditing</bundle.namespace>
+    <bundle.symbolicName>org.openengsb.connector.memoryauditing</bundle.symbolicName>
+    <bundle.namespace>org.openengsb.connector.memoryauditing</bundle.namespace>
   </properties>
 
   <groupId>org.openengsb.connector</groupId>

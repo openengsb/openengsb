@@ -25,21 +25,21 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:service interface="org.openengsb.core.common.DomainProvider">
-    <bean class="org.openengsb.domains.auditing.AuditingDomainProvider" />
+    <bean class="org.openengsb.domain.auditing.AuditingDomainProvider" />
   </osgi:service>
 
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.Domain</value>
-      <value>org.openengsb.domains.auditing.AuditingDomain</value>
+      <value>org.openengsb.domain.auditing.AuditingDomain</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.mydomain" />
+      <entry key="id" value="domain.auditing" />
       <entry key="openengsb.service.type" value="domain" />
     </osgi:service-properties>
     <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
       <property name="domainInterface">
-        <value>org.openengsb.domains.auditing.AuditingDomain</value>
+        <value>org.openengsb.domain.auditing.AuditingDomain</value>
       </property>
       <property name="domainName" value="AuditingDomain" />
       <property name="context" ref="contextService" />
@@ -49,21 +49,21 @@
   <osgi:service>
     <osgi:interfaces>
       <value>org.openengsb.core.common.DomainEvents</value>
-      <value>org.openengsb.domains.auditing.AuditingDomainEvents</value>
+      <value>org.openengsb.domain.auditing.AuditingDomainEvents</value>
     </osgi:interfaces>
     <osgi:service-properties>
-      <entry key="id" value="domains.mydomain.events" />
+      <entry key="id" value="domain.auditing.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </osgi:service-properties>
 
     <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
       <property name="domainEventInterface">
-        <value>org.openengsb.domains.auditing.AuditingDomainEvents</value>
+        <value>org.openengsb.domain.auditing.AuditingDomainEvents</value>
       </property>
       <property name="workflowService" ref="workflowService" />
     </bean>
   </osgi:service>
 
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
-  <osgi:reference id="workflowService" interface="org.openengsb.core.workflow.WorkflowService" />
+  <osgi:reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
 </beans>
