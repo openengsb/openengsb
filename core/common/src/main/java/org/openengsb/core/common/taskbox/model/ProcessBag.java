@@ -19,7 +19,6 @@ package org.openengsb.core.common.taskbox.model;
 import java.util.HashMap;
 import java.util.Set;
 
-
 /**
  * A ProcessBag can be used to dynamically save many different properties as key-value pairs (key is a String, value is
  * any object)
@@ -69,11 +68,11 @@ public class ProcessBag {
     /**
      * Adds a new property if, but only if it does not exist already
      * 
-     * @throws ProcessBagException 
+     * @throws ProcessBagException
      */
     public void addProperty(String key, Object value) throws ProcessBagException {
         if (properties.containsKey(key)) {
-            throw new ProcessBagException(key+" already used in the processbag!");
+            throw new ProcessBagException(key + " already used in the processbag!");
         } else {
             properties.put(key, value);
         }

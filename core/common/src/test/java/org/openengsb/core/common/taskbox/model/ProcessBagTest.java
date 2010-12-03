@@ -51,9 +51,9 @@ public class ProcessBagTest {
         assertTrue(pb.containsProperty("test"));
         assertEquals(pb.getProperty("test"), "42");
     }
-    
-    @Test(expected=ProcessBagException.class)
-    public void addProperty_shouldReturnException() throws ProcessBagException{
+
+    @Test(expected = ProcessBagException.class)
+    public void addProperty_shouldReturnException() throws ProcessBagException {
         pb.addProperty("test", "42");
         pb.addProperty("test", "42");
     }
@@ -91,14 +91,14 @@ public class ProcessBagTest {
 
         assertTrue(pb.getPropertyCount() == 2);
     }
-    
+
     @Test
     public void addOrReplaceProperty_shouldOverwriteValue() throws Exception {
         pb.addProperty("test", "42");
         pb.addOrReplaceProperty("test", "43");
         assertEquals(pb.getProperty("test"), "43");
     }
-    
+
     @Test
     public void removeAllProperties_shouldDeleteEverything() throws Exception {
         pb.addProperty("test", "42");
