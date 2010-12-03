@@ -23,7 +23,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.StringTools;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 
 /**
  * guides through the creation of a domain for the OpenEngSB via the domain archetype
@@ -67,9 +67,9 @@ public class GenDomain extends AbstractOpenengsbMojo {
         String domain_name = readValue(sc, "Domain name", DEFAULT_DOMAIN);
         String version = readValue(sc, "Version", default_version);
         String project_name = readValue(sc,
-                "Prefix for project names",
-                String.format("%s%s", DEFAULT_DOMAINNAME_PREFIX,
-                        StringTools.capitalizeFirst(domain_name)));
+            "Prefix for project names",
+            String.format("%s%s", DEFAULT_DOMAINNAME_PREFIX,
+                Tools.capitalizeFirst(domain_name)));
 
         String groupId = String.format("%s%s", DOMAIN_GROUPIDPREFIX, domain_name);
         String artifactId = String.format("%s%s", DOMAIN_ARTIFACTIDPREFIX, domain_name);
@@ -90,7 +90,7 @@ public class GenDomain extends AbstractOpenengsbMojo {
         userproperties.put("package", groupId);
         userproperties.put("name", project_name);
         userproperties
-            .put("domainInterface", String.format("%s%s", StringTools.capitalizeFirst(domain_name), "Domain"));
+            .put("domainInterface", String.format("%s%s", Tools.capitalizeFirst(domain_name), "Domain"));
         userproperties.put("implementationName", project_name);
 
         getMavenExecutor().execute(this, goals, null, null, userproperties,
@@ -98,16 +98,20 @@ public class GenDomain extends AbstractOpenengsbMojo {
 
         File from = new File(artifactId);
         System.out.println(String.format("\"%s\" exists: %s", artifactId, from.exists()));
-        System.out.println(String.format("Trying to rename to: \"%s\"", domain_name));
-        File to = new File(domain_name);
-        if (!to.exists()) {
-            from.renameTo(to);
-            System.out.println("renamed successfully");
+        if (from.exists()) {
+            System.out.println(String.format("Trying to rename to: \"%s\"", domain_name));
+            File to = new File(domain_name);
+            if (!to.exists()) {
+                from.renameTo(to);
+                System.out.println("renamed successfully");
+                renameSubmoduleInPom(artifactId, domain_name);
+            } else {
+                throw new MojoExecutionException("Couldn't rename: name clash!");
+            }
+            System.out.println("DON'T FORGET TO ADD THE DOMAIN TO YOUR RELEASE/ASSEMBLY PROJECT!");
         } else {
-            System.out.println("Couldn't rename: name clash!");
+            throw new MojoExecutionException("Artifact wasn't created as expected!");
         }
-
-        System.out.println("DON'T FORGET TO ADD THE DOMAIN TO YOUR RELEASE/ASSEMBLY PROJECT!");
 
     }
 
@@ -124,4 +128,18 @@ public class GenDomain extends AbstractOpenengsbMojo {
         }
         return line;
     }
+
+    private void renameSubmoduleInPom(String artifactId, String domain_name) throws MojoExecutionException {
+        try {
+            File pomFile = new File("pom.xml");
+            if (pomFile.exists()) {
+                Tools.replaceInFile(pomFile, String.format("<module>%s</module>", artifactId),
+                    String.format("<module>%s</module>", domain_name));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new MojoExecutionException("Couldn't modifiy module entry in pom file!");
+        }
+    }
+
 }
