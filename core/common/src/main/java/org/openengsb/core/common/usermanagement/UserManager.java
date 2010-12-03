@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.usermanagement.exceptions;
+package org.openengsb.core.common.usermanagement;
 
-import org.springframework.security.core.AuthenticationException;
+import java.util.List;
 
-public class UserNotFoundException extends AuthenticationException {
-    
-    public UserNotFoundException(String msg, Throwable t) {
-        super(msg, t);
-    }
+import org.openengsb.core.common.usermanagement.model.User;
+import org.springframework.osgi.context.BundleContextAware;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-    public UserNotFoundException(String msg) {
-        super(msg);
-    }
+public interface UserManager extends UserDetailsService, BundleContextAware {
 
-    public UserNotFoundException(String msg, Object extraInformation) {
-        super(msg, extraInformation);
-    }
+
+    void createUser(User user) ;
+
+    void updateUser(User user) ;
+
+    void deleteUser(String username) ;
+
+    User loadUserByUsername(String username);
+
+    List<User> getAllUser();
+
 }
