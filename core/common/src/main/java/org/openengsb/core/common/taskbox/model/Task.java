@@ -50,25 +50,15 @@ public class Task extends ProcessBag {
         properties.put("taskCreationTimestamp", new Date());
     }
 
-    public void setNull() {
-        super.setNull();
-    }
-
-    public static Task returnNullTask() {
-        Task t = new Task();
-        t.setNull();
-        return t;
-    }
-
     /**
-     * returns the Unique ID the Task can be identified with
+     * returns the unique ID the Task can be identified with
      */
     public String getTaskId() {
         return (String) properties.get("taskId");
     }
 
     /**
-     * generates and returns the Unique ID the Task can be identified with
+     * generates and returns the unique ID the Task can be identified with
      */
     public String generateTaskId() {
         properties.put("taskId", UUID.randomUUID().toString());
@@ -115,7 +105,7 @@ public class Task extends ProcessBag {
     }
 
     public void finishTask() {
-        properties.put("finished", new Boolean(true));
+        properties.put("finished", true);
     }
 
     public Date getTaskCreationTimestamp() {

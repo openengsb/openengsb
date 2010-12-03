@@ -41,27 +41,6 @@ public class ProcessBag {
         this.user = user;
     }
 
-    /**
-     * this method sets all attributes of this ProcessBag to null
-     */
-    public void setNull() {
-        this.processId = null;
-        this.context = null;
-        this.user = null;
-        this.properties = null;
-    }
-
-    /**
-     * static method to get a totally empty ProcessBag for testing reasons
-     * 
-     * @return an empty ProcessBag
-     */
-    public static ProcessBag returnNullProcessBag() {
-        ProcessBag pb = new ProcessBag();
-        pb.setNull();
-        return pb;
-    }
-
     public void setProcessId(String processId) {
         this.processId = processId;
     }
@@ -86,6 +65,11 @@ public class ProcessBag {
         return user;
     }
 
+    /**
+     * Adds a new property if, but only if it does not exist already
+     * 
+     * @return true if add was successful, false if it already existed
+     */
     public boolean addProperty(String key, Object value) {
         if (properties.containsKey(key)) {
             return false;
@@ -124,7 +108,7 @@ public class ProcessBag {
         return properties.keySet();
     }
 
-    public Integer getNumberOfProperties() {
+    public int getPropertyCount() {
         return properties.size();
     }
 
