@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.method.MethodSecurityMetadataSource;
 
@@ -38,7 +38,7 @@ public class MetadataSource implements MethodSecurityMetadataSource {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return MethodInterceptor.class.isAssignableFrom(clazz);
+        return MethodInvocation.class.isAssignableFrom(clazz);
     }
 
     @Override

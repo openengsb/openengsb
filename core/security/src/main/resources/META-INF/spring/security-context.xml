@@ -29,17 +29,37 @@
   </bean>
 
   <osgi:service interface="org.openengsb.core.security.usermanagement.UserManager" ref="userManager" />
-  
-  <osgi:service interface="org.springframework.security.authentication.AuthenticationProvider">
-    <bean id="userAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
-      <property name="userDetailsService" ref="userManager" />
-    </bean>
-  </osgi:service>
 
   <bean id="userAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
     <property name="userDetailsService" ref="userManager" />
   </bean>
-
   <osgi:service interface="org.springframework.security.authentication.AuthenticationProvider" ref="userAuthenticationProvider" />
+
+  <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+    <property name="providers">
+      <list>
+        <ref bean="userAuthenticationProvider" />
+      </list>
+    </property>
+  </bean>
+
+  <osgi:service interface="org.aopalliance.intercept.MethodInterceptor">
+    <bean class="org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor">
+      <property name="securityMetadataSource">
+        <bean class="org.openengsb.core.security.MetadataSource" />
+      </property>
+      <property name="rejectPublicInvocations" value="true" />
+      <property name="authenticationManager" ref="authenticationManager" />
+      <property name="accessDecisionManager">
+        <bean class="org.springframework.security.access.vote.AffirmativeBased">
+          <property name="DecisionVoters">
+            <list>
+              <bean class="org.openengsb.core.security.AuthenticatedUserAccessDecisionVoter" />
+            </list>
+          </property>
+        </bean>
+      </property>
+    </bean>
+  </osgi:service>
 </beans>
 
