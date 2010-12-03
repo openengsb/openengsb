@@ -96,7 +96,7 @@ public class ProcessBag {
         return properties.remove(key);
     }
 
-    public boolean containsPropertyKey(String key) {
+    public boolean containsProperty(String key) {
         return properties.containsKey(key);
     }
 
