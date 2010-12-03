@@ -29,6 +29,9 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 
 public class DefaultMavenExecutor implements MavenExecutor {
+	
+	private boolean changeInterActiveMode = false;
+	private boolean interActiveMode = true;
 
     @Override
     public void execute(AbstractMojo mojo, List<String> goals, List<String> activatedProfiles,
@@ -38,6 +41,10 @@ public class DefaultMavenExecutor implements MavenExecutor {
         MavenExecutionRequest wrapperRequest = session.getRequest();
 
         MavenExecutionRequest embeddedRequest = DefaultMavenExecutionRequest.copy(wrapperRequest);
+        
+		if (changeInterActiveMode) {
+			embeddedRequest.setInteractiveMode(interActiveMode);
+		}
 
         embeddedRequest.getGoals().clear();
         embeddedRequest.getGoals().addAll(goals);
@@ -69,22 +76,36 @@ public class DefaultMavenExecutor implements MavenExecutor {
         }
 
         MavenExecutionResult result = maven.execute(embeddedRequest);
-        mojo.getLog().info(String.format("EMBEDDED EXECUTION REQUESTS - END"));
-        mojo.getLog().info("////////////////////////////////////////////////");
+		mojo.getLog().info(String.format("EMBEDDED EXECUTION REQUESTS - END"));
+		mojo.getLog().info("////////////////////////////////////////////////");
 
-        if (result.hasExceptions()) {
-            mojo.getLog().warn("###################");
-            mojo.getLog().warn(
-                    String.format("The following exceptions occured during executions of mojo %s:", mojo.getClass()
-                            .getName()));
-            for (Throwable t : result.getExceptions()) {
-                mojo.getLog().warn("--------");
-                mojo.getLog().warn(t);
-            }
-            mojo.getLog().warn("###################");
-            throw new MojoExecutionException("FAIL - see log for additional info");
-        }
+		if (result.hasExceptions()) {
+			mojo.getLog().warn("###################");
+			mojo.getLog()
+					.warn(String
+							.format("The following exceptions occured during executions of mojo %s:",
+									mojo.getClass().getName()));
+			for (Throwable t : result.getExceptions()) {
+				mojo.getLog().warn("--------");
+				mojo.getLog().warn(t);
+			}
+			mojo.getLog().warn("###################");
+			Throwable ex = result.getExceptions().get(0);
+			Throwable cause = ex.getCause();
+			String errmsg = (cause != null ? cause.getMessage() : ex
+					.getMessage());
+			throw new MojoExecutionException(
+					String.format(
+							"%s\nFAIL - see log statements above for additional info",
+							errmsg));
+		}
 
-    }
+	}
+
+	@Override
+	public void setInterActiveMode(boolean interactiveMode) {
+		this.changeInterActiveMode = true;
+		this.interActiveMode = interactiveMode;
+	}
 
 }

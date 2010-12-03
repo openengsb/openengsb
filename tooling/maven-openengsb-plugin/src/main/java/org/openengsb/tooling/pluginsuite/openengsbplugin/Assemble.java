@@ -23,6 +23,8 @@ import java.util.Properties;
 import org.apache.maven.plugin.MojoExecutionException;
 
 /**
+ * equivalent to <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
+ * 
  * @goal assemble
  * 
  * @inheritedByDefault false
@@ -38,8 +40,7 @@ public class Assemble extends AbstractOpenengsbMojo {
 			return;
 		}
 
-		if (!(getProject().getGroupId().equals(OPENENGSB_ROOT_GROUP_ID) && getProject()
-				.getArtifactId().equals(OPENENGSB_ROOT_ARTIFACT_ID))) {
+		if (getProject().hasParent()) {
 			throw new MojoExecutionException(
 					"Please invoke this mojo only in the OpenEngSB root!");
 		}
@@ -51,7 +52,7 @@ public class Assemble extends AbstractOpenengsbMojo {
 				"release", "nightly" });
 
 		Properties userproperties = new Properties();
-		userproperties.put("skipTests", "true");
+		userproperties.put("maven.test.skip", "true");
 
 		getMavenExecutor().execute(this, goals, activatedProfiles, null,
 				userproperties, getProject(), getSession(), getMaven(), true);
