@@ -46,17 +46,6 @@ public class WebTask extends Task {
         // panelClass = DefaultWebTaskPanel.class;
     }
 
-    public void setNull() {
-        super.setNull();
-        // panelClass = DefaultWebTaskPanel.class;
-    }
-
-    public static Task returnNullTask() {
-        WebTask wt = new WebTask();
-        wt.setNull();
-        return wt;
-    }
-
     /**
      * returns the according Wicket Panel Class for the task
      */
