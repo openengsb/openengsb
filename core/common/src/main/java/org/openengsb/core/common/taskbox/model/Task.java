@@ -20,7 +20,8 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * A Task is handled by the TaskboxService and represents a human action to be done and proper information / properties
+ * A Task is handled by the TaskboxService and represents a human action to be
+ * done and proper information / properties
  */
 public class Task extends ProcessBag {
     public Task() {
@@ -75,7 +76,8 @@ public class Task extends ProcessBag {
     }
 
     /**
-     * returns the Type of the Task. The Type is used to group similar Tasks together
+     * returns the Type of the Task. The Type is used to group similar Tasks
+     * together
      */
     public String getTaskType() {
         return (String) properties.get("taskType");
@@ -101,19 +103,19 @@ public class Task extends ProcessBag {
         properties.put("description", description);
     }
 
-    public boolean getDoneFlag() {
-        return (Boolean) properties.get("finished");
-    }
-
     public void setFinished(boolean finished) {
         properties.put("finished", finished);
     }
 
-    public boolean isTaskFinished() {
+    public boolean isFinished() {
         if (!properties.containsKey("finished")) {
             return false;
         }
         return (Boolean) properties.get("finished");
+    }
+
+    public void finishTask() {
+        properties.put("finished", new Boolean(true));
     }
 
     public Date getTaskCreationTimestamp() {
