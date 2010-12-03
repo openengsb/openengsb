@@ -16,7 +16,13 @@
 
 package org.openengsb.core.persistence.internal;
 
-import java.lang.reflect.Field;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -181,41 +187,53 @@ public class NeodatisPersistenceService implements PersistenceService {
 
     @SuppressWarnings({ "unchecked", "serial" })
     private <TYPE> List<TYPE> queryByExample(ODB database, final TYPE example) {
-        final Field[] fields = example.getClass().getDeclaredFields();
-        IQuery query = new NativeQuery() {
-
-            @Override
-            public boolean match(Object object) {
-                TYPE compare = (TYPE) object;
-                for (Field field : fields) {
-                    try {
-                        field.setAccessible(true);
-                        Object exampleField = field.get(example);
-                        Object compareField = field.get(compare);
-                        if (exampleField != null && !exampleField.equals(compareField)) {
-                            return false;
-                        }
-                    } catch (IllegalArgumentException e) {
-                        throw new RuntimeException(e);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
+        try {
+            BeanInfo info = Introspector.getBeanInfo(example.getClass());
+            PropertyDescriptor[] properties = info.getPropertyDescriptors();
+            final List<Method> methods = new ArrayList<Method>(properties.length);
+            for (PropertyDescriptor property : properties) {
+                if (Modifier.isPublic(property.getReadMethod().getModifiers())) {
+                    methods.add(property.getReadMethod());
                 }
-                return true;
             }
 
-            @Override
-            public Class<?> getObjectType() {
-                return example.getClass();
-            }
+            IQuery query = new NativeQuery() {
+                @Override
+                public boolean match(Object object) {
+                    TYPE compare = (TYPE) object;
+                    for (Method method : methods) {
+                        try {
+                            Object exampleValue = method.invoke(example);
+                            Object compareValue = method.invoke(compare);
+                            if (exampleValue != null && !exampleValue.equals(compareValue)) {
+                                return false;
+                            }
+                        } catch (InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        } catch (IllegalArgumentException e) {
+                            throw new RuntimeException(e);
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    return true;
+                }
 
-        };
-        Objects<Object> objects = database.getObjects(query);
-        List<TYPE> retVal = new ArrayList<TYPE>();
-        while (objects.hasNext()) {
-            retVal.add((TYPE) objects.next());
+                @Override
+                public Class<?> getObjectType() {
+                    return example.getClass();
+                }
+
+            };
+            Objects<Object> objects = database.getObjects(query);
+            List<TYPE> retVal = new ArrayList<TYPE>();
+            while (objects.hasNext()) {
+                retVal.add((TYPE) objects.next());
+            }
+            return retVal;
+        } catch (IntrospectionException e) {
+            throw new RuntimeException(e);
         }
-        return retVal;
     }
 
     private void closeDatabase(ODB database) {
