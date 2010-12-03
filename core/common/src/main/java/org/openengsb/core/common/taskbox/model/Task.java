@@ -19,6 +19,8 @@ package org.openengsb.core.common.taskbox.model;
 import java.util.Date;
 import java.util.UUID;
 
+import org.openengsb.core.common.workflow.model.ProcessBag;
+
 /**
  * A Task is handled by the TaskboxService and represents a human action to be
  * done and proper information / properties
