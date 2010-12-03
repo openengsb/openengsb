@@ -47,10 +47,15 @@ public class ProcessBagTest {
     @Test
     public void getSetProperty_shouldSetAndGetProperValues() throws Exception {
         pb = new ProcessBag("4711", "c", "test-user");
-        assertTrue(pb.addProperty("test", "42"));
-        assertFalse(pb.addProperty("test", null));
+        pb.addProperty("test", "42");
         assertTrue(pb.containsProperty("test"));
         assertEquals(pb.getProperty("test"), "42");
+    }
+    
+    @Test(expected=ProcessBagException.class)
+    public void addProperty_shouldReturnException() throws ProcessBagException{
+        pb.addProperty("test", "42");
+        pb.addProperty("test", "42");
     }
 
     @Test
