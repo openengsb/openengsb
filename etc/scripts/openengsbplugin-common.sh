@@ -15,6 +15,8 @@
 # limitations under the License.
 #
 
+INVOCATION_DIR=`pwd`
+
 M2_REPO=~/.m2/repository
 
 PLUGIN_VERSION="1.1.0-SNAPSHOT"

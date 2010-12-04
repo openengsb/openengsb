@@ -17,7 +17,7 @@
 
 source $(dirname $0)/openengsbplugin-common.sh
 
-cd $ABSPATH/../../
+cd $INVOCATION_DIR
 
 GOAL="genConnector"
 
