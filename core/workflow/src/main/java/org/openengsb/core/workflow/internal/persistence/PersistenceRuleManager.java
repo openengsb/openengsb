@@ -127,7 +127,7 @@ public class PersistenceRuleManager extends AbstractRuleManager implements Bundl
         List<RuleBaseElement> queryResult = persistence.query(new RuleBaseElement(example));
         Collection<RuleBaseElementId> result = new HashSet<RuleBaseElementId>();
         for (RuleBaseElement element : queryResult) {
-            result.add(element.getId());
+            result.add(element.generateId());
         }
         return result;
     }
