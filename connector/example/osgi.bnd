@@ -14,18 +14,9 @@
 # limitations under the License.
 #
 
-Import-Package: *,\
-org.osgi.framework,\
-org.apache.commons.logging,\
+Import-Package: org.springframework.osgi.service.importer,\
 org.aopalliance.aop,\
+org.aopalliance.intercept,\
 org.springframework.aop,\
-org.springframework.osgi.context,\
-org.springframework.security.access.intercept.aopalliance,\
 org.springframework.aop.framework,\
-org.springframework.beans.factory.xml,\
-org.springframework.beans.propertyeditors,\
-org.springframework.osgi.service.exporter,\
-org.springframework.osgi.service.importer,\
-org.springframework.osgi.service.exporter.support,\
-org.springframework.osgi.service.importer.support,\
-org.xml.sax
+*
