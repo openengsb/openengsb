@@ -98,29 +98,27 @@
       <para>
         First make sure that the plugin is installed in your local maven repository
         (see <xref linkend="developer.quickstart.tools.mavenplugin"/>).
-        Then the <literal>genConnector</literal> mojo should be executed from the domain-specific directory
-        (alternatively the <literal>etc/scripts/gen-connector.sh</literal> script can be used which invokes the
-        maven-openengsb-plugin for you).
-        I.e. if your are developing a new connector for the Notification-Domain your current directory should be
-        <literal>domains/notification</literal>.
+        Then the <literal>genConnector</literal> mojo should be executed from the connector directory
+        (<literal>connector/</literal>) (alternatively the <literal>etc/scripts/gen-connector.sh</literal> script can
+        be used which invokes the maven-openengsb-plugin for you).
       </para>
 
       <literallayout>
-        <command>notification $</command> mvn org.openengsb.tooling.pluginsuite:maven-openengsb-plugin:&lt;version&gt;:genConnector
+        <command>connector $</command> mvn org.openengsb.tooling.pluginsuite:maven-openengsb-plugin:&lt;version&gt;:genConnector
       </literallayout>
 
-      <para>The mojo tries to guess as much as possible from your current location and previous input. Guessed values
+      <para>The mojo tries to guess as much as possible from your previous input. Guessed values
         are displayed in brackets. If the guess is what you want, simply acknowledge with <literal>Return</literal>. The
-        following output has been recorded by executing the script in the <literal>domains/notification</literal>
+        following output has been recorded by executing the script in the <literal>connector/</literal>
         directory:</para>
 
-      <literallayout><command>Domain Name [notification]: </command> &lt;Enter>
+      <literallayout><command>Domain Name [domain]: </command>notification &lt;Enter>
 <command>Domain Interface [NotificationDomain]: </command>&lt;Enter>
-<command>Connector Name: [myconnector]</command>twitter &lt;Enter>
+<command>Connector Name [myconnector]: </command>twitter &lt;Enter>
 <command>Version [1.0.0-SNAPSHOT]: </command>&lt;Enter>
 <command>Project Name [OpenEngSB :: Domains :: Notification :: Twitter]: </command>&lt;Enter></literallayout>
 
-      <para>Only the connector name was set, everything else has been guessed correctly. After this inputs
+      <para>Only the domain and connector name was set, everything else has been guessed correctly. After this inputs
         the Maven Archetype gets called and may ask you for further inputs. You can simply hit <literal>Return</literal>
         each time, because the values have been already set by the mojo. If it finishes successfully the new
         connector project has been created and you may start implementing.</para>

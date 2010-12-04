@@ -50,9 +50,10 @@ public class GenConnector extends AbstractOpenengsbMojo {
 
     private static final String DEFAULT_CONNECTORNAME_PREFIX = "OpenEngSB :: Connector :: ";
 
+    private static final String DEFAULT_DOMAIN = "domain";
+
     // DYNAMIC DEFAULTS
 
-    private String default_domain;
     private String default_version;
 
     @Override
@@ -74,7 +75,7 @@ public class GenConnector extends AbstractOpenengsbMojo {
             archetypeCatalogLocalOnly = true;
         }
 
-        String domain_name = readValue(sc, "Domain Name", default_domain);
+        String domain_name = readValue(sc, "Domain Name", DEFAULT_DOMAIN);
         String domaininterface =
             readValue(sc, "Domain Interface", String.format("%s%s", Tools.capitalizeFirst(domain_name), "Domain"));
         String connector = readValue(sc, "Connector Name", "myconnector");
@@ -137,8 +138,6 @@ public class GenConnector extends AbstractOpenengsbMojo {
     private void initDefaults() {
         // version should be the same as the version of the OpenEngSB
         default_version = getProject().getVersion();
-        // domain is the parent of the connector
-        default_domain = getProject().getBasedir().getName();
     }
 
     private String readValue(Scanner sc, String name, String defaultvalue) {
