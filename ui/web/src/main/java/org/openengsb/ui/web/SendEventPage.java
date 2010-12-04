@@ -33,9 +33,12 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
@@ -48,6 +51,7 @@ import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.common.wicket.editor.AttributeEditorUtil;
 import org.openengsb.ui.common.wicket.util.MethodUtil;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
@@ -68,7 +72,10 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     @SpringBean
     private RuleManager ruleManager;
 
-    private Map<String, String> values = new HashMap<String, String>();
+    @SpringBean
+    private AuditingDomain auditing;
+
+    private final Map<String, String> values = new HashMap<String, String>();
 
     private RepeatingView fieldList;
 
@@ -119,7 +126,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
                         info(new StringResourceModel("send.event.success", SendEventPage.this, null).getString());
                     } catch (WorkflowException e) {
                         StringResourceModel resourceModel =
-                                new StringResourceModel("send.event.error.process", SendEventPage.this, null);
+                            new StringResourceModel("send.event.error.process", SendEventPage.this, null);
                         error(resourceModel.getString());
                     }
                 } else {
@@ -135,7 +142,12 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         };
         submitButton.setOutputMarkupId(true);
         form.add(submitButton);
-
+        add(new ListView<String>("audits", this.auditing.getAudits()) {
+            @Override
+            protected void populateItem(ListItem<String> item) {
+                item.add(new Label("audit", item.getModelObject()));
+            }
+        });
         add(new RuleEditorPanel("ruleEditor", this));
     }
 

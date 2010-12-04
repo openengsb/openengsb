@@ -33,5 +33,4 @@
             <osgi:reference interface="org.openengsb.core.common.persistence.PersistenceManager"/>
         </property>
     </bean>
-
 </beans>
