@@ -22,15 +22,16 @@ import java.util.Set;
 import org.openengsb.core.common.workflow.ProcessBagException;
 
 /**
- * A ProcessBag can be used to dynamically save many different properties as key-value pairs (key is a String, value is
- * any object)
+ * The ProcessBag is a workflow property and contains all neccessary information and workflow metadata, i.e. processId
+ * or context. It contains a HashMap so every sub-class can use this field to add custom properties. Each workflow
+ * creates its own new ProcessBag when none is passed on workflow start.
  */
 public class ProcessBag {
     private String processId;
     private String context;
     private String user;
 
-    protected HashMap<String, Object> properties;
+    private HashMap<String, Object> properties;
 
     public ProcessBag() {
         properties = new HashMap<String, Object>();

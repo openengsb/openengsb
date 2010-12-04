@@ -27,7 +27,6 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.workflow.ProcessBagException;
-import org.openengsb.core.common.workflow.model.ProcessBag;
 
 public class ProcessBagTest {
     private ProcessBag pb;

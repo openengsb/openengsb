@@ -22,8 +22,9 @@ import java.util.UUID;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 
 /**
- * A Task is handled by the TaskboxService and represents a human action to be
- * done and proper information / properties
+ * A Task is based on a ProcessBag and used for human interaction. It contains all data needed by a human task i.e.
+ * properties that need to be changed by a user. Each time a workflow needs user interaction, such task is created from
+ * the workflows ProcessBag.
  */
 public class Task extends ProcessBag {
     public Task() {
@@ -47,70 +48,69 @@ public class Task extends ProcessBag {
     }
 
     private void init() {
-        properties.put("taskId", UUID.randomUUID().toString());
-        properties.put("finished", false);
-        properties.put("taskCreationTimestamp", new Date());
+        addOrReplaceProperty("taskId", UUID.randomUUID().toString());
+        addOrReplaceProperty("finished", false);
+        addOrReplaceProperty("taskCreationTimestamp", new Date());
     }
 
     /**
      * returns the unique ID the Task can be identified with
      */
     public String getTaskId() {
-        return (String) properties.get("taskId");
+        return (String) getProperty("taskId");
     }
 
     /**
      * generates and returns the unique ID the Task can be identified with
      */
     public String generateTaskId() {
-        properties.put("taskId", UUID.randomUUID().toString());
-        return (String) properties.get("taskId");
+        addOrReplaceProperty("taskId", UUID.randomUUID().toString());
+        return (String) getProperty("taskId");
     }
 
     /**
-     * returns the Type of the Task. The Type is used to group similar Tasks
-     * together
+     * returns the Type of the Task. The Type is used to group similar Tasks together
      */
     public String getTaskType() {
-        return (String) properties.get("taskType");
+        return (String) getProperty("taskType");
     }
 
     public void setTaskType(String taskType) {
-        properties.put("taskType", taskType);
+        addOrReplaceProperty("taskType", taskType);
     }
 
     public String getName() {
-        return (String) properties.get("name");
+        return (String) getProperty("name");
     }
 
     public void setName(String name) {
-        properties.put("name", name);
+        addOrReplaceProperty("name", name);
     }
 
     public String getDescription() {
-        return (String) properties.get("description");
+        return (String) getProperty("description");
     }
 
     public void setDescription(String description) {
-        properties.put("description", description);
+        addOrReplaceProperty("description", description);
     }
 
     public void setFinished(boolean finished) {
-        properties.put("finished", finished);
+        addOrReplaceProperty("finished", finished);
     }
 
     public boolean isFinished() {
-        if (!properties.containsKey("finished")) {
+        if (!containsProperty("finished")) {
             return false;
         }
-        return (Boolean) properties.get("finished");
+        return (Boolean) getProperty("finished");
     }
 
     public void finishTask() {
-        properties.put("finished", true);
+        addOrReplaceProperty("finished", true);
     }
 
     public Date getTaskCreationTimestamp() {
-        return (Date) properties.get("taskCreationTimestamp");
+        return (Date) getProperty("taskCreationTimestamp");
     }
 }

@@ -20,43 +20,43 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.common.taskbox.model.Task;
 
 /**
- * WebTask extends a normal Task by adding graphical Functionality so it can be used and displayed in Web-Applications -
- * that means that a any Panel can be associated with a WebTask
+ * WebTask extends a normal Task by adding graphical functionality so it can be used and displayed in Wicket web
+ * application. It holds a generic wicket panel to display all containing properties. This panel can easily be
+ * overwritten by a custom panel.
  */
 public class WebTask extends Task {
-    Class<? extends Panel> panelClass;
-
     public WebTask() {
         super();
-        // panelClass = DefaultWebTaskPanel.class;
+        // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
     }
 
     public WebTask(String processId, String context, String user) {
         super(processId, context, user);
-        // panelClass = DefaultWebTaskPanel.class;
+        // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
     }
 
     public WebTask(String taskType) {
         super(taskType);
-        // panelClass = DefaultWebTaskPanel.class;
+        // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
     }
 
     public WebTask(String taskType, String processId, String context, String user) {
         super(taskType, processId, context, user);
-        // panelClass = DefaultWebTaskPanel.class;
+        // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
     }
 
     /**
      * returns the according Wicket Panel Class for the task
      */
+    @SuppressWarnings("unchecked")
     public Class<? extends Panel> getPanelClass() {
-        return panelClass;
+        return (Class<? extends Panel>) getProperty("panelClass");
     }
 
     /**
      * sets the according Wicket Panel Class for the task
      */
     public void setPanelClass(Class<? extends Panel> panelClass) {
-        this.panelClass = panelClass;
+        addOrReplaceProperty("panelClass", panelClass);
     }
 }
