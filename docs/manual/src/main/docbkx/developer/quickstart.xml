@@ -305,6 +305,13 @@
       -Dmaven.test.skip=true</command>
     </para>
     <para>
+      <command>genConnector</command>
+    </para>
+    <para>
+      Guides interactively through the creation of a connector and generates the artifact via the connector archetype.
+      For additional info how to create a connector see <xref linkend="developer.howto.internal.connector" />
+    </para>
+    <para>
       <command>genDomain</command>
     </para>
     <para>

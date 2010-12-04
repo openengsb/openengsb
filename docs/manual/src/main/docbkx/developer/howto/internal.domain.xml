@@ -90,7 +90,7 @@
         First make sure that the plugin is installed in your local maven repository
         (see <xref linkend="developer.quickstart.tools.mavenplugin"/>).
         Then the <literal>genDomain</literal> mojo should be executed from the domains directory in your OpenEngSB
-        repository (alternatively the <literal>etc/scripts/gen-domain.sh</literal> can be used which invokes the
+        repository (alternatively the <literal>etc/scripts/gen-domain.sh</literal> script can be used which invokes the
         maven-openengsb-plugin for you).
       </para>
 
