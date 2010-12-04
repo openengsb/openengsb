@@ -138,10 +138,8 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         InstanceType instance = factory.createServiceInstance(id, attributes);
         instance = secureService(instance);
         Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
-        final String[] interfaces = new String[]{ getImplementationClass().getName(), getDomainInterface().getName(),
-            Domain.class.getName() };
-        ServiceRegistration registration =
-            getBundleContext().registerService(interfaces, instance, serviceProperties);
+        final String[] interfaces = new String[]{ getDomainInterface().getName(), Domain.class.getName() };
+        ServiceRegistration registration = getBundleContext().registerService(interfaces, instance, serviceProperties);
         addDomainRepresentation(id, instance, registration);
 
     }
