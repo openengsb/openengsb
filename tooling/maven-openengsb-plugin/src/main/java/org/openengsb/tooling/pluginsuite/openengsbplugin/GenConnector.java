@@ -68,7 +68,7 @@ public class GenConnector extends AbstractOpenengsbMojo {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("Set archetypeCatalog=\"local\" ? (y/n): ");
+        System.out.print("Use only local archetypeCatalog? (y/n): ");
         String in = sc.nextLine();
         if (in.equalsIgnoreCase("y")) {
             archetypeCatalogLocalOnly = true;
