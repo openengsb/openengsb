@@ -16,18 +16,27 @@
 
 package org.openengsb.ui.taskbox.model;
 
-import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.common.taskbox.model.TaskStep;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-/**
- * WebTaskStep extends a normal TaskStep by adding graphical Functionality so it
- * can be used and displayed in Web-Applications 
- */
-public interface WebTaskStep extends TaskStep {
-    /**
-     * returns the according Wicket Panel for the TaskStep
-     * can be used to display detailed information about the TaskStep
-     * e.g. Web-Controls representing all implemented properties 
-     */
-    Panel getPanel(String id);
+import java.util.Date;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class WebTaskTest {
+    private WebTask task;
+
+    @Before
+    public void init() throws Exception {
+        task = new WebTask();
+    }
+
+    @Test
+    public void init_shouldInitializeProperties() throws Exception {
+        assertTrue(task.getTaskId().length() > 0);
+        assertFalse(task.isFinished());
+        assertTrue(task.getTaskCreationTimestamp().before(new Date(System.currentTimeMillis() + 10)));
+    }
 }
+
