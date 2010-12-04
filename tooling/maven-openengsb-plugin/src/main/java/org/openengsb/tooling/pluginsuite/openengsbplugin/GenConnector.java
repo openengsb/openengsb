@@ -36,6 +36,8 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
  */
 public class GenConnector extends AbstractOpenengsbMojo {
 
+    private boolean archetypeCatalogLocalOnly = false;
+
     // CONSTANTS
     private static final String ARCHETYPE_GROUPID = "org.openengsb.tooling.archetypes";
     private static final String ARCHETYPE_ARTIFACTID = "openengsb-tooling-archetypes-connector";
@@ -65,6 +67,12 @@ public class GenConnector extends AbstractOpenengsbMojo {
         initDefaults();
 
         Scanner sc = new Scanner(System.in);
+
+        System.out.print("Set archetypeCatalog=\"local\" ? (y/n): ");
+        String in = sc.nextLine();
+        if (in.equalsIgnoreCase("y")) {
+            archetypeCatalogLocalOnly = true;
+        }
 
         String domain_name = readValue(sc, "Domain Name", default_domain);
         String domaininterface =
@@ -98,6 +106,11 @@ public class GenConnector extends AbstractOpenengsbMojo {
         userproperties.put("domainPackage", domainGroupId);
         userproperties.put("name", project_name);
         userproperties.put("connectorName", Tools.capitalizeFirst(connector));
+
+        // local archetype catalog only
+        if (archetypeCatalogLocalOnly) {
+            userproperties.put("archetypeCatalog", "local");
+        }
 
         getMavenExecutor().execute(this, goals, null, null, userproperties,
             getProject(), getSession(), getMaven(), true);
