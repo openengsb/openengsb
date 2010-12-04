@@ -20,7 +20,6 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;
 import org.neodatis.odb.Objects;
 import org.neodatis.odb.OdbConfiguration;
-import org.neodatis.odb.core.query.IQuery;
 import org.neodatis.odb.core.query.nq.NativeQuery;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceService;
@@ -185,55 +183,41 @@ public class NeodatisPersistenceService implements PersistenceService {
         }
     }
 
-    @SuppressWarnings({ "unchecked", "serial" })
-    private <TYPE> List<TYPE> queryByExample(ODB database, final TYPE example) {
+    @SuppressWarnings("serial")
+    private <TYPE> List<TYPE> queryByExample(ODB database, TYPE example) {
         try {
-            BeanInfo info = Introspector.getBeanInfo(example.getClass());
-            PropertyDescriptor[] properties = info.getPropertyDescriptors();
-            final List<Method> methods = new ArrayList<Method>(properties.length);
-            for (PropertyDescriptor property : properties) {
-                if (Modifier.isPublic(property.getReadMethod().getModifiers())) {
-                    methods.add(property.getReadMethod());
-                }
-            }
+            List<Method> getters = reflectGettersFromPersistenceClass(example.getClass());
 
-            IQuery query = new NativeQuery() {
-                @Override
-                public boolean match(Object object) {
-                    TYPE compare = (TYPE) object;
-                    for (Method method : methods) {
-                        try {
-                            Object exampleValue = method.invoke(example);
-                            Object compareValue = method.invoke(compare);
-                            if (exampleValue != null && !exampleValue.equals(compareValue)) {
-                                return false;
-                            }
-                        } catch (InvocationTargetException e) {
-                            throw new RuntimeException(e);
-                        } catch (IllegalArgumentException e) {
-                            throw new RuntimeException(e);
-                        } catch (IllegalAccessException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    return true;
-                }
+            NeodatisGetterQuery<TYPE> query = new NeodatisGetterQuery<TYPE>(getters, example);
 
-                @Override
-                public Class<?> getObjectType() {
-                    return example.getClass();
-                }
-
-            };
-            Objects<Object> objects = database.getObjects(query);
-            List<TYPE> retVal = new ArrayList<TYPE>();
-            while (objects.hasNext()) {
-                retVal.add((TYPE) objects.next());
-            }
-            return retVal;
+            return queryNeodatis(database, query);
         } catch (IntrospectionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private List<Method> reflectGettersFromPersistenceClass(Class<?> clazz) throws IntrospectionException {
+        List<Method> methods = new ArrayList<Method>();
+
+        BeanInfo info = Introspector.getBeanInfo(clazz);
+        PropertyDescriptor[] properties = info.getPropertyDescriptors();
+        for (PropertyDescriptor property : properties) {
+            if (Modifier.isPublic(property.getReadMethod().getModifiers())) {
+                methods.add(property.getReadMethod());
+            }
+        }
+
+        return methods;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TYPE> List<TYPE> queryNeodatis(ODB database, NativeQuery query) {
+        Objects<Object> objects = database.getObjects(query);
+        List<TYPE> retVal = new ArrayList<TYPE>();
+        while (objects.hasNext()) {
+            retVal.add((TYPE) objects.next());
+        }
+        return retVal;
     }
 
     private void closeDatabase(ODB database) {
