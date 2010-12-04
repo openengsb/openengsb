@@ -46,7 +46,7 @@ public class WebTask extends Task {
     }
 
     /**
-     * returns the according Wicket Panel Class for the task
+     * returns the according Wicket panel class for the task
      */
     @SuppressWarnings("unchecked")
     public Class<? extends Panel> getPanelClass() {
@@ -54,7 +54,7 @@ public class WebTask extends Task {
     }
 
     /**
-     * sets the according Wicket Panel Class for the task
+     * sets the according Wicket panel class for the task
      */
     public void setPanelClass(Class<? extends Panel> panelClass) {
         addOrReplaceProperty("panelClass", panelClass);

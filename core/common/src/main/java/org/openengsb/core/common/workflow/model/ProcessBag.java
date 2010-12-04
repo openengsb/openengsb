@@ -37,6 +37,17 @@ public class ProcessBag {
         properties = new HashMap<String, Object>();
     }
 
+    public ProcessBag(HashMap<String, Object> properties) {
+        this.properties = properties;
+    }
+
+    public ProcessBag(ProcessBag bag) {
+        this.properties = bag.properties;
+        this.processId = bag.processId;
+        this.context = bag.context;
+        this.user = bag.user;
+    }
+
     public ProcessBag(String processId, String context, String user) {
         this();
         this.processId = processId;

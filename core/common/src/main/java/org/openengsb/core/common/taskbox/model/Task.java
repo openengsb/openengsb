@@ -17,6 +17,7 @@
 package org.openengsb.core.common.taskbox.model;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.openengsb.core.common.workflow.model.ProcessBag;
@@ -30,6 +31,14 @@ public class Task extends ProcessBag {
     public Task() {
         super();
         init();
+    }
+
+    public Task(Task task) {
+        super(task);
+    }
+
+    public Task(HashMap<String, Object> properties) {
+        super(properties);
     }
 
     public Task(String processId, String context, String user) {
