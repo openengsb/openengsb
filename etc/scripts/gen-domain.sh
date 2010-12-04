@@ -15,9 +15,6 @@
 # limitations under the License.
 #
 
-# Helper script to generate an OpenEngSB domain. Tries to guess need variables
-# based on provided input.
-
 source $(dirname $0)/openengsbplugin-common.sh
 
 cd $ABSPATH/../../

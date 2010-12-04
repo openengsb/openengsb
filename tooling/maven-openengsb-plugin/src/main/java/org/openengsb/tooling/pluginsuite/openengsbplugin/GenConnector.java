@@ -26,26 +26,29 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 
 /**
- * guides through the creation of a domain for the OpenEngSB via the domain archetype
+ * guides through the creation of a connector for the OpenEngSB via the connector archetype
  * 
- * @goal genDomain
+ * @goal genConnector
  * 
  * @inheritedByDefault false
  * 
  * @requiresProject true
  */
-public class GenDomain extends AbstractOpenengsbMojo {
+public class GenConnector extends AbstractOpenengsbMojo {
 
     // CONSTANTS
     private static final String ARCHETYPE_GROUPID = "org.openengsb.tooling.archetypes";
-    private static final String ARCHETYPE_ARTIFACTID = "openengsb-tooling-archetypes-domain";
+    private static final String ARCHETYPE_ARTIFACTID = "openengsb-tooling-archetypes-connector";
 
     private static final String DOMAIN_GROUPIDPREFIX = "org.openengsb.domain.";
     private static final String DOMAIN_ARTIFACTIDPREFIX = "openengsb-domain-";
 
-    private static final String DEFAULT_DOMAIN = "mydomain";
+    private static final String CONNECTOR_GROUPID = "org.openengsb.connector";
+    private static final String CONNECTOR_ARTIFACTIDPREFIX = "openengsb-connector-";
 
-    private static final String DEFAULT_DOMAINNAME_PREFIX = "OpenEngSB :: Domain :: ";
+    private static final String DEFAULT_DOMAIN = "domainname";
+
+    private static final String DEFAULT_CONNECTORNAME_PREFIX = "OpenEngSB :: Domain :: ";
 
     // DYNAMIC DEFAULTS
 
@@ -65,14 +68,18 @@ public class GenDomain extends AbstractOpenengsbMojo {
         Scanner sc = new Scanner(System.in);
 
         String domain_name = readValue(sc, "Domain Name", DEFAULT_DOMAIN);
+        String domaininterface =
+            readValue(sc, "Domain Interface", String.format("%s%s", Tools.capitalizeFirst(domain_name), "Domain"));
+        String connector = readValue(sc, "Connector Name", "myconnector");
         String version = readValue(sc, "Version", default_version);
         String project_name = readValue(sc,
-            "Prefix for project names",
-            String.format("%s%s", DEFAULT_DOMAINNAME_PREFIX,
-                Tools.capitalizeFirst(domain_name)));
+            "Project Name",
+            String.format("%s%s", DEFAULT_CONNECTORNAME_PREFIX,
+                Tools.capitalizeFirst(connector)));
 
-        String groupId = String.format("%s%s", DOMAIN_GROUPIDPREFIX, domain_name);
-        String artifactId = String.format("%s%s", DOMAIN_ARTIFACTIDPREFIX, domain_name);
+        String domainGroupId = String.format("%s%s", DOMAIN_GROUPIDPREFIX, domain_name);
+        String domainArtifactId = String.format("%s%s", DOMAIN_ARTIFACTIDPREFIX, domain_name);
+        String artifactId = String.format("%s%s", CONNECTOR_ARTIFACTIDPREFIX, connector);
 
         List<String> goals = Arrays
             .asList(new String[]{ "archetype:generate" });
@@ -82,16 +89,16 @@ public class GenDomain extends AbstractOpenengsbMojo {
         userproperties.put("archetypeGroupId", ARCHETYPE_GROUPID);
         userproperties.put("archetypeArtifactId", ARCHETYPE_ARTIFACTID);
         userproperties.put("archetypeVersion", version);
-        userproperties.put("groupId", groupId);
+        userproperties.put("domainArtifactId", domainArtifactId);
         userproperties.put("artifactId", artifactId);
+        userproperties.put("connectorNameLC", connector);
+        userproperties.put("groupId", CONNECTOR_GROUPID);
         userproperties.put("version", version);
-        userproperties.put("domainName", domain_name);
-        userproperties.put("implementationArtifactId", artifactId);
-        userproperties.put("package", groupId);
+        userproperties.put("domainInterface", domaininterface);
+        userproperties.put("package", String.format("%s.%s", CONNECTOR_GROUPID, connector));
+        userproperties.put("domainPackage", domainGroupId);
         userproperties.put("name", project_name);
-        userproperties
-            .put("domainInterface", String.format("%s%s", Tools.capitalizeFirst(domain_name), "Domain"));
-        userproperties.put("implementationName", project_name);
+        userproperties.put("connectorName", Tools.capitalizeFirst(connector));
 
         getMavenExecutor().execute(this, goals, null, null, userproperties,
             getProject(), getSession(), getMaven(), true);
@@ -99,16 +106,16 @@ public class GenDomain extends AbstractOpenengsbMojo {
         File from = new File(artifactId);
         System.out.println(String.format("\"%s\" exists: %s", artifactId, from.exists()));
         if (from.exists()) {
-            System.out.println(String.format("Trying to rename to: \"%s\"", domain_name));
-            File to = new File(domain_name);
+            System.out.println(String.format("Trying to rename to: \"%s\"", connector));
+            File to = new File(connector);
             if (!to.exists()) {
                 from.renameTo(to);
                 System.out.println("renamed successfully");
-                renameSubmoduleInPom(artifactId, domain_name);
+                renameSubmoduleInPom(artifactId, connector);
             } else {
                 throw new MojoExecutionException("Couldn't rename: name clash!");
             }
-            System.out.println("DON'T FORGET TO ADD THE DOMAIN TO YOUR RELEASE/ASSEMBLY PROJECT!");
+            System.out.println("DON'T FORGET TO ADD THE CONNECTOR TO YOUR RELEASE/ASSEMBLY PROJECT!");
         } else {
             throw new MojoExecutionException("Artifact wasn't created as expected!");
         }
