@@ -150,21 +150,9 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         if (securityInterceptor == null) {
             securityInterceptor = new MethodInterceptor() {
                 @Override
-                public Object invoke(MethodInvocation invocation) throws Exception {
+                public Object invoke(MethodInvocation invocation) throws Throwable {
                     log.error("This service manager has no security-manager attached");
-                    try {
-                        return invocation.proceed();
-                    } catch (Throwable e) {
-                        // TODO remove this awkward code as soon as checkstyle is fixed.
-                        // OPENENGSB-686
-                        if (e instanceof Exception) {
-                            throw (Exception) e;
-                        }
-                        if (e instanceof Error) {
-                            throw (Error) e;
-                        }
-                        throw new Error(e);
-                    }
+                    return invocation.proceed();
                 }
             };
         }
