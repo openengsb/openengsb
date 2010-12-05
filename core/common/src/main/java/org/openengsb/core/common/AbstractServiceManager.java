@@ -136,10 +136,9 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
 
     private void createService(String id, Map<String, String> attributes) {
         InstanceType instance = factory.createServiceInstance(id, attributes);
-        instance = secureService(instance);
         Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
         final String[] interfaces = new String[]{ getDomainInterface().getName(), Domain.class.getName() };
-        ServiceRegistration registration = getBundleContext().registerService(interfaces, instance, serviceProperties);
+        ServiceRegistration registration = getBundleContext().registerService(interfaces, secureService(instance), serviceProperties);
         addDomainRepresentation(id, instance, registration);
 
     }
@@ -196,7 +195,8 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     @Override
     public void delete(String id) {
         synchronized (services) {
-            services.get(id).registration.unregister();
+            final DomainRepresentation domainRepresentation = services.get(id);
+            domainRepresentation.registration.unregister();
             services.remove(id);
             attributeValues.remove(id);
             connectorSetupStore.deleteConnectorSetup(getDomainConnectorPair(), id);
