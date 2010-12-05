@@ -49,7 +49,7 @@ public class UserManagerImpl implements UserManager {
         try {
             persistence.create(user);
         } catch (PersistenceException e) {
-            //TODO: rethink
+            throw new RuntimeException(e);
         }
     }
 
@@ -62,7 +62,7 @@ public class UserManagerImpl implements UserManager {
         try {
             persistence.update(oldUser, user);
         } catch (PersistenceException e) {
-            //TODO: rethink
+            throw new RuntimeException(e);
         }
     }
 
@@ -75,7 +75,7 @@ public class UserManagerImpl implements UserManager {
         try {
             persistence.delete(toBeDeleted);
         } catch (PersistenceException e) {
-            //TODO: rethink
+            throw new RuntimeException(e);
         }
     }
 
