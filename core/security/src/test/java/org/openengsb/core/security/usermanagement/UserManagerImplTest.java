@@ -33,9 +33,6 @@ import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.security.model.User;
-import org.openengsb.core.security.usermanagement.UserExistsException;
-import org.openengsb.core.security.usermanagement.UserManagerImpl;
-import org.openengsb.core.security.usermanagement.UserNotFoundException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -154,5 +151,5 @@ public class UserManagerImplTest {
         List<User> allUser = userManager.getAllUser();
         assertThat(allUser.size(), is(3));
     }
-    
+
 }

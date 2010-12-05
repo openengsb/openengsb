@@ -18,10 +18,9 @@ package org.openengsb.core.security;
 
 import org.openengsb.core.common.OpenEngSBService;
 
+public interface DummyService extends OpenEngSBService {
 
-public interface DummyService extends OpenEngSBService{
+    int getTheAnswerToLifeTheUniverseAndEverything();
 
-	public int getTheAnswerToLifeTheUniverseAndEverything();
-
-	public int test();
+    int test();
 }

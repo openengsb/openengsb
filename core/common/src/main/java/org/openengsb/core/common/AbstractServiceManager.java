@@ -138,7 +138,8 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         InstanceType instance = factory.createServiceInstance(id, attributes);
         Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
         final String[] interfaces = new String[]{ getDomainInterface().getName(), Domain.class.getName() };
-        ServiceRegistration registration = getBundleContext().registerService(interfaces, secureService(instance), serviceProperties);
+        ServiceRegistration registration =
+            getBundleContext().registerService(interfaces, secureService(instance), serviceProperties);
         addDomainRepresentation(id, instance, registration);
 
     }
@@ -149,9 +150,21 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
         if (securityInterceptor == null) {
             securityInterceptor = new MethodInterceptor() {
                 @Override
-                public Object invoke(MethodInvocation invocation) throws Throwable {
+                public Object invoke(MethodInvocation invocation) throws Exception {
                     log.error("This service manager has no security-manager attached");
-                    return invocation.proceed();
+                    try {
+                        return invocation.proceed();
+                    } catch (Throwable e) {
+                        // TODO remove this awkward code as soon as checkstyle is fixed.
+                        // OPENENGSB-686
+                        if (e instanceof Exception) {
+                            throw (Exception) e;
+                        }
+                        if (e instanceof Error) {
+                            throw (Error) e;
+                        }
+                        throw new Error(e);
+                    }
                 }
             };
         }

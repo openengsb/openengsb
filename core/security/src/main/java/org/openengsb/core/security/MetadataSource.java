@@ -27,7 +27,7 @@ import org.springframework.security.access.method.MethodSecurityMetadataSource;
 public class MetadataSource implements MethodSecurityMetadataSource {
 
     @Override
-    public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
+    public Collection<ConfigAttribute> getAttributes(Object object) {
         return Collections.emptyList();
     }
 
