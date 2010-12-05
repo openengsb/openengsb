@@ -43,6 +43,7 @@ import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
@@ -120,6 +121,12 @@ public class WorkflowServiceTest {
     @Test
     public void testProcessEvent() throws Exception {
         Event event = new Event();
+        service.processEvent(event);
+    }
+    
+    @Test
+    public void testProcessInternalWorkflowEvent() throws Exception {
+        InternalWorkflowEvent event = new InternalWorkflowEvent();
         service.processEvent(event);
     }
 
