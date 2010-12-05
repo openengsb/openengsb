@@ -87,7 +87,7 @@ public class TaskboxServiceTest {
         List<Task> ret = service.getOpenTasks();
         assertEquals(1, ret.size());
         for (Task task : result) {
-            assertFalse(task.isTaskFinished());
+            assertFalse(task.isFinished());
         }
     }
 }
