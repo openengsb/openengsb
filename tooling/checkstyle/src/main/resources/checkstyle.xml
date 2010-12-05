@@ -131,7 +131,9 @@
       <property name="severity" value="ignore"/>
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
     </module>
-    <module name="IllegalThrows"/>
+    <module name="IllegalThrows">
+      <property name="illegalClassNames" value="java.lang.Error, java.lang.RuntimeException"/>
+    </module>
     <module name="MultipleVariableDeclarations"/>
     <module name="LineLength">
       <property name="max" value="120"/>
