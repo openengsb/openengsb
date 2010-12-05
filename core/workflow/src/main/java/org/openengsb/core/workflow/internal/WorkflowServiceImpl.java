@@ -41,6 +41,7 @@ import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.osgi.framework.BundleContext;
@@ -109,8 +110,28 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     @Override
     public long startFlow(String processId) throws WorkflowException {
+        return this.startFlow(processId, null);
+    }
+    
+    @Override
+    public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
-        ProcessInstance processInstance = session.startProcess(processId);
+        ProcessInstance processInstance;
+        ProcessBag processBag;
+        
+        if(parameterMap == null)
+            parameterMap = new HashMap<String, Object>();
+            
+        if(!parameterMap.containsKey("processBag")) {
+            processBag = new ProcessBag();
+            parameterMap.put("processBag", processBag);
+        }
+        else 
+            processBag = (ProcessBag)parameterMap.get("processBag");
+                    
+        processInstance = session.startProcess(processId, parameterMap);
+        processBag.setProcessId(String.valueOf(processInstance.getId()));
+        
         return processInstance.getId();
     }
 
@@ -134,12 +155,6 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
             ruleCode.append(String.format(START_FLOW_CONSEQUENCE_LINE, flowId));
         }
         return ruleCode;
-    }
-
-    public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
-        StatefulKnowledgeSession session = getSessionForCurrentContext();
-        ProcessInstance processInstance = session.startProcess(processId, parameterMap);
-        return processInstance.getId();
     }
 
     public void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException {

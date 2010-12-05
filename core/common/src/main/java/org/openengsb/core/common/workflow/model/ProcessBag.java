@@ -31,6 +31,7 @@ public class ProcessBag {
     private String processId;
     private String context;
     private String user;
+    private Object processIdLock = new Object();
 
     private Map<String, Object> properties;
 
@@ -57,11 +58,23 @@ public class ProcessBag {
     }
 
     public void setProcessId(String processId) {
-        this.processId = processId;
+        synchronized (processIdLock) {
+            this.processId = processId;
+            processIdLock.notifyAll();
+        }
     }
 
     public String getProcessId() {
-        return processId;
+        synchronized (processIdLock) {
+            while (processId == null) {
+                try {
+                    processIdLock.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return processId;
+        }
     }
 
     public void setContext(String context) {
