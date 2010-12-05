@@ -16,7 +16,12 @@
 
 package org.openengsb.core.persistence.internal;
 
-import java.lang.reflect.Field;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +32,6 @@ import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;
 import org.neodatis.odb.Objects;
 import org.neodatis.odb.OdbConfiguration;
-import org.neodatis.odb.core.query.IQuery;
 import org.neodatis.odb.core.query.nq.NativeQuery;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceService;
@@ -179,37 +183,35 @@ public class NeodatisPersistenceService implements PersistenceService {
         }
     }
 
-    @SuppressWarnings({ "unchecked", "serial" })
-    private <TYPE> List<TYPE> queryByExample(ODB database, final TYPE example) {
-        final Field[] fields = example.getClass().getDeclaredFields();
-        IQuery query = new NativeQuery() {
+    @SuppressWarnings("serial")
+    private <TYPE> List<TYPE> queryByExample(ODB database, TYPE example) {
+        try {
+            List<Method> getters = reflectGettersFromPersistenceClass(example.getClass());
 
-            @Override
-            public boolean match(Object object) {
-                TYPE compare = (TYPE) object;
-                for (Field field : fields) {
-                    try {
-                        field.setAccessible(true);
-                        Object exampleField = field.get(example);
-                        Object compareField = field.get(compare);
-                        if (exampleField != null && !exampleField.equals(compareField)) {
-                            return false;
-                        }
-                    } catch (IllegalArgumentException e) {
-                        throw new RuntimeException(e);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-                return true;
+            NeodatisGetterQuery<TYPE> query = new NeodatisGetterQuery<TYPE>(getters, example);
+
+            return queryNeodatis(database, query);
+        } catch (IntrospectionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<Method> reflectGettersFromPersistenceClass(Class<?> clazz) throws IntrospectionException {
+        List<Method> methods = new ArrayList<Method>();
+
+        BeanInfo info = Introspector.getBeanInfo(clazz);
+        PropertyDescriptor[] properties = info.getPropertyDescriptors();
+        for (PropertyDescriptor property : properties) {
+            if (Modifier.isPublic(property.getReadMethod().getModifiers())) {
+                methods.add(property.getReadMethod());
             }
+        }
 
-            @Override
-            public Class<?> getObjectType() {
-                return example.getClass();
-            }
+        return methods;
+    }
 
-        };
+    @SuppressWarnings("unchecked")
+    private <TYPE> List<TYPE> queryNeodatis(ODB database, NativeQuery query) {
         Objects<Object> objects = database.getObjects(query);
         List<TYPE> retVal = new ArrayList<TYPE>();
         while (objects.hasNext()) {

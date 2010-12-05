@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.context;
+package org.openengsb.core.common.workflow;
 
-public class ContextStorageBean {
+@SuppressWarnings("serial")
+public class ProcessBagException extends WorkflowException {
 
-    private Context rootContext;
-
-    public ContextStorageBean(Context rootContext) {
-        this.rootContext = rootContext;
-    }
-
-    public Context getRootContext() {
-        return rootContext;
+    public ProcessBagException(String message) {
+        super(message);
     }
 
 }

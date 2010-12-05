@@ -23,11 +23,14 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
+ * equivalent to <code>mvn clean validate -Plicense-check</code>
+ * 
  * @goal licenseCheck
  * 
  * @inheritedByDefault false
  * 
  * @requiresProject true
+ * 
  */
 public class LicenseCheck extends AbstractOpenengsbMojo {
 
@@ -38,8 +41,7 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
 			return;
 		}
 
-		if (!(getProject().getGroupId().equals(OPENENGSB_ROOT_GROUP_ID) && getProject()
-				.getArtifactId().equals(OPENENGSB_ROOT_ARTIFACT_ID))) {
+		if (getProject().hasParent() && !getProject().getParent().getArtifactId().equals("oss-parent")) {
 			throw new MojoExecutionException(
 					"Please invoke this mojo only in the OpenEngSB root!");
 		}

@@ -23,6 +23,8 @@ import java.util.Properties;
 import org.apache.maven.plugin.MojoExecutionException;
 
 /**
+ * equivalent to <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
+ * 
  * @goal assemble
  * 
  * @inheritedByDefault false
@@ -31,30 +33,32 @@ import org.apache.maven.plugin.MojoExecutionException;
  */
 public class Assemble extends AbstractOpenengsbMojo {
 
-	@Override
-	public void execute() throws MojoExecutionException {
+    private List<String> goals;
+    private List<String> activatedProfiles;
+    Properties userProperties = new Properties();
 
-		if (!getProject().isExecutionRoot()) {
-			return;
-		}
+    @Override
+    public void execute() throws MojoExecutionException {
+        validateIfExecutionIsAllowed();
+        initializeMavenExecutionProperties();
+        executeMaven();
+    }
 
-		if (!(getProject().getGroupId().equals(OPENENGSB_ROOT_GROUP_ID) && getProject()
-				.getArtifactId().equals(OPENENGSB_ROOT_ARTIFACT_ID))) {
-			throw new MojoExecutionException(
-					"Please invoke this mojo only in the OpenEngSB root!");
-		}
+    private void validateIfExecutionIsAllowed() throws MojoExecutionException {
+        throwErrorIfProjectIsNotSetAsExecutionRoot();
+        throwErrorIfProjectIsNotExecutedInRootDirectory();
+        throwErrorIfMavenExecutorIsNull();
+    }
 
-		assert (getMavenExecutor() != null);
+    private void initializeMavenExecutionProperties() {
+        goals = Arrays.asList(new String[]{ "install" });
+        activatedProfiles = Arrays.asList(new String[]{ "release", "nightly" });
+        userProperties.put("maven.test.skip", "true");
+    }
 
-		List<String> goals = Arrays.asList(new String[] { "install" });
-		List<String> activatedProfiles = Arrays.asList(new String[] {
-				"release", "nightly" });
+    private void executeMaven() throws MojoExecutionException {
+        getMavenExecutor().execute(this, goals, activatedProfiles, null,
+            userProperties, getProject(), getSession(), getMaven(), true);
+    }
 
-		Properties userproperties = new Properties();
-		userproperties.put("skipTests", "true");
-
-		getMavenExecutor().execute(this, goals, activatedProfiles, null,
-				userproperties, getProject(), getSession(), getMaven(), true);
-
-	}
 }

@@ -20,13 +20,44 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.common.taskbox.model.Task;
 
 /**
- * WebTask extends a normal Task by adding graphical Functionality so it
- * can be used and displayed in Web-Applications 
+ * WebTask extends a normal Task by adding graphical functionality so it can be used and displayed in Wicket web
+ * application. It holds a generic wicket panel to display all containing properties. This panel can easily be
+ * overwritten by a custom panel.
  */
-public interface WebTask extends Task {
+public class WebTask extends Task {
+    public WebTask() {
+        super();
+        // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
+    }
+
+    public WebTask(String processId, String context, String user) {
+        super(processId, context, user);
+        // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
+    }
+
+    public WebTask(String taskType) {
+        super(taskType);
+        // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
+    }
+
+    public WebTask(String taskType, String processId, String context, String user) {
+        super(taskType, processId, context, user);
+        // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
+    }
+
     /**
-     * returns the according Wicket Panel for the task
-     * can be used to give an Overview over a Task and its contained TaskSteps
+     * returns the according Wicket panel class for the task
      */
-    Panel getPanel(String id);
+    @SuppressWarnings("unchecked")
+    public Class<? extends Panel> getPanelClass() {
+        return (Class<? extends Panel>) getProperty("panelClass");
+    }
+
+    /**
+     * sets the according Wicket panel class for the task
+     */
+    public void setPanelClass(Class<? extends Panel> panelClass) {
+        addOrReplaceProperty("panelClass", panelClass);
+    }
 }
+

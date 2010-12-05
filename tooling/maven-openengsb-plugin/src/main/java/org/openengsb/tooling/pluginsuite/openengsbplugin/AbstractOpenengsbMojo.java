@@ -19,49 +19,68 @@ package org.openengsb.tooling.pluginsuite.openengsbplugin;
 import org.apache.maven.Maven;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.MavenExecutor;
 
 public abstract class AbstractOpenengsbMojo extends AbstractMojo {
 
-	public final String OPENENGSB_ROOT_GROUP_ID = "org.openengsb";
-	public final String OPENENGSB_ROOT_ARTIFACT_ID = "openengsb-parent";
+    public final String OPENENGSB_ROOT_GROUP_ID = "org.openengsb";
+    public final String OPENENGSB_ROOT_ARTIFACT_ID = "openengsb-parent";
 
-	/**
-	 * @parameter expression="${project}"
-	 */
-	private MavenProject project;
+    /**
+     * @parameter expression="${project}"
+     */
+    private MavenProject project;
 
-	/**
-	 * @parameter expression="${session}"
-	 */
-	private MavenSession session;
+    /**
+     * @parameter expression="${session}"
+     */
+    private MavenSession session;
 
-	/**
-	 * @component role="org.apache.maven.Maven"
-	 */
-	private Maven maven;
+    /**
+     * @component role="org.apache.maven.Maven"
+     */
+    private Maven maven;
 
-	/**
-	 * @component role=
-	 *            "org.openengsb.tooling.pluginsuite.openengsbplugin.tools.MavenExecutor"
-	 */
-	private MavenExecutor mavenExecutor;
+    /**
+     * @component role= "org.openengsb.tooling.pluginsuite.openengsbplugin.tools.MavenExecutor"
+     */
+    private MavenExecutor mavenExecutor;
 
-	public MavenProject getProject() {
-		return project;
-	}
+    public MavenProject getProject() {
+        return project;
+    }
 
-	public MavenSession getSession() {
-		return session;
-	}
+    public MavenSession getSession() {
+        return session;
+    }
 
-	public Maven getMaven() {
-		return maven;
-	}
+    public Maven getMaven() {
+        return maven;
+    }
 
-	public MavenExecutor getMavenExecutor() {
-		return mavenExecutor;
-	}
+    public MavenExecutor getMavenExecutor() {
+        return mavenExecutor;
+    }
+
+    protected void throwErrorIfProjectIsNotSetAsExecutionRoot() throws MojoExecutionException {
+        if (!getProject().isExecutionRoot()) {
+            throw new MojoExecutionException("Project have to be set at execution root.");
+        }
+    }
+
+    protected void throwErrorIfProjectIsNotExecutedInRootDirectory() throws MojoExecutionException {
+        if (getProject().hasParent() && !getProject().getParent().getArtifactId().equals("oss-parent")) {
+            throw new MojoExecutionException(
+                "Please invoke this mojo only in the OpenEngSB root!");
+        }
+    }
+
+    protected void throwErrorIfMavenExecutorIsNull() throws MojoExecutionException {
+        if (getMavenExecutor() == null) {
+            throw new MojoExecutionException("Maven executor cannot be null");
+        }
+    }
 
 }

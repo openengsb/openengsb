@@ -14,18 +14,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.context;
+package org.openengsb.ui.taskbox.model;
 
-public class ContextStorageBean {
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-    private Context rootContext;
+import java.util.Date;
 
-    public ContextStorageBean(Context rootContext) {
-        this.rootContext = rootContext;
+import org.junit.Before;
+import org.junit.Test;
+
+public class WebTaskTest {
+    private WebTask task;
+
+    @Before
+    public void init() throws Exception {
+        task = new WebTask();
     }
 
-    public Context getRootContext() {
-        return rootContext;
+    @Test
+    public void init_shouldInitializeProperties() throws Exception {
+        assertTrue(task.getTaskId().length() > 0);
+        assertFalse(task.isFinished());
+        assertTrue(task.getTaskCreationTimestamp().before(new Date(System.currentTimeMillis() + 10)));
     }
-
 }
+
