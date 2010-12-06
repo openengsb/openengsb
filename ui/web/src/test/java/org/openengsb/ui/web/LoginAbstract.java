@@ -76,6 +76,7 @@ public abstract class LoginAbstract {
         });
         ArrayList<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
         grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
+        grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_USER"));
         final User admin = new User("admin", "password", grantedAuthorities);
         when(userManager.loadUserByUsername("admin")).thenAnswer(new Answer<User>() {
             @Override
