@@ -51,6 +51,7 @@ public final class RuleUtil {
         addFlow(manager, "flowtest");
         addFlow(manager, "ci");
         addFlow(manager, "floweventtest");
+        //addFlow(manager, "propertybagtest");
     }
 
     private static void addFlow(RuleManager manager, String flow) throws IOException, RuleBaseException {
