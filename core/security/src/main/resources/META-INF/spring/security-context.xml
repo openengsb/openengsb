@@ -54,7 +54,9 @@
         <bean class="org.springframework.security.access.vote.AffirmativeBased">
           <property name="DecisionVoters">
             <list>
-              <bean class="org.openengsb.core.security.AuthenticatedUserAccessDecisionVoter" />
+              <bean class="org.openengsb.core.security.AuthenticatedUserAccessDecisionVoter" init-method="init">
+                <property name="persistenceManager" ref="persistenceManager" />
+              </bean>
             </list>
           </property>
         </bean>

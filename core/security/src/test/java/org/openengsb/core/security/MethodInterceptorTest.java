@@ -17,17 +17,19 @@
 package org.openengsb.core.security;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceService;
+import org.openengsb.core.security.model.ServiceAuthorizedList;
 import org.openengsb.core.security.model.User;
 import org.openengsb.core.security.usermanagement.UserManagerImpl;
 import org.openengsb.core.test.DummyPersistenceManager;
@@ -44,22 +46,24 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import edu.emory.mathcs.backport.java.util.Arrays;
 
 public class MethodInterceptorTest {
 
     private static final String DEFAULT_USER = "foo";
     private MethodSecurityInterceptor interceptor;
-    private Bundle bundleMock;
     private ProviderManager authenticationManager;
     private PersistenceService persistence;
     private DummyService service;
     private DummyService service2;
+    private DummyPersistenceManager persistenceManager;
+    private BundleContext bundleContextMock;
 
     @Before
     public void setUp() throws Exception {
+        initPersistence();
         authenticationManager = initAuthenticationManager();
         interceptor = new MethodSecurityInterceptor();
         MethodSecurityMetadataSource metadataSource = new MetadataSource();
@@ -74,6 +78,26 @@ public class MethodInterceptorTest {
         service2 = (DummyService) secure(new DummyServiceImpl("21"));
     }
 
+    private void initPersistence() throws PersistenceException {
+        persistenceManager = new DummyPersistenceManager();
+        bundleContextMock = mock(BundleContext.class);
+        Bundle bundleMock = mock(Bundle.class);
+        when(bundleContextMock.getBundle()).thenReturn(bundleMock);
+        persistence = persistenceManager.getPersistenceForBundle(bundleMock);
+
+        List<GrantedAuthority> authorities =
+            Arrays.asList(new GrantedAuthority[]{ new GrantedAuthorityImpl("ROLE_USER") });
+        persistence.create(new ServiceAuthorizedList("42", authorities));
+
+        User user = new User(DEFAULT_USER, "password", authorities);
+        persistence.create(user);
+
+        List<GrantedAuthority> adminAuthorities =
+            Arrays.asList(new GrantedAuthority[]{ new GrantedAuthorityImpl("ROLE_ADMIN") });
+        User admin = new User("admin", "adminpw", adminAuthorities);
+        persistence.create(admin);
+    }
+
     private List<AccessDecisionVoter> makeVoterList() {
         List<AccessDecisionVoter> result = new ArrayList<AccessDecisionVoter>();
         result.add(makeVoter());
@@ -81,7 +105,10 @@ public class MethodInterceptorTest {
     }
 
     private AccessDecisionVoter makeVoter() {
-        AccessDecisionVoter voter = new AuthenticatedUserAccessDecisionVoter();
+        AuthenticatedUserAccessDecisionVoter voter = new AuthenticatedUserAccessDecisionVoter();
+        voter.setPersistenceManager(persistenceManager);
+        voter.setBundleContext(bundleContextMock);
+        voter.init();
         return voter;
     }
 
@@ -98,13 +125,7 @@ public class MethodInterceptorTest {
 
     private UserManagerImpl createUserDetailsService() throws PersistenceException {
         final UserManagerImpl userDetailsService = new UserManagerImpl();
-        final DummyPersistenceManager persistenceManager = new DummyPersistenceManager();
         userDetailsService.setPersistenceManager(persistenceManager);
-        BundleContext bundleContextMock = mock(BundleContext.class);
-        bundleMock = mock(Bundle.class);
-        when(bundleContextMock.getBundle()).thenReturn(bundleMock);
-        persistence = persistenceManager.getPersistenceForBundle(bundleMock);
-        persistence.create(new User(DEFAULT_USER, "password"));
         userDetailsService.setBundleContext(bundleContextMock);
         userDetailsService.init();
         return userDetailsService;
@@ -125,23 +146,33 @@ public class MethodInterceptorTest {
 
     @Test(expected = BadCredentialsException.class)
     public void testFalseAuthenticate() {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(DEFAULT_USER, "wrong"));
+        authenticate(DEFAULT_USER, "wrong");
     }
 
     @Test
     public void testInvokeMethod() throws Exception {
-        Authentication authentication =
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(DEFAULT_USER, "password"));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        authenticate(DEFAULT_USER, "password");
         // just invoke the method, and avoid failing
         service.getTheAnswerToLifeTheUniverseAndEverything();
     }
 
     @Test(expected = AccessDeniedException.class)
     public void testInvokeMethodOnWrongServiceInstance() throws Exception {
-        Authentication authentication =
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(DEFAULT_USER, "password"));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        authenticate(DEFAULT_USER, "password");
         service2.getTheAnswerToLifeTheUniverseAndEverything();
     }
+
+    @Test
+    public void testAdminAccess() throws Exception {
+        authenticate("admin", "adminpw");
+        service2.getTheAnswerToLifeTheUniverseAndEverything();
+        service.getTheAnswerToLifeTheUniverseAndEverything();
+    }
+
+    private void authenticate(String user, String password) {
+        Authentication authentication =
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user, password));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
 }
