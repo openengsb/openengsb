@@ -255,19 +255,18 @@ public class WorkflowServiceTest {
         verify(logService, times(2)).doSomething("Hello World");
     }
     
-    /*@Test
+    @Test
     public void testStartProcessWithProperyBag_ChangePropertyByScriptNode() throws Exception {
         ProcessBag processBag = new ProcessBag();
         processBag.addProperty("test", "test");
-        processBag.setUser("xyz");
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", processBag);
-        InternalWorkflowEvent e = new InternalWorkflowEvent("TestEvent", processBag);
+        Event e = new Event();
         
         long id = service.startFlow("propertybagtest", parameterMap);
         service.processEvent(e);
         service.waitForFlowToFinish(id);
         
         assertThat(((String)processBag.getProperty("test")), is("xyz"));
-    }*/
+    }
 }

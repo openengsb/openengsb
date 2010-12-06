@@ -51,7 +51,10 @@ public final class RuleUtil {
         addFlow(manager, "flowtest");
         addFlow(manager, "ci");
         addFlow(manager, "floweventtest");
-        //addFlow(manager, "propertybagtest");
+        
+        manager.addImport("org.openengsb.core.common.workflow.model.ProcessBag");
+        manager.addImport("org.openengsb.core.common.Event");
+        addFlow(manager, "propertybagtest");
     }
 
     private static void addFlow(RuleManager manager, String flow) throws IOException, RuleBaseException {
