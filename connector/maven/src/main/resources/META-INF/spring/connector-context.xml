@@ -33,6 +33,7 @@
         <ref bean="serviceFactory" />
       </constructor-arg>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
+      <property name="securityInterceptor" ref="securityInterceptor" />
     </bean>
   </osgi:service>
 
@@ -46,6 +47,7 @@
         <ref bean="serviceFactory" />
       </constructor-arg>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
+      <property name="securityInterceptor" ref="securityInterceptor" />
     </bean>
   </osgi:service>
 
@@ -59,6 +61,7 @@
         <ref bean="serviceFactory" />
       </constructor-arg>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
+      <property name="securityInterceptor" ref="securityInterceptor" />
     </bean>
   </osgi:service>
 
@@ -79,5 +82,7 @@
   <osgi:reference id="testEvents" interface="org.openengsb.domain.test.TestDomainEvents" />
   <osgi:reference id="deployEvents" interface="org.openengsb.domain.deploy.DeployDomainEvents" />
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextCurrentService" />
+
+  <osgi:reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
 
 </beans>

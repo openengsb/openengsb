@@ -36,6 +36,7 @@
         </bean>
       </constructor-arg>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
+      <property name="securityInterceptor" ref="securityInterceptor" />
     </bean>
   </osgi:service>
 
@@ -45,4 +46,5 @@
   </bean>
 
   <osgi:reference id="persistenceServiceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+  <osgi:reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
 </beans>

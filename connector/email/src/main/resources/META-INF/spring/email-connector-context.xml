@@ -42,7 +42,9 @@
           </property>
         </bean>
       </property>
+      <property name="securityInterceptor" ref="securityInterceptor" />
     </bean>
   </osgi:service>
+  <osgi:reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
 
 </beans>
