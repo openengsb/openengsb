@@ -36,6 +36,7 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.usermanagement.UserManager;
 import org.openengsb.core.common.usermanagement.exceptions.UserExistsException;
+import org.openengsb.core.common.usermanagement.exceptions.UserManagementException;
 import org.openengsb.core.common.usermanagement.model.User;
 import org.osgi.framework.BundleContext;
 
@@ -72,7 +73,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUserCreation_ShouldWork() {
+    public void testUserCreation_ShouldWork() throws UserManagementException {
         tester.startPage(UserService.class);
 
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
@@ -86,7 +87,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testErrorMessage_shouldReturnUserExists() {
+    public void testErrorMessage_shouldReturnUserExists() throws UserManagementException {
         tester.startPage(UserService.class);
         doThrow(new UserExistsException("user exists")).
             when(userManager).createUser(new User("user1", "password"));
@@ -101,7 +102,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testShowCreatedUser_ShouldShowAdmin() {
+    public void testShowCreatedUser_ShouldShowAdmin() throws UserManagementException {
         when(userManager.getAllUser()).thenAnswer(new Answer<List<User>>() {
             @Override
             public List<User> answer(InvocationOnMock invocationOnMock) {
@@ -117,7 +118,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testErrorMessage_ShouldReturnWrongSecondPassword() {
+    public void testErrorMessage_ShouldReturnWrongSecondPassword() throws UserManagementException {
         tester.startPage(UserService.class);
         doThrow(new UserExistsException("user exists")).
             when(userManager).createUser(new User("user1", "password"));
@@ -131,6 +132,18 @@ public class UserServiceTest {
     }
 
 
-    
+    @Test
+    public void testPersistenceError_ShouldThrowUserManagementExceptionAndShowErrorMessage()
+        throws UserManagementException {
+        tester.startPage(UserService.class);
+        doThrow(new UserManagementException("database error")).
+            when(userManager).createUser(new User("user1", "password"));
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password");
+        formTester.submit();
+        tester.assertErrorMessages(new String[]{"Database error occurred"});
+    }
 
 }

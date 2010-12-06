@@ -25,6 +25,7 @@ import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.usermanagement.UserManager;
 import org.openengsb.core.common.usermanagement.exceptions.UserExistsException;
+import org.openengsb.core.common.usermanagement.exceptions.UserManagementException;
 import org.openengsb.core.common.usermanagement.exceptions.UserNotFoundException;
 import org.openengsb.core.common.usermanagement.model.User;
 import org.osgi.framework.BundleContext;
@@ -42,19 +43,19 @@ public class UserManagerImpl implements UserManager {
     }
 
     @Override
-    public void createUser(User user) {
+    public void createUser(User user) throws UserManagementException {
         if (userNameExists(user.getUsername())) {
             throw new UserExistsException("User with username: " + user.getUsername() + " already exists");
         }
         try {
             persistence.create(user);
         } catch (PersistenceException e) {
-            throw new RuntimeException(e);
+            throw new UserManagementException(e);
         }
     }
 
     @Override
-    public void updateUser(User user) {
+    public void updateUser(User user) throws UserManagementException {
         User oldUser = new User(user.getUsername());
         if (!userNameExists(oldUser.getUsername())) {
             throw new UserNotFoundException("User with username: " + oldUser.getUsername() + " does not exists");
@@ -62,12 +63,12 @@ public class UserManagerImpl implements UserManager {
         try {
             persistence.update(oldUser, user);
         } catch (PersistenceException e) {
-            throw new RuntimeException(e);
+            throw new UserManagementException(e);
         }
     }
 
     @Override
-    public void deleteUser(String username) {
+    public void deleteUser(String username) throws UserManagementException {
         if (!userNameExists(username)) {
             throw new UserNotFoundException("User with username: " + username + " does not exists");
         }
@@ -75,7 +76,7 @@ public class UserManagerImpl implements UserManager {
         try {
             persistence.delete(toBeDeleted);
         } catch (PersistenceException e) {
-            throw new RuntimeException(e);
+            throw new UserManagementException(e);
         }
     }
 
@@ -104,7 +105,7 @@ public class UserManagerImpl implements UserManager {
         this.persistenceManager = persistenceManager;
     }
 
-    public void init() {
+    public void init() throws UserManagementException {
         persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
         try {
             loadUserByUsername(null);
