@@ -34,6 +34,9 @@ public class ConnectorSetupBean {
     }
 
     public Map<String, String> getProperties() {
+        if (properties == null) {
+            return null;
+        }
         return new HashMap<String, String>(properties);
     }
 
