@@ -34,13 +34,10 @@
     <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/usermanagement/UserManager.java">User manager</link>
     supports basic CRUD mechanisms. Instances of the user manager have to implement following methods
       * create(User): create a new user and save it to the persistence
-      * loadUserByUsername(String): get a single user from the persistence
-      * updateUser(User): update a specified user
-      * deleteUser(User): deletes a user from the persistence
-      * getAllUser(): get all user from the persistence
     The <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/usermanagement/model/User.java">User</link>
     is the used user model. It holds attributes like a password, username, if the user is enabled, or his account is expired or locked.
-    Another attribute are the authorities. These are the authorities granted to the user.
+    Another attribute are the authorities. These are the roles granted to the user. A user is identified by his username. So the username
+    can not be changed.
   </para>
 
 </chapter>

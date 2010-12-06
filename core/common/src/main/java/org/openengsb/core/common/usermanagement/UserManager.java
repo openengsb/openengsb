@@ -25,17 +25,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public interface UserManager extends UserDetailsService, BundleContextAware {
 
     /**
-     * create an user and save it to the persistence,
+     * create a user and save it to the persistence,
      */
     void createUser(User user);
 
     /**
-     * update the specified user in the persistence
+     * update the specified user in the persistence,
+     * the user is identified by its name, so the name can not be changed
      */
     void updateUser(User user);
 
     /**
-     * delete an user, specified by its username from the persistence
+     * delete a user, specified by its username from the persistence
      */
     void deleteUser(String username);
 
