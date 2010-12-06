@@ -16,7 +16,11 @@
 
 package org.openengsb.ui.web;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,11 +43,14 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.usermanagement.UserManagerImpl;
 import org.openengsb.core.usermanagement.model.User;
+import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
 import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
 public class LoginPageTest {
 
@@ -64,7 +71,6 @@ public class LoginPageTest {
             }
         };
         tester = new WicketTester(app);
-
     }
 
     private void mockIndex() {
@@ -93,6 +99,15 @@ public class LoginPageTest {
             @Override
             public User answer(InvocationOnMock invocationOnMock) {
                 return user;
+            }
+        });
+        ArrayList<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
+        grantedAuthorities.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
+        final User admin = new User("admin", "password", grantedAuthorities);
+        when(userManager.loadUserByUsername("admin")).thenAnswer(new Answer<User>() {
+            @Override
+            public User answer(InvocationOnMock invocationOnMock) {
+                return admin;
             }
         });
         contextMock.putBean("authenticationManager", authManager);
@@ -150,5 +165,29 @@ public class LoginPageTest {
         tester.assertComponent("header", HeaderTemplate.class);
     }
 
-    
+    @Test
+    public void testHeaderComponentsForAdmin_UserServiceShouldBeVisible() {
+        tester.startPage(LoginPage.class);
+        FormTester formTester = tester.newFormTester("loginForm");
+        formTester.setValue("username", "admin");
+        formTester.setValue("password", "password");
+        formTester.submit();
+        BookmarkablePageLabelLink userServiceLink = (BookmarkablePageLabelLink) tester
+            .getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
+        assertNotNull(userServiceLink);
+        assertThat(userServiceLink.getPageClass().getCanonicalName(), is(UserService.class.getCanonicalName()));        
+    }
+
+    @Test
+    public void testHeaderComponentsForNormalUser_UserServiceShouldNotBeVisible() {
+        tester.startPage(LoginPage.class);
+        FormTester formTester = tester.newFormTester("loginForm");
+        formTester.setValue("username", "user");
+        formTester.setValue("password", "password");
+        formTester.submit();
+        BookmarkablePageLabelLink userServiceLink = (BookmarkablePageLabelLink) tester
+            .getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
+        assertNull(userServiceLink);
+    }
+
 }
