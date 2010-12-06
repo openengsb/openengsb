@@ -44,6 +44,7 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
@@ -253,5 +254,20 @@ public class WorkflowServiceTest {
         service.processEvent(event);
         verify(logService, times(2)).doSomething("Hello World");
     }
-
+    
+    /*@Test
+    public void testStartProcessWithProperyBag_ChangePropertyByScriptNode() throws Exception {
+        ProcessBag processBag = new ProcessBag();
+        processBag.addProperty("test", "test");
+        processBag.setUser("xyz");
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("processBag", processBag);
+        InternalWorkflowEvent e = new InternalWorkflowEvent("TestEvent", processBag);
+        
+        long id = service.startFlow("propertybagtest", parameterMap);
+        service.processEvent(e);
+        service.waitForFlowToFinish(id);
+        
+        assertThat(((String)processBag.getProperty("test")), is("xyz"));
+    }*/
 }

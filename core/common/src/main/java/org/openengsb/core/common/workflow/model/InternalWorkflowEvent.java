@@ -45,7 +45,10 @@ public class InternalWorkflowEvent extends Event {
 
     @Override
     public String getType() {
-        return type;
+        if(type != null)
+            return type;
+        else
+            return this.getClass().getSimpleName();
     }
 
     public void setType(String type) {
