@@ -101,7 +101,7 @@ public class DefaultMavenExecutor implements MavenExecutor {
         if (embeddedRequest.getActiveProfiles() != null && embeddedRequest.getActiveProfiles().size() > 0) {
             String profilesInfo = "active profiles:";
             for (String profile : embeddedRequest.getActiveProfiles()) {
-                goalsInfo += String.format(" %s", profile);
+                profilesInfo += String.format(" %s", profile);
             }
             log.info(profilesInfo);
         }
