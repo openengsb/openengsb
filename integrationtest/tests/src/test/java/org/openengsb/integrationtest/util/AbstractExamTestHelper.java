@@ -73,10 +73,10 @@ public abstract class AbstractExamTestHelper {
                 break;
             }
         }
-        authenticate();
+        authenticateAsAdmin();
     }
 
-    protected void authenticate() throws InterruptedException {
+    protected void authenticateAsAdmin() throws InterruptedException {
         authenticate("admin", "password");
     }
 

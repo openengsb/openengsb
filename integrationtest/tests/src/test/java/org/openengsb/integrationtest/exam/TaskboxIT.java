@@ -34,7 +34,7 @@ public class TaskboxIT extends AbstractExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
-        authenticate();
+        authenticateAsAdmin();
         taskboxService = retrieveService(getBundleContext(), TaskboxService.class);
         ruleManager = retrieveService(getBundleContext(), RuleManager.class);
         ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);
