@@ -19,25 +19,43 @@ package org.openengsb.core.taskbox;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.openengsb.core.common.persistence.PersistenceException;
+import org.openengsb.core.common.persistence.PersistenceManager;
+import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 public class TaskboxServiceTest {
     private TaskboxServiceImpl service;
     private WorkflowService workflowService;
+    private PersistenceService persistenceService;
+    private TaskboxServiceInternalImpl internalService;
 
     @Before
     public void init() throws Exception {
         workflowService = mock(WorkflowService.class);
 
+        persistenceService = mock(PersistenceService.class);
+        PersistenceManager persistenceManager = mock(PersistenceManager.class);
+        when(persistenceManager.getPersistenceForBundle(any(Bundle.class))).thenReturn(persistenceService);
+
         service = new TaskboxServiceImpl();
         service.setWorkflowService(workflowService);
+
+        internalService = new TaskboxServiceInternalImpl();
+        internalService.setBundleContext(mock(BundleContext.class));
+        internalService.setPersistenceManager(persistenceManager);
+        internalService.init();
     }
 
     @SuppressWarnings("unchecked")
@@ -61,4 +79,10 @@ public class TaskboxServiceTest {
         assertEquals("testmessage", service.getWorkflowMessage());
     }
 
+    @Test
+    public void testCreateNewTask_ShouldReturnNewTask() throws PersistenceException {
+        Task newTask = null;
+        newTask = internalService.createNewTask("testId", "testContext", "testUser");
+        assertEquals("testUser", newTask.getUser());
+    }
 }
