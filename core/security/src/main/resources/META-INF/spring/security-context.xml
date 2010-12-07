@@ -42,6 +42,7 @@
       </list>
     </property>
   </bean>
+  <osgi:service interface="org.springframework.security.authentication.AuthenticationManager" ref="authenticationManager" />
 
   <osgi:service interface="org.aopalliance.intercept.MethodInterceptor">
     <bean class="org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor">

@@ -51,6 +51,7 @@ public final class BaseExamConfiguration {
         List<String> importantBundles = new ArrayList<String>();
         importantBundles.add("org.openengsb.core.persistence");
         importantBundles.add("org.openengsb.core.workflow");
+        importantBundles.add("org.openengsb.core.security");
         return importantBundles;
     }
 
