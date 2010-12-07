@@ -39,9 +39,6 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (!getProject().isExecutionRoot()) {
-            return;
-        }
         validateIfExecutionIsAllowed();
         initializeMavenExecutionProperties();
         executeMaven();
