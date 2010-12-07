@@ -59,31 +59,29 @@ public class TaskboxServiceTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testStartWorkflow_ShouldStartOneWorkflow() throws TaskboxException, WorkflowException {
+    public void testStartWorkflow_shouldStartOneWorkflow() throws TaskboxException, WorkflowException {
         service.startWorkflow("tasktest", "ticket", null);
 
         verify(workflowService).startFlow(Mockito.anyString(), Mockito.anyMap());
     }
 
     @Test(expected = TaskboxException.class)
-    public void testGetEmptyWorkflowMessage_ShouldThrowTaskboxException() throws TaskboxException {
+    public void testGetEmptyWorkflowMessage_shouldThrowTaskboxException() throws TaskboxException {
         service.getWorkflowMessage();
     }
 
     @Test
-    public void testWorkflowMessage_ShouldSetString() throws TaskboxException {
+    public void testWorkflowMessage_shouldSetString() throws TaskboxException {
         service.setWorkflowMessage("testmessage");
         assertEquals("testmessage", service.getWorkflowMessage());
     }
 
     @Test
-    public void testGetOpenTasks_ShouldReturnOpenTasks() {
-        /* result object for querys to persistence mock */
+    public void testGetOpenTasks_shouldReturnOpenTasks() {
         List<Task> result = new ArrayList<Task>();
         result.add(new Task());
         when(persistenceService.query(any(Task.class))).thenReturn(result);
 
-        /* actual test */
         List<Task> ret = service.getOpenTasks();
         assertEquals(1, ret.size());
         for (Task task : result) {

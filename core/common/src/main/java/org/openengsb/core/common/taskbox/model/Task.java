@@ -29,21 +29,21 @@ import org.openengsb.core.common.workflow.model.ProcessBag;
  */
 public class Task extends ProcessBag {
     private static Task emptyTask;
-    
+
     public Task() {
         super();
         init();
     }
-    
-    public static Task returnNullTask() {
-        if(emptyTask == null) {
+
+    public static Task createNullTask() {
+        if (emptyTask == null) {
             emptyTask = new Task();
             emptyTask.setProcessId(null);
             emptyTask.setContext(null);
             emptyTask.setUser(null);
             emptyTask.setProperties(null);
         }
-        
+
         return emptyTask;
     }
 

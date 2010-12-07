@@ -125,7 +125,7 @@ public class WorkflowServiceTest {
     }
     
     @Test
-    public void testProcessInternalWorkflowEvent() throws Exception {
+    public void testProcessInternalWorkflowEvent_shouldNotFail() throws Exception {
         InternalWorkflowEvent event = new InternalWorkflowEvent();
         service.processEvent(event);
     }

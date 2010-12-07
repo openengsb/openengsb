@@ -54,7 +54,6 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
         if (message == null) {
             throw new TaskboxException();
         }
-
         return message;
     }
 
@@ -68,9 +67,7 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
         try {
             Map<String, Object> parameterMap = new HashMap<String, Object>();
             parameterMap.put(taskVariableName, task);
-
             workflowService.startFlow(workflowName, parameterMap);
-
             log.trace("Started workflow " + workflowName);
         } catch (Exception e) {
             log.error(e.getMessage() + " STACKTRACE: " + e.getStackTrace());
@@ -99,7 +96,7 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
 
     @Override
     public List<Task> getOpenTasks() {
-        Task example = Task.returnNullTask();
+        Task example = Task.createNullTask();
         return getTasksForExample(example);
     }
 
@@ -109,9 +106,13 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     }
 
     @Override
-    public void finishTask(Task task) throws PersistenceException, WorkflowException {
-        TaskFinishedEvent finishedEvent=new TaskFinishedEvent(task);
-        persistence.delete(task);
+    public void finishTask(Task task) throws WorkflowException {
+        TaskFinishedEvent finishedEvent = new TaskFinishedEvent(task);
+        try {
+            persistence.delete(task);
+        } catch (PersistenceException e) {
+            throw new WorkflowException(e.getMessage());
+        }
         workflowService.processEvent(finishedEvent);
     }
 }
