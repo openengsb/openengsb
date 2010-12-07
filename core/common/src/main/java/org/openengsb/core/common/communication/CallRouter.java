@@ -22,8 +22,8 @@ public interface CallRouter {
 
     void registerPort(String scheme, Port port);
 
-    void call(URI destination, MethodCall call);
+    void call(String portId, URI destination, MethodCall call);
 
-    MethodReturn callSync(URI destination, MethodCall call);
+    MethodReturn callSync(String portId, URI destination, MethodCall call);
 
 }
