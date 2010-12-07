@@ -237,4 +237,9 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     public void setSecurityInterceptor(Advice securityInterceptor) {
         this.securityInterceptor = securityInterceptor;
     }
+
+    @Override
+    public String getInstanceId() {
+        return getClass().getName();
+    }
 }
