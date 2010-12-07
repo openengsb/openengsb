@@ -97,7 +97,7 @@ pconf.pyc
 #================
 #pax-provision
 #================
-runner
+*runner
 
 #================
 #wicket generated files
