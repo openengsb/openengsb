@@ -35,7 +35,7 @@ public class Task extends ProcessBag {
         init();
     }
 
-    public static Task createNullTask() {
+    public static Task createTaskWithAllValuesSetToNull() {
         if (emptyTask == null) {
             emptyTask = new Task();
             emptyTask.setProcessId(null);

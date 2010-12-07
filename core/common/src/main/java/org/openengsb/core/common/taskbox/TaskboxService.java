@@ -19,7 +19,6 @@ package org.openengsb.core.common.taskbox;
 import java.util.List;
 
 import org.openengsb.core.common.Event;
-import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
 
@@ -79,5 +78,5 @@ public interface TaskboxService {
      * @throws WorkflowException, if there is a problem while processing the event or a problem with the persistence
      *         occurs.
      */
-    void finishTask(Task task) throws PersistenceException, WorkflowException;
+    void finishTask(Task task) throws WorkflowException;
 }
