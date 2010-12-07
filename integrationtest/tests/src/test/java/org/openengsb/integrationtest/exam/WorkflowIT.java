@@ -40,6 +40,7 @@ import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.springframework.security.access.AccessDeniedException;
 
 @RunWith(JUnit4TestRunner.class)
 public class WorkflowIT extends AbstractExamTestHelper {
@@ -103,6 +104,12 @@ public class WorkflowIT extends AbstractExamTestHelper {
         workflowService.processEvent(e);
 
         assertThat(logService.isWasCalled(), is(true));
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testAccessToRuleManager() throws Exception {
+        authenticate("user", "password");
+        addHelloWorldRule();
     }
 
     private void addHelloWorldRule() throws Exception {
