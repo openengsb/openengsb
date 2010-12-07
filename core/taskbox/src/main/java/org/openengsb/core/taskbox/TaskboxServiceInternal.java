@@ -31,51 +31,26 @@ public interface TaskboxServiceInternal {
 
     /**
      * Create a new Task object from an existing Task
-     * 
-     * @param task
-     * @return Task
      */
     Task createNewTask(Task task) throws PersistenceException;
 
     /**
      * Create a new Task object from a properties-HashMap
-     * 
-     * @param properties
-     * @return Task
      */
     Task createNewTask(HashMap<String, Object> properties) throws PersistenceException;
 
     /**
      * Create a new Task object with given parameters
-     * 
-     * @param processId
-     * @param context
-     * @param user
-     * @return Task
      */
     Task createNewTask(String processId, String context, String user) throws PersistenceException;
 
     /**
      * Create a new Task object with given parameters
-     * 
-     * @param taskType
-     * @param processId
-     * @param context
-     * @param user
-     * @return Task
      */
     Task createNewTask(String taskType, String processId, String context, String user) throws PersistenceException;
 
     /**
      * Create a new Task object with given parameters
-     * 
-     * @param taskType
-     * @param name
-     * @param description
-     * @param processId
-     * @param context
-     * @param user
-     * @return Task
      */
     Task createNewTask(String taskType, String name, String description, String processId, String context, String user)
             throws PersistenceException;
