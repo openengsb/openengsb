@@ -51,8 +51,6 @@ public final class RuleUtil {
         addFlow(manager, "flowtest");
         addFlow(manager, "ci");
         addFlow(manager, "floweventtest");
-        
-        manager.addImport("org.openengsb.core.common.workflow.model.ProcessBag");
         addFlow(manager, "propertybagtest");
     }
 

@@ -125,11 +125,11 @@ public class WorkflowServiceTest {
         service.processEvent(event);
     }
     
-    @Test
+    /*@Test
     public void testProcessInternalWorkflowEvent_shouldNotFail() throws Exception {
         InternalWorkflowEvent event = new InternalWorkflowEvent();
         service.processEvent(event);
-    }
+    }*/
 
     @Test
     public void testProcessEventTriggersHelloWorld() throws Exception {
