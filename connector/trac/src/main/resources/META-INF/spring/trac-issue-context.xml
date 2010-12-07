@@ -36,6 +36,26 @@
     </bean>
   </osgi:service>
 
+  <bean id="realServiceManager" class="org.openengsb.connector.trac.TracServiceManager" init-method="init">
+    <constructor-arg>
+      <bean class="org.openengsb.connector.trac.internal.TracServiceInstanceFactory" />
+    </constructor-arg>
+    <property name="connectorSetupStore" ref="connectorSetupStore" />
+    <property name="securityInterceptor" ref="securityInterceptor" />
+  </bean>
+
+  <bean id="serviceManager" class="org.springframework.aop.framework.ProxyFactoryBean">
+    <property name="proxyInterfaces">
+      <value>org.openengsb.core.common.ServiceManager</value>
+    </property>
+    <property name="target" ref="realServiceManager" />
+    <property name="interceptorNames">
+      <list>
+        <value>securityInterceptor</value>
+      </list>
+    </property>
+  </bean>
+
   <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
     init-method="init">
     <property name="persistenceManager" ref="persistenceServiceManager" />
