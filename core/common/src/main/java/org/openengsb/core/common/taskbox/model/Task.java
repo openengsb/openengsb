@@ -47,8 +47,8 @@ public class Task extends ProcessBag {
         return emptyTask;
     }
 
-    public Task(Task task) {
-        super(task);
+    public Task(ProcessBag bag) {
+        super(bag);
     }
 
     public Task(HashMap<String, Object> properties) {

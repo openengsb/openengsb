@@ -17,22 +17,23 @@
 package org.openengsb.core.taskbox;
 
 import java.util.HashMap;
+
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.common.workflow.model.ProcessBag;
 
 /**
- * TaskboxServiceInternal is an internal Service (used by the workflowService),
- * providing methods to create new tasks for human interaction.
+ * TaskboxServiceInternal is an internal Service (used by the workflowService), providing methods to create new tasks
+ * for human interaction.
  * 
- * The component uses the persistence compontent to store tasks and the workflow
- * component to take control of specific workflows.
+ * The component uses the persistence compontent to store tasks and the workflow component to take control of specific
+ * workflows.
  */
 public interface TaskboxServiceInternal {
-
     /**
      * Create a new Task object from an existing Task
      */
-    Task createNewTask(Task task) throws PersistenceException;
+    Task createNewTask(ProcessBag bag) throws PersistenceException;
 
     /**
      * Create a new Task object from a properties-HashMap
@@ -53,5 +54,5 @@ public interface TaskboxServiceInternal {
      * Create a new Task object with given parameters
      */
     Task createNewTask(String taskType, String name, String description, String processId, String context, String user)
-            throws PersistenceException;
+        throws PersistenceException;
 }
