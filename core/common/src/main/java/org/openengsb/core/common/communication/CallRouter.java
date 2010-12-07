@@ -20,7 +20,7 @@ import java.net.URI;
 
 public interface CallRouter {
 
-    void registerPort(Port port);
+    void registerPort(String scheme, Port port);
 
     void call(URI destination, MethodCall call);
 
