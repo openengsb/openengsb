@@ -126,7 +126,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
             processBag = new ProcessBag();
             parameterMap.put("processBag", processBag);
         } else { 
-            processBag = (ProcessBag)parameterMap.get("processBag");
+            processBag = (ProcessBag) parameterMap.get("processBag");
         }            
         processInstance = session.startProcess(processId, parameterMap);
         processBag.setProcessId(String.valueOf(processInstance.getId()));

@@ -125,11 +125,12 @@ public class WorkflowServiceTest {
         service.processEvent(event);
     }
     
-    /*@Test
+    @Test
     public void testProcessInternalWorkflowEvent_shouldNotFail() throws Exception {
         InternalWorkflowEvent event = new InternalWorkflowEvent();
+        event.getProcessBag().setProcessId("0");
         service.processEvent(event);
-    }*/
+    }
 
     @Test
     public void testProcessEventTriggersHelloWorld() throws Exception {
@@ -265,6 +266,6 @@ public class WorkflowServiceTest {
         long id = service.startFlow("propertybagtest", parameterMap);
         service.waitForFlowToFinish(id);
         
-        assertThat(((String)processBag.getProperty("test")), is("xyz"));
+        assertThat((String) processBag.getProperty("test"), is("xyz"));
     }
 }
