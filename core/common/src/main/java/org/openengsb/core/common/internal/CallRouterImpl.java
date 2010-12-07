@@ -19,6 +19,7 @@ package org.openengsb.core.common.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -91,19 +92,26 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
         }
     }
 
-    private Map<String, Port> ports;
+    private Map<String, Port> ports = new HashMap<String, Port>();
     private BundleContext bundleContext;
 
     @Override
     public void registerPort(String scheme, Port port) {
+        ports.put(scheme, port);
         PortHandler portHandler2 = new PortHandler(port);
         new Thread(portHandler2).start();
     }
 
     @Override
-    public void call(String portId, URI destination, MethodCall call) {
-        // TODO Auto-generated method stub
-
+    public void call(String portId, final URI destination, final MethodCall call) {
+        final Port port = ports.get(portId);
+        Runnable callHandler = new Runnable() {
+            @Override
+            public void run() {
+                port.send(destination, call);
+            }
+        };
+        new Thread(callHandler).start();
     }
 
     @Override

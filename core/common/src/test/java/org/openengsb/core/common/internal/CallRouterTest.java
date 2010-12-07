@@ -16,12 +16,15 @@
 
 package org.openengsb.core.common.internal;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.net.URI;
 
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -45,8 +48,8 @@ public class CallRouterTest {
         callrouter.setBundleContext(bundleContext);
         callrouter.start();
         callrouter.registerPort("jms", portMock);
-        Thread.sleep(300);
         callrouter.stop();
+        Thread.sleep(300);
 
         verify(portMock, atLeast(1)).receive();
     }
@@ -60,10 +63,25 @@ public class CallRouterTest {
 
         callrouter.start();
         callrouter.registerPort("jms", portMock);
-        callrouter.stop();
         Thread.sleep(300);
-
+        callrouter.stop();
         verify(serviceMock, atLeast(1)).test();
+    }
+
+    @Test
+    public void testSendMethodCall_shouldCallPort() throws Exception {
+        CallRouterImpl callrouter = new CallRouterImpl();
+        Port portMock = createPortMock();
+        BundleContext bundleContext = createBundleContextMock();
+        callrouter.setBundleContext(bundleContext);
+
+        callrouter.start();
+        callrouter.registerPort("jms", portMock);
+        callrouter.call("jms", URI.create("jms://localhost"), new MethodCall());
+        Thread.sleep(300);
+        callrouter.stop();
+
+        verify(portMock, atLeast(1)).send(any(URI.class), any(MethodCall.class));
     }
 
     private BundleContext createBundleContextMock() throws InvalidSyntaxException {
