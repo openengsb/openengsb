@@ -17,16 +17,19 @@
 package org.openengsb.core.taskbox;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.Event;
+import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.common.taskbox.model.TaskFinishedEvent;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.osgi.framework.BundleContext;
@@ -51,7 +54,6 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
         if (message == null) {
             throw new TaskboxException();
         }
-
         return message;
     }
 
@@ -65,9 +67,7 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
         try {
             Map<String, Object> parameterMap = new HashMap<String, Object>();
             parameterMap.put(taskVariableName, task);
-
             workflowService.startFlow(workflowName, parameterMap);
-
             log.trace("Started workflow " + workflowName);
         } catch (Exception e) {
             log.error(e.getMessage() + " STACKTRACE: " + e.getStackTrace());
@@ -92,5 +92,27 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     @Override
     public void processEvent(Event event) throws WorkflowException {
         workflowService.processEvent(event);
+    }
+
+    @Override
+    public List<Task> getOpenTasks() {
+        Task example = Task.createTaskWithAllValuesSetToNull();
+        return getTasksForExample(example);
+    }
+
+    @Override
+    public List<Task> getTasksForExample(Task example) {
+        return persistence.query(example);
+    }
+
+    @Override
+    public void finishTask(Task task) throws WorkflowException {
+        TaskFinishedEvent finishedEvent = new TaskFinishedEvent(task);
+        try {
+            persistence.delete(task);
+        } catch (PersistenceException e) {
+            throw new WorkflowException(e.getMessage());
+        }
+        workflowService.processEvent(finishedEvent);
     }
 }

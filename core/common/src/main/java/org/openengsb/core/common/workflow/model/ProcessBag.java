@@ -17,6 +17,7 @@
 package org.openengsb.core.common.workflow.model;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.openengsb.core.common.workflow.ProcessBagException;
@@ -31,13 +32,13 @@ public class ProcessBag {
     private String context;
     private String user;
 
-    private HashMap<String, Object> properties;
+    private Map<String, Object> properties;
 
     public ProcessBag() {
         properties = new HashMap<String, Object>();
     }
 
-    public ProcessBag(HashMap<String, Object> properties) {
+    public ProcessBag(Map<String, Object> properties) {
         this.properties = properties;
     }
 
@@ -79,6 +80,10 @@ public class ProcessBag {
         return user;
     }
 
+    public void setProperties(Map<String, Object> properties) {
+        this.properties = properties;
+    }
+    
     /**
      * Adds a new property if, but only if it does not exist already
      * 

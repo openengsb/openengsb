@@ -40,6 +40,7 @@ import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.osgi.framework.BundleContext;
@@ -76,6 +77,32 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         session.fireAllRules();
         for (ProcessInstance p : session.getProcessInstances()) {
             p.signalEvent(event.getType(), event);
+        }
+        session.retract(factHandle);
+    }
+
+    @Override
+    public void processEvent(InternalWorkflowEvent event) throws WorkflowException {
+        long processId = 0;
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        FactHandle factHandle = session.insert(event);
+        session.fireAllRules();
+
+        if (event.getProcessBag() != null) {
+            if (event.getProcessBag().getProcessId() != null) {
+                processId = Long.parseLong(event.getProcessBag().getProcessId());
+            }
+        }
+        if (processId != 0) {
+            ProcessInstance p = session.getProcessInstance(processId);
+            if (p != null) {
+                p.signalEvent(event.getType(), event);
+            }
+        } else {
+            for (ProcessInstance p : session.getProcessInstances()) {
+                p.signalEvent(event.getType(), event);
+            }
+            log.warn("No ProcessId supplied for Event <" + event.getType() + ">");
         }
         session.retract(factHandle);
     }
@@ -155,7 +182,6 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         Collection<String> globalsToProcess = new ArrayList<String>(rulemanager.listGlobals().keySet());
         globalsToProcess.remove("flowHelper");
         globalsToProcess.removeAll(services.keySet());
-
         return discoverNewGlobalValues(globalsToProcess);
     }
 
@@ -311,4 +337,3 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         this.timeout = timeout;
     }
 }
-
