@@ -121,20 +121,8 @@
   </issueManagement>
 
   <ciManagement>
-    <system>Hudson</system>
-    <url>http://build.openengsb.org/</url>
-    <notifiers>
-      <notifier>
-        <type>mail</type>
-        <sendOnError>true</sendOnError>
-        <sendOnFailure>true</sendOnFailure>
-        <sendOnSuccess>true</sendOnSuccess>
-        <sendOnWarning>true</sendOnWarning>
-        <configuration>
-          <address>openengsb-dev@googlegroups.com</address>
-        </configuration>
-      </notifier>
-    </notifiers>
+    <system>OpenCIT</system>
+    <url>http://build.openengsb.org/opencit/</url>
   </ciManagement>
 
   <developers>

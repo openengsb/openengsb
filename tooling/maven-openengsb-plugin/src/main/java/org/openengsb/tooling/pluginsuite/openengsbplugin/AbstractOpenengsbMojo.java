@@ -21,6 +21,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.DefaultMavenExecutor;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.MavenExecutor;
 
 public abstract class AbstractOpenengsbMojo extends AbstractMojo {
@@ -43,11 +44,6 @@ public abstract class AbstractOpenengsbMojo extends AbstractMojo {
      */
     private Maven maven;
 
-    /**
-     * @component role= "org.openengsb.tooling.pluginsuite.openengsbplugin.tools.MavenExecutor"
-     */
-    private MavenExecutor mavenExecutor;
-
     public MavenProject getProject() {
         return project;
     }
@@ -60,13 +56,16 @@ public abstract class AbstractOpenengsbMojo extends AbstractMojo {
         return maven;
     }
 
-    public MavenExecutor getMavenExecutor() {
-        return mavenExecutor;
+    public MavenExecutor getNewMavenExecutor() {
+        return new DefaultMavenExecutor();
     }
 
-    protected void throwErrorIfProjectIsNotSetAsExecutionRoot() throws MojoExecutionException {
+    protected void throwErrorIfWrapperRequestIsRecursive() throws MojoExecutionException {
         if (!getProject().isExecutionRoot()) {
-            throw new MojoExecutionException("Project have to be set at execution root.");
+            String msg = "Please execute this mojo with the maven -N flag!\n";
+            msg += "Hint: This doesn't mean that the embedded request isn't executed recursivley ";
+            msg += "(This depends on the mojo implementation)";
+            throw new MojoExecutionException(msg);
         }
     }
 
@@ -74,12 +73,6 @@ public abstract class AbstractOpenengsbMojo extends AbstractMojo {
         if (getProject().hasParent() && !getProject().getParent().getArtifactId().equals("oss-parent")) {
             throw new MojoExecutionException(
                 "Please invoke this mojo only in the OpenEngSB root!");
-        }
-    }
-
-    protected void throwErrorIfMavenExecutorIsNull() throws MojoExecutionException {
-        if (getMavenExecutor() == null) {
-            throw new MojoExecutionException("Maven executor cannot be null");
         }
     }
 

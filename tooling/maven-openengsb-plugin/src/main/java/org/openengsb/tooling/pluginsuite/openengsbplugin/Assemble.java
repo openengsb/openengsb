@@ -35,7 +35,7 @@ public class Assemble extends AbstractOpenengsbMojo {
 
     private List<String> goals;
     private List<String> activatedProfiles;
-    Properties userProperties = new Properties();
+    private Properties userProperties = new Properties();
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -45,9 +45,8 @@ public class Assemble extends AbstractOpenengsbMojo {
     }
 
     private void validateIfExecutionIsAllowed() throws MojoExecutionException {
-        throwErrorIfProjectIsNotSetAsExecutionRoot();
+        throwErrorIfWrapperRequestIsRecursive();
         throwErrorIfProjectIsNotExecutedInRootDirectory();
-        throwErrorIfMavenExecutorIsNull();
     }
 
     private void initializeMavenExecutionProperties() {
@@ -57,8 +56,8 @@ public class Assemble extends AbstractOpenengsbMojo {
     }
 
     private void executeMaven() throws MojoExecutionException {
-        getMavenExecutor().execute(this, goals, activatedProfiles, null,
-            userProperties, getProject(), getSession(), getMaven(), true);
+        getNewMavenExecutor().setRecursive(true).execute(this, goals, activatedProfiles, null,
+            userProperties, getProject(), getSession(), getMaven());
     }
 
 }

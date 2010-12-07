@@ -16,7 +16,6 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -38,6 +37,19 @@ public class GenConnector extends AbstractOpenengsbMojo {
 
     private boolean archetypeCatalogLocalOnly = false;
 
+    private List<String> goals;
+    private Properties userproperties;
+
+    // INPUT
+    private String domain_name;
+    private String domaininterface;
+    private String connector;
+    private String version;
+    private String project_name;
+    private String domainGroupId;
+    private String domainArtifactId;
+    private String artifactId;
+
     // CONSTANTS
     private static final String ARCHETYPE_GROUPID = "org.openengsb.tooling.archetypes";
     private static final String ARCHETYPE_ARTIFACTID = "openengsb-tooling-archetypes-connector";
@@ -56,17 +68,33 @@ public class GenConnector extends AbstractOpenengsbMojo {
 
     private String default_version;
 
+    private void validateIfExecutionIsAllowed() throws MojoExecutionException {
+        throwErrorIfWrapperRequestIsRecursive();
+    }
+
     @Override
     public void execute() throws MojoExecutionException {
 
-        if (!getProject().isExecutionRoot()) {
-            return;
-        }
-
-        assert (getMavenExecutor() != null);
+        validateIfExecutionIsAllowed();
 
         initDefaults();
+        readUserInput();
+        initializeMavenExecutionProperties();
 
+        executeMaven();
+
+        Tools.renameArtifactFolderAndUpdateParentPom(artifactId, connector);
+
+        System.out.println("DON'T FORGET TO ADD THE CONNECTOR TO YOUR RELEASE/ASSEMBLY PROJECT!");
+
+    }
+
+    private void initDefaults() {
+        // version should be the same as the version of the OpenEngSB
+        default_version = getProject().getVersion();
+    }
+
+    private void readUserInput() {
         Scanner sc = new Scanner(System.in);
 
         System.out.print("Use only local archetypeCatalog? (y/n): ");
@@ -75,24 +103,27 @@ public class GenConnector extends AbstractOpenengsbMojo {
             archetypeCatalogLocalOnly = true;
         }
 
-        String domain_name = readValue(sc, "Domain Name", DEFAULT_DOMAIN);
-        String domaininterface =
-            readValue(sc, "Domain Interface", String.format("%s%s", Tools.capitalizeFirst(domain_name), "Domain"));
-        String connector = readValue(sc, "Connector Name", "myconnector");
-        String version = readValue(sc, "Version", default_version);
-        String project_name = readValue(sc,
+        domain_name = Tools.readValue(sc, "Domain Name", DEFAULT_DOMAIN);
+        domaininterface =
+            Tools
+                .readValue(sc, "Domain Interface", String.format("%s%s", Tools.capitalizeFirst(domain_name), "Domain"));
+        connector = Tools.readValue(sc, "Connector Name", "myconnector");
+        version = Tools.readValue(sc, "Version", default_version);
+        project_name = Tools.readValue(sc,
             "Project Name",
             String.format("%s%s", DEFAULT_CONNECTORNAME_PREFIX,
                 Tools.capitalizeFirst(connector)));
 
-        String domainGroupId = String.format("%s%s", DOMAIN_GROUPIDPREFIX, domain_name);
-        String domainArtifactId = String.format("%s%s", DOMAIN_ARTIFACTIDPREFIX, domain_name);
-        String artifactId = String.format("%s%s", CONNECTOR_ARTIFACTIDPREFIX, connector);
+        domainGroupId = String.format("%s%s", DOMAIN_GROUPIDPREFIX, domain_name);
+        domainArtifactId = String.format("%s%s", DOMAIN_ARTIFACTIDPREFIX, domain_name);
+        artifactId = String.format("%s%s", CONNECTOR_ARTIFACTIDPREFIX, connector);
+    }
 
-        List<String> goals = Arrays
+    private void initializeMavenExecutionProperties() {
+        goals = Arrays
             .asList(new String[]{ "archetype:generate" });
 
-        Properties userproperties = new Properties();
+        userproperties = new Properties();
 
         userproperties.put("archetypeGroupId", ARCHETYPE_GROUPID);
         userproperties.put("archetypeArtifactId", ARCHETYPE_ARTIFACTID);
@@ -112,54 +143,11 @@ public class GenConnector extends AbstractOpenengsbMojo {
         if (archetypeCatalogLocalOnly) {
             userproperties.put("archetypeCatalog", "local");
         }
-
-        getMavenExecutor().execute(this, goals, null, null, userproperties,
-            getProject(), getSession(), getMaven(), true);
-
-        File from = new File(artifactId);
-        System.out.println(String.format("\"%s\" exists: %s", artifactId, from.exists()));
-        if (from.exists()) {
-            System.out.println(String.format("Trying to rename to: \"%s\"", connector));
-            File to = new File(connector);
-            if (!to.exists()) {
-                from.renameTo(to);
-                System.out.println("renamed successfully");
-                renameSubmoduleInPom(artifactId, connector);
-            } else {
-                throw new MojoExecutionException("Couldn't rename: name clash!");
-            }
-            System.out.println("DON'T FORGET TO ADD THE CONNECTOR TO YOUR RELEASE/ASSEMBLY PROJECT!");
-        } else {
-            throw new MojoExecutionException("Artifact wasn't created as expected!");
-        }
-
     }
 
-    private void initDefaults() {
-        // version should be the same as the version of the OpenEngSB
-        default_version = getProject().getVersion();
-    }
-
-    private String readValue(Scanner sc, String name, String defaultvalue) {
-        System.out.print(String.format("%s [%s]: ", name, defaultvalue));
-        String line = sc.nextLine();
-        if (line == null || line.matches("[\\s]*")) {
-            return defaultvalue;
-        }
-        return line;
-    }
-
-    private void renameSubmoduleInPom(String artifactId, String domain_name) throws MojoExecutionException {
-        try {
-            File pomFile = new File("pom.xml");
-            if (pomFile.exists()) {
-                Tools.replaceInFile(pomFile, String.format("<module>%s</module>", artifactId),
-                    String.format("<module>%s</module>", domain_name));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new MojoExecutionException("Couldn't modifiy module entry in pom file!");
-        }
+    private void executeMaven() throws MojoExecutionException {
+        getNewMavenExecutor().setRecursive(true).execute(this, goals, null, null, userproperties,
+            getProject(), getSession(), getMaven());
     }
 
 }

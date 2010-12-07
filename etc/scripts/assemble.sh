@@ -21,4 +21,4 @@ cd $ABSPATH/../../
 
 GOAL="assemble"
 
-mvn org.openengsb.tooling.pluginsuite:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL
+mvn -N org.openengsb.tooling.pluginsuite:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL
