@@ -80,7 +80,7 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testCreateNewTask_ShouldReturnNewTask() throws PersistenceException {
+    public void testCreateNewTask_shouldReturnNewTask() throws PersistenceException {
         Task newTask = null;
         newTask = internalService.createNewTask("testId", "testContext", "testUser");
         assertEquals("testUser", newTask.getUser());
