@@ -21,7 +21,8 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.OpenEngSBService;
@@ -37,6 +38,8 @@ import org.springframework.osgi.context.BundleContextAware;
 public class CallRouterImpl implements CallRouter, BundleContextAware {
 
     private Log log = LogFactory.getLog(CallRouterImpl.class);
+
+    private ExecutorService executor = Executors.newCachedThreadPool();
 
     private class PortHandler implements Runnable {
         private Port port;
@@ -98,8 +101,8 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
     @Override
     public void registerPort(String scheme, Port port) {
         ports.put(scheme, port);
-        PortHandler portHandler2 = new PortHandler(port);
-        new Thread(portHandler2).start();
+        PortHandler portHandler = new PortHandler(port);
+        executor.submit(portHandler);
     }
 
     @Override
@@ -111,7 +114,7 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
                 port.send(destination, call);
             }
         };
-        new Thread(callHandler).start();
+        executor.submit(callHandler);
     }
 
     @Override
@@ -125,7 +128,7 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
     }
 
     public void stop() {
-
+        executor.shutdownNow();
     }
 
     @Override
