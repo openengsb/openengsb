@@ -101,4 +101,9 @@ public abstract class AbstractRuleManager implements RuleManager {
         return tmpFile;
     }
 
+    @Override
+    public String getInstanceId() {
+        return getClass().getName();
+    }
+
 }
