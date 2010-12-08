@@ -18,6 +18,7 @@ package org.openengsb.ui.taskbox.model;
 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.common.workflow.model.ProcessBag;
 
 /**
  * WebTask extends a normal Task by adding graphical functionality so it can be used and displayed in Wicket web
@@ -30,18 +31,8 @@ public class WebTask extends Task {
         // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
     }
 
-    public WebTask(String processId, String context, String user) {
-        super(processId, context, user);
-        // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
-    }
-
-    public WebTask(String taskType) {
-        super(taskType);
-        // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
-    }
-
-    public WebTask(String taskType, String processId, String context, String user) {
-        super(taskType, processId, context, user);
+    public WebTask(ProcessBag bag) {
+        super(bag);
         // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
     }
 

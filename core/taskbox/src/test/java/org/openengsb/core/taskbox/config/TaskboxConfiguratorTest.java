@@ -40,7 +40,7 @@ public class TaskboxConfiguratorTest {
     public void testInit_shouldMakeAllCalls() throws RuleBaseException {
         configurator.init();
 
-        RuleBaseElementId workflowId = new RuleBaseElementId(RuleBaseElementType.Process, "humanTask");
+        RuleBaseElementId workflowId = new RuleBaseElementId(RuleBaseElementType.Process, "humantask");
         Mockito.verify(ruleManager).add(Mockito.eq(workflowId), Mockito.anyString());
         
         Mockito.verify(ruleManager).addGlobal(Mockito.anyString(), Mockito.eq("taskbox"));

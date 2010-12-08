@@ -50,13 +50,6 @@ public class ProcessBag {
         this.user = bag.user;
     }
 
-    public ProcessBag(String processId, String context, String user) {
-        this();
-        this.processId = processId;
-        this.context = context;
-        this.user = user;
-    }
-
     public void setProcessId(String processId) {
         synchronized (processIdLock) {
             this.processId = processId;
@@ -64,7 +57,7 @@ public class ProcessBag {
         }
     }
 
-    public String readProcessId() {
+    public String getProcessId() {
         synchronized (processIdLock) {
             while (processId == null) {
                 try {
@@ -92,7 +85,7 @@ public class ProcessBag {
     public String getUser() {
         return user;
     }
-    
+
     /**
      * Adds a new property if, but only if it does not exist already
      * 

@@ -35,7 +35,6 @@ public class TaskTest {
     @Test
     public void init_shouldInitializeProperties() throws Exception {
         assertTrue(task.getTaskId().length() > 0);
-        assertFalse(task.isFinished());
         assertTrue(task.getTaskCreationTimestamp().before(new Date(System.currentTimeMillis() + 10)));
     }
     
@@ -44,11 +43,5 @@ public class TaskTest {
         String id = task.getTaskId();
         assertFalse(task.generateTaskId().equals(id));
         assertFalse(task.getTaskId().equals(id));
-    }
-    
-    @Test
-    public void finishTask_shouldSetProperty() throws Exception {
-        task.finishTask();
-        assertTrue(task.isFinished());
     }
 }

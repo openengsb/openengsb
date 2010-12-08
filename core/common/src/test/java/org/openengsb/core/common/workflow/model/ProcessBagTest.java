@@ -36,23 +36,6 @@ public class ProcessBagTest {
         pb = new ProcessBag();
     }
 
-    @Test
-    public void constructorAndGetMethods_shouldReturnCorrectValues() throws Exception {
-        pb = new ProcessBag("4711", "c", "test-user");
-
-        assertEquals(pb.readProcessId(), "4711");
-        assertEquals(pb.getContext(), "c");
-        assertEquals(pb.getUser(), "test-user");
-    }
-
-    @Test
-    public void getSetProperty_shouldSetAndGetProperValues() throws Exception {
-        pb = new ProcessBag("4711", "c", "test-user");
-        pb.addProperty("test", "42");
-        assertTrue(pb.containsProperty("test"));
-        assertEquals(pb.getProperty("test"), "42");
-    }
-
     @Test(expected = ProcessBagException.class)
     public void addProperty_shouldReturnException() throws ProcessBagException {
         pb.addProperty("test", "42");
