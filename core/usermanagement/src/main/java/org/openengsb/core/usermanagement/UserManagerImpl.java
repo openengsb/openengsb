@@ -23,9 +23,11 @@ import java.util.List;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.usermanagement.exceptions.UserExistsException;
-import org.openengsb.core.usermanagement.exceptions.UserNotFoundException;
-import org.openengsb.core.usermanagement.model.User;
+import org.openengsb.core.common.usermanagement.UserManager;
+import org.openengsb.core.common.usermanagement.exceptions.UserExistsException;
+import org.openengsb.core.common.usermanagement.exceptions.UserManagementException;
+import org.openengsb.core.common.usermanagement.exceptions.UserNotFoundException;
+import org.openengsb.core.common.usermanagement.model.User;
 import org.osgi.framework.BundleContext;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
@@ -48,7 +50,7 @@ public class UserManagerImpl implements UserManager {
         try {
             persistence.create(user);
         } catch (PersistenceException e) {
-            //TODO: rethink
+            throw new UserManagementException(e);
         }
     }
 
@@ -61,7 +63,7 @@ public class UserManagerImpl implements UserManager {
         try {
             persistence.update(oldUser, user);
         } catch (PersistenceException e) {
-            //TODO: rethink
+            throw new UserManagementException(e);
         }
     }
 
@@ -74,7 +76,7 @@ public class UserManagerImpl implements UserManager {
         try {
             persistence.delete(toBeDeleted);
         } catch (PersistenceException e) {
-            //TODO: rethink
+            throw new UserManagementException(e);
         }
     }
 

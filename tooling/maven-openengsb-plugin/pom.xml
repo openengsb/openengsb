@@ -20,9 +20,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.openengsb.tooling</groupId>
-    <artifactId>openengsb-tooling-parent</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <groupId>org.sonatype.oss</groupId>
+    <artifactId>oss-parent</artifactId>
+    <version>5</version>
   </parent>
 
   <groupId>org.openengsb.tooling.pluginsuite</groupId>
@@ -50,6 +50,11 @@
   <properties>
     <!-- settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <junit.version>4.8.2</junit.version>
+    <mvn.pluginapi.version>2.0</mvn.pluginapi.version>
+    <mvn.core.version>3.0</mvn.core.version>
+    <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
+
   </properties>
 
   <dependencies>
@@ -83,3 +88,4 @@
     </plugins>
   </build>
 </project>
+

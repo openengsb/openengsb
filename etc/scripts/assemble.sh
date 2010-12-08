@@ -15,6 +15,10 @@
 # limitations under the License.
 #
 
-cd $(dirname $0)/../../
-mvn install -Prelease,nightly -Dmaven.test.skip=true
+source $(dirname $0)/openengsbplugin-common.sh
 
+cd $ABSPATH/../../
+
+GOAL="assemble"
+
+mvn -N org.openengsb.tooling.pluginsuite:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL

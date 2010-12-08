@@ -15,6 +15,10 @@
 # limitations under the License.
 #
 
-cd $(dirname $0)/../..
-mvn clean validate -Plicense-check
+source $(dirname $0)/openengsbplugin-common.sh
 
+cd $ABSPATH/../../
+
+GOAL="licenseCheck"
+
+mvn -N org.openengsb.tooling.pluginsuite:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL

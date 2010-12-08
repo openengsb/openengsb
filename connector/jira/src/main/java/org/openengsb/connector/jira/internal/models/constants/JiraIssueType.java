@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.usermanagement;
+package org.openengsb.connector.jira.internal.models.constants;
 
-import java.util.List;
+public enum JiraIssueType {
+    BUG("1"), NEW_FEATURE("2"), TASK("3"), IMPROVEMENT("4");
 
-import org.openengsb.core.usermanagement.model.User;
-import org.springframework.osgi.context.BundleContextAware;
-import org.springframework.security.core.userdetails.UserDetailsService;
+    private String id;
 
-public interface UserManager extends UserDetailsService, BundleContextAware {
+    private JiraIssueType(String id) {
+        this.id = id;
+    }
 
-    void createUser(User user) ;
+    public String getId() {
+        return this.id;
+    }
 
-    void updateUser(User user) ;
-
-    void deleteUser(String username) ;
-
-    User loadUserByUsername(String username);
-
-    List<User> getAllUser();
+    @Override
+    public String toString() {
+        return this.id;
+    }
 
 }

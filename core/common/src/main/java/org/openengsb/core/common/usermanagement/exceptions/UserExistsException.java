@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.usermanagement.exceptions;
+package org.openengsb.core.common.usermanagement.exceptions;
 
 import org.springframework.security.core.AuthenticationException;
 

@@ -1,0 +1,86 @@
+/**
+ * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.openengsb.core.taskbox;
+
+import java.util.HashMap;
+
+import org.openengsb.core.common.persistence.PersistenceException;
+import org.openengsb.core.common.persistence.PersistenceManager;
+import org.openengsb.core.common.persistence.PersistenceService;
+import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.common.workflow.model.ProcessBag;
+import org.osgi.framework.BundleContext;
+import org.springframework.osgi.context.BundleContextAware;
+
+public class TaskboxServiceInternalImpl implements TaskboxServiceInternal, BundleContextAware {
+
+    private PersistenceService persistence;
+    private PersistenceManager persistenceManager;
+    private BundleContext bundleContext;
+
+    public void init() {
+        persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
+    }
+
+    public void setPersistenceManager(PersistenceManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
+    }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
+
+    @Override
+    public Task createNewTask(ProcessBag bag) throws PersistenceException {
+        Task newTask = new Task(bag);
+        persistence.create(newTask);
+        return newTask;
+    }
+
+    @Override
+    public Task createNewTask(HashMap<String, Object> properties) throws PersistenceException {
+        Task newTask = new Task(properties);
+        persistence.create(newTask);
+        return newTask;
+    }
+
+    @Override
+    public Task createNewTask(String processId, String context, String user) throws PersistenceException {
+        Task newTask = new Task(processId, context, user);
+        persistence.create(newTask);
+        return newTask;
+    }
+
+    @Override
+    public Task createNewTask(String taskType, String processId, String context, String user)
+        throws PersistenceException {
+        Task newTask = new Task(taskType, processId, context, user);
+        persistence.create(newTask);
+        return newTask;
+    }
+
+    @Override
+    public Task createNewTask(String taskType, String name, String description, String processId, String context,
+            String user) throws PersistenceException {
+        Task newTask = new Task(taskType, processId, context, user);
+        newTask.setName(name);
+        newTask.setDescription(description);
+        persistence.create(newTask);
+        return newTask;
+    }
+}

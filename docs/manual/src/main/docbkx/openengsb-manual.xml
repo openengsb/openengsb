@@ -49,6 +49,14 @@
     <xi:include href="introduction/whentousetheopenengsb.xml"/>
   </part>
 
+  <part xml:id="tutorials.manual">
+    <title>Tutorials</title>
+    <partintro>
+      <para>This part contains tutorials for the OpenEngSB.</para>
+    </partintro>
+    <xi:include href="howto/howtoCreateConnector.xml" />
+  </part>
+
   <part xml:id="user.manual">
     <title>OpenEngSB Framework</title>
     <partintro>
@@ -63,6 +71,7 @@
     <xi:include href="user/architecture.xml" />
     <xi:include href="user/context.xml"/>
     <xi:include href="user/persistence.xml"/>
+    <xi:include href="user/usermanagement.xml"/>
     <xi:include href="user/workflows.xml"/>
     <xi:include href="user/taskbox.xml"/>
     <xi:include href="user/plugins.xml" />
@@ -99,14 +108,6 @@
     <xi:include href="developer/wrapped.xml" />
     <xi:include href="developer/release.xml" />
     <xi:include href="developer/admin.xml" />
-  </part>
-
-  <part xml:id="tutorials.manual">
-    <title>Tutorials</title>
-    <partintro>
-      <para>This part contains tutorials for the OpenEngSB.</para>
-    </partintro>
-    <xi:include href="howto/howtoCreateConnector.xml" />
   </part>
 
   <part xml:id="appendix">

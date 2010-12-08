@@ -10,6 +10,7 @@ openengsb-1.1.0.RELEASE
   * openengsb-core-usermanagement
   * openengsb-ui-taskbox
   * openengsb-ui-common-wicket
+  * openengsb-connector-jira
 
 ### Removed Projects
   * openengsb-config-settings

@@ -17,6 +17,7 @@
 package org.openengsb.core.workflow.persistence;
 
 import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.test.DummyPersistence;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 
 public final class PersistenceTestUtil {

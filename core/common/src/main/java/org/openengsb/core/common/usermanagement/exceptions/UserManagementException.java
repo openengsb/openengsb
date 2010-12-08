@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.usermanagement.exceptions;
+package org.openengsb.core.common.usermanagement.exceptions;
 
-import org.springframework.security.core.AuthenticationException;
+public class UserManagementException extends RuntimeException {
 
-public class UserNotFoundException extends AuthenticationException {
-    
-    public UserNotFoundException(String msg, Throwable t) {
-        super(msg, t);
+    public UserManagementException() {
     }
 
-    public UserNotFoundException(String msg) {
-        super(msg);
+    public UserManagementException(String s) {
+        super(s);
     }
 
-    public UserNotFoundException(String msg, Object extraInformation) {
-        super(msg, extraInformation);
+    public UserManagementException(String s, Throwable throwable) {
+        super(s, throwable);
+    }
+
+    public UserManagementException(Throwable throwable) {
+        super(throwable);
     }
 }

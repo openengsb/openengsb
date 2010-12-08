@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.model;
+package org.openengsb.ui.taskbox.model;
 
-import java.io.Serializable;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-@SuppressWarnings("serial")
-public class User implements Serializable {
-    private String username;
-    private String password;
+import java.util.Date;
 
-    public String getUsername() {
-        return this.username;
+import org.junit.Before;
+import org.junit.Test;
+
+public class WebTaskTest {
+    private WebTask task;
+
+    @Before
+    public void init() throws Exception {
+        task = new WebTask();
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    @Test
+    public void init_shouldInitializeProperties() throws Exception {
+        assertTrue(task.getTaskId().length() > 0);
+        assertFalse(task.isFinished());
+        assertTrue(task.getTaskCreationTimestamp().before(new Date(System.currentTimeMillis() + 10)));
     }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
 }
+

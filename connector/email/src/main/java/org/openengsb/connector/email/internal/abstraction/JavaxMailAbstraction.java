@@ -99,7 +99,7 @@ public class JavaxMailAbstraction implements MailAbstraction {
         if (properties.getPrefix() == null) {
             return subject;
         }
-        return properties.getPrefix() + subject;
+        return new StringBuilder().append(properties.getPrefix()).append(" ").append(subject).toString();
     }
 
     private void send(Message message) throws MessagingException {

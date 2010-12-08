@@ -16,30 +16,124 @@
 
 package org.openengsb.core.common.taskbox.model;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.UUID;
+
+import org.openengsb.core.common.workflow.model.ProcessBag;
+
 /**
- * A Task is handled by the TaskboxService and consists of 1 or more TaskSteps.
- * It represents a more or less long running process (e.g.: handling of a Ticket
- * in a SupportSystem) 
+ * A Task is based on a ProcessBag and used for human interaction. It contains all data needed by a human task i.e.
+ * properties that need to be changed by a user. Each time a workflow needs user interaction, such task is created from
+ * the workflows ProcessBag.
  */
-public interface Task {
-    /**
-     * returns the Unique ID the Task can be identified with
-     */
-    String getId();
+public class Task extends ProcessBag {
+    private static Task emptyTask;
+
+    public Task() {
+        super();
+        init();
+    }
+
+    public static Task createTaskWithAllValuesSetToNull() {
+        if (emptyTask == null) {
+            emptyTask = new Task();
+            emptyTask.setProcessId(null);
+            emptyTask.setContext(null);
+            emptyTask.setUser(null);
+            emptyTask.setProperties(null);
+        }
+
+        return emptyTask;
+    }
+
+    public Task(ProcessBag bag) {
+        super(bag);
+    }
+
+    public Task(HashMap<String, Object> properties) {
+        super(properties);
+    }
+
+    public Task(String processId, String context, String user) {
+        super(processId, context, user);
+        init();
+    }
+
+    public Task(String taskType) {
+        this();
+        setTaskType(taskType);
+    }
+
+    public Task(String taskType, String processId, String context, String user) {
+        this(processId, context, user);
+        setTaskType(taskType);
+    }
+
+    private void init() {
+        addOrReplaceProperty("taskId", UUID.randomUUID().toString());
+        addOrReplaceProperty("finished", false);
+        addOrReplaceProperty("taskCreationTimestamp", new Date());
+    }
 
     /**
-     * sets the Unique ID the Task can be identified with
+     * returns the unique ID the Task can be identified with
      */
-    void setId(String id);
+    public String getTaskId() {
+        return (String) getProperty("taskId");
+    }
 
     /**
-     * returns the Type of the Task. 
-     * The Type is used to group similar Tasks together
+     * generates and returns the unique ID the Task can be identified with
      */
-    String getType();
+    public String generateTaskId() {
+        addOrReplaceProperty("taskId", UUID.randomUUID().toString());
+        return (String) getProperty("taskId");
+    }
 
     /**
-     * sets the Type of the Task
+     * returns the Type of the Task. The Type is used to group similar Tasks together
      */
-    void setType(String type);
+    public String getTaskType() {
+        return (String) getProperty("taskType");
+    }
+
+    public void setTaskType(String taskType) {
+        addOrReplaceProperty("taskType", taskType);
+    }
+
+    public String getName() {
+        return (String) getProperty("name");
+    }
+
+    public void setName(String name) {
+        addOrReplaceProperty("name", name);
+    }
+
+    public String getDescription() {
+        return (String) getProperty("description");
+    }
+
+    public void setDescription(String description) {
+        addOrReplaceProperty("description", description);
+    }
+
+    public void setFinished(boolean finished) {
+        addOrReplaceProperty("finished", finished);
+    }
+
+    public boolean isFinished() {
+        if (!containsProperty("finished")) {
+            return false;
+        }
+        return (Boolean) getProperty("finished");
+    }
+
+    public void finishTask() {
+        addOrReplaceProperty("finished", true);
+    }
+
+    public Date getTaskCreationTimestamp() {
+        return (Date) getProperty("taskCreationTimestamp");
+    }
 }

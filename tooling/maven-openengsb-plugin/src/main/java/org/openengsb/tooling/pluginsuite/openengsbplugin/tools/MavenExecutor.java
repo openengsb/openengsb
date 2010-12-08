@@ -27,8 +27,40 @@ import org.apache.maven.project.MavenProject;
 
 public interface MavenExecutor {
 
-    void execute(AbstractMojo mojo, List<String> goals, List<String> activatedProfiles,
-            List<String> deactivatedProfiles, Properties userproperties, MavenProject project, MavenSession session,
-            Maven maven, boolean showErrors) throws MojoExecutionException;
+    /**
+     * Builds and executes a {@link org.apache.maven.execution.MavenExecutionRequest MavenExecutionRequest} with given
+     * parameters. The request is copied from the wrapper request so all parameters except goals, activeProfiles,
+     * deactivateProfiles and userProperties are inherited and have to be changed explicitly.
+     * 
+     * @param mojo the wrapper mojo
+     * @param goals goals to execute
+     * @param activatedProfiles active profiles
+     * @param deactivatedProfiles inactive profiles
+     * @param userproperties properties for the mojo
+     * @param project maven project from the wrapper mojo
+     * @param session maven session from the wrapper mojo
+     * @param maven maven implementation from the wrapper mojo
+     * @throws MojoExecutionException
+     */
+    void execute(AbstractMojo mojo, List<String> goals,
+            List<String> activatedProfiles, List<String> deactivatedProfiles,
+            Properties userproperties, MavenProject project,
+            MavenSession session, Maven maven)
+            throws MojoExecutionException;
+
+    /**
+     * Changes this inherited parameter explicitely.
+     * 
+     * @param interactiveMode <code>true</code> enables interactive mode for this execution <br/>
+     *        <code>false</code> is equivalent to <code>mvn --batch-mode &lt;goal&gt;
+     */
+    MavenExecutor setInterActiveMode(boolean interactiveMode);
+
+    /**
+     * Changes this inherited parameter explicitely.
+     * 
+     * @param recursive <code>true</code> recursive execution of the embedded request
+     */
+    MavenExecutor setRecursive(boolean recursive);
 
 }

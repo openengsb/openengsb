@@ -57,6 +57,7 @@
     <module>trac</module>
     <module>git</module>
     <module>maven</module>
+    <module>jira</module>
   </modules>
 
 </project>

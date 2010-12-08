@@ -54,10 +54,6 @@
     <javax.xml.soap>1.3.0</javax.xml.soap>
     <!-- Dependency Versions -->
     <junit.version>4.8.2</junit.version>
-    <mvn.pluginapi.version>2.0</mvn.pluginapi.version>
-    <mvn.core.version>3.0</mvn.core.version>
-    <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
-
     <twdata.cli.version>1.0.5</twdata.cli.version>
     <clover.version>3.0.2</clover.version>
   </properties>
@@ -117,20 +113,8 @@
   </issueManagement>
 
   <ciManagement>
-    <system>Hudson</system>
-    <url>http://build.openengsb.org/</url>
-    <notifiers>
-      <notifier>
-        <type>mail</type>
-        <sendOnError>true</sendOnError>
-        <sendOnFailure>true</sendOnFailure>
-        <sendOnSuccess>true</sendOnSuccess>
-        <sendOnWarning>true</sendOnWarning>
-        <configuration>
-          <address>openengsb-dev@googlegroups.com</address>
-        </configuration>
-      </notifier>
-    </notifiers>
+    <system>OpenCIT</system>
+    <url>http://build.openengsb.org/opencit/</url>
   </ciManagement>
 
   <developers>
@@ -296,6 +280,11 @@
       <email>eduard.szente [at] gmail.com</email>
       <timezone>+1</timezone>
     </contributor>
+    <contributor>
+      <name>Christoph Karner</name>
+      <email>ch.karner [at] gmail.com</email>
+      <timezone>+1</timezone>
+    </contributor>
   </contributors>
 
   <build>
@@ -331,7 +320,11 @@
           <meminitial>128m</meminitial>
           <maxmem>512m</maxmem>
         </configuration>
-    </plugin>
+      </plugin>
+      <plugin>
+        <groupId>org.openengsb.tooling.pluginsuite</groupId>
+        <artifactId>maven-openengsb-plugin</artifactId>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -471,6 +464,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-report-plugin</artifactId>
           <version>${maven.plugin.surefire.report.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.openengsb.tooling.pluginsuite</groupId>
+          <artifactId>maven-openengsb-plugin</artifactId>
+          <version>${project.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -706,6 +704,17 @@
       <id>central</id>
       <name>Maven Central</name>
       <url>http://repo1.maven.org/maven2/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>sonatype-snapshots</id>
+      <name>Sonaype Snapsht Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </pluginRepository>
     <pluginRepository> <!-- maven jaxb-xjc-plugin -->
       <id>maven-repository.dev.java.net</id>

@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.taskbox.model;
+package org.openengsb.core.common.taskbox.model;
 
-import org.apache.wicket.markup.html.panel.Panel;
-import org.openengsb.core.common.taskbox.model.TaskStep;
+import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.common.workflow.model.ProcessBag;
 
-/**
- * WebTaskStep extends a normal TaskStep by adding graphical Functionality so it
- * can be used and displayed in Web-Applications 
- */
-public interface WebTaskStep extends TaskStep {
-    /**
-     * returns the according Wicket Panel for the TaskStep
-     * can be used to display detailed information about the TaskStep
-     * e.g. Web-Controls representing all implemented properties 
-     */
-    Panel getPanel(String id);
+public class TaskFinishedEvent extends InternalWorkflowEvent {
+    public TaskFinishedEvent(ProcessBag processBag) {
+        super(processBag);
+        this.setType("TaskFinished");
+    }
 }

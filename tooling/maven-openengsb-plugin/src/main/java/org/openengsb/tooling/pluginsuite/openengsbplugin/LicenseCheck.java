@@ -23,37 +23,42 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 
 /**
+ * equivalent to <code>mvn clean validate -Plicense-check</code>
+ * 
  * @goal licenseCheck
  * 
  * @inheritedByDefault false
  * 
  * @requiresProject true
+ * 
  */
 public class LicenseCheck extends AbstractOpenengsbMojo {
 
-	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
+    private List<String> goals;
+    private List<String> activatedProfiles;
 
-		if (!getProject().isExecutionRoot()) {
-			return;
-		}
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        validateIfExecutionIsAllowed();
+        initializeMavenExecutionProperties();
+        executeMaven();
+    }
 
-		if (!(getProject().getGroupId().equals(OPENENGSB_ROOT_GROUP_ID) && getProject()
-				.getArtifactId().equals(OPENENGSB_ROOT_ARTIFACT_ID))) {
-			throw new MojoExecutionException(
-					"Please invoke this mojo only in the OpenEngSB root!");
-		}
+    private void validateIfExecutionIsAllowed() throws MojoExecutionException {
+        throwErrorIfWrapperRequestIsRecursive();
+        throwErrorIfProjectIsNotExecutedInRootDirectory();
+    }
 
-		assert (getMavenExecutor() != null);
+    private void initializeMavenExecutionProperties() {
+        goals = Arrays
+            .asList(new String[]{ "clean", "validate" });
+        activatedProfiles = Arrays
+            .asList(new String[]{ "license-check" });
+    }
 
-		List<String> goals = Arrays
-				.asList(new String[] { "clean", "validate" });
-		List<String> activatedProfiles = Arrays
-				.asList(new String[] { "license-check" });
-
-		getMavenExecutor().execute(this, goals, activatedProfiles, null, null,
-				getProject(), getSession(), getMaven(), true);
-
-	}
+    private void executeMaven() throws MojoExecutionException {
+        getNewMavenExecutor().setRecursive(true).execute(this, goals, activatedProfiles, null, null,
+            getProject(), getSession(), getMaven());
+    }
 
 }
