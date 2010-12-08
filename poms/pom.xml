@@ -60,7 +60,7 @@
     <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
     <maven.war.plugin>2.1.1</maven.war.plugin>
     <maven.plugin.antrun>1.5</maven.plugin.antrun>
-    
+
     <!-- Component Versions -->
     <osgi.version>4.2.0</osgi.version>
 
