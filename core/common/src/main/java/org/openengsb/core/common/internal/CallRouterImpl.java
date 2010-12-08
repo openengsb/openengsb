@@ -21,6 +21,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -28,9 +29,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.communication.CallRouter;
+import org.openengsb.core.common.communication.IncomingPort;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
-import org.openengsb.core.common.communication.Port;
+import org.openengsb.core.common.communication.OutgoingPort;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
@@ -42,16 +44,17 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
     private ExecutorService executor = Executors.newCachedThreadPool();
 
     private class PortHandler implements Runnable {
-        private Port port;
+        private IncomingPort port;
 
-        public PortHandler(Port port) {
+        public PortHandler(IncomingPort port) {
             this.port = port;
         }
 
         @Override
         public void run() {
             while (true) {
-                MethodCall call = port.receive();
+                UUID id = UUID.randomUUID();
+                MethodCall call = port.listen(id);
                 String serviceId = call.getServiceId();
 
                 OpenEngSBService service =
@@ -85,19 +88,23 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
         }
     }
 
-    private Map<String, Port> ports = new HashMap<String, Port>();
+    private Map<String, OutgoingPort> ports = new HashMap<String, OutgoingPort>();
     private BundleContext bundleContext;
 
     @Override
-    public void registerPort(String scheme, Port port) {
-        ports.put(scheme, port);
+    public void registerIncomingPort(IncomingPort port) {
         PortHandler portHandler = new PortHandler(port);
         executor.execute(portHandler);
     }
 
     @Override
+    public void registerOutgoingPort(String scheme, OutgoingPort port) {
+        ports.put(scheme, port);
+    }
+
+    @Override
     public void call(String portId, final URI destination, final MethodCall call) {
-        final Port port = ports.get(portId);
+        final OutgoingPort port = ports.get(portId);
         Runnable callHandler = new Runnable() {
             @Override
             public void run() {
@@ -109,7 +116,7 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
 
     @Override
     public MethodReturn callSync(String portId, final URI destination, final MethodCall call) {
-        final Port port = ports.get(portId);
+        final OutgoingPort port = ports.get(portId);
         return port.sendSync(destination, call);
     }
 

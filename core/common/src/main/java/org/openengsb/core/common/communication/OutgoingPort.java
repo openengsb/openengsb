@@ -18,9 +18,7 @@ package org.openengsb.core.common.communication;
 
 import java.net.URI;
 
-public interface Port {
-
-    MethodCall receive();
+public interface OutgoingPort {
 
     void send(URI destination, MethodCall call);
 

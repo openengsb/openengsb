@@ -26,14 +26,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.OpenEngSBService;
+import org.openengsb.core.common.communication.IncomingPort;
 import org.openengsb.core.common.communication.MethodCall;
-import org.openengsb.core.common.communication.Port;
+import org.openengsb.core.common.communication.OutgoingPort;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -52,18 +54,18 @@ public class CallRouterTest {
 
     @Test
     public void testReceiveAnything() throws Exception {
-        Port portMock = createPortMock(new MethodCall("42", "test", new Object[0], null));
-        callrouter.registerPort("jms", portMock);
+        IncomingPort portMock = createPortMock(new MethodCall("42", "test", new Object[0], null));
+        callrouter.registerIncomingPort(portMock);
         callrouter.stop();
         Thread.sleep(300);
 
-        verify(portMock, atLeast(1)).receive();
+        verify(portMock, atLeast(1)).listen(any(UUID.class));
     }
 
     @Test
     public void testRecieveMethodCall_shouldCallService() throws Exception {
-        Port portMock = createPortMock(new MethodCall("42", "test", new Object[0], null));
-        callrouter.registerPort("jms", portMock);
+        IncomingPort portMock = createPortMock(new MethodCall("42", "test", new Object[0], null));
+        callrouter.registerIncomingPort(portMock);
         Thread.sleep(300);
         callrouter.stop();
         verify(serviceMock, atLeast(1)).test();
@@ -71,8 +73,8 @@ public class CallRouterTest {
 
     @Test
     public void testReceiveMethodCallWithArgument() throws Exception {
-        Port portMock = createPortMock(new MethodCall("42", "test", new Object[]{ 42 }, null));
-        callrouter.registerPort("jms", portMock);
+        IncomingPort portMock = createPortMock(new MethodCall("42", "test", new Object[]{ 42 }, null));
+        callrouter.registerIncomingPort(portMock);
         Thread.sleep(300);
         callrouter.stop();
         verify(serviceMock, never()).test();
@@ -81,8 +83,8 @@ public class CallRouterTest {
 
     @Test
     public void testSendMethodCall_shouldCallPort() throws Exception {
-        Port portMock = createPortMock(new MethodCall("42", "test", new Object[]{ 42 }, null));
-        callrouter.registerPort("jms", portMock);
+        OutgoingPort portMock = mock(OutgoingPort.class);
+        callrouter.registerOutgoingPort("jms", portMock);
         callrouter.call("jms", URI.create("jms://localhost"), new MethodCall());
         Thread.sleep(300);
         callrouter.stop();
@@ -93,8 +95,8 @@ public class CallRouterTest {
     @Test
     public void testSendSyncMethodCall_shouldCallPort() throws Exception {
         MethodCall methodCall = new MethodCall("42", "test", new Object[]{ 42 }, null);
-        Port portMock = createPortMock(methodCall);
-        callrouter.registerPort("jms", portMock);
+        OutgoingPort portMock = mock(OutgoingPort.class);
+        callrouter.registerOutgoingPort("jms", portMock);
         callrouter.callSync("jms", URI.create("jms://localhost"), methodCall);
 
         verify(portMock, atLeast(1)).sendSync(any(URI.class), any(MethodCall.class));
@@ -110,9 +112,9 @@ public class CallRouterTest {
         return bundleContext;
     }
 
-    private Port createPortMock(final MethodCall methodCall) {
-        final Port portMock = mock(Port.class);
-        when(portMock.receive()).thenAnswer(new Answer<MethodCall>() {
+    private IncomingPort createPortMock(final MethodCall methodCall) {
+        final IncomingPort portMock = mock(IncomingPort.class);
+        when(portMock.listen(any(UUID.class))).thenAnswer(new Answer<MethodCall>() {
             boolean first = true;
 
             @Override

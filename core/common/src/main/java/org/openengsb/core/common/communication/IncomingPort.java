@@ -16,16 +16,12 @@
 
 package org.openengsb.core.common.communication;
 
-import java.net.URI;
+import java.util.UUID;
 
-public interface CallRouter {
+public interface IncomingPort {
 
-    void registerIncomingPort(IncomingPort port);
+    MethodCall listen(UUID handle);
 
-    void registerOutgoingPort(String scheme, OutgoingPort port);
-
-    void call(String portId, URI destination, MethodCall call);
-
-    MethodReturn callSync(String portId, URI destination, MethodCall call);
+    void sendResponse(UUID handle, MethodReturn result);
 
 }
