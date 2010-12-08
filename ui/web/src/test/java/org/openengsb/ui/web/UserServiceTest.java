@@ -73,7 +73,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testUserCreation_ShouldWork() throws UserManagementException {
+    public void testUserCreation_ShouldWork() {
         tester.startPage(UserService.class);
 
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
@@ -87,7 +87,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testErrorMessage_shouldReturnUserExists() throws UserManagementException {
+    public void testErrorMessage_shouldReturnUserExists() {
         tester.startPage(UserService.class);
         doThrow(new UserExistsException("user exists")).
             when(userManager).createUser(new User("user1", "password"));
@@ -102,7 +102,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testShowCreatedUser_ShouldShowAdmin() throws UserManagementException {
+    public void testShowCreatedUser_ShouldShowAdmin() {
         when(userManager.getAllUser()).thenAnswer(new Answer<List<User>>() {
             @Override
             public List<User> answer(InvocationOnMock invocationOnMock) {
@@ -118,7 +118,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void testErrorMessage_ShouldReturnWrongSecondPassword() throws UserManagementException {
+    public void testErrorMessage_ShouldReturnWrongSecondPassword() {
         tester.startPage(UserService.class);
         doThrow(new UserExistsException("user exists")).
             when(userManager).createUser(new User("user1", "password"));
@@ -133,8 +133,7 @@ public class UserServiceTest {
 
 
     @Test
-    public void testPersistenceError_ShouldThrowUserManagementExceptionAndShowErrorMessage()
-        throws UserManagementException {
+    public void testPersistenceError_ShouldThrowUserManagementExceptionAndShowErrorMessage() {
         tester.startPage(UserService.class);
         doThrow(new UserManagementException("database error")).
             when(userManager).createUser(new User("user1", "password"));

@@ -43,7 +43,7 @@ public class UserManagerImpl implements UserManager {
     }
 
     @Override
-    public void createUser(User user) throws UserManagementException {
+    public void createUser(User user) {
         if (userNameExists(user.getUsername())) {
             throw new UserExistsException("User with username: " + user.getUsername() + " already exists");
         }
@@ -55,7 +55,7 @@ public class UserManagerImpl implements UserManager {
     }
 
     @Override
-    public void updateUser(User user) throws UserManagementException {
+    public void updateUser(User user) {
         User oldUser = new User(user.getUsername());
         if (!userNameExists(oldUser.getUsername())) {
             throw new UserNotFoundException("User with username: " + oldUser.getUsername() + " does not exists");
@@ -68,7 +68,7 @@ public class UserManagerImpl implements UserManager {
     }
 
     @Override
-    public void deleteUser(String username) throws UserManagementException {
+    public void deleteUser(String username) {
         if (!userNameExists(username)) {
             throw new UserNotFoundException("User with username: " + username + " does not exists");
         }
@@ -105,7 +105,7 @@ public class UserManagerImpl implements UserManager {
         this.persistenceManager = persistenceManager;
     }
 
-    public void init() throws UserManagementException {
+    public void init() {
         persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
         try {
             loadUserByUsername(null);

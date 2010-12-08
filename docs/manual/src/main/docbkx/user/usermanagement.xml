@@ -32,12 +32,12 @@
   <para>
     The interface of the
     <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/usermanagement/UserManager.java">User manager</link>
-    supports basic CRUD mechanisms. Instances of the user manager have to implement following methods
-      * create(User): create a new user and save it to the persistence
+    supports basic CRUD mechanisms (create, retrieve, update, delete).
     The <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/usermanagement/model/User.java">User</link>
     is the used user model. It holds attributes like a password, username, if the user is enabled, or his account is expired or locked.
-    Another attribute are the authorities. These are the roles granted to the user. A user is identified by his username. So the username
-    can not be changed.
+    A user is identified by his username. So the username can not be changed.
+    Another attribute are the authorities. These are the roles granted to the user. These can be for example "ROLE_ADMIN" which defines the user as admin.
+    Depending on the roles, a user can have different rights. For the OpenEngSB-UI a user has to have at least the role "ROLE_USER" which is the default role.
   </para>
 
 </chapter>

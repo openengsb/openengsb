@@ -16,7 +16,7 @@
 
 package org.openengsb.core.common.usermanagement.exceptions;
 
-public class UserManagementException extends Exception {
+public class UserManagementException extends RuntimeException {
 
     public UserManagementException() {
     }

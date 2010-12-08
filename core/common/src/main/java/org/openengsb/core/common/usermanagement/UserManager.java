@@ -18,7 +18,6 @@ package org.openengsb.core.common.usermanagement;
 
 import java.util.List;
 
-import org.openengsb.core.common.usermanagement.exceptions.UserManagementException;
 import org.openengsb.core.common.usermanagement.model.User;
 import org.springframework.osgi.context.BundleContextAware;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,22 +26,22 @@ public interface UserManager extends UserDetailsService, BundleContextAware {
 
     /**
      * create a user and save it to the persistence,
-     * throws UserManagementException if a persistence error occurred
+     * @throws UserManagementException if a persistence error occurred
      */
-    void createUser(User user) throws UserManagementException;
+    void createUser(User user);
 
     /**
      * update the specified user in the persistence,
      * the user is identified by its name, so the name can not be changed
-     * throws UserManagementException if a persistence error occurred
+     * @throws UserManagementException if a persistence error occurred
      */
-    void updateUser(User user) throws UserManagementException;
+    void updateUser(User user);
 
     /**
      * delete a user, specified by its username from the persistence
-     * throws UserManagementException if a persistence error occurred
+     * @throws UserManagementException if a persistence error occurred
      */
-    void deleteUser(String username) throws UserManagementException;
+    void deleteUser(String username);
 
     /**
      * get one single user from the persistence,
@@ -51,8 +50,8 @@ public interface UserManager extends UserDetailsService, BundleContextAware {
 
     /**
      * returns a list of all existing users
-     * throws UserManagementException if a persistence error occurred
+     * @throws UserManagementException if a persistence error occurred
      */
-    List<User> getAllUser() throws UserManagementException;
+    List<User> getAllUser();
 
 }
