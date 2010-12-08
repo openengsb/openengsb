@@ -107,7 +107,7 @@ public class WorkflowIT extends AbstractExamTestHelper {
     }
 
     @Test(expected = AccessDeniedException.class)
-    public void testAccessToRuleManager() throws Exception {
+    public void testUserAccessToRuleManager_shouldThrowException() throws Exception {
         authenticate("user", "password");
         addHelloWorldRule();
     }
