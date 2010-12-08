@@ -74,7 +74,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService
     }
 
     void setProjectPath(String projectPath) {
-        this.projectPath = projectPath;
+        this.projectPath = projectPath.replaceAll("%20", " ");
     }
 
     @Override

@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security.usermanagement;
+package org.openengsb.core.common.taskbox.model;
 
-import org.springframework.security.core.AuthenticationException;
+import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.common.workflow.model.ProcessBag;
 
-@SuppressWarnings("serial")
-public class UserExistsException extends AuthenticationException {
-
-    public UserExistsException(String msg, Throwable t) {
-        super(msg, t);
-    }
-
-    public UserExistsException(String msg) {
-        super(msg);
-    }
-
-    public UserExistsException(String msg, Object extraInformation) {
-        super(msg, extraInformation);
+public class TaskFinishedEvent extends InternalWorkflowEvent {
+    public TaskFinishedEvent(ProcessBag processBag) {
+        super(processBag);
+        this.setType("TaskFinished");
     }
 }

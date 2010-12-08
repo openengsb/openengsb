@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security;
+package org.openengsb.core.security.internal;
 
 import java.lang.reflect.Method;
 import java.util.Collection;

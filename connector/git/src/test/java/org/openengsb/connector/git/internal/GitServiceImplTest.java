@@ -49,7 +49,7 @@ public class GitServiceImplTest {
         repository = RepositoryFixture.createRepository(remoteDirectory);
         service = new GitServiceImpl("42");
         service.setLocalWorkspace(localDirectory.getAbsolutePath());
-        service.setRemoteLocation(remoteDirectory.toURI().toURL().toExternalForm());
+        service.setRemoteLocation(remoteDirectory.toURI().toURL().toExternalForm().replace("%20", " "));
         service.setWatchBranch("master");
     }
 

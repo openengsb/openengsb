@@ -21,6 +21,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
+
+import org.apache.maven.plugin.MojoExecutionException;
 
 public abstract class Tools {
 
@@ -55,6 +58,46 @@ public abstract class Tools {
         fw.write(str);
         fw.close();
 
+    }
+
+    public static void renameSubmoduleInPom(String oldStr, String newStr) throws MojoExecutionException {
+        try {
+            File pomFile = new File("pom.xml");
+            if (pomFile.exists()) {
+                Tools.replaceInFile(pomFile, String.format("<module>%s</module>", oldStr),
+                    String.format("<module>%s</module>", newStr));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new MojoExecutionException("Couldn't modifiy module entry in pom file!");
+        }
+    }
+
+    public static String readValue(Scanner sc, String name, String defaultvalue) {
+        System.out.print(String.format("%s [%s]: ", name, defaultvalue));
+        String line = sc.nextLine();
+        if (line == null || line.matches("[\\s]*")) {
+            return defaultvalue;
+        }
+        return line;
+    }
+
+    public static void renameArtifactFolderAndUpdateParentPom(String oldStr, String newStr) throws MojoExecutionException {
+        File from = new File(oldStr);
+        System.out.println(String.format("\"%s\" exists: %s", oldStr, from.exists()));
+        if (from.exists()) {
+            System.out.println(String.format("Trying to rename to: \"%s\"", newStr));
+            File to = new File(newStr);
+            if (!to.exists()) {
+                from.renameTo(to);
+                System.out.println("renamed successfully");
+                Tools.renameSubmoduleInPom(oldStr, newStr);
+            } else {
+                throw new MojoExecutionException("Couldn't rename: name clash!");
+            }
+        } else {
+            throw new MojoExecutionException("Artifact wasn't created as expected!");
+        }
     }
 
 }

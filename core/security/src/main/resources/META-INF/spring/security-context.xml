@@ -24,11 +24,11 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
-  <bean id="userManager" class="org.openengsb.core.security.usermanagement.UserManagerImpl" init-method="init">
+  <bean id="userManager" class="org.openengsb.core.security.internal.UserManagerImpl" init-method="init">
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
-  <osgi:service interface="org.openengsb.core.security.usermanagement.UserManager" ref="userManager" />
+  <osgi:service interface="org.openengsb.core.UserManager" ref="userManager" />
 
   <bean id="userAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
     <property name="userDetailsService" ref="userManager" />

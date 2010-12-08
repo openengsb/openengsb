@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security.model;
+package org.openengsb.core.common.security.model;
 
 import java.util.Collection;
 

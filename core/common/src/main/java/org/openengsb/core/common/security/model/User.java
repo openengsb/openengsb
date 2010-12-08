@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security.model;
+package org.openengsb.core.common.security.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +36,6 @@ public class User implements CredentialsContainer, UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
-
 
     /**
      * Default User
@@ -107,11 +106,9 @@ public class User implements CredentialsContainer, UserDetails {
     }
 
     /**
-     * Returns {@code true} if the supplied object is a {@code User} instance with the
-     * same {@code username} value.
+     * Returns {@code true} if the supplied object is a {@code User} instance with the same {@code username} value.
      * <p/>
-     * In other words, the objects are equal if they have the same username, representing the
-     * same principal.
+     * In other words, the objects are equal if they have the same username, representing the same principal.
      */
     @Override
     public boolean equals(Object rhs) {

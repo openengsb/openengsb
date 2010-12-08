@@ -17,7 +17,7 @@
 package org.openengsb.core.security;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,9 +29,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.security.model.ServiceAuthorizedList;
-import org.openengsb.core.security.model.User;
-import org.openengsb.core.security.usermanagement.UserManagerImpl;
+import org.openengsb.core.common.security.model.ServiceAuthorizedList;
+import org.openengsb.core.common.security.model.User;
+import org.openengsb.core.security.internal.MetadataSource;
+import org.openengsb.core.security.internal.UserManagerImpl;
 import org.openengsb.core.test.DummyPersistenceManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

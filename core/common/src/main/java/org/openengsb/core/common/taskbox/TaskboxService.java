@@ -16,6 +16,8 @@
 
 package org.openengsb.core.common.taskbox;
 
+import java.util.List;
+
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
@@ -32,7 +34,7 @@ import org.openengsb.core.common.workflow.WorkflowException;
  */
 public interface TaskboxService {
     /**
-     * Gets the message set by a workflow Used for testing purposes up to now
+     * Gets the message set by a workflow used for testing purposes up to now
      * 
      * @throws TaskboxException when the message is not set
      */
@@ -55,7 +57,26 @@ public interface TaskboxService {
     /**
      * Redirect events to workflowService
      * 
-     * @throws WorkflowException
+     * @throws WorkflowException when there is a problem processing the event.
      */
     void processEvent(Event event) throws WorkflowException;
+
+    /**
+     * Loads all open tasks out of the persistence service.
+     * 
+     */
+    List<Task> getOpenTasks();
+
+    /**
+     * Loads all tasks which match the example task out of the persistence.
+     */
+    List<Task> getTasksForExample(Task example);
+
+    /**
+     * Sends a TaskFinishedEvent and removes task from the persistence.
+     * 
+     * @throws WorkflowException, if there is a problem while processing the event or a problem with the persistence
+     *         occurs.
+     */
+    void finishTask(Task task) throws WorkflowException;
 }
