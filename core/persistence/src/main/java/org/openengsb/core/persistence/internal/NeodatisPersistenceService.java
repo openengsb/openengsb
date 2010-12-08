@@ -202,7 +202,7 @@ public class NeodatisPersistenceService implements PersistenceService {
         BeanInfo info = Introspector.getBeanInfo(clazz);
         PropertyDescriptor[] properties = info.getPropertyDescriptors();
         for (PropertyDescriptor property : properties) {
-            if (Modifier.isPublic(property.getReadMethod().getModifiers())) {
+            if (property.getReadMethod() != null && Modifier.isPublic(property.getReadMethod().getModifiers())) {
                 methods.add(property.getReadMethod());
             }
         }

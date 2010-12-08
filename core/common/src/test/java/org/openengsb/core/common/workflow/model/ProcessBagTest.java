@@ -40,7 +40,7 @@ public class ProcessBagTest {
     public void constructorAndGetMethods_shouldReturnCorrectValues() throws Exception {
         pb = new ProcessBag("4711", "c", "test-user");
 
-        assertEquals(pb.getProcessId(), "4711");
+        assertEquals(pb.readProcessId(), "4711");
         assertEquals(pb.getContext(), "c");
         assertEquals(pb.getUser(), "test-user");
     }

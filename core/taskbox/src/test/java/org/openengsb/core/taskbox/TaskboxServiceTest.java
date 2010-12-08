@@ -86,9 +86,8 @@ public class TaskboxServiceTest {
 
     @Test
     public void testCreateNewTask_shouldReturnNewTask() throws PersistenceException {
-        Task newTask = null;
-        newTask = internalService.createNewTask("testId", "testContext", "testUser");
-        assertEquals("testUser", newTask.getUser());
+        internalService.createNewTask("testId", "testContext", "testUser");
+        verify(persistenceService).create(Mockito.any(Task.class));
     }
 
     @Test

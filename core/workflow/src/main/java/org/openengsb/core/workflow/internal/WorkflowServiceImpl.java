@@ -107,8 +107,8 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         session.fireAllRules();
 
         if (event.getProcessBag() != null) {
-            if (event.getProcessBag().getProcessId() != null) {
-                processId = Long.parseLong(event.getProcessBag().getProcessId());
+            if (event.getProcessBag().readProcessId() != null) {
+                processId = Long.parseLong(event.getProcessBag().readProcessId());
             }
         }
         if (processId != 0) {
@@ -132,6 +132,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     @Override
     public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
+<<<<<<< HEAD
         try {
             return startFlowInBackground(processId, parameterMap).get();
         } catch (InterruptedException e) {
