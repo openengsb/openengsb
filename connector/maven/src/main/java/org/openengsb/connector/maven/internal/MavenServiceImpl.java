@@ -72,7 +72,7 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
     }
 
     void setProjectPath(String projectPath) {
-        this.projectPath = projectPath.replaceAll("%20"," ");
+        this.projectPath = projectPath.replaceAll("%20", " ");
     }
 
     @Override
