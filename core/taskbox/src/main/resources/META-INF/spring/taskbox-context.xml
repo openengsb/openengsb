@@ -33,6 +33,15 @@
       <property name="persistenceManager" ref="persistenceManager" />
     </bean>
   </osgi:service>
+  <osgi:service interface="org.openengsb.core..taskbox.TaskboxServiceInternal">
+    <osgi:service-properties>
+      <entry key="openengsb.service.type" value="workflow-service" />
+      <entry key="openengsb.workflow.globalid" value="taskbox" />
+    </osgi:service-properties>
+    <bean class="org.openengsb.core.taskbox.TaskboxServiceInternalImpl" init-method="init">
+      <property name="persistenceManager" ref="persistenceManager" />
+    </bean>
+  </osgi:service>
 
   <osgi:reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
   <osgi:reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
