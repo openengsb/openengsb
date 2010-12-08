@@ -76,12 +76,12 @@ public class HeaderTemplate extends Panel {
     }
 
     private void initMainMenuItems() {
-        addHeaderMenuItem("Index", Index.class, "index.title","");
+        addHeaderMenuItem("Index", Index.class, "index.title", "");
 
-        addHeaderMenuItem("TestClient", TestClient.class, "testclient.title","");
-        addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title","");
-        addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title","");
-        addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title","");
+        addHeaderMenuItem("TestClient", TestClient.class, "testclient.title", "");
+        addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title", "");
+        addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title", "");
+        addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title", "");
         addHeaderMenuItem("UserService", UserService.class, "userService.title", "ROLE_ADMIN");
     }
 
@@ -124,10 +124,10 @@ public class HeaderTemplate extends Panel {
 
     /**
      * add a new item to main header navigation
-     *  index     defines the name of the index, should be the class name
-     *  linkClass defines the class name to be linked to
-     *  langKey   defines the language key for the text which should be displayed
-     *  authority defines who is authorized to see the link
+     * index     defines the name of the index, should be the class name
+     * linkClass defines the class name to be linked to
+     * langKey   defines the language key for the text which should be displayed
+     * authority defines who is authorized to see the link
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String authority) {
@@ -142,7 +142,7 @@ public class HeaderTemplate extends Panel {
         if (authority != null && !"".equals(authority)) {
             MetaDataRoleAuthorizationStrategy.authorize(pageLabelLink, RENDER, authority);
         } else {
-            MetaDataRoleAuthorizationStrategy.authorizeAll(pageLabelLink,RENDER);
+            MetaDataRoleAuthorizationStrategy.authorizeAll(pageLabelLink, RENDER);
         }
     }
 
