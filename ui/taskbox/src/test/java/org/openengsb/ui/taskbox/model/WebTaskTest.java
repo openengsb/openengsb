@@ -16,7 +16,6 @@
 
 package org.openengsb.ui.taskbox.model;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -35,7 +34,6 @@ public class WebTaskTest {
     @Test
     public void init_shouldInitializeProperties() throws Exception {
         assertTrue(task.getTaskId().length() > 0);
-        assertFalse(task.isFinished());
         assertTrue(task.getTaskCreationTimestamp().before(new Date(System.currentTimeMillis() + 10)));
     }
 }

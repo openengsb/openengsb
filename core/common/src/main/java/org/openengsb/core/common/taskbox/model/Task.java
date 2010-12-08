@@ -17,7 +17,6 @@
 package org.openengsb.core.common.taskbox.model;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.UUID;
 
 import org.openengsb.core.common.workflow.model.ProcessBag;
@@ -46,30 +45,11 @@ public class Task extends ProcessBag {
 
     public Task(ProcessBag bag) {
         super(bag);
-    }
-
-    public Task(HashMap<String, Object> properties) {
-        super(properties);
-    }
-
-    public Task(String processId, String context, String user) {
-        super(processId, context, user);
         init();
-    }
-
-    public Task(String taskType) {
-        this();
-        setTaskType(taskType);
-    }
-
-    public Task(String taskType, String processId, String context, String user) {
-        this(processId, context, user);
-        setTaskType(taskType);
     }
 
     private void init() {
         addOrReplaceProperty("taskId", UUID.randomUUID().toString());
-        addOrReplaceProperty("finished", false);
         addOrReplaceProperty("taskCreationTimestamp", new Date());
     }
 
@@ -113,21 +93,6 @@ public class Task extends ProcessBag {
 
     public void setDescription(String description) {
         addOrReplaceProperty("description", description);
-    }
-
-    public void setFinished(boolean finished) {
-        addOrReplaceProperty("finished", finished);
-    }
-
-    public boolean isFinished() {
-        if (!containsProperty("finished")) {
-            return false;
-        }
-        return (Boolean) getProperty("finished");
-    }
-
-    public void finishTask() {
-        addOrReplaceProperty("finished", true);
     }
 
     public Date getTaskCreationTimestamp() {
