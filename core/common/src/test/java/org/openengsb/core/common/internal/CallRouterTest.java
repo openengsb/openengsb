@@ -17,7 +17,7 @@
 package org.openengsb.core.common.internal;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -28,6 +28,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.UUID;
 
 import org.junit.Before;
@@ -140,26 +142,30 @@ public class CallRouterTest {
     }
 
     private IncomingPort createPortMock(final MethodCall methodCall) {
+        LinkedList<MethodCall> linkedList = new LinkedList<MethodCall>();
+        linkedList.add(methodCall);
+        return createPortMock(linkedList);
+    }
+
+    private IncomingPort createPortMock(final Queue<MethodCall> methodCalls) {
         final IncomingPort portMock = mock(IncomingPort.class);
         when(portMock.listen(any(UUID.class))).thenAnswer(new Answer<MethodCall>() {
-            boolean first = true;
-
             @Override
             public MethodCall answer(InvocationOnMock invocation) throws Throwable {
-                if (!first) {
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        // ignore. this happens all the time.
-                    }
-                    MethodCall dummyResult = new MethodCall();
-                    dummyResult.setServiceId(methodCall.getServiceId());
-                    dummyResult.setArgs(new Object[0]);
-                    dummyResult.setMethodName("getClass");
-                    return dummyResult;
+                MethodCall next = methodCalls.poll();
+                if (next != null) {
+                    return next;
                 }
-                first = false;
-                return methodCall;
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    // ignore. this happens all the time.
+                }
+                MethodCall dummyResult = new MethodCall();
+                dummyResult.setServiceId("42");
+                dummyResult.setArgs(new Object[0]);
+                dummyResult.setMethodName("getClass");
+                return dummyResult;
             }
         });
         return portMock;
