@@ -25,7 +25,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 
-public abstract class LoginAbstract {
+public abstract class AbstractLogin {
 
     private WicketTester tester;
     private ApplicationContextMock contextMock;

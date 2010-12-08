@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
 
-public class LoginPageTest extends LoginAbstract {
+public class PageTestLogin extends AbstractLogin {
 
     WicketTester tester;
 

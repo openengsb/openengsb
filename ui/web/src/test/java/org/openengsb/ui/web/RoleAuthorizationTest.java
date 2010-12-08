@@ -20,7 +20,7 @@ import org.osgi.framework.BundleContext;
 
 
 // this class tests the ui for visible components depending on the logged in user roles
-public class RoleAuthorizationTest extends LoginAbstract {
+public class RoleAuthorizationTest extends AbstractLogin {
 
 
     private WicketTester tester;
@@ -89,8 +89,8 @@ public class RoleAuthorizationTest extends LoginAbstract {
         context.putBean(mock(ContextCurrentService.class));
         context.putBean(mock(BundleContext.class));
         context.putBean(mock(DomainService.class));
-           tester.getApplication().addComponentInstantiationListener(
-            new SpringComponentInjector(tester.getApplication(), context, true));
+        tester.getApplication()
+            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
     }
 
 }
