@@ -19,6 +19,8 @@ package org.openengsb.core.common.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.communication.IncomingPort;
@@ -31,6 +33,7 @@ import org.osgi.framework.BundleContext;
 class PortHandler implements Runnable {
     private BundleContext bundleContext;
     private IncomingPort port;
+    private ExecutorService executor = Executors.newCachedThreadPool();
 
     public PortHandler(BundleContext bundleContext, IncomingPort port) {
         this.bundleContext = bundleContext;
@@ -40,9 +43,15 @@ class PortHandler implements Runnable {
     @Override
     public void run() {
         while (true) {
-            UUID id = UUID.randomUUID();
-            MethodCall call = port.listen(id);
-            handleMethodCall(id, call);
+            final UUID id = UUID.randomUUID();
+            final MethodCall call = port.listen(id);
+            Runnable callhandler = new Runnable() {
+                @Override
+                public void run() {
+                    handleMethodCall(id, call);
+                }
+            };
+            executor.execute(callhandler);
         }
     }
 
