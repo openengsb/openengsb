@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 import java.net.URI;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -40,14 +41,19 @@ import org.osgi.framework.ServiceReference;
 public class CallRouterTest {
 
     private TestService serviceMock;
+    private CallRouterImpl callrouter;
 
-    @Test
-    public void testReceiveAnything() throws Exception {
-        CallRouterImpl callrouter = new CallRouterImpl();
-        Port portMock = createPortMock();
+    @Before
+    public void setUp() throws Exception {
+        callrouter = new CallRouterImpl();
         BundleContext bundleContext = createBundleContextMock();
         callrouter.setBundleContext(bundleContext);
         callrouter.start();
+    }
+
+    @Test
+    public void testReceiveAnything() throws Exception {
+        Port portMock = createPortMock(new MethodCall("42", "test", new Object[0], null));
         callrouter.registerPort("jms", portMock);
         callrouter.stop();
         Thread.sleep(300);
@@ -57,12 +63,7 @@ public class CallRouterTest {
 
     @Test
     public void testRecieveMethodCall_shouldCallService() throws Exception {
-        CallRouterImpl callrouter = new CallRouterImpl();
-        Port portMock = createPortMock();
-        BundleContext bundleContext = createBundleContextMock();
-        callrouter.setBundleContext(bundleContext);
-
-        callrouter.start();
+        Port portMock = createPortMock(new MethodCall("42", "test", new Object[0], null));
         callrouter.registerPort("jms", portMock);
         Thread.sleep(300);
         callrouter.stop();
@@ -71,28 +72,7 @@ public class CallRouterTest {
 
     @Test
     public void testReceiveMethodCallWithArgument() throws Exception {
-        CallRouterImpl callrouter = new CallRouterImpl();
-        Port portMock = mock(Port.class);
-        when(portMock.receive()).thenAnswer(new Answer<MethodCall>() {
-            boolean first = true;
-
-            @Override
-            public MethodCall answer(InvocationOnMock invocation) throws Throwable {
-                if (!first) {
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        // ignore. this happens all the time.
-                    }
-                }
-                first = false;
-                return new MethodCall("42", "test", new Object[]{ 42, }, null);
-            }
-        });
-        BundleContext bundleContext = createBundleContextMock();
-        callrouter.setBundleContext(bundleContext);
-
-        callrouter.start();
+        Port portMock = createPortMock(new MethodCall("42", "test", new Object[]{ 42 }, null));
         callrouter.registerPort("jms", portMock);
         Thread.sleep(300);
         callrouter.stop();
@@ -102,12 +82,7 @@ public class CallRouterTest {
 
     @Test
     public void testSendMethodCall_shouldCallPort() throws Exception {
-        CallRouterImpl callrouter = new CallRouterImpl();
-        Port portMock = createPortMock();
-        BundleContext bundleContext = createBundleContextMock();
-        callrouter.setBundleContext(bundleContext);
-
-        callrouter.start();
+        Port portMock = createPortMock(new MethodCall("42", "test", new Object[]{ 42 }, null));
         callrouter.registerPort("jms", portMock);
         callrouter.call("jms", URI.create("jms://localhost"), new MethodCall());
         Thread.sleep(300);
@@ -126,7 +101,7 @@ public class CallRouterTest {
         return bundleContext;
     }
 
-    private Port createPortMock() {
+    private Port createPortMock(final MethodCall methodCall) {
         final Port portMock = mock(Port.class);
         when(portMock.receive()).thenAnswer(new Answer<MethodCall>() {
             boolean first = true;
@@ -141,7 +116,7 @@ public class CallRouterTest {
                     }
                 }
                 first = false;
-                return new MethodCall("42", "test", new Object[0], null);
+                return methodCall;
             }
         });
         return portMock;
