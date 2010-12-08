@@ -60,4 +60,51 @@ public class MethodReturn {
         this.metaData = metaData;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((this.arg == null) ? 0 : this.arg.hashCode());
+        result = prime * result + ((this.metaData == null) ? 0 : this.metaData.hashCode());
+        result = prime * result + ((this.type == null) ? 0 : this.type.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        MethodReturn other = (MethodReturn) obj;
+        if (this.arg == null) {
+            if (other.arg != null) {
+                return false;
+            }
+        } else if (!this.arg.equals(other.arg)) {
+            return false;
+        }
+        if (this.metaData == null) {
+            if (other.metaData != null) {
+                return false;
+            }
+        } else if (!this.metaData.equals(other.metaData)) {
+            return false;
+        }
+        if (this.type != other.type) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s: %s", type, arg);
+    }
+
 }
