@@ -70,7 +70,7 @@ public class ProcessBagTest {
         pb.addProperty("test", "42");
         pb.addProperty("number", 42);
 
-        Set<String> list = pb.getPropertyKeyList();
+        Set<String> list = pb.propertyKeySet();
         assertThat(list.size(), is(2));
     }
 
@@ -80,7 +80,7 @@ public class ProcessBagTest {
         pb.addProperty("string", "42");
         pb.removeProperty("number");
 
-        Set<String> list = pb.getPropertyKeyList();
+        Set<String> list = pb.propertyKeySet();
         assertTrue(list.contains("string"));
         assertFalse(list.contains("number"));
     }
@@ -90,7 +90,7 @@ public class ProcessBagTest {
         pb.addProperty("test", "42");
         pb.addProperty("number", 42);
 
-        assertTrue(pb.getPropertyCount() == 2);
+        assertTrue(pb.propertyCount() == 2);
     }
 
     @Test
@@ -106,6 +106,6 @@ public class ProcessBagTest {
         pb.addProperty("number", 42);
 
         pb.removeAllProperties();
-        assertTrue(pb.getPropertyCount() == 0);
+        assertTrue(pb.propertyCount() == 0);
     }
 }

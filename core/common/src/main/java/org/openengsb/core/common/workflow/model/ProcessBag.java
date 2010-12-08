@@ -131,11 +131,11 @@ public class ProcessBag {
         return properties.get(key).getClass();
     }
 
-    public Set<String> getPropertyKeyList() {
+    public Set<String> propertyKeySet() {
         return properties.keySet();
     }
 
-    public int getPropertyCount() {
+    public int propertyCount() {
         return properties.size();
     }
 
