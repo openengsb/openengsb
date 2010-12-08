@@ -20,4 +20,6 @@ import org.openengsb.core.common.OpenEngSBService;
 
 public interface TestService extends OpenEngSBService {
     void test();
+
+    void test(Integer i);
 }

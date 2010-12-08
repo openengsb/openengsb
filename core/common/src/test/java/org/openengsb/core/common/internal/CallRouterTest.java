@@ -21,6 +21,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -69,6 +70,37 @@ public class CallRouterTest {
     }
 
     @Test
+    public void testReceiveMethodCallWithArgument() throws Exception {
+        CallRouterImpl callrouter = new CallRouterImpl();
+        Port portMock = mock(Port.class);
+        when(portMock.receive()).thenAnswer(new Answer<MethodCall>() {
+            boolean first = true;
+
+            @Override
+            public MethodCall answer(InvocationOnMock invocation) throws Throwable {
+                if (!first) {
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        // ignore. this happens all the time.
+                    }
+                }
+                first = false;
+                return new MethodCall("42", "test", new Object[]{ 42, }, null);
+            }
+        });
+        BundleContext bundleContext = createBundleContextMock();
+        callrouter.setBundleContext(bundleContext);
+
+        callrouter.start();
+        callrouter.registerPort("jms", portMock);
+        Thread.sleep(300);
+        callrouter.stop();
+        verify(serviceMock, never()).test();
+        verify(serviceMock, atLeast(1)).test(eq(42));
+    }
+
+    @Test
     public void testSendMethodCall_shouldCallPort() throws Exception {
         CallRouterImpl callrouter = new CallRouterImpl();
         Port portMock = createPortMock();
@@ -102,7 +134,11 @@ public class CallRouterTest {
             @Override
             public MethodCall answer(InvocationOnMock invocation) throws Throwable {
                 if (!first) {
-                    Thread.sleep(10000);
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        // ignore. this happens all the time.
+                    }
                 }
                 first = false;
                 return new MethodCall("42", "test", new Object[0], null);

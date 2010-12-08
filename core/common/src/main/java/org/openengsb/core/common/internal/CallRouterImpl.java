@@ -77,8 +77,11 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
         }
 
         private Class<?>[] getArgTypes(Object[] args) {
-            // TODO Auto-generated method stub
-            return null;
+            Class<?>[] result = new Class[args.length];
+            for (int i = 0; i < args.length; i++) {
+                result[i] = args[i].getClass();
+            }
+            return result;
         }
     }
 
@@ -89,7 +92,7 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
     public void registerPort(String scheme, Port port) {
         ports.put(scheme, port);
         PortHandler portHandler = new PortHandler(port);
-        executor.submit(portHandler);
+        executor.execute(portHandler);
     }
 
     @Override
@@ -101,7 +104,7 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
                 port.send(destination, call);
             }
         };
-        executor.submit(callHandler);
+        executor.execute(callHandler);
     }
 
     @Override
