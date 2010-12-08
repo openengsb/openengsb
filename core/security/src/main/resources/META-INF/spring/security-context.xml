@@ -28,7 +28,7 @@
     <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
-  <osgi:service interface="org.openengsb.core.UserManager" ref="userManager" />
+  <osgi:service interface="org.openengsb.core.common.security.UserManager" ref="userManager" />
 
   <bean id="userAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
     <property name="userDetailsService" ref="userManager" />
@@ -47,7 +47,7 @@
   <osgi:service interface="org.aopalliance.intercept.MethodInterceptor">
     <bean class="org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor">
       <property name="securityMetadataSource">
-        <bean class="org.openengsb.core.security.MetadataSource" />
+        <bean class="org.openengsb.core.security.internal.MetadataSource" />
       </property>
       <property name="rejectPublicInvocations" value="true" />
       <property name="authenticationManager" ref="authenticationManager" />
