@@ -34,9 +34,10 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.usermanagement.UserManager;
-import org.openengsb.core.usermanagement.exceptions.UserExistsException;
-import org.openengsb.core.usermanagement.model.User;
+import org.openengsb.core.common.usermanagement.UserManager;
+import org.openengsb.core.common.usermanagement.exceptions.UserExistsException;
+import org.openengsb.core.common.usermanagement.exceptions.UserManagementException;
+import org.openengsb.core.common.usermanagement.model.User;
 import org.osgi.framework.BundleContext;
 
 public class UserServiceTest {
@@ -131,6 +132,17 @@ public class UserServiceTest {
     }
 
 
-    
+    @Test
+    public void testPersistenceError_ShouldThrowUserManagementExceptionAndShowErrorMessage() {
+        tester.startPage(UserService.class);
+        doThrow(new UserManagementException("database error")).
+            when(userManager).createUser(new User("user1", "password"));
+        FormTester formTester = tester.newFormTester("usermanagementContainer:form");
+        formTester.setValue("username", "user1");
+        formTester.setValue("password", "password");
+        formTester.setValue("passwordVerification", "password");
+        formTester.submit();
+        tester.assertErrorMessages(new String[]{"Database error occurred"});
+    }
 
 }

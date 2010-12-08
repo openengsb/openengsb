@@ -14,29 +14,21 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.web.model;
+package org.openengsb.core.common.usermanagement.exceptions;
 
-import java.io.Serializable;
+import org.springframework.security.core.AuthenticationException;
 
-@SuppressWarnings("serial")
-public class User implements Serializable {
-    private String username;
-    private String password;
-
-    public String getUsername() {
-        return this.username;
+public class UserNotFoundException extends AuthenticationException {
+    
+    public UserNotFoundException(String msg, Throwable t) {
+        super(msg, t);
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public UserNotFoundException(String msg) {
+        super(msg);
     }
 
-    public String getPassword() {
-        return this.password;
+    public UserNotFoundException(String msg, Object extraInformation) {
+        super(msg, extraInformation);
     }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
 }

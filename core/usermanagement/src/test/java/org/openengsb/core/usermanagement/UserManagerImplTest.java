@@ -19,6 +19,7 @@ package org.openengsb.core.usermanagement;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -32,9 +33,10 @@ import org.junit.Test;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.usermanagement.exceptions.UserExistsException;
-import org.openengsb.core.usermanagement.exceptions.UserNotFoundException;
-import org.openengsb.core.usermanagement.model.User;
+import org.openengsb.core.common.usermanagement.exceptions.UserExistsException;
+import org.openengsb.core.common.usermanagement.exceptions.UserManagementException;
+import org.openengsb.core.common.usermanagement.exceptions.UserNotFoundException;
+import org.openengsb.core.common.usermanagement.model.User;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -78,14 +80,14 @@ public class UserManagerImplTest {
     }
 
     @Test
-    public void testToCreateUser_ShouldWork() throws PersistenceException {
+    public void testToCreateUser_ShouldWork() throws Exception {
         User user = new User("testUser1", "testPass");
         userManager.createUser(user);
         verify(persistMock, times(1)).create(user);
     }
 
     @Test(expected = UserExistsException.class)
-    public void testToCreateUserWhichAlreadyExists_shouldNotWork() throws PersistenceException {
+    public void testToCreateUserWhichAlreadyExists_shouldNotWork() throws Exception {
         User user = new User("testUser2", "testPass");
         userManager.createUser(user);
     }
@@ -97,12 +99,12 @@ public class UserManagerImplTest {
     }
 
     @Test(expected = UserNotFoundException.class)
-    public void testToLoadAnNotExistingUser_ShouldThrowUserNotFoundException() {
+    public void testToLoadAnNotExistingUser_ShouldThrowUserNotFoundException() throws Exception {
         userManager.loadUserByUsername("testUser1");
     }
 
     @Test
-    public void updateUser_ShouldWork() throws PersistenceException {
+    public void updateUser_ShouldWork() throws Exception {
         User userOld = new User("testUser2");
         User userNew = new User("testUser2", "testPassNew");
         userManager.updateUser(userNew);
@@ -110,7 +112,7 @@ public class UserManagerImplTest {
     }
 
     @Test(expected = UserNotFoundException.class)
-    public void updateNotExistingUser_ShouldThrowUserNotFoundException() throws PersistenceException {
+    public void updateNotExistingUser_ShouldThrowUserNotFoundException() throws Exception {
         User userOld = new User("testUser1");
         User userNew = new User("testUser1", "testPassNew");
         userManager.updateUser(userNew);
@@ -118,19 +120,19 @@ public class UserManagerImplTest {
     }
 
     @Test
-    public void deleteUser_ShouldWork() throws PersistenceException {
+    public void deleteUser_ShouldWork() throws Exception {
         userManager.deleteUser("testUser3");
         verify(persistMock, times(1)).delete(new User("testUser3"));
     }
 
     @Test(expected = UserNotFoundException.class)
-    public void deleteNotExistingUser_ShouldThrowUserNotFoundException() throws PersistenceException {
+    public void deleteNotExistingUser_ShouldThrowUserNotFoundException() throws Exception {
         userManager.deleteUser("testUser1");
         verify(persistMock, times(0)).delete(new User("testUser1"));
     }
 
     @Test
-    public void testInitMethodCreateNewUserIfNoUserIsPresent() throws PersistenceException {
+    public void testInitMethodCreateNewUserIfNoUserIsPresent() throws Exception {
         UserManagerImpl userManager = new UserManagerImpl();
         persistMock = mock(PersistenceService.class);
         PersistenceManager persistManagerMock = mock(PersistenceManager.class);
@@ -153,5 +155,32 @@ public class UserManagerImplTest {
         List<User> allUser = userManager.getAllUser();
         assertThat(allUser.size(), is(3));
     }
-    
+
+    @Test(expected = UserManagementException.class)
+    public void testDatabaseErrorOnCreateUser_ShouldThrowUserManagementException() throws Exception {
+        User user = new User("user5");
+        doThrow(new PersistenceException("database error")).
+            when(persistMock).create(user);
+        userManager.createUser(user);
+        verify(persistMock, times(1)).create(user);
+    }
+
+    @Test(expected = UserManagementException.class)
+    public void testDatabaseErrorOnUpdateUser_ShouldThrowUserManagementException() throws Exception {
+        User userOld = new User("testUser2");
+        User userNew = new User("testUser2");
+        doThrow(new PersistenceException("database error")).
+            when(persistMock).update(userOld, userNew);
+        userManager.updateUser(userNew);
+        verify(persistMock, times(1)).update(userOld, userNew);
+    }
+
+    @Test(expected = UserManagementException.class)
+    public void testDatabaseErrorOnDeleteUser_ShouldThrowUserManagementException() throws Exception {
+        User user = new User("testUser2");
+        doThrow(new PersistenceException("database error")).
+            when(persistMock).delete(user);
+        userManager.deleteUser("testUser2");
+        verify(persistMock, times(1)).create(user);
+    }
 }

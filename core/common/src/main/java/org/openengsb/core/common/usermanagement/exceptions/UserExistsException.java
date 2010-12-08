@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.usermanagement;
+package org.openengsb.core.common.usermanagement.exceptions;
 
-import java.util.List;
+import org.springframework.security.core.AuthenticationException;
 
-import org.openengsb.core.usermanagement.model.User;
-import org.springframework.osgi.context.BundleContextAware;
-import org.springframework.security.core.userdetails.UserDetailsService;
+public class UserExistsException extends AuthenticationException {
 
-public interface UserManager extends UserDetailsService, BundleContextAware {
+    public UserExistsException(String msg, Throwable t) {
+        super(msg, t);
+    }
 
-    void createUser(User user) ;
+    public UserExistsException(String msg) {
+        super(msg);
+    }
 
-    void updateUser(User user) ;
-
-    void deleteUser(String username) ;
-
-    User loadUserByUsername(String username);
-
-    List<User> getAllUser();
-
+    public UserExistsException(String msg, Object extraInformation) {
+        super(msg, extraInformation);
+    }
 }
