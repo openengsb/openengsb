@@ -116,19 +116,18 @@ public class HeaderTemplate extends Panel {
     }
 
     /**
-     * @returns the name of the current active menu item
+     * get the name of the current active menu item
      */
     public static String getActiveIndex() {
         return HeaderTemplate.menuIndex;
     }
 
     /**
-     * adds new item to main header navigation
-     *
-     * @param index     - the name of the index @see HeaderMenuItem.index
-     * @param linkClass - class name to be linked to
-     * @param langKey   - language key, the text which should be displayed
-     * @param authority - defines who is authorized to see the link
+     * add a new item to main header navigation
+     *  index     defines the name of the index, should be the class name
+     *  linkClass defines the class name to be linked to
+     *  langKey   defines the language key for the text which should be displayed
+     *  authority defines who is authorized to see the link
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String authority) {
