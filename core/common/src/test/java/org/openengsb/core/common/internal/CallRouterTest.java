@@ -16,6 +16,8 @@
 
 package org.openengsb.core.common.internal;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -35,6 +37,8 @@ import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.communication.IncomingPort;
 import org.openengsb.core.common.communication.MethodCall;
+import org.openengsb.core.common.communication.MethodReturn;
+import org.openengsb.core.common.communication.MethodReturn.ReturnType;
 import org.openengsb.core.common.communication.OutgoingPort;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -82,13 +86,25 @@ public class CallRouterTest {
     }
 
     @Test
+    public void recieveMethodCall_shouldSendResponse() throws Exception {
+        when(serviceMock.getAnswer()).thenReturn(42);
+        IncomingPort portMock = createPortMock(new MethodCall("42", "getAnswer", new Object[0], null));
+        callrouter.registerIncomingPort(portMock);
+        Thread.sleep(300);
+        callrouter.stop();
+
+        verify(serviceMock).getAnswer();
+        MethodReturn ref = new MethodReturn(ReturnType.Object, 42, null);
+        verify(portMock, atLeast(1)).sendResponse(any(UUID.class), eq(ref));
+    }
+
+    @Test
     public void testSendMethodCall_shouldCallPort() throws Exception {
         OutgoingPort portMock = mock(OutgoingPort.class);
         callrouter.registerOutgoingPort("jms", portMock);
         callrouter.call("jms", URI.create("jms://localhost"), new MethodCall());
         Thread.sleep(300);
         callrouter.stop();
-
         verify(portMock, atLeast(1)).send(any(URI.class), any(MethodCall.class));
     }
 
@@ -98,8 +114,19 @@ public class CallRouterTest {
         OutgoingPort portMock = mock(OutgoingPort.class);
         callrouter.registerOutgoingPort("jms", portMock);
         callrouter.callSync("jms", URI.create("jms://localhost"), methodCall);
-
         verify(portMock, atLeast(1)).sendSync(any(URI.class), any(MethodCall.class));
+    }
+
+    @Test
+    public void testSendSyncMethodCall_shouldReturnResult() throws Exception {
+        when(serviceMock.getAnswer()).thenReturn(42);
+        MethodCall methodCall = new MethodCall("42", "test", new Object[]{ 42 }, null);
+        OutgoingPort portMock = mock(OutgoingPort.class);
+        MethodReturn value = new MethodReturn();
+        when(portMock.sendSync(URI.create("jms://localhost"), methodCall)).thenReturn(value);
+        callrouter.registerOutgoingPort("jms", portMock);
+        MethodReturn result = callrouter.callSync("jms", URI.create("jms://localhost"), methodCall);
+        assertThat(result, is(value));
     }
 
     private BundleContext createBundleContextMock() throws InvalidSyntaxException {
@@ -125,6 +152,11 @@ public class CallRouterTest {
                     } catch (InterruptedException e) {
                         // ignore. this happens all the time.
                     }
+                    MethodCall dummyResult = new MethodCall();
+                    dummyResult.setServiceId(methodCall.getServiceId());
+                    dummyResult.setArgs(new Object[0]);
+                    dummyResult.setMethodName("getClass");
+                    return dummyResult;
                 }
                 first = false;
                 return methodCall;

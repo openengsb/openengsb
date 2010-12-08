@@ -32,6 +32,7 @@ import org.openengsb.core.common.communication.CallRouter;
 import org.openengsb.core.common.communication.IncomingPort;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
+import org.openengsb.core.common.communication.MethodReturn.ReturnType;
 import org.openengsb.core.common.communication.OutgoingPort;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
@@ -67,15 +68,20 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
                 } catch (NoSuchMethodException e) {
                     throw new IllegalArgumentException(e);
                 }
+                MethodReturn resultContainer = new MethodReturn();
                 try {
-                    method.invoke(service, call.getArgs());
+                    Object result = method.invoke(service, call.getArgs());
+                    resultContainer.setType(ReturnType.Object);
+                    resultContainer.setArg(result);
                 } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e);
+                    resultContainer.setType(ReturnType.Exception);
+                    resultContainer.setArg(e.getCause());
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
+                    resultContainer.setType(ReturnType.Exception);
+                    resultContainer.setArg(e);
                 }
 
-                log.info(call);
+                port.sendResponse(id, resultContainer);
             }
         }
 

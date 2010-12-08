@@ -22,4 +22,6 @@ public interface TestService extends OpenEngSBService {
     void test();
 
     void test(Integer i);
+
+    Integer getAnswer();
 }
