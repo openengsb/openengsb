@@ -48,7 +48,6 @@ public class CallRouterTest {
         callrouter = new CallRouterImpl();
         BundleContext bundleContext = createBundleContextMock();
         callrouter.setBundleContext(bundleContext);
-        callrouter.start();
     }
 
     @Test
@@ -89,6 +88,16 @@ public class CallRouterTest {
         callrouter.stop();
 
         verify(portMock, atLeast(1)).send(any(URI.class), any(MethodCall.class));
+    }
+
+    @Test
+    public void testSendSyncMethodCall_shouldCallPort() throws Exception {
+        MethodCall methodCall = new MethodCall("42", "test", new Object[]{ 42 }, null);
+        Port portMock = createPortMock(methodCall);
+        callrouter.registerPort("jms", portMock);
+        callrouter.callSync("jms", URI.create("jms://localhost"), methodCall);
+
+        verify(portMock, atLeast(1)).sendSync(any(URI.class), any(MethodCall.class));
     }
 
     private BundleContext createBundleContextMock() throws InvalidSyntaxException {

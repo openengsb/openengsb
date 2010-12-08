@@ -108,13 +108,9 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
     }
 
     @Override
-    public MethodReturn callSync(String portId, URI destination, MethodCall call) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public void start() {
-
+    public MethodReturn callSync(String portId, final URI destination, final MethodCall call) {
+        final Port port = ports.get(portId);
+        return port.sendSync(destination, call);
     }
 
     public void stop() {
