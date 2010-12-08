@@ -113,6 +113,7 @@ public class UserManagerImpl implements UserManager {
             //create dummy admin user
             List<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
             auth.add(new GrantedAuthorityImpl("ROLE_USER"));
+            auth.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
             createUser(new User("admin", "password", auth));
         }
     }

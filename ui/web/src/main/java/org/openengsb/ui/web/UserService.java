@@ -25,7 +25,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.authorization.Action;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -44,7 +45,7 @@ import org.openengsb.core.common.usermanagement.exceptions.UserExistsException;
 import org.openengsb.core.common.usermanagement.exceptions.UserManagementException;
 import org.openengsb.core.common.usermanagement.model.User;
 
-@AuthorizeInstantiation("ROLE_USER")
+@AuthorizeAction(action = Action.RENDER, roles = "ROLE_ADMIN")
 public class UserService extends BasePage {
 
     private static Log log = LogFactory.getLog(UserService.class);
