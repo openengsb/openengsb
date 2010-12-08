@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.OpenEngSBService;
@@ -30,9 +31,8 @@ import org.openengsb.core.common.communication.CallRouter;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
 import org.openengsb.core.common.communication.Port;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.springframework.osgi.context.BundleContextAware;
 
 public class CallRouterImpl implements CallRouter, BundleContextAware {
@@ -54,21 +54,8 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
                 MethodCall call = port.receive();
                 String serviceId = call.getServiceId();
 
-                ServiceReference[] allServiceReferences;
-                try {
-                    allServiceReferences =
-                        bundleContext.getServiceReferences(OpenEngSBService.class.getName(), "(id=" + serviceId
-                                + ")");
-                } catch (InvalidSyntaxException e1) {
-                    throw new RuntimeException(e1);
-                }
-                if (allServiceReferences == null) {
-                    throw new IllegalArgumentException("service with id " + serviceId + " not found");
-                }
-                if (allServiceReferences.length != 1) {
-                    throw new IllegalStateException("mutliple services matching (id=" + serviceId + ")");
-                }
-                Object service = bundleContext.getService(allServiceReferences[0]);
+                OpenEngSBService service =
+                    OsgiServiceUtils.getService(bundleContext, OpenEngSBService.class, "(id=" + serviceId + ")");
                 Class<?>[] argTypes = getArgTypes(call.getArgs());
 
                 Method method;
