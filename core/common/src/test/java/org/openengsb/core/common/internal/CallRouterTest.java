@@ -17,7 +17,7 @@
 package org.openengsb.core.common.internal;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -131,6 +131,46 @@ public class CallRouterTest {
         assertThat(result, is(value));
     }
 
+    @Test(timeout = 10000)
+    public void testHandleCallsParallel() throws Exception {
+        when(serviceMock.getAnswer()).thenReturn(42);
+        final Object sync = addWaitingAnswerToMock();
+
+        Queue<MethodCall> calls = new LinkedList<MethodCall>();
+        calls.add(new MethodCall("42", "getOtherAnswer", new Object[0], null));
+        calls.add(new MethodCall("42", "getAnswer", new Object[0], null));
+        IncomingPort port = createPortMock(calls);
+        callrouter.registerIncomingPort(port);
+
+        Thread.sleep(300);
+
+        MethodReturn ref = new MethodReturn(ReturnType.Object, 42, null);
+        /* getAnswer-call is finished */
+        verify(port).sendResponse(any(UUID.class), eq(ref));
+        MethodReturn longRef = new MethodReturn(ReturnType.Object, 42L, null);
+        /* getOtherAnswer-call is not finished yet */
+        verify(port, never()).sendResponse(any(UUID.class), eq(longRef));
+        synchronized (sync) {
+            sync.notifyAll();
+        }
+        /* now getOtherAnswer-call is finished too */
+        verify(port).sendResponse(any(UUID.class), eq(longRef));
+    }
+
+    private Object addWaitingAnswerToMock() {
+        final Object sync = new Object();
+        when(serviceMock.getOtherAnswer()).thenAnswer(new Answer<Long>() {
+            @Override
+            public Long answer(InvocationOnMock invocation) throws Throwable {
+                synchronized (sync) {
+                    sync.wait();
+                }
+                return 42L;
+            }
+        });
+        return sync;
+    }
+
     private BundleContext createBundleContextMock() throws InvalidSyntaxException {
         BundleContext bundleContext = mock(BundleContext.class);
         final ServiceReference serviceRefMock = mock(ServiceReference.class);
@@ -157,7 +197,7 @@ public class CallRouterTest {
                     return next;
                 }
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(100000);
                 } catch (InterruptedException e) {
                     // ignore. this happens all the time.
                 }
