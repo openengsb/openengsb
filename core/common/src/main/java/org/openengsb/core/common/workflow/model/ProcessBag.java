@@ -64,7 +64,7 @@ public class ProcessBag {
         }
     }
 
-    public String getProcessId() {
+    public String readProcessId() {
         synchronized (processIdLock) {
             while (processId == null) {
                 try {
@@ -91,10 +91,6 @@ public class ProcessBag {
 
     public String getUser() {
         return user;
-    }
-
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
     }
     
     /**
