@@ -51,7 +51,8 @@ import org.springframework.osgi.context.BundleContextAware;
 
 public class WorkflowServiceImpl implements WorkflowService, BundleContextAware, ServiceListener {
 
-    private static final String START_FLOW_CONSEQUENCE_LINE = "  flowHelper.startFlow(\"%s\");\n";
+    private static final String START_FLOW_CONSEQUENCE_LINE =
+        "  kcontext.getKnowledgeRuntime().startProcess(\"%s\");\n";
 
     private Log log = LogFactory.getLog(WorkflowServiceImpl.class);
 
