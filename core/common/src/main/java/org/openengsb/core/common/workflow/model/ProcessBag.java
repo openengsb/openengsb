@@ -32,6 +32,7 @@ public class ProcessBag {
     private String context;
     private String user;
     private Object processIdLock = new Object();
+    private boolean empty = false;
 
     private Map<String, Object> properties;
 
@@ -58,6 +59,9 @@ public class ProcessBag {
     }
 
     public String getProcessId() {
+        if (empty) {
+            return processId;
+        }
         synchronized (processIdLock) {
             while (processId == null) {
                 try {
@@ -134,5 +138,9 @@ public class ProcessBag {
 
     public void removeAllProperties() {
         properties.clear();
+    }
+
+    public void setEmpty() {
+        empty = true;
     }
 }

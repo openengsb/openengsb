@@ -325,7 +325,7 @@ public class WorkflowServiceTest {
         long id = service.startFlow("propertybagtest", parameterMap);
         service.waitForFlowToFinish(id);
 
-        assertThat((String) processBag.getProperty("test"), is("xyz"));
+        assertThat((String) processBag.getProperty("test"), is(String.valueOf(id)));
     }
 
     @Test(timeout = 4000)
