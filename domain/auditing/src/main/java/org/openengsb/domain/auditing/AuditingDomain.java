@@ -20,9 +20,12 @@ import java.util.List;
 
 import org.openengsb.core.common.Domain;
 
+/**
+ * The Auditing Domain provides means to audit certain events for later viewing.
+ */
 public interface AuditingDomain extends Domain {
 
-    public void audit(String message);
+    void audit(String message);
 
-    public List<String> getAudits();
+    List<String> getAudits();
 }

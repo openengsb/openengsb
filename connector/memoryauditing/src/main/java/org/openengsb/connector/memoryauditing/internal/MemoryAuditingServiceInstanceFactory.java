@@ -33,9 +33,6 @@ public class MemoryAuditingServiceInstanceFactory implements
 
     @Override
     public void updateServiceInstance(MemoryAuditingServiceImpl instance, Map<String, String> attributes) {
-        if (attributes.containsKey("attr")) {
-            instance.setAttr(attributes.get("attr"));
-        }
     }
 
     @Override

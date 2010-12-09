@@ -24,13 +24,27 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
-    <bean id="domainService" class="org.openengsb.core.common.service.impl.OsgiDomainService">
-        <property name="domains" ref="domains"/>
-    </bean>
+  <bean id="domainService"
+    class="org.openengsb.core.common.service.impl.OsgiDomainService">
+    <property name="domains" ref="domains" />
+  </bean>
 
-    <bean id="userManager" class="org.openengsb.core.usermanagement.UserManagerImpl" init-method="init">
-        <property name="persistenceManager">
-            <osgi:reference interface="org.openengsb.core.common.persistence.PersistenceManager"/>
-        </property>
-    </bean>
+  <bean id="userManager" class="org.openengsb.core.usermanagement.UserManagerImpl"
+    init-method="init">
+    <property name="persistenceManager">
+      <osgi:reference
+        interface="org.openengsb.core.common.persistence.PersistenceManager" />
+    </property>
+  </bean>
+
+  <bean class="org.openengsb.ui.web.config.AuditingConfig" id="auditingConfig"
+    init-method="init">
+    <property name="domainService" ref="domainService"/>
+    <property name="ruleManager" ref="ruleManager"/>
+    <property name="contextCurrentService" ref="contextCurrentService"/>
+  </bean>
+
+  <osgi:reference id="ruleManager"
+    interface="org.openengsb.core.common.workflow.RuleManager" />
+
 </beans>

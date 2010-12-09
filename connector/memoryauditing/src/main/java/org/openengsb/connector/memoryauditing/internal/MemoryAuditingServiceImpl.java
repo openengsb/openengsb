@@ -25,21 +25,14 @@ import org.openengsb.domain.auditing.AuditingDomain;
 
 public class MemoryAuditingServiceImpl implements AuditingDomain {
 
-    private String attr;
-
     @SuppressWarnings("unchecked")
     private final List<String> messages = Collections.synchronizedList(new ArrayList<String>());
 
     public MemoryAuditingServiceImpl() {
     }
 
-    void setAttr(String attr) {
-        this.attr = attr;
-    }
-
     @Override
     public AliveState getAliveState() {
-        // TODO Auto-generated method stub
         return AliveState.DISCONNECTED;
     }
 

@@ -16,10 +16,10 @@
 
 package org.openengsb.connector.memoryauditing;
 
+import org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceImpl;
 import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.domain.auditing.AuditingDomain;
-import org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceImpl;
 
 public class MemoryAuditingServiceManager extends AbstractServiceManager<AuditingDomain, MemoryAuditingServiceImpl> {
 

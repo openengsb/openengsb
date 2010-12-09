@@ -142,7 +142,13 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         };
         submitButton.setOutputMarkupId(true);
         form.add(submitButton);
-        add(new ListView<String>("audits", this.auditing.getAudits()) {
+        List<String> audits = new ArrayList<String>();
+        try {
+            audits = this.auditing.getAudits();
+        } catch (Exception e) {
+            log.error("Audits cannot be loaded", e);
+        }
+        add(new ListView<String>("audits", audits) {
             @Override
             protected void populateItem(ListItem<String> item) {
                 item.add(new Label("audit", item.getModelObject()));
