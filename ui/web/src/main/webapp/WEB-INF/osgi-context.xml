@@ -30,5 +30,7 @@
   <osgi:reference id="eventService" interface="org.openengsb.core.common.workflow.WorkflowService" />
   <osgi:reference id="contextCurrentService" interface="org.openengsb.core.common.context.ContextCurrentService" />
   <osgi:reference id="ruleManager" interface="org.openengsb.core.common.workflow.RuleManager" />
+  
+  <osgi:reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain"/>
 
 </beans>

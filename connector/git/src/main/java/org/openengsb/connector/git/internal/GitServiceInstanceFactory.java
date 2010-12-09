@@ -45,7 +45,7 @@ public class GitServiceInstanceFactory implements ServiceInstanceFactory<ScmDoma
 
     @Override
     public GitServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
-        GitServiceImpl service = new GitServiceImpl();
+        GitServiceImpl service = new GitServiceImpl(id);
         updateServiceInstance(service, attributes);
         return service;
     }

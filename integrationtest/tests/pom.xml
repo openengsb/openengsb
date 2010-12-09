@@ -71,6 +71,12 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-security</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-persistence</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
@@ -90,6 +96,18 @@
     <dependency>
       <groupId>org.openengsb.connector</groupId>
       <artifactId>openengsb-connector-example</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-auditing</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.connector</groupId>
+      <artifactId>openengsb-connector-memory-auditing</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>

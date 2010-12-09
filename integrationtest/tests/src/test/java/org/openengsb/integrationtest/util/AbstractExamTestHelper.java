@@ -16,6 +16,9 @@
 
 package org.openengsb.integrationtest.util;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -39,6 +42,10 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
 import org.osgi.util.tracker.ServiceTracker;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper {
 
@@ -66,6 +73,19 @@ public abstract class AbstractExamTestHelper {
                 break;
             }
         }
+        authenticateAsAdmin();
+    }
+
+    protected void authenticateAsAdmin() throws InterruptedException {
+        authenticate("admin", "password");
+    }
+
+    protected void authenticate(String user, String password) throws InterruptedException {
+        AuthenticationManager authenticationManager = retrieveService(getBundleContext(), AuthenticationManager.class);
+        Authentication authentication =
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user, password));
+        assertThat(authentication.isAuthenticated(), is(true));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     protected void waitForActiveSpringService(String bundleName) throws InterruptedException {

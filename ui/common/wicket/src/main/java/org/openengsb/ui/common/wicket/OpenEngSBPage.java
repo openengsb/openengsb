@@ -1,4 +1,5 @@
 package org.openengsb.ui.common.wicket;
+
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
@@ -14,7 +15,6 @@ package org.openengsb.ui.common.wicket;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +52,7 @@ public class OpenEngSBPage extends WebPage {
             contextService.putValue("domain/NotificationDomain/defaultConnector/id", "notification");
             contextService.putValue("domain/IssueDomain/defaultConnector/id", "issue");
             contextService.putValue("domain/ExampleDomain/defaultConnector/id", "example");
+            contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
         }
     }
 
@@ -75,7 +76,7 @@ public class OpenEngSBPage extends WebPage {
 
     /**
      * @return the class name, which should be the index in navigation bar
-     *
+     * 
      */
     public String getHeaderMenuItem() {
         return this.getClass().getSimpleName();

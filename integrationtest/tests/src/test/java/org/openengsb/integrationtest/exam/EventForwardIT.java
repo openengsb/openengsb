@@ -27,6 +27,7 @@ import java.util.Hashtable;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -43,7 +44,7 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 @RunWith(JUnit4TestRunner.class)
 public class EventForwardIT extends AbstractExamTestHelper {
 
-    public static class DummyLogDomain implements ExampleDomain {
+    public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain {
         private boolean wasCalled = false;
 
         @Override
@@ -81,9 +82,10 @@ public class EventForwardIT extends AbstractExamTestHelper {
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
         contextService.putValue("domain/ExampleDomain/defaultConnector/id", "dummyLog");
+        contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
 
         Dictionary<String, String> properties = new Hashtable<String, String>();
-        String[] clazzes = new String[]{ Domain.class.getName(), ExampleDomain.class.getName() };
+        String[] clazzes = new String[]{Domain.class.getName(), ExampleDomain.class.getName()};
         properties.put("id", "dummyLog");
 
         DummyLogDomain logService = new DummyLogDomain();
