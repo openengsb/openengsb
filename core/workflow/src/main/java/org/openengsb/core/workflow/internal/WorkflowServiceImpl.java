@@ -93,6 +93,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     public long startFlow(String processId) throws WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         ProcessInstance processInstance = session.startProcess(processId);
+        session.insert(processInstance);
         return processInstance.getId();
     }
 
