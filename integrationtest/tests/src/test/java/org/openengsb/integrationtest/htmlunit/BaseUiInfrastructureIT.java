@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
@@ -48,6 +49,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
     }
 
     @Test
+    @Ignore
     public void testIfAllMainNavigationLinksWork() throws Exception {
         String loginPageEntryUrl =
             "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.web.LoginPage";
