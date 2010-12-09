@@ -30,6 +30,8 @@ import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessNodeTriggeredEvent;
+import org.drools.event.process.ProcessStartedEvent;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.rule.FactHandle;
@@ -221,6 +223,28 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
                 synchronized (session) {
                     session.notifyAll();
                 }
+            }
+        });
+        session.addEventListener(new DefaultProcessEventListener() {
+            @Override
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                String processId2 = event.getProcessInstance().getProcessId();
+                long id = event.getProcessInstance().getId();
+                log.info(String.format("started process \"%s\". instance-ID: %d", processId2, id));
+            }
+
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                long nodeId = event.getNodeInstance().getNodeId();
+                String nodeName = event.getNodeInstance().getNodeName();
+                log.info(String.format("Now triggering node \"%s\" (\"%s\").", nodeName, nodeId));
+            }
+
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                String processId2 = event.getProcessInstance().getProcessId();
+                long id = event.getProcessInstance().getId();
+                log.info(String.format("process completed \"%s\". instance-ID: %d", processId2, id));
             }
         });
         return session;
