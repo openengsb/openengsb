@@ -24,9 +24,18 @@ public class TestEndEvent extends Event {
     private boolean success;
     private String output;
 
+    /**
+     * DEPRECATED: please use TestSuccessEvent and TestFailEvent in the future
+     */
+    @Deprecated
     public TestEndEvent(String testId, boolean success, String output) {
-        super("TestEndEvent");
         this.testId = testId;
+        this.success = success;
+        this.output = output;
+    }
+
+    public TestEndEvent(long processId, boolean success, String output) {
+        setProcessId(processId);
         this.success = success;
         this.output = output;
     }

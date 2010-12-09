@@ -36,6 +36,7 @@ import org.openengsb.domain.deploy.DeployStartEvent;
 import org.openengsb.domain.test.TestDomainEvents;
 import org.openengsb.domain.test.TestEndEvent;
 import org.openengsb.domain.test.TestStartEvent;
+import org.openengsb.domain.test.TestSuccessEvent;
 
 public class MavenServiceTest {
 
@@ -82,6 +83,16 @@ public class MavenServiceTest {
         String id = mavenService.runTests();
         verify(testEvents).raiseEvent(any(TestStartEvent.class));
         verify(testEvents).raiseEvent(refEq(new TestEndEvent(id, true, null), "output"));
+    }
+
+    @Test
+    public void testWithProcessId_shouldThrowEventsWithProcessId() {
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("test");
+        long processId = 42;
+        mavenService.runTests(processId);
+        verify(testEvents).raiseEvent(any(TestStartEvent.class));
+        verify(testEvents).raiseEvent(refEq(new TestSuccessEvent(processId, null), "output"));
     }
 
     @Test
