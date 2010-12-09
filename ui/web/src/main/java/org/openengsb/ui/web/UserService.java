@@ -40,10 +40,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.common.usermanagement.UserManager;
-import org.openengsb.core.common.usermanagement.exceptions.UserExistsException;
-import org.openengsb.core.common.usermanagement.exceptions.UserManagementException;
-import org.openengsb.core.common.usermanagement.model.User;
+import org.openengsb.core.common.security.UserExistsException;
+import org.openengsb.core.common.security.UserManagementException;
+import org.openengsb.core.common.security.UserManager;
+import org.openengsb.core.common.security.model.User;
 
 @AuthorizeAction(action = Action.RENDER, roles = "ROLE_ADMIN")
 public class UserService extends BasePage {

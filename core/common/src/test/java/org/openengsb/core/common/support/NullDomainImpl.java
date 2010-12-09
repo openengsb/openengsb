@@ -16,9 +16,10 @@
 
 package org.openengsb.core.common.support;
 
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 
-public class NullDomainImpl implements NullDomain {
+public class NullDomainImpl extends AbstractOpenEngSBService implements NullDomain {
 
     @Override
     public AliveState getAliveState() {

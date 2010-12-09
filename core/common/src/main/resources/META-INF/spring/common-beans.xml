@@ -26,4 +26,6 @@
   <bean id="defaultDomainProxy" class="org.openengsb.core.common.DefaultDomainProxyFactoryBean" abstract="true"
     init-method="init" />
 
+  <osgi:reference id="methodInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
+
 </beans>

@@ -51,6 +51,7 @@ public final class BaseExamConfiguration {
         List<String> importantBundles = new ArrayList<String>();
         importantBundles.add("org.openengsb.core.persistence");
         importantBundles.add("org.openengsb.core.workflow");
+        importantBundles.add("org.openengsb.core.security");
         return importantBundles;
     }
 
@@ -66,7 +67,7 @@ public final class BaseExamConfiguration {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_PERSISTENCE));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_WORKFLOW));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_TASKBOX));
-        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_USERMANAGEMENT));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_SECURITY));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_EXAMPLE));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONNECTOR_EXAMPLE));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_UI_COMMON_WICKET));

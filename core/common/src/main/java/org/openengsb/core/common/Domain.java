@@ -16,11 +16,10 @@
 
 package org.openengsb.core.common;
 
-
 /**
  * Base interface all domain interfaces have to implement to be discoverable in the OpenEngSB environment.
  */
-public interface Domain {
+public interface Domain extends OpenEngSBService {
 
     /**
      * return the current state of the service,

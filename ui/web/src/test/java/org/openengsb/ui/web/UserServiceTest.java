@@ -34,10 +34,10 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.usermanagement.UserManager;
-import org.openengsb.core.common.usermanagement.exceptions.UserExistsException;
-import org.openengsb.core.common.usermanagement.exceptions.UserManagementException;
-import org.openengsb.core.common.usermanagement.model.User;
+import org.openengsb.core.common.security.UserExistsException;
+import org.openengsb.core.common.security.UserManagementException;
+import org.openengsb.core.common.security.UserManager;
+import org.openengsb.core.common.security.model.User;
 import org.osgi.framework.BundleContext;
 
 public class UserServiceTest {
@@ -130,7 +130,6 @@ public class UserServiceTest {
         tester.assertErrorMessages(new String[]{"Invalid password"});
         verify(userManager, times(0)).createUser(new User("user1", "password"));
     }
-
 
     @Test
     public void testPersistenceError_ShouldThrowUserManagementExceptionAndShowErrorMessage() {

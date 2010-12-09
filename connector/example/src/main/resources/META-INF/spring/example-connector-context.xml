@@ -27,22 +27,40 @@
     <osgi:service-properties>
       <entry key="domain" value="org.openengsb.domain.example.ExampleDomain" />
     </osgi:service-properties>
-    <bean class="org.openengsb.connector.example.LogServiceManager" init-method="init">
-      <constructor-arg>
-        <bean class="org.openengsb.connector.example.LogServiceInstanceFactory">
-          <property name="domainEventInterface" ref="domainEventInterface" />
-        </bean>
-      </constructor-arg>
-      <property name="connectorSetupStore" ref="connectorSetupStore" />
-    </bean>
+    <ref bean="serviceManager" />
   </osgi:service>
+
+  <bean id="realServiceManager" class="org.openengsb.connector.example.LogServiceManager" init-method="init">
+    <constructor-arg>
+      <bean class="org.openengsb.connector.example.LogServiceInstanceFactory">
+        <property name="domainEventInterface" ref="domainEventInterface" />
+      </bean>
+    </constructor-arg>
+    <property name="connectorSetupStore" ref="connectorSetupStore" />
+    <property name="securityInterceptor" ref="securityInterceptor" />
+  </bean>
 
   <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
     init-method="init">
     <property name="persistenceManager" ref="persistenceServiceManager" />
   </bean>
 
+  <bean id="serviceManager" class="org.springframework.aop.framework.ProxyFactoryBean">
+    <property name="proxyInterfaces">
+      <value>org.openengsb.core.common.ServiceManager</value>
+    </property>
+    <property name="target" ref="realServiceManager" />
+    <property name="interceptorNames">
+      <list>
+        <value>securityInterceptor</value>
+      </list>
+    </property>
+  </bean>
+
+
+
   <osgi:reference id="persistenceServiceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
   <osgi:reference id="domainEventInterface" interface="org.openengsb.domain.example.ExampleDomainEvents" />
+  <osgi:reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
 
 </beans>

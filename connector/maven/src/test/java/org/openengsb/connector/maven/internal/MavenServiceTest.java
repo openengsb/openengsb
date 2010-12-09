@@ -46,7 +46,7 @@ public class MavenServiceTest {
 
     @Before
     public void setUp() {
-        this.mavenService = new MavenServiceImpl();
+        this.mavenService = new MavenServiceImpl("42");
         buildEvents = mock(BuildDomainEvents.class);
         testEvents = mock(TestDomainEvents.class);
         deployEvents = mock(DeployDomainEvents.class);

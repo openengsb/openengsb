@@ -37,7 +37,7 @@ public class TracServiceInstanceFactoryTest {
         Map<String, String> attributes = new HashMap<String, String>();
 
         TracConnector tracConnector = factory.createServiceInstance("id1", attributes);
-        assertThat(tracConnector.getId(), is("id1"));
+        assertThat(tracConnector.getInstanceId(), is("id1"));
     }
 
     @Test
