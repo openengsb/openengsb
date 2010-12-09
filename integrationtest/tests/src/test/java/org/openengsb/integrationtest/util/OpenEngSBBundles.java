@@ -23,8 +23,8 @@ import org.ops4j.pax.exam.options.MavenArtifactUrlReference;
 public final class OpenEngSBBundles {
 
     public static final MavenArtifactProvisionOption OPENENGSB_WRAPPED_WICKET = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped").artifactId(
-            "org.apache.wicket-all").version(new OpenEngSBVersionResolver()));
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
+            .artifactId("org.apache.wicket-all").version(new OpenEngSBVersionResolver()));
 
     public static final MavenArtifactProvisionOption OPENENGSB_WRAPPED_JAXB = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped").artifactId("javax.xml.jaxb-all")
@@ -39,8 +39,8 @@ public final class OpenEngSBBundles {
             .artifactId("org.apache.xmlrpc-all").version(new OpenEngSBVersionResolver()));
 
     public static final MavenArtifactProvisionOption OPENENGSB_WRAPPED_JSCH = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
-            .artifactId("com.jcraft.jsch-all").version(new OpenEngSBVersionResolver()));
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped").artifactId("com.jcraft.jsch-all")
+            .version(new OpenEngSBVersionResolver()));
 
     public static final MavenArtifactProvisionOption OPENENGSB_WRAPPED_NEODATIS = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.wrapped")
@@ -59,20 +59,20 @@ public final class OpenEngSBBundles {
             .version(new OpenEngSBVersionResolver()));
 
     public static final MavenArtifactProvisionOption OPENENGSB_CORE_PERSISTENCE = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId(
-            "openengsb-core-persistence").version(new OpenEngSBVersionResolver()));
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core")
+            .artifactId("openengsb-core-persistence").version(new OpenEngSBVersionResolver()));
 
     public static final MavenArtifactProvisionOption OPENENGSB_CORE_WORKFLOW = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core")
             .artifactId("openengsb-core-workflow").version(new OpenEngSBVersionResolver()));
 
     public static final MavenArtifactProvisionOption OPENENGSB_CORE_TASKBOX = CoreOptions
-        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core")
-            .artifactId("openengsb-core-taskbox").version(new OpenEngSBVersionResolver()));
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core").artifactId("openengsb-core-taskbox")
+            .version(new OpenEngSBVersionResolver()));
 
     public static final MavenArtifactProvisionOption OPENENGSB_CORE_USERMANAGEMENT = CoreOptions
-          .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core")
-                          .artifactId("openengsb-core-usermanagement").version(new OpenEngSBVersionResolver()));
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.core")
+            .artifactId("openengsb-core-usermanagement").version(new OpenEngSBVersionResolver()));
 
     public static final MavenArtifactProvisionOption OPENENGSB_DOMAIN_EXAMPLE = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domain")
@@ -81,6 +81,14 @@ public final class OpenEngSBBundles {
     public static final MavenArtifactProvisionOption OPENENGSB_CONNECTOR_EXAMPLE = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.connector")
             .artifactId("openengsb-connector-example").version(new OpenEngSBVersionResolver()));
+
+    public static final MavenArtifactProvisionOption OPENENGSB_DOMAIN_AUDITING = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.domain")
+            .artifactId("openengsb-domain-auditing").version(new OpenEngSBVersionResolver()));
+
+    public static final MavenArtifactProvisionOption OPENENGSB_CONNECTOR_AUDITING = CoreOptions
+        .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.connector")
+            .artifactId("openengsb-connector-memory-auditing").version(new OpenEngSBVersionResolver()));
 
     public static final MavenArtifactProvisionOption OPENENGSB_UI_COMMON_WICKET = CoreOptions
         .mavenBundle(new MavenArtifactUrlReference().groupId("org.openengsb.ui.common")
