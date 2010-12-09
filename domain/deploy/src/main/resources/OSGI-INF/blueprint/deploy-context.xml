@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="us-ascii" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
 
     Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -17,26 +17,22 @@
 
 -->
 
-<beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-  xmlns:osgi="http://www.springframework.org/schema/osgi"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <osgi:service interface="org.openengsb.core.common.DomainProvider">
+  <service interface="org.openengsb.core.common.DomainProvider">
     <bean class="org.openengsb.domain.deploy.DeployDomainProvider" />
-  </osgi:service>
+  </service>
 
-  <osgi:service>
-    <osgi:interfaces>
+  <service>
+    <interfaces>
       <value>org.openengsb.core.common.Domain</value>
       <value>org.openengsb.domain.deploy.DeployDomain</value>
-    </osgi:interfaces>
-    <osgi:service-properties>
+    </interfaces>
+    <service-properties>
       <entry key="id" value="domain.deploy" />
       <entry key="openengsb.service.type" value="domain" />
-    </osgi:service-properties>
+    </service-properties>
     <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
       <property name="domainInterface">
         <value>org.openengsb.domain.deploy.DeployDomain</value>
@@ -44,17 +40,17 @@
       <property name="domainName" value="DeployDomain" />
       <property name="context" ref="contextService" />
     </bean>
-  </osgi:service>
+  </service>
 
-  <osgi:service>
-    <osgi:interfaces>
+  <service>
+    <interfaces>
       <value>org.openengsb.core.common.DomainEvents</value>
       <value>org.openengsb.domain.deploy.DeployDomainEvents</value>
-    </osgi:interfaces>
-    <osgi:service-properties>
+    </interfaces>
+    <service-properties>
       <entry key="id" value="domain.deploy.events" />
       <entry key="openengsb.service.type" value="domain-events" />
-    </osgi:service-properties>
+    </service-properties>
 
     <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
       <property name="domainEventInterface">
@@ -62,8 +58,8 @@
       </property>
       <property name="workflowService" ref="workflowService" />
     </bean>
-  </osgi:service>
+  </service>
 
-  <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
-  <osgi:reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
-</beans>
+  <reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
+  <reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
+</blueprint>
