@@ -21,10 +21,11 @@
   xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd   http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd   http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd"
   xml:id="developer.management" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ns="http://docbook.org/ns/docbook">
+
   <title>Security in the OpenEngSB</title>
 
   <section xml:id="developer.security.usermanagement">
-    <title>Usermanagement</title></section>
+    <title>Usermanagement</title>
 
     <para>The OpenEngSB has a central user management service, which can be used for example by an user interface.
       The service is designed to manage your users. You can create new user and save them to the persistence or retrieve,
@@ -69,7 +70,7 @@
 </bean>]]></programlisting>
       When registering a service in code rather than in a spring context.xml this can be done as seen in the
       <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/AbstractServiceManager.java">
-        AbstractServiceManager</link>      
+        AbstractServiceManager</link>
       <programlisting language="java"><![CDATA[
 import org.springframework.aop.framework.ProxyFactory;
 //
@@ -86,8 +87,7 @@ OpenEngSBService securedService = (OpenEngSBService) factory.getProxy();]]></pro
         OpenEngSBservice</link>, and make sure the instanceId is unique enough to ensure security.
       You may want to derive your service-class from
       <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/AbstractOpenEngSBService.java">
-        AbstractOpenEngSBService</link>.
-    <para>
+        AbstractOpenEngSBService</link>.</para>
     <para>The persistence of the security-bundle manages a set of GrantedAuthorities (Roles) for each instanceId.
       There is one exception: Users with "ROLE_ADMIN" are always granted access.</para>
   </section>
