@@ -14,37 +14,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.deploy;
+package org.openengsb.domain.auditing;
 
-import org.openengsb.core.common.Event;
+import org.openengsb.core.common.DomainEvents;
 
-public class DeployEndEvent extends Event {
+public interface AuditingDomainEvents extends DomainEvents {
 
-    private boolean success;
-
-    private String output;
-
-    private String deployId;
-
-    public DeployEndEvent() {
-    }
-
-    public DeployEndEvent(String deployId, boolean success, String output) {
-        this.deployId = deployId;
-        this.success = success;
-        this.output = output;
-    }
-
-    public String getOutput() {
-        return output;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public String getDeployId() {
-        return deployId;
-    }
-
+    // TODO add your domain-specific methods here
 }

@@ -110,6 +110,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.openengsb.domain</groupId>
+      <artifactId>openengsb-domain-auditing</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-security</artifactId>
       <version>${project.version}</version>

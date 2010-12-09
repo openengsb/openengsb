@@ -14,37 +14,16 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.deploy;
+package org.openengsb.connector.memoryauditing;
 
-import org.openengsb.core.common.Event;
+import org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceImpl;
+import org.openengsb.core.common.AbstractServiceManager;
+import org.openengsb.core.common.ServiceInstanceFactory;
+import org.openengsb.domain.auditing.AuditingDomain;
 
-public class DeployEndEvent extends Event {
+public class MemoryAuditingServiceManager extends AbstractServiceManager<AuditingDomain, MemoryAuditingServiceImpl> {
 
-    private boolean success;
-
-    private String output;
-
-    private String deployId;
-
-    public DeployEndEvent() {
+    public MemoryAuditingServiceManager(ServiceInstanceFactory<AuditingDomain, MemoryAuditingServiceImpl> factory) {
+        super(factory);
     }
-
-    public DeployEndEvent(String deployId, boolean success, String output) {
-        this.deployId = deployId;
-        this.success = success;
-        this.output = output;
-    }
-
-    public String getOutput() {
-        return output;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public String getDeployId() {
-        return deployId;
-    }
-
 }

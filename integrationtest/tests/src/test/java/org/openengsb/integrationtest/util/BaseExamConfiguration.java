@@ -70,6 +70,8 @@ public final class BaseExamConfiguration {
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CORE_SECURITY));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_EXAMPLE));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONNECTOR_EXAMPLE));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_DOMAIN_AUDITING));
+        baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_CONNECTOR_AUDITING));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_UI_COMMON_WICKET));
         baseConfiguration.add(CoreOptions.provision(OpenEngSBBundles.OPENENGSB_UI_WEB));
     }
@@ -89,16 +91,15 @@ public final class BaseExamConfiguration {
         }
         writeFileFromString(pathToRoot + "target/finalPom.xml", pomfile);
         return new ArrayList<Option>(Arrays.asList(new Option[]{
-                PaxRunnerOptions.rawPaxRunnerOption("--platform", "felix"),
-                PaxRunnerOptions.rawPaxRunnerOption("--console", "false"),
-                PaxRunnerOptions.rawPaxRunnerOption("--ee", "J2SE-1.6"),
-                PaxRunnerOptions.rawPaxRunnerOption("--definitionURL", "file:" + pathToRoot
-                        + "assembly/target/classes/felix.xml"),
-                PaxRunnerOptions.scanComposite("file:" + pathToRoot + "assembly/target/classes/karaf.composite"),
-                PaxRunnerOptions.scanComposite("file:" + pathToRoot
-                        + "assembly/target/classes/settings.debug.composite"),
-                PaxRunnerOptions.scanPom("file:" + pathToRoot + "target/finalPom.xml"),
-                CoreOptions.frameworks(CoreOptions.felix()) }));
+            PaxRunnerOptions.rawPaxRunnerOption("--platform", "felix"),
+            PaxRunnerOptions.rawPaxRunnerOption("--console", "false"),
+            PaxRunnerOptions.rawPaxRunnerOption("--ee", "J2SE-1.6"),
+            PaxRunnerOptions.rawPaxRunnerOption("--definitionURL", "file:" + pathToRoot
+                    + "assembly/target/classes/felix.xml"),
+            PaxRunnerOptions.scanComposite("file:" + pathToRoot + "assembly/target/classes/karaf.composite"),
+            PaxRunnerOptions.scanComposite("file:" + pathToRoot + "assembly/target/classes/settings.debug.composite"),
+            PaxRunnerOptions.scanPom("file:" + pathToRoot + "target/finalPom.xml"),
+            CoreOptions.frameworks(CoreOptions.felix())}));
     }
 
     private static void writeFileFromString(String filepath, String input) {
@@ -175,8 +176,7 @@ public final class BaseExamConfiguration {
             NodeList nodeLst = doc.getDocumentElement().getChildNodes();
             for (int s = 0; s < nodeLst.getLength(); s++) {
                 Node fstNode = nodeLst.item(s);
-                if (fstNode.getNodeType() == Node.ELEMENT_NODE
-                        && ((Element) fstNode).getNodeName().equals("version")) {
+                if (fstNode.getNodeType() == Node.ELEMENT_NODE && ((Element) fstNode).getNodeName().equals("version")) {
                     return fstNode.getTextContent();
                 }
             }
@@ -188,7 +188,7 @@ public final class BaseExamConfiguration {
 
     public static void debug(List<Option> baseConfiguration) {
         baseConfiguration.add(PaxRunnerOptions
-                .vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"));
+            .vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005"));
     }
 
 }

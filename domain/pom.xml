@@ -59,6 +59,7 @@
     <module>test</module>
     <module>deploy</module>
     <module>build</module>
+    <module>auditing</module>
   </modules>
 
 </project>

@@ -14,37 +14,18 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.deploy;
+package org.openengsb.domain.auditing;
 
-import org.openengsb.core.common.Event;
+import java.util.List;
 
-public class DeployEndEvent extends Event {
+import org.openengsb.core.common.Domain;
 
-    private boolean success;
+/**
+ * The Auditing Domain provides means to audit certain events for later viewing.
+ */
+public interface AuditingDomain extends Domain {
 
-    private String output;
+    void audit(String message);
 
-    private String deployId;
-
-    public DeployEndEvent() {
-    }
-
-    public DeployEndEvent(String deployId, boolean success, String output) {
-        this.deployId = deployId;
-        this.success = success;
-        this.output = output;
-    }
-
-    public String getOutput() {
-        return output;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public String getDeployId() {
-        return deployId;
-    }
-
+    List<String> getAudits();
 }
