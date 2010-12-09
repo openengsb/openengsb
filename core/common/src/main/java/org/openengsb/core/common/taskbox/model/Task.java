@@ -38,6 +38,7 @@ public class Task extends ProcessBag {
         if (emptyTask == null) {
             emptyTask = new Task();
             emptyTask.removeAllProperties();
+            emptyTask.setEmpty();
         }
 
         return emptyTask;
