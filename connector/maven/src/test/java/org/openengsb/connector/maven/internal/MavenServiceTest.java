@@ -28,7 +28,7 @@ import org.junit.Test;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.build.BuildDomainEvents;
-import org.openengsb.domain.build.BuildEndEvent;
+import org.openengsb.domain.build.BuildSuccessEvent;
 import org.openengsb.domain.build.BuildStartEvent;
 import org.openengsb.domain.deploy.DeployDomainEvents;
 import org.openengsb.domain.deploy.DeployEndEvent;
@@ -63,7 +63,16 @@ public class MavenServiceTest {
         mavenService.setCommand("clean compile");
         String id = mavenService.build();
         verify(buildEvents).raiseEvent(any(BuildStartEvent.class));
-        verify(buildEvents).raiseEvent(refEq(new BuildEndEvent(id, true, null), "output"));
+        verify(buildEvents).raiseEvent(refEq(new BuildSuccessEvent(id, null), "output"));
+    }
+
+    @Test
+    public void buildWithProcessId_shouldWork() {
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("clean compile");
+        mavenService.build(42);
+        verify(buildEvents).raiseEvent(any(BuildStartEvent.class));
+        verify(buildEvents).raiseEvent(refEq(new BuildSuccessEvent(42, null), "output"));
     }
 
     @Test

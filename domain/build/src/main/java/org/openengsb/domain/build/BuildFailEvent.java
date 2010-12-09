@@ -18,20 +18,29 @@ package org.openengsb.domain.build;
 
 import org.openengsb.core.common.Event;
 
-public class BuildStartEvent extends Event {
+public class BuildFailEvent extends Event {
+
+    private String output;
 
     private String buildId;
 
-    public BuildStartEvent() {
+    public BuildFailEvent(String buildId, String output) {
+        super(BuildFailEvent.class.getSimpleName());
+        this.buildId = buildId;
+        this.output = output;
     }
 
-    public BuildStartEvent(String buildId) {
-        super("BuildStartEvent");
-        this.buildId = buildId;
+    public BuildFailEvent(long processId, String output) {
+        super(BuildFailEvent.class.getSimpleName(), processId);
+        this.output = output;
     }
 
     public String getBuildId() {
         return buildId;
+    }
+
+    public String getOutput() {
+        return output;
     }
 
 }

@@ -31,8 +31,9 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.build.BuildDomain;
 import org.openengsb.domain.build.BuildDomainEvents;
-import org.openengsb.domain.build.BuildEndEvent;
+import org.openengsb.domain.build.BuildFailEvent;
 import org.openengsb.domain.build.BuildStartEvent;
+import org.openengsb.domain.build.BuildSuccessEvent;
 import org.openengsb.domain.deploy.DeployDomain;
 import org.openengsb.domain.deploy.DeployDomainEvents;
 import org.openengsb.domain.deploy.DeployEndEvent;
@@ -108,16 +109,42 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
         final String contextId = contextService.getThreadLocalContext();
         buildEvents.raiseEvent(new BuildStartEvent(id));
         Runnable doBuild = new Runnable() {
-
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
-                buildEvents.raiseEvent(new BuildEndEvent(id, result.isSuccess(), result.getOutput()));
+                if (result.isSuccess()) {
+                    buildEvents.raiseEvent(new BuildSuccessEvent(id, result.getOutput()));
+                } else {
+                    buildEvents.raiseEvent(new BuildFailEvent(id, result.getOutput()));
+                }
             }
         };
         execute(doBuild);
         return id;
+    }
+
+    @Override
+    public void build(final long processId) {
+        BuildStartEvent buildStartEvent = new BuildStartEvent();
+        buildStartEvent.setProcessId(processId);
+        buildEvents.raiseEvent(buildStartEvent);
+        final String contextId = contextService.getThreadLocalContext();
+        Runnable doBuild = new Runnable() {
+            @Override
+            public void run() {
+                contextService.setThreadLocalContext(contextId);
+                MavenResult result = excuteCommand(command);
+                if (result.isSuccess()) {
+                    buildEvents.raiseEvent(new BuildSuccessEvent(processId, result.getOutput()));
+                } else {
+                    buildEvents.raiseEvent(new BuildFailEvent(processId, result.getOutput()));
+                }
+            }
+        };
+        execute(doBuild);
+
+
     }
 
     private void execute(Runnable runnable) {
