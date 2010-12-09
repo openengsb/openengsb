@@ -18,7 +18,7 @@ package org.openengsb.core.common;
 
 public class Event {
     private String name;
-    private long processId;
+    private Long processId;
 
     public Event() {
     }
@@ -47,11 +47,11 @@ public class Event {
         this.name = name;
     }
 
-    public long getProcessId() {
+    public Long getProcessId() {
         return this.processId;
     }
 
-    public void setProcessId(long processId) {
+    public void setProcessId(Long processId) {
         this.processId = processId;
     }
 
