@@ -228,12 +228,6 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     }
 
     private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
-        if (rulemanager.listGlobals().containsKey("flowHelper")) {
-            session.setGlobal("flowHelper", new DroolsFlowHelperImpl(session));
-        } else {
-            throw new RuntimeException("global was added but it was not found...");
-        }
-
         Collection<String> missingGlobals = findMissingGlobals();
         if (!missingGlobals.isEmpty()) {
             waitForGlobals(missingGlobals);
