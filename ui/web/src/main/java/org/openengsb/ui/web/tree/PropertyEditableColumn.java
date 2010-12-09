@@ -51,7 +51,7 @@ public class PropertyEditableColumn extends PropertyRenderableColumn {
         DefaultMutableTreeNode fieldNode = (DefaultMutableTreeNode) node;
         final ModelBean userObject = (ModelBean) fieldNode.getUserObject();
 
-        if (Pattern.matches("/domains/.+/defaultConnector/id", userObject.getKey())) {
+        if (Pattern.matches("/domain/.+/defaultConnector/id", userObject.getKey())) {
             return new DropDownPanel(id, new PropertyModel<String>(node, getPropertyExpression()),
                     new LoadableDetachableModel<List<String>>() {
                         @Override
@@ -77,7 +77,7 @@ public class PropertyEditableColumn extends PropertyRenderableColumn {
         List<DomainProvider> domains = domainService.domains();
         for (DomainProvider domainProvider : domains) {
             String domainProvierName = domainProvider.getId();
-            if (("/domains/" + domainProvierName + "/defaultConnector/id").equals(keyPath)) {
+            if (("/domain/" + domainProvierName + "/defaultConnector/id").equals(keyPath)) {
                 Class<? extends Domain> domainInterface = domainProvider.getDomainInterface();
                 List<ServiceReference> serviceReferencesForConnector = domainService
                         .serviceReferencesForDomain(domainInterface);
