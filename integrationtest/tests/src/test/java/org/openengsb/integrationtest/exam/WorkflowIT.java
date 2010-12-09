@@ -82,6 +82,7 @@ public class WorkflowIT extends AbstractExamTestHelper {
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
         contextService.putValue("domain/ExampleDomain/defaultConnector/id", "dummyLog");
+        contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
 
         /*
          * This is kind of a workaround. But for some reason when the workflow-service waits for these services for 30
@@ -91,7 +92,7 @@ public class WorkflowIT extends AbstractExamTestHelper {
         retrieveService(getBundleContext(), ExampleDomain.class);
 
         Dictionary<String, String> properties = new Hashtable<String, String>();
-        String[] clazzes = new String[]{ Domain.class.getName(), ExampleDomain.class.getName() };
+        String[] clazzes = new String[]{Domain.class.getName(), ExampleDomain.class.getName()};
         properties.put("id", "dummyLog");
 
         DummyLogDomain logService = new DummyLogDomain();
