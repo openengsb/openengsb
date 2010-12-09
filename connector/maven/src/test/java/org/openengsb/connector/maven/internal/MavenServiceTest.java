@@ -28,11 +28,12 @@ import org.junit.Test;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.build.BuildDomainEvents;
-import org.openengsb.domain.build.BuildSuccessEvent;
 import org.openengsb.domain.build.BuildStartEvent;
+import org.openengsb.domain.build.BuildSuccessEvent;
 import org.openengsb.domain.deploy.DeployDomainEvents;
 import org.openengsb.domain.deploy.DeployEndEvent;
 import org.openengsb.domain.deploy.DeployStartEvent;
+import org.openengsb.domain.deploy.DeploySuccessEvent;
 import org.openengsb.domain.test.TestDomainEvents;
 import org.openengsb.domain.test.TestEndEvent;
 import org.openengsb.domain.test.TestStartEvent;
@@ -102,6 +103,16 @@ public class MavenServiceTest {
         String id = mavenService.deploy();
         verify(deployEvents).raiseEvent(any(DeployStartEvent.class));
         verify(deployEvents).raiseEvent(refEq(new DeployEndEvent(id, true, null), "output"));
+    }
+
+    @Test
+    public void deployWithProcessId_shouldThrowEventsWithProcessId() {
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("install -Dmaven.test.skip=true");
+        long id = 42;
+        mavenService.deploy(id);
+        verify(deployEvents).raiseEvent(any(DeployStartEvent.class));
+        verify(deployEvents).raiseEvent(refEq(new DeploySuccessEvent(id, null), "output"));
     }
 
     @Test

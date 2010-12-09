@@ -22,9 +22,13 @@ public class DeployStartEvent extends Event {
 
     private String deployId;
 
+    @Deprecated
     public DeployStartEvent(String deployId) {
         super("DeployStartEvent");
         this.deployId = deployId;
+    }
+
+    public DeployStartEvent(long processId) {
     }
 
     public String getDeployId() {

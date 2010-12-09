@@ -16,16 +16,10 @@
 
 package org.openengsb.domain.deploy;
 
-import org.openengsb.core.common.DomainEvents;
+public class DeploySuccessEvent extends DeployEndEvent {
 
-public interface DeployDomainEvents extends DomainEvents {
+    public DeploySuccessEvent(long processId, String output) {
+        super(processId, true, output);
+    }
 
-    void raiseEvent(DeployStartEvent e);
-
-    @Deprecated
-    void raiseEvent(DeployEndEvent e);
-
-    void raiseEvent(DeployFailEvent e);
-
-    void raiseEvent(DeploySuccessEvent e);
 }

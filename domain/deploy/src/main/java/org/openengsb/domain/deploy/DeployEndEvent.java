@@ -26,8 +26,15 @@ public class DeployEndEvent extends Event {
 
     private String deployId;
 
+    @Deprecated
     public DeployEndEvent(String deployId, boolean success, String output) {
         this.deployId = deployId;
+        this.success = success;
+        this.output = output;
+    }
+
+    public DeployEndEvent(long processId, boolean success, String output) {
+        setProcessId(processId);
         this.success = success;
         this.output = output;
     }

@@ -37,7 +37,9 @@ import org.openengsb.domain.build.BuildSuccessEvent;
 import org.openengsb.domain.deploy.DeployDomain;
 import org.openengsb.domain.deploy.DeployDomainEvents;
 import org.openengsb.domain.deploy.DeployEndEvent;
+import org.openengsb.domain.deploy.DeployFailEvent;
 import org.openengsb.domain.deploy.DeployStartEvent;
+import org.openengsb.domain.deploy.DeploySuccessEvent;
 import org.openengsb.domain.test.TestDomain;
 import org.openengsb.domain.test.TestDomainEvents;
 import org.openengsb.domain.test.TestEndEvent;
@@ -191,6 +193,26 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
         };
         execute(doDeploy);
         return id;
+    }
+
+    @Override
+    public void deploy(final long processId) {
+        final String contextId = contextService.getThreadLocalContext();
+        deployEvents.raiseEvent(new DeployStartEvent(processId));
+        Runnable doDeploy = new Runnable() {
+            @Override
+            public void run() {
+                contextService.setThreadLocalContext(contextId);
+                MavenResult result = excuteCommand(command);
+                if (result.isSuccess()) {
+                    deployEvents.raiseEvent(new DeploySuccessEvent(processId, result.getOutput()));
+                } else {
+                    deployEvents.raiseEvent(new DeployFailEvent(processId, result.getOutput()));
+                }
+
+            }
+        };
+        execute(doDeploy);
     }
 
     private String createId() {
