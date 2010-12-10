@@ -32,6 +32,8 @@ import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
 import org.drools.event.process.ProcessNodeTriggeredEvent;
 import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.rule.BeforeActivationFiredEvent;
+import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.rule.FactHandle;
@@ -73,6 +75,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     @Override
     public void processEvent(Event event) throws WorkflowException {
+        log.info(String.format("processing Event %s of type %s", event, event.getClass()));
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         FactHandle factHandle = session.insert(event);
         session.fireAllRules();
@@ -133,6 +136,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         Collection<Long> result = new HashSet<Long>();
         for (ProcessInstance p : processInstances) {
             result.add(p.getId());
+
         }
         return result;
     }
@@ -253,6 +257,14 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
                 String processId2 = event.getProcessInstance().getProcessId();
                 long id = event.getProcessInstance().getId();
                 log.info(String.format("process completed \"%s\". instance-ID: %d", processId2, id));
+            }
+        });
+
+        session.addEventListener(new DefaultAgendaEventListener() {
+            @Override
+            public void beforeActivationFired(BeforeActivationFiredEvent event) {
+                String ruleName = event.getActivation().getRule().getName();
+                log.info(String.format("rule \"%s\" fired.", ruleName));
             }
         });
         return session;
