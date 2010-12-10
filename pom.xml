@@ -24,8 +24,8 @@
   <properties>
     <!-- Version Informtations -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
-    <openengsb.version.name.adjective>Icy</openengsb.version.name.adjective>
-    <openengsb.version.name.noun>Ikarus</openengsb.version.name.noun>
+    <openengsb.version.name.adjective>Joyful</openengsb.version.name.adjective>
+    <openengsb.version.name.noun>Jerry</openengsb.version.name.noun>
     <!-- General Settings -->
     <root.basedir>${project.basedir}</root.basedir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
