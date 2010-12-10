@@ -17,6 +17,8 @@
 package org.openengsb.tooling.pluginsuite.openengsbplugin.tools;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.ops4j.io.Pipe;
 import org.ops4j.pax.runner.platform.PlatformException;
@@ -31,9 +33,11 @@ public class OpenEngSBJavaRunner {
     private Pipe inStreamMapper;
     private Runnable shutdownRunnable;
     private String[] commandLine;
+    private Map<String, String> environment;
 
-    public OpenEngSBJavaRunner(CommandLineBuilder command) {
+    public OpenEngSBJavaRunner(CommandLineBuilder command, Map<String, String> env) {
         commandLine = command.toArray();
+        environment = env;
     }
 
     public synchronized void exec() throws PlatformException {
@@ -45,7 +49,13 @@ public class OpenEngSBJavaRunner {
 
     private void startProcess() throws PlatformException {
         try {
-            process = Runtime.getRuntime().exec(commandLine, null, null);
+            ProcessBuilder processBuilder = new ProcessBuilder();
+            processBuilder.command(commandLine);
+            Map<String, String> env = processBuilder.environment();
+            for (Entry<String, String> entry : environment.entrySet()) {
+                env.put(entry.getKey(), entry.getValue());
+            }
+            process = processBuilder.start();
         } catch (IOException e) {
             throw new PlatformException("Could not start up the process", e);
         }

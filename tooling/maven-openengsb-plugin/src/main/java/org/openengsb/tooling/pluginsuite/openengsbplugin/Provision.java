@@ -16,7 +16,8 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -40,17 +41,32 @@ public class Provision extends AbstractOpenengsbMojo {
      * This setting should be done in the one of the assembly folders and have to point to the final directory where the
      * karaf system, etc configs and so on consist.
      * 
-     * @parameter expression="${provisionPath}"
+     * @parameter expression="${provisionPathUnix}"
      */
-    private String provisionPath;
+    private String provisionPathUnix;
+
+    /**
+     * This setting should be done in the one of the assembly folders and have to point to the final directory where the
+     * karaf system, etc configs and so on consist.
+     * 
+     * @parameter expression="${provisionPathWindows}"
+     */
+    private String provisionPathWindows;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (provisionPath != null) {
-            File file = new File(provisionPath);
-            System.out.println(file.exists());
+        if (provisionPathWindows != null && provisionPathUnix != null) {
+            CommandLineBuilder command = new CommandLineBuilder();
+            Map<String, String> environment = new HashMap<String, String>();
+            environment.put("KARAF_DEBUG", "true");
+            if (System.getProperty("os.name").startsWith("Windows")) {
+                command.append(provisionPathWindows);
+                environment.put("jline.terminal", "jline.UnsupportedTerminal");
+            } else {
+                command.append(provisionPathUnix);
+            }
             try {
-                new OpenEngSBJavaRunner(new CommandLineBuilder().append(provisionPath)).exec();
+                new OpenEngSBJavaRunner(command, environment).exec();
             } catch (PlatformException e) {
                 throw new MojoFailureException(e, e.getMessage(), e.getStackTrace().toString());
             }
