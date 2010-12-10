@@ -61,7 +61,7 @@ public class Provision extends AbstractOpenengsbMojo {
             environment.put("KARAF_DEBUG", "true");
             if (System.getProperty("os.name").startsWith("Windows")) {
                 command.append(provisionPathWindows);
-                environment.put("jline.terminal", "jline.UnsupportedTerminal");
+                environment.put("JAVA_OPTS", "-Djline.terminal=jline.UnsupportedTerminal");
             } else {
                 command.append(provisionPathUnix);
             }
