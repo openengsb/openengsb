@@ -182,7 +182,6 @@
                 <!-- OpenEngSB Features -->
                 <feature>openengsb-core</feature>
                 <!-- OpenEngSB Domains -->
-                <feature>openengsb-domain-example</feature>
                 <feature>openengsb-domain-notification</feature>
                 <feature>openengsb-domain-report</feature>
                 <feature>openengsb-domain-issue</feature>
@@ -191,7 +190,6 @@
                 <feature>openengsb-domain-test</feature>
                 <feature>openengsb-domain-deploy</feature>
                 <!-- OpenEngSB Connectors -->
-                <feature>openengsb-connector-example</feature>
                 <feature>openengsb-connector-email</feature>
                 <feature>openengsb-connector-plaintextreport</feature>
                 <feature>openengsb-connector-maven</feature>
