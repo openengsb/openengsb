@@ -16,10 +16,7 @@
 
 package org.openengsb.core.taskbox;
 
-import java.util.HashMap;
-
 import org.openengsb.core.common.persistence.PersistenceException;
-import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 
 /**
@@ -33,26 +30,5 @@ public interface TaskboxServiceInternal {
     /**
      * Create a new Task object from an existing Task
      */
-    Task createNewTask(ProcessBag bag) throws PersistenceException;
-
-    /**
-     * Create a new Task object from a properties-HashMap
-     */
-    Task createNewTask(HashMap<String, Object> properties) throws PersistenceException;
-
-    /**
-     * Create a new Task object with given parameters
-     */
-    Task createNewTask(String processId, String context, String user) throws PersistenceException;
-
-    /**
-     * Create a new Task object with given parameters
-     */
-    Task createNewTask(String taskType, String processId, String context, String user) throws PersistenceException;
-
-    /**
-     * Create a new Task object with given parameters
-     */
-    Task createNewTask(String taskType, String name, String description, String processId, String context, String user)
-        throws PersistenceException;
+    void createNewTask(ProcessBag bag) throws PersistenceException;
 }
