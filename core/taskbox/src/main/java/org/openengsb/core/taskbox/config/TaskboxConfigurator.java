@@ -53,12 +53,10 @@ public class TaskboxConfigurator {
 
     private void addWorkflow() {
         InputStream is = null;
-        String testWorkflow;
-        RuleBaseElementId id;
         try {
             is = getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/humantask.rf");
-            testWorkflow = IOUtils.toString(is);
-            id = new RuleBaseElementId(RuleBaseElementType.Process, "humantask");
+            String testWorkflow = IOUtils.toString(is);
+            RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Process, "humantask");
             ruleManager.add(id, testWorkflow);
 
             log.info("loaded workflow 'humanTask'");

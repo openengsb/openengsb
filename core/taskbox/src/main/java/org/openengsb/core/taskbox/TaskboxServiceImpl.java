@@ -58,8 +58,7 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
 
     @Override
     public List<Task> getOpenTasks() {
-        Task example = Task.createTaskWithAllValuesSetToNull();
-        return getTasksForExample(example);
+        return getTasksForExample(Task.createTaskWithAllValuesSetToNull());
     }
 
     @Override
@@ -75,6 +74,7 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
         } catch (PersistenceException e) {
             throw new WorkflowException(e.getMessage());
         }
+
         workflowService.processEvent(finishedEvent);
         log.info("finished task " + task.getTaskId());
     }

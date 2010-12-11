@@ -21,20 +21,26 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.common.workflow.RuleBaseException;
+import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.common.workflow.model.ProcessBag;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
@@ -42,6 +48,7 @@ import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 public class TaskboxIT extends AbstractExamTestHelper {
     private TaskboxService taskboxService;
     private WorkflowService workflowService;
+    private RuleManager ruleManager;
 
     @Before
     public void setUp() throws Exception {
@@ -81,7 +88,6 @@ public class TaskboxIT extends AbstractExamTestHelper {
         assertTrue(taskboxService.getOpenTasks().size() == 0);
     }
 
-    @Ignore
     @Test
     public void testHumanTaskFlow_shouldCreateOwnProcessBag() throws WorkflowException {
         assertTrue(taskboxService.getOpenTasks().size() == 0);
@@ -97,7 +103,6 @@ public class TaskboxIT extends AbstractExamTestHelper {
         assertTrue(taskboxService.getOpenTasks().size() == 0);
     }
 
-    @Ignore
     @Test
     public void testHumanTaskFlow_shouldHandleMultipleTasks() throws WorkflowException {
         assertTrue(taskboxService.getOpenTasks().size() == 0);
@@ -109,5 +114,32 @@ public class TaskboxIT extends AbstractExamTestHelper {
 
         taskboxService.finishTask(taskboxService.getOpenTasks().get(0));
         assertTrue(taskboxService.getOpenTasks().size() == 2);
+    }
+
+    @Test
+    public void testCompleteWorkflow_humanInteractionShouldReplaceValues() throws WorkflowException, IOException,
+        RuleBaseException {
+        addWorkflow("HIDemoWorkflow");
+
+        workflowService.startFlow("HIDemoWorkflow");
+        Task task = taskboxService.getOpenTasks().get(0);
+        Date date = new Date();
+        task.addOrReplaceProperty("test", date);
+
+        taskboxService.finishTask(task);
+
+        task = taskboxService.getOpenTasks().get(0);
+        assertEquals(task.getProperty("test"), date);
+
+        taskboxService.finishTask(task);
+        assertTrue(taskboxService.getOpenTasks().size() == 0);
+    }
+
+    private void addWorkflow(String workflow) throws IOException, RuleBaseException {
+        InputStream is = getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/" + workflow + ".rf");
+        String testWorkflow = IOUtils.toString(is);
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Process, workflow);
+        ruleManager.add(id, testWorkflow);
+        IOUtils.closeQuietly(is);
     }
 }
