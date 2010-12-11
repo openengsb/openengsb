@@ -198,6 +198,7 @@
                 <feature>openengsb-connector-jira</feature>
               </features>
               <repository>target/features-repo</repository>
+              <failOnArtifactResolutionError>true</failOnArtifactResolutionError>
             </configuration>
           </execution>
         </executions>
