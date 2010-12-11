@@ -20,10 +20,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
-public class AppTest{
-    
+public class AppTestInternal {
+
     @Test
     public void testApp() {
-        Assert.assertTrue(true);
+        Assert.assertTrue(false);
     }
 }
