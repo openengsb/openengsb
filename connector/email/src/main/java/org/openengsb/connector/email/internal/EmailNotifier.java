@@ -18,21 +18,19 @@ package org.openengsb.connector.email.internal;
 
 import org.openengsb.connector.email.internal.abstraction.MailAbstraction;
 import org.openengsb.connector.email.internal.abstraction.MailProperties;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.notification.NotificationDomain;
 import org.openengsb.domain.notification.model.Notification;
 import org.osgi.framework.ServiceRegistration;
 
-public class EmailNotifier implements NotificationDomain {
-
-    private final String id;
-
+public class EmailNotifier extends AbstractOpenEngSBService implements NotificationDomain {
     private final MailAbstraction mailAbstraction;
     private ServiceRegistration serviceRegistration;
     private final MailProperties properties;
 
-    public EmailNotifier(String id, MailAbstraction mailAbstraction) {
-        this.id = id;
+    public EmailNotifier(String instanceId, MailAbstraction mailAbstraction) {
+        super(instanceId);
         this.mailAbstraction = mailAbstraction;
         properties = mailAbstraction.createMailProperties();
     }
@@ -50,10 +48,6 @@ public class EmailNotifier implements NotificationDomain {
             return AliveState.OFFLINE;
         }
         return aliveState;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public ServiceRegistration getServiceRegistration() {

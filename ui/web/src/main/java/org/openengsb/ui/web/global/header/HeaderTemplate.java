@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -83,13 +84,13 @@ public class HeaderTemplate extends Panel {
     }
 
     private void initMainMenuItems() {
-        addHeaderMenuItem("Index", Index.class, "index.title");
+        addHeaderMenuItem("Index", Index.class, "index.title", "");
 
-        addHeaderMenuItem("TestClient", TestClient.class, "testclient.title");
-        addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title");
-        addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title");
-        addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title");
-        addHeaderMenuItem("UserService", UserService.class, "userService.title");
+        addHeaderMenuItem("TestClient", TestClient.class, "testclient.title", "");
+        addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title", "");
+        addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title", "");
+        addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title", "");
+        addHeaderMenuItem("UserService", UserService.class, "userService.title", "ROLE_ADMIN");
     }
 
     private void initializeMenu() {
@@ -123,25 +124,34 @@ public class HeaderTemplate extends Panel {
     }
 
     /**
-     * @returns the name of the current active menu item
+     * get the name of the current active menu item
      */
     public static String getActiveIndex() {
         return HeaderTemplate.menuIndex;
     }
 
     /**
-     * adds new item to main header navigation
-     * 
-     * @param index - the name of the index @see HeaderMenuItem.index
-     * @param linkClass - class name to be linked to
-     * @param langKey - language key, the text which should be displayed
+     * Adds a new item to main header navigation where the index defines the name of the index, which should be the
+     * class name; linkClass defines the class name to be linked to; langKey defines the language key for the text 
+     * which should be displayed and authority defines who is authorized to see the link
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String authority) {
         StringResourceModel label = new StringResourceModel(langKey, this, null);
-        menuItems.add(new HeaderMenuItem(index, new BookmarkablePageLabelLink("link", linkClass, label)));
+        BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
+        addAuthorizationRoles(pageLabelLink, authority);
+        menuItems.add(new HeaderMenuItem(index, pageLabelLink));
         avialableItems.add(index);
     }
+
+    private void addAuthorizationRoles(BookmarkablePageLabelLink pageLabelLink, String authority) {
+        if (authority != null && !"".equals(authority)) {
+            MetaDataRoleAuthorizationStrategy.authorize(pageLabelLink, RENDER, authority);
+        } else {
+            MetaDataRoleAuthorizationStrategy.authorizeAll(pageLabelLink, RENDER);
+        }
+    }
+
 
     private static class HeaderMenuItem implements Serializable {
         private final String index;
@@ -162,3 +172,4 @@ public class HeaderTemplate extends Panel {
     }
 
 }
+

@@ -58,7 +58,7 @@ public class JiraServiceTest {
 
     @Test
     public void connectorKeepsId() {
-        assertEquals("anId", jiraService.getId());
+        assertEquals("anId", jiraService.getInstanceId());
     }
 
     @Test

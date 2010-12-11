@@ -35,6 +35,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -100,7 +101,7 @@ public class TestClient extends BasePage {
         WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
         serviceManagementContainer.setOutputMarkupId(true);
         add(serviceManagementContainer);
-
+        MetaDataRoleAuthorizationStrategy.authorize(serviceManagementContainer, RENDER, "ROLE_ADMIN");
         IModel<List<DomainProvider>> domainModel = new LoadableDetachableModel<List<DomainProvider>>() {
             @Override
             protected List<DomainProvider> load() {

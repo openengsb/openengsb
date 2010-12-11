@@ -55,6 +55,13 @@ public class MethodUtilTest {
     }
 
     public class SubTestClass extends AbstractTestClass implements NullDomain {
+
+        @Override
+        public String getInstanceId() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
         @Override
         public void dootherstuff() {
         }
@@ -79,6 +86,13 @@ public class MethodUtilTest {
     }
 
     public static class MultiClass implements NullDomain, TestInterface2 {
+
+        @Override
+        public String getInstanceId() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
         @Override
         public void dootherstuff() {
         }

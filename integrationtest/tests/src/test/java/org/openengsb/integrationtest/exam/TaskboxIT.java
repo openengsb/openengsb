@@ -20,10 +20,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.TaskboxService;
+import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
@@ -34,6 +34,7 @@ public class TaskboxIT extends AbstractExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
+        authenticateAsAdmin();
         taskboxService = retrieveService(getBundleContext(), TaskboxService.class);
         ruleManager = retrieveService(getBundleContext(), RuleManager.class);
         ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);

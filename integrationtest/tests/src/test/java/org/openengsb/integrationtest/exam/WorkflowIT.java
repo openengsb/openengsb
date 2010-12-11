@@ -27,6 +27,7 @@ import java.util.Hashtable;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
@@ -39,11 +40,12 @@ import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+import org.springframework.security.access.AccessDeniedException;
 
 @RunWith(JUnit4TestRunner.class)
 public class WorkflowIT extends AbstractExamTestHelper {
 
-    public static class DummyLogDomain implements ExampleDomain {
+    public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain {
         private boolean wasCalled = false;
 
         @Override
@@ -82,6 +84,7 @@ public class WorkflowIT extends AbstractExamTestHelper {
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
         contextService.putValue("domain/ExampleDomain/defaultConnector/id", "dummyLog");
+        contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
 
         /*
          * This is kind of a workaround. But for some reason when the workflow-service waits for these services for 30
@@ -91,7 +94,7 @@ public class WorkflowIT extends AbstractExamTestHelper {
         retrieveService(getBundleContext(), ExampleDomain.class);
 
         Dictionary<String, String> properties = new Hashtable<String, String>();
-        String[] clazzes = new String[]{ Domain.class.getName(), ExampleDomain.class.getName() };
+        String[] clazzes = new String[]{Domain.class.getName(), ExampleDomain.class.getName()};
         properties.put("id", "dummyLog");
 
         DummyLogDomain logService = new DummyLogDomain();
@@ -102,6 +105,12 @@ public class WorkflowIT extends AbstractExamTestHelper {
         workflowService.processEvent(e);
 
         assertThat(logService.isWasCalled(), is(true));
+    }
+
+    @Test(expected = AccessDeniedException.class)
+    public void testUserAccessToRuleManager_shouldThrowException() throws Exception {
+        authenticate("user", "password");
+        addHelloWorldRule();
     }
 
     private void addHelloWorldRule() throws Exception {

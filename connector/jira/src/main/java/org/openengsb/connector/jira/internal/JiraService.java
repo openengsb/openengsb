@@ -25,24 +25,24 @@ import org.apache.commons.logging.LogFactory;
 import org.openengsb.connector.jira.internal.models.xmlrpc.JiraDynamicProxy;
 import org.openengsb.connector.jira.internal.models.xmlrpc.JiraProxyFactory;
 import org.openengsb.connector.jira.internal.models.xmlrpc.JiraRpcConverter;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.issue.IssueDomain;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 
-public class JiraService implements IssueDomain {
+public class JiraService extends AbstractOpenEngSBService implements IssueDomain {
 
     private static Log log = LogFactory.getLog(JiraService.class);
 
     private AliveState state = AliveState.DISCONNECTED;
-    private final String id;
     private String jiraUser;
     private String jiraPassword;
     private JiraProxyFactory proxyFactory;
     private JiraRpcConverter rpcConverter;
 
     public JiraService(String id, JiraProxyFactory proxyFactory, JiraRpcConverter rpcConverter) {
-        this.id = id;
+        super(id);
         this.proxyFactory = proxyFactory;
         this.rpcConverter = rpcConverter;
     }
@@ -100,10 +100,6 @@ public class JiraService implements IssueDomain {
         }
     }
 
-    public String getId() {
-        return this.id;
-    }
-
     @Override
     public AliveState getAliveState() {
         return state;
@@ -112,7 +108,7 @@ public class JiraService implements IssueDomain {
     public JiraRpcConverter getRpcConverter() {
         return this.rpcConverter;
     }
-    
+
     public JiraProxyFactory getProxyFactory() {
         return this.proxyFactory;
     }
@@ -120,15 +116,15 @@ public class JiraService implements IssueDomain {
     public String getJiraUser() {
         return this.jiraUser;
     }
-    
+
     public void setJiraUser(String jiraUser) {
         this.jiraUser = jiraUser;
     }
-    
+
     public void setJiraPassword(String jiraPassword) {
         this.jiraPassword = jiraPassword;
     }
-    
+
     private JiraDynamicProxy createConnectedJiraProxy() throws Exception {
         JiraDynamicProxy client = this.proxyFactory.createInstance();
         client.logIn(jiraUser, jiraPassword);

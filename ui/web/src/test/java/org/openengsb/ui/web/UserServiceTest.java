@@ -34,12 +34,11 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.usermanagement.UserManager;
-import org.openengsb.core.common.usermanagement.exceptions.UserExistsException;
-import org.openengsb.core.common.usermanagement.exceptions.UserManagementException;
-import org.openengsb.core.common.usermanagement.model.User;
+import org.openengsb.core.common.security.UserExistsException;
+import org.openengsb.core.common.security.UserManagementException;
+import org.openengsb.core.common.security.UserManager;
+import org.openengsb.core.common.security.model.User;
 import org.openengsb.ui.web.model.OpenEngSBVersion;
-
 import org.osgi.framework.BundleContext;
 
 public class UserServiceTest {

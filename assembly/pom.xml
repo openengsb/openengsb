@@ -197,6 +197,7 @@
                 <feature>openengsb-connector-maven</feature>
                 <feature>openengsb-connector-git</feature>
                 <feature>openengsb-connector-trac</feature>
+                <feature>openengsb-connector-jira</feature>
               </features>
               <repository>target/features-repo</repository>
             </configuration>

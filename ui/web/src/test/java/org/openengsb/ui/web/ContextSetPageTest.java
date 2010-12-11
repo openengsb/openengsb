@@ -74,11 +74,11 @@ public class ContextSetPageTest {
                 new SpringComponentInjector(tester.getApplication(), appContext, false));
         context = new Context();
         context.createChild("a").createChild("b").createChild("c").put("d", "e");
-        context.createChild("domains").createChild("domains.example").createChild("defaultConnector")
+        context.createChild("domain").createChild("domain.example").createChild("defaultConnector")
                 .put("id", "blabla");
         when(contextService.getContext()).thenReturn(context);
         when(contextService.getValue("/a/b/c/d")).thenReturn("e");
-        when(contextService.getValue("/domains/domains.example/defaultConnector/id")).thenReturn("blabla");
+        when(contextService.getValue("/domain/domain.example/defaultConnector/id")).thenReturn("blabla");
         when(contextService.getThreadLocalContext()).thenReturn("foo");
         tester.startPage(new ContextSetPage());
     }
@@ -137,8 +137,8 @@ public class ContextSetPageTest {
 
     @Test
     public void idValueIsDropdown() {
-        testLabel("domains", "form:treeTable:i:5:sideColumns:0:nodeLink:label");
-        testLabel("domains.example", "form:treeTable:i:6:sideColumns:0:nodeLink:label");
+        testLabel("domain", "form:treeTable:i:5:sideColumns:0:nodeLink:label");
+        testLabel("domain.example", "form:treeTable:i:6:sideColumns:0:nodeLink:label");
         testLabel("defaultConnector", "form:treeTable:i:7:sideColumns:0:nodeLink:label");
         testLabel("id", "form:treeTable:i:8:sideColumns:0:nodeLink:label");
 
@@ -165,7 +165,7 @@ public class ContextSetPageTest {
         DomainProvider domainProvider = mock(DomainProvider.class);
         domainProviderList.add(domainProvider);
 
-        when(domainProvider.getId()).thenReturn("domains.example");
+        when(domainProvider.getId()).thenReturn("domain.example");
         when(domainProvider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
             public Class<? extends Domain> answer(InvocationOnMock invocation) {
@@ -207,8 +207,8 @@ public class ContextSetPageTest {
         DomainProvider domainProvider = mock(DomainProvider.class);
         DomainProvider wrongDomainProvider = mock(DomainProvider.class);
 
-        when(domainProvider.getId()).thenReturn("domains.example");
-        when(wrongDomainProvider.getId()).thenReturn("domains.example");
+        when(domainProvider.getId()).thenReturn("domain.example");
+        when(wrongDomainProvider.getId()).thenReturn("domain.example");
 
         domainProviderList.add(domainProvider);
         when(domainProvider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
@@ -254,7 +254,7 @@ public class ContextSetPageTest {
         DomainProvider domainProvider = mock(DomainProvider.class);
         domainProviderList.add(domainProvider);
 
-        when(domainProvider.getId()).thenReturn("domains.example");
+        when(domainProvider.getId()).thenReturn("domain.example");
         when(domainProvider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
             @Override
             public Class<? extends Domain> answer(InvocationOnMock invocation) {
