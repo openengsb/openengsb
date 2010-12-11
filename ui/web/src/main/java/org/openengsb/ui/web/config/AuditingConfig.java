@@ -49,7 +49,11 @@ public class AuditingConfig {
     public void init() {
         try {
             ruleManager.addImport(AuditingDomain.class.getCanonicalName());
-            ruleManager.addGlobal(AuditingDomain.class.getCanonicalName(), "auditing");
+            try {
+                ruleManager.addGlobal(AuditingDomain.class.getCanonicalName(), "auditing");
+            } catch (RuntimeException e) {
+                // thrown if there is already one global auditing... fine then, go on
+            }
             addRule("auditEvent");
             List<ServiceManager> serviceManagersForDomain =
                 domainService.serviceManagersForDomain(AuditingDomain.class);
