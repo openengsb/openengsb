@@ -19,7 +19,11 @@ package org.openengsb.domain.deploy;
 public class DeployFailEvent extends DeployEndEvent {
 
     public DeployFailEvent(long processId, String output) {
-        super(processId, false, output);
+        super(processId, output);
+    }
+
+    public DeployFailEvent(String deployId, String output) {
+        super(deployId, output);
     }
 
 }

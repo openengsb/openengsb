@@ -19,7 +19,11 @@ package org.openengsb.domain.deploy;
 public class DeploySuccessEvent extends DeployEndEvent {
 
     public DeploySuccessEvent(long processId, String output) {
-        super(processId, true, output);
+        super(processId, output);
+    }
+
+    public DeploySuccessEvent(String deployId, String output) {
+        super(deployId, output);
     }
 
 }

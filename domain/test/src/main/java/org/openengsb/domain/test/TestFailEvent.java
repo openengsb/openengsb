@@ -19,7 +19,11 @@ package org.openengsb.domain.test;
 public class TestFailEvent extends TestEndEvent {
 
     public TestFailEvent(long processId, String output) {
-        super(processId, false, output);
+        super(processId, output);
+    }
+
+    public TestFailEvent(String testId, String output) {
+        super(testId, output);
     }
 
 }

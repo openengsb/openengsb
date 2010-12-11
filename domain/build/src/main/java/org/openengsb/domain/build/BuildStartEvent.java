@@ -26,8 +26,11 @@ public class BuildStartEvent extends Event {
     }
 
     public BuildStartEvent(String buildId) {
-        super("BuildStartEvent");
         this.buildId = buildId;
+    }
+
+    public BuildStartEvent(Long processId) {
+        super(processId);
     }
 
     public String getBuildId() {

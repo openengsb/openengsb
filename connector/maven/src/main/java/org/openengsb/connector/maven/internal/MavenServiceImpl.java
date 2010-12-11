@@ -36,13 +36,11 @@ import org.openengsb.domain.build.BuildStartEvent;
 import org.openengsb.domain.build.BuildSuccessEvent;
 import org.openengsb.domain.deploy.DeployDomain;
 import org.openengsb.domain.deploy.DeployDomainEvents;
-import org.openengsb.domain.deploy.DeployEndEvent;
 import org.openengsb.domain.deploy.DeployFailEvent;
 import org.openengsb.domain.deploy.DeployStartEvent;
 import org.openengsb.domain.deploy.DeploySuccessEvent;
 import org.openengsb.domain.test.TestDomain;
 import org.openengsb.domain.test.TestDomainEvents;
-import org.openengsb.domain.test.TestEndEvent;
 import org.openengsb.domain.test.TestFailEvent;
 import org.openengsb.domain.test.TestStartEvent;
 import org.openengsb.domain.test.TestSuccessEvent;
@@ -100,7 +98,11 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
-                testEvents.raiseEvent(new TestEndEvent(id, result.isSuccess(), result.getOutput()));
+                if (result.isSuccess()) {
+                    testEvents.raiseEvent(new TestSuccessEvent(id, result.getOutput()));
+                } else {
+                    testEvents.raiseEvent(new TestFailEvent(id, result.getOutput()));
+                }
             }
         };
         execute(runTests);
@@ -188,7 +190,11 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
-                deployEvents.raiseEvent(new DeployEndEvent(id, result.isSuccess(), result.getOutput()));
+                if (result.isSuccess()) {
+                    deployEvents.raiseEvent(new DeploySuccessEvent(id, result.getOutput()));
+                } else {
+                    deployEvents.raiseEvent(new DeployFailEvent(id, result.getOutput()));
+                }
             }
         };
         execute(doDeploy);
@@ -259,6 +265,7 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
         if (!errorOutput.isEmpty()) {
             log.warn("Maven connector error stream output: " + errorOutput);
         }
+        log.debug("output: " + output.getString());
         return new MavenResult(result, output.getString());
     }
 

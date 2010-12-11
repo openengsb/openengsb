@@ -24,13 +24,12 @@ public class BuildSuccessEvent extends Event {
     private String buildId;
 
     public BuildSuccessEvent(String buildId, String output) {
-        super(BuildSuccessEvent.class.getSimpleName());
         this.buildId = buildId;
         this.output = output;
     }
 
-    public BuildSuccessEvent(long processId, String output) {
-        super(BuildSuccessEvent.class.getSimpleName(), processId);
+    public BuildSuccessEvent(Long processId, String output) {
+        super(processId);
         this.output = output;
     }
 

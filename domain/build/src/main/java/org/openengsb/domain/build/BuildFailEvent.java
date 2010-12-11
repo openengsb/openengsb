@@ -24,14 +24,16 @@ public class BuildFailEvent extends Event {
 
     private String buildId;
 
+    public BuildFailEvent() {
+    }
+
     public BuildFailEvent(String buildId, String output) {
-        super(BuildFailEvent.class.getSimpleName());
         this.buildId = buildId;
         this.output = output;
     }
 
-    public BuildFailEvent(long processId, String output) {
-        super(BuildFailEvent.class.getSimpleName(), processId);
+    public BuildFailEvent(Long processId, String output) {
+        super(processId);
         this.output = output;
     }
 

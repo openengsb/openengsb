@@ -19,7 +19,11 @@ package org.openengsb.domain.test;
 public class TestSuccessEvent extends TestEndEvent {
 
     public TestSuccessEvent(long processId, String output) {
-        super(processId, true, output);
+        super(processId, output);
+    }
+
+    public TestSuccessEvent(String testId, String output) {
+        super(testId, output);
     }
 
 }

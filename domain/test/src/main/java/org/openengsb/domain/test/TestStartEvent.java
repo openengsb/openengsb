@@ -23,12 +23,10 @@ public class TestStartEvent extends Event {
     private String testId;
 
     public TestStartEvent(String testId) {
-        super();
         this.testId = testId;
     }
 
-    public TestStartEvent(long processId) {
-        super();
+    public TestStartEvent(Long processId) {
         setProcessId(processId);
     }
 

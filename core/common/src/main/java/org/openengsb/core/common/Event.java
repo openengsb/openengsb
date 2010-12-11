@@ -27,8 +27,13 @@ public class Event {
         this.name = name;
     }
 
-    public Event(String name, long processId) {
+    public Event(Long processId) {
+        this.processId = processId;
+    }
+
+    public Event(String name, Long processId) {
         this.name = name;
+        this.processId = processId;
     }
 
     /**
