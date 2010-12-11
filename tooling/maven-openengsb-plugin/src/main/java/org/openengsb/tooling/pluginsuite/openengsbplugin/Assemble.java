@@ -30,6 +30,9 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @inheritedByDefault false
  * 
  * @requiresProject true
+ * 
+ * @aggregator true
+ * 
  */
 public class Assemble extends AbstractOpenengsbMojo {
 

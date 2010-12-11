@@ -32,6 +32,9 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
  * @inheritedByDefault false
  * 
  * @requiresProject true
+ * 
+ * @aggregator true
+ * 
  */
 public class GenConnector extends AbstractOpenengsbMojo {
 
