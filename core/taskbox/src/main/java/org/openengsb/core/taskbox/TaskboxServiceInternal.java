@@ -20,7 +20,7 @@ import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 
 /**
- * TaskboxServiceInternal is an internal Service (used by the workflowService), providing methods to create new tasks
+ * TaskboxServiceInternal is an internal Service (used by the WorkflowService), providing methods to create new tasks
  * for human interaction.
  * 
  * The component uses the persistence compontent to store tasks and the workflow component to take control of specific
@@ -28,7 +28,7 @@ import org.openengsb.core.common.workflow.model.ProcessBag;
  */
 public interface TaskboxServiceInternal {
     /**
-     * Create a new Task object from an existing Task
+     * Create a new Task object from an existing ProcessBag
      */
     void createNewTask(ProcessBag bag) throws PersistenceException;
 }
