@@ -16,8 +16,8 @@
 
 package org.openengsb.core.common.communication;
 
-public interface IncomingPort {
+public interface RequestHandler {
 
-    void setRequestHandler(RequestHandler handler);
+    MethodReturn handleCall(MethodCall request);
 
 }
