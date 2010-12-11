@@ -97,6 +97,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         ProcessInstance processInstance = session.startProcess(processId);
         session.insert(processInstance);
+        processInstance.signalEvent("FlowStartedEvent", null);
         return processInstance.getId();
     }
 
