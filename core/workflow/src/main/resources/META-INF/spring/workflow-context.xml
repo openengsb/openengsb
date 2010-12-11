@@ -41,7 +41,7 @@
   </bean>
 
   <osgi:service interface="org.openengsb.core.common.workflow.RuleManager">
-    <ref local="secureRuleManager" />
+    <ref local="ruleManager" />
   </osgi:service>
 
   <osgi:service interface="org.openengsb.core.common.workflow.WorkflowService">
