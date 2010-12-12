@@ -96,7 +96,7 @@
     <module>connector</module>
     <module>ui</module>
     <module>assembly</module>
-    <module>integrationtest</module>
+    <module>itests</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
