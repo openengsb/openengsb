@@ -19,8 +19,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <groupId>org.openengsb.integrationtest.wrapped</groupId>
-    <artifactId>openengsb-integrationtest-wrapped-parent</artifactId>
+    <groupId>org.openengsb.wrapped</groupId>
+    <artifactId>openengsb-wrapped-parent</artifactId>
     <version>1.1.0-SNAPSHOT</version>
   </parent>
 
@@ -35,7 +35,8 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>net.sourceforge.htmlunit-all</artifactId>
   <version>1.1.0-SNAPSHOT</version>
-  <name>OpenEngSB :: Integration Tests :: OSGi Composed Wrapped Bundles :: HTML Unit Testing Framework</name>
+
+  <name>OpenEngSB :: OSGi Wrapped Bundles :: HTML Unit Testing Framework</name>
 
   <packaging>bundle</packaging>
 
@@ -65,7 +66,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Export-Package>com.gargoylesoftware.htmlunit.*</Export-Package>
+            <Export-Package>com.gargoylesoftware.htmlunit.*;!*</Export-Package>
             <Embed-Transitive>true</Embed-Transitive>
             <Embed-Dependency>*;scope=compile;inline=**</Embed-Dependency>
             <Import-Package>*;resolution:=optional</Import-Package>
@@ -74,7 +75,6 @@
       </plugin>
     </plugins>
   </build>
-
 
   <dependencies>
     <dependency>
