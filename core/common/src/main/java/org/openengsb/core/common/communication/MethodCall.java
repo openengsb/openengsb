@@ -20,27 +20,17 @@ import java.util.Map;
 
 public class MethodCall {
 
-    private String serviceId;
     private String methodName;
     private Object[] args;
     private Map<String, String> metaData;
 
-    public MethodCall(String serviceId, String methodName, Object[] args, Map<String, String> metaData) {
-        this.serviceId = serviceId;
+    public MethodCall(String methodName, Object[] args, Map<String, String> metaData) {
         this.methodName = methodName;
         this.args = args;
         this.metaData = metaData;
     }
 
     public MethodCall() {
-    }
-
-    public String getServiceId() {
-        return this.serviceId;
-    }
-
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
     }
 
     public String getMethodName() {
