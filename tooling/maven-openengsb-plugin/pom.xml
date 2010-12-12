@@ -51,7 +51,9 @@
   <properties>
     <!-- settings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- version info -->
     <junit.version>4.8.2</junit.version>
+    <log4j.version>1.2.14</log4j.version>
     <mvn.pluginapi.version>2.0</mvn.pluginapi.version>
     <mvn.core.version>3.0</mvn.core.version>
     <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
@@ -78,6 +80,11 @@
       <groupId>org.ops4j.pax.runner</groupId>
       <artifactId>pax-runner-platform</artifactId>
       <version>${paxrunner.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${log4j.version}</version>
     </dependency>
   </dependencies>
 
