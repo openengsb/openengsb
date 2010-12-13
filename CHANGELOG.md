@@ -2,6 +2,7 @@ openengsb-1.0.2.RELEASE
 
 ### Bug fixes
   * fix a problem when building the project in a path that contains spaces
+  * fix failing maven-connector-test on consecutive "install" calls without prior "clean"
 
 ### New Features & Changed Behaviour
   * workflow-service: remove droolsHelper and use drools-provided methods for starting workflows in rule-consequences (used in registerEventForFlow)
