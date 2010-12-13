@@ -1,111 +1,77 @@
-/**
- * Copyright 2010 OpenEngSB Division, Vienna University of Technology
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.openengsb.core.common.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static junit.framework.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Dictionary;
+import java.lang.reflect.Proxy;
+import java.net.URI;
 import java.util.HashMap;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.l10n.LocalizableString;
-import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.support.NullDomain;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
+import org.openengsb.core.common.communication.CallRouter;
+import org.openengsb.core.common.communication.MethodCall;
+import org.openengsb.core.common.communication.MethodReturn;
+import org.openengsb.core.common.communication.MethodReturn.ReturnType;
 
 public class ProxyConnectorTest {
 
-    private static final String ID = "ID";
-    private DomainService domainService;
-    private DomainProvider provider;
+    @Test
+    public void callInvoke_shouldCreateMethodCallAndReturnResult() throws Throwable {
+        CallRouter router = mock(CallRouter.class);
+        ProxyConnector proxy = new ProxyConnector();
+        proxy.setCallRouter(router);
+        String id = "id";
+        String test = "test";
 
-    @Before
-    public void setUp() {
-        domainService = mock(DomainService.class);
-        provider = Mockito.mock(DomainProvider.class);
-        when(provider.getDomainInterface()).thenAnswer(new Answer<Class<? extends Domain>>() {
-            @Override
-            public Class<? extends Domain> answer(InvocationOnMock invocation) {
-                return NullDomain.class;
-            }
-        });
-        LocalizableString stringMock = mock(LocalizableString.class);
-        when(provider.getName()).thenReturn(stringMock);
-        when(provider.getId()).thenReturn(ID);
-        when(domainService.domains()).thenReturn(Arrays.asList(new DomainProvider[]{ provider }));
+        proxy.setPortId(id);
+        URI uri = new URI(test);
+        proxy.setDestination(uri);
+
+        proxy.addMetadata("key", "value");
+        ArgumentCaptor<MethodCall> captor = ArgumentCaptor.forClass(MethodCall.class);
+        MethodReturn methodReturn = new MethodReturn(ReturnType.Object, id, new HashMap<String, String>());
+        when(router.callSync(Mockito.eq(id), Mockito.eq(uri), captor.capture())).thenReturn(methodReturn);
+
+        Object[] args = new Object[]{id, uri};
+        Interface newProxyInstance =
+            (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{Interface.class}, proxy);
+        String result = newProxyInstance.test(id, uri);
+
+        MethodCall value = captor.getValue();
+        assertThat(value.getMethodName(), equalTo(test));
+        assertThat(value.getArgs(), equalTo(args));
+        assertThat(value.getMetaData().size(), equalTo(1));
+        assertThat(value.getMetaData().get("key"), equalTo("value"));
+        assertThat(result, equalTo(id));
     }
 
     @Test
-    public void returnMockDomainInterface_shouldAddProxyToBundleContext() {
-        BundleContext mockContext = mock(BundleContext.class);
-        Bundle mockBundle = mock(Bundle.class);
-        Dictionary<?, ?> headers = mock(Dictionary.class);
-        when(mockBundle.getHeaders()).thenReturn(headers);
-        when(mockContext.getBundle()).thenReturn(mockBundle);
-
-        InvocationHandler invocationHandlerMock = mock(InvocationHandler.class);
-        InvocationHandlerFactory mock = mock(InvocationHandlerFactory.class);
-        when(mock.createInstance(Mockito.any(DomainProvider.class))).thenReturn(invocationHandlerMock);
-
-        ProxyConnector jmsConnector =
-            new ProxyConnector(domainService, mock);
-        jmsConnector.setBundleContext(mockContext);
-        jmsConnector.addProxiesToContext();
-
-        ArgumentCaptor<Object> captor = ArgumentCaptor.forClass(Object.class);
-        verify(mockContext)
-            .registerService(eq(ServiceManager.class.getName()), captor.capture(), any(Dictionary.class));
-        assertTrue(captor.getValue() instanceof ProxyServiceManager);
-        ProxyServiceManager manager = (ProxyServiceManager) captor.getValue();
-
-        // This line is required since spring cannot set it automatically
-        manager.update("12345", new HashMap<String, String>());
-        verify(mockContext).registerService(eq(new String[]{ NullDomain.class.getName(), Domain.class.getName() }),
-            captor.capture(), any(Dictionary.class));
-
-        ((NullDomain) captor.getValue()).nullMethod(5);
-        ArgumentCaptor<Method> methodCaptor = ArgumentCaptor.forClass(Method.class);
+    public void callInvokeWithException_ShouldThrowException() {
+        CallRouter router = mock(CallRouter.class);
+        ProxyConnector proxy = new ProxyConnector();
+        proxy.setCallRouter(router);
+        String message = "Message";
+        MethodReturn methodReturn = new MethodReturn(ReturnType.Exception, message, new HashMap<String, String>());
+        when(router.callSync(any(String.class), any(URI.class), any(MethodCall.class))).thenReturn(methodReturn);
+        Interface newProxyInstance =
+            (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{Interface.class}, proxy);
         try {
-            verify(invocationHandlerMock).invoke(same(captor.getValue()), methodCaptor.capture(),
-                eq(new Object[]{ Integer.valueOf(5) }));
-        } catch (Throwable e) {
-            throw new RuntimeException(e.getMessage(), e);
+            newProxyInstance.testException();
+            fail();
+        } catch (RuntimeException e) {
+            assertThat(e.getMessage(), equalTo(message));
         }
-        Method value = methodCaptor.getValue();
-        assertEquals("nullMethod", value.getName());
-        assertEquals(NullDomain.class, value.getDeclaringClass());
+    }
+
+    private interface Interface {
+        public String test(String id, URI uri);
+
+        public void testException();
     }
 }

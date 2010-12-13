@@ -22,6 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Dictionary;
+import java.util.List;
 import java.util.Locale;
 
 import org.junit.Test;
@@ -29,6 +30,8 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
+import org.openengsb.core.common.communication.CallRouter;
+import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.proxy.ProxyServiceManager;
@@ -60,11 +63,14 @@ public class ProxyServiceManagerTest {
         when(mockBundle.getHeaders()).thenReturn(headers);
         when(mockContext.getBundle()).thenReturn(mockBundle);
 
-        ProxyServiceManager manager = new ProxyServiceManager(provider, null);
+        ProxyServiceManager manager = new ProxyServiceManager(provider, mock(CallRouter.class));
         manager.setBundleContext(mockContext);
         ServiceDescriptor descriptor = manager.getDescriptor();
         assertThat(descriptor.getId(), equalTo(string));
-        assertThat(descriptor.getAttributes().size(), equalTo(0));
+        List<AttributeDefinition> attributes = descriptor.getAttributes();
+        assertThat(attributes.size(), equalTo(2));
+        assertThat(attributes.get(0).getId(), equalTo("portId"));
+        assertThat(attributes.get(1).getId(), equalTo("destination"));
         assertThat(descriptor.getImplementationType().getName(), equalTo(NullDomain.class.getName()));
         assertThat(descriptor.getServiceType().getName(), equalTo(NullDomain.class.getName()));
     }
