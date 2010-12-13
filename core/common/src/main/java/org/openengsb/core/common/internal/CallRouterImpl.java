@@ -86,7 +86,8 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
 
     @Override
     public MethodReturn handleCall(MethodCall call) {
-        final String filter = "(id=" + call.getServiceId() + ")";
+        String serviceId = call.getMetaData().get("serviceId");
+        String filter = String.format("(id=%s)", serviceId);
         OpenEngSBService service = OsgiServiceUtils.getService(bundleContext, OpenEngSBService.class, filter);
 
         Object[] args = call.getArgs();

@@ -75,7 +75,7 @@ public class CallRouterTest {
 
     @Test
     public void testRecieveMethodCall_shouldCallService() throws Exception {
-        final MethodCall call = new MethodCall("42", "test", new Object[0], new HashMap<String, String>());
+        final MethodCall call = new MethodCall("test", new Object[0], new HashMap<String, String>());
         callrouter.handleCall(call);
         callrouter.stop();
         verify(serviceMock, times(1)).test();
@@ -83,7 +83,7 @@ public class CallRouterTest {
 
     @Test
     public void testReceiveMethodCallWithArgument() throws Exception {
-        final MethodCall call = new MethodCall("42", "test", new Object[]{ 42 }, new HashMap<String, String>());
+        final MethodCall call = new MethodCall("test", new Object[]{ 42 }, new HashMap<String, String>());
         callrouter.handleCall(call);
         callrouter.stop();
         verify(serviceMock, never()).test();
@@ -93,7 +93,7 @@ public class CallRouterTest {
     @Test
     public void recieveMethodCall_shouldSendResponse() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
-        final MethodCall call = new MethodCall("42", "getAnswer", new Object[0], new HashMap<String, String>());
+        final MethodCall call = new MethodCall("getAnswer", new Object[0], new HashMap<String, String>());
         MethodReturn result = callrouter.handleCall(call);
 
         verify(serviceMock).getAnswer();
@@ -113,7 +113,7 @@ public class CallRouterTest {
 
     @Test
     public void testSendSyncMethodCall_shouldCallPort() throws Exception {
-        MethodCall methodCall = new MethodCall("42", "test", new Object[]{ 42 }, new HashMap<String, String>());
+        MethodCall methodCall = new MethodCall("test", new Object[]{ 42 }, new HashMap<String, String>());
         OutgoingPort portMock = mock(OutgoingPort.class);
         callrouter.registerOutgoingPort("jms", portMock);
         final URI testURI = URI.create("jms://localhost");
@@ -124,7 +124,7 @@ public class CallRouterTest {
     @Test
     public void testSendSyncMethodCall_shouldReturnResult() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
-        MethodCall methodCall = new MethodCall("42", "test", new Object[]{ 42 }, null);
+        MethodCall methodCall = new MethodCall("test", new Object[]{ 42 }, null);
         OutgoingPort portMock = mock(OutgoingPort.class);
         MethodReturn value = new MethodReturn();
         when(portMock.sendSync(URI.create("jms://localhost"), methodCall)).thenReturn(value);
@@ -150,8 +150,8 @@ public class CallRouterTest {
     public void testHandleCallsParallel() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
         final Object sync = addWaitingAnswerToServiceMock();
-        MethodCall blockingCall = new MethodCall("42", "getOtherAnswer", new Object[0], null);
-        MethodCall normalCall = new MethodCall("42", "getAnswer", new Object[0], null);
+        MethodCall blockingCall = new MethodCall("getOtherAnswer", new Object[0], null);
+        MethodCall normalCall = new MethodCall("getAnswer", new Object[0], null);
 
         ExecutorService threadPool = Executors.newCachedThreadPool();
         Future<MethodReturn> blockingFuture = threadPool.submit(new MethodCallable(blockingCall));
