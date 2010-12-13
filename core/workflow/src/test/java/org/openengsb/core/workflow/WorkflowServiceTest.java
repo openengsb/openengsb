@@ -234,7 +234,7 @@ public class WorkflowServiceTest {
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n"
                 + "  Event()\n"
                 + "then\n"
-                + "  flowHelper.startFlow(\"ci\");\n");
+                + "  kcontext.getKnowledgeRuntime().startProcess(\"ci\");\n");
         service.processEvent(new Event());
         assertThat(service.getRunningFlows().isEmpty(), is(false));
     }

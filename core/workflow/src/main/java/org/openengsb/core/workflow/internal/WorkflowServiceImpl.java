@@ -53,7 +53,8 @@ import org.springframework.osgi.context.BundleContextAware;
 
 public class WorkflowServiceImpl implements WorkflowService, BundleContextAware, ServiceListener {
 
-    private static final String START_FLOW_CONSEQUENCE_LINE = "  flowHelper.startFlow(\"%s\");\n";
+    private static final String START_FLOW_CONSEQUENCE_LINE =
+        "  kcontext.getKnowledgeRuntime().startProcess(\"%s\");\n";
 
     private Log log = LogFactory.getLog(WorkflowServiceImpl.class);
 
@@ -273,12 +274,6 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     }
 
     private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
-        if (rulemanager.listGlobals().containsKey("flowHelper")) {
-            session.setGlobal("flowHelper", new DroolsFlowHelperImpl(session));
-        } else {
-            throw new RuntimeException("global was added but it was not found...");
-        }
-
         Collection<String> missingGlobals = findMissingGlobals();
         if (!missingGlobals.isEmpty()) {
             waitForGlobals(missingGlobals);
