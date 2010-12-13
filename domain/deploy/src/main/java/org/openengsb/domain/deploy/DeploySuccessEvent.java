@@ -16,21 +16,14 @@
 
 package org.openengsb.domain.deploy;
 
-import org.openengsb.core.common.Event;
+public class DeploySuccessEvent extends DeployEndEvent {
 
-public class DeployStartEvent extends Event {
-
-    private String deployId;
-
-    public DeployStartEvent(String deployId) {
-        this.deployId = deployId;
+    public DeploySuccessEvent(long processId, String output) {
+        super(processId, output);
     }
 
-    public DeployStartEvent(long processId) {
-    }
-
-    public String getDeployId() {
-        return deployId;
+    public DeploySuccessEvent(String deployId, String output) {
+        super(deployId, output);
     }
 
 }

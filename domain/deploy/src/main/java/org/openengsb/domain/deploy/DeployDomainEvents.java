@@ -21,6 +21,11 @@ import org.openengsb.core.common.DomainEvents;
 public interface DeployDomainEvents extends DomainEvents {
 
     void raiseEvent(DeployStartEvent e);
-    
+
+    @Deprecated
     void raiseEvent(DeployEndEvent e);
+
+    void raiseEvent(DeployFailEvent e);
+
+    void raiseEvent(DeploySuccessEvent e);
 }

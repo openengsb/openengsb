@@ -14,23 +14,35 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.deploy;
+package org.openengsb.domain.build;
 
 import org.openengsb.core.common.Event;
 
-public class DeployStartEvent extends Event {
+public class BuildFailEvent extends Event {
 
-    private String deployId;
+    private String output;
 
-    public DeployStartEvent(String deployId) {
-        this.deployId = deployId;
+    private String buildId;
+
+    public BuildFailEvent() {
     }
 
-    public DeployStartEvent(long processId) {
+    public BuildFailEvent(String buildId, String output) {
+        this.buildId = buildId;
+        this.output = output;
     }
 
-    public String getDeployId() {
-        return deployId;
+    public BuildFailEvent(Long processId, String output) {
+        super(processId);
+        this.output = output;
+    }
+
+    public String getBuildId() {
+        return buildId;
+    }
+
+    public String getOutput() {
+        return output;
     }
 
 }
