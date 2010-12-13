@@ -16,7 +16,11 @@
 
 package org.openengsb.connector.plaintextreport.internal;
 
-import java.lang.reflect.Field;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
@@ -112,23 +116,25 @@ public class PlaintextReportService extends AbstractReportDomain {
         StringBuilder content = new StringBuilder();
         appendAll(content, "Event class: ", event.getClass().getName(), "\n");
         appendAll(content, "Event Fields: \n");
-        for (Field field : event.getClass().getDeclaredFields()) {
-            appendAll(content, "  ", field.getName(), ": ", getFieldValue(field, event), "\n");
+        BeanInfo beanInfo;
+        try {
+            beanInfo = Introspector.getBeanInfo(event.getClass());
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            for (PropertyDescriptor p : propertyDescriptors) {
+                try {
+                    String name = p.getName();
+                    Object value = p.getReadMethod().invoke(event);
+                    appendAll(content, "  ", name, ": ", value, "\n");
+                } catch (IllegalAccessException e) {
+                    appendAll(content, e);
+                } catch (InvocationTargetException e) {
+                    appendAll(content, e);
+                }
+            }
+        } catch (IntrospectionException e) {
+            appendAll(content, e);
         }
         return content.toString();
-    }
-
-    private String getFieldValue(Field field, Event event) {
-        Object value = null;
-        try {
-            boolean accessible = field.isAccessible();
-            field.setAccessible(true);
-            value = field.get(event);
-            field.setAccessible(accessible);
-        } catch (IllegalAccessException e) {
-            value = "[WARNING - can not access field value]";
-        }
-        return String.valueOf(value);
     }
 
     private void appendAll(StringBuilder builder, Object... objects) {

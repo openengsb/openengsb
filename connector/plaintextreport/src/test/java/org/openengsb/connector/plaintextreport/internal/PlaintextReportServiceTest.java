@@ -126,7 +126,7 @@ public class PlaintextReportServiceTest {
         assertThat(reportService.getAliveState(), is(AliveState.ONLINE));
     }
 
-    private static class TestEvent extends Event {
+    static class TestEvent extends Event {
         private final String stringField;
         private final int intField;
         private final Object objectField;
@@ -136,6 +136,19 @@ public class PlaintextReportServiceTest {
             this.intField = intField;
             this.objectField = objectField;
         }
+
+        public String getStringField() {
+            return this.stringField;
+        }
+
+        public int getIntField() {
+            return this.intField;
+        }
+
+        public Object getObjectField() {
+            return this.objectField;
+        }
+
     }
 
 }

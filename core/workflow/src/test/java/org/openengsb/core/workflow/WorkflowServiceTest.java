@@ -17,9 +17,11 @@
 package org.openengsb.core.workflow;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
@@ -35,6 +37,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -63,6 +66,11 @@ public class WorkflowServiceTest {
     private DummyIssue issue;
     private DummyTest test;
     private DummyService myservice;
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        cleanup();
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -113,6 +121,10 @@ public class WorkflowServiceTest {
 
     @After
     public void tearDown() throws Exception {
+        cleanup();
+    }
+
+    private static void cleanup() {
         File ruleDir = new File("data");
         while (ruleDir.exists()) {
             FileUtils.deleteQuietly(ruleDir);
@@ -206,6 +218,19 @@ public class WorkflowServiceTest {
         InOrder inOrder2 = inOrder(logService);
         inOrder2.verify(logService).doSomething("start testflow");
         inOrder2.verify(logService).doSomething("first event received");
+    }
+
+    @Test
+    public void testStart2Processes_shouldOnlyTriggerSpecificEvents() throws Exception {
+        long id1 = service.startFlow("floweventtest");
+        long id2 = service.startFlow("floweventtest");
+
+        service.processEvent(new Event("event", id1));
+        service.processEvent(new TestEvent(id1));
+        service.waitForFlowToFinish(id1);
+
+        assertThat(service.getRunningFlows(), hasItem(id2));
+        assertThat(service.getRunningFlows(), not(hasItem(id1)));
     }
 
     @Test

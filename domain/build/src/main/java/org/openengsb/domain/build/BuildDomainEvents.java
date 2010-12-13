@@ -21,6 +21,8 @@ import org.openengsb.core.common.DomainEvents;
 public interface BuildDomainEvents extends DomainEvents {
 
     void raiseEvent(BuildStartEvent e);
-    
-    void raiseEvent(BuildEndEvent e);
+
+    void raiseEvent(BuildSuccessEvent e);
+
+    void raiseEvent(BuildFailEvent e);
 }

@@ -30,6 +30,10 @@ import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessNodeTriggeredEvent;
+import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.rule.BeforeActivationFiredEvent;
+import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.rule.FactHandle;
@@ -74,12 +78,20 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     @Override
     public void processEvent(Event event) throws WorkflowException {
+        log.info(String.format("processing Event %s of type %s", event, event.getClass()));
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         FactHandle factHandle = session.insert(event);
         session.fireAllRules();
-        for (ProcessInstance p : session.getProcessInstances()) {
-            p.signalEvent(event.getType(), event);
+        Long processId = event.getProcessId();
+        if (processId == null) {
+            for (ProcessInstance p : session.getProcessInstances()) {
+                p.signalEvent(event.getType(), event);
+            }
+        } else {
+            ProcessInstance processInstance = session.getProcessInstance(processId);
+            processInstance.signalEvent(event.getType(), event);
         }
+
         session.retract(factHandle);
     }
 
@@ -113,7 +125,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     public long startFlow(String processId) throws WorkflowException {
         return this.startFlow(processId, null);
     }
-    
+
     @Override
     public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
@@ -130,8 +142,9 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
             processBag = (ProcessBag) parameterMap.get("processBag");
         }            
         processInstance = session.startProcess(processId, parameterMap);
-        processBag.setProcessId(String.valueOf(processInstance.getId()));
-        
+        session.insert(processInstance);
+        processBag.setProcessId(String.valueOf(processInstance.getId()));        
+        processInstance.signalEvent("FlowStartedEvent", null);
         return processInstance.getId();
     }
 
@@ -171,6 +184,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         Collection<Long> result = new HashSet<Long>();
         for (ProcessInstance p : processInstances) {
             result.add(p.getId());
+
         }
         return result;
     }
@@ -268,6 +282,36 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
                 synchronized (session) {
                     session.notifyAll();
                 }
+            }
+        });
+        session.addEventListener(new DefaultProcessEventListener() {
+            @Override
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                String processId2 = event.getProcessInstance().getProcessId();
+                long id = event.getProcessInstance().getId();
+                log.info(String.format("started process \"%s\". instance-ID: %d", processId2, id));
+            }
+
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                long nodeId = event.getNodeInstance().getNodeId();
+                String nodeName = event.getNodeInstance().getNodeName();
+                log.info(String.format("Now triggering node \"%s\" (\"%s\").", nodeName, nodeId));
+            }
+
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                String processId2 = event.getProcessInstance().getProcessId();
+                long id = event.getProcessInstance().getId();
+                log.info(String.format("process completed \"%s\". instance-ID: %d", processId2, id));
+            }
+        });
+
+        session.addEventListener(new DefaultAgendaEventListener() {
+            @Override
+            public void beforeActivationFired(BeforeActivationFiredEvent event) {
+                String ruleName = event.getActivation().getRule().getName();
+                log.info(String.format("rule \"%s\" fired.", ruleName));
             }
         });
         return session;

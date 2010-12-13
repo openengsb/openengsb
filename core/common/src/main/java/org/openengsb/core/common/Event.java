@@ -24,12 +24,22 @@ import java.lang.reflect.InvocationTargetException;
 
 public class Event {
     private String name;
+    private Long processId;
 
     public Event() {
     }
 
     public Event(String name) {
         this.name = name;
+    }
+
+    public Event(Long processId) {
+        this.processId = processId;
+    }
+
+    public Event(String name, Long processId) {
+        this.name = name;
+        this.processId = processId;
     }
 
     /**
@@ -46,6 +56,14 @@ public class Event {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getProcessId() {
+        return this.processId;
+    }
+
+    public void setProcessId(Long processId) {
+        this.processId = processId;
     }
 
     @Override

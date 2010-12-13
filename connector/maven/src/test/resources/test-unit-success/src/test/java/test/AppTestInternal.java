@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.deploy;
+package test;
 
-import org.openengsb.core.common.Event;
+import org.junit.Assert;
+import org.junit.Test;
 
-public class DeployStartEvent extends Event {
 
-    private String deployId;
-
-    public DeployStartEvent(String deployId) {
-        this.deployId = deployId;
+public class AppTestInternal {
+    
+    @Test
+    public void testApp() {
+        Assert.assertTrue(true);
     }
-
-    public DeployStartEvent(long processId) {
-    }
-
-    public String getDeployId() {
-        return deployId;
-    }
-
 }

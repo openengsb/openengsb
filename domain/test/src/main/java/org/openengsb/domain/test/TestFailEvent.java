@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package test;
+package org.openengsb.domain.test;
 
-import org.junit.Assert;
-import org.junit.Test;
+public class TestFailEvent extends TestEndEvent {
 
-
-public class AppTest {
-
-    @Test
-    public void testApp() {
-        Assert.assertTrue(false);
+    public TestFailEvent(long processId, String output) {
+        super(processId, output);
     }
+
+    public TestFailEvent(String testId, String output) {
+        super(testId, output);
+    }
+
 }

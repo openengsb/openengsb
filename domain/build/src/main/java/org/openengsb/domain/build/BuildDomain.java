@@ -29,7 +29,15 @@ public interface BuildDomain extends Domain {
      * build the currently configured project. This method returns at once with an id. The build is conducted
      * asynchronously. The result can be retrieved using the events raised by this domain, which also contain the id.
      */
-    @Raises({BuildStartEvent.class, BuildEndEvent.class})
+    @Raises({ BuildStartEvent.class, BuildSuccessEvent.class })
     String build();
+
+    /**
+     * build the currently configured project. This method returns at once with an id. The build is conducted
+     * asynchronously. As soon as the build is finished an event is raised. The processId-field of the event must be
+     * populated with the supplied processId.
+     */
+    @Raises({ BuildStartEvent.class, BuildSuccessEvent.class })
+    void build(long processId);
 
 }

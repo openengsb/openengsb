@@ -105,9 +105,8 @@ public class SendEventPageTest {
 
     @Test
     public void firstClassIsDefault_shouldCreateEditorFieldsBasedOnDefault() {
-        tester.debugComponentTrees();
-        assertThat(fieldList.size(), is(2));
-        Component attributeName = fieldList.get("2:row:name");
+        assertThat(fieldList.size(), is(3));
+        Component attributeName = fieldList.get("3:row:name");
         assertThat(attributeName.getDefaultModelObjectAsString(), is("testProperty"));
     }
 
@@ -115,14 +114,14 @@ public class SendEventPageTest {
     public void selectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
         selectEventType(1);
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
-        assertThat(fieldList.size(), is(1));
+        assertThat(fieldList.size(), is(2));
         Component attributeName = fieldList.get("1:row:name");
         assertThat(attributeName.getDefaultModelObjectAsString(), is("name"));
     }
 
     @Test
     public void submittingForm_shouldCallDroolsServiceWithInstantiatedEvent() throws WorkflowException {
-        formTester.setValue("fieldContainer:fields:2:row:field", "a");
+        formTester.setValue("fieldContainer:fields:3:row:field", "a");
         submitForm();
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
         verify(eventService).processEvent(captor.capture());

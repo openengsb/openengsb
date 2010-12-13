@@ -32,16 +32,19 @@ import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.domain.build.BuildDomain;
 import org.openengsb.domain.build.BuildDomainEvents;
-import org.openengsb.domain.build.BuildEndEvent;
+import org.openengsb.domain.build.BuildFailEvent;
 import org.openengsb.domain.build.BuildStartEvent;
+import org.openengsb.domain.build.BuildSuccessEvent;
 import org.openengsb.domain.deploy.DeployDomain;
 import org.openengsb.domain.deploy.DeployDomainEvents;
-import org.openengsb.domain.deploy.DeployEndEvent;
+import org.openengsb.domain.deploy.DeployFailEvent;
 import org.openengsb.domain.deploy.DeployStartEvent;
+import org.openengsb.domain.deploy.DeploySuccessEvent;
 import org.openengsb.domain.test.TestDomain;
 import org.openengsb.domain.test.TestDomainEvents;
-import org.openengsb.domain.test.TestEndEvent;
+import org.openengsb.domain.test.TestFailEvent;
 import org.openengsb.domain.test.TestStartEvent;
+import org.openengsb.domain.test.TestSuccessEvent;
 
 public class MavenServiceImpl extends AbstractOpenEngSBService
         implements TestDomain, BuildDomain, DeployDomain {
@@ -97,11 +100,34 @@ public class MavenServiceImpl extends AbstractOpenEngSBService
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
-                testEvents.raiseEvent(new TestEndEvent(id, result.isSuccess(), result.getOutput()));
+                if (result.isSuccess()) {
+                    testEvents.raiseEvent(new TestSuccessEvent(id, result.getOutput()));
+                } else {
+                    testEvents.raiseEvent(new TestFailEvent(id, result.getOutput()));
+                }
             }
         };
         execute(runTests);
         return id;
+    }
+
+    @Override
+    public void runTests(final long processId) {
+        final String contextId = contextService.getThreadLocalContext();
+        testEvents.raiseEvent(new TestStartEvent(processId));
+        Runnable runTests = new Runnable() {
+            @Override
+            public void run() {
+                contextService.setThreadLocalContext(contextId);
+                MavenResult result = excuteCommand(command);
+                if (result.isSuccess()) {
+                    testEvents.raiseEvent(new TestSuccessEvent(processId, result.getOutput()));
+                } else {
+                    testEvents.raiseEvent(new TestFailEvent(processId, result.getOutput()));
+                }
+            }
+        };
+        execute(runTests);
     }
 
     @Override
@@ -110,16 +136,41 @@ public class MavenServiceImpl extends AbstractOpenEngSBService
         final String contextId = contextService.getThreadLocalContext();
         buildEvents.raiseEvent(new BuildStartEvent(id));
         Runnable doBuild = new Runnable() {
-
             @Override
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
-                buildEvents.raiseEvent(new BuildEndEvent(id, result.isSuccess(), result.getOutput()));
+                if (result.isSuccess()) {
+                    buildEvents.raiseEvent(new BuildSuccessEvent(id, result.getOutput()));
+                } else {
+                    buildEvents.raiseEvent(new BuildFailEvent(id, result.getOutput()));
+                }
             }
         };
         execute(doBuild);
         return id;
+    }
+
+    @Override
+    public void build(final long processId) {
+        BuildStartEvent buildStartEvent = new BuildStartEvent();
+        buildStartEvent.setProcessId(processId);
+        buildEvents.raiseEvent(buildStartEvent);
+        final String contextId = contextService.getThreadLocalContext();
+        Runnable doBuild = new Runnable() {
+            @Override
+            public void run() {
+                contextService.setThreadLocalContext(contextId);
+                MavenResult result = excuteCommand(command);
+                if (result.isSuccess()) {
+                    buildEvents.raiseEvent(new BuildSuccessEvent(processId, result.getOutput()));
+                } else {
+                    buildEvents.raiseEvent(new BuildFailEvent(processId, result.getOutput()));
+                }
+            }
+        };
+        execute(doBuild);
+
     }
 
     private void execute(Runnable runnable) {
@@ -141,11 +192,35 @@ public class MavenServiceImpl extends AbstractOpenEngSBService
             public void run() {
                 contextService.setThreadLocalContext(contextId);
                 MavenResult result = excuteCommand(command);
-                deployEvents.raiseEvent(new DeployEndEvent(id, result.isSuccess(), result.getOutput()));
+                if (result.isSuccess()) {
+                    deployEvents.raiseEvent(new DeploySuccessEvent(id, result.getOutput()));
+                } else {
+                    deployEvents.raiseEvent(new DeployFailEvent(id, result.getOutput()));
+                }
             }
         };
         execute(doDeploy);
         return id;
+    }
+
+    @Override
+    public void deploy(final long processId) {
+        final String contextId = contextService.getThreadLocalContext();
+        deployEvents.raiseEvent(new DeployStartEvent(processId));
+        Runnable doDeploy = new Runnable() {
+            @Override
+            public void run() {
+                contextService.setThreadLocalContext(contextId);
+                MavenResult result = excuteCommand(command);
+                if (result.isSuccess()) {
+                    deployEvents.raiseEvent(new DeploySuccessEvent(processId, result.getOutput()));
+                } else {
+                    deployEvents.raiseEvent(new DeployFailEvent(processId, result.getOutput()));
+                }
+
+            }
+        };
+        execute(doDeploy);
     }
 
     private String createId() {
@@ -192,6 +267,7 @@ public class MavenServiceImpl extends AbstractOpenEngSBService
         if (!errorOutput.isEmpty()) {
             log.warn("Maven connector error stream output: " + errorOutput);
         }
+        log.debug("output: " + output.getString());
         return new MavenResult(result, output.getString());
     }
 
