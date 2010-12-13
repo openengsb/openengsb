@@ -16,16 +16,8 @@
 
 package org.openengsb.core.common.communication;
 
-import java.net.URI;
+public interface RequestHandler {
 
-public interface CallRouter extends RequestHandler {
-
-    void registerIncomingPort(IncomingPort port);
-
-    void registerOutgoingPort(String scheme, OutgoingPort port);
-
-    void call(String portId, URI destination, MethodCall call);
-
-    MethodReturn callSync(String portId, URI destination, MethodCall call);
+    MethodReturn handleCall(MethodCall request);
 
 }

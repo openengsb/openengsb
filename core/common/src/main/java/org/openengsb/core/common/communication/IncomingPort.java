@@ -16,12 +16,12 @@
 
 package org.openengsb.core.common.communication;
 
-import java.util.UUID;
-
 public interface IncomingPort {
 
-    MethodCall listen(UUID handle);
+    void start();
 
-    void sendResponse(UUID handle, MethodReturn result);
+    void setRequestHandler(RequestHandler handler);
+
+    void stop();
 
 }

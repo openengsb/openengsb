@@ -16,6 +16,8 @@
 
 package org.openengsb.core.common.internal;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,11 +26,14 @@ import java.util.concurrent.Executors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.communication.CallRouter;
 import org.openengsb.core.common.communication.IncomingPort;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
+import org.openengsb.core.common.communication.MethodReturn.ReturnType;
 import org.openengsb.core.common.communication.OutgoingPort;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 
@@ -43,9 +48,7 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
 
     @Override
     public void registerIncomingPort(IncomingPort port) {
-        log.info("registering incoming port " + port);
-        PortHandler portHandler = new PortHandler(bundleContext, port);
-        executor.execute(portHandler);
+        port.setRequestHandler(this);
     }
 
     @Override
@@ -79,6 +82,51 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
     @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
+    }
+
+    @Override
+    public MethodReturn handleCall(MethodCall call) {
+        final String filter = "(id=" + call.getServiceId() + ")";
+        OpenEngSBService service = OsgiServiceUtils.getService(bundleContext, OpenEngSBService.class, filter);
+
+        Object[] args = call.getArgs();
+        Method method = findMethod(service, call.getMethodName(), getArgTypes(args));
+
+        return invokeMethod(service, method, args);
+    }
+
+    private MethodReturn invokeMethod(OpenEngSBService service, Method method, Object[] args) {
+        MethodReturn resultContainer = new MethodReturn();
+        try {
+            Object result = method.invoke(service, args);
+            resultContainer.setType(ReturnType.Object);
+            resultContainer.setArg(result);
+        } catch (InvocationTargetException e) {
+            resultContainer.setType(ReturnType.Exception);
+            resultContainer.setArg(e.getCause());
+        } catch (IllegalAccessException e) {
+            resultContainer.setType(ReturnType.Exception);
+            resultContainer.setArg(e);
+        }
+        return resultContainer;
+    }
+
+    private Method findMethod(OpenEngSBService service, String methodName, Class<?>[] argTypes) {
+        Method method;
+        try {
+            method = service.getClass().getMethod(methodName, argTypes);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return method;
+    }
+
+    private Class<?>[] getArgTypes(Object[] args) {
+        Class<?>[] result = new Class[args.length];
+        for (int i = 0; i < args.length; i++) {
+            result[i] = args[i].getClass();
+        }
+        return result;
     }
 
 }

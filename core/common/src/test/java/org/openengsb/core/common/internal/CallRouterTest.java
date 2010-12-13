@@ -17,20 +17,25 @@
 package org.openengsb.core.common.internal;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,8 +45,8 @@ import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.communication.IncomingPort;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
-import org.openengsb.core.common.communication.MethodReturn.ReturnType;
 import org.openengsb.core.common.communication.OutgoingPort;
+import org.openengsb.core.common.communication.RequestHandler;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -60,63 +65,60 @@ public class CallRouterTest {
 
     @Test
     public void testReceiveAnything() throws Exception {
-        IncomingPort portMock = createPortMock(new MethodCall("42", "test", new Object[0], null));
+        IncomingPort portMock = mock(IncomingPort.class);
         callrouter.registerIncomingPort(portMock);
         callrouter.stop();
         Thread.sleep(300);
 
-        verify(portMock, atLeast(1)).listen(any(UUID.class));
+        verify(portMock).setRequestHandler(any(RequestHandler.class));
     }
 
     @Test
     public void testRecieveMethodCall_shouldCallService() throws Exception {
-        IncomingPort portMock = createPortMock(new MethodCall("42", "test", new Object[0], null));
-        callrouter.registerIncomingPort(portMock);
-        Thread.sleep(300);
+        final MethodCall call = new MethodCall("42", "test", new Object[0], new HashMap<String, String>());
+        callrouter.handleCall(call);
         callrouter.stop();
-        verify(serviceMock, atLeast(1)).test();
+        verify(serviceMock, times(1)).test();
     }
 
     @Test
     public void testReceiveMethodCallWithArgument() throws Exception {
-        IncomingPort portMock = createPortMock(new MethodCall("42", "test", new Object[]{ 42 }, null));
-        callrouter.registerIncomingPort(portMock);
-        Thread.sleep(300);
+        final MethodCall call = new MethodCall("42", "test", new Object[]{ 42 }, new HashMap<String, String>());
+        callrouter.handleCall(call);
         callrouter.stop();
         verify(serviceMock, never()).test();
-        verify(serviceMock, atLeast(1)).test(eq(42));
+        verify(serviceMock, times(1)).test(eq(42));
     }
 
     @Test
     public void recieveMethodCall_shouldSendResponse() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
-        IncomingPort portMock = createPortMock(new MethodCall("42", "getAnswer", new Object[0], null));
-        callrouter.registerIncomingPort(portMock);
-        Thread.sleep(300);
-        callrouter.stop();
+        final MethodCall call = new MethodCall("42", "getAnswer", new Object[0], new HashMap<String, String>());
+        MethodReturn result = callrouter.handleCall(call);
 
         verify(serviceMock).getAnswer();
-        MethodReturn ref = new MethodReturn(ReturnType.Object, 42, null);
-        verify(portMock, atLeast(1)).sendResponse(any(UUID.class), eq(ref));
+        assertThat((Integer) result.getArg(), is(42));
     }
 
     @Test
     public void testSendMethodCall_shouldCallPort() throws Exception {
         OutgoingPort portMock = mock(OutgoingPort.class);
         callrouter.registerOutgoingPort("jms", portMock);
-        callrouter.call("jms", URI.create("jms://localhost"), new MethodCall());
+        final URI testURI = URI.create("jms://localhost");
+        callrouter.call("jms", testURI, new MethodCall());
         Thread.sleep(300);
         callrouter.stop();
-        verify(portMock, atLeast(1)).send(any(URI.class), any(MethodCall.class));
+        verify(portMock, times(1)).send(eq(testURI), any(MethodCall.class));
     }
 
     @Test
     public void testSendSyncMethodCall_shouldCallPort() throws Exception {
-        MethodCall methodCall = new MethodCall("42", "test", new Object[]{ 42 }, null);
+        MethodCall methodCall = new MethodCall("42", "test", new Object[]{ 42 }, new HashMap<String, String>());
         OutgoingPort portMock = mock(OutgoingPort.class);
         callrouter.registerOutgoingPort("jms", portMock);
-        callrouter.callSync("jms", URI.create("jms://localhost"), methodCall);
-        verify(portMock, atLeast(1)).sendSync(any(URI.class), any(MethodCall.class));
+        final URI testURI = URI.create("jms://localhost");
+        callrouter.callSync("jms", testURI, methodCall);
+        verify(portMock, times(1)).sendSync(eq(testURI), any(MethodCall.class));
     }
 
     @Test
@@ -131,44 +133,77 @@ public class CallRouterTest {
         assertThat(result, is(value));
     }
 
+    private class MethodCallable implements Callable<MethodReturn> {
+        private MethodCall call;
+
+        public MethodCallable(MethodCall call) {
+            this.call = call;
+        }
+
+        @Override
+        public MethodReturn call() throws Exception {
+            return callrouter.handleCall(call);
+        }
+    }
+
     @Test(timeout = 10000)
     public void testHandleCallsParallel() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
-        final Object sync = addWaitingAnswerToMock();
+        final Object sync = addWaitingAnswerToServiceMock();
+        MethodCall blockingCall = new MethodCall("42", "getOtherAnswer", new Object[0], null);
+        MethodCall normalCall = new MethodCall("42", "getAnswer", new Object[0], null);
 
-        Queue<MethodCall> calls = new LinkedList<MethodCall>();
-        calls.add(new MethodCall("42", "getOtherAnswer", new Object[0], null));
-        calls.add(new MethodCall("42", "getAnswer", new Object[0], null));
-        IncomingPort port = createPortMock(calls);
-        callrouter.registerIncomingPort(port);
+        ExecutorService threadPool = Executors.newCachedThreadPool();
+        Future<MethodReturn> blockingFuture = threadPool.submit(new MethodCallable(blockingCall));
+        Future<MethodReturn> normalFuture = threadPool.submit(new MethodCallable(normalCall));
 
-        Thread.sleep(300);
+        MethodReturn normalResult = normalFuture.get();
 
-        MethodReturn ref = new MethodReturn(ReturnType.Object, 42, null);
+        verify(serviceMock).getAnswer();
         /* getAnswer-call is finished */
-        verify(port).sendResponse(any(UUID.class), eq(ref));
-        MethodReturn longRef = new MethodReturn(ReturnType.Object, 42L, null);
-        /* getOtherAnswer-call is not finished yet */
-        verify(port, never()).sendResponse(any(UUID.class), eq(longRef));
+        assertThat((Integer) normalResult.getArg(), is(42));
+        try {
+            blockingFuture.get(200, TimeUnit.MILLISECONDS);
+            fail("blocking method returned premature");
+        } catch (TimeoutException e) {
+            // ignore, this is expceted
+        }
+
         synchronized (sync) {
             sync.notifyAll();
         }
-        /* now getOtherAnswer-call is finished too */
-        verify(port).sendResponse(any(UUID.class), eq(longRef));
+        MethodReturn blockingResult = blockingFuture.get();
+        assertThat((Long) blockingResult.getArg(), is(42L));
     }
 
-    private Object addWaitingAnswerToMock() {
+    private Object addWaitingAnswerToServiceMock() {
         final Object sync = new Object();
-        when(serviceMock.getOtherAnswer()).thenAnswer(new Answer<Long>() {
+        BlockingAnswer<Long> answer = new BlockingAnswer<Long>(sync) {
             @Override
-            public Long answer(InvocationOnMock invocation) throws Throwable {
-                synchronized (sync) {
-                    sync.wait();
-                }
+            public Long realAnswer(InvocationOnMock invocationOnMock) {
                 return 42L;
             }
-        });
+        };
+        when(serviceMock.getOtherAnswer()).thenAnswer(answer);
         return sync;
+    }
+
+    private abstract class BlockingAnswer<T> implements Answer<T> {
+        private Object sync;
+
+        public BlockingAnswer(Object sync) {
+            this.sync = sync;
+        }
+
+        @Override
+        public T answer(InvocationOnMock invocation) throws Throwable {
+            synchronized (sync) {
+                sync.wait();
+            }
+            return realAnswer(invocation);
+        }
+
+        public abstract T realAnswer(InvocationOnMock invocationOnMock);
     }
 
     private BundleContext createBundleContextMock() throws InvalidSyntaxException {
@@ -181,33 +216,4 @@ public class CallRouterTest {
         return bundleContext;
     }
 
-    private IncomingPort createPortMock(final MethodCall methodCall) {
-        LinkedList<MethodCall> linkedList = new LinkedList<MethodCall>();
-        linkedList.add(methodCall);
-        return createPortMock(linkedList);
-    }
-
-    private IncomingPort createPortMock(final Queue<MethodCall> methodCalls) {
-        final IncomingPort portMock = mock(IncomingPort.class);
-        when(portMock.listen(any(UUID.class))).thenAnswer(new Answer<MethodCall>() {
-            @Override
-            public MethodCall answer(InvocationOnMock invocation) throws Throwable {
-                MethodCall next = methodCalls.poll();
-                if (next != null) {
-                    return next;
-                }
-                try {
-                    Thread.sleep(100000);
-                } catch (InterruptedException e) {
-                    // ignore. this happens all the time.
-                }
-                MethodCall dummyResult = new MethodCall();
-                dummyResult.setServiceId("42");
-                dummyResult.setArgs(new Object[0]);
-                dummyResult.setMethodName("getClass");
-                return dummyResult;
-            }
-        });
-        return portMock;
-    }
 }
