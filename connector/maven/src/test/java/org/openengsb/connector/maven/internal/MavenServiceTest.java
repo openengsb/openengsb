@@ -23,6 +23,9 @@ import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.io.File;
+
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,7 +50,9 @@ public class MavenServiceTest {
     private DeployDomainEvents deployEvents;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        FileUtils.deleteDirectory(new File(getPath("test-unit-success"), "target"));
+        FileUtils.deleteDirectory(new File(getPath("test-unit-fail"), "target"));
         this.mavenService = new MavenServiceImpl("42");
         buildEvents = mock(BuildDomainEvents.class);
         testEvents = mock(TestDomainEvents.class);

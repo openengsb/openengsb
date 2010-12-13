@@ -26,7 +26,8 @@ public class DeployStartEvent extends Event {
         this.deployId = deployId;
     }
 
-    public DeployStartEvent(long processId) {
+    public DeployStartEvent(Long processId) {
+        super(processId);
     }
 
     public String getDeployId() {
