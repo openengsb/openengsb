@@ -14,17 +14,31 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.test;
+package org.openengsb.domain.build;
 
-import org.openengsb.core.common.DomainEvents;
+import org.openengsb.core.common.Event;
 
-public interface TestDomainEvents extends DomainEvents {
+public class BuildSuccessEvent extends Event {
+    private String output;
 
-    void raiseEvent(TestStartEvent e);
+    private String buildId;
 
-    void raiseEvent(TestEndEvent e);
+    public BuildSuccessEvent(String buildId, String output) {
+        this.buildId = buildId;
+        this.output = output;
+    }
 
-    void raiseEvent(TestFailEvent e);
+    public BuildSuccessEvent(Long processId, String output) {
+        super(processId);
+        this.output = output;
+    }
 
-    void raiseEvent(TestSuccessEvent e);
+    public String getBuildId() {
+        return buildId;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
 }

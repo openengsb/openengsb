@@ -29,6 +29,14 @@ public interface DeployDomain extends Domain {
      * Deploy the currently configured project. This method returns at once with an id. The deploy process is conducted
      * asynchronously. The result can be retrieved using the events raised by this domain, which also contain the id.
      */
-    @Raises({DeployStartEvent.class, DeployEndEvent.class})
+    @Raises({ DeployStartEvent.class, DeployEndEvent.class })
     String deploy();
+
+    /**
+     * Deploy the currently configured project. This method returns at once with an id. The deploy process is conducted
+     * asynchronously. The result can be retrieved using the events raised by this domain where the processId-field
+     * contains the supplied processId
+     */
+    @Raises({ DeployStartEvent.class, DeployFailEvent.class, DeploySuccessEvent.class })
+    void deploy(long processId);
 }

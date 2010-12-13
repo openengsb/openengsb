@@ -14,9 +14,35 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.droolsinternal;
+package org.openengsb.domain.build;
 
+import org.openengsb.core.common.Event;
 
-public interface DroolsFlowHelper {
-    void startFlow(String flowid);
+public class BuildFailEvent extends Event {
+
+    private String output;
+
+    private String buildId;
+
+    public BuildFailEvent() {
+    }
+
+    public BuildFailEvent(String buildId, String output) {
+        this.buildId = buildId;
+        this.output = output;
+    }
+
+    public BuildFailEvent(Long processId, String output) {
+        super(processId);
+        this.output = output;
+    }
+
+    public String getBuildId() {
+        return buildId;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
 }

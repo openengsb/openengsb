@@ -16,15 +16,14 @@
 
 package org.openengsb.domain.test;
 
-import org.openengsb.core.common.DomainEvents;
+public class TestSuccessEvent extends TestEndEvent {
 
-public interface TestDomainEvents extends DomainEvents {
+    public TestSuccessEvent(long processId, String output) {
+        super(processId, output);
+    }
 
-    void raiseEvent(TestStartEvent e);
+    public TestSuccessEvent(String testId, String output) {
+        super(testId, output);
+    }
 
-    void raiseEvent(TestEndEvent e);
-
-    void raiseEvent(TestFailEvent e);
-
-    void raiseEvent(TestSuccessEvent e);
 }

@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.test;
+package test;
 
-import org.openengsb.core.common.DomainEvents;
+import org.junit.Assert;
+import org.junit.Test;
 
-public interface TestDomainEvents extends DomainEvents {
 
-    void raiseEvent(TestStartEvent e);
-
-    void raiseEvent(TestEndEvent e);
-
-    void raiseEvent(TestFailEvent e);
-
-    void raiseEvent(TestSuccessEvent e);
+public class AppTestInternal {
+    
+    @Test
+    public void testApp() {
+        Assert.assertTrue(true);
+    }
 }

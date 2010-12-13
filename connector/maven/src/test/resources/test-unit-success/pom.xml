@@ -7,6 +7,25 @@
   <version>1.0-SNAPSHOT</version>
   <name>test-unit-success</name>
   <url>http://maven.apache.org</url>
+  
+  <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.5</version>
+            <configuration>
+              <excludes>
+                <exclude>*</exclude>
+              </excludes>
+              <includes>
+                <include>**/AppTestInternal.java</include>
+              </includes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+  
   <dependencies>
     <dependency>
       <groupId>junit</groupId>

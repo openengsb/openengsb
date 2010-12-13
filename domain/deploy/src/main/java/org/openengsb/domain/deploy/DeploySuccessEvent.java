@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package org.openengsb.domain.test;
+package org.openengsb.domain.deploy;
 
-import org.openengsb.core.common.DomainEvents;
+public class DeploySuccessEvent extends DeployEndEvent {
 
-public interface TestDomainEvents extends DomainEvents {
+    public DeploySuccessEvent(long processId, String output) {
+        super(processId, output);
+    }
 
-    void raiseEvent(TestStartEvent e);
+    public DeploySuccessEvent(String deployId, String output) {
+        super(deployId, output);
+    }
 
-    void raiseEvent(TestEndEvent e);
-
-    void raiseEvent(TestFailEvent e);
-
-    void raiseEvent(TestSuccessEvent e);
 }
