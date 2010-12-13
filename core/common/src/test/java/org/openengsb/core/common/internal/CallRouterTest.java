@@ -55,12 +55,15 @@ public class CallRouterTest {
 
     private TestService serviceMock;
     private CallRouterImpl callrouter;
+    private RequestHandlerImpl requestHandler;
 
     @Before
     public void setUp() throws Exception {
         callrouter = new CallRouterImpl();
         BundleContext bundleContext = createBundleContextMock();
         callrouter.setBundleContext(bundleContext);
+
+        requestHandler = new RequestHandlerImpl(bundleContext);
     }
 
     @Test
@@ -76,7 +79,7 @@ public class CallRouterTest {
     @Test
     public void testRecieveMethodCall_shouldCallService() throws Exception {
         final MethodCall call = new MethodCall("test", new Object[0], new HashMap<String, String>());
-        callrouter.handleCall(call);
+        requestHandler.handleCall(call);
         callrouter.stop();
         verify(serviceMock, times(1)).test();
     }
@@ -84,7 +87,7 @@ public class CallRouterTest {
     @Test
     public void testReceiveMethodCallWithArgument() throws Exception {
         final MethodCall call = new MethodCall("test", new Object[]{ 42 }, new HashMap<String, String>());
-        callrouter.handleCall(call);
+        requestHandler.handleCall(call);
         callrouter.stop();
         verify(serviceMock, never()).test();
         verify(serviceMock, times(1)).test(eq(42));
@@ -94,7 +97,7 @@ public class CallRouterTest {
     public void recieveMethodCall_shouldSendResponse() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
         final MethodCall call = new MethodCall("getAnswer", new Object[0], new HashMap<String, String>());
-        MethodReturn result = callrouter.handleCall(call);
+        MethodReturn result = requestHandler.handleCall(call);
 
         verify(serviceMock).getAnswer();
         assertThat((Integer) result.getArg(), is(42));
@@ -142,7 +145,7 @@ public class CallRouterTest {
 
         @Override
         public MethodReturn call() throws Exception {
-            return callrouter.handleCall(call);
+            return requestHandler.handleCall(call);
         }
     }
 

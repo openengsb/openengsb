@@ -18,7 +18,7 @@ package org.openengsb.core.common.communication;
 
 import java.net.URI;
 
-public interface CallRouter extends RequestHandler {
+public interface CallRouter {
 
     void registerIncomingPort(IncomingPort port);
 
