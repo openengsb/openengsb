@@ -33,6 +33,8 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -136,7 +138,7 @@ public class WorkflowServiceTest {
         Event event = new Event();
         service.processEvent(event);
     }
-    
+
     @Test
     public void testProcessInternalWorkflowEvent_shouldNotFail() throws Exception {
         InternalWorkflowEvent event = new InternalWorkflowEvent();
@@ -255,6 +257,21 @@ public class WorkflowServiceTest {
     }
 
     @Test
+    public void testStartInBackground() throws Exception {
+        Object lock = new Object();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("lock", lock);
+        Future<Long> processIdFuture = service.startFlowInBackground("blockingFlowtest", params);
+        Thread.sleep(200);
+        assertThat(processIdFuture.isDone(), is(false));
+        synchronized (lock) {
+            lock.notify();
+        }
+        processIdFuture.get(2, TimeUnit.SECONDS);
+        assertThat(processIdFuture.isDone(), is(true));
+    }
+
+    @Test
     public void testStartWorkflowTriggeredByEvent() throws Exception {
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n"
                 + "  Event()\n"
@@ -280,17 +297,17 @@ public class WorkflowServiceTest {
         service.processEvent(event);
         verify(logService, times(2)).doSomething("Hello World");
     }
-    
+
     @Test
     public void testStartProcessWithProperyBag_ChangePropertyByScriptNode_shouldChangeProperty() throws Exception {
         ProcessBag processBag = new ProcessBag();
         processBag.addProperty("test", "test");
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", processBag);
-        
+
         long id = service.startFlow("propertybagtest", parameterMap);
         service.waitForFlowToFinish(id);
-        
+
         assertThat((String) processBag.getProperty("test"), is("xyz"));
     }
 }
