@@ -18,36 +18,40 @@ package org.openengsb.integrationtest.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.ops4j.pax.exam.CoreOptions.felix;
+import static org.ops4j.pax.exam.CoreOptions.maven;
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
+import static org.ops4j.pax.exam.CoreOptions.waitForFrameworkStartup;
+import static org.ops4j.pax.exam.OptionUtils.combine;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.scanFeatures;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.vmOption;
+import static org.ops4j.pax.exam.container.def.PaxRunnerOptions.workingDirectory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.karaf.testing.AbstractIntegrationTest;
+import org.apache.karaf.testing.Helper;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.ServiceManager;
-import org.ops4j.pax.exam.CoreOptions;
 import org.ops4j.pax.exam.Inject;
 import org.ops4j.pax.exam.Option;
-import org.ops4j.pax.exam.container.def.options.WorkingDirectoryOption;
 import org.ops4j.pax.exam.junit.Configuration;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.Version;
 import org.osgi.util.tracker.ServiceTracker;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public abstract class AbstractExamTestHelper {
+public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     @Inject
     private BundleContext bundleContext;
@@ -57,12 +61,12 @@ public abstract class AbstractExamTestHelper {
     }
 
     protected static String getWorkingDirectory() {
-        return System.getProperty("java.io.tmpdir") + "/paxexam_runner_" + System.getProperty("user.name");
+        return "target/paxrunner/features/";
     }
 
     @Before
     public void before() throws Exception {
-        List<String> importantBundles = BaseExamConfiguration.getImportantBundleSymbolicNames();
+        List<String> importantBundles = getImportantBundleSymbolicNames();
         Bundle[] bundles = bundleContext.getBundles();
         for (Bundle bundle : bundles) {
             for (String importantBundleSymbolicName : importantBundles) {
@@ -76,12 +80,20 @@ public abstract class AbstractExamTestHelper {
         authenticateAsAdmin();
     }
 
+    public static List<String> getImportantBundleSymbolicNames() {
+        List<String> importantBundles = new ArrayList<String>();
+        importantBundles.add("org.openengsb.core.persistence");
+        importantBundles.add("org.openengsb.core.workflow");
+        importantBundles.add("org.openengsb.core.security");
+        return importantBundles;
+    }
+
     protected void authenticateAsAdmin() throws InterruptedException {
         authenticate("admin", "password");
     }
 
     protected void authenticate(String user, String password) throws InterruptedException {
-        AuthenticationManager authenticationManager = retrieveService(getBundleContext(), AuthenticationManager.class);
+        AuthenticationManager authenticationManager = getOsgiService(AuthenticationManager.class, 20000);
         Authentication authentication =
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user, password));
         assertThat(authentication.isAuthenticated(), is(true));
@@ -136,50 +148,17 @@ public abstract class AbstractExamTestHelper {
     }
 
     @Configuration
-    public static Option[] configuration() {
-        List<Option> baseConfiguration = BaseExamConfiguration.getBaseExamOptions("../../");
-        baseConfiguration
-            .add(CoreOptions.systemProperty("org.ops4j.pax.logging.DefaultServiceLog.level").value("WARN"));
-        baseConfiguration.add(new WorkingDirectoryOption(getWorkingDirectory()));
-        BaseExamConfiguration.addEntireOpenEngSBPlatform(baseConfiguration);
-        BaseExamConfiguration.addHtmlUnitTestDriver(baseConfiguration);
-        Option[] options = BaseExamConfiguration.convertOptionListToArray(baseConfiguration);
-        return CoreOptions.options(options);
+    public static Option[] configuration() throws Exception {
+        return combine(
+            Helper.getDefaultOptions(),
+            Helper.loadKarafFeatures("config", "ssh", "management", "wrapper", "obr"),
+            Helper.setLogLevel("WARN"),
+            scanFeatures(maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features")
+                .versionAsInProject(), "openengsb-core"), workingDirectory(getWorkingDirectory()),
+            vmOption("-Dorg.osgi.framework.system.packages.extra=sun.reflect"),
+            vmOption("-Dorg.osgi.service.http.port=8090"), waitForFrameworkStartup(),
+            mavenBundle(maven().groupId("org.openengsb.wrapped").artifactId("net.sourceforge.htmlunit-all")
+                .versionAsInProject()), felix());
     }
 
-    protected <ServiceClass> ServiceClass retrieveService(BundleContext bundleContext,
-            Class<? extends ServiceClass> serviceClass) throws InterruptedException {
-        ServiceTracker tracker = new ServiceTracker(bundleContext, serviceClass.getName(), null);
-        tracker.open();
-        @SuppressWarnings("unchecked")
-        ServiceClass service = (ServiceClass) tracker.waitForService(10000);
-        tracker.close();
-        Assert.assertNotNull(service);
-        return service;
-    }
-
-    protected ServiceManager retrieveServiceManager(BundleContext bundleContext, Class<? extends Domain> domain)
-        throws InterruptedException, InvalidSyntaxException {
-        String filter = "(domain=" + domain.getName() + ")";
-        ServiceReference[] allServiceReferences =
-            bundleContext.getAllServiceReferences(ServiceManager.class.getName(), filter);
-        if (allServiceReferences != null) {
-            for (ServiceReference serviceReference : allServiceReferences) {
-                Object service = bundleContext.getService(serviceReference);
-                return (ServiceManager) service;
-            }
-        }
-        Assert.fail("No service manager found.");
-        return null;
-    }
-
-    protected Version getBundleVersionBySymbolicName(String symbolicName, BundleContext context) {
-        Bundle[] bundles = context.getBundles();
-        for (Bundle bundle : bundles) {
-            if (bundle.getSymbolicName().equals(symbolicName)) {
-                return bundle.getVersion();
-            }
-        }
-        throw new RuntimeException("Buuuum");
-    }
 }

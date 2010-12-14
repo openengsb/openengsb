@@ -39,7 +39,7 @@ public class PersistenceIT extends AbstractExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
-        PersistenceManager manager = retrieveService(getBundleContext(), PersistenceManager.class);
+        PersistenceManager manager = getOsgiService(PersistenceManager.class);
         persistence = manager.getPersistenceForBundle(getBundleContext().getBundle());
 
         element = new PersistenceTestObject("42", 42);

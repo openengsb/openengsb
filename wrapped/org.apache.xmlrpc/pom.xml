@@ -26,7 +26,7 @@
     <bundle.symbolicName>org.apache.xmlrpc</bundle.symbolicName>
     <wrapped.groupId>org.apache.xmlrpc</wrapped.groupId>
     <wrapped.artifactId>org.apache.xmlrpc</wrapped.artifactId>
-    <wrapped.version>${xmlrpc.version}</wrapped.version>
+    <wrapped.version>${apache.xmlrpc.version}</wrapped.version>
     <bundle.namespace>${wrapped.groupId}</bundle.namespace>
   </properties>
 

@@ -35,9 +35,9 @@ public class TaskboxIT extends AbstractExamTestHelper {
     @Before
     public void setUp() throws Exception {
         authenticateAsAdmin();
-        taskboxService = retrieveService(getBundleContext(), TaskboxService.class);
-        ruleManager = retrieveService(getBundleContext(), RuleManager.class);
-        ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);
+        taskboxService = getOsgiService(TaskboxService.class);
+        ruleManager = getOsgiService(RuleManager.class);
+        ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         contextService.createContext("it-taskbox");
         contextService.setThreadLocalContext("it-taskbox");
         ruleManager.addGlobal(TaskboxService.class.getCanonicalName(), "taskbox");

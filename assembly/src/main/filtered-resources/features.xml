@@ -131,10 +131,10 @@
     <bundle dependency="true">mvn:org.openengsb.wrapped/javax.xml.jaxb-all/${project.version}</bundle>
     <bundle dependency="true">mvn:org.openengsb.wrapped/org.neodatis.odb-all/${project.version}</bundle>
     <bundle dependency="true">mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
-    <bundle dependency="true">mvn:org.apache.xmlrpc/xmlrpc-client/${apache.xmlrpc.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${project.version}</bundle>
     <bundle dependency="true">mvn:org.openengsb.wrapped/org.apache.wicket-all/${project.version}</bundle>
     <bundle dependency="true">mvn:org.springframework/spring-tx/${spring.version}</bundle>
-    <bundle dependency="true">mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/1.2.0</bundle>
+    <bundle dependency="true">mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <!-- OpenEngSB JMS Proxy Feature -->
     <bundle>mvn:javax.jms/com.springsource.javax.jms/${javax.jms.version}</bundle>
     <bundle dependency="true">mvn:javax.ejb/com.springsource.javax.ejb/${javax.ejb.version}</bundle>

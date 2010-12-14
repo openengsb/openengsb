@@ -83,6 +83,7 @@
     <spring.version>3.0.5.RELEASE</spring.version>
     <spring.security.version>3.0.5.RELEASE</spring.security.version>
     <transaction.version>1.1.0</transaction.version>
+    <smx.transaction.version>1.2.0</smx.transaction.version>
     <jetty.version>7.2.1.v20101111</jetty.version>
     <pax.web.version>0.8.1</pax.web.version>
     <pax.url.version>1.2.1</pax.url.version>
@@ -175,7 +176,7 @@
     <derby.version>10.2.2.0</derby.version>
     <geronimo.ejb.version>1.1</geronimo.ejb.version>
     <geronimo.j2ee.version>2.0.0</geronimo.j2ee.version>
-    <geronimo.servlet.version>1.1</geronimo.servlet.version>
+    <geronimo.servlet.version>1.1.2</geronimo.servlet.version>
     <geronimo.javamail.version>1.2</geronimo.javamail.version>
     <geronimo.jaxws.version>1.0</geronimo.jaxws.version>
     <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>

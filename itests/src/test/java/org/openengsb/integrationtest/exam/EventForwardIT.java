@@ -49,7 +49,7 @@ public class EventForwardIT extends AbstractExamTestHelper {
 
         @Override
         public String doSomething(String message) {
-            this.wasCalled = true;
+            wasCalled = true;
             return "something";
         }
 
@@ -60,13 +60,13 @@ public class EventForwardIT extends AbstractExamTestHelper {
 
         @Override
         public String doSomething(ExampleEnum exampleEnum) {
-            this.wasCalled = true;
+            wasCalled = true;
             return "something";
         }
 
         @Override
         public String doSomethingWithLogEvent(LogEvent event) {
-            this.wasCalled = true;
+            wasCalled = true;
             return "something";
         }
 
@@ -78,7 +78,7 @@ public class EventForwardIT extends AbstractExamTestHelper {
     @Test
     public void testSendEvent() throws Exception {
         addHelloWorldRule();
-        ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);
+        ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
         contextService.createContext("42");
         contextService.setThreadLocalContext("42");
         contextService.putValue("domain/ExampleDomain/defaultConnector/id", "dummyLog");
@@ -95,7 +95,7 @@ public class EventForwardIT extends AbstractExamTestHelper {
         e.setName("42");
         e.setLevel(Level.INFO);
 
-        ExampleDomainEvents exampleEvents = retrieveService(getBundleContext(), ExampleDomainEvents.class);
+        ExampleDomainEvents exampleEvents = getOsgiService(ExampleDomainEvents.class);
         // this should be routed through the domain, which forwards it to the workflow service
         exampleEvents.raiseEvent(e);
 
@@ -103,7 +103,7 @@ public class EventForwardIT extends AbstractExamTestHelper {
     }
 
     private void addHelloWorldRule() throws Exception {
-        RuleManager ruleManager = retrieveService(getBundleContext(), RuleManager.class);
+        RuleManager ruleManager = getOsgiService(RuleManager.class);
         ruleManager.addImport("org.openengsb.domain.example.ExampleDomain");
 
         ruleManager.addGlobal("org.openengsb.domain.example.ExampleDomain", "example");

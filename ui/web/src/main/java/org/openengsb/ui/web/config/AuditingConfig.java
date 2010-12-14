@@ -62,7 +62,7 @@ public class AuditingConfig {
                 serviceManagersForDomain.get(0).update(defaultConnectorID, new HashMap<String, String>());
             }
         } catch (RuleBaseException e) {
-            throw new RuntimeException(e);
+            // well we know that this can fail if these entries already exist...
         }
     }
 

@@ -16,27 +16,11 @@
 
 package org.openengsb.integrationtest.exam;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Dictionary;
-import java.util.Hashtable;
-
-import org.apache.commons.io.IOUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
-import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.Event;
-import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.WorkflowService;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
@@ -77,64 +61,13 @@ public class WorkflowIT extends AbstractExamTestHelper {
         }
     }
 
-    @Test
-    public void testSendEvent() throws Exception {
-        addHelloWorldRule();
-
-        ContextCurrentService contextService = retrieveService(getBundleContext(), ContextCurrentService.class);
-        contextService.createContext("42");
-        contextService.setThreadLocalContext("42");
-        contextService.putValue("domain/ExampleDomain/defaultConnector/id", "dummyLog");
-        contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
-
-        /*
-         * This is kind of a workaround. But for some reason when the workflow-service waits for these services for 30
-         * seconds, they don't show up. But when provoking an AssertionError using the line below, the services show up,
-         * and the test runs just fine - ChristophGr
-         */
-        retrieveService(getBundleContext(), ExampleDomain.class);
-
-        Dictionary<String, String> properties = new Hashtable<String, String>();
-        String[] clazzes = new String[]{ Domain.class.getName(), ExampleDomain.class.getName() };
-        properties.put("id", "dummyLog");
-
-        DummyLogDomain logService = new DummyLogDomain();
-        getBundleContext().registerService(clazzes, logService, properties);
-
-        WorkflowService workflowService = retrieveService(getBundleContext(), WorkflowService.class);
-        Event e = new Event("42");
-        workflowService.processEvent(e);
-
-        assertThat(logService.isWasCalled(), is(true));
-    }
-
     /**
-     * Ignored because security manager is outcommented in the moment.
+     * Ignored because security manager is commented in the moment.
      */
     @Ignore
     @Test(expected = AccessDeniedException.class)
     public void testUserAccessToRuleManager_shouldThrowException() throws Exception {
         authenticate("user", "password");
-        addHelloWorldRule();
     }
 
-    private void addHelloWorldRule() throws Exception {
-        RuleManager ruleManager = retrieveService(getBundleContext(), RuleManager.class);
-        ruleManager.addImport("org.openengsb.domain.example.ExampleDomain");
-        ruleManager.addGlobal("org.openengsb.domain.example.ExampleDomain", "example");
-
-        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "hello1");
-        String rule = readRule();
-        ruleManager.add(id, rule);
-    }
-
-    private String readRule() throws IOException {
-        InputStream helloWorldRule = null;
-        try {
-            helloWorldRule = this.getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/hello1.rule");
-            return IOUtils.toString(helloWorldRule);
-        } finally {
-            IOUtils.closeQuietly(helloWorldRule);
-        }
-    }
 }

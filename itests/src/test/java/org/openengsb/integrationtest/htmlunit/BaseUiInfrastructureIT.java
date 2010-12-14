@@ -49,9 +49,10 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     @Test
     public void testIfAllMainNavigationLinksWork() throws Exception {
+        HtmlPage page = null;
         String loginPageEntryUrl =
-            "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.web.LoginPage";
-        final HtmlPage page = webClient.getPage(loginPageEntryUrl);
+                "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.web.LoginPage";
+        page = webClient.getPage(loginPageEntryUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
         form.getInputByName("username").setValueAttribute("admin");
@@ -68,7 +69,6 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         assertTrue(servicePage.asText().contains("Services with state = Connecting"));
         HtmlPage usermanagementPage = testClient.getAnchorByText("User Management").click();
         assertTrue(usermanagementPage.asText().contains("Create new user"));
-
     }
 
     @Test(expected = FailingHttpStatusCodeException.class)
@@ -82,8 +82,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         form.getInputByName("password").setValueAttribute("password");
         HtmlPage indexPage = loginButton.click();
         assertTrue(indexPage.asText().contains("This page represents"));
-        HtmlPage testClient;
-        testClient = indexPage.getAnchorByText("Test Client").click();
+        indexPage.getAnchorByText("Test Client").click();
         fail("could display Test client");
     }
 
