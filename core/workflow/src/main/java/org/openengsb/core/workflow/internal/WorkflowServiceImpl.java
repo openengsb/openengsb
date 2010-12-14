@@ -179,7 +179,16 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         synchronized (session) {
             while (session.getProcessInstance(id) != null) {
-                session.wait(5000);
+                session.wait();
+            }
+        }
+    }
+
+    public void waitForFlowToFinish(long id, long timeout) throws InterruptedException, WorkflowException {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        synchronized (session) {
+            while (session.getProcessInstance(id) != null) {
+                session.wait(timeout);
             }
         }
     }

@@ -92,6 +92,23 @@ public interface WorkflowService {
     Future<Long> startFlowInBackground(String processId, Map<String, Object> paramterMap) throws WorkflowException;
 
     /**
+     * wait for the process with the given processInstance-id to finish.
+     *
+     * @throws InterruptedException if the waiting is interrupted
+     * @throws WorkflowException if the session could not be obtained
+     */
+    void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException;
+
+    /**
+     * wait for the process with the given processInstance-id to finish, but only for a limited time. The timeout is
+     * specified in milliseconds.
+     *
+     * @throws InterruptedException if the waiting is interrupted
+     * @throws WorkflowException if the session could not be obtained
+     */
+    void waitForFlowToFinish(long id, long timeout) throws InterruptedException, WorkflowException;
+
+    /**
      * this method adds a rule to the rulebase that always starts workflow(s) when a certain event is raised
      *
      * @throws WorkflowException when there is a problem while adding the new rule
