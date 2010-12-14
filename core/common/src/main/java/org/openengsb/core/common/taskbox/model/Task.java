@@ -27,7 +27,6 @@ import org.openengsb.core.common.workflow.model.ProcessBag;
  * the workflows ProcessBag.
  */
 public class Task extends ProcessBag {
-    private static Task emptyTask;
 
     public Task() {
         super();
@@ -35,12 +34,9 @@ public class Task extends ProcessBag {
     }
 
     public static Task createTaskWithAllValuesSetToNull() {
-        if (emptyTask == null) {
-            emptyTask = new Task();
-            emptyTask.removeAllProperties();
-            emptyTask.setEmpty();
-        }
-
+        Task emptyTask = new Task();
+        emptyTask.removeAllProperties();
+        emptyTask.setEmpty();
         return emptyTask;
     }
 
@@ -61,6 +57,10 @@ public class Task extends ProcessBag {
         return (String) getProperty("taskId");
     }
 
+    public void setTaskId(String id) {
+        addOrReplaceProperty("taskId", id);
+    }
+    
     /**
      * returns the Type of the Task. The Type is used to group similar Tasks together
      */
