@@ -24,6 +24,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,7 +49,6 @@ import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
-import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.osgi.framework.BundleContext;
@@ -73,6 +76,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     private Map<String, Object> services = new HashMap<String, Object>();
 
     private Map<String, StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
+    private ExecutorService executor = Executors.newCachedThreadPool();
 
     private long timeout = 10000;
 
@@ -123,29 +127,30 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     @Override
     public long startFlow(String processId) throws WorkflowException {
-        return this.startFlow(processId, null);
+        return startFlow(processId, new HashMap<String, Object>());
     }
 
     @Override
     public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
-        StatefulKnowledgeSession session = getSessionForCurrentContext();
-        ProcessInstance processInstance;
-        ProcessBag processBag;
-        
-        if (parameterMap == null) {
-            parameterMap = new HashMap<String, Object>();
-        }    
-        if (!parameterMap.containsKey("processBag")) {
-            processBag = new ProcessBag();
-            parameterMap.put("processBag", processBag);
-        } else { 
-            processBag = (ProcessBag) parameterMap.get("processBag");
-        }            
-        processInstance = session.startProcess(processId, parameterMap);
-        session.insert(processInstance);
-        processBag.setProcessId(String.valueOf(processInstance.getId()));        
-        processInstance.signalEvent("FlowStartedEvent", null);
-        return processInstance.getId();
+        try {
+            return startFlowInBackground(processId, parameterMap).get();
+        } catch (InterruptedException e) {
+            throw new WorkflowException(e);
+        } catch (ExecutionException e) {
+            throw new WorkflowException(e.getCause());
+        }
+    }
+
+    @Override
+    public Future<Long> startFlowInBackground(String processId) throws WorkflowException {
+        return startFlowInBackground(processId, new HashMap<String, Object>());
+    }
+
+    @Override
+    public Future<Long> startFlowInBackground(String processId, Map<String, Object> paramterMap)
+        throws WorkflowException {
+        WorkflowStarter workflowStarter = new WorkflowStarter(getSessionForCurrentContext(), processId, paramterMap);
+        return executor.submit(workflowStarter);
     }
 
     @Override
@@ -174,7 +179,16 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         synchronized (session) {
             while (session.getProcessInstance(id) != null) {
-                session.wait(5000);
+                session.wait();
+            }
+        }
+    }
+
+    public void waitForFlowToFinish(long id, long timeout) throws InterruptedException, WorkflowException {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        synchronized (session) {
+            while (session.getProcessInstance(id) != null) {
+                session.wait(timeout);
             }
         }
     }
@@ -389,4 +403,5 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     public void setTimeout(long timeout) {
         this.timeout = timeout;
     }
+
 }
