@@ -16,12 +16,10 @@
 
 package org.openengsb.integrationtest.htmlunit;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.openengsb.integrationtest.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
@@ -32,14 +30,18 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 
+import static org.junit.Assert.*;
+
 @RunWith(JUnit4TestRunner.class)
 public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     private WebClient webClient;
+    private String loginPageEntryUrl;
 
     @Before
     public void setUp() throws Exception {
         webClient = new WebClient();
+        loginPageEntryUrl = "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.web.LoginPage";
     }
 
     @After
@@ -49,8 +51,6 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     @Test
     public void testIfAllMainNavigationLinksWork() throws Exception {
-        String loginPageEntryUrl =
-            "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.web.LoginPage";
         final HtmlPage page = webClient.getPage(loginPageEntryUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
@@ -73,8 +73,6 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     @Test(expected = FailingHttpStatusCodeException.class)
     public void testUserLoginWithLimitedAccess() throws Exception {
-        String loginPageEntryUrl =
-            "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.web.LoginPage";
         final HtmlPage page = webClient.getPage(loginPageEntryUrl);
         HtmlForm form = page.getForms().get(0);
         HtmlSubmitInput loginButton = form.getInputByValue("Login");
@@ -85,6 +83,43 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         HtmlPage testClient;
         testClient = indexPage.getAnchorByText("Test Client").click();
         fail("could display Test client");
+    }
+
+    @Test
+    public void testCreateNewUser_LoginAsNewUser_UserManagementTabShouldNotBeVisible() throws Exception {
+        final HtmlPage page = webClient.getPage(loginPageEntryUrl);
+        HtmlForm form = page.getForms().get(0);
+        HtmlSubmitInput loginButton = form.getInputByValue("Login");
+        form.getInputByName("username").setValueAttribute("admin");
+        form.getInputByName("password").setValueAttribute("password");
+        HtmlPage indexPage = loginButton.click();
+        assertTrue(indexPage.asText().contains("This page represents"));
+
+        HtmlPage usermanagementPage = indexPage.getAnchorByText("User Management").click();
+        assertTrue(usermanagementPage.asText().contains("Create new user"));
+
+        //get user creation form:
+        HtmlForm userCreatForm = usermanagementPage.getForms().get(0);
+        assertNotNull(userCreatForm);
+        HtmlSubmitInput createButton = userCreatForm.getInputByValue("Ok");
+        userCreatForm.getInputByName("username").setValueAttribute("newUser");
+        userCreatForm.getInputByName("password").setValueAttribute("password");
+        userCreatForm.getInputByName("passwordVerification").setValueAttribute("password");
+        indexPage = createButton.click();
+
+        assertTrue(form.getInputsByName("username").isEmpty());
+        assertTrue(indexPage.asText().contains("newUSer"));
+
+        HtmlPage logoutPage = indexPage.getAnchorByText("Logout").click();
+        HtmlPage loginPage = logoutPage.getAnchorByText("Login").click();
+        form = loginPage.getForms().get(0);
+        loginButton = form.getInputByValue("Login");
+        form.getInputByName("username").setValueAttribute("newUser");
+        form.getInputByName("password").setValueAttribute("password");
+        HtmlPage userIndexPage = loginButton.click();
+        assertTrue(userIndexPage.asText().contains("This page represents"));
+        assertFalse(userIndexPage.asText().contains("User Management"));
+        
     }
 
 }
