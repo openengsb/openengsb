@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
+	xml:lang="en" lang="en">
+
+<body>
+<wicket:panel>
+	<div id="panel">
+	<p><span wicket:id="feedback"></span></p>
+	<fieldset>
+		<legend><wicket:message key="legend.info">[Ticket Info]</wicket:message></legend>
+		<table class="infoTable">
+			<tr>
+				<td style="text-align: right">
+					<label for="taskid"><wicket:message key="task.label.id">[ID Label]</wicket:message></label>
+				</td>
+				<td><label wicket:id="taskid">[ID]</label></td>
+			</tr>
+			<tr>
+				<td style="text-align: right">
+					<label for="taskname"><wicket:message key="task.label.name">[name Label]</wicket:message></label>
+				</td>
+				<td><label wicket:id="taskname">[priority]</label></td>
+			</tr>
+			<tr>
+				<td style="text-align: right">
+					<label for="tasktype"><wicket:message key="task.label.type">[Type Label]</wicket:message></label>
+				</td>
+				<td><label wicket:id="tasktype">[Type]</label></td>
+			</tr>
+			<tr>
+				<td style="text-align: right">
+					<label for="taskcreationTimestamp"><wicket:message key="task.label.creationTimestamp">[creationTimestamp Label]</wicket:message></label>
+				</td>
+				<td><label wicket:id="taskcreationTimestamp">[creationTimestamp]</label></td>
+			</tr>
+			<tr>
+				<td style="text-align: right">
+					<label for="ticketdescription"><wicket:message key="ticket.label.description">[description Label]</wicket:message></label>
+				</td>
+				<td><label wicket:id="ticketdescription">[description]</label></td>
+			</tr>
+		</table>
+	</fieldset>
+	<fieldset>
+		<legend><wicket:message key="legend.properties">[Task Properties]</wicket:message></legend>
+		<span wicket:id="properiesList">
+			<label wicket:id="propertiesLabel"></label><br />
+			<label wicket:id="propertiesValueLabel"></label><hr />
+		</span>
+	</fieldset>
+</wicket:panel>
+</body>
+</html>
