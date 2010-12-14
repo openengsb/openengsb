@@ -32,13 +32,13 @@ import org.junit.Test;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 import org.osgi.framework.BundleContext;
 
 /**
  * This class tests the ui for visible components depending on the logged in user roles
  */
 public class RoleAuthorizationTest extends AbstractLogin {
-
 
     private WicketTester tester;
 
@@ -106,6 +106,7 @@ public class RoleAuthorizationTest extends AbstractLogin {
         context.putBean(mock(ContextCurrentService.class));
         context.putBean(mock(BundleContext.class));
         context.putBean(mock(DomainService.class));
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
         tester.getApplication()
             .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
     }

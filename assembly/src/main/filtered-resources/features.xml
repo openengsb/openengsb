@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<features name="openengsb-${project.version}">
+  <!--<feature name="jetty" version="${jetty.version}" resolver="(obr)">-->
+  <feature name="jetty" version="${jetty.version}" >
+    <bundle dependency='true'>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/${geronimo.servlet.version}</bundle>
+    <bundle dependency='true'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
+    <bundle dependency='true'>mvn:javax.servlet/com.springsource.javax.servlet/${servlet.version}</bundle>
+    <bundle>mvn:org.eclipse.jetty/jetty-util/${jetty.version}</bundle>
+    <bundle>mvn:org.eclipse.jetty/jetty-io/${jetty.version}</bundle>
+    <bundle>mvn:org.eclipse.jetty/jetty-http/${jetty.version}</bundle>
+    <bundle>mvn:org.eclipse.jetty/jetty-continuation/${jetty.version}</bundle>
+    <bundle>mvn:org.eclipse.jetty/jetty-server/${jetty.version}</bundle>
+    <bundle>mvn:org.eclipse.jetty/jetty-security/${jetty.version}</bundle>
+    <bundle>mvn:org.eclipse.jetty/jetty-servlet/${jetty.version}</bundle>
+    <bundle>mvn:org.eclipse.jetty/jetty-client/${jetty.version}</bundle>
+    <bundle>mvn:org.eclipse.jetty/jetty-servlets/${jetty.version}</bundle>
+    <bundle>mvn:org.eclipse.jetty/jetty-xml/${jetty.version}</bundle>
+  </feature>
+  <!--<feature name="http" version="${project.version}" resolver="(obr)">-->
+  <feature name="http" version="${project.version}" >
+    <config name="org.ops4j.pax.web">
+      org.osgi.service.http.port=8090
+      org.ops4j.pax.web.config.file=${karaf.base}/etc/jetty.xml
+    </config>
+    <feature version="${jetty.version}">jetty</feature>
+    <bundle>mvn:org.ops4j.pax.web/pax-web-api/${pax.web.version}</bundle>
+    <bundle>mvn:org.ops4j.pax.web/pax-web-spi/${pax.web.version}</bundle>
+    <bundle>mvn:org.ops4j.pax.web/pax-web-runtime/${pax.web.version}</bundle>
+    <bundle>mvn:org.ops4j.pax.web/pax-web-jetty/${pax.web.version}</bundle>
+  </feature>
+  <!--<feature name="war" version="${project.version}" resolver="(obr)">-->
+  <feature name="war" version="${project.version}" >
+    <feature version="${project.version}">http</feature>
+    <bundle>mvn:org.ops4j.pax.web/pax-web-jsp/${pax.web.version}</bundle>
+    <bundle>mvn:org.ops4j.pax.web/pax-web-extender-war/${pax.web.version}</bundle>
+    <bundle>mvn:org.ops4j.pax.web/pax-web-extender-whiteboard/${pax.web.version}</bundle>
+    <bundle>mvn:org.ops4j.pax.web/pax-web-deployer/${pax.web.version}</bundle>
+    <bundle>mvn:org.ops4j.pax.url/pax-url-war/${pax.url.version}</bundle>
+  </feature>
+  <!--<feature name="spring" version="${spring.version}" resolver="(obr)">-->
+  <feature name="spring" version="${spring.version}">
+    <bundle>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/${geronimo.servlet.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
+    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aopalliance/${aopalliance.version}</bundle>
+    <bundle>mvn:javax.el/com.springsource.javax.el/${el.version}</bundle>
+    <bundle>mvn:commons-collections/commons-collections/${commons.collection.version}</bundle>
+    <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
+    <bundle>mvn:javax.servlet/com.springsource.javax.servlet/2.5.0</bundle>
+    <bundle>mvn:org.springframework/spring-core/${spring.version}</bundle>
+    <bundle>mvn:org.springframework/spring-asm/${spring.version}</bundle>
+    <bundle>mvn:org.springframework/spring-expression/${spring.version}</bundle>
+    <bundle>mvn:org.springframework/spring-beans/${spring.version}</bundle>
+    <bundle>mvn:org.springframework/spring-aop/${spring.version}</bundle>
+    <bundle>mvn:org.springframework/spring-context/${spring.version}</bundle>
+    <bundle>mvn:org.springframework/spring-context-support/${spring.version}</bundle>
+    <bundle>mvn:org.springframework/spring-web/${spring.version}</bundle>
+  </feature>
+  <!--<feature name="spring-dm" version="${spring.osgi.version}" resolver="(obr)">-->
+  <feature name="spring-dm" version="${spring.osgi.version}">
+    <feature version="${spring.version}">spring</feature>
+    <bundle dependency='true'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
+    <bundle>mvn:org.springframework.osgi/spring-osgi-io/${spring.osgi.version}</bundle>
+    <bundle>mvn:org.springframework.osgi/spring-osgi-core/${spring.osgi.version}</bundle>
+    <bundle>mvn:org.springframework.osgi/spring-osgi-extender/${spring.osgi.version}</bundle>
+    <bundle>mvn:org.springframework.osgi/spring-osgi-web/${spring.osgi.version}</bundle>
+    <bundle>mvn:org.springframework.osgi/spring-osgi-annotation/${spring.osgi.version}</bundle>
+    <bundle>mvn:org.apache.karaf.deployer/org.apache.karaf.deployer.spring/${karaf.version}</bundle>
+  </feature>
+  <!--<feature name="spring-security" version="${spring.security.version}" resolver="(obr)">-->
+  <feature name="spring-security" version="${spring.security.version}">
+    <feature version="${spring.version}">spring</feature>
+    <bundle>mvn:org.springframework.security/spring-security-core/${spring.security.version}</bundle>
+    <bundle>mvn:org.springframework.security/spring-security-config/${spring.security.version}</bundle>
+    <bundle>mvn:org.springframework.security/spring-security-web/${spring.security.version}</bundle>
+  </feature>
+  <!--<feature name="aspectj" version="${project.version}" resolver="(obr)">-->
+  <feature name="aspectj" version="${project.version}" >
+    <bundle start-level='30'>mvn:org.aspectj/com.springsource.org.aspectj.weaver/${aspectj.version}</bundle>
+  </feature>
+  <!--<feature name="drools" version="${drools.version}" resolver="(obr)">-->
+  <feature name="drools" version="${drools.version}" >
+    <bundle dependency="true">mvn:com.thoughtworks.xstream/com.springsource.com.thoughtworks.xstream/${xstream.version}</bundle>
+    <bundle dependency="true">mvn:org.xmlpull/com.springsource.org.xmlpull/${xmlpull.version}</bundle>
+    <bundle dependency="true">mvn:org.mvel/mvel2/${mvel2.version}</bundle>
+    <bundle dependency="true">mvn:org.antlr/com.springsource.org.antlr.runtime/${antlr.version}</bundle>
+    <bundle dependency="true">mvn:org.codehaus.janino/com.springsource.org.codehaus.janino/${janino.version}</bundle>
+    <bundle dependency="true">mvn:commons-io/commons-io/${commons.io.version}</bundle>
+    <bundle>mvn:org.drools/drools-api/${drools.version}</bundle>
+    <bundle>mvn:org.drools/drools-core/${drools.version}</bundle>
+    <bundle>mvn:org.drools/drools-compiler/${drools.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-core" version="${project.version}" >
+    <config name="org.openengsb.settings">
+      openengsb.version.number=${openengsb.version.number}
+      openengsb.version.name.adjective=${openengsb.version.name.adjective}
+      openengsb.version.name.noun=${openengsb.version.name.noun}
+    </config>
+    <feature version="${spring.version}">spring</feature>
+    <feature version="${spring.osgi.version}">spring-dm</feature>
+    <feature version="${spring.security.version}">spring-security</feature>
+    <feature version="${project.version}">aspectj</feature>
+    <feature version="${drools.version}">drools</feature>
+    <feature version="${project.version}">war</feature>
+    <!-- OpenEngSB Deps (have to be splitted into the different parts -->
+    <bundle dependency="true">mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.stax-api-1.0/${xml.stream.version}</bundle>
+    <bundle dependency="true">mvn:javax.activation/com.springsource.javax.activation/${javax.activation.version}</bundle>
+    <bundle dependency="true">mvn:org.jvnet.staxex/com.springsource.org.jvnet.staxex/${staxex.version}</bundle>
+    <bundle dependency="true">mvn:javax.xml.soap/com.springsource.javax.xml.soap/${javax.xml.soap}</bundle>
+    <bundle dependency="true">mvn:com.sun.xml/com.springsource.com.sun.xml.fastinfoset/${fastinfoset.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/com.google.guava-all/${project.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/com.jcraft.jsch-all/${project.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/javax.xml.jaxb-all/${project.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/org.neodatis.odb-all/${project.version}</bundle>
+    <bundle dependency="true">mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${project.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/org.apache.wicket-all/${project.version}</bundle>
+    <bundle dependency="true">mvn:org.springframework/spring-tx/${spring.version}</bundle>
+    <bundle dependency="true">mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
+    <!-- OpenEngSB JMS Proxy Feature -->
+    <bundle>mvn:javax.jms/com.springsource.javax.jms/${javax.jms.version}</bundle>
+    <bundle dependency="true">mvn:javax.ejb/com.springsource.javax.ejb/${javax.ejb.version}</bundle>
+    <bundle dependency="true">mvn:org.apache.geronimo.specs/com.springsource.javax.management.j2ee/${org.apache.geronimo.specs.version}</bundle>
+    <bundle>mvn:org.springframework/spring-jms/${spring.version}</bundle>
+    <bundle>mvn:org.apache.activemq/activemq-core/${activemq.version}</bundle>
+    <bundle dependency="true">mvn:org.codehaus.jackson/jackson-mapper-asl/${jackson.version}</bundle>
+    <bundle dependency="true">mvn:org.codehaus.jackson/jackson-core-asl/${jackson.version}</bundle>
+    <!-- OpenEngSB Core Features -->
+    <bundle>mvn:org.openengsb.core/openengsb-core-common/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-events/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-workflow/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core/openengsb-core-taskbox/${project.version}</bundle>
+    <!-- Required Domains and Connectors -->
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-auditing/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-memory-auditing/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-example/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-example/${project.version}</bundle>
+    <!-- OpenEngSB Proxy JMS Feature -->
+    <bundle>mvn:org.openengsb.core.proxy/openengsb-core-proxy-jms/${project.version}</bundle>
+    <!-- OpenEngSB UI Features -->
+    <bundle>mvn:org.openengsb.ui.common/openengsb-ui-common-wicket/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.ui/openengsb-ui-taskbox/${project.version}</bundle>
+    <!-- OpenEngSB Management UI -->
+    <bundle>mvn:org.openengsb.ui/openengsb-ui-web/${project.version}/war</bundle>
+  </feature>
+  <!--<feature name="openengsb-domain-notification" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-domain-notification" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-notification/${project.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb-domain-report" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-domain-report" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-report/${project.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb-domain-issue" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-domain-issue" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-issue/${project.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb-domain-scm" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-domain-scm" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-scm/${project.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb-domain-build" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-domain-build" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-build/${project.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb-domain-test" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-domain-test" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-test/${project.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb-domain-deploy" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-domain-deploy" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <bundle>mvn:org.openengsb.domain/openengsb-domain-deploy/${project.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb-connector-email" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-connector-email" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-domain-notification</feature>
+    <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax.mail/${javax.mail.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-email/${project.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb-connector-plaintextreport" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-connector-plaintextreport" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-domain-report</feature>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-plaintextreport/${project.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb-connector-maven" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-connector-maven" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-domain-build</feature>
+    <feature version="${project.version}">openengsb-domain-test</feature>
+    <feature version="${project.version}">openengsb-domain-deploy</feature>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-maven/${project.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb-connector-git" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-connector-git" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-domain-scm</feature>
+    <bundle dependency="true">mvn:org.eclipse.jgit/org.eclipse.jgit/${jgit.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-git/${project.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb-connector-trac" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-connector-trac" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-domain-issue</feature>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-trac/${project.version}</bundle>
+  </feature>
+  <!--<feature name="openengsb-connector-trac" version="${project.version}" resolver="(obr)">-->
+  <feature name="openengsb-connector-jira" version="${project.version}" >
+    <feature version="${project.version}">openengsb-core</feature>
+    <feature version="${project.version}">openengsb-domain-issue</feature>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-jira/${project.version}</bundle>
+  </feature>
+
+</features>
+

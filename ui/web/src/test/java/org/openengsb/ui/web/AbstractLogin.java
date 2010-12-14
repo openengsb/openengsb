@@ -34,6 +34,7 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.security.model.User;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.security.internal.UserManagerImpl;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 import org.osgi.framework.ServiceReference;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -101,6 +102,7 @@ public abstract class AbstractLogin {
             }
         });
         contextMock.putBean("authenticationManager", authManager);
+        contextMock.putBean("openengsbVersion", new OpenEngSBVersion());
     }
 
     public WicketTester getTester() {

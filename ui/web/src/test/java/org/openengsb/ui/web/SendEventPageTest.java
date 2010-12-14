@@ -48,6 +48,7 @@ import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.core.test.NullEvent2;
 import org.openengsb.domain.auditing.AuditingDomain;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 
 public class SendEventPageTest {
 
@@ -74,6 +75,7 @@ public class SendEventPageTest {
         context.putBean("eventService", eventService);
         context.putBean("domainService", mock(DomainService.class));
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean("audit", domain);
         eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent2.class, NullEvent.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
@@ -177,3 +179,4 @@ public class SendEventPageTest {
 
     }
 }
+

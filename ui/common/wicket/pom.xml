@@ -78,13 +78,51 @@
   </build>
 
   <dependencies>
+    <!-- Spring Security Dependencies -->
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+      <version>${spring.security.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-aop</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-support</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- OpenEngSB Dependencies -->
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-test</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
 
+
+    <!-- Wicket Dependencies -->
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket</artifactId>
@@ -133,19 +171,12 @@
       <version>${wicket.version}</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-servlet_2.5_spec</artifactId>
+      <version>${geronimo.servlet.version}</version>
+    </dependency>
 
-    <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-test</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 
 </project>

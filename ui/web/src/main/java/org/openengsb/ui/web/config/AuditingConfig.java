@@ -49,7 +49,11 @@ public class AuditingConfig {
     public void init() {
         try {
             ruleManager.addImport(AuditingDomain.class.getCanonicalName());
-            ruleManager.addGlobal(AuditingDomain.class.getCanonicalName(), "auditing");
+            try {
+                ruleManager.addGlobal(AuditingDomain.class.getCanonicalName(), "auditing");
+            } catch (RuntimeException e) {
+                // thrown if there is already one global auditing... fine then, go on
+            }
             addRule("auditEvent");
             List<ServiceManager> serviceManagersForDomain =
                 domainService.serviceManagersForDomain(AuditingDomain.class);
@@ -58,7 +62,7 @@ public class AuditingConfig {
                 serviceManagersForDomain.get(0).update(defaultConnectorID, new HashMap<String, String>());
             }
         } catch (RuleBaseException e) {
-            throw new RuntimeException(e);
+            // well we know that this can fail if these entries already exist...
         }
     }
 

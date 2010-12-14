@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.ui.web.ContextSetPage;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
@@ -38,6 +39,7 @@ import org.openengsb.ui.web.ServiceListPage;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.UserService;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 
 @SuppressWarnings("serial")
 public class HeaderTemplate extends Panel {
@@ -45,6 +47,9 @@ public class HeaderTemplate extends Panel {
     private final ArrayList<String> avialableItems = new ArrayList<String>();
 
     private static String menuIndex;
+
+    @SpringBean(name = "openengsbVersion")
+    private OpenEngSBVersion openengsbVersion;
 
     public HeaderTemplate(String id, String menuIndex) {
         super(id);
@@ -70,9 +75,12 @@ public class HeaderTemplate extends Panel {
         HeaderTemplate.menuIndex = menuIndex;
 
         add(new BookmarkablePageLink<Index>("logo", Index.class));
-        add(new Label("version", System.getProperty("openengsb.version.number") + " \""
-            + System.getProperty("openengsb.version.name.adjective") + " "
-            + System.getProperty("openengsb.version.name.noun") + "\""));
+        if (openengsbVersion == null) {
+            openengsbVersion = new OpenEngSBVersion();
+        }
+        add(new Label("version", openengsbVersion.getVersionNumber() + " \""
+                + openengsbVersion.getNameAdjective() + " "
+                + openengsbVersion.getNameNoun() + "\""));
     }
 
     private void initMainMenuItems() {
@@ -123,11 +131,9 @@ public class HeaderTemplate extends Panel {
     }
 
     /**
-     * add a new item to main header navigation
-     * index     defines the name of the index, should be the class name
-     * linkClass defines the class name to be linked to
-     * langKey   defines the language key for the text which should be displayed
-     * authority defines who is authorized to see the link
+     * Adds a new item to main header navigation where the index defines the name of the index, which should be the
+     * class name; linkClass defines the class name to be linked to; langKey defines the language key for the text 
+     * which should be displayed and authority defines who is authorized to see the link
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String authority) {
@@ -166,3 +172,4 @@ public class HeaderTemplate extends Panel {
     }
 
 }
+

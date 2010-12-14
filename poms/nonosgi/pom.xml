@@ -57,16 +57,5 @@
     </resources>
   </build>
 
-  <dependencies>
-    <!-- All dependencies from provision pom -->
-    <dependency>
-      <type>pom</type>
-      <groupId>org.openengsb.build</groupId>
-      <artifactId>provision</artifactId>
-      <version>${project.version}</version>
-      <scope>provided</scope>
-      <optional>true</optional>
-    </dependency>
-  </dependencies>
-
 </project>
+

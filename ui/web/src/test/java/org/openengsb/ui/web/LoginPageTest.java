@@ -90,4 +90,3 @@ public class LoginPageTest extends AbstractLogin {
     }
 
 }
-
