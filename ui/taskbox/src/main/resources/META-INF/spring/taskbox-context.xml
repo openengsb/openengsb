@@ -24,4 +24,8 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <osgi:reference id="taskboxService" interface="org.openengsb.core.common.taskbox.TaskboxService" />
+  
+  <bean id="dataProvider" class="org.openengsb.ui.taskbox.TaskDataProvider">
+  	<property name="taskboxService" ref="taskboxService" />
+  </bean>
 </beans>
