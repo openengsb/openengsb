@@ -12,5 +12,10 @@ public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTask
         // TODO Auto-generated method stub
         return null;
     }
+    
+    @Override
+    public Panel getTaskPanel(String panelId, String taskId){
+        return new TaskPanel(panelId, getTaskForId(taskId));
+    }
 
 }
