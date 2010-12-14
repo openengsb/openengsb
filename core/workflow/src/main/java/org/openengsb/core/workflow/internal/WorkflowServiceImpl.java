@@ -19,7 +19,6 @@ package org.openengsb.core.workflow.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -128,7 +127,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     @Override
     public long startFlow(String processId) throws WorkflowException {
-        return startFlow(processId, null);
+        return startFlow(processId, new HashMap<String, Object>());
     }
 
     @Override
@@ -144,8 +143,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     @Override
     public Future<Long> startFlowInBackground(String processId) throws WorkflowException {
-        Map<String, Object> params = Collections.emptyMap();
-        return startFlowInBackground(processId, params);
+        return startFlowInBackground(processId, new HashMap<String, Object>());
     }
 
     @Override

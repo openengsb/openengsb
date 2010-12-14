@@ -24,6 +24,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.model.ProcessBag;
+import com.google.common.base.Preconditions;
 
 public class WorkflowStarter implements Callable<Long> {
 
@@ -32,6 +33,7 @@ public class WorkflowStarter implements Callable<Long> {
     private Map<String, Object> params;
 
     public WorkflowStarter(StatefulKnowledgeSession session, String processId, Map<String, Object> params) {
+        Preconditions.checkNotNull(params, "params-map must not be null");
         this.session = session;
         this.processId = processId;
         this.params = params;
@@ -42,9 +44,6 @@ public class WorkflowStarter implements Callable<Long> {
     }
 
     public Long call() throws WorkflowException {
-        if (params == null) {
-            params = new HashMap<String, Object>();
-        }
         ProcessBag processBag = getProcessBag();
         ProcessInstance processInstance = session.startProcess(processId, params);
         session.insert(processInstance);

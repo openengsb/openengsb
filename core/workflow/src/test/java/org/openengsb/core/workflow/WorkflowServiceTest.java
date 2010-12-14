@@ -272,6 +272,14 @@ public class WorkflowServiceTest {
     }
 
     @Test
+    public void testStartInBackgroundWithoutParams() throws Exception {
+        Future<Long> processIdFuture = service.startFlowInBackground("flowtest");
+        Thread.sleep(200);
+        processIdFuture.get(2, TimeUnit.SECONDS);
+        assertThat(processIdFuture.isDone(), is(true));
+    }
+
+    @Test
     public void testStartWorkflowTriggeredByEvent() throws Exception {
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n"
                 + "  Event()\n"
