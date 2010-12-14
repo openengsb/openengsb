@@ -24,6 +24,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.model.ProcessBag;
+
 import com.google.common.base.Preconditions;
 
 public class WorkflowStarter implements Callable<Long> {
