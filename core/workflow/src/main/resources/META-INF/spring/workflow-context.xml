@@ -24,7 +24,7 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <bean class="org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource" id="ruleManager" init-method="init">
-    <property name="path" value="data/openengsb/rulebase" />
+    <property name="path" value="openengsb/rulebase" />
   </bean>
 
   <osgi:service interface="org.openengsb.core.common.workflow.RuleManager" >
