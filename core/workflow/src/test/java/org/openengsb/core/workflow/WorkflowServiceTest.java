@@ -40,7 +40,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -316,7 +315,6 @@ public class WorkflowServiceTest {
         verify(logService, times(2)).doSomething("Hello World");
     }
 
-    @Ignore
     @Test
     public void testStartProcessWithProperyBag_ChangePropertyByScriptNode_shouldChangeProperty() throws Exception {
         ProcessBag processBag = new ProcessBag();
@@ -324,10 +322,10 @@ public class WorkflowServiceTest {
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", processBag);
 
-        long id = service.startFlow("propertybagtest", parameterMap);
-        service.waitForFlowToFinish(id);
+        Future<Long> id = service.startFlowInBackground("propertybagtest", parameterMap);
+        service.waitForFlowToFinish(id.get());
 
-        assertThat((String) processBag.getProperty("test"), is(String.valueOf(id)));
+        assertThat((String) processBag.getProperty("test"), is(String.valueOf(id.get())));
     }
 
     @Test(timeout = 4000)
