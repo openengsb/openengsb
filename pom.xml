@@ -88,6 +88,7 @@
 
   <modules>
     <module>tooling</module>
+    <module>branding</module>
     <module>docs</module>
     <module>poms</module>
     <module>wrapped</module>
