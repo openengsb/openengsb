@@ -14,8 +14,8 @@
 
   <nodes>
     <start id="1" name="Start" x="47" y="89" width="49" height="49" />
-    <end id="2" name="End" x="88" y="349" width="49" height="49" />
-    <actionNode id="21" name="Script" x="72" y="258" width="80" height="48" >
+    <end id="2" name="End" x="387" y="90" width="49" height="49" />
+    <actionNode id="21" name="Script" x="205" y="90" width="80" height="48" >
         <action type="expression" dialect="java" >processBag.addOrReplaceProperty("test", processBag.getProcessId());</action>
     </actionNode>
   </nodes>
