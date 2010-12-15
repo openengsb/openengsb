@@ -50,18 +50,20 @@
   </scm>
 
   <properties>
-    <!-- Plugin Versions -->
-    <plugin.bundle.version>2.1.0</plugin.bundle.version>
-    <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
+  <!-- Plugin Versions -->
+    <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
+    <maven.plugin.antrun.version>1.5</maven.plugin.antrun.version>
     <maven.plugin.changes.version>2.3</maven.plugin.changes.version>
     <maven.plugin.checkstyle.version>2.6</maven.plugin.checkstyle.version>
-    <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
-    <maven.plugin.rat.version>0.6</maven.plugin.rat.version>
+    <maven.plugin.dependency.version>2.1</maven.plugin.dependency.version>
     <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
-    <maven.war.plugin>2.1.1</maven.war.plugin>
-    <maven.plugin.antrun>1.5</maven.plugin.antrun>
+    <maven.plugin.rat.version>0.6</maven.plugin.rat.version>
+    <maven.plugin.resources.version>2.4.3</maven.plugin.resources.version>
+    <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
+    <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
 
-    <!-- Component Versions -->
+    <plugin.bundle.version>2.1.0</plugin.bundle.version>
+      <!-- Component Versions -->
     <osgi.version>4.2.0</osgi.version>
 
     <!-- Library Versions -->
