@@ -132,7 +132,6 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     @Override
     public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
-<<<<<<< HEAD
         try {
             return startFlowInBackground(processId, parameterMap).get();
         } catch (InterruptedException e) {
