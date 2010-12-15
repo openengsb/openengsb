@@ -318,7 +318,6 @@ public class WorkflowServiceTest {
     @Test
     public void testStartProcessWithProperyBag_ChangePropertyByScriptNode_shouldChangeProperty() throws Exception {
         ProcessBag processBag = new ProcessBag();
-        processBag.addProperty("test", "test");
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", processBag);
 

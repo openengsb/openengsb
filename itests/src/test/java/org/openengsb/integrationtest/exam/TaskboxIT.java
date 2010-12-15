@@ -56,8 +56,9 @@ public class TaskboxIT extends AbstractExamTestHelper {
         contextService.createContext("it-taskbox");
         contextService.setThreadLocalContext("it-taskbox");
 
-        taskboxService = getOsgiService(TaskboxService.class);
         ruleManager = getOsgiService(RuleManager.class);
+        workflowService = getOsgiService(WorkflowService.class);
+        taskboxService = getOsgiService(TaskboxService.class);
     }
 
     @After
