@@ -312,9 +312,9 @@ public class WorkflowServiceTest {
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", processBag);
 
-        Future<Long> id = service.startFlowInBackground("propertybagtest", parameterMap);
-        service.waitForFlowToFinish(id.get());
+        long id = service.startFlow("propertybagtest", parameterMap);
+        service.waitForFlowToFinish(id);
 
-        assertThat((String) processBag.getProperty("test"), is(String.valueOf(id.get())));
+        assertThat((String) processBag.getProperty("test"), is(String.valueOf(id)));
     }
 }

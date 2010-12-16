@@ -67,7 +67,10 @@ public class TaskboxIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testHumanTaskFlow_shouldWorkWithGivenProcessBag() throws WorkflowException {
+    public void testHumanTaskFlow_shouldWorkWithGivenProcessBag() throws WorkflowException, IOException,
+        RuleBaseException {
+        addWorkflow("TaskDemoWorkflow");
+
         ProcessBag processBag = new ProcessBag();
         processBag.addProperty("test", "test");
         Map<String, Object> parameterMap = new HashMap<String, Object>();
@@ -75,7 +78,7 @@ public class TaskboxIT extends AbstractExamTestHelper {
 
         assertTrue(taskboxService.getOpenTasks().size() == 0);
 
-        workflowService.startFlow("humantask", parameterMap);
+        workflowService.startFlow("TaskDemoWorkflow", parameterMap);
 
         assertNotNull(processBag.getProcessId());
         assertTrue(taskboxService.getOpenTasks().size() == 1);
@@ -90,10 +93,12 @@ public class TaskboxIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testHumanTaskFlow_shouldCreateOwnProcessBag() throws WorkflowException {
+    public void testHumanTaskFlow_shouldCreateOwnProcessBag() throws WorkflowException, IOException, RuleBaseException {
+        addWorkflow("TaskDemoWorkflow");
+
         assertTrue(taskboxService.getOpenTasks().size() == 0);
 
-        workflowService.startFlow("humantask");
+        workflowService.startFlow("TaskDemoWorkflow");
         assertTrue(taskboxService.getOpenTasks().size() == 1);
 
         Task task = taskboxService.getOpenTasks().get(0);
@@ -105,12 +110,14 @@ public class TaskboxIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testHumanTaskFlow_shouldHandleMultipleTasks() throws WorkflowException {
+    public void testHumanTaskFlow_shouldHandleMultipleTasks() throws WorkflowException, IOException, RuleBaseException {
+        addWorkflow("TaskDemoWorkflow");
+
         assertTrue(taskboxService.getOpenTasks().size() == 0);
 
-        workflowService.startFlow("humantask");
-        workflowService.startFlow("humantask");
-        workflowService.startFlow("humantask");
+        workflowService.startFlow("TaskDemoWorkflow");
+        workflowService.startFlow("TaskDemoWorkflow");
+        workflowService.startFlow("TaskDemoWorkflow");
         assertTrue(taskboxService.getOpenTasks().size() == 3);
 
         taskboxService.finishTask(taskboxService.getOpenTasks().get(0));

@@ -18,7 +18,7 @@
   <nodes>
     <start id="1" name="Start" x="341" y="51" width="48" height="48" />
     <actionNode id="2" name="Create Task" x="324" y="176" width="80" height="48" >
-        <action type="expression" dialect="java" >taskboxinternal.createNewTask(processBag);</action>
+      <action type="expression" dialect="java" >taskboxinternal.createNewTask(processBag);</action>
     </actionNode>
     <eventNode id="3" name="Message" x="208" y="248" width="48" height="48" variableName="event" >
       <eventFilters>
@@ -28,7 +28,7 @@
     <join id="4" name="Gateway" x="339" y="337" width="49" height="49" type="1" />
     <end id="20" name="End" x="338" y="556" width="48" height="48" />
     <actionNode id="5" name="Copy ProcessBag after human interaction" x="323" y="440" width="80" height="48" >
-        <action type="expression" dialect="java" >processBag = event.getProcessBag();</action>
+      <action type="expression" dialect="java" >processBag = event.getProcessBag();</action>
     </actionNode>
   </nodes>
 
