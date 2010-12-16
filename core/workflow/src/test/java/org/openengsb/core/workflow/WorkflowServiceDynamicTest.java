@@ -21,9 +21,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-
-import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +32,7 @@ import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
-import org.openengsb.core.workflow.internal.dirsource.DirectoryRuleSource;
+import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -92,10 +89,6 @@ public class WorkflowServiceDynamicTest {
 
     @After
     public void tearDown() throws Exception {
-        File ruleDir = new File("data");
-        while (ruleDir.exists()) {
-            FileUtils.deleteQuietly(ruleDir);
-        }
     }
 
     @Test
@@ -200,8 +193,7 @@ public class WorkflowServiceDynamicTest {
     }
 
     private void setupRulemanager() throws Exception {
-        manager = new DirectoryRuleSource("data/rulebase");
-        ((DirectoryRuleSource) manager).init();
+        manager = PersistenceTestUtil.getRuleManager();
         mockDomain("deploy");
         mockDomain("build");
         mockDomain("test");

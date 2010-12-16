@@ -24,18 +24,33 @@
     <relativePath>../poms/wrapped</relativePath>
     <groupId>org.openengsb.build</groupId>
     <artifactId>wrapped-settings</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.wrapped</groupId>
   <artifactId>openengsb-wrapped-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
 
   <packaging>pom</packaging>
 
   <name>OpenEngSB :: OSGi Wrapped Bundles :: Parent</name>
 
   <description>Configuration Script for wrapping non OSGi artifacts</description>
+
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
 
   <modules>
     <module>com.google.guava</module>
@@ -44,6 +59,7 @@
     <module>org.apache.xmlrpc</module>
     <module>com.jcraft.jsch</module>
     <module>org.neobatis.odb</module>
+    <module>net.sourceforge.htmlunit</module>
   </modules>
 
 </project>

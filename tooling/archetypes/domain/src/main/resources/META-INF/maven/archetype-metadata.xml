@@ -24,45 +24,45 @@
 
   <requiredProperties>
     <requiredProperty key="groupId">
-      <defaultValue>org.openengsb.domains.domainname</defaultValue>
+      <defaultValue>org.openengsb.domain.domainname</defaultValue>
     </requiredProperty>
     <requiredProperty key="artifactId">
-      <defaultValue>openengsb-domains-domainname-parent</defaultValue>
+      <defaultValue>openengsb-domain-domainname-parent</defaultValue>
     </requiredProperty>
     <requiredProperty key="name">
-      <defaultValue>OpenEngSB :: Domains :: Domainname :: Parent</defaultValue>
+      <defaultValue>OpenEngSB :: Domain :: Domainname :: Parent</defaultValue>
     </requiredProperty>
     <requiredProperty key="version">
       <defaultValue>1.0.0-SNAPSHOT</defaultValue>
     </requiredProperty>
     <requiredProperty key="implementationArtifactId">
-      <defaultValue>openengsb-domains-domainname-implementation</defaultValue>
+      <defaultValue>openengsb-domain-domainname</defaultValue>
     </requiredProperty>
     <requiredProperty key="implementationName">
-      <defaultValue>OpenEngSB :: Domains :: Domainname :: Implementation</defaultValue>
+      <defaultValue>OpenEngSB :: Domain :: Domainname</defaultValue>
     </requiredProperty>
     <requiredProperty key="package">
-      <defaultValue>org.openengsb.domains.domainname</defaultValue>
+      <defaultValue>org.openengsb.domain.domainname</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="domainInterface">
+      <defaultValue>DomainnameDomain</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="domainName">
+      <defaultValue>domainname</defaultValue>
     </requiredProperty>
   </requiredProperties>
 
   <fileSets>
     <fileSet filtered="true" packaged="true">
-      <directory>implementation/src/main/java</directory>
+      <directory>src/main/java</directory>
       <includes>
         <include>**/*.java</include>
       </includes>
     </fileSet>
     <fileSet filtered="true" packaged="false">
-      <directory>implementation/src/main/resources</directory>
+      <directory>src/main/resources</directory>
       <includes>
         <include>**/*</include>
-      </includes>
-    </fileSet>
-    <fileSet filtered="true" packaged="false">
-      <directory>implementation</directory>
-      <includes>
-        <include>*.xml</include>
       </includes>
     </fileSet>
   </fileSets>

@@ -24,8 +24,6 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.util.tester.FormTester;
@@ -74,6 +72,7 @@ public class EditorPageTest {
         ConnectorEditorPage page = new ConnectorEditorPage(manager);
         assertThat(page.getEditorPanel().getAttributes().size(), is(2));
         assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("id"));
+        assertThat(page.getEditorPanel().getAttributes().get(0).isRequired(), is(true));
     }
 
     @Test
@@ -89,13 +88,32 @@ public class EditorPageTest {
         tester.debugComponentTrees();
         String id = page.getEditorPanel().getAttributeViewId("id");
         TextField<String> idField =
-            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:fields:" + id + ":row:field");
+            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:" + id
+                    + ":row:field");
         assertThat(page.getEditorPanel().getAttributes().size(), is(2));
         assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("id"));
-        Assert.assertEquals("id1", idField.getDefaultModel().getObject());
+        assertThat((String) idField.getDefaultModel().getObject(), is("id1"));
+        assertThat(idField.isEnabled(), is(false));
     }
 
-    @SuppressWarnings({"unchecked", "serial"})
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testIfEmptyIdFieldIsEditable() {
+
+        ConnectorEditorPage page = new ConnectorEditorPage(manager);
+        tester.startPage(page);
+        tester.debugComponentTrees();
+        String id = page.getEditorPanel().getAttributeViewId("id");
+        TextField<String> idField =
+            (TextField<String>) tester.getComponentFromLastRenderedPage("editor:form:attributesPanel:fields:" + id
+                    + ":row:field");
+        assertThat(page.getEditorPanel().getAttributes().size(), is(2));
+        assertThat(page.getEditorPanel().getAttributes().get(0).getId(), is("id"));
+        assertThat((String) idField.getDefaultModel().getObject(), is(""));
+        assertThat(idField.isEnabled(), is(true));
+    }
+
+    @SuppressWarnings({ "unchecked", "serial" })
     public void addServiceManagerValidationError_ShouldPutErrorMessagesOnPage() {
         Map<String, String> errorMessages = new HashMap<String, String>();
         errorMessages.put("a", "validation.service.not");
@@ -111,12 +129,12 @@ public class EditorPageTest {
         FormTester formTester = tester.newFormTester("editor:form");
         formTester.setValue("fields:id:row:field", "someValue");
         formTester.submit();
-        tester.assertErrorMessages(new String[]{"Service Validation Error"});
+        tester.assertErrorMessages(new String[]{ "Service Validation Error" });
         tester.assertRenderedPage(ConnectorEditorPage.class);
     }
 
     @Test
-    @SuppressWarnings({"unchecked", "serial"})
+    @SuppressWarnings({ "unchecked", "serial" })
     @Ignore("OPENENGSB-277, what checks should be bypassed")
     public void uncheckValidationCheckbox_shouldBypassValidation() {
         Map<String, String> errorMessages = new HashMap<String, String>();
@@ -135,7 +153,7 @@ public class EditorPageTest {
         formTester.setValue("validate", false);
         formTester.submit();
         tester.assertErrorMessages(new String[]{});
-        tester.assertInfoMessages(new String[]{"Service can be added"});
+        tester.assertInfoMessages(new String[]{ "Service can be added" });
         Mockito.verify(manager).update(Mockito.anyString(), Mockito.anyMap());
         Mockito.verify(manager, Mockito.never()).update(Mockito.anyString(), Mockito.anyMap());
     }

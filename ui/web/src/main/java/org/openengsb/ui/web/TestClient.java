@@ -19,10 +19,9 @@ package org.openengsb.ui.web;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -35,6 +34,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.authorization.strategies.role.metadata.MetaDataRoleAuthorizationStrategy;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -53,20 +54,14 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.descriptor.AttributeDefinition;
-import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
-import org.openengsb.core.common.l10n.PassThroughStringLocalizer;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.ui.web.editor.AttributeEditorUtil;
-import org.openengsb.ui.web.editor.BeanArgumentPanel;
-import org.openengsb.ui.web.editor.fields.AbstractField;
-import org.openengsb.ui.web.model.LocalizableStringModel;
+import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
+import org.openengsb.ui.web.model.Argument;
 import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
 import org.openengsb.ui.web.model.ServiceId;
@@ -74,7 +69,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-@SuppressWarnings("serial")
+@AuthorizeInstantiation("ROLE_USER")
 public class TestClient extends BasePage {
 
     private static Log log = LogFactory.getLog(TestClient.class);
@@ -101,11 +96,12 @@ public class TestClient extends BasePage {
 
     private ServiceId lastServiceId;
 
+    @SuppressWarnings("serial")
     public TestClient() {
         WebMarkupContainer serviceManagementContainer = new WebMarkupContainer("serviceManagementContainer");
         serviceManagementContainer.setOutputMarkupId(true);
         add(serviceManagementContainer);
-
+        MetaDataRoleAuthorizationStrategy.authorize(serviceManagementContainer, RENDER, "ROLE_ADMIN");
         IModel<List<DomainProvider>> domainModel = new LoadableDetachableModel<List<DomainProvider>>() {
             @Override
             protected List<DomainProvider> load() {
@@ -329,7 +325,7 @@ public class TestClient extends BasePage {
         DefaultMutableTreeNode providerNode =
             new DefaultMutableTreeNode(provider.getName().getString(getSession().getLocale()));
         node.add(providerNode);
-        for (ServiceReference serviceReference : this.services
+        for (ServiceReference serviceReference : services
             .serviceReferencesForDomain(provider.getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
             if (id != null) {
@@ -374,28 +370,14 @@ public class TestClient extends BasePage {
     protected void populateArgumentList() {
         argumentList.removeAll();
         Method m = findMethod();
-        List<ArgumentModel> arguments = new ArrayList<ArgumentModel>();
+        List<Argument> arguments = new ArrayList<Argument>();
         call.setArguments(arguments);
         int i = 0;
         for (Class<?> p : m.getParameterTypes()) {
-            ArgumentModel argModel = new ArgumentModel(i + 1, p, null);
+            Argument argModel = new Argument(i + 1, p, null);
             arguments.add(argModel);
-            if (p.isPrimitive() || p.equals(String.class) || p.isEnum()) {
-                Builder builder = AttributeDefinition.builder(new PassThroughStringLocalizer());
-                MethodUtil.addEnumValues(argModel.getType(), builder);
-                builder.id("value").name(
-                    new StringResourceModel("argument", this, new Model<ArgumentModel>(argModel)).getString());
-                AbstractField<?> createEditorField =
-                    AttributeEditorUtil.createEditorField("argument_" + i,
-                        new PropertyModel<String>(argModel, "value"), builder.build());
-                argumentList.add(createEditorField);
-            } else {
-                Map<String, String> beanAttrs = new HashMap<String, String>();
-                argModel.setValue(beanAttrs);
-                argModel.setBean(true);
-                BeanArgumentPanel arg = new BeanArgumentPanel(String.valueOf(i), argModel, beanAttrs);
-                argumentList.add(arg);
-            }
+            MethodArgumentPanel argumentPanel = new MethodArgumentPanel("arg" + i + "panel", argModel);
+            argumentList.add(argumentPanel);
             i++;
         }
         call.setArguments(arguments);
@@ -416,9 +398,14 @@ public class TestClient extends BasePage {
         if (service == null) {
             return Collections.emptyList();
         }
-        Object serviceObject = getService(service);
-        log.info("retrieved service Object of type " + serviceObject.getClass().getName());
-        List<Method> methods = MethodUtil.getServiceMethods(serviceObject);
+        Class<?> connectorInterface;
+        try {
+            connectorInterface = Class.forName(service.getServiceClass());
+        } catch (ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+        List<Method> methods = Arrays.asList(connectorInterface.getMethods());
         return methods;
     }
 

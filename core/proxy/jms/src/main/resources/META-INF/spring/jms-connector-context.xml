@@ -30,13 +30,15 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd
         http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-2.0-m1.xsd">
         
-   <osgi:list id="domains" interface="org.openengsb.core.common.DomainProvider" />
+   <osgi:list id="domains" interface="org.openengsb.core.common.DomainProvider" availability="optional"/>
    
    <osgix:cm-properties id="ports" persistent-id="org.openengsb.ports">
      <prop key="jms.port">6549</prop>
    </osgix:cm-properties>
    
    <context:property-placeholder properties-ref="ports" />
+   
+   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextCurrentService" />
     
    <!-- JMS ConnectionFactory to use -->
    <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
@@ -68,6 +70,7 @@
   
   <bean id="messageListenerFactory" class="org.openengsb.core.proxy.jms.MessageListenerFactory">
     <constructor-arg ref="jmsFactory"/>
+    <constructor-arg ref="contextService"/>
   </bean>
   
   <bean id="proxyConnector" class="org.openengsb.core.common.proxy.ProxyConnector" init-method="addProxiesToContext">

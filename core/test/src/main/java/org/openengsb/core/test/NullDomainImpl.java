@@ -16,9 +16,10 @@
 
 package org.openengsb.core.test;
 
-import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.AliveState;
 
-public class NullDomainImpl implements NullDomain {
+public class NullDomainImpl extends AbstractOpenEngSBService implements NullDomain {
 
     private AliveState state = AliveState.OFFLINE;
 

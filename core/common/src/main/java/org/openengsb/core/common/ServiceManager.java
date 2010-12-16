@@ -24,7 +24,7 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 /**
  * Instance provider for a specific service interface.
  */
-public interface ServiceManager {
+public interface ServiceManager extends OpenEngSBService {
 
     /**
      * Returns the {@code ServiceDescriptor} describing the managed service.

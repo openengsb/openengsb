@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.openengsb.connector</groupId>
     <artifactId>openengsb-connector-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -31,12 +31,32 @@
     <bundle.namespace>org.openengsb.connector.maven</bundle.namespace>
   </properties>
 
+  <groupId>org.openengsb.connector</groupId>
   <artifactId>openengsb-connector-maven</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Connector :: Maven</name>
 
   <packaging>bundle</packaging>
+  
+  <description>
+    Maven Connector implements the Build Domain, the Deploy Domain and the Test Domain
+    and is used for building, deploying and running tests for maven projects.
+  </description>
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
 
   <build>
     <resources>

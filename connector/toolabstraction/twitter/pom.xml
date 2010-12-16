@@ -27,13 +27,28 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>openengsb-domains-toolabstraction-twitter</artifactId>
-  <name>openengsb-domains-toolabstraction-twitter</name>
+  <groupId>org.openengsb.connector.toolabstraction</groupId>
+  <artifactId>openengsb-connector-toolabstraction-twitter</artifactId>
+  <version>1.1.0-SNAPSHOT</version>
+  <name>openengsb-connector-toolabstraction-twitter</name>
   <packaging>jar</packaging>
 
-  <description>
-    This component gives a convenient interface for the twitter API.
-  </description>
+  <description>This component gives a convenient interface for the twitter API</description>
+
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
 
   <dependencies>
     <dependency>

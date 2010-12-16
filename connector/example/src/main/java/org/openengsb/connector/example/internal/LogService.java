@@ -18,29 +18,29 @@ package org.openengsb.connector.example.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.event.LogEvent.Level;
 
-public class LogService implements ExampleDomain {
+public class LogService extends AbstractOpenEngSBService implements ExampleDomain {
 
     private final Log log = LogFactory.getLog(getClass());
     private String outputMode;
-    private final String id;
     private AliveState aliveState = AliveState.OFFLINE;
     private final ExampleDomainEvents domainEventInterface;
 
-    public LogService(String id, ExampleDomainEvents domainEventInterface) {
-        this.id = id;
+    public LogService(String instanceId, ExampleDomainEvents domainEventInterface) {
+        super(instanceId);
         this.domainEventInterface = domainEventInterface;
         aliveState = AliveState.CONNECTING;
     }
 
     @Override
     public String doSomething(String message) {
-        message = id + ": " + message;
+        message = instanceId + ": " + message;
         Level level = Level.INFO;
         if ("DEBUG".equals(outputMode)) {
             log.debug(message);

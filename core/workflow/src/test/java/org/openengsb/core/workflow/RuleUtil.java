@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
@@ -44,6 +45,26 @@ public final class RuleUtil {
         } finally {
             IOUtils.closeQuietly(helloWorldRule);
         }
+    }
+
+    public static void addTestFlows(RuleManager manager) throws Exception {
+        addFlow(manager, "flowtest");
+        addFlow(manager, "ci");
+        addFlow(manager, "floweventtest");
+        addFlow(manager, "propertybagtest");
+        addFlow(manager, "blockingFlowtest");
+    }
+
+    private static void addFlow(RuleManager manager, String flow) throws IOException, RuleBaseException {
+        RuleBaseElementId testFlowId = new RuleBaseElementId(RuleBaseElementType.Process, flow);
+        String code = readFlow(flow);
+        manager.add(testFlowId, code);
+    }
+
+    private static String readFlow(String string) throws IOException {
+        InputStream flowStream =
+            RuleUtil.class.getClassLoader().getResourceAsStream("rulebase/org/openengsb/" + string + ".rf");
+        return IOUtils.toString(flowStream);
     }
 
 }

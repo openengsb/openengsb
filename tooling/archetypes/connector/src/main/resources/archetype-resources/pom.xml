@@ -22,9 +22,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>${groupId}</groupId>
-    <artifactId>${parentArtifactId}</artifactId>
-    <version>${project.version}</version>
+    <groupId>org.openengsb.connector</groupId>
+    <artifactId>openengsb-connector-parent</artifactId>
+    <version>${version}</version>
   </parent>
 
   <properties>
@@ -32,13 +32,29 @@
     <bundle.namespace>${package}</bundle.namespace>
   </properties>
 
-  <groupId>${groupId}</groupId>
-  <artifactId>${project.artifactId}</artifactId>
-  <version>${project.version}</version>
+  <groupId>org.openengsb.connector</groupId>
+  <artifactId>${artifactId}</artifactId>
+  <version>${version}</version>
 
   <name>${name}</name>
 
   <packaging>bundle</packaging>
+  
+  <description>Description of Connector</description>
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
 
   <build>
     <resources>
@@ -62,28 +78,17 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>${groupId}</groupId>
+      <groupId>org.openengsb.core</groupId>
+      <artifactId>openengsb-core-test</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.domain</groupId>
       <artifactId>${domainArtifactId}</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-all</artifactId>
-      <version>${hamcrest.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>${mockito.version}</version>
-      <scope>test</scope>
-    </dependency>
+
   </dependencies>
 
 </project>

@@ -49,7 +49,7 @@ public class EmailNotifierFactoryTest {
         EmailNotifier notifier = factory.createServiceInstance("id", attributes);
 
         Assert.assertNotNull(notifier);
-        Assert.assertEquals("id", notifier.getId());
+        Assert.assertEquals("id", notifier.getInstanceId());
 
         Mockito.verify(propertiesMock).setPassword("password");
         Mockito.verify(propertiesMock).setPrefix("pre: ");

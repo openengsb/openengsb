@@ -16,6 +16,8 @@
 
 package org.openengsb.ui.web;
 
+import org.apache.commons.lang.ObjectUtils;
+
 public class TestBean {
     private String id;
     private String name;
@@ -44,4 +46,23 @@ public class TestBean {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ObjectUtils.hashCode(this.id);
+        result = prime * result + ObjectUtils.hashCode(this.name);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof TestBean)) {
+            return false;
+        }
+        TestBean other = (TestBean) obj;
+        return ObjectUtils.equals(this.id, other.id) && ObjectUtils.equals(this.name, other.name);
+    }
+
 }

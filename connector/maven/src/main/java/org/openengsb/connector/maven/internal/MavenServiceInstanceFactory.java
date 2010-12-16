@@ -54,7 +54,7 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestD
 
     @Override
     public MavenServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
-        MavenServiceImpl service = new MavenServiceImpl();
+        MavenServiceImpl service = new MavenServiceImpl(id);
         service.setBuildEvents(buildEvents);
         service.setTestEvents(testEvents);
         service.setDeployEvents(deployEvents);

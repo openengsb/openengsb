@@ -18,71 +18,89 @@ package org.openengsb.ui.web;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
-import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
-import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.ui.common.wicket.OpenEngSBPage;
+import org.openengsb.ui.common.wicket.OpenEngSBWebSession;
 import org.openengsb.ui.web.global.footer.FooterTemplate;
 import org.openengsb.ui.web.global.header.HeaderTemplate;
 
 @SuppressWarnings("serial")
-@AuthorizeInstantiation("ROLE_USER")
-public class BasePage extends WebPage {
-
+public class BasePage extends OpenEngSBPage {
     @SpringBean
     private ContextCurrentService contextService;
 
     public BasePage() {
-        initContextForCurrentThread();
-        initWebPage();
+        initializeHeader();
+        initializeLoginLogoutTemplate();
+        initializeFooter();
     }
 
-    private void initWebPage() {
-        add(new Link<Object>("lang.en") {
-            @Override
-            public void onClick() {
-                this.getSession().setLocale(Locale.ENGLISH);
-            }
-        });
-        add(new Link<Object>("lang.de") {
-            @Override
-            public void onClick() {
-                this.getSession().setLocale(Locale.GERMAN);
-            }
-        });
+    private void initializeFooter() {
+        add(new FooterTemplate("footer"));
+    }
+
+    private void initializeLoginLogoutTemplate() {
         Form<?> form = new Form<Object>("projectChoiceForm");
         form.add(createProjectChoice());
         add(form);
-        form.add(new Link<Object>("logout") {
+        try {
+            form.setVisible(((OpenEngSBWebSession) WebSession.get()).isSignedIn());
+        } catch (ClassCastException e) {
+        }
+
+        Link<Object> link = new Link<Object>("logout") {
             @Override
             public void onClick() {
-                ((AuthenticatedWebSession) this.getSession()).signOut();
-                setResponsePage(LoginPage.class);
+                boolean signedIn = ((OpenEngSBWebSession) WebSession.get()).isSignedIn();
+                if (signedIn) {
+                    ((AuthenticatedWebSession) this.getSession()).signOut();
+                }
+                setResponsePage(signedIn ? Index.class : LoginPage.class);
             }
-        });
+        };
+        add(link);
 
-        this.add(new HeaderTemplate("header", this.getHeaderMenuItem()));
-        this.add(new FooterTemplate("footer"));
+        WebMarkupContainer container = new WebMarkupContainer("logintext");
+        link.add(container);
+        try {
+            container.setVisible(!((OpenEngSBWebSession) WebSession.get()).isSignedIn());
+        } catch (ClassCastException e) {
+        }
+        container = new WebMarkupContainer("logouttext");
+        link.add(container);
+        try {
+            container.setVisible(((OpenEngSBWebSession) WebSession.get()).isSignedIn());
+        } catch (ClassCastException e) {
+        }
+    }
+
+    private void initializeHeader() {
+        add(new HeaderTemplate("header", getHeaderMenuItem()));
     }
 
     private Component createProjectChoice() {
         DropDownChoice<String> dropDownChoice = new DropDownChoice<String>("projectChoice", new IModel<String>() {
+            @Override
             public String getObject() {
                 return getSessionContextId();
             }
 
+            @Override
             public void setObject(String object) {
                 setThreadLocalContext(object);
             }
 
+            @Override
             public void detach() {
             }
         }, getAvailableContexts()) {
@@ -93,38 +111,25 @@ public class BasePage extends WebPage {
 
             @Override
             protected void onModelChanged() {
-                setResponsePage(BasePage.this.getClass());
+                setResponsePage(BasePage.class);
             }
 
         };
         return dropDownChoice;
     }
 
-    private List<String> getAvailableContexts() {
-        if (contextService == null) {
-            return new ArrayList<String>();
-        }
-        return contextService.getAvailableContexts();
+    /**
+     * @return the class name, which should be the index in navigation bar
+     *
+     */
+    @Override
+    public String getHeaderMenuItem() {
+        return this.getClass().getSimpleName();
     }
 
-    final void initContextForCurrentThread() {
-        String sessionContextId = getSessionContextId();
-        try {
-            if (contextService != null) {
-                contextService.setThreadLocalContext(sessionContextId);
-            }
-        } catch (IllegalArgumentException e) {
-            contextService.createContext(sessionContextId);
-            contextService.createContext(sessionContextId + "2");
-            contextService.setThreadLocalContext(sessionContextId);
-            contextService.putValue("domain/NotificationDomain/defaultConnector/id", "notification");
-            contextService.putValue("domain/IssueDomain/defaultConnector/id", "issue");
-            contextService.putValue("domain/ExampleDomain/defaultConnector/id", "example");
-        }
-    }
-
+    @Override
     public String getSessionContextId() {
-        WicketSession session = WicketSession.get();
+        OpenEngSBWebSession session = OpenEngSBWebSession.get();
         if (session == null) {
             return "foo";
         }
@@ -134,18 +139,19 @@ public class BasePage extends WebPage {
         return session.getThreadContextId();
     }
 
-    private void setThreadLocalContext(String threadLocalContext) {
-        WicketSession session = WicketSession.get();
+    @Override
+    public void setThreadLocalContext(String threadLocalContext) {
+        OpenEngSBWebSession session = OpenEngSBWebSession.get();
         if (session != null) {
             session.setThreadContextId(threadLocalContext);
         }
     }
 
-    /**
-     * @return the class name, which should be the index in navigation bar
-     * 
-     */
-    public String getHeaderMenuItem() {
-        return this.getClass().getSimpleName();
+    @Override
+    public List<String> getAvailableContexts() {
+        if (contextService == null) {
+            return new ArrayList<String>();
+        }
+        return contextService.getAvailableContexts();
     }
 }

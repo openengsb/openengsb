@@ -16,10 +16,11 @@
 
 package org.openengsb.core.common.support;
 
+import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.Domain;
-import org.openengsb.core.common.util.AliveState;
 
-public class DomainImpl implements Domain {
+public class DomainImpl extends AbstractOpenEngSBService implements Domain {
     @Override
     public AliveState getAliveState() {
         return AliveState.OFFLINE;

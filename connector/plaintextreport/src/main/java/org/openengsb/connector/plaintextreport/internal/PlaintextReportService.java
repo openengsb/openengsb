@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.Event;
-import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.report.NoSuchReportException;
 import org.openengsb.domain.report.common.AbstractReportDomain;
 import org.openengsb.domain.report.model.Report;
@@ -43,10 +43,8 @@ public class PlaintextReportService extends AbstractReportDomain {
 
     private ReportPartStore partStore = new InMemoryReportPartStore();
 
-    private String id;
-
     public PlaintextReportService(String id) {
-        this.id = id;
+        super(id);
     }
 
     @Override
@@ -89,10 +87,6 @@ public class PlaintextReportService extends AbstractReportDomain {
     @Override
     public AliveState getAliveState() {
         return AliveState.ONLINE;
-    }
-
-    public String getId() {
-        return id;
     }
 
     private void checkContentType(ReportPart reportPart) {

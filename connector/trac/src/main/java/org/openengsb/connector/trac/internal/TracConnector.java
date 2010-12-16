@@ -28,21 +28,21 @@ import org.openengsb.connector.trac.internal.models.constants.TracFieldConstants
 import org.openengsb.connector.trac.internal.models.constants.TracPriorityConstants;
 import org.openengsb.connector.trac.internal.models.constants.TracStatusConstants;
 import org.openengsb.connector.trac.internal.models.xmlrpc.Ticket;
-import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.issue.IssueDomain;
 import org.openengsb.domain.issue.models.Issue;
 import org.openengsb.domain.issue.models.IssueAttribute;
 
-public class TracConnector implements IssueDomain {
+public class TracConnector extends AbstractOpenEngSBService implements IssueDomain {
 
     private static Log log = LogFactory.getLog(TracConnector.class);
 
     private AliveState state = AliveState.DISCONNECTED;
-    private final String id;
     private final TicketHandlerFactory ticketFactory;
 
     public TracConnector(String id, TicketHandlerFactory ticketFactory) {
-        this.id = id;
+        super(id);
         this.ticketFactory = ticketFactory;
     }
 
@@ -63,7 +63,6 @@ public class TracConnector implements IssueDomain {
         return issueId.toString();
     }
 
-    @Override
     public void deleteIssue(String id) {
         try {
             Ticket ticket = createTicket();
@@ -116,10 +115,6 @@ public class TracConnector implements IssueDomain {
 
     public TicketHandlerFactory getTicketHandlerFactory() {
         return this.ticketFactory;
-    }
-
-    public String getId() {
-        return this.id;
     }
 
     private Hashtable<IssueAttribute, String> translateChanges(Map<IssueAttribute, String> changes) {

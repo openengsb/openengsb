@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import org.junit.Test;
 import org.openengsb.connector.email.internal.abstraction.MailAbstraction;
 import org.openengsb.connector.email.internal.abstraction.MailProperties;
+import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.DomainMethodExecutionException;
-import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.notification.model.Attachment;
 import org.openengsb.domain.notification.model.Notification;
 

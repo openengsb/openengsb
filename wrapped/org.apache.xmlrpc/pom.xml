@@ -19,30 +19,47 @@
   <parent>
     <groupId>org.openengsb.wrapped</groupId>
     <artifactId>openengsb-wrapped-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <properties>
     <bundle.symbolicName>org.apache.xmlrpc</bundle.symbolicName>
     <wrapped.groupId>org.apache.xmlrpc</wrapped.groupId>
     <wrapped.artifactId>org.apache.xmlrpc</wrapped.artifactId>
-    <wrapped.version>${xmlrpc.version}</wrapped.version>
+    <wrapped.version>${apache.xmlrpc.version}</wrapped.version>
     <bundle.namespace>${wrapped.groupId}</bundle.namespace>
   </properties>
 
   <modelVersion>4.0.0</modelVersion>
   <artifactId>org.apache.xmlrpc-all</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: OSGi Wrapped Bundles :: XMLRPC</name>
 
   <packaging>bundle</packaging>
 
+  <description>XMLRPC wrapped bundle</description>
+
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.xmlrpc</groupId>
       <artifactId>xmlrpc-client</artifactId>
-      <version>${xmlrpc.version}</version>
+      <version>${apache.xmlrpc.version}</version>
     </dependency>
   </dependencies>
 

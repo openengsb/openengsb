@@ -43,19 +43,23 @@ import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RemoteConfig;
 import org.eclipse.jgit.transport.Transport;
-import org.openengsb.core.common.util.AliveState;
+import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.AliveState;
+import org.openengsb.core.common.DomainMethodNotImplementedException;
+import org.openengsb.domain.scm.CommitRef;
 import org.openengsb.domain.scm.ScmDomain;
 import org.openengsb.domain.scm.ScmException;
 
 @SuppressWarnings("deprecation")
-public class GitServiceImpl implements ScmDomain {
+public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomain {
 
     private String remoteLocation;
     private File localWorkspace;
     private String watchBranch;
     private FileRepository repository;
 
-    public GitServiceImpl() {
+    public GitServiceImpl(String instanceId) {
+        super(instanceId);
     }
 
     @Override
@@ -183,4 +187,49 @@ public class GitServiceImpl implements ScmDomain {
     public FileRepository getRepository() {
         return repository;
     }
+
+    @Override
+    public void addDirectory(File arg0, boolean arg1) {
+        throw new DomainMethodNotImplementedException();
+
+    }
+
+    @Override
+    public void addFile(File arg0) {
+        throw new DomainMethodNotImplementedException();
+
+    }
+
+    @Override
+    public void checkoutDirectory(String arg0, CommitRef arg1, boolean arg2, File arg3) {
+        throw new DomainMethodNotImplementedException();
+
+    }
+
+    @Override
+    public void checkoutFile(String arg0, CommitRef arg1, File arg2) {
+        throw new DomainMethodNotImplementedException();
+
+    }
+
+    @Override
+    public CommitRef commitDirectory(File arg0, String arg1, boolean arg2) {
+        throw new DomainMethodNotImplementedException();
+    }
+
+    @Override
+    public CommitRef commitFile(File arg0, String arg1) {
+        throw new DomainMethodNotImplementedException();
+    }
+
+    @Override
+    public boolean exists(String arg0) {
+        throw new DomainMethodNotImplementedException();
+    }
+
+    @Override
+    public boolean exists(String arg0, CommitRef arg1) {
+        throw new DomainMethodNotImplementedException();
+    }
+
 }

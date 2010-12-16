@@ -16,46 +16,94 @@
 
 package org.openengsb.core.workflow.internal;
 
-import java.util.Collection;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseFactory;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.common.workflow.model.RuleBaseElementId;
-import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 
 public abstract class AbstractRuleManager implements RuleManager {
 
-    protected ResourceHandler<?> getRessourceHandler(RuleBaseElementType element) {
-        throw new UnsupportedOperationException("not implemented for type " + getClass());
+    protected KnowledgeBase rulebase;
+    protected RulebaseBuilder builder;
+
+    public AbstractRuleManager() {
+        rulebase = KnowledgeBaseFactory.newKnowledgeBase();
+        builder = new RulebaseBuilder(rulebase, this);
     }
 
     @Override
-    public void add(RuleBaseElementId name, String code) throws RuleBaseException {
-        this.getRessourceHandler(name.getType()).create(name, code);
+    public KnowledgeBase getRulebase() {
+        return rulebase;
+    }
+
+    public void init() throws RuleBaseException {
+        if (rulebaseIsEmpty()) {
+            readImports();
+            readGlobals();
+        }
+        builder.reloadRulebase();
+    }
+
+    private boolean rulebaseIsEmpty() {
+        if (!listImports().isEmpty()) {
+            return false;
+        }
+        return listGlobals().isEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void readGlobals() throws RuleBaseException {
+        URL globalURL = this.getClass().getClassLoader().getResource("rulebase/globals");
+        File globalFile = copyFileToTemp(globalURL);
+        List<String> globalLines;
+        try {
+            globalLines = FileUtils.readLines(globalFile);
+        } catch (IOException e) {
+            throw new RuleBaseException(e);
+        }
+        for (String s : globalLines) {
+            String[] parts = s.split(" ");
+            addGlobal(parts[0], parts[1]);
+        }
+        FileUtils.deleteQuietly(globalFile);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void readImports() throws RuleBaseException {
+        URL importsURL = this.getClass().getClassLoader().getResource("rulebase/imports");
+        File importsFile = copyFileToTemp(importsURL);
+        List<String> importLines;
+        try {
+            importLines = FileUtils.readLines(importsFile);
+        } catch (IOException e) {
+            throw new RuleBaseException(e);
+        }
+        for (String s : importLines) {
+            addImport(s);
+        }
+        FileUtils.deleteQuietly(importsFile);
+    }
+
+    private File copyFileToTemp(URL url) throws RuleBaseException {
+        File tmpFile;
+        try {
+            tmpFile = File.createTempFile("workflow", null);
+            FileUtils.copyURLToFile(url, tmpFile);
+        } catch (IOException e1) {
+            throw new RuleBaseException(e1);
+        }
+        return tmpFile;
     }
 
     @Override
-    public String get(RuleBaseElementId name) {
-        return this.getRessourceHandler(name.getType()).get(name);
+    public String getInstanceId() {
+        return getClass().getName();
     }
 
-    @Override
-    public void update(RuleBaseElementId name, String newCode) throws RuleBaseException {
-        this.getRessourceHandler(name.getType()).update(name, newCode);
-    }
-
-    @Override
-    public void delete(RuleBaseElementId name) throws RuleBaseException {
-        this.getRessourceHandler(name.getType()).delete(name);
-    }
-
-    @Override
-    public Collection<RuleBaseElementId> list(RuleBaseElementType type) {
-        return this.getRessourceHandler(type).list();
-    }
-
-    @Override
-    public Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName) {
-        return this.getRessourceHandler(type).list(packageName);
-    }
 }
