@@ -2,7 +2,7 @@
 <process xmlns="http://drools.org/drools-5.0/process"
          xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
          xs:schemaLocation="http://drools.org/drools-5.0/process drools-processes-5.0.xsd"
-         type="RuleFlow" name="Human interaction demo workflow" id="HIDemoWorkflow" package-name="org.openengsb" routerLayout="2" >
+         type="RuleFlow" name="Single task demo workflow" id="TaskDemoWorkflow" package-name="org.openengsb" routerLayout="2" >
 
   <header>
     <variables>
@@ -14,12 +14,8 @@
 
   <nodes>
     <start id="1" name="Start" x="151" y="23" width="49" height="49" />
-    <end id="2" name="End" x="151" y="434" width="49" height="49" />
-    <subProcess id="3" name="Human interaction 1" x="96" y="232" width="159" height="48" processId="humantask" >
-      <mapping type="in" from="processBag" to="processBag" />
-      <mapping type="out" from="processBag" to="processBag" />
-    </subProcess>
-    <subProcess id="4" name="Human interaction 2" x="96" y="340" width="159" height="48" processId="humantask" >
+    <end id="2" name="End" x="151" y="354" width="49" height="49" />
+    <subProcess id="3" name="Human interaction" x="96" y="232" width="159" height="48" processId="humantask" >
       <mapping type="in" from="processBag" to="processBag" />
       <mapping type="out" from="processBag" to="processBag" />
     </subProcess>
@@ -32,9 +28,8 @@
   </nodes>
 
   <connections>
-    <connection from="4" to="2" />
+    <connection from="3" to="2" />
     <connection from="6" to="3" />
-    <connection from="3" to="4" />
     <connection from="1" to="6" />
     <connection from="5" to="6" />
   </connections>
