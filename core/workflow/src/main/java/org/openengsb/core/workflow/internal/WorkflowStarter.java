@@ -20,31 +20,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.process.ProcessInstance;
-import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 
 import com.google.common.base.Preconditions;
 
 public class WorkflowStarter implements Callable<Long> {
 
-    private StatefulKnowledgeSession session;
+    private KnowledgeRuntime session;
     private String processId;
     private Map<String, Object> params;
 
-    public WorkflowStarter(StatefulKnowledgeSession session, String processId, Map<String, Object> params) {
+    public WorkflowStarter(KnowledgeRuntime session, String processId, Map<String, Object> params) {
         Preconditions.checkNotNull(params, "params-map must not be null");
         this.session = session;
         this.processId = processId;
         this.params = params;
     }
 
-    public WorkflowStarter(StatefulKnowledgeSession session, String processId) {
+    public WorkflowStarter(KnowledgeRuntime session, String processId) {
         this(session, processId, new HashMap<String, Object>());
     }
 
-    public Long call() throws WorkflowException {
+    public Long call() {
         ProcessBag processBag = getProcessBag();
         ProcessInstance processInstance = session.startProcess(processId, params);
         session.insert(processInstance);
