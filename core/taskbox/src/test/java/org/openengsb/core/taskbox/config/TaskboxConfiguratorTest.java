@@ -16,6 +16,8 @@
 
 package org.openengsb.core.taskbox.config;
 
+import java.util.HashMap;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -31,6 +33,7 @@ public class TaskboxConfiguratorTest {
     @Before
     public void setUp() {
         ruleManager = Mockito.mock(RuleManager.class);
+        Mockito.when(ruleManager.listGlobals()).thenReturn(new HashMap<String, String>());
 
         configurator = new TaskboxConfigurator();
         configurator.setRuleManager(ruleManager);

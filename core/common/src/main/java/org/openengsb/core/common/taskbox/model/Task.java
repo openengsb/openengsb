@@ -62,14 +62,6 @@ public class Task extends ProcessBag {
     }
 
     /**
-     * generates and returns the unique ID the Task can be identified with
-     */
-    public String generateTaskId() {
-        addOrReplaceProperty("taskId", UUID.randomUUID().toString());
-        return (String) getProperty("taskId");
-    }
-
-    /**
      * returns the Type of the Task. The Type is used to group similar Tasks together
      */
     public String getTaskType() {
