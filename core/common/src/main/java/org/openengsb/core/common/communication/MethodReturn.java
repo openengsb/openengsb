@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class MethodReturn {
     public enum ReturnType {
-            Object, Exception,
+        Object, Exception,
     }
 
     private ReturnType type;
@@ -60,4 +60,7 @@ public class MethodReturn {
         this.metaData = metaData;
     }
 
+    public String getClassName() {
+        return this.arg.getClass().getName();
+    }
 }
