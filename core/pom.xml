@@ -55,7 +55,6 @@
     <module>workflow</module>
     <module>persistence</module>
     <module>events</module>
-    <module>proxy</module>
     <module>taskbox</module>
     <module>test</module>
     <module>usermanagement</module>
