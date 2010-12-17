@@ -23,6 +23,10 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -107,5 +111,26 @@ public class ProcessBagTest {
 
         pb.removeAllProperties();
         assertTrue(pb.getPropertyCount() == 0);
+    }
+
+    @Test
+    public void setProcessIdLater_shouldBlockGetter() throws Exception {
+        Callable<String> task = new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return pb.getProcessId();
+            }
+        };
+        Future<String> processIdFuture = Executors.newSingleThreadExecutor().submit(task);
+
+        Thread.sleep(100);
+        // this task should block now
+        assertThat(processIdFuture.isDone(), is(false));
+
+        // just call it to make sure it isn't blocking
+        pb.getPropertyCount();
+
+        pb.setProcessId("foo");
+        processIdFuture.get(1, TimeUnit.SECONDS);
     }
 }

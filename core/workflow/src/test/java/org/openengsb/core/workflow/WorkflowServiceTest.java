@@ -297,6 +297,15 @@ public class WorkflowServiceTest {
         assertThat(service.getRunningFlows().size(), is(1));
     }
 
+    @Test(timeout = 3000)
+    public void testRegisterWorkflowTriggerWithFlowStartedEvent() throws Exception {
+        service.registerFlowTriggerEvent(new Event("triggerEvent"), "flowStartedEvent");
+        service.processEvent(new Event("triggerEvent"));
+        for (Long id : service.getRunningFlows()) {
+            service.waitForFlowToFinish(id);
+        }
+    }
+
     @Test
     public void testIfEventIsRetracted() throws Exception {
         Event event = new Event();
