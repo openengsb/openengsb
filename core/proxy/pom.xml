@@ -22,13 +22,13 @@
     <relativePath>../</relativePath>
     <groupId>org.openengsb.core</groupId>
     <artifactId>openengsb-core-parent</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3.RELEASE</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.core.proxy</groupId>
   <artifactId>openengsb-core-proxy-parent</artifactId>
-  <version>1.0.3-SNAPSHOT</version>
+  <version>1.0.3.RELEASE</version>
 
   <name>OpenEngSB :: Core :: Proxy</name>
 
