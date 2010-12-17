@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,18 +51,20 @@ public class TaskboxIT extends AbstractExamTestHelper {
 
     @Before
     public void setUp() throws Exception {
+        super.beforeClass();
+
         ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
-        contextService.createContext("it-taskbox");
-        contextService.setThreadLocalContext("it-taskbox");
+        if (!contextService.getAvailableContexts().contains("it-taskbox")) {
+            contextService.createContext("it-taskbox");
+            contextService.setThreadLocalContext("it-taskbox");
+            contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
+        } else {
+            contextService.setThreadLocalContext("it-taskbox");
+        }
 
         ruleManager = getOsgiService(RuleManager.class);
         workflowService = getOsgiService(WorkflowService.class);
         taskboxService = getOsgiService(TaskboxService.class);
-    }
-
-    @After
-    public void cleanup() throws IOException {
-        super.afterClass();
     }
 
     @Test
@@ -117,16 +118,21 @@ public class TaskboxIT extends AbstractExamTestHelper {
 
         workflowService.startFlow("TaskDemoWorkflow");
         workflowService.startFlow("TaskDemoWorkflow");
-        workflowService.startFlow("TaskDemoWorkflow");
-        assertTrue(taskboxService.getOpenTasks().size() == 3);
 
-        taskboxService.finishTask(taskboxService.getOpenTasks().get(0));
         assertTrue(taskboxService.getOpenTasks().size() == 2);
+
+        Task task1 = taskboxService.getOpenTasks().get(0);
+        Task task2 = taskboxService.getOpenTasks().get(1);
+        
+        taskboxService.finishTask(task1);
+        assertTrue(taskboxService.getOpenTasks().size() == 1);
+        taskboxService.finishTask(task2);
+        assertTrue(taskboxService.getOpenTasks().size() == 0);
     }
 
     @Test
     public void testCompleteWorkflow_humanInteractionShouldReplaceValues() throws WorkflowException, IOException,
-        RuleBaseException {
+        RuleBaseException, InterruptedException {
         addWorkflow("HIDemoWorkflow");
 
         workflowService.startFlow("HIDemoWorkflow");
@@ -144,10 +150,13 @@ public class TaskboxIT extends AbstractExamTestHelper {
     }
 
     private void addWorkflow(String workflow) throws IOException, RuleBaseException {
-        InputStream is = getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/" + workflow + ".rf");
-        String testWorkflow = IOUtils.toString(is);
-        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Process, workflow);
-        ruleManager.add(id, testWorkflow);
-        IOUtils.closeQuietly(is);
+        if (ruleManager.get(new RuleBaseElementId(RuleBaseElementType.Process, workflow)) == null) {
+            InputStream is =
+                getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/" + workflow + ".rf");
+            String testWorkflow = IOUtils.toString(is);
+            RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Process, workflow);
+            ruleManager.add(id, testWorkflow);
+            IOUtils.closeQuietly(is);
+        }
     }
 }

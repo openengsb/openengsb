@@ -36,8 +36,10 @@ public class TaskboxConfigurator {
     private RuleManager ruleManager;
 
     public void init() {
-        addGlobalsAndImports();
-        addWorkflow();
+        if (!ruleManager.listGlobals().containsKey("taskbox")) {
+            addGlobalsAndImports();
+            addWorkflow();
+        }
     }
 
     private void addGlobalsAndImports() {
