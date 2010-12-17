@@ -46,6 +46,7 @@ import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.WorkflowHelper;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -56,7 +57,7 @@ import org.springframework.osgi.context.BundleContextAware;
 public class WorkflowServiceImpl implements WorkflowService, BundleContextAware, ServiceListener {
 
     private static final String START_FLOW_CONSEQUENCE_LINE =
-        "  kcontext.getKnowledgeRuntime().startProcess(\"%s\");\n";
+        "  WorkflowHelper.startFlow(kcontext.getKnowledgeRuntime(), \"%s\");\n";
 
     private Log log = LogFactory.getLog(WorkflowServiceImpl.class);
 
@@ -96,10 +97,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     @Override
     public long startFlow(String processId) throws WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
-        ProcessInstance processInstance = session.startProcess(processId);
-        session.insert(processInstance);
-        processInstance.signalEvent("FlowStartedEvent", null);
-        return processInstance.getId();
+        return WorkflowHelper.startFlow(session, processId);
     }
 
     @Override
