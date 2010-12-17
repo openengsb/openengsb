@@ -19,8 +19,7 @@ package org.openengsb.core.workflow;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
@@ -264,6 +263,15 @@ public class WorkflowServiceTest {
         service.processEvent(new Event());
         service.processEvent(new Event("triggerEvent"));
         assertThat(service.getRunningFlows().size(), is(1));
+    }
+
+    @Test(timeout = 3000)
+    public void testRegisterWorkflowTriggerWithFlowStartedEvent() throws Exception {
+        service.registerFlowTriggerEvent(new Event("triggerEvent"), "flowStartedEvent");
+        service.processEvent(new Event("triggerEvent"));
+        for (Long id : service.getRunningFlows()) {
+            service.waitForFlowToFinish(id);
+        }
     }
 
     @Test
