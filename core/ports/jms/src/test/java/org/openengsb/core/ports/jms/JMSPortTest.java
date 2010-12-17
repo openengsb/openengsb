@@ -16,13 +16,6 @@
 
 package org.openengsb.core.ports.jms;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -35,9 +28,9 @@ import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,9 +47,10 @@ public class JMSPortTest {
 
     private final String begin = "{";
 
-    private final String sendText =
-        "\"classes\":[\"java.lang.String\",\"java.lang.Integer\",\"org.openengsb.core.ports.jms.JMSPortTest$TestClass\"],\"methodName\":\"method\","
-                + "\"metaData\":{\"test\":\"test\"},\"args\":[\"123\",5,{\"test\":\"test\"}]}";
+    private final String sendText = "\"classes\":[\"java.lang.String\",\"java.lang.Integer\","
+            + "\"org.openengsb.core.ports.jms.JMSPortTest$TestClass\"],"
+            + "\"methodName\":\"method\",\"metaData\":{\"test\":\"test\"},"
+            + "\"args\":[\"123\",5,{\"test\":\"test\"}]}";
 
     private final String sendTextWithReturn = begin + "\"callId\":\"12345\",\"answer\":true," + sendText;
     private final String sendTextWithoutId = begin + sendText;
@@ -78,13 +72,13 @@ public class JMSPortTest {
 
     @Before
     public void setup() {
-        jmsTemplate = mock(JmsTemplate.class);
-        jmsTemplateFactory = mock(JMSTemplateFactory.class);
-        when(jmsTemplateFactory.createJMSTemplate("host")).thenReturn(jmsTemplate);
-        simpleMessageListenerContainer = mock(SimpleMessageListenerContainer.class);
-        when(jmsTemplateFactory.createMessageListenerContainer()).thenReturn(simpleMessageListenerContainer);
-        port = new JMSPort(jmsTemplateFactory, mock(ConnectionFactory.class));
-        handler = mock(RequestHandler.class);
+        jmsTemplate = Mockito.mock(JmsTemplate.class);
+        jmsTemplateFactory = Mockito.mock(JMSTemplateFactory.class);
+        Mockito.when(jmsTemplateFactory.createJMSTemplate("host")).thenReturn(jmsTemplate);
+        simpleMessageListenerContainer = Mockito.mock(SimpleMessageListenerContainer.class);
+        Mockito.when(jmsTemplateFactory.createMessageListenerContainer()).thenReturn(simpleMessageListenerContainer);
+        port = new JMSPort(jmsTemplateFactory, Mockito.mock(ConnectionFactory.class));
+        handler = Mockito.mock(RequestHandler.class);
         metaData = new HashMap<String, String>();
         metaData.put("test", "test");
         call = new MethodCall("method", new Object[]{"123", 5, new TestClass("test")}, metaData);
@@ -95,35 +89,34 @@ public class JMSPortTest {
     public void callSend_shouldSendMessageViaJMS() throws URISyntaxException {
         port.send(new URI("jms-json", "host", "example"), call);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(jmsTemplate).convertAndSend(Mockito.eq("example"), captor.capture());
-        verifyNoMoreInteractions(jmsTemplate);
+        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("example"), captor.capture());
+        Mockito.verifyNoMoreInteractions(jmsTemplate);
         System.out.println(captor.getValue());
         System.out.println(sendTextWithoutId);
-        assertThat(captor.getValue(), equalTo(sendTextWithoutId));
+        MatcherAssert.assertThat(captor.getValue(), Matchers.equalTo(sendTextWithoutId));
     }
 
     @Test
-    public void callSendSync_shouldSendMessageListenToReturnQueueAndSerialize() throws URISyntaxException,
-        JsonParseException, JsonMappingException, IOException {
+    public void callSendSync_shouldSendMessageListenToReturnQueueAndSerialize() throws URISyntaxException, IOException {
         ArgumentCaptor<String> sendIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
-        when(jmsTemplate.receiveAndConvert(destinationCaptor.capture())).thenReturn(returnText);
+        Mockito.when(jmsTemplate.receiveAndConvert(destinationCaptor.capture())).thenReturn(returnText);
         MethodReturn sendSync = port.sendSync(new URI("jms-json", "host", "example"), call);
-        verify(jmsTemplate).convertAndSend(Mockito.eq("example"), sendIdCaptor.capture());
+        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("example"), sendIdCaptor.capture());
         String destination =
             new ObjectMapper().readValue(new StringReader(sendIdCaptor.getValue()), JsonNode.class).get("callId")
                 .getValueAsText();
-        assertThat(destinationCaptor.getValue(), equalTo(destination));
+        MatcherAssert.assertThat(destinationCaptor.getValue(), Matchers.equalTo(destination));
         assertMethodReturn(sendSync);
     }
 
     private void assertMethodReturn(MethodReturn sendSync) {
-        assertThat(sendSync.getType(), equalTo(ReturnType.Object));
+        MatcherAssert.assertThat(sendSync.getType(), Matchers.equalTo(ReturnType.Object));
         Assert.assertTrue(sendSync.getArg() instanceof TestClass);
         TestClass test = (TestClass) sendSync.getArg();
-        assertThat(test.getTest(), equalTo("test"));
-        assertThat(sendSync.getMetaData().size(), equalTo(1));
-        assertThat(sendSync.getMetaData().get("test"), equalTo("test"));
+        MatcherAssert.assertThat(test.getTest(), Matchers.equalTo("test"));
+        MatcherAssert.assertThat(sendSync.getMetaData().size(), Matchers.equalTo(1));
+        MatcherAssert.assertThat(sendSync.getMetaData().get("test"), Matchers.equalTo("test"));
     }
 
     @Test
@@ -145,36 +138,36 @@ public class JMSPortTest {
         port.start();
 
         ArgumentCaptor<MethodCall> captor = ArgumentCaptor.forClass(MethodCall.class);
-        when(handler.handleCall(captor.capture())).thenReturn(
+        Mockito.when(handler.handleCall(captor.capture())).thenReturn(
             new MethodReturn(ReturnType.Object, new TestClass("test"), metaData));
         new JmsTemplate(cf).convertAndSend("receive", sendTextWithReturn);
         String receiveAndConvert = (String) jmsTemplate.receiveAndConvert("12345");
-        assertThat(receiveAndConvert, equalTo(returnText));
+        MatcherAssert.assertThat(receiveAndConvert, Matchers.equalTo(returnText));
         MethodCall call = captor.getValue();
-        assertThat(call.getMethodName(), equalTo("method"));
+        MatcherAssert.assertThat(call.getMethodName(), Matchers.equalTo("method"));
         System.out.println(call.getArgs() == new Object[]{"123", 5, new TestClass("test")});
         System.out.println(call.getArgs()[2].getClass());
-        assertThat(call.getArgs(), equalTo(new Object[]{"123", 5, new TestClass("test")}));
-        assertThat(call.getMetaData(), equalTo(this.metaData));
+        MatcherAssert.assertThat(call.getArgs(), Matchers.equalTo(new Object[]{"123", 5, new TestClass("test")}));
+        MatcherAssert.assertThat(call.getMetaData(), Matchers.equalTo(this.metaData));
     }
 
     @Test
     public void stop_ShouldNotReactToIncomingCalls() {
         port.start();
         port.stop();
-        verify(simpleMessageListenerContainer).stop();
+        Mockito.verify(simpleMessageListenerContainer).stop();
     }
 
     @Test
-    public void requestMapping_shouldDeserialiseRequest() throws JsonParseException, JsonMappingException, IOException {
+    public void requestMapping_shouldDeserialiseRequest() throws IOException {
         new ObjectMapper().readValue(this.sendTextWithReturn, RequestMapping.class);
     }
 
     @Test
-    public void methodReturn_DeserialiseResponse() throws JsonParseException, JsonMappingException, IOException {
+    public void methodReturn_DeserialiseResponse() throws IOException {
         StringWriter writer = new StringWriter();
         new ObjectMapper().writeValue(writer, this.methodReturn);
-        assertThat(writer.toString(), equalTo(this.returnText));
+        MatcherAssert.assertThat(writer.toString(), Matchers.equalTo(this.returnText));
     }
 
     public static class TestClass {
@@ -205,18 +198,23 @@ public class JMSPortTest {
 
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             TestClass other = (TestClass) obj;
             if (test == null) {
-                if (other.test != null)
+                if (other.test != null) {
                     return false;
-            } else if (!test.equals(other.test))
+                }
+            } else if (!test.equals(other.test)) {
                 return false;
+            }
             return true;
         }
 
