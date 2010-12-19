@@ -61,7 +61,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>${maven.plugin.resources.version}</version>   
         <executions>
           <execution>
             <id>resources</id>
@@ -232,7 +232,8 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
+        <version>${maven.plugin.helper.version}</version>
+          <executions>
           <execution>
             <id>attach-artifacts</id>
             <phase>package</phase>

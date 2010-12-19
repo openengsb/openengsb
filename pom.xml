@@ -32,25 +32,25 @@
     <!-- Environment Versions -->
     <jdk.version>1.6</jdk.version>
     <mvn.version>2.1</mvn.version>
-    <!-- Plugin Version -->
-    <maven.plugin.eclipse.version>2.8</maven.plugin.eclipse.version>
-    <maven.plugin.surefire.version>2.6</maven.plugin.surefire.version>
-    <maven.plugin.surefire.report.version>2.6</maven.plugin.surefire.report.version>
-    <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
-    <maven.plugin.compiler.version>2.3.2</maven.plugin.compiler.version>
+    <!-- maven plugin versions -->
     <maven.plugin.clean.version>2.4.1</maven.plugin.clean.version>
-    <maven.plugin.jar.version>2.3.1</maven.plugin.jar.version>
+    <maven.plugin.compiler.version>2.3.2</maven.plugin.compiler.version>
     <maven.plugin.deploy.version>2.5</maven.plugin.deploy.version>
-    <maven.plugin.release.version>2.0</maven.plugin.release.version>
+    <maven.plugin.eclipse.version>2.8</maven.plugin.eclipse.version>
+    <maven.plugin.helper.version>1.5</maven.plugin.helper.version>
+    <maven.plugin.install.version>2.3.1</maven.plugin.install.version>
+    <maven.plugin.jar.version>2.3.1</maven.plugin.jar.version>
+    <maven.plugin.javadoc.version>2.7</maven.plugin.javadoc.version>
+    <maven.plugin.mvn.license>1.8.0</maven.plugin.mvn.license>
+    <maven.plugin.resources.version>2.4.3</maven.plugin.resources.version>
+    <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
     <maven.plugin.site.version>3.0-beta-3</maven.plugin.site.version>
     <maven.plugin.source.version>2.1.2</maven.plugin.source.version>
-    <maven.plugin.mvn.license>1.8.0</maven.plugin.mvn.license>
-    <maven.plugin.javadoc.version>2.7</maven.plugin.javadoc.version>
-    <maven.plugin.helper.version>1.5</maven.plugin.helper.version>
-    <maven.plugin.resources.version>2.4.3</maven.plugin.resources.version>
-    <maven.plugin.install.version>2.3.1</maven.plugin.install.version>
-    <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>
+    <maven.plugin.surefire.version>2.6</maven.plugin.surefire.version>
+    <maven.plugin.surefire.report.version>2.6</maven.plugin.surefire.report.version>
     <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
+    <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>
+
     <javax.xml.soap>1.3.0</javax.xml.soap>
     <!-- Dependency Versions -->
     <junit.version>4.8.2</junit.version>
@@ -564,7 +564,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>${maven.plugin.release.version}</version>
+            <version>   ${maven.plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
