@@ -2,11 +2,9 @@ package org.openengsb.ui.taskbox;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortState;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
@@ -55,7 +53,14 @@ public class TaskDataProvider extends SortableDataProvider<Task> implements IFil
     }
 
     private void filterTasks(List<Task> result, TaskFilter filter2) {
-        // TODO Auto-generated method stub
+        List<Task> tmp = new ArrayList<Task>();
+        for (Iterator<Task> iterator = list.iterator(); iterator.hasNext();) {
+            Task task = iterator.next();
+            if (!filter.match(task)) {
+                tmp.add(task);
+            }
+        }
+        list.removeAll(tmp);
         
     }
 
@@ -67,6 +72,7 @@ public class TaskDataProvider extends SortableDataProvider<Task> implements IFil
 
     @Override
     public void detach() {
+        super.detach();
         list = null;
     }
 
