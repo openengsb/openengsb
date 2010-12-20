@@ -26,20 +26,16 @@ import org.openengsb.core.common.communication.MethodReturn.ReturnType;
 import org.openengsb.core.common.communication.RequestHandler;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
+import org.springframework.osgi.context.BundleContextAware;
 
-public class RequestHandlerImpl implements RequestHandler {
+public class RequestHandlerImpl implements RequestHandler, BundleContextAware {
 
     private BundleContext bundleContext;
-
-    public RequestHandlerImpl(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
-    }
 
     @Override
     public MethodReturn handleCall(MethodCall call) {
         String serviceId = call.getMetaData().get("serviceId");
-        String filter = String.format("(id=%s)", serviceId);
-        OpenEngSBService service = OsgiServiceUtils.getService(bundleContext, OpenEngSBService.class, filter);
+        OpenEngSBService service = OsgiServiceUtils.getServiceWithId(bundleContext, OpenEngSBService.class, serviceId);
 
         Object[] args = call.getArgs();
         Method method = findMethod(service, call.getMethodName(), getArgTypes(args));
@@ -79,6 +75,11 @@ public class RequestHandlerImpl implements RequestHandler {
             result[i] = args[i].getClass();
         }
         return result;
+    }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
     }
 
 }

@@ -26,8 +26,7 @@ public final class OsgiServiceUtils {
     public static Object getService(BundleContext bundleContext, String className, String filter) {
         ServiceReference[] allServiceReferences;
         try {
-            allServiceReferences =
-                bundleContext.getServiceReferences(OpenEngSBService.class.getName(), filter);
+            allServiceReferences = bundleContext.getServiceReferences(OpenEngSBService.class.getName(), filter);
         } catch (InvalidSyntaxException e1) {
             throw new RuntimeException(e1);
         }
@@ -42,6 +41,12 @@ public final class OsgiServiceUtils {
 
     @SuppressWarnings("unchecked")
     public static <T> T getService(BundleContext bundleContext, Class<? extends T> clazz, String filter) {
+        return (T) getService(bundleContext, clazz.getName(), filter);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T getServiceWithId(BundleContext bundleContext, Class<? extends T> clazz, String id) {
+        String filter = String.format("(id=%s)", id);
         return (T) getService(bundleContext, clazz.getName(), filter);
     }
 

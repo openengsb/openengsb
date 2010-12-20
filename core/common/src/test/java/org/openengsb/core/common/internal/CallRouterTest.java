@@ -46,16 +46,16 @@ import org.openengsb.core.common.communication.IncomingPort;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
 import org.openengsb.core.common.communication.OutgoingPort;
-import org.openengsb.core.common.communication.RequestHandler;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public class CallRouterTest {
 
-    private TestService serviceMock;
     private CallRouterImpl callrouter;
     private RequestHandlerImpl requestHandler;
+    private TestService serviceMock;
+    private OutgoingPort outgoingPortMock;
 
     @Before
     public void setUp() throws Exception {
@@ -63,30 +63,35 @@ public class CallRouterTest {
         BundleContext bundleContext = createBundleContextMock();
         callrouter.setBundleContext(bundleContext);
 
-        requestHandler = new RequestHandlerImpl(bundleContext);
+        requestHandler = new RequestHandlerImpl();
+        requestHandler.setBundleContext(bundleContext);
     }
 
     @Test
     public void testReceiveAnything() throws Exception {
         IncomingPort portMock = mock(IncomingPort.class);
-        callrouter.registerIncomingPort(portMock);
         callrouter.stop();
         Thread.sleep(300);
-
-        verify(portMock).setRequestHandler(any(RequestHandler.class));
     }
 
     @Test
     public void testRecieveMethodCall_shouldCallService() throws Exception {
-        final MethodCall call = new MethodCall("test", new Object[0], new HashMap<String, String>());
+        HashMap<String, String> metaData = getMetadata("foo");
+        final MethodCall call = new MethodCall("test", new Object[0], metaData);
         requestHandler.handleCall(call);
         callrouter.stop();
         verify(serviceMock, times(1)).test();
     }
 
+    private HashMap<String, String> getMetadata(String id) {
+        HashMap<String, String> metaData = new HashMap<String, String>();
+        metaData.put("serviceId", id);
+        return metaData;
+    }
+
     @Test
     public void testReceiveMethodCallWithArgument() throws Exception {
-        final MethodCall call = new MethodCall("test", new Object[]{ 42 }, new HashMap<String, String>());
+        final MethodCall call = new MethodCall("test", new Object[]{42}, getMetadata("foo"));
         requestHandler.handleCall(call);
         callrouter.stop();
         verify(serviceMock, never()).test();
@@ -96,7 +101,7 @@ public class CallRouterTest {
     @Test
     public void recieveMethodCall_shouldSendResponse() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
-        final MethodCall call = new MethodCall("getAnswer", new Object[0], new HashMap<String, String>());
+        final MethodCall call = new MethodCall("getAnswer", new Object[0], getMetadata("foo"));
         MethodReturn result = requestHandler.handleCall(call);
 
         verify(serviceMock).getAnswer();
@@ -105,39 +110,33 @@ public class CallRouterTest {
 
     @Test
     public void testSendMethodCall_shouldCallPort() throws Exception {
-        OutgoingPort portMock = mock(OutgoingPort.class);
-        callrouter.registerOutgoingPort("jms", portMock);
         final URI testURI = URI.create("jms://localhost");
-        callrouter.call("jms", testURI, new MethodCall());
+        callrouter.call("jms+json-out", testURI, new MethodCall());
         Thread.sleep(300);
         callrouter.stop();
-        verify(portMock, times(1)).send(eq(testURI), any(MethodCall.class));
+        verify(outgoingPortMock, times(1)).send(eq(testURI), any(MethodCall.class));
     }
 
     @Test
     public void testSendSyncMethodCall_shouldCallPort() throws Exception {
-        MethodCall methodCall = new MethodCall("test", new Object[]{ 42 }, new HashMap<String, String>());
-        OutgoingPort portMock = mock(OutgoingPort.class);
-        callrouter.registerOutgoingPort("jms", portMock);
+        MethodCall methodCall = new MethodCall("test", new Object[]{42}, getMetadata("foo"));
         final URI testURI = URI.create("jms://localhost");
-        callrouter.callSync("jms", testURI, methodCall);
-        verify(portMock, times(1)).sendSync(eq(testURI), any(MethodCall.class));
+        callrouter.callSync("jms+json-out", testURI, methodCall);
+        verify(this.outgoingPortMock, times(1)).sendSync(eq(testURI), any(MethodCall.class));
     }
 
     @Test
     public void testSendSyncMethodCall_shouldReturnResult() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
-        MethodCall methodCall = new MethodCall("test", new Object[]{ 42 }, null);
-        OutgoingPort portMock = mock(OutgoingPort.class);
+        MethodCall methodCall = new MethodCall("test", new Object[]{42}, getMetadata("foo"));
         MethodReturn value = new MethodReturn();
-        when(portMock.sendSync(URI.create("jms://localhost"), methodCall)).thenReturn(value);
-        callrouter.registerOutgoingPort("jms", portMock);
-        MethodReturn result = callrouter.callSync("jms", URI.create("jms://localhost"), methodCall);
+        when(outgoingPortMock.sendSync(URI.create("jms://localhost"), methodCall)).thenReturn(value);
+        MethodReturn result = callrouter.callSync("jms+json-out", URI.create("jms://localhost"), methodCall);
         assertThat(result, is(value));
     }
 
     private class MethodCallable implements Callable<MethodReturn> {
-        private MethodCall call;
+        private final MethodCall call;
 
         public MethodCallable(MethodCall call) {
             this.call = call;
@@ -153,8 +152,8 @@ public class CallRouterTest {
     public void testHandleCallsParallel() throws Exception {
         when(serviceMock.getAnswer()).thenReturn(42);
         final Object sync = addWaitingAnswerToServiceMock();
-        MethodCall blockingCall = new MethodCall("getOtherAnswer", new Object[0], null);
-        MethodCall normalCall = new MethodCall("getAnswer", new Object[0], null);
+        MethodCall blockingCall = new MethodCall("getOtherAnswer", new Object[0], getMetadata("foo"));
+        MethodCall normalCall = new MethodCall("getAnswer", new Object[0], getMetadata("foo"));
 
         ExecutorService threadPool = Executors.newCachedThreadPool();
         Future<MethodReturn> blockingFuture = threadPool.submit(new MethodCallable(blockingCall));
@@ -192,7 +191,7 @@ public class CallRouterTest {
     }
 
     private abstract class BlockingAnswer<T> implements Answer<T> {
-        private Object sync;
+        private final Object sync;
 
         public BlockingAnswer(Object sync) {
             this.sync = sync;
@@ -211,12 +210,21 @@ public class CallRouterTest {
 
     private BundleContext createBundleContextMock() throws InvalidSyntaxException {
         BundleContext bundleContext = mock(BundleContext.class);
-        final ServiceReference serviceRefMock = mock(ServiceReference.class);
-        when(bundleContext.getServiceReferences(eq(OpenEngSBService.class.getName()), anyString())).thenReturn(
-            new ServiceReference[]{ serviceRefMock, });
-        serviceMock = mock(TestService.class);
-        when(bundleContext.getService(serviceRefMock)).thenReturn(serviceMock);
+        serviceMock = mockService(bundleContext, TestService.class, "foo");
+        outgoingPortMock = mockService(bundleContext, OutgoingPort.class, "jms+json-out");
         return bundleContext;
     }
 
+    private <T> T mockService(BundleContext bundleContext, Class<T> serviceClass, String id)
+        throws InvalidSyntaxException {
+        final ServiceReference serviceRefMock = mock(ServiceReference.class);
+        ServiceReference[] mockAsArray = new ServiceReference[]{serviceRefMock,};
+        when(bundleContext.getServiceReferences(eq(serviceClass.getName()), eq(String.format("(id=%s)", id))))
+            .thenReturn(mockAsArray);
+        when(bundleContext.getServiceReferences(eq(OpenEngSBService.class.getName()), eq(String.format("(id=%s)", id))))
+            .thenReturn(mockAsArray);
+        T serviceMock = mock(serviceClass);
+        when(bundleContext.getService(serviceRefMock)).thenReturn(serviceMock);
+        return serviceMock;
+    }
 }

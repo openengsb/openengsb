@@ -25,36 +25,24 @@ import java.util.concurrent.Executors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.communication.CallRouter;
-import org.openengsb.core.common.communication.IncomingPort;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
 import org.openengsb.core.common.communication.OutgoingPort;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 
 public class CallRouterImpl implements CallRouter, BundleContextAware {
 
-    private Log log = LogFactory.getLog(CallRouterImpl.class);
+    private final Log log = LogFactory.getLog(CallRouterImpl.class);
 
-    private ExecutorService executor = Executors.newCachedThreadPool();
+    private final ExecutorService executor = Executors.newCachedThreadPool();
 
-    private Map<String, OutgoingPort> ports = new HashMap<String, OutgoingPort>();
-    BundleContext bundleContext;
-
-    @Override
-    public void registerIncomingPort(IncomingPort port) {
-        port.setRequestHandler(new RequestHandlerImpl(bundleContext));
-    }
-
-    @Override
-    public void registerOutgoingPort(String scheme, OutgoingPort port) {
-        log.info(String.format("registering outgoing port for scheme %s: %s", scheme, port));
-        ports.put(scheme, port);
-    }
+    private BundleContext bundleContext;
 
     @Override
     public void call(String portId, final URI destination, final MethodCall call) {
-        final OutgoingPort port = ports.get(portId);
+        final OutgoingPort port = getPort(portId);
         Runnable callHandler = new Runnable() {
             @Override
             public void run() {
@@ -66,8 +54,13 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
 
     @Override
     public MethodReturn callSync(String portId, final URI destination, final MethodCall call) {
-        final OutgoingPort port = ports.get(portId);
+        final OutgoingPort port = getPort(portId);
         return port.sendSync(destination, call);
+    }
+
+    private OutgoingPort getPort(String portId) {
+        final OutgoingPort port = OsgiServiceUtils.getServiceWithId(bundleContext, OutgoingPort.class, portId);
+        return port;
     }
 
     public void stop() {

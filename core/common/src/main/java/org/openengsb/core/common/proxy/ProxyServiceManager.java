@@ -64,7 +64,9 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
                 .implementationType(getDomainInterface())
                 .name("proxy.name", provider.getName().getString(Locale.getDefault())).description("proxy.description");
         builder.attribute(builder.newAttribute().id("portId").name("portId").description("Port Id").build());
-        builder.attribute(builder.newAttribute().id("destination").name("destination").description("Port Id").build());
+        builder.attribute(builder.newAttribute().id("destination").name("destination").description("Port Destination")
+            .build());
+        builder.attribute(builder.newAttribute().id("serviceId").name("serviceId").description("Serice Id").build());
         return builder.build();
     }
 
@@ -81,7 +83,9 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
                 handler.setCallRouter(router);
                 handler.setPortId(attributes.get("portId"));
                 try {
-                    handler.setDestination(new URI(attributes.get("destination")));
+                    String destination = attributes.get("destination");
+                    String serviceId = attributes.get("serviceId");
+                    handler.setDestination(new URI(destination));
                 } catch (URISyntaxException e) {
                     throw new RuntimeException(e);
                 }

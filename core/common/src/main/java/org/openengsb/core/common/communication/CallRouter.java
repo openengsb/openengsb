@@ -20,10 +20,6 @@ import java.net.URI;
 
 public interface CallRouter {
 
-    void registerIncomingPort(IncomingPort port);
-
-    void registerOutgoingPort(String scheme, OutgoingPort port);
-
     void call(String portId, URI destination, MethodCall call);
 
     MethodReturn callSync(String portId, URI destination, MethodCall call);

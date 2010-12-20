@@ -20,8 +20,6 @@ public interface IncomingPort {
 
     void start();
 
-    void setRequestHandler(RequestHandler handler);
-
     void stop();
 
 }

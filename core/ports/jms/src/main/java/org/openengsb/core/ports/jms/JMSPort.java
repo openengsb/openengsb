@@ -38,20 +38,15 @@ import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
 public class JMSPort implements IncomingPort, OutgoingPort {
 
-    private final JMSTemplateFactory factory;
+    private JMSTemplateFactory factory;
 
-    private final ConnectionFactory connectionFactory;
+    private ConnectionFactory connectionFactory;
 
     private RequestHandler requestHandler;
 
     private SimpleMessageListenerContainer simpleMessageListenerContainer;
 
     private final ObjectMapper mapper = new ObjectMapper();
-
-    public JMSPort(JMSTemplateFactory factory, ConnectionFactory connectionFactory) {
-        this.factory = factory;
-        this.connectionFactory = connectionFactory;
-    }
 
     @Override
     public void send(URI destination, MethodCall call) {
@@ -102,7 +97,6 @@ public class JMSPort implements IncomingPort, OutgoingPort {
         createJMSTemplate.convertAndSend(destination.getFragment(), result.toString());
     }
 
-    @Override
     public void setRequestHandler(RequestHandler handler) {
         this.requestHandler = handler;
     }
@@ -145,5 +139,13 @@ public class JMSPort implements IncomingPort, OutgoingPort {
     @Override
     public void stop() {
         simpleMessageListenerContainer.stop();
+    }
+
+    public void setFactory(JMSTemplateFactory factory) {
+        this.factory = factory;
+    }
+
+    public void setConnectionFactory(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
     }
 }

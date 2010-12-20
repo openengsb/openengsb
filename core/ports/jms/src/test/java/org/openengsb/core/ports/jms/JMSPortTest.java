@@ -77,7 +77,9 @@ public class JMSPortTest {
         Mockito.when(jmsTemplateFactory.createJMSTemplate("host")).thenReturn(jmsTemplate);
         simpleMessageListenerContainer = Mockito.mock(SimpleMessageListenerContainer.class);
         Mockito.when(jmsTemplateFactory.createMessageListenerContainer()).thenReturn(simpleMessageListenerContainer);
-        port = new JMSPort(jmsTemplateFactory, Mockito.mock(ConnectionFactory.class));
+        port = new JMSPort();
+        port.setFactory(jmsTemplateFactory);
+        port.setConnectionFactory(Mockito.mock(ConnectionFactory.class));
         handler = Mockito.mock(RequestHandler.class);
         metaData = new HashMap<String, String>();
         metaData.put("test", "test");
@@ -120,10 +122,11 @@ public class JMSPortTest {
     }
 
     @Test
-    public void start_ShouldListenToIncomingCallsAndCallSetRequestHandler() {
-        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("vm://localhost?broker.persistent=true");
+    public void start_ShouldListenToIncomingCallsAndCallSetRequestHandler() throws InterruptedException {
+        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("vm://localhost");
         final JmsTemplate jmsTemplate = new JmsTemplate(cf);
-        port = new JMSPort(new JMSTemplateFactory() {
+        port = new JMSPort();
+        port.setFactory(new JMSTemplateFactory() {
             @Override
             public JmsTemplate createJMSTemplate(String host) {
                 return jmsTemplate;
@@ -133,7 +136,8 @@ public class JMSPortTest {
             public SimpleMessageListenerContainer createMessageListenerContainer() {
                 return new SimpleMessageListenerContainer();
             }
-        }, cf);
+        });
+        port.setConnectionFactory(cf);
         port.setRequestHandler(handler);
         port.start();
 
@@ -217,6 +221,16 @@ public class JMSPortTest {
             }
             return true;
         }
+    }
 
+    public static void main(String[] args) {
+        ActiveMQConnectionFactory cf = new ActiveMQConnectionFactory("tcp://localhost:6549");
+        JmsTemplate template = new JmsTemplate(cf);
+        String request =
+            "{\"callId\":\"12345\",\"answer\":true,\"classes\":[\"java.lang.String\"],"
+                    + "\"methodName\":\"doSomething\",\"metaData\":{\"serviceId\":\"12345\"},"
+                    + "\"args\":[\"Audit\"]}";
+        template.convertAndSend("receive", request);
+        System.out.println(template.receiveAndConvert("12345"));
     }
 }
