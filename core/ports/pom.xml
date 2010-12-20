@@ -19,22 +19,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
-    <relativePath>../poms/compiled/</relativePath>
-    <groupId>org.openengsb.build</groupId>
-    <artifactId>compiled-bundle-settings</artifactId>
+    <relativePath>../</relativePath>
+    <groupId>org.openengsb.core</groupId>
+    <artifactId>openengsb-core-parent</artifactId>
     <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.openengsb.core</groupId>
-  <artifactId>openengsb-core-parent</artifactId>
+  <groupId>org.openengsb.core.ports</groupId>
+  <artifactId>openengsb-core-ports-parent</artifactId>
   <version>1.1.0-SNAPSHOT</version>
 
-  <name>OpenEngSB :: Core :: Parent</name>
+  <name>OpenEngSB :: Core :: Ports :: Parent</name>
 
   <packaging>pom</packaging>
 
-  <description>Parent project for all OpenEngSB Core classes</description>
+  <description>Parent project for OpenEngSB Ports, which enables external method calls</description>
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>
@@ -51,14 +51,7 @@
   </scm>
 
   <modules>
-    <module>common</module>
-    <module>workflow</module>
-    <module>persistence</module>
-    <module>events</module>
-    <module>taskbox</module>
-    <module>test</module>
-    <module>usermanagement</module>
-    <module>ports</module>
+    <module>jms</module>
   </modules>
 
 </project>

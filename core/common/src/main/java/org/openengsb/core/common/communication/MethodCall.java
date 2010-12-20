@@ -16,7 +16,9 @@
 
 package org.openengsb.core.common.communication;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MethodCall {
@@ -62,4 +64,11 @@ public class MethodCall {
         this.metaData = metaData;
     }
 
+    public List<String> getClasses() {
+        List<String> argsClasses = new ArrayList<String>();
+        for (Object object : this.getArgs()) {
+            argsClasses.add(object.getClass().getName());
+        }
+        return argsClasses;
+    }
 }
