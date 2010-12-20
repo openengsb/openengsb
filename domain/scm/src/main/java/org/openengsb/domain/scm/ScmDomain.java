@@ -26,93 +26,96 @@ import org.openengsb.core.common.Domain;
  */
 public interface ScmDomain extends Domain {
 
-    /**
-     * Polls the represented repository for updates. Returns true if there have
-     * been changes since the last poll.
-     */
-    boolean poll();
+	/**
+	 * Polls the represented repository for updates. Returns true if there have
+	 * been changes since the last poll.
+	 */
+	boolean poll();
 
-    /**
-     * Exports the current head of the repository to the specified directory.
-     * 
-     * @param directory if the directory is non-existent, it'll be created. if
-     *        the directory already exists it must not contain any files.
-     */
-    void export(File directory);
+	/**
+	 * Exports the current head of the repository to the specified directory.
+	 * 
+	 * @param directory
+	 *            if the directory is non-existent, it'll be created. if the
+	 *            directory already exists it must not contain any files.
+	 */
+	void export(File directory);
 
-    /**
-     * Checks if file or directory specified by relative {@code path} exists in repository.
-     * Returns true if item exists in repository, otherwise false.
-     * 
-     * @return true if item exists in repository, otherwise false
-     */
-    boolean exists(String path);
+	/**
+	 * Check if HEAD revision of a {@code file} exists in repository.
+	 * 
+	 * @param file
+	 *            relative repository path to file
+	 * 
+	 * @return true if item exists in repository, otherwise false
+	 */
+	boolean exists(String file);
 
-    /**
-     * Checks if file or directory specified by relative {@code path} and {@code id}
-     * (commit-ref) exists in repository. Returns true if item exists in repository, otherwise false.
-     * 
-     * @return true if item exists in repository, otherwise false
-     */
-    boolean exists(String path, CommitRef id);
+	/**
+	 * Check if given {@code version} of a {@code file} exists in repository.
+	 * 
+	 * @param file
+	 *            relative repository path to file
+	 * @param version
+	 *            file version
+	 * 
+	 * @return true if file exists in repository, otherwise false
+	 */
+	boolean exists(String file, CommitRef version);
 
-    /**
-     * Adds new working {@code file} to SCM index.
-     * 
-     * @throws {@link ScmException} if working {@code file} does not exist or is
-     *         not accessible.
-     */
-    void addFile(File file);
+	/**
+	 * Adds new working {@code file} to index.
+	 * 
+	 * @throws {@link ScmException} if working {@code file} does not exist or is
+	 *         not accessible.
+	 */
+	void add(File file);
 
-    /**
-     * Adds new working {@code directory} to SCM repository. The
-     * {@code recursive} option sets if also its children will be added to
-     * index.
-     * 
-     * @throws {@link ScmException} if working {@code directory} does not exist
-     *         or is not accessible.
-     */
-    void addDirectory(File directory, boolean recursive);
+	/**
+	 * Adds new working {@code directory} to index. 
+	 * 
+	 * @throws {@link ScmException} if working {@code directory} does not exist
+	 *         or is not accessible.
+	 */
+	void add(File directory, boolean recursive);
 
-    /**
-     * Commit a single {@code file} to SCM repository. The {@code comment}
-     * parameter adds message to given commit. Reference to commit in SCM is returned as instance of {@link CommitRef}.
-     * 
-     * @throws {@link ScmException} if working {@code file} does not exist or is
-     *         not accessible.
-     * @return commit-ref, see {@link CommitRef}
-     */
-    CommitRef commitFile(File file, String comment);
+	/**
+	 * Commit changes of working {@code file} to repository.
+	 * 
+	 * @throws {@link ScmException} if working {@code file} does not exist or is
+	 *         not accessible.
+	 * @return version number, see {@link CommitRef}
+	 */
+	CommitRef commit(File file, String comment);
 
-    /**
-     * Commit changes on working {@code directory} to SCM repository. The
-     * {@code comment} parameter adds message to given commit. The
-     * {@code recursive} option sets if also changes for its children will be
-     * committed. Reference to commit in SCM is returned as instance of {@link CommitRef}.
-     * 
-     * @throws {@link ScmException} if working {@code directory} does not exist
-     *         or is not accessible.
-     * @return commit-ref, see {@link CommitRef}
-     */
-    CommitRef commitDirectory(File directory, String comment, boolean recursive);
+	/**
+	 * Commit working {@code directory} changes to repository. 
+	 * 
+	 * @throws {@link ScmException} if working {@code directory} does not exist
+	 *         or is not accessible.
+	 * @return version number, see {@link CommitRef}
+	 */
+	CommitRef commit(File directory, String comment, boolean recursive);
 
-    /**
-     * Copy repository file specified by relative {@code path}
-     * and commit-ref {@code id} into working {@code directory}.
-     * 
-     * @throws {@link ScmException} if working {@code directory} is not
-     *         accessible or can not be created.
-     */
-    void checkoutFile(String path, CommitRef id, File directory);
+	/**
+	 * Checkout {@code version} of repository {@code path}  to specified working {@code directory}.
+	* To checkout folder with all its children set the {@code recursive} flag.
+	 * 
+	 * 
+	 * @throws {@link ScmException} if working {@code directory} is not
+	 *         accessible or can not be created.
+	 */
+	 void checkout(String repository, CommitRef version, File directory, boolean recursive);
 
-    /**
-     * Copy repository directory specified by relative {@code path} and
-     * commit-ref {@code id} into newly created working {@code directory}. To
-     * get also all children use {@code recursive} option.
-     * 
-     * @throws {@link ScmException} if working {@code directory} is not
-     *         accessible or can not be created.
-     */
-    void checkoutDirectory(String path, CommitRef id, boolean recursive, File directory);
+	/**
+	 * Checkout HEAD version of repository {@code path} to specified working {@code directory}. 
+	 * To checkout folder with all its children set the {@code recursive} flag.
+	 * 
+	 * 
+	 * @throws {@link ScmException} if working {@code directory} is not
+	 *         accessible or can not be created.
+	 */
+	void checkout(String path, File directory, boolean recursive);
+
 }
 
