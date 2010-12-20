@@ -70,7 +70,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     @Override
     public boolean poll() {
         if (!localWorkspace.isDirectory()) {
-            throw new ScmException("local workspace directory does not exist");
+            tryCreateLocalWorkspace();
         }
         try {
             if (repository == null) {
@@ -86,9 +86,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             }
             ObjectId remote = repository.resolve(Constants.R_REMOTES + "origin/" + watchBranch);
             Git git = new Git(repository);
-            MergeCommand merge = git.merge()
-                .include("remote", remote)
-                .setStrategy(MergeStrategy.OURS);
+            MergeCommand merge = git.merge().include("remote", remote).setStrategy(MergeStrategy.OURS);
             merge.call();
         } catch (Exception e) {
             if (repository != null) {
@@ -98,6 +96,19 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             throw new ScmException(e);
         }
         return true;
+    }
+
+    private void tryCreateLocalWorkspace() {
+        if (!this.localWorkspace.exists()) {
+            this.localWorkspace.mkdirs();
+        }
+        if (!this.localWorkspace.exists()) {
+            throw new ScmException("Local workspace directory '" + localWorkspace
+                    + "' does not exist and cannot be created.");
+        }
+        if (!this.localWorkspace.isDirectory()) {
+            throw new ScmException("Local workspace directory '" + localWorkspace + "' is not a valid directory.");
+        }
     }
 
     protected boolean checkoutWatchBranch(FetchResult result) throws IOException {
