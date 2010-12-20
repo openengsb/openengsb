@@ -19,25 +19,24 @@ package org.openengsb.domain.deploy;
 import org.openengsb.core.common.Event;
 
 public class DeployEndEvent extends Event {
-
-    private boolean success;
-
     private String output;
-
     private String deployId;
 
-    public DeployEndEvent(String deployId, boolean success, String output) {
+    public DeployEndEvent() {
+    }
+
+    public DeployEndEvent(String deployId, String output) {
         this.deployId = deployId;
-        this.success = success;
+        this.output = output;
+    }
+
+    public DeployEndEvent(long processId, String output) {
+        super(processId);
         this.output = output;
     }
 
     public String getOutput() {
         return output;
-    }
-
-    public boolean isSuccess() {
-        return success;
     }
 
     public String getDeployId() {

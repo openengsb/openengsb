@@ -17,5 +17,5 @@
 package org.openengsb.core.common;
 
 public interface OpenEngSBService {
-
+    String getInstanceId();
 }

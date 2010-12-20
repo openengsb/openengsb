@@ -46,6 +46,7 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.ui.common.wicket.OpenEngSBWebSession;
 import org.openengsb.ui.web.BasePage;
 import org.openengsb.ui.web.Index;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -64,6 +65,7 @@ public class ProjectTest {
         contextService = mock(ContextCurrentService.class);
         appContext = new ApplicationContextMock();
         appContext.putBean(contextService);
+        appContext.putBean("openengsbVersion", new OpenEngSBVersion());
         mockAuthentication();
         tester = new WicketTester(new WebApplication() {
 

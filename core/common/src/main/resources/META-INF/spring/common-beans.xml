@@ -24,5 +24,8 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
   <bean id="defaultDomainProxy" class="org.openengsb.core.common.DefaultDomainProxyFactoryBean" abstract="true"
-    init-method="start" />
+    init-method="init" />
+
+  <osgi:reference id="methodInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
+
 </beans>

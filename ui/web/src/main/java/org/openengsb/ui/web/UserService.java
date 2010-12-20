@@ -17,6 +17,7 @@
 package org.openengsb.ui.web;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -24,7 +25,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.authorization.Action;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeAction;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -38,11 +40,12 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.core.usermanagement.UserManager;
-import org.openengsb.core.usermanagement.exceptions.UserExistsException;
-import org.openengsb.core.usermanagement.model.User;
+import org.openengsb.core.common.security.UserExistsException;
+import org.openengsb.core.common.security.UserManagementException;
+import org.openengsb.core.common.security.UserManager;
+import org.openengsb.core.common.security.model.User;
 
-@AuthorizeInstantiation("ROLE_USER")
+@AuthorizeAction(action = Action.RENDER, roles = "ROLE_ADMIN")
 public class UserService extends BasePage {
 
     private static Log log = LogFactory.getLog(UserService.class);
@@ -104,7 +107,12 @@ public class UserService extends BasePage {
         IModel<List<User>> userList = new LoadableDetachableModel<List<User>>() {
             @Override
             protected List<User> load() {
-                return userManager.getAllUser();
+                try {
+                    return userManager.getAllUser();
+                } catch (UserManagementException e) {
+                    error(new StringResourceModel("userManagementExceptionError", null).getString());
+                }
+                return new ArrayList<User>();
             }
         };
         ListView<User> users = new ListView<User>("users", userList) {
@@ -114,9 +122,13 @@ public class UserService extends BasePage {
                 userListItem.add(new AjaxLink<User>("user.delete") {
                     @Override
                     public void onClick(AjaxRequestTarget ajaxRequestTarget) {
-                        userManager.deleteUser(userListItem.getModelObject().getUsername());
-                        getList().remove(userListItem.getModelObject());
-                        ajaxRequestTarget.addComponent(usermanagementContainer);
+                        try {
+                            userManager.deleteUser(userListItem.getModelObject().getUsername());
+                            getList().remove(userListItem.getModelObject());
+                            ajaxRequestTarget.addComponent(usermanagementContainer);
+                        } catch (UserManagementException e) {
+                            error(new StringResourceModel("userManagementExceptionError", this, null).getString());
+                        }
                     }
                 });
                 userListItem.add(new AjaxLink<User>("user.update") {
@@ -140,27 +152,32 @@ public class UserService extends BasePage {
     }
 
     private void createUser() {
-        if (input.getUsername() == null) {
-            error(new StringResourceModel("usernameError", this, null).getString());
-        } else if (input.getPassword() == null || !input.getPassword().equals(input.getPasswordVerification())) {
-            error(new StringResourceModel("passwordError", this, null).getString());
-        } else {
-            try {
-                User user = new User(input.getUsername(), input.getPassword());
-                if (editMode) {
-                    userManager.updateUser(user);
-                } else {
-                    userManager.createUser(user);
+        try {
+            if (input.getUsername() == null) {
+                error(new StringResourceModel("usernameError", this, null).getString());
+            } else if (input.getPassword() == null || !input.getPassword().equals(input.getPasswordVerification())) {
+                error(new StringResourceModel("passwordError", this, null).getString());
+            } else {
+                try {
+                    User user = new User(input.getUsername(), input.getPassword());
+                    if (editMode) {
+                        userManager.updateUser(user);
+                    } else {
+                        userManager.createUser(user);
+                    }
+                    info(new StringResourceModel("success", this, null).getString());
+                    userManager.loadUserByUsername(input.getUsername());
+                    usernameField.setEnabled(true);
+                    editMode = false;
+                } catch (UserExistsException ex) {
+                    error(new StringResourceModel("userExistError", this, null).getString());
+                    return;
                 }
-                info(new StringResourceModel("success", this, null).getString());
-                userManager.loadUserByUsername(input.getUsername());
-                usernameField.setEnabled(true);
-                editMode = false;
-            } catch (UserExistsException ex) {
-                error(new StringResourceModel("userExistError", this, null).getString());
-                return;
             }
+        } catch (UserManagementException ex) {
+            error(new StringResourceModel("userManagementExceptionError", this, null).getString());
         }
+
     }
 
 

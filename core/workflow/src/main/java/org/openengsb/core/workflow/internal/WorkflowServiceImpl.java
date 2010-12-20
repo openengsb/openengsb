@@ -24,12 +24,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
 import org.drools.event.process.DefaultProcessEventListener;
 import org.drools.event.process.ProcessCompletedEvent;
+import org.drools.event.process.ProcessNodeTriggeredEvent;
+import org.drools.event.process.ProcessStartedEvent;
+import org.drools.event.rule.BeforeActivationFiredEvent;
+import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.rule.FactHandle;
@@ -40,6 +48,7 @@ import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.osgi.framework.BundleContext;
@@ -51,7 +60,8 @@ import org.springframework.osgi.context.BundleContextAware;
 
 public class WorkflowServiceImpl implements WorkflowService, BundleContextAware, ServiceListener {
 
-    private static final String START_FLOW_CONSEQUENCE_LINE = "  flowHelper.startFlow(\"%s\");\n";
+    private static final String START_FLOW_CONSEQUENCE_LINE =
+        "  WorkflowHelper.startFlow(kcontext.getKnowledgeRuntime(), \"%s\");\n";
 
     private Log log = LogFactory.getLog(WorkflowServiceImpl.class);
 
@@ -66,25 +76,81 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     private Map<String, Object> services = new HashMap<String, Object>();
 
     private Map<String, StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
+    private ExecutorService executor = Executors.newCachedThreadPool();
 
     private long timeout = 10000;
 
     @Override
     public void processEvent(Event event) throws WorkflowException {
+        log.info(String.format("processing Event %s of type %s", event, event.getClass()));
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         FactHandle factHandle = session.insert(event);
         session.fireAllRules();
-        for (ProcessInstance p : session.getProcessInstances()) {
-            p.signalEvent(event.getType(), event);
+        Long processId = event.getProcessId();
+        if (processId == null) {
+            for (ProcessInstance p : session.getProcessInstances()) {
+                p.signalEvent(event.getType(), event);
+            }
+        } else {
+            ProcessInstance processInstance = session.getProcessInstance(processId);
+            processInstance.signalEvent(event.getType(), event);
+        }
+
+        session.retract(factHandle);
+    }
+
+    @Override
+    public void processEvent(InternalWorkflowEvent event) throws WorkflowException {
+        long processId = 0;
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        FactHandle factHandle = session.insert(event);
+        session.fireAllRules();
+
+        if (event.getProcessBag() != null) {
+            if (event.getProcessBag().getProcessId() != null) {
+                processId = Long.parseLong(event.getProcessBag().getProcessId());
+            }
+        }
+        if (processId != 0) {
+            ProcessInstance p = session.getProcessInstance(processId);
+            if (p != null) {
+                p.signalEvent(event.getType(), event);
+            }
+        } else {
+            for (ProcessInstance p : session.getProcessInstances()) {
+                p.signalEvent(event.getType(), event);
+            }
+            log.warn("No ProcessId supplied for Event <" + event.getType() + ">");
         }
         session.retract(factHandle);
     }
 
     @Override
     public long startFlow(String processId) throws WorkflowException {
-        StatefulKnowledgeSession session = getSessionForCurrentContext();
-        ProcessInstance processInstance = session.startProcess(processId);
-        return processInstance.getId();
+        return startFlow(processId, new HashMap<String, Object>());
+    }
+
+    @Override
+    public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
+        try {
+            return startFlowInBackground(processId, parameterMap).get();
+        } catch (InterruptedException e) {
+            throw new WorkflowException(e);
+        } catch (ExecutionException e) {
+            throw new WorkflowException(e.getCause());
+        }
+    }
+
+    @Override
+    public Future<Long> startFlowInBackground(String processId) throws WorkflowException {
+        return startFlowInBackground(processId, new HashMap<String, Object>());
+    }
+
+    @Override
+    public Future<Long> startFlowInBackground(String processId, Map<String, Object> paramterMap)
+        throws WorkflowException {
+        WorkflowStarter workflowStarter = new WorkflowStarter(getSessionForCurrentContext(), processId, paramterMap);
+        return executor.submit(workflowStarter);
     }
 
     @Override
@@ -109,17 +175,20 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         return ruleCode;
     }
 
-    public long startFlow(String processId, Map<String, Object> parameterMap) throws WorkflowException {
-        StatefulKnowledgeSession session = getSessionForCurrentContext();
-        ProcessInstance processInstance = session.startProcess(processId, parameterMap);
-        return processInstance.getId();
-    }
-
     public void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException {
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         synchronized (session) {
             while (session.getProcessInstance(id) != null) {
-                session.wait(5000);
+                session.wait();
+            }
+        }
+    }
+
+    public void waitForFlowToFinish(long id, long timeout) throws InterruptedException, WorkflowException {
+        StatefulKnowledgeSession session = getSessionForCurrentContext();
+        synchronized (session) {
+            while (session.getProcessInstance(id) != null) {
+                session.wait(timeout);
             }
         }
     }
@@ -129,6 +198,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         Collection<Long> result = new HashSet<Long>();
         for (ProcessInstance p : processInstances) {
             result.add(p.getId());
+
         }
         return result;
     }
@@ -155,7 +225,6 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         Collection<String> globalsToProcess = new ArrayList<String>(rulemanager.listGlobals().keySet());
         globalsToProcess.remove("flowHelper");
         globalsToProcess.removeAll(services.keySet());
-
         return discoverNewGlobalValues(globalsToProcess);
     }
 
@@ -229,16 +298,40 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
                 }
             }
         });
+        session.addEventListener(new DefaultProcessEventListener() {
+            @Override
+            public void afterProcessStarted(ProcessStartedEvent event) {
+                String processId2 = event.getProcessInstance().getProcessId();
+                long id = event.getProcessInstance().getId();
+                log.info(String.format("started process \"%s\". instance-ID: %d", processId2, id));
+            }
+
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                long nodeId = event.getNodeInstance().getNodeId();
+                String nodeName = event.getNodeInstance().getNodeName();
+                log.info(String.format("Now triggering node \"%s\" (\"%s\").", nodeName, nodeId));
+            }
+
+            @Override
+            public void afterProcessCompleted(ProcessCompletedEvent event) {
+                String processId2 = event.getProcessInstance().getProcessId();
+                long id = event.getProcessInstance().getId();
+                log.info(String.format("process completed \"%s\". instance-ID: %d", processId2, id));
+            }
+        });
+
+        session.addEventListener(new DefaultAgendaEventListener() {
+            @Override
+            public void beforeActivationFired(BeforeActivationFiredEvent event) {
+                String ruleName = event.getActivation().getRule().getName();
+                log.info(String.format("rule \"%s\" fired.", ruleName));
+            }
+        });
         return session;
     }
 
     private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
-        if (rulemanager.listGlobals().containsKey("flowHelper")) {
-            session.setGlobal("flowHelper", new DroolsFlowHelperImpl(session));
-        } else {
-            throw new RuntimeException("global was added but it was not found...");
-        }
-
         Collection<String> missingGlobals = findMissingGlobals();
         if (!missingGlobals.isEmpty()) {
             waitForGlobals(missingGlobals);
@@ -310,5 +403,5 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     public void setTimeout(long timeout) {
         this.timeout = timeout;
     }
-}
 
+}

@@ -16,14 +16,30 @@
 
 package org.openengsb.core.common;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+
 public class Event {
     private String name;
+    private Long processId;
 
     public Event() {
     }
 
     public Event(String name) {
         this.name = name;
+    }
+
+    public Event(Long processId) {
+        this.processId = processId;
+    }
+
+    public Event(String name, Long processId) {
+        this.name = name;
+        this.processId = processId;
     }
 
     /**
@@ -40,5 +56,41 @@ public class Event {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getProcessId() {
+        return this.processId;
+    }
+
+    public void setProcessId(Long processId) {
+        this.processId = processId;
+    }
+
+    @Override
+    public String toString() {
+        try {
+            BeanInfo beanInfo = Introspector.getBeanInfo(this.getClass());
+            PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
+            StringBuilder builder = new StringBuilder();
+            builder.append("Event Properties =>");
+            for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
+                String name = propertyDescriptor.getName();
+                Object invoke = propertyDescriptor.getReadMethod().invoke(this);
+                builder.append(" " + name + ":" + invoke + ";");
+            }
+            return builder.toString();
+        } catch (IntrospectionException e) {
+            return returnSimpleEventString();
+        } catch (IllegalArgumentException e) {
+            return returnSimpleEventString();
+        } catch (IllegalAccessException e) {
+            return returnSimpleEventString();
+        } catch (InvocationTargetException e) {
+            return returnSimpleEventString();
+        }
+    }
+
+    private String returnSimpleEventString() {
+        return "Event Properties => class:" + this.getClass().toString();
     }
 }

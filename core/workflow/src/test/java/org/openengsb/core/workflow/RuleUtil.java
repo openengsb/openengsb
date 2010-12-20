@@ -50,7 +50,10 @@ public final class RuleUtil {
     public static void addTestFlows(RuleManager manager) throws Exception {
         addFlow(manager, "flowtest");
         addFlow(manager, "ci");
+        addFlow(manager, "flowStartedEvent");
         addFlow(manager, "floweventtest");
+        addFlow(manager, "propertybagtest");
+        addFlow(manager, "blockingFlowtest");
     }
 
     private static void addFlow(RuleManager manager, String flow) throws IOException, RuleBaseException {

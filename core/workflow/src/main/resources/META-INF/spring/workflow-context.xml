@@ -23,11 +23,24 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
-  <bean class="org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager" id="ruleManager" init-method="init">
+  <bean id="secureRuleManager" class="org.springframework.aop.framework.ProxyFactoryBean">
+    <property name="proxyInterfaces">
+      <value>org.openengsb.core.common.workflow.RuleManager</value>
+    </property>
+    <property name="interceptorNames">
+      <list>
+        <value>securityInterceptor</value>
+      </list>
+    </property>
+    <property name="target" ref="ruleManager" />
+  </bean>
+
+  <bean class="org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager" id="ruleManager"
+    init-method="init">
     <property name="persistenceManager" ref="persistenceManger" />
   </bean>
 
-  <osgi:service interface="org.openengsb.core.common.workflow.RuleManager" >
+  <osgi:service interface="org.openengsb.core.common.workflow.RuleManager">
     <ref local="ruleManager" />
   </osgi:service>
 
@@ -40,5 +53,6 @@
 
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextCurrentService" />
   <osgi:reference id="persistenceManger" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+  <osgi:reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
 </beans>
 

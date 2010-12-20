@@ -70,6 +70,7 @@ import org.openengsb.ui.common.wicket.editor.fields.DropdownField;
 import org.openengsb.ui.common.wicket.editor.fields.InputField;
 import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 import org.openengsb.ui.web.model.ServiceId;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -91,7 +92,7 @@ public class TestClientTest {
     }
 
     public enum UpdateEnum {
-        ONE, TWO
+            ONE, TWO
     }
 
     private WicketTester tester;
@@ -109,6 +110,7 @@ public class TestClientTest {
         context.putBean(mock(ContextCurrentService.class));
         bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
     }
 
     @Test
@@ -376,7 +378,7 @@ public class TestClientTest {
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
-        tester.assertInfoMessages(new String[]{"Methodcall called successfully"});
+        tester.assertInfoMessages(new String[]{ "Methodcall called successfully" });
         Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
         Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
     }
@@ -536,7 +538,7 @@ public class TestClientTest {
             ServiceReference ref = Mockito.mock(ServiceReference.class);
             Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
             Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-            ServiceReference[] refs = new ServiceReference[]{ref};
+            ServiceReference[] refs = new ServiceReference[]{ ref };
             Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
         } catch (InvalidSyntaxException e) {
             Assert.fail("not expected");

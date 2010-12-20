@@ -20,4 +20,11 @@ import org.openengsb.core.common.Event;
 
 public class TestEvent extends Event {
 
+    public TestEvent() {
+    }
+
+    public TestEvent(long processId) {
+        setProcessId(processId);
+    }
+
 }

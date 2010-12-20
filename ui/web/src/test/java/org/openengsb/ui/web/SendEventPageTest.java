@@ -47,6 +47,8 @@ import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.core.test.NullEvent2;
+import org.openengsb.domain.auditing.AuditingDomain;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 
 public class SendEventPageTest {
 
@@ -56,6 +58,7 @@ public class SendEventPageTest {
     private List<Class<? extends Event>> eventClasses;
     private FormTester formTester;
     private RepeatingView fieldList;
+    private AuditingDomain domain;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -66,10 +69,14 @@ public class SendEventPageTest {
             new SpringComponentInjector(tester.getApplication(), context, false));
         eventService = mock(WorkflowService.class);
         RuleManager ruleManager = mock(RuleManager.class);
+        domain = mock(AuditingDomain.class);
+        Mockito.when(domain.getAudits()).thenReturn(Arrays.asList(new String[]{"123", "456"}));
         context.putBean(ruleManager);
         context.putBean("eventService", eventService);
         context.putBean("domainService", mock(DomainService.class));
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
+        context.putBean("audit", domain);
         eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent2.class, NullEvent.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
@@ -100,9 +107,8 @@ public class SendEventPageTest {
 
     @Test
     public void firstClassIsDefault_shouldCreateEditorFieldsBasedOnDefault() {
-        tester.debugComponentTrees();
-        assertThat(fieldList.size(), is(2));
-        Component attributeName = fieldList.get("2:row:name");
+        assertThat(fieldList.size(), is(3));
+        Component attributeName = fieldList.get("3:row:name");
         assertThat(attributeName.getDefaultModelObjectAsString(), is("testProperty"));
     }
 
@@ -110,14 +116,14 @@ public class SendEventPageTest {
     public void selectNewClassInDropDown_shouldRenderNewEditorPanelThroughAjax() {
         selectEventType(1);
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
-        assertThat(fieldList.size(), is(1));
+        assertThat(fieldList.size(), is(2));
         Component attributeName = fieldList.get("1:row:name");
         assertThat(attributeName.getDefaultModelObjectAsString(), is("name"));
     }
 
     @Test
     public void submittingForm_shouldCallDroolsServiceWithInstantiatedEvent() throws WorkflowException {
-        formTester.setValue("fieldContainer:fields:2:row:field", "a");
+        formTester.setValue("fieldContainer:fields:3:row:field", "a");
         submitForm();
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
         verify(eventService).processEvent(captor.capture());
@@ -159,4 +165,18 @@ public class SendEventPageTest {
         tester.executeAjaxEvent(dropdown, "onchange");
         formTester = tester.newFormTester("form");
     }
+
+    @Test
+    public void openSite_shouldShowAuditLog() {
+        tester.assertVisible("audits");
+        tester.assertVisible("audits:0:audit");
+        tester.assertVisible("audits:1:audit");
+        int i = 0;
+        for (String string : this.domain.getAudits()) {
+            tester.assertLabel("audits:" + i + ":audit", string);
+            i++;
+        }
+
+    }
 }
+

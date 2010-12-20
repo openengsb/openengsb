@@ -24,44 +24,38 @@
   <properties>
     <!-- Version Informtations -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
-    <openengsb.version.name.adjective>Icy</openengsb.version.name.adjective>
-    <openengsb.version.name.noun>Ikarus</openengsb.version.name.noun>
+    <openengsb.version.name.adjective>Joyful</openengsb.version.name.adjective>
+    <openengsb.version.name.noun>Jerry</openengsb.version.name.noun>
     <!-- General Settings -->
     <root.basedir>${project.basedir}</root.basedir>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- Environment Versions -->
     <jdk.version>1.6</jdk.version>
     <mvn.version>2.1</mvn.version>
-    <!-- Plugin Version -->
-    <maven.plugin.eclipse.version>2.8</maven.plugin.eclipse.version>
-    <maven.plugin.surefire.version>2.6</maven.plugin.surefire.version>
-    <maven.plugin.surefire.report.version>2.6</maven.plugin.surefire.report.version>
-    <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
-    <maven.plugin.compiler.version>2.3.2</maven.plugin.compiler.version>
+    <!-- maven plugin versions -->
     <maven.plugin.clean.version>2.4.1</maven.plugin.clean.version>
-    <maven.plugin.jar.version>2.3.1</maven.plugin.jar.version>
+    <maven.plugin.compiler.version>2.3.2</maven.plugin.compiler.version>
     <maven.plugin.deploy.version>2.5</maven.plugin.deploy.version>
-    <maven.plugin.release.version>2.0</maven.plugin.release.version>
+    <maven.plugin.eclipse.version>2.8</maven.plugin.eclipse.version>
+    <maven.plugin.helper.version>1.5</maven.plugin.helper.version>
+    <maven.plugin.install.version>2.3.1</maven.plugin.install.version>
+    <maven.plugin.jar.version>2.3.1</maven.plugin.jar.version>
+    <maven.plugin.javadoc.version>2.7</maven.plugin.javadoc.version>
+    <maven.plugin.mvn.license>1.8.0</maven.plugin.mvn.license>
+    <maven.plugin.resources.version>2.4.3</maven.plugin.resources.version>
+    <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
     <maven.plugin.site.version>3.0-beta-3</maven.plugin.site.version>
     <maven.plugin.source.version>2.1.2</maven.plugin.source.version>
-    <maven.plugin.mvn.license>1.8.0</maven.plugin.mvn.license>
-    <maven.plugin.javadoc.version>2.7</maven.plugin.javadoc.version>
-    <maven.plugin.helper.version>1.5</maven.plugin.helper.version>
-    <maven.plugin.resources.version>2.4.3</maven.plugin.resources.version>
-    <maven.plugin.install.version>2.3.1</maven.plugin.install.version>
-    <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>
+    <maven.plugin.surefire.version>2.6</maven.plugin.surefire.version>
+    <maven.plugin.surefire.report.version>2.6</maven.plugin.surefire.report.version>
     <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
+    <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>
+
     <javax.xml.soap>1.3.0</javax.xml.soap>
     <!-- Dependency Versions -->
     <junit.version>4.8.2</junit.version>
-    <mvn.pluginapi.version>2.0</mvn.pluginapi.version>
-    <mvn.core.version>3.0</mvn.core.version>
-    <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
-
     <twdata.cli.version>1.0.5</twdata.cli.version>
     <clover.version>3.0.2</clover.version>
-    <plugin.pax.version>1.4</plugin.pax.version>
-    <plugin.paxrunner.version>1.5.0</plugin.paxrunner.version>
   </properties>
 
   <parent>
@@ -96,15 +90,13 @@
     <module>tooling</module>
     <module>docs</module>
     <module>poms</module>
-    <module>provision</module>
     <module>wrapped</module>
-    <module>config</module>
     <module>core</module>
     <module>domain</module>
     <module>connector</module>
     <module>ui</module>
     <module>assembly</module>
-    <module>integrationtest</module>
+    <module>itests</module>
   </modules>
 
   <inceptionYear>2009</inceptionYear>
@@ -121,20 +113,8 @@
   </issueManagement>
 
   <ciManagement>
-    <system>Hudson</system>
-    <url>http://build.openengsb.org/</url>
-    <notifiers>
-      <notifier>
-        <type>mail</type>
-        <sendOnError>true</sendOnError>
-        <sendOnFailure>true</sendOnFailure>
-        <sendOnSuccess>true</sendOnSuccess>
-        <sendOnWarning>true</sendOnWarning>
-        <configuration>
-          <address>openengsb-dev@googlegroups.com</address>
-        </configuration>
-      </notifier>
-    </notifiers>
+    <system>OpenCIT</system>
+    <url>http://build.openengsb.org/opencit/</url>
   </ciManagement>
 
   <developers>
@@ -340,7 +320,7 @@
           <meminitial>128m</meminitial>
           <maxmem>512m</maxmem>
         </configuration>
-    </plugin>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -487,35 +467,6 @@
 
   <profiles>
     <profile>
-      <id>run</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.ops4j</groupId>
-            <artifactId>maven-pax-plugin</artifactId>
-            <version>${plugin.pax.version}</version>
-            <configuration>
-              <runner>${plugin.paxrunner.version}</runner>
-              <framework>felix</framework>
-              <noDependencies>true</noDependencies>
-              <provision>
-                <param>--platform=felix</param>
-                <param>--console=false</param>
-                <param>--vmOptions=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</param>
-                <param>scan-composite:file:assembly/target/classes/karaf.composite</param>
-                <param>scan-composite:file:assembly/target/classes/settings.debug.composite</param>
-                <param>--ee=J2SE-1.6</param>
-                <param>--definitionURL=file:assembly/target/classes/felix.xml</param>
-              </provision>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
       <id>nightly</id>
       <build>
         <plugins>
@@ -613,7 +564,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>${maven.plugin.release.version}</version>
+            <version>   ${maven.plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
@@ -745,6 +696,17 @@
       <name>Maven Central</name>
       <url>http://repo1.maven.org/maven2/</url>
     </pluginRepository>
+    <pluginRepository>
+      <id>sonatype-snapshots</id>
+      <name>Sonaype Snapsht Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
     <pluginRepository> <!-- maven jaxb-xjc-plugin -->
       <id>maven-repository.dev.java.net</id>
       <name>Java.net Maven 2 Repository</name>
@@ -760,7 +722,11 @@
       <name>JAI Repository (indirectly used by Docbook plugin)</name>
       <url>https://m2proxy.atlassian.com/repository/public</url>
     </pluginRepository>
-
+    <pluginRepository> <!-- required for karaf snapshot builds -->
+      <id>apache.snapshots</id>
+      <name>Apache Public Repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots/</url>
+    </pluginRepository>
   </pluginRepositories>
 
   <repositories>
@@ -819,7 +785,7 @@
         cd docs; mvn -Pdocs clean install site:run
         does not work without
       -->
-      <id>apache</id>
+      <id>apache.releases</id>
       <name>Apache Public Repository</name>
       <url>https://repository.apache.org/content/groups/public/</url>
       <releases>
@@ -827,6 +793,17 @@
       </releases>
       <snapshots>
         <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository> <!-- required for karaf snapshot builds -->
+      <id>apache.snapshots</id>
+      <name>Apache Public Repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
       </snapshots>
     </repository>
     <repository> <!-- Additional Repositories for Karaf -->
@@ -849,6 +826,17 @@
       </releases>
       <snapshots>
         <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository> <!-- Additional Repositories for Karaf -->
+      <id>sonatype</id>
+      <name>sonatype</name>
+      <url>http://repository.sonatype.org/content/groups/sonatype-public-grid</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
       </snapshots>
     </repository>
     <repository> <!-- JGIT  -->

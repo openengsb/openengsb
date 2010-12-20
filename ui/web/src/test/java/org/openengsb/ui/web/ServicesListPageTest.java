@@ -42,6 +42,7 @@ import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.test.NullDomainImpl;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 import org.osgi.framework.ServiceReference;
 
 public class ServicesListPageTest {
@@ -68,6 +69,7 @@ public class ServicesListPageTest {
         context.putBean(domainServiceMock);
         context.putBean(contextCurrentServiceMock);
         context.putBean("managedServiceInstances", managedServiceInstances);
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
         tester.getApplication()
             .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
     }

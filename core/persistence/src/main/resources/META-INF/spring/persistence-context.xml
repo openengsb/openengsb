@@ -25,7 +25,7 @@
 
   <osgi:service interface="org.openengsb.core.common.persistence.PersistenceManager">
     <bean class="org.openengsb.core.persistence.internal.NeodatisPersistenceManager" >
-      <property name="persistenceRootDir" value="data/openengsb/persistence" />
+      <property name="persistenceRootDir" value="openengsb/persistence" />
     </bean>    
   </osgi:service>
 

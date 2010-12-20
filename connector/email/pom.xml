@@ -67,6 +67,14 @@
   </build>
 
   <dependencies>
+    <!-- Mail Dependencies -->
+    <dependency>
+      <groupId>org.apache.servicemix.bundles</groupId>
+      <artifactId>org.apache.servicemix.bundles.javax.mail</artifactId>
+      <version>${javax.mail.version}</version>
+    </dependency>
+
+    <!-- OpenEngSB References -->
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
@@ -79,7 +87,7 @@
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
+        <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-test</artifactId>
       <version>${project.version}</version>

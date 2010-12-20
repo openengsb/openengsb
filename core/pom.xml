@@ -57,8 +57,8 @@
     <module>events</module>
     <module>taskbox</module>
     <module>test</module>
-    <module>usermanagement</module>
     <module>ports</module>
+    <module>security</module>
   </modules>
 
 </project>

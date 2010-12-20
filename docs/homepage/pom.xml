@@ -53,7 +53,8 @@
     <profile>
       <id>nightly</id>
       <properties>
-        <latest>${repos.snapshot}org/openengsb/openengsb/${project.version}/</latest>
+        <latestWin>${repos.snapshot}org/openengsb/openengsb/${project.version}/</latestWin>
+        <latestUnix>${repos.snapshot}org/openengsb/openengsb/${project.version}/</latestUnix>
         <older>${repos.snapshot}org/openengsb/openengsb/${project.version}/</older>
       </properties>
       <distributionManagement>
@@ -66,7 +67,8 @@
     <profile>
       <id>milestone</id>
       <properties>
-        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
+        <latestWin>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
+        <latestUnix>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.tar.gz</latestUnix>
         <older>${repos.final}org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
@@ -79,7 +81,8 @@
     <profile>
       <id>rc</id>
       <properties>
-        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
+        <latestWin>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
+        <latestUnix>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
         <older>${repos.final}org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
@@ -92,7 +95,8 @@
     <profile>
       <id>final</id>
       <properties>
-        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
+        <latestWin>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
+        <latestUnix>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
         <older>${repos.final}org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
@@ -105,7 +109,8 @@
     <profile>
       <id>support</id>
       <properties>
-        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
+        <latestWin>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
+        <latestUnix>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
         <older>${repos.final}org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
@@ -122,6 +127,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
+        <version>${maven.plugin.site.version}</version>
         <configuration>
           <reportPlugins>
             <plugin>
@@ -168,6 +174,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
+        <version>${maven.plugin.dependency.version}</version>
         <executions>
           <execution>
             <id>unpack</id>
@@ -209,7 +216,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.5</version>
+        <version>${maven.plugin.antrun.version}</version>
         <executions>
           <execution>
             <phase>package</phase>

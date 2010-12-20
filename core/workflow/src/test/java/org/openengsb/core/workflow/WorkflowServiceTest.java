@@ -17,9 +17,11 @@
 package org.openengsb.core.workflow;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
@@ -31,10 +33,13 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -43,6 +48,8 @@ import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
@@ -61,6 +68,11 @@ public class WorkflowServiceTest {
     private DummyIssue issue;
     private DummyTest test;
     private DummyService myservice;
+
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        cleanup();
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -111,6 +123,10 @@ public class WorkflowServiceTest {
 
     @After
     public void tearDown() throws Exception {
+        cleanup();
+    }
+
+    private static void cleanup() {
         File ruleDir = new File("data");
         while (ruleDir.exists()) {
             FileUtils.deleteQuietly(ruleDir);
@@ -120,6 +136,13 @@ public class WorkflowServiceTest {
     @Test
     public void testProcessEvent() throws Exception {
         Event event = new Event();
+        service.processEvent(event);
+    }
+
+    @Test
+    public void testProcessInternalWorkflowEvent_shouldNotFail() throws Exception {
+        InternalWorkflowEvent event = new InternalWorkflowEvent();
+        event.getProcessBag().setProcessId("0");
         service.processEvent(event);
     }
 
@@ -200,6 +223,19 @@ public class WorkflowServiceTest {
     }
 
     @Test
+    public void testStart2Processes_shouldOnlyTriggerSpecificEvents() throws Exception {
+        long id1 = service.startFlow("floweventtest");
+        long id2 = service.startFlow("floweventtest");
+
+        service.processEvent(new Event("event", id1));
+        service.processEvent(new TestEvent(id1));
+        service.waitForFlowToFinish(id1);
+
+        assertThat(service.getRunningFlows(), hasItem(id2));
+        assertThat(service.getRunningFlows(), not(hasItem(id1)));
+    }
+
+    @Test
     public void testCiWorkflow() throws Exception {
         long id = service.startFlow("ci");
         service.processEvent(new Event() {
@@ -221,11 +257,34 @@ public class WorkflowServiceTest {
     }
 
     @Test
+    public void testStartInBackground() throws Exception {
+        Object lock = new Object();
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("lock", lock);
+        Future<Long> processIdFuture = service.startFlowInBackground("blockingFlowtest", params);
+        Thread.sleep(200);
+        assertThat(processIdFuture.isDone(), is(false));
+        synchronized (lock) {
+            lock.notify();
+        }
+        processIdFuture.get(2, TimeUnit.SECONDS);
+        assertThat(processIdFuture.isDone(), is(true));
+    }
+
+    @Test
+    public void testStartInBackgroundWithoutParams() throws Exception {
+        Future<Long> processIdFuture = service.startFlowInBackground("flowtest");
+        Thread.sleep(200);
+        processIdFuture.get(2, TimeUnit.SECONDS);
+        assertThat(processIdFuture.isDone(), is(true));
+    }
+
+    @Test
     public void testStartWorkflowTriggeredByEvent() throws Exception {
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n"
                 + "  Event()\n"
                 + "then\n"
-                + "  flowHelper.startFlow(\"ci\");\n");
+                + "  kcontext.getKnowledgeRuntime().startProcess(\"ci\");\n");
         service.processEvent(new Event());
         assertThat(service.getRunningFlows().isEmpty(), is(false));
     }
@@ -238,6 +297,15 @@ public class WorkflowServiceTest {
         assertThat(service.getRunningFlows().size(), is(1));
     }
 
+    @Test(timeout = 3000)
+    public void testRegisterWorkflowTriggerWithFlowStartedEvent() throws Exception {
+        service.registerFlowTriggerEvent(new Event("triggerEvent"), "flowStartedEvent");
+        service.processEvent(new Event("triggerEvent"));
+        for (Long id : service.getRunningFlows()) {
+            service.waitForFlowToFinish(id);
+        }
+    }
+
     @Test
     public void testIfEventIsRetracted() throws Exception {
         Event event = new Event();
@@ -247,4 +315,16 @@ public class WorkflowServiceTest {
         verify(logService, times(2)).doSomething("Hello World");
     }
 
+    @Test
+    public void testStartProcessWithProperyBag_ChangePropertyByScriptNode_shouldChangeProperty() throws Exception {
+        ProcessBag processBag = new ProcessBag();
+        processBag.addProperty("test", "test");
+        Map<String, Object> parameterMap = new HashMap<String, Object>();
+        parameterMap.put("processBag", processBag);
+
+        long id = service.startFlow("propertybagtest", parameterMap);
+        service.waitForFlowToFinish(id);
+
+        assertThat((String) processBag.getProperty("test"), is("xyz"));
+    }
 }
