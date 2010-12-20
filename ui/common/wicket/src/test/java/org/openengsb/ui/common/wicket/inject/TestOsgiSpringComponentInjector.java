@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.wicket.inject;
+package org.openengsb.ui.common.wicket.inject;
 
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.openengsb.core.common.wicket.inject.demopage.Page;
-import org.openengsb.core.common.wicket.inject.demopage.PageService;
+import org.openengsb.ui.common.wicket.inject.demopage.Page;
+import org.openengsb.ui.common.wicket.inject.demopage.PageService;
 
 public class TestOsgiSpringComponentInjector {
 
@@ -32,7 +32,7 @@ public class TestOsgiSpringComponentInjector {
         Mockito.when(testServiceMock.getHelloWorldText()).thenReturn("helloWorldText");
         Mockito.when(beanReceiver.getBean("testBean", "testName")).thenReturn(testServiceMock);
         tester.getApplication().addComponentInstantiationListener(
-                new OsgiSpringComponentInjector(tester.getApplication(), beanReceiver));
+            new OsgiSpringComponentInjector(tester.getApplication(), beanReceiver));
         tester.startPage(Page.class);
         tester.assertContains("helloWorldText");
     }

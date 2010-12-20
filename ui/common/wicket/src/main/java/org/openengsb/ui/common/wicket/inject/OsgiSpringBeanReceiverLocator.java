@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.wicket.inject;
+package org.openengsb.ui.common.wicket.inject;
 
 import org.apache.wicket.IClusterable;
 
-public interface OsgiSpringBeanReceiver extends IClusterable {
+public interface OsgiSpringBeanReceiverLocator extends IClusterable {
 
-    Object getBean(String springBeanName, String bundleSymbolicName);
+    OsgiSpringBeanReceiver getSpringBeanReceiver();
 
 }

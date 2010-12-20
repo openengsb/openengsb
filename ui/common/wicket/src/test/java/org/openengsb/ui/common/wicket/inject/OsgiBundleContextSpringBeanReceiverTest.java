@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.wicket.inject;
+package org.openengsb.ui.common.wicket.inject;
 
 import java.util.ArrayList;
 import java.util.List;

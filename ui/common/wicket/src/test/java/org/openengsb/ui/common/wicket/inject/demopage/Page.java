@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.wicket.inject;
+package org.openengsb.ui.common.wicket.inject.demopage;
 
-import org.apache.wicket.injection.ConfigurableInjector;
-import org.apache.wicket.injection.IFieldValueFactory;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
+import org.openengsb.ui.common.wicket.inject.OsgiSpringBean;
 
-public class OsgiAnnotationSpringInjector extends ConfigurableInjector {
+public class Page extends WebPage {
 
-    private IFieldValueFactory factory;
+    @OsgiSpringBean(springBeanName = "testBean", bundleSymbolicName = "testName")
+    private PageService testService;
 
-    public OsgiAnnotationSpringInjector(OsgiSpringBeanReceiverLocator springBeanReceiverLocator) {
-        factory = new OsgiAnnotationProxyFieldValueFactory(springBeanReceiverLocator);
-    }
-
-    @Override
-    protected IFieldValueFactory getFieldValueFactory() {
-        return factory;
+    public Page() {
+        add(new Label("testId", testService.getHelloWorldText()));
     }
 
 }
