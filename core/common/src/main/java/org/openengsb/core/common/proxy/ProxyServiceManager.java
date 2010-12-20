@@ -18,6 +18,8 @@ package org.openengsb.core.common.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -26,7 +28,9 @@ import org.openengsb.core.common.AbstractServiceManagerParent;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.communication.CallRouter;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.descriptor.ServiceDescriptor.Builder;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.osgi.framework.ServiceRegistration;
@@ -43,20 +47,25 @@ import org.osgi.framework.ServiceRegistration;
 public class ProxyServiceManager extends AbstractServiceManagerParent implements ServiceManager {
 
     private final DomainProvider provider;
-    private final InvocationHandler handler;
 
     private final Map<String, ServiceRegistration> services = new HashMap<String, ServiceRegistration>();
 
-    public ProxyServiceManager(DomainProvider provider, InvocationHandler handler) {
+    private final CallRouter router;
+
+    public ProxyServiceManager(DomainProvider provider, CallRouter router) {
         this.provider = provider;
-        this.handler = handler;
+        this.router = router;
     }
 
     @Override
     public ServiceDescriptor getDescriptor() {
-        return ServiceDescriptor.builder(getStrings()).id(provider.getId()).serviceType(getDomainInterface())
-            .implementationType(getDomainInterface())
-            .name("jms.name", provider.getName().getString(Locale.getDefault())).description("jms.description").build();
+        Builder builder =
+            ServiceDescriptor.builder(getStrings()).id(provider.getId()).serviceType(getDomainInterface())
+                .implementationType(getDomainInterface())
+                .name("proxy.name", provider.getName().getString(Locale.getDefault())).description("proxy.description");
+        builder.attribute(builder.newAttribute().id("portId").name("portId").description("Port Id").build());
+        builder.attribute(builder.newAttribute().id("destination").name("destination").description("Port Id").build());
+        return builder.build();
     }
 
     @Override
@@ -68,6 +77,14 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
     public MultipleAttributeValidationResult update(String id, Map<String, String> attributes) {
         synchronized (services) {
             if (!services.containsKey(id)) {
+                ProxyConnector handler = new ProxyConnector();
+                handler.setCallRouter(router);
+                handler.setPortId(attributes.get("portId"));
+                try {
+                    handler.setDestination(new URI(attributes.get("destination")));
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
                 Domain newProxyInstance =
                     (Domain) Proxy.newProxyInstance(getDomainInterface().getClassLoader(),
                         new Class[]{getDomainInterface()}, handler);
