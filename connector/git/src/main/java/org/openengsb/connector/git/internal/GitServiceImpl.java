@@ -186,41 +186,6 @@ public class GitServiceImpl implements ScmDomain {
         return repository;
     }
 
-
-    @Override
-    public void addDirectory(File arg0, boolean arg1) {
-        throw new DomainMethodNotImplementedException();
-        
-    }
-
-    @Override
-    public void addFile(File arg0) {
-        throw new DomainMethodNotImplementedException();
-        
-    }
-
-    @Override
-    public void checkoutDirectory(String arg0, CommitRef arg1, boolean arg2, File arg3) {
-        throw new DomainMethodNotImplementedException();
-        
-    }
-
-    @Override
-    public void checkoutFile(String arg0, CommitRef arg1, File arg2) {
-        throw new DomainMethodNotImplementedException();
-        
-    }
-
-    @Override
-    public CommitRef commitDirectory(File arg0, String arg1, boolean arg2) {
-        throw new DomainMethodNotImplementedException();
-    }
-
-    @Override
-    public CommitRef commitFile(File arg0, String arg1) {
-        throw new DomainMethodNotImplementedException();
-    }
-
     @Override
     public boolean exists(String arg0) {
         throw new DomainMethodNotImplementedException();
@@ -230,5 +195,40 @@ public class GitServiceImpl implements ScmDomain {
     public boolean exists(String arg0, CommitRef arg1) {
         throw new DomainMethodNotImplementedException();
     }
+
+	@Override
+	public void add(File file) {
+		throw new DomainMethodNotImplementedException();
+		
+	}
+
+	@Override
+	public void add(File directory, boolean recursive) {
+		throw new DomainMethodNotImplementedException();
+		
+	}
+
+	@Override
+	public CommitRef commit(File file, String comment) {
+		throw new DomainMethodNotImplementedException();
+	}
+
+	@Override
+	public CommitRef commit(File directory, String comment, boolean recursive) {
+		throw new DomainMethodNotImplementedException();
+	}
+
+	@Override
+	public void checkout(String repository, CommitRef version, File directory,
+			boolean recursive) {
+		throw new DomainMethodNotImplementedException();
+		
+	}
+
+	@Override
+	public void checkout(String path, File directory, boolean recursive) {
+		throw new DomainMethodNotImplementedException();
+		
+	}
 
 }
