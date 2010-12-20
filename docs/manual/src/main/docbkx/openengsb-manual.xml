@@ -112,7 +112,6 @@
     <xi:include href="developer/writing.code.xml"/>
     <xi:include href="developer/recommended.eclipse.plugins.xml"/>
     <xi:include href="developer/writing.documentation.xml"/>
-    <xi:include href="developer/license.xml"/>
   </part>
 
 
