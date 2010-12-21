@@ -108,6 +108,10 @@ public class MethodReturn {
     }
 
     public String getClassName() {
-        return this.arg.getClass().getName();
+        if (this.arg != null) {
+            return this.arg.getClass().getName();
+        } else {
+            return "";
+        }
     }
 }
