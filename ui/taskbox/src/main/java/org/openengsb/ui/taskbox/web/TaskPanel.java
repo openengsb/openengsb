@@ -39,6 +39,7 @@ import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.ui.taskbox.model.WebTask;
 
 public class TaskPanel extends Panel {
@@ -79,7 +80,13 @@ public class TaskPanel extends Panel {
         {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                
+                try {
+                    service.finishTask(task);
+                  //setResponsePage(OverviewPanel.class);
+                } catch (WorkflowException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -88,6 +95,11 @@ public class TaskPanel extends Panel {
             }
         });
         add(form);
+        
+        
+        
+        
+        
         add(new ListView("propertiesList", new ArrayList<String>(task.propertyKeySet())) {
             @Override
             protected void populateItem(ListItem item) {
