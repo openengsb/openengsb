@@ -16,7 +16,12 @@
 
 package org.openengsb.core.workflow.internal;
 
-import java.lang.reflect.Field;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,7 +36,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.drools.KnowledgeBase;
@@ -173,43 +177,55 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     private StringBuffer generateFlowTriggerRule(Event event, String... flowIds) throws WorkflowException {
         StringBuffer ruleCode = new StringBuffer();
         ruleCode.append(String.format(FLOW_TRIGGER_RULE_TEMPLATE_START, event.getClass().getName(), event.getName()));
-        addOtherFieldChecks(event, ruleCode);
+        addOtherPropertyChecks(event, ruleCode);
         for (String flowId : flowIds) {
             ruleCode.append(String.format(START_FLOW_CONSEQUENCE_LINE, flowId));
         }
         return ruleCode;
     }
 
-    private void addOtherFieldChecks(Event event, StringBuffer ruleCode) throws WorkflowException {
+    private void addOtherPropertyChecks(Event event, StringBuffer ruleCode) throws WorkflowException {
         Class<? extends Event> eventClass = event.getClass();
-        List<Field> fields = reflectAllFieldsOfEventClass(eventClass);
-        for (Field field : fields) {
-            Object fieldValue = getFieldValue(event, field);
-            if (fieldValue != null) {
-                ruleCode.append(String.format(FLOW_TRIGGER_RULE_TEMPLATE_EVENT_FIELD, field.getName(), fieldValue));
+        List<PropertyDescriptor> properties = reflectPropertiesFromEventClass(eventClass);
+        for (PropertyDescriptor property : properties) {
+            Method getter = property.getReadMethod();
+            if (Modifier.PUBLIC != getter.getModifiers()) {
+                continue;
             }
+            Object propertyValue = getPropertyValue(event, getter);
+            if (propertyValue == null) {
+                continue;
+            }
+            ruleCode.append(String.format(FLOW_TRIGGER_RULE_TEMPLATE_EVENT_FIELD, property.getName(), propertyValue));
         }
     }
 
-    private Object getFieldValue(Event event, Field field) throws WorkflowException {
+    private Object getPropertyValue(Event event, Method getter) throws WorkflowException {
         try {
-            return FieldUtils.readField(field, event, true);
-        } catch (IllegalAccessException e) {
-            throw new WorkflowException("Cannot access event field '" + field + "' of event '" + event + "' .", e);
+            return getter.invoke(event);
+        } catch (Exception e) {
+            throw new WorkflowException("Cannot invoke getter '" + getter + "' of event class '" + event.getClass()
+                    + "'.", e);
         }
     }
 
-    private List<Field> reflectAllFieldsOfEventClass(Class<? extends Event> eventClass) {
-        if (eventClass.equals(Event.class)) {
-            return new ArrayList<Field>();
+    private List<PropertyDescriptor> reflectPropertiesFromEventClass(Class<? extends Event> clazz)
+        throws WorkflowException {
+        if (clazz.equals(Event.class)) {
+            return new ArrayList<PropertyDescriptor>();
         }
-        List<Field> fields = new ArrayList<Field>(Arrays.asList(eventClass.getDeclaredFields()));
-        Class<?> superClass = eventClass.getSuperclass();
-        while (superClass != null && !superClass.equals(Event.class)) {
-            fields.addAll(Arrays.asList(superClass.getDeclaredFields()));
-            superClass = superClass.getSuperclass();
+        try {
+            List<PropertyDescriptor> result = new ArrayList<PropertyDescriptor>();
+            BeanInfo info = Introspector.getBeanInfo(clazz);
+            result.addAll(Arrays.asList(info.getPropertyDescriptors()));
+
+            BeanInfo eventInfo = Introspector.getBeanInfo(Event.class);
+            result.removeAll(Arrays.asList(eventInfo.getPropertyDescriptors()));
+
+            return result;
+        } catch (IntrospectionException ie) {
+            throw new WorkflowException("Cannot introspect event class " + clazz, ie);
         }
-        return fields;
     }
 
     public void waitForFlowToFinish(long id) throws InterruptedException, WorkflowException {
