@@ -170,7 +170,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         }
     }
 
-    private StringBuffer generateFlowTriggerRule(Event event, String... flowIds) {
+    private StringBuffer generateFlowTriggerRule(Event event, String... flowIds) throws WorkflowException {
         StringBuffer ruleCode = new StringBuffer();
         ruleCode.append(String.format(FLOW_TRIGGER_RULE_TEMPLATE_START, event.getClass().getName(), event.getName()));
         addOtherFieldChecks(event, ruleCode);
@@ -180,7 +180,7 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         return ruleCode;
     }
 
-    private void addOtherFieldChecks(Event event, StringBuffer ruleCode) {
+    private void addOtherFieldChecks(Event event, StringBuffer ruleCode) throws WorkflowException {
         Class<? extends Event> eventClass = event.getClass();
         List<Field> fields = reflectAllFieldsOfEventClass(eventClass);
         for (Field field : fields) {
@@ -191,11 +191,11 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         }
     }
 
-    private Object getFieldValue(Event event, Field field) {
+    private Object getFieldValue(Event event, Field field) throws WorkflowException {
         try {
             return FieldUtils.readField(field, event, true);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Cannot access event field '" + field + "' of event '" + event + "' .", e);
+            throw new WorkflowException("Cannot access event field '" + field + "' of event '" + event + "' .", e);
         }
     }
 
