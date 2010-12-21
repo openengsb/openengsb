@@ -228,8 +228,7 @@ public class JMSPortTest {
         JmsTemplate template = new JmsTemplate(cf);
         String request =
             "{\"callId\":\"12345\",\"answer\":true,\"classes\":[\"java.lang.String\"],"
-                    + "\"methodName\":\"doSomething\",\"metaData\":{\"serviceId\":\"12345\"},"
-                    + "\"args\":[\"Audit\"]}";
+                    + "\"methodName\":\"audit\",\"metaData\":{\"serviceId\":\"auditing\"}," + "\"args\":[\"Audit\"]}";
         template.convertAndSend("receive", request);
         System.out.println(template.receiveAndConvert("12345"));
     }
