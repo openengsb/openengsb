@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.proxy.ProxyServiceManager;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
@@ -57,9 +58,11 @@ public class AuditingConfig {
             addRule("auditEvent");
             List<ServiceManager> serviceManagersForDomain =
                 domainService.serviceManagersForDomain(AuditingDomain.class);
-            if (serviceManagersForDomain.size() > 0) {
-                String defaultConnectorID = "auditing";
-                serviceManagersForDomain.get(0).update(defaultConnectorID, new HashMap<String, String>());
+            for (ServiceManager serviceManager : serviceManagersForDomain) {
+                if (!(serviceManager instanceof ProxyServiceManager)) {
+                    String defaultConnectorID = "auditing";
+                    serviceManager.update(defaultConnectorID, new HashMap<String, String>());
+                }
             }
         } catch (RuleBaseException e) {
             // well we know that this can fail if these entries already exist...
