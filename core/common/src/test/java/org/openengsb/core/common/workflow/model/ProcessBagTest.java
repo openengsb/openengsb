@@ -111,7 +111,7 @@ public class ProcessBagTest {
         assertThat(processIdFuture.isDone(), is(false));
 
         // just call it to make sure it isn't blocking
-        pb.getPropertyCount();
+        pb.propertyCount();
 
         pb.setProcessId("foo");
         processIdFuture.get(1, TimeUnit.SECONDS);
