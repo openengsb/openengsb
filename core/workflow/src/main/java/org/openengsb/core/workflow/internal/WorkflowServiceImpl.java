@@ -44,11 +44,13 @@ import org.drools.runtime.rule.FactHandle;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.workflow.RemoteEventProcessor;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.common.workflow.model.RemoteEvent;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.osgi.framework.BundleContext;
@@ -58,7 +60,7 @@ import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.springframework.osgi.context.BundleContextAware;
 
-public class WorkflowServiceImpl implements WorkflowService, BundleContextAware, ServiceListener {
+public class WorkflowServiceImpl implements WorkflowService, RemoteEventProcessor, BundleContextAware, ServiceListener {
 
     private static final String START_FLOW_CONSEQUENCE_LINE =
         "  WorkflowHelper.startFlow(kcontext.getKnowledgeRuntime(), \"%s\");\n";
@@ -97,6 +99,11 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         }
 
         session.retract(factHandle);
+    }
+
+    @Override
+    public void processRemoteEvent(RemoteEvent event) throws WorkflowException {
+        processEvent(event);
     }
 
     @Override
