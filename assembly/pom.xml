@@ -74,7 +74,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>${maven.plugin.dependency.version}</version>
         <executions>
           <execution>
             <id>branding</id>
@@ -157,7 +156,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>${maven.plugin.resources.version}</version>  
         <executions>
           <execution>
             <id>filter</id>
@@ -215,7 +213,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>${maven.plugin.assembly.version}</version>
         <configuration>
           <appendAssemblyId>false</appendAssemblyId>
           <descriptors>
@@ -237,7 +234,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>${maven.plugin.helper.version}</version>
         <executions>
           <execution>
             <id>attach-artifacts</id>

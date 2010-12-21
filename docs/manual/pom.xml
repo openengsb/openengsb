@@ -210,7 +210,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>${maven.plugin.assembly.version}</version>
         <configuration>
           <appendAssemblyId>true</appendAssemblyId>
           <descriptors>
@@ -232,8 +231,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>${maven.plugin.helper.version}</version>
-          <executions>
+        <executions>
           <execution>
             <id>attach-artifacts</id>
             <phase>package</phase>

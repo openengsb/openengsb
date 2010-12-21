@@ -127,7 +127,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>${maven.plugin.site.version}</version>
         <configuration>
           <reportPlugins>
             <plugin>
@@ -174,7 +173,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>${maven.plugin.dependency.version}</version>
         <executions>
           <execution>
             <id>unpack</id>
@@ -216,7 +214,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>${maven.plugin.antrun.version}</version>
         <executions>
           <execution>
             <phase>package</phase>
