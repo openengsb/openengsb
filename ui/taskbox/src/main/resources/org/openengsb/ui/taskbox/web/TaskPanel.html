@@ -25,48 +25,52 @@
 <wicket:panel>
 	<div id="panel">
 	<p><span wicket:id="feedback"></span></p>
-	<fieldset>
-		<legend><wicket:message key="legend.info">[Ticket Info]</wicket:message></legend>
-		<table class="infoTable">
-			<tr>
-				<td style="text-align: right">
-					<label for="taskid"><wicket:message key="task.label.id">[ID Label]</wicket:message></label>
-				</td>
-				<td><label wicket:id="taskid">[ID]</label></td>
-			</tr>
-			<tr>
-				<td style="text-align: right">
-					<label for="taskname"><wicket:message key="task.label.name">[name Label]</wicket:message></label>
-				</td>
-				<td><label wicket:id="taskname">[priority]</label></td>
-			</tr>
-			<tr>
-				<td style="text-align: right">
-					<label for="tasktype"><wicket:message key="task.label.type">[Type Label]</wicket:message></label>
-				</td>
-				<td><label wicket:id="tasktype">[Type]</label></td>
-			</tr>
-			<tr>
-				<td style="text-align: right">
-					<label for="taskcreationTimestamp"><wicket:message key="task.label.creationTimestamp">[creationTimestamp Label]</wicket:message></label>
-				</td>
-				<td><label wicket:id="taskcreationTimestamp">[creationTimestamp]</label></td>
-			</tr>
-			<tr>
-				<td style="text-align: right">
-					<label for="ticketdescription"><wicket:message key="ticket.label.description">[description Label]</wicket:message></label>
-				</td>
-				<td><label wicket:id="ticketdescription">[description]</label></td>
-			</tr>
-		</table>
-	</fieldset>
+	
+	<form wicket:id="inputForm">
+      	<fieldset>
+      		<legend><wicket:message key="legend.info">[Task Info]</wicket:message></legend>
+      		<table class="inputTable">
+	      		<tr>
+					<td style="text-align: right">
+						<label for="taskid"><wicket:message key="task.label.id">[ID Label]</wicket:message></label>
+					</td>
+					<td><label wicket:id="taskid">[id]</label></td>
+				</tr>
+				<tr>
+					<td style="text-align: right">
+						<label for="taskname"><wicket:message key="task.label.name">[name Label]</wicket:message></label>
+					</td>
+					<td><input wicket:id="taskname" id="type" type="text" size="10"/></td>
+				</tr>
+				<tr>
+					<td style="text-align: right">
+						<label for="tasktype"><wicket:message key="task.label.type">[Type Label]</wicket:message></label>
+					</td>
+					<td><input wicket:id="tasktype" id="type" type="text" size="10"/></td>
+				</tr>
+				<tr>
+					<td style="text-align: right">
+						<label for="taskcreationTimestamp"><wicket:message key="task.label.creationTimestamp">[creationTimestamp Label]</wicket:message></label>
+					</td>
+					<td><label wicket:id="taskcreationTimestamp">[creationTimestamp]</label></td>
+				</tr>
+				<tr>
+					<td style="text-align: right">
+						<label for="taskdescription"><wicket:message key="task.label.description">[description Label]</wicket:message></label>
+					</td>
+					<td><textarea wicket:id="taskdescription" rows="5" cols="30"></textarea></td>
+				</tr>
+      		</table>
+      	</fieldset>
+      <input type="submit" wicket:id="submitButton" wicket:message="value:button.submit,title:button.submit" />
+    </form>
 	<fieldset>
 		<legend><wicket:message key="legend.properties">[Task Properties]</wicket:message></legend>
-		<span wicket:id="properiesList">
+		<span wicket:id="propertiesList">
 			<label wicket:id="propertiesLabel"></label><br />
-			<label wicket:id="propertiesValueLabel"></label><hr />
 		</span>
 	</fieldset>
+	</div>
 </wicket:panel>
 </body>
 </html>
