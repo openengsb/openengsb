@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.concurrent.Future;
 
 import org.openengsb.core.common.Event;
-import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 
 public interface WorkflowService {
     /**
@@ -30,14 +29,6 @@ public interface WorkflowService {
      * @throws WorkflowException when there is a problem with obtaining the KnowledgeSession
      */
     void processEvent(Event event) throws WorkflowException;
-
-    /**
-     * processes the event in the knowledgebase by inserting it as a fact. the event only gets signaled to the process
-     * specified in the InternalWorkflowEvent (see ProcessBag - ProcessId)
-     *
-     * @throws WorkflowException when there is a problem with obtaining the KnowledgeSession
-     */
-    void processEvent(InternalWorkflowEvent event) throws WorkflowException;
 
     /**
      * Starts a flow with the given id, in the current context's session and returns the process' instance ID as

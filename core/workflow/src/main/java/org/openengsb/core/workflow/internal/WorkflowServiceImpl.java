@@ -39,8 +39,11 @@ import org.drools.event.process.ProcessStartedEvent;
 import org.drools.event.rule.BeforeActivationFiredEvent;
 import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.drools.runtime.process.NodeInstance;
 import org.drools.runtime.process.ProcessInstance;
+import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.runtime.rule.FactHandle;
+import org.drools.workflow.instance.node.SubProcessNodeInstance;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -49,6 +52,7 @@ import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
+import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.osgi.framework.BundleContext;
@@ -86,43 +90,42 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         FactHandle factHandle = session.insert(event);
         session.fireAllRules();
-        Long processId = event.getProcessId();
+        Long processId;
+        if (event instanceof InternalWorkflowEvent) {
+            ProcessBag bag = ((InternalWorkflowEvent) event).getProcessBag();
+            processId = Long.parseLong(bag.getProcessId());
+        } else {
+            processId = event.getProcessId();
+        }
         if (processId == null) {
             for (ProcessInstance p : session.getProcessInstances()) {
                 p.signalEvent(event.getType(), event);
             }
         } else {
             ProcessInstance processInstance = session.getProcessInstance(processId);
-            processInstance.signalEvent(event.getType(), event);
+            if(processInstance != null){
+                processInstance.signalEvent(event.getType(), event);
+                for (Long subProcessId : getSubFlows(processInstance)) {
+                    session.signalEvent(event.getType(), event, subProcessId);
+                }
+            } else {
+                log.warn(String.format("processInstance %s not found. Maybe it already terminated", processId));
+            }
         }
 
         session.retract(factHandle);
     }
 
-    @Override
-    public void processEvent(InternalWorkflowEvent event) throws WorkflowException {
-        long processId = 0;
-        StatefulKnowledgeSession session = getSessionForCurrentContext();
-        FactHandle factHandle = session.insert(event);
-        session.fireAllRules();
-
-        if (event.getProcessBag() != null) {
-            if (event.getProcessBag().getProcessId() != null) {
-                processId = Long.parseLong(event.getProcessBag().getProcessId());
+    private Collection<Long> getSubFlows(ProcessInstance processInstance) {
+        Collection<Long> result = new HashSet<Long>();
+        WorkflowProcessInstance wp = (WorkflowProcessInstance) processInstance;
+        for (NodeInstance n : wp.getNodeInstances()) {
+            if (n instanceof SubProcessNodeInstance) {
+                SubProcessNodeInstance spn = (SubProcessNodeInstance) n;
+                result.add(spn.getProcessInstanceId());
             }
         }
-        if (processId != 0) {
-            ProcessInstance p = session.getProcessInstance(processId);
-            if (p != null) {
-                p.signalEvent(event.getType(), event);
-            }
-        } else {
-            for (ProcessInstance p : session.getProcessInstances()) {
-                p.signalEvent(event.getType(), event);
-            }
-            log.warn("No ProcessId supplied for Event <" + event.getType() + ">");
-        }
-        session.retract(factHandle);
+        return result;
     }
 
     @Override
