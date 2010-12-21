@@ -184,8 +184,10 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         Class<? extends Event> eventClass = event.getClass();
         List<Field> fields = reflectAllFieldsOfEventClass(eventClass);
         for (Field field : fields) {
-            ruleCode.append(String.format(FLOW_TRIGGER_RULE_TEMPLATE_EVENT_FIELD, field.getName(),
-                getFieldValue(event, field)));
+            Object fieldValue = getFieldValue(event, field);
+            if (fieldValue != null) {
+                ruleCode.append(String.format(FLOW_TRIGGER_RULE_TEMPLATE_EVENT_FIELD, field.getName(), fieldValue));
+            }
         }
     }
 

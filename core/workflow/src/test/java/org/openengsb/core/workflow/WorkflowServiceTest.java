@@ -310,6 +310,28 @@ public class WorkflowServiceTest {
         assertThat(service.getRunningFlows().size(), is(1));
     }
 
+    @Test
+    public void testRegisterWorkflowTriggerIgnoreNullFields() throws Exception {
+        NullEvent3 testEvent = new NullEvent3();
+        testEvent.setName("triggerEvent");
+        service.registerFlowTriggerEvent(testEvent, "ci");
+        service.processEvent(new Event());
+        service.processEvent(testEvent);
+        assertThat(service.getRunningFlows().size(), is(1));
+    }
+
+    @Test
+    public void testRegisterWorkflowTriggerIgnoreNullFieldsMixed() throws Exception {
+        NullEvent3 testEvent = new NullEvent3();
+        testEvent.setName("triggerEvent");
+        testEvent.setTestStringProp("bar");
+        testEvent.setTestIntProp(42);
+        service.registerFlowTriggerEvent(testEvent, "ci");
+        service.processEvent(new Event());
+        service.processEvent(testEvent);
+        assertThat(service.getRunningFlows().size(), is(1));
+    }
+
     @Test(timeout = 3000)
     public void testRegisterWorkflowTriggerWithFlowStartedEvent() throws Exception {
         service.registerFlowTriggerEvent(new Event("triggerEvent"), "flowStartedEvent");
