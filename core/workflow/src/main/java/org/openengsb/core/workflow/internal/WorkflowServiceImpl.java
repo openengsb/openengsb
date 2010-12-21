@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -90,34 +91,52 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         FactHandle factHandle = session.insert(event);
         session.fireAllRules();
-        Long processId;
-        if (event instanceof InternalWorkflowEvent) {
-            ProcessBag bag = ((InternalWorkflowEvent) event).getProcessBag();
-            processId = Long.parseLong(bag.getProcessId());
-        } else {
-            processId = event.getProcessId();
-        }
-        if (processId == null) {
+
+        Set<Long> processIds = retrieveRelevantProcessInstanceIds(event, session);
+        if (processIds.isEmpty()) {
             for (ProcessInstance p : session.getProcessInstances()) {
                 p.signalEvent(event.getType(), event);
             }
         } else {
-            ProcessInstance processInstance = session.getProcessInstance(processId);
-            if(processInstance != null){
-                processInstance.signalEvent(event.getType(), event);
-                for (Long subProcessId : getSubFlows(processInstance)) {
-                    session.signalEvent(event.getType(), event, subProcessId);
-                }
-            } else {
-                log.warn(String.format("processInstance %s not found. Maybe it already terminated", processId));
-            }
+            signalEventToProcesses(event, session, processIds);
         }
 
         session.retract(factHandle);
     }
 
+    private void signalEventToProcesses(Event event, StatefulKnowledgeSession session, Set<Long> processIds) {
+        for (Long pid : processIds) {
+            ProcessInstance processInstance = session.getProcessInstance(pid);
+            if (processInstance == null) {
+                log.warn(String.format("processInstance with ID %s not found, maybe it already terminated", pid));
+            } else {
+                processInstance.signalEvent(event.getType(), event);
+            }
+        }
+    }
+
+    private Set<Long> retrieveRelevantProcessInstanceIds(Event event, StatefulKnowledgeSession session) {
+        Set<Long> processIds = new HashSet<Long>();
+        Long processIdFromEvent = event.getProcessId();
+        if (processIdFromEvent != null) {
+            processIds.add(processIdFromEvent);
+            processIds.addAll(getSubFlows(session.getProcessInstance(processIdFromEvent)));
+        }
+        if (event instanceof InternalWorkflowEvent) {
+            ProcessBag bag = ((InternalWorkflowEvent) event).getProcessBag();
+            Long processIdFromBag = Long.parseLong(bag.getProcessId());
+            processIds.add(processIdFromBag);
+            processIds.addAll(getSubFlows(session.getProcessInstance(processIdFromBag)));
+        }
+
+        return processIds;
+    }
+
     private Collection<Long> getSubFlows(ProcessInstance processInstance) {
         Collection<Long> result = new HashSet<Long>();
+        if (processInstance == null) {
+            return result;
+        }
         WorkflowProcessInstance wp = (WorkflowProcessInstance) processInstance;
         for (NodeInstance n : wp.getNodeInstances()) {
             if (n instanceof SubProcessNodeInstance) {
