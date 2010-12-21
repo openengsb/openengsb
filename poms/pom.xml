@@ -220,10 +220,6 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.ops4j</groupId>
-          <artifactId>maven-pax-plugin</artifactId>
-        </plugin>
-        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
