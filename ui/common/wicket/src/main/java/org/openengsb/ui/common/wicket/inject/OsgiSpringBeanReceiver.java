@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.wicket.inject.demopage;
+package org.openengsb.ui.common.wicket.inject;
 
-public interface PageService {
+import org.apache.wicket.IClusterable;
 
-    String getHelloWorldText();
+public interface OsgiSpringBeanReceiver extends IClusterable {
+
+    Object getBean(String springBeanName, String bundleSymbolicName);
 
 }

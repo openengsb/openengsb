@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common.wicket.inject;
+package org.openengsb.ui.common.wicket.inject;
 
-import org.apache.wicket.IClusterable;
+import org.apache.wicket.injection.ConfigurableInjector;
+import org.apache.wicket.injection.IFieldValueFactory;
 
-public interface OsgiSpringBeanReceiverLocator extends IClusterable {
+public class OsgiAnnotationSpringInjector extends ConfigurableInjector {
 
-    OsgiSpringBeanReceiver getSpringBeanReceiver();
+    private IFieldValueFactory factory;
+
+    public OsgiAnnotationSpringInjector(OsgiSpringBeanReceiverLocator springBeanReceiverLocator) {
+        factory = new OsgiAnnotationProxyFieldValueFactory(springBeanReceiverLocator);
+    }
+
+    @Override
+    protected IFieldValueFactory getFieldValueFactory() {
+        return factory;
+    }
 
 }
