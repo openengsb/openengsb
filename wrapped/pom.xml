@@ -54,7 +54,6 @@
 
   <modules>
     <module>org.apache.xmlrpc</module>
-    <module>org.neobatis.odb</module>
     <module>net.sourceforge.htmlunit</module>
   </modules>
 
