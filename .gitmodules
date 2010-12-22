@@ -4,3 +4,6 @@
 [submodule "wrapped/openengsb-wrapped-com.google.guava"]
 	path = wrapped/openengsb-wrapped-com.google.guava
 	url = git://github.com/openengsb/openengsb-wrapped-com.google.guava.git
+[submodule "wrapped/openengsb-wrapped-com.jcraft.jsch"]
+	path = wrapped/openengsb-wrapped-com.jcraft.jsch
+	url = git://github.com/openengsb/openengsb-wrapped-com.jcraft.jsch.git
