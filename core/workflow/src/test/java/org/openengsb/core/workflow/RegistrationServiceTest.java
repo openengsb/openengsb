@@ -16,6 +16,30 @@
 
 package org.openengsb.core.workflow;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.util.Map;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.openengsb.core.common.workflow.model.RemoteEvent;
+import org.openengsb.core.workflow.model.TestEvent;
+
 public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
+    @Override
+    @Before
+    public void setUp() throws Exception {
+    }
+
+    @Test
+    public void testWrapRemoteEvent() throws Exception {
+        TestEvent event = new TestEvent(3L);
+        event.setTestProperty("bla");
+        RemoteEvent wrapEvent = RemoteEventUtil.wrapEvent(event);
+        Map<String, String> properties = wrapEvent.getNestedEventProperties();
+        assertThat(wrapEvent.getType(), is(TestEvent.class.getName()));
+        assertThat(properties.get("processId"), is("3"));
+    }
 }

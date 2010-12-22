@@ -16,25 +16,30 @@
 
 package org.openengsb.core.common.workflow.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openengsb.core.common.Event;
 
 public class RemoteEvent extends Event {
-
-    private String nestedEventClassName;
-    private Map<String, String> nestedEventProperties;
-    private Map<String, String> contextValues;
+    private String type;
+    private Map<String, String> nestedEventProperties = new HashMap<String, String>();
+    private Map<String, String> contextValues = new HashMap<String, String>();
 
     public RemoteEvent() {
     }
 
-    public String getNestedEventClassName() {
-        return this.nestedEventClassName;
+    public RemoteEvent(String type) {
+        this.type = type;
     }
 
-    public void setNestedEventClassName(String nestedEventClassName) {
-        this.nestedEventClassName = nestedEventClassName;
+    @Override
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Map<String, String> getNestedEventProperties() {
