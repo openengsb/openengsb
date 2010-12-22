@@ -16,3 +16,6 @@
 [submodule "wrapped/openengsb-wrapped-org.apache.wicket"]
 	path = wrapped/openengsb-wrapped-org.apache.wicket
 	url = git://github.com/openengsb/openengsb-wrapped-org.apache.wicket.git
+[submodule "wrapped/openengsb-wrapped-org.apache.xmlrpc"]
+	path = wrapped/openengsb-wrapped-org.apache.xmlrpc
+	url = git://github.com/openengsb/openengsb-wrapped-org.apache.xmlrpc.git
