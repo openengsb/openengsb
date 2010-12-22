@@ -44,6 +44,7 @@
     </property>
     <property name="domainName" value="IssueDomain" />
     <property name="context" ref="contextService" />
+    <property name="bundleContext" ref="bluprintBundleContext" />
   </bean>
 
   <service>

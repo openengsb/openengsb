@@ -34,14 +34,17 @@
       <entry key="id" value="domain.auditing" />
       <entry key="openengsb.service.type" value="domain" />
     </service-properties>
-    <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
-      <property name="domainInterface">
-        <value>org.openengsb.domain.auditing.AuditingDomain</value>
-      </property>
-      <property name="domainName" value="AuditingDomain" />
-      <property name="context" ref="contextService" />
-    </bean>
+    <bean factory-ref="domainProxyFactory" factory-method="getObject" />
   </service>
+
+  <bean id="domainProxyFactory" class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
+    <property name="domainInterface">
+      <value>org.openengsb.domain.auditing.AuditingDomain</value>
+    </property>
+    <property name="domainName" value="AuditingDomain" />
+    <property name="context" ref="contextService" />
+    <property name="bundleContext" ref="bluprintBundleContext" />
+  </bean>
 
   <service>
     <interfaces>
@@ -52,14 +55,15 @@
       <entry key="id" value="domain.auditing.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </service-properties>
-
-    <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
-      <property name="domainEventInterface">
-        <value>org.openengsb.domain.auditing.AuditingDomainEvents</value>
-      </property>
-      <property name="workflowService" ref="workflowService" />
-    </bean>
+    <bean factory-ref="domainEventsProxyFactory" factory-method="getObject" />
   </service>
+
+  <bean id="domainEventsProxyFactory" class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
+    <property name="domainEventInterface">
+      <value>org.openengsb.domain.auditing.AuditingDomainEvents</value>
+    </property>
+    <property name="workflowService" ref="workflowService" />
+  </bean>
 
   <reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
   <reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
