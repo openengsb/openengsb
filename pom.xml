@@ -464,17 +464,6 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <repository> <!-- manually wrapped jaxb and latest version of neodatis -->
-      <id>thirdparty</id>
-      <name>OpenEngSB 3rd Party Repository</name>
-      <url>http://maven.openengsb.org/nexus/content/repositories/thirdparty/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
     <repository>
       <!-- required for maven-default-skin/1.0/maven-default-skin-1.0.jar
         cd docs; mvn -Pdocs clean install site:run
