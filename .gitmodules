@@ -10,3 +10,6 @@
 [submodule "wrapped/openengsb-wrapped-javax.xml.jaxb"]
 	path = wrapped/openengsb-wrapped-javax.xml.jaxb
 	url = git://github.com/openengsb/openengsb-wrapped-javax.xml.jaxb.git
+[submodule "wrapped/openengsb-wrapped-net.sourceforge.htmlunit"]
+	path = wrapped/openengsb-wrapped-net.sourceforge.htmlunit
+	url = git://github.com/openengsb/openengsb-wrapped-net.sourceforge.htmlunit.git
