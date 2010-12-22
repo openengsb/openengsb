@@ -19,3 +19,6 @@
 [submodule "wrapped/openengsb-wrapped-org.apache.xmlrpc"]
 	path = wrapped/openengsb-wrapped-org.apache.xmlrpc
 	url = git://github.com/openengsb/openengsb-wrapped-org.apache.xmlrpc.git
+[submodule "wrapped/openengsb-wrapped-org.neobatis.odb"]
+	path = wrapped/openengsb-wrapped-org.neobatis.odb
+	url = git://github.com/openengsb/openengsb-wrapped-org.neobatis.odb.git
