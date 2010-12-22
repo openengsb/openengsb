@@ -25,6 +25,10 @@ import org.apache.wicket.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.authentication.AuthenticatedWebSession;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 
+/**
+ * Base class for Wicket Applications in OpenEngSB and client projects.
+ * It enforces authentication and initializes the spring-injector.
+ */
 public abstract class OpenEngSBWicketApplication extends AuthenticatedWebApplication {
 
     @Override

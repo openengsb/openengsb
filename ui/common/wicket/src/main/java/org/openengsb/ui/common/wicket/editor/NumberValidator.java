@@ -23,6 +23,9 @@ import org.openengsb.core.common.validation.FieldValidator;
 import org.openengsb.core.common.validation.SingleAttributeValidationResult;
 import org.openengsb.core.common.validation.ValidationResultImpl;
 
+/**
+ * FieldValidator, that is used to check if the value is a number
+ */
 @SuppressWarnings("serial")
 public class NumberValidator implements FieldValidator {
 

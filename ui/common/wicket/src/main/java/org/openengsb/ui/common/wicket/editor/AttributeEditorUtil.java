@@ -35,14 +35,17 @@ import org.openengsb.ui.common.wicket.editor.fields.PasswordField;
 import org.openengsb.ui.common.wicket.model.MapModel;
 import org.openengsb.ui.common.wicket.util.MethodUtil;
 
+/**
+ * common utility-functions for creating Forms to edit properties of beans.
+ */
 public final class AttributeEditorUtil {
     private AttributeEditorUtil() {
     }
 
     /**
      * creates a RepeatingView providing a suitable editor field for every property.
-     * 
-     * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
+     *
+     * @param values map used for saving the data @see org.openengsb.ui.common.wicket.model.MapModel
      */
     public static RepeatingView createFieldList(String id, Class<?> bean, Map<String, String> values) {
         List<AttributeDefinition> attributes = MethodUtil.buildAttributesList(bean);
@@ -51,8 +54,8 @@ public final class AttributeEditorUtil {
 
     /**
      * creates a RepeatingView providing a suitable editor field for every attribute in the list.
-     * 
-     * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
+     *
+     * @param values map used for saving the data @see org.openengsb.ui.common.wicket.model.MapModel
      */
     public static RepeatingView createFieldList(String id, List<AttributeDefinition> attributes,
             Map<String, String> values) {
@@ -65,8 +68,8 @@ public final class AttributeEditorUtil {
 
     /**
      * creates a RepeatingView providing a suitable editor field for every attribute in the list.
-     * 
-     * @param values map used for saving the data @see org.openengsb.ui.web.model.MapModel
+     *
+     * @param values map used for saving the data @see org.openengsb.ui.common.wicket.model.MapModel
      * @param attributeViewIds this Map is populated with ids of the generated elements
      * @return
      */
