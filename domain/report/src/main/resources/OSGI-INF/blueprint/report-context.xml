@@ -21,7 +21,9 @@
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
   <service interface="org.openengsb.core.common.DomainProvider">
-    <bean class="org.openengsb.domain.report.ReportDomainProvider" />
+    <bean class="org.openengsb.domain.report.ReportDomainProvider">
+      <property name="bundleContext" ref="blueprintBundleContext" />
+    </bean>
   </service>
 
   <service>
@@ -41,7 +43,7 @@
       <property name="context" ref="contextService" />
     </bean>
   </service>
-  
+
   <service>
     <interfaces>
       <value>org.openengsb.domain.report.ReportDomainEvents</value>
@@ -59,7 +61,7 @@
       <property name="workflowService" ref="workflowService" />
     </bean>
   </service>
-  
+
   <reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
   <reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
 </blueprint>

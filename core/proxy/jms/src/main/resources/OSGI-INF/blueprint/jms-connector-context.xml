@@ -44,10 +44,11 @@
 
   <bean id="domainService" class="org.openengsb.core.common.service.impl.OsgiDomainService">
     <property name="domains" ref="domains" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
   <bean id="invocationHandlerFactory" class="org.openengsb.core.proxy.jms.JSONSerializerInvocationHandlerFactoryImpl">
-    <argument ref="jmsTemplate"/>
+    <argument ref="jmsTemplate" />
   </bean>
 
   <bean id="messageListenerContainerFactory" class="org.openengsb.core.proxy.jms.MessageListenerContainerFactory" />
@@ -55,11 +56,13 @@
   <bean id="messageListenerFactory" class="org.openengsb.core.proxy.jms.MessageListenerFactory">
     <argument ref="jmsFactory" />
     <argument ref="contextService" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
   <bean id="proxyConnector" class="org.openengsb.core.common.proxy.ProxyConnector" init-method="addProxiesToContext">
     <argument ref="domainService" />
     <argument ref="invocationHandlerFactory" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
   <bean id="jmsConnector" class="org.openengsb.core.proxy.jms.JMSEventListenerSetup">

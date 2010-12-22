@@ -19,11 +19,11 @@ package org.openengsb.core.proxy.jms;
 import javax.jms.ConnectionFactory;
 import javax.jms.MessageListener;
 
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.osgi.framework.BundleContext;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.osgi.context.BundleContextAware;
 
 public class MessageListenerFactory implements BundleContextAware {
 

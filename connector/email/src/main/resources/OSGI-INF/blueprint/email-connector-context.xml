@@ -37,8 +37,10 @@
           <property name="persistenceManager">
             <reference interface="org.openengsb.core.common.persistence.PersistenceManager" />
           </property>
+          <property name="bundleContext" ref="blueprintBundleContext" />
         </bean>
       </property>
+      <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
   

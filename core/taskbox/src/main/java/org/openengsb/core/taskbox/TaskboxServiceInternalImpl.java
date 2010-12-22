@@ -18,13 +18,13 @@ package org.openengsb.core.taskbox;
 
 import java.util.HashMap;
 
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
 public class TaskboxServiceInternalImpl implements TaskboxServiceInternal, BundleContextAware {
 

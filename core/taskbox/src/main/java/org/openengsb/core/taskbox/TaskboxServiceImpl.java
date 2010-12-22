@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
@@ -33,7 +34,6 @@ import org.openengsb.core.common.taskbox.model.TaskFinishedEvent;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
 public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     private Log log = LogFactory.getLog(getClass());

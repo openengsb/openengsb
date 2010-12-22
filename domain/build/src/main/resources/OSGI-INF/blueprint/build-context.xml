@@ -22,7 +22,9 @@
 
 
   <service interface="org.openengsb.core.common.DomainProvider">
-    <bean class="org.openengsb.domain.build.BuildDomainProvider" />
+    <bean class="org.openengsb.domain.build.BuildDomainProvider">
+      <property name="bundleContext" ref="blueprintBundleContext" />
+    </bean>
   </service>
 
   <service>

@@ -33,6 +33,7 @@
         </bean>
       </argument>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
+      <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
 
@@ -64,6 +65,7 @@
   <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
     init-method="init">
     <property name="persistenceManager" ref="persistenceServiceManager" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
   <reference id="persistenceServiceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />

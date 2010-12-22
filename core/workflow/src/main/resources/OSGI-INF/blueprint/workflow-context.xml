@@ -19,20 +19,22 @@
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
-  
+
   <bean class="org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager" id="ruleManager"
     init-method="init">
     <property name="persistenceManager" ref="persistenceManger" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
   <service interface="org.openengsb.core.common.workflow.RuleManager">
-    <ref component-id="ruleManager"/>
+    <ref component-id="ruleManager" />
   </service>
 
   <service interface="org.openengsb.core.common.workflow.WorkflowService">
     <bean class="org.openengsb.core.workflow.internal.WorkflowServiceImpl">
       <property name="rulemanager" ref="ruleManager" />
       <property name="currentContextService" ref="contextService" />
+      <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
 

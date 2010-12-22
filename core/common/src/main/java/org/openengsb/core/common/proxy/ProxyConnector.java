@@ -22,11 +22,11 @@ import java.util.Hashtable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.service.DomainService;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
 public class ProxyConnector implements BundleContextAware {
 
@@ -53,11 +53,9 @@ public class ProxyConnector implements BundleContextAware {
         properties.put("domain", domain.getDomainInterface().getName());
         ProxyServiceManager service = new ProxyServiceManager(domain, handler);
         service.setBundleContext(bundleContext);
-        bundleContext.registerService(ServiceManager.class.getName(), service,
-            properties);
+        bundleContext.registerService(ServiceManager.class.getName(), service, properties);
     }
 
-    @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
     }

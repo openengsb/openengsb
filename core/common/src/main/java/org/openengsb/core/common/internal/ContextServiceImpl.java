@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.context.Context;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.context.ContextPath;
@@ -30,7 +31,6 @@ import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
 import com.google.common.base.Preconditions;
 
