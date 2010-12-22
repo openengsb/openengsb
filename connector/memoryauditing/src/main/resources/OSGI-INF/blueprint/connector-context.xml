@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="us-ascii" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
 
     Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -17,29 +17,29 @@
 
 -->
 
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:context="http://www.springframework.org/schema/context" xmlns:osgi="http://www.springframework.org/schema/osgi"
-  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <osgi:service interface="org.openengsb.core.common.ServiceManager">
-    <osgi:service-properties>
+  <service interface="org.openengsb.core.common.ServiceManager">
+    <service-properties>
       <entry key="domain" value="org.openengsb.domain.auditing.AuditingDomain" />
       <entry key="openengsb.service.type" value="connector" />
-    </osgi:service-properties>
+    </service-properties>
     <bean class="org.openengsb.connector.memoryauditing.MemoryAuditingServiceManager" init-method="init">
-      <constructor-arg>
+      <argument>
         <bean class="org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceInstanceFactory" />
-      </constructor-arg>
+      </argument>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
+      <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
-  </osgi:service>
+  </service>
 
-  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore" init-method="init">
+  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
+    init-method="init">
     <property name="persistenceManager" ref="persistenceServiceManager" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
-  <osgi:reference id="persistenceServiceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+  <reference id="persistenceServiceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
 
-</beans>
+</blueprint>

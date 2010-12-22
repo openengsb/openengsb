@@ -35,16 +35,6 @@
     </bean>
   </service>
 
-  <bean id="realServiceManager" class="org.openengsb.connector.example.LogServiceManager" init-method="init">
-    <constructor-arg>
-      <bean class="org.openengsb.connector.example.LogServiceInstanceFactory">
-        <property name="domainEventInterface" ref="domainEventInterface" />
-      </bean>
-    </constructor-arg>
-    <property name="connectorSetupStore" ref="connectorSetupStore" />
-    <property name="securityInterceptor" ref="securityInterceptor" />
-  </bean>
-
   <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
     init-method="init">
     <property name="persistenceManager" ref="persistenceServiceManager" />
