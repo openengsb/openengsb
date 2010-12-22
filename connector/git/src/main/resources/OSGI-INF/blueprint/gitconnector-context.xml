@@ -20,16 +20,23 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <service>
-    <interfaces>
-      <value>org.openengsb.core.common.context.ContextService</value>
-      <value>org.openengsb.core.common.context.ContextCurrentService</value>
-    </interfaces>
-    <bean class="org.openengsb.core.common.internal.ContextServiceImpl" init-method="init">
-      <property name="persistenceManager" ref="persistenceManager" />
+  <service interface="org.openengsb.core.common.ServiceManager">
+    <service-properties>
+      <entry key="domain" value="org.openengsb.domain.scm.ScmDomain" />
+    </service-properties>
+    <bean class="org.openengsb.connector.git.GitServiceManager" init-method="init">
+      <argument>
+        <bean class="org.openengsb.connector.git.internal.GitServiceInstanceFactory" />
+      </argument>
+      <property name="connectorSetupStore" ref="connectorSetupStore" />
     </bean>
   </service>
-  
-  <reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+
+  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
+    init-method="init">
+    <property name="persistenceManager" ref="persistenceServiceManager" />
+  </bean>
+
+  <reference id="persistenceServiceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
 
 </blueprint>
