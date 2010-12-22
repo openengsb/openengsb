@@ -26,13 +26,13 @@
       <entry key="openengsb.service.type" value="connector" />
     </service-properties>
     <bean class="org.openengsb.connector.memoryauditing.MemoryAuditingServiceManager" init-method="init">
-      <argument>
-        <bean class="org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceInstanceFactory" />
-      </argument>
+      <argument ref="auditingServiceFactory" />
       <property name="connectorSetupStore" ref="connectorSetupStore" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
+
+  <bean id="auditingServiceFactory" class="org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceInstanceFactory" />
 
   <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
     init-method="init">
