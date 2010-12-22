@@ -13,8 +13,6 @@ import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.openengsb.core.taskbox.TaskboxServiceImpl;
 import org.openengsb.ui.taskbox.model.WebTask;
 import org.openengsb.ui.taskbox.web.TaskPanel;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTaskboxService {
 
@@ -22,10 +20,7 @@ public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTask
     
     @Override
     public Panel getOverviewPanel() {
-        TaskDataProvider provider = new TaskDataProvider();
-        provider.setTaskboxService(this);
-        TaskOverviewPanel op= new TaskOverviewPanel("Overview",provider);
-        return op;
+        return null;
     }
     
     @Override
