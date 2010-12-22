@@ -21,7 +21,7 @@
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
   <service interface="org.openengsb.core.common.DomainProvider">
-    <bean class="org.openengsb.domain.issue.IssueDomainProvider" >
+    <bean class="org.openengsb.domain.issue.IssueDomainProvider">
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
@@ -35,18 +35,18 @@
       <entry key="id" value="domain.issue" />
       <entry key="openengsb.service.type" value="domain" />
     </service-properties>
-
-    <!-- this bean replaces the ForwardService -->
-    <bean class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
-      <property name="domainInterface">
-        <value>org.openengsb.domain.issue.IssueDomain</value>
-      </property>
-      <property name="domainName" value="IssueDomain" />
-      <property name="context" ref="contextService" />
-    </bean>
+    <bean factory-ref="domainProxyFactory" factory-method="getObject" />
   </service>
 
-   <service>
+  <bean id="domainProxyFactory" class="org.openengsb.core.common.DefaultDomainProxyFactoryBean">
+    <property name="domainInterface">
+      <value>org.openengsb.domain.issue.IssueDomain</value>
+    </property>
+    <property name="domainName" value="IssueDomain" />
+    <property name="context" ref="contextService" />
+  </bean>
+
+  <service>
     <interfaces>
       <value>org.openengsb.domain.issue.IssueDomainEvents</value>
       <value>org.openengsb.core.common.DomainEvents</value>
@@ -55,14 +55,15 @@
       <entry key="id" value="domain.issue.events" />
       <entry key="openengsb.service.type" value="domain-events" />
     </service-properties>
-
-    <bean class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
-      <property name="domainEventInterface">
-        <value>org.openengsb.domain.issue.IssueDomainEvents</value>
-      </property>
-      <property name="workflowService" ref="workflowService" />
-    </bean>
+    <bean factory-ref="domainEventsProxyFactory" factory-method="getObject" />
   </service>
+
+  <bean id="domainEventsProxyFactory" class="org.openengsb.core.events.DomainEventsProxyFactoryBean">
+    <property name="domainEventInterface">
+      <value>org.openengsb.domain.issue.IssueDomainEvents</value>
+    </property>
+    <property name="workflowService" ref="workflowService" />
+  </bean>
 
   <reference id="contextService" interface="org.openengsb.core.common.context.ContextService" />
   <reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />

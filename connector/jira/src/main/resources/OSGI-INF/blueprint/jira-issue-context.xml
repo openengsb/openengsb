@@ -22,16 +22,16 @@
 
   <service interface="org.openengsb.core.common.ServiceManager">
     <service-properties>
-      <entry key="domain" value="org.openengsb.domain.scm.ScmDomain" />
+      <entry key="domain" value="org.openengsb.domain.issue.IssueDomain" />
     </service-properties>
-    <bean class="org.openengsb.connector.git.GitServiceManager" init-method="init">
-      <argument ref="gitServiceFactory" />
+    <bean class="org.openengsb.connector.jira.JiraServiceManager" init-method="init">
+      <argument>
+        <bean class="org.openengsb.connector.jira.internal.JiraServiceInstanceFactory" />
+      </argument>
       <property name="connectorSetupStore" ref="connectorSetupStore" />
       <property name="bundleContext" ref="blueprintBundleContext" />
     </bean>
   </service>
-
-  <bean id="gitServiceFactory" class="org.openengsb.connector.git.internal.GitServiceInstanceFactory" />
 
   <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
     init-method="init">

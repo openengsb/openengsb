@@ -21,9 +21,8 @@ import java.lang.reflect.Proxy;
 
 import org.openengsb.core.common.context.ContextService;
 import org.osgi.framework.BundleContext;
-import org.springframework.beans.factory.FactoryBean;
 
-public class DefaultDomainProxyFactoryBean implements BundleContextAware, FactoryBean<Domain> {
+public class DefaultDomainProxyFactoryBean implements BundleContextAware {
 
     private Class<? extends Domain> domainInterface;
     private BundleContext bundleContext;
@@ -57,21 +56,11 @@ public class DefaultDomainProxyFactoryBean implements BundleContextAware, Factor
         this.bundleContext = bundleContext;
     }
 
-    @Override
     public Domain getObject() throws Exception {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classLoader = domainInterface.getClassLoader();
         Class<?>[] classes = new Class<?>[]{Domain.class, domainInterface,};
         InvocationHandler handler = makeHandler();
         return (Domain) Proxy.newProxyInstance(classLoader, classes, handler);
     }
 
-    @Override
-    public Class<? extends Domain> getObjectType() {
-        return domainInterface;
-    }
-
-    @Override
-    public boolean isSingleton() {
-        return false;
-    }
 }
