@@ -55,7 +55,6 @@
   <modules>
     <module>javax.xml.jaxb</module>
     <module>org.apache.xmlrpc</module>
-    <module>com.jcraft.jsch</module>
     <module>org.neobatis.odb</module>
     <module>net.sourceforge.htmlunit</module>
   </modules>
