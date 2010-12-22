@@ -1,3 +1,6 @@
 [submodule "wrapped/openengsb-wrapped-parent"]
 	path = wrapped/openengsb-wrapped-parent
 	url = git://github.com/openengsb/openengsb-wrapped-parent.git
+[submodule "wrapped/openengsb-wrapped-com.google.guava"]
+	path = wrapped/openengsb-wrapped-com.google.guava
+	url = git://github.com/openengsb/openengsb-wrapped-com.google.guava.git
