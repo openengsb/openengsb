@@ -24,6 +24,7 @@ public class RemoteEvent extends Event {
 
     private String nestedEventClassName;
     private Map<String, String> nestedEventProperties;
+    private Map<String, String> contextValues;
 
     public RemoteEvent() {
     }
@@ -43,4 +44,13 @@ public class RemoteEvent extends Event {
     public void setNestedEventProperties(Map<String, String> nestedEventProperties) {
         this.nestedEventProperties = nestedEventProperties;
     }
+
+    public Map<String, String> getContextValues() {
+        return this.contextValues;
+    }
+
+    public void setContextValues(Map<String, String> contextValues) {
+        this.contextValues = contextValues;
+    }
+
 }
