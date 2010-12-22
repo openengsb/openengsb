@@ -13,3 +13,6 @@
 [submodule "wrapped/openengsb-wrapped-net.sourceforge.htmlunit"]
 	path = wrapped/openengsb-wrapped-net.sourceforge.htmlunit
 	url = git://github.com/openengsb/openengsb-wrapped-net.sourceforge.htmlunit.git
+[submodule "wrapped/openengsb-wrapped-org.apache.wicket"]
+	path = wrapped/openengsb-wrapped-org.apache.wicket
+	url = git://github.com/openengsb/openengsb-wrapped-org.apache.wicket.git
