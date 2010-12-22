@@ -37,11 +37,11 @@ import org.osgi.framework.ServiceRegistration;
 
 /**
  * Proxy Service Manager to instantiate Proxies to communicate with external systems.
- *
+ * 
  * The proxy for the specified Domain are created upon request for a ServiceDescriptor.
- *
+ * 
  * The ProxyServiceManager is completely generic. Business logic to interpret a certain call is handled via the
- *
+ * 
  * @see InvocationHandler handed to the constructor.
  */
 public class ProxyServiceManager extends AbstractServiceManagerParent implements ServiceManager {
@@ -63,10 +63,12 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
             ServiceDescriptor.builder(getStrings()).id(provider.getId()).serviceType(getDomainInterface())
                 .implementationType(getDomainInterface())
                 .name("proxy.name", provider.getName().getString(Locale.getDefault())).description("proxy.description");
-        builder.attribute(builder.newAttribute().id("portId").name("portId").description("Port Id").build());
-        builder.attribute(builder.newAttribute().id("destination").name("destination").description("Port Destination")
+        builder.attribute(builder.newAttribute().id("proxyId").name("proxy.id").description("proxy.id.description")
             .build());
-        builder.attribute(builder.newAttribute().id("serviceId").name("serviceId").description("Serice Id").build());
+        builder.attribute(builder.newAttribute().id("destination").name("destination.name")
+            .description("destination.description").build());
+        builder.attribute(builder.newAttribute().id("serviceId").name("serviceId.name")
+            .description("serviceId.description").build());
         return builder.build();
     }
 
@@ -81,7 +83,7 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
             if (!services.containsKey(id)) {
                 ProxyConnector handler = new ProxyConnector();
                 handler.setCallRouter(router);
-                handler.setPortId(attributes.get("portId"));
+                handler.setPortId(attributes.get("proxyId"));
                 try {
                     String destination = attributes.get("destination");
                     String serviceId = attributes.get("serviceId");
