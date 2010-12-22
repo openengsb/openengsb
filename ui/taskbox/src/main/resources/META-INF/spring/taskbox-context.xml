@@ -36,5 +36,7 @@
   </osgi:service> 
   <osgi:reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
   <osgi:reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
-  
+  <bean id="dataProvider" class="org.openengsb.ui.taskbox.TaskDataProvider">
+    <property name="taskboxService" ref="taskboxService" />
+  </bean>
 </beans>

@@ -40,17 +40,18 @@ import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
+import org.openengsb.ui.taskbox.TaskOverviewPanel;
 import org.openengsb.ui.taskbox.model.WebTask;
 
 public class TaskPanel extends Panel {
 
-    private WebTask task;
+    private Task task;
 
     @SpringBean
     private TaskboxService service;
 
     @SuppressWarnings("serial")
-    public TaskPanel(String id, WebTask t) {
+    public TaskPanel(String id, Task t) {
         super(id);
         this.task = t;
         final FeedbackPanel feedback = new FeedbackPanel("feedback");
@@ -82,7 +83,7 @@ public class TaskPanel extends Panel {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 try {
                     service.finishTask(task);
-                  //setResponsePage(OverviewPanel.class);
+                    //setResponsePage(TaskOverviewPage.class);
                 } catch (WorkflowException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

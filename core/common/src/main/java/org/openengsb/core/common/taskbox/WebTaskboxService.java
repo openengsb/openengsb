@@ -16,4 +16,9 @@ public interface WebTaskboxService extends TaskboxService {
      * Gets the Wicket Panel for a Specific Task if it is registered. If Panel is not registered, returns the Default-TaskPanel
      */
     public Panel getTaskPanel(String panelId, String taskId);
+    
+    /**
+     * Register a Specific Panel for a predefined Tasktype
+     */
+    public void registerTaskPanel(String taskType, String panelClass);
 }
