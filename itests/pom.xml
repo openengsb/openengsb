@@ -148,7 +148,7 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-memory-auditing</artifactId>
+      <artifactId>openengsb-connector-memoryauditing</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>

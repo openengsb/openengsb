@@ -152,7 +152,7 @@
     <bundle>mvn:org.openengsb.core/openengsb-core-taskbox/${project.version}</bundle>
     <!-- Required Domains and Connectors -->
     <bundle>mvn:org.openengsb.domain/openengsb-domain-auditing/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.connector/openengsb-connector-memory-auditing/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.connector/openengsb-connector-memoryauditing/${project.version}</bundle>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-example/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-example/${project.version}</bundle>
     <!-- OpenEngSB Proxy JMS Feature -->
