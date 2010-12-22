@@ -6,18 +6,29 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
-import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.injection.web.InjectorHolder;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
 
 @SuppressWarnings("serial")
 public class TaskDataProvider extends SortableDataProvider<Task> implements IFilterStateLocator {
 
+    @SpringBean
     private TaskboxService taskboxService;
-    private TaskFilter filter;
+    private TaskFilter filter = TaskFilter.createTaskFilter();
     private List<Task> list;
+
+    public TaskDataProvider() {
+        InjectorHolder.getInjector().inject(this);
+        this.setSort("taskId", true);
+    }
+
+    public TaskboxService gett() {
+        return taskboxService;
+    }
 
     @Override
     public Iterator<? extends Task> iterator(int first, int count) {
@@ -34,34 +45,34 @@ public class TaskDataProvider extends SortableDataProvider<Task> implements IFil
 
     private void initList() {
         if (list == null) {
-            SortParam sp = this.getSort();
-            list=getSortedandFilteredList(sp);   
+            list = getSortedandFilteredList();
         }
     }
 
-    private List<Task> getSortedandFilteredList(SortParam sortParam) {
+    private List<Task> getSortedandFilteredList() {
         List<Task> result = taskboxService.getOpenTasks();
 
         if (result != null) {
-            filterTasks(result, filter);
-            Collections.sort(result, new TaskComparator());
+            filterTasks(result);
+            Collections.sort(result, new TaskComparator(getSort()));
         } else {
             result = new ArrayList<Task>();
         }
         return result;
-        
+
     }
 
-    private void filterTasks(List<Task> result, TaskFilter filter2) {
-        List<Task> tmp = new ArrayList<Task>();
-        for (Iterator<Task> iterator = list.iterator(); iterator.hasNext();) {
-            Task task = iterator.next();
-            if (!filter.match(task)) {
-                tmp.add(task);
+    private void filterTasks(List<Task> result) {
+        if (filter != null) {
+            List<Task> tmp = new ArrayList<Task>();
+            for (Iterator<Task> iterator = result.iterator(); iterator.hasNext();) {
+                Task task = iterator.next();
+                if (!filter.match(task)) {
+                    tmp.add(task);
+                }
             }
+            result.removeAll(tmp);
         }
-        list.removeAll(tmp);
-        
     }
 
     @Override

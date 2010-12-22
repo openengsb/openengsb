@@ -9,6 +9,7 @@ public interface WebTaskboxService extends TaskboxService {
     
     /**
      * Generates a standard Wicket-Panel, which displays tasks out of the persistence.
+     * The panel has the componentId="OverviewPanel" and the style attribute class="OverviewPanel"
      */
     public Panel getOverviewPanel();
 }

@@ -11,26 +11,24 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.Filte
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.FilteredAbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.GoAndClearFilter;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.TextFilteredPropertyColumn;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.taskbox.model.Task;
 
-import sun.security.krb5.internal.Ticket;
-
+@SuppressWarnings("serial")
 public class TaskOverviewPanel extends Panel {
 
-    @SpringBean
-    TaskDataProvider dataProvider;
-    
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    TaskDataProvider dataProvider = new TaskDataProvider();
+
     public TaskOverviewPanel(String id) {
         super(id);
         ArrayList<IColumn<Task>> columns = new ArrayList<IColumn<Task>>();
 
-        IColumn actionsColumn = new FilteredAbstractColumn<Ticket>(Model.of("Actions")) {
+        IColumn<Task> actionsColumn = new FilteredAbstractColumn<Task>(Model.of("Actions")) {
 
             @Override
             public Component getFilter(String componentId, FilterForm form) {
@@ -40,24 +38,24 @@ public class TaskOverviewPanel extends Panel {
             @Override
             public void populateItem(Item cellItem, String componentId, IModel rowModel) {
                 final Task task = (Task) rowModel.getObject();
-                // TODO: ADD link to LPuschmanns Panel.
+                cellItem.add(new Label(componentId));
             }
         };
         columns.add(actionsColumn);
 
         columns.add(new TextFilteredPropertyColumn<Task, String>(Model.of("TaskId"), "taskId", "taskId"));
         columns.add(new TextFilteredPropertyColumn<Task, String>(Model.of("TaskType"), "taskType", "taskType"));
-        columns.add(new TextFilteredPropertyColumn<Task, String>(Model.of("Description"), "description", "description"));
-        columns.add(new PropertyColumn(Model.of("TaskCreationTimestamp"), "taskCreationTimestamp", "taskCreationTimestamp"));
+        columns
+            .add(new TextFilteredPropertyColumn<Task, String>(Model.of("Description"), "description", "description"));
+        columns.add(new PropertyColumn<Task>(Model.of("TaskCreationTimestamp"), "taskCreationTimestamp",
+            "taskCreationTimestamp"));
         FilterForm form = new FilterForm("form", dataProvider);
 
-        DefaultDataTable<Task> dataTable = new DefaultDataTable<Task>("dataTable", columns, dataProvider, 10);
+        DefaultDataTable<Task> dataTable = new DefaultDataTable<Task>("dataTable", columns, dataProvider, 15);
         dataTable.addTopToolbar(new FilterToolbar(dataTable, form, dataProvider));
         form.add(dataTable);
 
         add(form);
     }
-    
-    
 
 }
