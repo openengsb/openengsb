@@ -131,7 +131,7 @@
     <bundle dependency="true">mvn:org.openengsb.wrapped/javax.xml.jaxb-all/${jaxb.wrapped.version}</bundle>
     <bundle dependency="true">mvn:org.openengsb.wrapped/org.neodatis.odb-all/${odb.wrapped.version}</bundle>
     <bundle dependency="true">mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
-    <bundle dependency="true">mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${project.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
     <bundle dependency="true">mvn:org.openengsb.wrapped/org.apache.wicket-all/${wicket.wrapped.version}</bundle>
     <bundle dependency="true">mvn:org.springframework/spring-tx/${spring.version}</bundle>
     <bundle dependency="true">mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
