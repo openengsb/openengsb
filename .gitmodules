@@ -7,3 +7,6 @@
 [submodule "wrapped/openengsb-wrapped-com.jcraft.jsch"]
 	path = wrapped/openengsb-wrapped-com.jcraft.jsch
 	url = git://github.com/openengsb/openengsb-wrapped-com.jcraft.jsch.git
+[submodule "wrapped/openengsb-wrapped-javax.xml.jaxb"]
+	path = wrapped/openengsb-wrapped-javax.xml.jaxb
+	url = git://github.com/openengsb/openengsb-wrapped-javax.xml.jaxb.git
