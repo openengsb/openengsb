@@ -44,6 +44,7 @@
     </property>
     <property name="domainName" value="ScmDomain" />
     <property name="context" ref="contextService" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
   <service>

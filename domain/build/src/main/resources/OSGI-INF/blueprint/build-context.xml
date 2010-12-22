@@ -45,6 +45,7 @@
     </property>
     <property name="domainName" value="BuildDomain" />
     <property name="context" ref="contextService" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
   <service>
