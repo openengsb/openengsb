@@ -22,8 +22,8 @@
   xmlns:osgix="http://www.springframework.org/schema/osgi-compendium"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd
-        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-2.0-m1.xsd">
+        http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd
+        http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd">
 
   <osgix:cm-properties id="settings" persistent-id="org.openengsb.settings">
     <prop key="openengsb.version.number">1.0.0.RELEASE</prop>
@@ -50,7 +50,7 @@
 
   <osgi:list id="domains" interface="org.openengsb.core.common.DomainProvider" />
   <osgi:list id="services" interface="org.openengsb.core.common.ServiceManager" />
-  <osgi:list id="managedServiceInstances" member-type="service-reference" interface="org.openengsb.core.common.Domain" />
+  <osgi:list id="managedServiceInstances" interface="org.openengsb.core.common.Domain" />
   <osgi:reference id="eventService" interface="org.openengsb.core.common.workflow.WorkflowService" />
   <osgi:reference id="contextCurrentService" interface="org.openengsb.core.common.context.ContextCurrentService" />
   <osgi:reference id="ruleManager" interface="org.openengsb.core.common.workflow.RuleManager" />
