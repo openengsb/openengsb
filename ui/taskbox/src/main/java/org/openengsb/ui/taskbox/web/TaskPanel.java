@@ -47,7 +47,7 @@ public class TaskPanel extends Panel {
 
     private Task task;
 
-    @SpringBean
+    @SpringBean(name="taskboxService")
     private TaskboxService service;
 
     @SuppressWarnings("serial")
