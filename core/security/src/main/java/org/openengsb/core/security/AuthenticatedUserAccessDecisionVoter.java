@@ -20,17 +20,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.security.model.ServiceAuthorizedList;
 import org.openengsb.core.common.security.model.User;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.Authentication;
@@ -68,7 +69,8 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
         Collection<GrantedAuthority> userAuthorities = user.getAuthorities();
         if (log.isDebugEnabled()) {
             @SuppressWarnings("unchecked")
-            Collection<GrantedAuthority> authorities = CollectionUtils.intersection(userAuthorities, allowedAuthorities);
+            Collection<GrantedAuthority> authorities =
+                CollectionUtils.intersection(userAuthorities, allowedAuthorities);
             log.debug("Intersection of Sets: " + authorities);
         }
         if (!Collections.disjoint(allowedAuthorities, userAuthorities)) {
