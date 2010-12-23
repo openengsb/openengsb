@@ -36,11 +36,11 @@
     </property>
   </bean>
 
+  <reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+  
   <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
     init-method="init">
-    <property name="persistenceManager">
-      <reference interface="org.openengsb.core.common.persistence.PersistenceManager" />
-    </property>
+    <property name="persistenceManager" ref="persistenceManager" />
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 

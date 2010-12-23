@@ -18,49 +18,103 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd" >
+  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <service interface="org.openengsb.core.common.ServiceManager">
-    <service-properties>
-      <entry key="domain" value="org.openengsb.domain.test.TestDomain" />
-      <entry key="openengsb.service.type" value="connector" />
-    </service-properties>
-    <bean class="org.openengsb.connector.maven.TestDomainServiceManager" init-method="init">
-      <argument ref="serviceFactory" />
-      <property name="connectorSetupStore" ref="connectorSetupStore" />
-      <property name="bundleContext" ref="blueprintBundleContext" />
-    </bean>
-  </service>
 
-  <service interface="org.openengsb.core.common.ServiceManager">
-    <service-properties>
-      <entry key="domain" value="org.openengsb.domain.build.BuildDomain" />
-      <entry key="openengsb.service.type" value="connector" />
-    </service-properties>
-    <bean class="org.openengsb.connector.maven.BuildDomainServiceManager" init-method="init">
-      <argument ref="serviceFactory" />
-      <property name="connectorSetupStore" ref="connectorSetupStore" />
-      <property name="bundleContext" ref="blueprintBundleContext" />
-    </bean>
-  </service>
+  <reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
 
-  <service interface="org.openengsb.core.common.ServiceManager">
-    <service-properties>
-      <entry key="domain" value="org.openengsb.domain.deploy.DeployDomain" />
-      <entry key="openengsb.service.type" value="connector" />
-    </service-properties>
-    <bean class="org.openengsb.connector.maven.DeployDomainServiceManager" init-method="init">
-      <argument ref="serviceFactory" />
-      <property name="connectorSetupStore" ref="connectorSetupStore" />
-      <property name="bundleContext" ref="blueprintBundleContext" />
-    </bean>
-  </service>
+  <bean id="buildServiceManagerProxyFactory" class="org.openengsb.core.common.ProxyFactoryBean">
+    <property name="proxyInterfaces">
+      <list>
+        <value>org.openengsb.core.common.ServiceManager</value>
+      </list>
+    </property>
+    <property name="target" ref="realBuildServiceManager" />
+    <property name="advices">
+      <list>
+        <ref component-id="securityInterceptor" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="testServiceManagerProxyFactory" class="org.openengsb.core.common.ProxyFactoryBean">
+    <property name="proxyInterfaces">
+      <list>
+        <value>org.openengsb.core.common.ServiceManager</value>
+      </list>
+    </property>
+    <property name="target" ref="realTestServiceManager" />
+    <property name="advices">
+      <list>
+        <ref component-id="securityInterceptor" />
+      </list>
+    </property>
+  </bean>
+
+  <bean id="deployServiceManagerProxyFactory" class="org.openengsb.core.common.ProxyFactoryBean">
+    <property name="proxyInterfaces">
+      <list>
+        <value>org.openengsb.core.common.ServiceManager</value>
+      </list>
+    </property>
+    <property name="target" ref="realDeployServiceManager" />
+    <property name="advices">
+      <list>
+        <ref component-id="securityInterceptor" />
+      </list>
+    </property>
+  </bean>
+
+  <reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
 
   <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
     init-method="init">
     <property name="persistenceManager" ref="persistenceManager" />
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
+
+  <service interface="org.openengsb.core.common.ServiceManager">
+    <service-properties>
+      <entry key="domain" value="org.openengsb.domain.build.BuildDomain" />
+    </service-properties>
+    <bean factory-ref="buildServiceManagerProxyFactory" factory-method="getObject" />
+  </service>
+
+  <service interface="org.openengsb.core.common.ServiceManager">
+    <service-properties>
+      <entry key="domain" value="org.openengsb.domain.test.TestDomain" />
+    </service-properties>
+    <bean factory-ref="testServiceManagerProxyFactory" factory-method="getObject" />
+  </service>
+
+  <service interface="org.openengsb.core.common.ServiceManager">
+    <service-properties>
+      <entry key="domain" value="org.openengsb.domain.deploy.DeployDomain" />
+    </service-properties>
+    <bean factory-ref="deployServiceManagerProxyFactory" factory-method="getObject" />
+  </service>
+
+  <bean id="realBuildServiceManager" class="org.openengsb.connector.maven.BuildDomainServiceManager" init-method="init">
+    <argument ref="serviceFactory" />
+    <property name="connectorSetupStore" ref="connectorSetupStore" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
+    <property name="securityInterceptor" ref="securityInterceptor" />
+  </bean>
+
+  <bean id="realTestServiceManager" class="org.openengsb.connector.maven.TestDomainServiceManager" init-method="init">
+    <argument ref="serviceFactory" />
+    <property name="connectorSetupStore" ref="connectorSetupStore" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
+    <property name="securityInterceptor" ref="securityInterceptor" />
+  </bean>
+
+  <bean id="realDeployServiceManager" class="org.openengsb.connector.maven.DeployDomainServiceManager" init-method="init">
+    <argument ref="serviceFactory" />
+    <property name="connectorSetupStore" ref="connectorSetupStore" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
+    <property name="securityInterceptor" ref="securityInterceptor" />
+  </bean>
+
 
   <bean id="serviceFactory" class="org.openengsb.connector.maven.internal.MavenServiceInstanceFactory">
     <property name="buildEvents" ref="buildEvents" />
@@ -69,7 +123,6 @@
     <property name="contextService" ref="contextService" />
   </bean>
 
-  <reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
   <reference id="buildEvents" interface="org.openengsb.domain.build.BuildDomainEvents" />
   <reference id="testEvents" interface="org.openengsb.domain.test.TestDomainEvents" />
   <reference id="deployEvents" interface="org.openengsb.domain.deploy.DeployDomainEvents" />

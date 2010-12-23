@@ -18,28 +18,48 @@
 -->
 
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd" >
+  xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
+
+  <reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
+
+  <bean id="serviceManagerProxyFactory" class="org.openengsb.core.common.ProxyFactoryBean">
+    <property name="proxyInterfaces">
+      <list>
+        <value>org.openengsb.core.common.ServiceManager</value>
+      </list>
+    </property>
+    <property name="target" ref="realServiceManager" />
+    <property name="advices">
+      <list>
+        <ref component-id="securityInterceptor" />
+      </list>
+    </property>
+  </bean>
+
+  <reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+
+  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
+    init-method="init">
+    <property name="persistenceManager" ref="persistenceManager" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
 
   <service interface="org.openengsb.core.common.ServiceManager">
     <service-properties>
       <entry key="domain" value="org.openengsb.domain.auditing.AuditingDomain" />
       <entry key="openengsb.service.type" value="connector" />
     </service-properties>
-    <bean class="org.openengsb.connector.memoryauditing.MemoryAuditingServiceManager" init-method="init">
-      <argument ref="auditingServiceFactory" />
-      <property name="connectorSetupStore" ref="connectorSetupStore" />
-      <property name="bundleContext" ref="blueprintBundleContext" />
-    </bean>
+    <bean factory-ref="serviceManagerProxyFactory" factory-method="getObject" />
   </service>
 
-  <bean id="auditingServiceFactory" class="org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceInstanceFactory" />
-
-  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
+  <bean id="realServiceManager" class="org.openengsb.connector.memoryauditing.MemoryAuditingServiceManager"
     init-method="init">
-    <property name="persistenceManager" ref="persistenceServiceManager" />
+    <argument ref="auditingServiceFactory" />
+    <property name="connectorSetupStore" ref="connectorSetupStore" />
     <property name="bundleContext" ref="blueprintBundleContext" />
+    <property name="securityInterceptor" ref="securityInterceptor" />
   </bean>
 
-  <reference id="persistenceServiceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+  <bean id="auditingServiceFactory" class="org.openengsb.connector.memoryauditing.internal.MemoryAuditingServiceInstanceFactory" />
 
 </blueprint>
