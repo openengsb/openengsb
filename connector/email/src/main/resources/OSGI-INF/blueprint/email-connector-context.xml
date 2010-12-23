@@ -20,32 +20,7 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd">
 
-  <service interface="org.openengsb.core.common.ServiceManager">
-    <service-properties>
-      <entry key="domain" value="org.openengsb.domain.notification.NotificationDomain" />
-    </service-properties>
-    <bean factory-ref="serviceManagerProxyFactory" factory-method="getObject" />
-  </service>
-
-  <bean class="org.openengsb.connector.email.EmailServiceManager" init-method="init" id="realServiceManager">
-    <argument>
-      <bean class="org.openengsb.connector.email.internal.EmailNotifierFactory">
-        <argument>
-          <bean class="org.openengsb.connector.email.internal.abstraction.JavaxMailAbstraction" />
-        </argument>
-      </bean>
-    </argument>
-    <property name="connectorSetupStore">
-      <bean class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore" init-method="init">
-        <property name="persistenceManager">
-          <reference interface="org.openengsb.core.common.persistence.PersistenceManager" />
-        </property>
-        <property name="bundleContext" ref="blueprintBundleContext" />
-      </bean>
-    </property>
-    <property name="bundleContext" ref="blueprintBundleContext" />
-    <property name="securityInterceptor" ref="securityInterceptor" />
-  </bean>
+  <reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
 
   <bean id="serviceManagerProxyFactory" class="org.openengsb.core.common.ProxyFactoryBean">
     <property name="proxyInterfaces">
@@ -61,6 +36,32 @@
     </property>
   </bean>
 
-  <reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
+  <bean id="connectorSetupStore" class="org.openengsb.core.common.connectorsetupstore.PersistenceConnectorSetupStore"
+    init-method="init">
+    <property name="persistenceManager">
+      <reference interface="org.openengsb.core.common.persistence.PersistenceManager" />
+    </property>
+    <property name="bundleContext" ref="blueprintBundleContext" />
+  </bean>
+
+  <service interface="org.openengsb.core.common.ServiceManager">
+    <service-properties>
+      <entry key="domain" value="org.openengsb.domain.notification.NotificationDomain" />
+    </service-properties>
+    <bean factory-ref="serviceManagerProxyFactory" factory-method="getObject" />
+  </service>
+
+  <bean class="org.openengsb.connector.email.EmailServiceManager" init-method="init" id="realServiceManager">
+    <argument>
+      <bean class="org.openengsb.connector.email.internal.EmailNotifierFactory">
+        <argument>
+          <bean class="org.openengsb.connector.email.internal.abstraction.JavaxMailAbstraction" />
+        </argument>
+      </bean>
+    </argument>
+    <property name="connectorSetupStore" ref="connectorSetupStore" />
+    <property name="bundleContext" ref="blueprintBundleContext" />
+    <property name="securityInterceptor" ref="securityInterceptor" />
+  </bean>
 
 </blueprint>

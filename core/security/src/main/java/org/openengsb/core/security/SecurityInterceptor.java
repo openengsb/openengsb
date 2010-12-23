@@ -20,7 +20,6 @@ import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.security.access.intercept.InterceptorStatusToken;
 import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor;
 
 public class SecurityInterceptor extends MethodSecurityInterceptor {
@@ -35,13 +34,6 @@ public class SecurityInterceptor extends MethodSecurityInterceptor {
             return mi.proceed();
         }
         return super.invoke(mi);
-    }
-
-    @Override
-    protected InterceptorStatusToken beforeInvocation(Object object) {
-        MethodInvocation o = (MethodInvocation) object;
-
-        return super.beforeInvocation(object);
     }
 
 }
