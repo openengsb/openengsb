@@ -73,13 +73,13 @@ public class ServiceListPage extends BasePage {
         log.debug("service list initialized");
 
         IModel<List<ServiceReference>> connectingServicesLoadableModel =
-            createLoadableServiceReferenceModel(AliveState.CONNECTING);
+            createServiceReferenceModel(AliveState.CONNECTING);
         IModel<List<ServiceReference>> onlineServicesLoadableModel =
-            createLoadableServiceReferenceModel(AliveState.ONLINE);
+            createServiceReferenceModel(AliveState.ONLINE);
         IModel<List<ServiceReference>> offlineServicesLoadableModel =
-            createLoadableServiceReferenceModel(AliveState.OFFLINE);
+            createServiceReferenceModel(AliveState.OFFLINE);
         IModel<List<ServiceReference>> disconnectedServicesLoadableModel =
-            createLoadableServiceReferenceModel(AliveState.DISCONNECTED);
+            createServiceReferenceModel(AliveState.DISCONNECTED);
 
         WebMarkupContainer connectingServicePanel = new WebMarkupContainer("connectingServicePanel");
         connectingServicePanel.setOutputMarkupId(true);
@@ -159,13 +159,13 @@ public class ServiceListPage extends BasePage {
                 }
                 item.add(new Label("service.name", id));
                 item.add(new Label("service.description", new LocalizableStringModel(this, description)));
-                item.add(new AjaxLink<ServiceManager>("updateService", createLoadableDetachableServiceManagerModel(sm)) {
+                item.add(new AjaxLink<ServiceManager>("updateService", createServiceManagerModel(sm)) {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
                         setResponsePage(new ConnectorEditorPage(getModelObject(), id));
                     }
                 });
-                item.add(new AjaxLink<ServiceManager>("deleteService", createLoadableDetachableServiceManagerModel(sm)) {
+                item.add(new AjaxLink<ServiceManager>("deleteService", createServiceManagerModel(sm)) {
 
                     @Override
                     public void onClick(AjaxRequestTarget target) {
@@ -181,8 +181,7 @@ public class ServiceListPage extends BasePage {
     }
 
     @SuppressWarnings("serial")
-    private LoadableDetachableModel<ServiceManager>
-        createLoadableDetachableServiceManagerModel(final ServiceManager sm) {
+    private LoadableDetachableModel<ServiceManager> createServiceManagerModel(final ServiceManager sm) {
         return new LoadableDetachableModel<ServiceManager>() {
             @Override
             protected ServiceManager load() {
@@ -201,7 +200,7 @@ public class ServiceListPage extends BasePage {
     }
 
     @SuppressWarnings("serial")
-    private LoadableDetachableModel<List<ServiceReference>> createLoadableServiceReferenceModel(final AliveState state) {
+    private LoadableDetachableModel<List<ServiceReference>> createServiceReferenceModel(final AliveState state) {
         return new LoadableDetachableModel<List<ServiceReference>>() {
             @Override
             protected List<ServiceReference> load() {
