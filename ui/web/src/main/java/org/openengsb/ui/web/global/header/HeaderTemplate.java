@@ -38,7 +38,6 @@ import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.ServiceListPage;
 import org.openengsb.ui.web.TaskPage;
 import org.openengsb.ui.web.TestClient;
-import org.openengsb.ui.web.TaskOverviewPage;
 import org.openengsb.ui.web.UserService;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.web.model.OpenEngSBVersion;
