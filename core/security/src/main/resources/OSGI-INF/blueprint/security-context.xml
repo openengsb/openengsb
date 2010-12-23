@@ -44,7 +44,7 @@
   <service interface="org.springframework.security.authentication.AuthenticationManager" ref="authenticationManager" />
 
   <service interface="org.aopalliance.intercept.MethodInterceptor">
-    <bean class="org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor">
+    <bean class="org.openengsb.core.security.SecurityInterceptor">
       <property name="securityMetadataSource">
         <bean class="org.openengsb.core.security.internal.MetadataSource" />
       </property>
