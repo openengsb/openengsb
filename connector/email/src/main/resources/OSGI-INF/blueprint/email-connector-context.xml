@@ -44,6 +44,7 @@
       </bean>
     </property>
     <property name="bundleContext" ref="blueprintBundleContext" />
+    <property name="securityInterceptor" ref="securityInterceptor" />
   </bean>
 
   <bean id="serviceManagerProxyFactory" class="org.openengsb.core.common.ProxyFactoryBean">
