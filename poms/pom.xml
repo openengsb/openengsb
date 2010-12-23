@@ -62,7 +62,6 @@
     <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
     <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
 
-    <plugin.bundle.version>2.1.0</plugin.bundle.version>
       <!-- Component Versions -->
     <osgi.version>4.2.0</osgi.version>
 
@@ -219,7 +218,6 @@
   <modules>
     <module>compiled</module>
     <module>nonosgi</module>
-    <module>wrapped</module>
   </modules>
 
   <build>
