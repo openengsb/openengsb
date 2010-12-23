@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -42,6 +43,8 @@ import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 @AuthorizeInstantiation("ROLE_USER")
@@ -52,8 +55,8 @@ public class ServiceListPage extends BasePage {
     @SpringBean
     private DomainService services;
 
-    @SpringBean(name = "managedServiceInstances")
-    private List<ServiceReference> managedServiceInstances;
+    @SpringBean
+    private BundleContext bundleContext;
 
     @SpringBean(name = "services")
     private List<ServiceManager> serviceManager;
@@ -70,13 +73,13 @@ public class ServiceListPage extends BasePage {
         log.debug("service list initialized");
 
         IModel<List<ServiceReference>> connectingServicesLoadableModel =
-            createLoadableServiceReferenceModel(AliveState.CONNECTING);
+            createServiceReferenceModel(AliveState.CONNECTING);
         IModel<List<ServiceReference>> onlineServicesLoadableModel =
-            createLoadableServiceReferenceModel(AliveState.ONLINE);
+            createServiceReferenceModel(AliveState.ONLINE);
         IModel<List<ServiceReference>> offlineServicesLoadableModel =
-            createLoadableServiceReferenceModel(AliveState.OFFLINE);
+            createServiceReferenceModel(AliveState.OFFLINE);
         IModel<List<ServiceReference>> disconnectedServicesLoadableModel =
-            createLoadableServiceReferenceModel(AliveState.DISCONNECTED);
+            createServiceReferenceModel(AliveState.DISCONNECTED);
 
         WebMarkupContainer connectingServicePanel = new WebMarkupContainer("connectingServicePanel");
         connectingServicePanel.setOutputMarkupId(true);
@@ -156,15 +159,13 @@ public class ServiceListPage extends BasePage {
                 }
                 item.add(new Label("service.name", id));
                 item.add(new Label("service.description", new LocalizableStringModel(this, description)));
-                item.add(new AjaxLink<ServiceManager>("updateService",
-                        createLoadableDetachableServiceManagerModel(sm)) {
+                item.add(new AjaxLink<ServiceManager>("updateService", createServiceManagerModel(sm)) {
                     @Override
                     public void onClick(AjaxRequestTarget target) {
                         setResponsePage(new ConnectorEditorPage(getModelObject(), id));
                     }
                 });
-                item.add(new AjaxLink<ServiceManager>("deleteService",
-                        createLoadableDetachableServiceManagerModel(sm)) {
+                item.add(new AjaxLink<ServiceManager>("deleteService", createServiceManagerModel(sm)) {
 
                     @Override
                     public void onClick(AjaxRequestTarget target) {
@@ -180,8 +181,7 @@ public class ServiceListPage extends BasePage {
     }
 
     @SuppressWarnings("serial")
-    private LoadableDetachableModel<ServiceManager> createLoadableDetachableServiceManagerModel(
-            final ServiceManager sm) {
+    private LoadableDetachableModel<ServiceManager> createServiceManagerModel(final ServiceManager sm) {
         return new LoadableDetachableModel<ServiceManager>() {
             @Override
             protected ServiceManager load() {
@@ -200,8 +200,7 @@ public class ServiceListPage extends BasePage {
     }
 
     @SuppressWarnings("serial")
-    private LoadableDetachableModel<List<ServiceReference>> createLoadableServiceReferenceModel(
-            final AliveState state) {
+    private LoadableDetachableModel<List<ServiceReference>> createServiceReferenceModel(final AliveState state) {
         return new LoadableDetachableModel<List<ServiceReference>>() {
             @Override
             protected List<ServiceReference> load() {
@@ -214,6 +213,7 @@ public class ServiceListPage extends BasePage {
     }
 
     private void updateDomainServiceMap() {
+        ServiceReference[] managedServiceInstances = getAllManagedServices();
         for (ServiceReference serviceReference : managedServiceInstances) {
             if (!"domain".equals(serviceReference.getProperty("openengsb.service.type"))) {
                 Domain domainService = (Domain) services.getService(serviceReference);
@@ -223,6 +223,17 @@ public class ServiceListPage extends BasePage {
                     serviceReferenceList.add(serviceReference);
                 }
             }
+        }
+    }
+
+    private ServiceReference[] getAllManagedServices() {
+        try {
+            return bundleContext.getAllServiceReferences("org.openengsb.core.common.Domain", null);
+        } catch (InvalidSyntaxException e) {
+            String stackTrace = ExceptionUtils.getFullStackTrace(e.getCause());
+            error(stackTrace);
+            log.error(stackTrace);
+            return new ServiceReference[0];
         }
     }
 

@@ -58,7 +58,7 @@ public class DefaultDomainProxyFactoryBean implements BundleContextAware {
 
     public Domain getObject() throws Exception {
         ClassLoader classLoader = domainInterface.getClassLoader();
-        Class<?>[] classes = new Class<?>[]{Domain.class, domainInterface,};
+        Class<?>[] classes = new Class<?>[]{Domain.class, domainInterface};
         InvocationHandler handler = makeHandler();
         return (Domain) Proxy.newProxyInstance(classLoader, classes, handler);
     }
