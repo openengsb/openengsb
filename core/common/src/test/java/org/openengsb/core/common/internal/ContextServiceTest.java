@@ -16,6 +16,7 @@
 
 package org.openengsb.core.common.internal;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.nullValue;
@@ -29,7 +30,10 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -75,6 +79,22 @@ public class ContextServiceTest {
     }
 
     @Test
+    public void testGetContext() throws Exception {
+        cs.createContext("a");
+        cs.createContext("b");
+        cs.setThreadLocalContext("a");
+        Callable<String> callable = new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return cs.getThreadLocalContext();
+            }
+        };
+        ExecutorService pool = Executors.newSingleThreadExecutor();
+        Future<String> otherThreadContext = pool.submit(callable);
+        assertThat(otherThreadContext.get(), is("a"));
+    }
+
+    @Test
     public void testContextIsCreated_shouldWork() throws PersistenceException {
         verify(persistence).create(any(ContextStorageBean.class));
     }
@@ -111,22 +131,28 @@ public class ContextServiceTest {
     }
 
     @Test(timeout = 5000)
-    public void contextIsLocalToCurrentThread() throws InterruptedException {
+    public void contextIsLocalToCurrentThread() throws Exception {
         addTestData();
         cs.createContext("threadLocal");
-        cs.setThreadLocalContext("threadLocal");
         assertThat(cs.getContext(), notNullValue());
-        final CountDownLatch latch = new CountDownLatch(1);
-        Thread th = new Thread(new Runnable() {
+        Thread task1 = new Thread() {
             @Override
             public void run() {
-                if (cs.getContext() == null) {
-                    latch.countDown();
-                }
+                cs.setThreadLocalContext("threadLocal");
             }
-        });
-        th.start();
-        latch.await();
+        };
+        task1.start();
+        task1.join();
+        ExecutorService pool = Executors.newSingleThreadExecutor();
+        Callable<String> otherTask = new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                return cs.getThreadLocalContext();
+            }
+        };
+
+        Future<String> otherThreadContext = pool.submit(otherTask);
+        assertThat(otherThreadContext.get(), not("threadLocal"));
     }
 
     @Test
