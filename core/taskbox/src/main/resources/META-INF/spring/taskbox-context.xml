@@ -23,6 +23,10 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
+  <bean class="org.openengsb.core.taskbox.config.TaskboxConfigurator" init-method="init">
+    <property name="ruleManager" ref="ruleManager" />
+  </bean>
+
   <osgi:service interface="org.openengsb.core.common.taskbox.TaskboxService">
     <osgi:service-properties>
       <entry key="openengsb.service.type" value="workflow-service" />
@@ -34,6 +38,17 @@
     </bean>
   </osgi:service>
 
+  <osgi:service interface="org.openengsb.core.taskbox.TaskboxServiceInternal">
+    <osgi:service-properties>
+      <entry key="openengsb.service.type" value="workflow-service" />
+      <entry key="openengsb.workflow.globalid" value="taskboxinternal" />
+    </osgi:service-properties>
+    <bean class="org.openengsb.core.taskbox.TaskboxServiceInternalImpl" init-method="init">
+      <property name="persistenceManager" ref="persistenceManager" />
+    </bean>
+  </osgi:service>
+
   <osgi:reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
   <osgi:reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+  <osgi:reference id="ruleManager" interface="org.openengsb.core.common.workflow.RuleManager" />
 </beans>
