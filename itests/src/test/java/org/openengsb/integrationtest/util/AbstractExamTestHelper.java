@@ -73,7 +73,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
                 if (!bundle.getSymbolicName().equals(importantBundleSymbolicName)) {
                     continue;
                 }
-                waitForActiveSpringService(bundle);
+                waitForBlueprint(bundle);
                 break;
             }
         }
@@ -100,17 +100,18 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    protected void waitForActiveSpringService(String bundleName) throws InterruptedException {
+    protected void waitForBundle(String bundleName) throws InterruptedException {
         Bundle[] bundles = bundleContext.getBundles();
         for (Bundle bundle : bundles) {
             if (bundle.getSymbolicName().equals(bundleName)) {
-                waitForActiveSpringService(bundle);
+                waitForBundleActivation(bundle);
+                waitForBlueprint(bundle);
                 return;
             }
         }
     }
 
-    private void waitForActiveSpringService(Bundle bundle) throws InterruptedException {
+    private void waitForBundleActivation(Bundle bundle) throws InterruptedException {
         int times = 0;
         while (bundle.getState() != Bundle.ACTIVE) {
             if (times > 20) {
@@ -119,12 +120,16 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             Thread.sleep(3000);
             times++;
         }
+    }
+
+    private void waitForBlueprint(Bundle bundle) throws InterruptedException {
         ServiceTracker tracker =
-            new ServiceTracker(bundle.getBundleContext(), "org.springframework.context.ApplicationContext", null);
+            new ServiceTracker(bundle.getBundleContext(), "org.osgi.service.blueprint.container.BlueprintContainer",
+                null);
         tracker.open();
         Object service = tracker.waitForService(60000);
         if (service == null) {
-            Assert.fail(String.format("Bundle %s does not start spring service", bundle.getSymbolicName()));
+            Assert.fail(String.format("Bundle %s does not start blueprint service", bundle.getSymbolicName()));
         }
         tracker.close();
     }
