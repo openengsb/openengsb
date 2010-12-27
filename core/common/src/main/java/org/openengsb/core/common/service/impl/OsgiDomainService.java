@@ -32,8 +32,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-public class OsgiDomainService implements DomainService, BundleContextAware,
-        org.springframework.osgi.context.BundleContextAware {
+public class OsgiDomainService implements DomainService, BundleContextAware {
 
     private Log log = LogFactory.getLog(OsgiDomainService.class);
 

@@ -39,17 +39,13 @@
     <property name="nameNoun" value="${openengsb.version.name.noun}" />
   </bean>
 
-  <bean id="domainService" class="org.openengsb.core.common.service.impl.OsgiDomainService">
-    <property name="domains" ref="domains" />
-  </bean>
-
   <bean class="org.openengsb.ui.web.config.AuditingConfig" id="auditingConfig" init-method="init">
     <property name="domainService" ref="domainService" />
     <property name="ruleManager" ref="ruleManager" />
   </bean>
 
-  <osgi:list id="domains" cardinality="0..N" interface="org.openengsb.core.common.DomainProvider" />
   <osgi:list id="services" cardinality="0..N" interface="org.openengsb.core.common.ServiceManager" />
+  <osgi:reference id="domainService" interface="org.openengsb.core.common.service.DomainService" />
   <osgi:reference id="eventService" interface="org.openengsb.core.common.workflow.WorkflowService" />
   <osgi:reference id="contextCurrentService" interface="org.openengsb.core.common.context.ContextCurrentService" />
   <osgi:reference id="ruleManager" interface="org.openengsb.core.common.workflow.RuleManager" />
