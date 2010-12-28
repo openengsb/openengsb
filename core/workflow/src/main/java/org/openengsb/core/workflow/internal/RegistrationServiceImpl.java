@@ -21,8 +21,11 @@ import java.net.URI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.workflow.EventRegistrationService;
+import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RemoteEvent;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 
 public class RegistrationServiceImpl implements EventRegistrationService {
 
@@ -32,7 +35,20 @@ public class RegistrationServiceImpl implements EventRegistrationService {
 
     @Override
     public void registerEvent(RemoteEvent event, String portId, URI returnAddress) {
+        String name =
+            String.format("Notify %s via %s when %s occurs", returnAddress.toString(), portId, event.getType());
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, name);
+        String code = "when\nthen\n";
+        try {
+            ruleManager.add(id, code);
+        } catch (RuleBaseException e) {
+            throw new IllegalArgumentException(e);
+        }
         log.info("registering Event: " + event);
+    }
+
+    public void setRuleManager(RuleManager ruleManager) {
+        this.ruleManager = ruleManager;
     }
 
 }

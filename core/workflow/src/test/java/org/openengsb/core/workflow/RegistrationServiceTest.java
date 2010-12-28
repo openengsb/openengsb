@@ -17,7 +17,7 @@
 package org.openengsb.core.workflow;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -38,6 +38,7 @@ import org.openengsb.core.common.internal.CallRouterImpl;
 import org.openengsb.core.common.internal.RequestHandlerImpl;
 import org.openengsb.core.common.workflow.EventRegistrationService;
 import org.openengsb.core.common.workflow.model.RemoteEvent;
+import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.internal.RegistrationServiceImpl;
 import org.openengsb.core.workflow.model.TestEvent;
 
@@ -56,7 +57,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         RequestHandlerImpl requestHandlerImpl = new RequestHandlerImpl();
         requestHandlerImpl.setBundleContext(bundleContext);
 
-        regService = new RegistrationServiceImpl();
+        regService = getRegistrationService();
         requestHandler = mockService(RequestHandler.class, "requestHandler");
         outgoingPort = mockService(OutgoingPort.class, "testPort");
 
@@ -67,6 +68,12 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
                 return null;
             }
         }).when(outgoingPort).send(any(URI.class), any(MethodCall.class));
+    }
+
+    private RegistrationServiceImpl getRegistrationService() {
+        RegistrationServiceImpl registrationServiceImpl = new RegistrationServiceImpl();
+        registrationServiceImpl.setRuleManager(manager);
+        return registrationServiceImpl;
     }
 
     @Test
@@ -87,5 +94,14 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         regService.registerEvent(reg, "testPort", URI.create("test://localhost"));
         service.processEvent(new TestEvent());
         verify(outgoingPort).send(eq(URI.create("test://localhost")), any(MethodCall.class));
+    }
+
+    @Test
+    public void testRegisterEvent_shouldCreateRule() throws Exception {
+        RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
+        reg.setProcessId(3L);
+        int oldCount = manager.list(RuleBaseElementType.Rule).size();
+        regService.registerEvent(reg, "testPort", URI.create("test://localhost"));
+        assertThat(manager.list(RuleBaseElementType.Rule).size(), is(oldCount + 1));
     }
 }
