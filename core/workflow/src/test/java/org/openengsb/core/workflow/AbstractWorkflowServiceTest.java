@@ -81,6 +81,9 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         services.putAll(domains);
         myservice = mock(DummyService.class);
         services.put("myservice", myservice);
+        OsgiHelper osgiHelper = new OsgiHelper();
+        osgiHelper.setBundleContext(bundleContext);
+        services.put("osgiHelper", osgiHelper);
         service.setServices(services);
     }
 

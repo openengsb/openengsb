@@ -31,7 +31,8 @@ public class RegistrationServiceImpl implements EventRegistrationService {
 
     private static final String EVENT_REGISTRATION_RULE_TEMPLATE = "when event : %s\n" +
             "then\n" +
-            "System.out.println(\"bla\");";
+            "RemoteEvent re = new RemoteEvent(event.getType());\n" +
+            "osgiHelper.sendRemoteEvent(\"%s\", URI.create(\"%s\"), re);\n";
 
     private Log log = LogFactory.getLog(RegistrationServiceImpl.class);
 
@@ -44,7 +45,7 @@ public class RegistrationServiceImpl implements EventRegistrationService {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, name);
         String eventMatcher = makeEventMatcher(event);
         try {
-            ruleManager.add(id, String.format(EVENT_REGISTRATION_RULE_TEMPLATE, eventMatcher));
+            ruleManager.add(id, String.format(EVENT_REGISTRATION_RULE_TEMPLATE, eventMatcher, portId, returnAddress));
         } catch (RuleBaseException e) {
             throw new IllegalArgumentException(e);
         }
