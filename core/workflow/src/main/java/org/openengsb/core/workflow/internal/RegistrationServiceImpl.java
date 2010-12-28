@@ -29,6 +29,10 @@ import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 
 public class RegistrationServiceImpl implements EventRegistrationService {
 
+    private static final String EVENT_REGISTRATION_RULE_TEMPLATE = "when event : %s\n" +
+            "then\n" +
+            "System.out.println(\"bla\");";
+
     private Log log = LogFactory.getLog(RegistrationServiceImpl.class);
 
     private RuleManager ruleManager;
@@ -38,13 +42,17 @@ public class RegistrationServiceImpl implements EventRegistrationService {
         String name =
             String.format("Notify %s via %s when %s occurs", returnAddress.toString(), portId, event.getType());
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, name);
-        String code = "when\nthen\n";
+        String eventMatcher = makeEventMatcher(event);
         try {
-            ruleManager.add(id, code);
+            ruleManager.add(id, String.format(EVENT_REGISTRATION_RULE_TEMPLATE, eventMatcher));
         } catch (RuleBaseException e) {
             throw new IllegalArgumentException(e);
         }
         log.info("registering Event: " + event);
+    }
+
+    private String makeEventMatcher(RemoteEvent event) {
+        return String.format("Event(type == \"%s\")", event.getType());
     }
 
     public void setRuleManager(RuleManager ruleManager) {
