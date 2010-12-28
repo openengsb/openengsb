@@ -81,7 +81,7 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
 
     @Override
     public Task getTaskForId(String id) {
-        Task example=Task.createTaskWithAllValuesSetToNull();
+        Task example = Task.createTaskWithAllValuesSetToNull();
         example.setTaskId(id);
         return getTasksForExample(example).get(0);
     }

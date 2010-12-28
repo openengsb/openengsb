@@ -25,7 +25,6 @@ import static org.mockito.Mockito.when;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
@@ -42,9 +41,12 @@ public class WebTaskboxServiceTest {
     private WebTaskboxServiceImpl service;
     private PersistenceService persistenceService;
     private WorkflowService workflowService;
+    private WicketTester tester;
     
     @Before
     public void init() throws Exception {
+        tester = new WicketTester();
+        
         workflowService = mock(WorkflowService.class);
         persistenceService = mock(PersistenceService.class);
         PersistenceManager persistenceManager = mock(PersistenceManager.class);

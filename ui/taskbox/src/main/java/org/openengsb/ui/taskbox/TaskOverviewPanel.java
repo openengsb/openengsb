@@ -1,3 +1,19 @@
+/**
+ * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.openengsb.ui.taskbox;
 
 import java.util.ArrayList;
@@ -31,7 +47,7 @@ public class TaskOverviewPanel extends Panel {
         ArrayList<IColumn<Task>> columns = new ArrayList<IColumn<Task>>();
 
         IColumn actionsColumn = new FilteredAbstractColumn<Ticket>(Model.of("Actions")) {
-
+        
             @Override
             public Component getFilter(String componentId, FilterForm form) {
                 return new GoAndClearFilter(componentId, form);
@@ -45,10 +61,14 @@ public class TaskOverviewPanel extends Panel {
         };
         columns.add(actionsColumn);
 
-        columns.add(new TextFilteredPropertyColumn<Task, String>(Model.of("TaskId"), "taskId", "taskId"));
-        columns.add(new TextFilteredPropertyColumn<Task, String>(Model.of("TaskType"), "taskType", "taskType"));
-        columns.add(new TextFilteredPropertyColumn<Task, String>(Model.of("Description"), "description", "description"));
-        columns.add(new PropertyColumn(Model.of("TaskCreationTimestamp"), "taskCreationTimestamp", "taskCreationTimestamp"));
+        columns.add(new TextFilteredPropertyColumn<Task, String>(
+                Model.of("TaskId"), "taskId", "taskId"));
+        columns.add(new TextFilteredPropertyColumn<Task, String>(
+                Model.of("TaskType"), "taskType", "taskType"));
+        columns.add(new TextFilteredPropertyColumn<Task, String>(
+                Model.of("Description"), "description", "description"));
+        columns.add(new PropertyColumn(
+                Model.of("TaskCreationTimestamp"), "taskCreationTimestamp", "taskCreationTimestamp"));
         FilterForm form = new FilterForm("form", dataProvider);
 
         DefaultDataTable<Task> dataTable = new DefaultDataTable<Task>("dataTable", columns, dataProvider, 10);

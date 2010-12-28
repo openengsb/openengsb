@@ -1,5 +1,20 @@
-package org.openengsb.ui.taskbox;
+/**
+ * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package org.openengsb.ui.taskbox;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -23,7 +38,7 @@ public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTask
     
     @Override
     public Panel getTaskPanel(Task task, String wicketPanelId) throws TaskboxException {
-        if(panelMap.containsKey(task.getTaskType())){
+        if (panelMap.containsKey(task.getTaskType())) {
             Panel p = null;
             try {
                 Class panelClass = panelMap.get(task.getTaskType());
@@ -34,7 +49,7 @@ public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTask
             }
             return p;
         } else {
-            registerTaskPanel(task.getTaskType(),TaskPanel.class);
+            registerTaskPanel(task.getTaskType(), TaskPanel.class);
             return getTaskPanel(task, wicketPanelId);
         }
     }
@@ -43,5 +58,4 @@ public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTask
     public void registerTaskPanel(String taskType, Class panelClass) {
         panelMap.put(taskType, panelClass);
     }
-
 }
