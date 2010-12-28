@@ -32,10 +32,12 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.test.AbstractOsgiMockServiceTest;
 import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
 
-public abstract class AbstractWorkflowServiceTest {
+public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServiceTest {
+
     protected WorkflowServiceImpl service;
     protected RuleManager manager;
     protected DummyExampleDomain logService;
@@ -52,8 +54,10 @@ public abstract class AbstractWorkflowServiceTest {
         cleanup();
     }
 
+    @Override
     @Before
     public void setUp() throws Exception {
+        super.setUp();
         setupRulemanager();
         service = new WorkflowServiceImpl();
         service.setRulemanager(manager);
