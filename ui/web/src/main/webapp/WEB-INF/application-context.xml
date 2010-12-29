@@ -65,6 +65,7 @@
   <osgi:reference id="contextCurrentService" interface="org.openengsb.core.common.context.ContextCurrentService" />
   <osgi:reference id="ruleManager" interface="org.openengsb.core.common.workflow.RuleManager" />
   <osgi:reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain" />
+  <osgi:reference id="callRouter" interface="org.openengsb.core.common.communication.CallRouter" />
 
 </beans>
 
