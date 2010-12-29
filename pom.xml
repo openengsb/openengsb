@@ -38,7 +38,7 @@
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>1</version>
+    <version>3</version>
   </parent>
 
   <groupId>org.openengsb</groupId>
@@ -68,7 +68,6 @@
     <module>branding</module>
     <module>docs</module>
     <module>poms</module>
-    <module>wrapped</module>
     <module>core</module>
     <module>domain</module>
     <module>connector</module>
@@ -462,17 +461,6 @@
       <url>http://maven.springframework.org/milestone</url>
       <snapshots>
         <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository> <!-- manually wrapped jaxb and latest version of neodatis -->
-      <id>thirdparty</id>
-      <name>OpenEngSB 3rd Party Repository</name>
-      <url>http://maven.openengsb.org/nexus/content/repositories/thirdparty/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
       </snapshots>
     </repository>
     <repository>
