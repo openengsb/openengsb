@@ -41,6 +41,7 @@ import org.drools.event.rule.DefaultAgendaEventListener;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.rule.FactHandle;
+import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -60,7 +61,8 @@ import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.springframework.osgi.context.BundleContextAware;
 
-public class WorkflowServiceImpl implements WorkflowService, RemoteEventProcessor, BundleContextAware, ServiceListener {
+public class WorkflowServiceImpl extends AbstractOpenEngSBService implements WorkflowService, RemoteEventProcessor,
+        BundleContextAware, ServiceListener {
 
     private static final String START_FLOW_CONSEQUENCE_LINE =
         "  WorkflowHelper.startFlow(kcontext.getKnowledgeRuntime(), \"%s\");\n";

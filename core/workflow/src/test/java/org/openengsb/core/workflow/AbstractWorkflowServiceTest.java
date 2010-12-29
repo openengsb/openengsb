@@ -30,6 +30,7 @@ import org.junit.BeforeClass;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.AbstractOsgiMockServiceTest;
@@ -64,6 +65,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         ContextCurrentService currentContext = mock(ContextCurrentService.class);
         when(currentContext.getThreadLocalContext()).thenReturn("42");
         service.setCurrentContextService(currentContext);
+        registerService(service, "workflowService", WorkflowService.class);
         setupDomainsAndOtherServices();
     }
 

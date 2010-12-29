@@ -17,6 +17,8 @@
 package org.openengsb.core.workflow;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.OutgoingPort;
@@ -34,6 +36,14 @@ public class OsgiHelper implements BundleContextAware {
     public void sendRemoteEvent(String portId, URI destination, RemoteEvent e) {
         OutgoingPort port = OsgiServiceUtils.getServiceWithId(bundleContext, OutgoingPort.class, portId);
         MethodCall call = new MethodCall();
+        port.send(destination, call);
+    }
+
+    public void sendRemoteEvent(String portId, URI destination, RemoteEvent e, String serviceId) {
+        OutgoingPort port = OsgiServiceUtils.getServiceWithId(bundleContext, OutgoingPort.class, portId);
+        Map<String, String> metaData = new HashMap<String, String>();
+        metaData.put("serviceId", serviceId);
+        MethodCall call = new MethodCall("processRemoteEvent", new Object[]{ e }, metaData);
         port.send(destination, call);
     }
 

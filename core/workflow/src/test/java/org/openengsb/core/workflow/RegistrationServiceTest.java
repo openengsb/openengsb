@@ -25,6 +25,9 @@ import static org.mockito.Mockito.verify;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +40,7 @@ import org.openengsb.core.common.internal.CallRouterImpl;
 import org.openengsb.core.common.internal.RequestHandlerImpl;
 import org.openengsb.core.common.workflow.EventRegistrationService;
 import org.openengsb.core.common.workflow.model.RemoteEvent;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.internal.RegistrationServiceImpl;
 import org.openengsb.core.workflow.model.TestEvent;
@@ -47,26 +51,44 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     private RequestHandler requestHandler;
     private OutgoingPort outgoingPort;
 
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         CallRouterImpl callRouterImpl = new CallRouterImpl();
         callRouterImpl.setBundleContext(bundleContext);
-        RequestHandlerImpl requestHandlerImpl = new RequestHandlerImpl();
-        requestHandlerImpl.setBundleContext(bundleContext);
+        requestHandler = getRequestHandler();
 
         regService = getRegistrationService();
-        requestHandler = mockService(RequestHandler.class, "requestHandler");
+        registerService(requestHandler, "requestHandler", RequestHandler.class);
         outgoingPort = mockService(OutgoingPort.class, "testPort");
 
         doAnswer(new Answer<Void>() {
             @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                requestHandler.handleCall((MethodCall) invocation.getArguments()[1]);
+            public Void answer(final InvocationOnMock invocation) throws Throwable {
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        requestHandler.handleCall((MethodCall) invocation.getArguments()[1]);
+                    };
+                };
+                executorService.execute(runnable);
                 return null;
             }
         }).when(outgoingPort).send(any(URI.class), any(MethodCall.class));
+    }
+
+    private RequestHandler getRequestHandler() {
+        RequestHandlerImpl requestHandlerImpl = new RequestHandlerImpl();
+        requestHandlerImpl.setBundleContext(bundleContext);
+        return requestHandlerImpl;
     }
 
     private RegistrationServiceImpl getRegistrationService() {
@@ -97,9 +119,20 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     @Test
     public void testRegisterEvent_shouldCreateRule() throws Exception {
         RemoteEvent reg = new RemoteEvent(TestEvent.class.getSimpleName());
-        reg.setProcessId(3L);
         int oldCount = manager.list(RuleBaseElementType.Rule).size();
         regService.registerEvent(reg, "testPort", URI.create("test://localhost"));
         assertThat(manager.list(RuleBaseElementType.Rule).size(), is(oldCount + 1));
+    }
+
+    @Test
+    public void testRegisterEvent_shouldProcessRemoteEvent() throws Exception {
+        RemoteEvent reg = new RemoteEvent(TestEvent.class.getSimpleName());
+        regService.registerEvent(reg, "testPort", URI.create("test://localhost"), "workflowService");
+        String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
+        service.processEvent(new TestEvent());
+        executorService.shutdown();
+        executorService.awaitTermination(3, TimeUnit.SECONDS);
+        verify(logService).doSomething("it works");
     }
 }

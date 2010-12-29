@@ -18,7 +18,6 @@ package org.openengsb.core.common.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
@@ -35,6 +34,9 @@ public class RequestHandlerImpl implements RequestHandler, BundleContextAware {
     @Override
     public MethodReturn handleCall(MethodCall call) {
         String serviceId = call.getMetaData().get("serviceId");
+        if (serviceId == null) {
+            throw new IllegalArgumentException("missing definition of serviceid in methodcall");
+        }
         OpenEngSBService service = OsgiServiceUtils.getServiceWithId(bundleContext, OpenEngSBService.class, serviceId);
 
         Object[] args = call.getArgs();

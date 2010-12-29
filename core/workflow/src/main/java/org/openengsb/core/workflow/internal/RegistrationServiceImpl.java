@@ -17,7 +17,6 @@
 package org.openengsb.core.workflow.internal;
 
 import java.net.URI;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.workflow.EventRegistrationService;
@@ -32,24 +31,38 @@ public class RegistrationServiceImpl implements EventRegistrationService {
     private static final String EVENT_REGISTRATION_RULE_TEMPLATE = "when event : %s\n" +
             "then\n" +
             "RemoteEvent re = new RemoteEvent(event.getType());\n" +
-            "osgiHelper.sendRemoteEvent(\"%s\", URI.create(\"%s\"), re);\n";
+            "%s\n";
+    private static final String OSGI_HELPER_TEMPLATE1 = "osgiHelper.sendRemoteEvent(\"%s\", URI.create(\"%s\"), re);";
+    private static final String OSGI_HELPER_TEMPLATE2 =
+        "osgiHelper.sendRemoteEvent(\"%s\", URI.create(\"%s\"), re, \"%s\");";
 
     private Log log = LogFactory.getLog(RegistrationServiceImpl.class);
 
     private RuleManager ruleManager;
 
     @Override
-    public void registerEvent(RemoteEvent event, String portId, URI returnAddress) {
+    public void registerEvent(RemoteEvent event, String portId, URI returnAddress, String serviceId) {
         String name =
             String.format("Notify %s via %s when %s occurs", returnAddress.toString(), portId, event.getType());
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, name);
         String eventMatcher = makeEventMatcher(event);
         try {
-            ruleManager.add(id, String.format(EVENT_REGISTRATION_RULE_TEMPLATE, eventMatcher, portId, returnAddress));
+            String osgiHelperStatement;
+            if (serviceId == null) {
+                osgiHelperStatement = String.format(OSGI_HELPER_TEMPLATE1, portId, returnAddress);
+            } else {
+                osgiHelperStatement = String.format(OSGI_HELPER_TEMPLATE2, portId, returnAddress, serviceId);
+            }
+            ruleManager.add(id, String.format(EVENT_REGISTRATION_RULE_TEMPLATE, eventMatcher, osgiHelperStatement));
         } catch (RuleBaseException e) {
             throw new IllegalArgumentException(e);
         }
         log.info("registering Event: " + event);
+    }
+
+    @Override
+    public void registerEvent(RemoteEvent reg, String portId, URI returnAddress) {
+        registerEvent(reg, portId, returnAddress, null);
     }
 
     private String makeEventMatcher(RemoteEvent event) {

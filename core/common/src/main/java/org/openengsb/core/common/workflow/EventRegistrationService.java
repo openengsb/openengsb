@@ -22,6 +22,8 @@ import org.openengsb.core.common.workflow.model.RemoteEvent;
 
 public interface EventRegistrationService {
 
-    void registerEvent(RemoteEvent event, String portId, URI returnAddress);
+    void registerEvent(RemoteEvent reg, String string, URI create);
+
+    void registerEvent(RemoteEvent event, String portId, URI returnAddress, String serviceId);
 
 }

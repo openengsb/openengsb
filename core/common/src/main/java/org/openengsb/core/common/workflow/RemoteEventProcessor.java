@@ -16,9 +16,10 @@
 
 package org.openengsb.core.common.workflow;
 
+import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.workflow.model.RemoteEvent;
 
-public interface RemoteEventProcessor {
+public interface RemoteEventProcessor extends OpenEngSBService {
 
     void processRemoteEvent(RemoteEvent event) throws WorkflowException;
 
