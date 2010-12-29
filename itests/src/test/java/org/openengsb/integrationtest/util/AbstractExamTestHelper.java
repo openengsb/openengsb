@@ -73,7 +73,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
                 if (!bundle.getSymbolicName().equals(importantBundleSymbolicName)) {
                     continue;
                 }
-                waitForBlueprint(bundle);
+                waitForBundle(bundle);
                 break;
             }
         }
@@ -104,11 +104,15 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         Bundle[] bundles = bundleContext.getBundles();
         for (Bundle bundle : bundles) {
             if (bundle.getSymbolicName().equals(bundleName)) {
-                waitForBundleActivation(bundle);
-                waitForBlueprint(bundle);
+                waitForBundle(bundle);
                 return;
             }
         }
+    }
+
+    private void waitForBundle(Bundle bundle) throws InterruptedException {
+        waitForBundleActivation(bundle);
+        waitForBlueprint(bundle);
     }
 
     private void waitForBundleActivation(Bundle bundle) throws InterruptedException {
