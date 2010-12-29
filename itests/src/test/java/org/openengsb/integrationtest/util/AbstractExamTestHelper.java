@@ -67,15 +67,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
     @Before
     public void before() throws Exception {
         List<String> importantBundles = getImportantBundleSymbolicNames();
-        Bundle[] bundles = bundleContext.getBundles();
-        for (Bundle bundle : bundles) {
-            for (String importantBundleSymbolicName : importantBundles) {
-                if (!bundle.getSymbolicName().equals(importantBundleSymbolicName)) {
-                    continue;
-                }
-                waitForBundle(bundle);
-                break;
-            }
+        for (String bundle : importantBundles) {
+            waitForBundle(bundle);
         }
         authenticateAsAdmin();
     }
