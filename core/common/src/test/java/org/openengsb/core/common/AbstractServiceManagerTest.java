@@ -126,7 +126,8 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock).registerService(
-            eq(new String[]{ NullDomain.class.getName(), Domain.class.getName() }), any(NullDomain.class), eq(props));
+            eq(new String[]{ NullDomain.class.getName(), Domain.class.getName(), OpenEngSBService.class.getName() }),
+            any(NullDomain.class), eq(props));
 
         ConnectorDomainPair pair = new ConnectorDomainPair(NullDomain.class.getName(), instance.getClass().getName());
         Mockito.verify(setupStoreMock).storeConnectorSetup(pair, "test", attributes);
@@ -151,7 +152,7 @@ public class AbstractServiceManagerTest {
 
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
-            eq(new String[]{ NullDomain.class.getName(), Domain.class.getName() }),
+            eq(new String[]{ NullDomain.class.getName(), Domain.class.getName(), OpenEngSBService.class.getName() }),
             any(Proxy.class),
             eq(props));
         inOrder.verify(setupStoreMock).storeConnectorSetup(pair, "test", verificationAttributes);
@@ -180,7 +181,7 @@ public class AbstractServiceManagerTest {
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.when(
             bundleContextMock.registerService(
-                eq(new String[]{ NullDomain.class.getName(), Domain.class.getName() }),
+                eq(new String[]{ NullDomain.class.getName(), Domain.class.getName(), OpenEngSBService.class.getName() }),
                 any(NullDomain.class), eq(props))).thenReturn(serviceRegistrationMock);
         return serviceRegistrationMock;
     }
