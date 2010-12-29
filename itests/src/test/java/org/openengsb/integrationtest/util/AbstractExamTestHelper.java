@@ -75,6 +75,7 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     public static List<String> getImportantBundleSymbolicNames() {
         List<String> importantBundles = new ArrayList<String>();
+        importantBundles.add("org.openengsb.core.common");
         importantBundles.add("org.openengsb.core.persistence");
         importantBundles.add("org.openengsb.core.workflow");
         importantBundles.add("org.openengsb.core.security");
