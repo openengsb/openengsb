@@ -36,6 +36,10 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.validation.FormValidator;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 
+/**
+ * Creates a panel containing a service-editor, for usage in forms.
+ *
+ */
 @SuppressWarnings("serial")
 public class ServiceEditorPanel extends Panel {
 
@@ -60,6 +64,10 @@ public class ServiceEditorPanel extends Panel {
         add(checkbox);
     }
 
+    /**
+     * attach a ServiceValidator to the given form. This formValidator is meant to validate the fields in context to
+     * each other. This validation is only done on submit.
+     */
     public void attachFormValidator(final Form<?> form, final FormValidator validator) {
         form.add(new AbstractFormValidator() {
 
@@ -102,7 +110,10 @@ public class ServiceEditorPanel extends Panel {
         });
     }
 
-    public void addAjaxValidationToForm(Form<?> form) {
+    /**
+     * enable ad-hoc validation on all fields in your form
+     */
+    public static void addAjaxValidationToForm(Form<?> form) {
         AjaxFormValidatingBehavior.addToAllFormComponents(form, "onBlur");
         AjaxFormValidatingBehavior.addToAllFormComponents(form, "onChange");
     }

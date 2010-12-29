@@ -40,23 +40,6 @@ public class ProcessBagTest {
         pb = new ProcessBag();
     }
 
-    @Test
-    public void constructorAndGetMethods_shouldReturnCorrectValues() throws Exception {
-        pb = new ProcessBag("4711", "c", "test-user");
-
-        assertEquals(pb.getProcessId(), "4711");
-        assertEquals(pb.getContext(), "c");
-        assertEquals(pb.getUser(), "test-user");
-    }
-
-    @Test
-    public void getSetProperty_shouldSetAndGetProperValues() throws Exception {
-        pb = new ProcessBag("4711", "c", "test-user");
-        pb.addProperty("test", "42");
-        assertTrue(pb.containsProperty("test"));
-        assertEquals(pb.getProperty("test"), "42");
-    }
-
     @Test(expected = ProcessBagException.class)
     public void addProperty_shouldReturnException() throws ProcessBagException {
         pb.addProperty("test", "42");
@@ -74,7 +57,7 @@ public class ProcessBagTest {
         pb.addProperty("test", "42");
         pb.addProperty("number", 42);
 
-        Set<String> list = pb.getPropertyKeyList();
+        Set<String> list = pb.propertyKeySet();
         assertThat(list.size(), is(2));
     }
 
@@ -84,7 +67,7 @@ public class ProcessBagTest {
         pb.addProperty("string", "42");
         pb.removeProperty("number");
 
-        Set<String> list = pb.getPropertyKeyList();
+        Set<String> list = pb.propertyKeySet();
         assertTrue(list.contains("string"));
         assertFalse(list.contains("number"));
     }
@@ -94,7 +77,7 @@ public class ProcessBagTest {
         pb.addProperty("test", "42");
         pb.addProperty("number", 42);
 
-        assertTrue(pb.getPropertyCount() == 2);
+        assertTrue(pb.propertyCount() == 2);
     }
 
     @Test
@@ -110,7 +93,7 @@ public class ProcessBagTest {
         pb.addProperty("number", 42);
 
         pb.removeAllProperties();
-        assertTrue(pb.getPropertyCount() == 0);
+        assertTrue(pb.propertyCount() == 0);
     }
 
     @Test
@@ -128,7 +111,7 @@ public class ProcessBagTest {
         assertThat(processIdFuture.isDone(), is(false));
 
         // just call it to make sure it isn't blocking
-        pb.getPropertyCount();
+        pb.propertyCount();
 
         pb.setProcessId("foo");
         processIdFuture.get(1, TimeUnit.SECONDS);

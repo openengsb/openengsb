@@ -27,6 +27,9 @@ import org.apache.wicket.validation.IValidator;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
 
+/**
+ * Field intended for editing a property in a bean (e.g. a service).
+ */
 @SuppressWarnings("serial")
 public abstract class AbstractField<T> extends Panel {
 

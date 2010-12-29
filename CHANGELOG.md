@@ -38,6 +38,7 @@ openengsb-1.1.0.RELEASE
 
 ### New Features & Changed Behaviour
   * Added tooling plugin to execute license-check plugin and assemble scripts via mvn.
+  * Added possibility to brand konsole
 
 ### Depricated or Removed Features
 

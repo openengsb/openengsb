@@ -26,42 +26,19 @@
     <openengsb.version.number>${project.version}</openengsb.version.number>
     <openengsb.version.name.adjective>Joyful</openengsb.version.name.adjective>
     <openengsb.version.name.noun>Jerry</openengsb.version.name.noun>
-    <!-- General Settings -->
-    <root.basedir>${project.basedir}</root.basedir>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- Environment Versions -->
-    <jdk.version>1.6</jdk.version>
-    <mvn.version>2.1</mvn.version>
     <!-- maven plugin versions -->
-    <maven.plugin.clean.version>2.4.1</maven.plugin.clean.version>
-    <maven.plugin.compiler.version>2.3.2</maven.plugin.compiler.version>
-    <maven.plugin.deploy.version>2.5</maven.plugin.deploy.version>
-    <maven.plugin.eclipse.version>2.8</maven.plugin.eclipse.version>
-    <maven.plugin.helper.version>1.5</maven.plugin.helper.version>
-    <maven.plugin.install.version>2.3.1</maven.plugin.install.version>
-    <maven.plugin.jar.version>2.3.1</maven.plugin.jar.version>
-    <maven.plugin.javadoc.version>2.7</maven.plugin.javadoc.version>
     <maven.plugin.mvn.license>1.8.0</maven.plugin.mvn.license>
-    <maven.plugin.resources.version>2.4.3</maven.plugin.resources.version>
-    <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
-    <maven.plugin.site.version>3.0-beta-3</maven.plugin.site.version>
-    <maven.plugin.source.version>2.1.2</maven.plugin.source.version>
-    <maven.plugin.surefire.version>2.6</maven.plugin.surefire.version>
-    <maven.plugin.surefire.report.version>2.6</maven.plugin.surefire.report.version>
     <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
     <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>
-
-    <javax.xml.soap>1.3.0</javax.xml.soap>
     <!-- Dependency Versions -->
+    <javax.xml.soap>1.3.0</javax.xml.soap>
     <junit.version>4.8.2</junit.version>
-    <twdata.cli.version>1.0.5</twdata.cli.version>
-    <clover.version>3.0.2</clover.version>
   </properties>
 
   <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>5</version>
+    <groupId>org.openengsb</groupId>
+    <artifactId>openengsb-root</artifactId>
+    <version>3</version>
   </parent>
 
   <groupId>org.openengsb</groupId>
@@ -88,9 +65,9 @@
 
   <modules>
     <module>tooling</module>
+    <module>branding</module>
     <module>docs</module>
     <module>poms</module>
-    <module>wrapped</module>
     <module>core</module>
     <module>domain</module>
     <module>connector</module>
@@ -99,193 +76,11 @@
     <module>itests</module>
   </modules>
 
-  <inceptionYear>2009</inceptionYear>
-
   <scm>
     <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
     <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
     <url>http://github.com/openengsb/openengsb</url>
   </scm>
-
-  <issueManagement>
-    <system>JIRA</system>
-    <url>http://issues.openengsb.org/jira/browse/OPENENGSB</url>
-  </issueManagement>
-
-  <ciManagement>
-    <system>OpenCIT</system>
-    <url>http://build.openengsb.org/opencit/</url>
-  </ciManagement>
-
-  <developers>
-    <developer>
-      <id>api</id>
-      <name>Andreas Pieber</name>
-      <email>andreas.pieber [at] ifs.tuwien.ac.at</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Project Lead</role>
-        <role>Developer</role>
-        <role>Release Manager</role>
-        <role>Administrator</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>mha</id>
-      <name>Michael Handler</name>
-      <email>michael.handler [at] fullstop.at</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-        <role>Release Manager</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>cgr</id>
-      <name>Christoph Gritschenberger</name>
-      <email>e0525747 [at] student.tuwien.ac.at</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-        <role>Release Manager</role>
-        <role>Administrator</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>mzo</id>
-      <name>Michael Zoech</name>
-      <email>zoech [at] qse.ifs.tuwien.ac.at</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>pho</id>
-      <name>Philipp Hoenisch</name>
-      <email>philipp.hoenisch [at] gmail.com</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>tho</id>
-      <name>Tobias Hochwallner</name>
-      <email>tobster [at] gmx.at</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>fmo</id>
-      <name>Florian Motlik</name>
-      <email>flomotlik [at] gmail.com</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-        <role>Release Manager</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>mhe</id>
-      <name>Michael Heil</name>
-      <email>michael.heil [at] chello.at</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-  </developers>
-
-  <contributors>
-    <contributor>
-      <name>Patrick Peer</name>
-      <email>e0326352 [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Christoph Zehetner</name>
-      <email>christoph.zehetner [at] gmx.at</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Alexander Pucher</name>
-      <email>engsb [at] alexander-pucher.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>David Waldhans</name>
-      <email>david [at] waldhans.at</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Lukas Puschmann</name>
-      <email>lukas.puschmann [at] gmx.at</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Johannes Binder</name>
-      <email>j.binder.x [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Gernot Rumpold</name>
-      <email>gernot.rumpold [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Florian Waltersdorfer</name>
-      <email>ignatiomobius [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Christoph Leiter</name>
-      <email>openengsb [at] christophleiter.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Kristof Meixner</name>
-      <email>kristof.meixner [at] fatlenny.net</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Lukas Stampf</name>
-      <email>lukas.stampf [at] gmx.at</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Gregor Ryba</name>
-      <email>gregor.ryba [at] infor.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Daniel Driza</name>
-      <email>daniel.driza [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Ioanna Lytra</name>
-      <email>jlytra [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Petr Horinek</name>
-      <email>horinek.petr [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Eduard Szente</name>
-      <email>eduard.szente [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Christoph Karner</name>
-      <email>ch.karner [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-  </contributors>
 
   <build>
     <resources>
@@ -309,68 +104,6 @@
       </extension>
     </extensions>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.plugin.compiler.version}</version>
-        <configuration>
-          <source>${jdk.version}</source>
-          <target>${jdk.version}</target>
-          <fork>true</fork>
-          <meminitial>128m</meminitial>
-          <maxmem>512m</maxmem>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>${maven.plugin.jar.version}</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-clean-plugin</artifactId>
-        <version>${maven.plugin.clean.version}</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>${maven.plugin.eclipse.version}</version>
-        <configuration>
-          <downloadSources>true</downloadSources>
-          <downloadJavadocs>true</downloadJavadocs>
-          <workspace>eclipse-workspace</workspace>
-          <workspaceCodeStylesURL>file:etc/eclipse/formatter.xml</workspaceCodeStylesURL>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>${maven.plugin.deploy.version}</version>
-        <configuration>
-          <remoteOBR>true</remoteOBR>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.twdata.maven</groupId>
-        <artifactId>maven-cli-plugin</artifactId>
-        <version>${twdata.cli.version}</version>
-      </plugin>
-      <plugin>
-        <groupId>com.atlassian.maven.plugins</groupId>
-        <artifactId>maven-clover2-plugin</artifactId>
-        <version>${clover.version}</version>
-        <configuration>
-          <generateHtml>false</generateHtml>
-          <generatePdf>false</generatePdf>
-          <generateXml>true</generateXml>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>${maven.plugin.site.version}</version>
-        <extensions>true</extensions>
-      </plugin>
       <plugin>
         <inherited>false</inherited>
         <groupId>com.mycila.maven-license-plugin</groupId>
@@ -424,45 +157,6 @@
         </configuration>
       </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>${maven.plugin.source.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${maven.plugin.javadoc.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>${maven.plugin.resources.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>${maven.plugin.install.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${maven.plugin.helper.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${maven.plugin.surefire.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-report-plugin</artifactId>
-          <version>${maven.plugin.surefire.report.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
   <profiles>
@@ -767,17 +461,6 @@
       <url>http://maven.springframework.org/milestone</url>
       <snapshots>
         <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository> <!-- manually wrapped jaxb and latest version of neodatis -->
-      <id>thirdparty</id>
-      <name>OpenEngSB 3rd Party Repository</name>
-      <url>http://maven.openengsb.org/nexus/content/repositories/thirdparty/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
       </snapshots>
     </repository>
     <repository>

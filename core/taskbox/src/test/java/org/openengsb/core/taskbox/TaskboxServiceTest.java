@@ -17,7 +17,6 @@
 package org.openengsb.core.taskbox;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -32,10 +31,9 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.model.Task;
-import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -65,30 +63,10 @@ public class TaskboxServiceTest {
         service.init();
     }
 
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testStartWorkflow_shouldStartOneWorkflow() throws TaskboxException, WorkflowException {
-        service.startWorkflow("tasktest", "ticket", null);
-
-        verify(workflowService).startFlow(Mockito.anyString(), Mockito.anyMap());
-    }
-
-    @Test(expected = TaskboxException.class)
-    public void testGetEmptyWorkflowMessage_shouldThrowTaskboxException() throws TaskboxException {
-        service.getWorkflowMessage();
-    }
-
-    @Test
-    public void testWorkflowMessage_shouldSetString() throws TaskboxException {
-        service.setWorkflowMessage("testmessage");
-        assertEquals("testmessage", service.getWorkflowMessage());
-    }
-
     @Test
     public void testCreateNewTask_shouldReturnNewTask() throws PersistenceException {
-        Task newTask = null;
-        newTask = internalService.createNewTask("testId", "testContext", "testUser");
-        assertEquals("testUser", newTask.getUser());
+        internalService.createNewTask(new ProcessBag());
+        verify(persistenceService).create(Mockito.any(Task.class));
     }
 
     @Test
@@ -99,8 +77,5 @@ public class TaskboxServiceTest {
 
         List<Task> ret = service.getOpenTasks();
         assertEquals(1, ret.size());
-        for (Task task : result) {
-            assertFalse(task.isFinished());
-        }
     }
 }
