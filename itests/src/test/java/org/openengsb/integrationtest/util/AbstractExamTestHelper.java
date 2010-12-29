@@ -156,6 +156,8 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             Helper.getDefaultOptions(),
             Helper.loadKarafFeatures("config", "ssh", "management", "wrapper", "obr"),
             Helper.setLogLevel("WARN"),
+            mavenBundle(maven().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint")
+                .version("0.2-incubating")),
             scanFeatures(maven().groupId("org.openengsb").artifactId("openengsb").type("xml").classifier("features")
                 .versionAsInProject(), "openengsb-core"), workingDirectory(getWorkingDirectory()),
             vmOption("-Dorg.osgi.framework.system.packages.extra=sun.reflect"),
