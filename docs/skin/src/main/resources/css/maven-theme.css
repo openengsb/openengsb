@@ -34,14 +34,11 @@ code{
 a {
   text-decoration: none;
 }
-a:link {
-  color:#47a;
-}
-a:visited {
-  color:#68a;
+a:link, a:visited {
+  color:#8D0000;
 }
 a:active, a:hover {
-  color:#990000;
+  color:#590000
 }
 #legend li.externalLink {
   background: url(../images/external.png) left top no-repeat;
@@ -64,14 +61,14 @@ h2 {
   color: #333333;
 }
 h3 {
-  padding: 4px 4px 4px 24px;
-  color: #666;
-  background-color: #ccc;
+  padding: 4px 4px 4px 28px;
+  color: #FFF;
+  background-color: #AB0000;
   font-weight: bold;
   font-size: 14px;
-  background-image: url(../images/h3.jpg);
+  background-image: url(../images/design/h3.png);
   background-repeat: no-repeat;
-  background-position: left bottom;
+  background-position: left center;
 }
 p {
   line-height: 1.3em;
@@ -79,9 +76,9 @@ p {
   color: #000;
 }
 #breadcrumbs {
-  height: 13px;
+/*  height: 13px;
   background-image: url(../images/breadcrumbs.jpg);
-  padding: 5px 10px 14px 20px;
+  padding: 5px 10px 14px 20px;	*/
 }
 * html #breadcrumbs {
   padding-bottom: 8px;
@@ -113,7 +110,7 @@ p {
 
 table.bodyTable th {
   color: white;
-  background-color: #bbb;
+  background-color: #850000;
   text-align: left;
   font-weight: bold;
 }
@@ -131,7 +128,7 @@ table.bodyTable tr.b {
 }
 
 table.bodyTable tr.a:hover, table.bodyTable tr.b:hover {
-  background: #dfe3db;
+  background: #ffe8e8;
 }
 
 .source {
@@ -157,6 +154,7 @@ dt {
 
 table {
   font-size: 10px;
+  border: 1px solid #850000;
 }
 .xright a:link, .xright a:visited, .xright a:active {
   color: #666;
@@ -165,8 +163,8 @@ table {
   color: #003300;
 }
 #banner {
-  height: 93px;
-  background: url(../images/banner.jpg);
+/*  height: 93px;
+  background: url(../images/banner.jpg);	*/
 }
 #navcolumn ul {
   margin: 5px 0 15px -0em;
@@ -175,7 +173,7 @@ table {
   color: #333333;
 }
 #navcolumn ul a:hover {
-  color: red;
+  color: #8D0000;
 }
 #intro {
   border: solid #ccc 1px;
@@ -193,7 +191,7 @@ table {
 #footer {
   padding: 10px;
   margin: 20px 0px 20px 0px;
-  border-top: solid #ccc 1px;
+/*  border-top: solid #ccc 1px;	*/
   color: #333333;
 }
 
@@ -211,4 +209,86 @@ table {
 
 .infomark {
   background-image: url(../images/icon_info_sml.gif);
+}
+
+
+/*** openEngSB Design ***/
+body {
+	background-image: url('../images/design/background.jpg');
+}
+
+#header {
+	background-color: #000000;
+}
+
+#banner {
+	color: #FFFFFF;
+	height: 126px !important;
+}
+
+#bannerLeft img {
+	top: 30px;
+	left: 10%;
+}
+
+#breadcrumbs {
+	background-color: #1D1D1D;
+	border-width: 1px 1px 0 1px;
+	border-color: #767676;
+	border-style: solid;
+}
+
+#breadcrumbs, #breadcrumbs a {
+	color: #EEEEEE;
+}
+
+#breadcrumbs a.externalLink {
+	background: none;
+	padding-right: 0;
+}
+
+#content, #breadcrumbs, #footer {
+	margin: 0 10% 0 10%;
+}
+
+#body {
+	padding-top: 12px;
+	background-image: url('../images/design/mainBackground.png');
+	background-repeat:repeat-x;
+}
+
+#content {
+	background-color: #F2F2F2;
+	border-width: 0 1px 1px 1px;
+	border-style: solid;
+	border-color: #ABAAAA;
+}
+
+#leftColumn {
+	overflow: visible;
+}
+
+#navcolumn .menuItem {
+	position: relative;
+	left: -26px;
+	padding-bottom: 11px;
+	background-image: url('../images/design/navigationCorner.png');
+	background-repeat:no-repeat;
+	background-position: left bottom;
+}
+
+#navcolumn h5 {
+	background-image: none;
+	border:1px solid #FFFFFF;
+	background-color: #AB0000;
+	background-image: url('../images/design/navigationBackground.png');
+	background-repeat:repeat-x;
+	color: #FFFFFF;
+	padding: 4px;
+	text-align:right;
+	-moz-box-shadow: 2px 2px 4px #999;
+	-webkit-box-shadow: 2px 2px 4px #999;
+	box-shadow: 2px 2px 4px #999;
+	width: 170px;
+	font-weight: normal;
 }
