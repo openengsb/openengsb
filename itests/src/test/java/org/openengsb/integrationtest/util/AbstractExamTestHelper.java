@@ -53,6 +53,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
+    public enum SetupType {
+        BLUEPRINT, SPRING
+    }
+
     @Inject
     private BundleContext bundleContext;
 
@@ -68,8 +72,9 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
     public void before() throws Exception {
         List<String> importantBundles = getImportantBundleSymbolicNames();
         for (String bundle : importantBundles) {
-            waitForBundle(bundle);
+            waitForBundle(bundle, SetupType.BLUEPRINT);
         }
+        waitForBundle("org.openengsb.ui.web", SetupType.SPRING);
         authenticateAsAdmin();
     }
 
@@ -94,19 +99,23 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    protected void waitForBundle(String bundleName) throws InterruptedException {
+    protected void waitForBundle(String bundleName, SetupType setupType) throws InterruptedException {
         Bundle[] bundles = bundleContext.getBundles();
         for (Bundle bundle : bundles) {
             if (bundle.getSymbolicName().equals(bundleName)) {
-                waitForBundle(bundle);
+                waitForBundle(bundle, setupType);
                 return;
             }
         }
     }
 
-    private void waitForBundle(Bundle bundle) throws InterruptedException {
+    private void waitForBundle(Bundle bundle, SetupType setupType) throws InterruptedException {
         waitForBundleActivation(bundle);
-        waitForBlueprint(bundle);
+        if (setupType == SetupType.SPRING) {
+            waitForSpring(bundle);
+        } else {
+            waitForBlueprint(bundle);
+        }
     }
 
     private void waitForBundleActivation(Bundle bundle) throws InterruptedException {
@@ -118,6 +127,17 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
             Thread.sleep(3000);
             times++;
         }
+    }
+
+    private void waitForSpring(Bundle bundle) throws InterruptedException {
+        ServiceTracker tracker =
+            new ServiceTracker(bundle.getBundleContext(), "org.springframework.context.ApplicationContext", null);
+        tracker.open();
+        Object service = tracker.waitForService(60000);
+        if (service == null) {
+            Assert.fail(String.format("Bundle %s does not start spring service", bundle.getSymbolicName()));
+        }
+        tracker.close();
     }
 
     private void waitForBlueprint(Bundle bundle) throws InterruptedException {

@@ -32,8 +32,7 @@ public class NeodatisPersistenceServiceTest extends PersistenceServiceTest {
 
     @Override
     protected PersistenceService createPersitenceService() throws Exception {
-        CustomClassLoader classLoader = new CustomClassLoader(getClass().getClassLoader(), Mockito.mock(Bundle.class));
-        persistence = new NeodatisPersistenceService("target/db.data", classLoader);
+        persistence = new NeodatisPersistenceService("target/db.data", Mockito.mock(Bundle.class));
         return persistence;
     }
 

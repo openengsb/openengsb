@@ -35,18 +35,21 @@ import org.neodatis.odb.OdbConfiguration;
 import org.neodatis.odb.core.query.nq.NativeQuery;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceService;
+import org.osgi.framework.Bundle;
 
 public class NeodatisPersistenceService implements PersistenceService {
+
+    private static final Object LOCK = new Object();
 
     private final String dbFile;
 
     private final Semaphore semaphore = new Semaphore(1);
 
-    private final CustomClassLoader loader;
+    private final Bundle bundle;
 
-    public NeodatisPersistenceService(String dbFile, CustomClassLoader loader) {
+    public NeodatisPersistenceService(String dbFile, Bundle bundle) {
         this.dbFile = dbFile;
-        this.loader = loader;
+        this.bundle = bundle;
     }
 
     @Override
@@ -183,7 +186,6 @@ public class NeodatisPersistenceService implements PersistenceService {
         }
     }
 
-    @SuppressWarnings("serial")
     private <TYPE> List<TYPE> queryByExample(ODB database, TYPE example) {
         try {
             List<Method> getters = reflectGettersFromPersistenceClass(example.getClass());
@@ -233,8 +235,8 @@ public class NeodatisPersistenceService implements PersistenceService {
         }
         try {
             ODB database = null;
-            synchronized (OdbConfiguration.class) {
-                configureLoader(object);
+            synchronized (LOCK) {
+                CustomClassLoader loader = configureLoader(object);
                 OdbConfiguration.setClassLoader(loader);
                 database = ODBFactory.open(dbFile);
             }
@@ -245,12 +247,15 @@ public class NeodatisPersistenceService implements PersistenceService {
         }
     }
 
-    private void configureLoader(Object object) {
+    private CustomClassLoader configureLoader(Object object) {
+        CustomClassLoader loader = new CustomClassLoader(this.getClass().getClassLoader(), bundle);
         if (object != null) {
+            loader.addClassToPool(object.getClass());
             loader.setBackUpClassLoader(object.getClass().getClassLoader());
         } else {
             loader.setBackUpClassLoader(null);
         }
+        return loader;
     }
 
 }
