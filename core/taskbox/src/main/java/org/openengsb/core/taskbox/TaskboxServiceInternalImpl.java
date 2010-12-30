@@ -16,8 +16,6 @@
 
 package org.openengsb.core.taskbox;
 
-import java.util.HashMap;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.BundleContextAware;
@@ -55,4 +53,3 @@ public class TaskboxServiceInternalImpl implements TaskboxServiceInternal, Bundl
         log.info("new human task with id " + task.getTaskId() + " created");
     }
 }
-
