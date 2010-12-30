@@ -74,6 +74,13 @@
       <artifactId>org.apache.felix.main</artifactId>
       <version>3.0.1</version>
     </dependency>
+    
+    <!-- Blueprint Dependency -->
+    <dependency>
+      <groupId>org.apache.aries.blueprint</groupId>
+      <artifactId>org.apache.aries.blueprint</artifactId>
+      <version>${aries.blueprint.version}</version>
+    </dependency>
 
     <!-- Feature File Dependencies -->
     <dependency>
