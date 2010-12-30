@@ -18,7 +18,6 @@ package org.openengsb.core.common;
 
 import static java.lang.String.format;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -29,7 +28,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-public class ForwardHandler implements InvocationHandler {
+public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
 
     private Log log = LogFactory.getLog(ForwardHandler.class);
 
@@ -41,8 +40,12 @@ public class ForwardHandler implements InvocationHandler {
 
     private String domainName;
 
+    public ForwardHandler() {
+        super(true);
+    }
+
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws IllegalAccessException,
+    public Object handleInvoke(Object proxy, Method method, Object[] args) throws IllegalAccessException,
         InvocationTargetException {
         log.info("Forwarding invocation to default connector");
         String connectorId = context.getValue("/domain/" + domainName + "/defaultConnector/id");
