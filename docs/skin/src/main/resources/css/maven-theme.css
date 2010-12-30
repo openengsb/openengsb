@@ -62,7 +62,6 @@ h2 {
 }
 h3 {
   padding: 4px 4px 4px 28px;
-  color: #FFF;
   background-color: #AB0000;
   font-weight: bold;
   font-size: 14px;
@@ -70,6 +69,11 @@ h3 {
   background-repeat: no-repeat;
   background-position: left center;
 }
+
+h3, h3 a, h3 a.externalLink {
+	color: #FFF;
+}
+
 p {
   line-height: 1.3em;
   font-size: 12px;
