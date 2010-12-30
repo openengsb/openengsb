@@ -353,14 +353,13 @@ public class WorkflowServiceTest {
     @Test
     public void testStartProcessWithProperyBag_ChangePropertyByScriptNode_shouldChangeProperty() throws Exception {
         ProcessBag processBag = new ProcessBag();
-        processBag.addProperty("test", "test");
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", processBag);
 
         long id = service.startFlow("propertybagtest", parameterMap);
         service.waitForFlowToFinish(id);
 
-        assertThat((String) processBag.getProperty("test"), is("xyz"));
+        assertThat((String) processBag.getProperty("test"), is(String.valueOf(id)));
     }
 
     @Test(timeout = 4000)

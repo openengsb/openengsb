@@ -27,6 +27,11 @@ import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.ui.common.wicket.model.MapModel;
 import org.openengsb.ui.common.wicket.util.MethodUtil;
 
+/**
+ * A Panel that serves as an Editor for Beans. It generates fields for each property (using a
+ *
+ * @link{org.openengsb.ui.common.wicket.editor.AttributeEditorUtil ) of the given type, and saves the data in a Map
+ */
 @SuppressWarnings("serial")
 public class BeanEditorPanel extends Panel {
 

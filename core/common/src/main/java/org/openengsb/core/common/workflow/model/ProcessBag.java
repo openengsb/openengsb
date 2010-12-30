@@ -32,6 +32,7 @@ public class ProcessBag {
     private String context;
     private String user;
     private Object processIdLock = new Object();
+    private boolean empty = false;
 
     private Map<String, Object> properties;
 
@@ -50,13 +51,6 @@ public class ProcessBag {
         this.user = bag.user;
     }
 
-    public ProcessBag(String processId, String context, String user) {
-        this();
-        this.processId = processId;
-        this.context = context;
-        this.user = user;
-    }
-
     public void setProcessId(String processId) {
         synchronized (processIdLock) {
             this.processId = processId;
@@ -65,6 +59,9 @@ public class ProcessBag {
     }
 
     public String getProcessId() {
+        if (empty) {
+            return processId;
+        }
         synchronized (processIdLock) {
             while (processId == null) {
                 try {
@@ -93,10 +90,6 @@ public class ProcessBag {
         return user;
     }
 
-    public void setProperties(Map<String, Object> properties) {
-        this.properties = properties;
-    }
-    
     /**
      * Adds a new property if, but only if it does not exist already
      * 
@@ -135,15 +128,19 @@ public class ProcessBag {
         return properties.get(key).getClass();
     }
 
-    public Set<String> getPropertyKeyList() {
+    public Set<String> propertyKeySet() {
         return properties.keySet();
     }
 
-    public int getPropertyCount() {
+    public int propertyCount() {
         return properties.size();
     }
 
     public void removeAllProperties() {
         properties.clear();
+    }
+
+    public void setEmpty() {
+        empty = true;
     }
 }

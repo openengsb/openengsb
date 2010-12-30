@@ -18,6 +18,8 @@ package org.openengsb.core.taskbox;
 
 import java.util.HashMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
@@ -27,6 +29,7 @@ import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.osgi.framework.BundleContext;
 
 public class TaskboxServiceInternalImpl implements TaskboxServiceInternal, BundleContextAware {
+    private Log log = LogFactory.getLog(getClass());
 
     private PersistenceService persistence;
     private PersistenceManager persistenceManager;
@@ -46,41 +49,10 @@ public class TaskboxServiceInternalImpl implements TaskboxServiceInternal, Bundl
     }
 
     @Override
-    public Task createNewTask(ProcessBag bag) throws PersistenceException {
-        Task newTask = new Task(bag);
-        persistence.create(newTask);
-        return newTask;
-    }
-
-    @Override
-    public Task createNewTask(HashMap<String, Object> properties) throws PersistenceException {
-        Task newTask = new Task(properties);
-        persistence.create(newTask);
-        return newTask;
-    }
-
-    @Override
-    public Task createNewTask(String processId, String context, String user) throws PersistenceException {
-        Task newTask = new Task(processId, context, user);
-        persistence.create(newTask);
-        return newTask;
-    }
-
-    @Override
-    public Task createNewTask(String taskType, String processId, String context, String user)
-        throws PersistenceException {
-        Task newTask = new Task(taskType, processId, context, user);
-        persistence.create(newTask);
-        return newTask;
-    }
-
-    @Override
-    public Task createNewTask(String taskType, String name, String description, String processId, String context,
-            String user) throws PersistenceException {
-        Task newTask = new Task(taskType, processId, context, user);
-        newTask.setName(name);
-        newTask.setDescription(description);
-        persistence.create(newTask);
-        return newTask;
+    public void createNewTask(ProcessBag bag) throws PersistenceException {
+        Task task = new Task(bag);
+        persistence.create(task);
+        log.info("new human task with id " + task.getTaskId() + " created");
     }
 }
+

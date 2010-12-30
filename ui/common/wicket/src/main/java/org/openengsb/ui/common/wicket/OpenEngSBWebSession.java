@@ -1,4 +1,3 @@
-package org.openengsb.ui.common.wicket;
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
@@ -15,8 +14,7 @@ package org.openengsb.ui.common.wicket;
  * limitations under the License.
  */
 
-
-import static java.lang.String.format;
+package org.openengsb.ui.common.wicket;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,6 +31,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+/**
+ * Common class of sessions for use in OpenEngSB and client applications. It enforces authentication and builds the
+ * bridge to spring-security. Note: You must have an authenticationManager configured to start new sessions
+ */
 @SuppressWarnings("serial")
 public class OpenEngSBWebSession extends AuthenticatedWebSession {
 
@@ -86,7 +88,7 @@ public class OpenEngSBWebSession extends AuthenticatedWebSession {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             authenticated = authentication.isAuthenticated();
         } catch (AuthenticationException e) {
-            log.warn(format("User '%s' failed to login. Reason: %s", username, e.getMessage()));
+            log.warn(String.format("User '%s' failed to login. Reason: %s", username, e.getMessage()));
             authenticated = false;
         }
         return authenticated;

@@ -16,18 +16,14 @@
 
 package org.openengsb.core.taskbox;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.BundleContextAware;
-import org.openengsb.core.common.Event;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.taskbox.model.TaskFinishedEvent;
@@ -43,37 +39,8 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     private PersistenceManager persistenceManager;
     private BundleContext bundleContext;
 
-    private String message;
-
     public void init() {
         persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
-    }
-
-    @Override
-    public String getWorkflowMessage() throws TaskboxException {
-        if (message == null) {
-            throw new TaskboxException();
-        }
-        return message;
-    }
-
-    @Override
-    public void setWorkflowMessage(String message) {
-        this.message = message;
-    }
-
-    @Override
-    public void startWorkflow(String workflowName, String taskVariableName, Task task) throws TaskboxException {
-        try {
-            Map<String, Object> parameterMap = new HashMap<String, Object>();
-            parameterMap.put(taskVariableName, task);
-            workflowService.startFlow(workflowName, parameterMap);
-            log.trace("Started workflow " + workflowName);
-        } catch (Exception e) {
-            log.error(e.getMessage() + " STACKTRACE: " + e.getStackTrace());
-            throw new TaskboxException(e);
-        }
-
     }
 
     public void setWorkflowService(WorkflowService workflowService) {
@@ -90,14 +57,8 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     }
 
     @Override
-    public void processEvent(Event event) throws WorkflowException {
-        workflowService.processEvent(event);
-    }
-
-    @Override
     public List<Task> getOpenTasks() {
-        Task example = Task.createTaskWithAllValuesSetToNull();
-        return getTasksForExample(example);
+        return getTasksForExample(Task.createTaskWithAllValuesSetToNull());
     }
 
     @Override
@@ -113,6 +74,9 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
         } catch (PersistenceException e) {
             throw new WorkflowException(e.getMessage());
         }
+
         workflowService.processEvent(finishedEvent);
+        log.info("finished task " + task.getTaskId());
     }
 }
+
