@@ -110,7 +110,7 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
 
     @Override
     public void setThreadLocalContext(String contextId) {
-        this.currentContextId.set(contextId);
+        currentContextId.set(contextId);
         Context context = rootContext.getChild(contextId);
         Preconditions.checkArgument(context != null, "no context exists for given context id");
         currentContext.set(contextId);
@@ -132,6 +132,9 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
 
     private Context getContext(String path, boolean create) {
         Context c = getContext();
+        if (c == null) {
+            return null;
+        }
         Context parent = null;
         for (String pathElem : new ContextPath(path).getElements()) {
             parent = c;
