@@ -55,8 +55,8 @@
     <bundle>mvn:org.ops4j.pax.web/pax-web-deployer/${pax.web.version}</bundle>
     <bundle>mvn:org.ops4j.pax.url/pax-url-war/${pax.url.version}</bundle>
   </feature>
-  <!--<feature name="spring" version="${spring.version}" resolver="(obr)">-->
-  <feature name="spring" version="${spring.version}">
+  <!--<feature name="openengsb-spring" version="${spring.version}" resolver="(obr)">-->
+  <feature name="openengsb-spring" version="${spring.version}">
     <bundle>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/${geronimo.servlet.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aopalliance/${aopalliance.version}</bundle>
@@ -73,9 +73,9 @@
     <bundle>mvn:org.springframework/spring-context-support/${spring.version}</bundle>
     <bundle>mvn:org.springframework/spring-web/${spring.version}</bundle>
   </feature>
-  <!--<feature name="spring-dm" version="${spring.osgi.version}" resolver="(obr)">-->
-  <feature name="spring-dm" version="${spring.osgi.version}">
-    <feature version="${spring.version}">spring</feature>
+  <!--<feature name="openengsb-spring-dm" version="${spring.osgi.version}" resolver="(obr)">-->
+  <feature name="openengsb-spring-dm" version="${spring.osgi.version}">
+    <feature version="${spring.version}">openengsb-spring</feature>
     <bundle dependency='true'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
     <bundle>mvn:org.springframework.osgi/spring-osgi-io/${spring.osgi.version}</bundle>
     <bundle>mvn:org.springframework.osgi/spring-osgi-core/${spring.osgi.version}</bundle>
@@ -84,9 +84,9 @@
     <bundle>mvn:org.springframework.osgi/spring-osgi-annotation/${spring.osgi.version}</bundle>
     <bundle>mvn:org.apache.karaf.deployer/org.apache.karaf.deployer.spring/${karaf.version}</bundle>
   </feature>
-  <!--<feature name="spring-security" version="${spring.security.version}" resolver="(obr)">-->
-  <feature name="spring-security" version="${spring.security.version}">
-    <feature version="${spring.version}">spring</feature>
+  <!--<feature name="openengsb-spring-security" version="${spring.security.version}" resolver="(obr)">-->
+  <feature name="openengsb-spring-security" version="${spring.security.version}">
+    <feature version="${spring.version}">openengsb-spring</feature>
     <bundle>mvn:org.springframework.security/spring-security-core/${spring.security.version}</bundle>
     <bundle>mvn:org.springframework.security/spring-security-config/${spring.security.version}</bundle>
     <bundle>mvn:org.springframework.security/spring-security-web/${spring.security.version}</bundle>
@@ -114,9 +114,9 @@
       openengsb.version.name.adjective=${openengsb.version.name.adjective}
       openengsb.version.name.noun=${openengsb.version.name.noun}
     </config>
-    <feature version="${spring.version}">spring</feature>
-    <feature version="${spring.osgi.version}">spring-dm</feature>
-    <feature version="${spring.security.version}">spring-security</feature>
+    <feature version="${spring.version}">openengsb-spring</feature>
+    <feature version="${spring.osgi.version}">openengsb-spring-dm</feature>
+    <feature version="${spring.security.version}">openengsb-spring-security</feature>
     <feature version="${project.version}">aspectj</feature>
     <feature version="${drools.version}">drools</feature>
     <feature version="${project.version}">war</feature>
