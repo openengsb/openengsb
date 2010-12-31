@@ -217,7 +217,6 @@
 
   <modules>
     <module>compiled</module>
-    <module>nonosgi</module>
   </modules>
 
   <build>
