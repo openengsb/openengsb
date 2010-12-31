@@ -28,11 +28,11 @@ import org.ops4j.pax.runner.platform.internal.CommandLineBuilder;
 /**
  * Equivalent to execute karaf or karaf.bat per hand after build by mvn clean install in a (typically) assembly
  * directory.
- * 
+ *
  * @goal provision
- * 
+ *
  * @inheritedByDefault false
- * 
+ *
  * @requiresProject true
  */
 public class Provision extends AbstractOpenengsbMojo {
@@ -40,7 +40,7 @@ public class Provision extends AbstractOpenengsbMojo {
     /**
      * This setting should be done in the one of the assembly folders and have to point to the final directory where the
      * karaf system, etc configs and so on consist.
-     * 
+     *
      * @parameter expression="${provisionPathUnix}"
      */
     private String provisionPathUnix;
@@ -48,7 +48,7 @@ public class Provision extends AbstractOpenengsbMojo {
     /**
      * This setting should be done in the one of the assembly folders and have to point to the final directory where the
      * karaf system, etc configs and so on consist.
-     * 
+     *
      * @parameter expression="${provisionPathWindows}"
      */
     private String provisionPathWindows;
@@ -59,6 +59,7 @@ public class Provision extends AbstractOpenengsbMojo {
             CommandLineBuilder command = new CommandLineBuilder();
             Map<String, String> environment = new HashMap<String, String>();
             environment.put("KARAF_DEBUG", "true");
+            environment.put("KARAF_OPTS", "-Dwicket.configuration=development");
             if (System.getProperty("os.name").startsWith("Windows")) {
                 command.append(provisionPathWindows);
                 environment.put("JAVA_OPTS", "-Djline.terminal=jline.UnsupportedTerminal");
