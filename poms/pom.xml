@@ -62,7 +62,12 @@
     <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
     <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
 
-      <!-- Component Versions -->
+    <!-- Karaf versions; those will change very likely together -->
+    <karaf.version>2.1.3-SNAPSHOT</karaf.version>
+    <aries.blueprint.version>0.2-incubating</aries.blueprint.version>
+
+
+    <!-- Component Versions -->
     <osgi.version>4.2.0</osgi.version>
 
     <!-- Library Versions -->
@@ -130,7 +135,6 @@
     <felix.prefs.version>1.0.4</felix.prefs.version>
     <felix.gogo.version>0.4.0</felix.gogo.version>
     <felix.version>3.0.2</felix.version>
-    <karaf.version>2.1.3-SNAPSHOT</karaf.version>
     <mina.version>2.0.0</mina.version>
     <sshd.version>0.4.0</sshd.version>
     <jsch.version>0.1.42</jsch.version>
@@ -213,7 +217,6 @@
     <org.apache.geronimo.specs.version>1.0.1</org.apache.geronimo.specs.version>
     <javax.ejb.version>3.0.0</javax.ejb.version>
     <javax.xml.soap>1.3.0</javax.xml.soap>
-    <aries.blueprint.version>0.2-incubating</aries.blueprint.version>
   </properties>
 
   <modules>
