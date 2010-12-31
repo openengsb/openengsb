@@ -70,6 +70,16 @@
       <artifactId>pax-runner-platform</artifactId>
       <version>${paxrunner.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>${}commons.compress.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons.io.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
