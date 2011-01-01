@@ -27,7 +27,7 @@ import org.openengsb.core.common.workflow.model.ProcessBag;
  * properties that need to be changed by a user. Each time a workflow needs user interaction, such task is created from
  * the workflows ProcessBag.
  */
-public class Task extends ProcessBag implements Serializable{
+public class Task extends ProcessBag implements Serializable {
 
     public Task() {
         super();
