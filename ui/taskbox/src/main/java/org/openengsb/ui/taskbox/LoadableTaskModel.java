@@ -20,6 +20,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
 
+@SuppressWarnings("serial")
 public class LoadableTaskModel extends LoadableDetachableModel<Task> {
 
     private final String taskId;

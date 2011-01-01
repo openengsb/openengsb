@@ -19,7 +19,6 @@ package org.openengsb.ui.taskbox;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.WebTaskboxService;
@@ -33,7 +32,7 @@ public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTask
     
     @Override
     public Panel getOverviewPanel() {
-        return null;
+        return new TaskOverviewPanel("OverviewPanel");
     }
     
     @Override
@@ -56,6 +55,6 @@ public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTask
 
     @Override
     public void registerTaskPanel(String taskType, Class panelClass) {
-        panelMap.put(taskType, panelClass);
+        panelMap.put(taskType, panelClass);        
     }
 }
