@@ -25,6 +25,7 @@ import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.WebTaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.taskbox.TaskboxServiceImpl;
+import org.openengsb.ui.taskbox.web.TaskOverviewPanel;
 import org.openengsb.ui.taskbox.web.TaskPanel;
 
 public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTaskboxService {
