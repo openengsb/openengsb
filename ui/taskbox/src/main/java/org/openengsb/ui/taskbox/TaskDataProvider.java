@@ -32,7 +32,7 @@ import org.openengsb.core.common.taskbox.model.Task;
 @SuppressWarnings("serial")
 public class TaskDataProvider extends SortableDataProvider<Task> implements IFilterStateLocator {
 
-    @SpringBean
+    @SpringBean(name = "taskboxService")
     private TaskboxService taskboxService;
     private TaskFilter filter = TaskFilter.createTaskFilter();
     private List<Task> list;
