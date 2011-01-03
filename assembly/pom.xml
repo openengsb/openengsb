@@ -216,7 +216,6 @@
         <configuration>
           <appendAssemblyId>false</appendAssemblyId>
           <descriptors>
-            <descriptor>${project.basedir}/src/main/descriptors/run-bin.xml</descriptor>
             <descriptor>${project.basedir}/src/main/descriptors/unix-bin.xml</descriptor>
             <descriptor>${project.basedir}/src/main/descriptors/windows-bin.xml</descriptor>
           </descriptors>
@@ -266,8 +265,10 @@
         <artifactId>maven-openengsb-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
-          <provisionPathUnix>${project.basedir}/target/openengsb-${project.version}/openengsb-${project.version}/bin/openengsb</provisionPathUnix>
-          <provisionPathWindows>${project.basedir}/target/openengsb-${project.version}/openengsb-${project.version}/bin/openengsb.bat</provisionPathWindows>
+          <provisionArchivePathUnix>${project.basedir}/target/openengsb-${project.version}.tar.gz</provisionArchivePathUnix>
+          <provisionExecutionPathUnix>bin/openengsb</provisionExecutionPathUnix>
+          <provisionArchivePathWindows>${project.basedir}/target/openengsb-${project.version}.zip</provisionArchivePathWindows>
+          <provisionExecutionPathWindows>bin/openengsb.bat</provisionExecutionPathWindows>
         </configuration>
       </plugin>
     </plugins>

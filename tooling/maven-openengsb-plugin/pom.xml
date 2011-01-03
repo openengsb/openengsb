@@ -16,14 +16,15 @@
    limitations under the License.
 
 -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>5</version>
+    <groupId>org.openengsb.tooling</groupId>
+    <artifactId>openengsb-tooling-parent</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.tooling.pluginsuite</groupId>
@@ -48,16 +49,6 @@
     <url>http://github.com/openengsb/openengsb</url>
   </scm>
 
-  <properties>
-    <!-- settings -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <junit.version>4.8.2</junit.version>
-    <mvn.pluginapi.version>2.0</mvn.pluginapi.version>
-    <mvn.core.version>3.0</mvn.core.version>
-    <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
-    <paxrunner.version>1.5.0</paxrunner.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -79,6 +70,16 @@
       <artifactId>pax-runner-platform</artifactId>
       <version>${paxrunner.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>${commons.compress.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons.io.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -94,4 +95,3 @@
     </plugins>
   </build>
 </project>
-
