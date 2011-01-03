@@ -1,5 +1,3 @@
-package org.openengsb.ui.common.wicket;
-
 /**
  * Copyright 2010 OpenEngSB Division, Vienna University of Technology
  *
@@ -16,6 +14,8 @@ package org.openengsb.ui.common.wicket;
  * limitations under the License.
  */
 
+package org.openengsb.ui.common.wicket;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +23,12 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.context.ContextCurrentService;
 
+/**
+ * Baseclass for any page in the OpenEngSB and for client Projects. It initializes a context when started the first
+ * time. In order for this page to work, a spring-bean of the class
+ *
+ * @link{org.openengsb.core.common.context.ContextCurrentService must be available
+ */
 public class OpenEngSBPage extends WebPage {
 
     @SpringBean
@@ -76,7 +82,7 @@ public class OpenEngSBPage extends WebPage {
 
     /**
      * @return the class name, which should be the index in navigation bar
-     * 
+     *
      */
     public String getHeaderMenuItem() {
         return this.getClass().getSimpleName();

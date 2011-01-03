@@ -68,7 +68,7 @@
       <artifactId>drools-api</artifactId>
       <version>${drools.version}</version>
     </dependency>
-
+    
     <!-- Wicket Dependencies -->
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -118,6 +118,7 @@
       <version>${wicket.version}</version>
       <optional>true</optional>
     </dependency>
+    
  </dependencies>
 
 </project>

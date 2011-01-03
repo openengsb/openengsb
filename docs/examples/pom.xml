@@ -54,7 +54,6 @@
     <plugins>  
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>${maven.plugin.assembly.version}</version>
         <configuration>
           <appendAssemblyId>true</appendAssemblyId>
           <descriptors>

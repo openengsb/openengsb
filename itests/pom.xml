@@ -163,7 +163,7 @@
     <dependency>
       <groupId>org.openengsb.wrapped</groupId>
       <artifactId>net.sourceforge.htmlunit-all</artifactId>
-      <version>${project.version}</version>
+      <version>${htmlunit.wrapped.version}</version>
       <scope>test</scope>
     </dependency>
 

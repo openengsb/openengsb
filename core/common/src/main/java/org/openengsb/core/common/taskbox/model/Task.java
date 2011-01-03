@@ -61,7 +61,7 @@ public class Task extends ProcessBag implements Serializable {
     public void setTaskId(String id) {
         addOrReplaceProperty("taskId", id);
     }
-    
+
     /**
      * returns the Type of the Task. The Type is used to group similar Tasks together
      */

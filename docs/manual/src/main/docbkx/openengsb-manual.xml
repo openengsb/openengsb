@@ -108,15 +108,12 @@
     <xi:include href="developer/wrapped.xml" />
     <xi:include href="developer/release.xml" />
     <xi:include href="developer/admin.xml" />
+    <xi:include href="developer/codestyle.xml"/>
+    <xi:include href="developer/writing.code.xml"/>
+    <xi:include href="developer/recommended.eclipse.plugins.xml"/>
+    <xi:include href="developer/writing.documentation.xml"/>
   </part>
 
-  <part xml:id="appendix">
-    <title>Appendix</title>
-    <xi:include href="appendix/codestyle.xml"/>
-    <xi:include href="appendix/writing.code.xml"/>
-    <xi:include href="appendix/recommended.eclipse.plugins.xml"/>
-    <xi:include href="appendix/writing.documentation.xml"/>
-    <xi:include href="appendix/license.xml"/>
-  </part>
+
 
 </book>
