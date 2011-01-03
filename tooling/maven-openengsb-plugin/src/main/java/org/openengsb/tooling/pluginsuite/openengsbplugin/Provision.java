@@ -62,10 +62,18 @@ public class Provision extends AbstractOpenengsbMojo {
 
     /**
      * The path to the executable in the unix archive file
-     * 
+     *
      * @parameter expression="${provisionExecutionPathUnix}"
      */
     private String provisionExecutionPathUnix;
+
+    /**
+     * Sometimes it's required that some executable files, provided in {@link #provisionExecutionPathUnix} execute other
+     * files which have to made executable to work correctly on themselves. Those files should be specified here.
+     *
+     * @parameter expression="${additionalRequiredExecutionPathUnix}"
+     */
+    private String[] additionalRequiredExecutionPathUnix;
 
     /**
      * This setting should be done in the one of the assembly folders and have to point to the final directory where the
@@ -77,10 +85,18 @@ public class Provision extends AbstractOpenengsbMojo {
 
     /**
      * The path to the executable in the windows archive file
-     * 
+     *
      * @parameter expression="${provisionExecutionPathWindows}"
      */
     private String provisionExecutionPathWindows;
+
+    /**
+     * Sometimes it's required that some executable files, provided in {@link #provisionExecutionPathWindows} execute
+     * other files which have to made executable to work correctly on themselves. Those files should be specified here.
+     *
+     * @parameter expression="${additionalRequiredExecutionPathWindows}"
+     */
+    private String[] additionalRequiredExecutionPathWindows;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -92,10 +108,12 @@ public class Provision extends AbstractOpenengsbMojo {
             if (System.getProperty("os.name").startsWith("Windows")) {
                 extractWindowsArchive();
                 createExecutableCommand(command, provisionExecutionPathWindows);
+                makeAdditionalRequiredFilesExecutable(additionalRequiredExecutionPathWindows);
                 environment.put("JAVA_OPTS", "-Djline.terminal=jline.UnsupportedTerminal");
             } else {
                 extractUnixArchive();
                 createExecutableCommand(command, provisionExecutionPathUnix);
+                makeAdditionalRequiredFilesExecutable(additionalRequiredExecutionPathUnix);
             }
             executePlatform(command, environment);
         }
@@ -114,6 +132,15 @@ public class Provision extends AbstractOpenengsbMojo {
         File executable = new File(RUNNER + executablePath);
         executable.setExecutable(true);
         command.append(executable.getAbsolutePath());
+    }
+
+    private void makeAdditionalRequiredFilesExecutable(String[] additionalExecutionPath) {
+        if (additionalExecutionPath == null || additionalExecutionPath.length == 0) {
+            return;
+        }
+        for (String additionalPath : additionalExecutionPath) {
+            new File(RUNNER + additionalPath).setExecutable(true);
+        }
     }
 
     private void extractUnixArchive() throws MojoFailureException {
