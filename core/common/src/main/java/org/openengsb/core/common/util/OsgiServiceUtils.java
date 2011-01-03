@@ -26,7 +26,7 @@ public final class OsgiServiceUtils {
     public static Object getService(BundleContext bundleContext, String className, String filter) {
         ServiceReference[] allServiceReferences;
         try {
-            allServiceReferences = bundleContext.getServiceReferences(OpenEngSBService.class.getName(), filter);
+            allServiceReferences = bundleContext.getServiceReferences(className, filter);
         } catch (InvalidSyntaxException e1) {
             throw new RuntimeException(e1);
         }

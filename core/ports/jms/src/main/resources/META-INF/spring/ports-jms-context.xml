@@ -47,4 +47,11 @@
     <property name="connectionFactory" ref="jmsFactory"/>
     <property name="requestHandler" ref="requestHandler"/>
   </bean>
+  
+  <osgi:service interface="org.openengsb.core.common.communication.OutgoingPort">
+    <osgi:service-properties>
+      <entry key="id" value="jms-json" />
+    </osgi:service-properties>
+    <bean class="org.openengsb.core.ports.jms.JMSPort"/>
+  </osgi:service>
 </beans>

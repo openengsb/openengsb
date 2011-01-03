@@ -34,10 +34,6 @@
             <osgi:reference interface="org.openengsb.core.common.persistence.PersistenceManager"/>
         </property>
     </bean>
-    
-    <bean id="proxySetup" class="org.openengsb.core.common.proxy.ProxySetup" init-method="addProxiesToContext">
-      <constructor-arg ref="domainService"/>
-    </bean>
 
   <osgix:cm-properties id="settings" persistent-id="org.openengsb.settings">
     <prop key="openengsb.version.number">1.0.0.RELEASE</prop>
@@ -57,7 +53,7 @@
     <property name="domainService" ref="domainService" />
     <property name="ruleManager" ref="ruleManager" />
   </bean>
-
+  
   <osgi:list id="domains" interface="org.openengsb.core.common.DomainProvider" />
   <osgi:list id="services" interface="org.openengsb.core.common.ServiceManager" />
   <osgi:list id="managedServiceInstances" member-type="service-reference" interface="org.openengsb.core.common.Domain" />
@@ -65,7 +61,6 @@
   <osgi:reference id="contextCurrentService" interface="org.openengsb.core.common.context.ContextCurrentService" />
   <osgi:reference id="ruleManager" interface="org.openengsb.core.common.workflow.RuleManager" />
   <osgi:reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain" />
-  <osgi:reference id="callRouter" interface="org.openengsb.core.common.communication.CallRouter" />
 
 </beans>
 
