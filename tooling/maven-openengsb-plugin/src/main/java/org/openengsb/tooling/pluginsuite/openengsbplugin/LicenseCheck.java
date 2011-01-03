@@ -55,23 +55,19 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
     private File licenseHeaderFile;
     private File tmpPom;
 
+    private static final OpenEngSBMavenPluginNSContext nsContext = new OpenEngSBMavenPluginNSContext();
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        MojoExecutionException e = null;
         try {
             validateIfExecutionIsAllowed();
             licenseHeaderFile = readHeaderStringAndwriteHeaderIntoTmpFile();
             String profileName = UUID.randomUUID().toString();
             tmpPom = configureTmpPom(profileName);
             initializeMavenExecutionProperties(profileName);
-            executeMaven(tmpPom);
-        } catch (MojoExecutionException ex) {
-            e = ex;
+            executeMavenWithCustomPom(tmpPom);
         } finally {
             cleanUp();
-        }
-        if (e != null) {
-            throw e;
         }
     }
 
@@ -92,7 +88,7 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
         userProperties.put("license.strictCheck", "true");
     }
 
-    private void executeMaven(File pom) throws MojoExecutionException {
+    private void executeMavenWithCustomPom(File pom) throws MojoExecutionException {
         getNewMavenExecutor().setRecursive(true).setCustomPomFile(pom)
             .execute(this, goals, activatedProfiles, null, userProperties,
                 getProject(), getSession(), getMaven());
@@ -113,12 +109,14 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
     private File configureTmpPom(String profileName) throws MojoExecutionException {
         try {
             Document originalPomDocument = Tools.readXML(new FileInputStream(getSession().getRequest().getPom()));
+            // read plugin default configuration
             Document configDocument =
                 Tools.readXML(getClass().getClassLoader().getResourceAsStream("licenseCheck/licenseCheckConfig.xml"));
 
+            // .. and insert the profile node into the pom dom tree ..
             Node licenseCheckMojoProfileNode =
                 Tools.evaluateXPath("/lc:licenseCheckMojo/lc:profile", configDocument,
-                    new OpenEngSBMavenPluginNSContext(),
+                    nsContext,
                     XPathConstants.NODE,
                     Node.class);
 
@@ -129,8 +127,9 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
             Node importedLicenseCheckProfileNode = originalPomDocument.importNode(licenseCheckMojoProfileNode, true);
 
             Tools.insertDomNode(originalPomDocument, importedLicenseCheckProfileNode, "/pom:project/pom:profiles",
-                new OpenEngSBMavenPluginNSContext());
+                nsContext);
 
+            // .. the finally serialize that modified pom into a temporary file
             String serializedXml = Tools.serializeXML(originalPomDocument);
 
             String baseDirURI = getSession().getRequest().getPom().getParentFile().toURI().toString();

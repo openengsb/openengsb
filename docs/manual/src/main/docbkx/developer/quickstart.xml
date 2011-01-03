@@ -322,8 +322,11 @@
       <command>licenseCheck</command>
     </para>
     <para>
-      Performs a check if appropriate license headers are available in every source file. Is equivalent to executing
-      <command>mvn clean validate -Plicense-check</command>
+      Performs a check if appropriate license headers are available in every source file. A large part of the default
+      behavior of this mojo can be changed in
+      <filename>tooling/maven-openengsb-plugin/src/main/resources/licenseCheck</filename>. See 
+      <link xlink:href="http://code.google.com/p/maven-license-plugin/wiki/Configuration#maven-license-plugin_configuration_options">this site</link>
+      for available configuration options.
     </para>
   </section>
   </section>

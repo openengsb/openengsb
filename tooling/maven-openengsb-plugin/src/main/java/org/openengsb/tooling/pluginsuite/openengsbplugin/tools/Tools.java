@@ -82,6 +82,13 @@ public abstract class Tools {
 
     }
 
+    /**
+     * Renames <code>&lt;module&gt;oldStr&lt;/module&gt;</code> to <code>&lt;module&gt;newStr&lt;/module&gt;</code>
+     * 
+     * @param oldStr
+     * @param newStr
+     * @throws MojoExecutionException
+     */
     public static void renameSubmoduleInPom(String oldStr, String newStr) throws MojoExecutionException {
         try {
             File pomFile = new File("pom.xml");
@@ -95,7 +102,7 @@ public abstract class Tools {
         }
     }
 
-    public static String readValue(Scanner sc, String name, String defaultvalue) {
+    public static String readValueFromStdin(Scanner sc, String name, String defaultvalue) {
         System.out.print(String.format("%s [%s]: ", name, defaultvalue));
         String line = sc.nextLine();
         if (line == null || line.matches("[\\s]*")) {
@@ -123,11 +130,17 @@ public abstract class Tools {
         }
     }
 
+    /**
+     * Reads an XML document from an input stream but doesn't validate it against a scheme.
+     * 
+     * @param is
+     * @return
+     * @throws Exception
+     */
     public static Document readXML(InputStream is) throws Exception {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         DocumentBuilder db = dbf.newDocumentBuilder();
-        // TODO validate against scheme
         return db.parse(is);
     }
 
@@ -174,6 +187,16 @@ public abstract class Tools {
         return stringWriter.toString();
     }
 
+    /**
+     * Insert dom node into parentDoc at the given xpath (if this path doesnt exist, the elements are created). Note:
+     * text content of nodes and attributes aren't considered.
+     * 
+     * @param parentDoc
+     * @param nodeToInsert
+     * @param xpath
+     * @param nsContext
+     * @throws XPathExpressionException
+     */
     public static void insertDomNode(Document parentDoc, Node nodeToInsert, String xpath, NamespaceContext nsContext)
         throws XPathExpressionException {
         log.trace("insertDomNode() - start");
@@ -190,14 +213,11 @@ public abstract class Tools {
             log.trace(String.format("result empty: %s", result == null));
             if (result == null) {
                 String elemName = null;
-                // String elemText = null;
-                // HashMap<String, String> elemAttrs = new HashMap<String, String>();
                 // attribute filter
                 elemName = tokens[i].replaceAll("\\[.*\\]", "");
                 // namespace prefix
                 elemName = elemName.replaceAll(".*:", "");
                 log.trace(String.format("elementName: %s", elemName));
-                // TODO respect text and attributes
                 Element element = parentDoc.createElement(elemName);
                 parent.appendChild(element);
                 result = element;
@@ -209,6 +229,29 @@ public abstract class Tools {
         log.trace(String.format("node to insert = %s", nodeToInsert == null ? "null" : nodeToInsert.getLocalName()));
         parent.appendChild(nodeToInsert);
         log.trace("insertDomNode() - end");
+    }
+
+    public static int executeProcess(String[] command, File targetDirectory, boolean printOutput) throws IOException,
+        InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.directory(targetDirectory);
+        Process p = processBuilder.start();
+        if (printOutput) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        }
+        p.waitFor();
+        return p.exitValue();
+    }
+
+    public static int executeProcess(String[] command, String targetDirectory, boolean printOutput)
+        throws IOException,
+        InterruptedException {
+        String trgtDir = targetDirectory.replaceAll("\\\\", File.separator).replaceAll("/", File.separator);
+        return executeProcess(command, new File(trgtDir), printOutput);
     }
 
 }
