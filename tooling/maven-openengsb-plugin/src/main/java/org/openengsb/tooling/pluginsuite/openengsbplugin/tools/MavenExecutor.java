@@ -16,6 +16,7 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin.tools;
 
+import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
@@ -62,5 +63,7 @@ public interface MavenExecutor {
      * @param recursive <code>true</code> recursive execution of the embedded request
      */
     MavenExecutor setRecursive(boolean recursive);
+
+    MavenExecutor setCustomPomFile(File pomFile);
 
 }
