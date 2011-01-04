@@ -144,8 +144,12 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
     }
 
     private void cleanUp() {
-        licenseHeaderFile.delete();
-        tmpPom.delete();
+        if (licenseHeaderFile != null) {
+            licenseHeaderFile.delete();
+        }
+        if (tmpPom != null) {
+            tmpPom.delete();
+        }
     }
 
 }
