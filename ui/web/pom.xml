@@ -16,7 +16,9 @@
    limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>org.openengsb.ui</groupId>
@@ -39,7 +41,7 @@
   <description>Web Administration Interface for the OpenEngSB</description>
 
   <packaging>war</packaging>
-  
+
   <url>http://www.openengsb.org</url>
   <licenses>
     <license>
@@ -100,6 +102,12 @@
     <dependency>
       <groupId>org.openengsb.ui.common</groupId>
       <artifactId>openengsb-ui-common-wicket</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openengsb.ui</groupId>
+      <artifactId>openengsb-ui-taskbox</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -179,7 +187,7 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
-    
+
   </dependencies>
 
 </project>
