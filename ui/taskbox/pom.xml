@@ -64,6 +64,13 @@
     </dependency>
     
     <dependency>
+      <groupId>org.openengsb.core</groupId>
+  	  <artifactId>openengsb-core-taskbox</artifactId>
+  		<version>${project.version}</version>
+  		<scope>provided</scope>
+    </dependency>
+    
+    <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket</artifactId>
       <version>${wicket.version}</version>
@@ -130,6 +137,14 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>test</scope>
+    </dependency>
+    
   </dependencies>
 
 </project>
