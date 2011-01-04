@@ -50,8 +50,8 @@ public class TaskOverviewPanel extends Panel {
             }
 
             @Override
+            @SuppressWarnings("rawtypes")
             public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-                final Task task = (Task) rowModel.getObject();
                 cellItem.add(new Label(componentId));
             }
         };
