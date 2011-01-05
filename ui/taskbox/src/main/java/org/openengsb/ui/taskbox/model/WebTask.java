@@ -25,15 +25,14 @@ import org.openengsb.core.common.workflow.model.ProcessBag;
  * application. It holds a generic wicket panel to display all containing properties. This panel can easily be
  * overwritten by a custom panel.
  */
+@SuppressWarnings("serial")
 public class WebTask extends Task {
     public WebTask() {
         super();
-        // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
     }
 
     public WebTask(ProcessBag bag) {
         super(bag);
-        // addOrReplaceProperty("panelClass", DefaultWebTaskPanel.class);
     }
 
     /**
