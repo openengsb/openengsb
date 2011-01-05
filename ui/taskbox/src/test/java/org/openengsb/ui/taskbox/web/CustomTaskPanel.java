@@ -42,20 +42,20 @@ public class CustomTaskPanel extends Panel {
     @SpringBean(name = "taskboxService")
     private TaskboxService service;
 
-    @SuppressWarnings("serial")
+    @SuppressWarnings({ "serial", "unchecked" })
     public CustomTaskPanel(String id, Task t) {
         super(id);
         this.task = t;
         final FeedbackPanel feedback = new FeedbackPanel("feedback");
         feedback.setOutputMarkupId(true);
         add(feedback);
-        
+
         add(new Label("taskid", task.getTaskId()));
         add(new Label("taskname", task.getName()));
         add(new Label("tasktype", task.getTaskType() != null ? task.getTaskType() : "N/A"));
-        
+
         add(new Label("taskdescription", task.getDescription() != null ? task.getDescription() : "N/A"));
-        
+
         CompoundPropertyModel<Task> taskModel = new CompoundPropertyModel<Task>(task);
         Form<Task> form = new Form<Task>("inputForm", taskModel);
         form.setOutputMarkupId(true);
@@ -75,7 +75,7 @@ public class CustomTaskPanel extends Panel {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 try {
                     service.finishTask(task);
-                    //setResponsePage(TaskOverviewPage.class);
+                    // setResponsePage(TaskOverviewPage.class);
                 } catch (WorkflowException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -88,11 +88,7 @@ public class CustomTaskPanel extends Panel {
             }
         });
         add(form);
-        
-        
-        
-        
-        
+
         add(new ListView("propertiesList", new ArrayList<String>(task.propertyKeySet())) {
             @Override
             protected void populateItem(ListItem item) {

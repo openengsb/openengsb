@@ -49,8 +49,8 @@ public class TaskOverviewPanel extends Panel {
                 return new GoAndClearFilter(componentId, form);
             }
 
+            @SuppressWarnings("unchecked")
             @Override
-            @SuppressWarnings("rawtypes")
             public void populateItem(Item cellItem, String componentId, IModel rowModel) {
                 cellItem.add(new Label(componentId));
             }
