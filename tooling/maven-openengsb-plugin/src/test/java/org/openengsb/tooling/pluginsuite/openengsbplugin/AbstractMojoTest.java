@@ -17,10 +17,10 @@
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
 import java.io.File;
-import java.io.FileInputStream;
 
 import javax.xml.xpath.XPathConstants;
 
+import org.apache.commons.io.FileUtils;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.xml.OpenEngSBMavenPluginNSContext;
 import org.w3c.dom.Document;
@@ -39,7 +39,7 @@ public abstract class AbstractMojoTest {
 
     public static void prepare(String goal) throws Exception {
         File f = new File("pom.xml");
-        Document doc = Tools.readXML(new FileInputStream(f));
+        Document doc = Tools.parseXMLFromString(FileUtils.readFileToString(f));
         groupId =
             Tools.evaluateXPath("/pom:project/pom:groupId/text()", doc, nsContext,
                 XPathConstants.STRING, String.class).trim();

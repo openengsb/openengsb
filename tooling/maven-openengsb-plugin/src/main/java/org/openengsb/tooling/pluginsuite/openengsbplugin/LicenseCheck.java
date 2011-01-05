@@ -17,8 +17,6 @@
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +25,8 @@ import java.util.UUID;
 
 import javax.xml.xpath.XPathConstants;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
@@ -96,22 +96,24 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
 
     private File readHeaderStringAndwriteHeaderIntoTmpFile() throws MojoExecutionException {
         try {
-            String headerString =
-                Tools.getTxtFileContent(getClass().getClassLoader()
-                    .getResourceAsStream("licenseCheck/header.txt"));
+
+            String headerString = IOUtils.toString(getClass().getClassLoader()
+                .getResourceAsStream("licenseCheck/header.txt"));
             File generatedFile = Tools.generateTmpFile(headerString, ".txt");
             return generatedFile;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new MojoExecutionException("Couldn't create license header temp file!", e);
         }
     }
 
     private File configureTmpPom(String profileName) throws MojoExecutionException {
         try {
-            Document originalPomDocument = Tools.readXML(new FileInputStream(getSession().getRequest().getPom()));
+            Document originalPomDocument =
+                Tools.parseXMLFromString(FileUtils.readFileToString(getSession().getRequest().getPom()));
             // read plugin default configuration
-            Document configDocument =
-                Tools.readXML(getClass().getClassLoader().getResourceAsStream("licenseCheck/licenseCheckConfig.xml"));
+            Document configDocument = Tools.parseXMLFromString(
+                IOUtils.toString(getClass().getClassLoader()
+                    .getResourceAsStream("licenseCheck/licenseCheckConfig.xml")));
 
             // .. and insert the profile node into the pom dom tree ..
             Node licenseCheckMojoProfileNode =
@@ -134,8 +136,8 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
 
             String baseDirURI = getSession().getRequest().getPom().getParentFile().toURI().toString();
             File temporaryPom = new File(new URI(baseDirURI + "/" + "tmpPom.xml"));
-
-            Tools.writeIntoFile(serializedXml, temporaryPom);
+            
+            FileUtils.writeStringToFile(temporaryPom, serializedXml);
 
             return temporaryPom;
         } catch (Exception e) {
@@ -144,12 +146,8 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
     }
 
     private void cleanUp() {
-        if (licenseHeaderFile != null) {
-            licenseHeaderFile.delete();
-        }
-        if (tmpPom != null) {
-            tmpPom.delete();
-        }
+        FileUtils.deleteQuietly(licenseHeaderFile);
+        FileUtils.deleteQuietly(tmpPom);
     }
 
 }

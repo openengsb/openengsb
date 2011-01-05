@@ -22,12 +22,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathConstants;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.xml.OpenEngSBMavenPluginNSContext;
 import org.w3c.dom.Document;
@@ -54,7 +55,8 @@ public class ToolsTest {
     @Test
     public void testXPath() throws Exception {
         Document doc =
-            Tools.readXML(ClassLoader.getSystemResourceAsStream("licenseCheck/licenseCheckConfig.xml"));
+            Tools
+                .parseXMLFromString(IOUtils.toString(ClassLoader.getSystemResourceAsStream("licenseCheck/licenseCheckConfig.xml")));
         Node n =
             Tools.evaluateXPath("//lc:licenseCheckMojo", doc, new OpenEngSBMavenPluginNSContext(), XPathConstants.NODE,
                 Node.class);
@@ -66,15 +68,18 @@ public class ToolsTest {
         String fileContent = "BLA\n";
         File generatedFile = Tools.generateTmpFile(fileContent, ".txt");
         File f = new File(generatedFile.getAbsolutePath());
-        String readContent = Tools.getTxtFileContent(new FileInputStream(f));
+        String readContent = FileUtils.readFileToString(f);
         assertEquals(fileContent, readContent);
         assertTrue(generatedFile.delete());
     }
 
     @Test
     public void testInsertDomNode() throws Exception {
-        Document thePom = Tools.readXML(ClassLoader.getSystemResourceAsStream("licensecheck/pass/pom.xml"));
-        Document config = Tools.readXML(ClassLoader.getSystemResourceAsStream("licenseCheck/licenseCheckConfig.xml"));
+        Document thePom =
+            Tools.parseXMLFromString(IOUtils.toString(ClassLoader.getSystemResourceAsStream("licensecheck/pass/pom.xml")));
+        Document config =
+            Tools
+                .parseXMLFromString(IOUtils.toString(ClassLoader.getSystemResourceAsStream("licenseCheck/licenseCheckConfig.xml")));
 
         Node licenseCheckMojoProfileNode =
             Tools.evaluateXPath("/lc:licenseCheckMojo/lc:profile", config, new OpenEngSBMavenPluginNSContext(),
@@ -94,16 +99,17 @@ public class ToolsTest {
         String serializedXml = Tools.serializeXML(thePom);
         File generatedFile = Tools.generateTmpFile(serializedXml, ".xml");
 
-        Document generatedPom = Tools.readXML(new FileInputStream(generatedFile));
+        Document generatedPom = Tools.parseXMLFromString(FileUtils.readFileToString(generatedFile));
 
         Node foundNode =
-            Tools.evaluateXPath(String.format("/pom:project/pom:profiles/pom:profile/pom:id[text()='%s']", profileName),
+            Tools.evaluateXPath(
+                String.format("/pom:project/pom:profiles/pom:profile/pom:id[text()='%s']", profileName),
                 generatedPom, new OpenEngSBMavenPluginNSContext(),
                 XPathConstants.NODE,
                 Node.class);
-        
-       assertNotNull(foundNode);
-       assertTrue(generatedFile.delete());
+
+        assertNotNull(foundNode);
+        assertTrue(generatedFile.delete());
     }
 
 }

@@ -17,13 +17,10 @@
 package org.openengsb.tooling.pluginsuite.openengsbplugin.tools;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Scanner;
 import java.util.UUID;
@@ -37,11 +34,14 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
@@ -63,22 +63,9 @@ public abstract class Tools {
 
     public static void replaceInFile(File f, String pattern, String replacement) throws IOException {
 
-        BufferedReader br = new BufferedReader(new FileReader(f));
+        String str = FileUtils.readFileToString(f).replaceAll(pattern, replacement);
 
-        String str = "";
-        String line = "";
-
-        while ((line = br.readLine()) != null) {
-            str += line + "\n";
-        }
-
-        br.close();
-
-        str = str.replaceAll(pattern, replacement);
-
-        FileWriter fw = new FileWriter(f);
-        fw.write(str);
-        fw.close();
+        FileUtils.writeStringToFile(f, str);
 
     }
 
@@ -97,7 +84,6 @@ public abstract class Tools {
                     String.format("<module>%s</module>", newStr));
             }
         } catch (Exception e) {
-            e.printStackTrace();
             throw new MojoExecutionException("Couldn't modifiy module entry in pom file!");
         }
     }
@@ -111,19 +97,21 @@ public abstract class Tools {
         return line;
     }
 
-    public static void renameArtifactFolderAndUpdateParentPom(String oldStr, String newStr)
+    public static void renameArtifactFolderAndUpdateParentPom(String oldFileName, String newFileName)
         throws MojoExecutionException {
-        File from = new File(oldStr);
-        System.out.println(String.format("\"%s\" exists: %s", oldStr, from.exists()));
+        File from = new File(oldFileName);
+        System.out.println(String.format("\"%s\" exists: %s", oldFileName, from.exists()));
         if (from.exists()) {
-            System.out.println(String.format("Trying to rename to: \"%s\"", newStr));
-            File to = new File(newStr);
+            System.out.println(String.format("Trying to rename to: \"%s\"", newFileName));
+            File to = new File(newFileName);
+            boolean success = false;
             if (!to.exists()) {
-                from.renameTo(to);
+                success = from.renameTo(to);
                 System.out.println("renamed successfully");
-                Tools.renameSubmoduleInPom(oldStr, newStr);
-            } else {
-                throw new MojoExecutionException("Couldn't rename: name clash!");
+                Tools.renameSubmoduleInPom(oldFileName, newFileName);
+            }
+            if (!success) {
+                throw new MojoExecutionException("Couldn't rename!");
             }
         } else {
             throw new MojoExecutionException("Artifact wasn't created as expected!");
@@ -137,11 +125,17 @@ public abstract class Tools {
      * @return
      * @throws Exception
      */
-    public static Document readXML(InputStream is) throws Exception {
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(true);
-        DocumentBuilder db = dbf.newDocumentBuilder();
-        return db.parse(is);
+    public static Document parseXMLFromString(String str) throws Exception {
+        StringReader sr = null;
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(true);
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            sr = new StringReader(str);
+            return db.parse(new InputSource(sr));
+        } finally {
+            IOUtils.closeQuietly(sr);
+        }
     }
 
     public static <T> T evaluateXPath(String xpathStr, Document doc, NamespaceContext nsContext, QName returnTypeQName,
@@ -156,35 +150,22 @@ public abstract class Tools {
 
     public static File generateTmpFile(String content, String suffix) throws IOException {
         File f = File.createTempFile(UUID.randomUUID().toString(), suffix);
-        Tools.writeIntoFile(content, f);
+        FileUtils.writeStringToFile(f, content);
         log.debug(String.format("generated file: %s", f.toURI().toString()));
         return f;
     }
 
-    public static void writeIntoFile(String content, File f) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(f));
-        bw.write(content);
-        bw.flush();
-        bw.close();
-    }
-
-    public static String getTxtFileContent(InputStream is) throws IOException {
-        StringBuilder contents = new StringBuilder();
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = br.readLine()) != null) {
-            contents.append(line);
-            contents.append("\n");
-        }
-        return contents.toString();
-    }
-
     public static String serializeXML(Document doc) throws IOException {
-        StringWriter stringWriter = new StringWriter();
-        XMLSerializer xmlSerializer = new XMLSerializer();
-        xmlSerializer.setOutputCharStream(stringWriter);
-        xmlSerializer.serialize(doc);
-        return stringWriter.toString();
+        StringWriter sw = null;
+        try {
+            sw = new StringWriter();
+            XMLSerializer xmlSerializer = new XMLSerializer();
+            xmlSerializer.setOutputCharStream(sw);
+            xmlSerializer.serialize(doc);
+            return sw.toString();
+        } finally {
+            IOUtils.closeQuietly(sw);
+        }
     }
 
     /**
@@ -233,18 +214,23 @@ public abstract class Tools {
 
     public static int executeProcess(String[] command, File targetDirectory, boolean printOutput) throws IOException,
         InterruptedException {
-        ProcessBuilder processBuilder = new ProcessBuilder(command);
-        processBuilder.directory(targetDirectory);
-        Process p = processBuilder.start();
-        if (printOutput) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
+        BufferedReader br = null;
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            processBuilder.directory(targetDirectory);
+            Process p = processBuilder.start();
+            if (printOutput) {
+                br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
             }
+            p.waitFor();
+            return p.exitValue();
+        } finally {
+            IOUtils.closeQuietly(br);
         }
-        p.waitFor();
-        return p.exitValue();
     }
 
     public static int executeProcess(String[] command, String targetDirectory, boolean printOutput)
