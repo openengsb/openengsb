@@ -87,6 +87,7 @@ public class TaskboxIT extends AbstractExamTestHelper {
         Task task = taskboxService.getOpenTasks().get(0);
         assertEquals(task.getProcessId(), processBag.getProcessId());
         assertEquals(task.getProperty("test"), "test");
+        assertEquals(task.getTaskType(), "demo");
         assertNotNull(task.getTaskId());
 
         taskboxService.finishTask(task);
@@ -139,11 +140,13 @@ public class TaskboxIT extends AbstractExamTestHelper {
         Task task = taskboxService.getOpenTasks().get(0);
         Date date = new Date();
         task.addOrReplaceProperty("test", date);
+        assertEquals(task.getTaskType(), "step1");
 
         taskboxService.finishTask(task);
 
         task = taskboxService.getOpenTasks().get(0);
         assertEquals(task.getProperty("test"), date);
+        assertEquals(task.getTaskType(), "step2");
 
         taskboxService.finishTask(task);
         assertTrue(taskboxService.getOpenTasks().size() == 0);
