@@ -28,7 +28,7 @@ import org.w3c.dom.Document;
 
 public abstract class AbstractMojoTest {
 
-    private static boolean installed = false;
+    private static boolean prepared = false;
 
     private static File userDir = new File(System.getProperty("user.dir"));
 
@@ -43,25 +43,25 @@ public abstract class AbstractMojoTest {
     protected static String invocation;
 
     public static void prepare(String goal) throws Exception {
-        File f = new File("pom.xml");
-        Document doc = Tools.parseXMLFromString(FileUtils.readFileToString(f));
-        groupId = Tools.evaluateXPath("/pom:project/pom:groupId/text()", doc, nsContext, XPathConstants.STRING,
-                String.class).trim();
-        artifactId = Tools.evaluateXPath("/pom:project/pom:artifactId/text()", doc, nsContext, XPathConstants.STRING,
-                String.class).trim();
-        version = Tools.evaluateXPath("/pom:project/pom:version/text()", doc, nsContext, XPathConstants.STRING,
-                String.class).trim();
+        if (!prepared) {
+            File f = new File("pom.xml");
+            Document doc = Tools.parseXMLFromString(FileUtils.readFileToString(f));
+            groupId = Tools.evaluateXPath("/pom:project/pom:groupId/text()", doc, nsContext, XPathConstants.STRING,
+                    String.class).trim();
+            artifactId = Tools.evaluateXPath("/pom:project/pom:artifactId/text()", doc, nsContext,
+                    XPathConstants.STRING, String.class).trim();
+            version = Tools.evaluateXPath("/pom:project/pom:version/text()", doc, nsContext, XPathConstants.STRING,
+                    String.class).trim();
 
-        invocation = String.format("%s:%s:%s:%s", groupId, artifactId, version, goal);
+            invocation = String.format("%s:%s:%s:%s", groupId, artifactId, version, goal);
 
-        if (System.getProperty("os.name").startsWith("Windows")) {
-            mvnCommand = "mvn.bat";
-        }
+            if (System.getProperty("os.name").startsWith("Windows")) {
+                mvnCommand = "mvn.bat";
+            }
 
-        if (!installed) {
             Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "install", "-Dmaven.test.skip=true" }),
                     userDir, false);
-            installed = true;
+            prepared = true;
         }
     }
 
