@@ -137,7 +137,6 @@ public class TaskboxIT extends AbstractExamTestHelper {
 
         taskboxService.finishTask(task2);
         assertTrue(taskboxService.getOpenTasks().size() == 0);
-        assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id)).size(), 0);
         assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id2)).size(), 0);
     }
 
