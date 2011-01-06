@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -212,12 +213,18 @@ public abstract class Tools {
         log.trace("insertDomNode() - end");
     }
 
-    public static int executeProcess(String[] command, File targetDirectory, boolean printOutput) throws IOException,
+    public static int executeProcess(List<String> command, File targetDirectory, boolean printOutput)
+        throws IOException,
         InterruptedException {
         BufferedReader br = null;
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(command);
             processBuilder.directory(targetDirectory);
+            if (targetDirectory != null) {
+                log
+                    .trace(String
+                        .format("processBuilder.directory().exists(): %s", processBuilder.directory().exists()));
+            }
             Process p = processBuilder.start();
             if (printOutput) {
                 br = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -231,13 +238,6 @@ public abstract class Tools {
         } finally {
             IOUtils.closeQuietly(br);
         }
-    }
-
-    public static int executeProcess(String[] command, String targetDirectory, boolean printOutput)
-        throws IOException,
-        InterruptedException {
-        String trgtDir = targetDirectory.replaceAll("\\\\", File.separator).replaceAll("/", File.separator);
-        return executeProcess(command, new File(trgtDir), printOutput);
     }
 
 }

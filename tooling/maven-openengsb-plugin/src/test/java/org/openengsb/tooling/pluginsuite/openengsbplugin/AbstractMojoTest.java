@@ -17,6 +17,7 @@
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
 import java.io.File;
+import java.util.Arrays;
 
 import javax.xml.xpath.XPathConstants;
 
@@ -28,6 +29,8 @@ import org.w3c.dom.Document;
 public abstract class AbstractMojoTest {
 
     private static boolean installed = false;
+
+    private static File userDir = new File(System.getProperty("user.dir"));
 
     protected static String groupId;
     protected static String artifactId;
@@ -53,7 +56,7 @@ public abstract class AbstractMojoTest {
         invocation = String.format("%s:%s:%s:%s", groupId, artifactId, version, goal);
 
         if (!installed) {
-            Tools.executeProcess(new String[]{ "mvn", "install", "-Dmaven.test.skip=true" }, ".", false);
+            Tools.executeProcess(Arrays.asList(new String[]{ "mvn", "install", "-Dmaven.test.skip=true" }), userDir, true);
             installed = true;
         }
     }

@@ -19,6 +19,7 @@ package org.openengsb.tooling.pluginsuite.openengsbplugin;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
@@ -36,20 +37,15 @@ public class LicenseCheckTest extends AbstractMojoTest {
 
     @Test
     public void licenseCheckNoLicenseHeader_mojoShouldFail() throws Exception {
-        int result =
-            Tools.executeProcess(new String[]{ "mvn", "-e",
-                invocation },
-                "src/test/resources/licensecheck/fail", false);
-
+        int result = Tools.executeProcess(Arrays.asList(new String[] { "mvn", "-e", invocation }), new File(
+                "src/test/resources/licensecheck/fail"), false);
         assertEquals(1, result);
     }
 
     @Test
     public void licenseCheckHeaderAvailable_mojoShouldPass() throws Exception {
-        int result =
-            Tools.executeProcess(new String[]{ "mvn", "-e",
-                invocation },
-                "src/test/resources/licensecheck/pass", false);
+        int result = Tools.executeProcess(Arrays.asList(new String[] { "mvn", "-e", invocation }), new File(
+                "src/test/resources/licensecheck/pass"), false);
         assertEquals(0, result);
     }
 
