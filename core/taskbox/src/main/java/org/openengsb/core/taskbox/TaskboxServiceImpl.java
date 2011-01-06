@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
+import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.taskbox.model.TaskFinishedEvent;
@@ -67,6 +68,24 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     }
 
     @Override
+    public Task getTaskForId(String id) throws TaskboxException {
+        Task example = Task.createTaskWithAllValuesSetToNull();
+        example.setTaskId(id);
+        List<Task> list = getTasksForExample(example);
+        if (list.size() != 1) {
+            throw new TaskboxException((list.size() == 0 ? "No" : "More than one") + " task with ID " + id + " found!");
+        }
+        return list.get(0);
+    }
+
+    @Override
+    public List<Task> getTasksForProcessId(String id) {
+        Task example = Task.createTaskWithAllValuesSetToNull();
+        example.setProcessId(id);
+        return getTasksForExample(example);
+    }
+
+    @Override
     public void finishTask(Task task) throws WorkflowException {
         TaskFinishedEvent finishedEvent = new TaskFinishedEvent(task);
         try {
@@ -77,12 +96,5 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
 
         workflowService.processEvent(finishedEvent);
         log.info("finished task " + task.getTaskId());
-    }
-
-    @Override
-    public Task getTaskForId(String id) {
-        Task example = Task.createTaskWithAllValuesSetToNull();
-        example.setTaskId(id);
-        return getTasksForExample(example).get(0);
     }
 }

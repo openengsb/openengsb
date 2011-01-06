@@ -31,6 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.RuleBaseException;
@@ -112,23 +113,32 @@ public class TaskboxIT extends AbstractExamTestHelper {
     }
 
     @Test
-    public void testHumanTaskFlow_shouldHandleMultipleTasks() throws WorkflowException, IOException, RuleBaseException {
+    public void testHumanTaskFlow_shouldHandleMultipleTasks() throws WorkflowException, IOException, RuleBaseException,
+        TaskboxException {
         addWorkflow("TaskDemoWorkflow");
 
         assertTrue(taskboxService.getOpenTasks().size() == 0);
 
-        workflowService.startFlow("TaskDemoWorkflow");
-        workflowService.startFlow("TaskDemoWorkflow");
+        long id = workflowService.startFlow("TaskDemoWorkflow");
+        long id2 = workflowService.startFlow("TaskDemoWorkflow");
 
         assertTrue(taskboxService.getOpenTasks().size() == 2);
 
-        Task task1 = taskboxService.getOpenTasks().get(0);
-        Task task2 = taskboxService.getOpenTasks().get(1);
-        
+        assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id)).size(), 1);
+        assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id2)).size(), 1);
+
+        Task task1 = taskboxService.getTasksForProcessId(String.valueOf(id)).get(0);
+        Task task2 = taskboxService.getTasksForProcessId(String.valueOf(id2)).get(0);
+
         taskboxService.finishTask(task1);
         assertTrue(taskboxService.getOpenTasks().size() == 1);
+        assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id)).size(), 0);
+        assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id2)).size(), 1);
+
         taskboxService.finishTask(task2);
         assertTrue(taskboxService.getOpenTasks().size() == 0);
+        assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id)).size(), 0);
+        assertEquals(taskboxService.getTasksForProcessId(String.valueOf(id2)).size(), 0);
     }
 
     @Test
