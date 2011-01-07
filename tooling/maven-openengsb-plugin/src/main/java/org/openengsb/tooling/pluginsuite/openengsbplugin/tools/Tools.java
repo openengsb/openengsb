@@ -71,7 +71,8 @@ public abstract class Tools {
     }
 
     /**
-     * Renames <code>&lt;module&gt;oldStr&lt;/module&gt;</code> to <code>&lt;module&gt;newStr&lt;/module&gt;</code>
+     * Renames <code>&lt;module&gt;oldStr&lt;/module&gt;</code> to
+     * <code>&lt;module&gt;newStr&lt;/module&gt;</code>
      * 
      * @param oldStr
      * @param newStr
@@ -82,7 +83,7 @@ public abstract class Tools {
             File pomFile = new File("pom.xml");
             if (pomFile.exists()) {
                 Tools.replaceInFile(pomFile, String.format("<module>%s</module>", oldStr),
-                    String.format("<module>%s</module>", newStr));
+                        String.format("<module>%s</module>", newStr));
             }
         } catch (Exception e) {
             throw new MojoExecutionException("Couldn't modifiy module entry in pom file!");
@@ -99,7 +100,7 @@ public abstract class Tools {
     }
 
     public static void renameArtifactFolderAndUpdateParentPom(String oldFileName, String newFileName)
-        throws MojoExecutionException {
+            throws MojoExecutionException {
         File from = new File(oldFileName);
         System.out.println(String.format("\"%s\" exists: %s", oldFileName, from.exists()));
         if (from.exists()) {
@@ -120,7 +121,8 @@ public abstract class Tools {
     }
 
     /**
-     * Reads an XML document from an input stream but doesn't validate it against a scheme.
+     * Reads an XML document from an input stream but doesn't validate it
+     * against a scheme.
      * 
      * @param is
      * @return
@@ -170,8 +172,9 @@ public abstract class Tools {
     }
 
     /**
-     * Insert dom node into parentDoc at the given xpath (if this path doesnt exist, the elements are created). Note:
-     * text content of nodes and attributes aren't considered.
+     * Insert dom node into parentDoc at the given xpath (if this path doesnt
+     * exist, the elements are created). Note: text content of nodes and
+     * attributes aren't considered.
      * 
      * @param parentDoc
      * @param nodeToInsert
@@ -180,7 +183,7 @@ public abstract class Tools {
      * @throws XPathExpressionException
      */
     public static void insertDomNode(Document parentDoc, Node nodeToInsert, String xpath, NamespaceContext nsContext)
-        throws XPathExpressionException {
+            throws XPathExpressionException {
         log.trace("insertDomNode() - start");
         String[] tokens = xpath.split("/");
         String currPath = "";
@@ -214,30 +217,29 @@ public abstract class Tools {
     }
 
     public static int executeProcess(List<String> command, File targetDirectory, boolean printOutput)
-        throws IOException,
-        InterruptedException {
+            throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        processBuilder.directory(targetDirectory);
+        if (targetDirectory != null) {
+            log.trace(String.format("processBuilder.directory().exists(): %s", processBuilder.directory().exists()));
+        }
+        Process p = processBuilder.start();
+
         BufferedReader br = null;
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder(command);
-            processBuilder.directory(targetDirectory);
-            if (targetDirectory != null) {
-                log
-                    .trace(String
-                        .format("processBuilder.directory().exists(): %s", processBuilder.directory().exists()));
-            }
-            Process p = processBuilder.start();
-            if (printOutput) {
-                br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                String line;
-                while ((line = br.readLine()) != null) {
+            br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (printOutput) {
                     System.out.println(line);
                 }
             }
-            p.waitFor();
-            return p.exitValue();
         } finally {
             IOUtils.closeQuietly(br);
         }
+
+        p.waitFor();
+        return p.exitValue();
     }
 
 }
