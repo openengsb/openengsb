@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.taskbox;
+package org.openengsb.ui.common.wicket.taskbox;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -32,8 +32,9 @@ import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowService;
-import org.openengsb.ui.taskbox.web.CustomTaskPanel;
-import org.openengsb.ui.taskbox.web.TaskPanel;
+import org.openengsb.ui.common.wicket.taskbox.WebTaskboxServiceImpl;
+import org.openengsb.ui.common.wicket.taskbox.web.CustomTaskPanel;
+import org.openengsb.ui.common.wicket.taskbox.web.TaskPanel;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 

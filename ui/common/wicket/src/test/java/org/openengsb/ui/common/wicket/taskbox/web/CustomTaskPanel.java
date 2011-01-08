@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.taskbox.web;
+package org.openengsb.ui.common.wicket.taskbox.web;
 
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
@@ -37,30 +35,27 @@ import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
 
-@SuppressWarnings("serial")
-public class TaskPanel extends Panel {
+public class CustomTaskPanel extends Panel {
 
     private Task task;
-
-    private static final Log LOG = LogFactory.getLog(TaskPanel.class);
 
     @SpringBean(name = "taskboxService")
     private TaskboxService service;
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public TaskPanel(String id, Task t) {
+    @SuppressWarnings("serial")
+    public CustomTaskPanel(String id, Task t) {
         super(id);
-        task = t;
+        this.task = t;
         final FeedbackPanel feedback = new FeedbackPanel("feedback");
         feedback.setOutputMarkupId(true);
         add(feedback);
-
+        
         add(new Label("taskid", task.getTaskId()));
         add(new Label("taskname", task.getName()));
         add(new Label("tasktype", task.getTaskType() != null ? task.getTaskType() : "N/A"));
-
+        
         add(new Label("taskdescription", task.getDescription() != null ? task.getDescription() : "N/A"));
-
+        
         CompoundPropertyModel<Task> taskModel = new CompoundPropertyModel<Task>(task);
         Form<Task> form = new Form<Task>("inputForm", taskModel);
         form.setOutputMarkupId(true);
@@ -80,8 +75,10 @@ public class TaskPanel extends Panel {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 try {
                     service.finishTask(task);
+                    //setResponsePage(TaskOverviewPage.class);
                 } catch (WorkflowException e) {
-                    LOG.error("Not possible to finish task " + task.toString(), e);
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
             }
 
@@ -91,6 +88,11 @@ public class TaskPanel extends Panel {
             }
         });
         add(form);
+        
+        
+        
+        
+        
         add(new ListView("propertiesList", new ArrayList<String>(task.propertyKeySet())) {
             @Override
             protected void populateItem(ListItem item) {

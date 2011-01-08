@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.taskbox.model;
+package org.openengsb.ui.common.wicket.taskbox.model;
 
 import static org.junit.Assert.assertTrue;
 
@@ -22,6 +22,7 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.ui.common.wicket.taskbox.model.WebTask;
 
 public class WebTaskTest {
     private WebTask task;

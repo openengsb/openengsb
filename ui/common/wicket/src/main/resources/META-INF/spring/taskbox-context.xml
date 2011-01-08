@@ -23,12 +23,12 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-2.0-m1.xsd">
 
-  <osgi:service interface="org.openengsb.ui.taskbox.WebTaskboxService">
+  <osgi:service interface="org.openengsb.ui.common.wicket.taskbox.WebTaskboxService">
     <osgi:service-properties>
       <entry key="openengsb.service.type" value="workflow-service" />
       <entry key="openengsb.workflow.globalid" value="webtaskbox" />
     </osgi:service-properties>
-    <bean class="org.openengsb.ui.taskbox.WebTaskboxServiceImpl" init-method="init">
+    <bean class="org.openengsb.ui.common.wicket.taskbox.WebTaskboxServiceImpl" init-method="init">
       <property name="workflowService" ref="workflowService" />
       <property name="persistenceManager" ref="persistenceManager" />
     </bean>
