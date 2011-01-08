@@ -17,17 +17,22 @@
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.util.Arrays;
 
 import javax.xml.xpath.XPathConstants;
 
+import org.apache.commons.io.FileUtils;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.xml.OpenEngSBMavenPluginNSContext;
 import org.w3c.dom.Document;
 
 public abstract class AbstractMojoTest {
 
-    private static boolean installed = false;
+    private static boolean prepared = false;
+
+    private static File userDir = new File(System.getProperty("user.dir"));
+
+    protected static String mvnCommand = "mvn";
 
     protected static String groupId;
     protected static String artifactId;
@@ -38,23 +43,25 @@ public abstract class AbstractMojoTest {
     protected static String invocation;
 
     public static void prepare(String goal) throws Exception {
-        File f = new File("pom.xml");
-        Document doc = Tools.readXML(new FileInputStream(f));
-        groupId =
-            Tools.evaluateXPath("/pom:project/pom:groupId/text()", doc, nsContext,
-                XPathConstants.STRING, String.class).trim();
-        artifactId =
-            Tools.evaluateXPath("/pom:project/pom:artifactId/text()", doc, nsContext,
-                XPathConstants.STRING, String.class).trim();
-        version =
-            Tools.evaluateXPath("/pom:project/pom:version/text()", doc, nsContext,
-                XPathConstants.STRING, String.class).trim();
+        if (!prepared) {
+            File f = new File("pom.xml");
+            Document doc = Tools.parseXMLFromString(FileUtils.readFileToString(f));
+            groupId = Tools.evaluateXPath("/pom:project/pom:groupId/text()", doc, nsContext, XPathConstants.STRING,
+                    String.class).trim();
+            artifactId = Tools.evaluateXPath("/pom:project/pom:artifactId/text()", doc, nsContext,
+                    XPathConstants.STRING, String.class).trim();
+            version = Tools.evaluateXPath("/pom:project/pom:version/text()", doc, nsContext, XPathConstants.STRING,
+                    String.class).trim();
 
-        invocation = String.format("%s:%s:%s:%s", groupId, artifactId, version, goal);
+            invocation = String.format("%s:%s:%s:%s", groupId, artifactId, version, goal);
 
-        if (!installed) {
-            Tools.executeProcess(new String[]{ "mvn", "install", "-Dmaven.test.skip=true" }, ".", false);
-            installed = true;
+            if (System.getProperty("os.name").startsWith("Windows")) {
+                mvnCommand = "mvn.bat";
+            }
+
+            Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "install", "-Dmaven.test.skip=true" }),
+                    userDir, false);
+            prepared = true;
         }
     }
 
