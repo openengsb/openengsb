@@ -70,7 +70,7 @@ public abstract class AbstractOpenengsbMojo extends AbstractMojo {
     }
 
     protected void throwErrorIfProjectIsNotExecutedInRootDirectory() throws MojoExecutionException {
-        if (getProject().hasParent() && !getProject().getParent().getArtifactId().equals("oss-parent")) {
+        if (getProject().hasParent() && !getProject().getParent().getArtifactId().equals("openengsb-root")) {
             throw new MojoExecutionException(
                 "Please invoke this mojo only in the OpenEngSB root!");
         }
