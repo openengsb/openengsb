@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.taskbox.model;
+package org.openengsb.ui.common.wicket.taskbox.model;
 
 import static org.junit.Assert.assertTrue;
 
@@ -37,4 +37,3 @@ public class WebTaskTest {
         assertTrue(task.getTaskCreationTimestamp().before(new Date(System.currentTimeMillis() + 10)));
     }
 }
-

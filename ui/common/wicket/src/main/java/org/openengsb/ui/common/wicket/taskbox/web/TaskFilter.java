@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.taskbox.web;
+package org.openengsb.ui.common.wicket.taskbox.web;
 
 import org.openengsb.core.common.taskbox.model.Task;
 

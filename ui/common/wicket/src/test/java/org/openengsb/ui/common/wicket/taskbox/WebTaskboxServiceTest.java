@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.taskbox;
+package org.openengsb.ui.common.wicket.taskbox;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -32,8 +32,8 @@ import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowService;
-import org.openengsb.ui.taskbox.web.CustomTaskPanel;
-import org.openengsb.ui.taskbox.web.TaskPanel;
+import org.openengsb.ui.common.wicket.taskbox.web.CustomTaskPanel;
+import org.openengsb.ui.common.wicket.taskbox.web.TaskPanel;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -42,11 +42,11 @@ public class WebTaskboxServiceTest {
     private PersistenceService persistenceService;
     private WorkflowService workflowService;
     private WicketTester tester;
-    
+
     @Before
     public void init() throws Exception {
         tester = new WicketTester();
-        
+
         workflowService = mock(WorkflowService.class);
         persistenceService = mock(PersistenceService.class);
         PersistenceManager persistenceManager = mock(PersistenceManager.class);
@@ -58,13 +58,13 @@ public class WebTaskboxServiceTest {
         service.setPersistenceManager(persistenceManager);
         service.init();
     }
-    
+
     @Test
     public void testGetTaskPanel_shouldReturnDefaultPanel() throws PersistenceException {
         Task t = new Task();
         t.setTaskType("Type1");
         Panel p = null;
-        
+
         try {
             p = service.getTaskPanel(t, "panel");
         } catch (TaskboxException e) {
@@ -73,13 +73,13 @@ public class WebTaskboxServiceTest {
         }
         assertEquals(p.getClass(), TaskPanel.class);
     }
-    
+
     @Test
     public void testGetRegisteredTaskPanel_shouldReturnCustomPanel() throws PersistenceException {
         Task t = new Task();
         t.setTaskType("Type1");
         Panel p = null;
-        
+
         try {
             service.registerTaskPanel(t.getTaskType(), CustomTaskPanel.class);
             p = service.getTaskPanel(t, "panel");

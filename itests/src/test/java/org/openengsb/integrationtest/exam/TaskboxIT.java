@@ -64,7 +64,7 @@ public class TaskboxIT extends AbstractExamTestHelper {
 
         ruleManager = getOsgiService(RuleManager.class);
         workflowService = getOsgiService(WorkflowService.class);
-        taskboxService = getOsgiService(TaskboxService.class);
+        taskboxService = getOsgiService(TaskboxService.class, 30000);
     }
 
     @Test
@@ -123,7 +123,7 @@ public class TaskboxIT extends AbstractExamTestHelper {
 
         Task task1 = taskboxService.getOpenTasks().get(0);
         Task task2 = taskboxService.getOpenTasks().get(1);
-        
+
         taskboxService.finishTask(task1);
         assertTrue(taskboxService.getOpenTasks().size() == 1);
         taskboxService.finishTask(task2);

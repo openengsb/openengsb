@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.ui.taskbox;
+package org.openengsb.ui.common.wicket.taskbox;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -24,8 +24,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.taskbox.TaskboxServiceImpl;
-import org.openengsb.ui.taskbox.web.TaskOverviewPanel;
-import org.openengsb.ui.taskbox.web.TaskPanel;
+import org.openengsb.ui.common.wicket.taskbox.web.TaskOverviewPanel;
+import org.openengsb.ui.common.wicket.taskbox.web.TaskPanel;
 
 public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTaskboxService {
 

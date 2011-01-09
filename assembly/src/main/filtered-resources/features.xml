@@ -159,7 +159,6 @@
     <bundle>mvn:org.openengsb.core.proxy/openengsb-core-proxy-jms/${project.version}</bundle>
     <!-- OpenEngSB UI Features -->
     <bundle>mvn:org.openengsb.ui.common/openengsb-ui-common-wicket/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.ui/openengsb-ui-taskbox/${project.version}</bundle>
     <!-- OpenEngSB Management UI -->
     <bundle>mvn:org.openengsb.ui/openengsb-ui-web/${project.version}/war</bundle>
   </feature>
