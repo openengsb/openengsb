@@ -26,4 +26,9 @@ public class EmailServiceManager extends AbstractServiceManager<NotificationDoma
     public EmailServiceManager(EmailNotifierFactory emailNotifierBuilder) {
         super(emailNotifierBuilder);
     }
+
+    @Override
+    public Class<?> getImplementingServiceManagerClass() {
+        return EmailServiceManager.class;
+    }
 }

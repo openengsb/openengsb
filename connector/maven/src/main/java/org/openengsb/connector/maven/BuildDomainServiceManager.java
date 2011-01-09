@@ -28,4 +28,9 @@ public class BuildDomainServiceManager extends AbstractServiceManager<BuildDomai
     public BuildDomainServiceManager(MavenServiceInstanceFactory factory) {
         super((ServiceInstanceFactory) factory);
     }
+
+    @Override
+    public Class<?> getImplementingServiceManagerClass() {
+        return BuildDomainServiceManager.class;
+    }
 }

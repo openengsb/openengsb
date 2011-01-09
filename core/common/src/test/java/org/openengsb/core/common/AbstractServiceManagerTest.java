@@ -93,6 +93,11 @@ public class AbstractServiceManagerTest {
                 }
             });
         }
+
+        @Override
+        public Class<?> getImplementingServiceManagerClass() {
+            return DummyServiceManager.class;
+        }
     }
 
     @Test
@@ -299,6 +304,10 @@ public class AbstractServiceManagerTest {
 
         AbstractServiceManager<NullDomain, NullDomainImpl> serviceManager =
             new AbstractServiceManager<NullDomain, NullDomainImpl>(serviceInstanceFactory) {
+                @Override
+                public Class<?> getImplementingServiceManagerClass() {
+                    return null;
+                }
             };
         serviceManager.setConnectorSetupStore(Mockito.mock(ConnectorSetupStore.class));
 
@@ -328,6 +337,10 @@ public class AbstractServiceManagerTest {
 
         AbstractServiceManager<NullDomain, NullDomainImpl> serviceManager =
             new AbstractServiceManager<NullDomain, NullDomainImpl>(serviceInstanceFactory) {
+                @Override
+                public Class<?> getImplementingServiceManagerClass() {
+                    return null;
+                }
             };
         serviceManager.setConnectorSetupStore(Mockito.mock(ConnectorSetupStore.class));
 

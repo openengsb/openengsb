@@ -27,4 +27,9 @@ public class GitServiceManager extends AbstractServiceManager<ScmDomain, GitServ
         super(factory);
     }
 
+    @Override
+    public Class<?> getImplementingServiceManagerClass() {
+        return GitServiceManager.class;
+    }
+
 }

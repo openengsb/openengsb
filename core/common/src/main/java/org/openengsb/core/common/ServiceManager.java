@@ -33,7 +33,7 @@ public interface ServiceManager extends OpenEngSBService {
 
     /**
      * Creates or updates a service instance. If the given id does not exist, this creates a new service instance.
-     * 
+     *
      * @param id identifier for a new or already existing service instance.
      * @param attributes updates to maybe already set attributes.
      * @return the result of the validation
@@ -42,7 +42,7 @@ public interface ServiceManager extends OpenEngSBService {
 
     /**
      * Works the same way us update, but doesn't validate
-     * 
+     *
      * @param id identifier for a new or already existing service instance.
      * @param attributes updates to maybe already set attributes.
      * @return the result of the validation
@@ -51,17 +51,23 @@ public interface ServiceManager extends OpenEngSBService {
 
     /**
      * Deletes the service instanced with the given {@code id}.
-     * 
+     *
      * @param id identifier for a service instance provided by this {@code ServiceManager}.
-     * 
+     *
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
     void delete(String id);
 
     /**
      * Returns the attributes with values for the specified service instance.
-     * 
+     *
      * @param id identifier for a already existing service instance
      */
     Map<String, String> getAttributeValues(String id);
+
+    /**
+     * Since proxies are often used there still have to be a way to get the direct {@link ServiceManager} implementing
+     * class to decide which connector you really want to use.
+     */
+    Class<?> getImplementingServiceManagerClass();
 }

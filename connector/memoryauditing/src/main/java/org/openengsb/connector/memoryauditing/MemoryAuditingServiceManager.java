@@ -26,4 +26,9 @@ public class MemoryAuditingServiceManager extends AbstractServiceManager<Auditin
     public MemoryAuditingServiceManager(MemoryAuditingServiceInstanceFactory factory) {
         super(factory);
     }
+
+    @Override
+    public Class<?> getImplementingServiceManagerClass() {
+        return MemoryAuditingServiceManager.class;
+    }
 }

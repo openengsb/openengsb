@@ -26,4 +26,9 @@ public class JiraServiceManager extends AbstractServiceManager<IssueDomain, Jira
     public JiraServiceManager(JiraServiceInstanceFactory tracServiceFactory) {
         super(tracServiceFactory);
     }
+
+    @Override
+    public Class<?> getImplementingServiceManagerClass() {
+        return JiraServiceManager.class;
+    }
 }

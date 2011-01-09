@@ -28,4 +28,9 @@ public class TestDomainServiceManager extends AbstractServiceManager<TestDomain,
     public TestDomainServiceManager(MavenServiceInstanceFactory factory) {
         super((ServiceInstanceFactory) factory);
     }
+
+    @Override
+    public Class<?> getImplementingServiceManagerClass() {
+        return TestDomainServiceManager.class;
+    }
 }

@@ -20,6 +20,10 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd" >
 
+  <bean class="org.openengsb.core.taskbox.config.TaskboxConfigurator" init-method="init">
+    <property name="ruleManager" ref="ruleManager" />
+  </bean>
+
   <service interface="org.openengsb.core.common.taskbox.TaskboxService">
     <service-properties>
       <entry key="openengsb.service.type" value="workflow-service" />
@@ -32,6 +36,18 @@
     </bean>
   </service>
 
+  <service interface="org.openengsb.core.taskbox.TaskboxServiceInternal">
+    <service-properties>
+      <entry key="openengsb.service.type" value="workflow-service" />
+      <entry key="openengsb.workflow.globalid" value="taskboxinternal" />
+    </service-properties>
+    <bean class="org.openengsb.core.taskbox.TaskboxServiceInternalImpl" init-method="init">
+      <property name="persistenceManager" ref="persistenceManager" />
+      <property name="bundleContext" ref="blueprintBundleContext" />
+    </bean>
+  </service>
+
   <reference id="workflowService" interface="org.openengsb.core.common.workflow.WorkflowService" />
   <reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+  <reference id="ruleManager" interface="org.openengsb.core.common.workflow.RuleManager" />
 </blueprint>

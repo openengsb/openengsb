@@ -52,7 +52,6 @@ public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
         log.debug(format("Default connector for %s is %s", domainName, connectorId));
         ServiceReference serviceRef = getServiceRef(connectorId);
         Object service = bundleContext.getService(serviceRef);
-        log.debug("invoking method on serviceObject " + service);
         Object result;
         result = method.invoke(service, args);
         bundleContext.ungetService(serviceRef);

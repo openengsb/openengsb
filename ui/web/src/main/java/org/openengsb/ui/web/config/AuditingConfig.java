@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.connector.memoryauditing.MemoryAuditingServiceManager;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.workflow.RuleBaseException;
@@ -29,6 +30,10 @@ import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.domain.auditing.AuditingDomain;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AuditingConfig {
 
@@ -38,6 +43,9 @@ public class AuditingConfig {
     @SpringBean
     private DomainService domainService;
 
+    @SpringBean
+    private AuthenticationManager authManager;
+
     public final void setRuleManager(RuleManager ruleManager) {
         this.ruleManager = ruleManager;
     }
@@ -46,7 +54,14 @@ public class AuditingConfig {
         this.domainService = domainService;
     }
 
+    public void setAuthManager(AuthenticationManager authManager) {
+        this.authManager = authManager;
+    }
+
     public void init() {
+        Authentication authentication =
+            authManager.authenticate(new UsernamePasswordAuthenticationToken("admin", "password"));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         try {
             ruleManager.addImport(AuditingDomain.class.getCanonicalName());
             try {
@@ -58,8 +73,12 @@ public class AuditingConfig {
             List<ServiceManager> serviceManagersForDomain =
                 domainService.serviceManagersForDomain(AuditingDomain.class);
             if (serviceManagersForDomain.size() > 0) {
-                String defaultConnectorID = "auditing";
-                serviceManagersForDomain.get(0).update(defaultConnectorID, new HashMap<String, String>());
+                for (ServiceManager serviceManager : serviceManagersForDomain) {
+                    if (serviceManager.getImplementingServiceManagerClass().equals(
+                        MemoryAuditingServiceManager.class)) {
+                        serviceManager.update("auditing", new HashMap<String, String>());
+                    }
+                }
             }
         } catch (RuleBaseException e) {
             // well we know that this can fail if these entries already exist...

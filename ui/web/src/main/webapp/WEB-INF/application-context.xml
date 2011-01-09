@@ -42,6 +42,7 @@
   <bean class="org.openengsb.ui.web.config.AuditingConfig" id="auditingConfig" init-method="init">
     <property name="domainService" ref="domainService" />
     <property name="ruleManager" ref="ruleManager" />
+    <property name="authManager" ref="authenticationManager" />
   </bean>
 
   <osgi:list id="services" cardinality="0..N" interface="org.openengsb.core.common.ServiceManager" />

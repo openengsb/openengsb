@@ -109,4 +109,9 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
         return getClass().getName();
     }
 
+    @Override
+    public Class<?> getImplementingServiceManagerClass() {
+        return ProxyServiceManager.class;
+    }
+
 }

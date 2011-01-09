@@ -28,4 +28,9 @@ public class DeployDomainServiceManager extends AbstractServiceManager<DeployDom
     public DeployDomainServiceManager(MavenServiceInstanceFactory factory) {
         super((ServiceInstanceFactory) factory);
     }
+
+    @Override
+    public Class<?> getImplementingServiceManagerClass() {
+        return DeployDomainServiceManager.class;
+    }
 }
