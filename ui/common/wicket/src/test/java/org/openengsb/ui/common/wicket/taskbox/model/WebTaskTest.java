@@ -22,7 +22,6 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.openengsb.ui.common.wicket.taskbox.model.WebTask;
 
 public class WebTaskTest {
     private WebTask task;
@@ -38,4 +37,3 @@ public class WebTaskTest {
         assertTrue(task.getTaskCreationTimestamp().before(new Date(System.currentTimeMillis() + 10)));
     }
 }
-
