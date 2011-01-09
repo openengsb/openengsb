@@ -102,9 +102,9 @@ public class GenDomain extends AbstractOpenengsbMojo {
             archetypeCatalogLocalOnly = true;
         }
 
-        domain_name = Tools.readValue(sc, "Domain Name", DEFAULT_DOMAIN);
-        version = Tools.readValue(sc, "Version", default_version);
-        project_name = Tools.readValue(sc,
+        domain_name = Tools.readValueFromStdin(sc, "Domain Name", DEFAULT_DOMAIN);
+        version = Tools.readValueFromStdin(sc, "Version", default_version);
+        project_name = Tools.readValueFromStdin(sc,
             "Prefix for project names",
             String.format("%s%s", DEFAULT_DOMAINNAME_PREFIX,
                 Tools.capitalizeFirst(domain_name)));

@@ -41,6 +41,11 @@ public interface TaskboxService {
      * Loads all tasks which match the example task out of the persistence.
      */
     List<Task> getTasksForExample(Task example);
+    
+    /**
+     * Loads the task fitting a given id.
+     */    
+    Task getTaskForId(String id);
 
     /**
      * Sends a TaskFinishedEvent and removes task from the persistence.

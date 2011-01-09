@@ -78,5 +78,12 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
         workflowService.processEvent(finishedEvent);
         log.info("finished task " + task.getTaskId());
     }
+
+    @Override
+    public Task getTaskForId(String id) {
+        Task example = Task.createTaskWithAllValuesSetToNull();
+        example.setTaskId(id);
+        return getTasksForExample(example).get(0);
+    }
 }
 
