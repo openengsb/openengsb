@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.proxy.ProxyFactory;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowService;
@@ -100,6 +101,7 @@ public class HeaderTemplateTest {
         context.putBean(domainServiceMock);
         BundleContext bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
+        context.putBean(mock(ProxyFactory.class));
         setupTesterWithSpringMockContext();
     }
 
@@ -128,6 +130,7 @@ public class HeaderTemplateTest {
         context.putBean("ruleManagerBean", mock(RuleManager.class));
         context.putBean("openengsbVersion", new OpenEngSBVersion());
         context.putBean("auditing", mock(AuditingDomain.class));
+        context.putBean(mock(ProxyFactory.class));
         BundleContext bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);
@@ -135,4 +138,3 @@ public class HeaderTemplateTest {
         tester.startPage(Index.class);
     }
 }
-
