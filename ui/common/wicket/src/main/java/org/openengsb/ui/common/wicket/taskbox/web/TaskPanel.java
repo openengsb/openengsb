@@ -47,7 +47,7 @@ public class TaskPanel extends Panel {
     @SpringBean(name = "taskboxService")
     private TaskboxService service;
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings("unchecked")
     public TaskPanel(String id, Task t) {
         super(id);
         task = t;

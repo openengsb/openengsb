@@ -17,12 +17,12 @@
 package org.openengsb.ui.common.wicket.taskbox.web;
 
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
 
 @SuppressWarnings("serial")
 public class LoadableTaskModel extends LoadableDetachableModel<Task> {
-
     private final String taskId;
     private final TaskboxService taskboxService;
 
@@ -33,7 +33,10 @@ public class LoadableTaskModel extends LoadableDetachableModel<Task> {
 
     @Override
     protected Task load() {
-        return taskboxService.getTaskForId(taskId);
+        try {
+            return taskboxService.getTaskForId(taskId);
+        } catch (TaskboxException e) {
+            return null;
+        }
     }
-
 }
