@@ -16,7 +16,6 @@
 
 package org.openengsb.core.common.util;
 
-import org.openengsb.core.common.OpenEngSBService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;

@@ -40,18 +40,16 @@
     </property>
   </bean>
 
-  <bean id="jmsPort" class="org.openengsb.core.ports.jms.JMSPort" init-method="start" destroy-method="stop">
-    <property name="factory">
-      <bean class="org.openengsb.core.ports.jms.JMSTemplateFactoryImpl"/>
-    </property>
-    <property name="connectionFactory" ref="jmsFactory"/>
-    <property name="requestHandler" ref="requestHandler"/>
-  </bean>
-  
   <osgi:service interface="org.openengsb.core.common.communication.OutgoingPort">
     <osgi:service-properties>
       <entry key="id" value="jms-json" />
     </osgi:service-properties>
-    <bean class="org.openengsb.core.ports.jms.JMSPort"/>
+    <bean id="jmsPort" class="org.openengsb.core.ports.jms.JMSPort" init-method="start" destroy-method="stop">
+      <property name="factory">
+        <bean class="org.openengsb.core.ports.jms.JMSTemplateFactoryImpl"/>
+      </property>
+      <property name="connectionFactory" ref="jmsFactory"/>
+      <property name="requestHandler" ref="requestHandler"/>
+  </bean>
   </osgi:service>
 </beans>

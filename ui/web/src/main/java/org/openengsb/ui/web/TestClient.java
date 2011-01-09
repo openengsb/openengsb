@@ -58,8 +58,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.communication.CallRouter;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.proxy.ProxyFactory;
 import org.openengsb.core.common.proxy.ProxyServiceManager;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
@@ -83,7 +83,7 @@ public class TestClient extends BasePage {
     private BundleContext bundleContext;
 
     @SpringBean
-    private CallRouter callRouter;
+    private ProxyFactory proxyFactory;
 
     private final DropDownChoice<MethodId> methodList;
 
@@ -123,7 +123,7 @@ public class TestClient extends BasePage {
 
                     @Override
                     public void onClick() {
-                        ProxyServiceManager serviceManager = new ProxyServiceManager(item.getModelObject(), callRouter);
+                        ProxyServiceManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
                         serviceManager.setBundleContext(bundleContext);
                         setResponsePage(new ConnectorEditorPage(serviceManager));
                     }

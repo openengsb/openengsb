@@ -16,10 +16,7 @@
 
 package org.openengsb.core.common.proxy;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -84,13 +81,10 @@ public class ProxyServiceManager extends AbstractServiceManagerParent implements
                 ProxyConnector handler = new ProxyConnector();
                 handler.setCallRouter(router);
                 handler.setPortId(attributes.get("proxyId"));
-                try {
-                    String destination = attributes.get("destination");
-                    String serviceId = attributes.get("serviceId");
-                    handler.setDestination(new URI(destination));
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
-                }
+                String destination = attributes.get("destination");
+                String serviceId = attributes.get("serviceId");
+                handler.addMetadata("serviceId", serviceId);
+                handler.setDestination(destination);
                 Domain newProxyInstance =
                     (Domain) Proxy.newProxyInstance(getDomainInterface().getClassLoader(),
                         new Class[]{getDomainInterface()}, handler);

@@ -2,7 +2,6 @@ package org.openengsb.core.common.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +12,7 @@ import org.openengsb.core.common.communication.MethodReturn;
 public class ProxyConnector implements InvocationHandler {
 
     private String portId;
-    private URI destination;
+    private String destination;
     private final Map<String, String> metadata = new HashMap<String, String>();
 
     private CallRouter callRouter;
@@ -25,6 +24,8 @@ public class ProxyConnector implements InvocationHandler {
         switch (callSync.getType()) {
             case Object:
                 return callSync.getArg();
+            case Void:
+                return null;
             case Exception:
                 throw new RuntimeException(callSync.getArg().toString());
             default:
@@ -36,7 +37,7 @@ public class ProxyConnector implements InvocationHandler {
         this.portId = id;
     }
 
-    public final void setDestination(URI destination) {
+    public final void setDestination(String destination) {
         this.destination = destination;
     }
 
@@ -52,12 +53,11 @@ public class ProxyConnector implements InvocationHandler {
         return portId;
     }
 
-    public final URI getDestination() {
+    public final String getDestination() {
         return destination;
     }
 
     public final CallRouter getCallRouter() {
         return callRouter;
     }
-
 }

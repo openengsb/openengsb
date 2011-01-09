@@ -47,8 +47,12 @@ public class RequestHandlerImpl implements RequestHandler, BundleContextAware {
         MethodReturn resultContainer = new MethodReturn();
         try {
             Object result = method.invoke(service, args);
-            resultContainer.setType(ReturnType.Object);
-            resultContainer.setArg(result);
+            if (method.getReturnType().getName().equals("void")) {
+                resultContainer.setType(ReturnType.Void);
+            } else {
+                resultContainer.setType(ReturnType.Object);
+                resultContainer.setArg(result);
+            }
         } catch (InvocationTargetException e) {
             resultContainer.setType(ReturnType.Exception);
             resultContainer.setArg(e.getCause());

@@ -16,11 +16,13 @@
 
 package org.openengsb.core.common.internal;
 
+import static junit.framework.Assert.assertNull;
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -28,7 +30,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -45,6 +46,7 @@ import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.communication.IncomingPort;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
+import org.openengsb.core.common.communication.MethodReturn.ReturnType;
 import org.openengsb.core.common.communication.OutgoingPort;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -56,6 +58,7 @@ public class CallRouterTest {
     private RequestHandlerImpl requestHandler;
     private TestService serviceMock;
     private OutgoingPort outgoingPortMock;
+    private final String testURI = "jms://localhost";
 
     @Before
     public void setUp() throws Exception {
@@ -109,8 +112,18 @@ public class CallRouterTest {
     }
 
     @Test
+    public void recieveMethodCallWithVoidMethod_shouldSendResponseWithVoidType() throws Exception {
+        final MethodCall call = new MethodCall("test", new Object[0], getMetadata("foo"));
+        MethodReturn result = requestHandler.handleCall(call);
+
+        verify(serviceMock).test();
+        assertThat(result.getType(), equalTo(ReturnType.Void));
+        assertNull(result.getArg());
+    }
+
+    @Test
     public void testSendMethodCall_shouldCallPort() throws Exception {
-        final URI testURI = URI.create("jms://localhost");
+
         callrouter.call("jms+json-out", testURI, new MethodCall());
         Thread.sleep(300);
         callrouter.stop();
@@ -120,7 +133,6 @@ public class CallRouterTest {
     @Test
     public void testSendSyncMethodCall_shouldCallPort() throws Exception {
         MethodCall methodCall = new MethodCall("test", new Object[]{42}, getMetadata("foo"));
-        final URI testURI = URI.create("jms://localhost");
         callrouter.callSync("jms+json-out", testURI, methodCall);
         verify(this.outgoingPortMock, times(1)).sendSync(eq(testURI), any(MethodCall.class));
     }
@@ -130,8 +142,8 @@ public class CallRouterTest {
         when(serviceMock.getAnswer()).thenReturn(42);
         MethodCall methodCall = new MethodCall("test", new Object[]{42}, getMetadata("foo"));
         MethodReturn value = new MethodReturn();
-        when(outgoingPortMock.sendSync(URI.create("jms://localhost"), methodCall)).thenReturn(value);
-        MethodReturn result = callrouter.callSync("jms+json-out", URI.create("jms://localhost"), methodCall);
+        when(outgoingPortMock.sendSync("jms://localhost", methodCall)).thenReturn(value);
+        MethodReturn result = callrouter.callSync("jms+json-out", "jms://localhost", methodCall);
         assertThat(result, is(value));
     }
 
@@ -218,7 +230,7 @@ public class CallRouterTest {
     private <T> T mockService(BundleContext bundleContext, Class<T> serviceClass, String id)
         throws InvalidSyntaxException {
         final ServiceReference serviceRefMock = mock(ServiceReference.class);
-        ServiceReference[] mockAsArray = new ServiceReference[]{serviceRefMock,};
+        ServiceReference[] mockAsArray = new ServiceReference[]{serviceRefMock};
         when(bundleContext.getServiceReferences(eq(serviceClass.getName()), eq(String.format("(id=%s)", id))))
             .thenReturn(mockAsArray);
         when(bundleContext.getServiceReferences(eq(OpenEngSBService.class.getName()), eq(String.format("(id=%s)", id))))

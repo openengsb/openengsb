@@ -16,11 +16,12 @@
 
 package org.openengsb.core.common.communication;
 
+import java.util.List;
 import java.util.Map;
 
 public class MethodReturn {
     public enum ReturnType {
-        Object, Exception,
+        Void, Object, Exception,
     }
 
     private ReturnType type;
@@ -109,7 +110,11 @@ public class MethodReturn {
 
     public String getClassName() {
         if (this.arg != null) {
-            return this.arg.getClass().getName();
+            if (this.arg instanceof List<?>) {
+                return List.class.getName();
+            } else {
+                return this.arg.getClass().getName();
+            }
         } else {
             return "";
         }

@@ -16,12 +16,10 @@
 
 package org.openengsb.core.common.communication;
 
-import java.net.URI;
-
 public interface OutgoingPort {
 
-    void send(URI destination, MethodCall call);
+    void send(String destination, MethodCall call);
 
-    MethodReturn sendSync(URI destination, MethodCall call);
+    MethodReturn sendSync(String destination, MethodCall call);
 
 }

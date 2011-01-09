@@ -16,10 +16,14 @@
 
 package org.openengsb.core.ports.jms;
 
+import static junit.framework.Assert.assertNotNull;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,15 +53,15 @@ public class JMSPortTest {
 
     private final String sendText = "\"classes\":[\"java.lang.String\",\"java.lang.Integer\","
             + "\"org.openengsb.core.ports.jms.JMSPortTest$TestClass\"],"
-            + "\"methodName\":\"method\",\"metaData\":{\"test\":\"test\"},"
-            + "\"args\":[\"123\",5,{\"test\":\"test\"}]}";
+            + "\"methodName\":\"method\",\"args\":[\"123\",5,{\"test\":\"test\"}],"
+            + "\"metaData\":{\"test\":\"test\"}}";
 
     private final String sendTextWithReturn = begin + "\"callId\":\"12345\",\"answer\":true," + sendText;
     private final String sendTextWithoutId = begin + sendText;
 
     private final String returnText =
         "{\"type\":\"Object\",\"className\":\"org.openengsb.core.ports.jms.JMSPortTest$TestClass\","
-                + "\"arg\":{\"test\":\"test\"},\"metaData\":{\"test\":\"test\"}}";
+                + "\"metaData\":{\"test\":\"test\"},\"arg\":{\"test\":\"test\"}}";
 
     private MethodCall call;
     private MethodReturn methodReturn;
@@ -74,6 +78,7 @@ public class JMSPortTest {
     public void setup() {
         jmsTemplate = Mockito.mock(JmsTemplate.class);
         jmsTemplateFactory = Mockito.mock(JMSTemplateFactory.class);
+
         Mockito.when(jmsTemplateFactory.createJMSTemplate("host")).thenReturn(jmsTemplate);
         simpleMessageListenerContainer = Mockito.mock(SimpleMessageListenerContainer.class);
         Mockito.when(jmsTemplateFactory.createMessageListenerContainer()).thenReturn(simpleMessageListenerContainer);
@@ -89,12 +94,10 @@ public class JMSPortTest {
 
     @Test
     public void callSend_shouldSendMessageViaJMS() throws URISyntaxException {
-        port.send(new URI("jms-json", "host", "example"), call);
+        port.send("host", call);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("example"), captor.capture());
+        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("receive"), captor.capture());
         Mockito.verifyNoMoreInteractions(jmsTemplate);
-        System.out.println(captor.getValue());
-        System.out.println(sendTextWithoutId);
         MatcherAssert.assertThat(captor.getValue(), Matchers.equalTo(sendTextWithoutId));
     }
 
@@ -103,8 +106,16 @@ public class JMSPortTest {
         ArgumentCaptor<String> sendIdCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<String> destinationCaptor = ArgumentCaptor.forClass(String.class);
         Mockito.when(jmsTemplate.receiveAndConvert(destinationCaptor.capture())).thenReturn(returnText);
-        MethodReturn sendSync = port.sendSync(new URI("jms-json", "host", "example"), call);
-        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("example"), sendIdCaptor.capture());
+        MethodReturn sendSync = port.sendSync("host", call);
+        Mockito.verify(jmsTemplate).convertAndSend(org.mockito.Matchers.eq("receive"), sendIdCaptor.capture());
+        RequestMapping mapping = new ObjectMapper().readValue(sendIdCaptor.getValue(), RequestMapping.class);
+        mapping.resetArgs();
+        assertThat(mapping.getClasses(), equalTo(call.getClasses()));
+        assertThat(mapping.getArgs(), equalTo(call.getArgs()));
+        assertThat(mapping.getMetaData(), equalTo(call.getMetaData()));
+        assertThat(mapping.getMethodName(), equalTo(call.getMethodName()));
+        assertNotNull(mapping.getCallId());
+
         String destination =
             new ObjectMapper().readValue(new StringReader(sendIdCaptor.getValue()), JsonNode.class).get("callId")
                 .getValueAsText();
@@ -149,8 +160,6 @@ public class JMSPortTest {
         MatcherAssert.assertThat(receiveAndConvert, Matchers.equalTo(returnText));
         MethodCall call = captor.getValue();
         MatcherAssert.assertThat(call.getMethodName(), Matchers.equalTo("method"));
-        System.out.println(call.getArgs() == new Object[]{"123", 5, new TestClass("test")});
-        System.out.println(call.getArgs()[2].getClass());
         MatcherAssert.assertThat(call.getArgs(), Matchers.equalTo(new Object[]{"123", 5, new TestClass("test")}));
         MatcherAssert.assertThat(call.getMetaData(), Matchers.equalTo(this.metaData));
     }

@@ -16,9 +16,6 @@
 
 package org.openengsb.core.common.internal;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -41,7 +38,7 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
     private BundleContext bundleContext;
 
     @Override
-    public void call(String portId, final URI destination, final MethodCall call) {
+    public void call(String portId, final String destination, final MethodCall call) {
         final OutgoingPort port = getPort(portId);
         Runnable callHandler = new Runnable() {
             @Override
@@ -53,7 +50,7 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
     }
 
     @Override
-    public MethodReturn callSync(String portId, final URI destination, final MethodCall call) {
+    public MethodReturn callSync(String portId, final String destination, final MethodCall call) {
         final OutgoingPort port = getPort(portId);
         return port.sendSync(destination, call);
     }
