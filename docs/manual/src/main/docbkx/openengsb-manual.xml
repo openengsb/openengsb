@@ -92,6 +92,7 @@
     <xi:include href="domains/build/domain.xml"/>
     <xi:include href="domains/test/domain.xml"/>
     <xi:include href="domains/deploy/domain.xml"/>
+    <xi:include href="domains/auditing/domain.xml"/>
     <xi:include href="domains/multi-domain/connectors.xml" />
   </part>
 
