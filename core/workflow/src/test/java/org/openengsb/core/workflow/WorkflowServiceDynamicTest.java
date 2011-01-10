@@ -21,6 +21,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,6 +84,7 @@ public class WorkflowServiceDynamicTest {
 
         myservice = mock(DummyService.class);
         when(bundleContext.getService(myserviceReference)).thenReturn(myservice);
+
     }
 
     private void mockDomain(String name) throws RuleBaseException {
@@ -189,6 +193,11 @@ public class WorkflowServiceDynamicTest {
         when(currentContext.getThreadLocalContext()).thenReturn("42");
         workflowService.setCurrentContextService(currentContext);
         workflowService.setBundleContext(bundleContext);
+        OsgiHelper osgiHelper = new OsgiHelper();
+        osgiHelper.setBundleContext(bundleContext);
+        Map<String, Object> services = new HashMap<String, Object>();
+        services.put("osgiHelper", osgiHelper);
+        workflowService.setServices(services);
 
     }
 

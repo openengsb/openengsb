@@ -24,6 +24,7 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -131,6 +132,25 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
         service.processEvent(new TestEvent());
+        // TODO these 2 lines sync-code are required because of OPENENGSB-762
+        executorService.shutdown();
+        executorService.awaitTermination(3, TimeUnit.SECONDS);
+        verify(logService).doSomething("it works");
+    }
+
+    @Test
+    public void testRegisterMultipleEvents_shouldOnlyProcessOneEvent() throws Exception {
+        RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
+        regService.registerEvent(reg, "testPort", URI.create("test://localhost"), "workflowService");
+        RemoteEvent reg2 = new RemoteEvent(TestEvent.class.getName());
+        Map<String, String> nestedEventProperties = new HashMap<String, String>();
+        nestedEventProperties.put("testProperty", "testValue");
+        reg2.setNestedEventProperties(nestedEventProperties);
+        regService.registerEvent(reg2, "testPort", URI.create("test://localhost"), "workflowService");
+        String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
+        service.processEvent(new TestEvent());
+        // TODO these 2 lines sync-code are required because of OPENENGSB-762
         executorService.shutdown();
         executorService.awaitTermination(3, TimeUnit.SECONDS);
         verify(logService).doSomething("it works");

@@ -17,6 +17,13 @@
 package org.openengsb.core.workflow.internal;
 
 import java.net.URI;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.workflow.EventRegistrationService;
@@ -41,9 +48,10 @@ public class RegistrationServiceImpl implements EventRegistrationService {
     private RuleManager ruleManager;
 
     @Override
-    public void registerEvent(RemoteEvent event, String portId, URI returnAddress, String serviceId) {
+    public synchronized void registerEvent(RemoteEvent event, String portId, URI returnAddress, String serviceId) {
         String name =
             String.format("Notify %s via %s when %s occurs", returnAddress.toString(), portId, event.getClassName());
+        name = getUniqueRuleName(name);
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, name);
         String eventMatcher = makeEventMatcher(event);
         try {
@@ -60,14 +68,29 @@ public class RegistrationServiceImpl implements EventRegistrationService {
         log.info("registering Event: " + event);
     }
 
+    private String getUniqueRuleName(String name) {
+        Collection<RuleBaseElementId> list = ruleManager.list(RuleBaseElementType.Rule);
+        while (list.contains(new RuleBaseElementId(RuleBaseElementType.Rule, name))) {
+            name = name + "_";
+        }
+        return name;
+    }
+
     @Override
     public void registerEvent(RemoteEvent reg, String portId, URI returnAddress) {
         registerEvent(reg, portId, returnAddress, null);
     }
 
     private String makeEventMatcher(RemoteEvent event) {
-        return String.format(event.getClassName() + "()");
+        List<String> matchers = new LinkedList<String>();
+        Set<Entry<String, String>> entrySet = event.getNestedEventProperties().entrySet();
+        for (Entry<String, String> entry : entrySet) {
+            matchers.add(String.format("%s == \"%s\"", entry.getKey(), entry.getValue()));
+        }
+        return event.getClassName() + "(" + StringUtils.join(matchers, ",") + ")";
     }
+
+
 
     public void setRuleManager(RuleManager ruleManager) {
         this.ruleManager = ruleManager;
