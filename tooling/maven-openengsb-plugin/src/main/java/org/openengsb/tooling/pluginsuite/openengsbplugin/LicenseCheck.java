@@ -63,7 +63,6 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
-            validateIfExecutionIsAllowed();
             licenseHeaderFile = readHeaderStringAndwriteHeaderIntoTmpFile();
             String profileName = UUID.randomUUID().toString();
             tmpPom = configureTmpPom(profileName);
@@ -74,13 +73,8 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
         }
     }
 
-    private void validateIfExecutionIsAllowed() throws MojoExecutionException {
-        throwErrorIfWrapperRequestIsRecursive();
-        throwErrorIfProjectIsNotExecutedInRootDirectory();
-    }
-
     private void initializeMavenExecutionProperties(String profileName) {
-        goals = Arrays.asList(new String[] { "clean", "validate" });
+        goals = Arrays.asList(new String[] { "validate" });
         activatedProfiles = Arrays.asList(new String[] { profileName });
         userProperties = new Properties();
         userProperties.put("license.header", licenseHeaderFile.toURI().toString());

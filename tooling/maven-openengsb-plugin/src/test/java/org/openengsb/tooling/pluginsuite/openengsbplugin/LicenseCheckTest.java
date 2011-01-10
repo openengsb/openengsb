@@ -38,14 +38,14 @@ public class LicenseCheckTest extends AbstractMojoTest {
     @Test
     public void licenseCheckNoLicenseHeader_mojoShouldFail() throws Exception {
         int result = Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "-e", invocation }), new File(
-                "src/test/resources/licensecheck/fail"), false);
+                "src/test/resources/licenseCheck/fail"), false);
         assertEquals(1, result);
     }
 
     @Test
     public void licenseCheckHeaderAvailable_mojoShouldPass() throws Exception {
         int result = Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "-e", invocation }), new File(
-                "src/test/resources/licensecheck/pass"), false);
+                "src/test/resources/licenseCheck/pass"), false);
         assertEquals(0, result);
     }
 

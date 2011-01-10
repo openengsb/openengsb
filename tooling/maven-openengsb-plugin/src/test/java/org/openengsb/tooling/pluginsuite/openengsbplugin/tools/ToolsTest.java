@@ -76,7 +76,7 @@ public class ToolsTest {
     @Test
     public void testInsertDomNode() throws Exception {
         Document thePom =
-            Tools.parseXMLFromString(IOUtils.toString(ClassLoader.getSystemResourceAsStream("licensecheck/pass/pom.xml")));
+            Tools.parseXMLFromString(IOUtils.toString(ClassLoader.getSystemResourceAsStream("licenseCheck/pass/pom.xml")));
         Document config =
             Tools
                 .parseXMLFromString(IOUtils.toString(ClassLoader.getSystemResourceAsStream("licenseCheck/licenseCheckConfig.xml")));
