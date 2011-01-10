@@ -23,10 +23,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,23 +34,6 @@ public class ProcessBagTest {
     @Before
     public void init() throws Exception {
         pb = new ProcessBag();
-    }
-
-    @Test
-    public void constructorAndGetMethods_shouldReturnCorrectValues() throws Exception {
-        pb = new ProcessBag("4711", "c", "test-user");
-
-        assertEquals(pb.getProcessId(), "4711");
-        assertEquals(pb.getContext(), "c");
-        assertEquals(pb.getUser(), "test-user");
-    }
-
-    @Test
-    public void getSetProperty_shouldSetAndGetProperValues() throws Exception {
-        pb = new ProcessBag("4711", "c", "test-user");
-        pb.addProperty("test", "42");
-        assertTrue(pb.containsProperty("test"));
-        assertEquals(pb.getProperty("test"), "42");
     }
 
     @Test(expected = ProcessBagException.class)
@@ -74,7 +53,7 @@ public class ProcessBagTest {
         pb.addProperty("test", "42");
         pb.addProperty("number", 42);
 
-        Set<String> list = pb.getPropertyKeyList();
+        Set<String> list = pb.propertyKeySet();
         assertThat(list.size(), is(2));
     }
 
@@ -84,7 +63,7 @@ public class ProcessBagTest {
         pb.addProperty("string", "42");
         pb.removeProperty("number");
 
-        Set<String> list = pb.getPropertyKeyList();
+        Set<String> list = pb.propertyKeySet();
         assertTrue(list.contains("string"));
         assertFalse(list.contains("number"));
     }
@@ -94,7 +73,7 @@ public class ProcessBagTest {
         pb.addProperty("test", "42");
         pb.addProperty("number", 42);
 
-        assertTrue(pb.getPropertyCount() == 2);
+        assertTrue(pb.propertyCount() == 2);
     }
 
     @Test
@@ -110,27 +89,6 @@ public class ProcessBagTest {
         pb.addProperty("number", 42);
 
         pb.removeAllProperties();
-        assertTrue(pb.getPropertyCount() == 0);
-    }
-
-    @Test
-    public void setProcessIdLater_shouldBlockGetter() throws Exception {
-        Callable<String> task = new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return pb.getProcessId();
-            }
-        };
-        Future<String> processIdFuture = Executors.newSingleThreadExecutor().submit(task);
-
-        Thread.sleep(100);
-        // this task should block now
-        assertThat(processIdFuture.isDone(), is(false));
-
-        // just call it to make sure it isn't blocking
-        pb.getPropertyCount();
-
-        pb.setProcessId("foo");
-        processIdFuture.get(1, TimeUnit.SECONDS);
+        assertTrue(pb.propertyCount() == 0);
     }
 }

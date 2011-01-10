@@ -55,8 +55,8 @@
     <bundle>mvn:org.ops4j.pax.web/pax-web-deployer/${pax.web.version}</bundle>
     <bundle>mvn:org.ops4j.pax.url/pax-url-war/${pax.url.version}</bundle>
   </feature>
-  <!--<feature name="spring" version="${spring.version}" resolver="(obr)">-->
-  <feature name="spring" version="${spring.version}">
+  <!--<feature name="openengsb-spring" version="${spring.version}" resolver="(obr)">-->
+  <feature name="openengsb-spring" version="${spring.version}">
     <bundle>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/${geronimo.servlet.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aopalliance/${aopalliance.version}</bundle>
@@ -73,9 +73,9 @@
     <bundle>mvn:org.springframework/spring-context-support/${spring.version}</bundle>
     <bundle>mvn:org.springframework/spring-web/${spring.version}</bundle>
   </feature>
-  <!--<feature name="spring-dm" version="${spring.osgi.version}" resolver="(obr)">-->
-  <feature name="spring-dm" version="${spring.osgi.version}">
-    <feature version="${spring.version}">spring</feature>
+  <!--<feature name="openengsb-spring-dm" version="${spring.osgi.version}" resolver="(obr)">-->
+  <feature name="openengsb-spring-dm" version="${spring.osgi.version}">
+    <feature version="${spring.version}">openengsb-spring</feature>
     <bundle dependency='true'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
     <bundle>mvn:org.springframework.osgi/spring-osgi-io/${spring.osgi.version}</bundle>
     <bundle>mvn:org.springframework.osgi/spring-osgi-core/${spring.osgi.version}</bundle>
@@ -84,9 +84,9 @@
     <bundle>mvn:org.springframework.osgi/spring-osgi-annotation/${spring.osgi.version}</bundle>
     <bundle>mvn:org.apache.karaf.deployer/org.apache.karaf.deployer.spring/${karaf.version}</bundle>
   </feature>
-  <!--<feature name="spring-security" version="${spring.security.version}" resolver="(obr)">-->
-  <feature name="spring-security" version="${spring.security.version}">
-    <feature version="${spring.version}">spring</feature>
+  <!--<feature name="openengsb-spring-security" version="${spring.security.version}" resolver="(obr)">-->
+  <feature name="openengsb-spring-security" version="${spring.security.version}">
+    <feature version="${spring.version}">openengsb-spring</feature>
     <bundle>mvn:org.springframework.security/spring-security-core/${spring.security.version}</bundle>
     <bundle>mvn:org.springframework.security/spring-security-config/${spring.security.version}</bundle>
     <bundle>mvn:org.springframework.security/spring-security-web/${spring.security.version}</bundle>
@@ -114,9 +114,9 @@
       openengsb.version.name.adjective=${openengsb.version.name.adjective}
       openengsb.version.name.noun=${openengsb.version.name.noun}
     </config>
-    <feature version="${spring.version}">spring</feature>
-    <feature version="${spring.osgi.version}">spring-dm</feature>
-    <feature version="${spring.security.version}">spring-security</feature>
+    <feature version="${spring.version}">openengsb-spring</feature>
+    <feature version="${spring.osgi.version}">openengsb-spring-dm</feature>
+    <feature version="${spring.security.version}">openengsb-spring-security</feature>
     <feature version="${project.version}">aspectj</feature>
     <feature version="${drools.version}">drools</feature>
     <feature version="${project.version}">war</feature>
@@ -126,13 +126,13 @@
     <bundle dependency="true">mvn:org.jvnet.staxex/com.springsource.org.jvnet.staxex/${staxex.version}</bundle>
     <bundle dependency="true">mvn:javax.xml.soap/com.springsource.javax.xml.soap/${javax.xml.soap}</bundle>
     <bundle dependency="true">mvn:com.sun.xml/com.springsource.com.sun.xml.fastinfoset/${fastinfoset.version}</bundle>
-    <bundle dependency="true">mvn:org.openengsb.wrapped/com.google.guava-all/${project.version}</bundle>
-    <bundle dependency="true">mvn:org.openengsb.wrapped/com.jcraft.jsch-all/${project.version}</bundle>
-    <bundle dependency="true">mvn:org.openengsb.wrapped/javax.xml.jaxb-all/${project.version}</bundle>
-    <bundle dependency="true">mvn:org.openengsb.wrapped/org.neodatis.odb-all/${project.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/com.google.guava-all/${guava.wrapped.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/com.jcraft.jsch-all/${jsch.wrapped.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/javax.xml.jaxb-all/${jaxb.wrapped.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/org.neodatis.odb-all/${odb.wrapped.version}</bundle>
     <bundle dependency="true">mvn:javax.xml.rpc/com.springsource.javax.xml.rpc/${javax.xmlrpc.version}</bundle>
-    <bundle dependency="true">mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${project.version}</bundle>
-    <bundle dependency="true">mvn:org.openengsb.wrapped/org.apache.wicket-all/${project.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/org.apache.xmlrpc-all/${apache.xmlrpc.wrapped.version}</bundle>
+    <bundle dependency="true">mvn:org.openengsb.wrapped/org.apache.wicket-all/${wicket.wrapped.version}</bundle>
     <bundle dependency="true">mvn:org.springframework/spring-tx/${spring.version}</bundle>
     <bundle dependency="true">mvn:org.apache.servicemix.transaction/org.apache.servicemix.transaction/${smx.transaction.version}</bundle>
     <!-- OpenEngSB JMS Proxy Feature -->
@@ -159,7 +159,6 @@
     <bundle>mvn:org.openengsb.core.ports/openengsb-core-ports-jms/${project.version}</bundle>
     <!-- OpenEngSB UI Features -->
     <bundle>mvn:org.openengsb.ui.common/openengsb-ui-common-wicket/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.ui/openengsb-ui-taskbox/${project.version}</bundle>
     <!-- OpenEngSB Management UI -->
     <bundle>mvn:org.openengsb.ui/openengsb-ui-web/${project.version}/war</bundle>
   </feature>

@@ -16,7 +16,8 @@
    limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
     <groupId>org.openengsb.ui.common</groupId>
@@ -43,7 +44,7 @@
       <name>Apache 2</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
-     </license>
+    </license>
   </licenses>
   <scm>
     <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
@@ -63,7 +64,6 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>${plugin.bundle.version}</version>
         <executions>
           <execution>
             <id>bundle-manifest</id>
@@ -120,8 +120,13 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
-
-
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+  	  <artifactId>openengsb-core-taskbox</artifactId>
+  	  <version>${project.version}</version>
+  	  <scope>provided</scope>
+    </dependency>
+    
     <!-- Wicket Dependencies -->
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -172,9 +177,23 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.wicket</groupId>
+      <artifactId>wicket-velocity</artifactId>
+      <version>${wicket.version}</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-servlet_2.5_spec</artifactId>
       <version>${geronimo.servlet.version}</version>
+    </dependency>
+    
+    <!-- Neodatis Dependencies -->
+    <dependency>
+      <groupId>org.neodatis.odb</groupId>
+      <artifactId>neodatis-odb</artifactId>
+      <version>${odb.version}</version>
+      <optional>true</optional>
     </dependency>
 
   </dependencies>

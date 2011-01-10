@@ -27,6 +27,7 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -41,6 +42,7 @@ import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.test.NullEvent3;
 import org.openengsb.core.workflow.model.TestEvent;
 
 public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
@@ -193,9 +195,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testStartWorkflowTriggeredByEvent() throws Exception {
-        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n"
-                + "  Event()\n"
-                + "then\n"
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "test42"), "when\n" + "  Event()\n" + "then\n"
                 + "  kcontext.getKnowledgeRuntime().startProcess(\"ci\");\n");
         service.processEvent(new Event());
         assertThat(service.getRunningFlows().isEmpty(), is(false));
@@ -206,6 +206,42 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         service.registerFlowTriggerEvent(new Event("triggerEvent"), "ci");
         service.processEvent(new Event());
         service.processEvent(new Event("triggerEvent"));
+        assertThat(service.getRunningFlows().size(), is(1));
+    }
+
+    @Test
+    public void testRegisterWorkflowTriggerWithSubclass() throws Exception {
+        NullEvent3 testEvent = new NullEvent3();
+        testEvent.setName("triggerEvent");
+        testEvent.setTestProperty("foo");
+        testEvent.setTestStringProp("bar");
+        testEvent.setTestBoolProp(true);
+        testEvent.setTestIntProp(42);
+        service.registerFlowTriggerEvent(testEvent, "ci");
+        service.processEvent(new Event());
+        service.processEvent(testEvent);
+        assertThat(service.getRunningFlows().size(), is(1));
+    }
+
+    @Test
+    public void testRegisterWorkflowTriggerIgnoreNullFields() throws Exception {
+        NullEvent3 testEvent = new NullEvent3();
+        testEvent.setName("triggerEvent");
+        service.registerFlowTriggerEvent(testEvent, "ci");
+        service.processEvent(new Event());
+        service.processEvent(testEvent);
+        assertThat(service.getRunningFlows().size(), is(1));
+    }
+
+    @Test
+    public void testRegisterWorkflowTriggerIgnoreNullFieldsMixed() throws Exception {
+        NullEvent3 testEvent = new NullEvent3();
+        testEvent.setName("triggerEvent");
+        testEvent.setTestStringProp("bar");
+        testEvent.setTestIntProp(42);
+        service.registerFlowTriggerEvent(testEvent, "ci");
+        service.processEvent(new Event());
+        service.processEvent(testEvent);
         assertThat(service.getRunningFlows().size(), is(1));
     }
 
@@ -230,13 +266,12 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
     @Test
     public void testStartProcessWithProperyBag_ChangePropertyByScriptNode_shouldChangeProperty() throws Exception {
         ProcessBag processBag = new ProcessBag();
-        processBag.addProperty("test", "test");
         Map<String, Object> parameterMap = new HashMap<String, Object>();
         parameterMap.put("processBag", processBag);
 
         long id = service.startFlow("propertybagtest", parameterMap);
         service.waitForFlowToFinish(id);
 
-        assertThat((String) processBag.getProperty("test"), is("xyz"));
+        assertThat((String) processBag.getProperty("test"), is(String.valueOf(id)));
     }
 }

@@ -18,7 +18,6 @@ package org.openengsb.core.common.taskbox;
 
 import java.util.List;
 
-import org.openengsb.core.common.Event;
 import org.openengsb.core.common.taskbox.model.Task;
 import org.openengsb.core.common.workflow.WorkflowException;
 
@@ -34,43 +33,26 @@ import org.openengsb.core.common.workflow.WorkflowException;
  */
 public interface TaskboxService {
     /**
-     * Gets the message set by a workflow used for testing purposes up to now
-     * 
-     * @throws TaskboxException when the message is not set
-     */
-    String getWorkflowMessage() throws TaskboxException;
-
-    /**
-     * Starts a test workflow workflowName - the name of the workflow to be started taskVariableName - the name of the
-     * variable containing the taskObject in the workflow task - the taskobject to be reasoned about
-     * 
-     * @throws TaskboxException when the test workflow could not be started
-     */
-
-    void startWorkflow(String workflowName, String taskVariableName, Task task) throws TaskboxException;
-
-    /**
-     * Used by a workflow to set a message Used for testing purposes up to now
-     */
-    void setWorkflowMessage(String message);
-
-    /**
-     * Redirect events to workflowService
-     * 
-     * @throws WorkflowException when there is a problem processing the event.
-     */
-    void processEvent(Event event) throws WorkflowException;
-
-    /**
      * Loads all open tasks out of the persistence service.
-     * 
      */
     List<Task> getOpenTasks();
 
     /**
-     * Loads all tasks which match the example task out of the persistence.
+     * Loads all open tasks which match the example task out of the persistence.
      */
     List<Task> getTasksForExample(Task example);
+
+    /**
+     * Loads the open task fitting a given id.
+     * 
+     * @throws TaskboxException if none or more than one task was found
+     */
+    Task getTaskForId(String id) throws TaskboxException;
+
+    /**
+     * Loads all open tasks belonging to a processes instance
+     */
+    List<Task> getTasksForProcessId(String id);
 
     /**
      * Sends a TaskFinishedEvent and removes task from the persistence.

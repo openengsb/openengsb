@@ -106,13 +106,13 @@ public class GenConnector extends AbstractOpenengsbMojo {
             archetypeCatalogLocalOnly = true;
         }
 
-        domain_name = Tools.readValue(sc, "Domain Name", DEFAULT_DOMAIN);
+        domain_name = Tools.readValueFromStdin(sc, "Domain Name", DEFAULT_DOMAIN);
         domaininterface =
             Tools
-                .readValue(sc, "Domain Interface", String.format("%s%s", Tools.capitalizeFirst(domain_name), "Domain"));
-        connector = Tools.readValue(sc, "Connector Name", "myconnector");
-        version = Tools.readValue(sc, "Version", default_version);
-        project_name = Tools.readValue(sc,
+                .readValueFromStdin(sc, "Domain Interface", String.format("%s%s", Tools.capitalizeFirst(domain_name), "Domain"));
+        connector = Tools.readValueFromStdin(sc, "Connector Name", "myconnector");
+        version = Tools.readValueFromStdin(sc, "Version", default_version);
+        project_name = Tools.readValueFromStdin(sc,
             "Project Name",
             String.format("%s%s", DEFAULT_CONNECTORNAME_PREFIX,
                 Tools.capitalizeFirst(connector)));

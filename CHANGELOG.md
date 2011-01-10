@@ -18,6 +18,7 @@ openengsb-1.1.0.RELEASE
   * provision
 
 ### Upgraded Projects
+  * org.ops4j.pax.exam/pax-exam-*/1.2.3
   * org.apache.wicket/wicket-*/1.4.13
   * org.neodatis.odb/neodatis-odb/1.9.30.687
   * junit/junit/4.8.2
@@ -38,6 +39,7 @@ openengsb-1.1.0.RELEASE
 
 ### New Features & Changed Behaviour
   * Added tooling plugin to execute license-check plugin and assemble scripts via mvn.
+  * Added possibility to brand konsole
 
 ### Depricated or Removed Features
 

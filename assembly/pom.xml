@@ -74,8 +74,27 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>${maven.plugin.dependency.version}</version>
         <executions>
+          <execution>
+            <id>branding</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.openengsb.branding</groupId>
+                  <artifactId>openengsb-branding-shell</artifactId>
+                  <version>${project.version}</version>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>target/dependencies/lib</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <stripVersion>true</stripVersion>
+            </configuration>
+          </execution>
           <execution>
             <id>unpack</id>
             <phase>generate-resources</phase>
@@ -137,7 +156,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>${maven.plugin.resources.version}</version>  
         <executions>
           <execution>
             <id>filter</id>
@@ -195,11 +213,9 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>${maven.plugin.assembly.version}</version>
         <configuration>
           <appendAssemblyId>false</appendAssemblyId>
           <descriptors>
-            <descriptor>${project.basedir}/src/main/descriptors/run-bin.xml</descriptor>
             <descriptor>${project.basedir}/src/main/descriptors/unix-bin.xml</descriptor>
             <descriptor>${project.basedir}/src/main/descriptors/windows-bin.xml</descriptor>
           </descriptors>
@@ -217,7 +233,6 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>${maven.plugin.helper.version}</version>
         <executions>
           <execution>
             <id>attach-artifacts</id>
@@ -250,8 +265,10 @@
         <artifactId>maven-openengsb-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
-          <provisionPathUnix>${project.basedir}/target/openengsb-${project.version}/openengsb-${project.version}/bin/openengsb</provisionPathUnix>
-          <provisionPathWindows>${project.basedir}/target/openengsb-${project.version}/openengsb-${project.version}/bin/openengsb.bat</provisionPathWindows>
+          <provisionArchivePathUnix>${project.basedir}/target/openengsb-${project.version}.tar.gz</provisionArchivePathUnix>
+          <provisionExecutionPathUnix>bin/openengsb</provisionExecutionPathUnix>
+          <provisionArchivePathWindows>${project.basedir}/target/openengsb-${project.version}.zip</provisionArchivePathWindows>
+          <provisionExecutionPathWindows>bin/openengsb.bat</provisionExecutionPathWindows>
         </configuration>
       </plugin>
     </plugins>

@@ -20,6 +20,9 @@ import java.util.Map;
 
 import org.apache.wicket.model.IModel;
 
+/**
+ * Model that represents a specific entry "key" in a map "map"
+ */
 @SuppressWarnings("serial")
 public class MapModel<K, V> implements IModel<V> {
     private final Map<K, V> map;

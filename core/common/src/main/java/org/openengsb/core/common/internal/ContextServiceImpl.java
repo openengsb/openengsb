@@ -36,9 +36,9 @@ import com.google.common.base.Preconditions;
 
 public class ContextServiceImpl implements ContextCurrentService, ContextService, BundleContextAware {
 
-    private ThreadLocal<String> currentContext = new ThreadLocal<String>();
+    private ThreadLocal<String> currentContext = new InheritableThreadLocal<String>();
     private Context rootContext;
-    private ThreadLocal<String> currentContextId = new ThreadLocal<String>();
+    private ThreadLocal<String> currentContextId = new InheritableThreadLocal<String>();
 
     private PersistenceManager persistenceManager;
 
