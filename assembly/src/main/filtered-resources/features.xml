@@ -149,7 +149,7 @@
     <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-workflow/${project.version}</bundle>
-    <bundle>mvn:org.openengsb.core/openengsb-core-taskbox/${project.version}</bundle>
+
     <!-- Required Domains and Connectors -->
     <bundle>mvn:org.openengsb.domain/openengsb-domain-auditing/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-memoryauditing/${project.version}</bundle>

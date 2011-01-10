@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.taskbox;
+package org.openengsb.core.workflow.taskbox;
 
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.workflow.model.ProcessBag;
