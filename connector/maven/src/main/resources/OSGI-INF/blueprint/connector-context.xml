@@ -76,6 +76,7 @@
   <service interface="org.openengsb.core.common.ServiceManager">
     <service-properties>
       <entry key="domain" value="org.openengsb.domain.build.BuildDomain" />
+      <entry key="connector" value="maven" />
     </service-properties>
     <bean factory-ref="buildServiceManagerProxyFactory" factory-method="getObject" />
   </service>
@@ -83,6 +84,7 @@
   <service interface="org.openengsb.core.common.ServiceManager">
     <service-properties>
       <entry key="domain" value="org.openengsb.domain.test.TestDomain" />
+      <entry key="connector" value="maven" />
     </service-properties>
     <bean factory-ref="testServiceManagerProxyFactory" factory-method="getObject" />
   </service>
@@ -90,6 +92,7 @@
   <service interface="org.openengsb.core.common.ServiceManager">
     <service-properties>
       <entry key="domain" value="org.openengsb.domain.deploy.DeployDomain" />
+      <entry key="connector" value="maven" />
     </service-properties>
     <bean factory-ref="deployServiceManagerProxyFactory" factory-method="getObject" />
   </service>

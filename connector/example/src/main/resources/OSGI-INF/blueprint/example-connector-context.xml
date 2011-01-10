@@ -47,6 +47,7 @@
   <service interface="org.openengsb.core.common.ServiceManager">
     <service-properties>
       <entry key="domain" value="org.openengsb.domain.example.ExampleDomain" />
+      <entry key="connector" value="example" />
     </service-properties>
     <bean factory-ref="serviceManagerProxyFactory" factory-method="getObject" />
   </service>

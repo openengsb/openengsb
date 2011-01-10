@@ -54,6 +54,7 @@
   <service interface="org.openengsb.core.common.ServiceManager">
     <service-properties>
       <entry key="domain" value="org.openengsb.domain.issue.IssueDomain" />
+      <entry key="connector" value="jira" />
     </service-properties>
     <bean factory-ref="serviceManagerProxyFactory" factory-method="getObject" />
   </service>
