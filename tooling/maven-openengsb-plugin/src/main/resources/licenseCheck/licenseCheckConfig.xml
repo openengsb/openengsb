@@ -10,9 +10,9 @@
           <version>1.8.0</version>
           <configuration>
             <excludes>
-              <exclude>tooling/maven-openengsb-plugin/src/main/resources/licenseCheck/header.txt</exclude>
-              <exclude>tooling/maven-openengsb-plugin/src/main/resources/licenseCheck/licenseCheckConfig.xml</exclude>
-              <eclude>tooling/maven-openengsb-plugin/src/test/resources/licensecheck/fail/**</eclude>
+              <exclude>**/main/resources/licenseCheck/header.txt</exclude>
+              <exclude>**/main/resources/licenseCheck/licenseCheckConfig.xml</exclude>
+              <eclude>**/test/resources/licenseCheck/fail/src/main/java/org/openengsb/licensecheck/App.java</eclude>
               <exclude>tmpPom.xml</exclude>
               <exclude>etc/eclipse/checkstyle.xml</exclude>
               <exclude>license.txt</exclude>
