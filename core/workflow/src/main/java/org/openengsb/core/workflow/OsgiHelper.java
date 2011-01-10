@@ -34,17 +34,19 @@ public class OsgiHelper implements BundleContextAware {
     private ContextCurrentService contextService;
 
     public void sendRemoteEvent(String portId, URI destination, RemoteEvent e) {
+        sendRemoteEvent(portId, destination, e, new HashMap<String, String>());
+    }
+
+    public void sendRemoteEvent(String portId, URI destination, RemoteEvent e, Map<String, String> metaData) {
         OutgoingPort port = OsgiServiceUtils.getServiceWithId(bundleContext, OutgoingPort.class, portId);
-        MethodCall call = new MethodCall();
+        MethodCall call = new MethodCall("processRemoteEvent", new Object[]{ e }, metaData);
         port.send(destination, call);
     }
 
     public void sendRemoteEvent(String portId, URI destination, RemoteEvent e, String serviceId) {
-        OutgoingPort port = OsgiServiceUtils.getServiceWithId(bundleContext, OutgoingPort.class, portId);
         Map<String, String> metaData = new HashMap<String, String>();
         metaData.put("serviceId", serviceId);
-        MethodCall call = new MethodCall("processRemoteEvent", new Object[]{ e }, metaData);
-        port.send(destination, call);
+        sendRemoteEvent(portId, destination, e, metaData);
     }
 
     @Override
