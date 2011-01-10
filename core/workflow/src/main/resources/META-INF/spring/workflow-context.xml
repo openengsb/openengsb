@@ -40,6 +40,12 @@
     <property name="persistenceManager" ref="persistenceManger" />
   </bean>
 
+  <bean class="org.openengsb.core.workflow.internal.RegistrationServiceImpl" id="registrationService">
+    <property name="ruleManager" ref="ruleManager" />
+  </bean>
+
+  <osgi:service interface="org.openengsb.core.common.workflow.EventRegistrationService" ref="registrationService" />
+
   <osgi:service interface="org.openengsb.core.common.workflow.RuleManager">
     <ref local="ruleManager" />
   </osgi:service>
