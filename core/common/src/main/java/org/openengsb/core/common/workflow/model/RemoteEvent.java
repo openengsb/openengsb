@@ -22,24 +22,23 @@ import java.util.Map;
 import org.openengsb.core.common.Event;
 
 public class RemoteEvent extends Event {
-    private String type;
+    private String className;
     private Map<String, String> nestedEventProperties = new HashMap<String, String>();
     private Map<String, String> contextValues = new HashMap<String, String>();
 
     public RemoteEvent() {
     }
 
-    public RemoteEvent(String type) {
-        this.type = type;
+    public RemoteEvent(String className) {
+        this.className = className;
     }
 
-    @Override
-    public String getType() {
-        return type;
+    public String getClassName() {
+        return this.className;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     public Map<String, String> getNestedEventProperties() {

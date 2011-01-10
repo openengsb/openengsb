@@ -103,13 +103,13 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         event.setTestProperty("bla");
         RemoteEvent wrapEvent = RemoteEventUtil.wrapEvent(event);
         Map<String, String> properties = wrapEvent.getNestedEventProperties();
-        assertThat(wrapEvent.getType(), is(TestEvent.class.getName()));
+        assertThat(wrapEvent.getClassName(), is(TestEvent.class.getName()));
         assertThat(properties.get("processId"), is("3"));
     }
 
     @Test
     public void testRegisterEvent() throws Exception {
-        RemoteEvent reg = new RemoteEvent(TestEvent.class.getSimpleName());
+        RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
         reg.setProcessId(3L);
         regService.registerEvent(reg, "testPort", URI.create("test://localhost"));
         service.processEvent(new TestEvent());
@@ -118,7 +118,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testRegisterEvent_shouldCreateRule() throws Exception {
-        RemoteEvent reg = new RemoteEvent(TestEvent.class.getSimpleName());
+        RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
         int oldCount = manager.list(RuleBaseElementType.Rule).size();
         regService.registerEvent(reg, "testPort", URI.create("test://localhost"));
         assertThat(manager.list(RuleBaseElementType.Rule).size(), is(oldCount + 1));
@@ -126,7 +126,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testRegisterEvent_shouldProcessRemoteEvent() throws Exception {
-        RemoteEvent reg = new RemoteEvent(TestEvent.class.getSimpleName());
+        RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
         regService.registerEvent(reg, "testPort", URI.create("test://localhost"), "workflowService");
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);

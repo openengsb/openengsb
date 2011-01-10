@@ -43,7 +43,7 @@ public class RegistrationServiceImpl implements EventRegistrationService {
     @Override
     public void registerEvent(RemoteEvent event, String portId, URI returnAddress, String serviceId) {
         String name =
-            String.format("Notify %s via %s when %s occurs", returnAddress.toString(), portId, event.getType());
+            String.format("Notify %s via %s when %s occurs", returnAddress.toString(), portId, event.getClassName());
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, name);
         String eventMatcher = makeEventMatcher(event);
         try {
@@ -66,7 +66,7 @@ public class RegistrationServiceImpl implements EventRegistrationService {
     }
 
     private String makeEventMatcher(RemoteEvent event) {
-        return String.format("Event(type == \"%s\")", event.getType());
+        return String.format(event.getClassName() + "()");
     }
 
     public void setRuleManager(RuleManager ruleManager) {
