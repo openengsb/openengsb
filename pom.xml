@@ -363,6 +363,17 @@
       <name>Apache Public Repository</name>
       <url>https://repository.apache.org/content/repositories/snapshots/</url>
     </pluginRepository>
+    <pluginRepository>
+      <id>docbook-utils</id>
+      <name>DocBook Utils</name>
+      <url>http://docbook-utils.sourceforge.net/maven2</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
+      </releases>
+    </pluginRepository>
   </pluginRepositories>
 
   <repositories>
