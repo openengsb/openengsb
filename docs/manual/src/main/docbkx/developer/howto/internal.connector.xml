@@ -43,7 +43,7 @@
 
     <para>To take the burden of the developer creating the initial boilerplate code and configuration, a Maven archetype
       is provided for creating the initial project structure. Furthermore, if the new connector is developed inside of
-      the OpenEngSB repository, the <literal>maven-openengsb-plugin</literal>
+      the OpenEngSB repository, the <literal>openengsb-maven-plugin</literal>
       (see <xref linkend="developer.quickstart.tools.mavenplugin"/>)
       (or the <literal>etc/scripts/gen-connector.sh</literal> script, which wraps the invocation of the maven plugin)
       should be used for assisted creation of a new connector project.</para>
@@ -52,7 +52,7 @@
       <title>Using the Maven Archetype</title>
 
       <para>It is not recommended to use the maven archetype directly, because the <literal>genConnector</literal> goal
-      of the maven-openengsb-plugin executes additional tasks, like the renaming of the resulting project. Furthermore
+      of the openengsb-maven-plugin executes additional tasks, like the renaming of the resulting project. Furthermore
       it tries to make sure that the new project is consistent with the naming conventions of the
       OpenEngSB project.</para>
       
@@ -93,18 +93,18 @@
     </section>
 
     <section>
-      <title>Using the <literal>maven-openengsb-plugin:genConnector</literal></title>
+      <title>Using the <literal>openengsb-maven-plugin:genConnector</literal></title>
 
       <para>
         First make sure that the plugin is installed in your local maven repository
         (see <xref linkend="developer.quickstart.tools.mavenplugin"/>).
         Then the <literal>genConnector</literal> mojo should be executed from the connector directory
         (<literal>connector/</literal>) (alternatively the <literal>etc/scripts/gen-connector.sh</literal> script can
-        be used which invokes the maven-openengsb-plugin for you).
+        be used which invokes the openengsb-maven-plugin for you).
       </para>
 
       <literallayout>
-        <command>connector $</command> mvn org.openengsb.tooling.pluginsuite:maven-openengsb-plugin:&lt;version&gt;:genConnector
+        <command>connector $</command> mvn org.openengsb.tooling.pluginsuite:openengsb-maven-plugin:&lt;version&gt;:genConnector
       </literallayout>
 
       <para>The mojo tries to guess as much as possible from your previous input. Guessed values

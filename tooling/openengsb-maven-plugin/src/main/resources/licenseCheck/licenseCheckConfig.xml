@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<licenseCheckMojo xmlns="http://www.openengsb.org/tooling/maven-openengsb-plugin/licenseCheckMojo">
+<licenseCheckMojo xmlns="http://www.openengsb.org/tooling/openengsb-maven-plugin/licenseCheckMojo">
   <profile>
     <build>
       <plugins>

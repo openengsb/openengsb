@@ -291,7 +291,7 @@
         <plugins>
           <plugin>
             <groupId>org.openengsb.tooling.pluginsuite</groupId>
-            <artifactId>maven-openengsb-plugin</artifactId>
+            <artifactId>openengsb-maven-plugin</artifactId>
             <version>${project.version}</version>
             <executions>
               <execution>

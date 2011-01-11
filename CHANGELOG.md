@@ -5,7 +5,7 @@ openengsb-1.1.0.RELEASE
   * [e.g.] Fix problem with setting files
 
 ### New Projects
-  * maven-openengsb-plugin
+  * openengsb-maven-plugin
   * openengsb-core-taskbox
   * openengsb-core-usermanagement
   * openengsb-ui-taskbox

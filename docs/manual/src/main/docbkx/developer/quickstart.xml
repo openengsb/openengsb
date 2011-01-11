@@ -259,18 +259,18 @@
   <section xml:id="developer.quickstart.tools">
   <title>Useful Tools</title>
   <section xml:id="developer.quickstart.tools.mavenplugin">
-    <title>maven-openengsb-plugin</title>
+    <title>openengsb-maven-plugin</title>
     <para>
-      The maven-openengsb-plugin is a plugin for Apache Maven, intended to simplify various activities (creating
+      The openengsb-maven-plugin is a plugin for Apache Maven, intended to simplify various activities (creating
       domains or connectors, building a release artifact of the whole project etc.) when developing for the OpenEngSB.
       It is automatically installed into your local maven repository when doing a
       <command>mvn clean install</command>
       of the whole project for the first time. You can also install the plugin separately by invoking
-      <command>mvn clean install</command> within <filename>tooling/maven-openengsb-plugin/</filename>.
+      <command>mvn clean install</command> within <filename>tooling/openengsb-maven-plugin/</filename>.
     </para>
     <para>
       The plugin can be invoked by
-      <command>mvn org.openengsb.tooling.pluginsuite:maven-openengsb-plugin:&lt;version&gt;:&lt;goal&gt;</command>
+      <command>mvn org.openengsb.tooling.pluginsuite:openengsb-maven-plugin:&lt;version&gt;:&lt;goal&gt;</command>
       where <replaceable>version</replaceable> is the current version of the OpenEngSB and
       <replaceable>goal</replaceable> denotes the mojo you want to execute.
     </para>
@@ -324,7 +324,7 @@
     <para>
       Performs a check if appropriate license headers are available in every source file. A large part of the default
       behavior of this mojo can be changed in
-      <filename>tooling/maven-openengsb-plugin/src/main/resources/licenseCheck</filename>. See 
+      <filename>tooling/openengsb-maven-plugin/src/main/resources/licenseCheck</filename>. See 
       <link xlink:href="http://code.google.com/p/maven-license-plugin/wiki/Configuration#maven-license-plugin_configuration_options">this site</link>
       for available configuration options.
     </para>

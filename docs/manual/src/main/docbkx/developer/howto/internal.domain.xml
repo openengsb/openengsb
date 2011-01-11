@@ -41,7 +41,7 @@
 
     <para>To get developers started creating a new domain a Maven archetype is provided for creating the initial project
       structure. Furthermore, if the new domain is developed in the OpenEngSB repository, the
-      <literal>maven-openengsb-plugin</literal> (see <xref linkend="developer.quickstart.tools.mavenplugin"/>) or the
+      <literal>openengsb-maven-plugin</literal> (see <xref linkend="developer.quickstart.tools.mavenplugin"/>) or the
       <literal>etc/scripts/gen-domain.sh</literal> script (which only wraps the invocation of the plugin) should be
       used for further convenience.
     </para>
@@ -50,7 +50,7 @@
       <title>Using the Maven Archetype</title>
 
       <para>It is not recommended to use the maven archetype directly, because the <emphasis>genDomain</emphasis> goal 
-      of the maven-openengsb-plugin executes additional tasks, like the renaming of the resulting project.
+      of the openengsb-maven-plugin executes additional tasks, like the renaming of the resulting project.
       Furthermore it tries to make sure that the new project is consistent with the naming conventions
       of the OpenEngSB project.</para>
       
@@ -84,18 +84,18 @@
     </section>
 
     <section>
-      <title>Using <literal>maven-openengsb-plugin:genDomain</literal></title>
+      <title>Using <literal>openengsb-maven-plugin:genDomain</literal></title>
 
       <para>
         First make sure that the plugin is installed in your local maven repository
         (see <xref linkend="developer.quickstart.tools.mavenplugin"/>).
         Then the <literal>genDomain</literal> mojo should be executed from the domains directory in your OpenEngSB
         repository (alternatively the <literal>etc/scripts/gen-domain.sh</literal> script can be used which invokes the
-        maven-openengsb-plugin for you).
+        openengsb-maven-plugin for you).
       </para>
 
       <literallayout>
-        <command>domains $</command> mvn org.openengsb.tooling.pluginsuite:maven-openengsb-plugin:&lt;version&gt;:genDomain
+        <command>domains $</command> mvn org.openengsb.tooling.pluginsuite:openengsb-maven-plugin:&lt;version&gt;:genDomain
       </literallayout>
 
       <para>You'll be asked to fill in a few variables the script needs to create the initial project structure. Based on
