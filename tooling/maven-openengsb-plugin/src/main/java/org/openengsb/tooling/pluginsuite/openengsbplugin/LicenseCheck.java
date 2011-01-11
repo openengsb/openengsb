@@ -17,8 +17,6 @@
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +25,9 @@ import java.util.UUID;
 
 import javax.xml.xpath.XPathConstants;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
@@ -48,6 +49,8 @@ import org.w3c.dom.Node;
  */
 public class LicenseCheck extends AbstractOpenengsbMojo {
 
+    private static final Logger log = Logger.getLogger(LicenseCheck.class);
+
     private List<String> goals;
     private List<String> activatedProfiles;
     private Properties userProperties;
@@ -60,7 +63,6 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
-            validateIfExecutionIsAllowed();
             licenseHeaderFile = readHeaderStringAndwriteHeaderIntoTmpFile();
             String profileName = UUID.randomUUID().toString();
             tmpPom = configureTmpPom(profileName);
@@ -71,16 +73,9 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
         }
     }
 
-    private void validateIfExecutionIsAllowed() throws MojoExecutionException {
-        throwErrorIfWrapperRequestIsRecursive();
-        throwErrorIfProjectIsNotExecutedInRootDirectory();
-    }
-
     private void initializeMavenExecutionProperties(String profileName) {
-        goals = Arrays
-            .asList(new String[]{ "clean", "validate" });
-        activatedProfiles = Arrays
-            .asList(new String[]{ profileName });
+        goals = Arrays.asList(new String[] { "validate" });
+        activatedProfiles = Arrays.asList(new String[] { profileName });
         userProperties = new Properties();
         userProperties.put("license.header", licenseHeaderFile.toURI().toString());
         userProperties.put("license.failIfMissing", "true");
@@ -90,35 +85,32 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
 
     private void executeMavenWithCustomPom(File pom) throws MojoExecutionException {
         getNewMavenExecutor().setRecursive(true).setCustomPomFile(pom)
-            .execute(this, goals, activatedProfiles, null, userProperties,
-                getProject(), getSession(), getMaven());
+                .execute(this, goals, activatedProfiles, null, userProperties, getProject(), getSession(), getMaven());
     }
 
     private File readHeaderStringAndwriteHeaderIntoTmpFile() throws MojoExecutionException {
         try {
-            String headerString =
-                Tools.getTxtFileContent(getClass().getClassLoader()
-                    .getResourceAsStream("licenseCheck/header.txt"));
+
+            String headerString = IOUtils.toString(getClass().getClassLoader().getResourceAsStream(
+                    "licenseCheck/header.txt"));
             File generatedFile = Tools.generateTmpFile(headerString, ".txt");
             return generatedFile;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new MojoExecutionException("Couldn't create license header temp file!", e);
         }
     }
 
     private File configureTmpPom(String profileName) throws MojoExecutionException {
         try {
-            Document originalPomDocument = Tools.readXML(new FileInputStream(getSession().getRequest().getPom()));
+            Document originalPomDocument = Tools.parseXMLFromString(FileUtils.readFileToString(getSession()
+                    .getRequest().getPom()));
             // read plugin default configuration
-            Document configDocument =
-                Tools.readXML(getClass().getClassLoader().getResourceAsStream("licenseCheck/licenseCheckConfig.xml"));
+            Document configDocument = Tools.parseXMLFromString(IOUtils.toString(getClass().getClassLoader()
+                    .getResourceAsStream("licenseCheck/licenseCheckConfig.xml")));
 
             // .. and insert the profile node into the pom dom tree ..
-            Node licenseCheckMojoProfileNode =
-                Tools.evaluateXPath("/lc:licenseCheckMojo/lc:profile", configDocument,
-                    nsContext,
-                    XPathConstants.NODE,
-                    Node.class);
+            Node licenseCheckMojoProfileNode = Tools.evaluateXPath("/lc:licenseCheckMojo/lc:profile", configDocument,
+                    nsContext, XPathConstants.NODE, Node.class);
 
             Node idNode = configDocument.createElement("id");
             idNode.setTextContent(profileName);
@@ -127,7 +119,7 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
             Node importedLicenseCheckProfileNode = originalPomDocument.importNode(licenseCheckMojoProfileNode, true);
 
             Tools.insertDomNode(originalPomDocument, importedLicenseCheckProfileNode, "/pom:project/pom:profiles",
-                nsContext);
+                    nsContext);
 
             // .. the finally serialize that modified pom into a temporary file
             String serializedXml = Tools.serializeXML(originalPomDocument);
@@ -135,21 +127,18 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
             String baseDirURI = getSession().getRequest().getPom().getParentFile().toURI().toString();
             File temporaryPom = new File(new URI(baseDirURI + "/" + "tmpPom.xml"));
 
-            Tools.writeIntoFile(serializedXml, temporaryPom);
+            FileUtils.writeStringToFile(temporaryPom, serializedXml);
 
             return temporaryPom;
         } catch (Exception e) {
+            log.warn(e.getMessage(), e);
             throw new MojoExecutionException("Couldn't configure temporary pom for this execution!", e);
         }
     }
 
     private void cleanUp() {
-        if (licenseHeaderFile != null) {
-            licenseHeaderFile.delete();
-        }
-        if (tmpPom != null) {
-            tmpPom.delete();
-        }
+        FileUtils.deleteQuietly(licenseHeaderFile);
+        FileUtils.deleteQuietly(tmpPom);
     }
 
 }

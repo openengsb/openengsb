@@ -27,11 +27,15 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
+import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.core.common.taskbox.model.TaskFinishedEvent;
+import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.osgi.framework.Bundle;
@@ -77,5 +81,56 @@ public class TaskboxServiceTest {
 
         List<Task> ret = service.getOpenTasks();
         assertEquals(1, ret.size());
+    }
+
+    @Test
+    public void testGetTaskForId_shouldRunQuery() {
+        Task task = Task.createTaskWithAllValuesSetToNull();
+        task.setTaskId("1");
+
+        try {
+            service.getTaskForId("1");
+        } catch (TaskboxException e) {
+        }
+        verify(persistenceService).query(any(Task.class));
+    }
+
+    @Test
+    public void testGetTaskForProcessId_shouldRunQuery() throws TaskboxException {
+        Task task = Task.createTaskWithAllValuesSetToNull();
+        task.setProcessId("1");
+
+        service.getTasksForProcessId("1");
+        verify(persistenceService).query(any(Task.class));
+    }
+
+    @Test(expected = TaskboxException.class)
+    public void testGetTaskForId_shouldThrowExceptionWhenNothingFound() throws TaskboxException {
+        Task task = Task.createTaskWithAllValuesSetToNull();
+        task.setTaskId("1");
+        when(persistenceService.query(any(Task.class))).thenReturn(new ArrayList<Task>());
+        service.getTaskForId("1");
+    }
+
+    @Test(expected = TaskboxException.class)
+    public void testGetTaskForId_shouldThrowExceptionWhenMoreThanOneFound() throws TaskboxException {
+        Task task = Task.createTaskWithAllValuesSetToNull();
+        task.setTaskId("1");
+
+        List<Task> list = new ArrayList<Task>();
+        list.add(task);
+        list.add(task);
+        when(persistenceService.query(any(Task.class))).thenReturn(list);
+        service.getTaskForId("1");
+    }
+
+    @Test
+    public void testFinishTask_shouldDeleteAndProcessEvent() throws PersistenceException, WorkflowException {
+        InOrder io = Mockito.inOrder(persistenceService, workflowService);
+        Task task = new Task();
+        service.finishTask(task);
+
+        io.verify(persistenceService).delete(task);
+        io.verify(workflowService).processEvent(any(TaskFinishedEvent.class));
     }
 }

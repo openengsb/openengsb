@@ -52,9 +52,8 @@ public class OpenEngSBMavenPluginNSContext implements NamespaceContext {
         return URIToPrefix.get(uri);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Iterator getPrefixes(String arg0) {
+    public Iterator<String> getPrefixes(String arg0) {
         HashSet<String> h = new HashSet<String>();
         h.addAll(prefixToURI.keySet());
         return h.iterator();
