@@ -16,6 +16,7 @@
 
 package org.openengsb.core.common.taskbox.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
@@ -26,8 +27,7 @@ import org.openengsb.core.common.workflow.model.ProcessBag;
  * properties that need to be changed by a user. Each time a workflow needs user interaction, such task is created from
  * the workflows ProcessBag.
  */
-public class Task extends ProcessBag {
-    private static Task emptyTask;
+public class Task extends ProcessBag implements Serializable {
 
     public Task() {
         super();
@@ -35,12 +35,9 @@ public class Task extends ProcessBag {
     }
 
     public static Task createTaskWithAllValuesSetToNull() {
-        if (emptyTask == null) {
-            emptyTask = new Task();
-            emptyTask.removeAllProperties();
-            emptyTask.setEmpty();
-        }
-
+        Task emptyTask = new Task();
+        emptyTask.removeAllProperties();
+        emptyTask.setEmpty();
         return emptyTask;
     }
 
@@ -59,6 +56,10 @@ public class Task extends ProcessBag {
      */
     public String getTaskId() {
         return (String) getProperty("taskId");
+    }
+
+    public void setTaskId(String id) {
+        addOrReplaceProperty("taskId", id);
     }
 
     /**

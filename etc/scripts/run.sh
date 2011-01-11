@@ -22,6 +22,12 @@
 
 echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
 
-cd $(dirname $0)/../..
+source $(dirname $0)/openengsbplugin-common.sh
+
+cd $ABSPATH/../../
+
+GOAL="provision"
+
 mvn install -Dmaven.test.skip=true
-mvn org.openengsb.tooling.pluginsuite:maven-openengsb-plugin:1.1.0-SNAPSHOT:provision
+mvn org.openengsb.tooling.pluginsuite:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL
+

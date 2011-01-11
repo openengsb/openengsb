@@ -53,9 +53,9 @@
     <profile>
       <id>nightly</id>
       <properties>
-        <latestWin>${repos.snapshot}org/openengsb/openengsb/${project.version}/</latestWin>
-        <latestUnix>${repos.snapshot}org/openengsb/openengsb/${project.version}/</latestUnix>
-        <older>${repos.snapshot}org/openengsb/openengsb/${project.version}/</older>
+        <latestWin>${repos.snapshot}/org/openengsb/openengsb/${project.version}/</latestWin>
+        <latestUnix>${repos.snapshot}/org/openengsb/openengsb/${project.version}/</latestUnix>
+        <older>${repos.snapshot}/org/openengsb/openengsb/${project.version}/</older>
       </properties>
       <distributionManagement>
         <site>
@@ -67,9 +67,9 @@
     <profile>
       <id>milestone</id>
       <properties>
-        <latestWin>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
-        <latestUnix>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.tar.gz</latestUnix>
-        <older>${repos.final}org/openengsb/openengsb/</older>
+        <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.tar.gz</latestUnix>
+        <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
         <site>
@@ -81,9 +81,9 @@
     <profile>
       <id>rc</id>
       <properties>
-        <latestWin>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
-        <latestUnix>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
-        <older>${repos.final}org/openengsb/openengsb/</older>
+        <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
+        <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
         <site>
@@ -95,9 +95,9 @@
     <profile>
       <id>final</id>
       <properties>
-        <latestWin>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
-        <latestUnix>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
-        <older>${repos.final}org/openengsb/openengsb/</older>
+        <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
+        <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
         <site>
@@ -109,9 +109,9 @@
     <profile>
       <id>support</id>
       <properties>
-        <latestWin>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
-        <latestUnix>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
-        <older>${repos.final}org/openengsb/openengsb/</older>
+        <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
+        <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
         <site>

@@ -38,9 +38,21 @@ public interface TaskboxService {
     List<Task> getOpenTasks();
 
     /**
-     * Loads all tasks which match the example task out of the persistence.
+     * Loads all open tasks which match the example task out of the persistence.
      */
     List<Task> getTasksForExample(Task example);
+
+    /**
+     * Loads the open task fitting a given id.
+     * 
+     * @throws TaskboxException if none or more than one task was found
+     */
+    Task getTaskForId(String id) throws TaskboxException;
+
+    /**
+     * Loads all open tasks belonging to a processes instance
+     */
+    List<Task> getTasksForProcessId(String id);
 
     /**
      * Sends a TaskFinishedEvent and removes task from the persistence.

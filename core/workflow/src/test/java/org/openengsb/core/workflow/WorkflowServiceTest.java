@@ -361,14 +361,4 @@ public class WorkflowServiceTest {
 
         assertThat((String) processBag.getProperty("test"), is(String.valueOf(id)));
     }
-
-    @Test(timeout = 4000)
-    public void signalEventsToSubflow() throws Exception {
-        long pid = service.startFlow("subflowTest");
-        service.processEvent(new Event(pid));
-        ProcessBag bag = new ProcessBag();
-        bag.setProcessId("" + pid);
-        service.processEvent(new TestEvent(pid));
-        service.waitForFlowToFinish(pid);
-    }
 }

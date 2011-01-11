@@ -120,7 +120,13 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.openengsb.core</groupId>
+  	  <artifactId>openengsb-core-taskbox</artifactId>
+  	  <version>${project.version}</version>
+  	  <scope>provided</scope>
+    </dependency>
+    
     <!-- Wicket Dependencies -->
     <dependency>
       <groupId>org.apache.wicket</groupId>
@@ -180,6 +186,14 @@
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-servlet_2.5_spec</artifactId>
       <version>${geronimo.servlet.version}</version>
+    </dependency>
+    
+    <!-- Neodatis Dependencies -->
+    <dependency>
+      <groupId>org.neodatis.odb</groupId>
+      <artifactId>neodatis-odb</artifactId>
+      <version>${odb.version}</version>
+      <optional>true</optional>
     </dependency>
 
   </dependencies>
