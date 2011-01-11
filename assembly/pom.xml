@@ -262,7 +262,7 @@
       </plugin>
       <plugin>
         <groupId>org.openengsb.tooling.pluginsuite</groupId>
-        <artifactId>maven-openengsb-plugin</artifactId>
+        <artifactId>openengsb-maven-plugin</artifactId>
         <version>${project.version}</version>
         <configuration>
           <provisionArchivePathUnix>${project.basedir}/target/openengsb-${project.version}.tar.gz</provisionArchivePathUnix>
