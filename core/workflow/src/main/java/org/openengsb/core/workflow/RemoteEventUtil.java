@@ -27,9 +27,12 @@ import org.openengsb.core.common.Event;
 import org.openengsb.core.common.workflow.model.RemoteEvent;
 import org.springframework.beans.BeanUtils;
 
-public class RemoteEventUtil {
+public final class RemoteEventUtil {
 
     private static Log log = LogFactory.getLog(RemoteEventUtil.class);
+
+    private RemoteEventUtil() {
+    }
 
     public static RemoteEvent wrapEvent(Event event) {
         RemoteEvent result = new RemoteEvent(event.getClass().getName());

@@ -181,7 +181,8 @@ public class AbstractServiceManagerTest {
         Hashtable<String, String> props = createVerificationHashmap();
         Mockito.when(
             bundleContextMock.registerService(
-                eq(new String[]{ NullDomain.class.getName(), Domain.class.getName(), OpenEngSBService.class.getName() }),
+                eq(new String[]{ NullDomain.class.getName(), Domain.class.getName(),
+                    OpenEngSBService.class.getName() }),
                 any(NullDomain.class), eq(props))).thenReturn(serviceRegistrationMock);
         return serviceRegistrationMock;
     }

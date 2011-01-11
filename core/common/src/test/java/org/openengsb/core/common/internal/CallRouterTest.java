@@ -20,7 +20,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -69,7 +68,7 @@ public class CallRouterTest {
 
     @Test
     public void testReceiveAnything() throws Exception {
-        IncomingPort portMock = mock(IncomingPort.class);
+        mock(IncomingPort.class);
         callrouter.stop();
         Thread.sleep(300);
     }
@@ -122,7 +121,7 @@ public class CallRouterTest {
         MethodCall methodCall = new MethodCall("test", new Object[]{42}, getMetadata("foo"));
         final URI testURI = URI.create("jms://localhost");
         callrouter.callSync("jms+json-out", testURI, methodCall);
-        verify(this.outgoingPortMock, times(1)).sendSync(eq(testURI), any(MethodCall.class));
+        verify(outgoingPortMock, times(1)).sendSync(eq(testURI), any(MethodCall.class));
     }
 
     @Test
@@ -218,7 +217,7 @@ public class CallRouterTest {
     private <T> T mockService(BundleContext bundleContext, Class<T> serviceClass, String id)
         throws InvalidSyntaxException {
         final ServiceReference serviceRefMock = mock(ServiceReference.class);
-        ServiceReference[] mockAsArray = new ServiceReference[]{serviceRefMock,};
+        ServiceReference[] mockAsArray = new ServiceReference[]{ serviceRefMock };
         when(bundleContext.getServiceReferences(eq(serviceClass.getName()), eq(String.format("(id=%s)", id))))
             .thenReturn(mockAsArray);
         when(bundleContext.getServiceReferences(eq(OpenEngSBService.class.getName()), eq(String.format("(id=%s)", id))))
