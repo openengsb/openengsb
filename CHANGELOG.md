@@ -5,7 +5,7 @@ openengsb-1.1.0.RELEASE
   * [e.g.] Fix problem with setting files
 
 ### New Projects
-  * maven-openengsb-plugin
+  * openengsb-maven-plugin
   * openengsb-core-taskbox
   * openengsb-core-usermanagement
   * openengsb-ui-taskbox
@@ -40,6 +40,7 @@ openengsb-1.1.0.RELEASE
 ### New Features & Changed Behaviour
   * Added tooling plugin to execute license-check plugin and assemble scripts via mvn.
   * Added possibility to brand konsole
+  * renamed: maven-openengsb-plugin -> openengsb-maven-plugin
 
 ### Depricated or Removed Features
 
