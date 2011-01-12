@@ -23,7 +23,7 @@ import java.util.Map;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.model.Task;
-import org.openengsb.core.taskbox.TaskboxServiceImpl;
+import org.openengsb.core.workflow.taskbox.TaskboxServiceImpl;
 import org.openengsb.ui.common.wicket.taskbox.web.TaskOverviewPanel;
 import org.openengsb.ui.common.wicket.taskbox.web.TaskPanel;
 

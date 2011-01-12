@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.taskbox.config;
+package org.openengsb.core.workflow.taskbox.config;
 
 import java.io.InputStream;
 
@@ -28,7 +28,7 @@ import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
-import org.openengsb.core.taskbox.TaskboxServiceInternal;
+import org.openengsb.core.workflow.taskbox.TaskboxServiceInternal;
 
 public class TaskboxConfigurator {
     private Log log = LogFactory.getLog(getClass());

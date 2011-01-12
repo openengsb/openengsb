@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.taskbox;
+package org.openengsb.core.workflow.taskbox;
 
 import java.util.List;
 

@@ -122,12 +122,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-taskbox</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>openengsb-domain-example</artifactId>
       <version>${project.version}</version>
