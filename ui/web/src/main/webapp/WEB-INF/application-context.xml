@@ -55,7 +55,6 @@
   <osgi:reference id="contextCurrentService" interface="org.openengsb.core.common.context.ContextCurrentService" />
   <osgi:reference id="ruleManager" interface="org.openengsb.core.common.workflow.RuleManager" />
   <osgi:reference id="auditing" interface="org.openengsb.domain.auditing.AuditingDomain" />
-  <osgi:reference id="taskboxService" interface="org.openengsb.ui.taskbox.WebTaskboxService" />
   <osgi:reference id="proxyFactory" interface="org.openengsb.core.common.proxy.ProxyFactory" />
 </beans>
 

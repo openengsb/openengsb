@@ -37,7 +37,7 @@
 
   <bean class="org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager" id="ruleManager"
     init-method="init">
-    <property name="persistenceManager" ref="persistenceManger" />
+    <property name="persistenceManager" ref="persistenceManager" />
   </bean>
 
   <osgi:service interface="org.openengsb.core.common.workflow.RuleManager">
@@ -45,14 +45,42 @@
   </osgi:service>
 
   <osgi:service interface="org.openengsb.core.common.workflow.WorkflowService">
-    <bean class="org.openengsb.core.workflow.internal.WorkflowServiceImpl">
-      <property name="rulemanager" ref="ruleManager" />
-      <property name="currentContextService" ref="contextService" />
+    <ref local="workflowService" />
+  </osgi:service>
+
+  <bean id="workflowService" class="org.openengsb.core.workflow.internal.WorkflowServiceImpl">
+    <property name="rulemanager" ref="ruleManager" />
+    <property name="currentContextService" ref="contextService" />
+  </bean>
+
+  <bean class="org.openengsb.core.workflow.taskbox.config.TaskboxConfigurator" init-method="init">
+    <property name="ruleManager" ref="ruleManager" />
+  </bean>
+
+  <osgi:service interface="org.openengsb.core.common.taskbox.TaskboxService">
+    <osgi:service-properties>
+      <entry key="openengsb.service.type" value="workflow-service" />
+      <entry key="openengsb.workflow.globalid" value="taskbox" />
+    </osgi:service-properties>
+    <bean class="org.openengsb.core.workflow.taskbox.TaskboxServiceImpl" init-method="init">
+      <property name="workflowService" ref="workflowService" />
+      <property name="persistenceManager" ref="persistenceManager" />
     </bean>
   </osgi:service>
 
+  <osgi:service interface="org.openengsb.core.workflow.taskbox.TaskboxServiceInternal">
+    <osgi:service-properties>
+      <entry key="openengsb.service.type" value="workflow-service" />
+      <entry key="openengsb.workflow.globalid" value="taskboxinternal" />
+    </osgi:service-properties>
+    <bean class="org.openengsb.core.workflow.taskbox.TaskboxServiceInternalImpl" init-method="init">
+      <property name="persistenceManager" ref="persistenceManager" />
+    </bean>
+  </osgi:service>
+
+  <osgi:reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
   <osgi:reference id="contextService" interface="org.openengsb.core.common.context.ContextCurrentService" />
-  <osgi:reference id="persistenceManger" interface="org.openengsb.core.common.persistence.PersistenceManager" />
   <osgi:reference id="securityInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
+
 </beans>
 
