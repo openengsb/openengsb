@@ -76,11 +76,9 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
 
     @Override
     public boolean poll() {
-        if (!localWorkspace.isDirectory()) {
-            tryCreateLocalWorkspace();
-        }
         try {
             if (repository == null) {
+                prepareWorkspace();
                 initRepository();
             }
             FetchResult result = doRemoteUpdate();
@@ -103,6 +101,15 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
             throw new ScmException(e);
         }
         return true;
+    }
+    
+    private void prepareWorkspace() {
+        if(localWorkspace == null) {
+            throw new ScmException("Local workspace not set.");
+        }
+        if (!localWorkspace.isDirectory()) {
+            tryCreateLocalWorkspace();
+        }
     }
 
     private void tryCreateLocalWorkspace() {
@@ -203,6 +210,14 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     }
 
     public FileRepository getRepository() {
+        if (repository == null) {
+            prepareWorkspace();
+            try {
+                initRepository();
+            } catch (IOException e) {
+                throw new ScmException(e);
+            }
+        }
         return repository;
     }
 
@@ -258,10 +273,8 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
 
     @Override
     public CommitRef commit(File file, String comment) {
-        if (!localWorkspace.isDirectory()) {
-            tryCreateLocalWorkspace();
-        }
         if (repository == null) {
+            prepareWorkspace();
             try {
                 initRepository();
             } catch (IOException e) {
@@ -288,10 +301,8 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
 
     @Override
     public CommitRef commit(File directory, String comment, boolean recursive) {
-        if (!localWorkspace.isDirectory()) {
-            tryCreateLocalWorkspace();
-        }
         if (repository == null) {
+            prepareWorkspace();
             try {
                 initRepository();
             } catch (IOException e) {
