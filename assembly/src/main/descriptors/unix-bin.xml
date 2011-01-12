@@ -114,7 +114,7 @@
       <lineEnding>unix</lineEnding>
     </file>
     <file>
-      <source>${basedir}/target/openengsb-docs-manual-1.1.0-SNAPSHOT/manual/pdf/openengsb-manual.pdf</source>
+      <source>${basedir}/target/openengsb-docs-manual-${project.version}/manual/pdf/openengsb-manual.pdf</source>
       <outputDirectory>/</outputDirectory>
       <destName>openengsb-manual.pdf</destName>
       <fileMode>0644</fileMode>
