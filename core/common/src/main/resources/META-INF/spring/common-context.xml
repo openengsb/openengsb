@@ -33,6 +33,16 @@
       <property name="persistenceManager" ref="persistenceManager"/>
     </bean>
   </osgi:service>
+  
+  <osgi:service interface="org.openengsb.core.common.communication.RequestHandler">
+    <bean class="org.openengsb.core.common.internal.RequestHandlerImpl"/>
+  </osgi:service>
+  
+  <osgi:service interface="org.openengsb.core.common.proxy.ProxyFactory">
+    <bean class="org.openengsb.core.common.proxy.ProxyFactoryImpl">
+      <property name="callRouter" ref="callRouter"/>
+    </bean>
+  </osgi:service>
 
   <osgi:reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
 </beans>

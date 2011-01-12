@@ -59,6 +59,8 @@ import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
+import org.openengsb.core.common.proxy.ProxyFactory;
+import org.openengsb.core.common.proxy.ProxyServiceManager;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
 import org.openengsb.ui.web.model.Argument;
@@ -79,6 +81,9 @@ public class TestClient extends BasePage {
 
     @SpringBean
     private BundleContext bundleContext;
+
+    @SpringBean
+    private ProxyFactory proxyFactory;
 
     private final DropDownChoice<MethodId> methodList;
 
@@ -114,8 +119,18 @@ public class TestClient extends BasePage {
             @Override
             protected void populateItem(final ListItem<DomainProvider> item) {
                 item.add(new Label("domain.name", new LocalizableStringModel(this, item.getModelObject().getName())));
+                item.add(new Link<DomainProvider>("proxy.create.new", item.getModel()) {
+
+                    @Override
+                    public void onClick() {
+                        ProxyServiceManager serviceManager = proxyFactory.createProxyForDomain(item.getModelObject());
+                        serviceManager.setBundleContext(bundleContext);
+                        setResponsePage(new ConnectorEditorPage(serviceManager));
+                    }
+                });
                 item.add(new Label("domain.description", new LocalizableStringModel(this, item.getModelObject()
                     .getDescription())));
+
                 item.add(new Label("domain.class", item.getModelObject().getDomainInterface().getName()));
                 IModel<List<ServiceManager>> managersModel = new LoadableDetachableModel<List<ServiceManager>>() {
                     @Override
@@ -325,8 +340,7 @@ public class TestClient extends BasePage {
         DefaultMutableTreeNode providerNode =
             new DefaultMutableTreeNode(provider.getName().getString(getSession().getLocale()));
         node.add(providerNode);
-        for (ServiceReference serviceReference : services
-            .serviceReferencesForDomain(provider.getDomainInterface())) {
+        for (ServiceReference serviceReference : services.serviceReferencesForDomain(provider.getDomainInterface())) {
             String id = (String) serviceReference.getProperty("id");
             if (id != null) {
                 ServiceId serviceId = new ServiceId();

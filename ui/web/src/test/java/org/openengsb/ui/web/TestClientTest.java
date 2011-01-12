@@ -64,6 +64,7 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
+import org.openengsb.core.common.proxy.ProxyFactory;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.ui.common.wicket.editor.BeanEditorPanel;
 import org.openengsb.ui.common.wicket.editor.fields.DropdownField;
@@ -92,7 +93,7 @@ public class TestClientTest {
     }
 
     public enum UpdateEnum {
-            ONE, TWO
+        ONE, TWO
     }
 
     private WicketTester tester;
@@ -111,6 +112,7 @@ public class TestClientTest {
         bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
         context.putBean("openengsbVersion", new OpenEngSBVersion());
+        context.putBean(mock(ProxyFactory.class));
     }
 
     @Test
@@ -378,7 +380,7 @@ public class TestClientTest {
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
-        tester.assertInfoMessages(new String[]{ "Methodcall called successfully" });
+        tester.assertInfoMessages(new String[]{"Methodcall called successfully"});
         Label message = (Label) feedbackPanel.get("feedbackul:messages:0:message");
         Assert.assertEquals("Methodcall called successfully", message.getDefaultModelObjectAsString());
     }
@@ -538,7 +540,7 @@ public class TestClientTest {
             ServiceReference ref = Mockito.mock(ServiceReference.class);
             Mockito.when(ref.getProperty("managerId")).thenReturn("ManagerId");
             Mockito.when(ref.getProperty("domain")).thenReturn(TestInterface.class.getName());
-            ServiceReference[] refs = new ServiceReference[]{ ref };
+            ServiceReference[] refs = new ServiceReference[]{ref};
             Mockito.when(bundleContext.getServiceReferences(Domain.class.getName(), "(id=test)")).thenReturn(refs);
         } catch (InvalidSyntaxException e) {
             Assert.fail("not expected");

@@ -156,9 +156,10 @@
     <bundle>mvn:org.openengsb.domain/openengsb-domain-example/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-example/${project.version}</bundle>
     <!-- OpenEngSB Proxy JMS Feature -->
-    <bundle>mvn:org.openengsb.core.proxy/openengsb-core-proxy-jms/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.core.ports/openengsb-core-ports-jms/${project.version}</bundle>
     <!-- OpenEngSB UI Features -->
     <bundle>mvn:org.openengsb.ui.common/openengsb-ui-common-wicket/${project.version}</bundle>
+    <bundle>mvn:org.openengsb.ui/openengsb-ui-taskbox/${project.version}</bundle>
     <!-- OpenEngSB Management UI -->
     <bundle>mvn:org.openengsb.ui/openengsb-ui-web/${project.version}/war</bundle>
   </feature>

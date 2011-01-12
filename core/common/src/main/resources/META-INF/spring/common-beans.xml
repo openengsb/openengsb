@@ -25,6 +25,8 @@
 
   <bean id="defaultDomainProxy" class="org.openengsb.core.common.DefaultDomainProxyFactoryBean" abstract="true"
     init-method="init" />
+    
+  <bean id="callRouter" class="org.openengsb.core.common.internal.CallRouterImpl"/>
 
   <osgi:reference id="methodInterceptor" interface="org.aopalliance.intercept.MethodInterceptor" />
 
