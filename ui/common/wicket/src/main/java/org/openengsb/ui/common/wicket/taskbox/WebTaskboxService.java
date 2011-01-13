@@ -22,24 +22,31 @@ import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
 
 /**
- * The WebTaskboxService extends the normal TaskboxService with a function to generate a standard overview panel.
+ * The WebTaskboxService extends the normal {@link org.openengsb.core.common.taskbox.TaskboxService TaskboxService} by
+ * adding some Wicket UI functionality. This includes the provisioning of tasks panels, an overview panel to display
+ * open tasks and a registration mechanism to define custom panels for certain task types.
  */
 public interface WebTaskboxService extends TaskboxService {
-
     /**
-     * Generates a standard Wicket-Panel, which displays tasks out of the persistence.
-     * The panel has the componentId="OverviewPanel" and the style attribute class="OverviewPanel"
+     * Returns a Wicket panel which displays all open tasks. It provides filtering and sorting capabilities.
+     * 
+     * This panel has {@code componentId="OverviewPanel"} and style attribute {@code class="OverviewPanel"}.
      */
     Panel getOverviewPanel();
 
     /**
-     * Gets the Wicket Panel for a Specific Task if it is registered.
-     * If Panel is not registered, returns the Default-TaskPanel
+     * Gets the Wicket panel for the task type of the passed task. If a custom panel was registered for this type before
+     * it gets returned, otherwise it falls back to the default task panel providing a generic user interface.
+     * 
+     * @throws TaskboxException when the creation of the tasks panel fails
      */
     Panel getTaskPanel(Task task, String wicketPanelId) throws TaskboxException;
 
     /**
-     * Register a Specific Panel for a predefined Tasktype
+     * Registers a custom Wicket panel for a certain task type. Any older registration for this type gets overwritten.
+     * 
+     * The panel is provided via its class and needs a constructor with the ID as string for the first parameter and the
+     * {@link org.openengsb.core.common.taskbox.model.Task Task} as second.
      */
     void registerTaskPanel(String taskType, Class<?> panelClass);
 }

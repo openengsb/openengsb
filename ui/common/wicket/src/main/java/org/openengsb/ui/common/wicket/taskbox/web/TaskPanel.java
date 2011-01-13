@@ -74,8 +74,7 @@ public class TaskPanel extends Panel {
                 task.getTaskCreationTimestamp() != null ? task.getTaskCreationTimestamp().toString() : "N/A"));
         form.add(new TextArea("taskdescription", taskModel.bind("description")).setRequired(true));
 
-        form.add(new AjaxButton("submitButton", form)
-        {
+        form.add(new AjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 try {
