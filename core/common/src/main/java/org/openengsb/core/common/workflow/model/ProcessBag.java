@@ -23,9 +23,12 @@ import java.util.Set;
 import org.openengsb.core.common.workflow.ProcessBagException;
 
 /**
- * The ProcessBag is a workflow property and contains all neccessary information and workflow metadata, i.e. processId
- * or context. It contains a HashMap so every sub-class can use this field to add custom properties. Each workflow
- * creates its own new ProcessBag when none is passed on workflow start.
+ * The ProcessBag is a workflow property that contains all neccessary information and workflow metadata.
+ * 
+ * It contains a HashMap so every sub-class can use this field to add custom properties. Each workflow creates its own
+ * new ProcessBag when none is passed on workflow start.
+ * 
+ * One of the properties is the workflow ID it belongs to. It is recommended to not change this value!
  */
 public class ProcessBag {
     private String processId;
@@ -91,33 +94,31 @@ public class ProcessBag {
     }
 
     /**
-     * Adds a new property if, but only if it does not exist already
+     * Adds a new property only if it does not exist already
      * 
-     * @throws ProcessBagException
+     * @throws ProcessBagException if the key is already present
      */
     public void addProperty(String key, Object value) throws ProcessBagException {
         if (properties.containsKey(key)) {
-            throw new ProcessBagException(key + " already used in the processbag!");
+            throw new ProcessBagException(key + " already used!");
         } else {
             properties.put(key, value);
         }
     }
 
     /**
-     * This method adds a property and replaces an potential old one with the same key
-     * 
-     * @return: The previous value to that key is returned, or null if there was no previous value to that key
+     * Adds a property and replaces an potential old one
      */
-    public Object addOrReplaceProperty(String key, Object value) {
-        return properties.put(key, value);
+    public void addOrReplaceProperty(String key, Object value) {
+        properties.put(key, value);
     }
 
     public Object getProperty(String key) {
         return properties.get(key);
     }
 
-    public Object removeProperty(String key) {
-        return properties.remove(key);
+    public void removeProperty(String key) {
+        properties.remove(key);
     }
 
     public boolean containsProperty(String key) {
@@ -140,7 +141,7 @@ public class ProcessBag {
         properties.clear();
     }
 
-    public void setEmpty() {
+    protected void setEmpty() {
         empty = true;
     }
 }

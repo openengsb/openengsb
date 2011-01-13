@@ -27,7 +27,7 @@
         <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.openengsb.core.common.workflow.model.ProcessBag" />
       </variable>
       <variable name="event" >
-        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.openengsb.core.common.taskbox.model.TaskFinishedEvent" />
+        <type name="org.drools.process.core.datatype.impl.type.ObjectDataType" className="org.openengsb.core.common.workflow.model.InternalWorkflowEvent" />
       </variable>
     </variables>
   </header>

@@ -22,9 +22,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.taskbox.TaskboxService;
-import org.openengsb.core.common.taskbox.model.TaskFinishedEvent;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
@@ -46,7 +46,7 @@ public class TaskboxConfigurator {
         try {
             ruleManager.addGlobal(TaskboxService.class.getCanonicalName(), "taskbox");
             ruleManager.addGlobal(TaskboxServiceInternal.class.getCanonicalName(), "taskboxinternal");
-            ruleManager.addImport(TaskFinishedEvent.class.getCanonicalName());
+            ruleManager.addImport(InternalWorkflowEvent.class.getCanonicalName());
             ruleManager.addImport(ProcessBag.class.getCanonicalName());
         } catch (RuleBaseException e) {
             throw new RuntimeException(e);

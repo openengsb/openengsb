@@ -23,42 +23,46 @@ import org.openengsb.core.common.workflow.WorkflowException;
 
 /**
  * The Taskbox is a service which can be used when human interaction is required, e.g. by help desk applications. This
- * core part is responsible for storing tasks, throwing events and starting workflows. Therefore it provides methods
- * which can be called by workflows e.g. assigning a task to different user-roles (such as case worker or developer) or
- * setting a task status. Another job is to choose the right wicket panel from the UI project to display the right
- * information in a certain situation.
+ * service provides functionality to get all or a filtered set of currently open human tasks. It also contains
+ * functionality to finish an open task.
  * 
- * The component uses the persistence compontent to store tasks and the workflow component to take control of specific
- * workflows.
+ * A human task can be inserted into any workflow by using the sub-workflow "humantask". This workflow then
+ * automatically creates a task which then can be obtained by this service.
+ * 
+ * There is a {@link org.openengsb.ui.common.wicket.taskbox.WebTaskboxService WebTaskboxService} which adds UI capabilities.
+ * 
+ * IMPORTANT: Every workflow which should support human interaction needs to wait for the FlowStartedEvent before the
+ * first humantask is inserted!
  */
 public interface TaskboxService {
     /**
-     * Loads all open tasks out of the persistence service.
+     * Gets all tasks waiting for human interaction.
      */
     List<Task> getOpenTasks();
 
     /**
-     * Loads all open tasks which match the example task out of the persistence.
+     * Gets all open tasks which match the example task.
      */
     List<Task> getTasksForExample(Task example);
 
     /**
-     * Loads the open task fitting a given id.
+     * Gets the open task for the passed ID.
      * 
      * @throws TaskboxException if none or more than one task was found
      */
     Task getTaskForId(String id) throws TaskboxException;
 
     /**
-     * Loads all open tasks belonging to a processes instance
+     * Gets all open tasks belonging to a workflow instance via its ID.
      */
     List<Task> getTasksForProcessId(String id);
 
     /**
-     * Sends a TaskFinishedEvent and removes task from the persistence.
+     * Finishes the passed human interaction task. The task is removed and the workflow to which this task belongs to is
+     * signaled that it can go on.
      * 
-     * @throws WorkflowException, if there is a problem while processing the event or a problem with the persistence
-     *         occurs.
+     * @throws WorkflowException if the workflow could not get the event (maybe due to an invalid processId in the tasks
+     *         processBag) the or the task could not be removed.
      */
     void finishTask(Task task) throws WorkflowException;
 }

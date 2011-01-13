@@ -28,7 +28,6 @@ import org.openengsb.ui.common.wicket.taskbox.web.TaskOverviewPanel;
 import org.openengsb.ui.common.wicket.taskbox.web.TaskPanel;
 
 public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTaskboxService {
-
     private Map<String, Class<?>> panelMap = new HashMap<String, Class<?>>();
 
     @Override
