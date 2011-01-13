@@ -37,19 +37,19 @@ import org.w3c.dom.Node;
 
 /**
  * Validates license headers.
- * 
+ *
  * @goal licenseCheck
- * 
+ *
  * @inheritedByDefault false
- * 
+ *
  * @requiresProject true
- * 
+ *
  * @aggregator true
- * 
+ *
  */
 public class LicenseCheck extends AbstractOpenengsbMojo {
 
-    private static final Logger log = Logger.getLogger(LicenseCheck.class);
+    private static final Logger LOG = Logger.getLogger(LicenseCheck.class);
 
     private List<String> goals;
     private List<String> activatedProfiles;
@@ -58,7 +58,7 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
     private File licenseHeaderFile;
     private File tmpPom;
 
-    private static final OpenEngSBMavenPluginNSContext nsContext = new OpenEngSBMavenPluginNSContext();
+    private static final OpenEngSBMavenPluginNSContext NS_CONTEXT = new OpenEngSBMavenPluginNSContext();
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -110,7 +110,7 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
 
             // .. and insert the profile node into the pom dom tree ..
             Node licenseCheckMojoProfileNode = Tools.evaluateXPath("/lc:licenseCheckMojo/lc:profile", configDocument,
-                    nsContext, XPathConstants.NODE, Node.class);
+                    NS_CONTEXT, XPathConstants.NODE, Node.class);
 
             Node idNode = configDocument.createElement("id");
             idNode.setTextContent(profileName);
@@ -119,7 +119,7 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
             Node importedLicenseCheckProfileNode = originalPomDocument.importNode(licenseCheckMojoProfileNode, true);
 
             Tools.insertDomNode(originalPomDocument, importedLicenseCheckProfileNode, "/pom:project/pom:profiles",
-                    nsContext);
+                    NS_CONTEXT);
 
             // .. the finally serialize that modified pom into a temporary file
             String serializedXml = Tools.serializeXML(originalPomDocument);
@@ -131,7 +131,7 @@ public class LicenseCheck extends AbstractOpenengsbMojo {
 
             return temporaryPom;
         } catch (Exception e) {
-            log.warn(e.getMessage(), e);
+            LOG.warn(e.getMessage(), e);
             throw new MojoExecutionException("Couldn't configure temporary pom for this execution!", e);
         }
     }

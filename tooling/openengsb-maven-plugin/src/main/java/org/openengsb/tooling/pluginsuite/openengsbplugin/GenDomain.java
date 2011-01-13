@@ -26,15 +26,15 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 
 /**
  * guides through the creation of a domain for the OpenEngSB via the domain archetype
- * 
+ *
  * @goal genDomain
- * 
+ *
  * @inheritedByDefault false
- * 
+ *
  * @requiresProject true
- * 
+ *
  * @aggregator true
- * 
+ *
  */
 public class GenDomain extends AbstractOpenengsbMojo {
 
@@ -45,9 +45,9 @@ public class GenDomain extends AbstractOpenengsbMojo {
 
     // INPUTS
 
-    private String domain_name;
+    private String domainName;
     private String version;
-    private String project_name;
+    private String projectName;
 
     private String groupId;
     private String artifactId;
@@ -65,7 +65,7 @@ public class GenDomain extends AbstractOpenengsbMojo {
 
     // DYNAMIC DEFAULTS
 
-    private String default_version;
+    private String defaultVersion;
 
     @Override
     public void execute() throws MojoExecutionException {
@@ -78,7 +78,7 @@ public class GenDomain extends AbstractOpenengsbMojo {
 
         executeMaven();
 
-        Tools.renameArtifactFolderAndUpdateParentPom(artifactId, domain_name);
+        Tools.renameArtifactFolderAndUpdateParentPom(artifactId, domainName);
 
         System.out.println("DON'T FORGET TO ADD THE DOMAIN TO YOUR RELEASE/ASSEMBLY PROJECT!");
 
@@ -90,7 +90,7 @@ public class GenDomain extends AbstractOpenengsbMojo {
 
     private void initDefaults() {
         // version should be the same as the version of the OpenEngSB
-        default_version = getProject().getVersion();
+        defaultVersion = getProject().getVersion();
     }
 
     private void readUserInput() {
@@ -102,15 +102,15 @@ public class GenDomain extends AbstractOpenengsbMojo {
             archetypeCatalogLocalOnly = true;
         }
 
-        domain_name = Tools.readValueFromStdin(sc, "Domain Name", DEFAULT_DOMAIN);
-        version = Tools.readValueFromStdin(sc, "Version", default_version);
-        project_name = Tools.readValueFromStdin(sc,
+        domainName = Tools.readValueFromStdin(sc, "Domain Name", DEFAULT_DOMAIN);
+        version = Tools.readValueFromStdin(sc, "Version", defaultVersion);
+        projectName = Tools.readValueFromStdin(sc,
             "Prefix for project names",
             String.format("%s%s", DEFAULT_DOMAINNAME_PREFIX,
-                Tools.capitalizeFirst(domain_name)));
+                Tools.capitalizeFirst(domainName)));
 
-        groupId = String.format("%s%s", DOMAIN_GROUPIDPREFIX, domain_name);
-        artifactId = String.format("%s%s", DOMAIN_ARTIFACTIDPREFIX, domain_name);
+        groupId = String.format("%s%s", DOMAIN_GROUPIDPREFIX, domainName);
+        artifactId = String.format("%s%s", DOMAIN_ARTIFACTIDPREFIX, domainName);
     }
 
     private void initializeMavenExecutionProperties() {
@@ -125,13 +125,13 @@ public class GenDomain extends AbstractOpenengsbMojo {
         userproperties.put("groupId", groupId);
         userproperties.put("artifactId", artifactId);
         userproperties.put("version", version);
-        userproperties.put("domainName", domain_name);
+        userproperties.put("domainName", domainName);
         userproperties.put("implementationArtifactId", artifactId);
         userproperties.put("package", groupId);
-        userproperties.put("name", project_name);
+        userproperties.put("name", projectName);
         userproperties
-            .put("domainInterface", String.format("%s%s", Tools.capitalizeFirst(domain_name), "Domain"));
-        userproperties.put("implementationName", project_name);
+            .put("domainInterface", String.format("%s%s", Tools.capitalizeFirst(domainName), "Domain"));
+        userproperties.put("implementationName", projectName);
 
         // local archetype catalog only
         if (archetypeCatalogLocalOnly) {

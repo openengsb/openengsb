@@ -48,7 +48,10 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 public abstract class Tools {
 
-    private static final Logger log = Logger.getLogger(Tools.class);
+    private static final Logger LOG = Logger.getLogger(Tools.class);
+
+    private Tools() {
+    }
 
     public static String capitalizeFirst(String st) {
         if (st == null) {
@@ -73,7 +76,7 @@ public abstract class Tools {
     /**
      * Renames <code>&lt;module&gt;oldStr&lt;/module&gt;</code> to
      * <code>&lt;module&gt;newStr&lt;/module&gt;</code>
-     * 
+     *
      * @param oldStr
      * @param newStr
      * @throws MojoExecutionException
@@ -100,7 +103,7 @@ public abstract class Tools {
     }
 
     public static void renameArtifactFolderAndUpdateParentPom(String oldFileName, String newFileName)
-            throws MojoExecutionException {
+        throws MojoExecutionException {
         File from = new File(oldFileName);
         System.out.println(String.format("\"%s\" exists: %s", oldFileName, from.exists()));
         if (from.exists()) {
@@ -123,7 +126,7 @@ public abstract class Tools {
     /**
      * Reads an XML document from an input stream but doesn't validate it
      * against a scheme.
-     * 
+     *
      * @param is
      * @return
      * @throws Exception
@@ -143,7 +146,7 @@ public abstract class Tools {
 
     public static <T> T evaluateXPath(String xpathStr, Document doc, NamespaceContext nsContext, QName returnTypeQName,
             Class<T> returnType) throws XPathExpressionException {
-        log.debug(String.format("evaluating xpath: %s", xpathStr));
+        LOG.debug(String.format("evaluating xpath: %s", xpathStr));
         XPath xpath = XPathFactory.newInstance().newXPath();
         if (nsContext != null) {
             xpath.setNamespaceContext(nsContext);
@@ -154,7 +157,7 @@ public abstract class Tools {
     public static File generateTmpFile(String content, String suffix) throws IOException {
         File f = File.createTempFile(UUID.randomUUID().toString(), suffix);
         FileUtils.writeStringToFile(f, content);
-        log.debug(String.format("generated file: %s", f.toURI().toString()));
+        LOG.debug(String.format("generated file: %s", f.toURI().toString()));
         return f;
     }
 
@@ -175,7 +178,7 @@ public abstract class Tools {
      * Insert dom node into parentDoc at the given xpath (if this path doesnt
      * exist, the elements are created). Note: text content of nodes and
      * attributes aren't considered.
-     * 
+     *
      * @param parentDoc
      * @param nodeToInsert
      * @param xpath
@@ -183,8 +186,8 @@ public abstract class Tools {
      * @throws XPathExpressionException
      */
     public static void insertDomNode(Document parentDoc, Node nodeToInsert, String xpath, NamespaceContext nsContext)
-            throws XPathExpressionException {
-        log.trace("insertDomNode() - start");
+        throws XPathExpressionException {
+        LOG.trace("insertDomNode() - start");
         String[] tokens = xpath.split("/");
         String currPath = "";
         Node parent = null;
@@ -192,36 +195,36 @@ public abstract class Tools {
             if (tokens[i].matches("[\\s]*")) {
                 continue;
             }
-            log.trace(String.format("parent = %s", parent == null ? "null" : parent.getLocalName()));
+            LOG.trace(String.format("parent = %s", parent == null ? "null" : parent.getLocalName()));
             currPath += "/" + tokens[i];
             Node result = Tools.evaluateXPath(currPath, parentDoc, nsContext, XPathConstants.NODE, Node.class);
-            log.trace(String.format("result empty: %s", result == null));
+            LOG.trace(String.format("result empty: %s", result == null));
             if (result == null) {
                 String elemName = null;
                 // attribute filter
                 elemName = tokens[i].replaceAll("\\[.*\\]", "");
                 // namespace prefix
                 elemName = elemName.replaceAll(".*:", "");
-                log.trace(String.format("elementName: %s", elemName));
+                LOG.trace(String.format("elementName: %s", elemName));
                 Element element = parentDoc.createElement(elemName);
                 parent.appendChild(element);
                 result = element;
             }
             parent = result;
         }
-        log.trace("finally inserting the node..");
-        log.trace(String.format("parent node: %s", parent == null ? "null" : parent.getLocalName()));
-        log.trace(String.format("node to insert = %s", nodeToInsert == null ? "null" : nodeToInsert.getLocalName()));
+        LOG.trace("finally inserting the node..");
+        LOG.trace(String.format("parent node: %s", parent == null ? "null" : parent.getLocalName()));
+        LOG.trace(String.format("node to insert = %s", nodeToInsert == null ? "null" : nodeToInsert.getLocalName()));
         parent.appendChild(nodeToInsert);
-        log.trace("insertDomNode() - end");
+        LOG.trace("insertDomNode() - end");
     }
 
     public static int executeProcess(List<String> command, File targetDirectory, boolean printOutput)
-            throws IOException, InterruptedException {
+        throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.directory(targetDirectory);
         if (targetDirectory != null) {
-            log.trace(String.format("processBuilder.directory().exists(): %s", processBuilder.directory().exists()));
+            LOG.trace(String.format("processBuilder.directory().exists(): %s", processBuilder.directory().exists()));
         }
         Process p = processBuilder.start();
 

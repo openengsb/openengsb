@@ -26,8 +26,8 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.MavenExecutor;
 
 public abstract class AbstractOpenengsbMojo extends AbstractMojo {
 
-    public final String OPENENGSB_ROOT_GROUP_ID = "org.openengsb";
-    public final String OPENENGSB_ROOT_ARTIFACT_ID = "openengsb-parent";
+    public static final String OPENENGSB_ROOT_GROUP_ID = "org.openengsb";
+    public static final String OPENENGSB_ROOT_ARTIFACT_ID = "openengsb-parent";
 
     /**
      * @parameter expression="${project}"

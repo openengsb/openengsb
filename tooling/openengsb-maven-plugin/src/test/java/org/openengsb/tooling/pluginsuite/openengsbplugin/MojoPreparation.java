@@ -26,23 +26,23 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.xml.OpenEngSBMavenPluginNSContext;
 import org.w3c.dom.Document;
 
-public abstract class AbstractMojoTest {
+public class MojoPreparation {
 
-    private static boolean prepared = false;
+    private boolean prepared = false;
 
-    private static File userDir = new File(System.getProperty("user.dir"));
+    private File userDir = new File(System.getProperty("user.dir"));
 
-    protected static String mvnCommand = "mvn";
+    protected String mvnCommand = "mvn";
 
-    protected static String groupId;
-    protected static String artifactId;
-    protected static String version;
+    protected String groupId;
+    protected String artifactId;
+    protected String version;
 
-    protected static final OpenEngSBMavenPluginNSContext nsContext = new OpenEngSBMavenPluginNSContext();
+    protected OpenEngSBMavenPluginNSContext nsContext = new OpenEngSBMavenPluginNSContext();
 
-    protected static String invocation;
+    protected String invocation;
 
-    public static void prepare(String goal) throws Exception {
+    public void prepare(String goal) throws Exception {
         if (!prepared) {
             File f = new File("pom.xml");
             Document doc = Tools.parseXMLFromString(FileUtils.readFileToString(f));
@@ -59,7 +59,7 @@ public abstract class AbstractMojoTest {
                 mvnCommand = "mvn.bat";
             }
 
-            Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "install", "-Dmaven.test.skip=true" }),
+            Tools.executeProcess(Arrays.asList(new String[]{ mvnCommand, "install", "-Dmaven.test.skip=true" }),
                     userDir, false);
             prepared = true;
         }
