@@ -20,7 +20,6 @@ import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.communication.CallRouter;
 import org.osgi.framework.BundleContext;
-import org.springframework.jms.core.JmsTemplate;
 
 public class ProxyFactoryImpl implements BundleContextAware, ProxyFactory {
 
