@@ -30,6 +30,9 @@ import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.workflow.taskbox.TaskboxServiceInternal;
 
+/**
+ * Adds everything needed for humann interaction into the rulemanager, (humantask workflow, taskbox global etc.).
+ */
 public class TaskboxConfigurator {
     private Log log = LogFactory.getLog(getClass());
 
