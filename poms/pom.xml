@@ -16,6 +16,7 @@
    limitations under the License.
 
 -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
@@ -50,7 +51,7 @@
   </scm>
 
   <properties>
-  <!-- Plugin Versions -->
+    <!-- Plugin Versions -->
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
     <maven.plugin.antrun.version>1.5</maven.plugin.antrun.version>
     <maven.plugin.changes.version>2.3</maven.plugin.changes.version>
@@ -61,11 +62,6 @@
     <maven.plugin.resources.version>2.4.3</maven.plugin.resources.version>
     <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
     <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
-
-    <!-- Karaf versions; those will change very likely together -->
-    <karaf.version>2.1.3-SNAPSHOT</karaf.version>
-    <aries.blueprint.version>0.2-incubating</aries.blueprint.version>
-
 
     <!-- Component Versions -->
     <osgi.version>4.2.0</osgi.version>
@@ -220,7 +216,6 @@
 
   <modules>
     <module>compiled</module>
-    <module>nonosgi</module>
   </modules>
 
   <build>
@@ -289,6 +284,28 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>license-check</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.openengsb.tooling.pluginsuite</groupId>
+            <artifactId>openengsb-maven-plugin</artifactId>
+            <version>${project.version}</version>
+            <executions>
+              <execution>
+                <id>check-headers</id>
+                <inherited>false</inherited>
+                <phase>validate</phase>
+                <goals>
+                  <goal>licenseCheck</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>checkstyle</id>
       <build>

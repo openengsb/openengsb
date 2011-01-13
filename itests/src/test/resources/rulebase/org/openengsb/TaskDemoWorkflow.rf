@@ -18,6 +18,9 @@
     <subProcess id="3" name="Human interaction" x="96" y="232" width="159" height="48" processId="humantask" >
       <mapping type="in" from="processBag" to="processBag" />
       <mapping type="out" from="processBag" to="processBag" />
+      <onEntry>
+        <action type="expression" dialect="java" >processBag.addOrReplaceProperty("taskType", "demo");</action>
+      </onEntry>
     </subProcess>
     <eventNode id="5" name="FlowStarted" x="284" y="133" width="48" height="48" >
       <eventFilters>

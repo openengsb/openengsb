@@ -32,7 +32,7 @@ public class MemoryAuditingServiceImpl implements AuditingDomain {
 
     @Override
     public AliveState getAliveState() {
-        return AliveState.DISCONNECTED;
+        return AliveState.ONLINE;
     }
 
     @Override

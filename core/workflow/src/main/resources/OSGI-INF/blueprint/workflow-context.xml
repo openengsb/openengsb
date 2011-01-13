@@ -22,7 +22,7 @@
 
   <bean class="org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager" id="ruleManager"
     init-method="init">
-    <property name="persistenceManager" ref="persistenceManger" />
+    <property name="persistenceManager" ref="persistenceManager" />
     <property name="bundleContext" ref="blueprintBundleContext" />
   </bean>
 
@@ -38,8 +38,33 @@
     </bean>
   </service>
 
-  <reference id="contextService" interface="org.openengsb.core.common.context.ContextCurrentService" />
-  <reference id="persistenceManger" interface="org.openengsb.core.common.persistence.PersistenceManager" />
-</blueprint>
+    <bean class="org.openengsb.core.workflow.taskbox.config.TaskboxConfigurator" init-method="init">
+    <property name="ruleManager" ref="ruleManager" />
+  </bean>
 
+  <service interface="org.openengsb.core.common.taskbox.TaskboxService">
+    <service-properties>
+      <entry key="openengsb.service.type" value="workflow-service" />
+      <entry key="openengsb.workflow.globalid" value="taskbox" />
+    </service-properties>
+    <bean class="org.openengsb.core.workflow.taskbox.TaskboxServiceImpl" init-method="init">
+      <property name="workflowService" ref="workflowService" />
+      <property name="persistenceManager" ref="persistenceManager" />
+    </bean>
+  </service>
+
+  <service interface="org.openengsb.core.workflow.taskbox.TaskboxServiceInternal">
+    <service-properties>
+      <entry key="openengsb.service.type" value="workflow-service" />
+      <entry key="openengsb.workflow.globalid" value="taskboxinternal" />
+    </service-properties>
+    <bean class="org.openengsb.core.workflow.taskbox.TaskboxServiceInternalImpl" init-method="init">
+      <property name="persistenceManager" ref="persistenceManager" />
+    </bean>
+  </service>
+
+  <reference id="contextService" interface="org.openengsb.core.common.context.ContextCurrentService" />
+  <reference id="persistenceManager" interface="org.openengsb.core.common.persistence.PersistenceManager" />
+
+</blueprint>
 

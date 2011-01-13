@@ -4,16 +4,15 @@
   Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS 
   IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language 
   governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.openengsb.build</groupId>
-    <artifactId>non-osgi-settings</artifactId>
+    <artifactId>shared-plugin-settings</artifactId>
     <version>1.1.0-SNAPSHOT</version>
-    <relativePath>../poms/nonosgi</relativePath>
+    <relativePath>../poms/</relativePath>
   </parent>
 
   <groupId>org.openengsb.itests</groupId>
@@ -130,12 +129,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.openengsb.core</groupId>
-      <artifactId>openengsb-core-taskbox</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.openengsb.domain</groupId>
       <artifactId>openengsb-domain-example</artifactId>
       <version>${project.version}</version>
@@ -155,7 +148,7 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-memory-auditing</artifactId>
+      <artifactId>openengsb-connector-memoryauditing</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
