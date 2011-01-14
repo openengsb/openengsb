@@ -26,8 +26,4 @@ public class LogServiceManager extends AbstractServiceManager<ExampleDomain, Log
         super(factory);
     }
 
-    @Override
-    public Class<?> getImplementingServiceManagerClass() {
-        return LogServiceManager.class;
-    }
 }

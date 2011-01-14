@@ -29,8 +29,4 @@ public class BuildDomainServiceManager extends AbstractServiceManager<BuildDomai
         super((ServiceInstanceFactory) factory);
     }
 
-    @Override
-    public Class<?> getImplementingServiceManagerClass() {
-        return BuildDomainServiceManager.class;
-    }
 }

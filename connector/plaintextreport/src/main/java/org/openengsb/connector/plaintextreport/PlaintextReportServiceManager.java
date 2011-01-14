@@ -27,9 +27,4 @@ public class PlaintextReportServiceManager extends AbstractServiceManager<Report
         super(plaintextReportBuilder);
     }
 
-    @Override
-    public Class<?> getImplementingServiceManagerClass() {
-        return PlaintextReportServiceManager.class;
-    }
-
 }

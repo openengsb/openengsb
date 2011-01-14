@@ -99,10 +99,6 @@ public class AbstractServiceManagerTest {
             });
         }
 
-        @Override
-        public Class<?> getImplementingServiceManagerClass() {
-            return DummyServiceManager.class;
-        }
     }
 
     @Test
@@ -137,7 +133,7 @@ public class AbstractServiceManagerTest {
         Hashtable<String, String> props = createVerificationHashmap();
         ArgumentCaptor<String[]> captor = ArgumentCaptor.forClass(String[].class);
         Mockito.verify(bundleContextMock).registerService(captor.capture(), any(NullDomain.class), eq(props));
-        assertThat(this.domainRegistrationArray, equalTo(captor.getValue()));
+        assertThat(domainRegistrationArray, equalTo(captor.getValue()));
 
         ConnectorDomainPair pair = new ConnectorDomainPair(NullDomain.class.getName(), instance.getClass().getName());
         Mockito.verify(setupStoreMock).storeConnectorSetup(pair, "test", attributes);
@@ -164,7 +160,7 @@ public class AbstractServiceManagerTest {
         ArgumentCaptor<String[]> captor = ArgumentCaptor.forClass(String[].class);
         Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(captor.capture(), any(Proxy.class),
             eq(props));
-        assertThat(this.domainRegistrationArray, equalTo(captor.getValue()));
+        assertThat(domainRegistrationArray, equalTo(captor.getValue()));
         inOrder.verify(setupStoreMock).storeConnectorSetup(pair, "test", verificationAttributes);
     }
 
@@ -309,10 +305,6 @@ public class AbstractServiceManagerTest {
 
         AbstractServiceManager<NullDomain, NullDomainImpl> serviceManager =
             new AbstractServiceManager<NullDomain, NullDomainImpl>(serviceInstanceFactory) {
-                @Override
-                public Class<?> getImplementingServiceManagerClass() {
-                    return null;
-                }
             };
         serviceManager.setConnectorSetupStore(Mockito.mock(ConnectorSetupStore.class));
 
@@ -342,10 +334,6 @@ public class AbstractServiceManagerTest {
 
         AbstractServiceManager<NullDomain, NullDomainImpl> serviceManager =
             new AbstractServiceManager<NullDomain, NullDomainImpl>(serviceInstanceFactory) {
-                @Override
-                public Class<?> getImplementingServiceManagerClass() {
-                    return null;
-                }
             };
         serviceManager.setConnectorSetupStore(Mockito.mock(ConnectorSetupStore.class));
 

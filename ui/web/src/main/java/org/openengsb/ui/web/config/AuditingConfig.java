@@ -18,13 +18,9 @@ package org.openengsb.ui.web.config;
 
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.openengsb.connector.memoryauditing.MemoryAuditingServiceManager;
 import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
@@ -37,25 +33,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AuditingConfig {
 
-    @SpringBean
     private RuleManager ruleManager;
-
-    @SpringBean
-    private DomainService domainService;
-
-    @SpringBean
     private AuthenticationManager authManager;
+    private ServiceManager memoryauditingService;
 
     public final void setRuleManager(RuleManager ruleManager) {
         this.ruleManager = ruleManager;
     }
 
-    public final void setDomainService(DomainService domainService) {
-        this.domainService = domainService;
-    }
-
     public void setAuthManager(AuthenticationManager authManager) {
         this.authManager = authManager;
+    }
+
+    public void setMemoryauditingService(ServiceManager memoryauditingService) {
+        this.memoryauditingService = memoryauditingService;
     }
 
     public void init() {
@@ -70,16 +61,7 @@ public class AuditingConfig {
                 // thrown if there is already one global auditing... fine then, go on
             }
             addRule("auditEvent");
-            List<ServiceManager> serviceManagersForDomain =
-                domainService.serviceManagersForDomain(AuditingDomain.class);
-            if (serviceManagersForDomain.size() > 0) {
-                for (ServiceManager serviceManager : serviceManagersForDomain) {
-                    if (serviceManager.getImplementingServiceManagerClass().equals(
-                        MemoryAuditingServiceManager.class)) {
-                        serviceManager.update("auditing", new HashMap<String, String>());
-                    }
-                }
-            }
+            memoryauditingService.update("auditing", new HashMap<String, String>());
         } catch (RuleBaseException e) {
             // well we know that this can fail if these entries already exist...
         }

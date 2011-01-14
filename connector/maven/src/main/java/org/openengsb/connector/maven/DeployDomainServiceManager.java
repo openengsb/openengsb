@@ -29,8 +29,4 @@ public class DeployDomainServiceManager extends AbstractServiceManager<DeployDom
         super((ServiceInstanceFactory) factory);
     }
 
-    @Override
-    public Class<?> getImplementingServiceManagerClass() {
-        return DeployDomainServiceManager.class;
-    }
 }

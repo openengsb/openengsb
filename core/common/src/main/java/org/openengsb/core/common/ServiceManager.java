@@ -65,9 +65,4 @@ public interface ServiceManager extends OpenEngSBService {
      */
     Map<String, String> getAttributeValues(String id);
 
-    /**
-     * Since proxies are often used there still have to be a way to get the direct {@link ServiceManager} implementing
-     * class to decide which connector you really want to use.
-     */
-    Class<?> getImplementingServiceManagerClass();
 }

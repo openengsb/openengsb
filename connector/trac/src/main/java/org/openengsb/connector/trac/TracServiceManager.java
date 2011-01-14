@@ -27,8 +27,4 @@ public class TracServiceManager extends AbstractServiceManager<IssueDomain, Trac
         super(tracServiceFactory);
     }
 
-    @Override
-    public Class<?> getImplementingServiceManagerClass() {
-        return TracServiceManager.class;
-    }
 }

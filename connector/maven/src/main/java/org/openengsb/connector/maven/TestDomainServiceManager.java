@@ -29,8 +29,4 @@ public class TestDomainServiceManager extends AbstractServiceManager<TestDomain,
         super((ServiceInstanceFactory) factory);
     }
 
-    @Override
-    public Class<?> getImplementingServiceManagerClass() {
-        return TestDomainServiceManager.class;
-    }
 }
