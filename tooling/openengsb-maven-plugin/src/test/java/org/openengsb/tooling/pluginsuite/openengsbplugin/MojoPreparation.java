@@ -26,7 +26,7 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.xml.OpenEngSBMavenPluginNSContext;
 import org.w3c.dom.Document;
 
-public class MojoPreparation {
+public abstract class MojoPreparation {
 
     private boolean prepared = false;
 
@@ -42,7 +42,7 @@ public class MojoPreparation {
 
     protected String invocation;
 
-    public void prepare(String goal) throws Exception {
+    protected void prepare(String goal) throws Exception {
         if (!prepared) {
             File f = new File("pom.xml");
             Document doc = Tools.parseXMLFromString(FileUtils.readFileToString(f));

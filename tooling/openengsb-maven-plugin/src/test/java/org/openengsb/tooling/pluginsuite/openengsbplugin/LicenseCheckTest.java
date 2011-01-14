@@ -22,15 +22,15 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 
 public class LicenseCheckTest extends MojoPreparation {
 
-    @BeforeClass
-    public static void buildInvocationCommand() throws Exception {
-        new MojoPreparation().prepare("licenseCheck");
+    @Before
+    public void buildInvocationCommand() throws Exception {
+        prepare("licenseCheck");
     }
 
     @Test

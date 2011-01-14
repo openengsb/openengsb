@@ -21,13 +21,13 @@ import java.util.concurrent.Executors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.communication.CallRouter;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
 import org.openengsb.core.common.communication.OutgoingPort;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
 public class CallRouterImpl implements CallRouter, BundleContextAware {
 

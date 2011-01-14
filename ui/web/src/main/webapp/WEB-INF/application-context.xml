@@ -25,10 +25,6 @@
         http://www.springframework.org/schema/osgi http://www.springframework.org/schema/osgi/spring-osgi-1.2.xsd
         http://www.springframework.org/schema/osgi-compendium http://www.springframework.org/schema/osgi-compendium/spring-osgi-compendium-1.2.xsd">
 
-  <bean id="domainService" class="org.openengsb.core.common.service.impl.OsgiDomainService">
-    <property name="domains" ref="domains" />
-  </bean>
-
   <osgix:cm-properties id="settings" persistent-id="org.openengsb.settings">
     <prop key="openengsb.version.number">1.0.0.RELEASE</prop>
     <prop key="openengsb.version.name.adjective">OpenEngSB</prop>

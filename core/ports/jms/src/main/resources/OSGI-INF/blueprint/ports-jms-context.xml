@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
+
+  <reference id="requestHandler" interface="org.openengsb.core.common.communication.RequestHandler" />
+
+  <cm:property-placeholder persistent-id="org.openengsb.ports" update-strategy="reload">
+    <cm:default-properties>
+      <cm:property key="jmsPort">6549</cm:property>
+    </cm:default-properties>
+  </cm:property-placeholder>
+
+  <!-- JMS ConnectionFactory to use -->
+  <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+    <property name="brokerURL">
+      <value>vm:(broker:(tcp://localhost:${jmsPort})?persistent=false)</value>
+    </property>
+  </bean>
+
+  <service interface="org.openengsb.core.common.communication.OutgoingPort">
+    <service-properties>
+      <entry key="id" value="jms-json" />
+    </service-properties>
+    <bean id="jmsPort" class="org.openengsb.core.ports.jms.JMSPort" init-method="start" destroy-method="stop">
+      <property name="factory">
+        <bean class="org.openengsb.core.ports.jms.JMSTemplateFactoryImpl" />
+      </property>
+      <property name="connectionFactory" ref="jmsFactory" />
+      <property name="requestHandler" ref="requestHandler" />
+    </bean>
+  </service>
+
+</blueprint>
