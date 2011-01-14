@@ -29,7 +29,8 @@ import org.openengsb.core.common.workflow.WorkflowException;
  * A human task can be inserted into any workflow by using the sub-workflow "humantask". This workflow then
  * automatically creates a task which then can be obtained by this service.
  * 
- * There is a {@link org.openengsb.ui.common.wicket.taskbox.WebTaskboxService WebTaskboxService} which adds UI capabilities.
+ * There is a {@link org.openengsb.ui.common.wicket.taskbox.WebTaskboxService WebTaskboxService} which adds UI
+ * capabilities.
  * 
  * IMPORTANT: Every workflow which should support human interaction needs to wait for the FlowStartedEvent before the
  * first humantask is inserted!

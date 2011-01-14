@@ -91,7 +91,7 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
         try {
             persistence.delete(task);
         } catch (PersistenceException e) {
-            throw new WorkflowException(e.getMessage());
+            throw new WorkflowException(e);
         }
 
         workflowService.processEvent(finishedEvent);

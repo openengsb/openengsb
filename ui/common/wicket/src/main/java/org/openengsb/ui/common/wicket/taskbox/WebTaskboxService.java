@@ -47,6 +47,8 @@ public interface WebTaskboxService extends TaskboxService {
      * 
      * The panel is provided via its class and needs a constructor with the ID as string for the first parameter and the
      * {@link org.openengsb.core.common.taskbox.model.Task Task} as second.
+     * 
+     * @throws TaskboxException when the panel could not be registered
      */
-    void registerTaskPanel(String taskType, Class<?> panelClass);
+    void registerTaskPanel(String taskType, Class<? extends Panel> panelClass) throws TaskboxException;
 }

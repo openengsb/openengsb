@@ -39,7 +39,6 @@ import org.openengsb.core.common.workflow.WorkflowException;
 
 @SuppressWarnings("serial")
 public class TaskPanel extends Panel {
-
     private Task task;
 
     private static final Log LOG = LogFactory.getLog(TaskPanel.class);
