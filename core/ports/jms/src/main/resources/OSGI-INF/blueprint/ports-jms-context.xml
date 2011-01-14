@@ -17,21 +17,20 @@
 
 -->
 
-<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:cm="http://geronimo.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
+           xmlns:ext="http://geronimo.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
 
-  <reference id="requestHandler" interface="org.openengsb.core.common.communication.RequestHandler" />
-
-  <cm:property-placeholder persistent-id="org.openengsb.ports" update-strategy="reload">
+  <!-- <cm:property-placeholder persistent-id="org.openengsb.settings" update-strategy="reload">
     <cm:default-properties>
       <cm:property key="jmsPort">6549</cm:property>
     </cm:default-properties>
-  </cm:property-placeholder>
+  </cm:property-placeholder> -->
 
   <!-- JMS ConnectionFactory to use -->
   <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
     <property name="brokerURL">
-      <value>vm:(broker:(tcp://localhost:${jmsPort})?persistent=false)</value>
+      <value>vm:(broker:(tcp://localhost:6549)?persistent=false)</value>
     </property>
   </bean>
 
@@ -39,13 +38,17 @@
     <service-properties>
       <entry key="id" value="jms-json" />
     </service-properties>
-    <bean id="jmsPort" class="org.openengsb.core.ports.jms.JMSPort" init-method="start" destroy-method="stop">
+    <ref component-id="portBean"/>
+  </service>
+  
+  <bean id="portBean" class="org.openengsb.core.ports.jms.JMSPort" init-method="start"  destroy-method="stop">
       <property name="factory">
         <bean class="org.openengsb.core.ports.jms.JMSTemplateFactoryImpl" />
       </property>
       <property name="connectionFactory" ref="jmsFactory" />
       <property name="requestHandler" ref="requestHandler" />
     </bean>
-  </service>
+  
+  <reference id="requestHandler" interface="org.openengsb.core.common.communication.RequestHandler" />
 
 </blueprint>
