@@ -39,6 +39,7 @@ openengsb-1.1.0.RELEASE
 ### Removed External References
 
 ### New Features & Changed Behaviour
+  * Downgrade spring-dm to 1.x and switch to blueprint instead of spring
   * Added tooling plugin to execute license-check plugin and assemble scripts via mvn.
   * Added possibility to brand konsole
   * renamed: maven-openengsb-plugin -> openengsb-maven-plugin
