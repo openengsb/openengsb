@@ -22,29 +22,27 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 
-public class LicenseCheckTest extends AbstractMojoTest {
+public class LicenseCheckTest extends MojoPreparation {
 
-    private static final String goal = "licenseCheck";
-
-    @BeforeClass
-    public static void buildInvocationCommand() throws Exception {
-        prepare(goal);
+    @Before
+    public void buildInvocationCommand() throws Exception {
+        prepare("licenseCheck");
     }
 
     @Test
     public void licenseCheckNoLicenseHeader_mojoShouldFail() throws Exception {
-        int result = Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "-e", invocation }), new File(
+        int result = Tools.executeProcess(Arrays.asList(new String[]{ mvnCommand, "-e", invocation }), new File(
                 "src/test/resources/licenseCheck/fail"), false);
         assertEquals(1, result);
     }
 
     @Test
     public void licenseCheckHeaderAvailable_mojoShouldPass() throws Exception {
-        int result = Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "-e", invocation }), new File(
+        int result = Tools.executeProcess(Arrays.asList(new String[]{ mvnCommand, "-e", invocation }), new File(
                 "src/test/resources/licenseCheck/pass"), false);
         assertEquals(0, result);
     }

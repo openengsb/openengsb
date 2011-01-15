@@ -25,7 +25,7 @@ import javax.xml.namespace.NamespaceContext;
 public class OpenEngSBMavenPluginNSContext implements NamespaceContext {
 
     private HashMap<String, String> prefixToURI = new HashMap<String, String>();
-    private HashMap<String, String> URIToPrefix = new HashMap<String, String>();
+    private HashMap<String, String> uriToPrefix = new HashMap<String, String>();
 
     public OpenEngSBMavenPluginNSContext() {
         buildNamingContext();
@@ -38,7 +38,7 @@ public class OpenEngSBMavenPluginNSContext implements NamespaceContext {
 
         for (String[] strArr : data) {
             prefixToURI.put(strArr[0], strArr[1]);
-            URIToPrefix.put(strArr[1], strArr[0]);
+            uriToPrefix.put(strArr[1], strArr[0]);
         }
     }
 
@@ -49,7 +49,7 @@ public class OpenEngSBMavenPluginNSContext implements NamespaceContext {
 
     @Override
     public String getPrefix(String uri) {
-        return URIToPrefix.get(uri);
+        return uriToPrefix.get(uri);
     }
 
     @Override

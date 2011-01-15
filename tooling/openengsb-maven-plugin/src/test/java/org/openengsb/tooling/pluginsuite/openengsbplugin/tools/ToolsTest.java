@@ -56,7 +56,8 @@ public class ToolsTest {
     public void testXPath() throws Exception {
         Document doc =
             Tools
-                .parseXMLFromString(IOUtils.toString(ClassLoader.getSystemResourceAsStream("licenseCheck/licenseCheckConfig.xml")));
+                .parseXMLFromString(IOUtils.toString(ClassLoader
+                    .getSystemResourceAsStream("licenseCheck/licenseCheckConfig.xml")));
         Node n =
             Tools.evaluateXPath("//lc:licenseCheckMojo", doc, new OpenEngSBMavenPluginNSContext(), XPathConstants.NODE,
                 Node.class);
@@ -76,10 +77,12 @@ public class ToolsTest {
     @Test
     public void testInsertDomNode() throws Exception {
         Document thePom =
-            Tools.parseXMLFromString(IOUtils.toString(ClassLoader.getSystemResourceAsStream("licenseCheck/pass/pom.xml")));
+            Tools.parseXMLFromString(IOUtils.toString(ClassLoader
+                .getSystemResourceAsStream("licenseCheck/pass/pom.xml")));
         Document config =
             Tools
-                .parseXMLFromString(IOUtils.toString(ClassLoader.getSystemResourceAsStream("licenseCheck/licenseCheckConfig.xml")));
+                .parseXMLFromString(IOUtils.toString(ClassLoader
+                    .getSystemResourceAsStream("licenseCheck/licenseCheckConfig.xml")));
 
         Node licenseCheckMojoProfileNode =
             Tools.evaluateXPath("/lc:licenseCheckMojo/lc:profile", config, new OpenEngSBMavenPluginNSContext(),

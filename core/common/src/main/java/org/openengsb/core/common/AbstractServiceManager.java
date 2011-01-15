@@ -158,7 +158,9 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             };
         }
         factory.addAdvice(securityInterceptor);
-        return (InstanceType) factory.getProxy();
+        ClassLoader classLoader = getClass().getClassLoader();
+        log.info(String.format("creating aop-proxy using classloader %s (%s)", classLoader, classLoader.getClass()));
+        return (InstanceType) factory.getProxy(classLoader);
     }
 
     @Override

@@ -113,6 +113,7 @@
       openengsb.version.number=${openengsb.version.number}
       openengsb.version.name.adjective=${openengsb.version.name.adjective}
       openengsb.version.name.noun=${openengsb.version.name.noun}
+      jmsPort=6549
     </config>
     <feature version="${spring.version}">openengsb-spring</feature>
     <feature version="${spring.osgi.version}">openengsb-spring-dm</feature>

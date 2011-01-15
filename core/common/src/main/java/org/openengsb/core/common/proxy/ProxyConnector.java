@@ -36,7 +36,7 @@ public class ProxyConnector implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         MethodReturn callSync =
-            callRouter.callSync(portId, destination, new MethodCall(method.getName(), args, this.metadata));
+            callRouter.callSync(portId, destination, new MethodCall(method.getName(), args, metadata));
         switch (callSync.getType()) {
             case Object:
                 return callSync.getArg();
@@ -50,7 +50,7 @@ public class ProxyConnector implements InvocationHandler {
     }
 
     public final void setPortId(String id) {
-        this.portId = id;
+        portId = id;
     }
 
     public final void setDestination(String destination) {
@@ -58,7 +58,7 @@ public class ProxyConnector implements InvocationHandler {
     }
 
     public void addMetadata(String key, String value) {
-        this.metadata.put(key, value);
+        metadata.put(key, value);
     }
 
     public final void setCallRouter(CallRouter callRouter) {

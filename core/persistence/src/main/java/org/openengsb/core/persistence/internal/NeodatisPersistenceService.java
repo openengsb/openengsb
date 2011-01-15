@@ -35,6 +35,7 @@ import org.neodatis.odb.OdbConfiguration;
 import org.neodatis.odb.core.query.nq.NativeQuery;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceService;
+import org.osgi.framework.Bundle;
 
 public class NeodatisPersistenceService implements PersistenceService {
 
@@ -42,20 +43,25 @@ public class NeodatisPersistenceService implements PersistenceService {
 
     private final Semaphore semaphore = new Semaphore(1);
 
-    private final CustomClassLoader loader;
+    private final Bundle bundle;
 
-    public NeodatisPersistenceService(String dbFile, CustomClassLoader loader) {
+    private ODB database;
+
+    private CustomClassLoader loader;
+
+    public NeodatisPersistenceService(String dbFile, Bundle bundle) {
         this.dbFile = dbFile;
-        this.loader = loader;
+        this.bundle = bundle;
+        loader = new CustomClassLoader(this.getClass().getClassLoader(), this.bundle);
     }
 
     @Override
     public void create(Object bean) throws PersistenceException {
-        ODB database = openDatabase(bean);
+        openTransaction(bean);
         try {
             database.store(bean);
         } finally {
-            closeDatabase(database);
+            closeTransaction();
         }
     }
 
@@ -64,19 +70,19 @@ public class NeodatisPersistenceService implements PersistenceService {
         if (beans.isEmpty()) {
             return;
         }
-        ODB database = openDatabase(beans.get(0));
+        openTransaction(beans.get(0));
         try {
             for (Object bean : beans) {
                 database.store(bean);
             }
         } finally {
-            closeDatabase(database);
+            closeTransaction();
         }
     }
 
     @Override
     public <TYPE> void delete(TYPE example) throws PersistenceException {
-        ODB database = openDatabase(example);
+        openTransaction(example);
         try {
             List<TYPE> toDelete = queryByExample(database, example);
             if (toDelete.isEmpty()) {
@@ -87,7 +93,7 @@ public class NeodatisPersistenceService implements PersistenceService {
                 database.delete(element);
             }
         } finally {
-            closeDatabase(database);
+            closeTransaction();
         }
     }
 
@@ -96,7 +102,7 @@ public class NeodatisPersistenceService implements PersistenceService {
         if (examples.isEmpty()) {
             return;
         }
-        ODB database = openDatabase(examples.get(0));
+        openTransaction(examples.get(0));
         try {
             List<TYPE> toDelete = new ArrayList<TYPE>();
             for (TYPE example : examples) {
@@ -110,18 +116,19 @@ public class NeodatisPersistenceService implements PersistenceService {
                 database.delete(element);
             }
         } finally {
-            closeDatabase(database);
+            closeTransaction();
         }
     }
 
     @Override
     public <TYPE> List<TYPE> query(TYPE example) {
-        ODB database = openDatabase(example);
+        openTransaction(example);
+        List<TYPE> result = new ArrayList<TYPE>();
         try {
-            List<TYPE> result = queryByExample(database, example);
+            result.addAll(queryByExample(database, example));
             return result;
         } finally {
-            closeDatabase(database);
+            closeTransaction();
         }
     }
 
@@ -130,29 +137,29 @@ public class NeodatisPersistenceService implements PersistenceService {
         if (examples.isEmpty()) {
             return new ArrayList<TYPE>();
         }
-        ODB database = openDatabase(examples.get(0));
+        openTransaction(examples.get(0));
+        List<TYPE> result = new ArrayList<TYPE>();
         try {
-            List<TYPE> result = new ArrayList<TYPE>();
             for (TYPE example : examples) {
                 result.addAll(queryByExample(database, example));
             }
             return result;
         } finally {
-            closeDatabase(database);
+            closeTransaction();
         }
     }
 
     @Override
     public <TYPE> void update(TYPE oldBean, TYPE newBean) throws PersistenceException {
-        ODB database = openDatabase(oldBean);
+        openTransaction(oldBean);
         try {
-            doUpdate(database, oldBean, newBean);
+            doUpdate(oldBean, newBean);
         } finally {
-            closeDatabase(database);
+            closeTransaction();
         }
     }
 
-    private <TYPE> void doUpdate(ODB database, TYPE oldBean, TYPE newBean) throws PersistenceException {
+    private <TYPE> void doUpdate(TYPE oldBean, TYPE newBean) throws PersistenceException {
         List<TYPE> queryResult = queryByExample(database, oldBean);
         if (queryResult.isEmpty()) {
             throw new PersistenceException("Could not update element '" + oldBean
@@ -170,27 +177,27 @@ public class NeodatisPersistenceService implements PersistenceService {
         if (beans.isEmpty()) {
             return;
         }
-        ODB database = openDatabase(beans.keySet().iterator().next());
+        openTransaction(beans.keySet().iterator().next());
         try {
             for (Entry<TYPE, TYPE> entry : beans.entrySet()) {
-                doUpdate(database, entry.getKey(), entry.getValue());
+                doUpdate(entry.getKey(), entry.getValue());
             }
         } catch (PersistenceException e) {
             database.rollback();
             throw e;
         } finally {
-            closeDatabase(database);
+            closeTransaction();
         }
     }
 
-    @SuppressWarnings("serial")
     private <TYPE> List<TYPE> queryByExample(ODB database, TYPE example) {
         try {
             List<Method> getters = reflectGettersFromPersistenceClass(example.getClass());
 
             NeodatisGetterQuery<TYPE> query = new NeodatisGetterQuery<TYPE>(getters, example);
 
-            return queryNeodatis(database, query);
+            List<TYPE> result = queryNeodatis(database, query);
+            return result;
         } catch (IntrospectionException e) {
             throw new RuntimeException(e);
         }
@@ -220,36 +227,28 @@ public class NeodatisPersistenceService implements PersistenceService {
         return retVal;
     }
 
-    private void closeDatabase(ODB database) {
+    private void openTransaction(Object prototype) {
+        try {
+            semaphore.acquire();
+            if (prototype != null) {
+                loader.addClassToPool(prototype.getClass());
+            }
+            openDatabase();
+        } catch (InterruptedException e) {
+            semaphore.release();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void closeTransaction() {
         database.close();
         semaphore.release();
     }
 
-    private ODB openDatabase(Object object) {
-        try {
-            semaphore.acquire();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            ODB database = null;
-            synchronized (OdbConfiguration.class) {
-                configureLoader(object);
-                OdbConfiguration.setClassLoader(loader);
-                database = ODBFactory.open(dbFile);
-            }
-            return database;
-        } catch (RuntimeException re) {
-            semaphore.release();
-            throw re;
-        }
-    }
-
-    private void configureLoader(Object object) {
-        if (object != null) {
-            loader.setBackUpClassLoader(object.getClass().getClassLoader());
-        } else {
-            loader.setBackUpClassLoader(null);
+    private void openDatabase() {
+        synchronized (OdbConfiguration.class) {
+            OdbConfiguration.setClassLoader(loader);
+            database = ODBFactory.open(dbFile);
         }
     }
 

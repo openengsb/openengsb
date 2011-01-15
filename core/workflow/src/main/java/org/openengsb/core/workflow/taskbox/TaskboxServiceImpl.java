@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
@@ -30,7 +31,6 @@ import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
 public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     private Log log = LogFactory.getLog(getClass());
@@ -98,3 +98,4 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
         log.info("finished task " + task.getTaskId());
     }
 }
+

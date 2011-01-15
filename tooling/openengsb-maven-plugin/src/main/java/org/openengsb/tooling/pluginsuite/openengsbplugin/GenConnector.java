@@ -26,15 +26,15 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 
 /**
  * guides through the creation of a connector for the OpenEngSB via the connector archetype
- * 
+ *
  * @goal genConnector
- * 
+ *
  * @inheritedByDefault false
- * 
+ *
  * @requiresProject true
- * 
+ *
  * @aggregator true
- * 
+ *
  */
 public class GenConnector extends AbstractOpenengsbMojo {
 
@@ -44,11 +44,11 @@ public class GenConnector extends AbstractOpenengsbMojo {
     private Properties userproperties;
 
     // INPUT
-    private String domain_name;
+    private String domainName;
     private String domaininterface;
     private String connector;
     private String version;
-    private String project_name;
+    private String projectName;
     private String domainGroupId;
     private String domainArtifactId;
     private String artifactId;
@@ -69,7 +69,7 @@ public class GenConnector extends AbstractOpenengsbMojo {
 
     // DYNAMIC DEFAULTS
 
-    private String default_version;
+    private String defaultVersion;
 
     private void validateIfExecutionIsAllowed() throws MojoExecutionException {
         throwErrorIfWrapperRequestIsRecursive();
@@ -94,7 +94,7 @@ public class GenConnector extends AbstractOpenengsbMojo {
 
     private void initDefaults() {
         // version should be the same as the version of the OpenEngSB
-        default_version = getProject().getVersion();
+        defaultVersion = getProject().getVersion();
     }
 
     private void readUserInput() {
@@ -106,19 +106,20 @@ public class GenConnector extends AbstractOpenengsbMojo {
             archetypeCatalogLocalOnly = true;
         }
 
-        domain_name = Tools.readValueFromStdin(sc, "Domain Name", DEFAULT_DOMAIN);
+        domainName = Tools.readValueFromStdin(sc, "Domain Name", DEFAULT_DOMAIN);
         domaininterface =
             Tools
-                .readValueFromStdin(sc, "Domain Interface", String.format("%s%s", Tools.capitalizeFirst(domain_name), "Domain"));
+                .readValueFromStdin(sc, "Domain Interface",
+                    String.format("%s%s", Tools.capitalizeFirst(domainName), "Domain"));
         connector = Tools.readValueFromStdin(sc, "Connector Name", "myconnector");
-        version = Tools.readValueFromStdin(sc, "Version", default_version);
-        project_name = Tools.readValueFromStdin(sc,
+        version = Tools.readValueFromStdin(sc, "Version", defaultVersion);
+        projectName = Tools.readValueFromStdin(sc,
             "Project Name",
             String.format("%s%s", DEFAULT_CONNECTORNAME_PREFIX,
                 Tools.capitalizeFirst(connector)));
 
-        domainGroupId = String.format("%s%s", DOMAIN_GROUPIDPREFIX, domain_name);
-        domainArtifactId = String.format("%s%s", DOMAIN_ARTIFACTIDPREFIX, domain_name);
+        domainGroupId = String.format("%s%s", DOMAIN_GROUPIDPREFIX, domainName);
+        domainArtifactId = String.format("%s%s", DOMAIN_ARTIFACTIDPREFIX, domainName);
         artifactId = String.format("%s%s", CONNECTOR_ARTIFACTIDPREFIX, connector);
     }
 
@@ -139,7 +140,7 @@ public class GenConnector extends AbstractOpenengsbMojo {
         userproperties.put("domainInterface", domaininterface);
         userproperties.put("package", String.format("%s.%s", CONNECTOR_GROUPID, connector));
         userproperties.put("domainPackage", domainGroupId);
-        userproperties.put("name", project_name);
+        userproperties.put("name", projectName);
         userproperties.put("connectorName", Tools.capitalizeFirst(connector));
 
         // local archetype catalog only

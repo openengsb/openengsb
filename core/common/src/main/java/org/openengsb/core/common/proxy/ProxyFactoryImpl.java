@@ -16,10 +16,10 @@
 
 package org.openengsb.core.common.proxy;
 
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.communication.CallRouter;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
 public class ProxyFactoryImpl implements BundleContextAware, ProxyFactory {
 

@@ -16,23 +16,27 @@
 
 package org.openengsb.core.events;
 
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.AbstractOpenEngSBInvocationHandler;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 
-public class ForwardHandler implements InvocationHandler {
+public class ForwardHandler extends AbstractOpenEngSBInvocationHandler {
 
     private Log log = LogFactory.getLog(ForwardHandler.class);
     private WorkflowService workflowService;
 
+    public ForwardHandler() {
+        super(true);
+    }
+
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws IllegalAccessException,
+    public Object handleInvoke(Object proxy, Method method, Object[] args) throws IllegalAccessException,
         InvocationTargetException {
         checkMethod(method);
         log.info("Forwarding event to workflow service");

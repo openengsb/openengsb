@@ -17,13 +17,13 @@
 package org.openengsb.connector.git;
 
 import org.openengsb.connector.git.internal.GitServiceImpl;
+import org.openengsb.connector.git.internal.GitServiceInstanceFactory;
 import org.openengsb.core.common.AbstractServiceManager;
-import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.domain.scm.ScmDomain;
 
 public class GitServiceManager extends AbstractServiceManager<ScmDomain, GitServiceImpl> {
 
-    public GitServiceManager(ServiceInstanceFactory<ScmDomain, GitServiceImpl> factory) {
+    public GitServiceManager(GitServiceInstanceFactory factory) {
         super(factory);
     }
 

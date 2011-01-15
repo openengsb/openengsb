@@ -52,6 +52,7 @@ import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.workflow.instance.node.SubProcessNodeInstance;
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -68,7 +69,6 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
-import org.springframework.osgi.context.BundleContextAware;
 
 public class WorkflowServiceImpl implements WorkflowService, BundleContextAware, ServiceListener {
 

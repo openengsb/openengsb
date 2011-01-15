@@ -33,7 +33,7 @@ import org.apache.maven.project.MavenProject;
 
 public class DefaultMavenExecutor implements MavenExecutor {
 
-    private static final Logger log = Logger.getLogger(DefaultMavenExecutor.class);
+    private static final Logger LOG = Logger.getLogger(DefaultMavenExecutor.class);
 
     private MavenExecutionRequest embeddedRequest;
 
@@ -51,7 +51,7 @@ public class DefaultMavenExecutor implements MavenExecutor {
 
         baseDir = session.getRequest().getPom().getParentFile();
 
-        log.trace(String.format("basedir: %s", baseDir.toURI().toString()));
+        LOG.trace(String.format("basedir: %s", baseDir.toURI().toString()));
 
         generateRequestFromWrapperRequest(session);
         initExecParametersFromArguments(goals, activatedProfiles, deactivatedProfiles, userproperties);
@@ -59,14 +59,14 @@ public class DefaultMavenExecutor implements MavenExecutor {
 
         printExecutionStartInfoLog(mojo.getLog());
 
-        log.trace(String.format("basedir of embedded request: %s", embeddedRequest.getBaseDirectory()));
-        log.trace(String.format("pomfile of embedded request: %s", embeddedRequest.getPom().toURI().toString()));
+        LOG.trace(String.format("basedir of embedded request: %s", embeddedRequest.getBaseDirectory()));
+        LOG.trace(String.format("pomfile of embedded request: %s", embeddedRequest.getPom().toURI().toString()));
 
-        log.trace("executing execution request with maven - start");
+        LOG.trace("executing execution request with maven - start");
         MavenExecutionResult result = maven.execute(embeddedRequest);
-        log.trace("executing execution request with maven - end");
+        LOG.trace("executing execution request with maven - end");
 
-        log.trace(String.format("basedir of embedded request: %s", embeddedRequest.getBaseDirectory()));
+        LOG.trace(String.format("basedir of embedded request: %s", embeddedRequest.getBaseDirectory()));
 
         printExecutionEndInfoLog(mojo.getLog());
         logAndPassOnExceptionIfAny(result, mojo.getLog());
@@ -105,9 +105,9 @@ public class DefaultMavenExecutor implements MavenExecutor {
             embeddedRequest.setInteractiveMode(interActiveMode);
         }
         if (customPomFile != null) {
-            log.trace(String.format("setting custom pom: %s", customPomFile.toURI().toString()));
+            LOG.trace(String.format("setting custom pom: %s", customPomFile.toURI().toString()));
             embeddedRequest.setPom(customPomFile);
-            log.trace(String.format("setting basedir: %s", baseDir.toURI().toString()));
+            LOG.trace(String.format("setting basedir: %s", baseDir.toURI().toString()));
             embeddedRequest.setBaseDirectory(baseDir);
         }
     }
@@ -139,7 +139,7 @@ public class DefaultMavenExecutor implements MavenExecutor {
 
     @Override
     public MavenExecutor setInterActiveMode(boolean interactiveMode) {
-        this.interActiveMode = interactiveMode;
+        interActiveMode = interactiveMode;
         return this;
     }
 
@@ -151,7 +151,7 @@ public class DefaultMavenExecutor implements MavenExecutor {
 
     @Override
     public MavenExecutor setCustomPomFile(File pomFile) {
-        this.customPomFile = pomFile;
+        customPomFile = pomFile;
         return this;
     }
 
@@ -167,8 +167,8 @@ public class DefaultMavenExecutor implements MavenExecutor {
             log.warn("###################");
             Throwable ex = result.getExceptions().get(0);
             Throwable cause = ex.getCause();
-            String errmsg = (cause != null ? cause.getMessage() : ex
-                    .getMessage());
+            String errmsg = cause != null ? cause.getMessage() : ex
+                    .getMessage();
             throw new MojoExecutionException(
                     String.format(
                             "%s\nFAIL - see log statements above for additional info",

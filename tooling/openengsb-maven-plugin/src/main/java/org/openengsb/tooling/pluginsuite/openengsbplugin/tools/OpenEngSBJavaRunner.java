@@ -63,14 +63,12 @@ public class OpenEngSBJavaRunner {
 
     public void shutdown() {
         try {
-            if (shutdownHook != null) {
-                synchronized (shutdownHook) {
-                    if (shutdownHook != null) {
-                        Runtime.getRuntime().removeShutdownHook(shutdownHook);
-                        process = null;
-                        shutdownHook.run();
-                        shutdownHook = null;
-                    }
+            synchronized (shutdownHook) {
+                if (shutdownHook != null) {
+                    Runtime.getRuntime().removeShutdownHook(shutdownHook);
+                    process = null;
+                    shutdownHook.run();
+                    shutdownHook = null;
                 }
             }
         } catch (IllegalStateException ignore) {
