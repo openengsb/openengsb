@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
@@ -31,7 +32,6 @@ import org.openengsb.core.workflow.taskbox.TaskboxServiceImpl;
 import org.openengsb.ui.common.wicket.taskbox.web.TaskOverviewPanel;
 import org.openengsb.ui.common.wicket.taskbox.web.TaskPanel;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
 public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTaskboxService, BundleContextAware {
     private Log log = LogFactory.getLog(getClass());
@@ -40,10 +40,12 @@ public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTask
     private PersistenceManager persistenceManager;
     private BundleContext bundleContext;
 
+    @Override
     public void init() {
         persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
     }
 
+    @Override
     public void setPersistenceManager(PersistenceManager persistenceManager) {
         this.persistenceManager = persistenceManager;
     }
