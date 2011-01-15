@@ -34,9 +34,9 @@ import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.model.Task;
-import org.openengsb.core.common.taskbox.model.TaskFinishedEvent;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -131,6 +131,6 @@ public class TaskboxServiceTest {
         service.finishTask(task);
 
         io.verify(persistenceService).delete(task);
-        io.verify(workflowService).processEvent(any(TaskFinishedEvent.class));
+        io.verify(workflowService).processEvent(any(InternalWorkflowEvent.class));
     }
 }

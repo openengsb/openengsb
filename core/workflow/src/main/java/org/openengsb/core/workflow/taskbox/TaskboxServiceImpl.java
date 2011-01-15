@@ -26,9 +26,9 @@ import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.TaskboxService;
 import org.openengsb.core.common.taskbox.model.Task;
-import org.openengsb.core.common.taskbox.model.TaskFinishedEvent;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
+import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 import org.osgi.framework.BundleContext;
 import org.springframework.osgi.context.BundleContextAware;
 
@@ -87,11 +87,11 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
 
     @Override
     public void finishTask(Task task) throws WorkflowException {
-        TaskFinishedEvent finishedEvent = new TaskFinishedEvent(task);
+        InternalWorkflowEvent finishedEvent = new InternalWorkflowEvent("TaskFinished", task);
         try {
             persistence.delete(task);
         } catch (PersistenceException e) {
-            throw new WorkflowException(e.getMessage());
+            throw new WorkflowException(e);
         }
 
         workflowService.processEvent(finishedEvent);

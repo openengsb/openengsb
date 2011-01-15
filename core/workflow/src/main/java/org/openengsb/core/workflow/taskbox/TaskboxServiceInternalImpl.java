@@ -50,6 +50,6 @@ public class TaskboxServiceInternalImpl implements TaskboxServiceInternal, Bundl
     public void createNewTask(ProcessBag bag) throws PersistenceException {
         Task task = new Task(bag);
         persistence.create(task);
-        log.info("new human task with id " + task.getTaskId() + " created");
+        log.info("New human task with id " + task.getTaskId() + " created");
     }
 }
