@@ -102,9 +102,9 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         }
         return true;
     }
-    
+
     private void prepareWorkspace() {
-        if(localWorkspace == null) {
+        if (localWorkspace == null) {
             throw new ScmException("Local workspace not set.");
         }
         if (!localWorkspace.isDirectory()) {
@@ -113,14 +113,14 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
     }
 
     private void tryCreateLocalWorkspace() {
-        if (!this.localWorkspace.exists()) {
-            this.localWorkspace.mkdirs();
+        if (!localWorkspace.exists()) {
+            localWorkspace.mkdirs();
         }
-        if (!this.localWorkspace.exists()) {
+        if (!localWorkspace.exists()) {
             throw new ScmException("Local workspace directory '" + localWorkspace
                     + "' does not exist and cannot be created.");
         }
-        if (!this.localWorkspace.isDirectory()) {
+        if (!localWorkspace.isDirectory()) {
             throw new ScmException("Local workspace directory '" + localWorkspace + "' is not a valid directory.");
         }
     }
@@ -226,16 +226,12 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         try {
             AnyObjectId id = repository.resolve(Constants.HEAD);
             RevCommit commit = new RevWalk(repository).parseCommit(id);
-            TreeWalk treeWalk = TreeWalk.forPath(repository, arg0, new AnyObjectId[] { commit.getTree() });
+            TreeWalk treeWalk = TreeWalk.forPath(repository, arg0, new AnyObjectId[]{ commit.getTree() });
             if (treeWalk == null) {
                 return false;
             }
             ObjectId objectId = treeWalk.getObjectId(treeWalk.getTreeCount() - 1);
-            if (objectId.equals(ObjectId.zeroId())) {
-                return false;
-            } else {
-                return true;
-            }
+            return !objectId.equals(ObjectId.zeroId());
         } catch (Exception e) {
             throw new ScmException(e);
         }
@@ -246,16 +242,12 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
         try {
             AnyObjectId id = repository.resolve(arg1.getStringRepresentation());
             RevCommit commit = new RevWalk(repository).parseCommit(id);
-            TreeWalk treeWalk = TreeWalk.forPath(repository, arg0, new AnyObjectId[] { commit.getTree() });
+            TreeWalk treeWalk = TreeWalk.forPath(repository, arg0, new AnyObjectId[]{ commit.getTree() });
             if (treeWalk == null) {
                 return false;
             }
             ObjectId objectId = treeWalk.getObjectId(treeWalk.getTreeCount() - 1);
-            if (objectId.equals(ObjectId.zeroId())) {
-                return false;
-            } else {
-                return true;
-            }
+            return !objectId.equals(ObjectId.zeroId());
         } catch (Exception e) {
             throw new ScmException(e);
         }
@@ -328,7 +320,7 @@ public class GitServiceImpl extends AbstractOpenEngSBService implements ScmDomai
                     addCommand.addFilepattern(file.getName());
                 }
             }
-            if(!filesInDirectory) {
+            if (!filesInDirectory) {
                 return null;
             }
         } else {
