@@ -19,7 +19,8 @@ package org.openengsb.core.common.workflow.model;
 import org.openengsb.core.common.Event;
 
 /**
- * This event is used to finish taskbox sub-workflows and to indicate that a human task has finished
+ * This event is used for internal workflow control actions like the completion of a human task. It contains a workflows
+ * ProcessBag.
  */
 public class InternalWorkflowEvent extends Event {
     private ProcessBag processBag;
@@ -48,7 +49,7 @@ public class InternalWorkflowEvent extends Event {
         if (type != null) {
             return type;
         } else {
-            return this.getClass().getSimpleName();
+            return super.getType();
         }
     }
 

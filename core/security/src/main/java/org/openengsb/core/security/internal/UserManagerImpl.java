@@ -20,6 +20,7 @@ package org.openengsb.core.security.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
@@ -33,7 +34,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public class UserManagerImpl implements UserManager {
+public class UserManagerImpl implements UserManager, BundleContextAware {
 
     private PersistenceService persistence;
     private PersistenceManager persistenceManager;

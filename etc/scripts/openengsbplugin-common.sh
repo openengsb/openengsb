@@ -21,7 +21,7 @@ M2_REPO=~/.m2/repository
 
 PLUGIN_VERSION="1.1.0-SNAPSHOT"
 PLUGIN_GROUP_ID_PATH="org/openengsb/tooling/pluginsuite"
-PLUGIN_ARTIFACT_ID="maven-openengsb-plugin"
+PLUGIN_ARTIFACT_ID="openengsb-maven-plugin"
 
 ABSPATH=$(cd "$(dirname "${0}")"; pwd)
 
@@ -62,4 +62,4 @@ if [ ! `check_for_plugin` -eq 0 ]; then
   install_plugin
 fi
 
-echo "Invoking maven-openengsb-plugin"
+echo "Invoking openengsb-maven-plugin"

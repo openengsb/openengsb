@@ -30,6 +30,7 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.proxy.ProxyFactory;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
 import org.openengsb.ui.web.model.OpenEngSBVersion;
@@ -54,8 +55,8 @@ public class RoleAuthorizationTest extends AbstractLogin {
         formTester.setValue("username", "admin");
         formTester.setValue("password", "password");
         formTester.submit();
-        BookmarkablePageLabelLink userServiceLink = (BookmarkablePageLabelLink) tester
-            .getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
+        BookmarkablePageLabelLink userServiceLink =
+            (BookmarkablePageLabelLink) tester.getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
         assertNotNull(userServiceLink);
         assertThat(userServiceLink.getPageClass().getCanonicalName(), is(UserService.class.getCanonicalName()));
     }
@@ -67,8 +68,8 @@ public class RoleAuthorizationTest extends AbstractLogin {
         formTester.setValue("username", "user");
         formTester.setValue("password", "password");
         formTester.submit();
-        BookmarkablePageLabelLink userServiceLink = (BookmarkablePageLabelLink) tester
-            .getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
+        BookmarkablePageLabelLink userServiceLink =
+            (BookmarkablePageLabelLink) tester.getComponentFromLastRenderedPage("header:headerMenuItems:5:link");
         assertNull(userServiceLink);
     }
 
@@ -106,9 +107,10 @@ public class RoleAuthorizationTest extends AbstractLogin {
         context.putBean(mock(ContextCurrentService.class));
         context.putBean(mock(BundleContext.class));
         context.putBean(mock(DomainService.class));
+        context.putBean(mock(ProxyFactory.class));
         context.putBean("openengsbVersion", new OpenEngSBVersion());
-        tester.getApplication()
-            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
+        tester.getApplication().addComponentInstantiationListener(
+            new SpringComponentInjector(tester.getApplication(), context, true));
     }
 
 }

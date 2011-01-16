@@ -16,7 +16,6 @@
 
 package org.openengsb.core.workflow.internal;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,16 +38,16 @@ public class RegistrationServiceImpl implements EventRegistrationService {
             "then\n" +
             "RemoteEvent re = new RemoteEvent(event.getType());\n" +
             "%s\n";
-    private static final String OSGI_HELPER_TEMPLATE1 = "osgiHelper.sendRemoteEvent(\"%s\", URI.create(\"%s\"), re);";
+    private static final String OSGI_HELPER_TEMPLATE1 = "osgiHelper.sendRemoteEvent(\"%s\", \"%s\", re);";
     private static final String OSGI_HELPER_TEMPLATE2 =
-        "osgiHelper.sendRemoteEvent(\"%s\", URI.create(\"%s\"), re, \"%s\");";
+        "osgiHelper.sendRemoteEvent(\"%s\", \"%s\", re, \"%s\");";
 
     private Log log = LogFactory.getLog(RegistrationServiceImpl.class);
 
     private RuleManager ruleManager;
 
     @Override
-    public synchronized void registerEvent(RemoteEvent event, String portId, URI returnAddress, String serviceId) {
+    public synchronized void registerEvent(RemoteEvent event, String portId, String returnAddress, String serviceId) {
         String name =
             String.format("Notify %s via %s when %s occurs", returnAddress.toString(), portId, event.getClassName());
         name = getUniqueRuleName(name);
@@ -77,7 +76,7 @@ public class RegistrationServiceImpl implements EventRegistrationService {
     }
 
     @Override
-    public void registerEvent(RemoteEvent reg, String portId, URI returnAddress) {
+    public void registerEvent(RemoteEvent reg, String portId, String returnAddress) {
         registerEvent(reg, portId, returnAddress, null);
     }
 

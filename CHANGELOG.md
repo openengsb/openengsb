@@ -5,7 +5,7 @@ openengsb-1.1.0.RELEASE
   * [e.g.] Fix problem with setting files
 
 ### New Projects
-  * maven-openengsb-plugin
+  * openengsb-maven-plugin
   * openengsb-core-taskbox
   * openengsb-core-usermanagement
   * openengsb-ui-taskbox
@@ -18,6 +18,7 @@ openengsb-1.1.0.RELEASE
   * provision
 
 ### Upgraded Projects
+  * org.apache.karaf/*/2.1.3
   * org.ops4j.pax.exam/pax-exam-*/1.2.3
   * org.apache.wicket/wicket-*/1.4.13
   * org.neodatis.odb/neodatis-odb/1.9.30.687
@@ -35,11 +36,13 @@ openengsb-1.1.0.RELEASE
   * org.apache.karaf/*/2.1.2
   * apache-commons/commons-lang/2.6
 
-### Remvoed External References
+### Removed External References
 
 ### New Features & Changed Behaviour
+  * Downgrade spring-dm to 1.x and switch to blueprint instead of spring
   * Added tooling plugin to execute license-check plugin and assemble scripts via mvn.
   * Added possibility to brand konsole
+  * renamed: maven-openengsb-plugin -> openengsb-maven-plugin
 
 ### Depricated or Removed Features
 

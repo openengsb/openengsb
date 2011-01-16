@@ -32,7 +32,7 @@
   </properties>
 
   <groupId>org.openengsb.connector</groupId>
-  <artifactId>openengsb-connector-memory-auditing</artifactId>
+  <artifactId>openengsb-connector-memoryauditing</artifactId>
   <version>1.1.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Connector :: MemoryAuditing</name>

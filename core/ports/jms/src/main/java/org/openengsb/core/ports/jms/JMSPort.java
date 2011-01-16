@@ -19,7 +19,6 @@ package org.openengsb.core.ports.jms;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.URI;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -31,12 +30,15 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.openengsb.core.common.communication.IncomingPort;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
+import org.openengsb.core.common.communication.MethodReturn.ReturnType;
 import org.openengsb.core.common.communication.OutgoingPort;
 import org.openengsb.core.common.communication.RequestHandler;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
 public class JMSPort implements IncomingPort, OutgoingPort {
+
+    private static final String RECEIVE = "receive";
 
     private JMSTemplateFactory factory;
 
@@ -49,19 +51,23 @@ public class JMSPort implements IncomingPort, OutgoingPort {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public void send(URI destination, MethodCall call) {
+    public void send(String destination, MethodCall call) {
         sendMessage(destination, call);
     }
 
     @Override
-    public MethodReturn sendSync(URI destination, MethodCall call) {
+    public MethodReturn sendSync(String destination, MethodCall call) {
         String currentTimeMillis = String.valueOf(System.currentTimeMillis());
         RequestMapping mapping = new RequestMapping(call);
         mapping.setAnswer(true);
         mapping.setCallId(currentTimeMillis);
         sendMessage(destination, mapping);
         JmsTemplate createJMSTemplate = createJMSTemplate(destination);
+        createJMSTemplate.setReceiveTimeout(3000);
         Object receiveAndConvert = createJMSTemplate.receiveAndConvert(currentTimeMillis);
+        if (receiveAndConvert == null) {
+            throw new RuntimeException("JMS Receive Timeout reached");
+        }
         if (receiveAndConvert instanceof String) {
             return createMethodReturn((String) receiveAndConvert);
         } else {
@@ -72,8 +78,10 @@ public class JMSPort implements IncomingPort, OutgoingPort {
     private MethodReturn createMethodReturn(String receiveAndConvert) {
         try {
             ReturnMapping returnValue = mapper.readValue(receiveAndConvert, ReturnMapping.class);
-            Class<?> classValue = Class.forName(returnValue.getClassName());
-            returnValue.setArg(mapper.convertValue(returnValue.getArg(), classValue));
+            if (returnValue.getType() != ReturnType.Void) {
+                Class<?> classValue = Class.forName(returnValue.getClassName());
+                returnValue.setArg(mapper.convertValue(returnValue.getArg(), classValue));
+            }
             return returnValue;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -82,11 +90,11 @@ public class JMSPort implements IncomingPort, OutgoingPort {
         }
     }
 
-    private JmsTemplate createJMSTemplate(URI destination) {
-        return factory.createJMSTemplate(destination.getSchemeSpecificPart());
+    private JmsTemplate createJMSTemplate(String destination) {
+        return factory.createJMSTemplate(destination);
     }
 
-    private void sendMessage(URI destination, MethodCall call) {
+    private void sendMessage(String destination, MethodCall call) {
         StringWriter result = new StringWriter();
         try {
             new ObjectMapper().writeValue(result, call);
@@ -94,7 +102,7 @@ public class JMSPort implements IncomingPort, OutgoingPort {
             throw new RuntimeException(e);
         }
         JmsTemplate createJMSTemplate = createJMSTemplate(destination);
-        createJMSTemplate.convertAndSend(destination.getFragment(), result.toString());
+        createJMSTemplate.convertAndSend(RECEIVE, result.toString());
     }
 
     public void setRequestHandler(RequestHandler handler) {
@@ -103,13 +111,9 @@ public class JMSPort implements IncomingPort, OutgoingPort {
 
     @Override
     public void start() {
-        simpleMessageListenerContainer = factory.createMessageListenerContainer();
-        simpleMessageListenerContainer.setConnectionFactory(connectionFactory);
-        simpleMessageListenerContainer.setDestinationName("receive");
-        simpleMessageListenerContainer.setMessageListener(new MessageListener() {
+        this.simpleMessageListenerContainer = createListenerContainer(RECEIVE, new MessageListener() {
             @Override
             public void onMessage(Message message) {
-                System.out.println("Message");
                 if (message instanceof TextMessage) {
                     ObjectMapper mapper = new ObjectMapper();
                     TextMessage textMessage = (TextMessage) message;
@@ -136,9 +140,19 @@ public class JMSPort implements IncomingPort, OutgoingPort {
         simpleMessageListenerContainer.start();
     }
 
+    private SimpleMessageListenerContainer createListenerContainer(String destination, MessageListener listener) {
+        SimpleMessageListenerContainer messageListenerContainer = factory.createMessageListenerContainer();
+        messageListenerContainer.setConnectionFactory(connectionFactory);
+        messageListenerContainer.setDestinationName(destination);
+        messageListenerContainer.setMessageListener(listener);
+        return messageListenerContainer;
+    }
+
     @Override
     public void stop() {
-        simpleMessageListenerContainer.stop();
+        if (this.simpleMessageListenerContainer != null) {
+            simpleMessageListenerContainer.stop();
+        }
     }
 
     public void setFactory(JMSTemplateFactory factory) {

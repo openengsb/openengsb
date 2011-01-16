@@ -16,14 +16,12 @@
 
 package org.openengsb.core.common.workflow;
 
-import java.net.URI;
-
 import org.openengsb.core.common.workflow.model.RemoteEvent;
 
 public interface EventRegistrationService {
 
-    void registerEvent(RemoteEvent reg, String string, URI create);
+    void registerEvent(RemoteEvent reg, String string, String returnAddress);
 
-    void registerEvent(RemoteEvent event, String portId, URI returnAddress, String serviceId);
+    void registerEvent(RemoteEvent event, String portId, String returnAddress, String serviceId);
 
 }

@@ -16,6 +16,7 @@
    limitations under the License.
 
 -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <parent>
@@ -50,7 +51,7 @@
   </scm>
 
   <properties>
-  <!-- Plugin Versions -->
+    <!-- Plugin Versions -->
     <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
     <maven.plugin.antrun.version>1.5</maven.plugin.antrun.version>
     <maven.plugin.changes.version>2.3</maven.plugin.changes.version>
@@ -62,7 +63,7 @@
     <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
     <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
 
-      <!-- Component Versions -->
+    <!-- Component Versions -->
     <osgi.version>4.2.0</osgi.version>
 
     <!-- Library Versions -->
@@ -82,7 +83,7 @@
     <portlet.version>1.0.0</portlet.version>
     <jasper.version>6.0.24</jasper.version>
     <jsp.version>6.1.14</jsp.version>
-    <spring.osgi.version>2.0.0.M1</spring.osgi.version>
+    <spring.osgi.version>1.2.1</spring.osgi.version>
     <spring.version>3.0.5.RELEASE</spring.version>
     <spring.security.version>3.0.5.RELEASE</spring.security.version>
     <transaction.version>1.1.0</transaction.version>
@@ -151,7 +152,7 @@
     <jaxb.version>2.2.1</jaxb.version>
     <jaxb.wrapped.version>${jaxb.version}.w1</jaxb.wrapped.version>
     <jaxen.version>1.1.1</jaxen.version>
-    <jgit.version>0.9.3</jgit.version>
+    <jgit.version>0.10.1</jgit.version>
     <jibx.version>1.2.2</jibx.version>
     <joda.version>1.6</joda.version>
     <log4j.version>1.2.14</log4j.version>
@@ -215,7 +216,6 @@
 
   <modules>
     <module>compiled</module>
-    <module>nonosgi</module>
   </modules>
 
   <build>
@@ -284,6 +284,28 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>license-check</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.openengsb.tooling.pluginsuite</groupId>
+            <artifactId>openengsb-maven-plugin</artifactId>
+            <version>${project.version}</version>
+            <executions>
+              <execution>
+                <id>check-headers</id>
+                <inherited>false</inherited>
+                <phase>validate</phase>
+                <goals>
+                  <goal>licenseCheck</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>checkstyle</id>
       <build>

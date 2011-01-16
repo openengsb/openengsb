@@ -39,7 +39,6 @@ import org.openengsb.core.common.workflow.WorkflowException;
 
 @SuppressWarnings("serial")
 public class TaskPanel extends Panel {
-
     private Task task;
 
     private static final Log LOG = LogFactory.getLog(TaskPanel.class);
@@ -74,8 +73,7 @@ public class TaskPanel extends Panel {
                 task.getTaskCreationTimestamp() != null ? task.getTaskCreationTimestamp().toString() : "N/A"));
         form.add(new TextArea("taskdescription", taskModel.bind("description")).setRequired(true));
 
-        form.add(new AjaxButton("submitButton", form)
-        {
+        form.add(new AjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 try {

@@ -24,16 +24,17 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
-import org.openengsb.core.persistence.internal.CustomClassLoader;
 import org.openengsb.core.persistence.internal.NeodatisPersistenceService;
 import org.openengsb.core.workflow.internal.persistence.PersistenceRuleManager;
 import org.openengsb.core.workflow.model.GlobalDeclaration;
 import org.openengsb.core.workflow.model.ImportDeclaration;
+import org.osgi.framework.Bundle;
 
 public final class PersistenceTestUtil {
 
@@ -57,25 +58,13 @@ public final class PersistenceTestUtil {
             createReferencePersistence();
         }
         FileUtils.copyFile(refData, dataFile);
-        CustomClassLoader loader = getCustomClassLoader();
-        NeodatisPersistenceService persistence = new NeodatisPersistenceService("data", loader);
+        NeodatisPersistenceService persistence = new NeodatisPersistenceService("data", Mockito.mock(Bundle.class));
         return persistence;
-    }
-
-    private static CustomClassLoader getCustomClassLoader() {
-        CustomClassLoader loader = new CustomClassLoader(ClassLoader.getSystemClassLoader(), null) {
-            @Override
-            protected Class<?> findClass(String name) throws ClassNotFoundException {
-                return ClassLoader.getSystemClassLoader().loadClass(name);
-            }
-        };
-        return loader;
     }
 
     public static void createReferencePersistence() throws PersistenceException, IOException {
         FileUtils.deleteQuietly(new File("data.ref"));
-        CustomClassLoader loader = getCustomClassLoader();
-        NeodatisPersistenceService persistence = new NeodatisPersistenceService("data.ref", loader);
+        NeodatisPersistenceService persistence = new NeodatisPersistenceService("data.ref", Mockito.mock(Bundle.class));
         persistence.create(new ImportDeclaration(Event.class.getName()));
         readImports(persistence);
         readGlobals(persistence);

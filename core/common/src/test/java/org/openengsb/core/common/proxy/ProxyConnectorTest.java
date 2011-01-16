@@ -1,6 +1,23 @@
+/**
+ * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.openengsb.core.common.proxy;
 
 import static junit.framework.Assert.fail;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Matchers.any;
@@ -8,7 +25,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Proxy;
-import java.net.URI;
 import java.util.HashMap;
 
 import org.junit.Test;
@@ -30,24 +46,24 @@ public class ProxyConnectorTest {
         String test = "test";
 
         proxy.setPortId(id);
-        URI uri = new URI(test);
-        proxy.setDestination(uri);
+        proxy.setDestination(test);
 
         proxy.addMetadata("key", "value");
         ArgumentCaptor<MethodCall> captor = ArgumentCaptor.forClass(MethodCall.class);
         MethodReturn methodReturn = new MethodReturn(ReturnType.Object, id, new HashMap<String, String>());
-        when(router.callSync(Mockito.eq(id), Mockito.eq(uri), captor.capture())).thenReturn(methodReturn);
+        when(router.callSync(Mockito.eq(id), Mockito.eq(test), captor.capture())).thenReturn(methodReturn);
 
-        Object[] args = new Object[]{id, uri};
+        Object[] args = new Object[]{id, test};
         Interface newProxyInstance =
             (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{Interface.class}, proxy);
-        String result = newProxyInstance.test(id, uri);
+        String result = newProxyInstance.test(id, test);
 
         MethodCall value = captor.getValue();
         assertThat(value.getMethodName(), equalTo(test));
         assertThat(value.getArgs(), equalTo(args));
         assertThat(value.getMetaData().size(), equalTo(1));
         assertThat(value.getMetaData().get("key"), equalTo("value"));
+        assertThat(value.getClasses().size(), equalTo(2));
         assertThat(result, equalTo(id));
     }
 
@@ -58,7 +74,7 @@ public class ProxyConnectorTest {
         proxy.setCallRouter(router);
         String message = "Message";
         MethodReturn methodReturn = new MethodReturn(ReturnType.Exception, message, new HashMap<String, String>());
-        when(router.callSync(any(String.class), any(URI.class), any(MethodCall.class))).thenReturn(methodReturn);
+        when(router.callSync(any(String.class), any(String.class), any(MethodCall.class))).thenReturn(methodReturn);
         Interface newProxyInstance =
             (Interface) Proxy.newProxyInstance(Interface.class.getClassLoader(), new Class[]{Interface.class}, proxy);
         try {
@@ -70,8 +86,8 @@ public class ProxyConnectorTest {
     }
 
     private interface Interface {
-        public String test(String id, URI uri);
+        String test(String id, String uri);
 
-        public void testException();
+        void testException();
     }
 }

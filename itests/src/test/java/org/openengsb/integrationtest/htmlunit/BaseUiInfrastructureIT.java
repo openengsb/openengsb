@@ -39,8 +39,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
 
     private WebClient webClient;
-    private String loginPageEntryUrl
-        = "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.web.LoginPage";
+    private String loginPageEntryUrl =
+        "http://localhost:8090/openengsb/?wicket:bookmarkablePage=:org.openengsb.ui.web.LoginPage";
 
     @Before
     public void setUp() throws Exception {
@@ -101,7 +101,7 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         HtmlPage usermanagementPage = indexPage.getAnchorByText("User Management").click();
         assertTrue(usermanagementPage.asText().contains("Create new user"));
 
-        //get user creation form:
+        // get user creation form:
         form = usermanagementPage.getForms().get(1);
         assertNotNull(form);
 
@@ -125,4 +125,3 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
     }
 
 }
-

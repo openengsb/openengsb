@@ -17,19 +17,43 @@
 package org.openengsb.ui.common.wicket.taskbox;
 
 import java.lang.reflect.Constructor;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.openengsb.core.common.BundleContextAware;
+import org.openengsb.core.common.persistence.PersistenceException;
+import org.openengsb.core.common.persistence.PersistenceManager;
+import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.model.Task;
-import org.openengsb.core.taskbox.TaskboxServiceImpl;
+import org.openengsb.core.workflow.taskbox.TaskboxServiceImpl;
 import org.openengsb.ui.common.wicket.taskbox.web.TaskOverviewPanel;
 import org.openengsb.ui.common.wicket.taskbox.web.TaskPanel;
+import org.osgi.framework.BundleContext;
 
-public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTaskboxService {
+public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTaskboxService, BundleContextAware {
+    private Log log = LogFactory.getLog(getClass());
 
-    private Map<String, Class<?>> panelMap = new HashMap<String, Class<?>>();
+    private PersistenceService persistence;
+    private PersistenceManager persistenceManager;
+    private BundleContext bundleContext;
+
+    @Override
+    public void init() {
+        persistence = persistenceManager.getPersistenceForBundle(bundleContext.getBundle());
+    }
+
+    @Override
+    public void setPersistenceManager(PersistenceManager persistenceManager) {
+        this.persistenceManager = persistenceManager;
+    }
+
+    @Override
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
 
     @Override
     public Panel getOverviewPanel() {
@@ -38,24 +62,31 @@ public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTask
 
     @Override
     public Panel getTaskPanel(Task task, String wicketPanelId) throws TaskboxException {
-        if (panelMap.containsKey(task.getTaskType())) {
-            Panel p = null;
-            try {
-                Class<?> panelClass = panelMap.get(task.getTaskType());
-                Constructor<?> panelConstructor = panelClass.getConstructor(String.class, Task.class);
-                p = (Panel) panelConstructor.newInstance(wicketPanelId, task);
-            } catch (Exception e) {
-                throw new TaskboxException(e);
-            }
-            return p;
+        List<PanelRegistryEntry> panels = persistence.query(new PanelRegistryEntry(task.getTaskType()));
+
+        Class<? extends Panel> panelClass;
+        if (panels.size() > 0) {
+            panelClass = panels.get(0).getPanelClass();
         } else {
-            registerTaskPanel(task.getTaskType(), TaskPanel.class);
-            return getTaskPanel(task, wicketPanelId);
+            panelClass = TaskPanel.class;
+        }
+
+        try {
+            Constructor<? extends Panel> panelConstructor = panelClass.getConstructor(String.class, Task.class);
+            return panelConstructor.newInstance(wicketPanelId, task);
+        } catch (Exception e) {
+            throw new TaskboxException(e);
         }
     }
 
     @Override
-    public void registerTaskPanel(String taskType, Class<?> panelClass) {
-        panelMap.put(taskType, panelClass);
+    public void registerTaskPanel(String taskType, Class<? extends Panel> panelClass) throws TaskboxException {
+        try {
+            persistence.delete(new PanelRegistryEntry(taskType));
+            persistence.create(new PanelRegistryEntry(taskType, panelClass));
+            log.info("Successfully registered " + panelClass.getName() + " for task type " + taskType);
+        } catch (PersistenceException e) {
+            throw new TaskboxException(e);
+        }
     }
 }

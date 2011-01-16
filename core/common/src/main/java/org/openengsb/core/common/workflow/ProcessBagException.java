@@ -18,9 +18,7 @@ package org.openengsb.core.common.workflow;
 
 @SuppressWarnings("serial")
 public class ProcessBagException extends WorkflowException {
-
     public ProcessBagException(String message) {
         super(message);
     }
-
 }

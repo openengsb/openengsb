@@ -16,21 +16,18 @@
 
 package org.openengsb.core.common.internal;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.communication.CallRouter;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
 import org.openengsb.core.common.communication.OutgoingPort;
 import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
 public class CallRouterImpl implements CallRouter, BundleContextAware {
 
@@ -41,7 +38,7 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
     private BundleContext bundleContext;
 
     @Override
-    public void call(String portId, final URI destination, final MethodCall call) {
+    public void call(String portId, final String destination, final MethodCall call) {
         final OutgoingPort port = getPort(portId);
         Runnable callHandler = new Runnable() {
             @Override
@@ -53,7 +50,7 @@ public class CallRouterImpl implements CallRouter, BundleContextAware {
     }
 
     @Override
-    public MethodReturn callSync(String portId, final URI destination, final MethodCall call) {
+    public MethodReturn callSync(String portId, final String destination, final MethodCall call) {
         final OutgoingPort port = getPort(portId);
         return port.sendSync(destination, call);
     }

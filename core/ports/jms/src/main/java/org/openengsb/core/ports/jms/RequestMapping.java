@@ -33,7 +33,11 @@ public class RequestMapping extends MethodCall {
 
     @Override
     public final List<String> getClasses() {
-        return classes;
+        if (classes == null) {
+            return super.getClasses();
+        } else {
+            return classes;
+        }
     }
 
     public final void setClasses(List<String> classes) {
@@ -88,5 +92,4 @@ public class RequestMapping extends MethodCall {
         }
         this.setArgs(values.toArray());
     }
-
 }

@@ -16,12 +16,10 @@
 
 package org.openengsb.core.common.communication;
 
-import java.net.URI;
-
 public interface CallRouter {
 
-    void call(String portId, URI destination, MethodCall call);
+    void call(String portId, String destination, MethodCall call);
 
-    MethodReturn callSync(String portId, URI destination, MethodCall call);
+    MethodReturn callSync(String portId, String destination, MethodCall call);
 
 }

@@ -23,17 +23,22 @@ import java.util.UUID;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 
 /**
- * A Task is based on a ProcessBag and used for human interaction. It contains all data needed by a human task i.e.
- * properties that need to be changed by a user. Each time a workflow needs user interaction, such task is created from
- * the workflows ProcessBag.
+ * A Task is based on a {@link ProcessBag} and used for human interaction. It contains all data needed for human
+ * interaction i.e. the properties relevant to the user, a unique identifier and the tasks type used to categorize all
+ * tasks of a certain kind.
+ * 
+ * Each time a workflow needs user interaction, such task is created from the workflows ProcessBag. It is also used to
+ * pass data back to the workflow after user interaction. The old ProcessBag is then replaced with this new one.
  */
 public class Task extends ProcessBag implements Serializable {
-
     public Task() {
         super();
         init();
     }
 
+    /**
+     * Generates an empty task to be used for persistence queries (to get all tasks).
+     */
     public static Task createTaskWithAllValuesSetToNull() {
         Task emptyTask = new Task();
         emptyTask.removeAllProperties();
@@ -51,9 +56,6 @@ public class Task extends ProcessBag implements Serializable {
         addOrReplaceProperty("taskCreationTimestamp", new Date());
     }
 
-    /**
-     * returns the unique ID the Task can be identified with
-     */
     public String getTaskId() {
         return (String) getProperty("taskId");
     }
@@ -62,9 +64,6 @@ public class Task extends ProcessBag implements Serializable {
         addOrReplaceProperty("taskId", id);
     }
 
-    /**
-     * returns the Type of the Task. The Type is used to group similar Tasks together
-     */
     public String getTaskType() {
         return (String) getProperty("taskType");
     }

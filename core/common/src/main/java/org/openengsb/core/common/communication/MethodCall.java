@@ -46,6 +46,9 @@ public class MethodCall {
     }
 
     public Object[] getArgs() {
+        if (this.args == null) {
+            return new Object[0];
+        }
         return this.args;
     }
 
@@ -63,8 +66,14 @@ public class MethodCall {
 
     public List<String> getClasses() {
         List<String> argsClasses = new ArrayList<String>();
-        for (Object object : this.getArgs()) {
-            argsClasses.add(object.getClass().getName());
+        if (this.getArgs() != null) {
+            for (Object object : this.getArgs()) {
+                if (object instanceof List<?>) {
+                    argsClasses.add(List.class.getName());
+                } else {
+                    argsClasses.add(object.getClass().getName());
+                }
+            }
         }
         return argsClasses;
     }

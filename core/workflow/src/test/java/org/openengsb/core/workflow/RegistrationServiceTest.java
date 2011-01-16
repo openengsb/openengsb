@@ -23,7 +23,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -83,7 +82,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
                 executorService.execute(runnable);
                 return null;
             }
-        }).when(outgoingPort).send(any(URI.class), any(MethodCall.class));
+        }).when(outgoingPort).send(any(String.class), any(MethodCall.class));
     }
 
     private RequestHandler getRequestHandler() {
@@ -112,23 +111,23 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     public void testRegisterEvent() throws Exception {
         RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
         reg.setProcessId(3L);
-        regService.registerEvent(reg, "testPort", URI.create("test://localhost"));
+        regService.registerEvent(reg, "testPort", "test://localhost");
         service.processEvent(new TestEvent());
-        verify(outgoingPort).send(eq(URI.create("test://localhost")), any(MethodCall.class));
+        verify(outgoingPort).send(eq("test://localhost"), any(MethodCall.class));
     }
 
     @Test
     public void testRegisterEvent_shouldCreateRule() throws Exception {
         RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
         int oldCount = manager.list(RuleBaseElementType.Rule).size();
-        regService.registerEvent(reg, "testPort", URI.create("test://localhost"));
+        regService.registerEvent(reg, "testPort", "test://localhost");
         assertThat(manager.list(RuleBaseElementType.Rule).size(), is(oldCount + 1));
     }
 
     @Test
     public void testRegisterEvent_shouldProcessRemoteEvent() throws Exception {
         RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
-        regService.registerEvent(reg, "testPort", URI.create("test://localhost"), "workflowService");
+        regService.registerEvent(reg, "testPort", "test://localhost", "workflowService");
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
         service.processEvent(new TestEvent());
@@ -141,12 +140,12 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
     @Test
     public void testRegisterMultipleEvents_shouldOnlyProcessOneEvent() throws Exception {
         RemoteEvent reg = new RemoteEvent(TestEvent.class.getName());
-        regService.registerEvent(reg, "testPort", URI.create("test://localhost"), "workflowService");
+        regService.registerEvent(reg, "testPort", "test://localhost", "workflowService");
         RemoteEvent reg2 = new RemoteEvent(TestEvent.class.getName());
         Map<String, String> nestedEventProperties = new HashMap<String, String>();
         nestedEventProperties.put("testProperty", "testValue");
         reg2.setNestedEventProperties(nestedEventProperties);
-        regService.registerEvent(reg2, "testPort", URI.create("test://localhost"), "workflowService");
+        regService.registerEvent(reg2, "testPort", "test://localhost", "workflowService");
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "react to remote-event"), ruleCode);
         service.processEvent(new TestEvent());

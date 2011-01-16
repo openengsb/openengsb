@@ -46,8 +46,7 @@ public class NeodatisPersistenceManager implements PersistenceManager {
         if (persistenceServices.containsKey(dbFile)) {
             return persistenceServices.get(dbFile);
         }
-        CustomClassLoader classLoader = new CustomClassLoader(getClass().getClassLoader(), bundle);
-        PersistenceService bundleService = new NeodatisPersistenceService(dbFile, classLoader);
+        PersistenceService bundleService = new NeodatisPersistenceService(dbFile, bundle);
         persistenceServices.put(dbFile, bundleService);
         return bundleService;
     }

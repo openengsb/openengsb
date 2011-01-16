@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.ServiceManager;
@@ -30,7 +31,6 @@ import org.openengsb.core.common.service.DomainService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import org.springframework.osgi.context.BundleContextAware;
 
 public class OsgiDomainService implements DomainService, BundleContextAware {
 
@@ -49,8 +49,8 @@ public class OsgiDomainService implements DomainService, BundleContextAware {
         List<ServiceManager> serviceManagers = new ArrayList<ServiceManager>();
         try {
             String filter = "(domain=" + domain.getName() + ")";
-            ServiceReference[] allServiceReferences = bundleContext.getAllServiceReferences(
-                    ServiceManager.class.getName(), filter);
+            ServiceReference[] allServiceReferences =
+                bundleContext.getAllServiceReferences(ServiceManager.class.getName(), filter);
 
             if (allServiceReferences != null) {
                 for (ServiceReference serviceReference : allServiceReferences) {
@@ -68,8 +68,7 @@ public class OsgiDomainService implements DomainService, BundleContextAware {
     public List<ServiceReference> serviceReferencesForDomain(Class<? extends Domain> domain) {
         List<ServiceReference> serviceReferences = new ArrayList<ServiceReference>();
         try {
-            ServiceReference[] allServiceReferences = bundleContext.getAllServiceReferences(domain.getName(),
-                    null);
+            ServiceReference[] allServiceReferences = bundleContext.getAllServiceReferences(domain.getName(), null);
             if (allServiceReferences != null) {
                 serviceReferences = Arrays.asList(allServiceReferences);
             }
