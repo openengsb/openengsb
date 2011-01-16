@@ -34,10 +34,10 @@ import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 
 public class RegistrationServiceImpl implements EventRegistrationService {
 
-    private static final String EVENT_REGISTRATION_RULE_TEMPLATE = "when event : %s\n" +
-            "then\n" +
-            "RemoteEvent re = new RemoteEvent(event.getType());\n" +
-            "%s\n";
+    private static final String EVENT_REGISTRATION_RULE_TEMPLATE = "when event : %s\n"
+            + "then\n"
+            + "RemoteEvent re = new RemoteEvent(event.getType());\n"
+            + "%s\n";
     private static final String OSGI_HELPER_TEMPLATE1 = "osgiHelper.sendRemoteEvent(\"%s\", \"%s\", re);";
     private static final String OSGI_HELPER_TEMPLATE2 =
         "osgiHelper.sendRemoteEvent(\"%s\", \"%s\", re, \"%s\");";
@@ -88,8 +88,6 @@ public class RegistrationServiceImpl implements EventRegistrationService {
         }
         return event.getClassName() + "(" + StringUtils.join(matchers, ",") + ")";
     }
-
-
 
     public void setRuleManager(RuleManager ruleManager) {
         this.ruleManager = ruleManager;

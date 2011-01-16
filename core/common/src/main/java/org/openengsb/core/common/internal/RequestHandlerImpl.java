@@ -18,6 +18,7 @@ package org.openengsb.core.common.internal;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.communication.MethodCall;
 import org.openengsb.core.common.communication.MethodReturn;
