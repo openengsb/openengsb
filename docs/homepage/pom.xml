@@ -123,7 +123,35 @@
   </profiles>
 
   <build>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/site</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <useDefaultDelimiters>false</useDefaultDelimiters>
+          <delimiters>
+            <delimiter>${*}</delimiter>
+          </delimiters>
+        </configuration>
+        <executions>
+          <execution>
+            <id>filter</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -235,6 +263,7 @@
           </dependency>
         </dependencies>
         <configuration>
+          <siteDirectory>${basedir}/target/classes</siteDirectory>
           <encoding>UTF-8</encoding>
           <reportPlugins>
             <plugin>
