@@ -72,7 +72,7 @@ public class CallRouterTest {
 
     @Test
     public void testReceiveAnything() throws Exception {
-        IncomingPort portMock = mock(IncomingPort.class);
+        mock(IncomingPort.class);
         callrouter.stop();
         Thread.sleep(300);
     }
@@ -134,7 +134,7 @@ public class CallRouterTest {
     public void testSendSyncMethodCall_shouldCallPort() throws Exception {
         MethodCall methodCall = new MethodCall("test", new Object[]{42}, getMetadata("foo"));
         callrouter.callSync("jms+json-out", testURI, methodCall);
-        verify(this.outgoingPortMock, times(1)).sendSync(eq(testURI), any(MethodCall.class));
+        verify(outgoingPortMock, times(1)).sendSync(eq(testURI), any(MethodCall.class));
     }
 
     @Test
@@ -230,7 +230,7 @@ public class CallRouterTest {
     private <T> T mockService(BundleContext bundleContext, Class<T> serviceClass, String id)
         throws InvalidSyntaxException {
         final ServiceReference serviceRefMock = mock(ServiceReference.class);
-        ServiceReference[] mockAsArray = new ServiceReference[]{serviceRefMock};
+        ServiceReference[] mockAsArray = new ServiceReference[]{ serviceRefMock };
         when(bundleContext.getServiceReferences(eq(serviceClass.getName()), eq(String.format("(id=%s)", id))))
             .thenReturn(mockAsArray);
         when(bundleContext.getServiceReferences(eq(OpenEngSBService.class.getName()), eq(String.format("(id=%s)", id))))

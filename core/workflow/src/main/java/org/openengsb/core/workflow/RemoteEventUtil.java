@@ -31,6 +31,9 @@ public final class RemoteEventUtil {
 
     private static Log log = LogFactory.getLog(RemoteEventUtil.class);
 
+    private RemoteEventUtil() {
+    }
+
     public static RemoteEvent wrapEvent(Event event) {
         RemoteEvent result = new RemoteEvent(event.getClass().getName());
         PropertyDescriptor[] propertyDescriptors = BeanUtils.getPropertyDescriptors(event.getClass());
@@ -51,9 +54,6 @@ public final class RemoteEventUtil {
         }
 
         return result;
-    }
-
-    private RemoteEventUtil() {
     }
 
 }
