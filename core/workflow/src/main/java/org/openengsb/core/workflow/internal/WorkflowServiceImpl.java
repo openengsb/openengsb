@@ -67,6 +67,7 @@ import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.openengsb.core.common.workflow.model.RemoteEvent;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.OsgiHelper;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
@@ -417,7 +418,16 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
 
     private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
         Collection<String> missingGlobals = findMissingGlobals();
+        log.info("populating globals");
+        if (missingGlobals.contains("osgiHelper")) {
+            OsgiHelper osgiHelper = new OsgiHelper();
+            osgiHelper.setBundleContext(bundleContext);
+            session.setGlobal("osgiHelper", osgiHelper);
+            missingGlobals.remove("osgiHelper");
+        }
         if (!missingGlobals.isEmpty()) {
+            log.info("there are still some globals missing. waiting for: ");
+            log.info(missingGlobals);
             waitForGlobals(missingGlobals);
             if (!missingGlobals.isEmpty()) {
                 throw new WorkflowException("there are unassigned globals, maybe some service is missing "

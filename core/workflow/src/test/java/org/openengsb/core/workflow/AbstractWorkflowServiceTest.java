@@ -65,6 +65,7 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         ContextCurrentService currentContext = mock(ContextCurrentService.class);
         when(currentContext.getThreadLocalContext()).thenReturn("42");
         service.setCurrentContextService(currentContext);
+        service.setBundleContext(bundleContext);
         registerService(service, "workflowService", WorkflowService.class);
         setupDomainsAndOtherServices();
     }
@@ -83,9 +84,6 @@ public abstract class AbstractWorkflowServiceTest extends AbstractOsgiMockServic
         services.putAll(domains);
         myservice = mock(DummyService.class);
         services.put("myservice", myservice);
-        OsgiHelper osgiHelper = new OsgiHelper();
-        osgiHelper.setBundleContext(bundleContext);
-        services.put("osgiHelper", osgiHelper);
         service.setServices(services);
     }
 
