@@ -248,14 +248,6 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>${project.basedir}/target/openengsb-${project.version}.tar.gz</file>
-                  <type>tar.gz</type>
-                </artifact>
-                <artifact>
-                  <file>${project.basedir}/target/openengsb-${project.version}.zip</file>
-                  <type>zip</type>
-                </artifact>
-                <artifact>
                   <file>target/classes/features.xml</file>
                   <type>xml</type>
                   <classifier>features</classifier>
