@@ -24,28 +24,31 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Taskbox</title>
-
-  <para>The Taskbox is a service which can be used when human interaction is required, e.g. by help desk applications.
-  It consists of a core and an UI project. The core is responsible for storing tasks (via persistence), throwing
-  events and starting workflows. Therefore it provides methods which can be called by workflows e.g. assigning a task to
-  different user-roles (such as case worker or developer) or setting a task status.</para>
-
-  <para>It is also the job of the core taskbox to choose the right wicket panel from the UI project to display the right
-  information in a certain situation. A wicket panel contains of a HTML-snippet which can be embedded into another HTML file,
-  an underlying data model some logic like buttonlisteners and session handling.</para>
-
-  <para>So the idea is that an application which wants to use the taskbox only has to define an area in a wicket page where
-  the taskbox is to be bound. The taskbox then takes control and takes user input to fill in the domain object behind
-  which then gets stored again and used to decide how the workflow will go on. Based on the workflow and user interaction
-  the taskbox then decides which panel is to be shown.</para>
-
-  <para>For each main action, the Taskbox throws an event. Examples for that are create, assign, finish or edit events.
-  These events are used to trigger or resume workflows and they can also be recorded by another component which then can
-  reconstruct the flow based on them.</para>
-
-  <para>The 
-    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/taskbox/TaskboxService.java">Taskbox service</link> 
-  provides the methods to be called by workflows and to bind it to a UI. Take a closer look to explore its usage and
-  possibilities.</para>
+  <para>The Taskbox enables you to combine workflows with Human Interactions.</para>
+  <section>
+    <title>Core Functionality</title>
+    <para>All workflows started in the OpenEngSB are supplied with the global variable  
+    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/workflow/model/ProcessBag.java">ProcessBag</link>.
+    Inside the workflow you can populate the ProcessBag with your data. As soon as Human Interaction is needed you have to incorporate
+    the sub-workflow "humantask", which wraps the ProcessBag into a
+    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/taskbox/model/Task.java">Task</link>.
+    You can then query the 
+    <link xlink:href="${github}/core/common/src/main/java/org/openengsb/core/common/taskbox/TaskboxService.java">Taskbox service</link>
+    for open Tasks, and manipulate the data inside of the Task (Not necessarily by Human Interaction). When you are finished, 
+    you again call the Taskbox service and supply the changed Task. The changed data gets extracted and is handed back over to the workflow.
+    </para>
+  </section>
+  <section>
+    <title>UI Functionality</title>
+    <para>The
+    <link xlink:href="${github}/ui/common/wicket/src/main/java/org/openengsb/ui/common/wicket/taskbox/WebTaskboxService.java">Webtaskbox service</link>
+    provides additional UI Features, if you want to integrate the Taskbox-Concept into a wicket Page. You can query the Webtaskbox service for an    
+    <link xlink:href="${github}/ui/common/wicket/src/main/java/org/openengsb/ui/common/wicket/taskbox/web/TaskOverviewPanel.java">Overview Panel</link>
+    that displays all open Tasks. If the default Overview Panel doesn't fit your needs exactly you can develop your own UI-Component using the (Core-)Taskboxservice.
+    If you navigate onto a specific Task the Overview Panel displays a (default)
+    <link xlink:href="${github}/ui/common/wicket/src/main/java/org/openengsb/ui/common/wicket/taskbox/web/TaskPanel.java">Detail Panel</link>
+    populated with the values of the Task, if there is no custom Panel registered for the supplied tasktype.
+    You can develop your own Detail-Panels and register them for a specific Tasktype via the Webtaskbox service.    
+    </para>
+  </section>
 </chapter>
-
