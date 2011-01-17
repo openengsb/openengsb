@@ -20,11 +20,21 @@ import org.openengsb.core.common.Event;
 
 public class TestEvent extends Event {
 
+    private String value;
+
     public TestEvent() {
     }
 
     public TestEvent(long processId) {
         setProcessId(processId);
+    }
+
+    public TestEvent(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return this.value;
     }
 
 }
