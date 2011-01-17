@@ -92,6 +92,7 @@
     <xi:include href="domains/build/domain.xml"/>
     <xi:include href="domains/test/domain.xml"/>
     <xi:include href="domains/deploy/domain.xml"/>
+    <xi:include href="domains/auditing/domain.xml"/>
     <xi:include href="domains/multi-domain/connectors.xml" />
   </part>
 
@@ -108,6 +109,7 @@
     <xi:include href="developer/wrapped.xml" />
     <xi:include href="developer/release.xml" />
     <xi:include href="developer/admin.xml" />
+    <xi:include href="developer/projectroles.xml" />
     <xi:include href="developer/codestyle.xml"/>
     <xi:include href="developer/writing.code.xml"/>
     <xi:include href="developer/recommended.eclipse.plugins.xml"/>

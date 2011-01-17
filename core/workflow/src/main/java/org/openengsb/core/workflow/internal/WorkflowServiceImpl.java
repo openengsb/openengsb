@@ -52,25 +52,30 @@ import org.drools.runtime.process.ProcessInstance;
 import org.drools.runtime.process.WorkflowProcessInstance;
 import org.drools.runtime.rule.FactHandle;
 import org.drools.workflow.instance.node.SubProcessNodeInstance;
+import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.BundleContextAware;
 import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.workflow.RemoteEventProcessor;
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.common.workflow.model.ProcessBag;
+import org.openengsb.core.common.workflow.model.RemoteEvent;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.core.workflow.OsgiHelper;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
-import org.springframework.osgi.context.BundleContextAware;
 
-public class WorkflowServiceImpl implements WorkflowService, BundleContextAware, ServiceListener {
+public class WorkflowServiceImpl extends AbstractOpenEngSBService implements WorkflowService, RemoteEventProcessor,
+        BundleContextAware, ServiceListener {
 
     private static final String START_FLOW_CONSEQUENCE_LINE =
         " )\nthen\n  WorkflowHelper.startFlow(kcontext.getKnowledgeRuntime(), \"%s\");\n";
@@ -110,6 +115,11 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
         }
 
         session.retract(factHandle);
+    }
+
+    @Override
+    public void processRemoteEvent(RemoteEvent event) throws WorkflowException {
+        processEvent(event);
     }
 
     private void signalEventToProcesses(Event event, StatefulKnowledgeSession session, Set<Long> processIds) {
@@ -408,7 +418,16 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
 
     private void populateGlobals(StatefulKnowledgeSession session) throws WorkflowException {
         Collection<String> missingGlobals = findMissingGlobals();
+        log.info("populating globals");
+        if (missingGlobals.contains("osgiHelper")) {
+            OsgiHelper osgiHelper = new OsgiHelper();
+            osgiHelper.setBundleContext(bundleContext);
+            session.setGlobal("osgiHelper", osgiHelper);
+            missingGlobals.remove("osgiHelper");
+        }
         if (!missingGlobals.isEmpty()) {
+            log.info("there are still some globals missing. waiting for: ");
+            log.info(missingGlobals);
             waitForGlobals(missingGlobals);
             if (!missingGlobals.isEmpty()) {
                 throw new WorkflowException("there are unassigned globals, maybe some service is missing "

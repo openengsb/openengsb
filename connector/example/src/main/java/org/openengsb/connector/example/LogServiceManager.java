@@ -25,4 +25,5 @@ public class LogServiceManager extends AbstractServiceManager<ExampleDomain, Log
     public LogServiceManager(LogServiceInstanceFactory factory) {
         super(factory);
     }
+
 }

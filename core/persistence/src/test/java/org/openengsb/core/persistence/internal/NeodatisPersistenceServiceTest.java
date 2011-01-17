@@ -25,6 +25,7 @@ import org.mockito.Mockito;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.openengsb.core.persistence.PersistenceServiceTest;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 public class NeodatisPersistenceServiceTest extends PersistenceServiceTest {
 
@@ -32,8 +33,10 @@ public class NeodatisPersistenceServiceTest extends PersistenceServiceTest {
 
     @Override
     protected PersistenceService createPersitenceService() throws Exception {
-        CustomClassLoader classLoader = new CustomClassLoader(getClass().getClassLoader(), Mockito.mock(Bundle.class));
-        persistence = new NeodatisPersistenceService("target/db.data", classLoader);
+        BundleContext contextMock = Mockito.mock(BundleContext.class);
+        Bundle bundleMock = Mockito.mock(Bundle.class);
+        Mockito.when(bundleMock.getBundleContext()).thenReturn(contextMock);
+        persistence = new NeodatisPersistenceService("target/db.data", bundleMock);
         return persistence;
     }
 

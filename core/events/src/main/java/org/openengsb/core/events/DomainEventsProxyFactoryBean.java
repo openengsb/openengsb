@@ -21,9 +21,8 @@ import java.lang.reflect.Proxy;
 
 import org.openengsb.core.common.DomainEvents;
 import org.openengsb.core.common.workflow.WorkflowService;
-import org.springframework.beans.factory.FactoryBean;
 
-public class DomainEventsProxyFactoryBean implements FactoryBean<DomainEvents> {
+public class DomainEventsProxyFactoryBean {
 
     private Class<? extends DomainEvents> domainEventInterface;
 
@@ -43,21 +42,11 @@ public class DomainEventsProxyFactoryBean implements FactoryBean<DomainEvents> {
         this.domainEventInterface = domainEventInterface;
     }
 
-    @Override
     public DomainEvents getObject() throws Exception {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        Class<?>[] classes = new Class<?>[]{ DomainEvents.class, domainEventInterface };
+        ClassLoader classLoader = domainEventInterface.getClassLoader();
+        Class<?>[] classes = new Class<?>[]{DomainEvents.class, domainEventInterface};
         InvocationHandler handler = makeHandler();
         return (DomainEvents) Proxy.newProxyInstance(classLoader, classes, handler);
     }
 
-    @Override
-    public Class<? extends DomainEvents> getObjectType() {
-        return domainEventInterface;
-    }
-
-    @Override
-    public boolean isSingleton() {
-        return false;
-    }
 }

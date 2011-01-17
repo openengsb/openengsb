@@ -19,10 +19,9 @@ package org.openengsb.core.common.security;
 import java.util.List;
 
 import org.openengsb.core.common.security.model.User;
-import org.springframework.osgi.context.BundleContextAware;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface UserManager extends UserDetailsService, BundleContextAware {
+public interface UserManager extends UserDetailsService {
 
     /**
      * create a user and save it to the persistence,

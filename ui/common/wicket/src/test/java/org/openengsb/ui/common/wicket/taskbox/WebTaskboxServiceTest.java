@@ -22,6 +22,9 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
@@ -41,6 +44,8 @@ public class WebTaskboxServiceTest {
     private WebTaskboxServiceImpl service;
     private PersistenceService persistenceService;
     private WorkflowService workflowService;
+
+    @SuppressWarnings("unused")
     private WicketTester tester;
 
     @Before
@@ -76,12 +81,16 @@ public class WebTaskboxServiceTest {
 
     @Test
     public void testGetRegisteredTaskPanel_shouldReturnCustomPanel() throws PersistenceException {
+        List<PanelRegistryEntry> list = new ArrayList<PanelRegistryEntry>();
+        list.add(new PanelRegistryEntry("Type1", CustomTaskPanel.class));
+
+        when(persistenceService.query(any(PanelRegistryEntry.class))).thenReturn(list);
+
         Task t = new Task();
         t.setTaskType("Type1");
         Panel p = null;
 
         try {
-            service.registerTaskPanel(t.getTaskType(), CustomTaskPanel.class);
             p = service.getTaskPanel(t, "panel");
         } catch (TaskboxException e) {
             e.printStackTrace();

@@ -91,12 +91,12 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     }
 
     @Override
-    public void updateWithoutValidation(String id, Map<String, String> attributes) {
+    public synchronized void updateWithoutValidation(String id, Map<String, String> attributes) {
         updateServiceInstance(id, attributes);
     }
 
     @Override
-    public MultipleAttributeValidationResult update(String id, Map<String, String> attributes) {
+    public synchronized MultipleAttributeValidationResult update(String id, Map<String, String> attributes) {
         MultipleAttributeValidationResult validateService;
         if (isAlreadyCreated(id)) {
             validateService = factory.updateValidation(getService(id), attributes);
@@ -137,7 +137,8 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     private void createService(String id, Map<String, String> attributes) {
         InstanceType instance = factory.createServiceInstance(id, attributes);
         Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
-        final String[] interfaces = new String[]{ getDomainInterface().getName(), Domain.class.getName() };
+        final String[] interfaces =
+            new String[]{getDomainInterface().getName(), Domain.class.getName(), OpenEngSBService.class.getName()};
         ServiceRegistration registration =
             getBundleContext().registerService(interfaces, secureService(instance), serviceProperties);
         addDomainRepresentation(id, instance, registration);
@@ -157,7 +158,9 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             };
         }
         factory.addAdvice(securityInterceptor);
-        return (InstanceType) factory.getProxy();
+        ClassLoader classLoader = getClass().getClassLoader();
+        log.info(String.format("creating aop-proxy using classloader %s (%s)", classLoader, classLoader.getClass()));
+        return (InstanceType) factory.getProxy(classLoader);
     }
 
     @Override
@@ -194,7 +197,7 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     }
 
     @Override
-    public void delete(String id) {
+    public synchronized void delete(String id) {
         synchronized (services) {
             final DomainRepresentation domainRepresentation = services.get(id);
             domainRepresentation.registration.unregister();

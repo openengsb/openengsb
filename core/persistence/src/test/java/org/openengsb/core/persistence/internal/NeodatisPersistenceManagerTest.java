@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.persistence.PersistenceService;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 
 public class NeodatisPersistenceManagerTest {
@@ -39,6 +40,8 @@ public class NeodatisPersistenceManagerTest {
         persistenceManager.setPersistenceRootDir("target/data");
         bundleMock = Mockito.mock(Bundle.class);
         Mockito.when(bundleMock.getSymbolicName()).thenReturn("testBundle");
+        BundleContext bundleContext = Mockito.mock(BundleContext.class);
+        Mockito.when(bundleMock.getBundleContext()).thenReturn(bundleContext);
         Version versionMock = Mockito.mock(Version.class);
         Mockito.when(bundleMock.getVersion()).thenReturn(versionMock);
     }

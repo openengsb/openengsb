@@ -25,7 +25,6 @@ import org.openengsb.domain.auditing.AuditingDomain;
 
 public class MemoryAuditingServiceImpl implements AuditingDomain {
 
-    @SuppressWarnings("unchecked")
     private final List<String> messages = Collections.synchronizedList(new ArrayList<String>());
 
     public MemoryAuditingServiceImpl() {
@@ -33,7 +32,7 @@ public class MemoryAuditingServiceImpl implements AuditingDomain {
 
     @Override
     public AliveState getAliveState() {
-        return AliveState.DISCONNECTED;
+        return AliveState.ONLINE;
     }
 
     @Override

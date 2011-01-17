@@ -25,114 +25,27 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-import org.openengsb.core.common.Domain;
 import org.openengsb.core.common.Event;
-import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.workflow.RuleBaseException;
-import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.model.InternalWorkflowEvent;
 import org.openengsb.core.common.workflow.model.ProcessBag;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 import org.openengsb.core.test.NullEvent3;
-import org.openengsb.core.workflow.internal.WorkflowServiceImpl;
 import org.openengsb.core.workflow.model.TestEvent;
-import org.openengsb.core.workflow.persistence.PersistenceTestUtil;
 
-public class WorkflowServiceTest {
-
-    private WorkflowServiceImpl service;
-    private RuleManager manager;
-    private DummyExampleDomain logService;
-    private DummyNotificationDomain notification;
-    private DummyBuild build;
-    private DummyDeploy deploy;
-    private DummyReport report;
-    private DummyIssue issue;
-    private DummyTest test;
-    private DummyService myservice;
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        cleanup();
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        setupRulemanager();
-        service = new WorkflowServiceImpl();
-        service.setRulemanager(manager);
-        ContextCurrentService currentContext = mock(ContextCurrentService.class);
-        when(currentContext.getThreadLocalContext()).thenReturn("42");
-        service.setCurrentContextService(currentContext);
-        setupDomainsAndOtherServices();
-    }
-
-    private void setupRulemanager() throws Exception {
-        manager = PersistenceTestUtil.getRuleManager();
-        RuleUtil.addHello1Rule(manager);
-        RuleUtil.addTestFlows(manager);
-        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "logtest"),
-            "when\n Event ( name == \"test-context\")\n then \n example.doSomething(\"42\");");
-    }
-
-    private void setupDomainsAndOtherServices() {
-        Map<String, Object> services = new HashMap<String, Object>();
-        Map<String, Domain> domains = createDomainMocks();
-        services.putAll(domains);
-        myservice = mock(DummyService.class);
-        services.put("myservice", myservice);
-        service.setServices(services);
-    }
-
-    private Map<String, Domain> createDomainMocks() {
-        Map<String, Domain> domains = new HashMap<String, Domain>();
-        logService = mock(DummyExampleDomain.class);
-        domains.put("example", logService);
-        notification = mock(DummyNotificationDomain.class);
-        domains.put("notification", notification);
-        build = mock(DummyBuild.class);
-        domains.put("build", build);
-        deploy = mock(DummyDeploy.class);
-        domains.put("deploy", deploy);
-        report = mock(DummyReport.class);
-        domains.put("report", report);
-        issue = mock(DummyIssue.class);
-        domains.put("issue", issue);
-        test = mock(DummyTest.class);
-        domains.put("test", test);
-        return domains;
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        cleanup();
-    }
-
-    private static void cleanup() {
-        File ruleDir = new File("data");
-        while (ruleDir.exists()) {
-            FileUtils.deleteQuietly(ruleDir);
-        }
-    }
+public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testProcessEvent() throws Exception {

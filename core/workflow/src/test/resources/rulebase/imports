@@ -8,3 +8,5 @@ org.openengsb.core.workflow.DummyNotificationDomain
 org.openengsb.core.common.workflow.model.Value
 org.openengsb.core.workflow.WorkflowHelper
 org.openengsb.core.common.workflow.model.ProcessBag
+java.net.URI
+org.openengsb.core.common.workflow.model.RemoteEvent
