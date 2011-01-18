@@ -28,6 +28,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -44,6 +45,7 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.time.Duration;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
@@ -148,12 +150,14 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         } catch (Exception e) {
             log.error("Audits cannot be loaded", e);
         }
-        add(new ListView<String>("audits", audits) {
+        ListView<String> listView = new ListView<String>("audits", audits) {
             @Override
             protected void populateItem(ListItem<String> item) {
                 item.add(new Label("audit", item.getModelObject()));
             }
-        });
+        };
+        add(listView);
+        listView.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
         add(new RuleEditorPanel("ruleEditor", this));
     }
 
