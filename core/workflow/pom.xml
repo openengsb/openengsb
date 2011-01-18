@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -16,7 +16,7 @@
    limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.openengsb.core</groupId>
@@ -57,12 +57,10 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
-      <version>${drools.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.janino</groupId>
       <artifactId>com.springsource.org.codehaus.janino</artifactId>
-      <version>${janino.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -70,26 +68,22 @@
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-test</artifactId>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>${guava.version}</version>
       <scope>provided</scope>
     </dependency>
     
     <dependency>
       <groupId>org.neodatis.odb</groupId>
       <artifactId>neodatis-odb</artifactId>
-      <version>${odb.version}</version>
       <optional>true</optional>
     </dependency>
   </dependencies>

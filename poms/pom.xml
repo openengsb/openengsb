@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -17,7 +17,7 @@
 
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
 
   <parent>
     <groupId>org.openengsb</groupId>
@@ -217,6 +217,88 @@
   <modules>
     <module>compiled</module>
   </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency><groupId>com.google.guava</groupId><artifactId>guava</artifactId><version>${guava.version}</version></dependency>
+      <dependency><groupId>commons-collections</groupId><artifactId>commons-collections</artifactId><version>${commons.collection.version}</version></dependency>
+      <dependency><groupId>commons-io</groupId><artifactId>commons-io</artifactId><version>${commons.io.version}</version></dependency>
+      <dependency><groupId>commons-lang</groupId><artifactId>commons-lang</artifactId><version>${commons.lang.version}</version></dependency>
+      <dependency><groupId>junit</groupId><artifactId>junit</artifactId><version>${junit.version}</version></dependency>
+      <dependency><groupId>log4j</groupId><artifactId>log4j</artifactId><version>${log4j.version}</version></dependency>
+      <dependency><groupId>org.apache.activemq</groupId><artifactId>activemq-core</artifactId><version>${activemq.version}</version></dependency>
+      <dependency><groupId>org.apache.aries.blueprint</groupId><artifactId>org.apache.aries.blueprint</artifactId><version>${aries.blueprint.version}</version></dependency>
+      <dependency><groupId>org.apache.commons</groupId><artifactId>commons-compress</artifactId><version>${commons.compress.version}</version></dependency>
+      <dependency><groupId>org.apache.felix</groupId><artifactId>org.apache.felix.bundlerepository</artifactId><version>1.2.1</version></dependency>
+      <dependency><groupId>org.apache.felix</groupId><artifactId>org.apache.felix.framework</artifactId><version>1.0.0</version></dependency>
+      <dependency><groupId>org.apache.felix</groupId><artifactId>org.apache.felix.main</artifactId><version>3.0.1</version></dependency>
+      <dependency><groupId>org.apache.geronimo.specs</groupId><artifactId>geronimo-servlet_2.5_spec</artifactId><version>${geronimo.servlet.version}</version></dependency>
+      <dependency><groupId>org.apache.karaf</groupId><artifactId>apache-karaf</artifactId><version>${karaf.version}</version><type>tar.gz</type></dependency>
+      <dependency><groupId>org.apache.karaf</groupId><artifactId>apache-karaf</artifactId><version>${karaf.version}</version><type>xml</type><classifier>features</classifier></dependency>
+      <dependency><groupId>org.apache.karaf</groupId><artifactId>apache-karaf</artifactId><version>${karaf.version}</version><type>zip</type></dependency>
+      <dependency><groupId>org.apache.karaf.tooling</groupId><artifactId>org.apache.karaf.tooling.testing</artifactId><version>${karaf.version}</version><scope>test</scope></dependency>
+      <dependency><groupId>org.apache.maven</groupId><artifactId>maven-core</artifactId><version>${mvn.core.version}</version></dependency>
+      <dependency><groupId>org.apache.maven</groupId><artifactId>maven-plugin-api</artifactId><version>${mvn.pluginapi.version}</version></dependency>
+      <dependency><groupId>org.apache.servicemix.bundles</groupId><artifactId>org.apache.servicemix.bundles.javax.mail</artifactId><version>${javax.mail.version}</version></dependency>
+      <dependency><groupId>org.apache.servicemix</groupId><artifactId>servicemix-core</artifactId><scope>test</scope><version></version></dependency>
+      <dependency><groupId>org.apache.wicket</groupId><artifactId>wicket</artifactId><version>${wicket.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.apache.wicket</groupId><artifactId>wicket-auth-roles</artifactId><version>${wicket.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.apache.wicket</groupId><artifactId>wicket-datetime</artifactId><version>${wicket.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.apache.wicket</groupId><artifactId>wicket-devutils</artifactId><version>${wicket.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.apache.wicket</groupId><artifactId>wicket-extensions</artifactId><version>${wicket.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.apache.wicket</groupId><artifactId>wicket-ioc</artifactId><version>${wicket.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.apache.wicket</groupId><artifactId>wicket-jmx</artifactId><version>${wicket.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.apache.wicket</groupId><artifactId>wicket-spring</artifactId><version>${wicket.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.apache.wicket</groupId><artifactId>wicket-velocity</artifactId><version>${wicket.version}</version><optional>true</optional></dependency>
+      <dependency><groupId>org.apache.xmlrpc</groupId><artifactId>xmlrpc-client</artifactId><version>${apache.xmlrpc.version}</version><scope>compile</scope></dependency>
+      <dependency><groupId>org.codehaus.jackson</groupId><artifactId>jackson-mapper-asl</artifactId><version>${jackson.version}</version></dependency>
+      <dependency><groupId>org.codehaus.janino</groupId><artifactId>com.springsource.org.codehaus.janino</artifactId><version>${janino.version}</version><scope>test</scope></dependency>
+      <dependency><groupId>org.drools</groupId><artifactId>drools-api</artifactId><version>${drools.version}</version></dependency>
+      <dependency><groupId>org.drools</groupId><artifactId>drools-compiler</artifactId><version>${drools.version}</version></dependency>
+      <dependency><groupId>org.eclipse.jgit</groupId><artifactId>org.eclipse.jgit</artifactId><version>${jgit.version}</version></dependency>
+      <dependency><groupId>org.hamcrest</groupId><artifactId>hamcrest-all</artifactId><version>${hamcrest.version}</version><scope>test</scope></dependency>
+      <dependency><groupId>org.mockito</groupId><artifactId>mockito-all</artifactId><version>${mockito.version}</version></dependency>
+      <dependency><groupId>org.neodatis.odb</groupId><artifactId>neodatis-odb</artifactId><version>${odb.version}</version></dependency>
+      <dependency><groupId>org.openengsb.connector</groupId><artifactId>openengsb-connector-example</artifactId><version>${project.version}</version><scope>test</scope></dependency>
+      <dependency><groupId>org.openengsb.connector</groupId><artifactId>openengsb-connector-memory-auditing</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.openengsb.connector</groupId><artifactId>openengsb-connector-memoryauditing</artifactId><version>${project.version}</version><scope>test</scope></dependency>
+      <dependency><groupId>org.openengsb.core</groupId><artifactId>openengsb-core-common</artifactId><version>${project.version}</version></dependency>
+      <dependency><groupId>org.openengsb.core</groupId><artifactId>openengsb-core-events</artifactId><version>${project.version}</version></dependency>
+      <dependency><groupId>org.openengsb.core</groupId><artifactId>openengsb-core-persistence</artifactId><version>${project.version}</version></dependency>
+      <dependency><groupId>org.openengsb.core</groupId><artifactId>openengsb-core-security</artifactId><version>${project.version}</version></dependency>
+      <dependency><groupId>org.openengsb.core</groupId><artifactId>openengsb-core-test</artifactId><version>${project.version}</version></dependency>
+      <dependency><groupId>org.openengsb.core</groupId><artifactId>openengsb-core-workflow</artifactId><version>${project.version}</version></dependency>
+      <dependency><groupId>org.openengsb.domain</groupId><artifactId>openengsb-domain-auditing</artifactId><version>${project.version}</version></dependency>
+      <dependency><groupId>org.openengsb.domain</groupId><artifactId>openengsb-domain-build</artifactId><version>${project.version}</version></dependency>
+      <dependency><groupId>org.openengsb.domain</groupId><artifactId>openengsb-domain-deploy</artifactId><version>${project.version}</version></dependency>
+      <dependency><groupId>org.openengsb.domain</groupId><artifactId>openengsb-domain-example</artifactId><version>${project.version}</version></dependency>
+      <dependency><groupId>org.openengsb.domain</groupId><artifactId>openengsb-domain-issue</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.openengsb.domain</groupId><artifactId>openengsb-domain-notification</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.openengsb.domain</groupId><artifactId>openengsb-domain-report</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.openengsb.domain</groupId><artifactId>openengsb-domain-scm</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.openengsb.domain</groupId><artifactId>openengsb-domain-test</artifactId><version>${project.version}</version></dependency>
+      <dependency><groupId>org.openengsb</groupId><artifactId>openengsb</artifactId><version>${project.version}</version><type>xml</type><classifier>features</classifier></dependency>
+      <dependency><groupId>org.openengsb</groupId><artifactId>openengsb-domains-toolabstraction-twitter</artifactId><version>1.0.0-SNAPSHOT</version></dependency>
+      <dependency><groupId>org.openengsb.ui.common</groupId><artifactId>openengsb-ui-common-wicket</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.openengsb.wrapped</groupId><artifactId>net.sourceforge.htmlunit-all</artifactId><version>${htmlunit.wrapped.version}</version><scope>test</scope></dependency>
+      <dependency><groupId>org.ops4j.pax.exam</groupId><artifactId>pax-exam</artifactId><version>${exam.version}</version><scope>test</scope></dependency>
+      <dependency><groupId>org.ops4j.pax.exam</groupId><artifactId>pax-exam-container-default</artifactId><version>${exam.version}</version><scope>test</scope></dependency>
+      <dependency><groupId>org.ops4j.pax.exam</groupId><artifactId>pax-exam-junit</artifactId><version>${exam.version}</version><scope>test</scope></dependency>
+      <dependency><groupId>org.ops4j.pax.runner</groupId><artifactId>pax-runner-platform</artifactId><version>${paxrunner.version}</version></dependency>
+      <dependency><groupId>org.osgi</groupId><artifactId>org.osgi.compendium</artifactId><version>${osgi.version}</version></dependency>
+      <dependency><groupId>org.osgi</groupId><artifactId>org.osgi.core</artifactId><version>${osgi.version}</version></dependency>
+      <dependency><groupId>org.slf4j</groupId><artifactId>jcl-over-slf4j</artifactId><version>${slf4j.version}</version></dependency>
+      <dependency><groupId>org.slf4j</groupId><artifactId>slf4j-api</artifactId><version>${slf4j.version}</version></dependency>
+      <dependency><groupId>org.slf4j</groupId><artifactId>slf4j-log4j12</artifactId><version>${slf4j.version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-context</artifactId><version>${spring.version}</version></dependency>
+      <dependency><groupId>org.springframework</groupId><artifactId>spring-jms</artifactId><version>${spring.version}</version><scope>provided</scope></dependency>
+      <dependency><groupId>org.springframework.osgi</groupId><artifactId>spring-osgi-core</artifactId><version>${spring.osgi.version}</version><exclusions><exclusion><groupId>org.springframework</groupId><artifactId>org.springframework.aop</artifactId></exclusion><exclusion><groupId>org.springframework</groupId><artifactId>org.springframework.beans</artifactId></exclusion><exclusion><groupId>org.springframework</groupId><artifactId>org.springframework.asm</artifactId></exclusion><exclusion><groupId>org.springframework</groupId><artifactId>org.springframework.context</artifactId></exclusion><exclusion><groupId>org.springframework</groupId><artifactId>org.springframework.expression</artifactId></exclusion><exclusion><groupId>org.springframework</groupId><artifactId>org.springframework.core</artifactId></exclusion></exclusions></dependency>
+      <dependency><groupId>org.springframework.security</groupId><artifactId>spring-security-config</artifactId><version>${spring.security.version}</version></dependency>
+      <dependency><groupId>org.springframework.security</groupId><artifactId>spring-security-core</artifactId><version>${spring.security.version}</version><exclusions><exclusion><groupId>org.springframework</groupId><artifactId>spring-core</artifactId></exclusion><exclusion><groupId>org.springframework</groupId><artifactId>spring-context</artifactId></exclusion><exclusion><groupId>org.springframework</groupId><artifactId>spring-aop</artifactId></exclusion><exclusion><groupId>org.springframework</groupId><artifactId>spring-support</artifactId></exclusion><exclusion><groupId>commons-logging</groupId><artifactId>commons-logging</artifactId></exclusion></exclusions></dependency>
+      <dependency><groupId>org.springframework.security</groupId><artifactId>spring-security-openid</artifactId><version>${spring.security.version}</version><scope>compile</scope></dependency>
+      <dependency><groupId>org.springframework.security</groupId><artifactId>spring-security-web</artifactId><version>${spring.security.version}</version></dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <finalName>${project.artifactId}-${project.version}</finalName>
