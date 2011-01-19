@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.openengsb.core.common.ContextHolder;
 import org.openengsb.core.common.context.Context;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.context.ContextPath;
 import org.openengsb.core.common.context.ContextService;
 import org.openengsb.core.common.context.ContextStorageBean;

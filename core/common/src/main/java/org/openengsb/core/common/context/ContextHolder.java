@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.common;
+package org.openengsb.core.common.context;
 
 /**
  * Singleton Class, that provides access to thread-local context-attributes
