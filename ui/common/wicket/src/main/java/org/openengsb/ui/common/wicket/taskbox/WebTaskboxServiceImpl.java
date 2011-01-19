@@ -82,7 +82,7 @@ public class WebTaskboxServiceImpl extends TaskboxServiceImpl implements WebTask
     @Override
     public void registerTaskPanel(String taskType, Class<? extends Panel> panelClass) throws TaskboxException {
         try {
-            if(persistence.query(new PanelRegistryEntry(taskType)).size()>0){
+            if (persistence.query(new PanelRegistryEntry(taskType)).size() > 0) {
                 persistence.delete(new PanelRegistryEntry(taskType));
             }
             persistence.create(new PanelRegistryEntry(taskType, panelClass));

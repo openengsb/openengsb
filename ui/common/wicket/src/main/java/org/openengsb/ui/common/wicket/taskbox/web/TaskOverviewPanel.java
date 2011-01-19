@@ -18,6 +18,8 @@ package org.openengsb.ui.common.wicket.taskbox.web;
 
 import java.util.ArrayList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -32,7 +34,6 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -43,10 +44,12 @@ import org.openengsb.ui.common.wicket.taskbox.WebTaskboxService;
 @SuppressWarnings("serial")
 public class TaskOverviewPanel extends Panel {
 
-    TaskDataProvider dataProvider = new TaskDataProvider();
+    public static final Log LOG = LogFactory.getLog(TaskOverviewPanel.class);
+
+    private TaskDataProvider dataProvider = new TaskDataProvider();
     private Panel panel = new EmptyPanel("taskPanel");
-    
-    @SpringBean(name="webtaskboxService")
+
+    @SpringBean(name = "webtaskboxService")
     private WebTaskboxService webtaskboxService;
 
     public TaskOverviewPanel(String id) {
@@ -59,8 +62,8 @@ public class TaskOverviewPanel extends Panel {
                 return new GoAndClearFilter(componentId, form);
             }
 
-            @SuppressWarnings("unchecked")
             @Override
+            @SuppressWarnings("rawtypes")
             public void populateItem(Item cellItem, String componentId, IModel rowModel) {
                 final Task task = (Task) rowModel.getObject();
                 cellItem.add(new UserActionsPanel(componentId, task));
@@ -81,16 +84,16 @@ public class TaskOverviewPanel extends Panel {
         form.add(dataTable);
         add(form);
         add(panel);
-        
+
     }
-    
+
     private class UserActionsPanel extends Panel {
 
         private Task task;
-        
+
         public UserActionsPanel(String id, Task t) {
             super(id);
-            task=t;
+            task = t;
             Link<Task> link = new Link<Task>("taskLink") {
                 @Override
                 public void onClick() {
@@ -100,12 +103,11 @@ public class TaskOverviewPanel extends Panel {
                         panel.replaceWith(newPanel);
                         panel = newPanel;
                     } catch (TaskboxException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        LOG.error("Taskbox panel could not be started", e);
                     }
                 }
             };
-            link.add(new Label("linkLabel", (task.getName()+"("+task.getTaskType()+")")));
+            link.add(new Label("linkLabel", task.getName() + "(" + task.getTaskType() + ")"));
             add(link);
         }
 
