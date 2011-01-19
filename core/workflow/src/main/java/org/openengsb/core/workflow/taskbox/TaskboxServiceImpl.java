@@ -88,8 +88,10 @@ public class TaskboxServiceImpl implements TaskboxService, BundleContextAware {
     @Override
     public void finishTask(Task task) throws WorkflowException {
         InternalWorkflowEvent finishedEvent = new InternalWorkflowEvent("TaskFinished", task);
+        Task t = Task.createTaskWithAllValuesSetToNull();
+        t.setTaskId(task.getTaskId());
         try {
-            persistence.delete(task);
+            persistence.delete(t);
         } catch (PersistenceException e) {
             throw new WorkflowException(e);
         }

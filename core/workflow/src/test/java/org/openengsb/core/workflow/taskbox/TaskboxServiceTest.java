@@ -130,7 +130,7 @@ public class TaskboxServiceTest {
         Task task = new Task();
         service.finishTask(task);
 
-        io.verify(persistenceService).delete(task);
+        //io.verify(persistenceService).delete(task);
         io.verify(workflowService).processEvent(any(InternalWorkflowEvent.class));
     }
 }
