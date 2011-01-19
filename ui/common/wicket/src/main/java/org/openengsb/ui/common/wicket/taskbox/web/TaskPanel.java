@@ -79,8 +79,7 @@ public class TaskPanel extends Panel {
                 try {
                     service.finishTask(task);
                 } catch (WorkflowException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LOG.error("Cant finish task", e);
                 }
             }
 
