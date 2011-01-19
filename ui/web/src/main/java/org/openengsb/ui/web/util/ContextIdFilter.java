@@ -43,31 +43,31 @@ public class ContextIdFilter implements Filter {
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-        log.debug("checking if filter was already applied");
         if (request.getAttribute(FILTER_APPLIED) != null) {
-            // ensure that filter is only applied once per request
-            log.debug("it was, so moving on");
+            log.debug("filter was already applied, moving on to next Filter in chain");
             chain.doFilter(request, response);
             return;
         }
         request.setAttribute(FILTER_APPLIED, Boolean.TRUE);
-        log.info("doing the context filter");
+        log.debug("applying Context-id-filter");
         HttpSession httpSession = request.getSession();
 
         String contextBeforeChainExecution = (String) httpSession.getAttribute(CONTEXT_ID_ATTRIBUTE_NAME);
-        log.info("retrieved contextId " + contextBeforeChainExecution + " from session");
         try {
-            String oldContext = ContextHolder.get().getCurrentContextId();
-            log.info("old Context was " + oldContext);
-            log.info("now setting " + contextBeforeChainExecution + "as threadlocal context");
+            if (log.isDebugEnabled()) {
+                String oldContext = ContextHolder.get().getCurrentContextId();
+                if (oldContext == null || !oldContext.equals(contextBeforeChainExecution)) {
+                    log.debug(String.format("correcting threadlocal context-id from %s to %s in thread %s", oldContext,
+                        contextBeforeChainExecution, Thread.currentThread().getId()));
+                }
+            }
             ContextHolder.get().setCurrentContextId(contextBeforeChainExecution);
-            // SecurityContextHolder.setContext(contextBeforeChainExecution);
             chain.doFilter(req, res);
         } finally {
-            log.info("request done; extracting threadlocal context... " + ContextHolder.get().getCurrentContextId());
-            String contextAfterChainExecution = ContextHolder.get().getCurrentContextId();
+            String currentContextId = ContextHolder.get().getCurrentContextId();
+            log.debug(String.format("request done; storing threadlocal context  to session (%s)", currentContextId));
+            String contextAfterChainExecution = currentContextId;
             // leave it lying around in the threadlocal for now
-            log.info("storing it into the session... done");
             httpSession.setAttribute(CONTEXT_ID_ATTRIBUTE_NAME, contextAfterChainExecution);
             request.removeAttribute(FILTER_APPLIED);
         }
