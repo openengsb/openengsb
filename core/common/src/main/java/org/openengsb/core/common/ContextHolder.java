@@ -16,20 +16,32 @@
 
 package org.openengsb.core.common;
 
+/**
+ * Singleton Class, that provides access to thread-local context-attributes
+ */
 public class ContextHolder {
 
     private static ContextHolder instance = new ContextHolder();
 
     private ThreadLocal<String> currentContextId = new InheritableThreadLocal<String>();
 
+    /**
+     * returns the singleton instance
+     */
     public static ContextHolder get() {
         return instance;
     }
 
+    /**
+     * set the current Threads context Id (it is inherited by threads spawned by the current process)
+     */
     public void setCurrentContextId(String value) {
         currentContextId.set(value);
     }
 
+    /**
+     * get the current Threads context id
+     */
     public String getCurrentContextId() {
         return currentContextId.get();
     }
