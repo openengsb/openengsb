@@ -43,6 +43,7 @@ openengsb-1.1.0.RELEASE
   * Added tooling plugin to execute license-check plugin and assemble scripts via mvn.
   * Added possibility to brand konsole
   * renamed: maven-openengsb-plugin -> openengsb-maven-plugin
+  * OpenEngSB dependencies could be used now by scope import of openengsb poms/pom.xml
 
 ### Depricated or Removed Features
 
