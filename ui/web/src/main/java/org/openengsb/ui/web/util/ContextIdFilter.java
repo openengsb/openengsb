@@ -18,7 +18,9 @@ package org.openengsb.ui.web.util;
 
 import java.io.IOException;
 
+import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -30,9 +32,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.ContextHolder;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.springframework.web.filter.GenericFilterBean;
 
-public class ContextIdFilter extends GenericFilterBean {
+public class ContextIdFilter implements Filter {
 
     private Log log = LogFactory.getLog(ContextIdFilter.class);
 
@@ -77,5 +78,12 @@ public class ContextIdFilter extends GenericFilterBean {
 
     public void setContextService(ContextCurrentService contextService) {
         this.contextService = contextService;
+    }
+    @Override
+    public void destroy() {
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
     }
 }
