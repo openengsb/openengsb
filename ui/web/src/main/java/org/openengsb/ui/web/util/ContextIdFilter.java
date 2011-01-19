@@ -30,7 +30,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.ContextHolder;
+import org.openengsb.core.common.context.ContextHolder;
 
 public class ContextIdFilter implements Filter {
 

@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import org.junit.Test;
-import org.openengsb.core.common.ContextHolder;
+import org.openengsb.core.common.context.ContextHolder;
 
 public class ContextHolderTest {
 

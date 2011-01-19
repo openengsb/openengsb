@@ -1,3 +1,9 @@
+openengsb-1.0.4.RELEASE
+### New Features & Changed Behaviour
+  * added ContextHolder to access the Threadlocal context-id statically
+
+openengsb-1.0.3.RELEASE
+
 openengsb-1.0.2.RELEASE
 
 ### Bug fixes
