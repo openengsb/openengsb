@@ -19,7 +19,7 @@ package org.openengsb.core.common.context;
 /**
  * Singleton Class, that provides access to thread-local context-attributes
  */
-public class ContextHolder {
+public final class ContextHolder {
 
     private static ContextHolder instance = new ContextHolder();
 
