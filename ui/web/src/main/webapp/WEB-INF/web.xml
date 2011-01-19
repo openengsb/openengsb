@@ -25,7 +25,8 @@
 
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath:/WEB-INF/application-context.xml classpath:/WEB-INF/osgi-context.xml classpath:/WEB-INF/security-context.xml</param-value>
+    <param-value>classpath:/WEB-INF/application-context.xml classpath:/WEB-INF/osgi-context.xml
+      classpath:/WEB-INF/security-context.xml</param-value>
   </context-param>
 
   <context-param>
@@ -74,7 +75,7 @@
   <filter-mapping>
     <filter-name>GZipFilter</filter-name>
     <url-pattern>/*</url-pattern>
-  </filter-mapping> 
+  </filter-mapping>
 
   <filter>
     <filter-name>wicket</filter-name>
@@ -89,7 +90,7 @@
     <filter-name>wicket</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-  
+
   <session-config>
     <session-timeout>60</session-timeout>
   </session-config>
