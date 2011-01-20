@@ -10,9 +10,13 @@
           <version>1.8.0</version>
           <configuration>
             <excludes>
-              <exclude>**/main/resources/licenseCheck/header.txt</exclude>
-              <exclude>**/main/resources/licenseCheck/licenseCheckConfig.xml</exclude>
+              <!-- openengs-maven-plugin test resources -->
+              <exclude>**/main/resources/licenseMojo/header.txt</exclude>
+              <exclude>**/main/resources/licenseMojo/licenseCheckConfig.xml</exclude>
+              <exclude>**/main/resources/licenseMojo/licenseFormatConfig.xml</exclude>
               <eclude>**/test/resources/licenseCheck/fail/src/main/java/org/openengsb/licensecheck/App.java</eclude>
+              <exclude>**/test/resources/licenseFormat/backup/Without_Header.java</exclude>
+              <!-- #################################### -->
               <exclude>tmpPom.xml</exclude>
               <exclude>etc/eclipse/checkstyle.xml</exclude>
               <exclude>license.txt</exclude>
