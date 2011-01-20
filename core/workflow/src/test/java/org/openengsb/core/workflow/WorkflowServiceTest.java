@@ -278,7 +278,7 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         assertThat((String) processBag.getProperty("test"), is(String.valueOf(id)));
     }
 
-@Test
+    @Test
     public void processEventsConcurrently_shouldProcessBothEvents() throws Exception {
         manager.addImport(TestEvent.class.getName());
         manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "concurrent test"), "when\n"
