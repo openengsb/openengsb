@@ -18,10 +18,11 @@ package org.openengsb.core.common;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
+
 import org.junit.Test;
 import org.openengsb.core.common.context.ContextHolder;
 

@@ -39,8 +39,8 @@ public class ContextIdFilter implements Filter {
     static final String FILTER_APPLIED = "__openengsb_context_filter_applied";
     static final String CONTEXT_ID_ATTRIBUTE_NAME = "__openengsb_context_id";
 
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException,
+        ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
         if (request.getAttribute(FILTER_APPLIED) != null) {
