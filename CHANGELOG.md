@@ -1,8 +1,19 @@
 openengsb-1.0.4.RELEASE
+
+### Bug fixes
+  * Make sure the context-id is correctly propagated to spawned child-threads
+  * Make sure the context-id remains consistent in Webapp-sessions
+
 ### New Features & Changed Behaviour
   * added ContextHolder to access the Threadlocal context-id statically
+  * git-connector now creates an empty working directory if it does not exist.
+  * Added a Filter that makes sure the threadlocal context-id is properly maintained in webapp-session (client project need to update)
 
 openengsb-1.0.3.RELEASE
+
+### Bug fixes
+  * fix neodatis-dependency
+  * make sure "flowStartedEvent" is triggered when flow is started by an Event
 
 openengsb-1.0.2.RELEASE
 
