@@ -1,3 +1,8 @@
+openengsb-1.0.4.RELEASE
+
+### Bug fixes
+  * fix race condition when processing two events simultaneously
+
 openengsb-1.0.2.RELEASE
 
 ### Bug fixes
