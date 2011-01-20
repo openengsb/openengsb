@@ -113,7 +113,7 @@ public class ProjectTest {
     }
 
     @Test
-    public void test_label_present() {
+    public void testIfLabelIsPresent() {
         String labelString =
             tester.getApplication().getResourceSettings().getLocalizer().getString("project.choice.label",
                 basePage.get("header"));
@@ -121,13 +121,13 @@ public class ProjectTest {
     }
 
     @Test
-    public void test_default_context_initialization() {
+    public void testInitDefaultContext_shouldSetFooContext() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
         assertThat("foo", is(OpenEngSBWebSession.get().getThreadContextId()));
     }
 
     @Test
-    public void test_context_change() {
+    public void testChangeContextDropdown_shouldChangeThreadlocal() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
         assertThat("foo", is(OpenEngSBWebSession.get().getThreadContextId()));
 
@@ -144,7 +144,7 @@ public class ProjectTest {
     }
 
     @Test
-    public void test_correct_response_page() {
+    public void testSelectContext_shouldRedirectToChoicesResponsePage() {
         FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 
