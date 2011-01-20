@@ -21,23 +21,23 @@ import org.apache.maven.plugin.MojoFailureException;
 
 /**
  * Validates license headers.
- *
- * @goal licenseCheck
- *
+ * 
+ * @goal licenseFormat
+ * 
  * @inheritedByDefault false
- *
+ * 
  * @requiresProject true
- *
+ * 
  * @aggregator true
- *
+ * 
  */
-public class LicenseCheck extends AbstractLicenseMojo {
-    
-    public LicenseCheck() {
-        wrappedGoal = "validate";
-        headerPath = "licenseCheck/header.txt";
-        configPath = "licenseCheck/licenseCheckConfig.xml";
-        configProfileXpath = "/lc:licenseCheckMojo/lc:profile";
+public class LicenseFormat extends AbstractLicenseMojo {
+
+    public LicenseFormat() {
+        wrappedGoal = "format";
+        headerPath = "licenseFormat/header.txt";
+        configPath = "licenseFormat/licenseFormatConfig.xml";
+        configProfileXpath = "/lf:licenseFormatMojo/lf:profile";
     }
 
     @Override
