@@ -35,8 +35,8 @@ public class LicenseCheck extends AbstractLicenseMojo {
     
     public LicenseCheck() {
         wrappedGoal = "validate";
-        headerPath = "licenseCheck/header.txt";
-        configPath = "licenseCheck/licenseCheckConfig.xml";
+        headerPath = "licenseMojo/header.txt";
+        configPath = "licenseMojo/licenseCheckConfig.xml";
         configProfileXpath = "/lc:licenseCheckMojo/lc:profile";
     }
 

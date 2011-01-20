@@ -68,4 +68,4 @@
       </plugins>
     </build>
   </profile>
-</licenseCheckMojo>
+</licenseFormatMojo>

@@ -34,9 +34,9 @@ import org.apache.maven.plugin.MojoFailureException;
 public class LicenseFormat extends AbstractLicenseMojo {
 
     public LicenseFormat() {
-        wrappedGoal = "format";
-        headerPath = "licenseFormat/header.txt";
-        configPath = "licenseFormat/licenseFormatConfig.xml";
+        wrappedGoal = "validate";
+        headerPath = "licenseMojo/header.txt";
+        configPath = "licenseMojo/licenseFormatConfig.xml";
         configProfileXpath = "/lf:licenseFormatMojo/lf:profile";
     }
 
