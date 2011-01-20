@@ -3,6 +3,7 @@ openengsb-1.0.4.RELEASE
 ### Bug fixes
   * Make sure the context-id is correctly propagated to spawned child-threads
   * Make sure the context-id remains consistent in Webapp-sessions
+  * fix race condition when processing two events simultaneously
 
 ### New Features & Changed Behaviour
   * added ContextHolder to access the Threadlocal context-id statically

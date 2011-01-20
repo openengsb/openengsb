@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -74,13 +76,16 @@ public class WorkflowServiceImpl implements WorkflowService, BundleContextAware,
     private Map<String, StatefulKnowledgeSession> sessions = new HashMap<String, StatefulKnowledgeSession>();
 
     private long timeout = 10000;
+    private Lock workflowLock = new ReentrantLock();
 
     @Override
     public void processEvent(Event event) throws WorkflowException {
         log.info(String.format("processing Event %s of type %s", event, event.getClass()));
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         FactHandle factHandle = session.insert(event);
+        workflowLock.lock();
         session.fireAllRules();
+        workflowLock.unlock();
         Long processId = event.getProcessId();
         if (processId == null) {
             for (ProcessInstance p : session.getProcessInstances()) {
