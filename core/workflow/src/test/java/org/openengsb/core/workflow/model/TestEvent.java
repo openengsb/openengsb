@@ -20,7 +20,7 @@ import org.openengsb.core.common.Event;
 
 public class TestEvent extends Event {
 
-    private String testProperty;
+    private String value;
 
     public TestEvent() {
     }
@@ -29,12 +29,21 @@ public class TestEvent extends Event {
         setProcessId(processId);
     }
 
-    public String getTestProperty() {
-        return this.testProperty;
+    public TestEvent(String value) {
+        this.value = value;
     }
 
-    public void setTestProperty(String testProperty) {
-        this.testProperty = testProperty;
+    public TestEvent(long processId, String value) {
+        super(processId);
+        this.value = value;
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 
 }

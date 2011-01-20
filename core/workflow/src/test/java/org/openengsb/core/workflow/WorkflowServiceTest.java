@@ -30,6 +30,9 @@ import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -273,5 +276,38 @@ public class WorkflowServiceTest extends AbstractWorkflowServiceTest {
         service.waitForFlowToFinish(id);
 
         assertThat((String) processBag.getProperty("test"), is(String.valueOf(id)));
+    }
+
+@Test
+    public void processEventsConcurrently_shouldProcessBothEvents() throws Exception {
+        manager.addImport(TestEvent.class.getName());
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "concurrent test"), "when\n"
+                + "TestEvent(value == \"0\")\n"
+                + "then\n"
+                + "example.doSomething(\"concurrent\");");
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "concurrent test1"), "when\n"
+                + "TestEvent(value == \"1\")\n"
+                + "then\n"
+                + "Thread.sleep(1000);");
+        Callable<Void> task = makeProcessEventTask(new TestEvent("1"));
+        Callable<Void> task2 = makeProcessEventTask(new TestEvent("0"));
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Future<Void> future1 = executor.submit(task);
+        Thread.sleep(300);
+        Future<Void> future2 = executor.submit(task2);
+        future1.get();
+        future2.get();
+        verify(logService).doSomething("concurrent");
+    }
+
+    private Callable<Void> makeProcessEventTask(final Event event) {
+        Callable<Void> task = new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                service.processEvent(event);
+                return null;
+            }
+        };
+        return task;
     }
 }

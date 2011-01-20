@@ -50,8 +50,12 @@ openengsb-1.1.0.RELEASE
 openengsb-1.0.4.RELEASE
 -----------------------
 
+### Bug fixes
+  * fix race condition when processing two events simultaneously
+
 ### New Features & Changed Behaviour
   * added ContextHolder to access the Threadlocal context-id statically
+
 
 openengsb-1.0.3.RELEASE
 -----------------------

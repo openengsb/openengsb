@@ -36,6 +36,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -97,13 +99,16 @@ public class WorkflowServiceImpl extends AbstractOpenEngSBService implements Wor
     private ExecutorService executor = Executors.newCachedThreadPool();
 
     private long timeout = 10000;
+    private Lock workflowLock = new ReentrantLock();
 
     @Override
     public void processEvent(Event event) throws WorkflowException {
         log.info(String.format("processing Event %s of type %s", event, event.getClass()));
         StatefulKnowledgeSession session = getSessionForCurrentContext();
         FactHandle factHandle = session.insert(event);
+        workflowLock.lock();
         session.fireAllRules();
+        workflowLock.unlock();
 
         Set<Long> processIds = retrieveRelevantProcessInstanceIds(event, session);
         if (processIds.isEmpty()) {
