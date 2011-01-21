@@ -16,8 +16,8 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.LicenseMojo;
+
 
 /**
  * Validates license headers.
@@ -31,18 +31,13 @@ import org.apache.maven.plugin.MojoFailureException;
  * @aggregator true
  * 
  */
-public class LicenseFormat extends AbstractLicenseMojo {
+public class LicenseFormat extends LicenseMojo {
 
     public LicenseFormat() {
         wrappedGoal = "validate";
         headerPath = "licenseMojo/header.txt";
         configPath = "licenseMojo/licenseFormatConfig.xml";
         configProfileXpath = "/lf:licenseFormatMojo/lf:profile";
-    }
-
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        super.execute();
     }
 
 }

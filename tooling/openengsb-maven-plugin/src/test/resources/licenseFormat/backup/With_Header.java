@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package backup;
 
-package org.openengsb.licensecheck;
+public final class App {
 
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+    private App() {
     }
+
 }

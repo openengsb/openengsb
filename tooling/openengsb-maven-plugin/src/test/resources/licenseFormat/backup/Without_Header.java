@@ -1,9 +1,8 @@
-package org.openengsb.licensecheck;
+package backup;
 
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
+public final class App {
+
+    private App() {
     }
+
 }

@@ -1,24 +1,8 @@
-/**
- * Copyright 2010 OpenEngSB Division, Vienna University of Technology
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.openengsb.tooling.pluginsuite.openengsbplugin;
+package org.openengsb.tooling.pluginsuite.openengsbplugin.base;
 
 import java.io.File;
 import java.net.URI;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
@@ -30,73 +14,67 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.AbstractOpenengsbMojo;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.xml.OpenEngSBMavenPluginNSContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-public class AbstractLicenseMojo extends AbstractOpenengsbMojo {
+public abstract class ConfiguredMojo extends AbstractOpenengsbMojo {
+
+    private static final Logger LOG = Logger.getLogger(ConfiguredMojo.class);
 
     // #################################
-    // set these in subclass constructor
+    // set these in subclass
     // #################################
-
-    protected String wrappedGoal;
-    protected String headerPath;
-    protected String configPath;
+    
     protected String configProfileXpath;
-
+    protected String configPath;
+    
     // #################################
 
-    private static final Logger LOG = Logger.getLogger(AbstractLicenseMojo.class);
+    protected List<String> goals = new ArrayList<String>();
+    protected List<String> activatedProfiles = new ArrayList<String>();
+    protected List<String> deactivatedProfiles = new ArrayList<String>();
+    protected Properties userProperties = new Properties();
 
-    private List<String> goals;
-    private List<String> activatedProfiles;
-    private Properties userProperties;
-
-    private File licenseHeaderFile;
     private File tmpPom;
 
     private static final OpenEngSBMavenPluginNSContext NS_CONTEXT = new OpenEngSBMavenPluginNSContext();
-    private static final String pomProfileXpath = "/pom:project/pom:profiles";
+    private static final String POM_PROFILE_XPATH = "/pom:project/pom:profiles";
+
+    protected static final List<File> FILES_TO_REMOVE_FINALLY = new ArrayList<File>();
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
-            licenseHeaderFile = readHeaderStringAndwriteHeaderIntoTmpFile();
+            preExecute();
             String profileName = UUID.randomUUID().toString();
             tmpPom = configureTmpPom(profileName);
-            initializeMavenExecutionProperties(profileName);
+            FILES_TO_REMOVE_FINALLY.add(tmpPom);
+            configureMojo(profileName);
             executeMavenWithCustomPom(tmpPom);
         } finally {
             cleanUp();
         }
     }
 
-    private void initializeMavenExecutionProperties(String profileName) {
-        goals = Arrays.asList(new String[] { wrappedGoal });
-        activatedProfiles = Arrays.asList(new String[] { profileName });
-        userProperties = new Properties();
-        userProperties.put("license.header", licenseHeaderFile.toURI().toString());
-        userProperties.put("license.failIfMissing", "true");
-        userProperties.put("license.aggregate", "true");
-        userProperties.put("license.strictCheck", "true");
+    /**
+     * overwrite in subclass
+     */
+    protected abstract void preExecute() throws MojoExecutionException;
+
+    private void configureMojo(String profileName) {
+        activatedProfiles.add(profileName);
     }
 
     private void executeMavenWithCustomPom(File pom) throws MojoExecutionException {
-        getNewMavenExecutor().setRecursive(true).setCustomPomFile(pom)
-                .execute(this, goals, activatedProfiles, null, userProperties, getProject(), getSession(), getMaven());
-    }
-
-    private File readHeaderStringAndwriteHeaderIntoTmpFile() throws MojoExecutionException {
-        try {
-
-            String headerString = IOUtils.toString(getClass().getClassLoader().getResourceAsStream(headerPath));
-            File generatedFile = Tools.generateTmpFile(headerString, ".txt");
-            return generatedFile;
-        } catch (Exception e) {
-            throw new MojoExecutionException("Couldn't create license header temp file!", e);
-        }
+        // TODO set all parameters
+        getNewMavenExecutor()
+                .setRecursive(true)
+                .setCustomPomFile(pom)
+                .execute(this, goals, activatedProfiles, deactivatedProfiles, userProperties, getProject(),
+                        getSession(), getMaven());
     }
 
     private File configureTmpPom(String profileName) throws MojoExecutionException {
@@ -117,7 +95,7 @@ public class AbstractLicenseMojo extends AbstractOpenengsbMojo {
 
             Node importedLicenseCheckProfileNode = originalPomDocument.importNode(licenseCheckMojoProfileNode, true);
 
-            Tools.insertDomNode(originalPomDocument, importedLicenseCheckProfileNode, pomProfileXpath, NS_CONTEXT);
+            Tools.insertDomNode(originalPomDocument, importedLicenseCheckProfileNode, POM_PROFILE_XPATH, NS_CONTEXT);
 
             // .. the finally serialize that modified pom into a temporary file
             String serializedXml = Tools.serializeXML(originalPomDocument);
@@ -135,8 +113,9 @@ public class AbstractLicenseMojo extends AbstractOpenengsbMojo {
     }
 
     private void cleanUp() {
-        FileUtils.deleteQuietly(licenseHeaderFile);
-        FileUtils.deleteQuietly(tmpPom);
+        for (File f : FILES_TO_REMOVE_FINALLY) {
+            FileUtils.deleteQuietly(f);
+        }
     }
 
 }
