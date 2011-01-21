@@ -79,7 +79,7 @@ public class TaskPanel extends Panel {
                 try {
                     service.finishTask(task);
                 } catch (WorkflowException e) {
-                    LOG.error("Not possible to finish task " + task.toString(), e);
+                    LOG.error("Cant finish task", e);
                 }
             }
 

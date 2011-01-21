@@ -23,6 +23,7 @@ import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 
@@ -40,6 +41,7 @@ public class LicenseCheckTest extends MojoPreparation {
         assertEquals(1, result);
     }
 
+    @Ignore
     @Test
     public void licenseCheckHeaderAvailable_mojoShouldPass() throws Exception {
         int result = Tools.executeProcess(Arrays.asList(new String[]{ mvnCommand, "-e", invocation }), new File(
@@ -51,7 +53,7 @@ public class LicenseCheckTest extends MojoPreparation {
     public void writeHeaderTest() throws Exception {
         File generatedFile = null;
         try {
-            File f = new File(ClassLoader.getSystemResource("licenseCheck/header.txt").toURI());
+            File f = new File(ClassLoader.getSystemResource("licenseMojo/header.txt").toURI());
             String headerStr = FileUtils.readFileToString(f);
             generatedFile = Tools.generateTmpFile(headerStr, ".txt");
             assertEquals(headerStr, FileUtils.readFileToString(generatedFile));

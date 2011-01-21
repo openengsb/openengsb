@@ -54,7 +54,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     public enum SetupType {
-        BLUEPRINT, SPRING
+            BLUEPRINT, SPRING, START_ONLY
     }
 
     @Inject
@@ -111,9 +111,9 @@ public abstract class AbstractExamTestHelper extends AbstractIntegrationTest {
 
     private void waitForBundle(Bundle bundle, SetupType setupType) throws InterruptedException {
         waitForBundleActivation(bundle);
-        if (setupType == SetupType.SPRING) {
+        if (SetupType.SPRING.equals(setupType)) {
             waitForSpring(bundle);
-        } else {
+        } else if (SetupType.BLUEPRINT.equals(setupType)) {
             waitForBlueprint(bundle);
         }
     }

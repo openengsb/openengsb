@@ -149,9 +149,11 @@ public class Provision extends AbstractOpenengsbMojo {
             extract(new TarArchiveInputStream(new GzipCompressorInputStream(new FileInputStream(
                 provisionArchivePathUnix))), new File(RUNNER));
         } catch (FileNotFoundException e) {
-            throw new MojoFailureException("Provision file for UNIX could not be found");
+            throw new MojoFailureException(e, "Provision file for UNIX could not be found (" + provisionArchivePathUnix
+                    + ")", e.getMessage());
         } catch (IOException e) {
-            throw new MojoFailureException("Provision file for UNIX could not be found");
+            throw new MojoFailureException(e, "Provision file for UNIX could not be found (" + provisionArchivePathUnix
+                    + ")", e.getMessage());
         }
     }
 
@@ -160,9 +162,11 @@ public class Provision extends AbstractOpenengsbMojo {
             extract(new ZipArchiveInputStream(new FileInputStream(provisionArchivePathWindows)), new File(
                 RUNNER));
         } catch (FileNotFoundException e) {
-            throw new MojoFailureException("Provision file for WINDOWS could not be found");
+            throw new MojoFailureException(e, "Provision file for WINDOWS could not be found ("
+                    + provisionArchivePathWindows + ")", e.getMessage());
         } catch (IOException e) {
-            throw new MojoFailureException("Provision file for WINDOWS could not be found");
+            throw new MojoFailureException(e, "Provision file for WINDOWS could not be found ("
+                    + provisionArchivePathWindows + ")", e.getMessage());
         }
     }
 

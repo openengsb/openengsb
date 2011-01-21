@@ -16,7 +16,6 @@
 
 package org.openengsb.core.common.taskbox.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
@@ -30,7 +29,7 @@ import org.openengsb.core.common.workflow.model.ProcessBag;
  * Each time a workflow needs user interaction, such task is created from the workflows ProcessBag. It is also used to
  * pass data back to the workflow after user interaction. The old ProcessBag is then replaced with this new one.
  */
-public class Task extends ProcessBag implements Serializable {
+public class Task extends ProcessBag {
     public Task() {
         super();
         init();

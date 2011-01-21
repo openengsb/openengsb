@@ -99,8 +99,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
 
     @Test
     public void testWrapRemoteEvent() throws Exception {
-        TestEvent event = new TestEvent(3L);
-        event.setTestProperty("bla");
+        TestEvent event = new TestEvent(3L, "bla");
         RemoteEvent wrapEvent = RemoteEventUtil.wrapEvent(event);
         Map<String, String> properties = wrapEvent.getNestedEventProperties();
         assertThat(wrapEvent.getClassName(), is(TestEvent.class.getName()));
@@ -143,7 +142,7 @@ public class RegistrationServiceTest extends AbstractWorkflowServiceTest {
         regService.registerEvent(reg, "testPort", "test://localhost", "workflowService");
         RemoteEvent reg2 = new RemoteEvent(TestEvent.class.getName());
         Map<String, String> nestedEventProperties = new HashMap<String, String>();
-        nestedEventProperties.put("testProperty", "testValue");
+        nestedEventProperties.put("value", "testValue");
         reg2.setNestedEventProperties(nestedEventProperties);
         regService.registerEvent(reg2, "testPort", "test://localhost", "workflowService");
         String ruleCode = "when RemoteEvent() then example.doSomething(\"it works\");";

@@ -16,6 +16,7 @@
 
 package org.openengsb.core.common.workflow.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -30,11 +31,11 @@ import org.openengsb.core.common.workflow.ProcessBagException;
  * 
  * One of the properties is the workflow ID it belongs to. It is recommended to not change this value!
  */
-public class ProcessBag {
+public class ProcessBag implements Serializable {
     private String processId;
     private String context;
     private String user;
-    private Object processIdLock = new Object();
+    private transient Object processIdLock = new Object();
     private boolean empty = false;
 
     private Map<String, Object> properties;

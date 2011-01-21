@@ -43,8 +43,30 @@ openengsb-1.1.0.RELEASE
   * Added tooling plugin to execute license-check plugin and assemble scripts via mvn.
   * Added possibility to brand konsole
   * renamed: maven-openengsb-plugin -> openengsb-maven-plugin
+  * OpenEngSB dependencies could be used now by scope import of openengsb poms/pom.xml
 
 ### Depricated or Removed Features
+
+openengsb-1.0.4.RELEASE
+-----------------------
+
+### Bug fixes
+  * Make sure the context-id is correctly propagated to spawned child-threads
+  * Make sure the context-id remains consistent in Webapp-sessions
+  * fix race condition when processing two events simultaneously
+
+### New Features & Changed Behaviour
+  * added ContextHolder to access the Threadlocal context-id statically
+  * git-connector now creates an empty working directory if it does not exist.
+  * Added a Filter that makes sure the threadlocal context-id is properly maintained in webapp-session (client project need to update)
+
+openengsb-1.0.3.RELEASE
+-----------------------
+
+### Bug fixes
+  * fix neodatis-dependency
+  * make sure "flowStartedEvent" is triggered when flow is started by an Event
+
 
 openengsb-1.0.2.RELEASE
 -----------------------

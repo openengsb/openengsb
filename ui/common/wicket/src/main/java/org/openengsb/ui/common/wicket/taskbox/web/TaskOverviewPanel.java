@@ -18,6 +18,8 @@ package org.openengsb.ui.common.wicket.taskbox.web;
 
 import java.util.ArrayList;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -28,16 +30,27 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.Filte
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.GoAndClearFilter;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.TextFilteredPropertyColumn;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.openengsb.core.common.taskbox.TaskboxException;
 import org.openengsb.core.common.taskbox.model.Task;
+import org.openengsb.ui.common.wicket.taskbox.WebTaskboxService;
 
 @SuppressWarnings("serial")
 public class TaskOverviewPanel extends Panel {
 
-    TaskDataProvider dataProvider = new TaskDataProvider();
+    public static final Log LOG = LogFactory.getLog(TaskOverviewPanel.class);
+
+    private TaskDataProvider dataProvider = new TaskDataProvider();
+    private Panel panel = new EmptyPanel("taskPanel");
+
+    @SpringBean(name = "webtaskboxService")
+    private WebTaskboxService webtaskboxService;
 
     public TaskOverviewPanel(String id) {
         super(id);
@@ -49,10 +62,11 @@ public class TaskOverviewPanel extends Panel {
                 return new GoAndClearFilter(componentId, form);
             }
 
-            @SuppressWarnings("unchecked")
             @Override
+            @SuppressWarnings("rawtypes")
             public void populateItem(Item cellItem, String componentId, IModel rowModel) {
-                cellItem.add(new Label(componentId));
+                final Task task = (Task) rowModel.getObject();
+                cellItem.add(new UserActionsPanel(componentId, task));
             }
         };
         columns.add(actionsColumn);
@@ -68,8 +82,35 @@ public class TaskOverviewPanel extends Panel {
         DefaultDataTable<Task> dataTable = new DefaultDataTable<Task>("dataTable", columns, dataProvider, 15);
         dataTable.addTopToolbar(new FilterToolbar(dataTable, form, dataProvider));
         form.add(dataTable);
-
         add(form);
+        add(panel);
+
+    }
+
+    private class UserActionsPanel extends Panel {
+
+        private Task task;
+
+        public UserActionsPanel(String id, Task t) {
+            super(id);
+            task = t;
+            Link<Task> link = new Link<Task>("taskLink") {
+                @Override
+                public void onClick() {
+                    try {
+                        Panel newPanel = webtaskboxService.getTaskPanel(task, "taskPanel");
+                        newPanel.setOutputMarkupId(true);
+                        panel.replaceWith(newPanel);
+                        panel = newPanel;
+                    } catch (TaskboxException e) {
+                        LOG.error("Taskbox panel could not be started", e);
+                    }
+                }
+            };
+            link.add(new Label("linkLabel", task.getName() + "(" + task.getTaskType() + ")"));
+            add(link);
+        }
+
     }
 
 }

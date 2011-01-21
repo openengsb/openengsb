@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
    Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -16,7 +16,7 @@
    limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
 
   <parent>
     <groupId>org.openengsb.ui.common</groupId>
@@ -81,7 +81,6 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
-      <version>${spring.security.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.springframework</groupId>
@@ -110,19 +109,17 @@
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-common</artifactId>
-      <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
       <artifactId>openengsb-core-test</artifactId>
-      <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.openengsb.core</groupId>
   	  <artifactId>openengsb-core-workflow</artifactId>
-  	  <version>${project.version}</version>
+  	  
   	  <scope>provided</scope>
     </dependency>
     
@@ -130,68 +127,57 @@
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket</artifactId>
-      <version>${wicket.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-datetime</artifactId>
-      <version>${wicket.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-devutils</artifactId>
-      <version>${wicket.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-extensions</artifactId>
-      <version>${wicket.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-ioc</artifactId>
-      <version>${wicket.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-spring</artifactId>
-      <version>${wicket.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-jmx</artifactId>
-      <version>${wicket.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-auth-roles</artifactId>
-      <version>${wicket.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket-velocity</artifactId>
-      <version>${wicket.version}</version>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-servlet_2.5_spec</artifactId>
-      <version>${geronimo.servlet.version}</version>
     </dependency>
     
     <!-- Neodatis Dependencies -->
     <dependency>
       <groupId>org.neodatis.odb</groupId>
       <artifactId>neodatis-odb</artifactId>
-      <version>${odb.version}</version>
       <optional>true</optional>
     </dependency>
 
