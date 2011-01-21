@@ -53,7 +53,7 @@ public class LicenseCheckTest extends MojoPreparation {
     public void writeHeaderTest() throws Exception {
         File generatedFile = null;
         try {
-            File f = new File(ClassLoader.getSystemResource("licenseCheck/header.txt").toURI());
+            File f = new File(ClassLoader.getSystemResource("licenseMojo/header.txt").toURI());
             String headerStr = FileUtils.readFileToString(f);
             generatedFile = Tools.generateTmpFile(headerStr, ".txt");
             assertEquals(headerStr, FileUtils.readFileToString(generatedFile));

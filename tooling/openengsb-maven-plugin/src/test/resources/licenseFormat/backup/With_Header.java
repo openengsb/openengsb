@@ -14,30 +14,11 @@
  * limitations under the License.
  */
 
-package org.openengsb.tooling.pluginsuite.openengsbplugin;
+package backup;
 
-import org.openengsb.tooling.pluginsuite.openengsbplugin.base.LicenseMojo;
+public final class App {
 
-
-/**
- * Validates license headers.
- *
- * @goal licenseCheck
- *
- * @inheritedByDefault false
- *
- * @requiresProject true
- *
- * @aggregator true
- *
- */
-public class LicenseCheck extends LicenseMojo {
-    
-    public LicenseCheck() {
-        wrappedGoal = "validate";
-        headerPath = "licenseMojo/header.txt";
-        configPath = "licenseMojo/licenseCheckConfig.xml";
-        configProfileXpath = "/lc:licenseCheckMojo/lc:profile";
+    private App() {
     }
 
 }

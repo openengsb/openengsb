@@ -1,4 +1,4 @@
-package org.openengsb.licensecheck;
+package backup;
 
 public final class App {
 

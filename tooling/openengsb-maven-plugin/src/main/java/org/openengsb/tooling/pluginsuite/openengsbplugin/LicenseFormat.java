@@ -21,23 +21,23 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.base.LicenseMojo;
 
 /**
  * Validates license headers.
- *
- * @goal licenseCheck
- *
+ * 
+ * @goal licenseFormat
+ * 
  * @inheritedByDefault false
- *
+ * 
  * @requiresProject true
- *
+ * 
  * @aggregator true
- *
+ * 
  */
-public class LicenseCheck extends LicenseMojo {
-    
-    public LicenseCheck() {
+public class LicenseFormat extends LicenseMojo {
+
+    public LicenseFormat() {
         wrappedGoal = "validate";
         headerPath = "licenseMojo/header.txt";
-        configPath = "licenseMojo/licenseCheckConfig.xml";
-        configProfileXpath = "/lc:licenseCheckMojo/lc:profile";
+        configPath = "licenseMojo/licenseFormatConfig.xml";
+        configProfileXpath = "/lf:licenseFormatMojo/lf:profile";
     }
 
 }
