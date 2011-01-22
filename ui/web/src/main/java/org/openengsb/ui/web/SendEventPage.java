@@ -28,7 +28,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.AjaxSelfUpdatingTimerBehavior;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -45,7 +44,6 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.time.Duration;
 import org.openengsb.core.common.DomainProvider;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
@@ -80,6 +78,8 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     private final Map<String, String> values = new HashMap<String, String>();
 
     private RepeatingView fieldList;
+
+    private final ValueConverter valueConverter = new ValueConverter();
 
     public SendEventPage() {
         List<Class<? extends Event>> classes = new ArrayList<Class<? extends Event>>();
@@ -118,6 +118,9 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         container.setOutputMarkupId(true);
         form.add(new FeedbackPanel("feedback"));
 
+        final WebMarkupContainer auditsContainer = new WebMarkupContainer("auditsContainer");
+        auditsContainer.setOutputMarkupId(true);
+
         AjaxButton submitButton = new IndicatingAjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -135,6 +138,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
                     error(new StringResourceModel("send.event.error.build", SendEventPage.this, null).getString());
                 }
                 target.addComponent(form);
+                target.addComponent(auditsContainer);
             }
 
             @Override
@@ -156,8 +160,8 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
                 item.add(new Label("audit", item.getModelObject()));
             }
         };
-        add(listView);
-        listView.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(2)));
+        auditsContainer.add(listView);
+        add(auditsContainer);
         add(new RuleEditorPanel("ruleEditor", this));
     }
 
@@ -193,7 +197,9 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
                         || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
                     continue;
                 }
-                propertyDescriptor.getWriteMethod().invoke(obj, values.get(propertyDescriptor.getName()));
+                String string = values.get(propertyDescriptor.getName());
+                Object converted = valueConverter.convert(propertyDescriptor.getPropertyType(), string);
+                propertyDescriptor.getWriteMethod().invoke(obj, converted);
             }
             return obj;
         } catch (Exception e) {
