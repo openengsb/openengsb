@@ -20,69 +20,8 @@
 <features name="openengsb-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.0.0 http://karaf.apache.org/xmlns/features/v1.0.0" >
-  <feature name="jetty" version="${jetty.version}" resolver="(obr)" >
-    <bundle dependency='true'>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/${geronimo.servlet.version}</bundle>
-    <bundle dependency='true'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
-    <bundle dependency='true'>mvn:javax.servlet/com.springsource.javax.servlet/${servlet.version}</bundle>
-    <bundle>mvn:org.eclipse.jetty/jetty-util/${jetty.version}</bundle>
-    <bundle>mvn:org.eclipse.jetty/jetty-io/${jetty.version}</bundle>
-    <bundle>mvn:org.eclipse.jetty/jetty-http/${jetty.version}</bundle>
-    <bundle>mvn:org.eclipse.jetty/jetty-continuation/${jetty.version}</bundle>
-    <bundle>mvn:org.eclipse.jetty/jetty-server/${jetty.version}</bundle>
-    <bundle>mvn:org.eclipse.jetty/jetty-security/${jetty.version}</bundle>
-    <bundle>mvn:org.eclipse.jetty/jetty-servlet/${jetty.version}</bundle>
-    <bundle>mvn:org.eclipse.jetty/jetty-client/${jetty.version}</bundle>
-    <bundle>mvn:org.eclipse.jetty/jetty-servlets/${jetty.version}</bundle>
-    <bundle>mvn:org.eclipse.jetty/jetty-xml/${jetty.version}</bundle>
-  </feature>
-  <feature name="http" version="${project.version}" resolver="(obr)" >
-    <config name="org.ops4j.pax.web">
-      org.osgi.service.http.port=8090
-      org.ops4j.pax.web.config.file=${karaf.base}/etc/jetty.xml
-    </config>
-    <feature version="${jetty.version}">jetty</feature>
-    <bundle>mvn:org.ops4j.pax.web/pax-web-api/${pax.web.version}</bundle>
-    <bundle>mvn:org.ops4j.pax.web/pax-web-spi/${pax.web.version}</bundle>
-    <bundle>mvn:org.ops4j.pax.web/pax-web-runtime/${pax.web.version}</bundle>
-    <bundle>mvn:org.ops4j.pax.web/pax-web-jetty/${pax.web.version}</bundle>
-  </feature>
-  <feature name="war" version="${project.version}" resolver="(obr)" >
-    <feature version="${project.version}">http</feature>
-    <bundle>mvn:org.ops4j.pax.web/pax-web-jsp/${pax.web.version}</bundle>
-    <bundle>mvn:org.ops4j.pax.web/pax-web-extender-war/${pax.web.version}</bundle>
-    <bundle>mvn:org.ops4j.pax.web/pax-web-extender-whiteboard/${pax.web.version}</bundle>
-    <bundle>mvn:org.ops4j.pax.web/pax-web-deployer/${pax.web.version}</bundle>
-    <bundle>mvn:org.ops4j.pax.url/pax-url-war/${pax.url.version}</bundle>
-  </feature>
-  <feature name="openengsb-spring" version="${spring.version}" resolver="(obr)" >
-    <bundle>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/${geronimo.servlet.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
-    <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aopalliance/${aopalliance.version}</bundle>
-    <bundle>mvn:javax.el/com.springsource.javax.el/${el.version}</bundle>
-    <bundle>mvn:commons-collections/commons-collections/${commons.collection.version}</bundle>
-    <bundle>mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
-    <bundle>mvn:javax.servlet/com.springsource.javax.servlet/2.5.0</bundle>
-    <bundle>mvn:org.springframework/spring-core/${spring.version}</bundle>
-    <bundle>mvn:org.springframework/spring-asm/${spring.version}</bundle>
-    <bundle>mvn:org.springframework/spring-expression/${spring.version}</bundle>
-    <bundle>mvn:org.springframework/spring-beans/${spring.version}</bundle>
-    <bundle>mvn:org.springframework/spring-aop/${spring.version}</bundle>
-    <bundle>mvn:org.springframework/spring-context/${spring.version}</bundle>
-    <bundle>mvn:org.springframework/spring-context-support/${spring.version}</bundle>
-    <bundle>mvn:org.springframework/spring-web/${spring.version}</bundle>
-  </feature>
-  <feature name="openengsb-spring-dm" version="${spring.osgi.version}" resolver="(obr)" >
-    <feature version="${spring.version}">openengsb-spring</feature>
-    <bundle dependency='true'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
-    <bundle>mvn:org.springframework.osgi/spring-osgi-io/${spring.osgi.version}</bundle>
-    <bundle>mvn:org.springframework.osgi/spring-osgi-core/${spring.osgi.version}</bundle>
-    <bundle>mvn:org.springframework.osgi/spring-osgi-extender/${spring.osgi.version}</bundle>
-    <bundle>mvn:org.springframework.osgi/spring-osgi-web/${spring.osgi.version}</bundle>
-    <bundle>mvn:org.springframework.osgi/spring-osgi-annotation/${spring.osgi.version}</bundle>
-    <bundle>mvn:org.apache.karaf.deployer/org.apache.karaf.deployer.spring/${karaf.version}</bundle>
-  </feature>
-  <feature name="openengsb-spring-security" version="${spring.security.version}" resolver="(obr)" >
-    <feature version="${spring.version}">openengsb-spring</feature>
+  <feature name="spring-security" version="${spring.security.version}" resolver="(obr)" >
+    <feature version="[3,4)">spring</feature>
     <bundle>mvn:org.springframework.security/spring-security-core/${spring.security.version}</bundle>
     <bundle>mvn:org.springframework.security/spring-security-config/${spring.security.version}</bundle>
     <bundle>mvn:org.springframework.security/spring-security-web/${spring.security.version}</bundle>
@@ -108,12 +47,18 @@
       openengsb.version.name.noun=${openengsb.version.name.noun}
       jmsPort=6549
     </config>
-    <feature version="${spring.version}">openengsb-spring</feature>
-    <feature version="${spring.osgi.version}">openengsb-spring-dm</feature>
-    <feature version="${spring.security.version}">openengsb-spring-security</feature>
+    <feature version="[3,4)">spring</feature>
+    <feature version="[3,4)">spring-web</feature>
+    <feature version="[1.2,2)">spring-dm</feature>
+    <feature version="[1.2,2)">spring-dm-web</feature>
+    <feature version="[3,4)">spring-security</feature>
     <feature version="${project.version}">aspectj</feature>
     <feature version="${drools.version}">drools</feature>
-    <feature version="${project.version}">war</feature>
+    <feature version="${karaf.version}">war</feature>
+    <!-- OpenEngSB Commons Dependencies -->
+    <bundle dependency="true">mvn:commons-io/commons-io/${commons.io.version}</bundle>
+    <bundle dependency="true">mvn:commons-lang/commons-lang/${commons.lang.version}</bundle>
+    <bundle dependency="true">mvn:commons-collections/commons-collections/${commons.collections.version}</bundle>
     <!-- OpenEngSB Deps (have to be splitted into the different parts -->
     <bundle dependency="true">mvn:org.apache.servicemix.specs/org.apache.servicemix.specs.stax-api-1.0/${xml.stream.version}</bundle>
     <bundle dependency="true">mvn:javax.activation/com.springsource.javax.activation/${javax.activation.version}</bundle>
