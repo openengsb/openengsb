@@ -49,8 +49,14 @@
       <type>tar.gz</type>
     </dependency>
     <dependency>
-      <groupId>org.apache.karaf</groupId>
-      <artifactId>apache-karaf</artifactId>
+      <groupId>org.apache.karaf.features.assembly</groupId>
+      <artifactId>standard</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.karaf.features.assembly</groupId>
+      <artifactId>enterprise</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
@@ -181,7 +187,8 @@
             </goals>
             <configuration>
               <descriptors>
-                <descriptor>mvn:org.apache.karaf/apache-karaf/${karaf.version}/xml/features</descriptor>
+                <descriptor>mvn:org.apache.karaf.features.assembly/standard/${karaf.version}/xml/features</descriptor>
+                <descriptor>mvn:org.apache.karaf.features.assembly/enterprise/${karaf.version}/xml/features</descriptor>
                 <descriptor>file:${basedir}/target/classes/features.xml</descriptor>
               </descriptors>
               <features>

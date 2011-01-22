@@ -80,7 +80,7 @@
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.main</artifactId>
     </dependency>
-    
+
     <!-- Blueprint Dependency -->
     <dependency>
       <groupId>org.apache.aries.blueprint</groupId>
@@ -89,8 +89,14 @@
 
     <!-- Feature File Dependencies -->
     <dependency>
-      <groupId>org.apache.karaf</groupId>
-      <artifactId>apache-karaf</artifactId>
+      <groupId>org.apache.karaf.features.assembly</groupId>
+      <artifactId>standard</artifactId>
+      <type>xml</type>
+      <classifier>features</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.karaf.features.assembly</groupId>
+      <artifactId>enterprise</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>

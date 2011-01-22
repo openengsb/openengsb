@@ -288,17 +288,24 @@
         <version>${geronimo.servlet.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.karaf</groupId>
-        <artifactId>apache-karaf</artifactId>
+        <groupId>org.apache.karaf.features.assembly</groupId>
+        <artifactId>standard</artifactId>
+        <type>xml</type>
+        <classifier>features</classifier>
         <version>${karaf.version}</version>
-        <type>tar.gz</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.karaf.features.assembly</groupId>
+        <artifactId>enterprise</artifactId>
+        <type>xml</type>
+        <classifier>features</classifier>
+        <version>${karaf.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.karaf</groupId>
         <artifactId>apache-karaf</artifactId>
         <version>${karaf.version}</version>
-        <type>xml</type>
-        <classifier>features</classifier>
+        <type>tar.gz</type>
       </dependency>
       <dependency>
         <groupId>org.apache.karaf</groupId>
