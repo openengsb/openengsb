@@ -72,6 +72,8 @@ public class BaseUiInfrastructureIT extends AbstractExamTestHelper {
         assertTrue(servicePage.asText().contains("Services with state = Connecting"));
         HtmlPage usermanagementPage = testClient.getAnchorByText("User Management").click();
         assertTrue(usermanagementPage.asText().contains("Create new user"));
+        HtmlPage taskOverviewPage = testClient.getAnchorByText("Task-Overview").click();
+        assertTrue(taskOverviewPage.asText().contains(("Task-Overview")));
     }
 
     @Test
