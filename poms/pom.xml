@@ -107,7 +107,7 @@
     <aopalliance.version>1.0_4</aopalliance.version>
     <xml.bind.version>2.0.0</xml.bind.version>
     <xml.stream.version>1.5.0</xml.stream.version>
-    <commons.collection.version>3.2.1</commons.collection.version>
+    <commons.collections.version>3.2.1</commons.collections.version>
     <commons.lang.version>2.5</commons.lang.version>
     <commons.pool.version>1.5.4_1</commons.pool.version>
     <commons.dbcp.version>1.2.2_5</commons.dbcp.version>
@@ -230,7 +230,7 @@
       <dependency>
         <groupId>commons-collections</groupId>
         <artifactId>commons-collections</artifactId>
-        <version>${commons.collection.version}</version>
+        <version>${commons.collections.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
