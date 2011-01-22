@@ -61,9 +61,7 @@
     <menu name="OpenEngSB">
       <item name="Welcome" href="index.html" />
       <item name="What is OpenEngSB?" href="about.html" />
-      <item name="Latest Windows Version" href="${latestWin}" />
-      <item name="Latest Unix Version" href="${latestUnix}" />
-      <item name="Older Versions" href="${older}" />
+      <item name="Downloads" href="downloads.html" />
       <item name="Changelog" href="${github}/CHANGELOG.md" />
       <item name="Sponsors" href="sponsors.html" />
     </menu>
