@@ -18,8 +18,7 @@
 -->
 
 <features name="openengsb-${project.version}">
-  <!--<feature name="jetty" version="${jetty.version}" resolver="(obr)">-->
-  <feature name="jetty" version="${jetty.version}" >
+  <feature name="jetty" version="${jetty.version}" resolver="(obr)" >
     <bundle dependency='true'>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/${geronimo.servlet.version}</bundle>
     <bundle dependency='true'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
     <bundle dependency='true'>mvn:javax.servlet/com.springsource.javax.servlet/${servlet.version}</bundle>
@@ -34,8 +33,7 @@
     <bundle>mvn:org.eclipse.jetty/jetty-servlets/${jetty.version}</bundle>
     <bundle>mvn:org.eclipse.jetty/jetty-xml/${jetty.version}</bundle>
   </feature>
-  <!--<feature name="http" version="${project.version}" resolver="(obr)">-->
-  <feature name="http" version="${project.version}" >
+  <feature name="http" version="${project.version}" resolver="(obr)" >
     <config name="org.ops4j.pax.web">
       org.osgi.service.http.port=8090
       org.ops4j.pax.web.config.file=${karaf.base}/etc/jetty.xml
@@ -46,8 +44,7 @@
     <bundle>mvn:org.ops4j.pax.web/pax-web-runtime/${pax.web.version}</bundle>
     <bundle>mvn:org.ops4j.pax.web/pax-web-jetty/${pax.web.version}</bundle>
   </feature>
-  <!--<feature name="war" version="${project.version}" resolver="(obr)">-->
-  <feature name="war" version="${project.version}" >
+  <feature name="war" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">http</feature>
     <bundle>mvn:org.ops4j.pax.web/pax-web-jsp/${pax.web.version}</bundle>
     <bundle>mvn:org.ops4j.pax.web/pax-web-extender-war/${pax.web.version}</bundle>
@@ -55,8 +52,7 @@
     <bundle>mvn:org.ops4j.pax.web/pax-web-deployer/${pax.web.version}</bundle>
     <bundle>mvn:org.ops4j.pax.url/pax-url-war/${pax.url.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-spring" version="${spring.version}" resolver="(obr)">-->
-  <feature name="openengsb-spring" version="${spring.version}">
+  <feature name="openengsb-spring" version="${spring.version}" resolver="(obr)" >
     <bundle>mvn:org.apache.geronimo.specs/geronimo-servlet_2.5_spec/${geronimo.servlet.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.asm/${asm.version}</bundle>
     <bundle>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.aopalliance/${aopalliance.version}</bundle>
@@ -73,8 +69,7 @@
     <bundle>mvn:org.springframework/spring-context-support/${spring.version}</bundle>
     <bundle>mvn:org.springframework/spring-web/${spring.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-spring-dm" version="${spring.osgi.version}" resolver="(obr)">-->
-  <feature name="openengsb-spring-dm" version="${spring.osgi.version}">
+  <feature name="openengsb-spring-dm" version="${spring.osgi.version}" resolver="(obr)" >
     <feature version="${spring.version}">openengsb-spring</feature>
     <bundle dependency='true'>mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.cglib/${cglib.version}</bundle>
     <bundle>mvn:org.springframework.osgi/spring-osgi-io/${spring.osgi.version}</bundle>
@@ -84,19 +79,16 @@
     <bundle>mvn:org.springframework.osgi/spring-osgi-annotation/${spring.osgi.version}</bundle>
     <bundle>mvn:org.apache.karaf.deployer/org.apache.karaf.deployer.spring/${karaf.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-spring-security" version="${spring.security.version}" resolver="(obr)">-->
-  <feature name="openengsb-spring-security" version="${spring.security.version}">
+  <feature name="openengsb-spring-security" version="${spring.security.version}" resolver="(obr)" >
     <feature version="${spring.version}">openengsb-spring</feature>
     <bundle>mvn:org.springframework.security/spring-security-core/${spring.security.version}</bundle>
     <bundle>mvn:org.springframework.security/spring-security-config/${spring.security.version}</bundle>
     <bundle>mvn:org.springframework.security/spring-security-web/${spring.security.version}</bundle>
   </feature>
-  <!--<feature name="aspectj" version="${project.version}" resolver="(obr)">-->
-  <feature name="aspectj" version="${project.version}" >
+  <feature name="aspectj" version="${project.version}" resolver="(obr)" >
     <bundle start-level='30'>mvn:org.aspectj/com.springsource.org.aspectj.weaver/${aspectj.version}</bundle>
   </feature>
-  <!--<feature name="drools" version="${drools.version}" resolver="(obr)">-->
-  <feature name="drools" version="${drools.version}" >
+  <feature name="drools" version="${drools.version}" resolver="(obr)" >
     <bundle dependency="true">mvn:com.thoughtworks.xstream/com.springsource.com.thoughtworks.xstream/${xstream.version}</bundle>
     <bundle dependency="true">mvn:org.xmlpull/com.springsource.org.xmlpull/${xmlpull.version}</bundle>
     <bundle dependency="true">mvn:org.mvel/mvel2/${mvel2.version}</bundle>
@@ -107,8 +99,7 @@
     <bundle>mvn:org.drools/drools-core/${drools.version}</bundle>
     <bundle>mvn:org.drools/drools-compiler/${drools.version}</bundle>
   </feature>
-  <!--<feature name="openengsb" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-core" version="${project.version}" >
+  <feature name="openengsb-core" version="${project.version}" resolver="(obr)" >
     <config name="org.openengsb.settings">
       openengsb.version.number=${openengsb.version.number}
       openengsb.version.name.adjective=${openengsb.version.name.adjective}
@@ -150,7 +141,6 @@
     <bundle>mvn:org.openengsb.core/openengsb-core-persistence/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-security/${project.version}</bundle>
     <bundle>mvn:org.openengsb.core/openengsb-core-workflow/${project.version}</bundle>
-
     <!-- Required Domains and Connectors -->
     <bundle>mvn:org.openengsb.domain/openengsb-domain-auditing/${project.version}</bundle>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-memoryauditing/${project.version}</bundle>
@@ -163,77 +153,64 @@
     <!-- OpenEngSB Management UI -->
     <bundle>mvn:org.openengsb.ui/openengsb-ui-web/${project.version}/war</bundle>
   </feature>
-  <!--<feature name="openengsb-domain-notification" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-domain-notification" version="${project.version}" >
+  <feature name="openengsb-domain-notification" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-notification/${project.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-domain-report" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-domain-report" version="${project.version}" >
+  <feature name="openengsb-domain-report" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-report/${project.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-domain-issue" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-domain-issue" version="${project.version}" >
+  <feature name="openengsb-domain-issue" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-issue/${project.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-domain-scm" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-domain-scm" version="${project.version}" >
+  <feature name="openengsb-domain-scm" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-scm/${project.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-domain-build" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-domain-build" version="${project.version}" >
+  <feature name="openengsb-domain-build" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-build/${project.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-domain-test" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-domain-test" version="${project.version}" >
+  <feature name="openengsb-domain-test" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-test/${project.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-domain-deploy" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-domain-deploy" version="${project.version}" >
+  <feature name="openengsb-domain-deploy" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <bundle>mvn:org.openengsb.domain/openengsb-domain-deploy/${project.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-connector-email" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-connector-email" version="${project.version}" >
+  <feature name="openengsb-connector-email" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-notification</feature>
     <bundle dependency="true">mvn:org.apache.servicemix.bundles/org.apache.servicemix.bundles.javax.mail/${javax.mail.version}</bundle>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-email/${project.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-connector-plaintextreport" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-connector-plaintextreport" version="${project.version}" >
+  <feature name="openengsb-connector-plaintextreport" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-report</feature>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-plaintextreport/${project.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-connector-maven" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-connector-maven" version="${project.version}" >
+  <feature name="openengsb-connector-maven" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-build</feature>
     <feature version="${project.version}">openengsb-domain-test</feature>
     <feature version="${project.version}">openengsb-domain-deploy</feature>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-maven/${project.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-connector-git" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-connector-git" version="${project.version}" >
+  <feature name="openengsb-connector-git" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-scm</feature>
     <bundle dependency="true">mvn:org.eclipse.jgit/org.eclipse.jgit/${jgit.version}</bundle>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-git/${project.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-connector-trac" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-connector-trac" version="${project.version}" >
+  <feature name="openengsb-connector-trac" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-issue</feature>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-trac/${project.version}</bundle>
   </feature>
-  <!--<feature name="openengsb-connector-trac" version="${project.version}" resolver="(obr)">-->
-  <feature name="openengsb-connector-jira" version="${project.version}" >
+  <feature name="openengsb-connector-jira" version="${project.version}" resolver="(obr)" >
     <feature version="${project.version}">openengsb-core</feature>
     <feature version="${project.version}">openengsb-domain-issue</feature>
     <bundle>mvn:org.openengsb.connector/openengsb-connector-jira/${project.version}</bundle>
