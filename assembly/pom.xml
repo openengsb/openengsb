@@ -214,6 +214,13 @@
                 <feature>openengsb-connector-trac</feature>
                 <feature>openengsb-connector-jira</feature>
               </features>
+              <copyFileBasedDescriptors>
+                <copyFileBasedDescriptor>
+                  <sourceFile>${basedir}/target/classes/features.xml</sourceFile>
+                  <targetDirectory>org/openengsb/openengsb/${project.version}</targetDirectory>
+                  <targetFileName>${project.artifactId}-${project.version}-features.xml</targetFileName>
+                </copyFileBasedDescriptor>
+              </copyFileBasedDescriptors>
               <repository>target/features-repo</repository>
               <failOnArtifactResolutionError>true</failOnArtifactResolutionError>
             </configuration>
