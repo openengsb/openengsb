@@ -245,90 +245,47 @@ andreas]]></programlisting>
 
   <section>
     <title>Prepare Changelog</title>
-    <para>Finally the CHANGELOG.md file has to be updated. Therefore the following template with the correct version
+    <para>The changelog is a file to inform users about the changes in the version they are using.
+      This file should only contain the releases which are done in one branch. E.g. the master will never contain changelog about minor releases; because of the way we handle Jira those changes are captured and included
+      anyhow.
+    </para>
+
+    <para>Now the CHANGELOG.md file has to be updated. Therefore the following template with the correct version
     have to be copied in the current changelog file (the latest version always has the most "on-top" position in the
     text file):
 <programlisting><![CDATA[openengsb-VERSION
 ------------------
 
-### Bug fixes
-  * [e.g.] Fix problem with setting files
+Add a General Description
 
-### New Projects
-  * [e.g.] openengsb-core-taskbox
+### Highlights
+  * [e.g.] org.openengsb.domain.scm.doSomething() is removed
 
-### Removed Projects
-  * [e.g.] openengsb-domain-scm
+### Details
 
-### Upgraded Projects
-  * [e.g.] org.apache.wicket/wicket-*/1.4.13
-  * [e.g.] org.eclipse.jgit/org.eclipse.jgit/0.9.14
-
-### Remvoed External References
-  * [e.g.] javax.ejb/com.springsource.javax.ejb
-
-### New Features & Changed Behaviour
-  * [e.g.] Added possibility to delete workfows
-
-### Depricated or Removed Features
-  * [e.g.] org.openengsb.domain.scm.doSomething() is removed]]></programlisting></para>
+Copy JIRA issues here]]></programlisting></para>
 
     <para>The following sections explain shortly what changes belong to which part of the changelog.</para>
 
     <section>
-      <title>Bug Fixes</title>
-      <para>This section should contain a short description of all things which does not work in a previous
-        version, but in this one. Bugs which are fixed and introduced during the development (e.g. in a milestone
-        release do not have to be added here. Only if they exist in a previous final release version. The
-        description should make it clear for the client which bug we address. An issue number will help but is
-        not requierd.
+      <title>General Description</title>
+      <para>The general description summarizes the most important changes in this release. This is
+        a short and verbal description of the changes.
       </para>
     </section>
 
     <section>
-      <title>New Projects</title>
-      <para>All new projects added to the OpenEngSB (or in any module section in other words) should be listed 
-        here, since it is very likely that the user has to adapt its project according to them. A move of a project
-        should be logged as add/remove. The artefact name is enough to be mentioned here.
+      <title>Highlights</title>
+      <para>The highlight section could be a little bit more detailed than the general description.
+        Things which should be changed by developers could be explained here and other important points
+        could be lined up here.
       </para>
     </section>
 
     <section>
-      <title>Removed Projects</title>
-      <para>All projects removed from the OpenEngSB (or from any module section in other words) should be listed
-        here, since it is very likely that the user has to adapt its proejct according to them. A move of a project
-        should be logged as add/remove. The artefact name is enough to be mentioned here.
-      </para>
-    </section>
-
-    <section>
-      <title>Upgraded and New External References</title>
-      <para>It is very likely that the client reuqires to use the versions directly anywhere in the project. It
-        is possible that he wants to stay in snyc in this versions with the OpenEngSB project. Therefore they
-        should be listend here. A maven like artifact description should be used here.
-      </para>
-    </section>
-
-    <section>
-      <title>Remvoed External References</title>
-      <para>It is very likely that the client reuqires to use the versions directly anywhere in the project. It
-        is possible that he wants to stay in snyc in this versions with the OpenEngSB project. Therefore they
-        should be listend here. A maven like artifact description should be used here.
-      </para>
-
-    </section>
-
-    <section>
-      <title>New Features and Changed Behaviour</title>
-      <para>This section should SHORTLY show a user where he has new possibilities or where he has to adapt
-        his current code or be especially careful with changes.
-      </para>
-    </section>
-
-    <section>
-      <title>Depricated or Removed Features</title>
-      <para>Depricated or removed features points the user to points in the code where his code will very
-        likely break. It should be clear for him what he has to do or change.
+      <title>Details</title>
+      <para>The details section contains a copy of the release notes generated by Jira if a developer
+        wants to take a detailed look at the changes included in this release.
       </para>
     </section>
 
