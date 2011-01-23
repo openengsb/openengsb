@@ -97,8 +97,7 @@ Release Notes - OpenEngSB - Version openengsb-1.0.0.RELEASE
     * [OPENENGSB-513] - Internet Explorer Interprets CSS wrong (see screenshot)
     * [OPENENGSB-514] - Apostrophs are not shown in the webapp for release names
     * [OPENENGSB-522] - userguide link on main page links to old documentation
-    * [OPENENGSB-532] - Edit Button in Testclient is very hacky. NotSerialisationException is thrown because last used ServiceManager is stored directly and not resolved via an id.
-Edit button should be completely redone
+    * [OPENENGSB-532] - Edit Button in Testclient is very hacky. NotSerialisationException is thrown because last used ServiceManager is stored directly and not resolved via an id.  Edit button should be completely redone
     * [OPENENGSB-533] - JsonMappingException: Unrecognized field "type" (Class org.openengsb.core.common.Event), not marked as ignorable
     * [OPENENGSB-534] - java.lang.NoSuchMethodException thrown on EventCaller.raiseEvent call
     * [OPENENGSB-542] - Update links to interface in documentation for all domains to new domain and connector project structure.
