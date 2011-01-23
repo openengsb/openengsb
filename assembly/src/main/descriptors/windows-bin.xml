@@ -104,7 +104,6 @@
       <outputDirectory>/</outputDirectory>
       <destName>openengsb-manual.pdf</destName>
       <fileMode>0644</fileMode>
-      <lineEnding>dos</lineEnding>
     </file>
   </files>
 

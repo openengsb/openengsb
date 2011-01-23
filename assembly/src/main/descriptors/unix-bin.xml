@@ -118,7 +118,6 @@
       <outputDirectory>/</outputDirectory>
       <destName>openengsb-manual.pdf</destName>
       <fileMode>0644</fileMode>
-      <lineEnding>unix</lineEnding>
     </file>
   </files>
 
