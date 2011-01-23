@@ -63,6 +63,7 @@
       <item name="What is OpenEngSB?" href="about.html" />
       <item name="Downloads" href="downloads.html" />
       <item name="Changelog" href="${github}/CHANGELOG.md" />
+      <item name="Known Issues" href="${github}/KNOWN_ISSUES.md" />
       <item name="Sponsors" href="sponsors.html" />
     </menu>
 
