@@ -41,11 +41,11 @@ If you're interested in the latest and greatest about the OpenEngSB follow us on
 Twitter [7], Facebook [8] or YouTube [9].
 
 [1] http://www.apache.org/licenses/LICENSE-2.0.html
-[2] http://openengsb.org/
-[3] http://openengsb.org/manual
+[2] http://openengsb.org/${sitesubtype}/
+[3] http://openengsb.org/${sitesubtype}/manual
 [4] http://issues.openengsb.org/jira/browse/OPENENGSB
-[5] http://openengsb.org/mailinglists.html
-[6] http://openengsb.org/contribution.html
+[5] http://openengsb.org/${sitesubtype}/mailinglists.html
+[6] http://openengsb.org/${sitesubtype}/contribution.html
 [7] http://twitter.com/OpenEngSB
 [8] http://www.facebook.com/group.php?gid=208312030232
 [9] http://www.youtube.com/user/cdflexvideo

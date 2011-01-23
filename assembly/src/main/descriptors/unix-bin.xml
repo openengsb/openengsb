@@ -107,7 +107,7 @@
       <lineEnding>unix</lineEnding>
     </file>
     <file>
-      <source>${basedir}/src/main/distribution/README.txt</source>
+      <source>${basedir}/target/classes/README.txt</source>
       <outputDirectory>/</outputDirectory>
       <destName>README</destName>
       <fileMode>0644</fileMode>
