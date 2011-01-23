@@ -174,8 +174,7 @@ Edit button should be completely redone
     * [OPENENGSB-272] - validate services before creation and update 
     * [OPENENGSB-282] - Move Proxy Connector from JMS-Domain to more general subproject
     * [OPENENGSB-283] - ajax feedback after pressing send in testclient
-    * [OPENENGSB-294] - increase page timout
-to something like an hour
+    * [OPENENGSB-294] - increase page timout to something like an hour
     * [OPENENGSB-296] - Consider bringing ProxyServiceManager and AbstractServiceManager together to further code reuse.
     * [OPENENGSB-299] - SendEvent-page should indicate activity while processing the event.
     * [OPENENGSB-304] - deactivate breadcrumbs on all wicket pages
