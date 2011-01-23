@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.integrationtest.exam;
+package org.openengsb.itests.exam;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import org.openengsb.core.common.AbstractOpenEngSBService;
 import org.openengsb.core.common.AliveState;
 import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.event.LogEvent;
-import org.openengsb.integrationtest.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.springframework.security.access.AccessDeniedException;
 

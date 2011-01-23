@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.integrationtest.exam;
+package org.openengsb.itests.exam;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -27,7 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.persistence.PersistenceManager;
 import org.openengsb.core.common.persistence.PersistenceService;
-import org.openengsb.integrationtest.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
 @RunWith(JUnit4TestRunner.class)

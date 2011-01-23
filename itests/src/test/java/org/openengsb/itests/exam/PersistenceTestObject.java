@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.integrationtest.exam;
+package org.openengsb.itests.exam;
 
 import org.apache.commons.lang.ObjectUtils;
 

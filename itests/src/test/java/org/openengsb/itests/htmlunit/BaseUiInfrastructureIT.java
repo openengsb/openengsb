@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.integrationtest.htmlunit;
+package org.openengsb.itests.htmlunit;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -27,7 +27,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openengsb.integrationtest.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
 import com.gargoylesoftware.htmlunit.WebClient;

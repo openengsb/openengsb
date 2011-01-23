@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.integrationtest.exam;
+package org.openengsb.itests.exam;
 
 import static junit.framework.Assert.assertNotNull;
 
@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openengsb.core.common.communication.OutgoingPort;
 import org.openengsb.core.common.util.OsgiServiceUtils;
-import org.openengsb.integrationtest.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
 @RunWith(JUnit4TestRunner.class)

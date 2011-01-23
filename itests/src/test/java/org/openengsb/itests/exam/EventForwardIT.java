@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.integrationtest.exam;
+package org.openengsb.itests.exam;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -38,7 +38,7 @@ import org.openengsb.domain.example.ExampleDomain;
 import org.openengsb.domain.example.ExampleDomainEvents;
 import org.openengsb.domain.example.event.LogEvent;
 import org.openengsb.domain.example.event.LogEvent.Level;
-import org.openengsb.integrationtest.util.AbstractExamTestHelper;
+import org.openengsb.itests.util.AbstractExamTestHelper;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 
 @RunWith(JUnit4TestRunner.class)

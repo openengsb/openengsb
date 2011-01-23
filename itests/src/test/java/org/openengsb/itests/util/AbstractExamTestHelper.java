@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.integrationtest.util;
+package org.openengsb.itests.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

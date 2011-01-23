@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.integrationtest.workflow;
+package org.openengsb.itests.workflow;
 
 import java.io.File;
 import java.io.IOException;
