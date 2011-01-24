@@ -23,7 +23,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -125,12 +127,23 @@ public class TaskboxServiceTest {
     }
 
     @Test
-    public void testFinishTask_shouldDeleteAndProcessEvent() throws PersistenceException, WorkflowException {
-        InOrder io = Mockito.inOrder(persistenceService, workflowService);
+    public void testFinishTask_shouldProcessEvent() throws PersistenceException, WorkflowException {
         Task task = new Task();
         service.finishTask(task);
-
-        //io.verify(persistenceService).delete(task);
-        io.verify(workflowService).processEvent(any(InternalWorkflowEvent.class));
+        verify(workflowService).processEvent(any(InternalWorkflowEvent.class));
+    }
+    
+    @Test
+    public void testFinishTask_shouldDeleteAndProcessEvent() throws PersistenceException, WorkflowException {
+        Task task = new Task();
+        
+        ProcessBag bag = new ProcessBag(task);
+        Map<String, Object> map = new HashMap<String,Object>();
+        map.put("processBag", bag);
+        workflowService.startFlow("TaskDemoWorkflow",map);
+        service.finishTask(task);
+        
+        verify(persistenceService).delete(any(Task.class));
+        verify(workflowService).processEvent(any(InternalWorkflowEvent.class));
     }
 }
