@@ -17,13 +17,16 @@
 package org.openengsb.tooling.pluginsuite.openengsbplugin.base;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -43,10 +46,10 @@ public abstract class ConfiguredMojo extends AbstractOpenengsbMojo {
     // #################################
     // set these in subclass
     // #################################
-    
+
     protected String configProfileXpath;
     protected String configPath;
-    
+
     // #################################
 
     protected List<String> goals = new ArrayList<String>();
@@ -60,6 +63,15 @@ public abstract class ConfiguredMojo extends AbstractOpenengsbMojo {
     private static final String POM_PROFILE_XPATH = "/pom:project/pom:profiles";
 
     protected static final List<File> FILES_TO_REMOVE_FINALLY = new ArrayList<File>();
+
+    /**
+     * If set to "true" prints the temporary pom to the console.
+     * 
+     * @parameter
+     *         expression="${debugMode}"
+     *         default-value="false"
+     */
+    private boolean debugMode;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -85,7 +97,6 @@ public abstract class ConfiguredMojo extends AbstractOpenengsbMojo {
     }
 
     private void executeMavenWithCustomPom(File pom) throws MojoExecutionException {
-        // TODO set all parameters
         getNewMavenExecutor()
                 .setRecursive(true)
                 .setCustomPomFile(pom)
@@ -95,37 +106,53 @@ public abstract class ConfiguredMojo extends AbstractOpenengsbMojo {
 
     private File configureTmpPom(String profileName) throws MojoExecutionException {
         try {
-            Document originalPomDocument = Tools.parseXMLFromString(FileUtils.readFileToString(getSession()
-                    .getRequest().getPom()));
-            // read plugin default configuration
-            Document configDocument = Tools.parseXMLFromString(IOUtils.toString(getClass().getClassLoader()
-                    .getResourceAsStream(configPath)));
+            Document originalPomDocument = parseProjectPom();
+            Document configDocument = parseDefaultConfiguration();
 
-            // .. and insert the profile node into the pom dom tree ..
-            Node licenseCheckMojoProfileNode = Tools.evaluateXPath(configProfileXpath, configDocument, NS_CONTEXT,
-                    XPathConstants.NODE, Node.class);
+            insertConfigProfileIntoOrigPom(originalPomDocument, configDocument, profileName);
 
-            Node idNode = configDocument.createElement("id");
-            idNode.setTextContent(profileName);
-            licenseCheckMojoProfileNode.insertBefore(idNode, licenseCheckMojoProfileNode.getFirstChild());
-
-            Node importedLicenseCheckProfileNode = originalPomDocument.importNode(licenseCheckMojoProfileNode, true);
-
-            Tools.insertDomNode(originalPomDocument, importedLicenseCheckProfileNode, POM_PROFILE_XPATH, NS_CONTEXT);
-
-            // .. the finally serialize that modified pom into a temporary file
-            String serializedXml = Tools.serializeXML(originalPomDocument);
-
-            String baseDirURI = getSession().getRequest().getPom().getParentFile().toURI().toString();
-            File temporaryPom = new File(new URI(baseDirURI + "/" + "tmpPom.xml"));
-
-            FileUtils.writeStringToFile(temporaryPom, serializedXml);
-
-            return temporaryPom;
+            return serializeIntoTmpPom(originalPomDocument);
         } catch (Exception e) {
             LOG.warn(e.getMessage(), e);
             throw new MojoExecutionException("Couldn't configure temporary pom for this execution!", e);
         }
+    }
+
+    private Document parseProjectPom() throws Exception {
+        return Tools.parseXMLFromString(FileUtils.readFileToString(getSession().getRequest().getPom()));
+    }
+
+    private Document parseDefaultConfiguration() throws Exception {
+        return Tools.parseXMLFromString(IOUtils.toString(getClass().getClassLoader().getResourceAsStream(configPath)));
+    }
+
+    private void insertConfigProfileIntoOrigPom(Document originalPom, Document mojoConfiguration, String profileName)
+        throws XPathExpressionException {
+        Node licenseCheckMojoProfileNode = Tools.evaluateXPath(configProfileXpath, mojoConfiguration, NS_CONTEXT,
+                XPathConstants.NODE, Node.class);
+
+        Node idNode = mojoConfiguration.createElement("id");
+        idNode.setTextContent(profileName);
+        licenseCheckMojoProfileNode.insertBefore(idNode, licenseCheckMojoProfileNode.getFirstChild());
+
+        Node importedLicenseCheckProfileNode = originalPom.importNode(licenseCheckMojoProfileNode, true);
+
+        Tools.insertDomNode(originalPom, importedLicenseCheckProfileNode, POM_PROFILE_XPATH, NS_CONTEXT);
+    }
+
+    private File serializeIntoTmpPom(Document pomDocument) throws IOException, URISyntaxException {
+        String serializedXml = Tools.serializeXML(pomDocument);
+        
+        if (debugMode) {
+            System.out.print(serializedXml);
+        }
+
+        String baseDirURI = getSession().getRequest().getPom().getParentFile().toURI().toString();
+        File temporaryPom = new File(new URI(baseDirURI + "/" + "tmpPom.xml"));
+
+        FileUtils.writeStringToFile(temporaryPom, serializedXml);
+
+        return temporaryPom;
     }
 
     private void cleanUp() {

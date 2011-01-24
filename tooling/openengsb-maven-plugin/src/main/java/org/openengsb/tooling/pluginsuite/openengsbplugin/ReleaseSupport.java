@@ -16,27 +16,25 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import org.openengsb.tooling.pluginsuite.openengsbplugin.base.LicenseMojo;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ReleaseMojo;
 
 /**
- * Adds/updates license headers where necessary.
+ * Mojo to perform support releases. This mojo activates the "support" profile
+ * in the project, where you can put your configuration for support releases.
  * 
- * @goal licenseFormat
+ * @goal releaseSupport
  * 
  * @inheritedByDefault false
  * 
  * @requiresProject true
  * 
  * @aggregator true
- * 
  */
-public class LicenseFormat extends LicenseMojo {
+public class ReleaseSupport extends ReleaseMojo {
 
-    public LicenseFormat() {
-        wrappedGoal = "validate";
-        headerPath = "licenseMojo/header.txt";
-        configPath = "licenseMojo/licenseFormatConfig.xml";
-        configProfileXpath = "/lf:licenseFormatMojo/lf:profile";
+    @Override
+    protected void configure() {
+        activatedProfiles.add("support");
     }
 
 }

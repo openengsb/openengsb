@@ -16,27 +16,35 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import org.openengsb.tooling.pluginsuite.openengsbplugin.base.LicenseMojo;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ConfiguredMojo;
 
 /**
- * Adds/updates license headers where necessary.
+ * Mojo to perform nightly releases. This mojo activates the "nightly" profile in
+ * the project, where you can put your configuration for nightly releases.
  * 
- * @goal licenseFormat
+ * @goal releaseNightly
  * 
  * @inheritedByDefault false
  * 
  * @requiresProject true
  * 
  * @aggregator true
- * 
  */
-public class LicenseFormat extends LicenseMojo {
+public class ReleaseNightly extends ConfiguredMojo {
 
-    public LicenseFormat() {
-        wrappedGoal = "validate";
-        headerPath = "licenseMojo/header.txt";
-        configPath = "licenseMojo/licenseFormatConfig.xml";
-        configProfileXpath = "/lf:licenseFormatMojo/lf:profile";
+    public ReleaseNightly() {
+        configPath = "releaseMojo/nightlyConfig.xml";
+        configProfileXpath = "/rn:releaseNightlyMojo/rn:profile";
+    }
+
+    @Override
+    protected void preExecute() throws MojoExecutionException {
+        goals.add("clean");
+        goals.add("install");
+        goals.add("deploy");
+        activatedProfiles.add("nightly");
+        userProperties.put("maven.test.skip", "true");
     }
 
 }

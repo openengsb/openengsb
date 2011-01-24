@@ -16,27 +16,25 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import org.openengsb.tooling.pluginsuite.openengsbplugin.base.LicenseMojo;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ReleaseMojo;
 
 /**
- * Adds/updates license headers where necessary.
+ * Mojo to perform final releases. This mojo activates the "final" profile in
+ * the project, where you can put your configuration for final releases.
  * 
- * @goal licenseFormat
+ * @goal releaseFinal
  * 
  * @inheritedByDefault false
  * 
  * @requiresProject true
  * 
  * @aggregator true
- * 
  */
-public class LicenseFormat extends LicenseMojo {
+public class ReleaseFinal extends ReleaseMojo {
 
-    public LicenseFormat() {
-        wrappedGoal = "validate";
-        headerPath = "licenseMojo/header.txt";
-        configPath = "licenseMojo/licenseFormatConfig.xml";
-        configProfileXpath = "/lf:licenseFormatMojo/lf:profile";
+    @Override
+    protected void configure() {
+        activatedProfiles.add("final");
     }
 
 }

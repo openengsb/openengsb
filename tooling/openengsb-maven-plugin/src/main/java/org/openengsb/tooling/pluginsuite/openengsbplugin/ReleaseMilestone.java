@@ -16,27 +16,26 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import org.openengsb.tooling.pluginsuite.openengsbplugin.base.LicenseMojo;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ReleaseMojo;
 
 /**
- * Adds/updates license headers where necessary.
+ * Mojo to perform milestone releases. This mojo activates the "milestone"
+ * profile in the project, where you can put your configuration for milestone
+ * releases.
  * 
- * @goal licenseFormat
+ * @goal releaseMilestone
  * 
  * @inheritedByDefault false
  * 
  * @requiresProject true
  * 
  * @aggregator true
- * 
  */
-public class LicenseFormat extends LicenseMojo {
+public class ReleaseMilestone extends ReleaseMojo {
 
-    public LicenseFormat() {
-        wrappedGoal = "validate";
-        headerPath = "licenseMojo/header.txt";
-        configPath = "licenseMojo/licenseFormatConfig.xml";
-        configProfileXpath = "/lf:licenseFormatMojo/lf:profile";
+    @Override
+    protected void configure() {
+        activatedProfiles.add("milestone");
     }
 
 }
