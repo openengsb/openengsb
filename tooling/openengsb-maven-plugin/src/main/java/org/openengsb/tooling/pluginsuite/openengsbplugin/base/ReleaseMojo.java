@@ -38,6 +38,7 @@ public abstract class ReleaseMojo extends ConfiguredMojo {
 
     @Override
     protected void preExecute() throws MojoExecutionException {
+        throwErrorIfProjectIsNotExecutedInRootDirectory();
         configure();
         goals.add("release:prepare");
         goals.add("release:perform");

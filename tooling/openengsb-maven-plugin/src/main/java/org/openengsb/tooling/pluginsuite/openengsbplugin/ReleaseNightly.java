@@ -20,8 +20,8 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ConfiguredMojo;
 
 /**
- * Mojo to perform nightly releases. This mojo activates the "nightly" profile in
- * the project, where you can put your configuration for nightly releases.
+ * Mojo to perform nightly releases. This mojo activates the "nightly" profile
+ * in the project, where you can put your configuration for nightly releases.
  * 
  * @goal releaseNightly
  * 
@@ -40,6 +40,7 @@ public class ReleaseNightly extends ConfiguredMojo {
 
     @Override
     protected void preExecute() throws MojoExecutionException {
+        throwErrorIfProjectIsNotExecutedInRootDirectory();
         goals.add("clean");
         goals.add("install");
         goals.add("deploy");
