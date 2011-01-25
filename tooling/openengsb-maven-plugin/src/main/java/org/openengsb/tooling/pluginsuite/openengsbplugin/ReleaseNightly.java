@@ -40,7 +40,6 @@ public class ReleaseNightly extends ConfiguredMojo {
 
     @Override
     protected void configure() throws MojoExecutionException {
-        throwErrorIfProjectIsNotExecutedInRootDirectory();
         goals.add("clean");
         goals.add("install");
         goals.add("deploy");
@@ -51,6 +50,7 @@ public class ReleaseNightly extends ConfiguredMojo {
 
     @Override
     protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
+        throwErrorIfProjectIsNotExecutedInRootDirectory();
     }
 
 }

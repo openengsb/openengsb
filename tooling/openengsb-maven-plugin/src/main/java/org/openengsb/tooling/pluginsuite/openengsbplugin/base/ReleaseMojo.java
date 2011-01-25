@@ -40,7 +40,6 @@ public abstract class ReleaseMojo extends ConfiguredMojo {
 
     @Override
     protected final void configure() throws MojoExecutionException {
-        throwErrorIfProjectIsNotExecutedInRootDirectory();
         configure();
         goals.add("release:prepare");
         goals.add("release:perform");
@@ -49,7 +48,8 @@ public abstract class ReleaseMojo extends ConfiguredMojo {
     }
 
     @Override
-    protected final void validateIfExecutionIsAllowed() throws MojoExecutionException {  
+    protected final void validateIfExecutionIsAllowed() throws MojoExecutionException {
+        throwErrorIfProjectIsNotExecutedInRootDirectory();
     }
     
     
