@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.common.context.Context;
+import org.openengsb.core.common.context.ContextConnectorService;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.context.ContextPath;
-import org.openengsb.core.common.context.ContextService;
 import org.openengsb.core.common.context.ContextStorageBean;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
@@ -35,7 +35,7 @@ import org.springframework.osgi.context.BundleContextAware;
 
 import com.google.common.base.Preconditions;
 
-public class ContextServiceImpl implements ContextCurrentService, ContextService, BundleContextAware {
+public class ContextServiceImpl implements ContextCurrentService, ContextConnectorService, BundleContextAware {
 
     private Context rootContext;
 
@@ -171,4 +171,13 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
         this.persistenceManager = persistenceManager;
     }
 
+    @Override
+    public String getDefaultConnectorServiceId(String domainName) {
+        return getValue(String.format("/domain/%s/defaultConnector/id", domainName));
+    }
+
+    @Override
+    public void registerDefaultConnector(String domainName, String serviceId) {
+        putValue(String.format("/domain/%s/defaultConnector/id", domainName), serviceId);
+    }
 }
