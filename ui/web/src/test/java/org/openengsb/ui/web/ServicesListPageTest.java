@@ -35,13 +35,16 @@ import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.util.AliveState;
 import org.openengsb.core.test.NullDomainImpl;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
 public class ServicesListPageTest {
@@ -51,9 +54,10 @@ public class ServicesListPageTest {
     private DomainService domainServiceMock;
     private List<ServiceReference> managedServiceInstances;
     private List<ServiceManager> serviceManagerListMock;
+    private BundleContext bundleContext;
 
     @Before
-    public void setup() {
+    public void setup() throws InvalidSyntaxException {
         Locale.setDefault(new Locale("en"));
         tester = new WicketTester();
         ApplicationContextMock context = new ApplicationContextMock();
@@ -63,13 +67,18 @@ public class ServicesListPageTest {
         managedServiceInstances = new ArrayList<ServiceReference>();
         serviceManagerListMock = new ArrayList<ServiceManager>();
 
+        bundleContext = mock(BundleContext.class);
+        when(bundleContext.getAllServiceReferences("org.openengsb.core.common.Domain", null)).thenReturn(
+            managedServiceInstances.toArray(new ServiceReference[0]));
+
         context.putBean(serviceManagerMock);
         context.putBean("services", serviceManagerListMock);
         context.putBean(domainServiceMock);
         context.putBean(contextCurrentServiceMock);
-        context.putBean("managedServiceInstances", managedServiceInstances);
-        tester.getApplication()
-            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
+        context.putBean("bundleContext", bundleContext);
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
+        tester.getApplication().addComponentInstantiationListener(
+            new SpringComponentInjector(tester.getApplication(), context, true));
     }
 
     @Test
@@ -83,7 +92,7 @@ public class ServicesListPageTest {
         ServiceReference serRef = mock(ServiceReference.class);
         when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
         when(serRef.getProperty("id")).thenReturn("testService");
-        managedServiceInstances.add(serRef);
+        addServiceRef(serRef);
         NullDomainImpl domainService = new NullDomainImpl();
         domainService.setAliveState(AliveState.CONNECTING);
         when(domainServiceMock.getService(serRef)).thenReturn(domainService);
@@ -98,9 +107,19 @@ public class ServicesListPageTest {
         tester.assertComponent("onlineServicePanel:onlineServices", ListView.class);
         tester.assertComponent("offlineServicePanel:offlineServices", ListView.class);
         tester.assertComponent("disconnectedServicePanel:disconnectedServices", ListView.class);
-        Label nameLabel = (Label) tester
-            .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices:0:service.name");
+        Label nameLabel =
+            (Label) tester.getComponentFromLastRenderedPage("connectingServicePanel:connectingServices:0:service.name");
         assertThat(nameLabel.getDefaultModelObjectAsString(), is("testService"));
+    }
+
+    private void addServiceRef(ServiceReference serRef) {
+        managedServiceInstances.add(serRef);
+        try {
+            when(bundleContext.getAllServiceReferences("org.openengsb.core.common.Domain", null)).thenReturn(
+                managedServiceInstances.toArray(new ServiceReference[0]));
+        } catch (InvalidSyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -114,12 +133,13 @@ public class ServicesListPageTest {
         when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
         tester.startPage(ServiceListPage.class);
 
-        ListView<ServiceReference> connectingService = (ListView<ServiceReference>) tester
-            .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices");
+        ListView<ServiceReference> connectingService =
+            (ListView<ServiceReference>) tester
+                .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices");
         assertThat(connectingService.getModelObject().size(), is(1));
 
-        ListView<ServiceReference> onlineServices = (ListView<ServiceReference>) tester
-            .getComponentFromLastRenderedPage("onlineServicePanel:onlineServices");
+        ListView<ServiceReference> onlineServices =
+            (ListView<ServiceReference>) tester.getComponentFromLastRenderedPage("onlineServicePanel:onlineServices");
         assertThat(onlineServices.getModelObject().size(), is(0));
 
         domainService.setAliveState(AliveState.ONLINE);
@@ -130,8 +150,8 @@ public class ServicesListPageTest {
         } finally {
             cycle.getResponse().close();
         }
-        ListView<ServiceReference> onlineServicesNew = (ListView<ServiceReference>) tester
-            .getComponentFromLastRenderedPage("onlineServicePanel:onlineServices");
+        ListView<ServiceReference> onlineServicesNew =
+            (ListView<ServiceReference>) tester.getComponentFromLastRenderedPage("onlineServicePanel:onlineServices");
         assertThat(onlineServicesNew.getModelObject().size(), is(1));
     }
 
@@ -142,10 +162,11 @@ public class ServicesListPageTest {
         tester.startPage(ServiceListPage.class);
 
         tester.debugComponentTrees();
-        Label name = (Label) tester
-            .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices:0:service.name");
-        Label description = (Label) tester
-            .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices:0:service.description");
+        Label name =
+            (Label) tester.getComponentFromLastRenderedPage("connectingServicePanel:connectingServices:0:service.name");
+        Label description =
+            (Label) tester
+                .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices:0:service.description");
         assertThat(name.getDefaultModelObjectAsString(), is("testService"));
         assertThat(description.getDefaultModelObjectAsString(), is("testDescription"));
 
@@ -182,8 +203,9 @@ public class ServicesListPageTest {
     public void testDeleteLink_AllListsShouldBeEmptyAfterwards() {
         setUpServicesMap();
         tester.startPage(ServiceListPage.class);
-        ListView<ServiceReference> connectingServices = (ListView<ServiceReference>) tester
-            .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices");
+        ListView<ServiceReference> connectingServices =
+            (ListView<ServiceReference>) tester
+                .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices");
         assertThat(connectingServices.size(), is(1));
 
         tester.assertComponent("connectingServicePanel:connectingServices:0:updateService", AjaxLink.class);
@@ -191,8 +213,9 @@ public class ServicesListPageTest {
         tester.clickLink("connectingServicePanel:connectingServices:0:deleteService", true);
         tester.debugComponentTrees();
 
-        ListView<ServiceReference> updateService = (ListView<ServiceReference>) tester
-            .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices");
+        ListView<ServiceReference> updateService =
+            (ListView<ServiceReference>) tester
+                .getComponentFromLastRenderedPage("connectingServicePanel:connectingServices");
         assertThat(updateService.size(), is(0));
         tester.assertVisible("connectingServicePanel:noConServices");
         tester.assertVisible("onlineServicePanel:noOnServices");
@@ -206,7 +229,7 @@ public class ServicesListPageTest {
         when(serRef.getProperty("openengsb.service.type")).thenReturn("service");
         when(serRef.getProperty("id")).thenReturn("testService");
         when(serRef.getProperty("managerId")).thenReturn("serviceManagerId");
-        managedServiceInstances.add(serRef);
+        addServiceRef(serRef);
         NullDomainImpl domainService = new NullDomainImpl();
         when(domainServiceMock.getService(serRef)).thenReturn(domainService);
         ServiceDescriptor serviceDescriptorMock = mock(ServiceDescriptor.class);

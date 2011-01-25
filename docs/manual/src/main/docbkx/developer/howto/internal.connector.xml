@@ -43,15 +43,18 @@
 
     <para>To take the burden of the developer creating the initial boilerplate code and configuration, a Maven archetype
       is provided for creating the initial project structure. Furthermore, if the new connector is developed inside of
-      the OpenEngSB repository, a shell script can be found at <literal>etc/scripts/gen-connector.sh</literal> for
-      further help in creating a new connector project.</para>
+      the OpenEngSB repository, the <literal>openengsb-maven-plugin</literal>
+      (see <xref linkend="developer.quickstart.tools.mavenplugin"/>)
+      (or the <literal>etc/scripts/gen-connector.sh</literal> script, which wraps the invocation of the maven plugin)
+      should be used for assisted creation of a new connector project.</para>
 
    <section>
       <title>Using the Maven Archetype</title>
 
-      <para>It is not recommended to use the maven archetype directly, because the gen-connector.sh script executes additional
-      tasks, like the renaming of the resulting project. Furthermore the shell script tries to make sure that the new project
-      is consistent with the naming conventions of the OpenEngSB project.</para>
+      <para>It is not recommended to use the maven archetype directly, because the <literal>genConnector</literal> goal
+      of the openengsb-maven-plugin executes additional tasks, like the renaming of the resulting project. Furthermore
+      it tries to make sure that the new project is consistent with the naming conventions of the
+      OpenEngSB project.</para>
       
       <para>The following parameters have to be specified to execute the correct archetype:
         <itemizedlist>
@@ -84,33 +87,40 @@
         Where &lt;yourDomain&gt; has to be replaced by your domain name and &lt;yourConnector&gt; has to be replaced by the respective connector name.
       </para>
       <para>Note that the archetype will use the artifactId to name the project, but the OpenEngSB convention is to use the
-      connector name. Therefore you will have to rename the resulting project. Do not forget to check that the new connector is 
-      included in the modules section of the domain parent pom.</para>
+      connector name. Therefore you will have to rename the resulting project (however if you use the
+      <literal>genConnector</literal> mojo, this renaming will be performed automatically).
+      Do not forget to check that the new connector is included in the modules section of the domain parent pom.</para>
     </section>
 
     <section>
-      <title>Using the <literal>gen-connector.sh</literal> shell script</title>
+      <title>Using the <literal>openengsb-maven-plugin:genConnector</literal></title>
 
-      <para>Calling the script should be done from the domain-specific directory. I.e. if your are developing a new
-        connector for the Notification-Domain your current directory should be <literal>domains/notification</literal>.
-        Inside your favourite shell execute the script.</para>
+      <para>
+        First make sure that the plugin is installed in your local maven repository
+        (see <xref linkend="developer.quickstart.tools.mavenplugin"/>).
+        Then the <literal>genConnector</literal> mojo should be executed from the connector directory
+        (<literal>connector/</literal>) (alternatively the <literal>etc/scripts/gen-connector.sh</literal> script can
+        be used which invokes the openengsb-maven-plugin for you).
+      </para>
 
-      <literallayout><command>notification $</command> ../../etc/scripts/gen-connector.sh</literallayout>
+      <literallayout>
+        <command>connector $</command> mvn org.openengsb.tooling.pluginsuite:openengsb-maven-plugin:&lt;version&gt;:genConnector
+      </literallayout>
 
-      <para>The script tries to guess as much as possible from your current location and previous input. Guessed values
+      <para>The mojo tries to guess as much as possible from your previous input. Guessed values
         are displayed in brackets. If the guess is what you want, simply acknowledge with <literal>Return</literal>. The
-        following output has been recorded by executing the script in the <literal>domains/notification</literal>
+        following output has been recorded by executing the script in the <literal>connector/</literal>
         directory:</para>
 
-      <literallayout><command>Domain Name (is notification): </command> &lt;Enter>
-<command>Domain Interface (is NotificationDomain): </command>&lt;Enter>
-<command>Connector Name: </command>twitter &lt;Enter>
-<command>Version (is 1.0.0-SNAPSHOT): </command>&lt;Enter>
-<command>Project Name (is OpenEngSB :: Domains :: Notification :: Twitter): </command>&lt;Enter></literallayout>
+      <literallayout><command>Domain Name [domain]: </command>notification &lt;Enter>
+<command>Domain Interface [NotificationDomain]: </command>&lt;Enter>
+<command>Connector Name [myconnector]: </command>twitter &lt;Enter>
+<command>Version [1.0.0-SNAPSHOT]: </command>&lt;Enter>
+<command>Project Name [OpenEngSB :: Domains :: Notification :: Twitter]: </command>&lt;Enter></literallayout>
 
-      <para>Only the connector name was set, everything else has been guessed correctly by the script. After this inputs
+      <para>Only the domain and connector name was set, everything else has been guessed correctly. After this inputs
         the Maven Archetype gets called and may ask you for further inputs. You can simply hit <literal>Return</literal>
-        each time, because the values have been already set by the script. If the script finishes successfully the new
+        each time, because the values have been already set by the mojo. If it finishes successfully the new
         connector project has been created and you may start implementing.</para>
     </section>
   </section>

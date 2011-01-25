@@ -21,23 +21,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.model.StringResourceModel;
 import org.openengsb.core.common.ServiceManager;
 import org.openengsb.core.common.descriptor.AttributeDefinition;
 import org.openengsb.core.common.descriptor.AttributeDefinition.Builder;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
-import org.openengsb.ui.web.editor.ServiceEditorPanel;
-import org.openengsb.ui.web.model.LocalizableStringModel;
+import org.openengsb.ui.common.wicket.editor.ServiceEditorPanel;
+import org.openengsb.ui.common.wicket.model.LocalizableStringModel;
 import org.openengsb.ui.web.model.ServiceId;
 import org.openengsb.ui.web.model.WicketStringLocalizer;
 
+@AuthorizeInstantiation("ROLE_USER")
 public class ConnectorEditorPage extends BasePage {
 
     private final transient ServiceManager serviceManager;
-    private ServiceEditorPanel editorPanel;
+    private ServiceEditor editor;
 
     public ConnectorEditorPage(ServiceManager serviceManager) {
         this.serviceManager = serviceManager;
@@ -64,12 +65,11 @@ public class ConnectorEditorPage extends BasePage {
                 values.put(attribute.getId(), attribute.getDefaultValue().getString(getSession().getLocale()));
             }
         }
-        editorPanel =
-            new ServiceEditorPanel("editor", attributes, values, serviceManager.getDescriptor().getFormValidator()) {
+        editor =
+            new ServiceEditor("editor", attributes, values, serviceManager.getDescriptor().getFormValidator()) {
                 @Override
                 public void onSubmit() {
-                    CheckBox component = (CheckBox) editorPanel.get("form:validate");
-                    boolean checkBoxValue = component.getModelObject();
+                    boolean checkBoxValue = isValidating();
                     if (checkBoxValue) {
                         MultipleAttributeValidationResult updateWithValidation =
                             serviceManager.update(getValues().get("id"), getValues());
@@ -95,7 +95,7 @@ public class ConnectorEditorPage extends BasePage {
                     setResponsePage(new TestClient(reference));
                 }
             };
-        add(editorPanel);
+        add(editor);
     }
 
     private List<AttributeDefinition> buildAttributeList(ServiceManager service) {
@@ -110,7 +110,7 @@ public class ConnectorEditorPage extends BasePage {
     }
 
     public ServiceEditorPanel getEditorPanel() {
-        return editorPanel;
+        return editor.getServiceEditorPanel();
     }
 
     @Override

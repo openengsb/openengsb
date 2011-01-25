@@ -20,13 +20,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openengsb.ui.web.ArgumentModel;
 
 @SuppressWarnings("serial")
 public class MethodCall implements Serializable {
     private ServiceId service;
     private MethodId method;
-    private List<ArgumentModel> arguments = new ArrayList<ArgumentModel>();
+    private List<Argument> arguments = new ArrayList<Argument>();
 
     public ServiceId getService() {
         return this.service;
@@ -44,11 +43,11 @@ public class MethodCall implements Serializable {
         this.method = method;
     }
 
-    public List<ArgumentModel> getArguments() {
+    public List<Argument> getArguments() {
         return this.arguments;
     }
 
-    public void setArguments(List<ArgumentModel> arguments) {
+    public void setArguments(List<Argument> arguments) {
         this.arguments = arguments;
     }
 

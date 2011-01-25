@@ -17,13 +17,16 @@
 package org.openengsb.connector.maven;
 
 import org.openengsb.connector.maven.internal.MavenServiceImpl;
+import org.openengsb.connector.maven.internal.MavenServiceInstanceFactory;
 import org.openengsb.core.common.AbstractServiceManager;
 import org.openengsb.core.common.ServiceInstanceFactory;
 import org.openengsb.domain.test.TestDomain;
 
 public class TestDomainServiceManager extends AbstractServiceManager<TestDomain, MavenServiceImpl> {
 
-    public TestDomainServiceManager(ServiceInstanceFactory<TestDomain, MavenServiceImpl> factory) {
-        super(factory);
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public TestDomainServiceManager(MavenServiceInstanceFactory factory) {
+        super((ServiceInstanceFactory) factory);
     }
+
 }

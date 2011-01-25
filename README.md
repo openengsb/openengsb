@@ -36,5 +36,5 @@ etc/scripts/pre-push.sh
 
 Further Information
 -------------------
-This readme gives only the most important information for developer. General information about this proejct is located at http://openengsb.org. The detailed developer documentation is located at http://openengsb.org/reference/index.html.
+This readme gives only the most important information for developer. General information about this project is located at http://openengsb.org. The detailed developer documentation is located at http://openengsb.org/reference/index.html.
 

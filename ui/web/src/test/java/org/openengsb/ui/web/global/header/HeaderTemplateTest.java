@@ -16,24 +16,6 @@
 
 package org.openengsb.ui.web.global.header;
 
-/**
-
- Copyright 2010 OpenEngSB Division, Vienna University of Technology
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-
- */
-
 import static org.mockito.Mockito.mock;
 
 import java.util.Arrays;
@@ -51,14 +33,17 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.openengsb.core.common.Event;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.proxy.ProxyFactory;
 import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
+import org.openengsb.domain.auditing.AuditingDomain;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.global.footer.ImprintPage;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 import org.osgi.framework.BundleContext;
 
 public class HeaderTemplateTest {
@@ -71,6 +56,7 @@ public class HeaderTemplateTest {
         tester = new WicketTester();
         context = new ApplicationContextMock();
         context.putBean(Mockito.mock(ContextCurrentService.class));
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
     }
 
     @Test
@@ -115,6 +101,7 @@ public class HeaderTemplateTest {
         context.putBean(domainServiceMock);
         BundleContext bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
+        context.putBean(mock(ProxyFactory.class));
         setupTesterWithSpringMockContext();
     }
 
@@ -126,26 +113,28 @@ public class HeaderTemplateTest {
     }
 
     private void setupTesterWithSpringMockContext() {
-        tester.getApplication()
-            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, true));
+        tester.getApplication().addComponentInstantiationListener(
+            new SpringComponentInjector(tester.getApplication(), context, true));
     }
 
     @SuppressWarnings("unchecked")
     private void setUpSendEventPage() {
         tester = new WicketTester();
         AnnotApplicationContextMock context = new AnnotApplicationContextMock();
-        tester.getApplication()
-            .addComponentInstantiationListener(new SpringComponentInjector(tester.getApplication(), context, false));
+        tester.getApplication().addComponentInstantiationListener(
+            new SpringComponentInjector(tester.getApplication(), context, false));
         WorkflowService eventService = mock(WorkflowService.class);
         context.putBean("eventService", eventService);
         context.putBean("domainService", mock(DomainService.class));
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
         context.putBean("ruleManagerBean", mock(RuleManager.class));
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
+        context.putBean("auditing", mock(AuditingDomain.class));
+        context.putBean(mock(ProxyFactory.class));
         BundleContext bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
         List<Class<? extends Event>> eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         tester.startPage(Index.class);
-
     }
 }

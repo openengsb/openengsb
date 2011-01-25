@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <!--
 
     Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -17,7 +18,7 @@
 -->
 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd"
-      xml:lang="en" lang="en">
+      xml:lang="en">
 
 <wicket:head>
   <link rel="stylesheet" type="text/css" href="style/style.css"/>
@@ -30,23 +31,25 @@
 </wicket:head>
 
 <body>
-  <div wicket:id="header">header</div>
-  <a class="languageIconsE" href="#" wicket:id="lang.en"> <img wicket:message="title:headerPage.title" alt="English"
-                                                               title="" src="images/english_icon.png"/> </a>
-  <a class="languageIconsG" href="#" wicket:id="lang.de"> <img wicket:message="title:headerPage.title" alt="Deutsch"
-                                                               title="" src="images/german_icon.png"/> </a>
+  <div wicket:id="header">[header]</div>
 
+  <div class="mainFrame">
+    <div class="menuRight">
+      <form wicket:id="projectChoiceForm" class="projectChoicePosition">
+        <wicket:message key="project.choice.label" />:<select wicket:id="projectChoice" />
+      </form>
+      <a class="logout" href="#" wicket:id="logout" >
+        <span wicket:id="logintext">
+          <wicket:message key="login">[login]</wicket:message>
+        </span>
+        <span wicket:id="logouttext">
+          <wicket:message key="logout">[logout]</wicket:message>
+        </span>
+      </a>
+    </div>
+    <div class="mainArea"><wicket:child>[children]</wicket:child></div>
+  </div>
 
-  <form wicket:id="projectChoiceForm" class="projectChoicePosition">
-    <wicket:message key="project.choice.label">[project.choice.label]</wicket:message>
-    <select wicket:id="projectChoice"/>
-
-    <a href="#" wicket:id="logout" >
-      <wicket:message key="logout.label">[logout.label]</wicket:message>
-    </a>
-  </form>
-  <wicket:child>[children]</wicket:child>
-  <div wicket:id="footer">footer</div>
-
+  <div wicket:id="footer">[footer]</div>
 </body>
 </html>

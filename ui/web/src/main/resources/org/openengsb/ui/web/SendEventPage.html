@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <!--
 
     Copyright 2010 OpenEngSB Division, Vienna University of Technology
@@ -31,6 +32,12 @@
     <div wicket:id="feedback"></div>
     <input type="submit" wicket:message="value:editor.submit" wicket:id="submitButton" />
   </form>
+  <h2>Audits</h2>
+  <div wicket:id="auditsContainer">
+    <ul wicket:id="audits">
+      <li><p wicket:id="audit">[audit]</p></li>
+    </ul>
+  </div>
   <div wicket:id="ruleEditor" />
 </wicket:extend>
 </body>

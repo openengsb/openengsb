@@ -16,13 +16,16 @@
 
 package org.openengsb.core.persistence.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.osgi.framework.Bundle;
 
 public class CustomClassLoader extends ClassLoader {
 
     private Bundle bundle;
 
-    private ClassLoader backUpClassLoader;
+    private Map<String, Class<?>> classPool = new HashMap<String, Class<?>>();
 
     public CustomClassLoader(ClassLoader parent, Bundle bundle) {
         super(parent);
@@ -34,34 +37,48 @@ public class CustomClassLoader extends ClassLoader {
         try {
             return bundle.loadClass(name);
         } catch (ClassNotFoundException cnfe) {
-            return tryBackupClassLoader(name);
+            return tryServiceBundles(name);
         }
     }
 
-    private Class<?> tryBackupClassLoader(String name) throws ClassNotFoundException {
-        if (backUpClassLoader == null) {
-            throw new ClassNotFoundException(getExceptionText(name, false));
+    private Class<?> tryServiceBundles(String name) throws ClassNotFoundException {
+        for (Bundle other : bundle.getBundleContext().getBundles()) {
+            Class<?> res = tryServiceBundle(other, name);
+            if (res != null) {
+                return res;
+            }
+        }
+        return tryBackupSolution(name);
+    }
+
+    private Class<?> tryServiceBundle(Bundle otherBundle, String name) {
+        if (otherBundle.getState() != Bundle.ACTIVE) {
+            return null;
         }
         try {
-            return backUpClassLoader.loadClass(name);
+            return otherBundle.loadClass(name);
         } catch (ClassNotFoundException cnfe) {
-            throw new ClassNotFoundException(getExceptionText(name, true));
+            return null;
         }
     }
 
-    private String getExceptionText(String name, boolean backupUsed) {
-        String message = "CustomClassLoader for OpenEngSB persistence cannot load class with name '" + name
-                + "' with default class loader and bundle class loader.";
-        if (backupUsed) {
-            message += "Backup class loader '" + backUpClassLoader + "' used.";
-        } else {
-            message += "No backup class loader configured.";
+    private Class<?> tryBackupSolution(String name) throws ClassNotFoundException {
+        if (classPool.containsKey(name)) {
+            return classPool.get(name);
         }
-        return message;
+        String message =
+            String.format(
+                "Class '%s' could not be loaded by bundle class loader of bundle %s and was not found in classpool %s",
+                name, bundle.getSymbolicName(), classPool);
+        throw new ClassNotFoundException(message);
     }
 
-    public void setBackUpClassLoader(ClassLoader backUpClassLoader) {
-        this.backUpClassLoader = backUpClassLoader;
+    public void addClassToPool(Class<?> clazz) {
+        classPool.put(clazz.getName(), clazz);
+    }
+
+    public void clearClassPool() {
+        classPool.clear();
     }
 
 }

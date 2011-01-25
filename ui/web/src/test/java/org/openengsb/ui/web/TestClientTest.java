@@ -16,15 +16,16 @@
 
 package org.openengsb.ui.web;
 
-import static junit.framework.Assert.assertFalse;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
@@ -63,13 +64,14 @@ import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.openengsb.core.common.l10n.PassThroughLocalizableString;
+import org.openengsb.core.common.proxy.ProxyFactory;
 import org.openengsb.core.common.service.DomainService;
-import org.openengsb.core.common.util.AliveState;
-import org.openengsb.ui.web.editor.BeanArgumentPanel;
-import org.openengsb.ui.web.editor.fields.DropdownField;
-import org.openengsb.ui.web.editor.fields.InputField;
+import org.openengsb.ui.common.wicket.editor.BeanEditorPanel;
+import org.openengsb.ui.common.wicket.editor.fields.DropdownField;
+import org.openengsb.ui.common.wicket.editor.fields.InputField;
 import org.openengsb.ui.web.model.MethodCall;
 import org.openengsb.ui.web.model.MethodId;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 import org.openengsb.ui.web.model.ServiceId;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -86,49 +88,18 @@ public class TestClientTest {
 
         void update(UpdateEnum updateEnum);
 
+        void update(Integer integer);
+
     }
 
     public enum UpdateEnum {
         ONE, TWO
     }
 
-    public class TestService implements TestInterface {
-
-        private boolean called = false;
-        private TestBean test;
-
-        @Override
-        public void update(String id, String name) {
-            if ("fail".equals(id)) {
-                throw new IllegalArgumentException();
-            }
-            called = true;
-        }
-
-        @Override
-        public void update(TestBean test) {
-            this.test = test;
-        }
-
-        public String getName(String id) {
-            return "";
-        }
-
-        @Override
-        public AliveState getAliveState() {
-            return AliveState.OFFLINE;
-        }
-
-        @Override
-        public void update(UpdateEnum updateEnum) {
-        }
-
-    }
-
     private WicketTester tester;
 
     private ApplicationContextMock context;
-    private TestService testService;
+    private TestInterface testService;
     private FormTester formTester;
     private boolean serviceListExpanded = true;
     private BundleContext bundleContext;
@@ -140,6 +111,8 @@ public class TestClientTest {
         context.putBean(mock(ContextCurrentService.class));
         bundleContext = mock(BundleContext.class);
         context.putBean(bundleContext);
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
+        context.putBean(mock(ProxyFactory.class));
     }
 
     @Test
@@ -231,7 +204,7 @@ public class TestClientTest {
         for (MethodId mid : choices) {
             choiceMethods.add(TestInterface.class.getMethod(mid.getName(), mid.getArgumentTypesAsClasses()));
         }
-        Assert.assertEquals(Arrays.asList(TestInterface.class.getDeclaredMethods()), choiceMethods);
+        Assert.assertEquals(Arrays.asList(TestInterface.class.getMethods()), choiceMethods);
     }
 
     @Test
@@ -253,11 +226,11 @@ public class TestClientTest {
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
-
         Assert.assertEquals(2, argList.size());
         Iterator<? extends Component> iterator = argList.iterator();
         while (iterator.hasNext()) {
-            Assert.assertEquals(InputField.class, iterator.next().getClass());
+            Component next = iterator.next();
+            tester.assertComponent(next.getPageRelativePath() + ":valueEditor", InputField.class);
         }
     }
 
@@ -272,10 +245,8 @@ public class TestClientTest {
         setMethodInDropDown(2);
 
         Assert.assertEquals(1, argList.size());
-        Iterator<? extends Component> iterator = argList.iterator();
-        Component next = iterator.next();
-        Assert.assertEquals(DropdownField.class, next.getClass());
-        assertFalse(iterator.hasNext());
+        tester.assertComponent("methodCallForm:argumentListContainer:argumentList:arg0panel:valueEditor",
+            DropdownField.class);
     }
 
     private void setMethodInDropDown(int index) {
@@ -294,9 +265,9 @@ public class TestClientTest {
         setMethodInDropDown(1);
 
         Assert.assertEquals(1, argList.size());
-        Assert.assertEquals(BeanArgumentPanel.class, argList.get("0").getClass());
-
-        RepeatingView panel = (RepeatingView) argList.get("0:fields");
+        Assert.assertEquals(BeanEditorPanel.class, argList.get("arg0panel:valueEditor").getClass());
+        tester.debugComponentTrees();
+        RepeatingView panel = (RepeatingView) argList.get("arg0panel:valueEditor:fields");
         Assert.assertEquals(2, panel.size());
     }
 
@@ -309,14 +280,13 @@ public class TestClientTest {
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
-
+        tester.debugComponentTrees();
         for (int i = 0; i < argList.size(); i++) {
-            formTester.setValue("argumentListContainer:argumentList:argument_" + i + ":field", "test");
+            formTester.setValue("argumentListContainer:argumentList:arg" + i + "panel:valueEditor:field", "test");
         }
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
-
-        Assert.assertTrue(testService.called);
+        verify(testService).update("test", "test");
     }
 
     @Test
@@ -326,17 +296,31 @@ public class TestClientTest {
         setServiceInDropDown(0);
         setMethodInDropDown(1);
 
-        String beanPanelPath = "argumentListContainer:argumentList:0";
-        BeanArgumentPanel beanPanel =
-            (BeanArgumentPanel) tester.getComponentFromLastRenderedPage("methodCallForm:" + beanPanelPath);
+        String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
+        BeanEditorPanel beanPanel =
+            (BeanEditorPanel) tester.getComponentFromLastRenderedPage("methodCallForm:" + beanPanelPath);
         String idFieldId = beanPanel.getFieldViewId("id");
         String nameFieldId = beanPanel.getFieldViewId("name");
         formTester.setValue(beanPanelPath + ":fields:" + idFieldId + ":row:field", "42");
         formTester.setValue(beanPanelPath + ":fields:" + nameFieldId + ":row:field", "test");
 
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+        verify(testService).update(new TestBean("42", "test"));
+    }
 
-        Assert.assertNotNull(testService.test);
+    @Test
+    public void testPerformMethodCallWithIntegerObjectArgument() throws Exception {
+        setupAndStartTestClientPage();
+
+        setServiceInDropDown(0);
+        setMethodInDropDown(3);
+
+        String beanPanelPath = "argumentListContainer:argumentList:arg0panel:valueEditor";
+        tester.debugComponentTrees();
+        formTester.setValue(beanPanelPath + ":field", "42");
+
+        tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
+        verify(testService).update(new Integer(42));
     }
 
     private void setServiceInDropDown(int index) {
@@ -369,8 +353,8 @@ public class TestClientTest {
         setServiceInDropDown(0);
         setMethodInDropDown(0);
 
-        formTester.setValue("argumentListContainer:argumentList:argument_0:field", "test");
-        formTester.setValue("argumentListContainer:argumentList:argument_1:field", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg1panel:valueEditor:field", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         RepeatingView argList =
@@ -391,8 +375,8 @@ public class TestClientTest {
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
-        formTester.setValue("argumentListContainer:argumentList:argument_0:field", "test");
-        formTester.setValue("argumentListContainer:argumentList:argument_1:field", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg1panel:valueEditor:field", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
 
         FeedbackPanel feedbackPanel = (FeedbackPanel) tester.getComponentFromLastRenderedPage("feedback");
@@ -407,8 +391,8 @@ public class TestClientTest {
 
         setServiceInDropDown(0);
         setMethodInDropDown(0);
-        formTester.setValue("argumentListContainer:argumentList:argument_0:field", "fail");
-        formTester.setValue("argumentListContainer:argumentList:argument_1:field", "test");
+        formTester.setValue("argumentListContainer:argumentList:arg0panel:valueEditor:field", "fail");
+        formTester.setValue("argumentListContainer:argumentList:arg1panel:valueEditor:field", "test");
         tester.executeAjaxEvent("methodCallForm:submitButton", "onclick");
         String resultException = (String) tester.getMessages(FeedbackMessage.ERROR).get(0);
         assertThat(resultException, containsString(IllegalArgumentException.class.getName()));
@@ -489,7 +473,8 @@ public class TestClientTest {
             new PassThroughLocalizableString("service.description"));
         Mockito.when(serviceManagerMock.getDescriptor()).thenReturn(serviceDescriptorMock);
 
-        testService = new TestService();
+        testService = mock(TestInterface.class);
+        doThrow(new IllegalArgumentException()).when(testService).update(eq("fail"), anyString());
         when(managedServicesMock.getService(any(ServiceReference.class))).thenReturn(testService);
         when(managedServicesMock.getService(anyString(), anyString())).thenReturn(testService);
         context.putBean(managedServicesMock);

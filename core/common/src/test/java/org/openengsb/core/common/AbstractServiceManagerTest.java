@@ -16,15 +16,21 @@
 
 package org.openengsb.core.common;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsSame.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyMap;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -32,6 +38,7 @@ import java.util.Map;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openengsb.core.common.connectorsetupstore.ConnectorDomainPair;
@@ -51,6 +58,9 @@ public class AbstractServiceManagerTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
     private ConnectorSetupStore setupStoreMock;
+
+    private final String[] domainRegistrationArray = new String[]{NullDomain.class.getName(), Domain.class.getName(),
+        OpenEngSBService.class.getName()};
 
     private static class DummyServiceManager extends AbstractServiceManager<NullDomain, NullDomainImpl> {
 
@@ -78,7 +88,7 @@ public class AbstractServiceManagerTest {
 
                 @Override
                 public MultipleAttributeValidationResult updateValidation(NullDomainImpl instance,
-                        Map<String, String> attributes) {
+                    Map<String, String> attributes) {
                     return new MultipleAttributeValidationResultImpl(true, new HashMap<String, String>());
                 }
 
@@ -88,6 +98,7 @@ public class AbstractServiceManagerTest {
                 }
             });
         }
+
     }
 
     @Test
@@ -120,9 +131,14 @@ public class AbstractServiceManagerTest {
         manager.update("test", attributes);
 
         Hashtable<String, String> props = createVerificationHashmap();
+
         Mockito.verify(bundleContextMock).registerService(
-            new String[]{NullDomainImpl.class.getName(), NullDomain.class.getName(), Domain.class.getName()}, instance,
-            props);
+            eq(new String[]{ NullDomain.class.getName(), Domain.class.getName(), OpenEngSBService.class.getName() }),
+            any(NullDomain.class), eq(props));
+
+        ArgumentCaptor<String[]> captor = ArgumentCaptor.forClass(String[].class);
+        Mockito.verify(bundleContextMock).registerService(captor.capture(), any(NullDomain.class), eq(props));
+        assertThat(domainRegistrationArray, equalTo(captor.getValue()));
 
         ConnectorDomainPair pair = new ConnectorDomainPair(NullDomain.class.getName(), instance.getClass().getName());
         Mockito.verify(setupStoreMock).storeConnectorSetup(pair, "test", attributes);
@@ -146,9 +162,11 @@ public class AbstractServiceManagerTest {
         manager.update("test", verificationAttributes);
 
         Hashtable<String, String> props = createVerificationHashmap();
-        Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(
-            new String[]{NullDomainImpl.class.getName(), NullDomain.class.getName(), Domain.class.getName()}, instance,
-            props);
+
+        ArgumentCaptor<String[]> captor = ArgumentCaptor.forClass(String[].class);
+        Mockito.verify(bundleContextMock, Mockito.times(1)).registerService(captor.capture(), any(Proxy.class),
+            eq(props));
+        assertThat(domainRegistrationArray, equalTo(captor.getValue()));
         inOrder.verify(setupStoreMock).storeConnectorSetup(pair, "test", verificationAttributes);
     }
 
@@ -170,12 +188,11 @@ public class AbstractServiceManagerTest {
     }
 
     private ServiceRegistration appendServiceRegistrationMockToBundleContextMock(BundleContext bundleContextMock,
-            NullDomainImpl mock) {
+        NullDomainImpl mock) {
         ServiceRegistration serviceRegistrationMock = Mockito.mock(ServiceRegistration.class);
         Hashtable<String, String> props = createVerificationHashmap();
-        Mockito.when(
-            bundleContextMock.registerService(new String[]{NullDomainImpl.class.getName(), NullDomain.class.getName(),
-                Domain.class.getName()}, mock, props)).thenReturn(serviceRegistrationMock);
+        Mockito.when(bundleContextMock.registerService(eq(domainRegistrationArray), any(NullDomain.class), eq(props)))
+            .thenReturn(serviceRegistrationMock);
         return serviceRegistrationMock;
     }
 
@@ -318,6 +335,7 @@ public class AbstractServiceManagerTest {
             new MultipleAttributeValidationResultImpl(true, attributes));
         when(serviceInstanceFactory.updateValidation(Mockito.any(Domain.class), Mockito.anyMap())).thenReturn(
             validationResult);
+        when(serviceInstanceFactory.createServiceInstance(anyString(), anyMap())).thenReturn(new NullDomainImpl());
 
         AbstractServiceManager<NullDomain, NullDomainImpl> serviceManager =
             new AbstractServiceManager<NullDomain, NullDomainImpl>(serviceInstanceFactory) {

@@ -17,15 +17,12 @@
 package org.openengsb.core.workflow;
 
 import org.drools.runtime.KnowledgeRuntime;
-import org.drools.runtime.process.ProcessInstance;
+import org.openengsb.core.workflow.internal.WorkflowStarter;
 
 public final class WorkflowHelper {
 
     public static long startFlow(KnowledgeRuntime session, String processId) {
-        ProcessInstance processInstance = session.startProcess(processId);
-        session.insert(processInstance);
-        processInstance.signalEvent("FlowStartedEvent", null);
-        return processInstance.getId();
+        return new WorkflowStarter(session, processId).call();
     }
 
     private WorkflowHelper() {

@@ -23,23 +23,39 @@
   <parent>
     <groupId>org.openengsb.docs</groupId>
     <artifactId>openengsb-docs-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
+  <groupId>org.openengsb.docs</groupId>
   <artifactId>openengsb-docs-homepage</artifactId>
+  <version>1.1.0-SNAPSHOT</version>
   <name>OpenEngSB :: Documentation :: Homepage</name>
   <packaging>pom</packaging>
 
-  <description>
-    Homepage for the Open Engineering Service Bus
-  </description>
+  <description>Homepage for the Open Engineering Service Bus</description>
+
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
 
   <profiles>
     <profile>
       <id>nightly</id>
       <properties>
-        <latest>${repos.snapshot}org/openengsb/openengsb/${project.version}/</latest>
-        <older>${repos.snapshot}org/openengsb/openengsb/${project.version}/</older>
+        <latestWin>${repos.snapshot}/org/openengsb/openengsb/${project.version}/</latestWin>
+        <latestUnix>${repos.snapshot}/org/openengsb/openengsb/${project.version}/</latestUnix>
+        <older>${repos.snapshot}/org/openengsb/openengsb/${project.version}/</older>
       </properties>
       <distributionManagement>
         <site>
@@ -51,8 +67,9 @@
     <profile>
       <id>milestone</id>
       <properties>
-        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
-        <older>${repos.final}org/openengsb/openengsb/</older>
+        <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.tar.gz</latestUnix>
+        <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
         <site>
@@ -64,8 +81,9 @@
     <profile>
       <id>rc</id>
       <properties>
-        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
-        <older>${repos.final}org/openengsb/openengsb/</older>
+        <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
+        <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
         <site>
@@ -77,8 +95,9 @@
     <profile>
       <id>final</id>
       <properties>
-        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
-        <older>${repos.final}org/openengsb/openengsb/</older>
+        <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
+        <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
         <site>
@@ -90,8 +109,9 @@
     <profile>
       <id>support</id>
       <properties>
-        <latest>${repos.final}org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latest>
-        <older>${repos.final}org/openengsb/openengsb/</older>
+        <latestWin>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestWin>
+        <latestUnix>${repos.final}/org/openengsb/openengsb/${project.version}/openengsb-${project.version}.zip</latestUnix>
+        <older>${repos.final}/org/openengsb/openengsb/</older>
       </properties>
       <distributionManagement>
         <site>
@@ -103,11 +123,148 @@
   </profiles>
 
   <build>
+    <resources>
+      <resource>
+        <directory>${project.basedir}/src/site</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+    </resources>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
+        <artifactId>maven-resources-plugin</artifactId>
         <configuration>
+          <useDefaultDelimiters>false</useDefaultDelimiters>
+          <delimiters>
+            <delimiter>${*}</delimiter>
+          </delimiters>
+        </configuration>
+        <executions>
+          <execution>
+            <id>filter</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.openengsb.docs</groupId>
+                  <artifactId>openengsb-docs-manual</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                  <classifier>html-multi</classifier>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb.docs</groupId>
+                  <artifactId>openengsb-docs-manual</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                  <classifier>html-single</classifier>
+                </artifactItem>
+                <artifactItem>
+                  <groupId>org.openengsb.docs</groupId>
+                  <artifactId>openengsb-docs-manual</artifactId>
+                  <version>${project.version}</version>
+                  <type>zip</type>
+                  <classifier>pdf</classifier>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <stripVersion>true</stripVersion>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>net.sourceforge.docbook-utils.maven-plugin</groupId>
+        <artifactId>maven-tidy-plugin</artifactId>
+        <version>1.0.0.beta-1</version>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>tidy</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDir>${project.build.directory}/openengsb-docs-manual-${project.version}/manual/html-multi/</sourceDir>
+          <destinationDir>${project.build.directory}/generated-site/xhtml/docbook</destinationDir>
+          <replaceExtensionMap>
+            <html>xhtml</html>
+          </replaceExtensionMap>
+          <jtidyConfiguration>
+            <property>
+               <name>output-encoding</name>
+               <value>UTF-8</value>
+             </property>
+             <property>
+               <name>add-xml-space</name>
+               <value>true</value>
+             </property>
+             <property>
+               <name>char-encoding</name>
+               <value>UTF-8</value>
+             </property>
+             <property>
+               <name>quiet</name>
+               <value>true</value>
+             </property>
+             <property>
+               <name>quote-nbsp</name>
+               <value>false</value>
+             </property>
+             <property>
+               <name>output-xhtml</name>
+               <value>true</value>
+             </property>
+             <property>
+               <name>indent</name>
+               <value>true</value>
+             </property>
+             <property>
+               <name>wrap</name>
+               <value>120</value>
+             </property>
+             <property>
+               <name>write-back</name>
+               <value>true</value>
+             </property>
+          </jtidyConfiguration>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.maven.doxia</groupId>
+            <artifactId>doxia-module-xhtml</artifactId>
+            <version>1.1.4</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <siteDirectory>${basedir}/target/classes</siteDirectory>
+          <encoding>UTF-8</encoding>
           <reportPlugins>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
@@ -151,50 +308,7 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>unpack</id>
-            <phase>package</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.openengsb.docs</groupId>
-                  <artifactId>openengsb-docs-manual</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                  <classifier>html-multi</classifier>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb.docs</groupId>
-                  <artifactId>openengsb-docs-manual</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                  <classifier>html-single</classifier>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.openengsb.docs</groupId>
-                  <artifactId>openengsb-docs-manual</artifactId>
-                  <version>${project.version}</version>
-                  <type>zip</type>
-                  <classifier>pdf</classifier>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>${project.build.directory}</outputDirectory>
-              <overWriteReleases>true</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-              <stripVersion>true</stripVersion>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.5</version>
         <executions>
           <execution>
             <phase>package</phase>

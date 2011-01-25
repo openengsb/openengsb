@@ -21,7 +21,6 @@ import java.util.Hashtable;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.l10n.BundleStrings;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
 public abstract class AbstractServiceManagerParent implements BundleContextAware {
 
@@ -40,7 +39,6 @@ public abstract class AbstractServiceManagerParent implements BundleContextAware
         return bundleContext;
     }
 
-    @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
         strings = new BundleStrings(bundleContext.getBundle());

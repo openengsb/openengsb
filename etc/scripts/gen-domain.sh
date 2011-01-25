@@ -15,62 +15,10 @@
 # limitations under the License.
 #
 
-# Helper script to generate an OpenEngSB domain. Tries to guess need variables
-# based on provided input.
+source $(dirname $0)/openengsbplugin-common.sh
 
-DEFAULT_DOMAIN="mydomain"
-echo -n "Domain Name (is mydomain): "
-read DOMAIN
-if [ "$DOMAIN" = "" ]; then
-	DOMAIN=$DEFAULT_DOMAIN
-fi
+cd $INVOCATION_DIR
 
-DEFAULT_VERSION="1.0.0-SNAPSHOT"
-echo -n "Version (is $DEFAULT_VERSION): "
-read VERSION
-if [ "$VERSION" = "" ]; then
-	VERSION=$DEFAULT_VERSION
-fi
+GOAL="genDomain"
 
-DEFAULT_NAME_PREFIX="OpenEngSB :: Domains :: ${DOMAIN~}"
-echo -n "Prefix for project names (is $DEFAULT_NAME_PREFIX): "
-read NAME_PREFIX
-if [ "$NAME_PREFIX" = "" ]; then
-	NAME_PREFIX=$DEFAULT_NAME_PREFIX
-fi
-
-artifactId="openengsb-domains-$DOMAIN-parent"
-
-mvn archetype:generate \
-	-DarchetypeGroupId="org.openengsb.tooling.archetypes" \
-	-DarchetypeArtifactId="openengsb-tooling-archetypes-domain" \
-	-DarchetypeVersion="$VERSION" \
-	-DgroupId="org.openengsb.domains.$DOMAIN" \
-	-DartifactId="$artifactId" \
-	-Dversion="$VERSION" \
-	-DimplementationArtifactId="openengsb-domains-$DOMAIN-implementation" \
-	-Dpackage="org.openengsb.domains.$DOMAIN" \
-	-Dname="$NAME_PREFIX :: Parent" \
-	-DimplementationName="$NAME_PREFIX :: Implementation"
-
-if [ $? != 0 ]; then
-	exit $?
-fi
-
-if [ -e "$artifactId" ]; then
-	if [ ! -e "$DOMAIN" ]; then
-		echo "INFO: Renaming project from '$artifactId' to '$DOMAIN'"
-		mv "$artifactId" "$DOMAIN"
-		if [ -f "pom.xml" ]; then
-			sed "s/<module>$artifactId<\/module>/<module>$DOMAIN<\/module>/" pom.xml >pom.xml.new
-			mv pom.xml.new pom.xml
-		fi
-	else
-		echo "WARNING: Renaming of domain directory to '$DOMAIN' not possible, directory already exists!"
-	fi
-fi
-
-echo ""
-echo "DON'T FORGET TO ADD THE DOMAIN TO THE INTEGRATION TEST PROJECT!"
-echo "SUCCESS"
-echo ""
+mvn org.openengsb.tooling.pluginsuite:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL

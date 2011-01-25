@@ -30,11 +30,15 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.Model;
@@ -47,11 +51,13 @@ import org.openengsb.core.common.service.DomainService;
 import org.openengsb.core.common.workflow.RuleManager;
 import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
-import org.openengsb.ui.web.editor.AttributeEditorUtil;
+import org.openengsb.domain.auditing.AuditingDomain;
+import org.openengsb.ui.common.wicket.editor.AttributeEditorUtil;
+import org.openengsb.ui.common.wicket.util.MethodUtil;
 import org.openengsb.ui.web.ruleeditor.RuleEditorPanel;
 import org.openengsb.ui.web.ruleeditor.RuleManagerProvider;
 
-@SuppressWarnings("serial")
+@AuthorizeInstantiation("ROLE_USER")
 public class SendEventPage extends BasePage implements RuleManagerProvider {
 
     private transient Log log = LogFactory.getLog(SendEventPage.class);
@@ -66,9 +72,14 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
     @SpringBean
     private RuleManager ruleManager;
 
-    private Map<String, String> values = new HashMap<String, String>();
+    @SpringBean
+    private AuditingDomain auditing;
+
+    private final Map<String, String> values = new HashMap<String, String>();
 
     private RepeatingView fieldList;
+
+    private final ValueConverter valueConverter = new ValueConverter();
 
     public SendEventPage() {
         List<Class<? extends Event>> classes = new ArrayList<Class<? extends Event>>();
@@ -83,6 +94,7 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         init(classes);
     }
 
+    @SuppressWarnings("serial")
     private void init(List<? extends Class<?>> classes) {
         Form<Object> form = new Form<Object>("form");
         add(form);
@@ -106,6 +118,9 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         container.setOutputMarkupId(true);
         form.add(new FeedbackPanel("feedback"));
 
+        final WebMarkupContainer auditsContainer = new WebMarkupContainer("auditsContainer");
+        auditsContainer.setOutputMarkupId(true);
+
         AjaxButton submitButton = new IndicatingAjaxButton("submitButton", form) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -116,13 +131,14 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
                         info(new StringResourceModel("send.event.success", SendEventPage.this, null).getString());
                     } catch (WorkflowException e) {
                         StringResourceModel resourceModel =
-                                new StringResourceModel("send.event.error.process", SendEventPage.this, null);
+                            new StringResourceModel("send.event.error.process", SendEventPage.this, null);
                         error(resourceModel.getString());
                     }
                 } else {
                     error(new StringResourceModel("send.event.error.build", SendEventPage.this, null).getString());
                 }
                 target.addComponent(form);
+                target.addComponent(auditsContainer);
             }
 
             @Override
@@ -132,7 +148,20 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
         };
         submitButton.setOutputMarkupId(true);
         form.add(submitButton);
-
+        List<String> audits = new ArrayList<String>();
+        try {
+            audits = this.auditing.getAudits();
+        } catch (Exception e) {
+            log.error("Audits cannot be loaded", e);
+        }
+        ListView<String> listView = new ListView<String>("audits", audits) {
+            @Override
+            protected void populateItem(ListItem<String> item) {
+                item.add(new Label("audit", item.getModelObject()));
+            }
+        };
+        auditsContainer.add(listView);
+        add(auditsContainer);
         add(new RuleEditorPanel("ruleEditor", this));
     }
 
@@ -168,7 +197,9 @@ public class SendEventPage extends BasePage implements RuleManagerProvider {
                         || !Modifier.isPublic(propertyDescriptor.getWriteMethod().getModifiers())) {
                     continue;
                 }
-                propertyDescriptor.getWriteMethod().invoke(obj, values.get(propertyDescriptor.getName()));
+                String string = values.get(propertyDescriptor.getName());
+                Object converted = valueConverter.convert(propertyDescriptor.getPropertyType(), string);
+                propertyDescriptor.getWriteMethod().invoke(obj, converted);
             }
             return obj;
         } catch (Exception e) {

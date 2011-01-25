@@ -1,7 +1,7 @@
-   =========================================================================
-   ==  NOTICE file for use with the Apache License, Version 2.0,          ==
-   ==  in this case for the Engineering Service Bus distribution.         ==
-   =========================================================================
+=========================================================================
+==  NOTICE file for use with the Apache License, Version 2.0,          ==
+==  in this case for the Engineering Service Bus distribution.         ==
+=========================================================================
 
    
    This product contains software developed by
@@ -27,25 +27,6 @@ package) which was developed by the Bouncy Castle project.
 
       Copyright (c) 2000-2005 The Legion Of The Bouncy Castle (http://www.bouncycastle.org)
 
-
-=========================================================================
-==  Derby Notice                                                       ==
-=========================================================================
-
-Portions of Derby were orginally developed by
-International Business Machines Corporation and are
-licensed to the Apache Software Foundation under the
-"Software Grant and Corporate Contribution License Agreement",
-informally known as the "Derby CLA".
-
-The portion of the functionTests under 'nist' was originally 
-developed by the National Institute of Standards and Technology (NIST), 
-an agency of the United States Department of Commerce, and adapted by
-International Business Machines Corporation in accordance with the NIST
-Software Acknowledgment and Redistribution document at
-http://www.itl.nist.gov/div897/ctg/sql_form.htm
-
-
 =========================================================================
 ==  Spring Notice                                                      ==
 =========================================================================
@@ -69,70 +50,7 @@ The names "Spring" and "Spring Framework" must not be used to
 endorse or promote products derived from this software without
 prior written permission. For written permission, please contact
 rod.johnson@interface21.com or juergen.hoeller@interface21.com.
-   
-=========================================================================
-==  MX4J Notice                                                        ==
-=========================================================================
-
-This product includes software developed by the MX4J project 
-(http://sourceforge.net/projects/mx4j).
-
-
-=========================================================================
-==  Twitter4J Notice                                                   ==
-=========================================================================
-
-This product includes software developed by the Twitter4J project
-released under the BSD license.
-(http://twitter4j.org).
-
-Copyright (c) 2007-2010, Yusuke Yamamoto
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the
-      distribution.
-    * Neither the name of the Yusuke Yamamoto nor the
-      names of its contributors may be used to endorse or promote
-      products derived from this software without specific prior written
-      permission.
-
-THIS SOFTWARE IS PROVIDED BY Yusuke Yamamoto ``AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL Yusuke Yamamoto BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-POSSIBILITY OF SUCH DAMAGE.
-
-Twitter4J includes software from JSON.org to parse JSON response from
-the Twitter API.
-(http://www.json.org/license.html)
-
-
-=========================================================================
-==  WSDL4J Notice                                                      ==
-=========================================================================
-
-The Program includes all or portions of the following software which is 
-subject to the Common Public License ("CPL Code").  This software 
-consists of voluntary contributions made by many individuals on behalf of
-the WSDL4J project.
-
-You may download the source version of the WSDL4J component at 
-http://sourceforge.net/projects/wsdl4j
-
-
+  
 =========================================================================
 ==  Xerces Notice                                                      ==
 =========================================================================
@@ -168,17 +86,6 @@ software also includes:
  - Piccolo XML Parser for Java from http://piccolo.sourceforge.net/,
    Copyright 2002 Yuval Oren under the terms of the Apache Software 
    License 2.0
-
-
-=========================================================================
-==  XmlSecurity Notice                                                 ==
-=========================================================================
-
-It was originally based on software copyright (c) 2001, Institute for
-Data Communications Systems, <http://www.nue.et-inf.uni-siegen.de/>.
-
-The development of this software was partly funded by the European 
-Commission in the <WebSig> project in the ISIS Programme. 
 
 =========================================================================
 ==  Trac XML-RPC Notice                                                ==
@@ -216,43 +123,6 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 =========================================================================
-==  Quartz Notice                                                      ==
-=========================================================================
-
-Quartz Scheduler source code and documentation are Copyright (c)
-2001-2010 Terracotta, Inc..
-
-Quartz Scheduler is licensed under the Apache License, Version 2.0 (the
-"License"); you may not use Quartz binaries or source in whole or in part
-except in compliance with the License. You may obtain a copy of the
-License at:
-http://www.apache.org/licenses/LICENSE-2.0 
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-License for the specific language governing permissions and limitations
-under the License.
-
-=========================================================================
-==  OpenSaml Notice                                                    ==
-=========================================================================
-
-We wish to acknowledge the following copyrighted works that make up
-portions of this software:
-
-This product includes software developed by the Apache Software
-Foundation (http://www.apache.org/).
-
-We also thank Tom Scavo for donating the original SAML artifact
-implementation.
-
-
-   This following notices refer to portions of this
-   software.
-
-
-=========================================================================
 ==  W3C Notice                                                         ==
 =========================================================================
 
@@ -285,19 +155,20 @@ Joseph Reagle <site-policy@w3.org>
 
 Last revised $Id: copyright-documents-20021231.html,v 1.6 2004/07/06 16:02:49 slesch Exp $
 
-
 =========================================================================
-==  OASIS Notice                                                       ==
+==  NeoDatis Notice                                                    ==
 =========================================================================
 
-OASIS takes no position regarding the validity or scope of any intellectual property or other rights that might be claimed to pertain to the implementation or use of the technology described in this document or the extent to which any license under such rights might or might not be available; neither does it represent that it has made any effort to identify any such rights. Information on OASIS's procedures with respect to rights in OASIS specifications can be found at the OASIS website. Copies of claims of rights made available for publication and any assurances of licenses to be made available, or the result of an attempt made to obtain a general license or permission for the use of such proprietary rights by implementors or users of this specification, can be obtained from the OASIS Executive Director.
+ NeoDatis ODB : Native Object Database (odb.info@neodatis.org)
+ Copyright (C) 2007 NeoDatis Inc. http://www.neodatis.org
 
-OASIS invites any interested party to bring to its attention any copyrights, patents or patent applications, or other proprietary rights which may cover technology that may be required to implement this specification. Please address the information to the OASIS Executive Director.
+ NeoDatis ODB is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
 
-Copyright (C) OASIS Open (2004-2005). All Rights Reserved.
+ NeoDatis ODB is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
 
-This document and translations of it may be copied and furnished to others, and derivative works that comment on or otherwise explain it or assist in its implementation may be prepared, copied, published and distributed, in whole or in part, without restriction of any kind, provided that the above copyright notice and this paragraph are included on all such copies and derivative works. However, this document itself may not be modified in any way, such as by removing the copyright notice or references to OASIS, except as needed for the purpose of developing OASIS specifications, in which case the procedures for copyrights defined in the OASIS Intellectual Property Rights document must be followed, or as required to translate it into languages other than English. 
-
-The limited permissions granted above are perpetual and will not be revoked by OASIS or its successors or assigns. 
-
-This document and the information contained herein is provided on an "AS IS" basis and OASIS DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.

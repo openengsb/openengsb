@@ -24,7 +24,7 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 /**
  * Instance provider for a specific service interface.
  */
-public interface ServiceManager {
+public interface ServiceManager extends OpenEngSBService {
 
     /**
      * Returns the {@code ServiceDescriptor} describing the managed service.
@@ -33,7 +33,7 @@ public interface ServiceManager {
 
     /**
      * Creates or updates a service instance. If the given id does not exist, this creates a new service instance.
-     * 
+     *
      * @param id identifier for a new or already existing service instance.
      * @param attributes updates to maybe already set attributes.
      * @return the result of the validation
@@ -42,7 +42,7 @@ public interface ServiceManager {
 
     /**
      * Works the same way us update, but doesn't validate
-     * 
+     *
      * @param id identifier for a new or already existing service instance.
      * @param attributes updates to maybe already set attributes.
      * @return the result of the validation
@@ -51,17 +51,18 @@ public interface ServiceManager {
 
     /**
      * Deletes the service instanced with the given {@code id}.
-     * 
+     *
      * @param id identifier for a service instance provided by this {@code ServiceManager}.
-     * 
+     *
      * @throws IllegalArgumentException if no instance exists for the given id.
      */
     void delete(String id);
 
     /**
      * Returns the attributes with values for the specified service instance.
-     * 
+     *
      * @param id identifier for a already existing service instance
      */
     Map<String, String> getAttributeValues(String id);
+
 }

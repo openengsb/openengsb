@@ -61,9 +61,9 @@
     <menu name="OpenEngSB">
       <item name="Welcome" href="index.html" />
       <item name="What is OpenEngSB?" href="about.html" />
-	    <item name="Latest Version" href="${latest}" />
-      <item name="Older Versions" href="${older}" />
+      <item name="Downloads" href="downloads.html" />
       <item name="Changelog" href="${github}/CHANGELOG.md" />
+      <item name="Known Issues" href="${github}/KNOWN_ISSUES.md" />
       <item name="Sponsors" href="sponsors.html" />
     </menu>
 
@@ -73,18 +73,18 @@
       <item name="Events" href="howto/howto_contexteditor.html" />
     </menu>
 
-	  <menu name="Documentation" >
-	    <item name="Manual" href="manual/index.html"  />
+    <menu name="Documentation" >
+      <item name="Manual" href="manual/index.html"  />
       <item name="FAQ" href="reference/faq.html" />
-	    <item name="Presentation Material" href="reference/presentation.html" />
-	    <item name="Youtube Channel" href="http://www.youtube.com/user/cdflexvideo" />
+      <item name="Additional Material" href="reference/additional.html" />
+      <item name="Youtube Channel" href="http://www.youtube.com/user/cdflexvideo" />
     </menu>
 
     <menu name="Community" >
       <item name="Mailing Lists" href="community/mailinglists.html" />
       <item name="IRC Channels" href="community/irc.html" />
-	    <item name="Twitter" href="http://twitter.com/openEngSB" />
-	    <item name="Facebook" href="http://www.facebook.com/group.php?gid=208312030232" />
+      <item name="Twitter" href="http://twitter.com/openEngSB" />
+      <item name="Facebook" href="http://www.facebook.com/group.php?gid=208312030232" />
     </menu>
 
     <menu name="Development" >
@@ -95,11 +95,12 @@
       <item name="Team" href="team-list.html" />
     </menu>
 
-	<menu name="Subprojects" >
-	  <item name="OpenCIT" href="http://opencit.openengsb.org" />
-    <item name="OpenTicket" href="http://openticket.openengsb.org/" />
-    <item name="YASTE" href="http://yaste.openengsb.org/" />
-  </menu>
+    <menu name="Subprojects" >
+      <item name="OpenCIT" href="http://opencit.openengsb.org" />
+      <item name="OpenTicket" href="http://openticket.openengsb.org/" />
+     <item name="YASTE" href="http://yaste.openengsb.org/" />
+    </menu>
   </body>
 
 </project>
+

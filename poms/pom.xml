@@ -1,95 +1,121 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-   Copyright 2010 OpenEngSB Division, Vienna University of Technology
+  Copyright 2010 OpenEngSB Division, Vienna University of Technology
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+  http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0">
 
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openengsb.build</groupId>
   <artifactId>shared-plugin-settings</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
 
   <name>OpenEngSB :: Plugin Configuration :: Parent</name>
 
   <packaging>pom</packaging>
 
+  <description>Parent for all osgi bundles, non-osgi and wrapped bundles</description>
+  <url>http://www.openengsb.org</url>
+  <licenses>
+    <license>
+      <name>Apache 2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
+    <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
+    <url>http://github.com/openengsb/openengsb</url>
+  </scm>
+
   <properties>
     <!-- Plugin Versions -->
-    <plugin.bundle.version>2.1.0</plugin.bundle.version>
+    <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
+    <maven.plugin.antrun.version>1.5</maven.plugin.antrun.version>
+    <maven.plugin.changes.version>2.3</maven.plugin.changes.version>
+    <maven.plugin.checkstyle.version>2.6</maven.plugin.checkstyle.version>
+    <maven.plugin.dependency.version>2.1</maven.plugin.dependency.version>
+    <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
+    <maven.plugin.rat.version>0.6</maven.plugin.rat.version>
+    <maven.plugin.resources.version>2.4.3</maven.plugin.resources.version>
+    <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
+    <maven.war.plugin.version>2.1.1</maven.war.plugin.version>
+
+    <!-- Component Versions -->
+    <osgi.version>4.2.0</osgi.version>
+
+    <!-- Library Versions -->
     <plugin.openjpa.version>1.1</plugin.openjpa.version>
     <docbkx.version>2.0.10</docbkx.version>
     <docbkx.xml.version>5.0-all</docbkx.xml.version>
     <jai.version>1.1.3</jai.version>
     <jaxb.plugin.version>1.2</jaxb.plugin.version>
-    <maven.plugin.project.info.reports.version>2.2</maven.plugin.project.info.reports.version>
-    <maven.plugin.changes.version>2.3</maven.plugin.changes.version>
-    <maven.plugin.release.version>2.0-beta-9</maven.plugin.release.version>
-    <maven.plugin.checkstyle.version>2.5</maven.plugin.checkstyle.version>
-    <maven.plugin.surefire>2.4.3</maven.plugin.surefire>
-    <maven.plugin.surefire.report>2.5</maven.plugin.surefire.report>
-    <maven.plugin.assembly.version>2.2-beta-5</maven.plugin.assembly.version>
-    <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
-    <maven.rat.version>0.6</maven.rat.version>
-    <maven.plugin.enforcer.version>1.0-beta-1</maven.plugin.enforcer.version>
-    <maven.war.plugin>2.1.1</maven.war.plugin>
-    <twdata.cli.version>1.0.4</twdata.cli.version>
-    <clover.version>3.0.2</clover.version>
-    <maven.plugin.antrun>1.5</maven.plugin.antrun>
-    <!-- Component Versions -->
-    <osgi.version>4.2.0</osgi.version>
-    <!-- Library Versions -->
     <aspectj.version>1.6.8.RELEASE</aspectj.version>
-    <exam.version>1.2.2</exam.version>
+    <exam.version>1.2.3</exam.version>
     <htmlunit.version>2.8</htmlunit.version>
+    <htmlunit.wrapped.version>${htmlunit.version}.w1</htmlunit.wrapped.version>
     <guava.version>r07</guava.version>
+    <guava.wrapped.version>1.0.0.${guava.version}.w1</guava.wrapped.version>
     <tinybundle.version>1.3.0</tinybundle.version>
     <servlet.version>2.5.0</servlet.version>
     <portlet.version>1.0.0</portlet.version>
     <jasper.version>6.0.24</jasper.version>
     <jsp.version>6.1.14</jsp.version>
-    <spring.osgi.version>2.0.0.M1</spring.osgi.version>
+    <spring.osgi.version>1.2.1</spring.osgi.version>
     <spring.version>3.0.5.RELEASE</spring.version>
-    <spring.security.version>3.0.4.RELEASE</spring.security.version>
+    <spring.security.version>3.0.5.RELEASE</spring.security.version>
     <transaction.version>1.1.0</transaction.version>
-    <paxweb.version>0.8.1</paxweb.version>
+    <smx.transaction.version>1.2.0</smx.transaction.version>
+    <jetty.version>7.2.1.v20101111</jetty.version>
+    <pax.web.version>0.8.1</pax.web.version>
+    <pax.url.version>1.2.1</pax.url.version>
+    <javax.jms.version>1.1.0</javax.jms.version>
     <persistence.version>1.0.0</persistence.version>
     <enterprise.loader.version>1.0.0</enterprise.loader.version>
     <oracle.classloader.version>10.1.3.1</oracle.classloader.version>
+    <javax.xmlrpc.version>1.1.0</javax.xmlrpc.version>
+    <apache.xmlrpc.version>3.1.3</apache.xmlrpc.version>
+    <apache.xmlrpc.wrapped.version>${apache.xmlrpc.version}.w1</apache.xmlrpc.wrapped.version>
     <el.version>2.1.0</el.version>
-    <wicket.version>1.4.12</wicket.version>
+    <wicket.version>1.4.13</wicket.version>
+    <wicket.wrapped.version>${wicket.version}.w1</wicket.wrapped.version>
     <jackson.version>1.5.3</jackson.version>
     <aopalliance.version>1.0_4</aopalliance.version>
     <xml.bind.version>2.0.0</xml.bind.version>
     <xml.stream.version>1.5.0</xml.stream.version>
-    <commons.collection.version>3.2.1</commons.collection.version>
-    <commons.lang.version>2.4</commons.lang.version>
+    <commons.collections.version>3.2.1</commons.collections.version>
+    <commons.lang.version>2.5</commons.lang.version>
     <commons.pool.version>1.5.4_1</commons.pool.version>
     <commons.dbcp.version>1.2.2_5</commons.dbcp.version>
     <commons.logging.version>1.1.1</commons.logging.version>
     <serp.version>1.13.1</serp.version>
     <javassist.version>3.9.0.GA</javassist.version>
     <cglib.version>2.1_3_6</cglib.version>
-    <asm.version>1.5.3</asm.version>
+    <asm.version>2.2.3_4</asm.version>
     <util.concurrent.version>1.3.4</util.concurrent.version>
     <javax.activation.version>1.1.0</javax.activation.version>
     <javax.validation.version>1.0.0.GA</javax.validation.version>
@@ -98,10 +124,8 @@
     <spec.jpa20.version>1.1</spec.jpa20.version>
     <spec.jta11.version>1.1.1</spec.jta11.version>
     <openjpa.version>2.0.0</openjpa.version>
-    <junit.version>4.8.1</junit.version>
     <mockito.version>1.8.5</mockito.version>
     <dbunit.version>2.4.7</dbunit.version>
-    <pax.url.version>1.1.3</pax.url.version>
     <pax.logging.version>1.5.2</pax.logging.version>
     <aries.version>0.2-incubating</aries.version>
     <felix.configadmin.version>1.2.8</felix.configadmin.version>
@@ -109,16 +133,15 @@
     <felix.prefs.version>1.0.4</felix.prefs.version>
     <felix.gogo.version>0.4.0</felix.gogo.version>
     <felix.version>3.0.2</felix.version>
-    <karaf.version>2.0.0</karaf.version>
     <mina.version>2.0.0</mina.version>
     <sshd.version>0.4.0</sshd.version>
     <jsch.version>0.1.42</jsch.version>
+    <jsch.wrapped.version>${jsch.version}.w1</jsch.wrapped.version>
     <jzlib.version>1.0.7</jzlib.version>
     <hsqldb.version>1.8.0.10</hsqldb.version>
     <h2.version>1.2.139</h2.version>
     <mysql.version>5.1.13</mysql.version>
     <activemq.version>5.2.0</activemq.version>
-    <commons.io.version>1.4</commons.io.version>
     <commons.net.version>20030805.205232</commons.net.version>
     <dom4j.version>1.6.1</dom4j.version>
     <exist.version>1.4.0</exist.version>
@@ -129,8 +152,9 @@
     <httpcomponent.version>4.0-alpha4</httpcomponent.version>
     <h2.version>1.1.116</h2.version>
     <jaxb.version>2.2.1</jaxb.version>
+    <jaxb.wrapped.version>${jaxb.version}.w1</jaxb.wrapped.version>
     <jaxen.version>1.1.1</jaxen.version>
-    <jgit.version>0.9.3</jgit.version>
+    <jgit.version>0.10.1</jgit.version>
     <jibx.version>1.2.2</jibx.version>
     <joda.version>1.6</joda.version>
     <log4j.version>1.2.14</log4j.version>
@@ -151,7 +175,6 @@
     <twitter4j.version>2.1.0</twitter4j.version>
     <xbean.version>3.5</xbean.version>
     <xerces.version>2.8.1</xerces.version>
-    <xmlrpc.version>3.1.2</xmlrpc.version>
     <xmlunit.version>1.3</xmlunit.version>
     <axis.version>1.3</axis.version>
     <backport.util.concurrent.version>2.2</backport.util.concurrent.version>
@@ -162,7 +185,7 @@
     <derby.version>10.2.2.0</derby.version>
     <geronimo.ejb.version>1.1</geronimo.ejb.version>
     <geronimo.j2ee.version>2.0.0</geronimo.j2ee.version>
-    <geronimo.servlet.version>1.1</geronimo.servlet.version>
+    <geronimo.servlet.version>1.1.2</geronimo.servlet.version>
     <geronimo.javamail.version>1.2</geronimo.javamail.version>
     <geronimo.jaxws.version>1.0</geronimo.jaxws.version>
     <geronimo-spec-j2ee.version>1.4-rc4</geronimo-spec-j2ee.version>
@@ -185,33 +208,497 @@
     <xmlpull.version>1.1.4.c</xmlpull.version>
     <mvel2.version>2.0.18</mvel2.version>
     <antlr.version>3.1.3</antlr.version>
-    <commons.io.version>1.4</commons.io.version>
     <janino.version>2.5.15</janino.version>
     <odb.version>1.9.30.687</odb.version>
+    <odb.wrapped.version>${odb.version}.w1</odb.wrapped.version>
     <org.apache.geronimo.specs.version>1.0.1</org.apache.geronimo.specs.version>
     <javax.ejb.version>3.0.0</javax.ejb.version>
-    <javax.xml.rpc>1.1.0</javax.xml.rpc>
     <javax.xml.soap>1.3.0</javax.xml.soap>
   </properties>
 
   <modules>
     <module>compiled</module>
-    <module>nonosgi</module>
-    <module>wrapped</module>
   </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>${commons.collections.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons.io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>${commons.lang.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>${log4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.activemq</groupId>
+        <artifactId>activemq-core</artifactId>
+        <version>${activemq.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.aries.blueprint</groupId>
+        <artifactId>org.apache.aries.blueprint</artifactId>
+        <version>${aries.blueprint.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${commons.compress.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.bundlerepository</artifactId>
+        <version>1.2.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.framework</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>org.apache.felix.main</artifactId>
+        <version>3.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.geronimo.specs</groupId>
+        <artifactId>geronimo-servlet_2.5_spec</artifactId>
+        <version>${geronimo.servlet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.karaf</groupId>
+        <artifactId>apache-karaf</artifactId>
+        <version>${karaf.version}</version>
+        <type>tar.gz</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.karaf</groupId>
+        <artifactId>apache-karaf</artifactId>
+        <version>${karaf.version}</version>
+        <type>xml</type>
+        <classifier>features</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.karaf</groupId>
+        <artifactId>apache-karaf</artifactId>
+        <version>${karaf.version}</version>
+        <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.karaf.tooling</groupId>
+        <artifactId>org.apache.karaf.tooling.testing</artifactId>
+        <version>${karaf.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-core</artifactId>
+        <version>${mvn.core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>${mvn.pluginapi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix.bundles</groupId>
+        <artifactId>org.apache.servicemix.bundles.javax.mail</artifactId>
+        <version>${javax.mail.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.servicemix</groupId>
+        <artifactId>servicemix-core</artifactId>
+        <scope>test</scope>
+        <version></version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket</artifactId>
+        <version>${wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-auth-roles</artifactId>
+        <version>${wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-datetime</artifactId>
+        <version>${wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-devutils</artifactId>
+        <version>${wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-extensions</artifactId>
+        <version>${wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-ioc</artifactId>
+        <version>${wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-jmx</artifactId>
+        <version>${wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-spring</artifactId>
+        <version>${wicket.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.wicket</groupId>
+        <artifactId>wicket-velocity</artifactId>
+        <version>${wicket.version}</version>
+        <optional>true</optional>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xmlrpc</groupId>
+        <artifactId>xmlrpc-client</artifactId>
+        <version>${apache.xmlrpc.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-mapper-asl</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.janino</groupId>
+        <artifactId>com.springsource.org.codehaus.janino</artifactId>
+        <version>${janino.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-api</artifactId>
+        <version>${drools.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-compiler</artifactId>
+        <version>${drools.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jgit</groupId>
+        <artifactId>org.eclipse.jgit</artifactId>
+        <version>${jgit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-all</artifactId>
+        <version>${hamcrest.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>${mockito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.neodatis.odb</groupId>
+        <artifactId>neodatis-odb</artifactId>
+        <version>${odb.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>openengsb-connector-example</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>openengsb-connector-memory-auditing</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.connector</groupId>
+        <artifactId>openengsb-connector-memoryauditing</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-events</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-persistence</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-security</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.core</groupId>
+        <artifactId>openengsb-core-workflow</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-auditing</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-build</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-deploy</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-example</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-issue</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-notification</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-report</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-scm</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.domain</groupId>
+        <artifactId>openengsb-domain-test</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb</artifactId>
+        <version>${project.version}</version>
+        <type>xml</type>
+        <classifier>features</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb</groupId>
+        <artifactId>openengsb-domains-toolabstraction-twitter</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.ui.common</groupId>
+        <artifactId>openengsb-ui-common-wicket</artifactId>
+        <version>${project.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.openengsb.wrapped</groupId>
+        <artifactId>net.sourceforge.htmlunit-all</artifactId>
+        <version>${htmlunit.wrapped.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.ops4j.pax.exam</groupId>
+        <artifactId>pax-exam</artifactId>
+        <version>${exam.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.ops4j.pax.exam</groupId>
+        <artifactId>pax-exam-container-default</artifactId>
+        <version>${exam.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.ops4j.pax.exam</groupId>
+        <artifactId>pax-exam-junit</artifactId>
+        <version>${exam.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.ops4j.pax.runner</groupId>
+        <artifactId>pax-runner-platform</artifactId>
+        <version>${paxrunner.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.compendium</artifactId>
+        <version>${osgi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.osgi</groupId>
+        <artifactId>org.osgi.core</artifactId>
+        <version>${osgi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-jms</artifactId>
+        <version>${spring.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.osgi</groupId>
+        <artifactId>spring-osgi-core</artifactId>
+        <version>${spring.osgi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.aop</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.beans</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.asm</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.context</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.expression</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>org.springframework.core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring.security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>${spring.security.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-support</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-openid</artifactId>
+        <version>${spring.security.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${spring.security.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <build>
     <finalName>${project.artifactId}-${project.version}</finalName>
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.ops4j</groupId>
-          <artifactId>maven-pax-plugin</artifactId>
-        </plugin>
-        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>${maven.plugin.surefire}</version>
           <configuration>
             <includes>
               <include>**/*Test.java</include>
@@ -221,7 +708,6 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-report-plugin</artifactId>
-          <version>${maven.plugin.surefire.report}</version>
           <configuration>
             <reportSets>
               <reportSet>
@@ -272,6 +758,28 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>license-check</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.openengsb.tooling.pluginsuite</groupId>
+            <artifactId>openengsb-maven-plugin</artifactId>
+            <version>${project.version}</version>
+            <executions>
+              <execution>
+                <id>check-headers</id>
+                <inherited>false</inherited>
+                <phase>validate</phase>
+                <goals>
+                  <goal>licenseCheck</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>checkstyle</id>
       <build>

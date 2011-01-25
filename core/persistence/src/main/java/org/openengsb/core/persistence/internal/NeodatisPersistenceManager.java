@@ -46,8 +46,7 @@ public class NeodatisPersistenceManager implements PersistenceManager {
         if (persistenceServices.containsKey(dbFile)) {
             return persistenceServices.get(dbFile);
         }
-        CustomClassLoader classLoader = new CustomClassLoader(getClass().getClassLoader(), bundle);
-        PersistenceService bundleService = new NeodatisPersistenceService(dbFile, classLoader);
+        PersistenceService bundleService = new NeodatisPersistenceService(dbFile, bundle);
         persistenceServices.put(dbFile, bundleService);
         return bundleService;
     }
@@ -67,7 +66,9 @@ public class NeodatisPersistenceManager implements PersistenceManager {
     }
 
     private String getFileName(Bundle bundle) {
-        return bundle.getSymbolicName().hashCode() + "_" + bundle.getVersion().hashCode() + ".data";
+        final String name = bundle.getSymbolicName().hashCode() + "_" + bundle.getVersion().hashCode() + ".data";
+        log.info("generated persitence-filename: " + name);
+        return name;
     }
 
     public void setPersistenceRootDir(String persistenceRootDir) {

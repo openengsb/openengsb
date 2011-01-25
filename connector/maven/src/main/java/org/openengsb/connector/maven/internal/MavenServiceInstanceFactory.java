@@ -26,10 +26,9 @@ import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResultImpl;
 import org.openengsb.domain.build.BuildDomainEvents;
 import org.openengsb.domain.deploy.DeployDomainEvents;
-import org.openengsb.domain.test.TestDomain;
 import org.openengsb.domain.test.TestDomainEvents;
 
-public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestDomain, MavenServiceImpl> {
+public class MavenServiceInstanceFactory implements ServiceInstanceFactory<MavenDomain, MavenServiceImpl> {
 
     private BuildDomainEvents buildEvents;
 
@@ -54,7 +53,7 @@ public class MavenServiceInstanceFactory implements ServiceInstanceFactory<TestD
 
     @Override
     public MavenServiceImpl createServiceInstance(String id, Map<String, String> attributes) {
-        MavenServiceImpl service = new MavenServiceImpl();
+        MavenServiceImpl service = new MavenServiceImpl(id);
         service.setBuildEvents(buildEvents);
         service.setTestEvents(testEvents);
         service.setDeployEvents(deployEvents);

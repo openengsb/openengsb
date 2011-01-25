@@ -23,23 +23,29 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
+import org.aopalliance.aop.Advice;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.connectorsetupstore.ConnectorDomainPair;
 import org.openengsb.core.common.connectorsetupstore.ConnectorSetupStore;
 import org.openengsb.core.common.descriptor.ServiceDescriptor;
 import org.openengsb.core.common.validation.MultipleAttributeValidationResult;
 import org.osgi.framework.ServiceRegistration;
+import org.springframework.aop.framework.ProxyFactory;
 
 /**
  * Base class for {@link ServiceManager} implementations. Handles all OSGi related stuff and exporting the right service
  * properties that are needed for service discovery. Furthermore this class also persists the connector state and
  * restores all persisted connectors at the next startup.
- * 
+ *
  * All service-specific action, like descriptor building, service instantiation and service updating are encapsulated in
  * a {@link ServiceInstanceFactory}. Creating a new service manager should be as simple as implementing the
  * {@link ServiceInstanceFactory} and creating a subclass of this class:
- * 
+ *
  * This class has to be instantiated via Spring, as the BundleContext has to be set as it is BundleContextAware.
- * 
+ *
  * <pre>
  * public class ExampleServiceManager extends AbstractServiceManager&lt;ExampleDomain, TheInstanceType&gt; {
  *     public ExampleServiceManager(ServiceInstanceFactory&lt;ExampleDomain, TheInstanceType&gt; factory) {
@@ -47,18 +53,21 @@ import org.osgi.framework.ServiceRegistration;
  *     }
  * }
  * </pre>
- * 
+ *
  * @param <DomainType> interface of the domain this service manages
  * @param <InstanceType> actual service implementation this service manages
  */
 public abstract class AbstractServiceManager<DomainType extends Domain, InstanceType extends DomainType> extends
         AbstractServiceManagerParent implements ServiceManager {
 
+    private final Log log = LogFactory.getLog(AbstractServiceManager.class);
+
     private final ServiceInstanceFactory<DomainType, InstanceType> factory;
     private final Map<String, Map<String, String>> attributeValues = new HashMap<String, Map<String, String>>();
     private ConnectorSetupStore connectorSetupStore;
 
     private final Map<String, DomainRepresentation> services = new HashMap<String, DomainRepresentation>();
+    protected Advice securityInterceptor;
 
     public AbstractServiceManager(ServiceInstanceFactory<DomainType, InstanceType> factory) {
         this.factory = factory;
@@ -82,12 +91,12 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     }
 
     @Override
-    public void updateWithoutValidation(String id, Map<String, String> attributes) {
+    public synchronized void updateWithoutValidation(String id, Map<String, String> attributes) {
         updateServiceInstance(id, attributes);
     }
 
     @Override
-    public MultipleAttributeValidationResult update(String id, Map<String, String> attributes) {
+    public synchronized MultipleAttributeValidationResult update(String id, Map<String, String> attributes) {
         MultipleAttributeValidationResult validateService;
         if (isAlreadyCreated(id)) {
             validateService = factory.updateValidation(getService(id), attributes);
@@ -128,13 +137,30 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     private void createService(String id, Map<String, String> attributes) {
         InstanceType instance = factory.createServiceInstance(id, attributes);
         Hashtable<String, String> serviceProperties = createNotificationServiceProperties(id);
+        final String[] interfaces =
+            new String[]{getDomainInterface().getName(), Domain.class.getName(), OpenEngSBService.class.getName()};
         ServiceRegistration registration =
-            getBundleContext()
-                .registerService(
-                    new String[]{getImplementationClass().getName(), getDomainInterface().getName(),
-                        Domain.class.getName()}, instance, serviceProperties);
+            getBundleContext().registerService(interfaces, secureService(instance), serviceProperties);
         addDomainRepresentation(id, instance, registration);
 
+    }
+
+    @SuppressWarnings("unchecked")
+    private InstanceType secureService(InstanceType instance) {
+        ProxyFactory factory = new ProxyFactory(instance);
+        if (securityInterceptor == null) {
+            securityInterceptor = new MethodInterceptor() {
+                @Override
+                public Object invoke(MethodInvocation invocation) throws Throwable {
+                    log.error("This service manager has no security-manager attached");
+                    return invocation.proceed();
+                }
+            };
+        }
+        factory.addAdvice(securityInterceptor);
+        ClassLoader classLoader = getClass().getClassLoader();
+        log.info(String.format("creating aop-proxy using classloader %s (%s)", classLoader, classLoader.getClass()));
+        return (InstanceType) factory.getProxy(classLoader);
     }
 
     @Override
@@ -171,9 +197,10 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
     }
 
     @Override
-    public void delete(String id) {
+    public synchronized void delete(String id) {
         synchronized (services) {
-            services.get(id).registration.unregister();
+            final DomainRepresentation domainRepresentation = services.get(id);
+            domainRepresentation.registration.unregister();
             services.remove(id);
             attributeValues.remove(id);
             connectorSetupStore.deleteConnectorSetup(getDomainConnectorPair(), id);
@@ -208,5 +235,14 @@ public abstract class AbstractServiceManager<DomainType extends Domain, Instance
             this.service = service;
             this.registration = registration;
         }
+    }
+
+    public void setSecurityInterceptor(Advice securityInterceptor) {
+        this.securityInterceptor = securityInterceptor;
+    }
+
+    @Override
+    public String getInstanceId() {
+        return getClass().getName();
     }
 }

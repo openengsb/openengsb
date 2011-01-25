@@ -17,48 +17,63 @@
 package org.openengsb.core.common.proxy;
 
 import java.lang.reflect.InvocationHandler;
-import java.util.Dictionary;
-import java.util.Hashtable;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.openengsb.core.common.DomainProvider;
-import org.openengsb.core.common.ServiceManager;
-import org.openengsb.core.common.service.DomainService;
-import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
+import org.openengsb.core.common.communication.CallRouter;
+import org.openengsb.core.common.communication.MethodCall;
+import org.openengsb.core.common.communication.MethodReturn;
 
-public class ProxyConnector implements BundleContextAware {
+public class ProxyConnector implements InvocationHandler {
 
-    Log log = LogFactory.getLog(ProxyConnector.class);
+    private String portId;
+    private String destination;
+    private final Map<String, String> metadata = new HashMap<String, String>();
 
-    private BundleContext bundleContext;
-    private final InvocationHandlerFactory handlerFactory;
-    private final DomainService domainService;
+    private CallRouter callRouter;
 
-    public ProxyConnector(DomainService domainService, InvocationHandlerFactory factory) {
-        this.domainService = domainService;
-        handlerFactory = factory;
-    }
-
-    public void addProxiesToContext() {
-        for (DomainProvider domain : domainService.domains()) {
-            addProxyServiceManager(domain);
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        MethodReturn callSync =
+            callRouter.callSync(portId, destination, new MethodCall(method.getName(), args, metadata));
+        switch (callSync.getType()) {
+            case Object:
+                return callSync.getArg();
+            case Void:
+                return null;
+            case Exception:
+                throw new RuntimeException(callSync.getArg().toString());
+            default:
+                throw new IllegalStateException("Return Type has to be either Object or Exception");
         }
     }
 
-    private void addProxyServiceManager(DomainProvider domain) {
-        InvocationHandler handler = handlerFactory.createInstance(domain);
-        Dictionary<String, String> properties = new Hashtable<String, String>();
-        properties.put("domain", domain.getDomainInterface().getName());
-        ProxyServiceManager service = new ProxyServiceManager(domain, handler);
-        service.setBundleContext(bundleContext);
-        bundleContext.registerService(ServiceManager.class.getName(), service,
-            properties);
+    public final void setPortId(String id) {
+        portId = id;
     }
 
-    @Override
-    public void setBundleContext(BundleContext bundleContext) {
-        this.bundleContext = bundleContext;
+    public final void setDestination(String destination) {
+        this.destination = destination;
+    }
+
+    public void addMetadata(String key, String value) {
+        metadata.put(key, value);
+    }
+
+    public final void setCallRouter(CallRouter callRouter) {
+        this.callRouter = callRouter;
+    }
+
+    public final String getPortId() {
+        return portId;
+    }
+
+    public final String getDestination() {
+        return destination;
+    }
+
+    public final CallRouter getCallRouter() {
+        return callRouter;
     }
 }

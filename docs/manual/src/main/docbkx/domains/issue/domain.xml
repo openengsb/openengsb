@@ -40,6 +40,7 @@
   <section>
     <title>Connectors</title>  
     <xi:include href="trac.xml" />
+    <xi:include href="jira.xml" />
   </section>
 
 </chapter>

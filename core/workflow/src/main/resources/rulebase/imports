@@ -5,3 +5,6 @@ java.util.HashMap
 org.openengsb.core.common.Event
 org.openengsb.core.common.workflow.model.Value
 org.openengsb.core.workflow.WorkflowHelper
+org.openengsb.core.workflow.OsgiHelper
+java.net.URI
+org.openengsb.core.common.workflow.model.RemoteEvent

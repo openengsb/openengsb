@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.drools.KnowledgeBase;
+import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.workflow.model.RuleBaseElementId;
 import org.openengsb.core.common.workflow.model.RuleBaseElementType;
 
@@ -34,7 +35,7 @@ import org.openengsb.core.common.workflow.model.RuleBaseElementType;
  * Note: When adding a new rule or function to the rulebase, make sure that all imports are present before. Otherwise
  * the adding of the elements will fail.
  */
-public interface RuleManager {
+public interface RuleManager extends OpenEngSBService {
 
     /**
      * provides a reference to the rulebase. This reference remains valid as long as the bundle is active. the rulebase

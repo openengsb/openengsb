@@ -40,15 +40,19 @@
     <title>Creating a new domain project</title>
 
     <para>To get developers started creating a new domain a Maven archetype is provided for creating the initial project
-      structure. Furthermore, if the new domain is developed in the OpenEngSB repository, a shell script can be found at
-        <literal>etc/scripts/gen-domain.sh</literal> as further convenience.</para>
+      structure. Furthermore, if the new domain is developed in the OpenEngSB repository, the
+      <literal>openengsb-maven-plugin</literal> (see <xref linkend="developer.quickstart.tools.mavenplugin"/>) or the
+      <literal>etc/scripts/gen-domain.sh</literal> script (which only wraps the invocation of the plugin) should be
+      used for further convenience.
+    </para>
 
     <section>
       <title>Using the Maven Archetype</title>
 
-      <para>It is not recommended to use the maven archetype directly, because the gen-domain.sh script executes additional
-      tasks, like the renaming of the resulting project. Furthermore the shell script tries to make sure that the new project
-      is consistent with the naming conventions of the OpenEngSB project.</para>
+      <para>It is not recommended to use the maven archetype directly, because the <emphasis>genDomain</emphasis> goal 
+      of the openengsb-maven-plugin executes additional tasks, like the renaming of the resulting project.
+      Furthermore it tries to make sure that the new project is consistent with the naming conventions
+      of the OpenEngSB project.</para>
       
       <para>The following parameters have to be specified to execute the correct archetype:
         <itemizedlist>
@@ -80,24 +84,32 @@
     </section>
 
     <section>
-      <title>Using the <literal>gen-domain.sh</literal> shell script</title>
+      <title>Using <literal>openengsb-maven-plugin:genDomain</literal></title>
 
-      <para>The script should be executed from the domains directory in your OpenEngSB repository.</para>
+      <para>
+        First make sure that the plugin is installed in your local maven repository
+        (see <xref linkend="developer.quickstart.tools.mavenplugin"/>).
+        Then the <literal>genDomain</literal> mojo should be executed from the domains directory in your OpenEngSB
+        repository (alternatively the <literal>etc/scripts/gen-domain.sh</literal> script can be used which invokes the
+        openengsb-maven-plugin for you).
+      </para>
 
-      <literallayout><command>domains $</command> ../etc/scripts/gen-domain.sh</literallayout>
+      <literallayout>
+        <command>domains $</command> mvn org.openengsb.tooling.pluginsuite:openengsb-maven-plugin:&lt;version&gt;:genDomain
+      </literallayout>
 
-      <para>You'll be asked to fill i a few variables the script needs to create the initial project structure. Based on
-        your input, the script tries to gues further values. Guessed values are displayed in brackets. If the guess is
+      <para>You'll be asked to fill in a few variables the script needs to create the initial project structure. Based on
+        your input, the mojo tries to guess further values. Guessed values are displayed in brackets. If the guess is
         correct, simply acknowledge with <literal>Return</literal>. As example, the following output has been recorded
         while creating the Test domain:</para>
 
-      <literallayout><command>Domain Name (is mydomain):</command> test &lt;Enter>
-<command>Version (is 1.0.0-SNAPSHOT):</command> &lt;Enter>
-<command>Prefix for project names (is OpenEngSB :: Domains :: Test):</command> &lt;Enter></literallayout>
+      <literallayout><command>Domain Name [mydomain]:</command> test &lt;Enter>
+<command>Version [1.0.0-SNAPSHOT]:</command> &lt;Enter>
+<command>Prefix for project names [OpenEngSB :: Domains :: Test]:</command> &lt;Enter></literallayout>
 
-      <para>Only the domain name has been filled in, while the rest has been correctly guessed by the script. After
+      <para>Only the domain name has been filled in, while the rest has been correctly guessed. After
         giving the inputs, the Maven archetype gets executed and may ask for further inputs. You can simply hit
-          <literal>Return</literal>, as the values have been already correctly set by the script. If the script finishes
+          <literal>Return</literal>, as the values have been already correctly set. If the mojo finishes
         successfully two new Maven projects, the domain parent and domain implementation project, have been created and
         setup with a sample implementation for a domain.</para>
     </section>

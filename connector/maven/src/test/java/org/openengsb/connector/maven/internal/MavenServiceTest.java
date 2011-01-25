@@ -29,8 +29,8 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openengsb.core.common.AliveState;
 import org.openengsb.core.common.context.ContextCurrentService;
-import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.build.BuildDomainEvents;
 import org.openengsb.domain.build.BuildStartEvent;
 import org.openengsb.domain.build.BuildSuccessEvent;
@@ -53,7 +53,7 @@ public class MavenServiceTest {
     public void setUp() throws Exception {
         FileUtils.deleteDirectory(new File(getPath("test-unit-success"), "target"));
         FileUtils.deleteDirectory(new File(getPath("test-unit-fail"), "target"));
-        this.mavenService = new MavenServiceImpl();
+        this.mavenService = new MavenServiceImpl("42");
         buildEvents = mock(BuildDomainEvents.class);
         testEvents = mock(TestDomainEvents.class);
         deployEvents = mock(DeployDomainEvents.class);

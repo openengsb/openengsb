@@ -47,6 +47,8 @@ import org.openengsb.core.common.workflow.WorkflowException;
 import org.openengsb.core.common.workflow.WorkflowService;
 import org.openengsb.core.test.NullEvent;
 import org.openengsb.core.test.NullEvent2;
+import org.openengsb.domain.auditing.AuditingDomain;
+import org.openengsb.ui.web.model.OpenEngSBVersion;
 
 public class SendEventPageTest {
 
@@ -56,6 +58,7 @@ public class SendEventPageTest {
     private List<Class<? extends Event>> eventClasses;
     private FormTester formTester;
     private RepeatingView fieldList;
+    private AuditingDomain domain;
 
     @Before
     @SuppressWarnings("unchecked")
@@ -66,10 +69,14 @@ public class SendEventPageTest {
             new SpringComponentInjector(tester.getApplication(), context, false));
         eventService = mock(WorkflowService.class);
         RuleManager ruleManager = mock(RuleManager.class);
+        domain = mock(AuditingDomain.class);
+        Mockito.when(domain.getAudits()).thenReturn(Arrays.asList(new String[]{"123", "456"}));
         context.putBean(ruleManager);
         context.putBean("eventService", eventService);
         context.putBean("domainService", mock(DomainService.class));
         context.putBean("contextCurrentService", mock(ContextCurrentService.class));
+        context.putBean("openengsbVersion", new OpenEngSBVersion());
+        context.putBean("audit", domain);
         eventClasses = Arrays.<Class<? extends Event>> asList(NullEvent2.class, NullEvent.class, BrokenEvent.class);
         tester.startPage(new SendEventPage(eventClasses));
         fieldList = (RepeatingView) tester.getComponentFromLastRenderedPage("form:fieldContainer:fields");
@@ -157,5 +164,18 @@ public class SendEventPageTest {
         typeFormTester.select("dropdown", idx);
         tester.executeAjaxEvent(dropdown, "onchange");
         formTester = tester.newFormTester("form");
+    }
+
+    @Test
+    public void openSite_shouldShowAuditLog() {
+        tester.assertVisible("auditsContainer:audits");
+        tester.assertVisible("auditsContainer:audits:0:audit");
+        tester.assertVisible("auditsContainer:audits:1:audit");
+        int i = 0;
+        for (String string : this.domain.getAudits()) {
+            tester.assertLabel("auditsContainer:audits:" + i + ":audit", string);
+            i++;
+        }
+
     }
 }

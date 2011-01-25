@@ -16,46 +16,29 @@
 
 package org.openengsb.ui.web;
 
-import java.util.Locale;
-
 import org.apache.wicket.authentication.AuthenticatedWebSession;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.openengsb.ui.web.global.header.HeaderTemplate;
-import org.openengsb.ui.web.model.User;
+import org.apache.wicket.model.StringResourceModel;
 
-public class LoginPage extends WebPage {
+import org.openengsb.core.common.security.model.User;
 
-    private User user = new User();
+public class LoginPage extends BasePage {
+    private User user = new User(null);
 
+    @SuppressWarnings("serial")
     public LoginPage() {
-
-        add(new Link<Object>("lang.en") {
-            @Override
-            public void onClick() {
-                this.getSession().setLocale(Locale.ENGLISH);
-            }
-        });
-        add(new Link<Object>("lang.de") {
-            @Override
-            public void onClick() {
-                this.getSession().setLocale(Locale.GERMAN);
-            }
-        });
-
-        @SuppressWarnings("serial") Form<User> loginForm = new Form<User>("form") {
+        Form<User> loginForm = new Form<User>("loginForm") {
             @Override
             protected void onSubmit() {
                 AuthenticatedWebSession session = AuthenticatedWebSession.get();
                 if (session.signIn(user.getUsername(), user.getPassword())) {
                     setDefaultResponsePageIfNecessary();
                 } else {
-                    error("Username and password did not match");
+                    error(new StringResourceModel("error", this, null).getString());
                 }
             }
 
@@ -72,7 +55,5 @@ public class LoginPage extends WebPage {
         FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
         feedbackPanel.setOutputMarkupId(true);
         add(feedbackPanel);
-
-        this.add(new HeaderTemplate("header", this.getClass().getSimpleName()));
     }
 }

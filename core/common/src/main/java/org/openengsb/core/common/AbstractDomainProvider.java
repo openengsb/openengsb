@@ -24,7 +24,6 @@ import java.util.List;
 import org.openengsb.core.common.l10n.BundleStrings;
 import org.openengsb.core.common.l10n.LocalizableString;
 import org.osgi.framework.BundleContext;
-import org.springframework.osgi.context.BundleContextAware;
 
 /**
  * Base class for {@code DomainProvider} implementations with the following unctionality:
@@ -104,7 +103,6 @@ public abstract class AbstractDomainProvider<DomainType extends Domain, DomainEv
         return domainInterface;
     }
 
-    @Override
     public void setBundleContext(BundleContext bundleContext) {
         this.bundleContext = bundleContext;
         this.strings = new BundleStrings(this.bundleContext.getBundle());

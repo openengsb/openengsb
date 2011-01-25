@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright 2010 OpenEngSB Division, Vienna University of Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+
+<chapter xml:id="recommended.eclipse.plugins" version="5.0" xmlns="http://docbook.org/ns/docbook"
+  xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd
+  http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd
+  http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema-instance.xsd">
+
+  <title>Recommended Eclipse Plug-ins for Developers</title>
+
+  <para>The following plug-ins for Eclipse are recommended for the development of the OpenEngSB.
+  If not otherwise stated we recommend the latest stable version of the plug-ins. For information about
+  the basic setup of this plug-ins please take a look into the corresponding plug-in documentation. This 
+  section only gives hints for setup if it is OpenEngSB specific.</para>
+
+  <section>
+    <title>Properties Editor</title>
+    <para>The <link xlink:href="http://marketplace.eclipse.org/content/properties-editor-0">properties editor</link> 
+    can be used to edit the properties files used for internationalization and automatically escapes special characters,
+    like the German "ü".</para>
+  </section>
+
+  <section>
+    <title>Spring IDE</title>
+    <para><link xlink:href="http://marketplace.eclipse.org/content/spring-ide">Spring IDE</link> 
+    adds support for the Spring Framework to the Eclipse platform. Especially editing the XML configuration
+    files becomes a lot easier, as this plug-in provides code completion and other useful features.</para>
+  </section>
+
+  <section>
+    <title>Eclipse CS</title>
+    <para>The <link xlink:href="http://marketplace.eclipse.org/content/checkstyle-plug">checkstyle plugin</link> 
+    integrates checkstyle into Eclipse. Conformance with checkstyle criteria has to be checked before each push to 
+    the repository, so integrating the check into the IDE helps developers to already conform to the checkstyle 
+    criteria during development. You have to configure the plug-in to use our checkstyle configuration file, which
+    can be found <link xlink:href="${github}/tooling/checkstyle/src/main/resources/checkstyle.xml">here</link> and
+    at /tooling/checkstyle/src/main/resources/checkstyle.xml starting from the root directory of the OpenEngSB.</para>
+  </section>
+
+  <section>
+    <title>Drools</title>
+    <para>The <link xlink:href="http://marketplace.eclipse.org/content/jboss-drools">Drools plug-in</link> is handy
+    if you want to edit workflows or Drools rules, because it provides syntax highlighting for rules and a graphical
+    editor for workflows.</para>
+  </section>
+
+</chapter>
+

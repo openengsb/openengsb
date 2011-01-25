@@ -22,6 +22,9 @@ public class DeployEndEvent extends Event {
     private String output;
     private String deployId;
 
+    public DeployEndEvent() {
+    }
+
     public DeployEndEvent(String deployId, String output) {
         this.deployId = deployId;
         this.output = output;

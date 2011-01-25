@@ -19,8 +19,7 @@ package org.openengsb.ui.web.global.footer;
 import org.openengsb.ui.web.BasePage;
 
 public class ImprintPage extends BasePage {
-
     public ImprintPage() {
-    }
 
+    }
 }

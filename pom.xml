@@ -22,48 +22,48 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
+    <!-- base settings -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- core versions -->
+    <karaf.version>2.1.3</karaf.version>
+    <aries.blueprint.version>0.2-incubating</aries.blueprint.version>
     <!-- Version Informtations -->
     <openengsb.version.number>${project.version}</openengsb.version.number>
-    <openengsb.version.name.adjective>Groovy</openengsb.version.name.adjective>
-    <openengsb.version.name.noun>Goofy</openengsb.version.name.noun>
-    <!-- General Settings -->
-    <root.basedir>${project.basedir}</root.basedir>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- Environment Versions -->
-    <jdk.version>1.6</jdk.version>
-    <mvn.version>2.1</mvn.version>
-    <!-- Plugin Version -->
-    <plugin.eclipse.version>2.8</plugin.eclipse.version>
-    <plugin.surefire.version>2.5</plugin.surefire.version>
-    <maven.plugin.release.version>3.0-beta-2</maven.plugin.release.version>
-    <maven.plugin.compiler.version>2.3.1</maven.plugin.compiler.version>
-    <plugin.deploy.version>2.5</plugin.deploy.version>
-    <twdata.cli.version>1.0.4</twdata.cli.version>
-    <clover.version>3.0.2</clover.version>
-    <plugin.pax.version>1.4</plugin.pax.version>
-    <plugin.paxrunner.version>1.5.0</plugin.paxrunner.version>
-    <plugin.release.version>2.0</plugin.release.version>
-    <plugin.site.version>3.0-beta-3</plugin.site.version>
-    <plugin.source.version>2.1.2</plugin.source.version>
-    <plugin.mvn.license>1.8.0</plugin.mvn.license>
-    <plugin.javadoc.version>2.7</plugin.javadoc.version>
-    <plugin.helper.version>1.5</plugin.helper.version>
-    <plugin.resources.version>2.4.3</plugin.resources.version>
-    <plugin.install.version>2.3.1</plugin.install.version>
-    <plugin.wagon.webdav.version>1.0-beta-2</plugin.wagon.webdav.version>
-    <plugin.wagon.ssh.version>1.0-beta-6</plugin.wagon.ssh.version>
+    <openengsb.version.name.adjective>Kind</openengsb.version.name.adjective>
+    <openengsb.version.name.noun>Kenny</openengsb.version.name.noun>
+    <!-- maven plugin versions -->
+    <maven.plugin.mvn.license>1.8.0</maven.plugin.mvn.license>
+    <maven.plugin.wagon.ssh.version>1.0-beta-6</maven.plugin.wagon.ssh.version>
+    <maven.plugin.wagon.webdav.version>1.0-beta-2</maven.plugin.wagon.webdav.version>
+    <maven.plugin.release.version>2.1</maven.plugin.release.version>
+    <!-- Dependency Versions -->
+    <javax.xml.soap>1.3.0</javax.xml.soap>
+    <junit.version>4.8.2</junit.version>
+    <mvn.pluginapi.version>2.0</mvn.pluginapi.version>
+    <mvn.core.version>3.0</mvn.core.version>
+    <mvn.plugin-plugin.version>2.5.1</mvn.plugin-plugin.version>
+    <paxrunner.version>1.5.0</paxrunner.version>
+    <commons.io.version>1.4</commons.io.version>
+    <commons.compress.version>1.1</commons.compress.version>
+    <log4j.version>1.2.14</log4j.version>
+    <!-- Documentation Properties -->
+    <github>https://github.com/openengsb/openengsb/blob/integration</github>
+    <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot> 
+    <repos.final>http://uk1.maven.org/maven2</repos.final>
+    <repos.current />
+    <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
   </properties>
 
   <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>5</version>
+    <groupId>org.openengsb</groupId>
+    <artifactId>openengsb-root</artifactId>
+    <version>6</version>
   </parent>
 
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <name>OpenEngSB :: Parent</name>
 
   <description>
@@ -84,183 +84,22 @@
 
   <modules>
     <module>tooling</module>
+    <module>branding</module>
     <module>docs</module>
     <module>poms</module>
-    <module>provision</module>
-    <module>wrapped</module>
-    <module>config</module>
     <module>core</module>
     <module>domain</module>
     <module>connector</module>
     <module>ui</module>
     <module>assembly</module>
-    <module>integrationtest</module>
+    <module>itests</module>
   </modules>
-
-  <inceptionYear>2009</inceptionYear>
 
   <scm>
     <connection>scm:git:git://github.com/openengsb/openengsb.git</connection>
     <developerConnection>scm:git:git@github.com:openengsb/openengsb.git</developerConnection>
     <url>http://github.com/openengsb/openengsb</url>
   </scm>
-
-  <issueManagement>
-    <system>JIRA</system>
-    <url>http://issues.openengsb.org/jira/browse/OPENENGSB</url>
-  </issueManagement>
-
-  <ciManagement>
-    <system>Hudson</system>
-    <url>http://build.openengsb.org/</url>
-    <notifiers>
-      <notifier>
-        <type>mail</type>
-        <sendOnError>true</sendOnError>
-        <sendOnFailure>true</sendOnFailure>
-        <sendOnSuccess>true</sendOnSuccess>
-        <sendOnWarning>true</sendOnWarning>
-        <configuration>
-          <address>openengsb-dev@googlegroups.com</address>
-        </configuration>
-      </notifier>
-    </notifiers>
-  </ciManagement>
-
-  <developers>
-    <developer>
-      <id>api</id>
-      <name>Andreas Pieber</name>
-      <email>andreas.pieber [at] ifs.tuwien.ac.at</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Project Lead</role>
-        <role>Developer</role>
-        <role>Release Manager</role>
-        <role>Administrator</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>mha</id>
-      <name>Michael Handler</name>
-      <email>michael.handler [at] fullstop.at</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-        <role>Release Manager</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>cgr</id>
-      <name>Christoph Gritschenberger</name>
-      <email>e0525747 [at] student.tuwien.ac.at</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-        <role>Release Manager</role>
-        <role>Administrator</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>mzo</id>
-      <name>Michael Zoech</name>
-      <email>zoech [at] qse.ifs.tuwien.ac.at</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>pho</id>
-      <name>Philipp Hoenisch</name>
-      <email>philipp.hoenisch [at] gmail.com</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>tho</id>
-      <name>Tobias Hochwallner</name>
-      <email>tobster [at] gmx.at</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>fmo</id>
-      <name>Florian Motlik</name>
-      <email>flomotlik [at] gmail.com</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-        <role>Release Manager</role>
-      </roles>
-    </developer>
-    <developer>
-      <id>mhe</id>
-      <name>Michael Heil</name>
-      <email>michael.heil [at] chello.at</email>
-      <timezone>+1</timezone>
-      <roles>
-        <role>Developer</role>
-      </roles>
-    </developer>
-  </developers>
-
-  <contributors>
-    <contributor>
-      <name>Patrick Peer</name>
-      <email>e0326352 [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Christoph Zehetner</name>
-      <email>christoph.zehetner [at] gmx.at</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Alexander Pucher</name>
-      <email>engsb [at] alexander-pucher.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>David Waldhans</name>
-      <email>david [at] waldhans.at</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Lukas Puschmann</name>
-      <email>lukas.puschmann [at] gmx.at</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Johannes Binder</name>
-      <email>j.binder.x [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Gernot Rumpold</name>
-      <email>gernot.rumpold [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Florian Waltersdorfer</name>
-      <email>ignatiomobius [at] gmail.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Christoph Leiter</name>
-      <email>openengsb [at] christophleiter.com</email>
-      <timezone>+1</timezone>
-    </contributor>
-    <contributor>
-      <name>Kristof Meixner</name>
-      <email>kristof.meixner [at] fatlenny.net</email>
-      <timezone>+1</timezone>
-    </contributor>
-  </contributors>
 
   <build>
     <resources>
@@ -275,72 +114,20 @@
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-webdav</artifactId>
-        <version>${plugin.wagon.webdav.version}</version>
+        <version>${maven.plugin.wagon.webdav.version}</version>
       </extension>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-ssh</artifactId>
-        <version>${plugin.wagon.ssh.version}</version>
+        <version>${maven.plugin.wagon.ssh.version}</version>
       </extension>
     </extensions>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.plugin.compiler.version}</version>
-        <configuration>
-          <source>${jdk.version}</source>
-          <target>${jdk.version}</target>
-          <fork>true</fork>
-          <meminitial>128m</meminitial>
-          <maxmem>512m</maxmem>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-eclipse-plugin</artifactId>
-        <version>${plugin.eclipse.version}</version>
-        <configuration>
-          <downloadSources>true</downloadSources>
-          <downloadJavadocs>true</downloadJavadocs>
-          <workspace>eclipse-workspace</workspace>
-          <workspaceCodeStylesURL>file:etc/eclipse/formatter.xml</workspaceCodeStylesURL>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>${plugin.deploy.version}</version>
-        <configuration>
-          <remoteOBR>true</remoteOBR>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.twdata.maven</groupId>
-        <artifactId>maven-cli-plugin</artifactId>
-        <version>${twdata.cli.version}</version>
-      </plugin>
-      <plugin>
-        <groupId>com.atlassian.maven.plugins</groupId>
-        <artifactId>maven-clover2-plugin</artifactId>
-        <version>${clover.version}</version>
-        <configuration>
-          <generateHtml>false</generateHtml>
-          <generatePdf>false</generatePdf>
-          <generateXml>true</generateXml>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <version>${plugin.site.version}</version>
-        <extensions>true</extensions>
-      </plugin>
-      <plugin>
         <inherited>false</inherited>
         <groupId>com.mycila.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
-        <version>${plugin.mvn.license}</version>
+        <version>${maven.plugin.mvn.license}</version>
         <configuration>
           <header>${basedir}/etc/license/header.txt</header>
           <failIfMissing>true</failIfMissing>
@@ -389,69 +176,16 @@
         </configuration>
       </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>${plugin.source.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${plugin.javadoc.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>${plugin.resources.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>${plugin.install.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <version>${plugin.helper.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
   <profiles>
     <profile>
-      <id>run</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.ops4j</groupId>
-            <artifactId>maven-pax-plugin</artifactId>
-            <version>${plugin.pax.version}</version>
-            <configuration>
-              <runner>${plugin.paxrunner.version}</runner>
-              <framework>felix</framework>
-              <noDependencies>true</noDependencies>
-              <provision>
-                <param>--platform=felix</param>
-                <param>--console=false</param>
-                <param>--vmOptions=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005</param>
-                <param>scan-composite:file:assembly/target/classes/karaf.composite</param>
-                <param>scan-composite:file:assembly/target/classes/settings.debug.composite</param>
-                <param>--ee=J2SE-1.6</param>
-                <param>--definitionURL=file:assembly/target/classes/felix.xml</param>
-              </provision>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
       <id>nightly</id>
+      <properties>
+        <github>https://github.com/openengsb/openengsb/blob/master</github>
+        <repos.current>${repos.snapshot}</repos.current>
+        <sitesubtype>nightly</sitesubtype>
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -483,12 +217,17 @@
     </profile>
     <profile>
       <id>milestone</id>
+      <properties>
+        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
+        <repos.current>${repos.final}</repos.current>
+        <sitesubtype>milestone</sitesubtype>
+      </properties>
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>${plugin.release.version}</version>
+            <version>${maven.plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
@@ -503,12 +242,17 @@
     </profile>
     <profile>
       <id>final</id>
+      <properties>
+        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
+        <repos.current>${repos.final}</repos.current>
+        <sitesubtype></sitesubtype>
+      </properties>
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>${plugin.release.version}</version>
+            <version>${maven.plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
@@ -523,12 +267,17 @@
     </profile>
     <profile>
       <id>support</id>
+      <properties>
+        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
+        <repos.current>${repos.final}</repos.current>
+        <sitesubtype></sitesubtype>
+      </properties>
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>${plugin.release.version}</version>
+            <version>${maven.plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
@@ -543,12 +292,17 @@
     </profile>
     <profile>
       <id>rc</id>
+      <properties>
+        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
+        <repos.current>${repos.final}</repos.current>
+        <sitesubtype>rc</sitesubtype>
+      </properties>
       <build>
         <plugins>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>${plugin.release.version}</version>
+            <version>   ${maven.plugin.release.version}</version>
             <configuration>
               <autoVersionSubmodules>true</autoVersionSubmodules>
               <mavenExecutorId>forked-path</mavenExecutorId>
@@ -557,76 +311,6 @@
               <arguments>-Psonatype-oss-release,release,rc -Dmaven.test.skip=true -DpushChanges=false</arguments>
               <preparationGoals>clean install</preparationGoals>
             </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>license-check</id>
-      <build>
-        <plugins>
-          <plugin>
-            <inherited>false</inherited>
-            <groupId>com.mycila.maven-license-plugin</groupId>
-            <artifactId>maven-license-plugin</artifactId>
-            <version>1.8.0</version>
-            <configuration>
-              <header>${basedir}/etc/license/header.txt</header>
-              <failIfMissing>true</failIfMissing>
-              <aggregate>true</aggregate>
-              <strictCheck>true</strictCheck>
-              <excludes>
-                <exclude>etc/eclipse/checkstyle.xml</exclude>
-                <exclude>license.txt</exclude>
-                <exclude>**/*.vm</exclude>
-                <exclude>**/license.txt</exclude>
-                <exclude>runner/**</exclude>
-                <exclude>assembly/runner/**</exclude>
-                <exclude>features/**</exclude>
-                <exclude>NOTICE</exclude>
-                <exclude>**/*.3pm</exclude>
-                <exclude>**/*.dll</exclude>
-                <exclude>**/*.pdb</exclude>
-                <exclude>**/*.pdf</exclude>
-                <exclude>**/LICENSE</exclude>
-                <exclude>**/*checkstyle.xml</exclude>
-                <exclude>**/*.log.*</exclude>
-                <exclude>**/*.log</exclude>
-                <exclude>**/*.packlist</exclude>
-                <exclude>**/*.pod</exclude>
-                <exclude>**/imports</exclude>
-                <exclude>**/globals</exclude>
-                <exclude>**/.keep</exclude>
-                <exclude>**/EngSB.sln</exclude>
-                <exclude>**/nb-configuration.xml</exclude>
-                <exclude>**/*.checkstyle</exclude>
-                <!-- the exclusion for .rf-files should be removed, when the xmlstyle is fixed OPENENGSB-379 -->
-                <exclude>**/*.rf</exclude>
-              </excludes>
-              <mapping>
-                <bnd>SCRIPT_STYLE</bnd>
-                <drl>SCRIPT_STYLE</drl>
-                <index>SCRIPT_STYLE</index>
-                <gitignore>SCRIPT_STYLE</gitignore>
-                <cfg>SCRIPT_STYLE</cfg>
-                <wsdl>XML_STYLE</wsdl>
-                <csproj>XML_STYLE</csproj>
-                <rf>XML_STYLE</rf>
-                <composite>SCRIPT_STYLE</composite>
-                <config>XML_STYLE</config>
-                <script>DOUBLESLASH_STYLE</script>
-                <rule>SCRIPT_STYLE</rule>
-              </mapping>
-            </configuration>
-            <executions>
-              <execution>
-                <id>check-headers</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
@@ -659,7 +343,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
-            <version>${plugin.surefire.version}</version>
             <configuration>
               <excludes>
                 <exclude>*</exclude>
@@ -681,6 +364,17 @@
       <name>Maven Central</name>
       <url>http://repo1.maven.org/maven2/</url>
     </pluginRepository>
+    <pluginRepository>
+      <id>sonatype-snapshots</id>
+      <name>Sonaype Snapsht Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
     <pluginRepository> <!-- maven jaxb-xjc-plugin -->
       <id>maven-repository.dev.java.net</id>
       <name>Java.net Maven 2 Repository</name>
@@ -696,7 +390,22 @@
       <name>JAI Repository (indirectly used by Docbook plugin)</name>
       <url>https://m2proxy.atlassian.com/repository/public</url>
     </pluginRepository>
-
+    <pluginRepository> <!-- required for karaf snapshot builds -->
+      <id>apache.snapshots</id>
+      <name>Apache Public Repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots/</url>
+    </pluginRepository>
+    <pluginRepository>
+      <id>docbook-utils</id>
+      <name>DocBook Utils</name>
+      <url>http://docbook-utils.sourceforge.net/maven2</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+        <checksumPolicy>warn</checksumPolicy>
+      </releases>
+    </pluginRepository>
   </pluginRepositories>
 
   <repositories>
@@ -739,23 +448,12 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <repository> <!-- manually wrapped jaxb and latest version of neodatis -->
-      <id>thirdparty</id>
-      <name>OpenEngSB 3rd Party Repository</name>
-      <url>http://maven.openengsb.org/nexus/content/repositories/thirdparty/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
     <repository>
       <!-- required for maven-default-skin/1.0/maven-default-skin-1.0.jar
         cd docs; mvn -Pdocs clean install site:run
         does not work without
       -->
-      <id>apache</id>
+      <id>apache.releases</id>
       <name>Apache Public Repository</name>
       <url>https://repository.apache.org/content/groups/public/</url>
       <releases>
@@ -763,6 +461,17 @@
       </releases>
       <snapshots>
         <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository> <!-- required for karaf snapshot builds -->
+      <id>apache.snapshots</id>
+      <name>Apache Public Repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
       </snapshots>
     </repository>
     <repository> <!-- Additional Repositories for Karaf -->
@@ -785,6 +494,17 @@
       </releases>
       <snapshots>
         <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository> <!-- Additional Repositories for Karaf -->
+      <id>sonatype</id>
+      <name>sonatype</name>
+      <url>http://repository.sonatype.org/content/groups/sonatype-public-grid</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
       </snapshots>
     </repository>
     <repository> <!-- JGIT  -->

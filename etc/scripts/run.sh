@@ -15,14 +15,19 @@
 # limitations under the License.
 #
 
-# Script used to build the entire servicebus and run it directly from maven. This 
+# Script used to build the entire servicebus and run it directly from maven. This
 # script actually using the jbi:servicemix maven command therefore. In future
 # version, when the project is embedded in an webserver this script is for
 # change.
 
 echo "Be careful in using this script. It does neighter run unit tests nor an upgrade!"
 
-cd $(dirname $0)/../..
-rm -r runner
-mvn install pax:provision -Dmaven.test.skip=true
+source $(dirname $0)/openengsbplugin-common.sh
+
+cd $ABSPATH/../../
+
+GOAL="provision"
+
+mvn install -Dmaven.test.skip=true
+mvn org.openengsb.tooling.pluginsuite:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL
 
