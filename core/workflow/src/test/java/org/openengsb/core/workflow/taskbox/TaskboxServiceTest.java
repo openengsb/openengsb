@@ -29,7 +29,6 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
@@ -132,17 +131,17 @@ public class TaskboxServiceTest {
         service.finishTask(task);
         verify(workflowService).processEvent(any(InternalWorkflowEvent.class));
     }
-    
+
     @Test
     public void testFinishTask_shouldDeleteAndProcessEvent() throws PersistenceException, WorkflowException {
         Task task = new Task();
-        
+
         ProcessBag bag = new ProcessBag(task);
-        Map<String, Object> map = new HashMap<String,Object>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("processBag", bag);
-        workflowService.startFlow("TaskDemoWorkflow",map);
+        workflowService.startFlow("TaskDemoWorkflow", map);
         service.finishTask(task);
-        
+
         verify(persistenceService).delete(any(Task.class));
         verify(workflowService).processEvent(any(InternalWorkflowEvent.class));
     }

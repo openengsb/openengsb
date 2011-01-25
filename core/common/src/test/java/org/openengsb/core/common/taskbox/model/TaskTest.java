@@ -25,7 +25,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class TaskTest {
-    private Task task, newtask;
+    private Task task;
+    private Task newtask;
 
     @Before
     public void init() throws Exception {
@@ -38,7 +39,7 @@ public class TaskTest {
         assertTrue(task.getTaskId().length() > 0);
         assertTrue(task.getTaskCreationTimestamp().before(new Date(System.currentTimeMillis() + 10)));
     }
-    
+
     @Test
     public void init_shouldCreateTaskWithGivenOtherTask() throws Exception {
         newtask.setTaskId("ID_newtask");
