@@ -17,7 +17,6 @@
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -38,9 +37,6 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
  *
  */
 public class GenDomain extends AbstractOpenengsbMojo {
-
-    private List<String> goals;
-    private Properties userproperties;
 
     private boolean archetypeCatalogLocalOnly = false;
 
@@ -80,7 +76,7 @@ public class GenDomain extends AbstractOpenengsbMojo {
     }
 
     protected void executeMaven() throws MojoExecutionException {
-        getNewMavenExecutor().setRecursive(true).execute(this, goals, null, null, userproperties,
+        getNewMavenExecutor().setRecursive(true).execute(this, goals, null, null, userProperties,
             getProject(), getSession(), getMaven());
         postExecute();
     }
@@ -119,25 +115,25 @@ public class GenDomain extends AbstractOpenengsbMojo {
         goals = Arrays
             .asList(new String[]{ "archetype:generate" });
 
-        userproperties = new Properties();
+        userProperties = new Properties();
 
-        userproperties.put("archetypeGroupId", ARCHETYPE_GROUPID);
-        userproperties.put("archetypeArtifactId", ARCHETYPE_ARTIFACTID);
-        userproperties.put("archetypeVersion", version);
-        userproperties.put("groupId", groupId);
-        userproperties.put("artifactId", artifactId);
-        userproperties.put("version", version);
-        userproperties.put("domainName", domainName);
-        userproperties.put("implementationArtifactId", artifactId);
-        userproperties.put("package", groupId);
-        userproperties.put("name", projectName);
-        userproperties
+        userProperties.put("archetypeGroupId", ARCHETYPE_GROUPID);
+        userProperties.put("archetypeArtifactId", ARCHETYPE_ARTIFACTID);
+        userProperties.put("archetypeVersion", version);
+        userProperties.put("groupId", groupId);
+        userProperties.put("artifactId", artifactId);
+        userProperties.put("version", version);
+        userProperties.put("domainName", domainName);
+        userProperties.put("implementationArtifactId", artifactId);
+        userProperties.put("package", groupId);
+        userProperties.put("name", projectName);
+        userProperties
             .put("domainInterface", String.format("%s%s", Tools.capitalizeFirst(domainName), "Domain"));
-        userproperties.put("implementationName", projectName);
+        userProperties.put("implementationName", projectName);
 
         // local archetype catalog only
         if (archetypeCatalogLocalOnly) {
-            userproperties.put("archetypeCatalog", "local");
+            userProperties.put("archetypeCatalog", "local");
         }
     }
 
