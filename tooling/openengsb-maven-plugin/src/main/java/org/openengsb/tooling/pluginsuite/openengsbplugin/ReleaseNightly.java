@@ -44,6 +44,7 @@ public class ReleaseNightly extends ConfiguredMojo {
         goals.add("clean");
         goals.add("install");
         goals.add("deploy");
+        activatedProfiles.add("release");
         activatedProfiles.add("nightly");
         userProperties.put("maven.test.skip", "true");
     }
