@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.AbstractOpenengsbMojo;
 
 /**
  * equivalent to <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>

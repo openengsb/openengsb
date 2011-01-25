@@ -33,7 +33,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.openengsb.tooling.pluginsuite.openengsbplugin.AbstractOpenengsbMojo;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.xml.OpenEngSBMavenPluginNSContext;
 import org.w3c.dom.Document;

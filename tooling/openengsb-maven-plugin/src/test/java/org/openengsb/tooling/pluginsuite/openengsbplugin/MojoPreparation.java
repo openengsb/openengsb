@@ -22,28 +22,35 @@ import java.util.Arrays;
 import javax.xml.xpath.XPathConstants;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.junit.BeforeClass;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.xml.OpenEngSBMavenPluginNSContext;
 import org.w3c.dom.Document;
 
 public abstract class MojoPreparation {
 
-    private boolean prepared = false;
+    private static boolean prepared = false;
 
-    private File userDir = new File(System.getProperty("user.dir"));
+    private static final Logger LOG = Logger.getLogger(MojoPreparation.class);
 
-    protected String mvnCommand = "mvn";
+    private static File userDir = new File(System.getProperty("user.dir"));
 
-    protected String groupId;
-    protected String artifactId;
-    protected String version;
+    protected static String mvnCommand = "mvn";
 
-    protected OpenEngSBMavenPluginNSContext nsContext = new OpenEngSBMavenPluginNSContext();
+    private static String groupId;
+    private static String artifactId;
+    private static String version;
+
+    private static OpenEngSBMavenPluginNSContext nsContext = new OpenEngSBMavenPluginNSContext();
 
     protected String invocation;
 
-    protected void prepare(String goal) throws Exception {
+    @BeforeClass
+    public static void preparePlugin() throws Exception {
         if (!prepared) {
+            LOG.debug("preparing openengsb-maven-plugin..");
+            
             File f = new File("pom.xml");
             Document doc = Tools.parseXMLFromString(FileUtils.readFileToString(f));
             groupId = Tools.evaluateXPath("/pom:project/pom:groupId/text()", doc, nsContext, XPathConstants.STRING,
@@ -53,16 +60,18 @@ public abstract class MojoPreparation {
             version = Tools.evaluateXPath("/pom:project/pom:version/text()", doc, nsContext, XPathConstants.STRING,
                     String.class).trim();
 
-            invocation = String.format("%s:%s:%s:%s", groupId, artifactId, version, goal);
-
             if (System.getProperty("os.name").startsWith("Windows")) {
                 mvnCommand = "mvn.bat";
             }
 
-            Tools.executeProcess(Arrays.asList(new String[]{ mvnCommand, "install", "-Dmaven.test.skip=true" }),
+            Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "install", "-Dmaven.test.skip=true" }),
                     userDir, false);
             prepared = true;
         }
+    }
+
+    protected void prepareGoal(String goal) {
+        invocation = String.format("%s:%s:%s:%s", groupId, artifactId, version, goal);
     }
 
 }

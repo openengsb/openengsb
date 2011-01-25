@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.openengsb.tooling.pluginsuite.openengsbplugin;
+package org.openengsb.tooling.pluginsuite.openengsbplugin.base;
 
 import org.apache.maven.Maven;
 import org.apache.maven.execution.MavenSession;

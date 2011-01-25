@@ -34,6 +34,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.AbstractOpenengsbMojo;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.OpenEngSBJavaRunner;
 import org.ops4j.pax.runner.platform.PlatformException;
 import org.ops4j.pax.runner.platform.internal.CommandLineBuilder;

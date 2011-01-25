@@ -23,7 +23,6 @@ import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 
@@ -31,21 +30,20 @@ public class LicenseCheckTest extends MojoPreparation {
 
     @Before
     public void buildInvocationCommand() throws Exception {
-        prepare("licenseCheck");
+        prepareGoal("licenseCheck");
     }
 
     @Test
     public void licenseCheckNoLicenseHeader_mojoShouldFail() throws Exception {
         int result = Tools.executeProcess(Arrays.asList(new String[]{ mvnCommand, "-e", invocation }), new File(
-                "src/test/resources/licenseCheck/fail"), false);
+                "src/test/resources/licenseCheck/fail"), true);
         assertEquals(1, result);
     }
 
-    @Ignore
     @Test
     public void licenseCheckHeaderAvailable_mojoShouldPass() throws Exception {
         int result = Tools.executeProcess(Arrays.asList(new String[]{ mvnCommand, "-e", invocation }), new File(
-                "src/test/resources/licenseCheck/pass"), false);
+                "src/test/resources/licenseCheck/pass"), true);
         assertEquals(0, result);
     }
 

@@ -26,6 +26,8 @@ public abstract class ReleaseMojo extends ConfiguredMojo {
      * POM.
      * 
      * @parameter expression="${connectionUrl}"
+     * 
+     * @required
      */
     protected String connectionUrl;
 

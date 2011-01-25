@@ -31,7 +31,7 @@ public class LicenseFormatTest extends MojoPreparation {
 
     @Before
     public void buildInvocationCommand() throws Exception {
-        prepare("licenseFormat");
+        prepareGoal("licenseFormat");
     }
 
     @Test
@@ -45,7 +45,7 @@ public class LicenseFormatTest extends MojoPreparation {
             projectFile = new File(sampleProjSrc, "Without_Header.java");
 
             int result = Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "-e", invocation }), new File(
-                    "src/test/resources/licenseFormat/sampleproject"), false);
+                    "src/test/resources/licenseFormat/sampleproject"), true);
             assertEquals(0, result);
 
             File backupWithHeader = new File("src/test/resources/licenseFormat/backup/With_Header.java");

@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 import org.apache.maven.plugin.MojoExecutionException;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.AbstractOpenengsbMojo;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 
 /**
