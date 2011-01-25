@@ -36,10 +36,10 @@ public abstract class ReleaseMojo extends ConfiguredMojo {
         configProfileXpath = "/rcc:releaseCommonConfig/rcc:profile";
     }
 
-    protected abstract void configure();
+    protected abstract void configureReleaseMojo();
 
     @Override
-    protected void preExecute() throws MojoExecutionException {
+    protected final void configure() throws MojoExecutionException {
         throwErrorIfProjectIsNotExecutedInRootDirectory();
         configure();
         goals.add("release:prepare");
@@ -47,5 +47,11 @@ public abstract class ReleaseMojo extends ConfiguredMojo {
         userProperties.put("maven.test.skip", "true");
         userProperties.put("connectionUrl", connectionUrl);
     }
+
+    @Override
+    protected final void validateIfExecutionIsAllowed() throws MojoExecutionException {  
+    }
+    
+    
 
 }

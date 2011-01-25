@@ -69,24 +69,25 @@ public class GenDomain extends AbstractOpenengsbMojo {
     private String defaultVersion;
 
     @Override
-    public void execute() throws MojoExecutionException {
-
-        validateIfExecutionIsAllowed();
-
+    protected void configure() throws MojoExecutionException {
         initDefaults();
         readUserInput();
         initializeMavenExecutionProperties();
-
-        executeMaven();
-
-        Tools.renameArtifactFolderAndUpdateParentPom(artifactId, domainName);
-
-        System.out.println("DON'T FORGET TO ADD THE DOMAIN TO YOUR RELEASE/ASSEMBLY PROJECT!");
-
     }
 
-    private void validateIfExecutionIsAllowed() throws MojoExecutionException {
+    protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
         throwErrorIfWrapperRequestIsRecursive();
+    }
+
+    protected void executeMaven() throws MojoExecutionException {
+        getNewMavenExecutor().setRecursive(true).execute(this, goals, null, null, userproperties,
+            getProject(), getSession(), getMaven());
+        postExecute();
+    }
+    
+    private void postExecute() throws MojoExecutionException {
+        Tools.renameArtifactFolderAndUpdateParentPom(artifactId, domainName);
+        System.out.println("DON'T FORGET TO ADD THE DOMAIN TO YOUR RELEASE/ASSEMBLY PROJECT!");
     }
 
     private void initDefaults() {
@@ -138,11 +139,6 @@ public class GenDomain extends AbstractOpenengsbMojo {
         if (archetypeCatalogLocalOnly) {
             userproperties.put("archetypeCatalog", "local");
         }
-    }
-
-    private void executeMaven() throws MojoExecutionException {
-        getNewMavenExecutor().setRecursive(true).execute(this, goals, null, null, userproperties,
-            getProject(), getSession(), getMaven());
     }
 
 }

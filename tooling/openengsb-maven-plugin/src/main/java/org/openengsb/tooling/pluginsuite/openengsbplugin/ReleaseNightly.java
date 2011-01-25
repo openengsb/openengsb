@@ -39,13 +39,17 @@ public class ReleaseNightly extends ConfiguredMojo {
     }
 
     @Override
-    protected void preExecute() throws MojoExecutionException {
+    protected void configure() throws MojoExecutionException {
         throwErrorIfProjectIsNotExecutedInRootDirectory();
         goals.add("clean");
         goals.add("install");
         goals.add("deploy");
         activatedProfiles.add("nightly");
         userProperties.put("maven.test.skip", "true");
+    }
+
+    @Override
+    protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
     }
 
 }

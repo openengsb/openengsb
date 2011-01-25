@@ -34,7 +34,7 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ReleaseMojo;
 public class ReleaseMilestone extends ReleaseMojo {
 
     @Override
-    protected void configure() {
+    protected void configureReleaseMojo() {
         activatedProfiles.add("milestone");
     }
 

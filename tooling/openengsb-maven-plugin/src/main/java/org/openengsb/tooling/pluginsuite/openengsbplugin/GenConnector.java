@@ -26,16 +26,17 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.base.AbstractOpenengsbM
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 
 /**
- * guides through the creation of a connector for the OpenEngSB via the connector archetype
- *
+ * guides through the creation of a connector for the OpenEngSB via the
+ * connector archetype
+ * 
  * @goal genConnector
- *
+ * 
  * @inheritedByDefault false
- *
+ * 
  * @requiresProject true
- *
+ * 
  * @aggregator true
- *
+ * 
  */
 public class GenConnector extends AbstractOpenengsbMojo {
 
@@ -72,25 +73,26 @@ public class GenConnector extends AbstractOpenengsbMojo {
 
     private String defaultVersion;
 
-    private void validateIfExecutionIsAllowed() throws MojoExecutionException {
-        throwErrorIfWrapperRequestIsRecursive();
-    }
-
     @Override
-    public void execute() throws MojoExecutionException {
-
-        validateIfExecutionIsAllowed();
-
+    protected void configure() throws MojoExecutionException {
         initDefaults();
         readUserInput();
         initializeMavenExecutionProperties();
+    }
 
-        executeMaven();
+    protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
+        throwErrorIfWrapperRequestIsRecursive();
+    }
 
+    protected void executeMaven() throws MojoExecutionException {
+        getNewMavenExecutor().setRecursive(true).execute(this, goals, null, null, userproperties, getProject(),
+                getSession(), getMaven());
+        postExec();
+    }
+
+    private void postExec() throws MojoExecutionException {
         Tools.renameArtifactFolderAndUpdateParentPom(artifactId, connector);
-
         System.out.println("DON'T FORGET TO ADD THE CONNECTOR TO YOUR RELEASE/ASSEMBLY PROJECT!");
-
     }
 
     private void initDefaults() {
@@ -108,16 +110,12 @@ public class GenConnector extends AbstractOpenengsbMojo {
         }
 
         domainName = Tools.readValueFromStdin(sc, "Domain Name", DEFAULT_DOMAIN);
-        domaininterface =
-            Tools
-                .readValueFromStdin(sc, "Domain Interface",
-                    String.format("%s%s", Tools.capitalizeFirst(domainName), "Domain"));
+        domaininterface = Tools.readValueFromStdin(sc, "Domain Interface",
+                String.format("%s%s", Tools.capitalizeFirst(domainName), "Domain"));
         connector = Tools.readValueFromStdin(sc, "Connector Name", "myconnector");
         version = Tools.readValueFromStdin(sc, "Version", defaultVersion);
-        projectName = Tools.readValueFromStdin(sc,
-            "Project Name",
-            String.format("%s%s", DEFAULT_CONNECTORNAME_PREFIX,
-                Tools.capitalizeFirst(connector)));
+        projectName = Tools.readValueFromStdin(sc, "Project Name",
+                String.format("%s%s", DEFAULT_CONNECTORNAME_PREFIX, Tools.capitalizeFirst(connector)));
 
         domainGroupId = String.format("%s%s", DOMAIN_GROUPIDPREFIX, domainName);
         domainArtifactId = String.format("%s%s", DOMAIN_ARTIFACTIDPREFIX, domainName);
@@ -125,8 +123,7 @@ public class GenConnector extends AbstractOpenengsbMojo {
     }
 
     private void initializeMavenExecutionProperties() {
-        goals = Arrays
-            .asList(new String[]{ "archetype:generate" });
+        goals = Arrays.asList(new String[] { "archetype:generate" });
 
         userproperties = new Properties();
 
@@ -148,11 +145,6 @@ public class GenConnector extends AbstractOpenengsbMojo {
         if (archetypeCatalogLocalOnly) {
             userproperties.put("archetypeCatalog", "local");
         }
-    }
-
-    private void executeMaven() throws MojoExecutionException {
-        getNewMavenExecutor().setRecursive(true).execute(this, goals, null, null, userproperties,
-            getProject(), getSession(), getMaven());
     }
 
 }

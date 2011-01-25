@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.base.AbstractOpenengsbMojo;
 
 /**
@@ -50,25 +49,18 @@ public class PushVersion extends AbstractOpenengsbMojo {
     private List<String> goals = new ArrayList<String>();
     private Properties userproperties = new Properties();
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        validateIfExecutionIsAllowed();
-        configure();
-        executeMaven();
+    protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
+        throwErrorIfWrapperRequestIsRecursive();
+        throwErrorIfProjectIsNotExecutedInRootDirectory();
     }
 
-    private void configure() {
+    protected void configure() {
         goals.add("release:update-versions");
         userproperties.put("autoVersionSubmodules", "true");
         userproperties.put("developmentVersion", developmentVersion);
     }
 
-    private void validateIfExecutionIsAllowed() throws MojoExecutionException {
-        throwErrorIfWrapperRequestIsRecursive();
-        throwErrorIfProjectIsNotExecutedInRootDirectory();
-    }
-
-    private void executeMaven() throws MojoExecutionException {
+    protected void executeMaven() throws MojoExecutionException {
         getNewMavenExecutor().setRecursive(true).setInterActiveMode(false)
                 .execute(this, goals, null, null, userproperties, getProject(), getSession(), getMaven());
     }

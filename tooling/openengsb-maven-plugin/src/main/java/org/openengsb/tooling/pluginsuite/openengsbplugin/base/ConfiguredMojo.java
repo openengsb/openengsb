@@ -22,7 +22,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathConstants;
@@ -32,7 +31,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.xml.OpenEngSBMavenPluginNSContext;
 import org.w3c.dom.Document;
@@ -43,18 +41,13 @@ public abstract class ConfiguredMojo extends AbstractOpenengsbMojo {
     private static final Logger LOG = Logger.getLogger(ConfiguredMojo.class);
 
     // #################################
-    // set these in subclass
+    // set these in subclass constructor
     // #################################
 
     protected String configProfileXpath;
     protected String configPath;
 
     // #################################
-
-    protected List<String> goals = new ArrayList<String>();
-    protected List<String> activatedProfiles = new ArrayList<String>();
-    protected List<String> deactivatedProfiles = new ArrayList<String>();
-    protected Properties userProperties = new Properties();
 
     private File tmpPom;
 
@@ -66,16 +59,13 @@ public abstract class ConfiguredMojo extends AbstractOpenengsbMojo {
     /**
      * If set to "true" prints the temporary pom to the console.
      * 
-     * @parameter
-     *         expression="${debugMode}"
-     *         default-value="false"
+     * @parameter expression="${debugMode}" default-value="false"
      */
     private boolean debugMode;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    protected final void executeMaven() throws MojoExecutionException {
         try {
-            preExecute();
             String profileName = UUID.randomUUID().toString();
             tmpPom = configureTmpPom(profileName);
             FILES_TO_REMOVE_FINALLY.add(tmpPom);
@@ -85,11 +75,6 @@ public abstract class ConfiguredMojo extends AbstractOpenengsbMojo {
             cleanUp();
         }
     }
-
-    /**
-     * overwrite in subclass
-     */
-    protected abstract void preExecute() throws MojoExecutionException;
 
     private void configureMojo(String profileName) {
         activatedProfiles.add(profileName);
@@ -141,7 +126,7 @@ public abstract class ConfiguredMojo extends AbstractOpenengsbMojo {
 
     private File serializeIntoTmpPom(Document pomDocument) throws IOException, URISyntaxException {
         String serializedXml = Tools.serializeXML(pomDocument);
-        
+
         if (debugMode) {
             System.out.print(serializedXml);
         }

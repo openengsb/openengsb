@@ -16,7 +16,6 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -42,24 +41,19 @@ public class Assemble extends AbstractOpenengsbMojo {
     private Properties userProperties = new Properties();
 
     @Override
-    public void execute() throws MojoExecutionException {
-        validateIfExecutionIsAllowed();
-        initializeMavenExecutionProperties();
-        executeMaven();
+    protected void configure() throws MojoExecutionException {
+        goals.add("install");
+        activatedProfiles.add("release");
+        activatedProfiles.add("nightly");
+        userProperties.put("maven.test.skip", "true");
     }
 
-    private void validateIfExecutionIsAllowed() throws MojoExecutionException {
+    protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
         throwErrorIfWrapperRequestIsRecursive();
         throwErrorIfProjectIsNotExecutedInRootDirectory();
     }
 
-    private void initializeMavenExecutionProperties() {
-        goals = Arrays.asList(new String[]{ "install" });
-        activatedProfiles = Arrays.asList(new String[]{ "release", "nightly" });
-        userProperties.put("maven.test.skip", "true");
-    }
-
-    private void executeMaven() throws MojoExecutionException {
+    protected void executeMaven() throws MojoExecutionException {
         getNewMavenExecutor().setRecursive(true).execute(this, goals, activatedProfiles, null,
             userProperties, getProject(), getSession(), getMaven());
     }
