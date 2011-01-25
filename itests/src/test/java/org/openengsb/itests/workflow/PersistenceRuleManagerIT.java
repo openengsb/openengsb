@@ -16,12 +16,14 @@
 
 package org.openengsb.itests.workflow;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 
 import java.util.Collection;
 import java.util.Random;
@@ -94,7 +96,7 @@ public class PersistenceRuleManagerIT extends AbstractRuleManagerIT {
         assertTrue(listener.haveRulesFired("org.openengsb.test"));
     }
 
-//    @Test
+    @Test
     public void testAddGlobal() throws Exception {
         ruleManager.addGlobal("java.util.Random", "bla");
         ruleManager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "bla"),
@@ -104,6 +106,39 @@ public class PersistenceRuleManagerIT extends AbstractRuleManagerIT {
         session.insert(new Event());
         session.fireAllRules();
         assertTrue(listener.haveRulesFired("bla"));
+    }
+
+    @Test
+    public void testAddGlobalIfNotPresentWhenIsPresent() throws Exception {
+        ruleManager.addGlobal("java.util.Random", "bla");
+        ruleManager.addGlobalIfNotPresent("java.util.Random", "bla");
+        assertThat(ruleManager.listGlobals().get("bla"), is("java.util.Random"));
+    }
+
+    @Test
+    public void testAddGlobalIfNotPresentWhenNotPresent() throws Exception {
+        ruleManager.addGlobalIfNotPresent("java.util.Random", "bla");
+        assertThat(ruleManager.listGlobals().get("bla"), is("java.util.Random"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddGlobalIfNotPresentWithWrongType() throws Exception {
+        ruleManager.addGlobalIfNotPresent("java.util.Random", "bla");
+        ruleManager.addGlobalIfNotPresent("java.util.List", "bla");
+    }
+
+    @Test
+    public void testGetAllGlobalsOfType() throws Exception {
+        ruleManager.addGlobal("java.util.Random", "bla1");
+        ruleManager.addGlobal("java.util.Random", "bla2");
+        assertThat(ruleManager.getAllGlobalsOfType("java.util.Random"), hasItems("bla1", "bla2"));
+    }
+
+    @Test
+    public void testGetGlobalType() throws Exception {
+        ruleManager.addGlobal("java.util.Random", "bla1");
+        String result = ruleManager.getGlobalType("bla1");
+        assertThat(result, is("java.util.Random"));
     }
 
     @Test

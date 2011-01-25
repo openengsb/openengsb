@@ -17,6 +17,7 @@
 package org.openengsb.itests.workflow;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -167,6 +168,19 @@ public class PersistenceRuleManagerCrudIT extends
     public void testDelete() throws RuleBaseException {
         ruleManager.add(id[0], code[0]);
         ruleManager.delete(id[0]);
+    }
+
+    @Test
+    public void testAddOrUpdateOnNewRule() throws Exception {
+        ruleManager.addOrUpdate(id[0], code[0]);
+        assertThat(ruleManager.get(id[0]), is(code[0]));
+    }
+
+    @Test
+    public void testAddOrUpdateOnExistingRule() throws Exception {
+        ruleManager.add(id[0], code[0]);
+        ruleManager.addOrUpdate(id[1], code[1]);
+        assertThat(ruleManager.get(id[0]), is(code[1]));
     }
 
 }
