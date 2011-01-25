@@ -17,6 +17,7 @@
 package org.openengsb.core.workflow;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -167,6 +168,19 @@ public abstract class AbstractRuleManagerCrudTest<SourceType extends RuleManager
     public void testDelete() throws RuleBaseException {
         source.add(id[0], code[0]);
         source.delete(id[0]);
+    }
+
+    @Test
+    public void testAddOrUpdateOnNewRule() throws Exception {
+        source.addOrUpdate(id[0], code[0]);
+        assertThat(source.get(id[0]), is(code[0]));
+    }
+
+    @Test
+    public void testAddOrUpdateOnExistingRule() throws Exception {
+        source.add(id[0], code[0]);
+        source.addOrUpdate(id[1], code[1]);
+        assertThat(source.get(id[0]), is(code[1]));
     }
 
 }

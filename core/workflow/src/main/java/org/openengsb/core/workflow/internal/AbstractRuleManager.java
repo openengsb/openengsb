@@ -66,7 +66,11 @@ public abstract class AbstractRuleManager implements RuleManager {
 
     @Override
     public void addOrUpdate(RuleBaseElementId name, String code) throws RuleBaseException {
-        throw new UnsupportedOperationException("not yet implemented");
+        if(get(name) == null){
+            add(name, code);
+        } else {
+            update(name, code);
+        }
     }
 
     @Override
