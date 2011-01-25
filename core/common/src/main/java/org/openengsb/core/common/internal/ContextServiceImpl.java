@@ -173,7 +173,7 @@ public class ContextServiceImpl implements ContextCurrentService, ContextConnect
 
     @Override
     public String getDefaultConnectorServiceId(String domainName) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return getValue(String.format("/domain/%s/defaultConnector/id", domainName));
     }
 
     @Override

@@ -226,4 +226,12 @@ public class ContextServiceTest {
         String value = cs.getValue("/domain/mydomain/defaultConnector/id");
         assertThat(value, is("myservice"));
     }
+
+    @Test
+    public void getDefaultConnector() throws Exception {
+        addTestData();
+        ((ContextConnectorService) cs).registerDefaultConnector("mydomain", "myservice");
+        String defaultConnectorServiceId = ((ContextConnectorService) cs).getDefaultConnectorServiceId("mydomain");
+        assertThat(defaultConnectorServiceId, is("myservice"));
+    }
 }
