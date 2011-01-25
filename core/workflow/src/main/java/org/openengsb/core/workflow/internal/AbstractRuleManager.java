@@ -58,4 +58,24 @@ public abstract class AbstractRuleManager implements RuleManager {
     public Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName) {
         return this.getRessourceHandler(type).list(packageName);
     }
+
+    @Override
+    public void addGlobalIfNotPresent(String className, String name) throws RuleBaseException {
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    @Override
+    public void addOrUpdate(RuleBaseElementId name, String code) throws RuleBaseException {
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    @Override
+    public Collection<String> getAllGlobalsOfType(String type) {
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    @Override
+    public String getGlobalType(String name) {
+        throw new UnsupportedOperationException("not yet implemented");
+    }
 }
