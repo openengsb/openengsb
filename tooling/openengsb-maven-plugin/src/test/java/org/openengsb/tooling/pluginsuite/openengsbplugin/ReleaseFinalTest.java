@@ -16,7 +16,7 @@ public class ReleaseFinalTest extends AbstractReleaseTest {
     public void testFinalRelease_shouldPassAndReleaseToRepo() throws Exception {
         prepareGoal("releaseFinal");
         int result = Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "-e", invocation,
-            "-DconnectionUrl=foo" }), new File("src/test/resources/release/final"), true);
+            "-DconnectionUrl=foo" }), new File("src/test/resources/release/final"));
         assertEquals(0, result);
     }
 

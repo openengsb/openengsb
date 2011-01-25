@@ -8,7 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 
-public class AbstractReleaseTest extends MojoPreparation {
+public abstract class AbstractReleaseTest extends MojoPreparation {
 
     protected File releaseRepo = null;
     protected File snapshotRepo = null;

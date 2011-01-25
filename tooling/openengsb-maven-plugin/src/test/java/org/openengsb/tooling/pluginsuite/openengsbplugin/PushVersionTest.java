@@ -26,7 +26,7 @@ public class PushVersionTest extends MojoPreparation {
             FileUtils.copyFile(pomBeforePush, pomFile);
             int result = Tools.executeProcess(
                     Arrays.asList(new String[] { mvnCommand, "-e", invocation, "-DdevelopmentVersion=2.0-SNAPSHOT" }),
-                    new File("src/test/resources/pushVersion"), true);
+                    new File("src/test/resources/pushVersion"));
             assertEquals(0, result);
             File pomAfterPush = new File("src/test/resources/pushVersion/afterPushVersion.xml");
             assertEquals(FileUtils.readFileToString(pomAfterPush), FileUtils.readFileToString(pomFile));

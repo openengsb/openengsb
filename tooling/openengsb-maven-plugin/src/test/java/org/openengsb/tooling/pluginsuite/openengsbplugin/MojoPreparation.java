@@ -65,7 +65,7 @@ public abstract class MojoPreparation {
             }
 
             Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "install", "-Dmaven.test.skip=true" }),
-                    userDir, false);
+                    userDir);
             prepared = true;
         }
     }
