@@ -210,6 +210,13 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     }
 
     @Test
+    public void testGetGlobalType() throws Exception {
+        source.addGlobal("java.util.Random", "bla1");
+        String result = source.getGlobalType("bla1");
+        assertThat(result, is("java.util.Random"));
+    }
+
+    @Test
     public void testInvalidAddRule() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
         try {

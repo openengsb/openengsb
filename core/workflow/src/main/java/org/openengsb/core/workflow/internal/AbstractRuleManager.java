@@ -101,6 +101,6 @@ public abstract class AbstractRuleManager implements RuleManager {
 
     @Override
     public String getGlobalType(String name) {
-        throw new UnsupportedOperationException("not yet implemented");
+        return this.listGlobals().get(name);
     }
 }
