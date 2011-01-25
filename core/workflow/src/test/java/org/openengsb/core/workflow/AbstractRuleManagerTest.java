@@ -23,6 +23,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -199,6 +200,13 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
     public void testAddGlobalIfNotPresentWithWrongType() throws Exception {
         source.addGlobalIfNotPresent("java.util.Random", "bla");
         source.addGlobalIfNotPresent("java.util.List", "bla");
+    }
+
+    @Test
+    public void testGetAllGlobalsOfType() throws Exception {
+        source.addGlobal("java.util.Random", "bla1");
+        source.addGlobal("java.util.Random", "bla2");
+        assertThat(source.getAllGlobalsOfType("java.util.Random"), hasItems("bla1", "bla2"));
     }
 
     @Test
