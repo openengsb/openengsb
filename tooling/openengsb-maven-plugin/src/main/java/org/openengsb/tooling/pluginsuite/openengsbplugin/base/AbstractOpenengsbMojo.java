@@ -14,17 +14,27 @@
  * limitations under the License.
  */
 
-package org.openengsb.tooling.pluginsuite.openengsbplugin;
+package org.openengsb.tooling.pluginsuite.openengsbplugin.base;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 import org.apache.maven.Maven;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.DefaultMavenExecutor;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.MavenExecutor;
 
 public abstract class AbstractOpenengsbMojo extends AbstractMojo {
+
+    protected List<String> goals = new ArrayList<String>();
+    protected List<String> activatedProfiles = new ArrayList<String>();
+    protected List<String> deactivatedProfiles = new ArrayList<String>();
+    protected Properties userProperties = new Properties();
 
     public static final String OPENENGSB_ROOT_GROUP_ID = "org.openengsb";
     public static final String OPENENGSB_ROOT_ARTIFACT_ID = "openengsb-parent";
@@ -44,6 +54,19 @@ public abstract class AbstractOpenengsbMojo extends AbstractMojo {
      */
     private Maven maven;
 
+    protected abstract void configure() throws MojoExecutionException;
+
+    protected abstract void validateIfExecutionIsAllowed() throws MojoExecutionException;
+
+    protected abstract void executeMaven() throws MojoExecutionException, MojoFailureException;
+
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        validateIfExecutionIsAllowed();
+        configure();
+        executeMaven();
+    }
+
     public MavenProject getProject() {
         return project;
     }
@@ -60,7 +83,7 @@ public abstract class AbstractOpenengsbMojo extends AbstractMojo {
         return new DefaultMavenExecutor();
     }
 
-    protected void throwErrorIfWrapperRequestIsRecursive() throws MojoExecutionException {
+    protected final void throwErrorIfWrapperRequestIsRecursive() throws MojoExecutionException {
         if (!getProject().isExecutionRoot()) {
             String msg = "Please execute this mojo with the maven -N flag!\n";
             msg += "Hint: This doesn't mean that the embedded request isn't executed recursivley ";
@@ -69,10 +92,9 @@ public abstract class AbstractOpenengsbMojo extends AbstractMojo {
         }
     }
 
-    protected void throwErrorIfProjectIsNotExecutedInRootDirectory() throws MojoExecutionException {
+    protected final void throwErrorIfProjectIsNotExecutedInRootDirectory() throws MojoExecutionException {
         if (getProject().hasParent() && !getProject().getParent().getArtifactId().equals("openengsb-root")) {
-            throw new MojoExecutionException(
-                "Please invoke this mojo only in the OpenEngSB root!");
+            throw new MojoExecutionException("Please invoke this mojo only in the OpenEngSB root!");
         }
     }
 

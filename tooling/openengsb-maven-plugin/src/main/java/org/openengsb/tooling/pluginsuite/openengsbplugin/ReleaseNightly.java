@@ -16,46 +16,41 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.maven.plugin.MojoExecutionException;
-import org.openengsb.tooling.pluginsuite.openengsbplugin.base.AbstractOpenengsbMojo;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ConfiguredMojo;
 
 /**
- * equivalent to <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
+ * Mojo to perform nightly releases. This mojo activates the "nightly" profile
+ * in the project, where you can put your configuration for nightly releases.
  * 
- * @goal assemble
+ * @goal releaseNightly
  * 
  * @inheritedByDefault false
  * 
  * @requiresProject true
  * 
  * @aggregator true
- * 
  */
-public class Assemble extends AbstractOpenengsbMojo {
+public class ReleaseNightly extends ConfiguredMojo {
 
-    private List<String> goals;
-    private List<String> activatedProfiles;
-    private Properties userProperties = new Properties();
+    public ReleaseNightly() {
+        configPath = "releaseMojo/nightlyConfig.xml";
+        configProfileXpath = "/rn:releaseNightlyMojo/rn:profile";
+    }
 
     @Override
     protected void configure() throws MojoExecutionException {
+        goals.add("clean");
         goals.add("install");
+        goals.add("deploy");
         activatedProfiles.add("release");
         activatedProfiles.add("nightly");
         userProperties.put("maven.test.skip", "true");
     }
 
+    @Override
     protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
-        throwErrorIfWrapperRequestIsRecursive();
         throwErrorIfProjectIsNotExecutedInRootDirectory();
-    }
-
-    protected void executeMaven() throws MojoExecutionException {
-        getNewMavenExecutor().setRecursive(true).execute(this, goals, activatedProfiles, null,
-            userProperties, getProject(), getSession(), getMaven());
     }
 
 }

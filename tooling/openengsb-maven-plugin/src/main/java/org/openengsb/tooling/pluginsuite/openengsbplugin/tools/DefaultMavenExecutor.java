@@ -116,19 +116,51 @@ public class DefaultMavenExecutor implements MavenExecutor {
         log.info("////////////////////////////////////////////////");
         log.info(String.format("EMBEDDED EXECUTION REQUESTS - BEGIN"));
 
-        String goalsInfo = "goals:";
-        // only iterate when necessary
+        LOG.debug("####################");
+        LOG.debug("# GOALS:");
+        LOG.debug("####################");
+
+        String goalsInfo = "";
         for (String goal : embeddedRequest.getGoals()) {
-            goalsInfo += String.format(" %s", goal);
+            goalsInfo += String.format("\t* %s\n", goal);
         }
-        log.info(goalsInfo);
+        LOG.debug(goalsInfo);
+
+        LOG.debug("####################");
+        LOG.debug("# ACTIVE PROFILES:");
+        LOG.debug("####################");
 
         if (embeddedRequest.getActiveProfiles() != null && embeddedRequest.getActiveProfiles().size() > 0) {
-            String profilesInfo = "active profiles:";
+            String profilesInfo = "";
             for (String profile : embeddedRequest.getActiveProfiles()) {
-                profilesInfo += String.format(" %s", profile);
+                profilesInfo += String.format("\t* %s\n", profile);
             }
-            log.info(profilesInfo);
+            LOG.debug(profilesInfo);
+        }
+
+        LOG.debug("####################");
+        LOG.debug("# INACTIVE PROFILES:");
+        LOG.debug("####################");
+
+        if (embeddedRequest.getInactiveProfiles() != null && embeddedRequest.getInactiveProfiles().size() > 0) {
+            String profilesInfo = "";
+            for (String profile : embeddedRequest.getInactiveProfiles()) {
+                profilesInfo += String.format("\t* %s\n", profile);
+            }
+            log.debug(profilesInfo);
+        }
+
+        LOG.debug("####################");
+        LOG.debug("# PROPERTIES:");
+        LOG.debug("####################");
+
+        if (embeddedRequest.getUserProperties() != null && embeddedRequest.getUserProperties().size() > 0) {
+            String propertiesInfo = "";
+            for (Object propName : embeddedRequest.getUserProperties().keySet()) {
+                propertiesInfo += String.format("\t* %s=%s\n", propName,
+                        embeddedRequest.getUserProperties().get(propName));
+            }
+            LOG.debug(propertiesInfo);
         }
     }
 
@@ -158,8 +190,7 @@ public class DefaultMavenExecutor implements MavenExecutor {
     private void logAndPassOnExceptionIfAny(MavenExecutionResult result, Log log) throws MojoExecutionException {
         if (result.hasExceptions()) {
             log.warn("###################");
-            log
-                    .warn("The following exceptions occured during execution:");
+            log.warn("The following exceptions occured during execution:");
             for (Throwable t : result.getExceptions()) {
                 log.warn("--------");
                 log.warn(t);
@@ -167,12 +198,9 @@ public class DefaultMavenExecutor implements MavenExecutor {
             log.warn("###################");
             Throwable ex = result.getExceptions().get(0);
             Throwable cause = ex.getCause();
-            String errmsg = cause != null ? cause.getMessage() : ex
-                    .getMessage();
-            throw new MojoExecutionException(
-                    String.format(
-                            "%s\nFAIL - see log statements above for additional info",
-                            errmsg));
+            String errmsg = cause != null ? cause.getMessage() : ex.getMessage();
+            throw new MojoExecutionException(String.format("%s\nFAIL - see log statements above for additional info",
+                    errmsg));
         }
     }
 

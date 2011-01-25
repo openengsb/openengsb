@@ -16,27 +16,24 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import org.openengsb.tooling.pluginsuite.openengsbplugin.base.LicenseMojo;
+import static org.junit.Assert.assertEquals;
 
-/**
- * Adds/updates license headers where necessary.
- * 
- * @goal licenseFormat
- * 
- * @inheritedByDefault false
- * 
- * @requiresProject true
- * 
- * @aggregator true
- * 
- */
-public class LicenseFormat extends LicenseMojo {
+import java.io.File;
+import java.util.Arrays;
 
-    public LicenseFormat() {
-        wrappedGoal = "validate";
-        headerPath = "licenseMojo/header.txt";
-        configPath = "licenseMojo/licenseFormatConfig.xml";
-        configProfileXpath = "/lf:licenseFormatMojo/lf:profile";
+import org.junit.Ignore;
+import org.junit.Test;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
+
+public class ReleaseFinalTest extends AbstractReleaseTest {
+
+    @Ignore
+    @Test
+    public void testFinalRelease_shouldPassAndReleaseToRepo() throws Exception {
+        prepareGoal("releaseFinal");
+        int result = Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "-e", invocation,
+            "-DconnectionUrl=foo" }), new File("src/test/resources/release/final"));
+        assertEquals(0, result);
     }
 
 }

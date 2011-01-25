@@ -16,16 +16,13 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.base.AbstractOpenengsbMojo;
 
 /**
- * equivalent to <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
+ * update development version
  * 
- * @goal assemble
+ * @goal pushVersion
  * 
  * @inheritedByDefault false
  * 
@@ -34,28 +31,31 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.base.AbstractOpenengsbM
  * @aggregator true
  * 
  */
-public class Assemble extends AbstractOpenengsbMojo {
+public class PushVersion extends AbstractOpenengsbMojo {
 
-    private List<String> goals;
-    private List<String> activatedProfiles;
-    private Properties userProperties = new Properties();
-
-    @Override
-    protected void configure() throws MojoExecutionException {
-        goals.add("install");
-        activatedProfiles.add("release");
-        activatedProfiles.add("nightly");
-        userProperties.put("maven.test.skip", "true");
-    }
+    /**
+     * the new version
+     * 
+     * @parameter expression="${developmentVersion}"
+     * 
+     * @required
+     */
+    private String developmentVersion;
 
     protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
         throwErrorIfWrapperRequestIsRecursive();
         throwErrorIfProjectIsNotExecutedInRootDirectory();
     }
 
+    protected void configure() {
+        goals.add("release:update-versions");
+        userProperties.put("autoVersionSubmodules", "true");
+        userProperties.put("developmentVersion", developmentVersion);
+    }
+
     protected void executeMaven() throws MojoExecutionException {
-        getNewMavenExecutor().setRecursive(true).execute(this, goals, activatedProfiles, null,
-            userProperties, getProject(), getSession(), getMaven());
+        getNewMavenExecutor().setRecursive(true).setInterActiveMode(false)
+                .execute(this, goals, null, null, userProperties, getProject(), getSession(), getMaven());
     }
 
 }
