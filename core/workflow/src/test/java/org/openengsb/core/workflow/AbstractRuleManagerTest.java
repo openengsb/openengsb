@@ -16,6 +16,7 @@
 
 package org.openengsb.core.workflow;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
@@ -179,6 +180,19 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         session.insert(new Event());
         session.fireAllRules();
         assertTrue(listener.haveRulesFired("bla"));
+    }
+
+    @Test
+    public void testAddGlobalIfNotPresentWhenIsPresent() throws Exception {
+        source.addGlobal("java.util.Random", "bla");
+        source.addGlobalIfNotPresent("java.util.Random", "bla");
+        assertThat(source.listGlobals().get("bla"), is("java.util.Random"));
+    }
+
+    @Test
+    public void testAddGlobalIfNotPresentWhenNotPresent() throws Exception {
+        source.addGlobalIfNotPresent("java.util.Random", "bla");
+        assertThat(source.listGlobals().get("bla"), is("java.util.Random"));
     }
 
     @Test

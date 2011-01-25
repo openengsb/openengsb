@@ -61,12 +61,24 @@ public abstract class AbstractRuleManager implements RuleManager {
 
     @Override
     public void addGlobalIfNotPresent(String className, String name) throws RuleBaseException {
-        throw new UnsupportedOperationException("not yet implemented");
+        String currentType = listGlobals().get(name);
+        if (currentType == null) {
+            addGlobal(className, name);
+            return;
+        }
+        if (!currentType.equals(className)) {
+            throw new IllegalArgumentException(
+                String
+                    .format(
+                        "Unable to add global of type %s."
+                                + "Global with the same name but different type is already registered (%s)",
+                        className, currentType));
+        }
     }
 
     @Override
     public void addOrUpdate(RuleBaseElementId name, String code) throws RuleBaseException {
-        if(get(name) == null){
+        if (get(name) == null) {
             add(name, code);
         } else {
             update(name, code);
