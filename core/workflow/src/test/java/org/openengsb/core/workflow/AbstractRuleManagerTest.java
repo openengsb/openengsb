@@ -195,6 +195,12 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         assertThat(source.listGlobals().get("bla"), is("java.util.Random"));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddGlobalIfNotPresentWithWrongType() throws Exception {
+        source.addGlobalIfNotPresent("java.util.Random", "bla");
+        source.addGlobalIfNotPresent("java.util.List", "bla");
+    }
+
     @Test
     public void testInvalidAddRule() throws Exception {
         RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "org.openengsb", "test");
