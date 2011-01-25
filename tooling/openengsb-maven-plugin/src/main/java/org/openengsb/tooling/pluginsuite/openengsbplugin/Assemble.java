@@ -16,14 +16,12 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.maven.plugin.MojoExecutionException;
-import org.openengsb.tooling.pluginsuite.openengsbplugin.base.AbstractOpenengsbMojo;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ConfiguredMojo;
 
 /**
- * equivalent to <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
+ * equivalent to
+ * <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
  * 
  * @goal assemble
  * 
@@ -34,28 +32,23 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.base.AbstractOpenengsbM
  * @aggregator true
  * 
  */
-public class Assemble extends AbstractOpenengsbMojo {
+public class Assemble extends ConfiguredMojo {
 
-    private List<String> goals;
-    private List<String> activatedProfiles;
-    private Properties userProperties = new Properties();
+    public Assemble() {
+        configPath = "assembleMojo/assembleConfig.xml";
+        configProfileXpath = "/am:assembleMojo/am:profile";
+    }
 
     @Override
     protected void configure() throws MojoExecutionException {
         goals.add("install");
-        activatedProfiles.add("release");
-        activatedProfiles.add("nightly");
         userProperties.put("maven.test.skip", "true");
     }
 
+    @Override
     protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
         throwErrorIfWrapperRequestIsRecursive();
         throwErrorIfProjectIsNotExecutedInRootDirectory();
-    }
-
-    protected void executeMaven() throws MojoExecutionException {
-        getNewMavenExecutor().setRecursive(true).execute(this, goals, activatedProfiles, null,
-            userProperties, getProject(), getSession(), getMaven());
     }
 
 }
