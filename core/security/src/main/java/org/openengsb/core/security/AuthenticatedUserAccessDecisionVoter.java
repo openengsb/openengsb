@@ -64,9 +64,22 @@ public class AuthenticatedUserAccessDecisionVoter implements AccessDecisionVoter
             return ACCESS_DENIED;
         }
 
-        User user = (User) authentication.getPrincipal();
-        log.info(String.format("authenticated as %s", user.getUsername()));
-        Collection<GrantedAuthority> userAuthorities = user.getAuthorities();
+        Object user = authentication.getPrincipal();
+        Collection<GrantedAuthority> userAuthorities = null;
+        if (user instanceof User) {
+            User castUser = (User) user;
+            log.info(String.format("authenticated as %s", castUser.getUsername()));
+            userAuthorities = castUser.getAuthorities();
+        } else if (user instanceof org.springframework.security.core.userdetails.User) {
+            org.springframework.security.core.userdetails.User castUser =
+                (org.springframework.security.core.userdetails.User) user;
+            log.info(String.format("authenticated as %s", castUser.getUsername()));
+            userAuthorities = castUser.getAuthorities();
+        }
+        if (userAuthorities == null) {
+            log.error("No authorities could be found");
+            return ACCESS_DENIED;
+        }
         if (log.isDebugEnabled()) {
             @SuppressWarnings("unchecked")
             Collection<GrantedAuthority> authorities =
