@@ -22,6 +22,14 @@ openengsb-1.1.0.RELEASE
   * when starting a flow, the ProcessInstance is now inserted into the workingmemory for use inside the workflow.
   * startFlow now triggers a "FlowStartedEvent" as soon as the processInstance has been inserted.
   * workflow-service: retract events from working-memory when all rules have fired.
+  * allow distribution via different OpenEngSBs
+  * Taskbox support for human flows
+  * OpenEngSB Maven plugin tool suite via openengsb-maven-plugin
+  * openengsb-maven-plugin mojo for license plugin
+  * openengsb-maven-plugin mojo for push-version
+  * openengsb-maven-plugin mojo for assembly-mojo
+  * More util methods for registering and using openengsb core services
+  * Upgrade of jgit, maven-bundle-plugin
 
 ### Details
 
