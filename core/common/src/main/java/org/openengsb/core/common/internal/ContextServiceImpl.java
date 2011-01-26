@@ -22,9 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.openengsb.core.common.context.Context;
+import org.openengsb.core.common.context.ContextConnectorService;
 import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.context.ContextHolder;
 import org.openengsb.core.common.context.ContextPath;
-import org.openengsb.core.common.context.ContextService;
 import org.openengsb.core.common.context.ContextStorageBean;
 import org.openengsb.core.common.persistence.PersistenceException;
 import org.openengsb.core.common.persistence.PersistenceManager;
@@ -34,11 +35,9 @@ import org.springframework.osgi.context.BundleContextAware;
 
 import com.google.common.base.Preconditions;
 
-public class ContextServiceImpl implements ContextCurrentService, ContextService, BundleContextAware {
+public class ContextServiceImpl implements ContextCurrentService, ContextConnectorService, BundleContextAware {
 
-    private ThreadLocal<String> currentContext = new ThreadLocal<String>();
     private Context rootContext;
-    private ThreadLocal<String> currentContextId = new ThreadLocal<String>();
 
     private PersistenceManager persistenceManager;
 
@@ -97,23 +96,24 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
 
     @Override
     public Context getContext() {
-        if (currentContext.get() == null) {
+        String currentContextId = ContextHolder.get().getCurrentContextId();
+        if (currentContextId == null) {
             return null;
         }
-        return rootContext.getChild(currentContext.get());
+        return rootContext.getChild(currentContextId);
     }
 
     @Override
     public String getThreadLocalContext() {
-        return currentContext.get();
+        return ContextHolder.get().getCurrentContextId();
     }
 
     @Override
     public void setThreadLocalContext(String contextId) {
-        this.currentContextId.set(contextId);
+        ContextHolder.get().setCurrentContextId(contextId);
         Context context = rootContext.getChild(contextId);
         Preconditions.checkArgument(context != null, "no context exists for given context id");
-        currentContext.set(contextId);
+        ContextHolder.get().setCurrentContextId(contextId);
     }
 
     @Override
@@ -171,4 +171,13 @@ public class ContextServiceImpl implements ContextCurrentService, ContextService
         this.persistenceManager = persistenceManager;
     }
 
+    @Override
+    public String getDefaultConnectorServiceId(String domainName) {
+        return getValue(String.format("/domain/%s/defaultConnector/id", domainName));
+    }
+
+    @Override
+    public void registerDefaultConnector(String domainName, String serviceId) {
+        putValue(String.format("/domain/%s/defaultConnector/id", domainName), serviceId);
+    }
 }

@@ -19,7 +19,8 @@ package org.openengsb.core.workflow;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.atLeast;
@@ -32,6 +33,10 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -283,4 +288,36 @@ public class WorkflowServiceTest {
         verify(logService, times(2)).doSomething("Hello World");
     }
 
+    @Test
+    public void processEventsConcurrently_shouldProcessBothEvents() throws Exception {
+        manager.addImport(TestEvent.class.getName());
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "concurrent test"), "when\n"
+                + "TestEvent(value == \"0\")\n"
+                + "then\n"
+                + "example.doSomething(\"concurrent\");");
+        manager.add(new RuleBaseElementId(RuleBaseElementType.Rule, "concurrent test1"), "when\n"
+                + "TestEvent(value == \"1\")\n"
+                + "then\n"
+                + "Thread.sleep(1000);");
+        Callable<Void> task = makeProcessEventTask(new TestEvent("1"));
+        Callable<Void> task2 = makeProcessEventTask(new TestEvent("0"));
+        ExecutorService executor = Executors.newCachedThreadPool();
+        Future<Void> future1 = executor.submit(task);
+        Thread.sleep(300);
+        Future<Void> future2 = executor.submit(task2);
+        future1.get();
+        future2.get();
+        verify(logService).doSomething("concurrent");
+    }
+
+    private Callable<Void> makeProcessEventTask(final Event event) {
+        Callable<Void> task = new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                service.processEvent(event);
+                return null;
+            }
+        };
+        return task;
+    }
 }

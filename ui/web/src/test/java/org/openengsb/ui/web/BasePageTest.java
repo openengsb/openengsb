@@ -103,20 +103,20 @@ public class BasePageTest {
     }
 
     @Test
-    public void test_label_present() {
+    public void testIfLabelIsPresent() {
         String labelString =
             tester.getApplication().getResourceSettings().getLocalizer().getString("project.choice.label", basePage);
         tester.assertContains(labelString);
     }
 
     @Test
-    public void test_default_context_initialization() {
+    public void testInitDefaultContext_shouldSetFooContext() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
         assertThat("foo", is(WicketSession.get().getThreadContextId()));
     }
 
     @Test
-    public void test_context_change() {
+    public void testChangeContextDropdown_shouldChangeThreadlocal() {
         tester.assertComponent("projectChoiceForm:projectChoice", DropDownChoice.class);
         assertThat("foo", is(WicketSession.get().getThreadContextId()));
 
@@ -133,7 +133,7 @@ public class BasePageTest {
     }
 
     @Test
-    public void test_correct_response_page() {
+    public void testSelectContext_shouldRedirectToChoicesResponsePage() {
         FormTester formTester = tester.newFormTester("projectChoiceForm");
         formTester.select("projectChoice", 1);
 

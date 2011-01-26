@@ -14,27 +14,18 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.workflow.model;
+package org.openengsb.core.common.context;
 
-import org.openengsb.core.common.Event;
+public interface ContextConnectorService {
 
-public class TestEvent extends Event {
+    /**
+     * assigns the given serviceId the current contexts defaultConnector for the given domain
+     */
+    void registerDefaultConnector(String domainName, String serviceId);
 
-    private String value;
-
-    public TestEvent() {
-    }
-
-    public TestEvent(long processId) {
-        setProcessId(processId);
-    }
-
-    public TestEvent(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return this.value;
-    }
+    /**
+     * returns the serviceId of the default-connector for the given domain
+     */
+    String getDefaultConnectorServiceId(String domainName);
 
 }

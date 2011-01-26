@@ -17,6 +17,9 @@
 package org.openengsb.core.workflow.internal;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.openengsb.core.common.workflow.RuleBaseException;
 import org.openengsb.core.common.workflow.RuleManager;
@@ -57,5 +60,47 @@ public abstract class AbstractRuleManager implements RuleManager {
     @Override
     public Collection<RuleBaseElementId> list(RuleBaseElementType type, String packageName) {
         return this.getRessourceHandler(type).list(packageName);
+    }
+
+    @Override
+    public void addGlobalIfNotPresent(String className, String name) throws RuleBaseException {
+        String currentType = listGlobals().get(name);
+        if (currentType == null) {
+            addGlobal(className, name);
+            return;
+        }
+        if (!currentType.equals(className)) {
+            throw new IllegalArgumentException(
+                String
+                    .format(
+                        "Unable to add global of type %s."
+                                + "Global with the same name but different type is already registered (%s)",
+                        className, currentType));
+        }
+    }
+
+    @Override
+    public void addOrUpdate(RuleBaseElementId name, String code) throws RuleBaseException {
+        if (get(name) == null) {
+            add(name, code);
+        } else {
+            update(name, code);
+        }
+    }
+
+    @Override
+    public Collection<String> getAllGlobalsOfType(String type) {
+        Set<String> result = new HashSet<String>();
+        for (Map.Entry<String, String> entry : listGlobals().entrySet()) {
+            if (entry.getValue().equals(type)) {
+                result.add(entry.getKey());
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public String getGlobalType(String name) {
+        return this.listGlobals().get(name);
     }
 }

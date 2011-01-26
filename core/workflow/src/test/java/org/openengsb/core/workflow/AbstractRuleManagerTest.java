@@ -16,12 +16,14 @@
 
 package org.openengsb.core.workflow;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -179,6 +181,39 @@ public abstract class AbstractRuleManagerTest<SourceType extends RuleManager> {
         session.insert(new Event());
         session.fireAllRules();
         assertTrue(listener.haveRulesFired("bla"));
+    }
+
+    @Test
+    public void testAddGlobalIfNotPresentWhenIsPresent() throws Exception {
+        source.addGlobal("java.util.Random", "bla");
+        source.addGlobalIfNotPresent("java.util.Random", "bla");
+        assertThat(source.listGlobals().get("bla"), is("java.util.Random"));
+    }
+
+    @Test
+    public void testAddGlobalIfNotPresentWhenNotPresent() throws Exception {
+        source.addGlobalIfNotPresent("java.util.Random", "bla");
+        assertThat(source.listGlobals().get("bla"), is("java.util.Random"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddGlobalIfNotPresentWithWrongType() throws Exception {
+        source.addGlobalIfNotPresent("java.util.Random", "bla");
+        source.addGlobalIfNotPresent("java.util.List", "bla");
+    }
+
+    @Test
+    public void testGetAllGlobalsOfType() throws Exception {
+        source.addGlobal("java.util.Random", "bla1");
+        source.addGlobal("java.util.Random", "bla2");
+        assertThat(source.getAllGlobalsOfType("java.util.Random"), hasItems("bla1", "bla2"));
+    }
+
+    @Test
+    public void testGetGlobalType() throws Exception {
+        source.addGlobal("java.util.Random", "bla1");
+        String result = source.getGlobalType("bla1");
+        assertThat(result, is("java.util.Random"));
     }
 
     @Test
