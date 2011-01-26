@@ -17,13 +17,12 @@
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ConfiguredMojo;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.AbstractOpenengsbMojo;
 
 /**
- * equivalent to
- * <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
+ * update development version
  * 
- * @goal assemble
+ * @goal pushVersion
  * 
  * @inheritedByDefault false
  * 
@@ -32,23 +31,31 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ConfiguredMojo;
  * @aggregator true
  * 
  */
-public class Assemble extends ConfiguredMojo {
+public class PushVersion extends AbstractOpenengsbMojo {
 
-    public Assemble() {
-        configPath = "assembleMojo/assembleConfig.xml";
-        configProfileXpath = "/am:assembleMojo/am:profile";
-    }
+    /**
+     * the new version
+     * 
+     * @parameter expression="${developmentVersion}"
+     * 
+     * @required
+     */
+    private String developmentVersion;
 
-    @Override
-    protected void configure() throws MojoExecutionException {
-        goals.add("install");
-        userProperties.put("maven.test.skip", "true");
-    }
-
-    @Override
     protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
         throwErrorIfWrapperRequestIsRecursive();
         throwErrorIfProjectIsNotExecutedInRootDirectory();
+    }
+
+    protected void configure() {
+        goals.add("release:update-versions");
+        userProperties.put("autoVersionSubmodules", "true");
+        userProperties.put("developmentVersion", developmentVersion);
+    }
+
+    protected void executeMaven() throws MojoExecutionException {
+        getNewMavenExecutor().setRecursive(true).setInterActiveMode(false)
+                .execute(this, goals, null, null, userProperties, getProject(), getSession(), getMaven());
     }
 
 }

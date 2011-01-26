@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 
-package org.openengsb.tooling.pluginsuite.openengsbplugin;
+package org.openengsb.core.common.context;
 
-import org.openengsb.tooling.pluginsuite.openengsbplugin.base.LicenseMojo;
+public interface ContextConnectorService {
 
-/**
- * Adds/updates license headers where necessary.
- * 
- * @goal licenseFormat
- * 
- * @inheritedByDefault false
- * 
- * @requiresProject true
- * 
- * @aggregator true
- * 
- */
-public class LicenseFormat extends LicenseMojo {
+    /**
+     * assigns the given serviceId the current contexts defaultConnector for the given domain
+     */
+    void registerDefaultConnector(String domainName, String serviceId);
 
-    public LicenseFormat() {
-        wrappedGoal = "validate";
-        headerPath = "licenseMojo/header.txt";
-        configPath = "licenseMojo/licenseFormatConfig.xml";
-        configProfileXpath = "/lf:licenseFormatMojo/lf:profile";
-    }
+    /**
+     * returns the serviceId of the default-connector for the given domain
+     */
+    String getDefaultConnectorServiceId(String domainName);
 
 }

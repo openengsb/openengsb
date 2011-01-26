@@ -38,6 +38,7 @@ import java.util.concurrent.Future;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.core.common.context.Context;
+import org.openengsb.core.common.context.ContextConnectorService;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.context.ContextStorageBean;
 import org.openengsb.core.common.persistence.PersistenceException;
@@ -213,5 +214,24 @@ public class ContextServiceTest {
         cs.createContext("x");
         cs.setThreadLocalContext("x");
         assertEquals("x", cs.getThreadLocalContext());
+    }
+
+    @Test
+    public void testRegisterDefaultConnector() throws Exception {
+        addTestData();
+        ((ContextConnectorService) cs).registerDefaultConnector("mydomain", "myservice");
+        /*
+         * Forwardhandler expects the value at this path
+         */
+        String value = cs.getValue("/domain/mydomain/defaultConnector/id");
+        assertThat(value, is("myservice"));
+    }
+
+    @Test
+    public void getDefaultConnector() throws Exception {
+        addTestData();
+        ((ContextConnectorService) cs).registerDefaultConnector("mydomain", "myservice");
+        String defaultConnectorServiceId = ((ContextConnectorService) cs).getDefaultConnectorServiceId("mydomain");
+        assertThat(defaultConnectorServiceId, is("myservice"));
     }
 }

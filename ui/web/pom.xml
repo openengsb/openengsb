@@ -114,7 +114,7 @@
     </dependency>
     <dependency>
       <groupId>org.openengsb.connector</groupId>
-      <artifactId>openengsb-connector-memory-auditing</artifactId>
+      <artifactId>openengsb-connector-memoryauditing</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

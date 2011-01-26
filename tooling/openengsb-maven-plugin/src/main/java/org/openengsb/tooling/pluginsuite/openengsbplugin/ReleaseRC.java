@@ -16,39 +16,25 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ConfiguredMojo;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ReleaseMojo;
 
 /**
- * equivalent to
- * <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
+ * Mojo to perform RC releases. This mojo activates the "rc" profile in the
+ * project, where you can put your configuration for RC releases.
  * 
- * @goal assemble
+ * @goal releaseRC
  * 
  * @inheritedByDefault false
  * 
  * @requiresProject true
  * 
  * @aggregator true
- * 
  */
-public class Assemble extends ConfiguredMojo {
-
-    public Assemble() {
-        configPath = "assembleMojo/assembleConfig.xml";
-        configProfileXpath = "/am:assembleMojo/am:profile";
-    }
+public class ReleaseRC extends ReleaseMojo {
 
     @Override
-    protected void configure() throws MojoExecutionException {
-        goals.add("install");
-        userProperties.put("maven.test.skip", "true");
-    }
-
-    @Override
-    protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
-        throwErrorIfWrapperRequestIsRecursive();
-        throwErrorIfProjectIsNotExecutedInRootDirectory();
+    protected void configureReleaseMojo() {
+        activatedProfiles.add("rc");
     }
 
 }

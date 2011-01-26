@@ -16,39 +16,25 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ConfiguredMojo;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ReleaseMojo;
 
 /**
- * equivalent to
- * <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
+ * Mojo to perform final releases. This mojo activates the "final" profile in
+ * the project, where you can put your configuration for final releases.
  * 
- * @goal assemble
+ * @goal releaseFinal
  * 
  * @inheritedByDefault false
  * 
  * @requiresProject true
  * 
  * @aggregator true
- * 
  */
-public class Assemble extends ConfiguredMojo {
-
-    public Assemble() {
-        configPath = "assembleMojo/assembleConfig.xml";
-        configProfileXpath = "/am:assembleMojo/am:profile";
-    }
+public class ReleaseFinal extends ReleaseMojo {
 
     @Override
-    protected void configure() throws MojoExecutionException {
-        goals.add("install");
-        userProperties.put("maven.test.skip", "true");
-    }
-
-    @Override
-    protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
-        throwErrorIfWrapperRequestIsRecursive();
-        throwErrorIfProjectIsNotExecutedInRootDirectory();
+    protected void configureReleaseMojo() {
+        activatedProfiles.add("final");
     }
 
 }

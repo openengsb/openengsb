@@ -16,6 +16,7 @@
 
 package org.openengsb.core.common.taskbox.model;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -25,15 +26,28 @@ import org.junit.Test;
 
 public class TaskTest {
     private Task task;
+    private Task newtask;
 
     @Before
     public void init() throws Exception {
         task = new Task();
+        newtask = Task.createTaskWithAllValuesSetToNull();
     }
 
     @Test
     public void init_shouldInitializeProperties() throws Exception {
         assertTrue(task.getTaskId().length() > 0);
+        assertTrue(task.getTaskCreationTimestamp().before(new Date(System.currentTimeMillis() + 10)));
+    }
+
+    @Test
+    public void init_shouldCreateTaskWithGivenOtherTask() throws Exception {
+        newtask.setTaskId("ID_newtask");
+        newtask.setDescription("Desc");
+        assertFalse(newtask.containsProperty("taskCreationTimestamp"));
+        task = new Task(newtask);
+        assertTrue(task.getTaskId().equals(newtask.getTaskId()));
+        assertTrue(task.getDescription().equals(newtask.getDescription()));
         assertTrue(task.getTaskCreationTimestamp().before(new Date(System.currentTimeMillis() + 10)));
     }
 }
