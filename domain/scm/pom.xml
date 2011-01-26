@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.openengsb.domain</groupId>
     <artifactId>openengsb-domain-parent</artifactId>
-    <version>1.0.4.RELEASE</version>
+    <version>1.0.5-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -32,7 +32,7 @@
   </properties>
 
   <artifactId>openengsb-domain-scm</artifactId>
-  <version>1.0.4.RELEASE</version>
+  <version>1.0.5-SNAPSHOT</version>
 
   <name>OpenEngSB :: Domain :: Scm</name>
 

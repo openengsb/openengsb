@@ -24,12 +24,12 @@
     <relativePath>../poms/wrapped</relativePath>
     <groupId>org.openengsb.build</groupId>
     <artifactId>wrapped-settings</artifactId>
-    <version>1.0.4.RELEASE</version>
+    <version>1.0.5-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb.wrapped</groupId>
   <artifactId>openengsb-wrapped-parent</artifactId>
-  <version>1.0.4.RELEASE</version>
+  <version>1.0.5-SNAPSHOT</version>
 
   <packaging>pom</packaging>
 
