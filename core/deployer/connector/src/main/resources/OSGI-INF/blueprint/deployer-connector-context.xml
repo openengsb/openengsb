@@ -21,5 +21,9 @@
            xmlns:cm="http://geronimo.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
            xmlns:ext="http://geronimo.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0">
 
-
+  <service id="connectorDeployerService" interface="org.apache.felix.fileinstall.ArtifactInstaller">
+    <bean class="org.openengsb.core.deployer.connector.ConnectorDeployer">
+    </bean>
+  </service>
+  
 </blueprint>

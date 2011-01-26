@@ -162,6 +162,9 @@
     <bundle>mvn:org.openengsb.ui.common/openengsb-ui-common-wicket/${project.version}</bundle>
     <!-- OpenEngSB Management UI -->
     <bundle>mvn:org.openengsb.ui/openengsb-ui-web/${project.version}/war</bundle>
+    <!-- OpenEngSB Connector Deployer -->
+    <bundle dependency="true">mvn:org.apache.felix/org.apache.felix.fileinstall/${felix.fileinstall.version}</bundle>
+    <bundle>mvn:org.openengsb.core.deployer/openengsb-core-deployer-connector/${project.version}</bundle>
   </feature>
   <!--<feature name="openengsb-domain-notification" version="${project.version}" resolver="(obr)">-->
   <feature name="openengsb-domain-notification" version="${project.version}" >
