@@ -21,10 +21,17 @@ import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.felix.fileinstall.ArtifactInstaller;
+import org.openengsb.core.common.proxy.ProxyFactory;
+import org.openengsb.core.common.service.DomainService;
+import org.osgi.framework.BundleContext;
 
 public class ConnectorDeployer implements ArtifactInstaller {
 
     private static Log log = LogFactory.getLog(ConnectorDeployer.class);
+
+    private DomainService domainService;
+    private ProxyFactory proxyFactory;
+    private BundleContext bundleContext;
 
     private static final String CONNECTOR_EXTENSION = ".connector";
 
@@ -58,6 +65,30 @@ public class ConnectorDeployer implements ArtifactInstaller {
         log.debug(String.format("ConnectorDeployer.uninstall(\"%s\")", artifact.getAbsolutePath()));
         // TODO Auto-generated method stub
 
+    }
+
+    public void setProxyFactory(ProxyFactory proxyFactory) {
+        this.proxyFactory = proxyFactory;
+    }
+
+    public ProxyFactory getProxyFactory() {
+        return proxyFactory;
+    }
+
+    public void setDomainService(DomainService domainService) {
+        this.domainService = domainService;
+    }
+
+    public DomainService getDomainService() {
+        return domainService;
+    }
+
+    public void setBundleContext(BundleContext bundleContext) {
+        this.bundleContext = bundleContext;
+    }
+
+    public BundleContext getBundleContext() {
+        return bundleContext;
     }
 
 }
