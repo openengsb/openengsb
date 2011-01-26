@@ -17,6 +17,7 @@
 package org.openengsb.connector.maven.internal;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
 import static org.mockito.Matchers.any;
@@ -25,8 +26,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -53,6 +57,8 @@ public class MavenServiceTest {
 
     @Before
     public void setUp() throws Exception {
+        System.setProperty("karaf.data", ".");
+        deleteLogFile();
         FileUtils.deleteDirectory(new File(getPath("test-unit-success"), "target"));
         FileUtils.deleteDirectory(new File(getPath("test-unit-fail"), "target"));
         this.mavenService = new MavenServiceImpl();
@@ -64,6 +70,12 @@ public class MavenServiceTest {
         mavenService.setDeployEvents(deployEvents);
         mavenService.setContextService(mock(ContextCurrentService.class));
         mavenService.setSynchronous(true);
+        mavenService.setUseLogFile(false);
+    }
+
+    @After
+    public void deleteLogFile() throws IOException {
+        FileUtils.deleteDirectory(new File("log"));
     }
 
     @Test
@@ -147,6 +159,25 @@ public class MavenServiceTest {
     public void testGetAliveStateWrongPath_shouldReturnOffline() {
         mavenService.setProjectPath("pathThatDoesForSureNotExistBecauseItIsStrange");
         assertThat(mavenService.getAliveState(), is(AliveState.OFFLINE));
+    }
+
+    @Test
+    public void build_shouldWriteLogFile() throws Exception {
+        mavenService.setUseLogFile(true);
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("clean compile");
+        mavenService.build();
+        ArgumentCaptor<BuildSuccessEvent> argumentCaptor = ArgumentCaptor.forClass(BuildSuccessEvent.class);
+
+        verify(buildEvents).raiseEvent(argumentCaptor.capture());
+        BuildSuccessEvent event = argumentCaptor.getValue();
+        String output = event.getOutput();
+        @SuppressWarnings("unchecked")
+        Collection<File> logFiles = FileUtils.listFiles(new File("log"), new String[]{ "log", }, false);
+        File logFile = logFiles.iterator().next();
+        assertThat(logFile, notNullValue());
+        String fileContent = FileUtils.readFileToString(logFile);
+        assertThat(fileContent, is(output));
     }
 
     private String getPath(String folder) {

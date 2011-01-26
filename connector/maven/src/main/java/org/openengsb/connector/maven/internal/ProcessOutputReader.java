@@ -17,9 +17,13 @@
 package org.openengsb.connector.maven.internal;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.util.concurrent.Callable;
 
@@ -34,9 +38,17 @@ public class ProcessOutputReader implements Callable<String> {
 
     private StringWriter writer;
 
+    private OutputStreamWriter logFileWriter;
+
     public ProcessOutputReader(InputStream inputStream) {
         this.inputStream = inputStream;
         writer = new StringWriter();
+    }
+
+    public ProcessOutputReader(InputStream inputStream, File logFile) throws FileNotFoundException {
+        this(inputStream);
+        FileOutputStream logFileOutputStream = new FileOutputStream(logFile);
+        logFileWriter = new OutputStreamWriter(logFileOutputStream);
     }
 
     @Override
@@ -45,7 +57,11 @@ public class ProcessOutputReader implements Callable<String> {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
         while ((line = bufferedReader.readLine()) != null) {
-            writer.append(line);
+            writer.append(line + "\n");
+            if (logFileWriter != null) {
+                logFileWriter.write(line + "\n");
+                logFileWriter.flush();
+            }
         }
         log.debug("inputstream has ended. returning result");
         return writer.toString();

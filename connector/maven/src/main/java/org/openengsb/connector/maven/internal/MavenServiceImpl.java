@@ -18,8 +18,10 @@ package org.openengsb.connector.maven.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -59,17 +61,26 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
     private TestDomainEvents testEvents;
     private DeployDomainEvents deployEvents;
 
-    private Executor executor;
+    private Executor executor = Executors.newSingleThreadExecutor();
     private ExecutorService outputReaderPool = Executors.newCachedThreadPool();
 
     private boolean synchronous = false;
 
+    private boolean useLogFile = true;
+
     private ContextCurrentService contextService;
 
     private String command;
+    private File logDir;
 
     public MavenServiceImpl() {
-        executor = Executors.newSingleThreadExecutor();
+        String karafData = System.getProperty("karaf.data");
+        logDir = new File(karafData, "log");
+        if (!logDir.exists()) {
+            logDir.mkdir();
+        } else if (!logDir.isDirectory()) {
+            throw new IllegalStateException("cannot access log-directory");
+        }
     }
 
     private static String addSystemEnding() {
@@ -256,15 +267,19 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
         log.info("running '" + command + "' in directory '" + dir.getPath() + "'");
         ProcessBuilder builder = new ProcessBuilder(command);
         Process process = builder.directory(dir).start();
-
-        ProcessOutputReader output = new ProcessOutputReader(process.getInputStream());
+        ProcessOutputReader output;
+        if (useLogFile) {
+            File logFile = getNewLogFile();
+            output = new ProcessOutputReader(process.getInputStream(), logFile);
+        } else {
+            output = new ProcessOutputReader(process.getInputStream());
+        }
         ProcessOutputReader error = new ProcessOutputReader(process.getErrorStream());
         Future<String> outputFuture = outputReaderPool.submit(output);
         Future<String> errorFuture = outputReaderPool.submit(error);
 
         boolean processResultCode = process.waitFor() == 0;
         String outputResult;
-        String errorResult;
         try {
             outputResult = outputFuture.get();
         } catch (ExecutionException e) {
@@ -272,6 +287,7 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
             outputResult = ExceptionUtils.getFullStackTrace(e);
         }
 
+        String errorResult;
         try {
             errorResult = errorFuture.get();
         } catch (ExecutionException e) {
@@ -284,6 +300,14 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
         }
         log.info("maven exited with status " + processResultCode);
         return new MavenResult(processResultCode, outputResult);
+    }
+
+    private File getNewLogFile() throws IOException {
+        String dateString = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date());
+        String fileName = String.format("maven.%s.log", dateString);
+        File logFile = new File(logDir, fileName);
+        logFile.createNewFile();
+        return logFile;
     }
 
     public void setBuildEvents(BuildDomainEvents buildEvents) {
@@ -312,6 +336,10 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
 
     public void setCommand(String command) {
         this.command = command;
+    }
+
+    public void setUseLogFile(boolean useLogFile) {
+        this.useLogFile = useLogFile;
     }
 
     private class MavenResult {
