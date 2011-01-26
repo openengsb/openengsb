@@ -443,12 +443,6 @@
       </dependency>
       <dependency>
         <groupId>org.openengsb.connector</groupId>
-        <artifactId>openengsb-connector-memory-auditing</artifactId>
-        <version>${project.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.openengsb.connector</groupId>
         <artifactId>openengsb-connector-memoryauditing</artifactId>
         <version>${project.version}</version>
         <scope>test</scope>
