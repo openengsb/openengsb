@@ -24,43 +24,40 @@ import org.apache.felix.fileinstall.ArtifactInstaller;
 
 public class ConnectorDeployer implements ArtifactInstaller {
 
-	private static Log log = LogFactory.getLog(ConnectorDeployer.class);
+    private static Log log = LogFactory.getLog(ConnectorDeployer.class);
 
-	private static final String CONNECTOR_EXTENSION = ".connector";
+    private static final String CONNECTOR_EXTENSION = ".connector";
 
-	@Override
-	public boolean canHandle(File artifact) {
-		log.debug(String.format("ConnectorDeployer.canHandle(\"%s\")",
-				artifact.getAbsolutePath()));
-		if (artifact.isFile()
-				&& artifact.getName().endsWith(CONNECTOR_EXTENSION)) {
-			log.info("Found a .connector file to deploy.");
-			return true;
-		}
-		return false;
-	}
+    @Override
+    public boolean canHandle(File artifact) {
+        log.debug(String.format("ConnectorDeployer.canHandle(\"%s\")", artifact.getAbsolutePath()));
 
-	@Override
-	public void install(File artifact) throws Exception {
-		log.debug(String.format("ConnectorDeployer.install(\"%s\")",
-				artifact.getAbsolutePath()));
-		// TODO Auto-generated method stub
-	}
+        if (artifact.isFile() && artifact.getName().endsWith(CONNECTOR_EXTENSION)) {
+            log.info("Found a .connector file to deploy.");
+            return true;
+        }
 
-	@Override
-	public void update(File artifact) throws Exception {
-		log.debug(String.format("ConnectorDeployer.update(\"%s\")",
-				artifact.getAbsolutePath()));
-		// TODO Auto-generated method stub
+        return false;
+    }
 
-	}
+    @Override
+    public void install(File artifact) throws Exception {
+        log.debug(String.format("ConnectorDeployer.install(\"%s\")", artifact.getAbsolutePath()));
+        // TODO Auto-generated method stub
+    }
 
-	@Override
-	public void uninstall(File artifact) throws Exception {
-		log.debug(String.format("ConnectorDeployer.uninstall(\"%s\")",
-				artifact.getAbsolutePath()));
-		// TODO Auto-generated method stub
+    @Override
+    public void update(File artifact) throws Exception {
+        log.debug(String.format("ConnectorDeployer.update(\"%s\")", artifact.getAbsolutePath()));
+        // TODO Auto-generated method stub
 
-	}
+    }
+
+    @Override
+    public void uninstall(File artifact) throws Exception {
+        log.debug(String.format("ConnectorDeployer.uninstall(\"%s\")", artifact.getAbsolutePath()));
+        // TODO Auto-generated method stub
+
+    }
 
 }
