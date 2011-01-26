@@ -18,6 +18,7 @@ package org.openengsb.connector.maven.internal;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.containsString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.refEq;
 import static org.mockito.Mockito.mock;
@@ -29,6 +30,7 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.build.BuildDomainEvents;
@@ -69,8 +71,13 @@ public class MavenServiceTest {
         mavenService.setProjectPath(getPath("test-unit-success"));
         mavenService.setCommand("clean compile");
         String id = mavenService.build();
+        ArgumentCaptor<BuildSuccessEvent> argumentCaptor = ArgumentCaptor.forClass(BuildSuccessEvent.class);
+
         verify(buildEvents).raiseEvent(any(BuildStartEvent.class));
-        verify(buildEvents).raiseEvent(refEq(new BuildSuccessEvent(id, null), "output"));
+        verify(buildEvents).raiseEvent(argumentCaptor.capture());
+        BuildSuccessEvent event = argumentCaptor.getValue();
+        assertThat(event.getBuildId(), is(id));
+        assertThat(event.getOutput(), containsString("SUCCESS"));
     }
 
     @Test

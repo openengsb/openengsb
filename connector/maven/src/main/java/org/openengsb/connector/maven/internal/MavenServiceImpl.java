@@ -22,9 +22,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openengsb.core.common.context.ContextCurrentService;
@@ -56,6 +60,7 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
     private DeployDomainEvents deployEvents;
 
     private Executor executor;
+    private ExecutorService outputReaderPool = Executors.newCachedThreadPool();
 
     private boolean synchronous = false;
 
@@ -252,21 +257,33 @@ public class MavenServiceImpl implements TestDomain, BuildDomain, DeployDomain {
         ProcessBuilder builder = new ProcessBuilder(command);
         Process process = builder.directory(dir).start();
 
-        StreamReader output = new StreamReader(process.getInputStream());
-        StreamReader error = new StreamReader(process.getErrorStream());
-        output.start();
-        error.start();
+        ProcessOutputReader output = new ProcessOutputReader(process.getInputStream());
+        ProcessOutputReader error = new ProcessOutputReader(process.getErrorStream());
+        Future<String> outputFuture = outputReaderPool.submit(output);
+        Future<String> errorFuture = outputReaderPool.submit(error);
 
-        boolean result = process.waitFor() == 0;
-        output.join();
-        error.join();
-
-        String errorOutput = error.getString();
-        if (!errorOutput.isEmpty()) {
-            log.warn("Maven connector error stream output: " + errorOutput);
+        boolean processResultCode = process.waitFor() == 0;
+        String outputResult;
+        String errorResult;
+        try {
+            outputResult = outputFuture.get();
+        } catch (ExecutionException e) {
+            log.error(e.getCause());
+            outputResult = ExceptionUtils.getFullStackTrace(e);
         }
-        log.debug("output: " + output.getString());
-        return new MavenResult(result, output.getString());
+
+        try {
+            errorResult = errorFuture.get();
+        } catch (ExecutionException e) {
+            log.error(e.getCause());
+            errorResult = ExceptionUtils.getFullStackTrace(e);
+        }
+
+        if (!errorResult.isEmpty()) {
+            log.warn("Maven connector error stream output: " + errorResult);
+        }
+        log.info("maven exited with status " + processResultCode);
+        return new MavenResult(processResultCode, outputResult);
     }
 
     public void setBuildEvents(BuildDomainEvents buildEvents) {

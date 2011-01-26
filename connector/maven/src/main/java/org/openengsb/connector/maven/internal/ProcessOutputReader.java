@@ -16,15 +16,17 @@
 
 package org.openengsb.connector.maven.internal;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.concurrent.Callable;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class StreamReader extends Thread {
+public class ProcessOutputReader implements Callable<String> {
 
     private Log log = LogFactory.getLog(getClass());
 
@@ -32,23 +34,20 @@ public class StreamReader extends Thread {
 
     private StringWriter writer;
 
-    public StreamReader(InputStream inputStream) {
+    public ProcessOutputReader(InputStream inputStream) {
         this.inputStream = inputStream;
         writer = new StringWriter();
     }
 
     @Override
-    public void run() {
-        try {
-            IOUtils.copy(inputStream, writer);
-        } catch (IOException e) {
-            log.error(e);
+    public String call() throws IOException {
+        log.debug("starting reading inputstream");
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            writer.append(line);
         }
-    }
-
-    public String getString() {
-        String value = writer.toString();
-        IOUtils.closeQuietly(writer);
-        return value;
+        log.debug("inputstream has ended. returning result");
+        return writer.toString();
     }
 }
