@@ -16,8 +16,6 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
@@ -32,9 +30,9 @@ public abstract class AbstractReleaseTest extends MojoPreparation {
     @Before
     public void initRepos() {
         releaseRepo = new File("src/test/resources/release/dummyReleaseRepo");
-        assertTrue(releaseRepo.mkdir());
+        releaseRepo.mkdir();
         snapshotRepo = new File("src/test/resources/release/dummySnapshotRepo");
-        assertTrue(snapshotRepo.mkdir());
+        snapshotRepo.mkdir();
     }
 
     @After
