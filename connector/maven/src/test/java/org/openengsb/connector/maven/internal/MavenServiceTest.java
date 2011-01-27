@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.containsString;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.refEq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -35,6 +36,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.openengsb.core.common.context.ContextCurrentService;
 import org.openengsb.core.common.util.AliveState;
 import org.openengsb.domain.build.BuildDomainEvents;
@@ -178,6 +181,45 @@ public class MavenServiceTest {
         assertThat(logFile, notNullValue());
         String fileContent = FileUtils.readFileToString(logFile);
         assertThat(fileContent, is(output));
+    }
+
+    @Test
+    public void asyncBuild_shouldRaiseBuildSuccessEvent() throws Exception {
+        final Object sync = new Object();
+        mavenService.setSynchronous(false);
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("clean compile");
+        ArgumentCaptor<BuildSuccessEvent> eventCaptor = ArgumentCaptor.forClass(BuildSuccessEvent.class);
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                synchronized (sync) {
+                    sync.notifyAll();
+                }
+                return null;
+            }
+        }).when(buildEvents).raiseEvent(eventCaptor.capture());
+        Thread waitForBuildEnd = createWaiterThread(sync);
+        waitForBuildEnd.start();
+        mavenService.build();
+        waitForBuildEnd.join();
+        BuildSuccessEvent event = eventCaptor.getValue();
+        assertThat(event.getOutput(), containsString("SUCCESS"));
+    }
+
+    private Thread createWaiterThread(final Object sync) {
+        return new Thread() {
+            @Override
+            public void run() {
+                synchronized (sync) {
+                    try {
+                        sync.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            };
+        };
     }
 
     private String getPath(String folder) {
