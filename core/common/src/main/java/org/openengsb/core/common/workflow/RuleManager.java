@@ -54,6 +54,13 @@ public interface RuleManager extends OpenEngSBService {
     void add(RuleBaseElementId name, String code) throws RuleBaseException;
 
     /**
+     * add a new Element to the rulebase. If it already exists, the element is updated
+     *
+     * @throws RuleBaseException
+     */
+    void addOrUpdate(RuleBaseElementId name, String code) throws RuleBaseException;
+
+    /**
      * retrieves the value for the given id
      */
     String get(RuleBaseElementId name);
@@ -107,6 +114,23 @@ public interface RuleManager extends OpenEngSBService {
      * @throws RuleBaseException if a global with the name already exists
      */
     void addGlobal(String className, String name) throws RuleBaseException;
+
+    /**
+     * adds a global if it is not present. If it is, this method does nothing.
+     *
+     * @throws RuleBaseException
+     */
+    void addGlobalIfNotPresent(String className, String name) throws RuleBaseException;
+
+    /**
+     * returns the typeName of the global identified the the given name
+     */
+    String getGlobalType(String name);
+
+    /**
+     * returns all globals of the given type (classname)
+     */
+    Collection<String> getAllGlobalsOfType(String type);
 
     /**
      * @throws RuleBaseException if removing the global would leave the rulebase in an inconsistent state (because it is

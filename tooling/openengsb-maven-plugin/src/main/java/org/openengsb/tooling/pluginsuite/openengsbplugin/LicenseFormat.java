@@ -18,9 +18,8 @@ package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
 import org.openengsb.tooling.pluginsuite.openengsbplugin.base.LicenseMojo;
 
-
 /**
- * Validates license headers.
+ * Adds/updates license headers where necessary.
  * 
  * @goal licenseFormat
  * 

@@ -46,18 +46,24 @@
     <commons.io.version>1.4</commons.io.version>
     <commons.compress.version>1.1</commons.compress.version>
     <log4j.version>1.2.14</log4j.version>
+    <!-- Documentation Properties -->
+    <github>https://github.com/openengsb/openengsb/blob/integration</github>
+    <repos.snapshot>https://oss.sonatype.org/content/groups/public</repos.snapshot> 
+    <repos.final>http://uk1.maven.org/maven2</repos.final>
+    <repos.current />
+    <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
   </properties>
 
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>5</version>
+    <version>6</version>
   </parent>
 
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
   <name>OpenEngSB :: Parent</name>
 
   <description>
@@ -116,65 +122,16 @@
         <version>${maven.plugin.wagon.ssh.version}</version>
       </extension>
     </extensions>
-    <plugins>
-      <plugin>
-        <inherited>false</inherited>
-        <groupId>com.mycila.maven-license-plugin</groupId>
-        <artifactId>maven-license-plugin</artifactId>
-        <version>${maven.plugin.mvn.license}</version>
-        <configuration>
-          <header>${basedir}/etc/license/header.txt</header>
-          <failIfMissing>true</failIfMissing>
-          <aggregate>true</aggregate>
-          <strictCheck>true</strictCheck>
-          <excludes>
-            <exclude>etc/eclipse/checkstyle.xml</exclude>
-            <exclude>license.txt</exclude>
-            <exclude>**/*.vm</exclude>
-            <exclude>**/license.txt</exclude>
-            <exclude>runner/**</exclude>
-            <exclude>assembly/runner/**</exclude>
-            <exclude>features/**</exclude>
-            <exclude>NOTICE</exclude>
-            <exclude>**/*.3pm</exclude>
-            <exclude>**/*.dll</exclude>
-            <exclude>**/*.pdb</exclude>
-            <exclude>**/*.pdf</exclude>
-            <exclude>**/LICENSE</exclude>
-            <exclude>**/*checkstyle.xml</exclude>
-            <exclude>**/*.log.*</exclude>
-            <exclude>**/*.log</exclude>
-            <exclude>**/*.packlist</exclude>
-            <exclude>**/*.pod</exclude>
-            <exclude>**/imports</exclude>
-            <exclude>**/globals</exclude>
-            <exclude>**/.keep</exclude>
-            <exclude>**/EngSB.sln</exclude>
-            <exclude>**/.checkstyle</exclude>
-            <exclude>**/nb-configuration.xml</exclude>
-          </excludes>
-          <mapping>
-            <bnd>SCRIPT_STYLE</bnd>
-            <drl>SCRIPT_STYLE</drl>
-            <index>SCRIPT_STYLE</index>
-            <gitignore>SCRIPT_STYLE</gitignore>
-            <cfg>SCRIPT_STYLE</cfg>
-            <wsdl>XML_STYLE</wsdl>
-            <csproj>XML_STYLE</csproj>
-            <rf>XML_STYLE</rf>
-            <composite>SCRIPT_STYLE</composite>
-            <config>XML_STYLE</config>
-            <script>DOUBLESLASH_STYLE</script>
-            <rule>SCRIPT_STYLE</rule>
-          </mapping>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 
   <profiles>
     <profile>
       <id>nightly</id>
+      <properties>
+        <github>https://github.com/openengsb/openengsb/blob/master</github>
+        <repos.current>${repos.snapshot}</repos.current>
+        <sitesubtype>nightly</sitesubtype>
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -206,6 +163,11 @@
     </profile>
     <profile>
       <id>milestone</id>
+      <properties>
+        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
+        <repos.current>${repos.final}</repos.current>
+        <sitesubtype>milestone</sitesubtype>
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -226,6 +188,11 @@
     </profile>
     <profile>
       <id>final</id>
+      <properties>
+        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
+        <repos.current>${repos.final}</repos.current>
+        <sitesubtype />
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -246,6 +213,11 @@
     </profile>
     <profile>
       <id>support</id>
+      <properties>
+        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
+        <repos.current>${repos.final}</repos.current>
+        <sitesubtype />
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -266,6 +238,11 @@
     </profile>
     <profile>
       <id>rc</id>
+      <properties>
+        <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
+        <repos.current>${repos.final}</repos.current>
+        <sitesubtype>rc</sitesubtype>
+      </properties>
       <build>
         <plugins>
           <plugin>
@@ -280,27 +257,6 @@
               <arguments>-Psonatype-oss-release,release,rc -Dmaven.test.skip=true -DpushChanges=false</arguments>
               <preparationGoals>clean install</preparationGoals>
             </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>license-format</id>
-      <build>
-        <plugins>
-          <plugin>
-            <inherited>false</inherited>
-            <groupId>com.mycila.maven-license-plugin</groupId>
-            <artifactId>maven-license-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>check-headers</id>
-                <phase>validate</phase>
-                <goals>
-                  <goal>format</goal>
-                </goals>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>

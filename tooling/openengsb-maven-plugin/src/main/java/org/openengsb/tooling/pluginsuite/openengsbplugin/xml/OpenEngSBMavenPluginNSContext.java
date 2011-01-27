@@ -35,6 +35,9 @@ public class OpenEngSBMavenPluginNSContext implements NamespaceContext {
         String[][] data = new String[][] {
             {"lc", "http://www.openengsb.org/tooling/openengsb-maven-plugin/licenseCheckMojo"},
             { "lf", "http://www.openengsb.org/tooling/openengsb-maven-plugin/licenseFormatMojo" },
+            { "rn", "http://www.openengsb.org/tooling/openengsb-maven-plugin/releaseNightlyMojo" },
+            { "rcc", "http://www.openengsb.org/tooling/openengsb-maven-plugin/releaseCommonConfig" },
+            { "am", "http://www.openengsb.org/tooling/openengsb-maven-plugin/assembleMojo" },
             { "pom", "http://maven.apache.org/POM/4.0.0" } };
 
         for (String[] strArr : data) {

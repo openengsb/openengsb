@@ -36,6 +36,7 @@ import org.openengsb.ui.web.ContextSetPage;
 import org.openengsb.ui.web.Index;
 import org.openengsb.ui.web.SendEventPage;
 import org.openengsb.ui.web.ServiceListPage;
+import org.openengsb.ui.web.TaskOverview;
 import org.openengsb.ui.web.TestClient;
 import org.openengsb.ui.web.UserService;
 import org.openengsb.ui.web.global.BookmarkablePageLabelLink;
@@ -90,7 +91,8 @@ public class HeaderTemplate extends Panel {
         addHeaderMenuItem("SendEventPage", SendEventPage.class, "sendevent.title", "");
         addHeaderMenuItem("ContextSetPage", ContextSetPage.class, "context.title", "");
         addHeaderMenuItem("ServiceListPage", ServiceListPage.class, "serviceList.title", "");
-        addHeaderMenuItem("UserService", UserService.class, "userService.title", "ROLE_ADMIN");
+        addHeaderMenuItem("TaskOverview", TaskOverview.class, "taskOverview.title", "");
+        addHeaderMenuItem("UserService", UserService.class, "userService.title", "ROLE_ADMIN");        
     }
 
     private void initializeMenu() {
@@ -132,10 +134,10 @@ public class HeaderTemplate extends Panel {
 
     /**
      * Adds a new item to main header navigation where the index defines the name of the index, which should be the
-     * class name; linkClass defines the class name to be linked to; langKey defines the language key for the text 
-     * which should be displayed and authority defines who is authorized to see the link
+     * class name; linkClass defines the class name to be linked to; langKey defines the language key for the text which
+     * should be displayed and authority defines who is authorized to see the link
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void addHeaderMenuItem(String index, Class<? extends WebPage> linkClass, String langKey, String authority) {
         StringResourceModel label = new StringResourceModel(langKey, this, null);
         BookmarkablePageLabelLink pageLabelLink = new BookmarkablePageLabelLink("link", linkClass, label);
@@ -151,7 +153,6 @@ public class HeaderTemplate extends Panel {
             MetaDataRoleAuthorizationStrategy.authorizeAll(pageLabelLink, RENDER);
         }
     }
-
 
     private static class HeaderMenuItem implements Serializable {
         private final String index;
@@ -172,4 +173,3 @@ public class HeaderTemplate extends Panel {
     }
 
 }
-

@@ -1,0 +1,126 @@
+/**
+ * Copyright 2010 OpenEngSB Division, Vienna University of Technology
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.openengsb.itests.exam;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openengsb.core.common.AbstractOpenEngSBService;
+import org.openengsb.core.common.AliveState;
+import org.openengsb.core.common.Domain;
+import org.openengsb.core.common.context.ContextCurrentService;
+import org.openengsb.core.common.workflow.RuleManager;
+import org.openengsb.core.common.workflow.model.RuleBaseElementId;
+import org.openengsb.core.common.workflow.model.RuleBaseElementType;
+import org.openengsb.domain.example.ExampleDomain;
+import org.openengsb.domain.example.ExampleDomainEvents;
+import org.openengsb.domain.example.event.LogEvent;
+import org.openengsb.domain.example.event.LogEvent.Level;
+import org.openengsb.itests.util.AbstractExamTestHelper;
+import org.ops4j.pax.exam.junit.JUnit4TestRunner;
+
+@RunWith(JUnit4TestRunner.class)
+public class EventForwardIT extends AbstractExamTestHelper {
+
+    public static class DummyLogDomain extends AbstractOpenEngSBService implements ExampleDomain {
+        private boolean wasCalled = false;
+
+        @Override
+        public String doSomething(String message) {
+            wasCalled = true;
+            return "something";
+        }
+
+        @Override
+        public AliveState getAliveState() {
+            return AliveState.OFFLINE;
+        }
+
+        @Override
+        public String doSomething(ExampleEnum exampleEnum) {
+            wasCalled = true;
+            return "something";
+        }
+
+        @Override
+        public String doSomethingWithLogEvent(LogEvent event) {
+            wasCalled = true;
+            return "something";
+        }
+
+        public boolean isWasCalled() {
+            return wasCalled;
+        }
+    }
+
+    @Test
+    public void testSendEvent() throws Exception {
+        addHelloWorldRule();
+        ContextCurrentService contextService = getOsgiService(ContextCurrentService.class);
+        contextService.createContext("42");
+        contextService.setThreadLocalContext("42");
+        contextService.putValue("domain/ExampleDomain/defaultConnector/id", "dummyLog");
+        contextService.putValue("domain/AuditingDomain/defaultConnector/id", "auditing");
+
+        Dictionary<String, String> properties = new Hashtable<String, String>();
+        String[] clazzes = new String[]{Domain.class.getName(), ExampleDomain.class.getName()};
+        properties.put("id", "dummyLog");
+
+        DummyLogDomain logService = new DummyLogDomain();
+        getBundleContext().registerService(clazzes, logService, properties);
+
+        LogEvent e = new LogEvent();
+        e.setName("42");
+        e.setLevel(Level.INFO);
+
+        ExampleDomainEvents exampleEvents = getOsgiService(ExampleDomainEvents.class);
+        // this should be routed through the domain, which forwards it to the workflow service
+        exampleEvents.raiseEvent(e);
+
+        assertThat(logService.isWasCalled(), is(true));
+    }
+
+    private void addHelloWorldRule() throws Exception {
+        RuleManager ruleManager = getOsgiService(RuleManager.class);
+        ruleManager.addImport("org.openengsb.domain.example.ExampleDomain");
+
+        ruleManager.addGlobal("org.openengsb.domain.example.ExampleDomain", "example");
+
+        RuleBaseElementId id = new RuleBaseElementId(RuleBaseElementType.Rule, "hello1");
+        String rule = readRule();
+        ruleManager.add(id, rule);
+    }
+
+    private String readRule() throws IOException {
+        InputStream helloWorldRule = null;
+        try {
+            helloWorldRule = this.getClass().getClassLoader().getResourceAsStream("rulebase/org/openengsb/hello1.rule");
+            return IOUtils.toString(helloWorldRule);
+        } finally {
+            IOUtils.closeQuietly(helloWorldRule);
+        }
+    }
+
+}

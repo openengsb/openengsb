@@ -219,7 +219,7 @@ public abstract class Tools {
         LOG.trace("insertDomNode() - end");
     }
 
-    public static int executeProcess(List<String> command, File targetDirectory, boolean printOutput)
+    public static int executeProcess(List<String> command, File targetDirectory)
         throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.directory(targetDirectory);
@@ -233,9 +233,7 @@ public abstract class Tools {
             br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
             while ((line = br.readLine()) != null) {
-                if (printOutput) {
-                    System.out.println(line);
-                }
+                LOG.debug(line);
             }
         } finally {
             IOUtils.closeQuietly(br);

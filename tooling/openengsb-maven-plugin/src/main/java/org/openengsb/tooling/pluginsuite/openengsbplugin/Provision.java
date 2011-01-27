@@ -34,6 +34,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.AbstractOpenengsbMojo;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.OpenEngSBJavaRunner;
 import org.ops4j.pax.runner.platform.PlatformException;
 import org.ops4j.pax.runner.platform.internal.CommandLineBuilder;
@@ -99,7 +100,15 @@ public class Provision extends AbstractOpenengsbMojo {
     private String[] additionalRequiredExecutionPathWindows;
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
+    }
+
+    @Override
+    protected void configure() throws MojoExecutionException {
+    }
+
+    @Override
+    protected void executeMaven() throws MojoExecutionException, MojoFailureException {
         if (provisionArchivePathWindows != null && provisionExecutionPathWindows != null
                 && provisionArchivePathUnix != null && provisionExecutionPathUnix != null) {
             CommandLineBuilder command = new CommandLineBuilder();

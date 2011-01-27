@@ -48,7 +48,7 @@ public class JiraProxyFactory {
         XmlRpcClient rpcClient = new XmlRpcClient();
         rpcClient.setConfig(config);
         ClientFactory factory = new ClientFactory(rpcClient);
-        XmlRpcService rpcService = (XmlRpcService) factory.newInstance(Thread.currentThread().getContextClassLoader(),
+        XmlRpcService rpcService = (XmlRpcService) factory.newInstance(this.getClass().getClassLoader(),
                 XmlRpcService.class, RPC_INSTANCE_NAME);
 
         return new JiraDynamicProxy(rpcService);

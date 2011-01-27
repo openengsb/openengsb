@@ -25,7 +25,7 @@ import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
 public abstract class LicenseMojo extends ConfiguredMojo {
 
     // #################################
-    // set these in subclass
+    // set these in subclass constructor
     // #################################
 
     protected String wrappedGoal;
@@ -36,7 +36,7 @@ public abstract class LicenseMojo extends ConfiguredMojo {
     private File licenseHeaderFile;
 
     @Override
-    protected void preExecute() throws MojoExecutionException {
+    protected final void configure() throws MojoExecutionException {
         goals.add(wrappedGoal);
         licenseHeaderFile = readHeaderStringAndwriteHeaderIntoTmpFile();
         FILES_TO_REMOVE_FINALLY.add(licenseHeaderFile);
@@ -44,6 +44,10 @@ public abstract class LicenseMojo extends ConfiguredMojo {
         userProperties.put("license.failIfMissing", "true");
         userProperties.put("license.aggregate", "true");
         userProperties.put("license.strictCheck", "true");
+    }
+    
+    @Override
+    protected final void validateIfExecutionIsAllowed() throws MojoExecutionException {        
     }
 
     private File readHeaderStringAndwriteHeaderIntoTmpFile() throws MojoExecutionException {

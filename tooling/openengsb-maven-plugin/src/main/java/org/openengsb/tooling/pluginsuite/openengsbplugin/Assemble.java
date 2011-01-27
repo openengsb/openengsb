@@ -16,14 +16,12 @@
 
 package org.openengsb.tooling.pluginsuite.openengsbplugin;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.maven.plugin.MojoExecutionException;
+import org.openengsb.tooling.pluginsuite.openengsbplugin.base.ConfiguredMojo;
 
 /**
- * equivalent to <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
+ * equivalent to
+ * <code>mvn install -Prelease,nightly -Dmaven.test.skip=true</code>
  * 
  * @goal assemble
  * 
@@ -34,33 +32,23 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @aggregator true
  * 
  */
-public class Assemble extends AbstractOpenengsbMojo {
+public class Assemble extends ConfiguredMojo {
 
-    private List<String> goals;
-    private List<String> activatedProfiles;
-    private Properties userProperties = new Properties();
+    public Assemble() {
+        configPath = "assembleMojo/assembleConfig.xml";
+        configProfileXpath = "/am:assembleMojo/am:profile";
+    }
 
     @Override
-    public void execute() throws MojoExecutionException {
-        validateIfExecutionIsAllowed();
-        initializeMavenExecutionProperties();
-        executeMaven();
-    }
-
-    private void validateIfExecutionIsAllowed() throws MojoExecutionException {
-        throwErrorIfWrapperRequestIsRecursive();
-        throwErrorIfProjectIsNotExecutedInRootDirectory();
-    }
-
-    private void initializeMavenExecutionProperties() {
-        goals = Arrays.asList(new String[]{ "install" });
-        activatedProfiles = Arrays.asList(new String[]{ "release", "nightly" });
+    protected void configure() throws MojoExecutionException {
+        goals.add("install");
         userProperties.put("maven.test.skip", "true");
     }
 
-    private void executeMaven() throws MojoExecutionException {
-        getNewMavenExecutor().setRecursive(true).execute(this, goals, activatedProfiles, null,
-            userProperties, getProject(), getSession(), getMaven());
+    @Override
+    protected void validateIfExecutionIsAllowed() throws MojoExecutionException {
+        throwErrorIfWrapperRequestIsRecursive();
+        throwErrorIfProjectIsNotExecutedInRootDirectory();
     }
 
 }
