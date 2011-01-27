@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.Collection;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -199,16 +200,60 @@ public class MavenServiceTest {
                 return null;
             }
         }).when(buildEvents).raiseEvent(eventCaptor.capture());
-        Thread waitForBuildEnd = createWaiterThread(sync);
-        waitForBuildEnd.start();
+        Thread waitForBuildEnd = startWaiterThread(sync);
         mavenService.build();
         waitForBuildEnd.join();
         BuildSuccessEvent event = eventCaptor.getValue();
         assertThat(event.getOutput(), containsString("SUCCESS"));
     }
 
-    private Thread createWaiterThread(final Object sync) {
-        return new Thread() {
+    @Ignore("OPENENGSB-881: buildStartEvent is raised too early")
+    @Test
+    public void build_shouldCreateLogFileAndThrowItAway() throws Exception {
+        final Object syncFinish = new Object();
+        final Object syncStart = new Object();
+        mavenService.setSynchronous(false);
+        mavenService.setProjectPath(getPath("test-unit-success"));
+        mavenService.setCommand("clean compile");
+        makeNotifyAnswerForBuildStart(syncStart);
+        makeNotifyAnswerForBuildSuccess(syncFinish);
+        Thread waitForBuildStart = startWaiterThread(syncStart);
+        Thread waitForBuildEnd = startWaiterThread(syncFinish);
+        mavenService.build();
+        waitForBuildStart.join();
+        @SuppressWarnings("unchecked")
+        Collection<File> listFiles = FileUtils.listFiles(new File("log"), FileFilterUtils.fileFileFilter(), null);
+        assertThat("no logfile was created", listFiles.isEmpty(), is(false));
+        waitForBuildEnd.join();
+        assertThat(listFiles.isEmpty(), is(true));
+    }
+
+    private void makeNotifyAnswerForBuildSuccess(final Object syncFinish) {
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                synchronized (syncFinish) {
+                    syncFinish.notifyAll();
+                }
+                return null;
+            }
+        }).when(buildEvents).raiseEvent(any(BuildSuccessEvent.class));
+    }
+
+    private void makeNotifyAnswerForBuildStart(final Object syncFinish) {
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                synchronized (syncFinish) {
+                    syncFinish.notifyAll();
+                }
+                return null;
+            }
+        }).when(buildEvents).raiseEvent(any(BuildStartEvent.class));
+    }
+
+    private Thread startWaiterThread(final Object sync) {
+        final Thread thread = new Thread() {
             @Override
             public void run() {
                 synchronized (sync) {
@@ -220,6 +265,8 @@ public class MavenServiceTest {
                 }
             };
         };
+        thread.start();
+        return thread;
     }
 
     private String getPath(String folder) {
