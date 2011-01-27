@@ -21,10 +21,13 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.Arrays;
 
+import javax.xml.xpath.XPathConstants;
+
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.openengsb.tooling.pluginsuite.openengsbplugin.tools.Tools;
+import org.w3c.dom.Document;
 
 public class PushVersionTest extends MojoPreparation {
 
@@ -35,19 +38,28 @@ public class PushVersionTest extends MojoPreparation {
 
     @Test
     public void pushVersionOfExampleProject_ShouldPass() throws Exception {
-        File pomFile = null;
+        File createdPom = null;
         try {
+            String versionQuery = "/pom:project/pom:version/text()";
+
             File pomBeforePush = new File("src/test/resources/pushVersion/beforePushVersion.xml");
-            pomFile = new File("src/test/resources/pushVersion/pom.xml");
-            FileUtils.copyFile(pomBeforePush, pomFile);
-            int result = Tools.executeProcess(
-                    Arrays.asList(new String[] { mvnCommand, "-e", invocation, "-DdevelopmentVersion=2.0-SNAPSHOT" }),
-                    new File("src/test/resources/pushVersion"));
+            createdPom = new File("src/test/resources/pushVersion/pom.xml");
+            FileUtils.copyFile(pomBeforePush, createdPom);
+            int result = Tools.executeProcess(Arrays.asList(new String[] { mvnCommand, "-e", invocation,
+                    "-DdevelopmentVersion=2.0-SNAPSHOT" }), new File("src/test/resources/pushVersion"));
             assertEquals(0, result);
+
+            Document docCreatedPom = Tools.parseXMLFromString(FileUtils.readFileToString(createdPom));
+            String actualVersion = Tools.evaluateXPath(versionQuery, docCreatedPom, nsContext, XPathConstants.STRING,
+                    String.class);
+
             File pomAfterPush = new File("src/test/resources/pushVersion/afterPushVersion.xml");
-            assertEquals(FileUtils.readFileToString(pomAfterPush), FileUtils.readFileToString(pomFile));
+            String expectedVersion = Tools.evaluateXPath(versionQuery, Tools.parseXMLFromString(FileUtils
+                    .readFileToString(pomAfterPush)), nsContext, XPathConstants.STRING, String.class);
+
+            assertEquals(expectedVersion, actualVersion);
         } finally {
-            FileUtils.deleteQuietly(pomFile);
+            FileUtils.deleteQuietly(createdPom);
         }
     }
 
