@@ -16,6 +16,9 @@
 
 package org.openengsb.connector.email.internal;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openengsb.connector.email.internal.abstraction.MailAbstraction;
 import org.openengsb.connector.email.internal.abstraction.MailProperties;
 import org.openengsb.core.common.util.AliveState;
@@ -24,6 +27,8 @@ import org.openengsb.domain.notification.model.Notification;
 import org.osgi.framework.ServiceRegistration;
 
 public class EmailNotifier implements NotificationDomain {
+
+    private Log log = LogFactory.getLog(EmailNotifier.class);
 
     private final String id;
 
@@ -39,8 +44,12 @@ public class EmailNotifier implements NotificationDomain {
 
     @Override
     public void notify(Notification notification) {
+        log.info(String.format("notifying %s via email...", notification.getRecipient()));
+        log.info("Subject: " + notification.getSubject());
+        log.info("Message: " + StringUtils.abbreviate(notification.getMessage(), 200));
         mailAbstraction.send(properties, notification.getSubject(), notification.getMessage(), notification
                 .getRecipient());
+        log.info("mail has been sent");
     }
 
     @Override
