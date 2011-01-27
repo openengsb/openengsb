@@ -42,7 +42,7 @@ public abstract class MojoPreparation {
     private static String artifactId;
     private static String version;
 
-    private static OpenEngSBMavenPluginNSContext nsContext = new OpenEngSBMavenPluginNSContext();
+    protected static OpenEngSBMavenPluginNSContext nsContext = new OpenEngSBMavenPluginNSContext();
 
     protected String invocation;
 
