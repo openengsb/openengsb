@@ -17,20 +17,24 @@
 package org.openengsb.core.deployer.connector;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.felix.fileinstall.ArtifactInstaller;
-import org.openengsb.core.common.proxy.ProxyFactory;
-import org.openengsb.core.common.service.DomainService;
+import org.openengsb.core.common.ServiceManager;
+import org.openengsb.core.common.util.OsgiServiceUtils;
 import org.osgi.framework.BundleContext;
 
 public class ConnectorDeployer implements ArtifactInstaller {
 
+    private static final String PROPERTY_CONNECTOR = "connector";
+
     private static Log log = LogFactory.getLog(ConnectorDeployer.class);
 
-    private DomainService domainService;
-    private ProxyFactory proxyFactory;
     private BundleContext bundleContext;
 
     private static final String CONNECTOR_EXTENSION = ".connector";
@@ -50,7 +54,11 @@ public class ConnectorDeployer implements ArtifactInstaller {
     @Override
     public void install(File artifact) throws Exception {
         log.debug(String.format("ConnectorDeployer.install(\"%s\")", artifact.getAbsolutePath()));
-        // TODO Auto-generated method stub
+
+        String connectorName = getConnectorNameFrom(artifact);
+        log.info(String.format("Load instance of %s", connectorName));
+    
+        ServiceManager serviceManager = OsgiServiceUtils.getService(bundleContext, ServiceManager.class, String.format("(connector=%s)", connectorName));
     }
 
     @Override
@@ -67,20 +75,11 @@ public class ConnectorDeployer implements ArtifactInstaller {
 
     }
 
-    public void setProxyFactory(ProxyFactory proxyFactory) {
-        this.proxyFactory = proxyFactory;
-    }
-
-    public ProxyFactory getProxyFactory() {
-        return proxyFactory;
-    }
-
-    public void setDomainService(DomainService domainService) {
-        this.domainService = domainService;
-    }
-
-    public DomainService getDomainService() {
-        return domainService;
+    private String getConnectorNameFrom(File artifact) throws IOException, FileNotFoundException {
+        Properties props = new Properties();
+        props.load(new FileInputStream(artifact.getAbsoluteFile()));
+        String connectorName = props.getProperty(PROPERTY_CONNECTOR);
+        return connectorName;
     }
 
     public void setBundleContext(BundleContext bundleContext) {
