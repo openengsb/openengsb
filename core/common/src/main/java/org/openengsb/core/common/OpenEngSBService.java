@@ -16,6 +16,9 @@
 
 package org.openengsb.core.common;
 
+import org.openengsb.core.common.security.AuthorizedRoles;
+
 public interface OpenEngSBService {
+    @AuthorizedRoles("ROLE_USER")
     String getInstanceId();
 }
