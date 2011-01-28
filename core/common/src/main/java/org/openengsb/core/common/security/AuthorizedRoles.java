@@ -14,28 +14,19 @@
  * limitations under the License.
  */
 
-package org.openengsb.core.security;
+package org.openengsb.core.common.security;
 
-import org.openengsb.core.common.AbstractOpenEngSBService;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class DummyServiceImpl extends AbstractOpenEngSBService implements DummyService {
-
-    public DummyServiceImpl(String id) {
-        super(id);
-    }
-
-    @Override
-    public int getTheAnswerToLifeTheUniverseAndEverything() {
-        return 42;
-    }
-
-    @Override
-    public int test() {
-        return -1;
-    }
-
-    @Override
-    public int publicTest() {
-        return 21;
-    }
+/**
+ * When annotated methods are invoked, the roles in the value are added to the list auf authorized authorities
+ *
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.METHOD })
+public @interface AuthorizedRoles {
+    String[] value();
 }
