@@ -34,10 +34,13 @@
   </bean>
   <service interface="org.springframework.security.authentication.AuthenticationProvider" ref="userAuthenticationProvider" />
 
+  <bean id="bundleAuthenticationProvider" class="org.openengsb.core.security.internal.SystemUserAuthenticationProvider" />
+
   <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
     <property name="providers">
       <list>
         <ref component-id="userAuthenticationProvider" />
+        <ref component-id="bundleAuthenticationProvider" />
       </list>
     </property>
   </bean>
