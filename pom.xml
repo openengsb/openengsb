@@ -124,6 +124,13 @@
         <version>${maven.plugin.wagon.ssh.version}</version>
       </extension>
     </extensions>
+    <plugins>
+      <plugin>
+        <groupId>org.openengsb.tooling</groupId>
+        <artifactId>openengsb-maven-plugin</artifactId>
+        <version>${openengsb.maven.plugin.version}</version>
+      </plugin>
+    </plugins>
   </build>
 
   <profiles>
