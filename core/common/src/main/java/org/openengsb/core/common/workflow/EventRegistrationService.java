@@ -16,9 +16,10 @@
 
 package org.openengsb.core.common.workflow;
 
+import org.openengsb.core.common.OpenEngSBService;
 import org.openengsb.core.common.workflow.model.RemoteEvent;
 
-public interface EventRegistrationService {
+public interface EventRegistrationService extends OpenEngSBService {
 
     void registerEvent(RemoteEvent reg, String string, String returnAddress);
 
