@@ -29,5 +29,5 @@ cd $ABSPATH/../../
 GOAL="provision"
 
 mvn install -Dmaven.test.skip=true
-mvn org.openengsb.tooling.pluginsuite:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL
+mvn org.openengsb.tooling:$PLUGIN_ARTIFACT_ID:$PLUGIN_VERSION:$GOAL
 
