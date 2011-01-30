@@ -1,4 +1,26 @@
+openengsb-1.0.5.RELEASE
+-----------------------
+
+This support release contains minor improvements and improvements.
+
+### Highlights
+  * Better log output of email connector
+  * Maven connectors to own logfiles
+
+### Details
+  * Bug
+    * [OPENENGSB-852] - class not visible from class loader (even though it's a package internal access)
+    * [OPENENGSB-855] - Presentation link broken on frontpage
+
+  * Improvement
+    * [OPENENGSB-853] - write maven-connector's maven-output to logfile
+    * [OPENENGSB-882] - improve log-output in email-connector
+
+  * Task
+    * [OPENENGSB-897] - add changelog for openengsb-1.0.5.RELEASE
+
 openengsb-1.0.4.RELEASE
+-----------------------
 
 ### Bug fixes
   * Make sure the context-id is correctly propagated to spawned child-threads
@@ -11,12 +33,14 @@ openengsb-1.0.4.RELEASE
   * Added a Filter that makes sure the threadlocal context-id is properly maintained in webapp-session (client project need to update)
 
 openengsb-1.0.3.RELEASE
+-----------------------
 
 ### Bug fixes
   * fix neodatis-dependency
   * make sure "flowStartedEvent" is triggered when flow is started by an Event
 
 openengsb-1.0.2.RELEASE
+-----------------------
 
 ### Bug fixes
   * fix a problem when building the project in a path that contains spaces
@@ -34,6 +58,7 @@ openengsb-1.0.2.RELEASE
   * startFlow now triggers a "FlowStartedEvent" as soon as the processInstance has been inserted.
 
 openengsb-1.0.1.RELEASE
+-----------------------
 
 ### Bug fixes
   * wrapped: fix bug in wrapped wicket, that caused the back-button to break the UI.
