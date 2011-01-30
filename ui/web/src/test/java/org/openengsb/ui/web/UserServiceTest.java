@@ -87,6 +87,7 @@ public class UserServiceTest {
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
         formTester.setValue("passwordVerification", "password");
+        formTester.setValue("roles", "admin,user");
         formTester.submit();
         tester.assertNoErrorMessage();
         verify(userManager, times(1)).createUser(new User("user1", "password"));
@@ -101,6 +102,7 @@ public class UserServiceTest {
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
+        formTester.setValue("roles", "admin,user");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
         tester.assertErrorMessages(new String[]{ "User already exists" });
@@ -146,6 +148,7 @@ public class UserServiceTest {
         FormTester formTester = tester.newFormTester("usermanagementContainer:form");
         formTester.setValue("username", "user1");
         formTester.setValue("password", "password");
+        formTester.setValue("roles", "admin,user");
         formTester.setValue("passwordVerification", "password");
         formTester.submit();
         tester.assertErrorMessages(new String[]{ "Database error occurred" });
