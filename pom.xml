@@ -285,5 +285,19 @@
     </profile>
   </profiles>
 
+  <repositories>
+    <repository> <!-- Additional Repositories for Karaf -->
+      <id>sonatype</id>
+      <name>sonatype</name>
+      <url>http://repository.sonatype.org/content/groups/sonatype-public-grid</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
 </project>
 
