@@ -91,7 +91,7 @@ public class TrackerDynamicProxy {
      * XML-RPC server by using the factories client.
      */
     public <T> Object newInstance(Class<T> clazz) {
-        return newInstance(Thread.currentThread().getContextClassLoader(), clazz);
+        return newInstance(this.getClass().getClassLoader(), clazz);
     }
 
     /**

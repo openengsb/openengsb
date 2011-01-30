@@ -52,18 +52,20 @@
     <repos.final>http://uk1.maven.org/maven2</repos.final>
     <repos.current />
     <repos.example>${repos.current}/org/openengsb/docs/openengsb-docs-examples/${project.version}/openengsb-docs-examples-${project.version}</repos.example>
+    <!-- Internal root versions -->
+    <openengsb.maven.plugin.version>1.2.0-SNAPSHOT</openengsb.maven.plugin.version>
   </properties>
 
   <parent>
     <groupId>org.openengsb</groupId>
     <artifactId>openengsb-root</artifactId>
-    <version>6</version>
+    <version>7-SNAPSHOT</version>
   </parent>
 
   <groupId>org.openengsb</groupId>
   <artifactId>openengsb-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>1.2.0-SNAPSHOT</version>
   <name>OpenEngSB :: Parent</name>
 
   <description>
@@ -191,7 +193,7 @@
       <properties>
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype></sitesubtype>
+        <sitesubtype />
       </properties>
       <build>
         <plugins>
@@ -216,7 +218,7 @@
       <properties>
         <github>https://github.com/openengsb/openengsb/blob/openengsb-${project.version}</github>
         <repos.current>${repos.final}</repos.current>
-        <sitesubtype></sitesubtype>
+        <sitesubtype />
       </properties>
       <build>
         <plugins>
@@ -283,144 +285,7 @@
     </profile>
   </profiles>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>central</id>
-      <name>Maven Central</name>
-      <url>http://repo1.maven.org/maven2/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>sonatype-snapshots</id>
-      <name>Sonaype Snapsht Repository</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository> <!-- maven jaxb-xjc-plugin -->
-      <id>maven-repository.dev.java.net</id>
-      <name>Java.net Maven 2 Repository</name>
-      <url>http://download.java.net/maven/2</url>
-    </pluginRepository>
-    <pluginRepository> <!-- for mvn-cli-plugin -->
-      <id>twdata-m2-repository</id>
-      <name>twdata.org Maven 2 Repository</name>
-      <url>http://twdata-m2-repository.googlecode.com/svn/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>jai.repository</id>
-      <name>JAI Repository (indirectly used by Docbook plugin)</name>
-      <url>https://m2proxy.atlassian.com/repository/public</url>
-    </pluginRepository>
-    <pluginRepository> <!-- required for karaf snapshot builds -->
-      <id>apache.snapshots</id>
-      <name>Apache Public Repository</name>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>docbook-utils</id>
-      <name>DocBook Utils</name>
-      <url>http://docbook-utils.sourceforge.net/maven2</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-        <checksumPolicy>warn</checksumPolicy>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
-
   <repositories>
-    <repository>
-      <id>central</id>
-      <name>Maven Central</name>
-      <url>http://repo1.maven.org/maven2/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository> <!-- for jboss-drools and its dependencies -->
-      <id>jboss</id>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository> <!-- various prewrapped -->
-      <id>com.springsource.repository.bundles.external</id>
-      <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
-      <url>http://repository.springsource.com/maven/bundles/external</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository> <!-- org.springframework.osgi:jetty.start.osgi -->
-      <id>i21-s3-osgi-repo</id>
-      <name>i21 osgi artifacts repo</name>
-      <url>http://maven.springframework.org/osgi</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository> <!-- spring-osgi-m1 -->
-      <id>spring-maven-milestone</id>
-      <name>Springframework Maven Repository</name>
-      <url>http://maven.springframework.org/milestone</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <!-- required for maven-default-skin/1.0/maven-default-skin-1.0.jar
-        cd docs; mvn -Pdocs clean install site:run
-        does not work without
-      -->
-      <id>apache.releases</id>
-      <name>Apache Public Repository</name>
-      <url>https://repository.apache.org/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository> <!-- required for karaf snapshot builds -->
-      <id>apache.snapshots</id>
-      <name>Apache Public Repository</name>
-      <url>https://repository.apache.org/content/repositories/snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository> <!-- Additional Repositories for Karaf -->
-      <id>servicemix</id>
-      <name>Apache ServiceMix Repository</name>
-      <url>http://svn.apache.org/repos/asf/servicemix/m2-repo</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository> <!-- Additional Repositories for Karaf -->
-      <id>fusesource.snapshots</id>
-      <name>FuseSource snapshot repository</name>
-      <url>http://repo.fusesource.com/nexus/content/repositories/releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
     <repository> <!-- Additional Repositories for Karaf -->
       <id>sonatype</id>
       <name>sonatype</name>
@@ -431,17 +296,6 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
-    </repository>
-    <repository> <!-- JGIT  -->
-      <id>jgit</id>
-      <url>http://download.eclipse.org/jgit/maven</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository> <!-- Latest PAX artifacts as long as not in central -->
-      <id>sonatype.pax</id>
-      <url>https://oss.sonatype.org/content/groups/ops4j-with-staging/</url>
     </repository>
   </repositories>
 
